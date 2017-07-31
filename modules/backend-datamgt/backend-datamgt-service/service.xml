@@ -1,0 +1,368 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+
+<service-builder auto-namespace-tables="false"
+	package-path="org.mobilink.backend.datamgt">
+	<author>Binhth</author>
+	<namespace>M_DataMgt</namespace>
+
+	<entity name="DictCollection" uuid="true" local-service="true"
+		remote-service="false" table="m_dictcollection">
+
+		<!-- PK fields -->
+		<column name="dictCollectionId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="collectionCode" type="String" />
+		<column name="collectionName" type="String" />
+		<column name="collectionNameEN" type="String" />
+		<column name="description" type="String" />
+		<column name="dataForm" type="String" />
+		
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+		<!-- Finder -->
+		<finder return-type="DictCollection" name="F_dictCollectionCode">
+			<finder-column name="collectionCode"></finder-column>
+			<finder-column name="groupId"></finder-column>
+		</finder>
+	</entity>
+
+	<entity name="DictItem" uuid="true" local-service="true"
+		remote-service="false" table="m_dictitem">
+
+		<!-- PK fields -->
+
+		<column name="dictItemId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="dictCollectionId" type="long" />
+		<column name="itemCode" type="String" />
+		<column name="itemName" type="String" />
+		<column name="itemNameEN" type="String" />
+		<column name="itemDescription" type="String" />
+		<column name="parentItemId" type="long" />
+		<column name="level" type="int" />
+		<column name="sibling" type="String" />
+		<column name="treeIndex" type="String" />
+		<column name="dataForm" type="String" />
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="sibling" />
+		</order>
+
+		<!-- Finder -->
+		<finder return-type="Collection" name="F_dictCollectionId">
+			<finder-column name="dictCollectionId"></finder-column>
+		</finder>
+
+		<!-- Finder -->
+		<finder return-type="DictItem" name="F_dictItemCode">
+			<finder-column name="itemCode"></finder-column>
+			<finder-column name="groupId"></finder-column>
+		</finder>
+
+	</entity>
+
+	<entity name="DictGroup" uuid="true" local-service="true"
+		remote-service="false" table="m_dictgroup">
+
+		<!-- PK fields -->
+
+		<column name="dictGroupId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="dictCollectionId" type="long" />
+		<column name="groupCode" type="String" />
+		<column name="groupName" type="String" />
+		<column name="groupNameEN" type="String" />
+		<column name="groupDescription" type="String" />
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="dictCollectionId" />
+		</order>
+
+	</entity>
+	
+	<entity name="DictItemGroup" uuid="true" local-service="true"
+		remote-service="false" table="m_dictitemgroup">
+
+		<!-- PK fields -->
+
+		<column name="dictItemGroupId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="dictGroupId" type="long" />
+		<column name="dictItemId" type="long" />
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="dictGroupId" />
+		</order>
+
+	</entity>
+	
+	<entity name="Label" uuid="true" local-service="true"
+		remote-service="false" table="m_label">
+
+		<!-- PK fields -->
+		<column name="labelId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="name" type="String" />
+		<column name="color" type="String" />
+		<column name="scope" type="int" />
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="name" />
+		</order>
+
+	</entity>
+
+	<entity name="Location" uuid="true" local-service="true" remote-service="false" table="m_location">
+
+		<!-- PK fields -->
+		<column name="locationId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="location" type="String" />
+		<column name="geolocation" type="String" />
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+		
+	</entity>
+	
+	<entity name="Workspace" uuid="true" local-service="true" remote-service="false" table="m_workspace">
+
+		<!-- PK fields -->
+		<column name="workspaceId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="name" type="String" />
+		<column name="seqOrder" type="int" />
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="seqOrder" />
+		</order>
+		
+	</entity>
+	
+	<entity name="WorkspaceUser" uuid="true" local-service="true" remote-service="false" table="m_workspaceuser">
+
+		<!-- PK fields -->
+		<column name="workspaceUserId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="workspaceId" type="long" />
+		<column name="assignUserId" type="long" />
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+		
+		<finder name="F_workspaceId" return-type="Collection">
+			<finder-column name="workspaceId" />
+		</finder>
+		
+	</entity>
+	
+	<entity name="WorkspaceRole" uuid="true" local-service="true" remote-service="false" table="m_workspacerole">
+
+		<!-- PK fields -->
+		<column name="workspaceRoleId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="workspaceId" type="long" />
+		<column name="roleId" type="long" />
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+		
+	</entity>
+	
+	<entity name="Comment" uuid="true" local-service="true" remote-service="false" table="m_comment">
+
+		<!-- PK fields -->
+		<column name="commentId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="className" type="String" />
+		<column name="classPK" type="String" />
+		<column name="fullname" type="String" />
+		<column name="email" type="String" />
+		<column name="parent" type="long" />
+		<column name="content" type="String" />
+		<column name="fileEntryId" type="long" />
+		<column name="upvoteCount" type="long" />
+		<column name="userHasUpvoted" type="String" />
+		<column name="createdByCurrentUser" type="long" />
+		
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+		
+	</entity>
+	
+	<entity name="Voting" uuid="true" local-service="true" remote-service="false" table="m_voting">
+
+		<!-- PK fields -->
+		<column name="votingId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="className" type="String" />
+		<column name="classPK" type="String" />
+		<column name="subject" type="String" />
+		<column name="answers" type="String" />
+		<column name="dueDate" type="Date" />
+		
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+		
+	</entity>
+	
+	<entity name="VotingResult" uuid="true" local-service="true" remote-service="false" table="m_votingresult">
+
+		<!-- PK fields -->
+		<column name="votingResultId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="votingId" type="long" />
+		<column name="toUserId" type="long" />
+		<column name="fullname" type="String" />
+		<column name="email" type="String" />
+		<column name="comment" type="String" />
+		<column name="selected" type="String" />
+		
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+		
+	</entity>
+	
+</service-builder>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://benchresources.in/cdm/Player" xmlns:tns="http://benchresources.in/cdm/Player"
+	elementFormDefault="qualified">
+
+	<!-- DictCollectionModel -->
+	<xsd:element name="DictCollectionModel">
+		<xsd:complexType>
+			<xsd:sequence>
+
+				<!-- Other fields -->
+
+				<xsd:element name="collectionCode" type="xsd:string" />
+				<xsd:element name="collectionName" type="xsd:string" />
+				<xsd:element name="collectionNameEN" type="xsd:string" />
+				<xsd:element name="description" type="xsd:string" />
+
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<!-- Object to contain list of Dossier referencing Dossier model -->
+	<xsd:element name="DictCollectionListModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="tns:DictCollectionModel" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<!-- Object to contain list of Dossier referencing Dossier model -->
+	<xsd:element name="DictCollectionResults">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" />
+				<xsd:element ref="tns:DictCollectionModel" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="DictGroupModel">
+		<xsd:complexType>
+			<xsd:sequence>
+
+				<!-- Other fields -->
+
+				<xsd:element name="groupCode" type="xsd:string" />
+				<xsd:element name="groupName" type="xsd:string" />
+				<xsd:element name="groupNameEN" type="xsd:string" />
+				<xsd:element name="groupDescription" type="xsd:string" />
+
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="DictGroupResults">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" />
+				<xsd:element ref="tns:DictGroupModel" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ParentItemModel">
+		<xsd:complexType>
+			<xsd:sequence>
+
+				<!-- Other fields -->
+
+				<xsd:element name="itemCode" type="xsd:string" />
+				<xsd:element name="itemName" type="xsd:string" />
+				<xsd:element name="itemNameEN" type="xsd:string" />
+
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="DictItemListModel">
+		<xsd:complexType>
+			<xsd:sequence>
+
+				<!-- Other fields -->
+
+				<xsd:element name="itemCode" type="xsd:string" />
+				<xsd:element name="itemName" type="xsd:string" />
+				<xsd:element name="itemNameEN" type="xsd:string" />
+				<xsd:element name="itemDescription" type="xsd:string" />
+				<xsd:element name="parentItemCode" type="xsd:string" />
+				<xsd:element name="sibling " type="xsd:int" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	
+	<xsd:element name="DictItemDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+
+				<xsd:element name="createDate" type="xsd:date" />
+				<xsd:element name="modifiedDate" type="xsd:date" />
+				<xsd:element name="itemCode " type="xsd:string" />
+				<xsd:element name="itemName " type="xsd:string" />
+				<xsd:element name="itemNameEN " type="xsd:string" />
+				<xsd:element name="itemDescription " type="xsd:string" />
+				<xsd:element name="level " type="xsd:int" />
+				<xsd:element name="sibling" type="xsd:int" />
+				<xsd:element name="treeIndex " type="xsd:string" />
+				<xsd:element ref="tns:ParentItemModel" minOccurs="0"
+					maxOccurs="unbounded" />
+				<xsd:element ref="tns:DictGroupModel" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="DictItemResults">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" />
+				<xsd:element ref="tns:DictItemListModel" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>
+

@@ -1,0 +1,6 @@
+Bundle-Name: backend-api-rest
+Bundle-SymbolicName: backend.api.rest
+Bundle-Version: 2.0.0
+ConfigurationPath: /configuration
+Include-Resource: configuration=src/main/resources/configuration
+Export-Package: org.mobilink.api.model

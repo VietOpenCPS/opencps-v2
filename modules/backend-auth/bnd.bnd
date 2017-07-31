@@ -1,0 +1,7 @@
+Bundle-Name: backend-auth
+Bundle-SymbolicName: backend.auth
+Bundle-Version: 1.0.0
+Export-Package: \
+	backend.auth.api,\
+	backend.auth.api.keys,\
+	backend.auth.api.exception

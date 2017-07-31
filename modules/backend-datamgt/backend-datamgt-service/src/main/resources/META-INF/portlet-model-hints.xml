@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="org.mobilink.backend.datamgt.model.Comment">
+		<field name="uuid" type="String" />
+		<field name="commentId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="className" type="String" />
+		<field name="classPK" type="String" />
+		<field name="fullname" type="String" />
+		<field name="email" type="String" />
+		<field name="parent" type="long" />
+		<field name="content" type="String" />
+		<field name="fileEntryId" type="long" />
+		<field name="upvoteCount" type="long" />
+		<field name="userHasUpvoted" type="String" />
+		<field name="createdByCurrentUser" type="long" />
+	</model>
+	<model name="org.mobilink.backend.datamgt.model.DictCollection">
+		<field name="uuid" type="String" />
+		<field name="dictCollectionId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="collectionCode" type="String" />
+		<field name="collectionName" type="String" />
+		<field name="collectionNameEN" type="String" />
+		<field name="description" type="String" />
+		<field name="dataForm" type="String" />
+	</model>
+	<model name="org.mobilink.backend.datamgt.model.DictGroup">
+		<field name="uuid" type="String" />
+		<field name="dictGroupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dictCollectionId" type="long" />
+		<field name="groupCode" type="String" />
+		<field name="groupName" type="String" />
+		<field name="groupNameEN" type="String" />
+		<field name="groupDescription" type="String" />
+	</model>
+	<model name="org.mobilink.backend.datamgt.model.DictItem">
+		<field name="uuid" type="String" />
+		<field name="dictItemId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dictCollectionId" type="long" />
+		<field name="itemCode" type="String" />
+		<field name="itemName" type="String" />
+		<field name="itemNameEN" type="String" />
+		<field name="itemDescription" type="String" />
+		<field name="parentItemId" type="long" />
+		<field name="level" type="int" />
+		<field name="sibling" type="String" />
+		<field name="treeIndex" type="String" />
+		<field name="dataForm" type="String" />
+	</model>
+	<model name="org.mobilink.backend.datamgt.model.DictItemGroup">
+		<field name="uuid" type="String" />
+		<field name="dictItemGroupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dictGroupId" type="long" />
+		<field name="dictItemId" type="long" />
+	</model>
+	<model name="org.mobilink.backend.datamgt.model.Label">
+		<field name="uuid" type="String" />
+		<field name="labelId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="name" type="String" />
+		<field name="color" type="String" />
+		<field name="scope" type="int" />
+	</model>
+	<model name="org.mobilink.backend.datamgt.model.Location">
+		<field name="uuid" type="String" />
+		<field name="locationId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="location" type="String" />
+		<field name="geolocation" type="String" />
+	</model>
+	<model name="org.mobilink.backend.datamgt.model.Voting">
+		<field name="uuid" type="String" />
+		<field name="votingId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="className" type="String" />
+		<field name="classPK" type="String" />
+		<field name="subject" type="String" />
+		<field name="answers" type="String" />
+		<field name="dueDate" type="Date" />
+	</model>
+	<model name="org.mobilink.backend.datamgt.model.VotingResult">
+		<field name="uuid" type="String" />
+		<field name="votingResultId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="votingId" type="long" />
+		<field name="toUserId" type="long" />
+		<field name="fullname" type="String" />
+		<field name="email" type="String" />
+		<field name="comment" type="String" />
+		<field name="selected" type="String" />
+	</model>
+	<model name="org.mobilink.backend.datamgt.model.Workspace">
+		<field name="uuid" type="String" />
+		<field name="workspaceId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="name" type="String" />
+		<field name="seqOrder" type="int" />
+	</model>
+	<model name="org.mobilink.backend.datamgt.model.WorkspaceRole">
+		<field name="uuid" type="String" />
+		<field name="workspaceRoleId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="workspaceId" type="long" />
+		<field name="roleId" type="long" />
+	</model>
+	<model name="org.mobilink.backend.datamgt.model.WorkspaceUser">
+		<field name="uuid" type="String" />
+		<field name="workspaceUserId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="workspaceId" type="long" />
+		<field name="assignUserId" type="long" />
+	</model>
+</model-hints>

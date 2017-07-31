@@ -1,0 +1,10 @@
+Bundle-Name: backend-usermgt-api
+Bundle-SymbolicName: backend.usermgt.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	org.mobilink.backend.usermgt.constants,\
+	org.mobilink.backend.usermgt.exception,\
+	org.mobilink.backend.usermgt.model,\
+	org.mobilink.backend.usermgt.service,\
+	org.mobilink.backend.usermgt.service.persistence
+-includeresource: META-INF/service.xml=../backend-usermgt-service/service.xml

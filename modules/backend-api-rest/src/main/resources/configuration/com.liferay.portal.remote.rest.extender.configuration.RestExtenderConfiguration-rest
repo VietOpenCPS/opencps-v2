@@ -1,0 +1,2 @@
+contextPaths=/rest
+jaxRsServiceFilterStrings=(component.name=backend.api.rest.application.BackendAPIRestApplication)

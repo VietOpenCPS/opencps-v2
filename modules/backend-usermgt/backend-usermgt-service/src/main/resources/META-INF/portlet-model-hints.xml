@@ -1,0 +1,186 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="org.mobilink.backend.usermgt.model.Contact">
+		<field name="uuid" type="String" />
+		<field name="contactId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="fullName" type="String" />
+		<field name="companyName" type="String" />
+		<field name="telNo" type="String" />
+		<field name="email" type="String" />
+		<field name="userMappingId" type="long" />
+		<field name="isOrg" type="boolean" />
+		<field name="shared" type="int" />
+	</model>
+	<model name="org.mobilink.backend.usermgt.model.ContactGroup">
+		<field name="uuid" type="String" />
+		<field name="contactGroupId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="groupName" type="String" />
+		<field name="contactList" type="String" />
+		<field name="shared" type="int" />
+	</model>
+	<model name="org.mobilink.backend.usermgt.model.Employee">
+		<field name="uuid" type="String" />
+		<field name="employeeId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="fullName" type="String" />
+		<field name="employeeNo" type="String" />
+		<field name="gender" type="int" />
+		<field name="birthDate" type="Date" />
+		<field name="telNo" type="String" />
+		<field name="mobile" type="String" />
+		<field name="email" type="String" />
+		<field name="workingStatus" type="int" />
+		<field name="mappingUserId" type="long" />
+		<field name="mainJobPostId" type="long" />
+		<field name="photoFileEntryId" type="long" />
+		<field name="fileDocId" type="long" />
+		<field name="preferences" type="String" />
+	</model>
+	<model name="org.mobilink.backend.usermgt.model.EmployeeFile">
+		<field name="uuid" type="String" />
+		<field name="employeeFileId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="employeeId" type="long" />
+		<field name="fileEntryId" type="long" />
+	</model>
+	<model name="org.mobilink.backend.usermgt.model.EmployeeJobPos">
+		<field name="uuid" type="String" />
+		<field name="employeeJobPosId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="employeeId" type="long" />
+		<field name="jobPostId" type="long" />
+	</model>
+	<model name="org.mobilink.backend.usermgt.model.JobPos">
+		<field name="uuid" type="String" />
+		<field name="jobPosId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="workingUnitId" type="long" />
+		<field name="title" type="String" />
+		<field name="description" type="String" />
+		<field name="directWorkingUnitId" type="long" />
+		<field name="leader" type="int" />
+		<field name="mappingRoleId" type="long" />
+		<field name="hiddenJobPos" type="boolean" />
+	</model>
+	<model name="org.mobilink.backend.usermgt.model.JoinSiteStatus">
+		<field name="uuid" type="String" />
+		<field name="JoinSiteStatusId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="employeeId" type="long" />
+		<field name="joinSiteGroupId" type="long" />
+		<field name="status" type="int" />
+	</model>
+	<model name="org.mobilink.backend.usermgt.model.OfficeSite">
+		<field name="uuid" type="String" />
+		<field name="officeSiteId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="name" type="String" />
+		<field name="enName" type="String" />
+		<field name="govAgencyCode" type="String" />
+		<field name="address" type="String" />
+		<field name="telNo" type="String" />
+		<field name="faxNo" type="String" />
+		<field name="email" type="String" />
+		<field name="website" type="String" />
+		<field name="logoFileEntryId" type="long" />
+		<field name="siteGroupId" type="long" />
+		<field name="adminUserId" type="long" />
+		<field name="preferences" type="String" />
+	</model>
+	<model name="org.mobilink.backend.usermgt.model.Partner">
+		<field name="uuid" type="String" />
+		<field name="partnerId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="name" type="String" />
+		<field name="address" type="String" />
+		<field name="telNo" type="String" />
+		<field name="faxNo" type="String" />
+		<field name="email" type="String" />
+		<field name="website" type="String" />
+		<field name="partnerClass" type="int" />
+		<field name="accountUserId" type="long" />
+		<field name="docFileId" type="String" />
+	</model>
+	<model name="org.mobilink.backend.usermgt.model.PartnerFile">
+		<field name="uuid" type="String" />
+		<field name="partnerFileId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="partnerId" type="long" />
+		<field name="fileEntryId" type="long" />
+	</model>
+	<model name="org.mobilink.backend.usermgt.model.WorkingUnit">
+		<field name="uuid" type="String" />
+		<field name="workingUnitId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="name" type="String" />
+		<field name="enName" type="String" />
+		<field name="govAgencyCode" type="String" />
+		<field name="parentWorkingUnitId" type="long" />
+		<field name="address" type="String" />
+		<field name="telNo" type="String" />
+		<field name="faxNo" type="String" />
+		<field name="email" type="String" />
+		<field name="website" type="String" />
+		<field name="logoFileEntryId" type="long" />
+		<field name="sibling" type="String" />
+		<field name="treeIndex" type="String" />
+	</model>
+</model-hints>
