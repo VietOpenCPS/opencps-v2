@@ -1,63 +1,172 @@
 package org.mobilink.api.controller.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 
 import org.mobilink.api.controller.DataManagement;
-import org.mobilink.api.controller.util.DictCollectionUtils;
-import org.mobilink.api.dictcollection.model.DictCollectionModel;
-import org.mobilink.api.dictcollection.model.DictCollectionResults;
-import org.mobilink.backend.datamgt.model.DictCollection;
-import org.mobilink.backend.datamgt.service.DictCollectionLocalServiceUtil;
+import org.mobilink.api.dictcollection.model.DictCollectionShortModel;
+import org.mobilink.api.dictcollection.model.DictGroupModel;
+import org.mobilink.api.dictcollection.model.DictItemModel;
 
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.servlet.Header;
 
 public class DataManagementImpl implements DataManagement {
 
+	Log _log = LogFactoryUtil.getLog(DataManagementImpl.class);
+
 	@Override
-	public Response getDictCollection(HttpServletRequest request, Header header) {
-		try {
-
-			DictCollectionResults result = new DictCollectionResults();
-
-			int total = DictCollectionLocalServiceUtil.getDictCollectionsCount();
-			
-			List<DictCollection> lsDictCollection = DictCollectionLocalServiceUtil.getDictCollections(QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS);
-			
-			List<DictCollectionModel> ls = DictCollectionUtils.mapperDictCollectionList(lsDictCollection);
-			
-			/*DictCollectionModel dc = new DictCollectionModel();
-			
-			dc.setCollectionCode("323");
-			
-			ls.add(dc);*/
-			
-			result.setTotal(total);
-			result.setDictCollectionModel(ls);
-
-			return Response.status(200).entity(result).build();
-
-		} catch (Exception e) {
-			JSONObject errorMgs = JSONFactoryUtil.createJSONObject();
-
-			errorMgs.put("code", 400);
-			errorMgs.put("message", "String input is incorrect");
-			errorMgs.put("description", "String input is incorrect");
-
-			_log.info(e);
-
-			return Response.status(400).entity(errorMgs).build();
-		}
+	public Response getDictCollection(HttpServletRequest request, org.apache.cxf.headers.Header header) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	Log _log = LogFactoryUtil.getLog(DataManagementImpl.class);
+	@Override
+	public Response getDictCollectionDetail(HttpServletRequest request, org.apache.cxf.headers.Header header,
+			String code) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response addDictCollection(HttpServletRequest request, org.apache.cxf.headers.Header header, String body) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response updateDictCollection(HttpServletRequest request, org.apache.cxf.headers.Header header, String code,
+			DictCollectionShortModel body) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response deleteDictCollection(HttpServletRequest request, org.apache.cxf.headers.Header header,
+			String code) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response getDataForm(HttpServletRequest request, org.apache.cxf.headers.Header header, String code) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response addDataForm(HttpServletRequest request, org.apache.cxf.headers.Header header, String code,
+			String body) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response getDictGroups(HttpServletRequest request, org.apache.cxf.headers.Header header, String code) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response addDictGroups(HttpServletRequest request, org.apache.cxf.headers.Header header, String code,
+			DictGroupModel body) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response updateDictGroups(HttpServletRequest request, org.apache.cxf.headers.Header header, String code,
+			String groupCode, DictGroupModel body) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response daleteDictGroups(HttpServletRequest request, org.apache.cxf.headers.Header header, String code,
+			String groupCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response getDictItem(HttpServletRequest request, org.apache.cxf.headers.Header header, String code,
+			String groupCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response addDictItem(HttpServletRequest request, org.apache.cxf.headers.Header header, String code,
+			String groupCode, DictItemModel dictItemModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response deleteDictItem(HttpServletRequest request, org.apache.cxf.headers.Header header, String code,
+			String groupCode, String dictitemCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response getDictItems(HttpServletRequest request, org.apache.cxf.headers.Header header, String code) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response addDictItems(HttpServletRequest request, org.apache.cxf.headers.Header header, String code) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response getDictItemByItemCode(HttpServletRequest request, org.apache.cxf.headers.Header header, String code,
+			String itemCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response updateDictItemByItemCode(HttpServletRequest request, org.apache.cxf.headers.Header header,
+			String code, String itemCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response dateletDictItemByItemCode(HttpServletRequest request, org.apache.cxf.headers.Header header,
+			String code, String itemCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response getMetaDataOfDictItem(HttpServletRequest request, org.apache.cxf.headers.Header header, String code,
+			String itemCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response addMetaDataOfDictItem(HttpServletRequest request, org.apache.cxf.headers.Header header, String code,
+			String itemCode, String body) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response updateMetaDataOfDictItem(HttpServletRequest request, org.apache.cxf.headers.Header header,
+			String code, String itemCode, String key, String body) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response deleteMetaDataOfDictItem(HttpServletRequest request, org.apache.cxf.headers.Header header,
+			String code, String itemCode, String key, String body) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

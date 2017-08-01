@@ -8,13 +8,10 @@
 
 package org.mobilink.api.dictcollection.model;
 
-import java.util.Date;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -32,8 +29,6 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="collectionName" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="collectionNameEN" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="createDate" type="{http://www.w3.org/2001/XMLSchema}date"/>
- *         &lt;element name="modifiedDate" type="{http://www.w3.org/2001/XMLSchema}date"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -47,12 +42,10 @@ import javax.xml.bind.annotation.XmlType;
     "collectionCode",
     "collectionName",
     "collectionNameEN",
-    "description",
-    "createDate",
-    "modifiedDate"
+    "description"
 })
-@XmlRootElement(name = "DictCollectionModel")
-public class DictCollectionModel {
+@XmlRootElement(name = "DictCollectionShortModel")
+public class DictCollectionShortModel {
 
     @XmlElement(required = true)
     protected String collectionCode;
@@ -62,12 +55,6 @@ public class DictCollectionModel {
     protected String collectionNameEN;
     @XmlElement(required = true)
     protected String description;
-    @XmlElement(required = true)
-    @XmlSchemaType(name = "date")
-    protected Date createDate;
-    @XmlElement(required = true)
-    @XmlSchemaType(name = "date")
-    protected Date modifiedDate;
 
     /**
      * Gets the value of the collectionCode property.
@@ -163,54 +150,6 @@ public class DictCollectionModel {
      */
     public void setDescription(String value) {
         this.description = value;
-    }
-
-    /**
-     * Gets the value of the createDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Date }
-     *     
-     */
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    /**
-     * Sets the value of the createDate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Date }
-     *     
-     */
-    public void setCreateDate(Date value) {
-        this.createDate = value;
-    }
-
-    /**
-     * Gets the value of the modifiedDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Date }
-     *     
-     */
-    public Date getModifiedDate() {
-        return modifiedDate;
-    }
-
-    /**
-     * Sets the value of the modifiedDate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Date }
-     *     
-     */
-    public void setModifiedDate(Date value) {
-        this.modifiedDate = value;
     }
 
 }

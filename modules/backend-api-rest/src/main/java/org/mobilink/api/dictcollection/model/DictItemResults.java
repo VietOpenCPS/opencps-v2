@@ -16,8 +16,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 
 /**
  * <p>Java class for anonymous complex type.
@@ -30,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="total" type="{http://www.w3.org/2001/XMLSchema}int"/>
- *         &lt;element ref="{http://benchresources.in/cdm/Player}DictCollectionShortModel" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element ref="{http://benchresources.in/cdm/Player}DictItemModel" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -42,15 +40,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "total",
-    "dictCollectionShortModel"
+    "dictItemModel"
 })
-@XmlRootElement(name = "DictCollectionResults")
-public class DictCollectionResults {
+@XmlRootElement(name = "DictItemResults")
+public class DictItemResults {
 
     protected int total;
-    @XmlElement(name = "data")
-    @JsonProperty("data")
-    protected List<DictCollectionShortModel> dictCollectionShortModel;
+    @XmlElement(name = "DictItemModel")
+    protected List<DictItemModel> dictItemModel;
 
     /**
      * Gets the value of the total property.
@@ -69,36 +66,32 @@ public class DictCollectionResults {
     }
 
     /**
-     * Gets the value of the dictCollectionShortModel property.
+     * Gets the value of the dictItemModel property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the dictCollectionShortModel property.
+     * This is why there is not a <CODE>set</CODE> method for the dictItemModel property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getDictCollectionShortModel().add(newItem);
+     *    getDictItemModel().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link DictCollectionShortModel }
+     * {@link DictItemModel }
      * 
      * 
      */
-    public List<DictCollectionShortModel> getDictCollectionShortModel() {
-        if (dictCollectionShortModel == null) {
-            dictCollectionShortModel = new ArrayList<DictCollectionShortModel>();
+    public List<DictItemModel> getDictItemModel() {
+        if (dictItemModel == null) {
+            dictItemModel = new ArrayList<DictItemModel>();
         }
-        return this.dictCollectionShortModel;
+        return this.dictItemModel;
     }
-
-	public void setDictCollectionShortModel(List<DictCollectionShortModel> dictCollectionShortModel) {
-		this.dictCollectionShortModel = dictCollectionShortModel;
-	}
 
 }
