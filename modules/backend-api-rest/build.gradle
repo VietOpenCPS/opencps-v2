@@ -27,7 +27,6 @@ dependencies {
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-api")
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-service")
 	
-	compileOnly project(":modules:backend-activity:backend-activity-api")
 	
 	compileOnly project(":modules:backend-auth")
 }
