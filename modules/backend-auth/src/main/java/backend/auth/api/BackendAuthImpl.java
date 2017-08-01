@@ -2,9 +2,6 @@ package backend.auth.api;
 
 import java.util.List;
 
-import org.mobilink.backend.activity.model.Activity;
-import org.mobilink.backend.activity.model.Participant;
-
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -23,17 +20,7 @@ public class BackendAuthImpl implements BackendAuth {
 
 		if (Validator.isNotNull(security)) {
 
-			Activity activity = BackendUtils.getActivity(security);
-
-			if (Validator.isNotNull(activity)) {
-
-				Participant participant = BackendUtils.getParticipant(activity.getActivityId(), password);
-
-				if (Validator.isNotNull(participant)) {
-					isAuth = true;
-				}
-
-			}
+			//TODO:
 
 		} else {
 			isAuth = context.isSignedIn();
