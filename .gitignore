@@ -10,6 +10,7 @@
 **/node_modules
 **/test-coverage
 **/tmp
+themes/
 **/.web_bundle_build
 .gradle
 .idea
