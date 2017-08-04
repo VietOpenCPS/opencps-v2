@@ -24,3 +24,5 @@
 test-results
 **/.DS_Store
 modules/backend-datamgt/backend-datamgt-api/src/main/java/**
+modules/backend-datamgt/backend-datamgt-service/src/main/java/org/opencps/datamgt/model/
+modules/backend-datamgt/backend-datamgt-service/src/main/java/org/opencps/datamgt/service/base/
