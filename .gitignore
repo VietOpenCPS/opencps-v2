@@ -29,3 +29,5 @@ modules/backend-datamgt/backend-datamgt-service/src/main/java/org/opencps/datamg
 modules/backend-usermgt/backend-usermgt-api/src/main/java/org/opencps/usermgt/exception/
 modules/backend-usermgt/backend-usermgt-api/src/main/java/org/opencps/usermgt/model/
 modules/backend-usermgt/backend-usermgt-api/src/main/java/org/opencps/usermgt/service/
+modules/backend-usermgt/backend-usermgt-service/src/main/java/org/opencps/usermgt/model/
+modules/backend-usermgt/backend-usermgt-service/src/main/java/org/opencps/usermgt/service/base/
