@@ -1,0 +1,10 @@
+Bundle-Name: backend-communication-api
+Bundle-SymbolicName: backend.communication.api
+Bundle-Version: 1.0.0
+Export-Package: \
+	org.opencps.communication.constants,\
+	org.opencps.communication.exception,\
+	org.opencps.communication.model,\
+	org.opencps.communication.service,\
+	org.opencps.communication.service.persistence
+-includeresource: META-INF/service.xml=../backend-communication-service/service.xml

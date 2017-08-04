@@ -1,11 +1,11 @@
 Bundle-Name: backend-datamgt-api
 Bundle-SymbolicName: backend.datamgt.api
 Bundle-Version: 1.0.0
-Export-Package:\
-	org.mobilink.backend.datamgt.exception,\
-	org.mobilink.backend.datamgt.model,\
-	org.mobilink.backend.datamgt.service,\
-	org.mobilink.backend.datamgt.constants,\
-	org.mobilink.backend.datamgt.service.persistence,\
-	org.mobilink.backend.datamgt.utils
+Export-Package: \
+	org.opencps.datamgt.constants,\
+	org.opencps.datamgt.exception,\
+	org.opencps.datamgt.model,\
+	org.opencps.datamgt.service,\
+	org.opencps.datamgt.service.persistence,\
+	org.opencps.datamgt.utils
 -includeresource: META-INF/service.xml=../backend-datamgt-service/service.xml

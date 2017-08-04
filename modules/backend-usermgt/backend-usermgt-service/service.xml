@@ -3,11 +3,11 @@
 
 <service-builder auto-namespace-tables="false"
 	package-path="org.mobilink.backend.usermgt">
-	<author>Binhth</author>
-	<namespace>M_UserMgt</namespace>
+	<author>khoavu</author>
+	<namespace>UserMgt</namespace>
 
 	<entity name="OfficeSite" uuid="true" local-service="true"
-		remote-service="false" table="m_officesite">
+		remote-service="false" table="opencps_officesite">
 
 		<!-- PK fields -->
 		<column name="officeSiteId" type="long" primary="true" />
@@ -41,7 +41,7 @@
 	</entity>
 	
 	<entity name="WorkingUnit" uuid="true" local-service="true"
-		remote-service="false" table="m_workingunit">
+		remote-service="false" table="opencps_workingunit">
 
 		<!-- PK fields -->
 		<column name="workingUnitId" type="long" primary="true" />
@@ -76,7 +76,7 @@
 	</entity>
 
 	<entity name="JobPos" uuid="true" local-service="true"
-		remote-service="false" table="m_jobpos">
+		remote-service="false" table="opencps_jobpos">
 
 		<!-- PK fields -->
 		<column name="jobPosId" type="long" primary="true" />
@@ -105,7 +105,7 @@
 	</entity>
 
 	<entity name="Employee" uuid="true" local-service="true"
-		remote-service="false" table="m_employee">
+		remote-service="false" table="opencps_employee">
 
 		<!-- PK fields -->
 		<column name="employeeId" type="long" primary="true" />
@@ -141,7 +141,7 @@
 	</entity>
 
 	<entity name="EmployeeJobPos" uuid="true" local-service="true"
-		remote-service="false" table="m_employee_jobpos">
+		remote-service="false" table="opencps_employee_jobpos">
 
 		<!-- PK fields -->
 		<column name="employeeJobPosId" type="long" primary="true" />
@@ -168,7 +168,7 @@
 	</entity>
 
 	<entity name="JoinSiteStatus" uuid="true" local-service="true"
-		remote-service="false" table="m_join_site_status">
+		remote-service="false" table="opencps_join_site_status">
 
 		<!-- PK fields -->
 		<column name="JoinSiteStatusId" type="long" primary="true" />
@@ -197,7 +197,7 @@
 	</entity>
 
 	<entity name="EmployeeFile" uuid="true" local-service="true"
-		remote-service="false" table="m_employee_file">
+		remote-service="false" table="opencps_employee_file">
 
 		<!-- PK fields -->
 		<column name="employeeFileId" type="long" primary="true" />
@@ -221,7 +221,7 @@
 	</entity>
 
 	<entity name="Partner" uuid="true" local-service="true"
-		remote-service="false" table="m_partner">
+		remote-service="false" table="opencps_partner">
 
 		<!-- PK fields -->
 		<column name="partnerId" type="long" primary="true" />
@@ -254,7 +254,7 @@
 	</entity>
 
 	<entity name="PartnerFile" uuid="true" local-service="true"
-		remote-service="false" table="m_partnerFile">
+		remote-service="false" table="opencps_partnerFile">
 
 		<!-- PK fields -->
 		<column name="partnerFileId" type="long" primary="true" />
@@ -279,7 +279,7 @@
 	</entity>
 
 	<entity name="Contact" uuid="true" local-service="true"
-		remote-service="false" table="m_contact">
+		remote-service="false" table="opencps_contact">
 
 		<!-- PK fields -->
 
@@ -317,7 +317,7 @@
 	</entity>
 	
 	<entity name="ContactGroup" uuid="true" local-service="true"
-		remote-service="false" table="m_contactgroup">
+		remote-service="false" table="opencps_contactgroup">
 
 		<!-- PK fields -->
 
