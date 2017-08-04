@@ -12,14 +12,14 @@
  * details.
  */
 
-package org.mobilink.backend.communication.service.impl;
+package org.opencps.communication.service.impl;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
 
-import org.mobilink.backend.communication.constants.NotificationTemplateTerm;
-import org.mobilink.backend.communication.model.Notificationtemplate;
-import org.mobilink.backend.communication.service.base.NotificationtemplateLocalServiceBaseImpl;
+import org.opencps.communication.constants.NotificationTemplateTerm;
+import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.service.base.NotificationtemplateLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -50,7 +50,7 @@ import aQute.bnd.annotation.ProviderType;
  * The implementation of the notificationtemplate local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.mobilink.backend.communication.service.NotificationtemplateLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.communication.service.NotificationtemplateLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
@@ -58,7 +58,7 @@ import aQute.bnd.annotation.ProviderType;
  *
  * @author Binhth
  * @see NotificationtemplateLocalServiceBaseImpl
- * @see org.mobilink.backend.communication.service.NotificationtemplateLocalServiceUtil
+ * @see org.opencps.communication.service.NotificationtemplateLocalServiceUtil
  */
 @ProviderType
 public class NotificationtemplateLocalServiceImpl

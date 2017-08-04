@@ -1,4 +1,4 @@
-package org.mobilink.backend.communication.service.indexer;
+package org.opencps.communication.service.indexer;
 
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -6,9 +6,9 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
-import org.mobilink.backend.communication.constants.NotificationTemplateTerm;
-import org.mobilink.backend.communication.model.Notificationtemplate;
-import org.mobilink.backend.communication.service.NotificationtemplateLocalServiceUtil;
+import org.opencps.communication.constants.NotificationTemplateTerm;
+import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
