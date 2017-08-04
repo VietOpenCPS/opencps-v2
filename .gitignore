@@ -26,3 +26,6 @@ test-results
 modules/backend-datamgt/backend-datamgt-api/src/main/java/**
 modules/backend-datamgt/backend-datamgt-service/src/main/java/org/opencps/datamgt/model/
 modules/backend-datamgt/backend-datamgt-service/src/main/java/org/opencps/datamgt/service/base/
+modules/backend-usermgt/backend-usermgt-api/src/main/java/org/opencps/usermgt/exception/
+modules/backend-usermgt/backend-usermgt-api/src/main/java/org/opencps/usermgt/model/
+modules/backend-usermgt/backend-usermgt-api/src/main/java/org/opencps/usermgt/service/
