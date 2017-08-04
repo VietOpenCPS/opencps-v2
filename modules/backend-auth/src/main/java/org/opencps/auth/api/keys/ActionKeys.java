@@ -1,4 +1,4 @@
-package backend.auth.api.keys;
+package org.opencps.auth.api.keys;
 
 public class ActionKeys {
 	//define action key here

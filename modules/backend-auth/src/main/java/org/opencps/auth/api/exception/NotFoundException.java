@@ -1,4 +1,4 @@
-package backend.auth.api.exception;
+package org.opencps.auth.api.exception;
 
 import com.liferay.portal.kernel.exception.PortalException;
 

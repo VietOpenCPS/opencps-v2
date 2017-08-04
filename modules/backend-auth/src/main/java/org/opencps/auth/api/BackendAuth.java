@@ -1,4 +1,4 @@
-package backend.auth.api;
+package org.opencps.auth.api;
 
 import com.liferay.portal.kernel.service.ServiceContext;
 
