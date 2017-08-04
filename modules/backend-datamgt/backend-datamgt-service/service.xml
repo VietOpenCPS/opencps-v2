@@ -2,12 +2,12 @@
 <!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
 
 <service-builder auto-namespace-tables="false"
-	package-path="org.mobilink.backend.datamgt">
-	<author>Binhth</author>
-	<namespace>M_DataMgt</namespace>
+	package-path="org.opencps.datamgt">
+	<author>khoavu</author>
+	<namespace>DataMgt</namespace>
 
 	<entity name="DictCollection" uuid="true" local-service="true"
-		remote-service="false" table="m_dictcollection">
+		remote-service="false" table="opencps_dictcollection">
 
 		<!-- PK fields -->
 		<column name="dictCollectionId" type="long" primary="true" />
@@ -40,7 +40,7 @@
 	</entity>
 
 	<entity name="DictItem" uuid="true" local-service="true"
-		remote-service="false" table="m_dictitem">
+		remote-service="false" table="opencps_dictitem">
 
 		<!-- PK fields -->
 
@@ -87,7 +87,7 @@
 	</entity>
 
 	<entity name="DictGroup" uuid="true" local-service="true"
-		remote-service="false" table="m_dictgroup">
+		remote-service="false" table="opencps_dictgroup">
 
 		<!-- PK fields -->
 
@@ -118,7 +118,7 @@
 	</entity>
 	
 	<entity name="DictItemGroup" uuid="true" local-service="true"
-		remote-service="false" table="m_dictitemgroup">
+		remote-service="false" table="opencps_dictitemgroup">
 
 		<!-- PK fields -->
 
@@ -146,7 +146,7 @@
 	</entity>
 	
 	<entity name="Label" uuid="true" local-service="true"
-		remote-service="false" table="m_label">
+		remote-service="false" table="opencps_label">
 
 		<!-- PK fields -->
 		<column name="labelId" type="long" primary="true" />
@@ -171,7 +171,7 @@
 
 	</entity>
 
-	<entity name="Location" uuid="true" local-service="true" remote-service="false" table="m_location">
+	<entity name="Location" uuid="true" local-service="true" remote-service="false" table="opencps_location">
 
 		<!-- PK fields -->
 		<column name="locationId" type="long" primary="true" />
@@ -196,7 +196,7 @@
 		
 	</entity>
 	
-	<entity name="Workspace" uuid="true" local-service="true" remote-service="false" table="m_workspace">
+	<entity name="Workspace" uuid="true" local-service="true" remote-service="false" table="opencps_workspace">
 
 		<!-- PK fields -->
 		<column name="workspaceId" type="long" primary="true" />
@@ -221,7 +221,7 @@
 		
 	</entity>
 	
-	<entity name="WorkspaceUser" uuid="true" local-service="true" remote-service="false" table="m_workspaceuser">
+	<entity name="WorkspaceUser" uuid="true" local-service="true" remote-service="false" table="opencps_workspaceuser">
 
 		<!-- PK fields -->
 		<column name="workspaceUserId" type="long" primary="true" />
@@ -250,7 +250,7 @@
 		
 	</entity>
 	
-	<entity name="WorkspaceRole" uuid="true" local-service="true" remote-service="false" table="m_workspacerole">
+	<entity name="WorkspaceRole" uuid="true" local-service="true" remote-service="false" table="opencps_workspacerole">
 
 		<!-- PK fields -->
 		<column name="workspaceRoleId" type="long" primary="true" />
@@ -275,7 +275,7 @@
 		
 	</entity>
 	
-	<entity name="Comment" uuid="true" local-service="true" remote-service="false" table="m_comment">
+	<entity name="Comment" uuid="true" local-service="true" remote-service="false" table="opencps_comment">
 
 		<!-- PK fields -->
 		<column name="commentId" type="long" primary="true" />
@@ -308,7 +308,7 @@
 		
 	</entity>
 	
-	<entity name="Voting" uuid="true" local-service="true" remote-service="false" table="m_voting">
+	<entity name="Voting" uuid="true" local-service="true" remote-service="false" table="opencps_voting">
 
 		<!-- PK fields -->
 		<column name="votingId" type="long" primary="true" />
@@ -336,7 +336,7 @@
 		
 	</entity>
 	
-	<entity name="VotingResult" uuid="true" local-service="true" remote-service="false" table="m_votingresult">
+	<entity name="VotingResult" uuid="true" local-service="true" remote-service="false" table="opencps_votingresult">
 
 		<!-- PK fields -->
 		<column name="votingResultId" type="long" primary="true" />

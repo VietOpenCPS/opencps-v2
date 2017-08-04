@@ -18,11 +18,11 @@ import java.io.File;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
-import org.mobilink.backend.datamgt.utils.DateTimeUtils;
-import org.mobilink.backend.datamgt.utils.DocumentUtils;
 import org.mobilink.backend.usermgt.constants.PartnerFileTerm;
 import org.mobilink.backend.usermgt.model.PartnerFile;
 import org.mobilink.backend.usermgt.service.base.PartnerFileLocalServiceBaseImpl;
+import org.opencps.datamgt.utils.DateTimeUtils;
+import org.opencps.datamgt.utils.DocumentUtils;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;

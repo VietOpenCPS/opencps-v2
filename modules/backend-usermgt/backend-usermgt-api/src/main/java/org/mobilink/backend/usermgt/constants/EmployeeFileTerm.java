@@ -5,7 +5,7 @@ import java.util.Date;
 
 import javax.portlet.ActionRequest;
 
-import org.mobilink.backend.datamgt.utils.DateTimeUtils;
+import org.opencps.datamgt.utils.DateTimeUtils;
 
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;

@@ -3,8 +3,8 @@ package org.opencps.api.controller.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mobilink.backend.datamgt.model.DictCollection;
 import org.opencps.api.dictcollection.model.DictCollectionModel;
+import org.opencps.datamgt.model.DictCollection;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
