@@ -22,3 +22,5 @@
 /plugins-sdk/dist
 /plugins-sdk/lib
 test-results
+**/.DS_Store
+
