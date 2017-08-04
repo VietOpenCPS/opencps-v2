@@ -1,0 +1,10 @@
+Bundle-Name: backend-communication-api
+Bundle-SymbolicName: backend.communication.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	org.mobilink.backend.communication.exception,\
+	org.mobilink.backend.communication.model,\
+	org.mobilink.backend.communication.service,\
+	org.mobilink.backend.communication.constants,\
+	org.mobilink.backend.communication.service.persistence
+-includeresource: META-INF/service.xml=../backend-communication-service/service.xml

@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+
+<service-builder auto-namespace-tables="false"
+	package-path="org.mobilink.backend.communication">
+	<author>Binhth</author>
+	<namespace>M_Communication</namespace>
+
+	<entity name="Notificationtemplate" local-service="true"
+		remote-service="false" table="m_notificationtemplate">
+
+		<!-- PK fields -->
+
+		<column name="notificationTemplateId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="notificationType" type="String" />
+		<column name="emailSubject" type="String" />
+		<column name="emailBody" type="String" />
+		<column name="textMessage" type="String" />
+		<column name="textSMS" type="String" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="notificationType" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="F_NotificationtemplateByType" return-type="Mnotificationtemplates">
+			<finder-column name="groupId" />
+			<finder-column name="notificationType" />
+		</finder>
+
+		<finder name="F_NotificationtemplateEmailSubject" return-type="Collection">
+			<finder-column name="emailSubject" />
+		</finder>
+
+	</entity>
+
+</service-builder>
