@@ -1,0 +1,494 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+
+<service-builder auto-namespace-tables="false" package-path="org.opencps.backend.dossiermgt">
+	<author>huymq</author>
+	<namespace>dossiermgt</namespace>
+	<entity name="ServiceInfo" table="opencps_serviceinfo" local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="serviceInfoId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="serviceCode" type="String" />
+		<column name="serviceName" type="String" />
+		<column name="processText" type="String" />
+		<column name="methodText" type="String" />
+		<column name="dossierText" type="String" />
+		<column name="conditionText" type="String" />
+		<column name="durationText" type="String" />
+		<column name="applicantText" type="String" />
+		<column name="resultText" type="String" />
+		<column name="regularText" type="String" />
+		<column name="feeText" type="String" />
+		<column name="administrationCode" type="String" />
+		<column name="administrationName" type="String" />
+		<column name="administrationIndex" type="String" />
+		<column name="domainCode" type="String" />
+		<column name="domainName" type="String" />
+		<column name="domainIndex" type="String" />
+		<column name="activeStatus" type="String" />
+		<column name="maxLevel" type="int" />
+		<column name="fileTemplates" type="Collection" entity="FileTemplate" mapping-table="opencps_services_filetemplates"/>
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+		
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+
+		<!-- References -->
+
+	</entity>
+	
+	<entity name="FileTemplate" table="opencps_filetemplate" local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="fileTemplateId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="fileName" type="String" />
+		<column name="fileNo" type="String" />
+		<column name="fileEntryId" type="long" />
+		<column name="serviceInfos" type="Collection" entity="ServiceInfo" mapping-table="opencps_services_filetemplates"/>
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+
+		<!-- References -->
+
+	</entity>
+	
+	<entity name="DossierTemplate" table="opencps_dossiertemplate" local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="dossierTemplateId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="templateName" type="String" />
+		<column name="description" type="String" />
+		<column name="templateNo" type="String" />
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+
+		<!-- References -->
+
+	</entity>
+	
+	<entity name="DossierPart" table="opencps_dossierpart" local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="dossierPartId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="templateNo" type="String" />
+		<column name="partNo" type="String" />
+		<column name="partName" type="String" />
+		<column name="partTip" type="String" />
+		<column name="partType" type="int" />
+		<column name="multiple" type="boolean" />
+		<column name="formScript" type="String" />
+		<column name="formReport" type="String" />
+		<column name="sampleData" type="String" />
+		<column name="required" type="boolean" />
+		<column name="fileTemplateNo" type="String" />
+		<column name="eSign" type="boolean" />
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+
+		<!-- References -->
+
+	</entity>
+	
+	<entity name="ServiceConfig" table="opencps_serviceconfig" local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="serviceConfigId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="serviceInfoId" type="long" />
+		<column name="govAgencyCode" type="String" />
+		<column name="govAgencyName" type="String" />
+		<column name="serviceInstruction" type="String" />
+		<column name="serviceLevel" type="int" />
+		<column name="serviceUrl" type="String" />
+		<column name="authentication" type="int" />
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+
+		<!-- References -->
+
+	</entity>
+	
+	<entity name="ServiceOption" table="opencps_serviceoption" local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="serviceOptionId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="optionCode" type="String" />
+		<column name="optionName" type="String" />
+		<column name="optionOrder" type="int" />
+		<column name="autoSelect" type="String" />
+		<column name="dossierTemplateId" type="long" />
+		<column name="serviceProcessId" type="long" />
+		<column name="instructionNote" type="String" />
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+
+		<!-- References -->
+
+	</entity>
+	
+	<entity name="Dossier" table="opencps_dossier" local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="dossierId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="referenceUid" type="String" />
+		<column name="counter" type="int" />
+		<column name="serviceCode" type="String" />
+		<column name="serviceName" type="String" />
+		<column name="optionCode" type="String" />
+		<column name="optionName" type="String" />
+		<column name="govAgencyCode" type="String" />
+		<column name="govAgencyName" type="String" />
+		<column name="applicantName" type="String" />
+		<column name="applicantIdType" type="String" />
+		<column name="applicantIdNo" type="String" />
+		<column name="applicantIdDate" type="Date" />
+		<column name="address" type="String" />
+		<column name="cityCode" type="String" />
+		<column name="cityName" type="String" />
+		<column name="districtCode" type="String" />
+		<column name="districtName" type="String" />
+		<column name="wardCode" type="String" />
+		<column name="wardName" type="String" />
+		<column name="contactName" type="String" />
+		<column name="contactTelNo" type="String" />
+		<column name="contactEmail" type="String" />
+		<column name="dossierTemplateNo" type="String" />
+		<column name="dossierNote" type="String" />
+		<column name="dossierNo" type="String" />
+		<column name="submitting" type="boolean" />
+		<column name="submitDate" type="Date" />
+		<column name="receiveDate" type="Date" />
+		<column name="dueDate" type="Date" />
+		<column name="releaseDate" type="Date" />
+		<column name="finishDate" type="Date" />
+		<column name="cancellingDate" type="Date" />
+		<column name="correcttingDate" type="Date" />
+		<column name="dossierStatus" type="String" />
+		<column name="dossierStatusText" type="String" />
+		<column name="dossierSubStatus" type="String" />
+		<column name="dossierSubStatusText" type="String" />
+		<column name="paymentRedirectURL" type="String" />
+		<column name="overDue" type="String" />
+		<column name="folderId" type="long" />
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+
+		<!-- References -->
+
+	</entity>
+	
+	<entity name="DossierFile" table="opencps_dossierfile" local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="dossierFileId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="dossierId" type="long" />
+		<column name="referenceUid" type="String" />
+		<column name="dossierTemplateNo" type="String" />
+		<column name="dossierPartNo" type="String" />
+		<column name="fileTemplateNo" type="String" />
+		<column name="displayName" type="String" />
+		<column name="formData" type="String" />
+		<column name="fileEntryId" type="long" />
+		<column name="dossierFileNo" type="Date" />
+		<column name="dossierFileDate" type="String" />
+		<column name="original" type="boolean" />
+		<column name="isNew" type="boolean" />
+		<column name="signed" type="boolean" />
+		<column name="signCheck" type="int" />
+		<column name="signInfo" type="String" />
+		<column name="formScript" type="String" />
+		<column name="formReport" type="String" />
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+
+		<!-- References -->
+
+	</entity>
+	
+	<entity name="DossierLog" table="opencps_dossierlog" local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="dossierLogId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="dossierId" type="long" />
+		<column name="author" type="String" />
+		<column name="content" type="String" />
+		<column name="notificationType" type="int" />
+		<column name="toUserIds" type="String" />
+		<column name="deliveredDate" type="Date" />
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+
+		<!-- References -->
+
+	</entity>
+	
+	<entity name="PaymentFile" table="opencps_paymentfile" local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="paymentFileId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="dossierId" type="long" />
+		<column name="referenceUid" type="String" />
+		<column name="govAgencyCode" type="String" />
+		<column name="govAgencyName" type="String" />
+		<column name="isNew" type="boolean" />
+		<column name="paymentFee" type="String" />
+		<column name="paymentAmount" type="double" />
+		<column name="paymentNote" type="String" />
+		<column name="paymentOptions" type="String" />
+		<column name="keypayUrl" type="Date" />
+		<column name="keypayTransactionId" type="long" />
+		<column name="keypayGoodCode" type="Date" />
+		<column name="keypayMerchantCode" type="Date" />
+		<column name="bankInfo" type="Date" />
+		<column name="paymentStatus" type="int" />
+		<column name="paymentMethod" type="int" />
+		<column name="confirmDatetime" type="Date" />
+		<column name="confirmFileEntryId" type="long" />
+		<column name="confirmNote" type="String" />
+		<column name="approveDatetime" type="Date" />
+		<column name="accountUserName" type="String" />
+		<column name="govAgencyTaxNo" type="String" />
+		<column name="invoiceTemplateNo" type="String" />
+		<column name="invoiceIssueNo" type="String" />
+		<column name="invoiceNo" type="String" />
+		<column name="invoiceFileEntryId" type="long" />
+		<column name="paymentGateStatusCode" type="int" />
+		<column name="paymentGateCheckCode" type="int" />
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+
+		<!-- References -->
+
+	</entity>
+	
+	<entity name="PaymentConfig" table="opencps_paymentconfig" local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="paymentConfigId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="dossierId" type="long" />
+		<column name="referenceUid" type="String" />
+		<column name="govAgencyCode" type="String" />
+		<column name="govAgencyName" type="String" />
+		<column name="govAgencyTaxNo" type="String" />
+		<column name="invoiceTemplateNo" type="String" />
+		<column name="invoiceIssueNo" type="String" />
+		<column name="invoiceLastNo" type="String" />
+		<column name="bankInfo" type="String" />
+		<column name="placeInfo" type="String" />
+		<column name="paymentDomain" type="String" />
+		<column name="paymentVersion" type="String" />
+		<column name="paymentMerchantCode" type="String" />
+		<column name="paymentSecureKey" type="String" />
+		<column name="reportTemplate" type="String" />
+		<column name="paymentGateType" type="long" />
+		<column name="returnUrl" type="String" />
+		<column name="paymentConfigNo" type="String" />
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+
+		<!-- References -->
+
+	</entity>
+</service-builder>

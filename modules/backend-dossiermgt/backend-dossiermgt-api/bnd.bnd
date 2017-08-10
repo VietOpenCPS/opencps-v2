@@ -1,0 +1,9 @@
+Bundle-Name: backend-dossiermgt-api
+Bundle-SymbolicName: backend.dossiermgt.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	backend.dossiermgt.exception,\
+	backend.dossiermgt.model,\
+	backend.dossiermgt.service,\
+	backend.dossiermgt.service.persistence
+-includeresource: META-INF/service.xml=../backend-dossiermgt-service/service.xml

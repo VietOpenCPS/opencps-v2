@@ -1,0 +1,274 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="org.opencps.backend.dossiermgt.model.Dossier">
+		<field name="uuid" type="String" />
+		<field name="dossierId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="referenceUid" type="String" />
+		<field name="counter" type="int" />
+		<field name="serviceCode" type="String" />
+		<field name="serviceName" type="String" />
+		<field name="optionCode" type="String" />
+		<field name="optionName" type="String" />
+		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyName" type="String" />
+		<field name="applicantName" type="String" />
+		<field name="applicantIdType" type="String" />
+		<field name="applicantIdNo" type="String" />
+		<field name="applicantIdDate" type="Date" />
+		<field name="address" type="String" />
+		<field name="cityCode" type="String" />
+		<field name="cityName" type="String" />
+		<field name="districtCode" type="String" />
+		<field name="districtName" type="String" />
+		<field name="wardCode" type="String" />
+		<field name="wardName" type="String" />
+		<field name="contactName" type="String" />
+		<field name="contactTelNo" type="String" />
+		<field name="contactEmail" type="String" />
+		<field name="dossierTemplateNo" type="String" />
+		<field name="dossierNote" type="String" />
+		<field name="dossierNo" type="String" />
+		<field name="submitting" type="boolean" />
+		<field name="submitDate" type="Date" />
+		<field name="receiveDate" type="Date" />
+		<field name="dueDate" type="Date" />
+		<field name="releaseDate" type="Date" />
+		<field name="finishDate" type="Date" />
+		<field name="cancellingDate" type="Date" />
+		<field name="correcttingDate" type="Date" />
+		<field name="dossierStatus" type="String" />
+		<field name="dossierStatusText" type="String" />
+		<field name="dossierSubStatus" type="String" />
+		<field name="dossierSubStatusText" type="String" />
+		<field name="paymentRedirectURL" type="String" />
+		<field name="overDue" type="String" />
+		<field name="folderId" type="long" />
+	</model>
+	<model name="org.opencps.backend.dossiermgt.model.DossierFile">
+		<field name="uuid" type="String" />
+		<field name="dossierFileId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dossierId" type="long" />
+		<field name="referenceUid" type="String" />
+		<field name="dossierTemplateNo" type="String" />
+		<field name="dossierPartNo" type="String" />
+		<field name="fileTemplateNo" type="String" />
+		<field name="displayName" type="String" />
+		<field name="formData" type="String" />
+		<field name="fileEntryId" type="long" />
+		<field name="dossierFileNo" type="Date" />
+		<field name="dossierFileDate" type="String" />
+		<field name="original" type="boolean" />
+		<field name="isNew" type="boolean" />
+		<field name="signed" type="boolean" />
+		<field name="signCheck" type="int" />
+		<field name="signInfo" type="String" />
+		<field name="formScript" type="String" />
+		<field name="formReport" type="String" />
+	</model>
+	<model name="org.opencps.backend.dossiermgt.model.DossierLog">
+		<field name="uuid" type="String" />
+		<field name="dossierLogId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dossierId" type="long" />
+		<field name="author" type="String" />
+		<field name="content" type="String" />
+		<field name="notificationType" type="int" />
+		<field name="toUserIds" type="String" />
+		<field name="deliveredDate" type="Date" />
+	</model>
+	<model name="org.opencps.backend.dossiermgt.model.DossierPart">
+		<field name="uuid" type="String" />
+		<field name="dossierPartId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="templateNo" type="String" />
+		<field name="partNo" type="String" />
+		<field name="partName" type="String" />
+		<field name="partTip" type="String" />
+		<field name="partType" type="int" />
+		<field name="multiple" type="boolean" />
+		<field name="formScript" type="String" />
+		<field name="formReport" type="String" />
+		<field name="sampleData" type="String" />
+		<field name="required" type="boolean" />
+		<field name="fileTemplateNo" type="String" />
+		<field name="eSign" type="boolean" />
+	</model>
+	<model name="org.opencps.backend.dossiermgt.model.DossierTemplate">
+		<field name="uuid" type="String" />
+		<field name="dossierTemplateId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="templateName" type="String" />
+		<field name="description" type="String" />
+		<field name="templateNo" type="String" />
+	</model>
+	<model name="org.opencps.backend.dossiermgt.model.FileTemplate">
+		<field name="uuid" type="String" />
+		<field name="fileTemplateId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="fileName" type="String" />
+		<field name="fileNo" type="String" />
+		<field name="fileEntryId" type="long" />
+	</model>
+	<model name="org.opencps.backend.dossiermgt.model.PaymentConfig">
+		<field name="uuid" type="String" />
+		<field name="paymentConfigId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dossierId" type="long" />
+		<field name="referenceUid" type="String" />
+		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyName" type="String" />
+		<field name="govAgencyTaxNo" type="String" />
+		<field name="invoiceTemplateNo" type="String" />
+		<field name="invoiceIssueNo" type="String" />
+		<field name="invoiceLastNo" type="String" />
+		<field name="bankInfo" type="String" />
+		<field name="placeInfo" type="String" />
+		<field name="paymentDomain" type="String" />
+		<field name="paymentVersion" type="String" />
+		<field name="paymentMerchantCode" type="String" />
+		<field name="paymentSecureKey" type="String" />
+		<field name="reportTemplate" type="String" />
+		<field name="paymentGateType" type="long" />
+		<field name="returnUrl" type="String" />
+		<field name="paymentConfigNo" type="String" />
+	</model>
+	<model name="org.opencps.backend.dossiermgt.model.PaymentFile">
+		<field name="uuid" type="String" />
+		<field name="paymentFileId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dossierId" type="long" />
+		<field name="referenceUid" type="String" />
+		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyName" type="String" />
+		<field name="isNew" type="boolean" />
+		<field name="paymentFee" type="String" />
+		<field name="paymentAmount" type="double" />
+		<field name="paymentNote" type="String" />
+		<field name="paymentOptions" type="String" />
+		<field name="keypayUrl" type="Date" />
+		<field name="keypayTransactionId" type="long" />
+		<field name="keypayGoodCode" type="Date" />
+		<field name="keypayMerchantCode" type="Date" />
+		<field name="bankInfo" type="Date" />
+		<field name="paymentStatus" type="int" />
+		<field name="paymentMethod" type="int" />
+		<field name="confirmDatetime" type="Date" />
+		<field name="confirmFileEntryId" type="long" />
+		<field name="confirmNote" type="String" />
+		<field name="approveDatetime" type="Date" />
+		<field name="accountUserName" type="String" />
+		<field name="govAgencyTaxNo" type="String" />
+		<field name="invoiceTemplateNo" type="String" />
+		<field name="invoiceIssueNo" type="String" />
+		<field name="invoiceNo" type="String" />
+		<field name="invoiceFileEntryId" type="long" />
+		<field name="paymentGateStatusCode" type="int" />
+		<field name="paymentGateCheckCode" type="int" />
+	</model>
+	<model name="org.opencps.backend.dossiermgt.model.ServiceConfig">
+		<field name="uuid" type="String" />
+		<field name="serviceConfigId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="serviceInfoId" type="long" />
+		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyName" type="String" />
+		<field name="serviceInstruction" type="String" />
+		<field name="serviceLevel" type="int" />
+		<field name="serviceUrl" type="String" />
+		<field name="authentication" type="int" />
+	</model>
+	<model name="org.opencps.backend.dossiermgt.model.ServiceInfo">
+		<field name="uuid" type="String" />
+		<field name="serviceInfoId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="serviceCode" type="String" />
+		<field name="serviceName" type="String" />
+		<field name="processText" type="String" />
+		<field name="methodText" type="String" />
+		<field name="dossierText" type="String" />
+		<field name="conditionText" type="String" />
+		<field name="durationText" type="String" />
+		<field name="applicantText" type="String" />
+		<field name="resultText" type="String" />
+		<field name="regularText" type="String" />
+		<field name="feeText" type="String" />
+		<field name="administrationCode" type="String" />
+		<field name="administrationName" type="String" />
+		<field name="administrationIndex" type="String" />
+		<field name="domainCode" type="String" />
+		<field name="domainName" type="String" />
+		<field name="domainIndex" type="String" />
+		<field name="activeStatus" type="String" />
+		<field name="maxLevel" type="int" />
+	</model>
+	<model name="org.opencps.backend.dossiermgt.model.ServiceOption">
+		<field name="uuid" type="String" />
+		<field name="serviceOptionId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="optionCode" type="String" />
+		<field name="optionName" type="String" />
+		<field name="optionOrder" type="int" />
+		<field name="autoSelect" type="String" />
+		<field name="dossierTemplateId" type="long" />
+		<field name="serviceProcessId" type="long" />
+		<field name="instructionNote" type="String" />
+	</model>
+</model-hints>
