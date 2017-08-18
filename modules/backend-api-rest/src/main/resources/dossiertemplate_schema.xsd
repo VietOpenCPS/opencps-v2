@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:element name="DossierTemplateModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="dossierTemplateId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="createDate" type="xsd:date" minOccurs="0" />
+				<xsd:element name="modifiedDate" type="xsd:date" minOccurs="0" />
+				<xsd:element name="templateName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="description" type="xsd:string" minOccurs="0" />
+				<xsd:element name="templateNo " type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="DossierTemplateResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element ref="DossierTemplateModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="DossierTemplateInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="templateName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="description" type="xsd:string" minOccurs="0" />
+				<xsd:element name="templateNo " type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="DossierPartModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="partNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="partName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="partTip" type="xsd:string" minOccurs="0" />
+				<xsd:element name="partType " type="xsd:int" minOccurs="0" />
+				<xsd:element name="multiple" type="xsd:boolean" minOccurs="0" />
+				<xsd:element name="required" type="xsd:boolean" minOccurs="0" />
+				<xsd:element name="esign" type="xsd:boolean" minOccurs="0" />
+				<xsd:element name="fileTemplateNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="hasForm" type="xsd:boolean" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="DossierTemplatePartListModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="dossierTemplateId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="createDate" type="xsd:date" minOccurs="0" />
+				<xsd:element name="modifiedDate" type="xsd:date" minOccurs="0" />
+				<xsd:element name="templateName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="description" type="xsd:string" minOccurs="0" />
+				<xsd:element name="templateNo " type="xsd:string" minOccurs="0" />
+				<!-- TODO: Change name to  dossierParts -->
+				<xsd:element ref="DossierPartModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="DossierPartResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element ref="DossierPartModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="DossierPartInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="partNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="partName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="partTip" type="xsd:string" minOccurs="0" />
+				<xsd:element name="partType " type="xsd:int" minOccurs="0" />
+				<xsd:element name="multiple" type="xsd:boolean" minOccurs="0" />
+				<xsd:element name="required" type="xsd:boolean" minOccurs="0" />
+				<xsd:element name="esign" type="xsd:boolean" minOccurs="0" />
+				<xsd:element name="fileTemplateNo" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+</xsd:schema>
