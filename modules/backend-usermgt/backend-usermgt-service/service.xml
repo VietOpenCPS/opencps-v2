@@ -2,7 +2,7 @@
 <!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
 
 <service-builder auto-namespace-tables="false"
-	package-path="org.mobilink.backend.usermgt">
+	package-path="org.opencps.backend.usermgt">
 	<author>khoavu</author>
 	<namespace>UserMgt</namespace>
 
@@ -344,6 +344,74 @@
 		<order by="asc">
 			<order-column name="groupName"></order-column>
 		</order>
+	</entity>
+	
+	<entity name="Applicant" uuid="true" local-service="true"
+		remote-service="false" table="opencps_applicant">
+
+		<!-- PK fields -->
+
+		<column name="applicantId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="applicantName" type="String" />
+		<column name="applicantIdType" type="String" />
+		<column name="applicantIdNo" type="String" />
+		<column name="applicantIdDate" type="Date" />
+		<column name="address" type="String" />
+		<column name="cityCode" type="String" />
+		<column name="cityName" type="String" />
+		<column name="districtCode" type="String" />
+		<column name="districtName" type="String" />
+		<column name="wardCode" type="String" />
+		<column name="wardName" type="String" />
+		<column name="contactName" type="String" />
+		<column name="contactTelNo" type="String" />
+		<column name="contactEmail" type="String" />
+		<column name="mappingUserId" type="long" />
+		<column name="profile" type="String" />
+
+		<order by="asc">
+			<order-column name="applicantName"/>
+		</order>
+	</entity>
+	
+	<entity name="Preferences" uuid="true" local-service="true"
+		remote-service="false" table="opencps_preferences">
+
+		<!-- PK fields -->
+
+		<column name="preferencesId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="preferences" type="String" />
+
 	</entity>
 	
 </service-builder>
