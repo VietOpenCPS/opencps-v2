@@ -73,4 +73,15 @@
 		</xsd:complexType>
 	</xsd:element>
 
+	<xsd:complexType name="RegisterModel">
+		<xsd:sequence>
+			<xsd:element name="applicantName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="applicantIdType" type="xsd:string" minOccurs="0" />
+			<xsd:element name="applicantIdNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="applicantIdDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="contactEmail" type="xsd:string" minOccurs="0" />
+			<xsd:element name="password" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+
 </xsd:schema>

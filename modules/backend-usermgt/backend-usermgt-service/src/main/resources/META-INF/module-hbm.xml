@@ -2,14 +2,14 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping auto-import="false" default-lazy="false">
-	<import class="org.opencps.backend.usermgt.model.Applicant" />
-	<import class="org.opencps.backend.usermgt.model.Employee" />
-	<import class="org.opencps.backend.usermgt.model.EmployeeJobPos" />
-	<import class="org.opencps.backend.usermgt.model.JobPos" />
-	<import class="org.opencps.backend.usermgt.model.OfficeSite" />
-	<import class="org.opencps.backend.usermgt.model.Preferences" />
-	<import class="org.opencps.backend.usermgt.model.WorkingUnit" />
-	<class name="org.opencps.backend.usermgt.model.impl.ApplicantImpl" table="opencps_applicant">
+	<import class="org.opencps.usermgt.model.Applicant" />
+	<import class="org.opencps.usermgt.model.Employee" />
+	<import class="org.opencps.usermgt.model.EmployeeJobPos" />
+	<import class="org.opencps.usermgt.model.JobPos" />
+	<import class="org.opencps.usermgt.model.OfficeSite" />
+	<import class="org.opencps.usermgt.model.Preferences" />
+	<import class="org.opencps.usermgt.model.WorkingUnit" />
+	<class name="org.opencps.usermgt.model.impl.ApplicantImpl" table="opencps_applicant">
 		<id name="applicantId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -37,7 +37,7 @@
 		<property name="mappingUserId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="profile" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.opencps.backend.usermgt.model.impl.EmployeeImpl" table="opencps_employee">
+	<class name="org.opencps.usermgt.model.impl.EmployeeImpl" table="opencps_employee">
 		<id name="employeeId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -62,7 +62,7 @@
 		<property name="fileDocId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="preferences" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.opencps.backend.usermgt.model.impl.EmployeeJobPosImpl" table="opencps_employee_jobpos">
+	<class name="org.opencps.usermgt.model.impl.EmployeeJobPosImpl" table="opencps_employee_jobpos">
 		<id name="employeeJobPosId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -76,7 +76,7 @@
 		<property name="employeeId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="jobPostId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
-	<class name="org.opencps.backend.usermgt.model.impl.JobPosImpl" table="opencps_jobpos">
+	<class name="org.opencps.usermgt.model.impl.JobPosImpl" table="opencps_jobpos">
 		<id name="jobPosId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -95,7 +95,7 @@
 		<property name="mappingRoleId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="hiddenJobPos" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 	</class>
-	<class name="org.opencps.backend.usermgt.model.impl.OfficeSiteImpl" table="opencps_officesite">
+	<class name="org.opencps.usermgt.model.impl.OfficeSiteImpl" table="opencps_officesite">
 		<id name="officeSiteId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -119,7 +119,7 @@
 		<property name="adminUserId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="preferences" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.opencps.backend.usermgt.model.impl.PreferencesImpl" table="opencps_preferences">
+	<class name="org.opencps.usermgt.model.impl.PreferencesImpl" table="opencps_preferences">
 		<id name="preferencesId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -132,7 +132,7 @@
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
 		<property name="preferences" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.opencps.backend.usermgt.model.impl.WorkingUnitImpl" table="opencps_workingunit">
+	<class name="org.opencps.usermgt.model.impl.WorkingUnitImpl" table="opencps_workingunit">
 		<id name="workingUnitId" type="long">
 			<generator class="assigned" />
 		</id>

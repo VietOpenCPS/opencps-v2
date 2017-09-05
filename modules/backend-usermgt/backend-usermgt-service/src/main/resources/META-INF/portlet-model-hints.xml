@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <model-hints>
-	<model name="org.opencps.backend.usermgt.model.Applicant">
+	<model name="org.opencps.usermgt.model.Applicant">
 		<field name="uuid" type="String" />
 		<field name="applicantId" type="long" />
 		<field name="groupId" type="long" />
@@ -27,7 +27,7 @@
 		<field name="mappingUserId" type="long" />
 		<field name="profile" type="String" />
 	</model>
-	<model name="org.opencps.backend.usermgt.model.Employee">
+	<model name="org.opencps.usermgt.model.Employee">
 		<field name="uuid" type="String" />
 		<field name="employeeId" type="long" />
 		<field name="companyId" type="long" />
@@ -50,7 +50,7 @@
 		<field name="fileDocId" type="long" />
 		<field name="preferences" type="String" />
 	</model>
-	<model name="org.opencps.backend.usermgt.model.EmployeeJobPos">
+	<model name="org.opencps.usermgt.model.EmployeeJobPos">
 		<field name="uuid" type="String" />
 		<field name="employeeJobPosId" type="long" />
 		<field name="companyId" type="long" />
@@ -62,7 +62,7 @@
 		<field name="employeeId" type="long" />
 		<field name="jobPostId" type="long" />
 	</model>
-	<model name="org.opencps.backend.usermgt.model.JobPos">
+	<model name="org.opencps.usermgt.model.JobPos">
 		<field name="uuid" type="String" />
 		<field name="jobPosId" type="long" />
 		<field name="companyId" type="long" />
@@ -79,7 +79,7 @@
 		<field name="mappingRoleId" type="long" />
 		<field name="hiddenJobPos" type="boolean" />
 	</model>
-	<model name="org.opencps.backend.usermgt.model.OfficeSite">
+	<model name="org.opencps.usermgt.model.OfficeSite">
 		<field name="uuid" type="String" />
 		<field name="officeSiteId" type="long" />
 		<field name="companyId" type="long" />
@@ -101,7 +101,7 @@
 		<field name="adminUserId" type="long" />
 		<field name="preferences" type="String" />
 	</model>
-	<model name="org.opencps.backend.usermgt.model.Preferences">
+	<model name="org.opencps.usermgt.model.Preferences">
 		<field name="uuid" type="String" />
 		<field name="preferencesId" type="long" />
 		<field name="groupId" type="long" />
@@ -112,7 +112,7 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="preferences" type="String" />
 	</model>
-	<model name="org.opencps.backend.usermgt.model.WorkingUnit">
+	<model name="org.opencps.usermgt.model.WorkingUnit">
 		<field name="uuid" type="String" />
 		<field name="workingUnitId" type="long" />
 		<field name="companyId" type="long" />

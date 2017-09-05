@@ -12,31 +12,31 @@
  * details.
  */
 
-package org.opencps.backend.usermgt.service.impl;
+package org.opencps.usermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import org.opencps.backend.usermgt.service.base.OfficeSiteLocalServiceBaseImpl;
+import org.opencps.usermgt.service.base.WorkingUnitLocalServiceBaseImpl;
 
 /**
- * The implementation of the office site local service.
+ * The implementation of the working unit local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.backend.usermgt.service.OfficeSiteLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.usermgt.service.WorkingUnitLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
  * </p>
  *
  * @author khoavu
- * @see OfficeSiteLocalServiceBaseImpl
- * @see org.opencps.backend.usermgt.service.OfficeSiteLocalServiceUtil
+ * @see WorkingUnitLocalServiceBaseImpl
+ * @see org.opencps.usermgt.service.WorkingUnitLocalServiceUtil
  */
 @ProviderType
-public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
+public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.backend.usermgt.service.OfficeSiteLocalServiceUtil} to access the office site local service.
+	 * Never reference this class directly. Always use {@link org.opencps.usermgt.service.WorkingUnitLocalServiceUtil} to access the working unit local service.
 	 */
 }

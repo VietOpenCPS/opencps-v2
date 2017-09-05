@@ -12,31 +12,32 @@
  * details.
  */
 
-package org.opencps.backend.usermgt.service.impl;
+package org.opencps.usermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import org.opencps.backend.usermgt.service.base.PreferencesLocalServiceBaseImpl;
+import org.opencps.usermgt.service.base.EmployeeJobPosLocalServiceBaseImpl;
 
 /**
- * The implementation of the preferences local service.
+ * The implementation of the employee job pos local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.backend.usermgt.service.PreferencesLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.usermgt.service.EmployeeJobPosLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
  * </p>
  *
  * @author khoavu
- * @see PreferencesLocalServiceBaseImpl
- * @see org.opencps.backend.usermgt.service.PreferencesLocalServiceUtil
+ * @see EmployeeJobPosLocalServiceBaseImpl
+ * @see org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil
  */
 @ProviderType
-public class PreferencesLocalServiceImpl extends PreferencesLocalServiceBaseImpl {
+public class EmployeeJobPosLocalServiceImpl
+	extends EmployeeJobPosLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.backend.usermgt.service.PreferencesLocalServiceUtil} to access the preferences local service.
+	 * Never reference this class directly. Always use {@link org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil} to access the employee job pos local service.
 	 */
 }

@@ -12,31 +12,31 @@
  * details.
  */
 
-package org.opencps.backend.usermgt.service.impl;
+package org.opencps.usermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import org.opencps.backend.usermgt.service.base.EmployeeLocalServiceBaseImpl;
+import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
 
 /**
- * The implementation of the employee local service.
+ * The implementation of the applicant local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.backend.usermgt.service.EmployeeLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.usermgt.service.ApplicantLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
  * </p>
  *
  * @author khoavu
- * @see EmployeeLocalServiceBaseImpl
- * @see org.opencps.backend.usermgt.service.EmployeeLocalServiceUtil
+ * @see ApplicantLocalServiceBaseImpl
+ * @see org.opencps.usermgt.service.ApplicantLocalServiceUtil
  */
 @ProviderType
-public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
+public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.backend.usermgt.service.EmployeeLocalServiceUtil} to access the employee local service.
+	 * Never reference this class directly. Always use {@link org.opencps.usermgt.service.ApplicantLocalServiceUtil} to access the applicant local service.
 	 */
 }
