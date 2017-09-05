@@ -38,9 +38,10 @@
 	<xsd:element name="ServiceInfoModel">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="serviceinfoId" type="xsd:date" minOccurs="0" />
+				<xsd:element name="serviceInfoId" type="xsd:long" minOccurs="0" />
 				<xsd:element name="createDate" type="xsd:date" minOccurs="0" />
 				<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceCode" type="xsd:string" minOccurs="0" />
 				<xsd:element name="serviceName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="processText" type="xsd:string" minOccurs="0" />
 				<xsd:element name="methodText" type="xsd:string" minOccurs="0" />
@@ -62,7 +63,7 @@
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="total" type="xsd:int" minOccurs="0" />
-				<xsd:element ref="ServiceInfoModel" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element name="data" type="ServiceInfoResultModel" minOccurs="0" maxOccurs="unbounded"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
@@ -70,7 +71,7 @@
 	<xsd:element name="ServiceInfoDetailModel">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="serviceinfoId" type="xsd:date" minOccurs="0" />
+				<xsd:element name="serviceInfoId" type="xsd:int" minOccurs="0" />
 				<xsd:element name="createDate" type="xsd:date" minOccurs="0" />
 				<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
 				<xsd:element name="serviceName" type="xsd:string" minOccurs="0" />
@@ -86,12 +87,12 @@
 				<xsd:element name="administrationCode" type="xsd:string" minOccurs="0" />
 				<xsd:element name="domainCode" type="xsd:string" minOccurs="0" />
 				<xsd:element name="maxLevel" type="xsd:int" minOccurs="0" />
-				<xsd:element ref="FileTempateModel"/>
+				<xsd:element ref="FileTemplateModel"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
 	
-	<xsd:element name="FileTempateModel">
+	<xsd:element name="FileTemplateModel">
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="fileTemplateNo" type="xsd:string" minOccurs="0" />
@@ -102,12 +103,46 @@
 		</xsd:complexType>
 	</xsd:element>
 
-	<xsd:element name="FileTempateResultsModel">
+	<xsd:element name="FileTemplateResultsModel">
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="total" type="xsd:int" minOccurs="0" />
-				<xsd:element ref="FileTempateModel" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element name="data" minOccurs="0" maxOccurs="unbounded" type="FileTemplateResultModel"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
+
+	<xsd:complexType name="ServiceInfoResultModel">
+		<xsd:sequence>
+			<xsd:element name="serviceInfoId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="serviceCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="serviceName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="processText" type="xsd:string" minOccurs="0" />
+			<xsd:element name="methodText" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierText" type="xsd:string" minOccurs="0" />
+			<xsd:element name="conditionText" type="xsd:string" minOccurs="0" />
+			<xsd:element name="durationText" type="xsd:string" minOccurs="0" />
+			<xsd:element name="applicantText" type="xsd:string" minOccurs="0" />
+			<xsd:element name="resultText" type="xsd:string" minOccurs="0" />
+			<xsd:element name="regularText" type="xsd:string" minOccurs="0" />
+			<xsd:element name="feeText" type="xsd:string" minOccurs="0" />
+			<xsd:element name="administrationCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="administrationName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="domainCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="domainName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="maxLevel" type="xsd:int" minOccurs="0" />
+			<xsd:element name="activeStatus" type="xsd:int" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="FileTemplateResultModel">
+		<xsd:sequence>
+			<xsd:element name="fileTemplateNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="templateName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="fileType" type="xsd:string" minOccurs="0" />
+			<xsd:element name="fileSize" type="xsd:int" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
 </xsd:schema>

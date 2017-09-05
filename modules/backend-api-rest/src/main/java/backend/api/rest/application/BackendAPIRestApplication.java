@@ -14,6 +14,7 @@ import org.opencps.api.context.provider.LocaleContextProvider;
 import org.opencps.api.context.provider.ServiceContextProvider;
 import org.opencps.api.context.provider.UserContextProvider;
 import org.opencps.api.controller.impl.DataManagementImpl;
+import org.opencps.api.controller.impl.ServiceInfoImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -26,6 +27,7 @@ public class BackendAPIRestApplication extends Application {
 		
 		// add REST endpoints (resources)
 		singletons.add(new DataManagementImpl());
+		singletons.add(new ServiceInfoImpl());
 		
 		// add service provider
 		singletons.add(_serviceContextProvider);

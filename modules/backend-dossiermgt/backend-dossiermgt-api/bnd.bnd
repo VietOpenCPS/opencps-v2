@@ -1,9 +1,9 @@
 Bundle-Name: backend-dossiermgt-api
-Bundle-SymbolicName: backend.dossiermgt.api
+Bundle-SymbolicName: org.opencps.backend.dossiermgt.api
 Bundle-Version: 1.0.0
-Export-Package:\
-	backend.dossiermgt.exception,\
-	backend.dossiermgt.model,\
-	backend.dossiermgt.service,\
-	backend.dossiermgt.service.persistence
+Export-Package: \
+	org.opencps.backend.dossiermgt.exception,\
+	org.opencps.backend.dossiermgt.model,\
+	org.opencps.backend.dossiermgt.service,\
+	org.opencps.backend.dossiermgt.service.persistence
 -includeresource: META-INF/service.xml=../backend-dossiermgt-service/service.xml

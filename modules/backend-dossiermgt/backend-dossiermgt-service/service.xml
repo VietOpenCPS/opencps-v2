@@ -41,9 +41,8 @@
 		<column name="domainCode" type="String" />
 		<column name="domainName" type="String" />
 		<column name="domainIndex" type="String" />
-		<column name="activeStatus" type="String" />
+		<column name="activeStatus" type="int" />
 		<column name="maxLevel" type="int" />
-		<column name="fileTemplates" type="Collection" entity="FileTemplate" mapping-table="opencps_services_filetemplates"/>
 
 		<!-- Order -->
 
@@ -60,37 +59,28 @@
 
 	</entity>
 	
-	<entity name="FileTemplate" table="opencps_filetemplate" local-service="true" remote-service="false" uuid="true">
+	<entity name="ServiceFileTemplate" table="opencps_services_filetemplates" local-service="true" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
 
-		<column name="fileTemplateId" primary="true" type="long" />
+		<column name="serviceInfoId" primary="true" type="long" />
+		<column name="fileTemplateNo" primary="true" type="String" />
 
-		<!-- Group instance -->
-
-		<column name="groupId" type="long" />
-
-		<!-- Audit fields -->
-
-		<column name="companyId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-
-		<column name="fileName" type="String" />
-		<column name="fileNo" type="String" />
+		<column name="templateName" type="String" />
 		<column name="fileEntryId" type="long" />
-		<column name="serviceInfos" type="Collection" entity="ServiceInfo" mapping-table="opencps_services_filetemplates"/>
 
 		<!-- Order -->
 
 		<!-- Finder methods -->
-
+		
+		<finder name="ServiceInfoId" return-type="Collection">
+			<finder-column name="serviceInfoId" />
+		</finder>
+		
 		<!-- References -->
-
+		
+		<reference entity="DLApp" package-path="com.liferay.portlet.documentlibrary" />
+		<reference entity="DLFileEntry" package-path="com.liferay.portlet.documentlibrary" />
 	</entity>
 	
 	<entity name="DossierTemplate" table="opencps_dossiertemplate" local-service="true" remote-service="false" uuid="true">
@@ -491,4 +481,13 @@
 		<!-- References -->
 
 	</entity>
+	
+	<exceptions>
+		<exception>RequiredServiceCode</exception>
+		<exception>RequiredServiceName</exception>
+		<exception>RequiredAdministrationCode</exception>
+		<exception>RequiredDomainCode</exception>
+		<exception>RequiredFileTemplateNo</exception>
+		<exception>RequiredTemplateName</exception>
+	</exceptions>
 </service-builder>
