@@ -12,7 +12,7 @@
  * details.
  */
 
-package backend.usermgt.service.util;
+package org.opencps.backend.usermgt.service.util;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -23,7 +23,7 @@ import com.liferay.portal.kernel.configuration.Filter;
 import java.util.Properties;
 
 /**
- * @author Binhth
+ * @author khoavu
  * @generated
  */
 @ProviderType

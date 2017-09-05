@@ -1,26 +1,18 @@
 <?xml version="1.0"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-	<bean class="org.mobilink.backend.usermgt.service.impl.ContactLocalServiceImpl" id="org.mobilink.backend.usermgt.service.ContactLocalService" />
-	<bean class="org.mobilink.backend.usermgt.service.persistence.impl.ContactPersistenceImpl" id="org.mobilink.backend.usermgt.service.persistence.ContactPersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.usermgt.service.impl.ContactGroupLocalServiceImpl" id="org.mobilink.backend.usermgt.service.ContactGroupLocalService" />
-	<bean class="org.mobilink.backend.usermgt.service.persistence.impl.ContactGroupPersistenceImpl" id="org.mobilink.backend.usermgt.service.persistence.ContactGroupPersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.usermgt.service.impl.EmployeeLocalServiceImpl" id="org.mobilink.backend.usermgt.service.EmployeeLocalService" />
-	<bean class="org.mobilink.backend.usermgt.service.persistence.impl.EmployeePersistenceImpl" id="org.mobilink.backend.usermgt.service.persistence.EmployeePersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.usermgt.service.impl.EmployeeFileLocalServiceImpl" id="org.mobilink.backend.usermgt.service.EmployeeFileLocalService" />
-	<bean class="org.mobilink.backend.usermgt.service.persistence.impl.EmployeeFilePersistenceImpl" id="org.mobilink.backend.usermgt.service.persistence.EmployeeFilePersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.usermgt.service.impl.EmployeeJobPosLocalServiceImpl" id="org.mobilink.backend.usermgt.service.EmployeeJobPosLocalService" />
-	<bean class="org.mobilink.backend.usermgt.service.persistence.impl.EmployeeJobPosPersistenceImpl" id="org.mobilink.backend.usermgt.service.persistence.EmployeeJobPosPersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.usermgt.service.impl.JobPosLocalServiceImpl" id="org.mobilink.backend.usermgt.service.JobPosLocalService" />
-	<bean class="org.mobilink.backend.usermgt.service.persistence.impl.JobPosPersistenceImpl" id="org.mobilink.backend.usermgt.service.persistence.JobPosPersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.usermgt.service.impl.JoinSiteStatusLocalServiceImpl" id="org.mobilink.backend.usermgt.service.JoinSiteStatusLocalService" />
-	<bean class="org.mobilink.backend.usermgt.service.persistence.impl.JoinSiteStatusPersistenceImpl" id="org.mobilink.backend.usermgt.service.persistence.JoinSiteStatusPersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.usermgt.service.impl.OfficeSiteLocalServiceImpl" id="org.mobilink.backend.usermgt.service.OfficeSiteLocalService" />
-	<bean class="org.mobilink.backend.usermgt.service.persistence.impl.OfficeSitePersistenceImpl" id="org.mobilink.backend.usermgt.service.persistence.OfficeSitePersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.usermgt.service.impl.PartnerLocalServiceImpl" id="org.mobilink.backend.usermgt.service.PartnerLocalService" />
-	<bean class="org.mobilink.backend.usermgt.service.persistence.impl.PartnerPersistenceImpl" id="org.mobilink.backend.usermgt.service.persistence.PartnerPersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.usermgt.service.impl.PartnerFileLocalServiceImpl" id="org.mobilink.backend.usermgt.service.PartnerFileLocalService" />
-	<bean class="org.mobilink.backend.usermgt.service.persistence.impl.PartnerFilePersistenceImpl" id="org.mobilink.backend.usermgt.service.persistence.PartnerFilePersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.usermgt.service.impl.WorkingUnitLocalServiceImpl" id="org.mobilink.backend.usermgt.service.WorkingUnitLocalService" />
-	<bean class="org.mobilink.backend.usermgt.service.persistence.impl.WorkingUnitPersistenceImpl" id="org.mobilink.backend.usermgt.service.persistence.WorkingUnitPersistence" parent="basePersistence" />
+	<bean class="org.opencps.backend.usermgt.service.impl.ApplicantLocalServiceImpl" id="org.opencps.backend.usermgt.service.ApplicantLocalService" />
+	<bean class="org.opencps.backend.usermgt.service.persistence.impl.ApplicantPersistenceImpl" id="org.opencps.backend.usermgt.service.persistence.ApplicantPersistence" parent="basePersistence" />
+	<bean class="org.opencps.backend.usermgt.service.impl.EmployeeLocalServiceImpl" id="org.opencps.backend.usermgt.service.EmployeeLocalService" />
+	<bean class="org.opencps.backend.usermgt.service.persistence.impl.EmployeePersistenceImpl" id="org.opencps.backend.usermgt.service.persistence.EmployeePersistence" parent="basePersistence" />
+	<bean class="org.opencps.backend.usermgt.service.impl.EmployeeJobPosLocalServiceImpl" id="org.opencps.backend.usermgt.service.EmployeeJobPosLocalService" />
+	<bean class="org.opencps.backend.usermgt.service.persistence.impl.EmployeeJobPosPersistenceImpl" id="org.opencps.backend.usermgt.service.persistence.EmployeeJobPosPersistence" parent="basePersistence" />
+	<bean class="org.opencps.backend.usermgt.service.impl.JobPosLocalServiceImpl" id="org.opencps.backend.usermgt.service.JobPosLocalService" />
+	<bean class="org.opencps.backend.usermgt.service.persistence.impl.JobPosPersistenceImpl" id="org.opencps.backend.usermgt.service.persistence.JobPosPersistence" parent="basePersistence" />
+	<bean class="org.opencps.backend.usermgt.service.impl.OfficeSiteLocalServiceImpl" id="org.opencps.backend.usermgt.service.OfficeSiteLocalService" />
+	<bean class="org.opencps.backend.usermgt.service.persistence.impl.OfficeSitePersistenceImpl" id="org.opencps.backend.usermgt.service.persistence.OfficeSitePersistence" parent="basePersistence" />
+	<bean class="org.opencps.backend.usermgt.service.impl.PreferencesLocalServiceImpl" id="org.opencps.backend.usermgt.service.PreferencesLocalService" />
+	<bean class="org.opencps.backend.usermgt.service.persistence.impl.PreferencesPersistenceImpl" id="org.opencps.backend.usermgt.service.persistence.PreferencesPersistence" parent="basePersistence" />
+	<bean class="org.opencps.backend.usermgt.service.impl.WorkingUnitLocalServiceImpl" id="org.opencps.backend.usermgt.service.WorkingUnitLocalService" />
+	<bean class="org.opencps.backend.usermgt.service.persistence.impl.WorkingUnitPersistenceImpl" id="org.opencps.backend.usermgt.service.persistence.WorkingUnitPersistence" parent="basePersistence" />
 </beans>

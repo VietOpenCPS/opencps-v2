@@ -1,37 +1,33 @@
 <?xml version="1.0"?>
 
 <model-hints>
-	<model name="org.mobilink.backend.usermgt.model.Contact">
+	<model name="org.opencps.backend.usermgt.model.Applicant">
 		<field name="uuid" type="String" />
-		<field name="contactId" type="long" />
+		<field name="applicantId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="fullName" type="String" />
-		<field name="companyName" type="String" />
-		<field name="telNo" type="String" />
-		<field name="email" type="String" />
-		<field name="userMappingId" type="long" />
-		<field name="isOrg" type="boolean" />
-		<field name="shared" type="int" />
+		<field name="applicantName" type="String" />
+		<field name="applicantIdType" type="String" />
+		<field name="applicantIdNo" type="String" />
+		<field name="applicantIdDate" type="Date" />
+		<field name="address" type="String" />
+		<field name="cityCode" type="String" />
+		<field name="cityName" type="String" />
+		<field name="districtCode" type="String" />
+		<field name="districtName" type="String" />
+		<field name="wardCode" type="String" />
+		<field name="wardName" type="String" />
+		<field name="contactName" type="String" />
+		<field name="contactTelNo" type="String" />
+		<field name="contactEmail" type="String" />
+		<field name="mappingUserId" type="long" />
+		<field name="profile" type="String" />
 	</model>
-	<model name="org.mobilink.backend.usermgt.model.ContactGroup">
-		<field name="uuid" type="String" />
-		<field name="contactGroupId" type="long" />
-		<field name="groupId" type="long" />
-		<field name="companyId" type="long" />
-		<field name="userId" type="long" />
-		<field name="userName" type="String" />
-		<field name="createDate" type="Date" />
-		<field name="modifiedDate" type="Date" />
-		<field name="groupName" type="String" />
-		<field name="contactList" type="String" />
-		<field name="shared" type="int" />
-	</model>
-	<model name="org.mobilink.backend.usermgt.model.Employee">
+	<model name="org.opencps.backend.usermgt.model.Employee">
 		<field name="uuid" type="String" />
 		<field name="employeeId" type="long" />
 		<field name="companyId" type="long" />
@@ -54,19 +50,7 @@
 		<field name="fileDocId" type="long" />
 		<field name="preferences" type="String" />
 	</model>
-	<model name="org.mobilink.backend.usermgt.model.EmployeeFile">
-		<field name="uuid" type="String" />
-		<field name="employeeFileId" type="long" />
-		<field name="companyId" type="long" />
-		<field name="groupId" type="long" />
-		<field name="userId" type="long" />
-		<field name="userName" type="String" />
-		<field name="createDate" type="Date" />
-		<field name="modifiedDate" type="Date" />
-		<field name="employeeId" type="long" />
-		<field name="fileEntryId" type="long" />
-	</model>
-	<model name="org.mobilink.backend.usermgt.model.EmployeeJobPos">
+	<model name="org.opencps.backend.usermgt.model.EmployeeJobPos">
 		<field name="uuid" type="String" />
 		<field name="employeeJobPosId" type="long" />
 		<field name="companyId" type="long" />
@@ -78,7 +62,7 @@
 		<field name="employeeId" type="long" />
 		<field name="jobPostId" type="long" />
 	</model>
-	<model name="org.mobilink.backend.usermgt.model.JobPos">
+	<model name="org.opencps.backend.usermgt.model.JobPos">
 		<field name="uuid" type="String" />
 		<field name="jobPosId" type="long" />
 		<field name="companyId" type="long" />
@@ -95,20 +79,7 @@
 		<field name="mappingRoleId" type="long" />
 		<field name="hiddenJobPos" type="boolean" />
 	</model>
-	<model name="org.mobilink.backend.usermgt.model.JoinSiteStatus">
-		<field name="uuid" type="String" />
-		<field name="JoinSiteStatusId" type="long" />
-		<field name="companyId" type="long" />
-		<field name="groupId" type="long" />
-		<field name="userId" type="long" />
-		<field name="userName" type="String" />
-		<field name="createDate" type="Date" />
-		<field name="modifiedDate" type="Date" />
-		<field name="employeeId" type="long" />
-		<field name="joinSiteGroupId" type="long" />
-		<field name="status" type="int" />
-	</model>
-	<model name="org.mobilink.backend.usermgt.model.OfficeSite">
+	<model name="org.opencps.backend.usermgt.model.OfficeSite">
 		<field name="uuid" type="String" />
 		<field name="officeSiteId" type="long" />
 		<field name="companyId" type="long" />
@@ -130,38 +101,18 @@
 		<field name="adminUserId" type="long" />
 		<field name="preferences" type="String" />
 	</model>
-	<model name="org.mobilink.backend.usermgt.model.Partner">
+	<model name="org.opencps.backend.usermgt.model.Preferences">
 		<field name="uuid" type="String" />
-		<field name="partnerId" type="long" />
-		<field name="companyId" type="long" />
+		<field name="preferencesId" type="long" />
 		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="name" type="String" />
-		<field name="address" type="String" />
-		<field name="telNo" type="String" />
-		<field name="faxNo" type="String" />
-		<field name="email" type="String" />
-		<field name="website" type="String" />
-		<field name="partnerClass" type="int" />
-		<field name="accountUserId" type="long" />
-		<field name="docFileId" type="String" />
+		<field name="preferences" type="String" />
 	</model>
-	<model name="org.mobilink.backend.usermgt.model.PartnerFile">
-		<field name="uuid" type="String" />
-		<field name="partnerFileId" type="long" />
-		<field name="companyId" type="long" />
-		<field name="groupId" type="long" />
-		<field name="userId" type="long" />
-		<field name="userName" type="String" />
-		<field name="createDate" type="Date" />
-		<field name="modifiedDate" type="Date" />
-		<field name="partnerId" type="long" />
-		<field name="fileEntryId" type="long" />
-	</model>
-	<model name="org.mobilink.backend.usermgt.model.WorkingUnit">
+	<model name="org.opencps.backend.usermgt.model.WorkingUnit">
 		<field name="uuid" type="String" />
 		<field name="workingUnitId" type="long" />
 		<field name="companyId" type="long" />

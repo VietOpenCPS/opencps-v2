@@ -2,19 +2,15 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping auto-import="false" default-lazy="false">
-	<import class="org.mobilink.backend.usermgt.model.Contact" />
-	<import class="org.mobilink.backend.usermgt.model.ContactGroup" />
-	<import class="org.mobilink.backend.usermgt.model.Employee" />
-	<import class="org.mobilink.backend.usermgt.model.EmployeeFile" />
-	<import class="org.mobilink.backend.usermgt.model.EmployeeJobPos" />
-	<import class="org.mobilink.backend.usermgt.model.JobPos" />
-	<import class="org.mobilink.backend.usermgt.model.JoinSiteStatus" />
-	<import class="org.mobilink.backend.usermgt.model.OfficeSite" />
-	<import class="org.mobilink.backend.usermgt.model.Partner" />
-	<import class="org.mobilink.backend.usermgt.model.PartnerFile" />
-	<import class="org.mobilink.backend.usermgt.model.WorkingUnit" />
-	<class name="org.mobilink.backend.usermgt.model.impl.ContactImpl" table="m_contact">
-		<id name="contactId" type="long">
+	<import class="org.opencps.backend.usermgt.model.Applicant" />
+	<import class="org.opencps.backend.usermgt.model.Employee" />
+	<import class="org.opencps.backend.usermgt.model.EmployeeJobPos" />
+	<import class="org.opencps.backend.usermgt.model.JobPos" />
+	<import class="org.opencps.backend.usermgt.model.OfficeSite" />
+	<import class="org.opencps.backend.usermgt.model.Preferences" />
+	<import class="org.opencps.backend.usermgt.model.WorkingUnit" />
+	<class name="org.opencps.backend.usermgt.model.impl.ApplicantImpl" table="opencps_applicant">
+		<id name="applicantId" type="long">
 			<generator class="assigned" />
 		</id>
 		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
@@ -24,30 +20,24 @@
 		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="fullName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="companyName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="telNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="email" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="userMappingId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="isOrg" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
-		<property name="shared" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="applicantName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="applicantIdType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="applicantIdNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="applicantIdDate" type="org.hibernate.type.TimestampType" />
+		<property name="address" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="cityCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="cityName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="districtCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="districtName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="wardCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="wardName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="contactName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="contactTelNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="contactEmail" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="mappingUserId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="profile" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.mobilink.backend.usermgt.model.impl.ContactGroupImpl" table="m_contactgroup">
-		<id name="contactGroupId" type="long">
-			<generator class="assigned" />
-		</id>
-		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="createDate" type="org.hibernate.type.TimestampType" />
-		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="groupName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="contactList" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="shared" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
-	</class>
-	<class name="org.mobilink.backend.usermgt.model.impl.EmployeeImpl" table="m_employee">
+	<class name="org.opencps.backend.usermgt.model.impl.EmployeeImpl" table="opencps_employee">
 		<id name="employeeId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -72,21 +62,7 @@
 		<property name="fileDocId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="preferences" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.mobilink.backend.usermgt.model.impl.EmployeeFileImpl" table="m_employee_file">
-		<id name="employeeFileId" type="long">
-			<generator class="assigned" />
-		</id>
-		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="createDate" type="org.hibernate.type.TimestampType" />
-		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="employeeId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="fileEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-	</class>
-	<class name="org.mobilink.backend.usermgt.model.impl.EmployeeJobPosImpl" table="m_employee_jobpos">
+	<class name="org.opencps.backend.usermgt.model.impl.EmployeeJobPosImpl" table="opencps_employee_jobpos">
 		<id name="employeeJobPosId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -100,7 +76,7 @@
 		<property name="employeeId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="jobPostId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
-	<class name="org.mobilink.backend.usermgt.model.impl.JobPosImpl" table="m_jobpos">
+	<class name="org.opencps.backend.usermgt.model.impl.JobPosImpl" table="opencps_jobpos">
 		<id name="jobPosId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -119,22 +95,7 @@
 		<property name="mappingRoleId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="hiddenJobPos" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 	</class>
-	<class name="org.mobilink.backend.usermgt.model.impl.JoinSiteStatusImpl" table="m_join_site_status">
-		<id name="JoinSiteStatusId" type="long">
-			<generator class="assigned" />
-		</id>
-		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="createDate" type="org.hibernate.type.TimestampType" />
-		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="employeeId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="joinSiteGroupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="status" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
-	</class>
-	<class name="org.mobilink.backend.usermgt.model.impl.OfficeSiteImpl" table="m_officesite">
+	<class name="org.opencps.backend.usermgt.model.impl.OfficeSiteImpl" table="opencps_officesite">
 		<id name="officeSiteId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -158,42 +119,20 @@
 		<property name="adminUserId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="preferences" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.mobilink.backend.usermgt.model.impl.PartnerImpl" table="m_partner">
-		<id name="partnerId" type="long">
+	<class name="org.opencps.backend.usermgt.model.impl.PreferencesImpl" table="opencps_preferences">
+		<id name="preferencesId" type="long">
 			<generator class="assigned" />
 		</id>
 		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="name" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="address" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="telNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="faxNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="email" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="website" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="partnerClass" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
-		<property name="accountUserId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="docFileId" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="preferences" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.mobilink.backend.usermgt.model.impl.PartnerFileImpl" table="m_partnerFile">
-		<id name="partnerFileId" type="long">
-			<generator class="assigned" />
-		</id>
-		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="createDate" type="org.hibernate.type.TimestampType" />
-		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="partnerId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="fileEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-	</class>
-	<class name="org.mobilink.backend.usermgt.model.impl.WorkingUnitImpl" table="m_workingunit">
+	<class name="org.opencps.backend.usermgt.model.impl.WorkingUnitImpl" table="opencps_workingunit">
 		<id name="workingUnitId" type="long">
 			<generator class="assigned" />
 		</id>
