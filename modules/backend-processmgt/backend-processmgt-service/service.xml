@@ -1,0 +1,170 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+
+<service-builder package-path="org.opencps.backend.processmgt">
+	<author>khoavu</author>
+	<namespace>OpenCPS_ProcessMgt</namespace>
+
+	<entity local-service="true" name="ServiceProcess" remote-service="false"
+		table="opencps_serviceprocess" uuid="true">
+
+		<column name="serviceProcessId" type="long" primary="true"/>
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="processNo" type="String" />
+		<column name="description" type="String" />
+		<column name="durationCount" type="int" />
+		<column name="durationUnit" type="int" />
+		<column name="counter" type="int" />
+		<column name="generateDossierNo" type="String" />
+		<column name="dossierNoPattern" type="String" />
+		<column name="generateDueDate" type="String" />
+		<column name="dueDatePattern" type="String" />
+		
+		<finder return-type="Collection" name="G_ID">
+			<finder-column name="groupId"/>
+		</finder>
+		
+	</entity>
+
+	<entity local-service="true" name="ProcessStep" remote-service="false"
+		table="opencps_processstep" uuid="true">
+
+		<column name="processStepId" type="long" primary="true"/>
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="stepCode" type="String" />
+		<column name="serviceProcessId" type="long" />
+		<column name="stepName" type="String" />
+		<column name="sequenceNo" type="String" />
+		<column name="dossierStatus" type="String" />
+		<column name="dossierSubStatus" type="String" />
+		<column name="durationCount" type="int" />
+		<column name="customProcessUrl" type="String" />
+		
+		<finder return-type="Collection" name="S_P_ID">
+			<finder-column name="serviceProcessId"/>
+		</finder>
+		
+	</entity>
+
+	<entity local-service="true" name="StepAllowance" remote-service="false"
+		table="opencps_stepallowance" uuid="true">
+
+		<column name="processStepId" type="long" primary="true"/>
+		<column name="roleId" type="long"  primary="true"/>
+		
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="moderator" type="int" />
+		
+		<finder return-type="Collection" name="P_S_ID">
+			<finder-column name="processStepId"/>
+		</finder>
+		
+	</entity>
+
+	<entity local-service="true" name="ProcessAction" remote-service="false"
+		table="opencps_processaction" uuid="true">
+
+		<column name="processActionId" type="long" primary="true"/>
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="serviceProcessId" type="long" />
+		<column name="preProcessStepId" type="long" />
+		<column name="postProcessStepId" type="long" />
+		<column name="autoEvent" type="String" />
+		<column name="preCondition" type="String" />
+		<column name="actionCode" type="String" />
+		<column name="actionName" type="String" />
+		<column name="allowAssignUser" type="String" />
+		<column name="assignUserId" type="long" />
+		<column name="requestPayment" type="String" />
+		<column name="paymentFee" type="String" />
+		<column name="createDossierFiles" type="String" />
+		<column name="returnDossierFiles" type="String" />
+		<column name="syncActionCode" type="String" />
+		<column name="rollback" type="String" />
+		
+		<finder return-type="Collection" name="S_P_ID">
+			<finder-column name="serviceProcessId"/>
+		</finder>
+		
+		<finder return-type="Collection" name="PR_P_S_ID">
+			<finder-column name="preProcessStepId"/>
+		</finder>
+		
+		<finder return-type="Collection" name="PO_P_S_ID">
+			<finder-column name="postProcessStepId"/>
+		</finder>
+		
+	</entity>
+
+	<entity local-service="true" name="DossierAction" remote-service="false"
+		table="opencps_dossieraction" uuid="true">
+
+		<column name="dossierActionId" type="long" primary="true"/>
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="dossierId" type="long" />
+		<column name="serviceProcessId" type="long" />
+		<column name="previousActionId" type="long" />
+		<column name="actionCode" type="String" />
+		<column name="actionUser" type="String" />
+		<column name="actionName" type="String" />
+		<column name="actionNote" type="String" />
+		<column name="overDue" type="int" />
+		<column name="syncActionCode" type="String" />
+		<column name="pending" type="String" />
+		<column name="rollback" type="String" />
+		<column name="processStepId" type="long" />
+		<column name="dueDate" type="int" />
+		<column name="nextActionId" type="long" />
+		
+		<finder return-type="Collection" name="G_ID">
+			<finder-column name="groupId"/>
+		</finder>
+	</entity>
+
+	<entity local-service="true" name="DossierActionUser" remote-service="false"
+		table="opencps_dossieractionuser" uuid="true">
+		<column name="dossierActionId" type="long" primary="true"/>
+		<column name="userId" type="long" primary="true"/>
+		<column name="moderator" type="int" />
+		
+		<finder return-type="Collection" name="D_A_ID">
+			<finder-column name="dossierActionId"/>
+		</finder>
+		
+	</entity>
+</service-builder>

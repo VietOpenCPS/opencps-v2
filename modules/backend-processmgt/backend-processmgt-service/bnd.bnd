@@ -1,0 +1,5 @@
+Bundle-Name: backend-processmgt-service
+Bundle-SymbolicName: org.opencps.backend.processmgt.service
+Bundle-Version: 1.0.0
+Liferay-Require-SchemaVersion: 1.0.0
+Liferay-Service: true
