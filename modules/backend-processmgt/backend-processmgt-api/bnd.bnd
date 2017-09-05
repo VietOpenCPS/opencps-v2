@@ -1,9 +1,0 @@
-Bundle-Name: backend-processmgt-api
-Bundle-SymbolicName: backend.processmgt.api
-Bundle-Version: 1.0.0
-Export-Package:\
-	backend.processmgt.exception,\
-	backend.processmgt.model,\
-	backend.processmgt.service,\
-	backend.processmgt.service.persistence
--includeresource: META-INF/service.xml=../backend-processmgt-service/service.xml
