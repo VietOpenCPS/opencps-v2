@@ -26,6 +26,8 @@ dependencies {
 	
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-api")
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-service")
+	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-api")
+	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-service")
 	
 	
 	compileOnly project(":modules:backend-auth")
