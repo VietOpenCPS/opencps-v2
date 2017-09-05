@@ -3,6 +3,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<bean class="org.opencps.backend.dossiermgt.service.impl.DossierLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.DossierLocalService" />
 	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.DossierPersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.DossierPersistence" parent="basePersistence" />
+	<bean class="org.opencps.backend.dossiermgt.service.impl.DossierActionLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.DossierActionLocalService" />
+	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.DossierActionPersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.DossierActionPersistence" parent="basePersistence" />
+	<bean class="org.opencps.backend.dossiermgt.service.impl.DossierActionUserLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.DossierActionUserLocalService" />
+	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.DossierActionUserPersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.DossierActionUserPersistence" parent="basePersistence" />
 	<bean class="org.opencps.backend.dossiermgt.service.impl.DossierFileLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.DossierFileLocalService" />
 	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.DossierFilePersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.DossierFilePersistence" parent="basePersistence" />
 	<bean class="org.opencps.backend.dossiermgt.service.impl.DossierLogLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.DossierLogLocalService" />
@@ -11,16 +15,24 @@
 	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.DossierPartPersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.DossierPartPersistence" parent="basePersistence" />
 	<bean class="org.opencps.backend.dossiermgt.service.impl.DossierTemplateLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.DossierTemplateLocalService" />
 	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.DossierTemplatePersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.DossierTemplatePersistence" parent="basePersistence" />
-	<bean class="org.opencps.backend.dossiermgt.service.impl.FileTemplateLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.FileTemplateLocalService" />
-	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.FileTemplatePersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.FileTemplatePersistence" parent="basePersistence" />
 	<bean class="org.opencps.backend.dossiermgt.service.impl.PaymentConfigLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.PaymentConfigLocalService" />
 	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.PaymentConfigPersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.PaymentConfigPersistence" parent="basePersistence" />
 	<bean class="org.opencps.backend.dossiermgt.service.impl.PaymentFileLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.PaymentFileLocalService" />
 	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.PaymentFilePersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.PaymentFilePersistence" parent="basePersistence" />
+	<bean class="org.opencps.backend.dossiermgt.service.impl.ProcessActionLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.ProcessActionLocalService" />
+	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.ProcessActionPersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.ProcessActionPersistence" parent="basePersistence" />
+	<bean class="org.opencps.backend.dossiermgt.service.impl.ProcessStepLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.ProcessStepLocalService" />
+	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.ProcessStepPersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.ProcessStepPersistence" parent="basePersistence" />
 	<bean class="org.opencps.backend.dossiermgt.service.impl.ServiceConfigLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.ServiceConfigLocalService" />
 	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.ServiceConfigPersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.ServiceConfigPersistence" parent="basePersistence" />
+	<bean class="org.opencps.backend.dossiermgt.service.impl.ServiceFileTemplateLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.ServiceFileTemplateLocalService" />
+	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.ServiceFileTemplatePersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.ServiceFileTemplatePersistence" parent="basePersistence" />
 	<bean class="org.opencps.backend.dossiermgt.service.impl.ServiceInfoLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.ServiceInfoLocalService" />
 	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.ServiceInfoPersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.ServiceInfoPersistence" parent="basePersistence" />
 	<bean class="org.opencps.backend.dossiermgt.service.impl.ServiceOptionLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.ServiceOptionLocalService" />
 	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.ServiceOptionPersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.ServiceOptionPersistence" parent="basePersistence" />
+	<bean class="org.opencps.backend.dossiermgt.service.impl.ServiceProcessLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.ServiceProcessLocalService" />
+	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.ServiceProcessPersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.ServiceProcessPersistence" parent="basePersistence" />
+	<bean class="org.opencps.backend.dossiermgt.service.impl.StepAllowanceLocalServiceImpl" id="org.opencps.backend.dossiermgt.service.StepAllowanceLocalService" />
+	<bean class="org.opencps.backend.dossiermgt.service.persistence.impl.StepAllowancePersistenceImpl" id="org.opencps.backend.dossiermgt.service.persistence.StepAllowancePersistence" parent="basePersistence" />
 </beans>
