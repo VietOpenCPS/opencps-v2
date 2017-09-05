@@ -1,3 +1,8 @@
+modules/backend-usermgt/backend-usermgt-api/src/main/java/org/opencps/backend/usermgt/** 
+modules/backend-dossiermgt/backend-dossiermgt-service/src/main/java/org/opencps/backend/dossiermgt/service/base/**
+modules/backend-dossiermgt/backend-dossiermgt-api/**
+**/service/persistence/impl/**
+**/model/impl/**
 **/*.iml
 **/.ivy
 **/.classpath
@@ -33,3 +38,4 @@ modules/backend-usermgt/backend-usermgt-api/src/main/java/org/opencps/usermgt/mo
 modules/backend-usermgt/backend-usermgt-api/src/main/java/org/opencps/usermgt/service/
 modules/backend-usermgt/backend-usermgt-service/src/main/java/org/opencps/usermgt/model/
 modules/backend-usermgt/backend-usermgt-service/src/main/java/org/opencps/usermgt/service/base/
+**/service/base/**

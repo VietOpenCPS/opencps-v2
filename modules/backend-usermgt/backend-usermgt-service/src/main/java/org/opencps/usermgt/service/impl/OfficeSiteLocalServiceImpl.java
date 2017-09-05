@@ -14,9 +14,9 @@
 
 package org.opencps.usermgt.service.impl;
 
-import org.opencps.usermgt.service.base.OfficeSiteLocalServiceBaseImpl;
-
 import aQute.bnd.annotation.ProviderType;
+
+import org.opencps.usermgt.service.base.OfficeSiteLocalServiceBaseImpl;
 
 /**
  * The implementation of the office site local service.
@@ -28,7 +28,7 @@ import aQute.bnd.annotation.ProviderType;
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
  * </p>
  *
- * @author Binhth
+ * @author khoavu
  * @see OfficeSiteLocalServiceBaseImpl
  * @see org.opencps.usermgt.service.OfficeSiteLocalServiceUtil
  */
@@ -37,6 +37,6 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.mobilink.backend.usermgt.service.OfficeSiteLocalServiceUtil} to access the office site local service.
+	 * Never reference this class directly. Always use {@link org.opencps.usermgt.service.OfficeSiteLocalServiceUtil} to access the office site local service.
 	 */
 }

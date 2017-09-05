@@ -49,6 +49,39 @@ create table opencps_dossier (
 	folderId LONG
 );
 
+create table opencps_dossieraction (
+	uuid_ VARCHAR(75) null,
+	dossierActionId LONG not null primary key,
+	companyId LONG,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	dossierId LONG,
+	serviceProcessId LONG,
+	previousActionId LONG,
+	actionCode VARCHAR(75) null,
+	actionUser VARCHAR(75) null,
+	actionName VARCHAR(75) null,
+	actionNote VARCHAR(75) null,
+	overDue INTEGER,
+	syncActionCode VARCHAR(75) null,
+	pending VARCHAR(75) null,
+	rollback VARCHAR(75) null,
+	processStepId LONG,
+	dueDate INTEGER,
+	nextActionId LONG
+);
+
+create table opencps_dossieractionuser (
+	uuid_ VARCHAR(75) null,
+	dossierActionId LONG not null,
+	userId LONG not null,
+	moderator INTEGER,
+	primary key (dossierActionId, userId)
+);
+
 create table opencps_dossierfile (
 	uuid_ VARCHAR(75) null,
 	dossierFileId LONG not null primary key,
@@ -131,20 +164,6 @@ create table opencps_dossiertemplate (
 	templateNo VARCHAR(75) null
 );
 
-create table opencps_filetemplate (
-	uuid_ VARCHAR(75) null,
-	fileTemplateId LONG not null primary key,
-	groupId LONG,
-	companyId LONG,
-	userId LONG,
-	userName VARCHAR(75) null,
-	createDate DATE null,
-	modifiedDate DATE null,
-	fileName VARCHAR(75) null,
-	fileNo VARCHAR(75) null,
-	fileEntryId LONG
-);
-
 create table opencps_paymentconfig (
 	uuid_ VARCHAR(75) null,
 	paymentConfigId LONG not null primary key,
@@ -213,6 +232,51 @@ create table opencps_paymentfile (
 	paymentGateCheckCode INTEGER
 );
 
+create table opencps_processaction (
+	uuid_ VARCHAR(75) null,
+	processActionId LONG not null primary key,
+	companyId LONG,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	serviceProcessId LONG,
+	preProcessStepId LONG,
+	postProcessStepId LONG,
+	autoEvent VARCHAR(75) null,
+	preCondition VARCHAR(75) null,
+	actionCode VARCHAR(75) null,
+	actionName VARCHAR(75) null,
+	allowAssignUser VARCHAR(75) null,
+	assignUserId LONG,
+	requestPayment VARCHAR(75) null,
+	paymentFee VARCHAR(75) null,
+	createDossierFiles VARCHAR(75) null,
+	returnDossierFiles VARCHAR(75) null,
+	syncActionCode VARCHAR(75) null,
+	rollback VARCHAR(75) null
+);
+
+create table opencps_processstep (
+	uuid_ VARCHAR(75) null,
+	processStepId LONG not null primary key,
+	companyId LONG,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	stepCode VARCHAR(75) null,
+	serviceProcessId LONG,
+	stepName VARCHAR(75) null,
+	sequenceNo VARCHAR(75) null,
+	dossierStatus VARCHAR(75) null,
+	dossierSubStatus VARCHAR(75) null,
+	durationCount INTEGER,
+	customProcessUrl VARCHAR(75) null
+);
+
 create table opencps_serviceconfig (
 	uuid_ VARCHAR(75) null,
 	serviceConfigId LONG not null primary key,
@@ -257,7 +321,7 @@ create table opencps_serviceinfo (
 	domainCode VARCHAR(75) null,
 	domainName VARCHAR(75) null,
 	domainIndex VARCHAR(75) null,
-	activeStatus VARCHAR(75) null,
+	activeStatus INTEGER,
 	maxLevel INTEGER
 );
 
@@ -279,9 +343,45 @@ create table opencps_serviceoption (
 	instructionNote VARCHAR(75) null
 );
 
+create table opencps_serviceprocess (
+	uuid_ VARCHAR(75) null,
+	serviceProcessId LONG not null primary key,
+	companyId LONG,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	processNo VARCHAR(75) null,
+	description VARCHAR(75) null,
+	durationCount INTEGER,
+	durationUnit INTEGER,
+	counter INTEGER,
+	generateDossierNo VARCHAR(75) null,
+	dossierNoPattern VARCHAR(75) null,
+	generateDueDate VARCHAR(75) null,
+	dueDatePattern VARCHAR(75) null
+);
+
 create table opencps_services_filetemplates (
-	companyId LONG not null,
-	fileTemplateId LONG not null,
+	uuid_ VARCHAR(75) null,
 	serviceInfoId LONG not null,
-	primary key (fileTemplateId, serviceInfoId)
+	fileTemplateNo VARCHAR(75) not null,
+	templateName VARCHAR(75) null,
+	fileEntryId LONG,
+	primary key (serviceInfoId, fileTemplateNo)
+);
+
+create table opencps_stepallowance (
+	uuid_ VARCHAR(75) null,
+	processStepId LONG not null,
+	roleId LONG not null,
+	companyId LONG,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	moderator INTEGER,
+	primary key (processStepId, roleId)
 );

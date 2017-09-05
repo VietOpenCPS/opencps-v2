@@ -11,4 +11,4 @@ buildService {
 	apiDir = "../backend-usermgt-api/src/main/java"
 }
 
-group = "backend.usermgt"
+group = "org.opencps"

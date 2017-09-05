@@ -2,7 +2,7 @@
 <!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
 
 <service-builder auto-namespace-tables="false"
-	package-path="org.mobilink.backend.usermgt">
+	package-path="org.opencps.usermgt">
 	<author>khoavu</author>
 	<namespace>UserMgt</namespace>
 
@@ -166,124 +166,13 @@
 			<finder-column name="employeeId"></finder-column>
 		</finder>
 	</entity>
-
-	<entity name="JoinSiteStatus" uuid="true" local-service="true"
-		remote-service="false" table="opencps_join_site_status">
-
-		<!-- PK fields -->
-		<column name="JoinSiteStatusId" type="long" primary="true" />
-
-		<!-- Audit fields -->
-		<column name="companyId" type="long" />
-		<column name="groupId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-		<column name="employeeId" type="long" />
-		<column name="joinSiteGroupId" type="long" />
-		<column name="status" type="int" />
-		<!-- Order -->
-		<order by="asc">
-			<order-column name="createDate" />
-		</order>
-		<!-- Finder -->
-		<finder return-type="MJoinSiteStatus" name="F_employeeId_joinSiteGroupId">
-			<finder-column name="employeeId"></finder-column>
-			<finder-column name="joinSiteGroupId"></finder-column>
-		</finder>
-	</entity>
-
-	<entity name="EmployeeFile" uuid="true" local-service="true"
-		remote-service="false" table="opencps_employee_file">
-
-		<!-- PK fields -->
-		<column name="employeeFileId" type="long" primary="true" />
-
-		<!-- Audit fields -->
-		<column name="companyId" type="long" />
-		<column name="groupId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-		<column name="employeeId" type="long" />
-		<column name="fileEntryId" type="long" />
-		<!-- Order -->
-		<order by="asc">
-			<order-column name="createDate" />
-		</order>
-		<!-- Finder -->
-	</entity>
-
-	<entity name="Partner" uuid="true" local-service="true"
-		remote-service="false" table="opencps_partner">
-
-		<!-- PK fields -->
-		<column name="partnerId" type="long" primary="true" />
-
-		<!-- Audit fields -->
-		<column name="companyId" type="long" />
-		<column name="groupId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-
-		<column name="name" type="String" />
-		<column name="address" type="String" />
-		<column name="telNo" type="String" />
-		<column name="faxNo" type="String" />
-		<column name="email" type="String" />
-		<column name="website" type="String" />
-		<column name="partnerClass" type="int" />
-		<column name="accountUserId" type="long" />
-		<column name="docFileId" type="String" />
-
-		<!-- Order -->
-		<order by="asc">
-			<order-column name="name" />
-		</order>
-		<!-- Finder -->
-	</entity>
-
-	<entity name="PartnerFile" uuid="true" local-service="true"
-		remote-service="false" table="opencps_partnerFile">
-
-		<!-- PK fields -->
-		<column name="partnerFileId" type="long" primary="true" />
-
-		<!-- Audit fields -->
-		<column name="companyId" type="long" />
-		<column name="groupId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-		<column name="partnerId" type="long" />
-		<column name="fileEntryId" type="long" />
-
-		<!-- Order -->
-		<order by="asc">
-			<order-column name="createDate" />
-		</order>
-		<!-- Finder -->
-	</entity>
-
-	<entity name="Contact" uuid="true" local-service="true"
-		remote-service="false" table="opencps_contact">
+	
+	<entity name="Applicant" uuid="true" local-service="true"
+		remote-service="false" table="opencps_applicant">
 
 		<!-- PK fields -->
 
-		<column name="contactId" primary="true" type="long" />
+		<column name="applicantId" primary="true" type="long" />
 
 		<!-- Group instance -->
 
@@ -299,29 +188,34 @@
 
 		<!-- Other fields -->
 
-		<column name="fullName" type="String" />
-		<column name="companyName" type="String" />
-		<column name="telNo" type="String" />
-		<column name="email" type="String" />
-		<column name="userMappingId" type="long" />
-		<column name="isOrg" type="boolean" />
-		<column name="shared" type="int" />
+		<column name="applicantName" type="String" />
+		<column name="applicantIdType" type="String" />
+		<column name="applicantIdNo" type="String" />
+		<column name="applicantIdDate" type="Date" />
+		<column name="address" type="String" />
+		<column name="cityCode" type="String" />
+		<column name="cityName" type="String" />
+		<column name="districtCode" type="String" />
+		<column name="districtName" type="String" />
+		<column name="wardCode" type="String" />
+		<column name="wardName" type="String" />
+		<column name="contactName" type="String" />
+		<column name="contactTelNo" type="String" />
+		<column name="contactEmail" type="String" />
+		<column name="mappingUserId" type="long" />
+		<column name="profile" type="String" />
 
 		<order by="asc">
-			<order-column name="fullName"></order-column>
+			<order-column name="applicantName"/>
 		</order>
-		
-		<finder return-type="MContacts" name="F_userMappingId" unique="true">
-			<finder-column name="userMappingId"></finder-column>
-		</finder>
 	</entity>
 	
-	<entity name="ContactGroup" uuid="true" local-service="true"
-		remote-service="false" table="opencps_contactgroup">
+	<entity name="Preferences" uuid="true" local-service="true"
+		remote-service="false" table="opencps_preferences">
 
 		<!-- PK fields -->
 
-		<column name="contactGroupId" primary="true" type="long" />
+		<column name="preferencesId" primary="true" type="long" />
 
 		<!-- Group instance -->
 
@@ -337,13 +231,8 @@
 
 		<!-- Other fields -->
 
-		<column name="groupName" type="String" />
-		<column name="contactList" type="String" />
-		<column name="shared" type="int" />
+		<column name="preferences" type="String" />
 
-		<order by="asc">
-			<order-column name="groupName"></order-column>
-		</order>
 	</entity>
 	
 </service-builder>
