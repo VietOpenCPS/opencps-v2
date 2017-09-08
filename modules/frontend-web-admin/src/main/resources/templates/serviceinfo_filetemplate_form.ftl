@@ -1,4 +1,6 @@
-<#include "init.ftl">
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 
 <div class="modal-dialog modal-lg">
 	<div class="modal-content">

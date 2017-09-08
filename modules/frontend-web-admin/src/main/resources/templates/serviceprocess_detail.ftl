@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div id="service_process_detail_tabstrip" class="panel">
   <div id="service_process_tabstrip">
     <ul class="ul-with-border ul-with-border-style-2">
@@ -78,29 +81,29 @@
           var serviceProcessStepDataSource = new kendo.data.DataSource({
              transport: {
                 read: function(options) {
-                   $.ajax({
-                      url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/processsteps",
-                      type: "GET",
-                      dataType: "json",
-                      data: {
-                        keywords: options.data.keywords,
-                        page: options.data.page,
-                        pageSize: options.data.pageSize
-                      },
-                      success: function(result) {
-                         options.success(result);
-                      },
-                      error: function(result) {
-                        options.error(result);
-                        notification.show({
-                          message: "Xẩy ra lỗi, vui lòng thử lại"
-                        }, "error");
-                      }
-                   });
+                  $.ajax({
+                     url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/steps",
+                     type: "GET",
+                     dataType: "json",
+                     data: {
+                       keywords: options.data.keywords,
+                       page: options.data.page,
+                       pageSize: options.data.pageSize
+                     },
+                     success: function(result) {
+                        options.success(result);
+                     },
+                     error: function(result) {
+                       options.error(result);
+                       notification.show({
+                         message: "Xẩy ra lỗi, vui lòng thử lại"
+                       }, "error");
+                     }
+                  });
                 },
                 create: function(options) {
                    $.ajax({
-                      url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/processsteps",
+                      url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/steps",
                       type: "POST",
                       dataType: "json",
                       data: {
@@ -129,12 +132,10 @@
                 },
                 update: function(options) {
                    $.ajax({
-                      url: "${api.server}" + "/serviceprocesses/" + options.data.processStepId,
+                      url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/steps/" + options.data.stepCode,
                       type: "PUT",
                       dataType: "json",
                       data: {
-                        processStepId: options.data.processStepId,
-                        stepCode: options.data.stepCode,
                         stepName: options.data.stepName,
                         sequenceNo: options.data.sequenceNo,
                         durationUnit: options.data.durationUnit,
@@ -158,7 +159,7 @@
                 },
                 destroy: function(options) {
                    $.ajax({
-                      url: "${api.server}" + "/serviceprocesses/" + options.data.processStepId,
+                      url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/steps/" + options.data.stepCode,
                       dataType: "json",
                       type: "DELETE",
                       success: function(result) {
@@ -189,7 +190,7 @@
              schema: {
                 total: "total",
                 data: "data",
-                model : { id: "processStepId" },
+                model : { id: "stepCode" },
              },
              pageSize: 10,
              serverPaging: false,
@@ -201,6 +202,7 @@
              dataSource: serviceProcessStepDataSource,
              template: kendo.template($("#service_process_step_template").html()),
              selectable: true,
+             autoBind: false,
              remove: function(e) {
                 if(!confirm("Xác nhận xóa bước: " + e.model.get("stepName") + "?")){
                    e.preventDefault();
@@ -253,6 +255,212 @@
                          $("#service_process_step_form").modal("hide");
                       }
                    });
+
+                   // step roles
+                   if (dataPk){
+
+                     var dbConnObj = $("#service_process_list_view").data("kendoListView");
+                     var index = dbConnObj.select().index();
+                     var dataItem = dbConnObj.dataSource.view()[index];
+
+                     var serviceProcessStepRoleDataSource = new kendo.data.DataSource({
+                        transport: {
+                           read: function(options) {
+                              $.ajax({
+                                 url: "${api.server}" + "/serviceprocesses/" + dataItem.serviceProcessId + "/steps/" + dataPk + "/roles", // 1 -> dataPk
+                                 type: "GET",
+                                 dataType: "json",
+                                 success: function(result) {
+                                   options.success(result);
+                                 }
+                              });
+                           },
+                           create: function(options) {
+                              $.ajax({
+                                 url: "${api.server}" + "/serviceprocesses/" + dataItem.serviceProcessId + "/steps/" + dataPk + "/roles",
+                                 type: "POST",
+                                 dataType: "json",
+                                 data: {
+                                   roleId: options.data.roleIdSend,
+                                   moderator: options.data.moderator,
+                                   condition: options.data.condition
+                                 },
+                                 success: function(result) {
+                                   options.success(result);
+                                   notification.show({
+                                     message: "Yêu cầu được thực hiện thành công"
+                                   }, "success");
+                                 },
+                                 error: function(result) {
+                                   options.error(result);
+                                   notification.show({
+                                     message: "Xẩy ra lỗi, vui lòng thử lại"
+                                   }, "error");
+                                 }
+                              });
+                           },
+                           update: function(options) {
+                              $.ajax({
+                                 url: "${api.server}" + "/serviceprocesses/" + dataItem.serviceProcessId + "/steps/" + dataPk + "/roles/" + options.data.roleId,
+                                 type: "PUT",
+                                 dataType: "json",
+                                 data: {
+                                   moderator: options.data.moderator,
+                                   condition: options.data.condition
+                                 },
+                                 success: function(result) {
+                                   options.success(result);
+                                   notification.show({
+                                     message: "Yêu cầu được thực hiện thành công"
+                                   }, "success");
+                                 },
+                                 error: function(result) {
+                                   options.error(result);
+                                   notification.show({
+                                     message: "Xẩy ra lỗi, vui lòng thử lại"
+                                   }, "error");
+                                 }
+                              });
+                           },
+                           destroy: function(options) {
+                              $.ajax({
+                                 url: "${api.server}" + "/serviceprocesses/" + dataItem.serviceProcessId + "/steps/" + dataPk + "/roles/" + options.data.roleId,
+                                 type: "DELETE",
+                                 dataType: "json",
+                                 success: function(result) {
+                                   options.success(result);
+                                   notification.show({
+                                     message: "Yêu cầu được thực hiện thành công"
+                                   }, "success");
+                                 },
+                                 error: function(result) {
+                                   options.error(result);
+                                   notification.show({
+                                     message: "Xẩy ra lỗi, vui lòng thử lại"
+                                   }, "error");
+                                 }
+                              });
+                           },
+                           parameterMap: function(options, operation) {
+                              if (operation !== "read" && options.models) {
+                                 return {
+                                    models: kendo.stringify(options.models)
+                                 };
+                              }
+                           },
+                        },
+                        error: function(e){
+                          this.cancelChanges();
+                        },
+                        schema: {
+                           total: "total",
+                           data: "data",
+                           model : {
+                             id: "roleId",
+                             fields: {
+                               roleId: { editable: false, nullable: true },
+                               roleName: "roleName",
+                               condition: "condition",
+                               moderator: { type: "boolean" }
+                             }
+                           }
+                        },
+                        pageSize: 10,
+                        serverPaging: false,
+                        serverSorting: false,
+                        serverFiltering: false
+                     });
+
+                     var stepRoleListView = $("#service_process_step_role_list_view").kendoListView({
+                       dataSource: serviceProcessStepRoleDataSource,
+                       template: kendo.template($("#service_process_step_role_template").html()),
+                       editTemplate: kendo.template($("#service_process_step_role_edit_template").html()),
+                       selectable: true,
+                       dataBound: function(e) {
+                          var listView = e.sender;
+                          var firstItem = listView.element.children().first();
+                          listView.select(firstItem);
+                       },
+                       edit: function(e) {
+                         var model = e.model;
+                         var item = $(e.item[0]);
+                         var roleName = item.find('[name="roleName"]')[0];
+
+                         var isNew = false;
+                         if (!e.model.id){
+                           isNew = true;
+                         }
+
+                         loadListStepRole(roleName, isNew);
+                       },
+                       save: function(e) {
+                         var model = e.model;
+                         var item = $(e.item[0]);
+                         var name = item.find('select option:selected');
+
+                         //model.set("id", name.val());
+                         model.set("roleName", name.text());
+                         model.set("roleIdSend", name.val());
+                       }
+                     }).data("kendoListView");
+
+                     $("#btn_add_step_role").click(function(e) {
+                       e.preventDefault();
+                       stepRoleListView.add();
+                     });
+
+                     // load list role
+                     function loadListStepRole(target, isNew){
+                       target.innerHTML = '';
+
+                       if (isNew){
+                         var optionBlank = target.appendChild(document.createElement('option'));
+                         optionBlank.value = "";
+                         optionBlank.text = "---Chọn---";
+                       }
+
+                       var dataPk = $($(target)[0]).attr('data-pk');
+
+                       $.ajax({
+                         url: "${api.server}" + "/jobpos",
+                         type: "GET",
+                         dataType: "json",
+                         data: {
+
+                         },
+                         success: function(result) {
+                           for(d in result.data){
+                             var jobpos = result.data[d];
+                             if (isNew){
+                               var option = target.appendChild(document.createElement('option'));
+                               option.value = jobpos.mappingRoleId;
+                               option.text = jobpos.title;
+                               if (option.value == dataPk){
+                                 option.selected = true;
+                               }
+                             } else {
+                               if (jobpos.mappingRoleId == dataPk){
+                                 var option = target.appendChild(document.createElement('option'));
+                                 option.value = jobpos.mappingRoleId;
+                                 option.text = jobpos.title;
+                                 option.selected = true;
+                               }
+                             }
+                           }
+                         }
+                       });
+                     }
+
+                     $("#service_process_step_role_pager").kendoPager({
+                        dataSource: serviceProcessStepRoleDataSource,
+                        buttonCount: 2,
+                        pageSizes: [5, 10, 20, 50],
+                     });
+                   } else {
+                     var tabStrip = $("#tabstrip_service_process_step_modal").kendoTabStrip().data("kendoTabStrip");
+                     tabStrip.disable(tabStrip.tabGroup.children().eq(1));
+                   }
+                   // end roles
                 }
              );
           }
@@ -347,7 +555,7 @@
              transport: {
                 read: function(options) {
                    $.ajax({
-                      url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/processactions",
+                      url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/actions",
                       type: "GET",
                       dataType: "json",
                       data: {
@@ -368,7 +576,7 @@
                 },
                 create: function(options) {
                    $.ajax({
-                      url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/processactions",
+                      url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/actions",
                       type: "POST",
                       dataType: "json",
                       data: {
@@ -403,7 +611,7 @@
                 },
                 update: function(options) {
                    $.ajax({
-                      url: "${api.server}" + "/serviceprocesses/" + options.data.processActionId,
+                      url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/actions/" + options.data.processActionId,
                       type: "PUT",
                       dataType: "json",
                       data: {
@@ -438,7 +646,7 @@
                 },
                 destroy: function(options) {
                    $.ajax({
-                      url: "${api.server}" + "/serviceprocesses/" + options.data.processActionId,
+                      url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/actions/" + options.data.processActionId,
                       dataType: "json",
                       type: "DELETE",
                       success: function(result) {
@@ -481,6 +689,7 @@
              dataSource: serviceProcessActionDataSource,
              template: kendo.template($("#service_process_action_template").html()),
              selectable: true,
+             autoBind: false,
              remove: function(e) {
                 if(!confirm("Xác nhận xóa hành động: " + e.model.get("actionName") + "?")){
                    e.preventDefault();
