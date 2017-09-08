@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Admin Theme</title>
+
+	<!-- library -->
+	<link rel="stylesheet" href="../../../../../../style-component/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../../../../../style-component/css/kendo.common.core.min.css">
+	<link rel="stylesheet" href="../../../../../../style-component/css/override-kendoui.css">
+	<script src="../../../../../../style-component/js/jquery-1.11.3.js"></script>
+	<script src="../../../../../../style-component/js/bootstrap.min.js"></script>
+	<script src="../../../../../../style-component/js/kendo.ui.core.min.js"></script>
+	<script src="../../../../../../style-component/js/jasny-bootstrap.min.js"></script>
+	<script src="../../../../../../style-component/js/custom.js"></script>
+
+	<!-- custom css, js -->
+	<link rel="stylesheet" href="../../../../../../style-component/css/modern_component.css">
+	<!-- <link rel="stylesheet" href="../../../../../../style-component/css/custom.css"> -->
+	<link href="../../../../../../style-component/css/modern_custom.css" rel="stylesheet">
+	<link rel="stylesheet" href="../../../../../../style-component/css/jasny-bootstrap.min.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.js"></script>
+
+	<style type="text/css">
+		.dropdown-menu {
+			width: 250px !important;
+			height: 400px !important;
+		}
+	</style>
+
+</head>
+<body style="background-color: white">
+	<header id="banner">
+		<div class="container-fluid align-middle">
+			<div class="logo align-middle">
+				<a href="#">
+					<img src="images/logo.png">
+					<div class="text-logo">
+						Logo, banner
+						<span>Hệ thống dịch vụ công trực tuyến</span>
+					</div> 
+				</a>
+			</div>
+                <!--
+                <div class="sub-info">
+                        <a href="#" class="signin">Đăng nhập</a>
+                        <a href="#" class="register">Đăng ký</a>
+                </div>
+            -->
+            <div class="account-section align-middle">
+            	<div class="dropdown">
+            		<a href="javascript:;" class="notification-alert dropdown-toggle" id="btn-show-notification" data-toggle="dropdown">
+            			<i class="fa fa-bell-o" aria-hidden="true"></i>
+            			<span>3</span>
+            		</a>
+            		<ul class="dropdown-menu" role="menu" aria-labelledby="btn-show-notification" id="dropdown-menu-notification">
+            			<span class="text-bold PL10 PT10 PB10">Thông báo</span> <span class="pull-right MR5">Đánh dấu đã đọc</span>
+            			<li role="presentation" class="divider"></li>
+            			<div data-spy="scroll" data-target="#listViewNotificationNew" data-offset="0">
+            				<ul class="ul-with-border" id="listViewNotificationNew" style="height:305px;width:100%;overflow:auto;">
+            					
+            				</ul>
+            			</div>
+            			<li role="presentation" class="divider"></li>
+            			<div class="row text-center">
+            				<a  href="#" id="btn-showall-notification">Xem tất cả</a>
+            			</div>
+            		</ul>
+            		<script type="text/x-kendo-template" id="dropdownNotificationNewTemp">
+            			<li class="ML10">
+            				<i class="fa fa-circle blue"></i> <span class="ML5">Yêu cầu bổ sung hồ sơ</span> <br>
+            				<i class="fa fa-cog"></i> <span class="text-bold ML5">024609322/17/TCCLU</span><br>
+            				<span class="ML20">Bổ sung thông tin</span><br>
+            				<span class="ML20">15:09 pm | 02-08-2017</span>
+            			</li>
+            		</script>
+            	</div>
+            	<div class="account align-middle">
+            		<img src="http://via.placeholder.com/350x150" class="img-rounded">
+            		<div class="dropdown">
+            			<button class="btn btn-reset dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            				Bà <b>Lương Thị Hạnh</b>
+            				<span class="caret"></span>
+            			</button>
+            			<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            				<li><a href="#"><i class="fa fa-user"></i> Thông tin tài khoản</a></li>
+            				<li><a href="#"><i class="fa fa-arrow-right"></i> Đăng xuất</a></li>
+            			</ul>
+            		</div>
+            	</div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="navbar navbar-default" id="navigation">
+    	<div class="container-fluid">
+    		<div class="navbar-header">
+    			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+    				<span class="icon-bar"></span>
+    				<span class="icon-bar"></span>
+    				<span class="icon-bar"></span> 
+    			</button>
+    			<!--<a class="navbar-brand" href="#">WebSiteName</a>-->
+    		</div>
+    		<div class="collapse navbar-collapse" id="myNavbar">
+    			<ul class="nav navbar-nav">
+    				<li class="active"><a href="#">Quản lý hồ sơ</a></li>
+    				<li><a href="#">Thủ tục hành chính</a></li> 
+    				<li><a href="#">Thống kê số liệu</a></li>
+    				<li><a href="#">Đánh giá mức độ hài lòng</a></li>
+    			</ul>
+    		</div>
+    	</div>
+    </nav>
+
+    <article id="main-content">
+    	<div class="container-fluid">
