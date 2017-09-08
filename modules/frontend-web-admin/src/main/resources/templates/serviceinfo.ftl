@@ -1,4 +1,6 @@
-<#include "init.ftl">
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 
 <div>
 	<div class="row MB20" >
@@ -59,17 +61,7 @@
 						<div class="row">
 							<p>#:administrationName#</p>
 						</div>
-						<div class="row">
-							<p>
-								# if (activeStatus==0) { #
-								Đang biên soạn 
-								# }else if(activeStatus==1){ #
-								Đang có hiệu lực
-								#}else{#
-								Hết hiệu lực thi hành
-								#}#
-							</p>
-						</div>
+						
 					</div>
 					<div class="col-sm-2 text-center MT15">
 						<a href="javascript:;" class="_itemServiceinfo_btnEdit" data-pk="#:id#">
@@ -103,11 +95,14 @@
 						dataType: "json",
 						type:"GET", 
 						data:{
+							domainCodeSearch: options.data.domainCodeSearch,
+							administrationCodeSearch: options.data.administrationCodeSearch,
 							keywords: options.data.keywords,
 							page: options.data.page,
 							pageSize: options.data.pageSize
 						},
 						success: function(result) {
+							console.log(options.data);
 							options.success(result);
 						},
 						error: function(result) {
@@ -157,7 +152,7 @@
 							methodText:options.methodText,
 							dossierText:options.dossierText,
 							conditionText:options.conditionText,
-							durationText:options.durationText,
+							durationText:options.durationText,	
 							resultText:options.resultText,
 							administrationCode:options.administrationCode,
 							domainCode:options.domainCode,
@@ -187,7 +182,6 @@
 								dataSourceTTHC.remove(item);
 							}
 							popupNotification.show("Success", "success");
-
 						},
 						error: function(result) {
 							popupNotification.show("Error", "error");
@@ -203,7 +197,7 @@
 				total:"total",
 				data:"data",
 				model:{
-					id:"serviceInfoId"
+					id:"serviceinfoId"
 				}
 			},
 			pageSize: 5,
@@ -224,14 +218,28 @@
 		});
 
 		$("#pagerTTHC").kendoPager({
-			dataSource:dataSourceTTHC
+			dataSource:dataSourceTTHC,
+			input: true,
+			numeric: false,
+			messages: {
+				empty: "Không có kết quả phù hợp!",
+				display: "Hiển thị {0}-{1} trong {2} bản ghi",
+				page: "",
+				of: "/ {0}"
+			}
 		});
 
 		$("#administrationCodeSearch").kendoComboBox({
 			placeholder:"Chọn cơ quan",
 			dataTextField:"administrationName",
 			dataValueField:"administrationCode",
-			change:onChangeAdministrationCodeSearch,
+			change:function(){
+				dataSourceTTHC.read({
+					"domainCodeSearch":$("#domainCodeSearch").val(),
+					"administrationCodeSearch":$("#administrationCodeSearch").val(),
+					"keyword":$("#keyword").val()
+				});
+			},
 			filter:"contains"
 		});
 
@@ -239,26 +247,23 @@
 			placeholder:"Chọn lĩnh vực",
 			dataTextField:"domainName",
 			dataValueField:"domainCode",
+			change:function(){
+				dataSourceTTHC.read({
+					"domainCodeSearch":$("#domainCodeSearch").val(),
+					"administrationCodeSearch":$("#administrationCodeSearch").val(),
+					"keyword":$("#keyword").val()
+				});
+			},
 			filter:"contains",
 		});
 
-		var onChangeDomainCodeSearch=function(){
-			$("#listViewTTHC").getKendoListView().dataSource.transport.read({
+		$("#keyword").change(function(){
+			dataSourceTTHC.read({
 				"domainCodeSearch":$("#domainCodeSearch").val(),
 				"administrationCodeSearch":$("#administrationCodeSearch").val(),
-				"keyword":$("#keyword").val()
+				"keywords":$("#keyword").val()
 			});
-		}
-
-		var onChangeAdministrationCodeSearch=function(){
-			$("#listViewTTHC").getKendoListView().dataSource.transport.read({
-				"domainCodeSearch":$("#domainCodeSearch").val(),
-				"administrationCodeSearch":$("#administrationCodeSearch").val(),
-				"keyword":$("#keyword").val()
-
-			});
-			console.log("change");
-		}
+		});
 
 		$(function() {
 			$("[data-role=combobox]").each(function() {
@@ -273,6 +278,7 @@
 
 			event.preventDefault();
 			$("#itemServiceInfoId").val($(this).attr("data-pk"));
+			console.log($(this).attr("data-pk"));
 			formControl($(this).attr("data-pk"));
 		});
 
@@ -410,33 +416,14 @@
 
 		$(document).on("click", ".serviceinfo-filetemplate-item", function(event){
 			var id = $(this).attr("data-pk");
+			console.log(id);
 			$("#itemServiceInfoId").val($(this).attr("data-pk"));
 			$("#serviceInfoFileTempalte").load(
 				"${ajax.serviceinfo_filetemplate}",
 				function(result){
-					$("#listViewFileTemplate").getKendoListView().dataSource.read({
+					dataSourceFileTemplate.read({
 						id: id
 					});
-
-					var item=dataSourceTTHC.get(id);
-					var viewModel = kendo.observable({	
-						serviceInfoId: id,
-						serviceCode:item.serviceCode,
-						serviceName:item.serviceName,
-						administrationName:item.administrationName,
-						domainName:item.domainName,
-						activeStatus:function(){
-							if (item.activeStatus==0) { 
-								return "Đang biên soạn"; 
-							}else if(item.activeStatus==1){ 
-								return "Đang có hiệu lực";
-							}else{
-								return "Hết hiệu lực thi hành";
-							}
-						}
-					});
-
-					kendo.bind($("#serviceInfoDetail"), viewModel);
 				}
 				);
 

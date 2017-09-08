@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="modal-dialog modal-lg">
 	<div class="modal-content">
 		<div class="modal-header">
@@ -11,7 +14,7 @@
 						<div class="form-group">
 							<label class="control-label">Mã thủ tục: 
 							</label> 
-							<input class="form-control" value="<#if (serviceoptions.optionCode)??>${serviceoptions.optionCode}</#if>" name="optionCode" id="optionCode">
+							<input class="form-control" value="<#if (serviceoptions.submissionNote)??>${serviceoptions.submissionNote}</#if>" name="submissionNote" id="submissionNote">
 						</div>
 					</div>
 				</div>
@@ -40,7 +43,7 @@
 						<div class="form-group">
 							<label class="control-label">Thứ tự: 
 							</label> 
-							<input class="form-control" value="<#if (serviceoptions.optionOrder)??>${serviceoptions.optionOrder}</#if>" name="optionOrder" id="optionOrder">
+							<input class="form-control" value="<#if (serviceoptions.seqOrder)??>${serviceoptions.seqOrder}</#if>" name="seqOrder" id="seqOrder">
 						</div>
 					</div>
 				</div>
@@ -77,14 +80,59 @@
 	</div>
 </div>
 <script type="text/javascript">
-	$("#optionCode").kendoComboBox({
-		
-	});
 	$("#dossierTemplateId").kendoComboBox({
-		
+		dataTextField:"templateName",
+		dataValueField:"templateNo",
+		filter: "contains",
+		dataSource:{
+			transport:{
+				read:{
+					url:"${api.server}/dossiertemplates",
+					dataType:"json",
+					type:"GET",
+					success:function(result){
+
+					},
+					error:function(result){
+
+					}
+				}
+			},
+			schema:{
+				data:"data",
+				total:"total",
+				model:{
+					id:"templateNo"
+				}
+			}
+		}
 	});
 	$("#serviceProcessId").kendoComboBox({
-		
+		dataTextField:"processName",
+		dataValueField:"processNo",
+		filter: "contains",
+		dataSource:{
+			transport:{
+				read:{
+					url:"${api.server}/serviceprocesses",
+					dataType:"json",
+					type:"GET",
+					success:function(result){
+
+					},
+					error:function(result){
+
+					}
+				}
+			},
+			schema:{
+				data:"data",
+				total:"total",
+				model:{
+					id:"processNo"
+				}
+			}
+		}
 	});
 
 </script>

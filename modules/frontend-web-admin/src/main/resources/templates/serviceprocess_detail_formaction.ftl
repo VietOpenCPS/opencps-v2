@@ -1,4 +1,6 @@
-
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="modal-header">
 	<a href="#" data-dismiss="modal" class="class pull-right">
 		<span class="glyphicon glyphicon-remove"></span>

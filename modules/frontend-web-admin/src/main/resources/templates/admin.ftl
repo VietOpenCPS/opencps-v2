@@ -1,4 +1,6 @@
-<#include "init.ftl">
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 
 <div id="admin_management_tabstrip" class="row">
   <div id="admin_tabstrip">
@@ -10,14 +12,6 @@
           </a>
         </div>
         <div class="col-sm-9 PL10 P0">Thủ tục hành chính</div>
-      </li>
-      <li class="clearfix k-state-active" >
-        <div class="col-sm-2 clearfix ">
-          <a href="javascript:;" >
-          <i class="fa fa-gg" aria-hidden="true"></i>
-          </a>
-        </div>
-        <div class="col-sm-9 PL10 P0">Biểu mẫu thủ tục</div>
       </li>
       <li class="clearfix k-state-active" >
         <div class="col-sm-2 clearfix ">
@@ -62,7 +56,6 @@
       tabPosition: "left",
       contentUrls: [
         '${ajax.serviceinfo_list}',
-        'filetemplate.ftl',
         'dossiertemplate.ftl',
         'serviceconfig.ftl',
         'serviceprocess.ftl',

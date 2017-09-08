@@ -1,4 +1,6 @@
-<#include "init.ftl">
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 
 <h4><b>Thông tin chi tiết</b></h4>
 <div id="serviceInfoDetail">
@@ -7,7 +9,9 @@
 			<label>Tên thủ tục:</label>
 		</div>
 		<div class="col-sm-10">
-			<p data-bind="text:serviceCode"></p>
+			<p>
+				<#if (serviceInfo.itemDetail.serviceName)??>${serviceInfo.itemDetail.serviceName}</#if>
+			</p>
 		</div>
 	</div>
 	<div class="row">
@@ -17,7 +21,9 @@
 					<label>Số hiệu:</label>
 				</div>
 				<div class="col-sm-8">
-					<p data-bind="text:serviceName"></p>
+					<p>
+						<#if (serviceInfo.itemDetail.serviceCode)??>${serviceInfo.itemDetail.serviceCode}</#if>
+					</p>
 				</div>
 			</div>
 		</div>
@@ -27,7 +33,9 @@
 					<label>Cơ quan:</label>
 				</div>
 				<div class="col-sm-8">
-					<p data-bind="text:administrationName"></p>
+					<p>
+						<#if (serviceInfo.itemDetail.administrationName)??>${serviceInfo.itemDetail.administrationName}</#if>
+					</p>
 				</div>
 			</div>
 		</div>
@@ -39,7 +47,9 @@
 					<label>Lĩnh vực:</label>
 				</div>
 				<div class="col-sm-8">
-					<p data-bind="text:domainName"></p>
+					<p>
+						<#if (serviceInfo.itemDetail.domainName)??>${serviceInfo.itemDetail.domainName}</#if>
+					</p>
 				</div>
 			</div>
 		</div>
@@ -49,7 +59,9 @@
 					<label>Trạng thái:</label>
 				</div>
 				<div class="col-sm-8">
-					<p data-bind="text:activeStatus"></p>
+					<p>
+						<#if (serviceInfo.itemDetail.activeStatus)??>${serviceInfo.itemDetail.activeStatus}</#if>
+					</p>
 				</div>
 			</div>
 		</div>
@@ -101,29 +113,30 @@
 			</div>
 		</li>
 	</script>
-
 </div>
 
 <div class="row">
 	<div id="serviceInfoFileTempalteDialog" class="modal fade serviceInfoFileTempalteDialog" role="dialog">
 	</div>
-</div>
+</div>	
 
 <script type="text/javascript">
 	var dataSourceFileTemplate=new kendo.data.DataSource({
 		transport:{
 			read:function(options){
 				$.ajax({
-					url:"${api.server}/serviceinfos/"+options.data.id+"/filetemplates",
+					url:"${api.server}/serviceinfos/1/filetemplates",
 					dataType:"json",
 					type:"GET",
 					data:{
 
 					},
 					success:function(result){
+						console.log(options.data.id);
 						options.success(result);
 					},
 					error:function(result){
+						console.log(options.data.id);
 						options.error(result);
 					}
 				});
@@ -135,15 +148,16 @@
 				documentData.append('templateName', options.templateName);
 				
 				$.ajax({
-					url:"${api.server}/serviceinfos/"+options.serviceInfoId+"/filetemplates",
+					url:"${api.server}/serviceinfos/"+options.serviceinfoId+"/filetemplates",
 					type:"POST",
-					headers: {"groupId": 20143},
+					headers: {"groupId": ${serviceInfo.groupId}},
 					dataType:"json",
 					data: documentData,
 					cache: false,
 					contentType: false,
 					processData: false,
 					success:function(result){
+						addFileTemplateIfSuccess(result);
 					},
 					error:function(result){
 					}
@@ -156,15 +170,16 @@
 				documentData.append('templateName', options.templateName);
 				
 				$.ajax({
-					url:"${api.server}/serviceinfos/"+options.serviceInfoId+"/filetemplates",
+					url:"${api.server}/serviceinfos/"+options.serviceinfoId+"/filetemplates/"+options.fileTemplateId,
 					dataType:"json",
 					type:"PUT",
-					headers: {"groupId": 20143},
+					headers: {"groupId": ${serviceInfo.groupId}},
 					data: documentData,
 					cache: false,
 					contentType: false,
 					processData: false,
 					success:function(result){
+						updateFileTemplateIfSuccess(options.fileTemplateId,result);
 
 					},
 					error:function(result){
@@ -174,7 +189,7 @@
 			},
 			destroy:function(options){
 				$.ajax({
-					url:"${api.server}/serviceinfos/filetemplates/"+options.fileTemplateId,
+					url:"${api.server}/serviceinfos/"+options.serviceinfoId+"/filetemplates/"+options.fileTemplateId,
 					dataType:"json",
 					type:"DELETE",
 					data:{
@@ -233,7 +248,7 @@
 							addServieInfoFileTemplate();
 						}
 
-						$("#serviceConfigOptionDialog").modal("hide");
+						$("#serviceInfoFileTempalteDialog").modal("hide");
 
 					} else {
 						return false;
@@ -256,26 +271,50 @@
 	});	
 
 	$("#pagerFileTemplate").kendoPager({
-		dataSource:dataSourceFileTemplate
+		dataSource:dataSourceFileTemplate,
+		input: true,
+		numeric: false,
+		messages: {
+			empty: "Không có kết quả phù hợp!",
+			display: "Hiển thị {0}-{1} trong {2} bản ghi",
+			page: "",
+			of: "/ {0}"
+		}
 	});
 
 	var updateServieInfoFileTemplate=function(dataPk){
 		
+		console.log($("#itemServiceInfoId").val());
 		dataSourceFileTemplate.transport.update({
 			"fileTemplateId":dataPk,
-			"serviceInfoId":$("#itemServiceInfoId").val(),
-			"fileTemplateNo":$("#fileNo").val(),
-			"templateName":$("#fileName").val(),
+			"serviceinfoId":$("#itemServiceInfoId").val(),
+			"fileNo":$("#fileNo").val(),
+			"fileName":$("#fileName").val(),
 			"file": $('input#file')[0].files[0]
 		});
 	}
 
 	var addServieInfoFileTemplate=function(){
 		dataSourceFileTemplate.transport.create({
-			"serviceInfoId":$("#itemServiceInfoId").val(),
-			"fileTemplateNo":$("#fileNo").val(),
-			"templateName":$("#fileName").val(),
+			"serviceinfoId":$("#itemServiceInfoId").val(),
+			"fileNo":$("#fileNo").val(),
+			"fileName":$("#fileName").val(),
 			"file": $('input#file')[0].files[0]
+		});
+	}
+
+	var updateFileTemplateIfSuccess = function(dataPk,result){
+		console.log("id:"+dataPk);
+		dataSourceFileTemplate.fetch(function() {
+			var item = dataSourceFileTemplate.get(dataPk);
+			item.set("fileTemplateNo",result.fileTemplateNo);
+			item.set("templateName",result.templateName);
+		});
+	}
+	var addFileTemplateIfSuccess=function(result){
+		dataSourceFileTemplate.add({
+			"fileTemplateNo":result.fileTemplateNo,
+			"templateName":result.templateName
 		});
 	}
 
@@ -291,6 +330,7 @@
 			var fileTemplateId=$(this).attr("data-pk");
 			if(fileTemplateId>0){
 				dataSourceFileTemplate.transport.destroy({
+					"serviceinfoId":$("#itemServiceInfoId").val(),
 					"fileTemplateId":fileTemplateId
 				});
 			}

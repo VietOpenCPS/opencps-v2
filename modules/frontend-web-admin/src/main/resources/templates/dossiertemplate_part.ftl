@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="row panel panel-body">
   <h4>Thành phần hồ sơ</h4>
   <div class="row">
@@ -94,7 +97,7 @@
        transport: {
           read: function(options) {
              $.ajax({
-                url: "${api.server}" + "/dossiertemplates/" + options.data.dossierTemplateId + "/dossierparts",
+                url: "${api.server}" + "/dossiertemplates/" + options.data.dossierTemplateId + "/parts",
                 type: "GET",
                 dataType: "json",
                 data: {
@@ -115,7 +118,7 @@
           },
           create: function(options) {
              $.ajax({
-                url: "${api.server}" + "/dossiertemplates/" + options.data.dossierTemplateId + "/dossierparts",
+                url: "${api.server}" + "/dossiertemplates/" + options.data.dossierTemplateId + "/parts",
                 type: "POST",
                 dataType: "json",
                 data: {
@@ -229,6 +232,7 @@
              e.preventDefault();
           }
        },
+       autoBind: false
     });
 
     $("#pager_dossier_template_part").kendoPager({

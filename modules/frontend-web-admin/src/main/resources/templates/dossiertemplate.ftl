@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="row">
    <div class="col-xs-12 col-sm-3 panel P0">
    		<div class="panel-body">
