@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <button class="k-button btn-primary MB10" id="btnAddServiceConfigOption"><i class="glyphicon glyphicon-plus"></i>Thêm cấu hình</button>
 <div class="row MB10" style="border-top:1px solid #ddd;"></div>
 <div class="row">
@@ -32,14 +35,14 @@
 			<p>1</p>
 		</div>
 		<div class="col-sm-6">
-			<p>#:optionName#</p>
+			<p>#:processNo#</p>
 		</div>
 		<div class="col-sm-3 text-center">
-			<p>#:optionOrder#</p>
+			<p>#:processName#</p>
 		</div>
 		<div class="col-sm-2 text-center">
 			<a href="javascript:;" class="_itemServiceConfig_option_btnEdit" data-pk="#:id#"><i class="glyphicon glyphicon-pencil MB10"></i></a>
-			<a href="javascript:;" class="k-delete-button"><i class="glyphicon glyphicon-remove"></i></a>
+			<a href="javascript:;" class="_itemServiceConfig_option_btnDelete" data-pk="#:id#"><i class="glyphicon glyphicon-remove"></i></a>
 		</div>
 	</div>
 </script>
@@ -48,7 +51,7 @@
 		transport:{
 			read:function(options){
 				$.ajax({
-					url:"${api.server}/serviceconfigs/"+options.data.id+"/serviceoptions",
+					url:"${api.server}/serviceconfigs/1/processes",
 					dataType:"json",
 					type:"GET",
 					success:function(result){
@@ -61,16 +64,15 @@
 			},
 			create:function(options){
 				$.ajax({
-					url:"${api.server}/serviceconfigs/"+options.serviceConfigId+"/serviceoptions",
+					url:"${api.server}/serviceconfigs/"+options.serviceConfigId+"/processes",
 					dataType:"json",
 					type:"POST",
 					data:{
 						serviceConfigId:options.serviceConfigId,
-						optionCode:options.optionCode,
-						optionName:options.optionName,
+						seqOrder:options.seqOrder,
 						dossierTemplateId:options.dossierTemplateId,
 						serviceProcessId:options.serviceProcessId,
-						optionOrder:options.optionOrder,
+						submissionNote:options.submissionNote,
 						instructionNote:options.instructionNote,
 						autoSelect:options.autoSelect
 					},
@@ -85,16 +87,16 @@
 			},
 			update:function(options){
 				$.ajax({
-					url:"${api.server}/serviceoptions/"+options.serviceConfigId,
+					url:"${api.server}/serviceconfigs/"+options.serviceConfigId+"/processes/"+options.processNo,
 					dataType:"json",
 					type:"PUT",
 					data:{
 						serviceConfigId:options.serviceConfigId,
-						serviceConfigOptionId:options.serviceConfigOptionId,
-						optionCode:options.optionCode,
+						processNo:options.processNo,
+						seqOrder:options.seqOrder,
 						dossierTemplateId:options.dossierTemplateId,
 						serviceProcessId:options.serviceProcessId,
-						optionOrder:options.optionOrder,
+						submissionNote:options.submissionNote,
 						instructionNote:options.instructionNote,
 						autoSelect:options.autoSelect
 					},
@@ -110,17 +112,20 @@
 			},
 			destroy:function(options){
 				$.ajax({
-					url:"${api.server}/serviceoptions/"+options.data.serviceConfigOptionId,
+					url:"${api.server}/serviceconfigs/"+options.serviceConfigId+"/processes/"+options.processNo,
 					dataType:"json",
 					type:"DELETE",
 					data:{
-						serviceConfigOptionId:options.serviceConfigOptionId
+						processNo:options.processNo
 					},
 					success:function(result){
-						options.success(result);
+						var item=dataSourceServiceOption.get(options.processNo);
+						if(item!=null){
+							dataSourceServiceOption.remove(item);
+						}
 					},
 					error:function(result){
-						options.error(result);
+						
 					}
 				});
 			}
@@ -129,7 +134,7 @@
 			total:"total",
 			data:"data",
 			model:{
-				id:"serviceConfigId"
+				id:"processOptionId"
 			}
 		},
 		error: function(e) {         
@@ -147,20 +152,38 @@
 		template:kendo.template($("#serviceConfigOptionTemplate").html()),
 		selectable: true,
 		remove:function(e){
-			if(!confirm('Bạn có muốn xóa ?')){
+			if(!confirm('Bạn có muốn xóa ?')){ 
 				e.preventDefault();
 			}
-		}
+		},
+		autoBind: false
 	});	
 
 	$("#pagerServiceConfigOption").kendoPager({
-		dataSource:dataSourceServiceOption
+		dataSource:dataSourceServiceOption,
+		input: true,
+		numeric: false,
+		messages: {
+			empty: "Không có kết quả phù hợp!",
+			display: "Hiển thị {0}-{1} trong {2} bản ghi",
+			page: "",
+			of: "/ {0}"
+		}
 	});
-
+	
 	$(document).on("click", "._itemServiceConfig_option_btnEdit", function(event){
 		event.preventDefault();
 		$("#itemServiceConfigOptionId").val($(this).attr("data-pk"));
 		formControl($(this).attr("data-pk"));
+	});
+
+	$(document).on("click", "._itemServiceConfig_option_btnDelete", function(event){
+		event.preventDefault();
+		$("#itemServiceConfigOptionId").val($(this).attr("data-pk"));
+		dataSourceServiceOption.transport.destroy({
+			"serviceConfigId":$("#itemServiceConfigId").val(),
+			"processNo":$(this).attr("data-pk")
+		});
 	});
 
 	$(document).on("click", "#btnAddServiceConfigOption", function(event){
@@ -207,11 +230,12 @@
 	var updateServieConfigOption = function(dataPk){
 
 		dataSourceServiceOption.transport.update({
-			"serviceConfigId":dataPk,
-			"optionCode":$("#optionCode").val(),
+			"serviceConfigId":$("#itemServiceConfigId").val(),
+			"processNo":dataPk,
+			"seqOrder":$("#seqOrder").val(),
 			"dossierTemplateId":$("#dossierTemplateId").val(),
 			"serviceProcessId":$("#serviceProcessId").val(),
-			"optionOrder":$("#optionOrder").val(),
+			"submissionNote":$("#submissionNote").val(),
 			"instructionNote":$("#instructionNote").val(),
 			"autoSelect":$("#autoSelect").val()
 		});
@@ -220,11 +244,11 @@
 	var updateServieConfigOptionIfSuccess = function(dataPk,result){
 		dataSourceServiceOption.fetch(function(){
 			var item=dataSourceServiceOption.get(dataPk);
-			item.set("optionCode",result.optionCode);
-			item.set("optionName",result.optionName);
+			item.set("processNo",result.processNo);
+			item.set("processName",result.processName);
 			item.set("dossierTemplateId",result.dossierTemplateId);
 			item.set("serviceProcessId",result.serviceProcessId);
-			item.set("optionOrder",result.optionOrder);
+			item.set("submissionNote",result.submissionNote);
 			item.set("instructionNote",result.instructionNote);
 			item.set("autoSelect",result.autoSelect);
 		});
@@ -234,10 +258,10 @@
 		console.log("itemServiceConfigId"+ $("#itemServiceConfigId").val());
 		dataSourceServiceOption.transport.create({
 			serviceConfigId:$("#itemServiceConfigId").val(),
-			optionCode:$("#optionCode").val(),
+			seqOrder:$("#seqOrder").val(),
 			dossierTemplateId:$("#dossierTemplateId").val(),
 			serviceProcessId:$("#serviceProcessId").val(),
-			optionOrder:$("#optionOrder").val(),
+			submissionNote:$("#submissionNote").val(),
 			instructionNote:$("#instructionNote").val(),
 			autoSelect:$("#autoSelect").val()
 		});	
@@ -246,11 +270,11 @@
 	var addServiceConfigOptionIfSuccess = function(result){
 		dataSourceServiceOption.add({
 
-			optionCode:result.optionCode,
-			optionName:result.optionName,
+			processNo:result.processNo,
+			processName:result.processName,
 			dossierTemplateId:result.dossierTemplateId,
 			serviceProcessId:result.serviceProcessId,
-			optionOrder:result.optionOrder,
+			submissionNote:result.submissionNote,
 			instructionNote:result.instructionNote,
 			autoSelect:result.autoSelect
 		});	

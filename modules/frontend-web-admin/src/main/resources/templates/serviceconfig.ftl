@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="row">
 	<div class="col-sm-12">
 		<div class="row">
@@ -6,7 +9,7 @@
 					<button class="k-button btn-primary" id="btnAddServiceConfig"><i class="glyphicon glyphicon-plus"></i> Thêm dịch vụ công</button>
 				</div>
 				<div class="col-sm-3">
-					<input name="administrativeSearch" id="administrativeSearch">
+					<input name="domainSearch" id="domainSearch">
 				</div>
 				<div class="col-sm-3">
 					<input name="govAgencySearch" id="govAgencySearch">
@@ -176,7 +179,7 @@
 				},
 				update:function(options){
 					$.ajax({
-						url: "${api.server}/serviceconfigs/"+options.serviceConfigId,
+						url: "${api.server}/serviceconfigs/1",
 						dataType:"json",
 						type:"PUT",
 						data:{
@@ -276,15 +279,95 @@
 		});
 
 		$("#pager").kendoPager({
-			dataSource:dataSourceServiceConfig
+			dataSource:dataSourceServiceConfig,
+			input: true,
+			numeric: false,
+			messages: {
+				empty: "Không có kết quả phù hợp!",
+				display: "Hiển thị {0}-{1} trong {2} bản ghi",
+				page: "",
+				of: "/ {0}"
+			}
 		});
 
 		$("#govAgencySearch").kendoComboBox({
+			placeholder:"Chọn mã cơ quan",
+			dataTextField:"",
+			dataValueField:"",
+			filter: "contains",
+			dataSource:{
+				transport:{
+					read:{
+						url:"",
+						dataType:"json",
+						type:"GET",
+						success:function(result){
 
+						},
+						error:function(result){
+
+						}
+					}
+				},
+				schema:{
+					data:"data",
+					total:"total",
+					model:{
+						id:"id"
+					}
+				}
+			},
+			change:function(){
+				dataSourceServiceConfig.read({
+					"govAgencySearch":$("#govAgencySearch").val(),
+					"domainSearch":$("#domainSearch").val(),
+					"keyword":$("#keyword").val()
+				});
+			}
 		});
 
-		$("#administrativeSearch").kendoComboBox({
+		$("#domainSearch").kendoComboBox({
+			placeholder:".......",
+			dataTextField:"",
+			dataValueField:"",
+			filter: "contains",
+			dataSource:{
+				transport:{
+					read:{
+						url:"",
+						dataType:"json",
+						type:"GET",
+						success:function(result){
 
+						},
+						error:function(result){
+
+						}
+					}
+				},
+				schema:{
+					data:"data",
+					total:"total",
+					model:{
+						id:"id"
+					}
+				}
+			},
+			change:function(){
+				dataSourceServiceConfig.read({
+					"domainSearch":$("#domainSearch").val(),
+					"govAgencySearch":$("#govAgencySearch").val(),
+					"keyword":$("#keyword").val()
+				});
+			}
+		});
+
+		$("#keyword").change(function(){
+			dataSourceServiceConfig.read({
+				"domainSearch":$("#domainSearch").val(),
+				"govAgencySearch":$("#govAgencySearch").val(),
+				"keyword":$("#keyword").val()
+			});
 		});
 
 		$(function() {
@@ -350,6 +433,8 @@
 		}
 
 		var updateServieConfig = function(dataPk){
+			console.log($("#serviceInfoId").val());
+			console.log(dataPk);
 			dataSourceServiceConfig.transport.update({
 				"serviceConfigId":dataPk,
 				"serviceInfoId":$("#serviceInfoId").val(),
@@ -362,6 +447,7 @@
 		}
 
 		var updateServieConfigIfSuccess = function(dataPk,result){
+			console.log(dataPk);
 			dataSourceServiceConfig.fetch(function(){
 				if(dataPk>0){
 					var item=dataSourceServiceConfig.get(dataPk);

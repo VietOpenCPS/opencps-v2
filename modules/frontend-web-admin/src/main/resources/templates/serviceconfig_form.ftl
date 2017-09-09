@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="modal-dialog modal-lg">
 	<div class="modal-content">
 		<div class="modal-header">
@@ -75,10 +78,58 @@
 
 <script type="text/javascript">
 	$("#serviceInfoId").kendoComboBox({
-		
+		dataTextField:"serviceName",
+		dataValueField:"serviceinfoId",
+		filter: "contains",
+		dataSource:{
+			transport:{
+				read:{
+					url:"${api.server}/serviceinfos",
+					dataType:"json",
+					type:"GET",
+					success:function(result){
+
+					},
+					error:function(result){
+
+					}
+				}
+			},
+			schema:{
+				data:"data",
+				total:"total",
+				model:{
+					id:"processNo"
+				}
+			}
+		}
 	});
 	$("#govAgencyCode").kendoComboBox({
-		
+		/*dataTextField:"processName",
+		dataValueField:"processNo",
+		filter: "contains",
+		dataSource:{
+			transport:{
+				read:{
+					url:"${api.server}/serviceprocesses",
+					dataType:"json",
+					type:"GET",
+					success:function(result){
+
+					},
+					error:function(result){
+
+					}
+				}
+			},
+			schema:{
+				data:"data",
+				total:"total",
+				model:{
+					id:"processNo"
+				}
+			}
+		}
 	});
 
 	$(function() {
@@ -87,6 +138,6 @@
 			widget.input.on("focus", function() {
 				widget.open();
 			});
-		});
+		});*/
 	});
 </script>

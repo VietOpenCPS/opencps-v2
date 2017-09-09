@@ -1,0 +1,91 @@
+{
+	"api": {
+		"server": "http://localhost:8081/api"
+	},
+	"ajax": {
+
+	},
+  "serviceinfo": {
+    "administrations": [
+      {
+        "administrationCode": "1",
+        "administrationName": "Sở Công thương",
+        "administrationCount": 1
+      },
+      {
+        "administrationCode": "2",
+        "administrationName": "Cục Đăng kiểm Việt Nam",
+        "administrationCount": 2
+      },
+      {
+        "administrationCode": "3",
+        "administrationName": "Sở Giáo dục và Đào tạo",
+        "administrationCount": 3
+      },
+      {
+        "administrationCode": "4",
+        "administrationName": "Sở Giao thông vận tải",
+        "administrationCount": 4
+      },
+      {
+        "administrationCode": "5",
+        "administrationName": "Sở kế hoạch và đầu tư",
+        "administrationCount": 5
+      },
+      {
+        "administrationCode": "6",
+        "administrationName": "Sở khoa học công nghệ",
+        "administrationCount": 6
+      },
+    ],
+    "domains": [
+      {
+        "domainCode": "1",
+        "domainName": "Lĩnh vực 1",
+        "domainCount": 1
+      },
+      {
+        "domainCode": "2",
+        "domainName": "Lĩnh vực 2",
+        "domainCount": 2
+      },
+      {
+        "domainCode": "3",
+        "domainName": "Lĩnh vực 3",
+        "domainCount": 3
+      },
+      {
+        "domainCode": "4",
+        "domainName": "Lĩnh vực 4",
+        "domainCount": 4
+      },
+      {
+        "domainCode": "5",
+        "domainName": "Lĩnh vực 5",
+        "domainCount": 5
+      }
+    ],
+    "levels": [
+      {
+        "levelCode": "1",
+        "levelName": "Mức độ 1",
+        "levelCount": 1
+      },
+      {
+        "levelCode": "2",
+        "levelName": "Mức độ 2",
+        "levelCount": 2
+      },
+      {
+        "levelCode": "3",
+        "levelName": "Mức độ 3",
+        "levelCount": 3
+      },
+      {
+        "levelCode": "4",
+        "levelName": "Mức độ 4",
+        "levelCount": 4
+      }
+    ]
+  }
+}

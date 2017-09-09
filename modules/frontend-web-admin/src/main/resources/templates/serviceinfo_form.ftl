@@ -1,4 +1,6 @@
-<#include "init.ftl">
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 
 <div class="modal-dialog modal-lg">
 	<div class="modal-content">
@@ -7,7 +9,7 @@
 			<h4 class="modal-title"> Thông tin chung </h4>
 		</div>
 		<div class="modal-body">
-			<form id="serviceInfoForm">
+			<form id="serviceInfoForm" >
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="form-group">
@@ -164,7 +166,7 @@
 			$("#domainCode").kendoComboBox();
 			$("#activeStatus").kendoComboBox();
 			$(function() {
-				$("[data-role=combobox]").each(function() {
+				$("[data-role=combobox]").each(function() { 
 					var widget = $(this).getKendoComboBox();
 					widget.input.on("focus", function() {
 						widget.open();
