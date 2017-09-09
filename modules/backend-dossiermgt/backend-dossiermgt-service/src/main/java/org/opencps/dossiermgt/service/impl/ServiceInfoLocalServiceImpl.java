@@ -90,8 +90,6 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		serviceInfo.setFeeText(feeText);
 		serviceInfo.setAdministrationCode(administrationCode);
 		serviceInfo.setDomainCode(domainCode);
-		serviceInfo.setMaxLevel(maxLevel);
-		serviceInfo.setActiveStatus(activeStatus);
 		
 		
 		serviceInfoPersistence.update(serviceInfo);
@@ -139,8 +137,6 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		serviceInfo.setFeeText(feeText);
 		serviceInfo.setAdministrationCode(administrationCode);
 		serviceInfo.setDomainCode(domainCode);
-		serviceInfo.setMaxLevel(maxLevel);
-		serviceInfo.setActiveStatus(activeStatus);
 		
 		serviceInfoPersistence.update(serviceInfo);
 		

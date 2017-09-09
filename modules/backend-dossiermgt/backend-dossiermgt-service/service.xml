@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
 <!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
 
-<service-builder auto-namespace-tables="false" package-path="org.opencps.dossiermgt">
+<service-builder auto-namespace-tables="false"
+	package-path="org.opencps.dossiermgt">
 	<author>huymq</author>
 	<namespace>dossiermgt</namespace>
-	<entity name="ServiceInfo" table="opencps_serviceinfo" local-service="true" remote-service="false" uuid="true">
+	<entity name="ServiceInfo" table="opencps_serviceinfo"
+		local-service="true" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -41,13 +43,12 @@
 		<column name="domainCode" type="String" />
 		<column name="domainName" type="String" />
 		<column name="domainIndex" type="String" />
-		<column name="activeStatus" type="int" />
-		<column name="maxLevel" type="int" />
+		<column name="public_" type="boolean" />
 
 		<!-- Order -->
 
 		<!-- Finder methods -->
-		
+
 		<finder name="GroupId" return-type="Collection">
 			<finder-column name="groupId" />
 		</finder>
@@ -58,8 +59,9 @@
 		<!-- References -->
 
 	</entity>
-	
-	<entity name="ServiceFileTemplate" table="opencps_services_filetemplates" local-service="true" remote-service="false" uuid="true">
+
+	<entity name="ServiceFileTemplate" table="opencps_services_filetemplates"
+		local-service="true" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -72,18 +74,19 @@
 		<!-- Order -->
 
 		<!-- Finder methods -->
-		
+
 		<finder name="ServiceInfoId" return-type="Collection">
 			<finder-column name="serviceInfoId" />
 		</finder>
-		
+
 		<!-- References -->
-		
+
 		<reference entity="DLApp" package-path="com.liferay.portlet.documentlibrary" />
 		<reference entity="DLFileEntry" package-path="com.liferay.portlet.documentlibrary" />
 	</entity>
-	
-	<entity name="DossierTemplate" table="opencps_dossiertemplate" local-service="true" remote-service="false" uuid="true">
+
+	<entity name="DossierTemplate" table="opencps_dossiertemplate"
+		local-service="true" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -114,8 +117,9 @@
 		<!-- References -->
 
 	</entity>
-	
-	<entity name="DossierPart" table="opencps_dossierpart" local-service="true" remote-service="false" uuid="true">
+
+	<entity name="DossierPart" table="opencps_dossierpart"
+		local-service="true" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -155,8 +159,9 @@
 		<!-- References -->
 
 	</entity>
-	
-	<entity name="ServiceConfig" table="opencps_serviceconfig" local-service="true" remote-service="false" uuid="true">
+
+	<entity name="ServiceConfig" table="opencps_serviceconfig"
+		local-service="true" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -182,21 +187,20 @@
 		<column name="serviceInstruction" type="String" />
 		<column name="serviceLevel" type="int" />
 		<column name="serviceUrl" type="String" />
-		<column name="authentication" type="int" />
+		<column name="forCitizen" type="boolean" />
+		<column name="forBusiness" type="boolean" />
+		<column name="postService" type="boolean" />
+		<column name="registration" type="boolean" />
 
-		<!-- Order -->
-
-		<!-- Finder methods -->
-
-		<!-- References -->
 
 	</entity>
-	
-	<entity name="ServiceOption" table="opencps_serviceoption" local-service="true" remote-service="false" uuid="true">
+
+	<entity name="ProcessOption" table="opencps_processoption"
+		local-service="true" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
 
-		<column name="serviceOptionId" primary="true" type="long" />
+		<column name="processOptionId" primary="true" type="long" />
 
 		<!-- Group instance -->
 
@@ -212,23 +216,18 @@
 
 		<!-- Other fields -->
 
-		<column name="optionCode" type="String" />
-		<column name="optionName" type="String" />
+		<column name="serviceConfigId" type="String" />
 		<column name="optionOrder" type="int" />
 		<column name="autoSelect" type="String" />
 		<column name="dossierTemplateId" type="long" />
 		<column name="serviceProcessId" type="long" />
 		<column name="instructionNote" type="String" />
-
-		<!-- Order -->
-
-		<!-- Finder methods -->
-
-		<!-- References -->
+		<column name="submissionNote" type="String" />
 
 	</entity>
-	
-	<entity name="Dossier" table="opencps_dossier" local-service="true" remote-service="false" uuid="true">
+
+	<entity name="Dossier" table="opencps_dossier" local-service="true"
+		remote-service="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -252,8 +251,6 @@
 		<column name="counter" type="int" />
 		<column name="serviceCode" type="String" />
 		<column name="serviceName" type="String" />
-		<column name="optionCode" type="String" />
-		<column name="optionName" type="String" />
 		<column name="govAgencyCode" type="String" />
 		<column name="govAgencyName" type="String" />
 		<column name="applicantName" type="String" />
@@ -271,7 +268,11 @@
 		<column name="contactTelNo" type="String" />
 		<column name="contactEmail" type="String" />
 		<column name="dossierTemplateNo" type="String" />
+		<column name="dossierTemplateName" type="String" />
 		<column name="dossierNote" type="String" />
+		<column name="submissionNote" type="String" />
+		<column name="applicantNote" type="String" />
+		<column name="briefNote" type="String" />
 		<column name="dossierNo" type="String" />
 		<column name="submitting" type="boolean" />
 		<column name="submitDate" type="Date" />
@@ -285,9 +286,12 @@
 		<column name="dossierStatusText" type="String" />
 		<column name="dossierSubStatus" type="String" />
 		<column name="dossierSubStatusText" type="String" />
-		<column name="paymentRedirectURL" type="String" />
-		<column name="overDue" type="String" />
 		<column name="folderId" type="long" />
+		<column name="dossierActionId" type="long" />
+		<column name="viaPost" type="int" />
+		<column name="postAddress" type="String" />
+		<column name="password" type="String" />
+		<column name="notification" type="boolean" />
 
 		<!-- Order -->
 
@@ -296,8 +300,9 @@
 		<!-- References -->
 
 	</entity>
-	
-	<entity name="DossierFile" table="opencps_dossierfile" local-service="true" remote-service="false" uuid="true">
+
+	<entity name="DossierFile" table="opencps_dossierfile"
+		local-service="true" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -321,19 +326,20 @@
 		<column name="referenceUid" type="String" />
 		<column name="dossierTemplateNo" type="String" />
 		<column name="dossierPartNo" type="String" />
+		<column name="dossierPartType" type="String" />
 		<column name="fileTemplateNo" type="String" />
 		<column name="displayName" type="String" />
 		<column name="formData" type="String" />
 		<column name="fileEntryId" type="long" />
-		<column name="dossierFileNo" type="Date" />
-		<column name="dossierFileDate" type="String" />
 		<column name="original" type="boolean" />
+		<column name="eForm" type="boolean" />
 		<column name="isNew" type="boolean" />
-		<column name="signed" type="boolean" />
+		<column name="removed" type="boolean" />
 		<column name="signCheck" type="int" />
 		<column name="signInfo" type="String" />
 		<column name="formScript" type="String" />
 		<column name="formReport" type="String" />
+
 
 		<!-- Order -->
 
@@ -342,8 +348,9 @@
 		<!-- References -->
 
 	</entity>
-	
-	<entity name="DossierLog" table="opencps_dossierlog" local-service="true" remote-service="false" uuid="true">
+
+	<entity name="DossierLog" table="opencps_dossierlog"
+		local-service="true" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -367,8 +374,7 @@
 		<column name="author" type="String" />
 		<column name="content" type="String" />
 		<column name="notificationType" type="int" />
-		<column name="toUserIds" type="String" />
-		<column name="deliveredDate" type="Date" />
+		<column name="payload" type="String" />
 
 		<!-- Order -->
 
@@ -377,8 +383,9 @@
 		<!-- References -->
 
 	</entity>
-	
-	<entity name="PaymentFile" table="opencps_paymentfile" local-service="true" remote-service="false" uuid="true">
+
+	<entity name="PaymentFile" table="opencps_paymentfile"
+		local-service="true" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -404,17 +411,14 @@
 		<column name="govAgencyName" type="String" />
 		<column name="isNew" type="boolean" />
 		<column name="paymentFee" type="String" />
-		<column name="paymentAmount" type="double" />
+		<column name="paymentAmount" type="long" />
 		<column name="paymentNote" type="String" />
-		<column name="paymentOptions" type="String" />
-		<column name="keypayUrl" type="Date" />
-		<column name="keypayTransactionId" type="long" />
-		<column name="keypayGoodCode" type="Date" />
-		<column name="keypayMerchantCode" type="Date" />
-		<column name="bankInfo" type="Date" />
+		<column name="epaymentProfile" type="String" />
+		<column name="bankInfo" type="String" />
 		<column name="paymentStatus" type="int" />
-		<column name="paymentMethod" type="int" />
+		<column name="paymentMethod" type="String" />
 		<column name="confirmDatetime" type="Date" />
+		<column name="confirmPayload" type="String" />
 		<column name="confirmFileEntryId" type="long" />
 		<column name="confirmNote" type="String" />
 		<column name="approveDatetime" type="Date" />
@@ -424,8 +428,6 @@
 		<column name="invoiceIssueNo" type="String" />
 		<column name="invoiceNo" type="String" />
 		<column name="invoiceFileEntryId" type="long" />
-		<column name="paymentGateStatusCode" type="int" />
-		<column name="paymentGateCheckCode" type="int" />
 
 		<!-- Order -->
 
@@ -434,8 +436,9 @@
 		<!-- References -->
 
 	</entity>
-	
-	<entity name="PaymentConfig" table="opencps_paymentconfig" local-service="true" remote-service="false" uuid="true">
+
+	<entity name="PaymentConfig" table="opencps_paymentconfig"
+		local-service="true" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -455,24 +458,15 @@
 
 		<!-- Other fields -->
 
-		<column name="dossierId" type="long" />
-		<column name="referenceUid" type="String" />
 		<column name="govAgencyCode" type="String" />
 		<column name="govAgencyName" type="String" />
 		<column name="govAgencyTaxNo" type="String" />
 		<column name="invoiceTemplateNo" type="String" />
 		<column name="invoiceIssueNo" type="String" />
 		<column name="invoiceLastNo" type="String" />
+		<column name="invoiceForm" type="String" />
 		<column name="bankInfo" type="String" />
-		<column name="placeInfo" type="String" />
-		<column name="paymentDomain" type="String" />
-		<column name="paymentVersion" type="String" />
-		<column name="paymentMerchantCode" type="String" />
-		<column name="paymentSecureKey" type="String" />
-		<column name="reportTemplate" type="String" />
-		<column name="paymentGateType" type="long" />
-		<column name="returnUrl" type="String" />
-		<column name="paymentConfigNo" type="String" />
+		<column name="epaymentConfig" type="String" />
 
 		<!-- Order -->
 
@@ -481,11 +475,11 @@
 		<!-- References -->
 
 	</entity>
-	
-	<entity local-service="true" name="ServiceProcess" remote-service="false"
-		table="opencps_serviceprocess" uuid="true">
 
-		<column name="serviceProcessId" type="long" primary="true"/>
+	<entity local-service="true" name="ServiceProcess"
+		remote-service="false" table="opencps_serviceprocess" uuid="true">
+
+		<column name="serviceProcessId" type="long" primary="true" />
 		<!-- Audit fields -->
 		<column name="companyId" type="long" />
 		<column name="groupId" type="long" />
@@ -495,6 +489,7 @@
 		<column name="modifiedDate" type="Date" />
 
 		<column name="processNo" type="String" />
+		<column name="processName" type="String" />
 		<column name="description" type="String" />
 		<column name="durationCount" type="int" />
 		<column name="durationUnit" type="int" />
@@ -503,17 +498,36 @@
 		<column name="dossierNoPattern" type="String" />
 		<column name="generateDueDate" type="String" />
 		<column name="dueDatePattern" type="String" />
-		
+		<column name="generatePassword" type="boolean" />
+		<column name="directNotification" type="boolean" />
+
 		<finder return-type="Collection" name="G_ID">
-			<finder-column name="groupId"/>
+			<finder-column name="groupId" />
 		</finder>
-		
+
+	</entity>
+
+
+
+	<entity local-service="true" name="ServiceProcessRole"
+		remote-service="false" table="opencps_serviceprocessrole" uuid="true">
+
+		<column name="serviceProcessId" type="long" primary="true" />
+		<column name="roleId" type="long" primary="true" />
+
+		<column name="moderator" type="int" />
+		<column name="condition" type="String" />
+
+		<finder return-type="Collection" name="P_S_ID">
+			<finder-column name="serviceProcessId" />
+		</finder>
+
 	</entity>
 
 	<entity local-service="true" name="ProcessStep" remote-service="false"
 		table="opencps_processstep" uuid="true">
 
-		<column name="processStepId" type="long" primary="true"/>
+		<column name="processStepId" type="long" primary="true" />
 		<!-- Audit fields -->
 		<column name="companyId" type="long" />
 		<column name="groupId" type="long" />
@@ -530,39 +544,33 @@
 		<column name="dossierSubStatus" type="String" />
 		<column name="durationCount" type="int" />
 		<column name="customProcessUrl" type="String" />
-		
+		<column name="stepInstruction" type="String" />
+		<column name="editable" type="boolean" />
+
 		<finder return-type="Collection" name="S_P_ID">
-			<finder-column name="serviceProcessId"/>
+			<finder-column name="serviceProcessId" />
 		</finder>
-		
+
 	</entity>
 
-	<entity local-service="true" name="StepAllowance" remote-service="false"
-		table="opencps_stepallowance" uuid="true">
+	<entity local-service="true" name="ProcessStepRole"
+		remote-service="false" table="opencps_processsteprole" uuid="true">
 
-		<column name="processStepId" type="long" primary="true"/>
-		<column name="roleId" type="long"  primary="true"/>
-		
-		<!-- Audit fields -->
-		<column name="companyId" type="long" />
-		<column name="groupId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
+		<column name="processStepId" type="long" primary="true" />
+		<column name="roleId" type="long" primary="true" />
 
 		<column name="moderator" type="int" />
-		
+		<column name="condition" type="String" />
+
 		<finder return-type="Collection" name="P_S_ID">
-			<finder-column name="processStepId"/>
+			<finder-column name="processStepId" />
 		</finder>
-		
+
 	</entity>
+	<entity local-service="true" name="ProcessAction"
+		remote-service="false" table="opencps_processaction" uuid="true">
 
-	<entity local-service="true" name="ProcessAction" remote-service="false"
-		table="opencps_processaction" uuid="true">
-
-		<column name="processActionId" type="long" primary="true"/>
+		<column name="processActionId" type="long" primary="true" />
 		<!-- Audit fields -->
 		<column name="companyId" type="long" />
 		<column name="groupId" type="long" />
@@ -572,8 +580,8 @@
 		<column name="modifiedDate" type="Date" />
 
 		<column name="serviceProcessId" type="long" />
-		<column name="preProcessStepId" type="long" />
-		<column name="postProcessStepId" type="long" />
+		<column name="preStepCode" type="long" />
+		<column name="postStepCode" type="long" />
 		<column name="autoEvent" type="String" />
 		<column name="preCondition" type="String" />
 		<column name="actionCode" type="String" />
@@ -584,27 +592,16 @@
 		<column name="paymentFee" type="String" />
 		<column name="createDossierFiles" type="String" />
 		<column name="returnDossierFiles" type="String" />
+		<column name="makeBriefNote" type="String" />
 		<column name="syncActionCode" type="String" />
-		<column name="rollback" type="String" />
-		
-		<finder return-type="Collection" name="S_P_ID">
-			<finder-column name="serviceProcessId"/>
-		</finder>
-		
-		<finder return-type="Collection" name="PR_P_S_ID">
-			<finder-column name="preProcessStepId"/>
-		</finder>
-		
-		<finder return-type="Collection" name="PO_P_S_ID">
-			<finder-column name="postProcessStepId"/>
-		</finder>
-		
+		<column name="rollbackable" type="String" />
+
 	</entity>
 
-	<entity local-service="true" name="DossierAction" remote-service="false"
-		table="opencps_dossieraction" uuid="true">
+	<entity local-service="true" name="DossierAction"
+		remote-service="false" table="opencps_dossieraction" uuid="true">
 
-		<column name="dossierActionId" type="long" primary="true"/>
+		<column name="dossierActionId" type="long" primary="true" />
 		<!-- Audit fields -->
 		<column name="companyId" type="long" />
 		<column name="groupId" type="long" />
@@ -620,31 +617,29 @@
 		<column name="actionUser" type="String" />
 		<column name="actionName" type="String" />
 		<column name="actionNote" type="String" />
-		<column name="overDue" type="int" />
+		<column name="actionOverdue" type="int" />
 		<column name="syncActionCode" type="String" />
 		<column name="pending" type="String" />
-		<column name="rollback" type="String" />
-		<column name="processStepId" type="long" />
-		<column name="dueDate" type="int" />
+		<column name="rollbackable" type="String" />
+		<column name="stepCode" type="String" />
+		<column name="stepName" type="String" />
+		<column name="dueDate" type="Date" />
 		<column name="nextActionId" type="long" />
-		
-		<finder return-type="Collection" name="G_ID">
-			<finder-column name="groupId"/>
-		</finder>
+		<column name="payload" type="String" />
+		<column name="stepInstruction" type="String" />
+
 	</entity>
 
-	<entity local-service="true" name="DossierActionUser" remote-service="false"
-		table="opencps_dossieractionuser" uuid="true">
-		<column name="dossierActionId" type="long" primary="true"/>
-		<column name="userId" type="long" primary="true"/>
+	<entity local-service="true" name="DossierActionUser"
+		remote-service="false" table="opencps_dossieractionuser" uuid="true">
+		
+		<column name="dossierActionId" type="long" primary="true" />
+		<column name="userId" type="long" primary="true" />
 		<column name="moderator" type="int" />
-		
-		<finder return-type="Collection" name="D_A_ID">
-			<finder-column name="dossierActionId"/>
-		</finder>
-		
+		<column name="assigned" type="boolean" />
+		<column name="visited" type="boolean" />
 	</entity>
-	
+
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>RequiredServiceName</exception>

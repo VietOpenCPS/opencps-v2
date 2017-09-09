@@ -37,8 +37,6 @@ public class ServiceInfoUtils {
 				serviceInfoResultModel.setAdministrationName(serviceInfo.getAdministrationName());
 				serviceInfoResultModel.setDomainCode(serviceInfo.getDomainCode());
 				serviceInfoResultModel.setDomainName(serviceInfo.getDomainName());
-				serviceInfoResultModel.setMaxLevel(serviceInfo.getMaxLevel());
-				serviceInfoResultModel.setActiveStatus(serviceInfo.getActiveStatus());
 				
 				serviceInfoResultsModel.add(serviceInfoResultModel);
 			}
@@ -67,7 +65,6 @@ public class ServiceInfoUtils {
 			serviceInfoModel.setFeeText(serviceInfo.getFeeText());
 			serviceInfoModel.setAdministrationCode(serviceInfo.getAdministrationCode());
 			serviceInfoModel.setDomainCode(serviceInfo.getDomainCode());
-			serviceInfoModel.setMaxLevel(serviceInfo.getMaxLevel());
 		}
 
 		return serviceInfoModel;

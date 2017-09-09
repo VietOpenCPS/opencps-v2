@@ -16,28 +16,28 @@ package org.opencps.dossiermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import org.opencps.dossiermgt.service.base.ServiceOptionLocalServiceBaseImpl;
+import org.opencps.dossiermgt.service.base.ServiceProcessRoleLocalServiceBaseImpl;
 
 /**
- * The implementation of the service option local service.
+ * The implementation of the service process role local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.ServiceOptionLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.ServiceProcessRoleLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
  * </p>
  *
  * @author huymq
- * @see ServiceOptionLocalServiceBaseImpl
- * @see org.opencps.dossiermgt.service.ServiceOptionLocalServiceUtil
+ * @see ServiceProcessRoleLocalServiceBaseImpl
+ * @see org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil
  */
 @ProviderType
-public class ServiceOptionLocalServiceImpl
-	extends ServiceOptionLocalServiceBaseImpl {
+public class ServiceProcessRoleLocalServiceImpl
+	extends ServiceProcessRoleLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.ServiceOptionLocalServiceUtil} to access the service option local service.
+	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil} to access the service process role local service.
 	 */
 }
