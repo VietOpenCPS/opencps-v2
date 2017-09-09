@@ -12,17 +12,17 @@
  * details.
  */
 
-package org.opencps.backend.dossiermgt.service.impl;
+package org.opencps.dossiermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import org.opencps.backend.dossiermgt.service.base.PaymentConfigLocalServiceBaseImpl;
+import org.opencps.dossiermgt.service.base.PaymentConfigLocalServiceBaseImpl;
 
 /**
  * The implementation of the payment config local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.backend.dossiermgt.service.PaymentConfigLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.PaymentConfigLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
@@ -30,7 +30,7 @@ import org.opencps.backend.dossiermgt.service.base.PaymentConfigLocalServiceBase
  *
  * @author huymq
  * @see PaymentConfigLocalServiceBaseImpl
- * @see org.opencps.backend.dossiermgt.service.PaymentConfigLocalServiceUtil
+ * @see org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil
  */
 @ProviderType
 public class PaymentConfigLocalServiceImpl
@@ -38,6 +38,6 @@ public class PaymentConfigLocalServiceImpl
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.backend.dossiermgt.service.PaymentConfigLocalServiceUtil} to access the payment config local service.
+	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil} to access the payment config local service.
 	 */
 }

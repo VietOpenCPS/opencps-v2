@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.opencps.api.serviceinfo.model.ServiceInfoModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoResultModel;
-import org.opencps.backend.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceInfo;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;

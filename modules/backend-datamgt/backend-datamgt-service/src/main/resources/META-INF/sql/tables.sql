@@ -1,4 +1,4 @@
-create table m_comment (
+create table opencps_comment (
 	uuid_ VARCHAR(75) null,
 	commentId LONG not null primary key,
 	companyId LONG,
@@ -19,7 +19,7 @@ create table m_comment (
 	createdByCurrentUser LONG
 );
 
-create table m_dictcollection (
+create table opencps_dictcollection (
 	uuid_ VARCHAR(75) null,
 	dictCollectionId LONG not null primary key,
 	companyId LONG,
@@ -35,7 +35,7 @@ create table m_dictcollection (
 	dataForm VARCHAR(75) null
 );
 
-create table m_dictgroup (
+create table opencps_dictgroup (
 	uuid_ VARCHAR(75) null,
 	dictGroupId LONG not null primary key,
 	companyId LONG,
@@ -51,7 +51,7 @@ create table m_dictgroup (
 	groupDescription VARCHAR(75) null
 );
 
-create table m_dictitem (
+create table opencps_dictitem (
 	uuid_ VARCHAR(75) null,
 	dictItemId LONG not null primary key,
 	companyId LONG,
@@ -72,7 +72,7 @@ create table m_dictitem (
 	dataForm VARCHAR(75) null
 );
 
-create table m_dictitemgroup (
+create table opencps_dictitemgroup (
 	uuid_ VARCHAR(75) null,
 	dictItemGroupId LONG not null primary key,
 	companyId LONG,
@@ -85,7 +85,7 @@ create table m_dictitemgroup (
 	dictItemId LONG
 );
 
-create table m_label (
+create table opencps_label (
 	uuid_ VARCHAR(75) null,
 	labelId LONG not null primary key,
 	companyId LONG,
@@ -99,7 +99,7 @@ create table m_label (
 	scope INTEGER
 );
 
-create table m_location (
+create table opencps_location (
 	uuid_ VARCHAR(75) null,
 	locationId LONG not null primary key,
 	companyId LONG,
@@ -112,7 +112,7 @@ create table m_location (
 	geolocation VARCHAR(75) null
 );
 
-create table m_voting (
+create table opencps_voting (
 	uuid_ VARCHAR(75) null,
 	votingId LONG not null primary key,
 	companyId LONG,
@@ -128,7 +128,7 @@ create table m_voting (
 	dueDate DATE null
 );
 
-create table m_votingresult (
+create table opencps_votingresult (
 	uuid_ VARCHAR(75) null,
 	votingResultId LONG not null primary key,
 	companyId LONG,
@@ -145,7 +145,7 @@ create table m_votingresult (
 	selected VARCHAR(75) null
 );
 
-create table m_workspace (
+create table opencps_workspace (
 	uuid_ VARCHAR(75) null,
 	workspaceId LONG not null primary key,
 	companyId LONG,
@@ -158,7 +158,7 @@ create table m_workspace (
 	seqOrder INTEGER
 );
 
-create table m_workspacerole (
+create table opencps_workspacerole (
 	uuid_ VARCHAR(75) null,
 	workspaceRoleId LONG not null primary key,
 	companyId LONG,
@@ -171,7 +171,7 @@ create table m_workspacerole (
 	roleId LONG
 );
 
-create table m_workspaceuser (
+create table opencps_workspaceuser (
 	uuid_ VARCHAR(75) null,
 	workspaceUserId LONG not null primary key,
 	companyId LONG,

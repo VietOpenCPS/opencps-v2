@@ -35,6 +35,8 @@
 		<property name="contactTelNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="contactEmail" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="mappingUserId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="activationCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="lock_" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="profile" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.EmployeeImpl" table="opencps_employee">

@@ -1,28 +1,28 @@
 <?xml version="1.0"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-	<bean class="org.mobilink.backend.datamgt.service.impl.CommentLocalServiceImpl" id="org.mobilink.backend.datamgt.service.CommentLocalService" />
-	<bean class="org.mobilink.backend.datamgt.service.persistence.impl.CommentPersistenceImpl" id="org.mobilink.backend.datamgt.service.persistence.CommentPersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.datamgt.service.impl.DictCollectionLocalServiceImpl" id="org.mobilink.backend.datamgt.service.DictCollectionLocalService" />
-	<bean class="org.mobilink.backend.datamgt.service.persistence.impl.DictCollectionPersistenceImpl" id="org.mobilink.backend.datamgt.service.persistence.DictCollectionPersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.datamgt.service.impl.DictGroupLocalServiceImpl" id="org.mobilink.backend.datamgt.service.DictGroupLocalService" />
-	<bean class="org.mobilink.backend.datamgt.service.persistence.impl.DictGroupPersistenceImpl" id="org.mobilink.backend.datamgt.service.persistence.DictGroupPersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.datamgt.service.impl.DictItemLocalServiceImpl" id="org.mobilink.backend.datamgt.service.DictItemLocalService" />
-	<bean class="org.mobilink.backend.datamgt.service.persistence.impl.DictItemPersistenceImpl" id="org.mobilink.backend.datamgt.service.persistence.DictItemPersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.datamgt.service.impl.DictItemGroupLocalServiceImpl" id="org.mobilink.backend.datamgt.service.DictItemGroupLocalService" />
-	<bean class="org.mobilink.backend.datamgt.service.persistence.impl.DictItemGroupPersistenceImpl" id="org.mobilink.backend.datamgt.service.persistence.DictItemGroupPersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.datamgt.service.impl.LabelLocalServiceImpl" id="org.mobilink.backend.datamgt.service.LabelLocalService" />
-	<bean class="org.mobilink.backend.datamgt.service.persistence.impl.LabelPersistenceImpl" id="org.mobilink.backend.datamgt.service.persistence.LabelPersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.datamgt.service.impl.LocationLocalServiceImpl" id="org.mobilink.backend.datamgt.service.LocationLocalService" />
-	<bean class="org.mobilink.backend.datamgt.service.persistence.impl.LocationPersistenceImpl" id="org.mobilink.backend.datamgt.service.persistence.LocationPersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.datamgt.service.impl.VotingLocalServiceImpl" id="org.mobilink.backend.datamgt.service.VotingLocalService" />
-	<bean class="org.mobilink.backend.datamgt.service.persistence.impl.VotingPersistenceImpl" id="org.mobilink.backend.datamgt.service.persistence.VotingPersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.datamgt.service.impl.VotingResultLocalServiceImpl" id="org.mobilink.backend.datamgt.service.VotingResultLocalService" />
-	<bean class="org.mobilink.backend.datamgt.service.persistence.impl.VotingResultPersistenceImpl" id="org.mobilink.backend.datamgt.service.persistence.VotingResultPersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.datamgt.service.impl.WorkspaceLocalServiceImpl" id="org.mobilink.backend.datamgt.service.WorkspaceLocalService" />
-	<bean class="org.mobilink.backend.datamgt.service.persistence.impl.WorkspacePersistenceImpl" id="org.mobilink.backend.datamgt.service.persistence.WorkspacePersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.datamgt.service.impl.WorkspaceRoleLocalServiceImpl" id="org.mobilink.backend.datamgt.service.WorkspaceRoleLocalService" />
-	<bean class="org.mobilink.backend.datamgt.service.persistence.impl.WorkspaceRolePersistenceImpl" id="org.mobilink.backend.datamgt.service.persistence.WorkspaceRolePersistence" parent="basePersistence" />
-	<bean class="org.mobilink.backend.datamgt.service.impl.WorkspaceUserLocalServiceImpl" id="org.mobilink.backend.datamgt.service.WorkspaceUserLocalService" />
-	<bean class="org.mobilink.backend.datamgt.service.persistence.impl.WorkspaceUserPersistenceImpl" id="org.mobilink.backend.datamgt.service.persistence.WorkspaceUserPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.CommentLocalServiceImpl" id="org.opencps.datamgt.service.CommentLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.CommentPersistenceImpl" id="org.opencps.datamgt.service.persistence.CommentPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.DictCollectionLocalServiceImpl" id="org.opencps.datamgt.service.DictCollectionLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.DictCollectionPersistenceImpl" id="org.opencps.datamgt.service.persistence.DictCollectionPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.DictGroupLocalServiceImpl" id="org.opencps.datamgt.service.DictGroupLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.DictGroupPersistenceImpl" id="org.opencps.datamgt.service.persistence.DictGroupPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.DictItemLocalServiceImpl" id="org.opencps.datamgt.service.DictItemLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.DictItemPersistenceImpl" id="org.opencps.datamgt.service.persistence.DictItemPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.DictItemGroupLocalServiceImpl" id="org.opencps.datamgt.service.DictItemGroupLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.DictItemGroupPersistenceImpl" id="org.opencps.datamgt.service.persistence.DictItemGroupPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.LabelLocalServiceImpl" id="org.opencps.datamgt.service.LabelLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.LabelPersistenceImpl" id="org.opencps.datamgt.service.persistence.LabelPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.LocationLocalServiceImpl" id="org.opencps.datamgt.service.LocationLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.LocationPersistenceImpl" id="org.opencps.datamgt.service.persistence.LocationPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.VotingLocalServiceImpl" id="org.opencps.datamgt.service.VotingLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.VotingPersistenceImpl" id="org.opencps.datamgt.service.persistence.VotingPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.VotingResultLocalServiceImpl" id="org.opencps.datamgt.service.VotingResultLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.VotingResultPersistenceImpl" id="org.opencps.datamgt.service.persistence.VotingResultPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.WorkspaceLocalServiceImpl" id="org.opencps.datamgt.service.WorkspaceLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.WorkspacePersistenceImpl" id="org.opencps.datamgt.service.persistence.WorkspacePersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.WorkspaceRoleLocalServiceImpl" id="org.opencps.datamgt.service.WorkspaceRoleLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.WorkspaceRolePersistenceImpl" id="org.opencps.datamgt.service.persistence.WorkspaceRolePersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.WorkspaceUserLocalServiceImpl" id="org.opencps.datamgt.service.WorkspaceUserLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.WorkspaceUserPersistenceImpl" id="org.opencps.datamgt.service.persistence.WorkspaceUserPersistence" parent="basePersistence" />
 </beans>

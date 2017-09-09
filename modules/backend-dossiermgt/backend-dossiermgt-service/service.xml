@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
 
-<service-builder auto-namespace-tables="false" package-path="org.opencps.backend.dossiermgt">
+<service-builder auto-namespace-tables="false" package-path="org.opencps.dossiermgt">
 	<author>huymq</author>
 	<namespace>dossiermgt</namespace>
 	<entity name="ServiceInfo" table="opencps_serviceinfo" local-service="true" remote-service="false" uuid="true">

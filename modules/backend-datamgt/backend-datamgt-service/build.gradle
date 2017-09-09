@@ -12,4 +12,4 @@ buildService {
 	apiDir = "../backend-datamgt-api/src/main/java"
 }
 
-group = "backend.datamgt"
+group = "org.opencps"

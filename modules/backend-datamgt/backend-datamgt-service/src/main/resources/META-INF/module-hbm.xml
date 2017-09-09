@@ -2,19 +2,19 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping auto-import="false" default-lazy="false">
-	<import class="org.mobilink.backend.datamgt.model.Comment" />
-	<import class="org.mobilink.backend.datamgt.model.DictCollection" />
-	<import class="org.mobilink.backend.datamgt.model.DictGroup" />
-	<import class="org.mobilink.backend.datamgt.model.DictItem" />
-	<import class="org.mobilink.backend.datamgt.model.DictItemGroup" />
-	<import class="org.mobilink.backend.datamgt.model.Label" />
-	<import class="org.mobilink.backend.datamgt.model.Location" />
-	<import class="org.mobilink.backend.datamgt.model.Voting" />
-	<import class="org.mobilink.backend.datamgt.model.VotingResult" />
-	<import class="org.mobilink.backend.datamgt.model.Workspace" />
-	<import class="org.mobilink.backend.datamgt.model.WorkspaceRole" />
-	<import class="org.mobilink.backend.datamgt.model.WorkspaceUser" />
-	<class name="org.mobilink.backend.datamgt.model.impl.CommentImpl" table="m_comment">
+	<import class="org.opencps.datamgt.model.Comment" />
+	<import class="org.opencps.datamgt.model.DictCollection" />
+	<import class="org.opencps.datamgt.model.DictGroup" />
+	<import class="org.opencps.datamgt.model.DictItem" />
+	<import class="org.opencps.datamgt.model.DictItemGroup" />
+	<import class="org.opencps.datamgt.model.Label" />
+	<import class="org.opencps.datamgt.model.Location" />
+	<import class="org.opencps.datamgt.model.Voting" />
+	<import class="org.opencps.datamgt.model.VotingResult" />
+	<import class="org.opencps.datamgt.model.Workspace" />
+	<import class="org.opencps.datamgt.model.WorkspaceRole" />
+	<import class="org.opencps.datamgt.model.WorkspaceUser" />
+	<class name="org.opencps.datamgt.model.impl.CommentImpl" table="opencps_comment">
 		<id name="commentId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -36,7 +36,7 @@
 		<property name="userHasUpvoted" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createdByCurrentUser" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
-	<class name="org.mobilink.backend.datamgt.model.impl.DictCollectionImpl" table="m_dictcollection">
+	<class name="org.opencps.datamgt.model.impl.DictCollectionImpl" table="opencps_dictcollection">
 		<id name="dictCollectionId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -53,7 +53,7 @@
 		<property name="description" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="dataForm" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.mobilink.backend.datamgt.model.impl.DictGroupImpl" table="m_dictgroup">
+	<class name="org.opencps.datamgt.model.impl.DictGroupImpl" table="opencps_dictgroup">
 		<id name="dictGroupId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -70,7 +70,7 @@
 		<property name="groupNameEN" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="groupDescription" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.mobilink.backend.datamgt.model.impl.DictItemImpl" table="m_dictitem">
+	<class name="org.opencps.datamgt.model.impl.DictItemImpl" table="opencps_dictitem">
 		<id name="dictItemId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -92,7 +92,7 @@
 		<property name="treeIndex" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="dataForm" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.mobilink.backend.datamgt.model.impl.DictItemGroupImpl" table="m_dictitemgroup">
+	<class name="org.opencps.datamgt.model.impl.DictItemGroupImpl" table="opencps_dictitemgroup">
 		<id name="dictItemGroupId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -106,7 +106,7 @@
 		<property name="dictGroupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="dictItemId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
-	<class name="org.mobilink.backend.datamgt.model.impl.LabelImpl" table="m_label">
+	<class name="org.opencps.datamgt.model.impl.LabelImpl" table="opencps_label">
 		<id name="labelId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -121,7 +121,7 @@
 		<property name="color" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="scope" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
-	<class name="org.mobilink.backend.datamgt.model.impl.LocationImpl" table="m_location">
+	<class name="org.opencps.datamgt.model.impl.LocationImpl" table="opencps_location">
 		<id name="locationId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -135,7 +135,7 @@
 		<property name="location" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="geolocation" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.mobilink.backend.datamgt.model.impl.VotingImpl" table="m_voting">
+	<class name="org.opencps.datamgt.model.impl.VotingImpl" table="opencps_voting">
 		<id name="votingId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -152,7 +152,7 @@
 		<property name="answers" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="dueDate" type="org.hibernate.type.TimestampType" />
 	</class>
-	<class name="org.mobilink.backend.datamgt.model.impl.VotingResultImpl" table="m_votingresult">
+	<class name="org.opencps.datamgt.model.impl.VotingResultImpl" table="opencps_votingresult">
 		<id name="votingResultId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -170,7 +170,7 @@
 		<property column="comment_" name="comment" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="selected" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.mobilink.backend.datamgt.model.impl.WorkspaceImpl" table="m_workspace">
+	<class name="org.opencps.datamgt.model.impl.WorkspaceImpl" table="opencps_workspace">
 		<id name="workspaceId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -184,7 +184,7 @@
 		<property name="name" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="seqOrder" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
-	<class name="org.mobilink.backend.datamgt.model.impl.WorkspaceRoleImpl" table="m_workspacerole">
+	<class name="org.opencps.datamgt.model.impl.WorkspaceRoleImpl" table="opencps_workspacerole">
 		<id name="workspaceRoleId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -198,7 +198,7 @@
 		<property name="workspaceId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="roleId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
-	<class name="org.mobilink.backend.datamgt.model.impl.WorkspaceUserImpl" table="m_workspaceuser">
+	<class name="org.opencps.datamgt.model.impl.WorkspaceUserImpl" table="opencps_workspaceuser">
 		<id name="workspaceUserId" type="long">
 			<generator class="assigned" />
 		</id>

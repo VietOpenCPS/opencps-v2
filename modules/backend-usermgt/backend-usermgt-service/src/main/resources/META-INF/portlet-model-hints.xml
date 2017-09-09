@@ -25,6 +25,8 @@
 		<field name="contactTelNo" type="String" />
 		<field name="contactEmail" type="String" />
 		<field name="mappingUserId" type="long" />
+		<field name="activationCode" type="String" />
+		<field name="lock_" type="boolean" />
 		<field name="profile" type="String" />
 	</model>
 	<model name="org.opencps.usermgt.model.Employee">

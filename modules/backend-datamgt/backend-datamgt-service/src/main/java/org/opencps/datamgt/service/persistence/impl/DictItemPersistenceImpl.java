@@ -64,7 +64,7 @@ import java.util.Set;
  * Caching information and settings can be found in <code>portal.properties</code>
  * </p>
  *
- * @author Binhth
+ * @author khoavu
  * @see DictItemPersistence
  * @see org.opencps.datamgt.service.persistence.DictItemUtil
  * @generated

@@ -2,24 +2,24 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping auto-import="false" default-lazy="false">
-	<import class="org.opencps.backend.dossiermgt.model.Dossier" />
-	<import class="org.opencps.backend.dossiermgt.model.DossierAction" />
-	<import class="org.opencps.backend.dossiermgt.model.DossierActionUser" />
-	<import class="org.opencps.backend.dossiermgt.model.DossierFile" />
-	<import class="org.opencps.backend.dossiermgt.model.DossierLog" />
-	<import class="org.opencps.backend.dossiermgt.model.DossierPart" />
-	<import class="org.opencps.backend.dossiermgt.model.DossierTemplate" />
-	<import class="org.opencps.backend.dossiermgt.model.PaymentConfig" />
-	<import class="org.opencps.backend.dossiermgt.model.PaymentFile" />
-	<import class="org.opencps.backend.dossiermgt.model.ProcessAction" />
-	<import class="org.opencps.backend.dossiermgt.model.ProcessStep" />
-	<import class="org.opencps.backend.dossiermgt.model.ServiceConfig" />
-	<import class="org.opencps.backend.dossiermgt.model.ServiceFileTemplate" />
-	<import class="org.opencps.backend.dossiermgt.model.ServiceInfo" />
-	<import class="org.opencps.backend.dossiermgt.model.ServiceOption" />
-	<import class="org.opencps.backend.dossiermgt.model.ServiceProcess" />
-	<import class="org.opencps.backend.dossiermgt.model.StepAllowance" />
-	<class name="org.opencps.backend.dossiermgt.model.impl.DossierImpl" table="opencps_dossier">
+	<import class="org.opencps.dossiermgt.model.Dossier" />
+	<import class="org.opencps.dossiermgt.model.DossierAction" />
+	<import class="org.opencps.dossiermgt.model.DossierActionUser" />
+	<import class="org.opencps.dossiermgt.model.DossierFile" />
+	<import class="org.opencps.dossiermgt.model.DossierLog" />
+	<import class="org.opencps.dossiermgt.model.DossierPart" />
+	<import class="org.opencps.dossiermgt.model.DossierTemplate" />
+	<import class="org.opencps.dossiermgt.model.PaymentConfig" />
+	<import class="org.opencps.dossiermgt.model.PaymentFile" />
+	<import class="org.opencps.dossiermgt.model.ProcessAction" />
+	<import class="org.opencps.dossiermgt.model.ProcessStep" />
+	<import class="org.opencps.dossiermgt.model.ServiceConfig" />
+	<import class="org.opencps.dossiermgt.model.ServiceFileTemplate" />
+	<import class="org.opencps.dossiermgt.model.ServiceInfo" />
+	<import class="org.opencps.dossiermgt.model.ServiceOption" />
+	<import class="org.opencps.dossiermgt.model.ServiceProcess" />
+	<import class="org.opencps.dossiermgt.model.StepAllowance" />
+	<class name="org.opencps.dossiermgt.model.impl.DossierImpl" table="opencps_dossier">
 		<id name="dossierId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -71,7 +71,7 @@
 		<property name="overDue" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="folderId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.DossierActionImpl" table="opencps_dossieraction">
+	<class name="org.opencps.dossiermgt.model.impl.DossierActionImpl" table="opencps_dossieraction">
 		<id name="dossierActionId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -97,15 +97,15 @@
 		<property name="dueDate" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="nextActionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.DossierActionUserImpl" table="opencps_dossieractionuser">
-		<composite-id class="org.opencps.backend.dossiermgt.service.persistence.DossierActionUserPK" name="primaryKey">
+	<class name="org.opencps.dossiermgt.model.impl.DossierActionUserImpl" table="opencps_dossieractionuser">
+		<composite-id class="org.opencps.dossiermgt.service.persistence.DossierActionUserPK" name="primaryKey">
 			<key-property name="dossierActionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 			<key-property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		</composite-id>
 		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="moderator" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.DossierFileImpl" table="opencps_dossierfile">
+	<class name="org.opencps.dossiermgt.model.impl.DossierFileImpl" table="opencps_dossierfile">
 		<id name="dossierFileId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -134,7 +134,7 @@
 		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.DossierLogImpl" table="opencps_dossierlog">
+	<class name="org.opencps.dossiermgt.model.impl.DossierLogImpl" table="opencps_dossierlog">
 		<id name="dossierLogId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -152,7 +152,7 @@
 		<property name="toUserIds" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="deliveredDate" type="org.hibernate.type.TimestampType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.DossierPartImpl" table="opencps_dossierpart">
+	<class name="org.opencps.dossiermgt.model.impl.DossierPartImpl" table="opencps_dossierpart">
 		<id name="dossierPartId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -176,7 +176,7 @@
 		<property name="fileTemplateNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.CamelCasePropertyAccessor" name="eSign" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.DossierTemplateImpl" table="opencps_dossiertemplate">
+	<class name="org.opencps.dossiermgt.model.impl.DossierTemplateImpl" table="opencps_dossiertemplate">
 		<id name="dossierTemplateId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -191,7 +191,7 @@
 		<property name="description" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="templateNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.PaymentConfigImpl" table="opencps_paymentconfig">
+	<class name="org.opencps.dossiermgt.model.impl.PaymentConfigImpl" table="opencps_paymentconfig">
 		<id name="paymentConfigId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -221,7 +221,7 @@
 		<property name="returnUrl" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="paymentConfigNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.PaymentFileImpl" table="opencps_paymentfile">
+	<class name="org.opencps.dossiermgt.model.impl.PaymentFileImpl" table="opencps_paymentfile">
 		<id name="paymentFileId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -261,7 +261,7 @@
 		<property name="paymentGateStatusCode" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="paymentGateCheckCode" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.ProcessActionImpl" table="opencps_processaction">
+	<class name="org.opencps.dossiermgt.model.impl.ProcessActionImpl" table="opencps_processaction">
 		<id name="processActionId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -288,7 +288,7 @@
 		<property name="syncActionCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="rollback" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.ProcessStepImpl" table="opencps_processstep">
+	<class name="org.opencps.dossiermgt.model.impl.ProcessStepImpl" table="opencps_processstep">
 		<id name="processStepId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -308,7 +308,7 @@
 		<property name="durationCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="customProcessUrl" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.ServiceConfigImpl" table="opencps_serviceconfig">
+	<class name="org.opencps.dossiermgt.model.impl.ServiceConfigImpl" table="opencps_serviceconfig">
 		<id name="serviceConfigId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -327,8 +327,8 @@
 		<property name="serviceUrl" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="authentication" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.ServiceFileTemplateImpl" table="opencps_services_filetemplates">
-		<composite-id class="org.opencps.backend.dossiermgt.service.persistence.ServiceFileTemplatePK" name="primaryKey">
+	<class name="org.opencps.dossiermgt.model.impl.ServiceFileTemplateImpl" table="opencps_services_filetemplates">
+		<composite-id class="org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK" name="primaryKey">
 			<key-property name="serviceInfoId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 			<key-property name="fileTemplateNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		</composite-id>
@@ -336,7 +336,7 @@
 		<property name="templateName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="fileEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.ServiceInfoImpl" table="opencps_serviceinfo">
+	<class name="org.opencps.dossiermgt.model.impl.ServiceInfoImpl" table="opencps_serviceinfo">
 		<id name="serviceInfoId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -367,7 +367,7 @@
 		<property name="activeStatus" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="maxLevel" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.ServiceOptionImpl" table="opencps_serviceoption">
+	<class name="org.opencps.dossiermgt.model.impl.ServiceOptionImpl" table="opencps_serviceoption">
 		<id name="serviceOptionId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -386,7 +386,7 @@
 		<property name="serviceProcessId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="instructionNote" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.ServiceProcessImpl" table="opencps_serviceprocess">
+	<class name="org.opencps.dossiermgt.model.impl.ServiceProcessImpl" table="opencps_serviceprocess">
 		<id name="serviceProcessId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -407,8 +407,8 @@
 		<property name="generateDueDate" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="dueDatePattern" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.opencps.backend.dossiermgt.model.impl.StepAllowanceImpl" table="opencps_stepallowance">
-		<composite-id class="org.opencps.backend.dossiermgt.service.persistence.StepAllowancePK" name="primaryKey">
+	<class name="org.opencps.dossiermgt.model.impl.StepAllowanceImpl" table="opencps_stepallowance">
+		<composite-id class="org.opencps.dossiermgt.service.persistence.StepAllowancePK" name="primaryKey">
 			<key-property name="processStepId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 			<key-property name="roleId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		</composite-id>

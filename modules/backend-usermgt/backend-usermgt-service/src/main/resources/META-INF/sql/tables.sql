@@ -22,6 +22,8 @@ create table opencps_applicant (
 	contactTelNo VARCHAR(75) null,
 	contactEmail VARCHAR(75) null,
 	mappingUserId LONG,
+	activationCode VARCHAR(75) null,
+	lock_ BOOLEAN,
 	profile VARCHAR(75) null
 );
 

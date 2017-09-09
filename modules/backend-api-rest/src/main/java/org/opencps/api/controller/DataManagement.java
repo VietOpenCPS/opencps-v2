@@ -66,7 +66,7 @@ public interface DataManagement {
 	
 	@PUT
 	@Path("/{code}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Update DictCollection by its code", response = DictCollectionModel.class)
 	@ApiResponses(value = {
