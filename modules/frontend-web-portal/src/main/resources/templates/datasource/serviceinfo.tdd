@@ -3,7 +3,7 @@
 		"server": "http://localhost:8081/api"
 	},
 	"ajax": {
-
+		"serviceinfo_detail": "serviceinfo_detail.ftl"
 	},
   "serviceinfo": {
     "administrations": [

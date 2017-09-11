@@ -62,7 +62,7 @@
       </div>
     </div>
   </div>
-  <div class="col-xs-12 col-sm-9">
+  <div class="col-xs-12 col-sm-9" id="right-content-serviceinfo">
     <#include "serviceinfomain_list.ftl">
   </div>
 </div>
