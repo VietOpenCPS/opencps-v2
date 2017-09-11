@@ -413,8 +413,59 @@ input[type="text"]:focus, input[type="password"]:focus {
 /*------------------------------
       Navtab
 ------------------------------*/
-.navtab-menu > ul {
+.navtab-menu.k-tabstrip > ul {
   margin: 0 !important;
+  padding: 0;
+  display: -webkit-box;
+  display: flex;
+  border-bottom: 1px solid #0b72ba;
+}
+.navtab-menu.k-tabstrip > ul li {
+  padding: 7px 0;
+  text-align: center;
+  border: 0 !important;
+  font-family: 'Roboto-Medium';
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+  color: #0b72ba;
+}
+.navtab-menu.k-tabstrip > ul li:hover {
+  cursor: pointer;
+}
+.navtab-menu.k-tabstrip > ul li.k-state-active {
+  color: white;
+  background-color: #14bef0;
+}
+.navtab-menu.k-tabstrip > div {
+  border: 1px solid #ddd;
+  border-width: 0 1px 1px;
+  padding: 0;
+  margin: 0;
+  background-color: white !important;
+  overflow: visible;
+}
+.navtab-menu.k-tabstrip > div li {
+  padding: 7px 15px;
+}
+.navtab-menu.k-tabstrip > div li.active {
+  background-color: #e9e9e9;
+  position: relative;
+}
+.navtab-menu.k-tabstrip > div li.active:before {
+  content: "";
+  height: 100%;
+  border-left: 3px solid #0b72ba;
+  position: absolute;
+  left: -1px;
+  top: 0;
+}
+.navtab-menu.k-tabstrip > div li:hover {
+  background-color: #e9e9e9;
+}
+.navtab-menu.k-tabstrip > div li div {
+  color: #14bef0;
+  background-color: #e9e9e9;
+  padding: 0px 10px;
 }
 
 /*------------------------------
