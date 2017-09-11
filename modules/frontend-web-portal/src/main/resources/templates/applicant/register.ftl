@@ -6,7 +6,7 @@
 	<div class="col-xs-12 col-sm-8 align-middle-lg">
 		<div class="col-xs-12 bg-gif-register"></div>
 	</div>
-	<div class="col-xs-12 col-sm-4 box">
+	<div class="col-xs-12 col-sm-4 box register-wrapper">
   	<form id="fm">
       <div class="row">
         <div class="box-title">
@@ -64,11 +64,11 @@
 
       <div class="row MT15">
   			<div class="col-xs-12 col-sm-12">
-  				<label><input type="checkbox" id="agreement" name="agreement"/>&nbsp;&nbsp;&nbsp;Tôi đồng ý với điều khoản sử dụng.</label> <a href="#" class="text-light-blue">Chi tiết</a>
+					<div class="checkbox-inline"> <input type="checkbox" id="agreement" name="agreement"> <label class="text-normal">Tôi đồng ý với điều khoản sử dụng. </label> </div> <span><a href="#" class="text-light-blue">Chi tiết</a></span>
   			</div>
   		</div>
       <div class="row MT15 MB15 text-center">
-  			<button class="k-button btn-primary" title="Đăng ký" id="btn-register">Đăng ký</button>
+  			<button class="btn btn-active" title="Đăng ký" id="btn-register">Đăng ký</button>
   		</div>
   	</form>
   </div>
