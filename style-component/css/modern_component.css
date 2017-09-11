@@ -556,6 +556,33 @@ input[type="text"]:focus, input[type="password"]:focus {
   font-family: 'Roboto-Medium';
 }
 
+/*----- Register -----*/
+/* BgImg Register */
+.bg-gif-register {
+  background: url("../images/bg-gif-register.gif") no-repeat center center;
+  padding-top: 66.666667%;
+  background-size: contain;
+}
+
+/* Register Wrapper */
+.register-wrapper .k-tooltip {
+  color: #b50303;
+  margin-top: 5px;
+}
+.register-wrapper .k-tooltip .k-icon {
+  vertical-align: sub;
+  display: inline-block;
+  position: relative;
+  top: 0;
+  -webkit-transform: none;
+  transform: none;
+}
+.register-wrapper .k-picker-wrap .k-tooltip {
+  margin-top: 35px;
+  position: absolute;
+  left: 0;
+}
+
 /*------------------------------
     Responsive
 ------------------------------*/
@@ -574,5 +601,10 @@ input[type="text"]:focus, input[type="password"]:focus {
   .background-triangle-small ~ .text-light-gray {
     display: block;
     margin: 10px 10px 0 !important;
+  }
+
+  /*----- BgImg Register -----*/
+  .bg-gif-register {
+    margin-bottom: 15px;
   }
 }
