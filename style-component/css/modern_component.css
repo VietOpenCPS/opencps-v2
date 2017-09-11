@@ -135,11 +135,14 @@
 /*----- Radio -----*/
 .radio label:before, .radio-inline label:before {
   border-radius: 50%;
+  border-color: #14bef0;
+  border-width: 2px;
 }
 .radio input[type="radio"]:checked + label:after, .radio-inline input[type="radio"]:checked + label:after {
-  content: "\f05d";
+  content: "\f111";
   left: 0;
-  font-size: 16px;
+  font-size: 17px;
+  color: #14bef0;
 }
 
 /*------------------------------
@@ -388,6 +391,84 @@ input[type="text"]:focus, input[type="password"]:focus {
 }
 
 /*------------------------------
+      Mimic Table
+------------------------------*/
+.mimic-table {
+  border: 1px solid #2a2a2a;
+  border-width: 1px 0 !important;
+  margin-bottom: -1px;
+}
+.mimic-table li {
+  padding: 0 !important;
+}
+.mimic-table li > div {
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  border-width: 1px 1px 0 0;
+}
+.mimic-table li > div:last-child {
+  border-right: 0;
+}
+
+/*------------------------------
+      Navtab
+------------------------------*/
+.navtab-menu.k-tabstrip > ul {
+  margin: 0 !important;
+  padding: 0;
+  display: -webkit-box;
+  display: flex;
+  border-bottom: 1px solid #0b72ba;
+}
+.navtab-menu.k-tabstrip > ul li {
+  padding: 7px 0;
+  text-align: center;
+  border: 0 !important;
+  font-family: 'Roboto-Medium';
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+  color: #0b72ba;
+}
+.navtab-menu.k-tabstrip > ul li:hover {
+  cursor: pointer;
+}
+.navtab-menu.k-tabstrip > ul li.k-state-active {
+  color: white;
+  background-color: #14bef0;
+}
+.navtab-menu.k-tabstrip > div {
+  border: 1px solid #ddd;
+  border-width: 0 1px 1px;
+  padding: 0;
+  margin: 0;
+  background-color: white !important;
+  overflow: visible;
+}
+.navtab-menu.k-tabstrip > div li {
+  padding: 7px 15px;
+}
+.navtab-menu.k-tabstrip > div li.active {
+  background-color: #e9e9e9;
+  position: relative;
+}
+.navtab-menu.k-tabstrip > div li.active:before {
+  content: "";
+  height: 100%;
+  border-left: 3px solid #0b72ba;
+  position: absolute;
+  left: -1px;
+  top: 0;
+}
+.navtab-menu.k-tabstrip > div li:hover {
+  background-color: #e9e9e9;
+}
+.navtab-menu.k-tabstrip > div li div {
+  color: #14bef0;
+  background-color: #e9e9e9;
+  padding: 0px 10px;
+}
+
+/*------------------------------
       Other
 ------------------------------*/
 .row-header {
@@ -466,6 +547,42 @@ input[type="text"]:focus, input[type="password"]:focus {
   background-color: white;
 }
 
+.box-title {
+  background-color: #14bef0;
+  color: white;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 8px 15px;
+  font-family: 'Roboto-Medium';
+}
+
+/*----- Register -----*/
+/* BgImg Register */
+.bg-gif-register {
+  background: url("../images/bg-gif-register.gif") no-repeat center center;
+  padding-top: 66.666667%;
+  background-size: contain;
+}
+
+/* Register Wrapper */
+.register-wrapper .k-tooltip {
+  color: #b50303;
+  margin-top: 5px;
+}
+.register-wrapper .k-tooltip .k-icon {
+  vertical-align: sub;
+  display: inline-block;
+  position: relative;
+  top: 0;
+  -webkit-transform: none;
+  transform: none;
+}
+.register-wrapper .k-picker-wrap .k-tooltip {
+  margin-top: 35px;
+  position: absolute;
+  left: 0;
+}
+
 /*------------------------------
     Responsive
 ------------------------------*/
@@ -480,8 +597,14 @@ input[type="text"]:focus, input[type="password"]:focus {
     float: none !important;
     margin: 0;
   }
+
   .background-triangle-small ~ .text-light-gray {
     display: block;
     margin: 10px 10px 0 !important;
+  }
+
+  /*----- BgImg Register -----*/
+  .bg-gif-register {
+    margin-bottom: 15px;
   }
 }
