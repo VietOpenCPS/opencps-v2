@@ -2,35 +2,11 @@
 	<#include "init.ftl">
 </#if>
 
-<div class="row row align-middle-lg">
-  <div class="col-xs-12 col-sm-8">
-		<div class="row">
-			<div class="col-xs-12 col-sm-12">
-				<img src="../../../../../../../style-component/images/register_1.png" class="img-responsive center-block">
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-12 col-sm-12">
-				<p class="text-light-blue text-center MT40 MB40 fs16">Bước đăng ký tài khoản</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-12 col-sm-12">
-				<img src="../../../../../../../style-component/images/register_2.png" class="img-responsive center-block">
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-12 col-sm-12">
-				<p class="text-light-blue text-center MT40 MB40 fs16">Công dân, Doanh nghiệp sử dụng tài khoản có thể</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-12 col-sm-12">
-				<img src="../../../../../../../style-component/images/register_3.gif" class="img-responsive center-block">
-			</div>
-		</div>
-  </div>
-	<div class="col-xs-12 col-sm-4 panel">
+<div class="row row eq-height-lg">
+	<div class="col-xs-12 col-sm-8 align-middle-lg">
+		<div class="col-xs-12 bg-gif-register"></div>
+	</div>
+	<div class="col-xs-12 col-sm-4 box">
   	<form id="fm">
       <div class="row">
         <div class="box-title">
