@@ -135,11 +135,14 @@
 /*----- Radio -----*/
 .radio label:before, .radio-inline label:before {
   border-radius: 50%;
+  border-color: #14bef0;
+  border-width: 2px;
 }
 .radio input[type="radio"]:checked + label:after, .radio-inline input[type="radio"]:checked + label:after {
-  content: "\f05d";
+  content: "\f111";
   left: 0;
-  font-size: 16px;
+  font-size: 17px;
+  color: #14bef0;
 }
 
 /*------------------------------
@@ -388,6 +391,33 @@ input[type="text"]:focus, input[type="password"]:focus {
 }
 
 /*------------------------------
+      Mimic Table
+------------------------------*/
+.mimic-table {
+  border: 1px solid #2a2a2a;
+  border-width: 1px 0 !important;
+  margin-bottom: -1px;
+}
+.mimic-table li {
+  padding: 0 !important;
+}
+.mimic-table li > div {
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  border-width: 1px 1px 0 0;
+}
+.mimic-table li > div:last-child {
+  border-right: 0;
+}
+
+/*------------------------------
+      Navtab
+------------------------------*/
+.navtab-menu > ul {
+  margin: 0 !important;
+}
+
+/*------------------------------
       Other
 ------------------------------*/
 .row-header {
@@ -466,6 +496,15 @@ input[type="text"]:focus, input[type="password"]:focus {
   background-color: white;
 }
 
+.box-title {
+  background-color: #14bef0;
+  color: white;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 8px 15px;
+  font-family: 'Roboto-Medium';
+}
+
 /*------------------------------
     Responsive
 ------------------------------*/
@@ -480,6 +519,7 @@ input[type="text"]:focus, input[type="password"]:focus {
     float: none !important;
     margin: 0;
   }
+
   .background-triangle-small ~ .text-light-gray {
     display: block;
     margin: 10px 10px 0 !important;
