@@ -346,9 +346,6 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		String keywords = (String) params.get("keywords");
 		String groupId = (String) params.get(ApplicantTerm.GROUP_ID);
-		
-		_log.info("GROUPID = " + groupId);
-		_log.info("COMPANYID = " + searchContext.getCompanyId());
 
 		Indexer<Applicant> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
 

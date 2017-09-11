@@ -13,7 +13,7 @@ public interface BackendAuth {
 	 * @param password
 	 * @return
 	 */
-	public boolean isAuth(ServiceContext context, String security, String password);
+	public boolean isAuth(ServiceContext context);
 	
 	/**
 	 * @param context

@@ -349,6 +349,7 @@ create table opencps_serviceinfo (
 	domainCode VARCHAR(75) null,
 	domainName VARCHAR(75) null,
 	domainIndex VARCHAR(75) null,
+	maxLevel INTEGER,
 	public_ BOOLEAN
 );
 

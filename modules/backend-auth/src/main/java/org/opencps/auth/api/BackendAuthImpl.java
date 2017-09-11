@@ -9,22 +9,13 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Validator;
 
 public class BackendAuthImpl implements BackendAuth {
 
 	@Override
-	public boolean isAuth(ServiceContext context, String security, String password) {
+	public boolean isAuth(ServiceContext context) {
 
-		boolean isAuth = false;
-
-		if (Validator.isNotNull(security)) {
-
-			//TODO:
-
-		} else {
-			isAuth = context.isSignedIn();
-		}
+		boolean isAuth = context.isSignedIn();
 
 		return isAuth;
 	}
@@ -35,9 +26,17 @@ public class BackendAuthImpl implements BackendAuth {
 		boolean hasPermission = false;
 
 		List<Role> roles = RoleLocalServiceUtil.getUserRoles(context.getUserId());
-		
+
 		try {
 			for (Role role : roles) {
+
+				if (role.getName().equals("Administrator")) {
+
+					hasPermission = true;
+					break;
+
+				}
+
 				hasPermission = ResourcePermissionLocalServiceUtil.hasResourcePermission(context.getCompanyId(), name,
 						ResourceConstants.SCOPE_INDIVIDUAL, Long.toString(role.getRoleId()), role.getRoleId(),
 						actionId);
@@ -50,7 +49,7 @@ public class BackendAuthImpl implements BackendAuth {
 		} catch (Exception e) {
 			_log.error(e);
 		}
-
+		
 		return hasPermission;
 	}
 

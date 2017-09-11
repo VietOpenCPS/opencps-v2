@@ -43,6 +43,7 @@
 		<column name="domainCode" type="String" />
 		<column name="domainName" type="String" />
 		<column name="domainIndex" type="String" />
+		<column name="maxLevel" type="int" />
 		<column name="public_" type="boolean" />
 
 		<!-- Order -->
@@ -54,6 +55,11 @@
 		</finder>
 		<finder name="CompanyId" return-type="Collection">
 			<finder-column name="companyId" />
+		</finder>
+		
+		<finder name="SC_GI" return-type="ServiceInfo">
+			<finder-column name="serviceCode" />
+			<finder-column name="groupId" />
 		</finder>
 
 		<!-- References -->
@@ -642,6 +648,8 @@
 
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
+		<exception>DuplicateServiceCode</exception>
+		<exception>RemoveConstrain</exception>
 		<exception>RequiredServiceName</exception>
 		<exception>RequiredAdministrationCode</exception>
 		<exception>RequiredDomainCode</exception>

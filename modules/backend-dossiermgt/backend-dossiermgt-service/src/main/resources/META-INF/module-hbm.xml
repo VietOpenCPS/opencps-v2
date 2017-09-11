@@ -394,6 +394,7 @@
 		<property name="domainCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="domainName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="domainIndex" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="maxLevel" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="public_" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ServiceProcessImpl" table="opencps_serviceprocess">

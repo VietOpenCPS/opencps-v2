@@ -343,6 +343,7 @@
 		<field name="domainCode" type="String" />
 		<field name="domainName" type="String" />
 		<field name="domainIndex" type="String" />
+		<field name="maxLevel" type="int" />
 		<field name="public_" type="boolean" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceProcess">

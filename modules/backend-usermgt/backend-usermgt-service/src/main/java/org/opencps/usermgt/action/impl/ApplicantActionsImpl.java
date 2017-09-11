@@ -26,11 +26,13 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public Applicant register(ServiceContext context, String applicantName, String applicantIdType,
-			String applicantIdNo, String applicantIdDate, String contactEmail, String password) throws PortalException, SystemException {
-		
-		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, 0, applicantName,
-				applicantIdType, applicantIdNo, applicantIdDate, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, contactEmail, StringPool.BLANK, password);
+			String applicantIdNo, String applicantIdDate, String contactEmail, String password)
+			throws PortalException, SystemException {
+
+		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, 0, applicantName, applicantIdType,
+				applicantIdNo, applicantIdDate, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, contactEmail,
+				StringPool.BLANK, password);
 
 		return applicant;
 	}
@@ -45,7 +47,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	@Override
 	public JSONObject getApplicants(ServiceContext context, long userId, long companyId, long groupId,
 			LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end, ServiceContext serviceContext) {
-		
+
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		Hits hits = null;
 		SearchContext searchContext = new SearchContext();
@@ -57,17 +59,13 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 			result.put("data", hits.toList());
 
-			long total = ApplicantLocalServiceUtil.countLucene(params,searchContext);
-			
-			_log.info("TOTAL=====" + total);
-			
-			_log.info("Hist===" + hits.getLength());
+			long total = ApplicantLocalServiceUtil.countLucene(params, searchContext);
 
 			result.put("total", total);
 
 		} catch (Exception e) {
 			_log.error(e);
-		} 
+		}
 
 		return result;
 
@@ -109,6 +107,6 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	Log _log = LogFactoryUtil.getLog(ApplicantActionsImpl.class);
 }

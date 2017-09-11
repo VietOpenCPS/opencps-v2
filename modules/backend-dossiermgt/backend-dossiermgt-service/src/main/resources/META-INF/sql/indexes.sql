@@ -42,6 +42,7 @@ create unique index IX_6FC25E90 on opencps_serviceconfig (uuid_[$COLUMN_LENGTH:7
 
 create index IX_3AF75462 on opencps_serviceinfo (companyId);
 create index IX_29AD8B64 on opencps_serviceinfo (groupId);
+create index IX_3E222E7E on opencps_serviceinfo (serviceCode[$COLUMN_LENGTH:75$], groupId);
 create index IX_D3675C7A on opencps_serviceinfo (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_D630B97C on opencps_serviceinfo (uuid_[$COLUMN_LENGTH:75$], groupId);
 

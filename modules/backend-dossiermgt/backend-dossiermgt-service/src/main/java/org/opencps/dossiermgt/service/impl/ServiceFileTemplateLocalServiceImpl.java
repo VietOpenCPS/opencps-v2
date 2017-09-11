@@ -57,6 +57,18 @@ public class ServiceFileTemplateLocalServiceImpl
 		return serviceFileTemplatePersistence.findByServiceInfoId(serviceInfoId);
 	}
 	
+	public ServiceFileTemplate removeServiceFileTemplate(long serviceInfoId, String fileTemplateNo) throws PortalException {
+		ServiceFileTemplatePK fileTemplatePK = new ServiceFileTemplatePK(serviceInfoId, fileTemplateNo);
+		
+		ServiceFileTemplate fileTemplate = serviceFileTemplatePersistence.fetchByPrimaryKey(fileTemplatePK);
+		
+		dlAppLocalService.deleteFileEntry(fileTemplate.getFileEntryId());
+		
+		serviceFileTemplatePersistence.remove(fileTemplate);
+		
+		return fileTemplate;
+	}
+	
 	public ServiceFileTemplate addServiceFileTemplate(long userId, long groupId, long folderId, 
 			long serviceInfoId, String fileTemplateNo, String templateName, 
 			String sourceFileName, InputStream inputStream,
@@ -78,6 +90,39 @@ public class ServiceFileTemplateLocalServiceImpl
 		ServiceFileTemplatePK fileTemplatePK = new ServiceFileTemplatePK(serviceInfoId, fileTemplateNo);
 
 		ServiceFileTemplate serviceFileTemplate = serviceFileTemplatePersistence.create(fileTemplatePK);
+
+		serviceFileTemplate.setTemplateName(templateName);
+		serviceFileTemplate.setFileEntryId(fileEntryId);
+
+		return serviceFileTemplatePersistence.update(serviceFileTemplate);
+	}
+	
+	public ServiceFileTemplate updateServiceFileTemplate(long userId, long groupId, long folderId, 
+			long serviceInfoId, String fileTemplateNo, String templateName, 
+			String sourceFileName, InputStream inputStream,
+			ServiceContext serviceContext) throws PortalException, IOException {
+
+		long fileEntryId = 0;
+
+		if (inputStream != null) {
+			String mimeType = MimeTypesUtil.getContentType(sourceFileName);
+			int size = FileUtil.getBytes(inputStream).length;
+			
+			FileEntry fileEntry = dlAppLocalService.addFileEntry(userId, groupId, folderId, sourceFileName, mimeType,
+					templateName, templateName, StringPool.BLANK, 
+					inputStream, size, serviceContext);
+
+			fileEntryId = fileEntry.getFileEntryId();
+		}
+
+		ServiceFileTemplatePK fileTemplatePK = new ServiceFileTemplatePK(serviceInfoId, fileTemplateNo);
+
+		ServiceFileTemplate serviceFileTemplate = serviceFileTemplatePersistence.fetchByPrimaryKey(fileTemplatePK);
+		
+		// remove old fileEntry
+		if (serviceFileTemplate.getFileEntryId() != 0 ) {
+			dlAppLocalService.deleteFileEntry(serviceFileTemplate.getFileEntryId());
+		}
 
 		serviceFileTemplate.setTemplateName(templateName);
 		serviceFileTemplate.setFileEntryId(fileEntryId);
