@@ -13,7 +13,7 @@
 	<script src="../../../../../../../style-component/js/kendo.ui.core.min.js"></script>
 
 	<!-- custom css, js -->
-	<link rel="stylesheet" href="../../../../../../../style-component/css/style-components.css">
+	<link rel="stylesheet" href="../../../../../../../style-component/css/modern_component.css">
 	<link rel="stylesheet" href="../../../../../../../style-component/css/custom.css">
 </head>
 
@@ -30,8 +30,11 @@
 				</a>
 			</div>
 			<div class="sub-info">
+				<#include "login.ftl">
+				<!-- <input type="text" class="form-control" id="" placeholder="Tài khoản đăng nhập" title="Tài khoản đăng nhập">
+				<input type="password" class="form-control" id="" placeholder="Mật khẩu" title="Mật khẩu">
 				<a href="#" class="signin">Đăng nhập</a>
-				<a href="#" class="register">Đăng ký</a>
+				<a href="#">Quên mật khẩu?</a> -->
 			</div>
 		</div>
 	</header>
@@ -48,14 +51,15 @@
 			</div>
 			<div class="collapse navbar-collapse" id="myNavbar">
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="#">Quản lý hồ sơ</a></li>
-					<li><a href="#">Thủ tục hành chính</a></li>
+					<li><a href="#">Trang chủ</a></li>
+					<li class="serviceinfo active"><a href="#">Thủ tục hành chính</a></li>
 					<li><a href="#">Thống kê số liệu</a></li>
 					<li><a href="#">Đánh giá mức độ hài lòng</a></li>
+					<li class="register"><a href="#">Đăng ký</a></li>
 				</ul>
 			</div>
 		</div>
 	</nav>
 
 	<article id="main-content">
-		<div class="container-fluid">
+		<div class="container container-all">

@@ -1,6 +1,7 @@
 <#if (Request)??>
 	<#include "init.ftl">
 </#if>
+
 <div class="row panel">
     <div class="row-header">
         <div class="background-triangle-big">CHI TIÊT THỦ TỤC HÀNH CHÍNH</div>
@@ -10,7 +11,7 @@
         <div class="row MB15">
             <div class="col-sm-12">
                 <span class="" id="maxLevel" data-bind="text:maxLevel"> </span> <span data-bind="text:serviceName" class="text-bold" id="serviceName"> #:serviceName# </span>
-            </div> 
+            </div>
         </div>
         <div id="serviceinfo_detail_tabstrip">
             <ul class="nav nav-tabs">
@@ -114,7 +115,7 @@
                     <div class="col-sm-12 PL0 MT15">
                         <button class="btn">Xem hướng dẫn >></button>
                     </div>
-                </div>  
+                </div>
                 <div id="tphs" class="tab-pane fade">
 
                 </div>
