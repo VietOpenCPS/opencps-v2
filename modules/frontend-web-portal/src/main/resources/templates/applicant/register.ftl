@@ -34,7 +34,7 @@
       <div class="row MT15">
   			<div class="col-xs-12 col-sm-12">Ngày cấp</div>
   			<div class="col-xs-12 col-sm-12 MT5">
-  				<input id="applicantIdDate" name="applicantIdDate" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Ngày/ tháng/ năm"/>
+  				<input id="applicantIdDate" name="applicantIdDate" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Ngày/ tháng/ năm"/>
   			</div>
   		</div>
       <div class="row MT15">
@@ -148,6 +148,17 @@
           $("#applicantIdNo").attr("placeholder","Mã số thuế");
         }
     });
+
+		$("#applicantIdDate").focusout(function(){
+			console.log('applicantIdDate focusout');
+			setTimeout(function(){
+				if ($("#applicantIdDate").hasClass("k-invalid")){
+					$("#applicantIdDate").parent().addClass("MB25");
+				} else {
+					$("#applicantIdDate").parent().removeClass("MB25");
+				}
+			}, 100);
+		});
 
   })(jQuery);
 
