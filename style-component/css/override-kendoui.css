@@ -134,8 +134,7 @@ ul.ul-with-border-style-2 li.k-state-selected span.col-sm-1:after {
     margin-top: 5px;
 }
 html .k-pager-numbers .k-state-selected {
-    background-color: #0d2434;
-    color: white;
+    background-color: #dbebf0;
     border-radius: 0;
     margin: 0;
     border: 0;
