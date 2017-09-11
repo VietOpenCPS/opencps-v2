@@ -489,6 +489,16 @@ input[type="text"]:focus, input[type="password"]:focus {
 .row-header .group-icons a:not(:first-child) {
   margin-left: 10px;
 }
+.row-header .show-per-page {
+  float: right;
+  margin-right: 15px;
+}
+.row-header .show-per-page select {
+  background-color: #f3f3f3;
+  border-radius: 4px;
+  padding: 3px 35px 3px 10px;
+  border-color: #ddd;
+}
 
 .background-triangle-small, .background-triangle-big {
   background-color: #0b72ba;
