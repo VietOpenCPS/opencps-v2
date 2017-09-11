@@ -1,16 +1,17 @@
 <#if (Request)??>
 	<#include "init.ftl">
 </#if>
+
 <div class="row">
   <div class="col-xs-12 col-sm-12 panel P0">
-    <div class="row-header"> 
-      <div class="background-triangle-big">DANH SÁCH THỦ TỤC HÀNH CHÍNH</div> 
-      <span>Hiển thị 5 trên 2055 bản ghi</span>  
-      <span class="pull-right MT5 MR10">Hiển thị 
-        <select class="ML5" id="slPageSize"> 
-          <option value="5" selected="">5</option> 
-          <option value="1">1</option> 
-          <option value="2">2</option> 
+    <div class="row-header">
+      <div class="background-triangle-big">DANH SÁCH THỦ TỤC HÀNH CHÍNH</div>
+      <span>Hiển thị 5 trên 2055 bản ghi</span>
+      <span class="pull-right MT5 MR10">Hiển thị
+        <select class="ML5" id="slPageSize">
+          <option value="5" selected="">5</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
         </select>
       </span>
     </div>
@@ -55,7 +56,7 @@
               </div>
             </div>
             <div class="col-sm-3">
-              <button class="btn btn-active btn-small pull-right" id="btn-filter-serviceinfo" type="button">Tìm kiếm</button> 
+              <button class="btn btn-active btn-small pull-right" id="btn-filter-serviceinfo" type="button">Tìm kiếm</button>
             </div>
           </div>
         </div>
@@ -88,7 +89,7 @@
        <div class="col-sm-1 text-center">
         1
       </div>
-      <div class="col-sm-7 PL0 service-info-item" data-pk="#: id #">
+      <div class="col-sm-7 service-info-item" data-pk="#: id #">
         #: serviceName #
       </div>
       <div class="col-sm-2 text-center">

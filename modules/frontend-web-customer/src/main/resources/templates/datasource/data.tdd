@@ -1,8 +1,8 @@
 {
 	"portletNamespace": "frontend_web_customer_war_",
 	"api": {
-		"server": "http://localhost:8081/api",
-		"city":"http://localhost:8081/api/city"
+		"server": "http://hanoi.fds.vn:2281/api",
+		"city":"http://hanoi.fds.vn:2281/api/city"
 	},
 	"ajax":{
 		"customer_dossierlist": "customer_dossierlist.ftl",

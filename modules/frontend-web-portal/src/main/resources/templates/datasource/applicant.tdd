@@ -1,5 +1,5 @@
 {
 	"api": {
-		"server":"http://localhost:8081/api"
+		"server":"http://hanoi.fds.vn:2281/api"
 	}
 }
