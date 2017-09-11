@@ -19,12 +19,12 @@ import org.opencps.api.serviceinfo.model.ServiceInfoModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoResultModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoResultsModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoSearchModel;
-import org.opencps.backend.dossiermgt.exception.RequiredAdministrationCodeException;
-import org.opencps.backend.dossiermgt.exception.RequiredServiceCodeException;
-import org.opencps.backend.dossiermgt.exception.RequiredServiceNameException;
-import org.opencps.backend.dossiermgt.model.ServiceFileTemplate;
-import org.opencps.backend.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
-import org.opencps.backend.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.dossiermgt.exception.RequiredAdministrationCodeException;
+import org.opencps.dossiermgt.exception.RequiredServiceCodeException;
+import org.opencps.dossiermgt.exception.RequiredServiceNameException;
+import org.opencps.dossiermgt.model.ServiceFileTemplate;
+import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.document.library.kernel.model.DLFolderConstants;
@@ -42,7 +42,7 @@ public class ServiceInfoImpl implements ServiceInfo {
 		ServiceInfoResultsModel result = new ServiceInfoResultsModel();
 		
 		int total = ServiceInfoLocalServiceUtil.countServiceInfosByGroupId(20143);
-		List<org.opencps.backend.dossiermgt.model.ServiceInfo> serviceInfos = 
+		List<org.opencps.dossiermgt.model.ServiceInfo> serviceInfos = 
 				ServiceInfoLocalServiceUtil.getServiceInfosByGroupId(20143);
 		
 		List<ServiceInfoResultModel> serviceInfoModels = ServiceInfoUtils.getServiceInfoResultsModel(serviceInfos);
@@ -60,7 +60,7 @@ public class ServiceInfoImpl implements ServiceInfo {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = serviceContext.getUserId();
 		
-		org.opencps.backend.dossiermgt.model.ServiceInfo serviceInfo = null;
+		org.opencps.dossiermgt.model.ServiceInfo serviceInfo = null;
 		ExceptionModel exception = null;
 		
 		try {

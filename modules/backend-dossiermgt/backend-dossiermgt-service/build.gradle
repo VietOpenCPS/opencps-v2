@@ -10,4 +10,4 @@ buildService {
 	apiDir = "../backend-dossiermgt-api/src/main/java"
 }
 
-group = "org.opencps.backend.dossiermgt"
+group = "org.opencps"

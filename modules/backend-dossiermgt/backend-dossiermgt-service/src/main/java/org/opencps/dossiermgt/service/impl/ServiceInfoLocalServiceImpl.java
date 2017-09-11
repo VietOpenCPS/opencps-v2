@@ -12,18 +12,18 @@
  * details.
  */
 
-package org.opencps.backend.dossiermgt.service.impl;
+package org.opencps.dossiermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
 import java.util.Date;
 import java.util.List;
 
-import org.opencps.backend.dossiermgt.exception.RequiredAdministrationCodeException;
-import org.opencps.backend.dossiermgt.exception.RequiredServiceCodeException;
-import org.opencps.backend.dossiermgt.exception.RequiredServiceNameException;
-import org.opencps.backend.dossiermgt.model.ServiceInfo;
-import org.opencps.backend.dossiermgt.service.base.ServiceInfoLocalServiceBaseImpl;
+import org.opencps.dossiermgt.exception.RequiredAdministrationCodeException;
+import org.opencps.dossiermgt.exception.RequiredServiceCodeException;
+import org.opencps.dossiermgt.exception.RequiredServiceNameException;
+import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.service.base.ServiceInfoLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
@@ -34,7 +34,7 @@ import com.liferay.portal.kernel.util.Validator;
  * The implementation of the service info local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.backend.dossiermgt.service.ServiceInfoLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.ServiceInfoLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
@@ -42,14 +42,14 @@ import com.liferay.portal.kernel.util.Validator;
  *
  * @author huymq
  * @see ServiceInfoLocalServiceBaseImpl
- * @see org.opencps.backend.dossiermgt.service.ServiceInfoLocalServiceUtil
+ * @see org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil
  */
 @ProviderType
 public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.backend.dossiermgt.service.ServiceInfoLocalServiceUtil} to access the service info local service.
+	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil} to access the service info local service.
 	 */
 
 	public ServiceInfo addServiceInfo(long userId, long groupId, String serviceCode, 
@@ -90,8 +90,6 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		serviceInfo.setFeeText(feeText);
 		serviceInfo.setAdministrationCode(administrationCode);
 		serviceInfo.setDomainCode(domainCode);
-		serviceInfo.setMaxLevel(maxLevel);
-		serviceInfo.setActiveStatus(activeStatus);
 		
 		
 		serviceInfoPersistence.update(serviceInfo);
@@ -139,8 +137,6 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		serviceInfo.setFeeText(feeText);
 		serviceInfo.setAdministrationCode(administrationCode);
 		serviceInfo.setDomainCode(domainCode);
-		serviceInfo.setMaxLevel(maxLevel);
-		serviceInfo.setActiveStatus(activeStatus);
 		
 		serviceInfoPersistence.update(serviceInfo);
 		

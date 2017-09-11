@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <model-hints>
-	<model name="org.mobilink.backend.datamgt.model.Comment">
+	<model name="org.opencps.datamgt.model.Comment">
 		<field name="uuid" type="String" />
 		<field name="commentId" type="long" />
 		<field name="companyId" type="long" />
@@ -21,7 +21,7 @@
 		<field name="userHasUpvoted" type="String" />
 		<field name="createdByCurrentUser" type="long" />
 	</model>
-	<model name="org.mobilink.backend.datamgt.model.DictCollection">
+	<model name="org.opencps.datamgt.model.DictCollection">
 		<field name="uuid" type="String" />
 		<field name="dictCollectionId" type="long" />
 		<field name="companyId" type="long" />
@@ -36,7 +36,7 @@
 		<field name="description" type="String" />
 		<field name="dataForm" type="String" />
 	</model>
-	<model name="org.mobilink.backend.datamgt.model.DictGroup">
+	<model name="org.opencps.datamgt.model.DictGroup">
 		<field name="uuid" type="String" />
 		<field name="dictGroupId" type="long" />
 		<field name="companyId" type="long" />
@@ -51,7 +51,7 @@
 		<field name="groupNameEN" type="String" />
 		<field name="groupDescription" type="String" />
 	</model>
-	<model name="org.mobilink.backend.datamgt.model.DictItem">
+	<model name="org.opencps.datamgt.model.DictItem">
 		<field name="uuid" type="String" />
 		<field name="dictItemId" type="long" />
 		<field name="companyId" type="long" />
@@ -71,7 +71,7 @@
 		<field name="treeIndex" type="String" />
 		<field name="dataForm" type="String" />
 	</model>
-	<model name="org.mobilink.backend.datamgt.model.DictItemGroup">
+	<model name="org.opencps.datamgt.model.DictItemGroup">
 		<field name="uuid" type="String" />
 		<field name="dictItemGroupId" type="long" />
 		<field name="companyId" type="long" />
@@ -83,7 +83,7 @@
 		<field name="dictGroupId" type="long" />
 		<field name="dictItemId" type="long" />
 	</model>
-	<model name="org.mobilink.backend.datamgt.model.Label">
+	<model name="org.opencps.datamgt.model.Label">
 		<field name="uuid" type="String" />
 		<field name="labelId" type="long" />
 		<field name="companyId" type="long" />
@@ -96,7 +96,7 @@
 		<field name="color" type="String" />
 		<field name="scope" type="int" />
 	</model>
-	<model name="org.mobilink.backend.datamgt.model.Location">
+	<model name="org.opencps.datamgt.model.Location">
 		<field name="uuid" type="String" />
 		<field name="locationId" type="long" />
 		<field name="companyId" type="long" />
@@ -108,7 +108,7 @@
 		<field name="location" type="String" />
 		<field name="geolocation" type="String" />
 	</model>
-	<model name="org.mobilink.backend.datamgt.model.Voting">
+	<model name="org.opencps.datamgt.model.Voting">
 		<field name="uuid" type="String" />
 		<field name="votingId" type="long" />
 		<field name="companyId" type="long" />
@@ -123,7 +123,7 @@
 		<field name="answers" type="String" />
 		<field name="dueDate" type="Date" />
 	</model>
-	<model name="org.mobilink.backend.datamgt.model.VotingResult">
+	<model name="org.opencps.datamgt.model.VotingResult">
 		<field name="uuid" type="String" />
 		<field name="votingResultId" type="long" />
 		<field name="companyId" type="long" />
@@ -139,7 +139,7 @@
 		<field name="comment" type="String" />
 		<field name="selected" type="String" />
 	</model>
-	<model name="org.mobilink.backend.datamgt.model.Workspace">
+	<model name="org.opencps.datamgt.model.Workspace">
 		<field name="uuid" type="String" />
 		<field name="workspaceId" type="long" />
 		<field name="companyId" type="long" />
@@ -151,7 +151,7 @@
 		<field name="name" type="String" />
 		<field name="seqOrder" type="int" />
 	</model>
-	<model name="org.mobilink.backend.datamgt.model.WorkspaceRole">
+	<model name="org.opencps.datamgt.model.WorkspaceRole">
 		<field name="uuid" type="String" />
 		<field name="workspaceRoleId" type="long" />
 		<field name="companyId" type="long" />
@@ -163,7 +163,7 @@
 		<field name="workspaceId" type="long" />
 		<field name="roleId" type="long" />
 	</model>
-	<model name="org.mobilink.backend.datamgt.model.WorkspaceUser">
+	<model name="org.opencps.datamgt.model.WorkspaceUser">
 		<field name="uuid" type="String" />
 		<field name="workspaceUserId" type="long" />
 		<field name="companyId" type="long" />

@@ -12,32 +12,32 @@
  * details.
  */
 
-package org.opencps.backend.dossiermgt.service.impl;
+package org.opencps.dossiermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import org.opencps.backend.dossiermgt.service.base.ServiceOptionLocalServiceBaseImpl;
+import org.opencps.dossiermgt.service.base.DossierTemplateLocalServiceBaseImpl;
 
 /**
- * The implementation of the service option local service.
+ * The implementation of the dossier template local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.backend.dossiermgt.service.ServiceOptionLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.DossierTemplateLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
  * </p>
  *
  * @author huymq
- * @see ServiceOptionLocalServiceBaseImpl
- * @see org.opencps.backend.dossiermgt.service.ServiceOptionLocalServiceUtil
+ * @see DossierTemplateLocalServiceBaseImpl
+ * @see org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil
  */
 @ProviderType
-public class ServiceOptionLocalServiceImpl
-	extends ServiceOptionLocalServiceBaseImpl {
+public class DossierTemplateLocalServiceImpl
+	extends DossierTemplateLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.backend.dossiermgt.service.ServiceOptionLocalServiceUtil} to access the service option local service.
+	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil} to access the dossier template local service.
 	 */
 }

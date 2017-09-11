@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
-	<xsd:element name="ApplicationSearchModel">
+	<xsd:element name="ApplicantSearchModel">
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="keyword" type="xsd:string" minOccurs="0" />
@@ -13,7 +13,7 @@
 		</xsd:complexType>
 	</xsd:element>
 	
-	<xsd:complexType name="ApplicationInputModel">
+	<xsd:complexType name="ApplicantInputModel">
 		<xsd:sequence>
 			<xsd:element name="applicantName" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="applicantIdType" type="xsd:string" minOccurs="0" />
@@ -33,7 +33,7 @@
 	</xsd:complexType>
 	
 	
-	<xsd:complexType name="ApplicationModel">
+	<xsd:complexType name="ApplicantModel">
 		<xsd:sequence>
 			<xsd:element name="applicantId" type="xsd:long" minOccurs="0" />
 			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
@@ -64,11 +64,11 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
-	<xsd:element name="ApplicationResultsModel">
+	<xsd:element name="ApplicantResultsModel">
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="total" type="xsd:int" minOccurs="0" />
-				<xsd:element name="data" minOccurs="0" maxOccurs="unbounded" type="ApplicationModel"/>
+				<xsd:element name="data" minOccurs="0" maxOccurs="unbounded" type="ApplicantModel"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>

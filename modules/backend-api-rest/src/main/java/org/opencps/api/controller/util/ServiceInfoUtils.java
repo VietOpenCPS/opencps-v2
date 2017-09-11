@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.opencps.api.serviceinfo.model.ServiceInfoModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoResultModel;
-import org.opencps.backend.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceInfo;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -37,8 +37,6 @@ public class ServiceInfoUtils {
 				serviceInfoResultModel.setAdministrationName(serviceInfo.getAdministrationName());
 				serviceInfoResultModel.setDomainCode(serviceInfo.getDomainCode());
 				serviceInfoResultModel.setDomainName(serviceInfo.getDomainName());
-				serviceInfoResultModel.setMaxLevel(serviceInfo.getMaxLevel());
-				serviceInfoResultModel.setActiveStatus(serviceInfo.getActiveStatus());
 				
 				serviceInfoResultsModel.add(serviceInfoResultModel);
 			}
@@ -67,7 +65,6 @@ public class ServiceInfoUtils {
 			serviceInfoModel.setFeeText(serviceInfo.getFeeText());
 			serviceInfoModel.setAdministrationCode(serviceInfo.getAdministrationCode());
 			serviceInfoModel.setDomainCode(serviceInfo.getDomainCode());
-			serviceInfoModel.setMaxLevel(serviceInfo.getMaxLevel());
 		}
 
 		return serviceInfoModel;

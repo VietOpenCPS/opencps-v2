@@ -2,14 +2,6 @@ package org.opencps.usermgt.constants;
 
 import java.util.Date;
 
-import javax.portlet.ActionRequest;
-
-import org.opencps.datamgt.utils.DateTimeUtils;
-
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.WebKeys;
-
 /**
  * @author Binhth
  * @see WorkingUnitTerm
@@ -45,12 +37,6 @@ public class WorkingUnitTerm {
 	
 	public static final String ADDRESS = "address";
 	
-	public static final String CITY_CODE = "cityCode";
-	
-	public static final String DISTRICT_CODE = "districtCode";
-	
-	public static final String WARD_CODE = "wardCode";
-	
 	public static final String TEL_NO = "telNo";
 	
 	public static final String FAX_NO = "faxNo";
@@ -59,11 +45,7 @@ public class WorkingUnitTerm {
 	
 	public static final String WEBSITE = "website";
 	
-	public static final String IS_EMPLOYER = "isEmployer";
-	
-	public static final String MANAGER_WORKING_UNIT_ID = "managerWorkingUnitId";
-	
-	public static final String MAPPING_ORGANISATION_ID = "mappingOrganisationId";
+	public static final String LOGO_FILE_ENTRY_ID = "logoFileEntryId";
 	
 	public static final String SITE_TEMPLATE_ID = "siteTemplateId";
 	// sortable
@@ -95,12 +77,6 @@ public class WorkingUnitTerm {
 	
 	public static final String ADDRESS_SORTABLE = "address_sortable";
 	
-	public static final String CITY_CODE_SORTABLE = "cityCode_sortable";
-	
-	public static final String DISTRICT_CODE_SORTABLE = "districtCode_sortable";
-	
-	public static final String WARD_CODE_SORTABLE = "wardCode_sortable";
-	
 	public static final String TEL_NO_SORTABLE = "telNo_sortable";
 	
 	public static final String FAX_NO_SORTABLE = "faxNo_sortable";
@@ -108,12 +84,6 @@ public class WorkingUnitTerm {
 	public static final String EMAIL_SORTABLE = "email_sortable";
 	
 	public static final String WEBSITE_SORTABLE = "website_sortable";
-	
-	public static final String IS_EMPLOYER_SORTABLE = "isEmployer_sortable";
-	
-	public static final String MANAGER_WORKING_UNIT_ID_SORTABLE = "managerWorkingUnitId_sortable";
-	
-	public static final String MAPPING_ORGANISATION_ID_SORTABLE = "mappingOrganisationId_sortable";
 	
 	private long workingUnitId;
 
@@ -136,61 +106,16 @@ public class WorkingUnitTerm {
 	private String sibling;
 	private String treeIndex;
 	private String address;
-	private String cityCode;
-	private String districtCode;
-	private String wardCode;
 	private String telNo;
 	private String faxNo;
 	private String email;
 	private String website;
-	private boolean isEmployer;
-	private long managerWorkingUnitId;
-	private long mappingOrganisationId;
 	private long employeeTemplateId;
 	private long partnerTemplateId;
 	private long adminUserId;
+	private long logoFileEntryId;
 	
 	public WorkingUnitTerm() {
-		
-	}
-
-	public WorkingUnitTerm(ActionRequest request) {
-
-		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-
-		workingUnitId = ParamUtil.getLong(request, WORKINGUNIT_ID);
-		
-		groupId = themeDisplay.getScopeGroupId();
-		
-		companyId = themeDisplay.getCompanyId();
-		
-		userId = themeDisplay.getUserId();
-		
-		userName = themeDisplay.getUser().getFullName();
-		
-		createDate = ParamUtil.getDate(request, CREATE_DATE,
-				DateTimeUtils.getDateTimeFormat(DateTimeUtils._VN_DATE_TIME_FORMAT));
-		
-		modifiedDate = ParamUtil.getDate(request, MODIFIED_DATE,
-				DateTimeUtils.getDateTimeFormat(DateTimeUtils._VN_DATE_TIME_FORMAT));
-		
-		name = ParamUtil.getString(request, NAME);
-		enName = ParamUtil.getString(request, ENNAME);
-		govAgencyCode = ParamUtil.getString(request, GOV_AGENCY_CODE);
-		parentWorkingUnitId = ParamUtil.getLong(request, PARENT_WORKING_UNIT_ID);
-		sibling = ParamUtil.getString(request, SIBLING);
-		treeIndex = ParamUtil.getString(request, TREEINDEX);
-		address = ParamUtil.getString(request, ADDRESS);
-		cityCode = ParamUtil.getString(request, CITY_CODE);
-		districtCode = ParamUtil.getString(request, DISTRICT_CODE);
-		wardCode = ParamUtil.getString(request, WARD_CODE);
-		telNo = ParamUtil.getString(request, TEL_NO);
-		faxNo = ParamUtil.getString(request, FAX_NO);
-		email = ParamUtil.getString(request, EMAIL);
-		website = ParamUtil.getString(request, WEBSITE);
-		isEmployer = ParamUtil.getBoolean(request, IS_EMPLOYER);
-		managerWorkingUnitId = ParamUtil.getLong(request, MANAGER_WORKING_UNIT_ID);
-		mappingOrganisationId = ParamUtil.getLong(request, MAPPING_ORGANISATION_ID);
 		
 	}
 
@@ -306,30 +231,6 @@ public class WorkingUnitTerm {
 		this.address = address;
 	}
 
-	public String getCityCode() {
-		return cityCode;
-	}
-
-	public void setCityCode(String cityCode) {
-		this.cityCode = cityCode;
-	}
-
-	public String getDistrictCode() {
-		return districtCode;
-	}
-
-	public void setDistrictCode(String districtCode) {
-		this.districtCode = districtCode;
-	}
-
-	public String getWardCode() {
-		return wardCode;
-	}
-
-	public void setWardCode(String wardCode) {
-		this.wardCode = wardCode;
-	}
-
 	public String getTelNo() {
 		return telNo;
 	}
@@ -362,30 +263,6 @@ public class WorkingUnitTerm {
 		this.website = website;
 	}
 
-	public boolean isEmployer() {
-		return isEmployer;
-	}
-
-	public void setEmployer(boolean isEmployer) {
-		this.isEmployer = isEmployer;
-	}
-
-	public long getManagerWorkingUnitId() {
-		return managerWorkingUnitId;
-	}
-
-	public void setManagerWorkingUnitId(long managerWorkingUnitId) {
-		this.managerWorkingUnitId = managerWorkingUnitId;
-	}
-
-	public long getMappingOrganisationId() {
-		return mappingOrganisationId;
-	}
-
-	public void setMappingOrganisationId(long mappingOrganisationId) {
-		this.mappingOrganisationId = mappingOrganisationId;
-	}
-
 	public long getEmployeeTemplateId() {
 		return employeeTemplateId;
 	}
@@ -408,6 +285,14 @@ public class WorkingUnitTerm {
 
 	public void setAdminUserId(long adminUserId) {
 		this.adminUserId = adminUserId;
+	}
+
+	public long getLogoFileEntryId() {
+		return logoFileEntryId;
+	}
+
+	public void setLogoFileEntryId(long logoFileEntryId) {
+		this.logoFileEntryId = logoFileEntryId;
 	}
 
 }

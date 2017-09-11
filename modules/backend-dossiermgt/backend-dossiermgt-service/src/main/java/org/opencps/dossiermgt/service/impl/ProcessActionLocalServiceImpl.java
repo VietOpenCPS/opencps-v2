@@ -12,32 +12,32 @@
  * details.
  */
 
-package org.opencps.backend.dossiermgt.service.impl;
+package org.opencps.dossiermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import org.opencps.backend.dossiermgt.service.base.StepAllowanceLocalServiceBaseImpl;
+import org.opencps.dossiermgt.service.base.ProcessActionLocalServiceBaseImpl;
 
 /**
- * The implementation of the step allowance local service.
+ * The implementation of the process action local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.backend.dossiermgt.service.StepAllowanceLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.ProcessActionLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
  * </p>
  *
  * @author huymq
- * @see StepAllowanceLocalServiceBaseImpl
- * @see org.opencps.backend.dossiermgt.service.StepAllowanceLocalServiceUtil
+ * @see ProcessActionLocalServiceBaseImpl
+ * @see org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil
  */
 @ProviderType
-public class StepAllowanceLocalServiceImpl
-	extends StepAllowanceLocalServiceBaseImpl {
+public class ProcessActionLocalServiceImpl
+	extends ProcessActionLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.backend.dossiermgt.service.StepAllowanceLocalServiceUtil} to access the step allowance local service.
+	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil} to access the process action local service.
 	 */
 }

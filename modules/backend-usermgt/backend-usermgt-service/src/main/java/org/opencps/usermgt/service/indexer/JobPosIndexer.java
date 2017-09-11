@@ -1,0 +1,166 @@
+package org.opencps.usermgt.service.indexer;
+
+import java.util.LinkedHashMap;
+import java.util.Locale;
+
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+
+import org.opencps.usermgt.constants.JobPosTerm;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
+import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
+
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.BaseIndexer;
+import com.liferay.portal.kernel.search.BooleanQuery;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Summary;
+import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
+
+public class JobPosIndexer extends BaseIndexer<JobPos> {
+
+	public static final String CLASS_NAME = JobPos.class.getName();
+
+	@Override
+	public String getClassName() {
+		return CLASS_NAME;
+	}
+
+	@Override
+	public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
+			SearchContext searchContext) throws Exception {
+
+		addSearchTerm(searchQuery, searchContext, JobPosTerm.JOBPOS_ID, false);
+		addSearchTerm(searchQuery, searchContext, JobPosTerm.GROUP_ID, false);
+		addSearchTerm(searchQuery, searchContext, JobPosTerm.COMPANY_ID, false);
+		addSearchTerm(searchQuery, searchContext, JobPosTerm.USER_ID, false);
+		addSearchTerm(searchQuery, searchContext, JobPosTerm.USER_NAME, false);
+		addSearchTerm(searchQuery, searchContext, JobPosTerm.CREATE_DATE, false);
+		addSearchTerm(searchQuery, searchContext, JobPosTerm.MODIFIED_DATE, false);
+
+		addSearchTerm(searchQuery, searchContext, JobPosTerm.WORKING_UNIT_ID, true);
+		addSearchTerm(searchQuery, searchContext, JobPosTerm.TITLE, true);
+		addSearchTerm(searchQuery, searchContext, JobPosTerm.DESCRIPTION, true);
+		addSearchTerm(searchQuery, searchContext, JobPosTerm.LEADER, true);
+		addSearchTerm(searchQuery, searchContext, JobPosTerm.MAPPING_ROLE_ID, true);
+
+		@SuppressWarnings("unchecked")
+		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
+
+		if (params != null) {
+			String expandoAttributes = (String) params.get("expandoAttributes");
+
+			if (Validator.isNotNull(expandoAttributes)) {
+				addSearchExpando(searchQuery, searchContext, expandoAttributes);
+			}
+		}
+	}
+
+	@Override
+	protected void doDelete(JobPos jobPos) throws Exception {
+		deleteDocument(jobPos.getCompanyId(), jobPos.getJobPosId());
+	}
+
+	@Override
+	protected Document doGetDocument(JobPos jobPos) throws Exception {
+		Document document = getBaseModelDocument(CLASS_NAME, jobPos);
+
+		document.addKeywordSortable(Field.COMPANY_ID, String.valueOf(jobPos.getCompanyId()));
+		document.addDateSortable(Field.MODIFIED_DATE, jobPos.getModifiedDate());
+		document.addKeywordSortable(Field.USER_ID, String.valueOf(jobPos.getUserId()));
+		document.addKeywordSortable(Field.USER_NAME, String.valueOf(jobPos.getUserName()));
+
+		document.addNumberSortable(JobPosTerm.JOBPOS_ID, jobPos.getJobPosId());
+		document.addNumberSortable(JobPosTerm.WORKING_UNIT_ID, jobPos.getWorkingUnitId());
+		document.addTextSortable(JobPosTerm.TITLE, jobPos.getTitle());
+		document.addTextSortable(JobPosTerm.DESCRIPTION, jobPos.getDescription());
+		document.addNumberSortable(JobPosTerm.LEADER, jobPos.getLeader());
+		document.addNumberSortable(JobPosTerm.MAPPING_ROLE_ID, jobPos.getMappingRoleId());
+
+		String workingUnitName = "";
+
+		if (jobPos.getWorkingUnitId() > 0) {
+
+			WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchWorkingUnit(jobPos.getWorkingUnitId());
+
+			workingUnitName = Validator.isNotNull(workingUnit)? workingUnit.getName():StringPool.BLANK;
+		}
+
+		document.addTextSortable(JobPosTerm.WORKING_UNIT_NAME, workingUnitName);
+
+		return document;
+	}
+
+	@Override
+	protected Summary doGetSummary(Document document, Locale locale, String snippet, PortletRequest portletRequest,
+			PortletResponse portletResponse) {
+
+		Summary summary = createSummary(document);
+
+		summary.setMaxContentLength(QueryUtil.ALL_POS);
+
+		return summary;
+	}
+
+	@Override
+	protected void doReindex(JobPos jobPos) throws Exception {
+		Document document = getDocument(jobPos);
+		IndexWriterHelperUtil.updateDocument(getSearchEngineId(), jobPos.getCompanyId(), document,
+				isCommitImmediately());
+	}
+
+	@Override
+	protected void doReindex(String className, long classPK) throws Exception {
+		JobPos jobPos = JobPosLocalServiceUtil.getJobPos(classPK);
+		doReindex(jobPos);
+	}
+
+	@Override
+	protected void doReindex(String[] ids) throws Exception {
+		long companyId = GetterUtil.getLong(ids[0]);
+		reindexJobPos(companyId);
+	}
+
+	protected void reindexJobPos(long companyId) throws PortalException {
+		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = JobPosLocalServiceUtil
+				.getIndexableActionableDynamicQuery();
+
+		indexableActionableDynamicQuery.setCompanyId(companyId);
+		indexableActionableDynamicQuery
+				.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<JobPos>() {
+
+					@Override
+					public void performAction(JobPos jobPos) {
+						try {
+							Document document = getDocument(jobPos);
+
+							indexableActionableDynamicQuery.addDocuments(document);
+						} catch (PortalException pe) {
+							if (_log.isWarnEnabled()) {
+								_log.warn("Unable to index contact " + jobPos.getJobPosId(), pe);
+							}
+						}
+					}
+
+				});
+		indexableActionableDynamicQuery.setSearchEngineId(getSearchEngineId());
+
+		indexableActionableDynamicQuery.performActions();
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(JobPosIndexer.class);
+
+}

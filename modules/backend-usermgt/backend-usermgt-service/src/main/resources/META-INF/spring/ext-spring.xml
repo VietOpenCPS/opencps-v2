@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean class="org.opencps.usermgt.service.indexer.OfficeSiteIndexer" id="org.opencps.usermgt.service.indexer.OfficeSiteIndexer" />
+	<bean class="org.opencps.usermgt.service.indexer.WorkingUnitIndexer" id="org.opencps.usermgt.service.indexer.WorkingUnitIndexer" />
+	<bean class="org.opencps.usermgt.service.indexer.JobPosIndexer" id="org.opencps.usermgt.service.indexer.JobPosIndexer" />
+	<bean class="org.opencps.usermgt.service.indexer.ApplicantIndexer" id="org.opencps.usermgt.service.indexer.ApplicantIndexer" />
+</beans>

@@ -14,18 +14,59 @@
 
 package org.opencps.usermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
 
+import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
+import org.opencps.usermgt.service.util.ServiceProps;
+import org.opencps.usermgt.service.util.UserMgtUtils;
+
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.BooleanQuery;
+import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PwdGenerator;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the applicant local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.usermgt.service.ApplicantLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are
+ * added, rerun ServiceBuilder to copy their definitions into the
+ * {@link org.opencps.usermgt.service.ApplicantLocalService} interface.
  *
  * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
+ * This is a local service. Methods of this service will not have security
+ * checks based on the propagated JAAS credentials because this service can only
+ * be accessed from within the same VM.
  * </p>
  *
  * @author khoavu
@@ -37,6 +78,322 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.usermgt.service.ApplicantLocalServiceUtil} to access the applicant local service.
+	 * Never reference this class directly. Always use {@link
+	 * org.opencps.usermgt.service.ApplicantLocalServiceUtil} to access the
+	 * applicant local service.
 	 */
+
+	/**
+	 * @param context
+	 * @param appicantId
+	 * @param applicantName
+	 * @param applicantIdNo
+	 * @param applicantIdDate
+	 * @param address
+	 * @param cityCode
+	 * @param cityName
+	 * @param districtCode
+	 * @param districtName
+	 * @param wardCode
+	 * @param wardName
+	 * @param contactName
+	 * @param contactTelNo
+	 * @param contactEmail
+	 * @param mappingUserId
+	 * @param profile
+	 * @return
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant updateApplication(ServiceContext context, long applicantId, String applicantName,
+			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String contactEmail, String profile, String password)
+			throws PortalException, SystemException {
+
+		Applicant applicant = null;
+
+		Date now = new Date();
+
+		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
+
+		if (applicantId == 0) {
+
+			applicantId = counterLocalService.increment(Applicant.class.getName());
+
+			applicant = applicantPersistence.create(applicantId);
+
+			Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
+
+			boolean autoPassword = false;
+			boolean autoScreenName = true;
+			boolean sendEmail = true;
+
+			long[] groupIds = null;
+			long[] organizationIds = null;
+			long[] roleIds = null;
+			long[] userGroupIds = null;
+
+			String screenName = null;
+
+			if (Validator.isNull(password)) {
+				password = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+			}
+
+			UserMgtUtils.SplitName spn = UserMgtUtils.splitName(applicantName, applicantIdType);
+
+			// add default role
+			if (Validator.isNotNull(roleDefault)) {
+				roleIds = new long[] { roleDefault.getRoleId() };
+			}
+
+			Role adminRole = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.ADM_ROLE_NAME);
+
+			List<User> adminUsers = userLocalService.getRoleUsers(adminRole.getRoleId());
+
+			long creatorUserId = 0;
+
+			if (adminUsers.size() != 0) {
+				creatorUserId = adminUsers.get(0).getUserId();
+			}
+
+			Calendar calendar = Calendar.getInstance();
+			
+			calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 20);
+
+			int year = calendar.get(Calendar.YEAR);
+			int month = calendar.get(Calendar.MONTH); // jan = 0, dec = 11
+			int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+			User mappingUser = userLocalService.addUserWithWorkflow(creatorUserId, context.getCompanyId(), autoPassword,
+					password, password, autoScreenName, screenName, contactEmail, 0l, StringPool.BLANK,
+					LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true,
+					dayOfMonth, month, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
+					userGroupIds, sendEmail, context);
+
+			long mappingUserId = mappingUser.getUserId();
+
+			Date idDate = null;
+
+			try {
+				idDate = UserMgtUtils.convertDate(applicantIdDate);
+			} catch (Exception e) {
+				_log.error(ApplicantLocalServiceImpl.class.getName() + "date input error");
+			}
+
+			// Add audit field
+			applicant.setCreateDate(now);
+			applicant.setModifiedDate(now);
+			applicant.setCompanyId(context.getCompanyId());
+			applicant.setUserId(context.getUserId());
+			applicant.setUserName(auditUser.getFullName());
+			applicant.setGroupId(context.getScopeGroupId());
+
+			applicant.setApplicantName(applicantName);
+			applicant.setApplicantIdType(applicantIdType);
+			applicant.setApplicantIdNo(applicantIdNo);
+			applicant.setApplicantIdDate(idDate);
+			applicant.setAddress(address);
+			applicant.setCityCode(cityCode);
+			applicant.setCityName(cityName);
+			applicant.setDistrictCode(districtCode);
+			applicant.setDistrictName(districtName);
+			applicant.setWardCode(wardCode);
+			applicant.setWardName(wardName);
+			applicant.setContactName(contactName);
+			applicant.setContactTelNo(contactTelNo);
+			applicant.setContactEmail(contactEmail);
+			applicant.setMappingUserId(mappingUserId);
+			applicant.setProfile(profile);
+
+		} else {
+			applicant = applicantPersistence.fetchByPrimaryKey(applicantId);
+
+			applicant.setModifiedDate(now);
+			applicant.setUserId(context.getUserId());
+			applicant.setUserName(auditUser.getFullName());
+
+			Date idDate = null;
+
+			try {
+				idDate = UserMgtUtils.convertDate(applicantIdDate);
+			} catch (Exception e) {
+				_log.error(ApplicantLocalServiceImpl.class.getName() + "date input error");
+			}
+
+			if (Validator.isNotNull(applicantName))
+				applicant.setApplicantName(applicantName);
+
+			if (Validator.isNotNull(applicantIdType))
+				applicant.setApplicantIdType(applicantIdType);
+
+			if (Validator.isNotNull(applicantIdNo))
+				applicant.setApplicantIdNo(applicantIdNo);
+
+			if (Validator.isNotNull(idDate))
+				applicant.setApplicantIdDate(idDate);
+
+			if (Validator.isNotNull(address))
+				applicant.setAddress(address);
+
+			if (Validator.isNotNull(cityCode))
+				applicant.setCityCode(cityCode);
+
+			if (Validator.isNotNull(cityName))
+				applicant.setCityName(cityName);
+
+			if (Validator.isNotNull(districtCode))
+				applicant.setDistrictCode(districtCode);
+
+			if (Validator.isNotNull(districtName))
+				applicant.setDistrictName(districtName);
+
+			if (Validator.isNotNull(wardCode))
+				applicant.setWardCode(wardCode);
+
+			if (Validator.isNotNull(wardName))
+				applicant.setWardName(wardName);
+
+			if (Validator.isNotNull(contactName))
+				applicant.setContactName(contactName);
+
+			if (Validator.isNotNull(contactTelNo))
+				applicant.setContactTelNo(contactTelNo);
+
+			if (Validator.isNotNull(contactEmail))
+				applicant.setContactEmail(contactEmail);
+
+			if (Validator.isNotNull(profile))
+				applicant.setProfile(profile);
+		}
+
+		applicantPersistence.update(applicant);
+
+		return applicant;
+	}
+
+	@Indexable(type = IndexableType.DELETE)
+	public Applicant removeApplicant(long applicantId) throws PortalException, SystemException {
+		Applicant applicant = applicantPersistence.fetchByPrimaryKey(applicantId);
+
+		long mappingId = applicant.getMappingUserId();
+
+		userPersistence.remove(mappingId);
+
+		applicantPersistence.remove(applicant);
+
+		return applicant;
+	}
+
+	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
+			SearchContext searchContext) throws ParseException, SearchException {
+
+		String keywords = (String) params.get("keywords");
+		String groupId = (String) params.get(ApplicantTerm.GROUP_ID);
+
+		Indexer<Applicant> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
+
+		searchContext.addFullQueryEntryClassName(Applicant.class.getName());
+		searchContext.setEntryClassNames(new String[] { Applicant.class.getName() });
+		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setLike(true);
+		searchContext.setStart(start);
+		searchContext.setEnd(end);
+		searchContext.setAndSearch(true);
+		searchContext.setSorts(sorts);
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		if (Validator.isNotNull(keywords)) {
+
+			String[] keyword = keywords.split(StringPool.SPACE);
+
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(ApplicantTerm.CONTACTNAME, ApplicantTerm.CONTACTEMAIL, ApplicantTerm.CONTACTTELNO,
+						ApplicantTerm.ADDRESS);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
+		}
+
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
+
+			query.addFields(ApplicantTerm.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Applicant.class.getName());
+
+		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+	}
+
+	public long countLucene(LinkedHashMap<String, Object> params, SearchContext searchContext)
+			throws ParseException, SearchException {
+
+		String keywords = (String) params.get("keywords");
+		String groupId = (String) params.get(ApplicantTerm.GROUP_ID);
+		
+		_log.info("GROUPID = " + groupId);
+		_log.info("COMPANYID = " + searchContext.getCompanyId());
+
+		Indexer<Applicant> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
+
+		searchContext.addFullQueryEntryClassName(Applicant.class.getName());
+		searchContext.setEntryClassNames(new String[] { Applicant.class.getName() });
+		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setLike(true);
+		searchContext.setAndSearch(true);
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		if (Validator.isNotNull(keywords)) {
+
+			String[] keyword = keywords.split(StringPool.SPACE);
+
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(ApplicantTerm.CONTACTNAME, ApplicantTerm.CONTACTEMAIL, ApplicantTerm.CONTACTTELNO,
+						ApplicantTerm.ADDRESS);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
+		}
+
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
+
+			query.addFields(ApplicantTerm.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Applicant.class.getName());
+
+		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
+	}
+
+	private Log _log = LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
 }

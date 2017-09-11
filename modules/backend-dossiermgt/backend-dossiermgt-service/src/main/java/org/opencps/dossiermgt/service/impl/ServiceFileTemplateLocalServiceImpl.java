@@ -12,7 +12,7 @@
  * details.
  */
 
-package org.opencps.backend.dossiermgt.service.impl;
+package org.opencps.dossiermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.opencps.backend.dossiermgt.model.ServiceFileTemplate;
-import org.opencps.backend.dossiermgt.service.base.ServiceFileTemplateLocalServiceBaseImpl;
-import org.opencps.backend.dossiermgt.service.persistence.ServiceFileTemplatePK;
+import org.opencps.dossiermgt.model.ServiceFileTemplate;
+import org.opencps.dossiermgt.service.base.ServiceFileTemplateLocalServiceBaseImpl;
+import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -35,7 +35,7 @@ import com.liferay.portal.kernel.util.StringPool;
  * The implementation of the file template local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.backend.dossiermgt.service.FileTemplateLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.FileTemplateLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
@@ -43,7 +43,7 @@ import com.liferay.portal.kernel.util.StringPool;
  *
  * @author huymq
  * @see FileTemplateLocalServiceBaseImpl
- * @see org.opencps.backend.dossiermgt.service.FileTemplateLocalServiceUtil
+ * @see org.opencps.dossiermgt.service.FileTemplateLocalServiceUtil
  */
 @ProviderType
 public class ServiceFileTemplateLocalServiceImpl

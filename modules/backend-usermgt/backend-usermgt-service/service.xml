@@ -203,11 +203,16 @@
 		<column name="contactTelNo" type="String" />
 		<column name="contactEmail" type="String" />
 		<column name="mappingUserId" type="long" />
+		<column name="activationCode" type="String" />
+		<column name="lock_" type="boolean" />
 		<column name="profile" type="String" />
 
 		<order by="asc">
 			<order-column name="applicantName"/>
 		</order>
+		
+		<reference entity="User" package-path="com.liferay.portal" />
+		<reference entity="Role" package-path="com.liferay.portal" />
 	</entity>
 	
 	<entity name="Preferences" uuid="true" local-service="true"

@@ -3,3 +3,10 @@ Bundle-SymbolicName: backend.api.rest
 Bundle-Version: 2.0.0
 ConfigurationPath: /configuration
 Include-Resource: configuration=src/main/resources/configuration
+Export-Package: \
+	org.opencps.usermgt.action,\
+	com.fasterxml.jackson.annotation,\
+	com.fasterxml.jackson.annotation.*,\
+	io.swagger.annotations,\
+	io.swagger.annotations.*,\
+	com.fasterxml.jackson.dataformat.xml.annotation

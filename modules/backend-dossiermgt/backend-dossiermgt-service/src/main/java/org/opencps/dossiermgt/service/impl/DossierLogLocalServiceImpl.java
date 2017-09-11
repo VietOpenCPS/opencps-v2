@@ -12,31 +12,31 @@
  * details.
  */
 
-package org.opencps.backend.dossiermgt.service.impl;
+package org.opencps.dossiermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import org.opencps.backend.dossiermgt.service.base.ProcessStepLocalServiceBaseImpl;
+import org.opencps.dossiermgt.service.base.DossierLogLocalServiceBaseImpl;
 
 /**
- * The implementation of the process step local service.
+ * The implementation of the dossier log local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.backend.dossiermgt.service.ProcessStepLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.DossierLogLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
  * </p>
  *
  * @author huymq
- * @see ProcessStepLocalServiceBaseImpl
- * @see org.opencps.backend.dossiermgt.service.ProcessStepLocalServiceUtil
+ * @see DossierLogLocalServiceBaseImpl
+ * @see org.opencps.dossiermgt.service.DossierLogLocalServiceUtil
  */
 @ProviderType
-public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl {
+public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.backend.dossiermgt.service.ProcessStepLocalServiceUtil} to access the process step local service.
+	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.DossierLogLocalServiceUtil} to access the dossier log local service.
 	 */
 }

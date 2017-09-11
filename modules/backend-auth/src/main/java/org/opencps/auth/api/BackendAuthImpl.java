@@ -35,6 +35,7 @@ public class BackendAuthImpl implements BackendAuth {
 		boolean hasPermission = false;
 
 		List<Role> roles = RoleLocalServiceUtil.getUserRoles(context.getUserId());
+		
 		try {
 			for (Role role : roles) {
 				hasPermission = ResourcePermissionLocalServiceUtil.hasResourcePermission(context.getCompanyId(), name,

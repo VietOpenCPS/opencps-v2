@@ -12,31 +12,31 @@
  * details.
  */
 
-package org.opencps.backend.dossiermgt.service.impl;
+package org.opencps.dossiermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import org.opencps.backend.dossiermgt.service.base.DossierLogLocalServiceBaseImpl;
+import org.opencps.dossiermgt.service.base.PaymentFileLocalServiceBaseImpl;
 
 /**
- * The implementation of the dossier log local service.
+ * The implementation of the payment file local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.backend.dossiermgt.service.DossierLogLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.PaymentFileLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
  * </p>
  *
  * @author huymq
- * @see DossierLogLocalServiceBaseImpl
- * @see org.opencps.backend.dossiermgt.service.DossierLogLocalServiceUtil
+ * @see PaymentFileLocalServiceBaseImpl
+ * @see org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil
  */
 @ProviderType
-public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
+public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.backend.dossiermgt.service.DossierLogLocalServiceUtil} to access the dossier log local service.
+	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil} to access the payment file local service.
 	 */
 }

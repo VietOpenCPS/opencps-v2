@@ -12,17 +12,17 @@
  * details.
  */
 
-package org.opencps.backend.dossiermgt.service.impl;
+package org.opencps.dossiermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import org.opencps.backend.dossiermgt.service.base.ServiceConfigLocalServiceBaseImpl;
+import org.opencps.dossiermgt.service.base.ServiceConfigLocalServiceBaseImpl;
 
 /**
  * The implementation of the service config local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.backend.dossiermgt.service.ServiceConfigLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.ServiceConfigLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
@@ -30,7 +30,7 @@ import org.opencps.backend.dossiermgt.service.base.ServiceConfigLocalServiceBase
  *
  * @author huymq
  * @see ServiceConfigLocalServiceBaseImpl
- * @see org.opencps.backend.dossiermgt.service.ServiceConfigLocalServiceUtil
+ * @see org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil
  */
 @ProviderType
 public class ServiceConfigLocalServiceImpl
@@ -38,6 +38,6 @@ public class ServiceConfigLocalServiceImpl
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.backend.dossiermgt.service.ServiceConfigLocalServiceUtil} to access the service config local service.
+	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil} to access the service config local service.
 	 */
 }
