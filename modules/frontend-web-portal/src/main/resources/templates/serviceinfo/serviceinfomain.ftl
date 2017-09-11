@@ -20,49 +20,49 @@
         <div>
           <ul class="ul-default ul-with-border ul-with-right-icon">
             <#if serviceinfo.administrations?has_content>
-              <#list serviceinfo.administrations as administration>
-                  <li dataPk="administration.administrationCode" class='administration'>
-                    <a href='javascript:;' >${administration.administrationName}</a>
-                    <div class="btn-group">
-                      ${administration.administrationCount}
-                    </div>
-                  </li>
-              </#list>
+            <#list serviceinfo.administrations as administration>
+            <li dataPk="administration.administrationCode" class='administration'>
+              <a href='javascript:;' >${administration.administrationName}</a>
+              <div class="btn-group">
+                <span class="label label-default PL15 PR15 text-link">${administration.administrationCount}</span>
+              </div>
+            </li>
+            </#list>
             </#if>
           </ul>
         </div>
         <div>
           <ul class="ul-default ul-with-border ul-with-right-icon">
             <#if serviceinfo.domains?has_content>
-              <#list serviceinfo.domains as domain>
-                  <li dataPk="domain.domainCode" class='domain'>
-                    <a href='javascript:;' >${domain.domainName}</a>
-                    <div class="btn-group">
-                      ${domain.domainCount}
-                    </div>
-                  </li>
-              </#list>
+            <#list serviceinfo.domains as domain>
+            <li dataPk="domain.domainCode" class='domain'>
+              <a href='javascript:;' >${domain.domainName}</a>
+              <div class="btn-group">
+                <span class="label label-default PL15 PR15 text-link">${domain.domainCount}</span>
+              </div>
+            </li>
+            </#list>
             </#if>
           </ul>
         </div>
         <div>
           <ul class="ul-default ul-with-border ul-with-right-icon">
             <#if serviceinfo.levels?has_content>
-              <#list serviceinfo.levels as level>
-                  <li dataPk="level.levelCode" class='level'>
-                    <a href='javascript:;' >${level.levelName}</a>
-                    <div class="btn-group">
-                      ${level.levelCount}
-                    </div>
-                  </li>
-              </#list>
+            <#list serviceinfo.levels as level>
+            <li dataPk="level.levelCode" class='level'>
+              <a href='javascript:;' >${level.levelName}</a>
+              <div class="btn-group">
+                <span class="label label-default PL15 PR15 text-link">${level.levelCount}</span>
+              </div>
+            </li>
+            </#list>
             </#if>
           </ul>
         </div>
       </div>
     </div>
   </div>
-  <div class="col-xs-12 col-sm-9" id="right-content-serviceinfo">
+  <div class="col-xs-12 col-sm-9" id="serviceinfo-right-content">
     <#include "serviceinfomain_list.ftl">
   </div>
 </div>
@@ -73,43 +73,53 @@
       animation: { open: { effects: "fadeIn"} }
     }).data('kendoTabStrip');
 
-		$("#administration li").first().addClass("active");
+    $("#administration li").first().addClass("active");
 
     $(document).on("click",".administration",function(event){
-  		event.preventDefault();
+      event.preventDefault();
 
-  		$("#administration li").removeClass('active');
-  		$(this).addClass('active');
+      $("#administration li").removeClass('active');
+      $(this).addClass('active');
 
-  		var administrationCode = $(this).attr("dataPk");
-			$("#service_info_list_view").getKendoListView().dataSource.read({
-				"administration": administrationCode
-			});
-  	});
+      var administrationCode = $(this).attr("dataPk");
+      $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
+        $("#service_info_list_view").getKendoListView().dataSource.read({
+          "administration": administrationCode
+        });
+      });
+      
+    });
 
     $(document).on("click",".domain",function(event){
-  		event.preventDefault();
+      event.preventDefault();
 
-  		$("#domain li").removeClass('active');
-  		$(this).addClass('active');
+      $("#domain li").removeClass('active');
+      $(this).addClass('active');
 
-  		var domainCode = $(this).attr("dataPk");
-			$("#service_info_list_view").getKendoListView().dataSource.read({
-				"domain": domainCode
-			});
-  	});
+      var domainCode = $(this).attr("dataPk");
+      $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
+        $("#service_info_list_view").getKendoListView().dataSource.read({
+          "domain": domainCode
+        });
+      });
+      
+    });
 
     $(document).on("click",".level",function(event){
-  		event.preventDefault();
+      event.preventDefault();
 
-  		$("#level li").removeClass('active');
-  		$(this).addClass('active');
+      $("#level li").removeClass('active');
+      $(this).addClass('active');
 
-  		var levelCode = $(this).attr("dataPk");
-			$("#service_info_list_view").getKendoListView().dataSource.read({
-				"level": levelCode
-			});
-  	});
+      var levelCode = $(this).attr("dataPk");
+
+      $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
+        $("#service_info_list_view").getKendoListView().dataSource.read({
+          "level": levelCode
+        });
+      });
+      
+    });
 
   });
 </script>

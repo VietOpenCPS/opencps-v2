@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="row">
   <div class="col-xs-12 col-sm-12 panel P0">
     <div class="row-header"> 
@@ -48,7 +51,7 @@
           <div class="row">
             <div class="col-sm-9">
               <div class="form-group search-icon">
-                <input type="text" name="input_search_service_info" id="input_search_service_info" class="form-control" placeholder="Nhập từ khóa">
+              <input type="text" name="input_search_service_info" id="input_search_service_info" class="form-control input-sm" placeholder="Nhập từ khóa">
               </div>
             </div>
             <div class="col-sm-3">
@@ -60,7 +63,7 @@
     </div>
     <div>
       <!-- list view header -->
-      <ul>
+      <ul class="mimic-table">
         <li class="clearfix">
           <div class="col-sm-1 text-center">
            <b>STT</b>
@@ -76,12 +79,12 @@
          </div>
        </li>
      </ul>
-     <ul id ="service_info_list_view" class="ul-with-border ul-with-border-style-2"></ul>
+     <ul id ="service_info_list_view" class="mimic-table"></ul>
      <div id="service_info_pager" class="k-pager-wrap full-width-pager pull-right PR15 PB15"></div>
    </div>
 
    <script type="text/x-kendo-template" id="service_info_template">
-     <li class="clearfix" data-pk="#: id #" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
+     <li class="clearfix item-serviceinfo eq-height-lg" data-pk="#: id #" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
        <div class="col-sm-1 text-center">
         1
       </div>
@@ -147,7 +150,7 @@
  schema: {
   total: "total",
   data: "data",
-  model : { id: "serviceInfoId" },
+  model : { id: "serviceinfoId" },
 },
 pageSize: 10,
 serverPaging: false,
@@ -169,17 +172,8 @@ serverFiltering: false
 
         //  the first select dossier template
         //  onSelectDossiertemplate(firstItem.attr("data-pk"));
-      },
-      change: function(){
-      	var data = dataSource.view(),
-            selected = $.map(this.select(), function(item) {
-                   var id = data[$(item).index()].id;
-                   $("#right-content-serviceinfo").load("{ajax.serviceinfo_detail}",function(result){
-                   		
-                   });
-            });
-
       }
+
     });
 
     $("#service_info_pager").kendoPager({
@@ -246,7 +240,13 @@ serverFiltering: false
         "keywords": $("#input_search_service_info").val()
       });
     });
-    
-    
+
+    $(document).on("click",".item-serviceinfo",function(event){
+      var id=$(this).attr("data-pk");
+      console.log(id);
+      $("#serviceinfo-right-content").load("${ajax.serviceinfo_detail}",function(result){
+        pullDataDetail(id);
+      });
+    });
   })(jQuery);
 </script>
