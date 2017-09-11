@@ -7,12 +7,14 @@
     <div class="row-header">
       <div class="background-triangle-big">DANH SÁCH THỦ TỤC HÀNH CHÍNH</div>
       <span>Hiển thị 5 trên 2055 bản ghi</span>
-      <span class="pull-right MT5 MR10">Hiển thị
-        <select class="ML5" id="slPageSize">
-          <option value="5" selected="">5</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-        </select>
+      <span class="show-per-page">Hiển thị
+        <span class="select-wrapper">
+					<select class="ML5" id="slPageSize">
+	          <option value="5" selected="">5</option>
+	          <option value="1">1</option>
+	          <option value="2">2</option>
+	        </select>
+				</span>
       </span>
     </div>
     <div class="panel-body">
