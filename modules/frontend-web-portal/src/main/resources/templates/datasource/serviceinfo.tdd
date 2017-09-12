@@ -1,6 +1,6 @@
 {
 	"api": {
-		"server": "http://hanoi.fds.vn:2281/api"
+		"server": "http://v2.opencps.vn/o/rest/v2"
 	},
 	"ajax": {
 		"serviceinfo_detail": "serviceinfo_detail.ftl",
