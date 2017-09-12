@@ -1,5 +1,5 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <div class="row">
@@ -19,7 +19,7 @@
         </ul>
         <div>
           <ul class="ul-default ul-with-right-icon" id="administration">
-            <#if serviceinfo.administrations?has_content>
+            <#-- <#if serviceinfo.administrations?has_content>
             <#list serviceinfo.administrations as administration>
             <li dataPk="${administration.administrationCode}" class='administration'>
               <a href='javascript:;' >${administration.administrationName}</a>
@@ -28,12 +28,21 @@
               </div>
             </li>
             </#list>
-            </#if>
+            </#if> -->
+
+            <script type="text/x-kendo-template" id="tempStatisticsAgencies">
+              <li dataPk="#:administrationCode#" class='administration'>
+                <a href='javascript:;' >#:administrationName#</a>
+                <div class="btn-group">
+                  <span>#:count#</span>
+                </div>
+              </li>
+            </script>
           </ul>
         </div>
         <div>
           <ul class="ul-default ul-with-right-icon" id="domain">
-            <#if serviceinfo.domains?has_content>
+            <#-- <#if serviceinfo.domains?has_content>
             <#list serviceinfo.domains as domain>
             <li dataPk="${domain.domainCode}" class='domain'>
               <a href='javascript:;' >${domain.domainName}</a>
@@ -42,11 +51,19 @@
               </div>
             </li>
             </#list>
-            </#if>
+            </#if> -->
+            <script type="text/x-kendo-template" id="tempStatisticsDomains">
+              <li dataPk="#:domainCode#" class='domain'>
+                <a href='javascript:;' >#:domainName#</a>
+                <div class="btn-group">
+                  <span>#:count#</span>
+                </div>
+              </li>
+            </script>
           </ul>
         </div>
         <div>
-          <ul class="ul-default ul-with-right-icon" id="level">
+          <#-- <ul class="ul-default ul-with-right-icon" id="level">
             <#if serviceinfo.levels?has_content>
             <#list serviceinfo.levels as level>
             <li dataPk="${level.levelCode}" class='level'>
@@ -56,7 +73,15 @@
               </div>
             </li>
             </#list>
-            </#if>
+            </#if> -->
+            <script type="text/x-kendo-template" id="tempStatisticsLevels">
+              <li dataPk="#:level#" class='level'>
+                <a href='javascript:;' >#:levelName#</a>
+                <div class="btn-group">
+                  <span>#count#</span>
+                </div>
+              </li>
+            </script>
           </ul>
         </div>
       </div>
@@ -102,7 +127,6 @@
           "domain": domainCode
         });
       });
-
     });
 
     $(document).on("click",".level",function(event){
@@ -120,6 +144,83 @@
       });
 
     });
+
+    //gen statistics agencies,domain,level
+    var templateAdministration = kendo.template($("#tempStatisticsAgencies").html());
+    var dataSourceAdministrations= new kendo.data.DataSource({
+      transport : {
+        read : {
+          url : "${api.server}/serviceinfos/statistics/agencies", 
+          dataType : "json",
+          type : "GET",
+          success : function(result){
+
+          },
+          error : function(xhr){
+
+          }
+        },
+        schema : {
+          data : "data",
+          total : "total"
+        },
+        change : function(){
+          $("#administration").html(kendo.render(templateAdministration, this.view()));
+        }
+      }
+    });
+    dataSourceAdministrations.read();
+
+    var templateDomains = kendo.template($("#tempStatisticsDomains").html());
+    var dataSourceDomains= new kendo.data.DataSource({
+      transport : {
+        read : {
+          url : "${api.server}/serviceinfos/statistics/domains",
+          dataType : "json",
+          type : "GET",
+          success : function(result){
+
+          },
+          error : function(xhr){
+
+          }
+        },
+        schema : {
+          data : "data",
+          total : "total"
+        },
+        change : function(){
+          $("#domain").html(kendo.render(templateDomains, this.view()));
+        }
+      }
+    });
+    dataSourceDomains.read();
+
+    var templateLevels = kendo.template($("#tempStatisticsLevels").html());
+    var dataSourceLevels= new kendo.data.DataSource({
+      transport : {
+        read : {
+          url : "${api.server}/serviceinfos/statistics/levels",
+          dataType : "json",
+          type : "GET",
+          success : function(result){
+
+          },
+          error : function(xhr){
+
+          }
+        },
+        schema : {
+          data : "data",
+          total : "total"
+        },
+        change : function(){
+          $("#level").html(kendo.render(templateLevels, this.view()));
+        }
+      }
+    });
+
+    dataSourceLevels.read();
 
   });
 </script>

@@ -1,5 +1,5 @@
 sourceRoot: templates
 outputRoot: build
-data: {tdd(datasource/serviceinfo.tdd), tdd(datasource/applicant.tdd)}
+data: {tdd(datasource/serviceinfo.tdd)}
 datetimeFormat: "MMM d, yyyy hh:mm a zzz"
 caseSensitive

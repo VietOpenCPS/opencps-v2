@@ -1,5 +1,5 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <div class="row">
@@ -54,7 +54,7 @@
           <div class="row">
             <div class="col-sm-9">
               <div class="form-group search-icon">
-              <input type="text" name="input_search_service_info" id="input_search_service_info" class="form-control input-sm" placeholder="Nhập từ khóa">
+                <input type="text" name="input_search_service_info" id="input_search_service_info" class="form-control input-sm" placeholder="Nhập từ khóa">
               </div>
             </div>
             <div class="col-sm-3">
@@ -114,6 +114,10 @@
         url: "${api.server}" + "/serviceinfos",
         type: "GET",
         dataType: "json",
+        contentType : "application/x-www-form-urlencoded",
+        beforeSend: function(req) {
+          req.setRequestHeader('groupId', '20147');
+        },
         data: {
           keyword: options.data.keywords,
           page: options.data.page,
@@ -186,21 +190,81 @@ serverFiltering: false
    });
 
     $("#administrationCodeSearch").kendoComboBox({
+      dataTextField: "administrationName",
+      dataValueField: "administrationCode",
       change: onSearchServiceInfo,
       filter: "contains",
-      value:[],
+      dataSource: {
+        transport :{
+          read : {
+            url : "${api.server}/serviceinfos/statistics/agencies",
+            dataType : "json",
+            type : "GET",
+            success : function(result){
+
+            },
+            error : function(xhr){
+
+            }
+          }
+        },
+        schema : {
+          data : "data",
+          total : "total"
+        }
+      }
     });
 
     $("#domainCodeSearch").kendoComboBox({
+      dataTextField: "domainName",
+      dataValueField: "domainCode",
       change: onSearchServiceInfo,
       filter: "contains",
-      value:[],
+      dataSource: {
+        transport :{
+          read : {
+            url : "${api.server}/serviceinfos/statistics/domains",
+            dataType : "json",
+            type : "GET",
+            success : function(result){
+
+            },
+            error : function(xhr){
+
+            }
+          }
+        },
+        schema : {
+          data : "data",
+          total : "total"
+        }
+      }
     });
 
     $("#levelSearch").kendoComboBox({
+      dataTextField: "levelName",
+      dataValueField: "level",
       change: onSearchServiceInfo,
       filter: "contains",
-      value:[],
+      dataSource: {
+        transport :{
+          read : {
+            url : "${api.server}/serviceinfos/statistics/levels",
+            dataType : "json",
+            type : "GET",
+            success : function(result){
+
+            },
+            error : function(xhr){
+
+            }
+          }
+        },
+        schema : {
+          data : "data",
+          total : "total"
+        }
+      }
     });
 
     // open combobox on focus
