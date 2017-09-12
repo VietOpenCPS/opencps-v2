@@ -8,7 +8,6 @@ import javax.portlet.PortletResponse;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
-import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -23,15 +22,14 @@ import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-public class ApplicantIndexer extends BaseIndexer<Applicant>{
-	
+public class ApplicantIndexer extends BaseIndexer<Applicant> {
+
 	public static final String CLASS_NAME = Applicant.class.getName();
 
 	@Override
 	public String getClassName() {
 		return CLASS_NAME;
 	}
-	
 
 	@Override
 	protected void doDelete(Applicant object) throws Exception {
@@ -40,13 +38,13 @@ public class ApplicantIndexer extends BaseIndexer<Applicant>{
 
 	@Override
 	protected Document doGetDocument(Applicant object) throws Exception {
-		
+
 		Document document = getBaseModelDocument(CLASS_NAME, object);
-		
-		//Indexer of audit fields
+
+		// Indexer of audit fields
 		document.addNumberSortable(Field.COMPANY_ID, object.getCompanyId());
 		document.addNumberSortable(Field.GROUP_ID, object.getGroupId());
-		document.addDateSortable(Field.MODIFIED_DATE, object.getModifiedDate());
+		document.addDateSortable(Field.MODIFIED_DATE, object.getCreateDate());
 		document.addDateSortable(Field.CREATE_DATE, object.getModifiedDate());
 		document.addNumberSortable(Field.USER_ID, object.getUserId());
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(object.getUserName()));
@@ -68,28 +66,27 @@ public class ApplicantIndexer extends BaseIndexer<Applicant>{
 	@Override
 	protected Summary doGetSummary(Document document, Locale locale, String snippet, PortletRequest portletRequest,
 			PortletResponse portletResponse) throws Exception {
-		// TODO Auto-generated method stub
 		Summary summary = createSummary(document);
 
 		summary.setMaxContentLength(QueryUtil.ALL_POS);
 
 		return summary;
-		}
+	}
 
 	@Override
 	protected void doReindex(String className, long classPK) throws Exception {
 		Applicant object = ApplicantLocalServiceUtil.getApplicant(classPK);
-		doReindex(object);		
+		doReindex(object);
 	}
 
 	@Override
 	protected void doReindex(String[] ids) throws Exception {
 		long companyId = GetterUtil.getLong(ids[0]);
-		reindex(companyId);		
+		reindex(companyId);
 	}
-	
+
 	protected void reindex(long companyId) throws PortalException {
-		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = JobPosLocalServiceUtil
+		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = ApplicantLocalServiceUtil
 				.getIndexableActionableDynamicQuery();
 
 		indexableActionableDynamicQuery.setCompanyId(companyId);
@@ -119,7 +116,7 @@ public class ApplicantIndexer extends BaseIndexer<Applicant>{
 	protected void doReindex(Applicant object) throws Exception {
 		Document document = getDocument(object);
 		IndexWriterHelperUtil.updateDocument(getSearchEngineId(), object.getCompanyId(), document,
-				isCommitImmediately());		
+				isCommitImmediately());
 	}
 
 	Log _log = LogFactoryUtil.getLog(ApplicantIndexer.class);
