@@ -94,12 +94,19 @@
       format: "dd/MM/yyyy"
     });
 
-    $("#btn-register").click(function(){
+	var datepicker = $("#applicantIdDate").data("kendoDatePicker");
+
+	$("#applicantIdDate").click(function() {
+	    datepicker.open();
+	});
+
+    $("#btn-register").click(function(e){
+      e.preventDefault();
       if(validator.validate()){
         if ($("#password").val().length < 6 || $("#repassword").val().length < 6){
-           notification.show({ message:" Xác nhận mật khẩu mới không đúng" }, "error");
+           notification.show({ message:"Mật khẩu gồm các ký tự 0-9, a-z, ít nhất 6 ký tự" }, "error");
          } else if ($("#password").val() != $("#repassword").val()){
-           notification.show({ message: " Xác nhận mật khẩu mới không đúng"}, "error");
+           notification.show({ message: "Xác nhận mật khẩu mới không đúng"}, "error");
          } else if (!$("#agreement").is(':checked')) {
             notification.show({ message: "Bạn chưa đồng ý với điều khoản sử dụng!!!"}, "error");
          }else{
@@ -110,26 +117,23 @@
 
     var register = function(){
         var data = $('#fm').serialize();
-        console.log(data);
         $.ajax({
-          type : 'POST',
-          url  : '${api.server}/register',
-          data : data,
-          success :  function(result){
+          url: '${api.server}/applicants/register',
+          type: 'POST',
+          data: data,
+          success: function(result){
             notification.show({
               title: "Success",
               message: "Đăng ký thành công."
             }, "success");
-
           },
-          error:function(result){
+          error: function(result){
             notification.show({
               title: "Success",
               message: "Đăng ký không thành công."
             }, "error");
           }
         });
-        console.log("success!");
     }
 
     $('input[type=radio][name=applicantIdType]').change(function() {
@@ -150,7 +154,6 @@
     });
 
 		$("#applicantIdDate").focusout(function(){
-			console.log('applicantIdDate focusout');
 			setTimeout(function(){
 				if ($("#applicantIdDate").hasClass("k-invalid")){
 					$("#applicantIdDate").parent().addClass("MB25");
