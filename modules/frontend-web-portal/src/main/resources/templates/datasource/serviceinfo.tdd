@@ -1,6 +1,7 @@
 {
+
 	"api": {
-		"server": "http://v2.opencps.vn/o/rest/v2"
+		"server": "http://hanoi.fds.vn:2281/api"
 	},
 	"ajax": {
 		"serviceinfo_detail": "serviceinfo_detail.ftl",
@@ -88,5 +89,8 @@
         "levelCount": 4
       }
     ]
-  }
+  },
+  "isSignedIn": false,
+  "loginURL": "#",
+  "portletNamespace": ""
 }
