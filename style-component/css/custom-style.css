@@ -1,0 +1,102 @@
+/*----- Register -----*/
+
+/* BgImg Register */
+.bg-gif-register {
+	background: url("../images/bg-gif-register.gif") no-repeat center center;
+	padding-top: 77.961783%;
+	background-size: contain;
+}
+
+/* Register Wrapper */
+.register-wrapper .k-tooltip {
+	color: #b50303;
+	margin-top: 5px;
+}
+.register-wrapper .k-tooltip .k-icon {
+	vertical-align: sub;
+	display: inline-block;
+	position: relative;
+	top: 0;
+	-webkit-transform: none;
+	transform: none;
+}
+.register-wrapper .k-picker-wrap .k-tooltip {
+	margin-top: 35px;
+	position: absolute;
+	left: 0;
+}
+
+
+
+/*----- Login -----*/
+.portlet-boundary_FrontendWebPortal_LoginPortlet_ {
+	margin-left: auto;
+}
+.portlet-boundary_FrontendWebPortal_LoginPortlet_ .portlet {
+	margin-bottom: 0;
+}
+.portlet-boundary_FrontendWebPortal_LoginPortlet_ form > div:nth-child(2) {
+	margin: 0 15px;
+}
+
+
+
+/*----- Popup Notification -----*/
+.popup-success-notification, 
+.popup-error-notification {
+	background-color: #51a351;
+    color: white;
+    opacity: 0.8;
+    padding: 10px 15px;
+    border-radius: 8px;
+	margin-bottom: 15px;
+}
+.popup-error-notification {
+	background-color: #bd362f;
+}
+.popup-success-notification:hover, 
+.popup-error-notification:hover {
+	opacity: 1;
+}
+.popup-success-notification p, 
+.popup-error-notification p {
+	margin-bottom: 0;
+    position: relative;
+    padding-left: 25px;
+}
+.popup-success-notification p:before, 
+.popup-error-notification p:before {
+    content: "\f00c";
+    font-family: FontAwesome;
+    font-size: 20px;
+    position: absolute;
+    top: 0px;
+    left: 0;
+}
+.popup-error-notification p:before {
+	content: "\f071";
+	top: 1px;
+}
+
+
+
+
+
+/*------------------------------
+		Responsive
+------------------------------*/
+@media (max-width: 767px) {
+
+	/*----- BgImg Register -----*/
+	.bg-gif-register {
+		margin-bottom: 15px;
+	}
+	
+	/*----- Login -----*/
+	.portlet-boundary_FrontendWebPortal_LoginPortlet_  .visible-xs a {
+		position: absolute;
+		top: 27px;
+		z-index: 50;
+	}
+	
+}
