@@ -240,15 +240,18 @@
                         }else if(result.maxLevel == 3){
                             $("#maxLevel").addClass("label label-danger");
                         }else {
-                            $("#maxLevel").addClass("label label-info");
+                            $("#maxLevel").addClass("label");
                         }
 
-                        if(result.maxLevel>=3){
+                        if(result.maxLevel >= 3){
                             $("#submitDossier").html("");
                             $("#submitDossier").append('<button type="button" class="btn btn-active" data-toggle="modal" data-target="#submitDossierModal">Nộp hồ sơ >></button>');
                         }
                         return "Mức "+result.maxLevel;
                     },
+                    /*fileTypeTemp : function(e){
+                        console.log(e.data);
+                    },*/
                     serviceinfoId: result.serviceinfoId,
                     serviceName: result.serviceName,
                     administrationName: result.administrationName,
