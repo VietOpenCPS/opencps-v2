@@ -2,13 +2,6 @@
 	<#include "init.ftl">
 </#if>
 
-<@liferay_portlet.actionURL name="/login/login" var="loginURL" >
-	<@liferay_portlet.param name="mvcRenderCommandName" value="/login/login" />
-</@>
-
-<#assign isSignedIn = themeDisplay.isSignedIn() />
-<#assign logoutURL = (themeDisplay.getURLPortal() + "/c/portal/logout") />
-
 <#if isSignedIn == false>
 	<div class="hidden-xs hidden-sm">
 	  <form action="${loginURL}" method="post" class="eq-height-lg">
@@ -43,7 +36,7 @@
             <img src="http://via.placeholder.com/350x150" class="img-rounded">
             <div class="dropdown">
                 <button class="btn btn-reset dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    Bà <b>Lương Thị Hạnh</b>
+                    ${preUserName} <b>${userName}</b>
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">

@@ -1,5 +1,5 @@
 <#if (Request)??>
-<#include "init.ftl">
+	<#include "init.ftl">
 </#if>
 
 <div class="row">
@@ -22,31 +22,13 @@
         <div class="col-sm-8">
           <div class="row">
             <div class="col-xs-12 col-sm-4">
-              <select class="form-control" id="administrationCodeSearch" name="administrationCodeSearch" placeholder="Chọn cơ quan quản lý">
-                <#if serviceinfo?has_content && serviceinfo.administrations?has_content>
-                <#list serviceinfo.administrations as administration>
-                <option value="${administration.administrationCode}">${administration.administrationName}</option>
-                </#list>
-                </#if>
-              </select>
+              <select class="form-control" id="administrationCodeSearch" name="administrationCodeSearch" placeholder="Chọn cơ quan quản lý"></select>
             </div>
             <div class="col-xs-12 col-sm-4 PL0">
-              <select class="form-control" id="domainCodeSearch" name="domainCodeSearch" placeholder="Chọn lĩnh vực thủ tục">
-                <#if serviceinfo?has_content && serviceinfo.domains?has_content>
-                <#list serviceinfo.domains as domain>
-                <option value="${domain.domainCode}">${domain.domainName}</option>
-                </#list>
-                </#if>
-              </select>
+              <select class="form-control" id="domainCodeSearch" name="domainCodeSearch" placeholder="Chọn lĩnh vực thủ tục"></select>
             </div>
             <div class="col-xs-12 col-sm-4 PL0">
-              <select class="form-control" id="levelSearch" name="levelSearch" placeholder="Chọn mức độ">
-                <#if serviceinfo?has_content && serviceinfo.levels?has_content>
-                <#list serviceinfo.levels as level>
-                <option value="${level.levelCode}">${level.levelName}</option>
-                </#list>
-                </#if>
-              </select>
+              <select class="form-control" id="levelSearch" name="levelSearch" placeholder="Chọn mức độ"></select>
             </div>
           </div>
         </div>
@@ -157,7 +139,7 @@
  schema: {
   total: "total",
   data: "data",
-  model : { id: "serviceinfoId" },
+  model : { id: "serviceInfoId" }
 },
 pageSize: 10,
 serverPaging: false,

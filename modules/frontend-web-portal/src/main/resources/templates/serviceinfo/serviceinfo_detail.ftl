@@ -1,5 +1,5 @@
 <#if (Request)??>
-<#include "init.ftl">
+	<#include "init.ftl">
 </#if>
 
 <div class="row panel">
