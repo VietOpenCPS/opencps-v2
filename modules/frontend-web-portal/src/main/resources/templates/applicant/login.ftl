@@ -19,7 +19,7 @@
 			<div class="col-xs-12 col-sm-5">
 			</div>
 			<div class="col-xs-12 col-sm-5 P0">
-				<a href="#" class="text-hover-blue">Quên mật khẩu?</a>
+				<a href="/forgotten-password" class="text-hover-blue">Quên mật khẩu?</a>
 			</div>
 		</div>
 	</div>

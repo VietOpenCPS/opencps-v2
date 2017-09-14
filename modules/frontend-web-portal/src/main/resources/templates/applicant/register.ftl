@@ -2,76 +2,78 @@
 	<#include "init.ftl">
 </#if>
 
-<div class="row row eq-height-lg">
-	<div class="col-xs-12 col-sm-8 align-middle-lg">
-		<div class="col-xs-12 bg-gif-register"></div>
-	</div>
-	<div class="col-xs-12 col-sm-4 box register-wrapper">
-  	<form id="fm">
-      <div class="row">
-        <div class="box-title">
-          <b>ĐĂNG KÝ TÀI KHOẢN</b>
-        </div>
-      </div>
-      <div class="row MT10 MB10">
-        <div class="col-xs-12 col-sm-12 text-center">
-					<div class="radio-inline"> <input type="radio" name="applicantIdType" value="1" checked> <label>Công dân</label> </div>
-					<div class="radio-inline"> <input type="radio" name="applicantIdType" value="2"> <label>Doanh nghiệp</label> </div>
-        </div>
-      </div>
-      <div class="row MT15">
-  			<div class="col-xs-12 col-sm-12" id="lblApplicantName">Họ và tên</div>
-  			<div class="col-xs-12 col-sm-12 MT5">
-  				<input type="text" id="applicantName" name="applicantName" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Tên cá nhân làm thủ tục"/>
-  			</div>
-  		</div>
-      <div class="row MT15">
-        <div class="col-xs-12 col-sm-12" id="lblApplicantIdNo">Số CMTND/ Hộ chiếu</div>
-        <div class="col-xs-12 col-sm-12 MT5">
-          <input type="text" id="applicantIdNo" name="applicantIdNo" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Số CMTND hoặc số Hộ chiếu"/>
-        </div>
-      </div>
-      <div class="row MT15">
-  			<div class="col-xs-12 col-sm-12">Ngày cấp</div>
-  			<div class="col-xs-12 col-sm-12 MT5">
-  				<input id="applicantIdDate" name="applicantIdDate" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Ngày/ tháng/ năm"/>
-  			</div>
-  		</div>
-      <div class="row MT15">
-        <div class="col-xs-12 col-sm-12">Thư điện tử</div>
-        <div class="col-xs-12 col-sm-12 MT5">
-          <input type="text" id="contactEmail" name="contactEmail" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Địa chỉ thư điện tử" />
-        </div>
-      </div>
-      <div class="row MT15">
-        <div class="col-xs-12 col-sm-12">Số điện thoại</div>
-        <div class="col-xs-12 col-sm-12 MT5">
-          <input type="text" id="telNo" name="telNo" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Nhập số điện thoại" />
-        </div>
-      </div>
-      <div class="row MT15">
-  			<div class="col-xs-12 col-sm-12">Mật khẩu</div>
-  			<div class="col-xs-12 col-sm-12 MT5">
-  				<input type="password" id="password" name="password" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Gồm các ký tự 0-9, a-z, ít nhất 6 ký tự"/>
-  			</div>
-  		</div>
-      <div class="row MT15">
-  			<div class="col-xs-12 col-sm-12">Nhập lại mật khẩu</div>
-  			<div class="col-xs-12 col-sm-12 MT5">
-  				<input type="password" id="repassword" name="repassword" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc"/>
-  			</div>
-  		</div>
+<div id="register_container">
+	<div class="row row eq-height-lg">
+		<div class="col-xs-12 col-sm-8 align-middle-lg">
+			<div class="col-xs-12 bg-gif-register"></div>
+		</div>
+		<div class="col-xs-12 col-sm-4 box register-wrapper">
+	  	<form id="fm">
+	      <div class="row">
+	        <div class="box-title">
+	          <b>ĐĂNG KÝ TÀI KHOẢN</b>
+	        </div>
+	      </div>
+	      <div class="row MT10 MB10">
+	        <div class="col-xs-12 col-sm-12 text-center">
+						<div class="radio-inline"> <input type="radio" name="applicantIdType" value="1" checked> <label>Công dân</label> </div>
+						<div class="radio-inline"> <input type="radio" name="applicantIdType" value="2"> <label>Doanh nghiệp</label> </div>
+	        </div>
+	      </div>
+	      <div class="row MT15">
+	  			<div class="col-xs-12 col-sm-12" id="lblApplicantName">Họ và tên</div>
+	  			<div class="col-xs-12 col-sm-12 MT5">
+	  				<input type="text" id="applicantName" name="applicantName" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Tên cá nhân làm thủ tục"/>
+	  			</div>
+	  		</div>
+	      <div class="row MT15">
+	        <div class="col-xs-12 col-sm-12" id="lblApplicantIdNo">Số CMTND/ Hộ chiếu</div>
+	        <div class="col-xs-12 col-sm-12 MT5">
+	          <input type="text" id="applicantIdNo" name="applicantIdNo" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Số CMTND hoặc số Hộ chiếu"/>
+	        </div>
+	      </div>
+	      <div class="row MT15">
+	  			<div class="col-xs-12 col-sm-12">Ngày cấp</div>
+	  			<div class="col-xs-12 col-sm-12 MT5">
+	  				<input id="applicantIdDate" name="applicantIdDate" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Ngày/ tháng/ năm"/>
+	  			</div>
+	  		</div>
+	      <div class="row MT15">
+	        <div class="col-xs-12 col-sm-12">Thư điện tử</div>
+	        <div class="col-xs-12 col-sm-12 MT5">
+	          <input type="text" id="contactEmail" name="contactEmail" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Địa chỉ thư điện tử" />
+	        </div>
+	      </div>
+	      <div class="row MT15">
+	        <div class="col-xs-12 col-sm-12">Số điện thoại</div>
+	        <div class="col-xs-12 col-sm-12 MT5">
+	          <input type="text" id="telNo" name="telNo" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Nhập số điện thoại" />
+	        </div>
+	      </div>
+	      <div class="row MT15">
+	  			<div class="col-xs-12 col-sm-12">Mật khẩu</div>
+	  			<div class="col-xs-12 col-sm-12 MT5">
+	  				<input type="password" id="password" name="password" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Gồm các ký tự 0-9, a-z, ít nhất 6 ký tự"/>
+	  			</div>
+	  		</div>
+	      <div class="row MT15">
+	  			<div class="col-xs-12 col-sm-12">Nhập lại mật khẩu</div>
+	  			<div class="col-xs-12 col-sm-12 MT5">
+	  				<input type="password" id="repassword" name="repassword" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc"/>
+	  			</div>
+	  		</div>
 
-      <div class="row MT15">
-  			<div class="col-xs-12 col-sm-12">
-					<div class="checkbox-inline"> <input type="checkbox" id="agreement" name="agreement"> <label class="text-normal">Tôi đồng ý với điều khoản sử dụng. </label> </div> <span><a href="#" class="text-light-blue">Chi tiết</a></span>
-  			</div>
-  		</div>
-      <div class="row MT15 MB15 text-center">
-  			<button class="btn btn-active" title="Đăng ký" id="btn-register">Đăng ký</button>
-  		</div>
-  	</form>
-  </div>
+	      <div class="row MT15">
+	  			<div class="col-xs-12 col-sm-12">
+						<div class="checkbox-inline"> <input type="checkbox" id="agreement" name="agreement"> <label class="text-normal">Tôi đồng ý với điều khoản sử dụng. </label> </div> <span><a href="#" class="text-light-blue">Chi tiết</a></span>
+	  			</div>
+	  		</div>
+	      <div class="row MT15 MB15 text-center">
+	  			<button class="btn btn-active" title="Đăng ký" id="btn-register">Đăng ký</button>
+	  		</div>
+	  	</form>
+	  </div>
+	</div>
 </div>
 
 <script type="text/javascript">
@@ -126,6 +128,8 @@
               title: "Success",
               message: "Đăng ký thành công."
             }, "success");
+
+						document.location = "/web/guest/confirm-account";
           },
           error: function(result){
             notification.show({

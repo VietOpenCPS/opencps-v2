@@ -28,7 +28,7 @@ import frontend.web.portal.constants.FrontendWebPortalPortletKeys;
 
 /**
  * @author phucnv
- * @date Sep 12, 2017
+ * @date Sep 14, 2017
  *
  */
 @Component(immediate = true, property = {
@@ -36,15 +36,15 @@ import frontend.web.portal.constants.FrontendWebPortalPortletKeys;
 	"com.liferay.portlet.display-category=category.opencps_v2",
 	"com.liferay.portlet.header-portlet-css=/css/main.css",
 	"com.liferay.portlet.instanceable=true",
-	"javax.portlet.display-name=frontend-web-portal ServiceInfo Portlet",
+	"javax.portlet.display-name=frontend-web-portal Confirm Account Portlet",
 	"javax.portlet.init-param.template-path=/",
-	"javax.portlet.init-param.view-template=/templates/serviceinfo/serviceinfomain.ftl",
+	"javax.portlet.init-param.view-template=/templates/applicant/confirm_account.ftl",
 	"javax.portlet.name=" +
-		FrontendWebPortalPortletKeys.SERVICE_INFO_PORTLET_NAME,
+		FrontendWebPortalPortletKeys.CONFIRM_ACCOUNT_PORTLET_NAME,
 	"javax.portlet.resource-bundle=content.Language",
 	"javax.portlet.security-role-ref=power-user,user"
 }, service = Portlet.class)
-public class ServiceInfoPortlet extends FreeMarkerPortlet {
+public class ConfirmAccountPortlet extends FreeMarkerPortlet {
 
 	/*
 	 * (non-Javadoc)
@@ -66,26 +66,16 @@ public class ServiceInfoPortlet extends FreeMarkerPortlet {
 		JSONObject apiObject = JSONFactoryUtil.createJSONObject();
 
 		// url
-		PortletURL serviceInfoListURL = PortletURLFactoryUtil.create(
+		PortletURL registerResultURL = PortletURLFactoryUtil.create(
 			renderRequest, portletId, themeDisplay.getPlid(),
 			PortletRequest.RENDER_PHASE);
 
-		serviceInfoListURL.setPortletMode(PortletMode.VIEW);
-		serviceInfoListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-		serviceInfoListURL.setParameter(
-			"mvcPath", "/templates/serviceinfo/serviceinfomain_list.ftl");
+		registerResultURL.setPortletMode(PortletMode.VIEW);
+		registerResultURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		registerResultURL.setParameter(
+			"mvcPath", "/templates/applicant/register_result.ftl");
 
-		PortletURL serviceinfoDetailURL = PortletURLFactoryUtil.create(
-			renderRequest, portletId, themeDisplay.getPlid(),
-			PortletRequest.RENDER_PHASE);
-
-		serviceinfoDetailURL.setPortletMode(PortletMode.VIEW);
-		serviceinfoDetailURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-		serviceinfoDetailURL.setParameter(
-			"mvcPath", "/templates/serviceinfo/serviceinfo_detail.ftl");
-
-		urlObject.put("serviceinfo_detail", serviceinfoDetailURL.toString());
-		urlObject.put("serviceinfomain_list", serviceInfoListURL.toString());
+		urlObject.put("register_result", registerResultURL.toString());
 
 		// api
 		apiObject.put("server", themeDisplay.getPortalURL() + "/o/rest/v2");

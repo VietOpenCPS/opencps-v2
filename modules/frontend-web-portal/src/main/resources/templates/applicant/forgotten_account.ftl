@@ -1,3 +1,7 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
+
 <form id="fmPasswordWorkflow">
 	<div class="row box MA" style="max-width: 500px;">
 		<div class="col-sm-12 text-center MB5">
@@ -7,8 +11,8 @@
 			<p>Vui lòng nhập Email hoặc số CMTND/ Hộ chiếu/ Mã số thuế để tìm kiếm tài khoản</p>
 		</div>
 		<div class="col-sm-12">
-			<div class="form-group"> 
-				<input type="text" id="emailOrPhone" class="form-control" placeholder="Email hoặc số CMTND/ Hộ chiếu/ Mã số thuế" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" > 
+			<div class="form-group">
+				<input type="text" id="emailOrPhone" class="form-control" placeholder="Email hoặc số CMTND/ Hộ chiếu/ Mã số thuế" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" >
 			</div>
 		</div>
 		<div class="col-sm-12 text-center MT10 MB15">
@@ -16,6 +20,8 @@
 		</div>
 	</div>
 </form>
+
+<div class="MT15" id="password_workflow_content"></div>
 
 <script type="text/javascript">
 	$("#btn-next-step").click(function() {
@@ -41,6 +47,6 @@
 				});
 			}
 		}
-		
+
 	});
 </script>
