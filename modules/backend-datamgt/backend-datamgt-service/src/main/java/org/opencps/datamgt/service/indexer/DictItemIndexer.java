@@ -11,6 +11,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.usermgt.constants.OfficeSiteTerm;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 public class DictItemIndexer extends BaseIndexer<DictItem> {
 
@@ -73,7 +75,7 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 			addSearchTerm(
 					searchQuery, searchContext, DictItemTerm.LEVEL, false);
 			addSearchTerm(
-					searchQuery, searchContext, DictItemTerm.DATAFORM, false);
+					searchQuery, searchContext, DictItemTerm.META_DATA, false);
 		LinkedHashMap<String, Object> params =
 			(LinkedHashMap<String, Object>)searchContext.getAttribute("params");
 
@@ -100,6 +102,7 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(dictItem.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(dictItem.getUserName()));
 
+		document.addNumberSortable(DictItemTerm.GROUP_ID, dictItem.getGroupId());
 		document.addNumberSortable(DictItemTerm.DICT_ITEM_ID, dictItem.getDictItemId());
 		document.addNumberSortable(DictItemTerm.DICT_COLLECTION_ID, dictItem.getDictCollectionId());
 		document.addTextSortable(DictItemTerm.ITEM_CODE, dictItem.getItemCode());
@@ -110,7 +113,7 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 		document.addTextSortable(DictItemTerm.SIBLING, dictItem.getSibling());
 		document.addTextSortable(DictItemTerm.TREE_INDEX, dictItem.getTreeIndex());
 		document.addNumberSortable(DictItemTerm.LEVEL, dictItem.getLevel());
-		document.addTextSortable(DictItemTerm.DATAFORM, dictItem.getDataForm());
+		document.addTextSortable(DictItemTerm.META_DATA, dictItem.getMetaData());
 		
 		long dictCollectionId = dictItem.getDictCollectionId();
 		
@@ -120,7 +123,7 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 			document.addTextSortable(DictItemTerm.DICT_COLLECTION_CODE, dictCollection.getCollectionCode());
 		}
 		
-		String parentCode = dictItem.getItemCode();
+		String parentCode = StringPool.BLANK;
 		
 		if(dictItem.getParentItemId() > 0){
 			

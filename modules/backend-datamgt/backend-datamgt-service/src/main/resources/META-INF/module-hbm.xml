@@ -7,13 +7,10 @@
 	<import class="org.opencps.datamgt.model.DictGroup" />
 	<import class="org.opencps.datamgt.model.DictItem" />
 	<import class="org.opencps.datamgt.model.DictItemGroup" />
-	<import class="org.opencps.datamgt.model.Label" />
-	<import class="org.opencps.datamgt.model.Location" />
+	<import class="org.opencps.datamgt.model.Holiday" />
 	<import class="org.opencps.datamgt.model.Voting" />
 	<import class="org.opencps.datamgt.model.VotingResult" />
-	<import class="org.opencps.datamgt.model.Workspace" />
-	<import class="org.opencps.datamgt.model.WorkspaceRole" />
-	<import class="org.opencps.datamgt.model.WorkspaceUser" />
+	<import class="org.opencps.datamgt.model.WorkTime" />
 	<class name="org.opencps.datamgt.model.impl.CommentImpl" table="opencps_comment">
 		<id name="commentId" type="long">
 			<generator class="assigned" />
@@ -91,6 +88,7 @@
 		<property name="sibling" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="treeIndex" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="dataForm" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="metaData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.datamgt.model.impl.DictItemGroupImpl" table="opencps_dictitemgroup">
 		<id name="dictItemGroupId" type="long">
@@ -106,8 +104,8 @@
 		<property name="dictGroupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="dictItemId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
-	<class name="org.opencps.datamgt.model.impl.LabelImpl" table="opencps_label">
-		<id name="labelId" type="long">
+	<class name="org.opencps.datamgt.model.impl.HolidayImpl" table="opencps_holiday">
+		<id name="holidayId" type="long">
 			<generator class="assigned" />
 		</id>
 		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
@@ -117,23 +115,8 @@
 		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="name" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="color" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="scope" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
-	</class>
-	<class name="org.opencps.datamgt.model.impl.LocationImpl" table="opencps_location">
-		<id name="locationId" type="long">
-			<generator class="assigned" />
-		</id>
-		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="createDate" type="org.hibernate.type.TimestampType" />
-		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="location" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="geolocation" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="holidayDate" type="org.hibernate.type.TimestampType" />
+		<property name="description" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.datamgt.model.impl.VotingImpl" table="opencps_voting">
 		<id name="votingId" type="long">
@@ -170,8 +153,8 @@
 		<property column="comment_" name="comment" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="selected" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class name="org.opencps.datamgt.model.impl.WorkspaceImpl" table="opencps_workspace">
-		<id name="workspaceId" type="long">
+	<class name="org.opencps.datamgt.model.impl.WorkTimeImpl" table="opencps_workTime">
+		<id name="workTimeId" type="long">
 			<generator class="assigned" />
 		</id>
 		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
@@ -181,35 +164,7 @@
 		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="name" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="seqOrder" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
-	</class>
-	<class name="org.opencps.datamgt.model.impl.WorkspaceRoleImpl" table="opencps_workspacerole">
-		<id name="workspaceRoleId" type="long">
-			<generator class="assigned" />
-		</id>
-		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="createDate" type="org.hibernate.type.TimestampType" />
-		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="workspaceId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="roleId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-	</class>
-	<class name="org.opencps.datamgt.model.impl.WorkspaceUserImpl" table="opencps_workspaceuser">
-		<id name="workspaceUserId" type="long">
-			<generator class="assigned" />
-		</id>
-		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="createDate" type="org.hibernate.type.TimestampType" />
-		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="workspaceId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="assignUserId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="day" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="hours" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 </hibernate-mapping>

@@ -52,7 +52,7 @@ public class NotificationTemplateIndexer extends BaseIndexer<Notificationtemplat
 		addSearchTerm(searchQuery, searchContext, NotificationTemplateTerm.NOTIFICATION_EMAIL_SUBJECT, true);
 		addSearchTerm(searchQuery, searchContext, NotificationTemplateTerm.NOTIFICATION_EMAIL_BODY, true);
 		addSearchTerm(searchQuery, searchContext, NotificationTemplateTerm.NOTIFICATION_TEXT_MESSAGE, true);
-		addSearchTerm(searchQuery, searchContext, NotificationTemplateTerm.NOTIFICATION_TEXT_SMS, true);
+		addSearchTerm(searchQuery, searchContext, NotificationTemplateTerm.NOTIFICATION_SEND_SMS, true);
 
 		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
 
@@ -72,45 +72,37 @@ public class NotificationTemplateIndexer extends BaseIndexer<Notificationtemplat
 
 	@Override
 	protected Document doGetDocument(Notificationtemplate notificationtemplates) throws Exception {
-		
-		Document document = getBaseModelDocument(CLASS_NAME, notificationtemplates);	
 
-		document.addNumberSortable(NotificationTemplateTerm.GROUP_ID, notificationtemplates.getGroupId());		
+		Document document = getBaseModelDocument(CLASS_NAME, notificationtemplates);
+
+		document.addNumberSortable(NotificationTemplateTerm.GROUP_ID, notificationtemplates.getGroupId());
 		document.addKeywordSortable(Field.COMPANY_ID, String.valueOf(notificationtemplates.getCompanyId()));
 		document.addDateSortable(Field.MODIFIED_DATE, notificationtemplates.getModifiedDate());
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(notificationtemplates.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(notificationtemplates.getUserName()));
 
-		document.addTextSortable(NotificationTemplateTerm.NOTIFICATTION_TYPE, notificationtemplates.getNotificationType());		
+		document.addTextSortable(NotificationTemplateTerm.SEND_EMAIL,
+				String.valueOf(notificationtemplates.getSendEmail()));
+		document.addTextSortable(NotificationTemplateTerm.NOTIFICATTION_TYPE,
+				notificationtemplates.getNotificationType());
 		document.addNumberSortable(NotificationTemplateTerm.GROUP_ID, notificationtemplates.getGroupId());
 		document.addNumberSortable(NotificationTemplateTerm.USER_ID, notificationtemplates.getUserId());
 		document.addNumberSortable(NotificationTemplateTerm.COMPANY_ID, notificationtemplates.getCompanyId());
-		document.addNumberSortable(NotificationTemplateTerm.NOTIFICATIONTEMPLATE_ID, notificationtemplates.getNotificationTemplateId());
-		
-		document.addTextSortable(NotificationTemplateTerm.NOTIFICATION_EMAIL_SUBJECT, notificationtemplates.getEmailSubject());
-		document.addTextSortable(NotificationTemplateTerm.NOTIFICATION_EMAIL_BODY, notificationtemplates.getEmailBody());
-		document.addTextSortable(NotificationTemplateTerm.NOTIFICATION_TEXT_MESSAGE, notificationtemplates.getTextMessage());
-		document.addTextSortable(NotificationTemplateTerm.NOTIFICATION_TEXT_SMS, notificationtemplates.getTextSMS());
+		document.addNumberSortable(NotificationTemplateTerm.NOTIFICATIONTEMPLATE_ID,
+				notificationtemplates.getNotificationTemplateId());
 
-		document.setSortableTextFields(
-				new String[] { NotificationTemplateTerm.NOTIFICATTION_TYPE,NotificationTemplateTerm.NOTIFICATION_EMAIL_SUBJECT});
+		document.addTextSortable(NotificationTemplateTerm.NOTIFICATION_EMAIL_SUBJECT,
+				notificationtemplates.getEmailSubject());
+		document.addTextSortable(NotificationTemplateTerm.NOTIFICATION_EMAIL_BODY,
+				notificationtemplates.getEmailBody());
+		document.addTextSortable(NotificationTemplateTerm.NOTIFICATION_TEXT_MESSAGE,
+				notificationtemplates.getTextMessage());
+		document.addTextSortable(NotificationTemplateTerm.NOTIFICATION_SEND_SMS,
+				String.valueOf(notificationtemplates.getSendSMS()));
+
+		document.setSortableTextFields(new String[] { NotificationTemplateTerm.NOTIFICATTION_TYPE });
 
 		return document;
-	}
-
-	@Override
-	protected String doGetSortField(String orderByCol) {
-		if (orderByCol.equals("email-address")) {
-			return "emailAddress";
-		} else if (orderByCol.equals("first-name")) {
-			return "firstName";
-		} else if (orderByCol.equals("job-title")) {
-			return "jobTitle";
-		} else if (orderByCol.equals("last-name")) {
-			return "lastName";
-		} else {
-			return orderByCol;
-		}
 	}
 
 	@Override
@@ -134,7 +126,8 @@ public class NotificationTemplateIndexer extends BaseIndexer<Notificationtemplat
 
 	@Override
 	protected void doReindex(String className, long classPK) throws Exception {
-		Notificationtemplate nofificationTemplae = NotificationtemplateLocalServiceUtil.fetchNotificationtemplate(classPK);
+		Notificationtemplate nofificationTemplae = NotificationtemplateLocalServiceUtil
+				.fetchNotificationtemplate(classPK);
 
 		doReindex(nofificationTemplae);
 	}
@@ -162,7 +155,8 @@ public class NotificationTemplateIndexer extends BaseIndexer<Notificationtemplat
 							indexableActionableDynamicQuery.addDocuments(document);
 						} catch (PortalException pe) {
 							if (_log.isWarnEnabled()) {
-								_log.warn("Unable to index contact " + nofificationTemplate.getNotificationTemplateId(), pe);
+								_log.warn("Unable to index contact " + nofificationTemplate.getNotificationTemplateId(),
+										pe);
 							}
 						}
 					}

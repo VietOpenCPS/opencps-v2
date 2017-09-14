@@ -6,6 +6,7 @@
 	<author>khoavu</author>
 	<namespace>DataMgt</namespace>
 
+
 	<entity name="DictCollection" uuid="true" local-service="true"
 		remote-service="false" table="opencps_dictcollection">
 
@@ -27,14 +28,19 @@
 		<column name="collectionNameEN" type="String" />
 		<column name="description" type="String" />
 		<column name="dataForm" type="String" />
-		
+
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>
+		
 		<!-- Finder -->
 		<finder return-type="DictCollection" name="F_dictCollectionCode">
 			<finder-column name="collectionCode"></finder-column>
+			<finder-column name="groupId"></finder-column>
+		</finder>
+
+		<finder return-type="Collection" name="F_dictCollectionByGroup">
 			<finder-column name="groupId"></finder-column>
 		</finder>
 	</entity>
@@ -67,10 +73,11 @@
 		<column name="sibling" type="String" />
 		<column name="treeIndex" type="String" />
 		<column name="dataForm" type="String" />
+		<column name="metaData" type="String" />
 
 		<!-- Order -->
 		<order by="asc">
-			<order-column name="sibling" />
+			<order-column name="treeIndex" />
 		</order>
 
 		<!-- Finder -->
@@ -84,6 +91,16 @@
 			<finder-column name="groupId"></finder-column>
 		</finder>
 
+		<finder return-type="Collection" name="F_dictItemByGroup">
+			<finder-column name="dictCollectionId"></finder-column>
+			<finder-column name="groupId"></finder-column>
+		</finder>
+		
+		<finder return-type="DictItem" name="F_dictItemCode_dictCollectionId">
+			<finder-column name="itemCode"></finder-column>
+			<finder-column name="dictCollectionId"></finder-column>
+			<finder-column name="groupId"></finder-column>
+		</finder>
 	</entity>
 
 	<entity name="DictGroup" uuid="true" local-service="true"
@@ -112,11 +129,17 @@
 
 		<!-- Order -->
 		<order by="asc">
-			<order-column name="dictCollectionId" />
+			<order-column name="dictGroupId" />
 		</order>
 
+		<!-- Finder -->
+		<finder return-type="DictGroup" name="F_groupCode">
+			<finder-column name="groupCode"></finder-column>
+			<finder-column name="groupId"></finder-column>
+		</finder>
+
 	</entity>
-	
+
 	<entity name="DictItemGroup" uuid="true" local-service="true"
 		remote-service="false" table="opencps_dictitemgroup">
 
@@ -138,122 +161,29 @@
 		<column name="dictGroupId" type="long" />
 		<column name="dictItemId" type="long" />
 
-		<!-- Order -->
-		<order by="asc">
-			<order-column name="dictGroupId" />
-		</order>
-
-	</entity>
-	
-	<entity name="Label" uuid="true" local-service="true"
-		remote-service="false" table="opencps_label">
-
-		<!-- PK fields -->
-		<column name="labelId" type="long" primary="true" />
-
-		<!-- Audit fields -->
-		<column name="companyId" type="long" />
-		<column name="groupId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-
-		<column name="name" type="String" />
-		<column name="color" type="String" />
-		<column name="scope" type="int" />
-		<!-- Order -->
-		<order by="asc">
-			<order-column name="name" />
-		</order>
-
-	</entity>
-
-	<entity name="Location" uuid="true" local-service="true" remote-service="false" table="opencps_location">
-
-		<!-- PK fields -->
-		<column name="locationId" type="long" primary="true" />
-
-		<!-- Audit fields -->
-		<column name="companyId" type="long" />
-		<column name="groupId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-
-		<column name="location" type="String" />
-		<column name="geolocation" type="String" />
-
-		<!-- Order -->
-		<order by="asc">
-			<order-column name="createDate" />
-		</order>
-		
-	</entity>
-	
-	<entity name="Workspace" uuid="true" local-service="true" remote-service="false" table="opencps_workspace">
-
-		<!-- PK fields -->
-		<column name="workspaceId" type="long" primary="true" />
-
-		<!-- Audit fields -->
-		<column name="companyId" type="long" />
-		<column name="groupId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-
-		<column name="name" type="String" />
-		<column name="seqOrder" type="int" />
-
-		<!-- Order -->
-		<order by="asc">
-			<order-column name="seqOrder" />
-		</order>
-		
-	</entity>
-	
-	<entity name="WorkspaceUser" uuid="true" local-service="true" remote-service="false" table="opencps_workspaceuser">
-
-		<!-- PK fields -->
-		<column name="workspaceUserId" type="long" primary="true" />
-
-		<!-- Audit fields -->
-		<column name="companyId" type="long" />
-		<column name="groupId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-
-		<column name="workspaceId" type="long" />
-		<column name="assignUserId" type="long" />
-
-		<!-- Order -->
-		<order by="asc">
-			<order-column name="createDate" />
-		</order>
-		
-		<finder name="F_workspaceId" return-type="Collection">
-			<finder-column name="workspaceId" />
+		<finder return-type="DictItemGroup" name="F_dictItemId_dictGroupId">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="dictGroupId"></finder-column>
+			<finder-column name="dictItemId"></finder-column>
 		</finder>
 		
+		<finder return-type="Collection" name="F_dictGroupId">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="dictGroupId"></finder-column>
+		</finder>
+		
+		<finder return-type="Collection" name="F_dictItemId">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="dictItemId"></finder-column>
+		</finder>
+
 	</entity>
-	
-	<entity name="WorkspaceRole" uuid="true" local-service="true" remote-service="false" table="opencps_workspacerole">
+
+	<entity name="WorkTime" uuid="true" local-service="true"
+		remote-service="false" table="opencps_workTime">
 
 		<!-- PK fields -->
-		<column name="workspaceRoleId" type="long" primary="true" />
+		<column name="workTimeId" type="long" primary="true" />
 
 		<!-- Audit fields -->
 		<column name="companyId" type="long" />
@@ -265,17 +195,53 @@
 
 		<!-- Other fields -->
 
-		<column name="workspaceId" type="long" />
-		<column name="roleId" type="long" />
+		<column name="day" type="int" />
+		<column name="hours" type="String" />
 
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>
-		
+
+		<finder return-type="WorkTime" name="F_day">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="day"></finder-column>
+		</finder>
+
 	</entity>
-	
-	<entity name="Comment" uuid="true" local-service="true" remote-service="false" table="opencps_comment">
+
+	<entity name="Holiday" uuid="true" local-service="true"
+		remote-service="false" table="opencps_holiday">
+
+		<!-- PK fields -->
+		<column name="holidayId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="holidayDate" type="Date" />
+		<column name="description" type="String" />
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+
+		<finder return-type="Holiday" name="F_holidayDate">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="holidayDate"></finder-column>
+		</finder>
+	</entity>
+
+	<entity name="Comment" uuid="true" local-service="true"
+		remote-service="false" table="opencps_comment">
 
 		<!-- PK fields -->
 		<column name="commentId" type="long" primary="true" />
@@ -300,15 +266,16 @@
 		<column name="upvoteCount" type="long" />
 		<column name="userHasUpvoted" type="String" />
 		<column name="createdByCurrentUser" type="long" />
-		
+
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>
-		
+
 	</entity>
-	
-	<entity name="Voting" uuid="true" local-service="true" remote-service="false" table="opencps_voting">
+
+	<entity name="Voting" uuid="true" local-service="true"
+		remote-service="false" table="opencps_voting">
 
 		<!-- PK fields -->
 		<column name="votingId" type="long" primary="true" />
@@ -328,15 +295,16 @@
 		<column name="subject" type="String" />
 		<column name="answers" type="String" />
 		<column name="dueDate" type="Date" />
-		
+
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>
-		
+
 	</entity>
-	
-	<entity name="VotingResult" uuid="true" local-service="true" remote-service="false" table="opencps_votingresult">
+
+	<entity name="VotingResult" uuid="true" local-service="true"
+		remote-service="false" table="opencps_votingresult">
 
 		<!-- PK fields -->
 		<column name="votingResultId" type="long" primary="true" />
@@ -357,12 +325,12 @@
 		<column name="email" type="String" />
 		<column name="comment" type="String" />
 		<column name="selected" type="String" />
-		
+
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>
-		
+
 	</entity>
-	
+
 </service-builder>

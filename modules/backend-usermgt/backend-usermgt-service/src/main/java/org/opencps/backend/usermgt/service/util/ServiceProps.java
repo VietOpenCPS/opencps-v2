@@ -12,7 +12,7 @@
  * details.
  */
 
-package org.opencps.backend.usermgt.service.util;
+package org.opencps.usermgt.service.util;
 
 import aQute.bnd.annotation.ProviderType;
 

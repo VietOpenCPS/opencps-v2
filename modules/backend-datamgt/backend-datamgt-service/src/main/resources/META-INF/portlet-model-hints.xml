@@ -70,6 +70,7 @@
 		<field name="sibling" type="String" />
 		<field name="treeIndex" type="String" />
 		<field name="dataForm" type="String" />
+		<field name="metaData" type="String" />
 	</model>
 	<model name="org.opencps.datamgt.model.DictItemGroup">
 		<field name="uuid" type="String" />
@@ -83,30 +84,17 @@
 		<field name="dictGroupId" type="long" />
 		<field name="dictItemId" type="long" />
 	</model>
-	<model name="org.opencps.datamgt.model.Label">
+	<model name="org.opencps.datamgt.model.Holiday">
 		<field name="uuid" type="String" />
-		<field name="labelId" type="long" />
+		<field name="holidayId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="name" type="String" />
-		<field name="color" type="String" />
-		<field name="scope" type="int" />
-	</model>
-	<model name="org.opencps.datamgt.model.Location">
-		<field name="uuid" type="String" />
-		<field name="locationId" type="long" />
-		<field name="companyId" type="long" />
-		<field name="groupId" type="long" />
-		<field name="userId" type="long" />
-		<field name="userName" type="String" />
-		<field name="createDate" type="Date" />
-		<field name="modifiedDate" type="Date" />
-		<field name="location" type="String" />
-		<field name="geolocation" type="String" />
+		<field name="holidayDate" type="Date" />
+		<field name="description" type="String" />
 	</model>
 	<model name="org.opencps.datamgt.model.Voting">
 		<field name="uuid" type="String" />
@@ -139,40 +127,16 @@
 		<field name="comment" type="String" />
 		<field name="selected" type="String" />
 	</model>
-	<model name="org.opencps.datamgt.model.Workspace">
+	<model name="org.opencps.datamgt.model.WorkTime">
 		<field name="uuid" type="String" />
-		<field name="workspaceId" type="long" />
+		<field name="workTimeId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="name" type="String" />
-		<field name="seqOrder" type="int" />
-	</model>
-	<model name="org.opencps.datamgt.model.WorkspaceRole">
-		<field name="uuid" type="String" />
-		<field name="workspaceRoleId" type="long" />
-		<field name="companyId" type="long" />
-		<field name="groupId" type="long" />
-		<field name="userId" type="long" />
-		<field name="userName" type="String" />
-		<field name="createDate" type="Date" />
-		<field name="modifiedDate" type="Date" />
-		<field name="workspaceId" type="long" />
-		<field name="roleId" type="long" />
-	</model>
-	<model name="org.opencps.datamgt.model.WorkspaceUser">
-		<field name="uuid" type="String" />
-		<field name="workspaceUserId" type="long" />
-		<field name="companyId" type="long" />
-		<field name="groupId" type="long" />
-		<field name="userId" type="long" />
-		<field name="userName" type="String" />
-		<field name="createDate" type="Date" />
-		<field name="modifiedDate" type="Date" />
-		<field name="workspaceId" type="long" />
-		<field name="assignUserId" type="long" />
+		<field name="day" type="int" />
+		<field name="hours" type="String" />
 	</model>
 </model-hints>
