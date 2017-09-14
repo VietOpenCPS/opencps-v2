@@ -18,10 +18,10 @@ import frontend.web.portal.constants.FrontendWebPortalPortletKeys;
  */
 @Component(immediate = true, property = {
 	"com.liferay.portlet.css-class-wrapper=portlet-freemarker",
-	"com.liferay.portlet.display-category=category.sample",
+	"com.liferay.portlet.display-category=category.opencps_v2.portal",
 	"com.liferay.portlet.header-portlet-css=/css/main.css",
 	"com.liferay.portlet.instanceable=false",
-	"javax.portlet.display-name=frontend-web-portal Login Portlet",
+	"javax.portlet.display-name=Login Portlet",
 	"javax.portlet.init-param.template-path=/",
 	"javax.portlet.init-param.view-template=/templates/applicant/login.ftl",
 	"javax.portlet.name=" + FrontendWebPortalPortletKeys.LOGIN_PORTLET_NAME,
