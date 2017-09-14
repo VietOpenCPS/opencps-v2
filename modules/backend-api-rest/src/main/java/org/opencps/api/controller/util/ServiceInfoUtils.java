@@ -3,6 +3,7 @@ package org.opencps.api.controller.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencps.api.serviceinfo.model.FileTemplateModel;
 import org.opencps.api.serviceinfo.model.FileTemplates;
 import org.opencps.api.serviceinfo.model.ServiceInfoDetailModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoInputModel;
@@ -29,7 +30,7 @@ public class ServiceInfoUtils {
 			ServiceInfoModel model = new ServiceInfoModel();
 
 			model.setServiceName(doc.get(ServiceInfoTerm.SERVICE_NAME));
-			model.setServiceInfoId(GetterUtil.getLong(doc.get(ServiceInfoTerm.SERVICE_INFO_ID)));
+			model.setServiceInfoId(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setCreateDate(doc.get(Field.CREATE_DATE));
 			model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
 			model.setServiceCode(doc.get(ServiceInfoTerm.SERVICE_CODE));
@@ -47,8 +48,10 @@ public class ServiceInfoUtils {
 			model.setAdministrationName(doc.get(ServiceInfoTerm.ADMINISTRATION_NAME));
 			model.setDomainCode(doc.get(ServiceInfoTerm.DOMAIN_CODE));
 			model.setDomainName(doc.get(ServiceInfoTerm.DOMAIN_NAME));
-			model.setMaxLevel(GetterUtil.getInteger(doc.get(ServiceInfoTerm.DOMAIN_NAME)));
-
+			model.setMaxLevel(GetterUtil.getInteger(doc.get(ServiceInfoTerm.MAX_LEVEL)));
+			
+			
+			data.add(model);
 		}
 
 		return data;
@@ -103,13 +106,13 @@ public class ServiceInfoUtils {
 
 		List<ServiceFileTemplate> serviceFileTemplates = ServiceFileTemplateLocalServiceUtil
 				.getByServiceInfoId(serviceInfo.getServiceInfoId());
-		
-		model.getFileTemplates().addAll(_mappingFileTemplates(serviceFileTemplates));
+
+		model.getFileTemplates().addAll(mappingToFileTemplates(serviceFileTemplates));
 
 		return model;
 	}
 
-	private static List<FileTemplates> _mappingFileTemplates(List<ServiceFileTemplate> serviceFileTemplates) {
+	public static List<FileTemplates> mappingToFileTemplates(List<ServiceFileTemplate> serviceFileTemplates) {
 		List<FileTemplates> fileTemplates = new ArrayList<FileTemplates>();
 
 		for (ServiceFileTemplate sft : serviceFileTemplates) {
@@ -124,6 +127,8 @@ public class ServiceInfoUtils {
 
 					fileTemplate.setFileSize(GetterUtil.getInteger(fileEntry.getSize()));
 					fileTemplate.setFileType(fileEntry.getExtension());
+					fileTemplate.setFileTemplateNo(sft.getFileTemplateNo());
+					fileTemplate.setTemplateName(sft.getTemplateName());
 
 				} catch (Exception e) {
 					_log.error("Can't get ServiceFileTemplate");
@@ -131,9 +136,33 @@ public class ServiceInfoUtils {
 			}
 			fileTemplates.add(fileTemplate);
 		}
-		
+
 		return fileTemplates;
 	}
+
+	public static FileTemplateModel mappingToFileTemplateModel(ServiceFileTemplate serviceFileTemplate) {
+
+		FileTemplateModel fileTemplate = new FileTemplateModel();
+
+		fileTemplate.setTemplateName(serviceFileTemplate.getTemplateName());
+
+		if (serviceFileTemplate.getFileEntryId() != 0) {
+
+			try {
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(serviceFileTemplate.getFileEntryId());
+
+				fileTemplate.setFileSize(GetterUtil.getInteger(fileEntry.getSize()));
+				fileTemplate.setFileType(fileEntry.getExtension());
+
+			} catch (Exception e) {
+				_log.error("Can't get ServiceFileTemplate");
+			}
+		}
+		
+		
+		return fileTemplate;
+	}
+
 
 	private static Log _log = LogFactoryUtil.getLog(ServiceInfoUtils.class);
 }

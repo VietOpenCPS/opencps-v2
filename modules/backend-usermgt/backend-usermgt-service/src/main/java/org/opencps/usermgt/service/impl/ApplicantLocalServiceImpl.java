@@ -170,7 +170,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			User mappingUser = userLocalService.addUserWithWorkflow(creatorUserId, context.getCompanyId(), autoPassword,
 					password, password, autoScreenName, screenName, contactEmail, 0l, StringPool.BLANK,
 					LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true,
-					dayOfMonth, month, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
+					month, dayOfMonth , year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
 					userGroupIds, sendEmail, context);
 
 			long mappingUserId = mappingUser.getUserId();

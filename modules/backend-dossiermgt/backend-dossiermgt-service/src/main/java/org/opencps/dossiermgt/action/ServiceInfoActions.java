@@ -9,6 +9,8 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
@@ -42,10 +44,17 @@ public interface ServiceInfoActions {
 			String fileTemplateNo, String templateName, String sourceFileName, InputStream inputStream,
 			ServiceContext serviceContext) throws PortalException, IOException;
 
-	public ServiceFileTemplate removeServiceFileTemplate(long serviceInfoId, String fileTemplateNo)  throws PortalException;
+	public ServiceFileTemplate removeServiceFileTemplate(long serviceInfoId, String fileTemplateNo)
+			throws PortalException;
 
-	public ServiceFileTemplate addServiceFileTemplate(long userId, long groupId, long folderId, long serviceInfoId,
-			String fileTemplateNo, String templateName, String sourceFileName, InputStream inputStream,
+	public ServiceFileTemplate addServiceFileTemplate(long userId, long groupId, long serviceInfoId,
+			String fileTemplateNo, String templateName, String fileName, InputStream is, String fileType, int fileSize,
 			ServiceContext serviceContext) throws PortalException, IOException;
+
+	public JSONObject getStatisticByAdministration();
+
+	public JSONObject getStatisticByDomain();
+
+	public JSONObject getStatisticByLevel(ServiceContext context, long groupId) throws ParseException, SearchException;
 
 }
