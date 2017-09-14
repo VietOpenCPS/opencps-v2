@@ -56,7 +56,7 @@
 		<finder name="CompanyId" return-type="Collection">
 			<finder-column name="companyId" />
 		</finder>
-		
+
 		<finder name="SC_GI" return-type="ServiceInfo">
 			<finder-column name="serviceCode" />
 			<finder-column name="groupId" />
@@ -638,7 +638,7 @@
 
 	<entity local-service="true" name="DossierActionUser"
 		remote-service="false" table="opencps_dossieractionuser" uuid="true">
-		
+
 		<column name="dossierActionId" type="long" primary="true" />
 		<column name="userId" type="long" primary="true" />
 		<column name="moderator" type="int" />

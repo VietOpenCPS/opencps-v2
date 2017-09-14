@@ -13,9 +13,10 @@ import org.opencps.api.context.provider.CompanyContextProvider;
 import org.opencps.api.context.provider.LocaleContextProvider;
 import org.opencps.api.context.provider.ServiceContextProvider;
 import org.opencps.api.context.provider.UserContextProvider;
+import org.opencps.api.controller.ServiceInfoManagement;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
-import org.opencps.api.controller.impl.ServiceInfoImpl;
+import org.opencps.api.controller.impl.ServiceInfoManagementImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -26,9 +27,11 @@ public class BackendAPIRestApplication extends Application {
 	public Set<Object> getSingletons() {
 		Set<Object> singletons = new HashSet<Object>();
 		
+		ServiceInfoManagement serviceInfo = new ServiceInfoManagementImpl();
+		
 		// add REST endpoints (resources)
 		singletons.add(new DataManagementImpl());
-		singletons.add(new ServiceInfoImpl());
+		singletons.add(serviceInfo);
 		singletons.add(new ApplicantManagementImpl());
 		
 		// add service provider

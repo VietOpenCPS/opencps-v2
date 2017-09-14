@@ -234,7 +234,13 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			throw new RequiredAdministrationCodeException();
 		}
 
-		ServiceInfo si = serviceInfoPersistence.findBySC_GI(serviceCode, groupId);
+		ServiceInfo si = null;
+		
+		try {
+			si = serviceInfoPersistence.findBySC_GI(serviceCode, groupId);
+		} catch (Exception e) {
+			
+		} 
 
 		if (Validator.isNotNull(si)) {
 			throw new DuplicateServiceCodeException();
@@ -296,7 +302,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		// Extra fields
 		String administration = GetterUtil.getString(params.get(ServiceInfoTerm.ADMINISTRATION_CODE));
 		String domain = GetterUtil.getString(params.get(ServiceInfoTerm.DOMAIN_CODE));
-		String level = GetterUtil.getString(params.get(ServiceInfoTerm.MAX_LEVEL));
+		String level = String.valueOf((params.get(ServiceInfoTerm.MAX_LEVEL)));
 
 		if (Validator.isNotNull(administration)) {
 			MultiMatchQuery query = new MultiMatchQuery(administration);
@@ -376,7 +382,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 		String administration = GetterUtil.getString(params.get(ServiceInfoTerm.ADMINISTRATION_CODE));
 		String domain = GetterUtil.getString(params.get(ServiceInfoTerm.DOMAIN_CODE));
-		String level = GetterUtil.getString(params.get(ServiceInfoTerm.MAX_LEVEL));
+		String level = String.valueOf((params.get(ServiceInfoTerm.MAX_LEVEL)));
 
 		if (Validator.isNotNull(administration)) {
 			MultiMatchQuery query = new MultiMatchQuery(administration);

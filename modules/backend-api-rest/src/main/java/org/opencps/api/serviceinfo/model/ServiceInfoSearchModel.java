@@ -8,10 +8,14 @@
 
 package org.opencps.api.serviceinfo.model;
 
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import com.liferay.portal.kernel.util.StringPool;
 
 
 /**
@@ -53,14 +57,21 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "ServiceInfoSearchModel")
 public class ServiceInfoSearchModel {
-
+	@QueryParam(value = "keyword")
     protected String keyword;
+	@DefaultValue(StringPool.BLANK) @QueryParam(value = "administration")
     protected String administration;
+	@QueryParam(value = "domain")
     protected String domain;
-    protected Integer level;
-    protected Integer start;
-    protected Integer end;
+	@QueryParam(value = "level")
+    protected int level;
+	@QueryParam(value = "start")
+    protected int start;
+	@QueryParam(value = "end")
+    protected int end;
+	@DefaultValue("serviceName") @QueryParam(value = "sort")
     protected String sort;
+	@QueryParam(value = "order")
     protected String order;
 
     /**
@@ -140,10 +151,10 @@ public class ServiceInfoSearchModel {
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link int }
      *     
      */
-    public Integer getLevel() {
+    public int getLevel() {
         return level;
     }
 
@@ -152,10 +163,10 @@ public class ServiceInfoSearchModel {
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link int }
      *     
      */
-    public void setLevel(Integer value) {
+    public void setLevel(int value) {
         this.level = value;
     }
 
@@ -164,10 +175,10 @@ public class ServiceInfoSearchModel {
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link int }
      *     
      */
-    public Integer getStart() {
+    public int getStart() {
         return start;
     }
 
@@ -176,10 +187,10 @@ public class ServiceInfoSearchModel {
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link int }
      *     
      */
-    public void setStart(Integer value) {
+    public void setStart(int value) {
         this.start = value;
     }
 
@@ -188,10 +199,10 @@ public class ServiceInfoSearchModel {
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link int }
      *     
      */
-    public Integer getEnd() {
+    public int getEnd() {
         return end;
     }
 
@@ -200,10 +211,10 @@ public class ServiceInfoSearchModel {
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link int }
      *     
      */
-    public void setEnd(Integer value) {
+    public void setEnd(int value) {
         this.end = value;
     }
 

@@ -129,4 +129,57 @@
 		</xsd:complexType>
 	</xsd:element>
 
+	<xsd:element name="StatisticsAgencyResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" minOccurs="0" maxOccurs="unbounded" type="StatisticsAgency"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="StatisticsDomainResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" minOccurs="0" maxOccurs="unbounded" type="StatisticsDomain"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="StatisticsLevelResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" minOccurs="0" maxOccurs="unbounded" type="StatisticsLevel"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="StatisticsAgency">
+		<xsd:sequence>
+			<xsd:element name="administrationCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="administrationName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="count" type="xsd:int" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="StatisticsDomain">
+		<xsd:sequence>
+			<xsd:element name="domainCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="domainName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="count" type="xsd:int" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="StatisticsLevel">
+		<xsd:sequence>
+			<xsd:element name="level" type="xsd:string" minOccurs="0" />
+			<xsd:element name="levelName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="count" type="xsd:int" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+
+	
 </xsd:schema>

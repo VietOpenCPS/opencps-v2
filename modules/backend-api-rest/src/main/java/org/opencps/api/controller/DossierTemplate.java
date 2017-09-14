@@ -3,7 +3,6 @@ package org.opencps.api.controller;
 import java.net.HttpURLConnection;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -13,17 +12,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.headers.Header;
-import org.opencps.dossiertemplate.model.DossierPartResultsModel;
 import org.opencps.dossiertemplate.model.DossierTemplateResultsModel;
 import org.opencps.exception.model.ExceptionModel;
-import org.opencps.serviceinfo.model.ServiceInfoResultsModel;
-import org.opencps.serviceinfo.model.ServiceInfoSearchModel;
 
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 

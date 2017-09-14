@@ -1,0 +1,141 @@
+create table opencps_applicant (
+	uuid_ varchar(75) null,
+	applicantId bigint not null primary key,
+	groupId bigint,
+	companyId bigint,
+	userId bigint,
+	userName varchar(75) null,
+	createDate datetime null,
+	modifiedDate datetime null,
+	applicantName varchar(75) null,
+	applicantIdType varchar(75) null,
+	applicantIdNo varchar(75) null,
+	applicantIdDate datetime null,
+	address varchar(75) null,
+	cityCode varchar(75) null,
+	cityName varchar(75) null,
+	districtCode varchar(75) null,
+	districtName varchar(75) null,
+	wardCode varchar(75) null,
+	wardName varchar(75) null,
+	contactName varchar(75) null,
+	contactTelNo varchar(75) null,
+	contactEmail varchar(75) null,
+	mappingUserId bigint,
+	activationCode varchar(75) null,
+	lock_ tinyint,
+	profile varchar(75) null
+) engine InnoDB;
+
+create table opencps_employee (
+	uuid_ varchar(75) null,
+	employeeId bigint not null primary key,
+	companyId bigint,
+	groupId bigint,
+	userId bigint,
+	userName varchar(75) null,
+	createDate datetime null,
+	modifiedDate datetime null,
+	fullName varchar(75) null,
+	employeeNo varchar(75) null,
+	gender integer,
+	birthDate datetime null,
+	telNo varchar(75) null,
+	mobile varchar(75) null,
+	email varchar(75) null,
+	workingStatus integer,
+	mappingUserId bigint,
+	mainJobPostId bigint,
+	photoFileEntryId bigint,
+	fileDocId bigint,
+	preferences varchar(75) null
+) engine InnoDB;
+
+create table opencps_employee_jobpos (
+	uuid_ varchar(75) null,
+	employeeJobPosId bigint not null primary key,
+	companyId bigint,
+	groupId bigint,
+	userId bigint,
+	userName varchar(75) null,
+	createDate datetime null,
+	modifiedDate datetime null,
+	employeeId bigint,
+	jobPostId bigint
+) engine InnoDB;
+
+create table opencps_jobpos (
+	uuid_ varchar(75) null,
+	jobPosId bigint not null primary key,
+	companyId bigint,
+	groupId bigint,
+	userId bigint,
+	userName varchar(75) null,
+	createDate datetime null,
+	modifiedDate datetime null,
+	workingUnitId bigint,
+	title varchar(75) null,
+	description varchar(75) null,
+	directWorkingUnitId bigint,
+	leader integer,
+	mappingRoleId bigint,
+	hiddenJobPos tinyint
+) engine InnoDB;
+
+create table opencps_officesite (
+	uuid_ varchar(75) null,
+	officeSiteId bigint not null primary key,
+	companyId bigint,
+	groupId bigint,
+	userId bigint,
+	userName varchar(75) null,
+	createDate datetime null,
+	modifiedDate datetime null,
+	name varchar(75) null,
+	enName varchar(75) null,
+	govAgencyCode varchar(75) null,
+	address varchar(75) null,
+	telNo varchar(75) null,
+	faxNo varchar(75) null,
+	email varchar(75) null,
+	website varchar(75) null,
+	logoFileEntryId bigint,
+	siteGroupId bigint,
+	adminUserId bigint,
+	preferences varchar(75) null
+) engine InnoDB;
+
+create table opencps_preferences (
+	uuid_ varchar(75) null,
+	preferencesId bigint not null primary key,
+	groupId bigint,
+	companyId bigint,
+	userId bigint,
+	userName varchar(75) null,
+	createDate datetime null,
+	modifiedDate datetime null,
+	preferences varchar(75) null
+) engine InnoDB;
+
+create table opencps_workingunit (
+	uuid_ varchar(75) null,
+	workingUnitId bigint not null primary key,
+	companyId bigint,
+	groupId bigint,
+	userId bigint,
+	userName varchar(75) null,
+	createDate datetime null,
+	modifiedDate datetime null,
+	name varchar(75) null,
+	enName varchar(75) null,
+	govAgencyCode varchar(75) null,
+	parentWorkingUnitId bigint,
+	address varchar(75) null,
+	telNo varchar(75) null,
+	faxNo varchar(75) null,
+	email varchar(75) null,
+	website varchar(75) null,
+	logoFileEntryId bigint,
+	sibling varchar(75) null,
+	treeIndex varchar(75) null
+) engine InnoDB;
