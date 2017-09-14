@@ -51,9 +51,9 @@ public interface ServiceInfoActions {
 			String fileTemplateNo, String templateName, String fileName, InputStream is, String fileType, int fileSize,
 			ServiceContext serviceContext) throws PortalException, IOException;
 
-	public JSONObject getStatisticByAdministration();
+	public JSONObject getStatisticByAdministration(ServiceContext context, long groupId)  throws ParseException, SearchException;
 
-	public JSONObject getStatisticByDomain();
+	public JSONObject getStatisticByDomain(ServiceContext context, long groupId)  throws ParseException, SearchException;
 
 	public JSONObject getStatisticByLevel(ServiceContext context, long groupId) throws ParseException, SearchException;
 

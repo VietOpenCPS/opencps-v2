@@ -4,4 +4,5 @@ Bundle-Version: 1.0.0
 Export-Package: \
 	org.opencps.auth.api,\
 	org.opencps.auth.api.exception,\
-	org.opencps.auth.api.keys
+	org.opencps.auth.api.keys,\
+	org.opencps.auth.utils

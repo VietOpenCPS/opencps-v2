@@ -8,7 +8,15 @@ import com.liferay.portal.kernel.util.WebKeys;
 import aQute.bnd.osgi.Constants;
 
 public class DataMGTConstants implements Constants, WebKeys {
-
+	
+	public static final String ADMINTRATION_CODE = "SERVICE_ADMINISTRATION";
+	public static final String SERVICE_DOMAIN = "SERVICE_DOMAIN";
+	public static final String DOSSIER_STATUS = "DOSSIER_STATUS";
+	public static final String DOSSIER_SUB_STATUS = "DOSSIER_SUB_STATUS";
+	public static final String BUSINESS_TYPE = "BUSINESS_TYPE";
+	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
+	public static final String BUSINESS_DOMAIN = "BUSINESS_DOMAIN";
+	
 	public static final String ACTIVITY_TYPE = "ACTIVITY_TYPE";
 	
 	public static final String DOCUMENT_TYPE = "DOCUMENT_TYPE";

@@ -18,6 +18,10 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.datamgt.constants.DataMGTConstants;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.utils.DictCollectionUtils;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.exception.DuplicateServiceCodeException;
 import org.opencps.dossiermgt.exception.RequiredAdministrationCodeException;
@@ -138,7 +142,29 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		serviceInfo.setAdministrationCode(administrationCode);
 		serviceInfo.setDomainCode(domainCode);
 		serviceInfo.setMaxLevel(maxLevel);
-		serviceInfo.setPublic_(GetterUtil.getBoolean(activeStatus));
+		
+		boolean ispublic = false;
+		
+		if (activeStatus == 1) {
+			ispublic = true;
+		}
+		
+		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE, administrationCode, groupId);
+		DictItem dom = DictCollectionUtils.getDictItemByCode(DataMGTConstants.SERVICE_DOMAIN, domainCode, groupId);
+		
+		if (Validator.isNotNull(adm)) {
+			serviceInfo.setAdministrationName(adm.getItemName());
+			serviceInfo.setAdministrationIndex(adm.getTreeIndex());
+		}
+		
+		
+		if (Validator.isNotNull(dom)) {
+			serviceInfo.setDomainName(dom.getItemName());
+			serviceInfo.setDomainIndex(dom.getTreeIndex());
+		}
+
+		serviceInfo.setPublic_(ispublic);
+
 		serviceInfoPersistence.update(serviceInfo);
 
 		return serviceInfo;
@@ -320,7 +346,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (!level.equalsIgnoreCase("0")) {
+		if (!level.equalsIgnoreCase("0") && Validator.isNotNull(level)) {
 			MultiMatchQuery query = new MultiMatchQuery(level);
 
 			query.addFields(ServiceInfoTerm.MAX_LEVEL);
@@ -400,7 +426,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (!level.equalsIgnoreCase("0")) {
+		if (!level.equalsIgnoreCase("0") && Validator.isNotNull(level)) {
 			MultiMatchQuery query = new MultiMatchQuery(level);
 
 			query.addFields(ServiceInfoTerm.MAX_LEVEL);

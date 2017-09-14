@@ -674,4 +674,58 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		
 	}
 
+	@Override
+	public Response getStatisticByAgency(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		ServiceInfoActions actions = new ServiceInfoActionsImpl();
+		
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+		
+		try {
+			results = actions.getStatisticByAdministration(serviceContext, groupId);
+			
+			_log.info(results);
+			
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("Forbidden.");
+				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+				error.setDescription("Forbidden.");
+
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
+		}
+	}
+
+	@Override
+	public Response getStatisticByDomain(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		ServiceInfoActions actions = new ServiceInfoActionsImpl();
+		
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+		
+		try {
+			results = actions.getStatisticByDomain(serviceContext, groupId);
+			
+			_log.info(results);
+			
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("Forbidden.");
+				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+				error.setDescription("Forbidden.");
+				
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
+		}
+	}
+
 }

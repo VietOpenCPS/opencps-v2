@@ -7,6 +7,10 @@ import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.datamgt.constants.DataMGTConstants;
+import org.opencps.datamgt.constants.DictItemTerm;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
@@ -15,6 +19,7 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -23,12 +28,14 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
@@ -187,15 +194,114 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 	Log _log = LogFactoryUtil.getLog(ServiceInfoActionsImpl.class);
 
 	@Override
-	public JSONObject getStatisticByAdministration() {
-		// TODO Auto-generated method stub
-		return null;
+	public JSONObject getStatisticByAdministration(ServiceContext context, long groupId)
+			throws ParseException, SearchException {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		JSONArray data = JSONFactoryUtil.createJSONArray();
+
+		long count = 0;
+
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(context.getCompanyId());
+
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+		LinkedHashMap<String, Object> paramsData = new LinkedHashMap<String, Object>();
+
+		params.put(Field.GROUP_ID, String.valueOf(groupId));
+
+		paramsData.put(Field.GROUP_ID, String.valueOf(groupId));
+		paramsData.put(DictItemTerm.DICT_COLLECTION_CODE, DataMGTConstants.ADMINTRATION_CODE);
+
+		Sort[] sorts = new Sort[] { SortFactoryUtil.create(StringPool.BLANK + "_sortable", Sort.STRING_TYPE, true) };
+
+		Hits hits = DictItemLocalServiceUtil.luceneSearchEngine(paramsData, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				searchContext);
+
+		List<Document> documents = hits.toList();
+
+		for (Document doc : documents) {
+
+			long admCount = 0;
+
+			params.put(ServiceInfoTerm.ADMINISTRATION_CODE, doc.get(DictItemTerm.ITEM_CODE));
+
+			admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
+
+			if (admCount != 0) {
+				count = admCount + count;
+
+				JSONObject elm = JSONFactoryUtil.createJSONObject();
+
+				elm.put("administrationCode", doc.get(DictItemTerm.ITEM_CODE));
+				elm.put("administrationName", doc.get(DictItemTerm.ITEM_NAME));
+				elm.put("count", admCount);
+
+				data.put(elm);
+			}
+
+			result.put("total", count);
+			result.put("data", data);
+
+		}
+
+		return result;
 	}
 
 	@Override
-	public JSONObject getStatisticByDomain() {
-		// TODO Auto-generated method stub
-		return null;
+	public JSONObject getStatisticByDomain(ServiceContext context, long groupId)
+			throws ParseException, SearchException {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		JSONArray data = JSONFactoryUtil.createJSONArray();
+
+		long count = 0;
+
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(context.getCompanyId());
+
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+		LinkedHashMap<String, Object> paramsData = new LinkedHashMap<String, Object>();
+
+		params.put(Field.GROUP_ID, String.valueOf(groupId));
+
+		paramsData.put(Field.GROUP_ID, String.valueOf(groupId));
+		paramsData.put(DictItemTerm.DICT_COLLECTION_CODE, DataMGTConstants.SERVICE_DOMAIN);
+
+		Sort[] sorts = new Sort[] { SortFactoryUtil.create(StringPool.BLANK + "_sortable", Sort.STRING_TYPE, true) };
+
+		Hits hits = DictItemLocalServiceUtil.luceneSearchEngine(paramsData, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				searchContext);
+
+		List<Document> documents = hits.toList();
+
+		for (Document doc : documents) {
+
+			long admCount = 0;
+
+			params.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+
+			admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
+
+			if (admCount != 0) {
+				count = admCount + count;
+
+				JSONObject elm = JSONFactoryUtil.createJSONObject();
+
+				elm.put("domainCode", doc.get(DictItemTerm.ITEM_CODE));
+				elm.put("domainName", doc.get(DictItemTerm.ITEM_NAME));
+				elm.put("count", admCount);
+
+				data.put(elm);
+			}
+
+			result.put("total", count);
+			result.put("data", data);
+
+		}
+
+		return result;
 	}
 
 	@Override
@@ -214,25 +320,25 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		params.put(Field.GROUP_ID, String.valueOf(groupId));
 
 		for (int i = 1; i <= 4; i++) {
-			
+
 			long levelCount = 0;
 
 			params.put(ServiceInfoTerm.MAX_LEVEL, i);
 
 			levelCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
-			
+
 			if (levelCount != 0) {
 				count = levelCount + count;
-				
+
 				JSONObject elm = JSONFactoryUtil.createJSONObject();
-				
+
 				elm.put("level", i);
 				elm.put("levelName", i);
 				elm.put("count", levelCount);
-				
+
 				data.put(elm);
 			}
-			
+
 			result.put("total", count);
 			result.put("data", data);
 		}
