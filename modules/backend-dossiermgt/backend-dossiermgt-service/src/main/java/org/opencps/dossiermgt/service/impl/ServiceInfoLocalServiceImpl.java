@@ -320,7 +320,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(level)) {
+		if (!level.equalsIgnoreCase("0")) {
 			MultiMatchQuery query = new MultiMatchQuery(level);
 
 			query.addFields(ServiceInfoTerm.MAX_LEVEL);
@@ -400,7 +400,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(level)) {
+		if (!level.equalsIgnoreCase("0")) {
 			MultiMatchQuery query = new MultiMatchQuery(level);
 
 			query.addFields(ServiceInfoTerm.MAX_LEVEL);

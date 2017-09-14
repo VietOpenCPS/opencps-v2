@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -103,8 +104,7 @@ public class DictGroupPersistenceImpl extends BasePersistenceImpl<DictGroup>
 			DictGroupModelImpl.FINDER_CACHE_ENABLED, DictGroupImpl.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 			new String[] { String.class.getName() },
-			DictGroupModelImpl.UUID_COLUMN_BITMASK |
-			DictGroupModelImpl.DICTCOLLECTIONID_COLUMN_BITMASK);
+			DictGroupModelImpl.UUID_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_UUID = new FinderPath(DictGroupModelImpl.ENTITY_CACHE_ENABLED,
 			DictGroupModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
@@ -903,8 +903,7 @@ public class DictGroupPersistenceImpl extends BasePersistenceImpl<DictGroup>
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
 			new String[] { String.class.getName(), Long.class.getName() },
 			DictGroupModelImpl.UUID_COLUMN_BITMASK |
-			DictGroupModelImpl.COMPANYID_COLUMN_BITMASK |
-			DictGroupModelImpl.DICTCOLLECTIONID_COLUMN_BITMASK);
+			DictGroupModelImpl.COMPANYID_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_UUID_C = new FinderPath(DictGroupModelImpl.ENTITY_CACHE_ENABLED,
 			DictGroupModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
@@ -1474,6 +1473,272 @@ public class DictGroupPersistenceImpl extends BasePersistenceImpl<DictGroup>
 	private static final String _FINDER_COLUMN_UUID_C_UUID_2 = "dictGroup.uuid = ? AND ";
 	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(dictGroup.uuid IS NULL OR dictGroup.uuid = '') AND ";
 	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 = "dictGroup.companyId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_GROUPCODE = new FinderPath(DictGroupModelImpl.ENTITY_CACHE_ENABLED,
+			DictGroupModelImpl.FINDER_CACHE_ENABLED, DictGroupImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_groupCode",
+			new String[] { String.class.getName(), Long.class.getName() },
+			DictGroupModelImpl.GROUPCODE_COLUMN_BITMASK |
+			DictGroupModelImpl.GROUPID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GROUPCODE = new FinderPath(DictGroupModelImpl.ENTITY_CACHE_ENABLED,
+			DictGroupModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_groupCode",
+			new String[] { String.class.getName(), Long.class.getName() });
+
+	/**
+	 * Returns the dict group where groupCode = &#63; and groupId = &#63; or throws a {@link NoSuchDictGroupException} if it could not be found.
+	 *
+	 * @param groupCode the group code
+	 * @param groupId the group ID
+	 * @return the matching dict group
+	 * @throws NoSuchDictGroupException if a matching dict group could not be found
+	 */
+	@Override
+	public DictGroup findByF_groupCode(String groupCode, long groupId)
+		throws NoSuchDictGroupException {
+		DictGroup dictGroup = fetchByF_groupCode(groupCode, groupId);
+
+		if (dictGroup == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupCode=");
+			msg.append(groupCode);
+
+			msg.append(", groupId=");
+			msg.append(groupId);
+
+			msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDictGroupException(msg.toString());
+		}
+
+		return dictGroup;
+	}
+
+	/**
+	 * Returns the dict group where groupCode = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupCode the group code
+	 * @param groupId the group ID
+	 * @return the matching dict group, or <code>null</code> if a matching dict group could not be found
+	 */
+	@Override
+	public DictGroup fetchByF_groupCode(String groupCode, long groupId) {
+		return fetchByF_groupCode(groupCode, groupId, true);
+	}
+
+	/**
+	 * Returns the dict group where groupCode = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupCode the group code
+	 * @param groupId the group ID
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching dict group, or <code>null</code> if a matching dict group could not be found
+	 */
+	@Override
+	public DictGroup fetchByF_groupCode(String groupCode, long groupId,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupCode, groupId };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_GROUPCODE,
+					finderArgs, this);
+		}
+
+		if (result instanceof DictGroup) {
+			DictGroup dictGroup = (DictGroup)result;
+
+			if (!Objects.equals(groupCode, dictGroup.getGroupCode()) ||
+					(groupId != dictGroup.getGroupId())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_DICTGROUP_WHERE);
+
+			boolean bindGroupCode = false;
+
+			if (groupCode == null) {
+				query.append(_FINDER_COLUMN_F_GROUPCODE_GROUPCODE_1);
+			}
+			else if (groupCode.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_F_GROUPCODE_GROUPCODE_3);
+			}
+			else {
+				bindGroupCode = true;
+
+				query.append(_FINDER_COLUMN_F_GROUPCODE_GROUPCODE_2);
+			}
+
+			query.append(_FINDER_COLUMN_F_GROUPCODE_GROUPID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindGroupCode) {
+					qPos.add(groupCode);
+				}
+
+				qPos.add(groupId);
+
+				List<DictGroup> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_GROUPCODE,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DictGroupPersistenceImpl.fetchByF_groupCode(String, long, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					DictGroup dictGroup = list.get(0);
+
+					result = dictGroup;
+
+					cacheResult(dictGroup);
+
+					if ((dictGroup.getGroupCode() == null) ||
+							!dictGroup.getGroupCode().equals(groupCode) ||
+							(dictGroup.getGroupId() != groupId)) {
+						finderCache.putResult(FINDER_PATH_FETCH_BY_F_GROUPCODE,
+							finderArgs, dictGroup);
+					}
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GROUPCODE,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (DictGroup)result;
+		}
+	}
+
+	/**
+	 * Removes the dict group where groupCode = &#63; and groupId = &#63; from the database.
+	 *
+	 * @param groupCode the group code
+	 * @param groupId the group ID
+	 * @return the dict group that was removed
+	 */
+	@Override
+	public DictGroup removeByF_groupCode(String groupCode, long groupId)
+		throws NoSuchDictGroupException {
+		DictGroup dictGroup = findByF_groupCode(groupCode, groupId);
+
+		return remove(dictGroup);
+	}
+
+	/**
+	 * Returns the number of dict groups where groupCode = &#63; and groupId = &#63;.
+	 *
+	 * @param groupCode the group code
+	 * @param groupId the group ID
+	 * @return the number of matching dict groups
+	 */
+	@Override
+	public int countByF_groupCode(String groupCode, long groupId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GROUPCODE;
+
+		Object[] finderArgs = new Object[] { groupCode, groupId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_DICTGROUP_WHERE);
+
+			boolean bindGroupCode = false;
+
+			if (groupCode == null) {
+				query.append(_FINDER_COLUMN_F_GROUPCODE_GROUPCODE_1);
+			}
+			else if (groupCode.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_F_GROUPCODE_GROUPCODE_3);
+			}
+			else {
+				bindGroupCode = true;
+
+				query.append(_FINDER_COLUMN_F_GROUPCODE_GROUPCODE_2);
+			}
+
+			query.append(_FINDER_COLUMN_F_GROUPCODE_GROUPID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindGroupCode) {
+					qPos.add(groupCode);
+				}
+
+				qPos.add(groupId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GROUPCODE_GROUPCODE_1 = "dictGroup.groupCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_GROUPCODE_GROUPCODE_2 = "dictGroup.groupCode = ? AND ";
+	private static final String _FINDER_COLUMN_F_GROUPCODE_GROUPCODE_3 = "(dictGroup.groupCode IS NULL OR dictGroup.groupCode = '') AND ";
+	private static final String _FINDER_COLUMN_F_GROUPCODE_GROUPID_2 = "dictGroup.groupId = ?";
 
 	public DictGroupPersistenceImpl() {
 		setModelClass(DictGroup.class);
@@ -1491,6 +1756,10 @@ public class DictGroupPersistenceImpl extends BasePersistenceImpl<DictGroup>
 
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
 			new Object[] { dictGroup.getUuid(), dictGroup.getGroupId() },
+			dictGroup);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GROUPCODE,
+			new Object[] { dictGroup.getGroupCode(), dictGroup.getGroupId() },
 			dictGroup);
 
 		dictGroup.resetOriginalValues();
@@ -1571,6 +1840,16 @@ public class DictGroupPersistenceImpl extends BasePersistenceImpl<DictGroup>
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
 			dictGroupModelImpl, false);
+
+		args = new Object[] {
+				dictGroupModelImpl.getGroupCode(),
+				dictGroupModelImpl.getGroupId()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_GROUPCODE, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GROUPCODE, args,
+			dictGroupModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -1594,6 +1873,27 @@ public class DictGroupPersistenceImpl extends BasePersistenceImpl<DictGroup>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					dictGroupModelImpl.getGroupCode(),
+					dictGroupModelImpl.getGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GROUPCODE, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GROUPCODE, args);
+		}
+
+		if ((dictGroupModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_GROUPCODE.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					dictGroupModelImpl.getOriginalGroupCode(),
+					dictGroupModelImpl.getOriginalGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GROUPCODE, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GROUPCODE, args);
 		}
 	}
 

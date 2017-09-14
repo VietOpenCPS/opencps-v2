@@ -52,6 +52,22 @@ public class DateTimeUtils {
 		return dateFormat.format(calendar.getTime());
 	}
 
+	public static Date convertStringToDateAPI(String strDate) {
+		DateFormat df = getDateTimeFormat(_DATE_TIME_TO_NAME);
+		Date date = null;
+
+		try {
+			if (Validator.isNotNull(strDate)) {
+				date = df.parse(strDate);
+			}
+		}
+		catch (ParseException pe) {
+			_log.error(pe);
+		}
+
+		return date;
+	}
+	
 	public static Date convertStringToDate(String strDate) {
 		DateFormat df = getDateTimeFormat(_VN_DATE_FORMAT);
 		Date date = null;
@@ -200,7 +216,7 @@ public class DateTimeUtils {
 		return sb.toString();
 	}
 
-	public int getDayFromDate(Date date) {
+	public static int getDayFromDate(Date date) {
 		int day = 1;
 
 		if (date != null) {
@@ -216,7 +232,7 @@ public class DateTimeUtils {
 		return day;
 	}
 
-	public int getMonthFromDate(Date date) {
+	public static int getMonthFromDate(Date date) {
 		int month = 1;
 
 		if (date != null) {
@@ -232,7 +248,7 @@ public class DateTimeUtils {
 		return month;
 	}
 
-	public int getYearFromDate(Date date) {
+	public static int getYearFromDate(Date date) {
 		int year = 1990;
 
 		if (date != null) {
@@ -247,6 +263,7 @@ public class DateTimeUtils {
 
 		return year;
 	}
+	
 
 	public static int daysBetween(Date date1, Date date2){
 	    Calendar dayOne =Calendar.getInstance();

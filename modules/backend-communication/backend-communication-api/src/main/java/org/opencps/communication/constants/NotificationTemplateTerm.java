@@ -32,6 +32,8 @@ public class NotificationTemplateTerm {
 
 	public static final String MODIFIED_DATE = "modifiedDate";
 
+	public static final String SEND_EMAIL = "sendEmail";
+	
 	public static final String NOTIFICATTION_TYPE = "notificationType";
 
 	public static final String NOTIFICATION_EMAIL_SUBJECT = "emailSubject";
@@ -40,7 +42,7 @@ public class NotificationTemplateTerm {
 
 	public static final String NOTIFICATION_TEXT_MESSAGE = "textMessage";
 
-	public static final String NOTIFICATION_TEXT_SMS = "textSMS";
+	public static final String NOTIFICATION_SEND_SMS = "sendSMS";
 	
 	public static final String NOTIFICATIONTEMPLATE_ID_SORTABLE = "notificationTemplateId_sortable";
 
@@ -64,7 +66,7 @@ public class NotificationTemplateTerm {
 
 	public static final String NOTIFICATION_TEXT_MESSAGE_SORTABLE = "textMessage_sortable";
 	
-	public static final String NOTIFICATION_TEXT_SMS_SORTABLE = "textSMS_sortable";
+	public static final String NOTIFICATION_SEND_SMS_SORTABLE = "sendSMS_sortable";
 
 	public NotificationTemplateTerm() {
 
@@ -78,11 +80,12 @@ public class NotificationTemplateTerm {
 	private Date createDate;
 	private Date modifiedDate;
 
-	private int notificationType;
+	private boolean sendEmail;
+	private String notificationType;
 	private String emailSubject;
 	private String emailBody;
 	private String textMessage;
-	private String textSMS;
+	private boolean sendSMS;
 
 	public long getNotificationTemplateId() {
 		return notificationTemplateId;
@@ -126,10 +129,16 @@ public class NotificationTemplateTerm {
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
 	}
-	public int getNotificationType() {
+	public boolean isSendEmail() {
+		return sendEmail;
+	}
+	public void setSendEmail(boolean sendEmail) {
+		this.sendEmail = sendEmail;
+	}
+	public String getNotificationType() {
 		return notificationType;
 	}
-	public void setNotificationType(int notificationType) {
+	public void setNotificationType(String notificationType) {
 		this.notificationType = notificationType;
 	}
 	public String getEmailSubject() {
@@ -150,10 +159,11 @@ public class NotificationTemplateTerm {
 	public void setTextMessage(String textMessage) {
 		this.textMessage = textMessage;
 	}
-	public String getTextSMS() {
-		return textSMS;
+	public boolean isSendSMS() {
+		return sendSMS;
 	}
-	public void setTextSMS(String textSMS) {
-		this.textSMS = textSMS;
+	public void setSendSMS(boolean sendSMS) {
+		this.sendSMS = sendSMS;
 	}
+
 }

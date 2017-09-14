@@ -21,8 +21,8 @@ import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import org.opencps.backend.dossiermgt.model.ServiceInfo;
-import org.opencps.backend.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.frontend.web.admin.constants.AdminPortletKeys;
 import org.osgi.service.component.annotations.Component;
 

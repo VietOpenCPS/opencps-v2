@@ -7,6 +7,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.datamgt.constants.DictCollectionTerm;
+import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 
@@ -41,17 +42,6 @@ public class DictCollectionIndexer extends BaseIndexer<DictCollection> {
 			SearchContext searchContext) throws Exception {
 
 		addSearchTerm(searchQuery, searchContext, DictCollectionTerm.DICT_COLLECTION_ID, false);
-		addSearchTerm(searchQuery, searchContext, DictCollectionTerm.GROUP_ID, false);
-		addSearchTerm(searchQuery, searchContext, DictCollectionTerm.COMPANY_ID, false);
-		addSearchTerm(searchQuery, searchContext, DictCollectionTerm.USER_ID, false);
-		addSearchTerm(searchQuery, searchContext, DictCollectionTerm.USER_NAME, false);
-		addSearchTerm(searchQuery, searchContext, DictCollectionTerm.CREATE_DATE, false);
-		addSearchTerm(searchQuery, searchContext, DictCollectionTerm.MODIFIED_DATE, false);
-		addSearchTerm(searchQuery, searchContext, DictCollectionTerm.COLLECTION_CODE, true);
-		addSearchTerm(searchQuery, searchContext, DictCollectionTerm.COLLECTION_NAME, true);
-		addSearchTerm(searchQuery, searchContext, DictCollectionTerm.COLLECTION_NAME_EN, true);
-		addSearchTerm(searchQuery, searchContext, DictCollectionTerm.DESCRIPTION, true);
-		addSearchTerm(searchQuery, searchContext, DictCollectionTerm.DATAFORM, true);
 
 		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
 
@@ -78,6 +68,7 @@ public class DictCollectionIndexer extends BaseIndexer<DictCollection> {
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(dictCollection.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(dictCollection.getUserName()));
 
+		document.addNumberSortable(DictCollectionTerm.GROUP_ID, dictCollection.getGroupId());
 		document.addNumberSortable(DictCollectionTerm.DICT_COLLECTION_ID, dictCollection.getDictCollectionId());
 		document.addTextSortable(DictCollectionTerm.COLLECTION_CODE, dictCollection.getCollectionCode());
 		document.addTextSortable(DictCollectionTerm.COLLECTION_NAME, dictCollection.getCollectionName());
@@ -90,17 +81,7 @@ public class DictCollectionIndexer extends BaseIndexer<DictCollection> {
 
 	@Override
 	protected String doGetSortField(String orderByCol) {
-		if (orderByCol.equals("email-address")) {
-			return "emailAddress";
-		} else if (orderByCol.equals("first-name")) {
-			return "firstName";
-		} else if (orderByCol.equals("job-title")) {
-			return "jobTitle";
-		} else if (orderByCol.equals("last-name")) {
-			return "lastName";
-		} else {
-			return orderByCol;
-		}
+		return orderByCol;
 	}
 
 	@Override
@@ -149,7 +130,7 @@ public class DictCollectionIndexer extends BaseIndexer<DictCollection> {
 							indexableActionableDynamicQuery.addDocuments(document);
 						} catch (PortalException pe) {
 							if (_log.isWarnEnabled()) {
-								_log.warn("Unable to index contact " + dictCollection.getDictCollectionId(), pe);
+								_log.warn("Unable to index DictCollectionIndexer " + dictCollection.getDictCollectionId(), pe);
 							}
 						}
 					}

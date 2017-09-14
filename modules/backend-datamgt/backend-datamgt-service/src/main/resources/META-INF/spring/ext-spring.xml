@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean class="org.opencps.datamgt.service.indexer.DictCollectionIndexer" id="org.opencps.datamgt.service.indexer.DictCollectionIndexer" />
+	<bean class="org.opencps.datamgt.service.indexer.DictGroupIndexer" id="org.opencps.datamgt.service.indexer.DictGroupIndexer" />
+	<bean class="org.opencps.datamgt.service.indexer.DictItemGroupIndexer" id="org.opencps.datamgt.service.indexer.DictItemGroupIndexer" />
+	<bean class="org.opencps.datamgt.service.indexer.DictItemIndexer" id="org.opencps.datamgt.service.indexer.DictItemIndexer" />
+	
+	<!-- 	holiday, worktime -->
+	<bean class="org.opencps.datamgt.service.indexer.HolidayIndexer" id="org.opencps.datamgt.service.indexer.HolidayIndexer" />
+	<bean class="org.opencps.datamgt.service.indexer.WorkTimeIndexer" id="org.opencps.datamgt.service.indexer.WorkTimeIndexer" />
+	
+</beans>
