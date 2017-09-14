@@ -15,7 +15,7 @@ import frontend.web.portal.constants.FrontendWebPortalPortletKeys;
 	immediate = true,
 	property = {
 		"com.liferay.portlet.css-class-wrapper=portlet-freemarker",
-					"com.liferay.portlet.display-category=category.opencps_v2",
+					"com.liferay.portlet.display-category=category.opencps_v2.portal",
 		"com.liferay.portlet.header-portlet-css=/css/main.css",
 		"com.liferay.portlet.instanceable=true",
 		"javax.portlet.display-name=frontend-web-portal Portlet",
