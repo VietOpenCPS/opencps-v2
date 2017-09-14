@@ -1,12 +1,11 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <div class="row panel">
     <div class="row-header">
         <div class="background-triangle-big">CHI TIÊT THỦ TỤC HÀNH CHÍNH</div>
     </div>
-
     <div class="panel-body" id="dataDetailServiceInfo">
         <div class="row MB15">
             <div class="col-sm-12">
@@ -76,7 +75,7 @@
                                 <label>Đối tượng</label>
                             </div>
                             <div class="col-sm-10">
-                                <p></p>
+                                <p data-bind="text:applicantText" id="applicantText"></p>
                             </div>
                         </div>
                         <div class="row" style="padding: 5px 0 5px 5px;">
@@ -100,65 +99,40 @@
                                 <label>Căn cứ pháp lý</label>
                             </div>
                             <div class="col-sm-10">
-                                <p data-bind="text:dossierText" id="dossierText"></p>
+                                <p data-bind="text:regularText" id="regularText"></p>
                             </div>
                         </div>
                         <input type="hidden" name="serviceinfoId" id="serviceinfoId" data-bind="value : serviceinfoId">
                         <div class="col-sm-12 PL0 MT15" id="submitDossier">
-                            
+
                         </div>
                     </div>
                 </div>
                 <div id="ttth" class="tab-pane fade">
-                   <p data-bind="text:processText" id="processText"></p>
+                 <p class="MT15" data-bind="text:processText" id="processText"></p>
 
-                   <div class="col-sm-12 PL0 MT15">
-                    <button class="btn">Xem hướng dẫn >></button>
-                </div>
+                 <div class="col-sm-12 PL0 MT15" id="viewGuide">
+
+                 </div>
+             </div>
+             <div id="tphs" class="tab-pane fade">
+                 <p class="MB15 MT10" data-bind="text:dossierText" id="dossierText"></p>
+
+                 <label>File biểu mẫu</label>
+                 <ul class="ML10" id ="service_info_filetemplate" data-template="service_info_filetemplate_template" data-bind="source: fileTemplates">
+
+                 </ul>
+                 <script type="text/x-kendo-template" id="service_info_filetemplate_template">
+                     <li class="clearfix item-serviceinfo-filetemplate eq-height-lg" data-bind="attr: {data-pk : fileTemplateNo}" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
+                        <a data-bind="attr : { href: fileTemplateDownLoad}"><i class="fa fa-download" aria-hidden="true"></i> <span data-bind="text: templateName"></span></a>
+                    </li>
+                </script>
             </div>
-            <div id="tphs" class="tab-pane fade">
-                <ul class="mimic-table">
-                    <li class="clearfix">
-                        <div class="col-sm-1 text-center">
-                           <b>STT</b>
-                       </div>
-                       <div class="col-sm-7 text-center">
-                           <b>Tên biểu mẫu</b>
-                       </div>
-                       <div class="col-sm-2 text-center">
-                           <b>Loại file</b>
-                       </div>
-                       <div class="col-sm-2 text-center">
-                           <b>Kích thước</b>
-                       </div>
-                   </li>
-               </ul>
-               <ul id ="service_info_filetemplate" class="mimic-table" data-template="service_info_filetemplate_template" data-bind="source: fileTemplates">
-
-               </ul>
-               <script type="text/x-kendo-template" id="service_info_filetemplate_template">
-                   <li class="clearfix item-serviceinfo-filetemplate eq-height-lg" data-bind="attr: {data-pk : fileTemplateNo}" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
-                    <div class="col-sm-1 text-center">
-                        1
-                    </div>
-                    <div class="col-sm-7 text-center" data-bind="text: templateName">
-
-                    </div>
-                    <div class="col-sm-2 text-center" data-bind="text: fileType">
-
-                    </div>
-                    <div class="col-sm-2 text-center" data-bind="text: fileSize">
-
-                    </div>
-                </li>
-            </script>
-
-        </div>
-        <div id="ycdk" class="tab-pane fade">
-            <p data-bind="text:conditionText" id="conditionText"></p>
+            <div id="ycdk" class="tab-pane fade">
+                <p class="MT10 MB10" data-bind="text:conditionText" id="conditionText"></p>
+            </div>
         </div>
     </div>
-</div>
 </div>
 
 <div id="submitDossierModal" class="modal fade" role="dialog">
@@ -188,7 +162,7 @@
 <script type="text/javascript">
 
     $(document).ready(function(){
-     $("#slAdministration").kendoComboBox({
+       $("#slAdministration").kendoComboBox({
         placeholder : "Chọn cơ quan thực hiện",
         dataTextField : "name",
         dataValueField : "value",
@@ -222,7 +196,7 @@
             },*/
             filter: "contains"
         });
- });
+   });
 
     var pullDataDetail= function(id){
         console.log(id);
@@ -240,18 +214,31 @@
                         }else if(result.maxLevel == 3){
                             $("#maxLevel").addClass("label label-danger");
                         }else {
-                            $("#maxLevel").addClass("label");
+                            $("#maxLevel").addClass("label label-info");
                         }
 
-                        if(result.maxLevel >= 3){
-                            $("#submitDossier").html("");
-                            $("#submitDossier").append('<button type="button" class="btn btn-active" data-toggle="modal" data-target="#submitDossierModal">Nộp hồ sơ >></button>');
+                        if(result.maxLevel>=3){
+                            $("#submitDossier").html('<button type="button" class="btn btn-active" data-toggle="modal" data-target="#submitDossierModal">Nộp hồ sơ >></button>');
+                        }else{
+                            $("#viewGuide").html('<button class="btn">Xem hướng dẫn >></button>');
                         }
                         return "Mức "+result.maxLevel;
                     },
-                    /*fileTypeTemp : function(e){
-                        console.log(e.data);
-                    },*/
+                    fileTypetemp : function(e){
+                        if(e.fileType == "txt"){
+                            return "fa fa-file-text-o";
+                        }else if(e.fileType == "doc" || e.fileType == "docx"){
+                            return "fa fa-file-word-o";
+                        }else if(e.fileType == "jpg"){
+                            return "fa fa-file-image-o";
+                        }else if(e.fileType == "pdf"){
+                            return "fa fa-file-pdf-o";
+                        }
+                    },
+                    fileTemplateDownLoad : function(e){
+                        var serviceInfoId = $("#serviceinfoId").val();
+                        return '${api.server}/serviceinfos/'+serviceInfoId+'/filetemplates/'+e.fileTemplateNo
+                    },
                     serviceinfoId: result.serviceinfoId,
                     serviceName: result.serviceName,
                     administrationName: result.administrationName,
@@ -262,6 +249,8 @@
                     durationText : result.durationText,
                     dossierText : result.dossierText,
                     processText : result.processText,
+                    applicantText : result.applicantText,
+                    regularText : result.regularText,
                     conditionText : result.conditionText,
                     fileTemplates : result.fileTemplates
                 });
