@@ -255,7 +255,7 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="serviceConfigId" type="String" />
+		<field name="serviceConfigId" type="long" />
 		<field name="optionOrder" type="int" />
 		<field name="autoSelect" type="String" />
 		<field name="dossierTemplateId" type="long" />
