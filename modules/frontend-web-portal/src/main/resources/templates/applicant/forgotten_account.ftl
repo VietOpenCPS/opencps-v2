@@ -5,7 +5,7 @@
 <form id="fmPasswordWorkflow">
 	<div class="row box MA" style="max-width: 500px;">
 		<div class="col-sm-12 text-center MB5">
-			<h3>QUÊN MÂT KHÂỦ</h3>
+			<h3>QUÊN MẬT KHÂỦ</h3>
 		</div>
 		<div class="col-sm-12 text-center MB5">
 			<p>Vui lòng nhập Email hoặc số CMTND/ Hộ chiếu/ Mã số thuế để tìm kiếm tài khoản</p>
