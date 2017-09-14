@@ -6,10 +6,10 @@
 	<div class="hidden-xs hidden-sm">
 	  <form action="${loginURL}" method="post" class="eq-height-lg">
 	    <div class="">
-	      <input type="text" class="form-control input-sm" name="<@portlet.namespace />login" placeholder="Tài khoản đăng nhập" title="Tài khoản đăng nhập">
+	      <input type="text" class="form-control input-sm" name="${portletNamespace}login" placeholder="Tài khoản đăng nhập" title="Tài khoản đăng nhập">
 	    </div>
 	    <div class="">
-	      <input type="password" class="form-control input-sm" name="<@portlet.namespace />password" placeholder="Mật khẩu" title="Mật khẩu">
+	      <input type="password" class="form-control input-sm" name="${portletNamespace}password" placeholder="Mật khẩu" title="Mật khẩu">
 	    </div>
 	    <div class="">
 	      <button class="btn btn-active btn-sm">Đăng nhập</button>
