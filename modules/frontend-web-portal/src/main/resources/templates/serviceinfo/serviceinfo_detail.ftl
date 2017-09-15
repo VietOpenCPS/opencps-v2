@@ -12,7 +12,7 @@
                 <span class="MR10" id="maxLevel" data-bind="text:maxLevel"> </span> <span data-bind="text:serviceName" class="text-bold" id="serviceName"> </span>
             </div>
         </div>
-        <div id="serviceinfo_detail_tabstrip">
+        <div id="serviceinfo_detail_tabstrip" class="row nav-tabs-wrapper">
             <ul class="nav nav-tabs">
                 <li class="active">
                     <a data-toggle="tab" href="#ttc">
@@ -36,9 +36,9 @@
                 </li>
             </ul>
             <div class="tab-content">
-                <div id="ttc" class="tab-pane fade in active MT20">
+                <div id="ttc" class="tab-pane fade in active">
                     <div class="row-parts-content">
-                        <div class="row" style="padding: 5px 0 5px 5px;">
+                        <div class="row">
                             <div class="col-sm-2">
                                 <label>Cơ quan quản lý</label>
                             </div>
@@ -46,57 +46,57 @@
                                 <p data-bind="text:administrationName" id="administrationName"></p>
                             </div>
                         </div>
-                        <div class="row" style="padding: 5px 0 5px 5px;">
+                        <div class="row" >
                             <div class="col-sm-2">
-                                <label>Lĩnh vực</label>
+                                <label class="MB10">Lĩnh vực</label>
                             </div>
                             <div class="col-sm-10">
                                 <p data-bind="text:domainName" id="domainName"></p>
                             </div>
                         </div>
-                        <div class="row" style="padding: 5px 0 5px 5px;">
+                        <div class="row">
                             <div class="col-sm-2">
-                                <label>Cách thực hiện</label>
+                                <label class="MB10">Cách thực hiện</label>
                             </div>
                             <div class="col-sm-10">
                                 <p data-bind="text:methodText" id="methodText"></p>
                             </div>
                         </div>
-                        <div class="row" style="padding: 5px 0 5px 5px;">
+                        <div class="row">
                             <div class="col-sm-2">
-                                <label>Thời gian giải quyết</label>
+                                <label class="MB10">Thời gian giải quyết</label>
                             </div>
                             <div class="col-sm-10">
                                 <p data-bind="text:durationText" id="durationText"></p>
                             </div>
                         </div>
-                        <div class="row" style="padding: 5px 0 5px 5px;">
+                        <div class="row">
                             <div class="col-sm-2">
-                                <label>Đối tượng</label>
+                                <label class="MB10">Đối tượng</label>
                             </div>
                             <div class="col-sm-10">
                                 <p data-bind="text:applicantText" id="applicantText"></p>
                             </div>
                         </div>
-                        <div class="row" style="padding: 5px 0 5px 5px;">
+                        <div class="row">
                             <div class="col-sm-2">
-                                <label>Kết quả giải quyết</label>
+                                <label class="MB10">Kết quả giải quyết</label>
                             </div>
                             <div class="col-sm-10">
                                 <p data-bind="text:resultText" id="resultText"></p>
                             </div>
                         </div>
-                        <div class="row" style="padding: 5px 0 5px 5px;">
+                        <div class="row">
                             <div class="col-sm-2">
-                                <label>Lệ phí</label>
+                                <label class="MB10">Lệ phí</label>
                             </div>
                             <div class="col-sm-10">
                                 <p data-bind="text:feeText" id="feeText"></p>
                             </div>
                         </div>
-                        <div class="row" style="padding: 5px 0 5px 5px;">
+                        <div class="row">
                             <div class="col-sm-2">
-                                <label>Căn cứ pháp lý</label>
+                                <label class="MB10">Căn cứ pháp lý</label>
                             </div>
                             <div class="col-sm-10">
                                 <p data-bind="text:regularText" id="regularText"></p>
@@ -109,21 +109,21 @@
                     </div>
                 </div>
                 <div id="ttth" class="tab-pane fade">
-                 <p class="MT15" data-bind="text:processText" id="processText"></p>
+                   <p class="" data-bind="text:processText" id="processText"></p>
 
-                 <div class="col-sm-12 PL0 MT15" id="viewGuide">
+                   <div class="col-sm-12 PL0 MT10" id="viewGuide">
 
-                 </div>
-             </div>
-             <div id="tphs" class="tab-pane fade">
-                 <p class="MB15 MT10" data-bind="text:dossierText" id="dossierText"></p>
+                   </div>
+               </div>
+               <div id="tphs" class="tab-pane fade">
+                   <p class="MB15 MT10" data-bind="text:dossierText" id="dossierText"></p>
 
-                 <label>File biểu mẫu</label>
-                 <ul class="ML10" id ="service_info_filetemplate" data-template="service_info_filetemplate_template" data-bind="source: fileTemplates">
+                   <label>File biểu mẫu</label>
+                   <ul class="ML10" id ="service_info_filetemplate" data-template="service_info_filetemplate_template" data-bind="source: fileTemplates">
 
-                 </ul>
-                 <script type="text/x-kendo-template" id="service_info_filetemplate_template">
-                     <li class="clearfix item-serviceinfo-filetemplate eq-height-lg" data-bind="attr: {data-pk : fileTemplateNo}" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
+                   </ul>
+                   <script type="text/x-kendo-template" id="service_info_filetemplate_template">
+                       <li class="clearfix item-serviceinfo-filetemplate eq-height-lg" data-bind="attr: {data-pk : fileTemplateNo}" role="option" aria-selected="true">
                         <a data-bind="attr : { href: fileTemplateDownLoad}"><i class="fa fa-download" aria-hidden="true"></i> <span data-bind="text: templateName"></span></a>
                     </li>
                 </script>
@@ -160,9 +160,8 @@
 </div>
 
 <script type="text/javascript">
-
     $(document).ready(function(){
-       $("#slAdministration").kendoComboBox({
+     $("#slAdministration").kendoComboBox({
         placeholder : "Chọn cơ quan thực hiện",
         dataTextField : "name",
         dataValueField : "value",
@@ -196,7 +195,7 @@
             },*/
             filter: "contains"
         });
-   });
+ });
 
     var pullDataDetail= function(id){
         console.log(id);
@@ -208,13 +207,13 @@
                 var viewModel = kendo.observable({
                     maxLevel: function(){
                         if(result.maxLevel == 1){
-                            $("#maxLevel").addClass("label label-info");
+                            $("#maxLevel").addClass("label label-dvc-lv1");
                         }else if(result.maxLevel == 2){
-                            $("#maxLevel").addClass("label label-warning");
+                            $("#maxLevel").addClass("label label-dvc-lv2");
                         }else if(result.maxLevel == 3){
-                            $("#maxLevel").addClass("label label-danger");
+                            $("#maxLevel").addClass("label label-dvc-lv3");
                         }else {
-                            $("#maxLevel").addClass("label label-info");
+                            $("#maxLevel").addClass("label label-dvc-lv4");
                         }
 
                         if(result.maxLevel>=3){
@@ -239,7 +238,7 @@
                         var serviceInfoId = $("#serviceinfoId").val();
                         return '${api.server}/serviceinfos/'+serviceInfoId+'/filetemplates/'+e.fileTemplateNo
                     },
-                    serviceinfoId: result.serviceinfoId,
+                    serviceinfoId: result.serviceInfoId,
                     serviceName: result.serviceName,
                     administrationName: result.administrationName,
                     domainName: result.domainName,
