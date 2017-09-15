@@ -89,7 +89,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 
 		return option;
 	}
-
+	@Indexable(type = IndexableType.REINDEX)
 	public ProcessOption updateProcessOption(long groupId, long processOptionId, long serviceConfigId, int seqOrder,
 			String autoSelect, String instructionNote, String submissionNote, long dossierTemplateId,
 			long serviceProcessId, ServiceContext context) throws PortalException {
@@ -105,7 +105,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		if (processOptionId == 0) {
 			processOptionId = counterLocalService.increment(ProcessOption.class.getName());
 
-			processOption = processOptionPersistence.fetchByPrimaryKey(processOptionId);
+			processOption = processOptionPersistence.create(processOptionId);
 
 			processOption.setCreateDate(now);
 			processOption.setModifiedDate(now);
@@ -274,7 +274,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		String configId = GetterUtil.getString(params.get(ProcessOptionTerm.SERVICE_CONFIG_ID));
 		String applicantType = GetterUtil.getString(params.get(ProcessOptionTerm.APPLICATION_TYPE));
 
-		if (Validator.isNotNull(configId)) {
+		if (Validator.isNotNull(configId) && !configId.contentEquals("0")) {
 			MultiMatchQuery query = new MultiMatchQuery(configId);
 
 			query.addFields(ProcessOptionTerm.SERVICE_CONFIG_ID);

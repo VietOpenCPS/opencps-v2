@@ -8,10 +8,14 @@
 
 package org.opencps.api.serviceconfig.model;
 
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import com.liferay.portal.kernel.util.StringPool;
 
 
 /**
@@ -55,15 +59,23 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "ServiceConfigInputModel")
 public class ServiceConfigInputModel {
-
+	@DefaultValue("0") @FormParam(value = "serviceInfoId")
     protected Integer serviceInfoId;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "govAgencyCode")
     protected String govAgencyCode;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "serviceInstruction")
     protected String serviceInstruction;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "serviceLevel")
     protected Integer serviceLevel;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "serviceUrl")
     protected String serviceUrl;
+	@DefaultValue(StringPool.FALSE) @FormParam(value = "forCitizen")
     protected String forCitizen;
+	@DefaultValue(StringPool.FALSE) @FormParam(value = "forBusiness")
     protected String forBusiness;
+	@DefaultValue(StringPool.FALSE) @FormParam(value = "postalService")
     protected String postalService;
+	@DefaultValue(StringPool.FALSE) @FormParam(value = "registration")
     protected String registration;
 
     /**
