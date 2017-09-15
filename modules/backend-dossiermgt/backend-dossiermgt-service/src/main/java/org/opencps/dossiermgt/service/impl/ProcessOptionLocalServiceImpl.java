@@ -19,6 +19,7 @@ import aQute.bnd.annotation.ProviderType;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
+import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
@@ -43,6 +44,7 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.generic.MatchQuery.Operator;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -206,9 +208,14 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		}
 
 		if (Validator.isNotNull(applicantType)) {
+
 			MultiMatchQuery query = new MultiMatchQuery(applicantType);
 
-			query.addFields(ProcessOptionTerm.APPLICATION_TYPE);
+			Operator operator = Operator.OR;
+			
+			query.addFields(ActionKeys.APPLICANT_CTZ, ActionKeys.APPLICANT_BUSINESS);
+
+			query.setOperator(operator);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

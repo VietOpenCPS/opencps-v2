@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:element name="ServiceConfigSearchModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- default -->
+				<xsd:element name="keyword" type="xsd:string" minOccurs="0" />
+				<xsd:element name="start" type="xsd:int" minOccurs="0" />
+				<xsd:element name="end" type="xsd:int" minOccurs="0" />
+				<xsd:element name="sort" type="xsd:string" minOccurs="0" />
+				<xsd:element name="order" type="xsd:string" minOccurs="0" />
+				
+				<!-- extends -->
+				<xsd:element name="level" type="xsd:string" minOccurs="0" />
+				<xsd:element name="agency" type="xsd:string" minOccurs="0" />
+				<xsd:element name="service" type="xsd:string" minOccurs="0" />
+				<xsd:element name="domain" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicant" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ProcessOptionSearchModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- default -->
+				<xsd:element name="keyword" type="xsd:string" minOccurs="0" />
+				<xsd:element name="start" type="xsd:int" minOccurs="0" />
+				<xsd:element name="end" type="xsd:int" minOccurs="0" />
+				<xsd:element name="sort" type="xsd:string" minOccurs="0" />
+				<xsd:element name="order" type="xsd:string" minOccurs="0" />
+				
+				<!-- extends -->
+				<xsd:element name="applicant" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="ServiceConfig">
+		<xsd:sequence>
+			<xsd:element name="serviceConfigId" type="xsd:int" minOccurs="0" />
+			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="serviceInfoId" type="xsd:int" minOccurs="0" />
+			<xsd:element name="serviceCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="serviceName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="domainCode " type="xsd:string" minOccurs="0" />
+			<xsd:element name="domainName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="serviceInstruction" type="xsd:string" minOccurs="0" />
+			<xsd:element name="serviceLevel" type="xsd:string" minOccurs="0" />
+			<xsd:element name="serviceUrl" type="xsd:string" minOccurs="0" />
+			<xsd:element name="forCitizen" type="xsd:string" minOccurs="0" />
+			<xsd:element name="forBusiness" type="xsd:string" minOccurs="0" />
+			<xsd:element name="postalService" type="xsd:string" minOccurs="0" />
+			<xsd:element name="registration" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="ServiceConfigResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="ServiceConfig" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ServiceConfigInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="serviceInfoId" type="xsd:int" minOccurs="0" />
+				<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceInstruction" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceLevel" type="xsd:int" minOccurs="0" />
+				<xsd:element name="serviceUrl" type="xsd:string" minOccurs="0" />
+				<xsd:element name="forCitizen" type="xsd:string" minOccurs="0" />
+				<xsd:element name="forBusiness" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalService" type="xsd:string" minOccurs="0" />
+				<xsd:element name="registration" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element  name="ServiceConfigDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="serviceConfigId" type="xsd:int" minOccurs="0" />
+				<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceInfoId" type="xsd:int" minOccurs="0" />
+				<xsd:element name="serviceCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="domainCode " type="xsd:string" minOccurs="0" />
+				<xsd:element name="domainName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceInstruction" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceLevel" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceUrl" type="xsd:string" minOccurs="0" />
+				<xsd:element name="forCitizen" type="xsd:string" minOccurs="0" />
+				<xsd:element name="forBusiness" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalService" type="xsd:string" minOccurs="0" />
+				<xsd:element name="registration" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="ProcessOption">
+		<xsd:sequence>
+			<xsd:element name="processOptionId" type="xsd:int" minOccurs="0" />
+			<xsd:element name="seqOrder" type="xsd:int" minOccurs="0" />
+			<xsd:element name="autoSelect" type="xsd:string" minOccurs="0" />
+			<xsd:element name="instructionNote" type="xsd:string" minOccurs="0" />
+			<xsd:element name="submissionNote" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierTemplateId" type="xsd:int" minOccurs="0" />
+			<xsd:element name="templateNo " type="xsd:string" minOccurs="0" />
+			<xsd:element name="templateName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="serviceProcessId" type="xsd:int" minOccurs="0" />
+			<xsd:element name="processNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="processName" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="ProcessOptionResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="ProcessOption" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ProcessOptionInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="seqOrder" type="xsd:int" minOccurs="0" />
+				<xsd:element name="autoSelect" type="xsd:string" minOccurs="0" />
+				<xsd:element name="instructionNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="submissionNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierTemplateId" type="xsd:int" minOccurs="0" />
+				<xsd:element name="serviceProcessId" type="xsd:int" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+</xsd:schema>
