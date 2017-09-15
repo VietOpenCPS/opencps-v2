@@ -8,6 +8,10 @@
 }
 
 /* Register Wrapper */
+#register_container {
+	max-width: 1170px;
+	margin: auto;
+}
 .register-wrapper .k-tooltip {
 	color: #b50303;
 	margin-top: 5px;
@@ -37,6 +41,29 @@
 }
 .portlet-boundary_FrontendWebPortal_LoginPortlet_ form > div:nth-child(2) {
 	margin: 0 15px;
+}
+
+/* Login Homepage */
+.hp form.eq-height-lg {
+	display: block;
+}
+.hp .portlet-boundary_FrontendWebPortal_LoginPortlet_ {
+	max-width: 220px;
+}
+.hp .portlet-boundary_FrontendWebPortal_LoginPortlet_ form > div:nth-child(2) {
+	margin: 0;
+}
+.hp .portlet-boundary_FrontendWebPortal_LoginPortlet_ input {
+	margin-bottom: 10px;
+}
+.hp .portlet-boundary_FrontendWebPortal_LoginPortlet_ button {
+	float: right;
+}
+.hp .portlet-boundary_FrontendWebPortal_LoginPortlet_ .text-hover-blue {
+	position: absolute;
+	top: 3px;
+	left: 15px;
+	white-space: nowrap;
 }
 
 
@@ -76,6 +103,31 @@
 .popup-error-notification p:before {
 	content: "\f071";
 	top: 1px;
+}
+
+
+
+/*----- Modal -----*/
+body .modal {
+	display: none;
+}
+html .modal-open .modal {
+    pointer-events: none;
+}
+html .modal-open .modal {
+    overflow-y: auto !important;
+}
+html .modal-dialog {
+	margin-bottom: 0;
+}
+html .modal-open .modal-content {
+	pointer-events: all;
+}
+html .modal-open .modal-header ~ form, 
+html .modal-open .modal-header ~ div form {
+	max-height: -webkit-calc(100vh - 145px);
+    max-height: calc(100vh - 145px);
+    overflow: auto;
 }
 
 

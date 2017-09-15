@@ -221,6 +221,14 @@ html .k-pager-input {
 .k-animation-container .k-list-container {
     background-color: white;
     border-radius: 4px;
+	border-color: #ddd;
+}
+
+.mBody .k-state-focused {
+	border-color: #0b72ba;
+}
+.k-dropdown-wrap {
+  border-radius: 4px;
 }
 
 body .k-dropdown-wrap, body .k-picker-wrap {
