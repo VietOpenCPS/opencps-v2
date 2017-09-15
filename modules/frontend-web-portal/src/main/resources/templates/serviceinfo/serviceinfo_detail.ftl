@@ -123,7 +123,7 @@
 
                    </ul>
                    <script type="text/x-kendo-template" id="service_info_filetemplate_template">
-                       <li class="clearfix item-serviceinfo-filetemplate eq-height-lg" data-bind="attr: {data-pk : fileTemplateNo}" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
+                       <li class="clearfix item-serviceinfo-filetemplate eq-height-lg" data-bind="attr: {data-pk : fileTemplateNo}" role="option" aria-selected="true">
                         <a data-bind="attr : { href: fileTemplateDownLoad}"><i class="fa fa-download" aria-hidden="true"></i> <span data-bind="text: templateName"></span></a>
                     </li>
                 </script>
