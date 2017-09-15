@@ -11,7 +11,7 @@
 				<xsd:element name="order" type="xsd:string" minOccurs="0" />
 				
 				<!-- extends -->
-				<xsd:element name="level" type="xsd:int" minOccurs="0" />
+				<xsd:element name="level" type="xsd:string" minOccurs="0" />
 				<xsd:element name="agency" type="xsd:string" minOccurs="0" />
 				<xsd:element name="service" type="xsd:string" minOccurs="0" />
 				<xsd:element name="domain" type="xsd:string" minOccurs="0" />
