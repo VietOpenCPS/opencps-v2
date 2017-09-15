@@ -6,4 +6,10 @@
 	xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<bean class="org.opencps.dossiermgt.service.indexer.ServiceInfoIndexer"
 		id="org.opencps.dossiermgt.service.indexer.ServiceInfoIndexer" />
+	<bean class="org.opencps.dossiermgt.service.indexer.ProcessOptionIndexer"
+		id="org.opencps.dossiermgt.service.indexer.ProcessOptionIndexer" />
+		
+	<bean class="org.opencps.dossiermgt.service.indexer.ServiceConfigIndexer"
+		id="org.opencps.dossiermgt.service.indexer.ServiceConfigIndexer" />
+		
 </beans>

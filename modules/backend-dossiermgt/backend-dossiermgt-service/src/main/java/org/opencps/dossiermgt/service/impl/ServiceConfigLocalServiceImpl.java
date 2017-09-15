@@ -14,8 +14,6 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,11 +29,9 @@ import org.opencps.dossiermgt.exception.ServiceLevelException;
 import org.opencps.dossiermgt.exception.ServiceURLOnlineException;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.base.ServiceConfigLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
@@ -54,11 +50,12 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the service config local service.
@@ -88,7 +85,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 	 * the service config local service.
 	 */
 	@Indexable(type = IndexableType.DELETE)
-	public ServiceConfig removeServiceConfigById(long serviceConfigId) throws PortalException{
+	public ServiceConfig removeServiceConfigById(long serviceConfigId) throws PortalException {
 
 		validateRemove(serviceConfigId);
 
@@ -97,9 +94,9 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		for (ProcessOption po : processOptions) {
 			processOptionLocalService.removeProcessOption(po.getPrimaryKey());
 		}
-		
+
 		ServiceConfig config = serviceConfigPersistence.findByPrimaryKey(serviceConfigId);
-		
+
 		serviceConfigPersistence.remove(config);
 
 		return config;
@@ -208,7 +205,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		}
 
 	}
-	
+
 	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 
@@ -242,7 +239,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(ServiceInfoTerm.SERVICE_NAME);
+				query.addFields(ServiceConfigTerm.SERVICE_NAME);
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -256,15 +253,13 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
-		
-		
+
 		// Extra fields
 		String level = GetterUtil.getString(params.get(ServiceConfigTerm.SERVICE_LEVEL));
 		String agency = GetterUtil.getString(params.get(ServiceConfigTerm.GOVAGENCY_CODE));
 		String service = String.valueOf((params.get(ServiceConfigTerm.SERVICE_CODE)));
 		String domain = String.valueOf((params.get(ServiceConfigTerm.DOMAIN_CODE)));
-		
+
 		String applicant = String.valueOf((params.get(ServiceConfigTerm.APPICATION_TYPE)));
 
 		if (Validator.isNotNull(level)) {
@@ -290,26 +285,152 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		//TODO
+
+		if (Validator.isNotNull(domain)) {
+			MultiMatchQuery query = new MultiMatchQuery(domain);
+
+			query.addFields(ServiceConfigTerm.DOMAIN_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		// TODO
 		if (applicant.contentEquals(org.opencps.auth.api.keys.ActionKeys.APPLICANT_BUSINESS)) {
-			MultiMatchQuery query = new MultiMatchQuery(applicant);
+			MultiMatchQuery query = new MultiMatchQuery(Boolean.toString(true));
 
 			query.addFields(ServiceConfigTerm.FOR_BUSINESS);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 		}
-		
+
 		if (applicant.contentEquals(org.opencps.auth.api.keys.ActionKeys.APPLICANT_CTZ)) {
-			
+			MultiMatchQuery query = new MultiMatchQuery(Boolean.toString(true));
+
+			query.addFields(ServiceConfigTerm.FOR_CITIZEN);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}
-	
-	public static final String CLASS_NAME = ServiceInfo.class.getName();
 
+	public long countLucene(LinkedHashMap<String, Object> params, SearchContext searchContext)
+			throws ParseException, SearchException {
 
+		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+		String groupId = (String) params.get(Field.GROUP_ID);
+
+		Indexer<ServiceConfig> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ServiceConfig.class);
+
+		searchContext.addFullQueryEntryClassName(CLASS_NAME);
+		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setLike(true);
+		searchContext.setAndSearch(true);
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		if (Validator.isNotNull(keywords)) {
+
+			String[] keyword = keywords.split(StringPool.SPACE);
+
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(ServiceInfoTerm.SERVICE_NAME);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
+		}
+
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
+
+			query.addFields(Field.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		// Extra fields
+		String level = GetterUtil.getString(params.get(ServiceConfigTerm.SERVICE_LEVEL));
+		String agency = GetterUtil.getString(params.get(ServiceConfigTerm.GOVAGENCY_CODE));
+		String service = String.valueOf((params.get(ServiceConfigTerm.SERVICE_CODE)));
+		String domain = String.valueOf((params.get(ServiceConfigTerm.DOMAIN_CODE)));
+
+		String applicant = String.valueOf((params.get(ServiceConfigTerm.APPICATION_TYPE)));
+
+		if (Validator.isNotNull(level)) {
+			MultiMatchQuery query = new MultiMatchQuery(level);
+
+			query.addFields(ServiceConfigTerm.SERVICE_LEVEL);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(agency)) {
+			MultiMatchQuery query = new MultiMatchQuery(agency);
+
+			query.addFields(ServiceConfigTerm.GOVAGENCY_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(service)) {
+			MultiMatchQuery query = new MultiMatchQuery(service);
+
+			query.addFields(ServiceConfigTerm.SERVICE_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(domain)) {
+			MultiMatchQuery query = new MultiMatchQuery(domain);
+
+			query.addFields(ServiceConfigTerm.DOMAIN_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		// TODO
+		if (applicant.contentEquals(org.opencps.auth.api.keys.ActionKeys.APPLICANT_BUSINESS)) {
+			MultiMatchQuery query = new MultiMatchQuery(Boolean.toString(true));
+
+			query.addFields(ServiceConfigTerm.FOR_BUSINESS);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+		}
+
+		if (applicant.contentEquals(org.opencps.auth.api.keys.ActionKeys.APPLICANT_CTZ)) {
+			MultiMatchQuery query = new MultiMatchQuery(Boolean.toString(true));
+
+			query.addFields(ServiceConfigTerm.FOR_CITIZEN);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
+
+		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
+	}
+
+	public static final String CLASS_NAME = ServiceConfig.class.getName();
+
+	public static void main(String[] args) {
+		System.out.println(Boolean.toString(true));
+
+		System.out.println(StringPool.TRUE);
+
+	}
 }
