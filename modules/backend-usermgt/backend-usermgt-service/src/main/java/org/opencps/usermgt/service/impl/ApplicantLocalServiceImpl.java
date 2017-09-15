@@ -52,6 +52,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -127,6 +128,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
 
+			String activationCode = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);;
+			
 			boolean autoPassword = false;
 			boolean autoScreenName = true;
 			boolean sendEmail = true;
@@ -172,6 +175,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 					LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true,
 					month, dayOfMonth , year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
 					userGroupIds, sendEmail, context);
+			
+			mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
 
 			long mappingUserId = mappingUser.getUserId();
 
@@ -207,6 +212,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			applicant.setContactEmail(contactEmail);
 			applicant.setMappingUserId(mappingUserId);
 			applicant.setProfile(profile);
+			applicant.setActivationCode(activationCode);
 
 		} else {
 			applicant = applicantPersistence.fetchByPrimaryKey(applicantId);

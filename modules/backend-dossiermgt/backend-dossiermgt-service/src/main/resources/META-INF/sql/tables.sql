@@ -263,7 +263,7 @@ create table opencps_processoption (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	serviceConfigId VARCHAR(75) null,
+	serviceConfigId LONG,
 	optionOrder INTEGER,
 	autoSelect VARCHAR(75) null,
 	dossierTemplateId LONG,

@@ -222,13 +222,17 @@
 
 		<!-- Other fields -->
 
-		<column name="serviceConfigId" type="String" />
+		<column name="serviceConfigId" type="long" />
 		<column name="optionOrder" type="int" />
 		<column name="autoSelect" type="String" />
 		<column name="dossierTemplateId" type="long" />
 		<column name="serviceProcessId" type="long" />
 		<column name="instructionNote" type="String" />
 		<column name="submissionNote" type="String" />
+		
+		<finder return-type="Collection" name="SC_ID">
+			<finder-column name="serviceConfigId"/>
+		</finder>
 
 	</entity>
 
@@ -653,7 +657,10 @@
 		<exception>RequiredServiceName</exception>
 		<exception>RequiredAdministrationCode</exception>
 		<exception>RequiredDomainCode</exception>
+		<exception>RequiredAgencyCode</exception>
 		<exception>RequiredFileTemplateNo</exception>
 		<exception>RequiredTemplateName</exception>
+		<exception>ServiceURLOnline</exception>
+		<exception>ServiceLevel</exception>
 	</exceptions>
 </service-builder>
