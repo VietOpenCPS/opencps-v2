@@ -75,7 +75,7 @@
   padding: 0 15px;
 }
 .select-wrapper select:focus {
-  border-color: #333;
+  border-color: #0b72ba;
   -webkit-box-shadow: none;
   box-shadow: none;
 }
@@ -282,7 +282,7 @@ input[type="text"], input[type="password"] {
 input[type="text"]:focus, input[type="password"]:focus {
   -webkit-box-shadow: none;
   box-shadow: none;
-  border-color: #333;
+  border-color: #0b72ba;
 }
 
 /*----- Input number new -----*/
@@ -576,7 +576,7 @@ input[type="text"]:focus, input[type="password"]:focus {
   right: -4px;
   border-top: 28px solid #0b72ba;
   border-left: 28px solid transparent;
-  border-bottom: 28px solid transparent;
+  border-bottom: 26px solid transparent;
 }
 
 .row-blue {
