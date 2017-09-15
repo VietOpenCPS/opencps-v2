@@ -221,6 +221,7 @@ html .k-pager-input {
 .k-animation-container .k-list-container {
     background-color: white;
     border-radius: 4px;
+	border-color: #ddd;
 }
 
 body .k-dropdown-wrap, body .k-picker-wrap {
