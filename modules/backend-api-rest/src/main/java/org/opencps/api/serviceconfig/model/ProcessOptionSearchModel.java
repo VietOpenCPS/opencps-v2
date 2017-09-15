@@ -8,10 +8,14 @@
 
 package org.opencps.api.serviceconfig.model;
 
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import com.liferay.portal.kernel.util.StringPool;
 
 
 /**
@@ -50,11 +54,17 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "ProcessOptionSearchModel")
 public class ProcessOptionSearchModel {
 
+	@DefaultValue(StringPool.BLANK) @QueryParam(value = "keyword")
     protected String keyword;
+	@DefaultValue("0") @QueryParam(value = "start")
     protected Integer start;
+	@DefaultValue("0") @QueryParam(value = "end")
     protected Integer end;
+	@DefaultValue(StringPool.BLANK) @QueryParam(value = "sort")
     protected String sort;
+	@DefaultValue(StringPool.BLANK) @QueryParam(value = "order")
     protected String order;
+	@DefaultValue(StringPool.BLANK) @QueryParam(value = "applicant")
     protected String applicant;
 
     /**

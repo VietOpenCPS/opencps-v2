@@ -228,7 +228,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			ServiceConfig serviceConfig = actions.updateServiceConfig(0l, userId, groupId,
+			ServiceConfig serviceConfig = actions.updateServiceConfig(id, userId, groupId,
 					(long) input.getServiceInfoId(), input.getGovAgencyCode(), input.getServiceInstruction(),
 					(int) input.getServiceLevel(), input.getServiceUrl(), GetterUtil.getBoolean(input.getForCitizen()),
 					GetterUtil.getBoolean(input.getForBusiness()), GetterUtil.getBoolean(input.getPostalService()),

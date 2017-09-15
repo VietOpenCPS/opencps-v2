@@ -8,10 +8,14 @@
 
 package org.opencps.api.serviceconfig.model;
 
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import com.liferay.portal.kernel.util.StringPool;
 
 
 /**
@@ -50,11 +54,17 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "ProcessOptionInputModel")
 public class ProcessOptionInputModel {
 
-    protected Integer seqOrder;
+	@DefaultValue("0") @FormParam(value = "seqOrder")
+	protected Integer seqOrder;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "autoSelect")
     protected String autoSelect;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "instructionNote")
     protected String instructionNote;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "submissionNote")
     protected String submissionNote;
+	@DefaultValue("0") @FormParam(value = "dossierTemplateId")
     protected Integer dossierTemplateId;
+	@DefaultValue("0") @FormParam(value = "serviceProcessId")
     protected Integer serviceProcessId;
 
     /**

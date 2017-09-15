@@ -41,7 +41,7 @@ import javax.xml.bind.annotation.XmlType;
     "total",
     "data"
 })
-@XmlRootElement(name = "ServiceConfigResultsModel")
+@XmlRootElement(name = "data")
 public class ServiceConfigResultsModel {
 
     protected Integer total;
