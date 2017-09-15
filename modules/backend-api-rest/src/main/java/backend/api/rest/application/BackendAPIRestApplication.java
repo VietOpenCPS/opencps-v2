@@ -30,7 +30,7 @@ public class BackendAPIRestApplication extends Application {
 		Set<Object> singletons = new HashSet<Object>();
 		
 		ServiceInfoManagement serviceInfo = new ServiceInfoManagementImpl();
-		
+	
 		// add REST endpoints (resources)
 		singletons.add(new DataManagementImpl());
 		singletons.add(serviceInfo);
