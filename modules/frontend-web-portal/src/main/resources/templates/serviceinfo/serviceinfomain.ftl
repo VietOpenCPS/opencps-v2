@@ -1,5 +1,5 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <div class="row">
@@ -62,7 +62,7 @@
           </ul>
         </div>
         <div>
-           <ul class="ul-default ul-with-right-icon" id="level">
+         <ul class="ul-default ul-with-right-icon" id="level">
             <#-- <#if serviceinfo.levels?has_content>
             <#list serviceinfo.levels as level>
             <li dataPk="${level.levelCode}" class='level'>
@@ -152,20 +152,23 @@
           url : "${api.server}/serviceinfos/statistics/agencies", 
           dataType : "json",
           type : "GET",
+          beforeSend: function(req) {
+            req.setRequestHeader('groupId', '20147');
+          },
           success : function(result){
 
           },
           error : function(xhr){
 
           }
-        },
-        schema : {
-          data : "data",
-          total : "total"
-        },
-        change : function(){
-          $("#administration").html(kendo.render(templateAdministration, this.view()));
         }
+      },
+      schema : {
+        data : "data",
+        total : "total"
+      },
+      change : function(){
+        $("#administration").html(kendo.render(templateAdministration, this.view()));
       }
     });
     dataSourceAdministrations.read();
@@ -177,20 +180,23 @@
           url : "${api.server}/serviceinfos/statistics/domains",
           dataType : "json",
           type : "GET",
+          beforeSend: function(req) {
+            req.setRequestHeader('groupId', '20147');
+          },
           success : function(result){
 
           },
           error : function(xhr){
 
           }
-        },
-        schema : {
-          data : "data",
-          total : "total"
-        },
-        change : function(){
-          $("#domain").html(kendo.render(templateDomains, this.view()));
         }
+      },
+      schema : {
+        data : "data",
+        total : "total"
+      },
+      change : function(){
+        $("#domain").html(kendo.render(templateDomains, this.view()));
       }
     });
     dataSourceDomains.read();
@@ -202,20 +208,24 @@
           url : "${api.server}/serviceinfos/statistics/levels",
           dataType : "json",
           type : "GET",
+          beforeSend: function(req) {
+            req.setRequestHeader('groupId', '20147');
+          },
           success : function(result){
 
           },
           error : function(xhr){
 
           }
-        },
-        schema : {
-          data : "data",
-          total : "total"
-        },
-        change : function(){
-          $("#level").html(kendo.render(templateLevels, this.view()));
         }
+        
+      },
+      schema : {
+        data : "data",
+        total : "total"
+      },
+      change : function(){
+        $("#level").html(kendo.render(templateLevels, this.view()));
       }
     });
 
