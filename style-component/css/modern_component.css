@@ -150,6 +150,16 @@
 }
 
 /*------------------------------
+      Label
+------------------------------*/
+.label-dvc-lv2 {
+  background-color: #e67e22;
+}
+.label-dvc-lv-3 {
+  background-color: #8e44ad;
+}
+
+/*------------------------------
       List style
 ------------------------------*/
 ul {
@@ -419,8 +429,9 @@ input[type="text"]:focus, input[type="password"]:focus {
 }
 
 /*------------------------------
-      Navtab
+      Nav-tabs
 ------------------------------*/
+/*----- Kendo -----*/
 .navtab-menu.k-tabstrip > ul {
   margin: 0 !important;
   padding: 0;
@@ -476,6 +487,27 @@ input[type="text"]:focus, input[type="password"]:focus {
   padding: 0px 10px;
 }
 
+/*----- Bootstrap -----*/
+.nav-tabs-wrapper .nav-tabs {
+  border-bottom: 1px solid #14bef0;
+  padding: 0 15px;
+}
+.nav-tabs-wrapper .nav-tabs > li > a {
+  border-color: #ddd;
+  margin: 0 -1px 0 0;
+  border-radius: 0;
+  border-bottom: 0;
+}
+.nav-tabs-wrapper .nav-tabs > li.active > a {
+  border-color: #14bef0;
+  border-bottom: 0;
+  position: relative;
+  z-index: 5;
+}
+.nav-tabs-wrapper .tab-content {
+  padding: 15px;
+}
+
 /*------------------------------
       Other
 ------------------------------*/
@@ -502,6 +534,7 @@ input[type="text"]:focus, input[type="password"]:focus {
 .row-header .show-per-page {
   float: right;
   margin-right: 15px;
+  margin-top: 6px;
 }
 .row-header .show-per-page select {
   background-color: #f3f3f3;

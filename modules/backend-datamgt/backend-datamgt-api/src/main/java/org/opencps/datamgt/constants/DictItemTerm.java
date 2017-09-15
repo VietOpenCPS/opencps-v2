@@ -60,7 +60,7 @@ public class DictItemTerm {
 	
 	public static final String LEVEL = "level";
 	
-	public static final String DATAFORM = "dataForm";
+	public static final String META_DATA = "metaData";
 	
 	public static final String IS_GLOBAL = "isGlobal";
 	
@@ -97,11 +97,9 @@ public class DictItemTerm {
 	
 	public static final String ISSUE_STATUS_SORTABLE = "issueStatus_sortable";
 	
-	public static final String DICT_VERSION_ID_SORTABLE = "dictVersionId_sortable";
-	
 	public static final String LEVEL_SORTABLE = "level_sortable";
 	
-	public static final String DATA_SORTABLE = "data_sortable";
+	public static final String META_DATA_SORTABLE = "metaData_sortable";
 	
 	public DictItemTerm() {
 
@@ -125,7 +123,7 @@ public class DictItemTerm {
 	private String sibling;
 	private String treeIndex;
 	private int level;
-	private String dataForm;
+	private String metaData;
 	
 	public long getDictItemId() {
 		return dictItemId;
@@ -263,12 +261,12 @@ public class DictItemTerm {
 		this.level = level;
 	}
 
-	public String getDataForm() {
-		return dataForm;
+	public String getMetaData() {
+		return metaData;
 	}
 
-	public void setDataForm(String dataForm) {
-		this.dataForm = dataForm;
+	public void setMetaData(String metaData) {
+		this.metaData = metaData;
 	}
 
 }

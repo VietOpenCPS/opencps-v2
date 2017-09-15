@@ -26,13 +26,13 @@
 		<column name="modifiedDate" type="Date" />
 
 		<!-- Other fields -->
-
 		<column name="notificationType" type="String" />
 		<column name="emailSubject" type="String" />
 		<column name="emailBody" type="String" />
 		<column name="textMessage" type="String" />
-		<column name="textSMS" type="String" />
-
+		<column name="sendSMS" type="boolean" />
+		<column name="sendEmail" type="boolean" />
+		<column name="expireDuration" type="Date" />
 		<!-- Order -->
 
 		<order by="asc">
@@ -41,15 +41,92 @@
 
 		<!-- Finder methods -->
 
-		<finder name="F_NotificationtemplateByType" return-type="Mnotificationtemplates">
+		<finder name="F_NotificationtemplateByType" return-type="Notificationtemplate">
 			<finder-column name="groupId" />
 			<finder-column name="notificationType" />
 		</finder>
 
+		<finder name="F_NotificationtemplateByGroup" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		
 		<finder name="F_NotificationtemplateEmailSubject" return-type="Collection">
 			<finder-column name="emailSubject" />
 		</finder>
 
 	</entity>
+	
+		<entity name="NotificationQueue" local-service="true"
+		remote-service="false" table="m_notificationqueue">
+
+		<!-- PK fields -->
+
+		<column name="notificationQueueId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="notificationType" type="String" />
+		<column name="className" type="String" />
+		<column name="classPK" type="String" />
+		<column name="payload" type="String" />
+		<column name="fromUsername" type="String" />
+		<column name="toUsername" type="String" />
+		<column name="toUserId" type="long" />
+		<column name="toEmail" type="String" />
+		<column name="toTelNo" type="String" />
+		<column name="expireDate" type="Date" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+
+	</entity>
+	
+	<entity name="HmacAuth" local-service="true"
+		remote-service="false" table="m_hmacauth">
+
+		<!-- PK fields -->
+
+		<column name="hmacAuthId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="secret" type="String" />
+		<column name="lastConnect" type="Date" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+
+	</entity>
+	
 
 </service-builder>

@@ -1761,6 +1761,521 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 	private static final String _FINDER_COLUMN_F_DICTCOLLECTIONCODE_COLLECTIONCODE_3 =
 		"(dictCollection.collectionCode IS NULL OR dictCollection.collectionCode = '') AND ";
 	private static final String _FINDER_COLUMN_F_DICTCOLLECTIONCODE_GROUPID_2 = "dictCollection.groupId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_DICTCOLLECTIONBYGROUP =
+		new FinderPath(DictCollectionModelImpl.ENTITY_CACHE_ENABLED,
+			DictCollectionModelImpl.FINDER_CACHE_ENABLED,
+			DictCollectionImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByF_dictCollectionByGroup",
+			new String[] {
+				Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DICTCOLLECTIONBYGROUP =
+		new FinderPath(DictCollectionModelImpl.ENTITY_CACHE_ENABLED,
+			DictCollectionModelImpl.FINDER_CACHE_ENABLED,
+			DictCollectionImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByF_dictCollectionByGroup",
+			new String[] { Long.class.getName() },
+			DictCollectionModelImpl.GROUPID_COLUMN_BITMASK |
+			DictCollectionModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_DICTCOLLECTIONBYGROUP = new FinderPath(DictCollectionModelImpl.ENTITY_CACHE_ENABLED,
+			DictCollectionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByF_dictCollectionByGroup",
+			new String[] { Long.class.getName() });
+
+	/**
+	 * Returns all the dict collections where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @return the matching dict collections
+	 */
+	@Override
+	public List<DictCollection> findByF_dictCollectionByGroup(long groupId) {
+		return findByF_dictCollectionByGroup(groupId, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dict collections where groupId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictCollectionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of dict collections
+	 * @param end the upper bound of the range of dict collections (not inclusive)
+	 * @return the range of matching dict collections
+	 */
+	@Override
+	public List<DictCollection> findByF_dictCollectionByGroup(long groupId,
+		int start, int end) {
+		return findByF_dictCollectionByGroup(groupId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dict collections where groupId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictCollectionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of dict collections
+	 * @param end the upper bound of the range of dict collections (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dict collections
+	 */
+	@Override
+	public List<DictCollection> findByF_dictCollectionByGroup(long groupId,
+		int start, int end, OrderByComparator<DictCollection> orderByComparator) {
+		return findByF_dictCollectionByGroup(groupId, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dict collections where groupId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictCollectionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of dict collections
+	 * @param end the upper bound of the range of dict collections (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dict collections
+	 */
+	@Override
+	public List<DictCollection> findByF_dictCollectionByGroup(long groupId,
+		int start, int end,
+		OrderByComparator<DictCollection> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DICTCOLLECTIONBYGROUP;
+			finderArgs = new Object[] { groupId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_DICTCOLLECTIONBYGROUP;
+			finderArgs = new Object[] { groupId, start, end, orderByComparator };
+		}
+
+		List<DictCollection> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<DictCollection>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (DictCollection dictCollection : list) {
+					if ((groupId != dictCollection.getGroupId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_DICTCOLLECTION_WHERE);
+
+			query.append(_FINDER_COLUMN_F_DICTCOLLECTIONBYGROUP_GROUPID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DictCollectionModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (!pagination) {
+					list = (List<DictCollection>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<DictCollection>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first dict collection in the ordered set where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dict collection
+	 * @throws NoSuchDictCollectionException if a matching dict collection could not be found
+	 */
+	@Override
+	public DictCollection findByF_dictCollectionByGroup_First(long groupId,
+		OrderByComparator<DictCollection> orderByComparator)
+		throws NoSuchDictCollectionException {
+		DictCollection dictCollection = fetchByF_dictCollectionByGroup_First(groupId,
+				orderByComparator);
+
+		if (dictCollection != null) {
+			return dictCollection;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchDictCollectionException(msg.toString());
+	}
+
+	/**
+	 * Returns the first dict collection in the ordered set where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dict collection, or <code>null</code> if a matching dict collection could not be found
+	 */
+	@Override
+	public DictCollection fetchByF_dictCollectionByGroup_First(long groupId,
+		OrderByComparator<DictCollection> orderByComparator) {
+		List<DictCollection> list = findByF_dictCollectionByGroup(groupId, 0,
+				1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last dict collection in the ordered set where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dict collection
+	 * @throws NoSuchDictCollectionException if a matching dict collection could not be found
+	 */
+	@Override
+	public DictCollection findByF_dictCollectionByGroup_Last(long groupId,
+		OrderByComparator<DictCollection> orderByComparator)
+		throws NoSuchDictCollectionException {
+		DictCollection dictCollection = fetchByF_dictCollectionByGroup_Last(groupId,
+				orderByComparator);
+
+		if (dictCollection != null) {
+			return dictCollection;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchDictCollectionException(msg.toString());
+	}
+
+	/**
+	 * Returns the last dict collection in the ordered set where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dict collection, or <code>null</code> if a matching dict collection could not be found
+	 */
+	@Override
+	public DictCollection fetchByF_dictCollectionByGroup_Last(long groupId,
+		OrderByComparator<DictCollection> orderByComparator) {
+		int count = countByF_dictCollectionByGroup(groupId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<DictCollection> list = findByF_dictCollectionByGroup(groupId,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the dict collections before and after the current dict collection in the ordered set where groupId = &#63;.
+	 *
+	 * @param dictCollectionId the primary key of the current dict collection
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next dict collection
+	 * @throws NoSuchDictCollectionException if a dict collection with the primary key could not be found
+	 */
+	@Override
+	public DictCollection[] findByF_dictCollectionByGroup_PrevAndNext(
+		long dictCollectionId, long groupId,
+		OrderByComparator<DictCollection> orderByComparator)
+		throws NoSuchDictCollectionException {
+		DictCollection dictCollection = findByPrimaryKey(dictCollectionId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			DictCollection[] array = new DictCollectionImpl[3];
+
+			array[0] = getByF_dictCollectionByGroup_PrevAndNext(session,
+					dictCollection, groupId, orderByComparator, true);
+
+			array[1] = dictCollection;
+
+			array[2] = getByF_dictCollectionByGroup_PrevAndNext(session,
+					dictCollection, groupId, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected DictCollection getByF_dictCollectionByGroup_PrevAndNext(
+		Session session, DictCollection dictCollection, long groupId,
+		OrderByComparator<DictCollection> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_DICTCOLLECTION_WHERE);
+
+		query.append(_FINDER_COLUMN_F_DICTCOLLECTIONBYGROUP_GROUPID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(DictCollectionModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(dictCollection);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<DictCollection> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the dict collections where groupId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 */
+	@Override
+	public void removeByF_dictCollectionByGroup(long groupId) {
+		for (DictCollection dictCollection : findByF_dictCollectionByGroup(
+				groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(dictCollection);
+		}
+	}
+
+	/**
+	 * Returns the number of dict collections where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @return the number of matching dict collections
+	 */
+	@Override
+	public int countByF_dictCollectionByGroup(long groupId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_DICTCOLLECTIONBYGROUP;
+
+		Object[] finderArgs = new Object[] { groupId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_DICTCOLLECTION_WHERE);
+
+			query.append(_FINDER_COLUMN_F_DICTCOLLECTIONBYGROUP_GROUPID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_DICTCOLLECTIONBYGROUP_GROUPID_2 =
+		"dictCollection.groupId = ?";
 
 	public DictCollectionPersistenceImpl() {
 		setModelClass(DictCollection.class);
@@ -2135,6 +2650,25 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+					args);
+			}
+
+			if ((dictCollectionModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DICTCOLLECTIONBYGROUP.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						dictCollectionModelImpl.getOriginalGroupId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_DICTCOLLECTIONBYGROUP,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DICTCOLLECTIONBYGROUP,
+					args);
+
+				args = new Object[] { dictCollectionModelImpl.getGroupId() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_DICTCOLLECTIONBYGROUP,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DICTCOLLECTIONBYGROUP,
 					args);
 			}
 		}

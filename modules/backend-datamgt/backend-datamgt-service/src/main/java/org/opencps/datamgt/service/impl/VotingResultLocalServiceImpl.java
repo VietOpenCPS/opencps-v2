@@ -14,9 +14,9 @@
 
 package org.opencps.datamgt.service.impl;
 
-import org.opencps.datamgt.service.base.VotingResultLocalServiceBaseImpl;
-
 import aQute.bnd.annotation.ProviderType;
+
+import org.opencps.datamgt.service.base.VotingResultLocalServiceBaseImpl;
 
 /**
  * The implementation of the voting result local service.
@@ -38,6 +38,6 @@ public class VotingResultLocalServiceImpl
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.mobilink.backend.datamgt.service.VotingResultLocalServiceUtil} to access the voting result local service.
+	 * Never reference this class directly. Always use {@link org.opencps.datamgt.service.VotingResultLocalServiceUtil} to access the voting result local service.
 	 */
 }

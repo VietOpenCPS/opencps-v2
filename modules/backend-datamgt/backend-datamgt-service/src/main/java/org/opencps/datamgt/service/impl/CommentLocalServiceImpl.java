@@ -16,11 +16,7 @@ package org.opencps.datamgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import org.opencps.datamgt.model.Comment;
 import org.opencps.datamgt.service.base.CommentLocalServiceBaseImpl;
-
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.service.ServiceContext;
 
 /**
  * The implementation of the comment local service.
@@ -41,7 +37,6 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.mobilink.backend.datamgt.service.CommentLocalServiceUtil} to access the comment local service.
+	 * Never reference this class directly. Always use {@link org.opencps.datamgt.service.CommentLocalServiceUtil} to access the comment local service.
 	 */
-
 }

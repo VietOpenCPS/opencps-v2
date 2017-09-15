@@ -33,10 +33,10 @@ import frontend.web.portal.constants.FrontendWebPortalPortletKeys;
  */
 @Component(immediate = true, property = {
 	"com.liferay.portlet.css-class-wrapper=portlet-freemarker",
-	"com.liferay.portlet.display-category=category.sample",
+	"com.liferay.portlet.display-category=category.opencps_v2.portal",
 	"com.liferay.portlet.header-portlet-css=/css/main.css",
 	"com.liferay.portlet.instanceable=true",
-	"javax.portlet.display-name=frontend-web-portal ServiceInfo Portlet",
+	"javax.portlet.display-name=Service Info Portlet",
 	"javax.portlet.init-param.template-path=/",
 	"javax.portlet.init-param.view-template=/templates/serviceinfo/serviceinfomain.ftl",
 	"javax.portlet.name=" +

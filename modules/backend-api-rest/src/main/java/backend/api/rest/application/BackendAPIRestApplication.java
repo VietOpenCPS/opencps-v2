@@ -16,7 +16,9 @@ import org.opencps.api.context.provider.UserContextProvider;
 import org.opencps.api.controller.ServiceInfoManagement;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
+import org.opencps.api.controller.impl.HolidayManagementImpl;
 import org.opencps.api.controller.impl.ServiceInfoManagementImpl;
+import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -33,7 +35,9 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new DataManagementImpl());
 		singletons.add(serviceInfo);
 		singletons.add(new ApplicantManagementImpl());
-		
+		singletons.add(new HolidayManagementImpl());
+		singletons.add(new WorkTimeManagementImpl());
+
 		// add service provider
 		singletons.add(_serviceContextProvider);
 		singletons.add(_companyContextProvider);

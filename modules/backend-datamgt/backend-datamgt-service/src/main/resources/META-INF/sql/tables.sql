@@ -69,7 +69,8 @@ create table opencps_dictitem (
 	level INTEGER,
 	sibling VARCHAR(75) null,
 	treeIndex VARCHAR(75) null,
-	dataForm VARCHAR(75) null
+	dataForm VARCHAR(75) null,
+	metaData VARCHAR(75) null
 );
 
 create table opencps_dictitemgroup (
@@ -85,31 +86,17 @@ create table opencps_dictitemgroup (
 	dictItemId LONG
 );
 
-create table opencps_label (
+create table opencps_holiday (
 	uuid_ VARCHAR(75) null,
-	labelId LONG not null primary key,
+	holidayId LONG not null primary key,
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	name VARCHAR(75) null,
-	color VARCHAR(75) null,
-	scope INTEGER
-);
-
-create table opencps_location (
-	uuid_ VARCHAR(75) null,
-	locationId LONG not null primary key,
-	companyId LONG,
-	groupId LONG,
-	userId LONG,
-	userName VARCHAR(75) null,
-	createDate DATE null,
-	modifiedDate DATE null,
-	location VARCHAR(75) null,
-	geolocation VARCHAR(75) null
+	holidayDate DATE null,
+	description VARCHAR(75) null
 );
 
 create table opencps_voting (
@@ -145,41 +132,15 @@ create table opencps_votingresult (
 	selected VARCHAR(75) null
 );
 
-create table opencps_workspace (
+create table opencps_workTime (
 	uuid_ VARCHAR(75) null,
-	workspaceId LONG not null primary key,
+	workTimeId LONG not null primary key,
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	name VARCHAR(75) null,
-	seqOrder INTEGER
-);
-
-create table opencps_workspacerole (
-	uuid_ VARCHAR(75) null,
-	workspaceRoleId LONG not null primary key,
-	companyId LONG,
-	groupId LONG,
-	userId LONG,
-	userName VARCHAR(75) null,
-	createDate DATE null,
-	modifiedDate DATE null,
-	workspaceId LONG,
-	roleId LONG
-);
-
-create table opencps_workspaceuser (
-	uuid_ VARCHAR(75) null,
-	workspaceUserId LONG not null primary key,
-	companyId LONG,
-	groupId LONG,
-	userId LONG,
-	userName VARCHAR(75) null,
-	createDate DATE null,
-	modifiedDate DATE null,
-	workspaceId LONG,
-	assignUserId LONG
+	day INTEGER,
+	hours VARCHAR(75) null
 );

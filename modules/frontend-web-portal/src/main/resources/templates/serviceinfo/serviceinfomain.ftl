@@ -19,7 +19,7 @@
         </ul>
         <div>
           <ul class="ul-default ul-with-right-icon" id="administration">
-            <#-- <#if serviceinfo.administrations?has_content>
+             <#-- <#if serviceinfo.administrations?has_content>
             <#list serviceinfo.administrations as administration>
             <li dataPk="${administration.administrationCode}" class='administration'>
               <a href='javascript:;' >${administration.administrationName}</a>
@@ -29,7 +29,6 @@
             </li>
             </#list>
             </#if> -->
-
             <script type="text/x-kendo-template" id="tempStatisticsAgencies">
               <li dataPk="#:administrationCode#" class='administration'>
                 <a href='javascript:;' >#:administrationName#</a>
@@ -42,7 +41,7 @@
         </div>
         <div>
           <ul class="ul-default ul-with-right-icon" id="domain">
-            <#-- <#if serviceinfo.domains?has_content>
+             <#-- <#if serviceinfo.domains?has_content>
             <#list serviceinfo.domains as domain>
             <li dataPk="${domain.domainCode}" class='domain'>
               <a href='javascript:;' >${domain.domainName}</a>
@@ -63,8 +62,8 @@
           </ul>
         </div>
         <div>
-          <#-- <ul class="ul-default ul-with-right-icon" id="level">
-            <#if serviceinfo.levels?has_content>
+           <ul class="ul-default ul-with-right-icon" id="level">
+            <#-- <#if serviceinfo.levels?has_content>
             <#list serviceinfo.levels as level>
             <li dataPk="${level.levelCode}" class='level'>
               <a href='javascript:;' >${level.levelName}</a>

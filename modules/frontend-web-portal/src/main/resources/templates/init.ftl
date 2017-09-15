@@ -42,7 +42,7 @@
             top: 30,
             right: 30
         },
-        autoHideAfter: -1,
+        autoHideAfter: 3500,
         stacking: "down",
         templates: [
           {
