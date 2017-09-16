@@ -33,6 +33,18 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		return applicant;
 	}
 
+	public Applicant register(ServiceContext context, String applicantName, String applicantIdType,
+			String applicantIdNo, String applicantIdDate, String contactEmail, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String password) throws PortalException, SystemException {
+
+		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, 0l, applicantName, applicantIdType,
+				applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
+				wardName, contactName, contactTelNo, contactEmail, StringPool.BLANK, password);
+
+		return applicant;
+	}
+
 	@Override
 	public Applicant removeApplicant(ServiceContext context, long applicantId) throws PortalException {
 

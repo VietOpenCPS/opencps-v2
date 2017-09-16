@@ -30,6 +30,15 @@ public class ApplicantUtils {
 		model.setApplicantIdNo(applicant.getApplicantIdNo());
 		model.setApplicantIdDate(StringUtil.valueOf(applicant.getApplicantIdDate()));
 		model.setContactEmail(applicant.getContactEmail());
+		model.setCityCode(applicant.getCityCode());
+		model.setCityName(applicant.getCityName());
+		model.setDistrictCode(applicant.getDistrictCode());
+		model.setDistrictName(applicant.getDistrictName());
+		model.setWardCode(applicant.getWardCode());
+		model.setWardName(applicant.getWardName());
+		model.setContactName(applicant.getContactName());
+		model.setContactTelNo(applicant.getContactTelNo());
+		
 
 		return model;
 	}
@@ -74,7 +83,7 @@ public class ApplicantUtils {
 			if (Validator.isNotNull(user)) {
 				mappingUser.setUserId(GetterUtil.getString(mappingUserId));
 				mappingUser.setScreenName(user.getScreenName());
-				mappingUser.setLocking(GetterUtil.getBoolean(user.getStatus()));
+				mappingUser.setLocking(user.getLockout());
 			}
 
 			model.setMappingUser(mappingUser);

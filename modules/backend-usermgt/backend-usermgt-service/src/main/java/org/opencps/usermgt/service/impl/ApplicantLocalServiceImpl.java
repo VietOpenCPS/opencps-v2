@@ -20,6 +20,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.exception.NoApplicantIdDateException;
+import org.opencps.usermgt.exception.NoApplicantIdNoException;
+import org.opencps.usermgt.exception.NoApplicantIdTypeException;
+import org.opencps.usermgt.exception.NoApplicantNameException;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
 import org.opencps.usermgt.service.util.ServiceProps;
@@ -48,7 +52,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringPool;
@@ -107,7 +110,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	 * @throws PortalException
 	 * @throws SystemException
 	 */
-	
+
 	@Indexable(type = IndexableType.REINDEX)
 	public Applicant updateApplication(ServiceContext context, long applicantId, String applicantName,
 			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
@@ -122,6 +125,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
 
 		if (applicantId == 0) {
+			
+			validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate);
 
 			applicantId = counterLocalService.increment(Applicant.class.getName());
 
@@ -129,8 +134,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
 
-			String activationCode = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);;
-			
+			String activationCode = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+			;
+
 			boolean autoPassword = false;
 			boolean autoScreenName = true;
 			boolean sendEmail = true;
@@ -164,7 +170,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			}
 
 			Calendar calendar = Calendar.getInstance();
-			
+
 			calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 20);
 
 			int year = calendar.get(Calendar.YEAR);
@@ -173,10 +179,10 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			User mappingUser = userLocalService.addUserWithWorkflow(creatorUserId, context.getCompanyId(), autoPassword,
 					password, password, autoScreenName, screenName, contactEmail, 0l, StringPool.BLANK,
-					LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true,
-					month, dayOfMonth , year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
+					LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true, month,
+					dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
 					userGroupIds, sendEmail, context);
-			
+
 			mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
 
 			long mappingUserId = mappingUser.getUserId();
@@ -275,59 +281,79 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			if (Validator.isNotNull(profile)) {
 				applicant.setProfile(profile);
 			}
-				
-			
+
 		}
 
 		applicantPersistence.update(applicant);
 
 		return applicant;
 	}
-	
-	
+
+	/**
+	 * @param appicantName
+	 * @param applicantIdType
+	 * @param applicantIdNo
+	 * @param applicantIdDate
+	 * @throws PortalException
+	 */
+	private void validateAdd(String applicantName, String applicantIdType, String applicantIdNo, String applicantIdDate)
+			throws PortalException {
+		if (Validator.isNull(applicantName)) {
+			throw new NoApplicantNameException();
+		}
+
+		if (Validator.isNull(applicantIdType))
+			throw new NoApplicantIdTypeException();
+
+		if (Validator.isNull(applicantIdNo))
+			throw new NoApplicantIdNoException();
+
+		if (Validator.isNull(applicantIdDate))
+			throw new NoApplicantIdDateException();
+	}
+
 	@Indexable(type = IndexableType.REINDEX)
 	public Applicant removeProfile(long applicantId) {
 		Applicant applicant = applicantPersistence.fetchByPrimaryKey(applicantId);
-		
+
 		applicant.setProfile(StringPool.BLANK);
-		
+
 		applicantPersistence.update(applicant);
-		
+
 		return applicant;
 	}
-	
+
 	@Indexable(type = IndexableType.REINDEX)
-	public Applicant lockoutApplicant(long applicantId) throws PortalException{
-		
+	public Applicant lockoutApplicant(long applicantId) throws PortalException {
+
 		Applicant applicant = applicantLocalService.fetchApplicant(applicantId);
-		
+
 		User user = userPersistence.fetchByPrimaryKey(applicant.getMappingUserId());
-		
+
 		userLocalService.updateLockout(user, true);
 		applicant.setLock_(true);
-		
+
 		applicantPersistence.update(applicant);
-		
+
 		return applicant;
 	}
-	
+
 	@Indexable(type = IndexableType.REINDEX)
-	public Applicant activateApplicant(long applicantId, ServiceContext context) throws PortalException{
-		
+	public Applicant activateApplicant(long applicantId, ServiceContext context) throws PortalException {
+
 		Applicant applicant = applicantLocalService.fetchApplicant(applicantId);
-		
+
 		User user = userPersistence.fetchByPrimaryKey(applicant.getMappingUserId());
-		
+
 		userLocalService.updateStatus(user.getUserId(), WorkflowConstants.STATUS_APPROVED, context);
-		
-		//reset activationCode
+
+		// reset activationCode
 		applicant.setActivationCode(StringPool.BLANK);
 
 		applicantPersistence.update(applicant);
 
 		return applicant;
 	}
-
 
 	@Indexable(type = IndexableType.DELETE)
 	public Applicant removeApplicant(long applicantId) throws PortalException, SystemException {

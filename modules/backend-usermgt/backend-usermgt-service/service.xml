@@ -240,4 +240,11 @@
 
 	</entity>
 	
+	<exceptions>
+		<exception>NoApplicantName</exception>
+		<exception>NoApplicantIdType</exception>
+		<exception>NoApplicantIdNo</exception>
+		<exception>NoApplicantIdDate</exception>
+	</exceptions>
+	
 </service-builder>

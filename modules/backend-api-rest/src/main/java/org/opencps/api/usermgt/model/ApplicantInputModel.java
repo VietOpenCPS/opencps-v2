@@ -8,9 +8,14 @@
 
 package org.opencps.api.usermgt.model;
 
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+
+import com.liferay.portal.kernel.util.StringPool;
 
 
 /**
@@ -64,20 +69,41 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class ApplicantInputModel {
 
+	@XmlElement(required = true)
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "applicantName")
     protected String applicantName;
+	@XmlElement(required = true)
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "applicantIdType")
     protected String applicantIdType;
+	@XmlElement(required = true)
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "applicantIdNo")
     protected String applicantIdNo;
+	@XmlElement(required = true)
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "applicantIdDate")
     protected String applicantIdDate;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "address")
     protected String address;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "cityCode")
     protected String cityCode;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "cityName")
     protected String cityName;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "districtCode")
     protected String districtCode;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "districtName")
     protected String districtName;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "wardCode")
     protected String wardCode;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "wardName")
     protected String wardName;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "contactName")
     protected String contactName;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "contactTelNo")
     protected String contactTelNo;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "contactEmail")
     protected String contactEmail;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "password")
+    protected String password;
+
 
     /**
      * Gets the value of the applicantName property.
@@ -414,5 +440,13 @@ public class ApplicantInputModel {
     public void setContactEmail(String value) {
         this.contactEmail = value;
     }
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 }
