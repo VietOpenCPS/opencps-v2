@@ -48,6 +48,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringPool;
@@ -271,14 +272,62 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			if (Validator.isNotNull(contactEmail))
 				applicant.setContactEmail(contactEmail);
 
-			if (Validator.isNotNull(profile))
+			if (Validator.isNotNull(profile)) {
 				applicant.setProfile(profile);
+			}
+				
+			
 		}
 
 		applicantPersistence.update(applicant);
 
 		return applicant;
 	}
+	
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant removeProfile(long applicantId) {
+		Applicant applicant = applicantPersistence.fetchByPrimaryKey(applicantId);
+		
+		applicant.setProfile(StringPool.BLANK);
+		
+		applicantPersistence.update(applicant);
+		
+		return applicant;
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant lockoutApplicant(long applicantId) throws PortalException{
+		
+		Applicant applicant = applicantLocalService.fetchApplicant(applicantId);
+		
+		User user = userPersistence.fetchByPrimaryKey(applicant.getMappingUserId());
+		
+		userLocalService.updateLockout(user, true);
+		applicant.setLock_(true);
+		
+		applicantPersistence.update(applicant);
+		
+		return applicant;
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant activateApplicant(long applicantId, ServiceContext context) throws PortalException{
+		
+		Applicant applicant = applicantLocalService.fetchApplicant(applicantId);
+		
+		User user = userPersistence.fetchByPrimaryKey(applicant.getMappingUserId());
+		
+		userLocalService.updateStatus(user.getUserId(), WorkflowConstants.STATUS_APPROVED, context);
+		
+		//reset activationCode
+		applicant.setActivationCode(StringPool.BLANK);
+
+		applicantPersistence.update(applicant);
+
+		return applicant;
+	}
+
 
 	@Indexable(type = IndexableType.DELETE)
 	public Applicant removeApplicant(long applicantId) throws PortalException, SystemException {

@@ -34,9 +34,8 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	}
 
 	@Override
-	public Applicant removeApplicant(ServiceContext context, long applicantId)
-			throws PortalException {
-		
+	public Applicant removeApplicant(ServiceContext context, long applicantId) throws PortalException {
+
 		return ApplicantLocalServiceUtil.removeApplicant(applicantId);
 	}
 
@@ -68,54 +67,54 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	}
 
 	@Override
-	public Applicant getApplicantDetail(ServiceContext context, long applicantId)
-			throws PortalException {
+	public Applicant getApplicantDetail(ServiceContext context, long applicantId) throws PortalException {
 		return ApplicantLocalServiceUtil.getApplicant(applicantId);
 	}
 
 	@Override
-	public Applicant updateApplicant(ServiceContext context, String address, String cityCode, String cityName,
-			String districtCode, String districtName, String wardCode, String wardName, String contactName,
-			String contactTelNo, String contactEmail)
-			throws PortalException {
+	public Applicant updateApplicant(ServiceContext context, long applicantId, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String contactEmail) throws PortalException {
 
-		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, 0, applicantName, applicantIdType,
-				applicantIdNo, applicantIdDate, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, contactEmail,
-				StringPool.BLANK, password);
+		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, applicantId, StringPool.BLANK,
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, address, cityCode, cityName, districtCode,
+				districtName, wardCode, wardName, contactName, contactTelNo, contactEmail, StringPool.BLANK,
+				StringPool.BLANK);
 
 		return applicant;
 	}
 
 	@Override
-	public Applicant updateProfile(ServiceContext context, long applicantId, String profile)
-			throws PortalException {
+	public Applicant updateProfile(ServiceContext context, long applicantId, String profile) throws PortalException {
 		// TODO Auto-generated method stub
-		return null;
+		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, applicantId, StringPool.BLANK,
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, profile, StringPool.BLANK);
+
+		return applicant;
 	}
 
 	@Override
-	public Applicant removeProfile(ServiceContext context, long applicantId)
-			throws PortalException {
+	public Applicant removeProfile(ServiceContext context, long applicantId) throws PortalException {
 		// TODO Auto-generated method stub
-		return null;
+		return ApplicantLocalServiceUtil.removeProfile(applicantId);
 	}
 
 	@Override
-	public Applicant lockApplicant(ServiceContext context, long applicantId)
-			throws PortalException {
+	public Applicant lockApplicant(ServiceContext context, long applicantId) throws PortalException {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 	@Override
 	public Applicant activationApplicant(ServiceContext context, long applicantId, String activationCode)
 			throws PortalException {
 		// TODO Auto-generated method stub
 		return null;
-		
+
 	}
+
 	Log _log = LogFactoryUtil.getLog(ApplicantActionsImpl.class);
 
 }
