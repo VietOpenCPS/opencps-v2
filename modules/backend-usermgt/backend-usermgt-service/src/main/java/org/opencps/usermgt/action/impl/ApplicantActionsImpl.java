@@ -2,14 +2,10 @@ package org.opencps.usermgt.action.impl;
 
 import java.util.LinkedHashMap;
 
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
-import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -39,9 +35,9 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public Applicant removeApplicant(ServiceContext context, long applicantId)
-			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException {
-		// TODO Auto-generated method stub
-		return null;
+			throws PortalException {
+		
+		return ApplicantLocalServiceUtil.removeApplicant(applicantId);
 	}
 
 	@Override
@@ -72,41 +68,54 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	}
 
 	@Override
-	public JSONObject getApplicantDetail(ServiceContext context, long applicantId)
-			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException {
-		// TODO Auto-generated method stub
-		return null;
+	public Applicant getApplicantDetail(ServiceContext context, long applicantId)
+			throws PortalException {
+		return ApplicantLocalServiceUtil.getApplicant(applicantId);
 	}
 
 	@Override
 	public Applicant updateApplicant(ServiceContext context, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
 			String contactTelNo, String contactEmail)
-			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException {
-		// TODO Auto-generated method stub
-		return null;
+			throws PortalException {
+
+		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, 0, applicantName, applicantIdType,
+				applicantIdNo, applicantIdDate, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, contactEmail,
+				StringPool.BLANK, password);
+
+		return applicant;
 	}
 
 	@Override
 	public Applicant updateProfile(ServiceContext context, long applicantId, String profile)
-			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException {
+			throws PortalException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Applicant removeProfile(ServiceContext context, long applicantId)
-			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException {
+			throws PortalException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Applicant lockApplicant(ServiceContext context, long applicantId)
-			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException {
+			throws PortalException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+
+	@Override
+	public Applicant activationApplicant(ServiceContext context, long applicantId, String activationCode)
+			throws PortalException {
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
 	Log _log = LogFactoryUtil.getLog(ApplicantActionsImpl.class);
+
 }
