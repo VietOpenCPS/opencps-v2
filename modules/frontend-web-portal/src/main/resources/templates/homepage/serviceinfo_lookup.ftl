@@ -11,7 +11,7 @@
 		</div>
 		<script type="text/x-kendo-template" id="tempDomains">
 			<div class="img-domains col-sm-4">
-				<img src="<#-- #:link#   -->https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4QFniWC6uanzGbP5uxvBxfX7YTnyVwYz1x6lg4CM0yP3p0lwZFw" class="responsive"/>
+				<img src="<#-- #:link#   -->https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4QFniWC6uanzGbP5uxvBxfX7YTnyVwYz1x6lg4CM0yP3p0lwZFw" class="img-responsive"/>
 				<div class="center-all-lg">
 					<p><#-- #:domainName# -->Lĩnh vực <span>DU LỊCH</span></p>
 				</div>
