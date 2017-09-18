@@ -1,4 +1,4 @@
-package frontend.web.portal.constants;
+package org.opencps.frontend.web.portal.constans;
 
 /**
  * @author huymq

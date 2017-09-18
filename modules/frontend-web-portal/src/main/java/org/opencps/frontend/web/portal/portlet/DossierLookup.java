@@ -1,7 +1,7 @@
 /**
  * 
  */
-package frontend.web.portal.portlet;
+package org.opencps.frontend.web.portal.portlet;
 
 import java.io.IOException;
 
@@ -13,6 +13,7 @@ import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import org.opencps.frontend.web.portal.constans.FrontendWebPortalPortletKeys;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -24,11 +25,9 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
-import frontend.web.portal.constants.FrontendWebPortalPortletKeys;
-
 /**
  * @author phucnv
- * @date Sep 14, 2017
+ * @date Sep 15, 2017
  *
  */
 @Component(immediate = true, property = {
@@ -36,15 +35,15 @@ import frontend.web.portal.constants.FrontendWebPortalPortletKeys;
 	"com.liferay.portlet.display-category=category.opencps_v2.portal",
 	"com.liferay.portlet.header-portlet-css=/css/main.css",
 	"com.liferay.portlet.instanceable=true",
-	"javax.portlet.display-name=Confirm Account Portlet",
+	"javax.portlet.display-name=DossierLookup Portlet",
 	"javax.portlet.init-param.template-path=/",
-	"javax.portlet.init-param.view-template=/templates/applicant/confirm_account.ftl",
+	"javax.portlet.init-param.view-template=/templates/homepage/dossier_lookup.ftl",
 	"javax.portlet.name=" +
-		FrontendWebPortalPortletKeys.CONFIRM_ACCOUNT_PORTLET_NAME,
+		FrontendWebPortalPortletKeys.DOSSIER_LOOKUP_PORTLET_NAME,
 	"javax.portlet.resource-bundle=content.Language",
 	"javax.portlet.security-role-ref=power-user,user"
 }, service = Portlet.class)
-public class ConfirmAccountPortlet extends FreeMarkerPortlet {
+public class DossierLookup extends FreeMarkerPortlet {
 
 	/*
 	 * (non-Javadoc)
@@ -66,16 +65,16 @@ public class ConfirmAccountPortlet extends FreeMarkerPortlet {
 		JSONObject apiObject = JSONFactoryUtil.createJSONObject();
 
 		// url
-		PortletURL registerResultURL = PortletURLFactoryUtil.create(
+		PortletURL dossierLookupURL = PortletURLFactoryUtil.create(
 			renderRequest, portletId, themeDisplay.getPlid(),
 			PortletRequest.RENDER_PHASE);
 
-		registerResultURL.setPortletMode(PortletMode.VIEW);
-		registerResultURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-		registerResultURL.setParameter(
-			"mvcPath", "/templates/applicant/register_result.ftl");
+		dossierLookupURL.setPortletMode(PortletMode.VIEW);
+		dossierLookupURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		dossierLookupURL.setParameter(
+			"mvcPath", "/templates/homepage/dossier_lookup.ftl");
 
-		urlObject.put("register_result", registerResultURL.toString());
+		urlObject.put("dossier_lookup", dossierLookupURL.toString());
 
 		// api
 		apiObject.put("server", themeDisplay.getPortalURL() + "/o/rest/v2");
