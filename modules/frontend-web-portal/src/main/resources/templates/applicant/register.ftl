@@ -1,8 +1,8 @@
 <#if (Request)??>
-<#include "init.ftl">
+	<#include "init.ftl">
 </#if>
 
-<div class="row row eq-height-lg">
+<div class="row row eq-height-lg" id="register_container">
 	<div class="col-xs-12 col-sm-8 align-middle-lg">
 		<div class="col-xs-12 bg-gif-register"></div>
 	</div>

@@ -3,12 +3,12 @@
 </#if>
 
 <form id="fmPasswordWorkflow">
-	<div class="row box MA" style="max-width: 500px;">
+	<div class="row box MA" style="max-width: 550px;">
 		<div class="col-sm-12 text-center MB5">
-			<h3>QUÊN MẬT KHÂỦ</h3>
+			<h4><b>QUÊN MẬT KHẨU</b></h4>
 		</div>
 		<div class="col-sm-12 text-center MB5">
-			<p>Vui lòng nhập Email hoặc số CMTND/ Hộ chiếu/ Mã số thuế để tìm kiếm tài khoản</p>
+			<p>Vui lòng nhập Email hoặc số CMND/ Hộ chiếu/ Mã số thuế để tìm kiếm tài khoản.</p>
 		</div>
 		<div class="col-sm-12">
 			<div class="form-group">
@@ -16,7 +16,7 @@
 			</div>
 		</div>
 		<div class="col-sm-12 text-center MT10 MB15">
-			<button class="btn btn-active MR10" id="btn-next-step" type="button">Tiếp tục</button> <button class="btn">Hủy bỏ</button>
+			<button class="btn btn-active MR10" id="btn-next-step" type="button">Đồng ý</button>
 		</div>
 	</div>
 </form>

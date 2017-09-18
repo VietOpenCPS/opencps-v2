@@ -77,7 +77,7 @@
               <li dataPk="#:level#" class='level'>
                 <a href='javascript:;' >#:levelName#</a>
                 <div class="btn-group">
-                  <span>#count#</span>
+                  <span>#:count#</span>
                 </div>
               </li>
             </script>
@@ -149,7 +149,7 @@
     var dataSourceAdministrations= new kendo.data.DataSource({
       transport : {
         read : {
-          url : "${api.server}/serviceinfos/statistics/agencies", 
+          url : "${api.server}/serviceinfos/statistics/agencies",
           dataType : "json",
           type : "GET",
           beforeSend: function(req) {
@@ -218,7 +218,7 @@
 
           }
         }
-        
+
       },
       schema : {
         data : "data",

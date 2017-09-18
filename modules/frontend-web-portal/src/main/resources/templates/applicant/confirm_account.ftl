@@ -1,8 +1,12 @@
-<div class="box row MA" style="max-width:500px;">
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
+
+<div class="box row MA" style="max-width:550px;">
     <div class="col-xs-12 col-sm-12 text-center">
-      <h3>XÁC NHẬN TÀI KHOẢN</h3>
+      <h3><b>XÁC NHẬN TÀI KHOẢN</b></h3>
     </div>
-    <div class="col-xs-12 col-sm-12 MT20">
+    <div class="col-xs-12 col-sm-12 MT20 text-center">
       <p>Vui lòng nhập mã PIN đã được gửi trong email hoặc số điện thoại</p>
     </div>
     <div class="col-xs-12 col-sm-12 MT20">
