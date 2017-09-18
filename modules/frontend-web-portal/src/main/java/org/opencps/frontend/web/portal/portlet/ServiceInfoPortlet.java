@@ -1,7 +1,7 @@
 /**
  * 
  */
-package frontend.web.portal.portlet;
+package org.opencps.frontend.web.portal.portlet;
 
 import java.io.IOException;
 
@@ -13,6 +13,7 @@ import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import org.opencps.frontend.web.portal.constants.FrontendWebPortalPortletKeys;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -23,8 +24,6 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
-
-import frontend.web.portal.constants.FrontendWebPortalPortletKeys;
 
 /**
  * @author phucnv

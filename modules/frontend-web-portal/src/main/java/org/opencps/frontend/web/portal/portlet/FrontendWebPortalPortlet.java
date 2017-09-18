@@ -1,12 +1,11 @@
-package frontend.web.portal.portlet;
+package org.opencps.frontend.web.portal.portlet;
 
 import javax.portlet.Portlet;
 
+import org.opencps.frontend.web.portal.constants.FrontendWebPortalPortletKeys;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
-
-import frontend.web.portal.constants.FrontendWebPortalPortletKeys;
 
 /**
  * @author huymq
