@@ -12,8 +12,8 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.ApplicantManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.ApplicantUtils;
-import org.opencps.api.controller.util.UserUtils;
 import org.opencps.api.usermgt.model.ApplicantInputModel;
+import org.opencps.api.usermgt.model.ApplicantInputUpdateModel;
 import org.opencps.api.usermgt.model.ApplicantModel;
 import org.opencps.api.usermgt.model.ApplicantResultsModel;
 import org.opencps.api.usermgt.model.ApplicantSearchModel;
@@ -165,7 +165,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new UnauthenticationException();
 			}
 
-			User requestUser = UserUtils.getUser(id);
+			User requestUser = ApplicantUtils.getUser(id);
+			
 
 			boolean isAllowed = false;
 
@@ -234,7 +235,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 	@Override
 	public Response updateApplicant(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long id, ApplicantInputModel input) {
+			User user, ServiceContext serviceContext, long id, ApplicantInputUpdateModel input) {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		ApplicantModel results = new ApplicantModel();
 		BackendAuth auth = new BackendAuthImpl();
@@ -245,7 +246,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new UnauthenticationException();
 			}
 
-			User requestUser = UserUtils.getUser(id);
+			User requestUser = ApplicantUtils.getUser(id);
 
 			boolean isAllowed = false;
 
@@ -327,23 +328,11 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new UnauthenticationException();
 			}
 
-			User requestUser = UserUtils.getUser(id);
-
 			boolean isAllowed = false;
 
-			
 			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
 				isAllowed = true;
-			} else {
-				if (Validator.isNull(requestUser)) {
-					throw new NoSuchUserException();
-				} else {
-					// check userLogin is equal userRequest get detail
-					if (requestUser.getUserId() == user.getUserId()) {
-						isAllowed = true;
-					} 
-				}
-			}
+			} 
 
 			if (isAllowed) {
 				applicant = actions.removeApplicant(serviceContext, id);
@@ -407,7 +396,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new UnauthenticationException();
 			}
 
-			User requestUser = UserUtils.getUser(id);
+			User requestUser = ApplicantUtils.getUser(id);
 
 			boolean isAllowed = false;
 
@@ -490,7 +479,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new UnauthenticationException();
 			}
 
-			User requestUser = UserUtils.getUser(id);
+			User requestUser = ApplicantUtils.getUser(id);
 
 			boolean isAllowed = false;
 
@@ -582,7 +571,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new UnauthenticationException();
 			}
 
-			User requestUser = UserUtils.getUser(id);
+			User requestUser = ApplicantUtils.getUser(id);
 
 			boolean isAllowed = false;
 
@@ -666,7 +655,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new UnauthenticationException();
 			}
 
-			User requestUser = UserUtils.getUser(id);
+			User requestUser = ApplicantUtils.getUser(id);
 
 			boolean isAllowed = false;
 

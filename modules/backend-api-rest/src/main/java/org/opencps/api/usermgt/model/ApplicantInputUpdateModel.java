@@ -51,7 +51,7 @@ import com.liferay.portal.kernel.util.StringPool;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ApplicantInputModel", propOrder = {
+@XmlType(name = "ApplicantInputUpdateModel", propOrder = {
     "applicantName",
     "applicantIdType",
     "applicantIdNo",
@@ -67,18 +67,14 @@ import com.liferay.portal.kernel.util.StringPool;
     "contactTelNo",
     "contactEmail"
 })
-public class ApplicantInputModel {
+public class ApplicantInputUpdateModel {
 
-	@XmlElement(required = true)
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "applicantName")
     protected String applicantName;
-	@XmlElement(required = true)
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "applicantIdType")
     protected String applicantIdType;
-	@XmlElement(required = true)
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "applicantIdNo")
     protected String applicantIdNo;
-	@XmlElement(required = true)
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "applicantIdDate")
     protected String applicantIdDate;
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "address")
@@ -101,10 +97,8 @@ public class ApplicantInputModel {
     protected String contactTelNo;
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "contactEmail")
     protected String contactEmail;
-	@XmlElement(required = true)
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "password")
     protected String password;
-
 
     /**
      * Gets the value of the applicantName property.

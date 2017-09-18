@@ -233,7 +233,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			try {
 				idDate = UserMgtUtils.convertDate(applicantIdDate);
 			} catch (Exception e) {
-				_log.error(ApplicantLocalServiceImpl.class.getName() + "date input error");
+				_log.error(ApplicantLocalServiceImpl.class.getName() + " date input error");
 			}
 
 			if (Validator.isNotNull(applicantName))

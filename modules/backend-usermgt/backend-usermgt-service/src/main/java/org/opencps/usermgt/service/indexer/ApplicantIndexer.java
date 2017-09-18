@@ -58,7 +58,7 @@ public class ApplicantIndexer extends BaseIndexer<Applicant> {
 		document.addTextSortable(ApplicantTerm.CONTACTNAME, object.getContactName());
 		document.addTextSortable(ApplicantTerm.CONTACTTELNO, object.getContactTelNo());
 		document.addTextSortable(ApplicantTerm.CONTACTEMAIL, object.getContactEmail());
-		document.addNumberSortable(ApplicantTerm.ADDRESS, object.getMappingUserId());
+		document.addNumberSortable(ApplicantTerm.MAPPINGUSERID, object.getMappingUserId());
 
 		return document;
 	}
