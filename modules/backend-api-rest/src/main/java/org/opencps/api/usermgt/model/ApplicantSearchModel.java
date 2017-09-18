@@ -87,6 +87,13 @@ public class ApplicantSearchModel {
 		this.end = end;
 	}
 
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
+
 	@QueryParam(value = "keywords")
     protected String keywords;
 	@DefaultValue("applicantName") @QueryParam(value = "sort")
@@ -97,4 +104,7 @@ public class ApplicantSearchModel {
     protected int start;
 	@QueryParam(value = "end")
     protected int end;
+	@QueryParam(value = "type")
+    protected int type;
+
 }
