@@ -177,6 +177,9 @@
                         url : "",
                         dataType : "json",
                         type : "GET",
+                        beforeSend: function(req) {
+                            req.setRequestHeader('groupId', ${serviceinfo.groupId});
+                        },
                         success : function(result){
 
                         },
@@ -270,6 +273,7 @@
                 url : "${api.server}/serviceinfos/"+id,
                 dataType : "json",
                 type : "PUT",
+                contentType : "application/x-www-form-urlencoded",
                 success : function(result){
 
                 },
