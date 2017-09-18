@@ -169,16 +169,17 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			boolean isAllowed = false;
 
-			if (Validator.isNull(requestUser)) {
-				throw new NoSuchUserException();
+			
+			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
+				isAllowed = true;
 			} else {
-				// check userLogin is equal userRequest get detail
-				if (requestUser.getUserId() == user.getUserId()) {
-					isAllowed = true;
+				if (Validator.isNull(requestUser)) {
+					throw new NoSuchUserException();
 				} else {
-					if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
+					// check userLogin is equal userRequest get detail
+					if (requestUser.getUserId() == user.getUserId()) {
 						isAllowed = true;
-					}
+					} 
 				}
 			}
 
@@ -248,16 +249,17 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			boolean isAllowed = false;
 
-			if (Validator.isNull(requestUser)) {
-				throw new NoSuchUserException();
+			
+			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
+				isAllowed = true;
 			} else {
-				// check userLogin is equal userRequest get detail
-				if (requestUser.getUserId() == user.getUserId()) {
-					isAllowed = true;
+				if (Validator.isNull(requestUser)) {
+					throw new NoSuchUserException();
 				} else {
-					if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
+					// check userLogin is equal userRequest get detail
+					if (requestUser.getUserId() == user.getUserId()) {
 						isAllowed = true;
-					}
+					} 
 				}
 			}
 
@@ -329,16 +331,17 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			boolean isAllowed = false;
 
-			if (Validator.isNull(requestUser)) {
-				throw new NoSuchUserException();
+			
+			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
+				isAllowed = true;
 			} else {
-				// check userLogin is equal userRequest get detail
-				if (requestUser.getUserId() == user.getUserId()) {
-					isAllowed = true;
+				if (Validator.isNull(requestUser)) {
+					throw new NoSuchUserException();
 				} else {
-					if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
+					// check userLogin is equal userRequest get detail
+					if (requestUser.getUserId() == user.getUserId()) {
 						isAllowed = true;
-					}
+					} 
 				}
 			}
 
@@ -408,16 +411,17 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			boolean isAllowed = false;
 
-			if (Validator.isNull(requestUser)) {
-				throw new NoSuchUserException();
+			
+			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
+				isAllowed = true;
 			} else {
-				// check userLogin is equal userRequest get detail
-				if (requestUser.getUserId() == user.getUserId()) {
-					isAllowed = true;
+				if (Validator.isNull(requestUser)) {
+					throw new NoSuchUserException();
 				} else {
-					if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
+					// check userLogin is equal userRequest get detail
+					if (requestUser.getUserId() == user.getUserId()) {
 						isAllowed = true;
-					}
+					} 
 				}
 			}
 
@@ -490,18 +494,20 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			boolean isAllowed = false;
 
-			if (Validator.isNull(requestUser)) {
-				throw new NoSuchUserException();
+			
+			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
+				isAllowed = true;
 			} else {
-				// check userLogin is equal userRequest get detail
-				if (requestUser.getUserId() == user.getUserId()) {
-					isAllowed = true;
+				if (Validator.isNull(requestUser)) {
+					throw new NoSuchUserException();
 				} else {
-					if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
+					// check userLogin is equal userRequest get detail
+					if (requestUser.getUserId() == user.getUserId()) {
 						isAllowed = true;
-					}
+					} 
 				}
 			}
+
 
 			if (isAllowed) {
 				applicant = actions.updateProfile(serviceContext, id, body);
@@ -580,16 +586,17 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			boolean isAllowed = false;
 
-			if (Validator.isNull(requestUser)) {
-				throw new NoSuchUserException();
+			
+			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
+				isAllowed = true;
 			} else {
-				// check userLogin is equal userRequest get detail
-				if (requestUser.getUserId() == user.getUserId()) {
-					isAllowed = true;
+				if (Validator.isNull(requestUser)) {
+					throw new NoSuchUserException();
 				} else {
-					if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
+					// check userLogin is equal userRequest get detail
+					if (requestUser.getUserId() == user.getUserId()) {
 						isAllowed = true;
-					}
+					} 
 				}
 			}
 
@@ -663,18 +670,20 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			boolean isAllowed = false;
 
-			if (Validator.isNull(requestUser)) {
-				throw new NoSuchUserException();
+			
+			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
+				isAllowed = true;
 			} else {
-				// check userLogin is equal userRequest get detail
-				if (requestUser.getUserId() == user.getUserId()) {
-					isAllowed = true;
+				if (Validator.isNull(requestUser)) {
+					throw new NoSuchUserException();
 				} else {
-					if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
+					// check userLogin is equal userRequest get detail
+					if (requestUser.getUserId() == user.getUserId()) {
 						isAllowed = true;
-					}
+					} 
 				}
 			}
+
 
 			if (isAllowed) {
 				applicant = actions.activationApplicant(serviceContext, id, code);

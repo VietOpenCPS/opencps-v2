@@ -115,15 +115,15 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public Applicant lockApplicant(ServiceContext context, long applicantId) throws PortalException {
-		// TODO Auto-generated method stub
-		return null;
+		Applicant applicant = ApplicantLocalServiceUtil.lockoutApplicant(applicantId);
+		return applicant;
 	}
 
 	@Override
 	public Applicant activationApplicant(ServiceContext context, long applicantId, String activationCode)
 			throws PortalException {
-		// TODO Auto-generated method stub
-		return null;
+		Applicant applicant = ApplicantLocalServiceUtil.activateApplicant(applicantId, context);
+		return applicant;
 
 	}
 
