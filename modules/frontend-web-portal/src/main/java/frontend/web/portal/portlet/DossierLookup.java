@@ -66,16 +66,16 @@ public class DossierLookup extends FreeMarkerPortlet {
 		JSONObject apiObject = JSONFactoryUtil.createJSONObject();
 
 		// url
-		PortletURL registerResultURL = PortletURLFactoryUtil.create(
+		PortletURL dossierLookupURL = PortletURLFactoryUtil.create(
 			renderRequest, portletId, themeDisplay.getPlid(),
 			PortletRequest.RENDER_PHASE);
 
-		registerResultURL.setPortletMode(PortletMode.VIEW);
-		registerResultURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-		registerResultURL.setParameter(
+		dossierLookupURL.setPortletMode(PortletMode.VIEW);
+		dossierLookupURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		dossierLookupURL.setParameter(
 			"mvcPath", "/templates/homepage/dossier_lookup.ftl");
 
-		urlObject.put("register_result", registerResultURL.toString());
+		urlObject.put("dossier_lookup", dossierLookupURL.toString());
 
 		// api
 		apiObject.put("server", themeDisplay.getPortalURL() + "/o/rest/v2");

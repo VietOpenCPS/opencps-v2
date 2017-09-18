@@ -66,16 +66,16 @@ public class ServiceInfoLookup extends FreeMarkerPortlet {
 		JSONObject apiObject = JSONFactoryUtil.createJSONObject();
 
 		// url
-		PortletURL registerResultURL = PortletURLFactoryUtil.create(
+		PortletURL serviceInfoLookupURL = PortletURLFactoryUtil.create(
 			renderRequest, portletId, themeDisplay.getPlid(),
 			PortletRequest.RENDER_PHASE);
 
-		registerResultURL.setPortletMode(PortletMode.VIEW);
-		registerResultURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-		registerResultURL.setParameter(
+		serviceInfoLookupURL.setPortletMode(PortletMode.VIEW);
+		serviceInfoLookupURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		serviceInfoLookupURL.setParameter(
 			"mvcPath", "/templates/homepage/serviceinfo_lookup.ftl");
 
-		urlObject.put("register_result", registerResultURL.toString());
+		urlObject.put("serviceinfo_lookup", serviceInfoLookupURL.toString());
 
 		// api
 		apiObject.put("server", themeDisplay.getPortalURL() + "/o/rest/v2");
