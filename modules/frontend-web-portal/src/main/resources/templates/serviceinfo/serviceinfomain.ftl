@@ -75,9 +75,9 @@
             </#if> -->
             <script type="text/x-kendo-template" id="tempStatisticsLevels">
               <li dataPk="#:level#" class='level'>
-                <a href='javascript:;' >#:levelName#</a>
+                <a href='javascript:;' >Mức độ #:levelName#</a>
                 <div class="btn-group">
-                  <span>#count#</span>
+                  <span>#:count#</span>
                 </div>
               </li>
             </script>
@@ -153,7 +153,7 @@
           dataType : "json",
           type : "GET",
           beforeSend: function(req) {
-            req.setRequestHeader('groupId', '20147');
+            req.setRequestHeader('groupId', ${serviceinfo.groupId});
           },
           success : function(result){
 
@@ -181,7 +181,7 @@
           dataType : "json",
           type : "GET",
           beforeSend: function(req) {
-            req.setRequestHeader('groupId', '20147');
+            req.setRequestHeader('groupId', ${serviceinfo.groupId});
           },
           success : function(result){
 
@@ -209,7 +209,7 @@
           dataType : "json",
           type : "GET",
           beforeSend: function(req) {
-            req.setRequestHeader('groupId', '20147');
+            req.setRequestHeader('groupId', ${serviceinfo.groupId});
           },
           success : function(result){
 
