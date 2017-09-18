@@ -5,7 +5,7 @@
 	<div class="col-sm-12">
 		<ul class="PT10 PB5" id="lvDossierResult"></ul>
 		<script type="text/x-kendo-template" id="tempDossierResult">
-			<li class="MT5 MB5"> <span>NGUYÊN VĂN KHOA - 7666648658 <#-- #:name# - #:dossierId# --></span></li>
+			<li class="MT5 MB5">NGUYÊN VĂN KHOA - <span>7666648658</span> <#-- #:name# - #:dossierId# --></li>
 		</script>
 		<div class="pager pull-left" id="pagerDossirResult"></div>
 	</div>

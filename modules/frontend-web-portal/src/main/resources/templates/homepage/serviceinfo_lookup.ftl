@@ -1,7 +1,14 @@
 <div class="row">
 	<div class="col-sm-10 col-sm-offset-1 text-center searchbar">
 		<h3 class="text-blue"><i>HỆ THỐNG DỊCH VỤ CÔNG TRỰC TUYẾN</i></h3>
-		<div class="form-group search-icon"> <input type="text" class="form-control" placeholder="Nhập tên thủ tục hành chính"> </div>
+		<div class="input-group MB15">
+			<input type="text" class="form-control" placeholder="Nhập tên thủ tục hành chính">
+			<div class="input-group-btn">
+				<button class="btn btn-default" type="submit">
+					<i class="glyphicon glyphicon-search"></i>
+				</button>
+			</div>
+		</div>
 	</div>
 	<div class="col-sm-12">
 		<div class="eq-height-lg">
