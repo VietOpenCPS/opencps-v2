@@ -13,7 +13,7 @@ import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import org.opencps.frontend.web.portal.constans.FrontendWebPortalPortletKeys;
+import org.opencps.frontend.web.portal.constants.FrontendWebPortalPortletKeys;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
