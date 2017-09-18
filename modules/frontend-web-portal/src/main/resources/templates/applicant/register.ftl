@@ -15,8 +15,8 @@
     </div>
     <div class="row MT10 MB10">
       <div class="col-xs-12 col-sm-12 text-center">
-       <div class="radio-inline"> <input type="radio" name="applicantIdType" value="1" checked> <label>Công dân</label> </div>
-       <div class="radio-inline"> <input type="radio" name="applicantIdType" value="2"> <label>Doanh nghiệp</label> </div>
+       <div class="radio-inline"> <input type="radio" name="applicantIdType" value="citizen" checked> <label>Công dân</label> </div>
+       <div class="radio-inline"> <input type="radio" name="applicantIdType" value="business"> <label>Doanh nghiệp</label> </div>
      </div>
    </div>
    <div class="row MT15">
@@ -119,7 +119,7 @@
      var register = function(){
       var data = $('#fm').serialize();
       $.ajax({
-        url: '${api.server}/applicants/register',
+        url: '${api.server}/applicants',
         type: 'POST',
         data: data,
         success: function(result){
