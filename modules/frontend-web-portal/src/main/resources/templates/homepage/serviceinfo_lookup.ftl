@@ -1,30 +1,22 @@
-<#-- <style type="tẽt/css">
-	.img-domains Ơ
-		float: lèt;
-		width: 150px;
-		height: 130px;
-		margin: 0 10px;
-	Ư
-	.img-domains img Ơ
-		width: 110px;
-		height: 110px;
-	Ư
-</style> -->
 <div class="row">
-	<div class="col-sm-12 text-center">
-		<h3><i>HÊ THÔNG DỊCH VỤ CÔNG TRƯC TUYÊN</i></h3>
-		<div class="form-group search-icon"> <input type="text" class="form-control" placeholder="Nhập tên thủ rục hành chính"> </div>
+	<div class="col-sm-10 col-sm-offset-1 text-center searchbar">
+		<h3 class="text-blue"><i>HỆ THỐNG DỊCH VỤ CÔNG TRỰC TUYẾN</i></h3>
+		<div class="form-group search-icon"> <input type="text" class="form-control" placeholder="Nhập tên thủ tục hành chính"> </div>
 	</div>
-	<div class="col-sm-12 center-all">
-		<div id="imgDomains">
-			
+	<div class="col-sm-12">
+		<div class="eq-height-lg">
+			<div class="row" id="imgDomains">
+				
+			</div>
 		</div>
 		<script type="text/x-kendo-template" id="tempDomains">
-			<div class="img-domains">
-				<img src="<#-- #:link#   -->https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4QFniWC6uanzGbP5uxvBxfX7YTnyVwYz1x6lg4CM0yP3p0lwZFw" />
-				<p><#-- #:domainName# -->Lĩnh vực DU LỊCH</p>
+			<div class="img-domains col-sm-4">
+				<img src="<#-- #:link#   -->https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4QFniWC6uanzGbP5uxvBxfX7YTnyVwYz1x6lg4CM0yP3p0lwZFw" class="responsive"/>
+				<div class="center-all-lg">
+					<p><#-- #:domainName# -->Lĩnh vực <span>DU LỊCH</span></p>
+				</div>
 			</div>
-		</script>
+		</script>	
 	</div>
 </div>
 <script type="text/javascript">
@@ -37,6 +29,9 @@
 						url : "http://hanoi.fds.vn:2281/api/serviceinfos",
 						dataType : "json",
 						type : "GET",
+						beforeSend: function(req) {
+							req.setRequestHeader('groupId', '20147');
+						},
 						success : function(result){
 							options.success(result);
 						},

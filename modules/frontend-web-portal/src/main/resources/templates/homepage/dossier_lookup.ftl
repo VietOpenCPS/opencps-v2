@@ -1,8 +1,7 @@
-<div class="row">
+<div class="dossier-with-result">
 	<div class="col-sm-12">
-		<i class="fa fa-paperclip MT10 MB10"></i> <span>HÔ SƠ ĐÃ CÓ KÊT QUẢ</span>
+		<span class="title">HÔ SƠ ĐÃ CÓ KÊT QUẢ</span>
 	</div>
-	<div class="col-sm-12" style="border-bottom: 2px solid #ccc;">
 
 	</div>
 	<div class="col-sm-12">
@@ -19,7 +18,6 @@
 		<button class="btn btn-small" type="button" id="btn-search-dossier">Tra cứu</button>
 	</div>
 
-
 </div>
 
 <script type="text/javascript">
@@ -32,6 +30,9 @@
 					type : "GET",
 					data : {
 						dossierCode : options.data.dossierCode
+					},
+					beforeSend: function(req) {
+						req.setRequestHeader('groupId', '20147');
 					},
 					success : function(result){
 						options.success(result);
