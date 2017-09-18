@@ -1,4 +1,4 @@
-package frontend.web.portal.constants;
+package org.opencps.frontend.web.portal.constants;
 
 /**
  * @author huymq
@@ -22,4 +22,9 @@ public class FrontendWebPortalPortletKeys {
 	public static final String FORGOTTEN_ACCOUNT_PORTLET_NAME =
 		"FrontendWebPortal_ForgottenAccountPortlet";
 
+	public static final String SERVICE_INFO_LOOKUP_PORTLET_NAME =
+		"FrontendWebPortal_ServiceInfoLookupPortlet";
+
+	public static final String DOSSIER_LOOKUP_PORTLET_NAME =
+		"FrontendWebPortal_DossierLookupPortlet";
 }

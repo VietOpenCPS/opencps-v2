@@ -1,13 +1,14 @@
 /**
  * 
  */
-package frontend.web.portal.portlet;
+package org.opencps.frontend.web.portal.portlet;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.opencps.frontend.web.portal.constants.FrontendWebPortalPortletKeys;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.model.CompanyConstants;
@@ -18,8 +19,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
-
-import frontend.web.portal.constants.FrontendWebPortalPortletKeys;
 
 /**
  * @author phucnv

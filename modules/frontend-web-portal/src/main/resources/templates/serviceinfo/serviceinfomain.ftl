@@ -149,7 +149,7 @@
     var dataSourceAdministrations= new kendo.data.DataSource({
       transport : {
         read : {
-          url : "${api.server}/serviceinfos/statistics/agencies", 
+          url : "${api.server}/serviceinfos/statistics/agencies",
           dataType : "json",
           type : "GET",
           beforeSend: function(req) {
@@ -218,7 +218,7 @@
 
           }
         }
-        
+
       },
       schema : {
         data : "data",
