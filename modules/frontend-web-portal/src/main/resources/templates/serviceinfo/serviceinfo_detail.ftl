@@ -103,7 +103,7 @@
                             </div>
                         </div>
                         <input type="hidden" name="serviceinfoId" id="serviceinfoId" data-bind="value : serviceinfoId">
-                        <div class="col-sm-12 PL0 MT15" id="submitDossier">
+                        <div class="col-sm-12 PL0 MT10 submitDossier">
 
                         </div>
                     </div>
@@ -111,7 +111,7 @@
                 <div id="ttth" class="tab-pane fade">
                    <p class="" data-bind="text:processText" id="processText"></p>
 
-                   <div class="col-sm-12 PL0 MT10" id="viewGuide">
+                   <div class="col-sm-12 PL0 MT10 submitDossier">
 
                    </div>
                </div>
@@ -127,9 +127,17 @@
                         <a data-bind="attr : { href: fileTemplateDownLoad}"><i class="fa fa-download" aria-hidden="true"></i> <span data-bind="text: templateName"></span></a>
                     </li>
                 </script>
+
+                <div class="col-sm-12 PL0 MT10 submitDossier">
+
+                </div>
             </div>
             <div id="ycdk" class="tab-pane fade">
                 <p class="MT10 MB10" data-bind="text:conditionText" id="conditionText"></p>
+
+                <div class="col-sm-12 PL0 MT10 submitDossier">
+
+                </div>
             </div>
         </div>
     </div>
@@ -178,7 +186,7 @@
                         dataType : "json",
                         type : "GET",
                         beforeSend: function(req) {
-                            req.setRequestHeader('groupId', ${serviceinfo.groupId});
+                            req.setRequestHeader('groupId', ${groupId});
                         },
                         success : function(result){
 
@@ -220,9 +228,9 @@
                         }
 
                         if(result.maxLevel>=3){
-                            $("#submitDossier").html('<button type="button" class="btn btn-active" data-toggle="modal" data-target="#submitDossierModal">Nộp hồ sơ >></button>');
+                            $(".submitDossier").html('<button type="button" class="btn btn-active" data-toggle="modal" data-target="#submitDossierModal">Nộp hồ sơ >></button>');
                         }else{
-                            $("#viewGuide").html('<button class="btn">Xem hướng dẫn >></button>');
+                            $(".submitDossier").html('<button class="btn">Xem hướng dẫn >></button>');
                         }
                         return "Mức "+result.maxLevel;
                     },
