@@ -94,7 +94,10 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		List<ServiceFileTemplate> fileTemplates = serviceFileTemplateLocalService.getByServiceInfoId(serviceInfoId);
 
 		for (ServiceFileTemplate fileTemplate : fileTemplates) {
-			serviceFileTemplateLocalService.removeServiceFileTemplate(serviceInfoId, fileTemplate.getFileTemplateNo());
+			if (fileTemplate.getFileEntryId() != 0) {
+				serviceFileTemplateLocalService.removeServiceFileTemplate(serviceInfoId,
+						fileTemplate.getFileTemplateNo());
+			}
 		}
 
 		return serviceInfo;
@@ -142,22 +145,22 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		serviceInfo.setAdministrationCode(administrationCode);
 		serviceInfo.setDomainCode(domainCode);
 		serviceInfo.setMaxLevel(maxLevel);
-		
+
 		boolean ispublic = false;
-		
+
 		if (activeStatus == 1) {
 			ispublic = true;
 		}
-		
-		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE, administrationCode, groupId);
+
+		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE, administrationCode,
+				groupId);
 		DictItem dom = DictCollectionUtils.getDictItemByCode(DataMGTConstants.SERVICE_DOMAIN, domainCode, groupId);
-		
+
 		if (Validator.isNotNull(adm)) {
 			serviceInfo.setAdministrationName(adm.getItemName());
 			serviceInfo.setAdministrationIndex(adm.getTreeIndex());
 		}
-		
-		
+
 		if (Validator.isNotNull(dom)) {
 			serviceInfo.setDomainName(dom.getItemName());
 			serviceInfo.setDomainIndex(dom.getTreeIndex());
@@ -261,12 +264,12 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		}
 
 		ServiceInfo si = null;
-		
+
 		try {
 			si = serviceInfoPersistence.findBySC_GI(serviceCode, groupId);
 		} catch (Exception e) {
-			
-		} 
+
+		}
 
 		if (Validator.isNotNull(si)) {
 			throw new DuplicateServiceCodeException();

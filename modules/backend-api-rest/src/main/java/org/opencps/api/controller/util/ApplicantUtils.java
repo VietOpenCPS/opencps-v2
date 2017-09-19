@@ -44,7 +44,7 @@ public class ApplicantUtils {
 		model.setWardName(applicant.getWardName());
 		model.setContactName(applicant.getContactName());
 		model.setContactTelNo(applicant.getContactTelNo());
-		
+
 
 		return model;
 	}

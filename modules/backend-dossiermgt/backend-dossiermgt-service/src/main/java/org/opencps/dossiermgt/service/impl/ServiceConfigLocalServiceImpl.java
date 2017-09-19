@@ -193,7 +193,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			throw new ServiceLevelException();
 		}
 
-		if (!Validator.isUrl(serviceUrl)) {
+		if (Validator.isNotNull(serviceUrl) && !Validator.isUrl(serviceUrl)) {
 			throw new ServiceURLOnlineException();
 		}
 

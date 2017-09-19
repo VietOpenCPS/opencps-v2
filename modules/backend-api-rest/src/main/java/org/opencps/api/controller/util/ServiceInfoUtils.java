@@ -1,5 +1,6 @@
 package org.opencps.api.controller.util;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class ServiceInfoUtils {
 			model.setConditionText(doc.get(ServiceInfoTerm.CONDITION_TEXT));
 			model.setDurationText(doc.get(ServiceInfoTerm.DURATION_TEXT));
 			model.setApplicantText(doc.get(ServiceInfoTerm.APPLICANT_TEXT));
-			model.setRegularText(doc.get(ServiceInfoTerm.RESULT_TEXT));
+			model.setResultText(doc.get(ServiceInfoTerm.RESULT_TEXT));
 			model.setRegularText(doc.get(ServiceInfoTerm.REGULAR_TEXT));
 			model.setFeeText(doc.get(ServiceInfoTerm.FEE_TEXT));
 			model.setAdministrationCode(doc.get(ServiceInfoTerm.ADMINISTRATION_CODE));
@@ -84,8 +85,12 @@ public class ServiceInfoUtils {
 
 		ServiceInfoDetailModel model = new ServiceInfoDetailModel();
 
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+		
 		model.setServiceName(serviceInfo.getServiceName());
 		model.setServiceInfoId(serviceInfo.getServiceInfoId());
+		model.setModifiedDate(sdf.format(serviceInfo.getModifiedDate()));
+		model.setCreateDate(sdf.format(serviceInfo.getCreateDate()));
 		model.setServiceCode(serviceInfo.getServiceCode());
 		model.setServiceName(serviceInfo.getServiceName());
 		model.setProcessText(serviceInfo.getProcessText());

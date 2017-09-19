@@ -640,7 +640,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		Applicant applicant = null;
 		try {
-
+			
+			
 
 			applicant = actions.activationApplicant(serviceContext, id, code);
 
