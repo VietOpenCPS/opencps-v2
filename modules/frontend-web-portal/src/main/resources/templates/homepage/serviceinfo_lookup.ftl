@@ -1,5 +1,5 @@
 <div class="row">
-	<div class="col-sm-10 col-sm-offset-1 text-center searchbar">
+	<div class="col-sm-9 col-sm-offset-1 text-center searchbar">
 		<h3 class="text-blue"><i>HỆ THỐNG DỊCH VỤ CÔNG TRỰC TUYẾN</i></h3>
 		<div class="input-group MB15">
 			<input type="text" class="form-control" placeholder="Nhập tên thủ tục hành chính">
@@ -10,7 +10,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-sm-12">
+	<div class="col-sm-11">
 		<div class="eq-height-lg">
 			<div class="row" id="imgDomains">
 				

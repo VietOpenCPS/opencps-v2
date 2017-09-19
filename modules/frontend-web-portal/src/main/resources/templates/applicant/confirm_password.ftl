@@ -1,5 +1,5 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <div class="row box MA" style="max-width: 550px;">
@@ -11,7 +11,7 @@
 	</div>
 	<div class="col-sm-9">
 		<div class="form-group">
-			<input type="text" class="form-control" placeholder="Nhập mã">
+			<input id="vertifyCode" type="text" class="form-control" placeholder="Nhập mã">
 		</div>
 	</div>
 	<div class="col-sm-3 with-input">
@@ -23,6 +23,17 @@
 </div>
 <script type="text/javascript">
 	$("#btn-next-step").click(function() {
+		$.ajax({
+			url : "${api.server}/users/"+$("#emailOrPhone").val()+"/forgot/confirm/"+$("#vertifyCode").val(),
+			dataType : "json",
+			type : "GET",
+			data : data,
+			success : function(result){
 
+			},
+			error : function(xhr){
+
+			}
+		});
 	});
 </script>

@@ -116,7 +116,7 @@
         dataType: "json",
         contentType : "application/x-www-form-urlencoded",
         beforeSend: function(req) {
-          req.setRequestHeader('groupId', ${serviceinfo.groupId});
+          req.setRequestHeader('groupId', ${groupId});
         },
         data: {
           keyword: options.data.keywords,
@@ -201,7 +201,7 @@ serverFiltering: false
             dataType : "json",
             type : "GET",
             beforeSend: function(req) {
-              req.setRequestHeader('groupId', ${serviceinfo.groupId});
+              req.setRequestHeader('groupId', ${groupId});
             },
             success : function(result){
 
@@ -229,7 +229,7 @@ serverFiltering: false
             dataType : "json",
             type : "GET",
             beforeSend: function(req) {
-              req.setRequestHeader('groupId', ${serviceinfo.groupId});
+              req.setRequestHeader('groupId', ${groupId});
             },
             success : function(result){
 
@@ -257,7 +257,7 @@ serverFiltering: false
             dataType : "json",
             type : "GET",
             beforeSend: function(req) {
-              req.setRequestHeader('groupId', ${serviceinfo.groupId});
+              req.setRequestHeader('groupId', ${groupId});
             },
             success : function(result){
 

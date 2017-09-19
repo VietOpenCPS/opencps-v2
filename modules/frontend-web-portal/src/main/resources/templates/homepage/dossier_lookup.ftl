@@ -1,11 +1,11 @@
 <div class="dossier-with-result">
 	<div class="col-sm-12">
-		<span class="title">HÔ SƠ ĐÃ CÓ KÊT QUẢ</span>
+		<span class="title">HỒ SƠ ĐÃ CÓ KẾT QUẢ</span>
 	</div>
 	<div class="col-sm-12">
 		<ul class="PT10 PB5" id="lvDossierResult"></ul>
 		<script type="text/x-kendo-template" id="tempDossierResult">
-			<li class="MT5 MB5">NGUYÊN VĂN KHOA - <span>7666648658</span> <#-- #:name# - #:dossierId# --></li>
+			<li class="MT5 MB5">NGUYỄN VĂN KHOA - <span>7666648658</span> <#-- #:name# - #:dossierId# --></li>
 		</script>
 		<div class="pager pull-left" id="pagerDossirResult"></div>
 	</div>
@@ -18,6 +18,7 @@
 		</div>
 	</div>
 </div>
+
 <script type="text/javascript">
 	var dataSourceDossierResult = new kendo.data.DataSource({
 		transport : {
