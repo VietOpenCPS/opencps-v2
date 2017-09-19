@@ -1,5 +1,5 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <form id="fmPasswordWorkflow">
@@ -29,23 +29,23 @@
 		if(validator.validate()){
 			var data = $("#fmPasswordWorkflow").serialize();
 			$.ajax({
-				url : "",
+				url : "${api.server}/users/"+$("#emailOrPhone").val()+"/forgot",
 				dataType : "json",
 				type : "GET",
 				data : data,
 				success : function(result){
+					if($("#emailOrPhone").val()!= ""){
+						$("#password_workflow_content").load("${ajax.confirm_password}",function(result){
 
+						});
+					}
 				},
 				error : function(xhr){
 
 				}
 			});
 
-			if($("#emailOrPhone").val()!= ""){
-				$("#password_workflow_content").load("${ajax.confirm_password}",function(result){
-
-				});
-			}
+			
 		}
 
 	});

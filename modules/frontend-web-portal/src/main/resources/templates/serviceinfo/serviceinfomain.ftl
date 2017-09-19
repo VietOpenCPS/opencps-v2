@@ -153,7 +153,7 @@
           dataType : "json",
           type : "GET",
           beforeSend: function(req) {
-            req.setRequestHeader('groupId', ${serviceinfo.groupId});
+            req.setRequestHeader('groupId', ${groupId});
           },
           success : function(result){
 
@@ -181,7 +181,7 @@
           dataType : "json",
           type : "GET",
           beforeSend: function(req) {
-            req.setRequestHeader('groupId', ${serviceinfo.groupId});
+            req.setRequestHeader('groupId', ${groupId});
           },
           success : function(result){
 
@@ -209,7 +209,7 @@
           dataType : "json",
           type : "GET",
           beforeSend: function(req) {
-            req.setRequestHeader('groupId', ${serviceinfo.groupId});
+            req.setRequestHeader('groupId', ${groupId});
           },
           success : function(result){
 
