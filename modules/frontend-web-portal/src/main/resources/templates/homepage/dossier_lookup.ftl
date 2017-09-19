@@ -41,7 +41,7 @@
 				});
 			}
 		},
-		pageSize : 1,
+		pageSize : 8,
 		schema : {
 			total : "total",
 			data : "data",
@@ -60,7 +60,7 @@
 		dataSource : dataSourceDossierResult,
 		info : false,
 		selectTemplate: '<li class="k-link"><i class="fa fa-circle" aria-hidden="true"></i></li>',
-		linkTemplate: '<li><a href="\\#" class="k-link" data-#=ns#page="#=idx#"><i class="fa fa-circle-o" aria-hidden="true"></i></a></li>'
+		linkTemplate: '<li><a href="\\#" class="k-link" data-#=ns#page="#=idx#"><i class="fa fa-circle" aria-hidden="true"></i></a></li>'
 	});
 
 	$("#btn-search-dossier").click(function(){
