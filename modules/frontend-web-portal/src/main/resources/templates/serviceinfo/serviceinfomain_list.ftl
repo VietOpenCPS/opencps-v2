@@ -250,6 +250,7 @@ serverFiltering: false
       dataTextField: "levelName",
       dataValueField: "level",
       filter: "contains",
+      template: '<span class="k-state-default">Mức độ #:data.levelName#</span>',
       dataSource: {
         transport :{
           read : {
