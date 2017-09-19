@@ -18,6 +18,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.usermgt.model.ApplicantInputUpdateModel;
 import org.opencps.api.usermgt.model.ApplicantInputModel;
 import org.opencps.api.usermgt.model.ApplicantModel;
 import org.opencps.api.usermgt.model.ApplicantResultsModel;
@@ -91,7 +92,7 @@ public interface ApplicantManagement {
 
 	public Response updateApplicant(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id, @BeanParam ApplicantInputModel input);
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @BeanParam ApplicantInputUpdateModel input);
 	
 	@DELETE
 	@Path("/{id}")

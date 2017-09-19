@@ -24,7 +24,8 @@ create table opencps_applicant (
 	mappingUserId LONG,
 	activationCode VARCHAR(75) null,
 	lock_ BOOLEAN,
-	profile VARCHAR(75) null
+	profile VARCHAR(75) null,
+	tmpPass VARCHAR(75) null
 );
 
 create table opencps_employee (
@@ -36,19 +37,18 @@ create table opencps_employee (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	fullName VARCHAR(75) null,
 	employeeNo VARCHAR(75) null,
+	fullName VARCHAR(75) null,
+	title VARCHAR(75) null,
 	gender INTEGER,
-	birthDate DATE null,
+	birthdate DATE null,
 	telNo VARCHAR(75) null,
 	mobile VARCHAR(75) null,
 	email VARCHAR(75) null,
 	workingStatus INTEGER,
 	mappingUserId LONG,
 	mainJobPostId LONG,
-	photoFileEntryId LONG,
-	fileDocId LONG,
-	preferences VARCHAR(75) null
+	photoFileEntryId LONG
 );
 
 create table opencps_employee_jobpos (
@@ -61,7 +61,8 @@ create table opencps_employee_jobpos (
 	createDate DATE null,
 	modifiedDate DATE null,
 	employeeId LONG,
-	jobPostId LONG
+	jobPostId LONG,
+	workingUnitId LONG
 );
 
 create table opencps_jobpos (
@@ -73,13 +74,10 @@ create table opencps_jobpos (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	workingUnitId LONG,
 	title VARCHAR(75) null,
 	description VARCHAR(75) null,
-	directWorkingUnitId LONG,
-	leader INTEGER,
 	mappingRoleId LONG,
-	hiddenJobPos BOOLEAN
+	leader INTEGER
 );
 
 create table opencps_officesite (
@@ -130,12 +128,13 @@ create table opencps_workingunit (
 	enName VARCHAR(75) null,
 	govAgencyCode VARCHAR(75) null,
 	parentWorkingUnitId LONG,
+	sibling VARCHAR(75) null,
+	treeIndex VARCHAR(75) null,
 	address VARCHAR(75) null,
 	telNo VARCHAR(75) null,
 	faxNo VARCHAR(75) null,
 	email VARCHAR(75) null,
 	website VARCHAR(75) null,
 	logoFileEntryId LONG,
-	sibling VARCHAR(75) null,
-	treeIndex VARCHAR(75) null
+	level INTEGER
 );

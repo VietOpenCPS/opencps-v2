@@ -6,10 +6,15 @@ import java.util.List;
 import org.opencps.api.usermgt.model.ApplicantModel;
 import org.opencps.api.usermgt.model.MappingUser;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactory;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -24,12 +29,13 @@ public class ApplicantUtils {
 	public static ApplicantModel mappingToApplicantModel(Applicant applicant) {
 
 		ApplicantModel model = new ApplicantModel();
-
+		model.setApplicantId(GetterUtil.getLong(applicant.getPrimaryKey()));
 		model.setApplicantName(applicant.getApplicantName());
 		model.setApplicantIdType(applicant.getApplicantIdType());
 		model.setApplicantIdNo(applicant.getApplicantIdNo());
 		model.setApplicantIdDate(StringUtil.valueOf(applicant.getApplicantIdDate()));
 		model.setContactEmail(applicant.getContactEmail());
+		model.setAddress(applicant.getAddress());
 		model.setCityCode(applicant.getCityCode());
 		model.setCityName(applicant.getCityName());
 		model.setDistrictCode(applicant.getDistrictCode());
@@ -56,7 +62,7 @@ public class ApplicantUtils {
 		for (Document doc : documents) {
 			ApplicantModel model = new ApplicantModel();
 
-			model.setApplicantId(GetterUtil.getLong(doc.get("applicantId")));
+			model.setApplicantId(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setCreateDate(GetterUtil.getString(doc.get(Field.CREATE_DATE)));
 			model.setModifiedDate(GetterUtil.getString(doc.get(Field.MODIFIED_DATE)));
 			model.setApplicantName(GetterUtil.getString(doc.get("applicantName")));
@@ -77,11 +83,11 @@ public class ApplicantUtils {
 			MappingUser mappingUser = new MappingUser();
 
 			long mappingUserId = GetterUtil.getLong(doc.get("mappingUserId"));
-
+			
 			User user = UserUtils.getUser(mappingUserId);
 
 			if (Validator.isNotNull(user)) {
-				mappingUser.setUserId(GetterUtil.getString(mappingUserId));
+				mappingUser.setUserId(Long.toString(mappingUserId));
 				mappingUser.setScreenName(user.getScreenName());
 				mappingUser.setLocking(user.getLockout());
 			}
@@ -93,4 +99,20 @@ public class ApplicantUtils {
 
 		return data;
 	}
+	
+	public static User getUser(long applicantId) {
+		User user = null;
+		
+		try {
+			Applicant applicant = ApplicantLocalServiceUtil.getApplicant(applicantId);
+			
+			user = UserUtils.getUser(applicant.getMappingUserId());
+		} catch (Exception e) {
+			
+		}
+		
+		return user;
+	}
+	
+	static Log _log = LogFactoryUtil.getLog(ApplicantUtils.class);
 }

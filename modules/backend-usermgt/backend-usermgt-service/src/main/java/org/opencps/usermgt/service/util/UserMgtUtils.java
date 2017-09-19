@@ -3,6 +3,7 @@ package org.opencps.usermgt.service.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -23,7 +24,7 @@ public class UserMgtUtils {
 	public static Date convertDate(String dateString) throws ParseException {
 		Date output = null;
 
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
 		output = sdf.parse(dateString);
 

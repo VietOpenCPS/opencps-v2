@@ -5,4 +5,6 @@
 	<bean class="org.opencps.usermgt.service.indexer.WorkingUnitIndexer" id="org.opencps.usermgt.service.indexer.WorkingUnitIndexer" />
 	<bean class="org.opencps.usermgt.service.indexer.JobPosIndexer" id="org.opencps.usermgt.service.indexer.JobPosIndexer" />
 	<bean class="org.opencps.usermgt.service.indexer.ApplicantIndexer" id="org.opencps.usermgt.service.indexer.ApplicantIndexer" />
+	<bean class="org.opencps.usermgt.service.indexer.EmployeeIndexer" id="org.opencps.usermgt.service.indexer.EmployeeIndexer" />
+	<bean class="org.opencps.usermgt.service.indexer.EmployeeJobPosIndexer" id="org.opencps.usermgt.service.indexer.EmployeeJobPosIndexer" />
 </beans>

@@ -101,6 +101,7 @@ public class ApplicantInputModel {
     protected String contactTelNo;
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "contactEmail")
     protected String contactEmail;
+	@XmlElement(required = true)
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "password")
     protected String password;
 

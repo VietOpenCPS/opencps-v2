@@ -38,6 +38,11 @@
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>
+		<!-- Finder -->
+		<finder return-type="OfficeSite" name="F_groupId_siteGroupId">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="siteGroupId"></finder-column>
+		</finder>
 	</entity>
 	
 	<entity name="WorkingUnit" uuid="true" local-service="true"
@@ -60,15 +65,15 @@
 		<column name="enName" type="String" />
 		<column name="govAgencyCode" type="String" />
 		<column name="parentWorkingUnitId" type="long" />
+		<column name="sibling" type="String" />
+		<column name="treeIndex" type="String" />
 		<column name="address" type="String" />
 		<column name="telNo" type="String" />
 		<column name="faxNo" type="String" />
 		<column name="email" type="String" />
 		<column name="website" type="String" />
 		<column name="logoFileEntryId" type="long" />
-		<column name="sibling" type="String" />
-		<column name="treeIndex" type="String" />
-		
+		<column name="level" type="int" />
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="treeIndex" />
@@ -90,13 +95,10 @@
 		<column name="modifiedDate" type="Date" />
 
 		<!-- Other fields -->
-		<column name="workingUnitId" type="long" />
 		<column name="title" type="String" />
 		<column name="description" type="String" />
-		<column name="directWorkingUnitId" type="long" />
-		<column name="leader" type="int" />
 		<column name="mappingRoleId" type="long" />
-		<column name="hiddenJobPos" type="boolean" />
+		<column name="leader" type="int" />
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />
@@ -119,10 +121,11 @@
 		<column name="modifiedDate" type="Date" />
 
 		<!-- Other fields -->
-		<column name="fullName" type="String" />
 		<column name="employeeNo" type="String" />
+		<column name="fullName" type="String" />
+		<column name="title" type="String" />
 		<column name="gender" type="int" />
-		<column name="birthDate" type="Date" />
+		<column name="birthdate" type="Date" />
 		<column name="telNo" type="String" />
 		<column name="mobile" type="String" />
 		<column name="email" type="String" />
@@ -130,14 +133,16 @@
 		<column name="mappingUserId" type="long" />
 		<column name="mainJobPostId" type="long" />
 		<column name="photoFileEntryId" type="long" />
-		<column name="fileDocId" type="long" />
-		<column name="preferences" type="String" />
 
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="employeeNo" />
 		</order>
 		<!-- Finder -->
+		<finder return-type="Employee" name="F_mappingUserId">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="mappingUserId"></finder-column>
+		</finder>
 	</entity>
 
 	<entity name="EmployeeJobPos" uuid="true" local-service="true"
@@ -157,6 +162,7 @@
 		<!-- Other fields -->
 		<column name="employeeId" type="long" />
 		<column name="jobPostId" type="long" />
+		<column name="workingUnitId" type="long" />
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />
@@ -206,6 +212,7 @@
 		<column name="activationCode" type="String" />
 		<column name="lock_" type="boolean" />
 		<column name="profile" type="String" />
+		<column name="tmpPass" type="String" />
 
 		<order by="asc">
 			<order-column name="applicantName"/>
@@ -235,9 +242,17 @@
 		<column name="modifiedDate" type="Date" />
 
 		<!-- Other fields -->
-
 		<column name="preferences" type="String" />
-
+		
+		<order by="asc">
+			<order-column name="createDate"></order-column>
+		</order>
+		
+		<finder return-type="Preferences" name="F_userId" unique="true">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="userId"></finder-column>
+		</finder>
+		
 	</entity>
 	
 	<exceptions>

@@ -23,8 +23,6 @@ public class JobPosTerm {
 
 	public static final String MODIFIED_DATE = "modifiedDate";
 
-	public static final String WORKING_UNIT_ID = "workingUnitId";
-
 	public static final String TITLE = "title";
 
 	public static final String DESCRIPTION = "description";
@@ -32,10 +30,6 @@ public class JobPosTerm {
 	public static final String LEADER = "leader";
 
 	public static final String MAPPING_ROLE_ID = "mappingRoleId";
-
-	public static final String JOBPOS = "jobPos";
-
-	public static final String WORKING_UNIT_NAME = "workingUnitName";
 
 	// sortable
 	public static final String JOBPOS_ID_SORTABLE = "jobPosId_sortable";
@@ -51,8 +45,6 @@ public class JobPosTerm {
 	public static final String CREATE_DATE_SORTABLE = "createDate_sortable";
 
 	public static final String MODIFIED_DATE_SORTABLE = "modifiedDate_sortable";
-
-	public static final String WORKING_UNIT_ID_SORTABLE = "workingUnitId_sortable";
 
 	public static final String TITLE_SORTABLE = "title_sortable";
 
@@ -76,15 +68,13 @@ public class JobPosTerm {
 
 	private Date modifiedDate;
 
-	private long workingUnitId;
-
 	private String title;
+
+	private long mappingRoleId;
 
 	private String description;
 
 	private int leader;
-
-	private long mappingRoleId;
 
 	public long getJobPosId() {
 		return jobPosId;
@@ -142,20 +132,20 @@ public class JobPosTerm {
 		this.modifiedDate = modifiedDate;
 	}
 
-	public long getWorkingUnitId() {
-		return workingUnitId;
-	}
-
-	public void setWorkingUnitId(long workingUnitId) {
-		this.workingUnitId = workingUnitId;
-	}
-
 	public String getTitle() {
 		return title;
 	}
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public long getMappingRoleId() {
+		return mappingRoleId;
+	}
+
+	public void setMappingRoleId(long mappingRoleId) {
+		this.mappingRoleId = mappingRoleId;
 	}
 
 	public String getDescription() {
@@ -172,18 +162,6 @@ public class JobPosTerm {
 
 	public void setLeader(int leader) {
 		this.leader = leader;
-	}
-
-	public long getMappingRoleId() {
-		return mappingRoleId;
-	}
-
-	public void setMappingRoleId(long mappingRoleId) {
-		this.mappingRoleId = mappingRoleId;
-	}
-
-	public JobPosTerm() {
-
 	}
 
 }

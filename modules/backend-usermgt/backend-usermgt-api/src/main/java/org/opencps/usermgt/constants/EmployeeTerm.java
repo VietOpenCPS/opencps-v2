@@ -2,14 +2,6 @@ package org.opencps.usermgt.constants;
 
 import java.util.Date;
 
-import javax.portlet.ActionRequest;
-
-import org.opencps.datamgt.utils.DateTimeUtils;
-
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.WebKeys;
-
 /**
  * @author Binhth
  * @see EmployeeTerm
@@ -31,8 +23,6 @@ public class EmployeeTerm {
 	
 	public static final String MODIFIED_DATE = "modifiedDate";
 
-	public static final String WORKING_UNIT_ID = "workingUnitId";
-	
 	public static final String FULL_NAME = "fullName";
 	
 	public static final String EMPLOYEE_NO = "employeeNo";
@@ -53,13 +43,10 @@ public class EmployeeTerm {
 	
 	public static final String MAIN_JOBPOST_ID = "mainJobPostId";
 	
-	public static final String FORMSCRIPT = "formScript";
-	
-	public static final String FORMDATA = "formData";
-	
 	public static final String IS_USERACCOUNT = "isUserAccount";
 	
-	public static final String EMPLOYEE = "employee";
+	public static final String TITLE = "title";
+	
 	// sortable
 	public static final String EMPLOYEE_ID_SORTABLE = "employeeId_sortable";
 
@@ -75,8 +62,6 @@ public class EmployeeTerm {
 	
 	public static final String MODIFIED_DATE_SORTABLE = "modifiedDate_sortable";
 
-	public static final String WORKING_UNIT_ID_SORTABLE = "workingUnitId_sortable";
-	
 	public static final String FULL_NAME_SORTABLE = "fullName_sortable";
 	
 	public static final String EMPLOYEE_NO_SORTABLE = "employeeNo_sortable";
@@ -97,11 +82,7 @@ public class EmployeeTerm {
 	
 	public static final String MAIN_JOBPOST_ID_SORTABLE = "mainJobPostId_sortable";
 	
-	public static final String FORMSCRIPT_SORTABLE = "formScript_sortable";
-	
-	public static final String FORMDATA_SORTABLE = "formData_sortable";
-	
-	public static final String EMPLOYEE_SORTABLE = "employee_sortable";
+	public static final String TITLE_SORTABLE = "title_sortable";
 
 	private long employeeId;
 
@@ -117,74 +98,31 @@ public class EmployeeTerm {
 	
 	private Date modifiedDate;
 
-	private long workingUnitId;
-	
 	private String fullName;
+	
 	private String employeeNo;
+	
 	private int gender;
+	
 	private Date birthDate;
+	
 	private String telNo;
+	
 	private String mobile;
+	
 	private String email;
+	
 	private int workingStatus;
+	
 	private long mappingUserId;
+	
 	private long mainJobPostId;
-	private String formScript;
-	private String formData;
+	
 	private boolean isEmployer;
 	
+	private String title;
+	
 	public EmployeeTerm() {
-		
-	}
-
-	public EmployeeTerm(ActionRequest request) {
-
-		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-
-		employeeId = ParamUtil.getLong(request, EMPLOYEE_ID);
-		
-		groupId = themeDisplay.getScopeGroupId();
-		
-		companyId = themeDisplay.getCompanyId();
-		
-		userId = themeDisplay.getUserId();
-		
-		userName = themeDisplay.getUser().getFullName();
-		
-		createDate = ParamUtil.getDate(request, CREATE_DATE,
-				DateTimeUtils.getDateTimeFormat(DateTimeUtils._VN_DATE_TIME_FORMAT));
-		
-		modifiedDate = ParamUtil.getDate(request, MODIFIED_DATE,
-				DateTimeUtils.getDateTimeFormat(DateTimeUtils._VN_DATE_TIME_FORMAT));
-		
-		workingUnitId = ParamUtil.getLong(request, WORKING_UNIT_ID);
-		
-		fullName = ParamUtil.getString(request, FULL_NAME);
-		
-		employeeNo = ParamUtil.getString(request, EMPLOYEE_NO);
-		
-		gender = ParamUtil.getInteger(request, GENDER);
-		
-		birthDate = ParamUtil.getDate(request, BIRTH_DATE,
-				DateTimeUtils.getDateTimeFormat(DateTimeUtils._VN_DATE_TIME_FORMAT));
-		
-		telNo = ParamUtil.getString(request, TELNO);
-		
-		mobile = ParamUtil.getString(request, MOBILE);
-		
-		email = ParamUtil.getString(request, EMAIL);
-		
-		workingStatus = ParamUtil.getInteger(request, WORKING_STATUS);
-		
-		mappingUserId = ParamUtil.getLong(request, MAPPING_USER_ID);
-		
-		mainJobPostId = ParamUtil.getLong(request, MAIN_JOBPOST_ID);
-		
-		formScript = ParamUtil.getString(request, FORMSCRIPT);
-		
-		formData = ParamUtil.getString(request, FORMDATA);
-		
-		isEmployer = ParamUtil.getBoolean(request, IS_USERACCOUNT);
 		
 	}
 
@@ -242,14 +180,6 @@ public class EmployeeTerm {
 
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
-	}
-
-	public long getWorkingUnitId() {
-		return workingUnitId;
-	}
-
-	public void setWorkingUnitId(long workingUnitId) {
-		this.workingUnitId = workingUnitId;
 	}
 
 	public String getFullName() {
@@ -332,22 +262,6 @@ public class EmployeeTerm {
 		this.mainJobPostId = mainJobPostId;
 	}
 
-	public String getFormScript() {
-		return formScript;
-	}
-
-	public void setFormScript(String formScript) {
-		this.formScript = formScript;
-	}
-
-	public String getFormData() {
-		return formData;
-	}
-
-	public void setFormData(String formData) {
-		this.formData = formData;
-	}
-
 	public boolean isEmployer() {
 		return isEmployer;
 	}
@@ -356,5 +270,12 @@ public class EmployeeTerm {
 		this.isEmployer = isEmployer;
 	}
 
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 }

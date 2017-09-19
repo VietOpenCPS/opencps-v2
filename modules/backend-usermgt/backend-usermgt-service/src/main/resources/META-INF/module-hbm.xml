@@ -38,6 +38,7 @@
 		<property name="activationCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="lock_" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="profile" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="tmpPass" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.EmployeeImpl" table="opencps_employee">
 		<id name="employeeId" type="long">
@@ -50,10 +51,11 @@
 		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="fullName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="employeeNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="fullName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="title" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="gender" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
-		<property name="birthDate" type="org.hibernate.type.TimestampType" />
+		<property name="birthdate" type="org.hibernate.type.TimestampType" />
 		<property name="telNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="mobile" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="email" type="com.liferay.portal.dao.orm.hibernate.StringType" />
@@ -61,8 +63,6 @@
 		<property name="mappingUserId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="mainJobPostId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="photoFileEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="fileDocId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="preferences" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.EmployeeJobPosImpl" table="opencps_employee_jobpos">
 		<id name="employeeJobPosId" type="long">
@@ -77,6 +77,7 @@
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
 		<property name="employeeId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="jobPostId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="workingUnitId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.JobPosImpl" table="opencps_jobpos">
 		<id name="jobPosId" type="long">
@@ -89,13 +90,10 @@
 		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="workingUnitId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="title" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="description" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="directWorkingUnitId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="leader" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="mappingRoleId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="hiddenJobPos" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+		<property name="leader" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.OfficeSiteImpl" table="opencps_officesite">
 		<id name="officeSiteId" type="long">
@@ -149,13 +147,14 @@
 		<property name="enName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="govAgencyCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="parentWorkingUnitId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="sibling" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="treeIndex" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="address" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="telNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="faxNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="email" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="website" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="logoFileEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="sibling" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="treeIndex" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="level" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 </hibernate-mapping>

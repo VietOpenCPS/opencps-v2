@@ -92,5 +92,7 @@ public class NotificationMGTConstants implements Constants, WebKeys {
 		NOTIFICATION_TEMPLATE_INIT.put("USER-02", "Th\u00F4ng b\u00E1o thay \u0111\u1ED5i tr\u1EA1ng th\u00E1i k\u00EDch ho\u1EA1t t\u00E0i kho\u1EA3n");
 		
 		NOTIFICATION_TEMPLATE_INIT.put("USER-03", "Th\u00F4ng b\u00E1o reset m\u1EADt kh\u1EA9u t\u00E0i kho\u1EA3n b\u1EDFi h\u1EC7 th\u1ED1ng (qu\u00EAn m\u1EADt kh\u1EA9u)");
+		
+		NOTIFICATION_TEMPLATE_INIT.put("USER-04", "Th\u00F4ng b\u00E1o m\u1EADt kh\u1EA9u t\u00E0i kho\u1EA3n \u0111\u00E3 thay \u0111\u1ED5i");
 	}
 }

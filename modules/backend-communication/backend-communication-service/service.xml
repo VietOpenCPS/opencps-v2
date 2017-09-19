@@ -57,7 +57,7 @@
 	</entity>
 	
 		<entity name="NotificationQueue" local-service="true"
-		remote-service="false" table="m_notificationqueue">
+		remote-service="false" table="opencps_notificationqueue">
 
 		<!-- PK fields -->
 
@@ -97,7 +97,7 @@
 	</entity>
 	
 	<entity name="HmacAuth" local-service="true"
-		remote-service="false" table="m_hmacauth">
+		remote-service="false" table="opencps_hmacauth">
 
 		<!-- PK fields -->
 
