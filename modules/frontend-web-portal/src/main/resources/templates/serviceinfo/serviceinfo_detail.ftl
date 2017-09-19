@@ -109,21 +109,21 @@
                     </div>
                 </div>
                 <div id="ttth" class="tab-pane fade">
-                   <p class="" data-bind="text:processText" id="processText"></p>
+                 <p class="" data-bind="text:processText" id="processText"></p>
 
-                   <div class="col-sm-12 PL0 MT10 submitDossier">
+                 <div class="col-sm-12 PL0 MT10 submitDossier">
 
-                   </div>
-               </div>
-               <div id="tphs" class="tab-pane fade">
-                   <p class="MB15 MT10" data-bind="text:dossierText" id="dossierText"></p>
+                 </div>
+             </div>
+             <div id="tphs" class="tab-pane fade">
+                 <p class="MB15 MT10" data-bind="text:dossierText" id="dossierText"></p>
 
-                   <label>File biểu mẫu</label>
-                   <ul class="ML10" id ="service_info_filetemplate" data-template="service_info_filetemplate_template" data-bind="source: fileTemplates">
+                 <label>File biểu mẫu</label>
+                 <ul class="ML10" id ="service_info_filetemplate" data-template="service_info_filetemplate_template" data-bind="source: fileTemplates">
 
-                   </ul>
-                   <script type="text/x-kendo-template" id="service_info_filetemplate_template">
-                       <li class="clearfix item-serviceinfo-filetemplate eq-height-lg" data-bind="attr: {data-pk : fileTemplateNo}" role="option" aria-selected="true">
+                 </ul>
+                 <script type="text/x-kendo-template" id="service_info_filetemplate_template">
+                     <li class="clearfix item-serviceinfo-filetemplate eq-height-lg" data-bind="attr: {data-pk : fileTemplateNo}" role="option" aria-selected="true">
                         <a data-bind="attr : { href: fileTemplateDownLoad}"><i class="fa fa-download" aria-hidden="true"></i> <span data-bind="text: templateName"></span></a>
                     </li>
                 </script>
@@ -169,44 +169,38 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-     $("#slAdministration").kendoComboBox({
+       $("#slAdministration").kendoComboBox({
         placeholder : "Chọn cơ quan thực hiện",
-        dataTextField : "name",
-        dataValueField : "value",
-        dataSource : [
-        { "name" : "ccc", "value" : 1},
-        { "name" : "abc", "value" : 2},
-        { "name" : "ddd", "value" : 3},
-        { "name" : "eee", "value" : 4}
-        ],
-            /*dataSource : {
-                transport : {
-                    read : {
-                        url : "",
-                        dataType : "json",
-                        type : "GET",
-                        beforeSend: function(req) {
-                            req.setRequestHeader('groupId', ${groupId});
-                        },
-                        success : function(result){
+        dataTextField : "govAgencyName",
+        dataValueField : "govAgencyCode",
+        dataSource : {
+            transport : {
+                read : {
+                    url : "${api.server}/serverconfigs?service="+$("#serviceinfoId").val()+"&applicant=${applicant}",
+                    dataType : "json",
+                    type : "GET",
+                    beforeSend: function(req) {
+                        req.setRequestHeader('groupId', ${groupId});
+                    },
+                    success : function(result){
 
-                        },
-                        error : function(xhr){
+                    },
+                    error : function(xhr){
 
-                        }
-                    }
-                },
-                schema : {
-                    data : "data",
-                    total : "total",
-                    model : {
-                        id : "id"
                     }
                 }
-            },*/
-            filter: "contains"
-        });
- });
+            },
+            schema : {
+                data : "data",
+                total : "total",
+                model : {
+                    id : "id"
+                }
+            }
+        },
+        filter: "contains"
+    });
+   });
 
     var pullDataDetail= function(id){
         console.log(id);
