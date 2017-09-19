@@ -2,24 +2,22 @@
 	<div class="col-sm-12">
 		<span class="title">HÔ SƠ ĐÃ CÓ KÊT QUẢ</span>
 	</div>
-
-	</div>
 	<div class="col-sm-12">
 		<ul class="PT10 PB5" id="lvDossierResult"></ul>
 		<script type="text/x-kendo-template" id="tempDossierResult">
-			<li class="MT5 MB5"> <span>NGUYÊN VĂN KHOA - 7666648658 <#-- #:name# - #:dossierId# --></span></li>
+			<li class="MT5 MB5">NGUYÊN VĂN KHOA - <span>7666648658</span> <#-- #:name# - #:dossierId# --></li>
 		</script>
 		<div class="pager pull-left" id="pagerDossirResult"></div>
 	</div>
-	<div class="col-sm-9">
-		<div class="form-group MB10"> <input id="searchDossierCode" type="text" class="form-control input-sm" placeholder="Nhập mã hồ sơ/ họ và tên"> </div>
+	<div class="button-holder">
+		<div class="col-sm-9">
+			<div class="form-group"> <input id="searchDossierCode" type="text" class="form-control input-sm" placeholder="Nhập mã hồ sơ/ họ và tên"> </div>
+		</div>
+		<div class="col-sm-3">
+			<button class="btn btn-small" type="button" id="btn-search-dossier">Tra cứu</button>
+		</div>
 	</div>
-	<div class="col-sm-3 PL0">
-		<button class="btn btn-small" type="button" id="btn-search-dossier">Tra cứu</button>
-	</div>
-
 </div>
-
 <script type="text/javascript">
 	var dataSourceDossierResult = new kendo.data.DataSource({
 		transport : {
