@@ -103,7 +103,7 @@
                             </div>
                         </div>
                         <input type="hidden" name="serviceinfoId" id="serviceinfoId" data-bind="value : serviceinfoId">
-                        <div class="col-sm-12 MT10 submitDossier">
+                        <div class="col-sm-12 PL0 MT10 submitDossier">
 
                         </div>
                     </div>
@@ -111,7 +111,7 @@
                 <div id="ttth" class="tab-pane fade">
                    <p class="" data-bind="text:processText" id="processText"></p>
 
-                   <div class="col-sm-12 MT10 submitDossier">
+                   <div class="col-sm-12 PL0 MT10 submitDossier">
 
                    </div>
                </div>
@@ -128,14 +128,14 @@
                     </li>
                 </script>
 
-                <div class="col-sm-12 MT10 submitDossier">
+                <div class="col-sm-12 PL0 MT10 submitDossier">
 
                 </div>
             </div>
             <div id="ycdk" class="tab-pane fade">
                 <p class="MT10 MB10" data-bind="text:conditionText" id="conditionText"></p>
 
-                <div class="col-sm-12 MT10 submitDossier">
+                <div class="col-sm-12 PL0 MT10 submitDossier">
 
                 </div>
             </div>
