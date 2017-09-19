@@ -28,6 +28,7 @@
 		<field name="activationCode" type="String" />
 		<field name="lock_" type="boolean" />
 		<field name="profile" type="String" />
+		<field name="tmpPass" type="String" />
 	</model>
 	<model name="org.opencps.usermgt.model.Employee">
 		<field name="uuid" type="String" />
@@ -38,10 +39,11 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="fullName" type="String" />
 		<field name="employeeNo" type="String" />
+		<field name="fullName" type="String" />
+		<field name="title" type="String" />
 		<field name="gender" type="int" />
-		<field name="birthDate" type="Date" />
+		<field name="birthdate" type="Date" />
 		<field name="telNo" type="String" />
 		<field name="mobile" type="String" />
 		<field name="email" type="String" />
@@ -49,8 +51,6 @@
 		<field name="mappingUserId" type="long" />
 		<field name="mainJobPostId" type="long" />
 		<field name="photoFileEntryId" type="long" />
-		<field name="fileDocId" type="long" />
-		<field name="preferences" type="String" />
 	</model>
 	<model name="org.opencps.usermgt.model.EmployeeJobPos">
 		<field name="uuid" type="String" />
@@ -63,6 +63,7 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="employeeId" type="long" />
 		<field name="jobPostId" type="long" />
+		<field name="workingUnitId" type="long" />
 	</model>
 	<model name="org.opencps.usermgt.model.JobPos">
 		<field name="uuid" type="String" />
@@ -73,13 +74,10 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="workingUnitId" type="long" />
 		<field name="title" type="String" />
 		<field name="description" type="String" />
-		<field name="directWorkingUnitId" type="long" />
-		<field name="leader" type="int" />
 		<field name="mappingRoleId" type="long" />
-		<field name="hiddenJobPos" type="boolean" />
+		<field name="leader" type="int" />
 	</model>
 	<model name="org.opencps.usermgt.model.OfficeSite">
 		<field name="uuid" type="String" />
@@ -127,13 +125,14 @@
 		<field name="enName" type="String" />
 		<field name="govAgencyCode" type="String" />
 		<field name="parentWorkingUnitId" type="long" />
+		<field name="sibling" type="String" />
+		<field name="treeIndex" type="String" />
 		<field name="address" type="String" />
 		<field name="telNo" type="String" />
 		<field name="faxNo" type="String" />
 		<field name="email" type="String" />
 		<field name="website" type="String" />
 		<field name="logoFileEntryId" type="long" />
-		<field name="sibling" type="String" />
-		<field name="treeIndex" type="String" />
+		<field name="level" type="int" />
 	</model>
 </model-hints>

@@ -166,11 +166,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 			User requestUser = ApplicantUtils.getUser(id);
-			
 
 			boolean isAllowed = false;
 
-			
 			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
 				isAllowed = true;
 			} else {
@@ -180,7 +178,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					// check userLogin is equal userRequest get detail
 					if (requestUser.getUserId() == user.getUserId()) {
 						isAllowed = true;
-					} 
+					}
 				}
 			}
 
@@ -250,7 +248,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			boolean isAllowed = false;
 
-			
 			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
 				isAllowed = true;
 			} else {
@@ -260,7 +257,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					// check userLogin is equal userRequest get detail
 					if (requestUser.getUserId() == user.getUserId()) {
 						isAllowed = true;
-					} 
+					}
 				}
 			}
 
@@ -332,7 +329,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
 				isAllowed = true;
-			} 
+			}
 
 			if (isAllowed) {
 				applicant = actions.removeApplicant(serviceContext, id);
@@ -400,7 +397,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			boolean isAllowed = false;
 
-			
 			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
 				isAllowed = true;
 			} else {
@@ -410,15 +406,15 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					// check userLogin is equal userRequest get detail
 					if (requestUser.getUserId() == user.getUserId()) {
 						isAllowed = true;
-					} 
+					}
 				}
 			}
 
 			if (isAllowed) {
 				applicant = actions.removeApplicant(serviceContext, id);
-				
+
 				JSONObject result = JSONFactoryUtil.createJSONObject();
-				
+
 				result.put("applicantId", applicant.getApplicantId());
 				result.put("profile", applicant.getProfile());
 
@@ -465,7 +461,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 		}
 	}
-	
 
 	@Override
 	public Response addApplicantProfile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -483,7 +478,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			boolean isAllowed = false;
 
-			
 			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
 				isAllowed = true;
 			} else {
@@ -493,16 +487,15 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					// check userLogin is equal userRequest get detail
 					if (requestUser.getUserId() == user.getUserId()) {
 						isAllowed = true;
-					} 
+					}
 				}
 			}
 
-
 			if (isAllowed) {
 				applicant = actions.updateProfile(serviceContext, id, body);
-				
+
 				JSONObject result = JSONFactoryUtil.createJSONObject();
-				
+
 				result.put("applicantId", applicant.getApplicantId());
 				result.put("profile", applicant.getProfile());
 
@@ -575,7 +568,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			boolean isAllowed = false;
 
-			
 			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
 				isAllowed = true;
 			} else {
@@ -585,17 +577,16 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					// check userLogin is equal userRequest get detail
 					if (requestUser.getUserId() == user.getUserId()) {
 						isAllowed = true;
-					} 
+					}
 				}
 			}
 
 			if (isAllowed) {
 				applicant = actions.lockApplicant(serviceContext, id);
-				
+
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 
 				return Response.status(200).entity(results).build();
-
 
 			} else {
 				throw new UnauthorizationException();
@@ -645,46 +636,17 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	public Response activateApplicant(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String code) {
 		ApplicantActions actions = new ApplicantActionsImpl();
-		BackendAuth auth = new BackendAuthImpl();
 		ApplicantModel results = new ApplicantModel();
 
 		Applicant applicant = null;
 		try {
 
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
 
-			User requestUser = ApplicantUtils.getUser(id);
+			applicant = actions.activationApplicant(serviceContext, id, code);
 
-			boolean isAllowed = false;
+			results = ApplicantUtils.mappingToApplicantModel(applicant);
 
-			
-			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
-				isAllowed = true;
-			} else {
-				if (Validator.isNull(requestUser)) {
-					throw new NoSuchUserException();
-				} else {
-					// check userLogin is equal userRequest get detail
-					if (requestUser.getUserId() == user.getUserId()) {
-						isAllowed = true;
-					} 
-				}
-			}
-
-
-			if (isAllowed) {
-				applicant = actions.activationApplicant(serviceContext, id, code);
-				
-				results = ApplicantUtils.mappingToApplicantModel(applicant);
-
-				return Response.status(200).entity(results).build();
-
-
-			} else {
-				throw new UnauthorizationException();
-			}
+			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();

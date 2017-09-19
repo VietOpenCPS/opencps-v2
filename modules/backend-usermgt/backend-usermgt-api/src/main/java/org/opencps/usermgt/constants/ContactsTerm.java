@@ -2,14 +2,6 @@ package org.opencps.usermgt.constants;
 
 import java.util.Date;
 
-import javax.portlet.ActionRequest;
-
-import org.opencps.datamgt.utils.DateTimeUtils;
-
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.WebKeys;
-
 /**
  * @author Binhth
  * @see ContactsTerm
@@ -33,7 +25,7 @@ public class ContactsTerm {
 
 	public static final String GROUP_ID = "groupId";
 
-	public static final String IS_ORG = "isOrg";
+	public static final String CONTACT_TYPE = "contactType";
 
 	public static final String MODIFIED_DATE = "modifiedDate";
 
@@ -46,6 +38,8 @@ public class ContactsTerm {
 	public static final String USER_MAPPING_ID = "userMappingId";
 
 	public static final String USER_NAME = "userName";
+
+	public static final String GROUP_LIST = "groupList";
 
 	// sortable
 	public static final String COMPANY_ID_SORTABLE = "companyId_sortable";
@@ -64,7 +58,7 @@ public class ContactsTerm {
 
 	public static final String GROUP_ID_SORTABLE = "groupId_sortable";
 
-	public static final String IS_ORG_SORTABLE = "isOrg_sortable";
+	public static final String CONTACT_TYPE_SORTABLE = "contactType_sortable";
 
 	public static final String MODIFIED_DATE_SORTABLE = "modifiedDate_sortable";
 
@@ -78,6 +72,8 @@ public class ContactsTerm {
 
 	public static final String USER_NAME_SORTABLE = "userName_sortable";
 
+	public static final String GROUP_LIST_SORTABLE = "groupList_sortable";
+
 	private long companyId;
 	private String companyName;
 	private long contactId;
@@ -85,37 +81,17 @@ public class ContactsTerm {
 	private String email;
 	private String fullName;
 	private long groupId;
-	private boolean isOrg;
+	private int contactType;
 	private Date modifiedDate;
-	private int shared;
+	private boolean shared;
 	private String telNo;
 	private long userId;
 	private long userMappingId;
 	private String userName;
+	private String groupList;
 	private boolean isGroupUser;
-	
+
 	public ContactsTerm() {
-	}
-
-	public ContactsTerm(ActionRequest request) {
-		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-
-		contactId = ParamUtil.getLong(request, CONTACT_ID);
-		groupId = themeDisplay.getScopeGroupId();
-		companyId = themeDisplay.getCompanyId();
-		userId = themeDisplay.getUserId();
-		userName = themeDisplay.getUser().getFullName();
-		createDate = ParamUtil.getDate(request, CREATE_DATE,
-				DateTimeUtils.getDateTimeFormat(DateTimeUtils._VN_DATE_TIME_FORMAT));
-		modifiedDate = ParamUtil.getDate(request, MODIFIED_DATE,
-				DateTimeUtils.getDateTimeFormat(DateTimeUtils._VN_DATE_TIME_FORMAT));
-		fullName = ParamUtil.getString(request, FULL_NAME);
-		companyName = ParamUtil.getString(request, COMPANY_NAME);
-		telNo = ParamUtil.getString(request, TEL_NO);
-		email = ParamUtil.getString(request, EMAIL);
-		shared = ParamUtil.getInteger(request, SHARED);
-		userMappingId = ParamUtil.getLong(request, USER_MAPPING_ID);
-		isOrg = ParamUtil.getBoolean(request, IS_ORG, Boolean.FALSE);
 	}
 
 	public long getCompanyId() {
@@ -166,10 +142,6 @@ public class ContactsTerm {
 		return this.userName;
 	}
 
-	public boolean isOrg() {
-		return this.isOrg;
-	}
-
 	public void setCompanyId(long companyId) {
 		this.companyId = companyId;
 	}
@@ -218,24 +190,36 @@ public class ContactsTerm {
 		this.userName = userName;
 	}
 
-	public int getShared() {
-		return this.shared;
-	}
-
-	public void setShared(int shared) {
-		this.shared = shared;
-	}
-
-	public void setOrg(boolean isOrg) {
-		this.isOrg = isOrg;
-	}
-
 	public boolean isGroupUser() {
 		return isGroupUser;
 	}
 
 	public void setGroupUser(boolean isGroupUser) {
 		this.isGroupUser = isGroupUser;
+	}
+
+	public int getContactType() {
+		return contactType;
+	}
+
+	public void setContactType(int contactType) {
+		this.contactType = contactType;
+	}
+
+	public boolean isShared() {
+		return shared;
+	}
+
+	public void setShared(boolean shared) {
+		this.shared = shared;
+	}
+
+	public String getGroupList() {
+		return groupList;
+	}
+
+	public void setGroupList(String groupList) {
+		this.groupList = groupList;
 	}
 
 }

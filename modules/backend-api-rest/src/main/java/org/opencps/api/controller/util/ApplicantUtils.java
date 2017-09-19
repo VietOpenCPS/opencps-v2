@@ -29,7 +29,7 @@ public class ApplicantUtils {
 	public static ApplicantModel mappingToApplicantModel(Applicant applicant) {
 
 		ApplicantModel model = new ApplicantModel();
-
+		model.setApplicantId(GetterUtil.getLong(applicant.getPrimaryKey()));
 		model.setApplicantName(applicant.getApplicantName());
 		model.setApplicantIdType(applicant.getApplicantIdType());
 		model.setApplicantIdNo(applicant.getApplicantIdNo());
@@ -62,7 +62,7 @@ public class ApplicantUtils {
 		for (Document doc : documents) {
 			ApplicantModel model = new ApplicantModel();
 
-			model.setApplicantId(GetterUtil.getLong(doc.get("applicantId")));
+			model.setApplicantId(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setCreateDate(GetterUtil.getString(doc.get(Field.CREATE_DATE)));
 			model.setModifiedDate(GetterUtil.getString(doc.get(Field.MODIFIED_DATE)));
 			model.setApplicantName(GetterUtil.getString(doc.get("applicantName")));

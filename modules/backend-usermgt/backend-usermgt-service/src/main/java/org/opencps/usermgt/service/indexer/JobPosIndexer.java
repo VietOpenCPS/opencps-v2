@@ -8,9 +8,7 @@ import javax.portlet.PortletResponse;
 
 import org.opencps.usermgt.constants.JobPosTerm;
 import org.opencps.usermgt.model.JobPos;
-import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
-import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -27,7 +25,6 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class JobPosIndexer extends BaseIndexer<JobPos> {
@@ -42,20 +39,6 @@ public class JobPosIndexer extends BaseIndexer<JobPos> {
 	@Override
 	public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
 			SearchContext searchContext) throws Exception {
-
-		addSearchTerm(searchQuery, searchContext, JobPosTerm.JOBPOS_ID, false);
-		addSearchTerm(searchQuery, searchContext, JobPosTerm.GROUP_ID, false);
-		addSearchTerm(searchQuery, searchContext, JobPosTerm.COMPANY_ID, false);
-		addSearchTerm(searchQuery, searchContext, JobPosTerm.USER_ID, false);
-		addSearchTerm(searchQuery, searchContext, JobPosTerm.USER_NAME, false);
-		addSearchTerm(searchQuery, searchContext, JobPosTerm.CREATE_DATE, false);
-		addSearchTerm(searchQuery, searchContext, JobPosTerm.MODIFIED_DATE, false);
-
-		addSearchTerm(searchQuery, searchContext, JobPosTerm.WORKING_UNIT_ID, true);
-		addSearchTerm(searchQuery, searchContext, JobPosTerm.TITLE, true);
-		addSearchTerm(searchQuery, searchContext, JobPosTerm.DESCRIPTION, true);
-		addSearchTerm(searchQuery, searchContext, JobPosTerm.LEADER, true);
-		addSearchTerm(searchQuery, searchContext, JobPosTerm.MAPPING_ROLE_ID, true);
 
 		@SuppressWarnings("unchecked")
 		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
@@ -82,25 +65,14 @@ public class JobPosIndexer extends BaseIndexer<JobPos> {
 		document.addDateSortable(Field.MODIFIED_DATE, jobPos.getModifiedDate());
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(jobPos.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(jobPos.getUserName()));
-
+		
+		document.addNumberSortable(JobPosTerm.GROUP_ID, jobPos.getGroupId());
 		document.addNumberSortable(JobPosTerm.JOBPOS_ID, jobPos.getJobPosId());
-		document.addNumberSortable(JobPosTerm.WORKING_UNIT_ID, jobPos.getWorkingUnitId());
 		document.addTextSortable(JobPosTerm.TITLE, jobPos.getTitle());
 		document.addTextSortable(JobPosTerm.DESCRIPTION, jobPos.getDescription());
-		document.addNumberSortable(JobPosTerm.LEADER, jobPos.getLeader());
 		document.addNumberSortable(JobPosTerm.MAPPING_ROLE_ID, jobPos.getMappingRoleId());
-
-		String workingUnitName = "";
-
-		if (jobPos.getWorkingUnitId() > 0) {
-
-			WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchWorkingUnit(jobPos.getWorkingUnitId());
-
-			workingUnitName = Validator.isNotNull(workingUnit)? workingUnit.getName():StringPool.BLANK;
-		}
-
-		document.addTextSortable(JobPosTerm.WORKING_UNIT_NAME, workingUnitName);
-
+		document.addNumberSortable(JobPosTerm.LEADER, jobPos.getLeader());
+		
 		return document;
 	}
 

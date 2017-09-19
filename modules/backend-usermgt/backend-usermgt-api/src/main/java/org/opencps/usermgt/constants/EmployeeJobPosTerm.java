@@ -2,14 +2,6 @@ package org.opencps.usermgt.constants;
 
 import java.util.Date;
 
-import javax.portlet.ActionRequest;
-
-import org.opencps.datamgt.utils.DateTimeUtils;
-
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.WebKeys;
-
 /**
  * @author Binhth
  * @see EmployeeJobPosTerm
@@ -34,8 +26,17 @@ public class EmployeeJobPosTerm {
 	public static final String EMPLOYEE_ID = "employeeId";
 	
 	public static final String JOBPOST_ID = "jobPostId";
+	
+	public static final String JOBPOST_TITLE = "jobPosTitle";
+	
+	public static final String LEADER = "leader";
+	
+	public static final String MAIN_JOBPOS = "mainJobPos";
 
-	public static final String EMPLOYEEJOBPOST = "employeeJobPos";
+	public static final String WORKING_UNIT_ID = "workingUnitId";
+	
+	public static final String WORKING_UNIT_NAME = "workingUnitName";
+	
 	// sortable
 	public static final String EMPLOYEE_JOBPOST_ID_SORTABLE = "employeeJobPosId_sortable";
 
@@ -54,6 +55,8 @@ public class EmployeeJobPosTerm {
 	public static final String EMPLOYEE_ID_SORTABLE = "employeeId_sortable";
 	
 	public static final String JOBPOST_ID_SORTABLE = "jobPostId_sortable";
+	
+	public static final String WORKING_UNIT_ID_SORTABLE = "workingUnitId_sortable";
 
 	private long employeeJobPosId;
 
@@ -73,33 +76,9 @@ public class EmployeeJobPosTerm {
 	
 	private long jobPostId;
 	
+	private long workingUnitId;
+	
 	public EmployeeJobPosTerm() {
-		
-	}
-
-	public EmployeeJobPosTerm(ActionRequest request) {
-
-		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-
-		employeeJobPosId = ParamUtil.getLong(request, EMPLOYEE_JOBPOST_ID);
-		
-		groupId = themeDisplay.getScopeGroupId();
-		
-		companyId = themeDisplay.getCompanyId();
-		
-		userId = themeDisplay.getUserId();
-		
-		userName = themeDisplay.getUser().getFullName();
-		
-		createDate = ParamUtil.getDate(request, CREATE_DATE,
-				DateTimeUtils.getDateTimeFormat(DateTimeUtils._VN_DATE_TIME_FORMAT));
-		
-		modifiedDate = ParamUtil.getDate(request, MODIFIED_DATE,
-				DateTimeUtils.getDateTimeFormat(DateTimeUtils._VN_DATE_TIME_FORMAT));
-		
-		employeeId = ParamUtil.getLong(request, EMPLOYEE_ID);
-		
-		jobPostId = ParamUtil.getLong(request, JOBPOST_ID);
 		
 	}
 
@@ -173,6 +152,14 @@ public class EmployeeJobPosTerm {
 
 	public void setJobPostId(long jobPostId) {
 		this.jobPostId = jobPostId;
+	}
+
+	public long getWorkingUnitId() {
+		return workingUnitId;
+	}
+
+	public void setWorkingUnitId(long workingUnitId) {
+		this.workingUnitId = workingUnitId;
 	}
 
 }

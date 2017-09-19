@@ -13,14 +13,23 @@ import org.opencps.api.context.provider.CompanyContextProvider;
 import org.opencps.api.context.provider.LocaleContextProvider;
 import org.opencps.api.context.provider.ServiceContextProvider;
 import org.opencps.api.context.provider.UserContextProvider;
+import org.opencps.api.controller.ApplicantManagement;
 import org.opencps.api.controller.ServiceConfigManagement;
 import org.opencps.api.controller.ServiceInfoManagement;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
+import org.opencps.api.controller.impl.EmployeeManagementImpl;
 import org.opencps.api.controller.impl.HolidayManagementImpl;
+import org.opencps.api.controller.impl.JobposManagementImpl;
+import org.opencps.api.controller.impl.NotificationQueueManagementImpl;
+import org.opencps.api.controller.impl.NotificationTemplateImpl;
+import org.opencps.api.controller.impl.NotificationTypeManagementImpl;
+import org.opencps.api.controller.impl.OfficeSiteManagementImpl;
 import org.opencps.api.controller.impl.ServiceConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceInfoManagementImpl;
+import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
+import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -33,14 +42,24 @@ public class BackendAPIRestApplication extends Application {
 		
 		ServiceInfoManagement serviceInfo = new ServiceInfoManagementImpl();
 		ServiceConfigManagement serviceConfig = new ServiceConfigManagementImpl();
+		ApplicantManagement applicant = new ApplicantManagementImpl();
 		
 		// add REST endpoints (resources)
-		singletons.add(new DataManagementImpl());
 		singletons.add(serviceInfo);
 		singletons.add(serviceConfig);
-		singletons.add(new ApplicantManagementImpl());
+		singletons.add(applicant);
+		
+		singletons.add(new DataManagementImpl());
 		singletons.add(new HolidayManagementImpl());
 		singletons.add(new WorkTimeManagementImpl());
+		singletons.add(new NotificationTemplateImpl());
+		singletons.add(new NotificationTypeManagementImpl());
+		singletons.add(new NotificationQueueManagementImpl());
+		singletons.add(new OfficeSiteManagementImpl());
+		singletons.add(new WorkingUnitManagementImpl());
+		singletons.add(new JobposManagementImpl());
+		singletons.add(new UserManagementImpl());
+		singletons.add(new EmployeeManagementImpl());
 
 		// add service provider
 		singletons.add(_serviceContextProvider);

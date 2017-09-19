@@ -14,21 +14,59 @@
 
 package org.opencps.usermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
+import java.util.Date;
+import java.util.LinkedHashMap;
 
+import org.opencps.usermgt.constants.OfficeSiteTerm;
+import org.opencps.usermgt.exception.NoSuchOfficeSiteException;
+import org.opencps.usermgt.model.OfficeSite;
 import org.opencps.usermgt.service.base.OfficeSiteLocalServiceBaseImpl;
+
+import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.BooleanQuery;
+import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
+
+import aQute.bnd.annotation.ProviderType;
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.NotFoundException;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.auth.api.keys.ModelNameKeys;
 
 /**
  * The implementation of the office site local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.usermgt.service.OfficeSiteLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are
+ * added, rerun ServiceBuilder to copy their definitions into the
+ * {@link org.opencps.usermgt.service.OfficeSiteLocalService}
+ * interface.
  *
  * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
+ * This is a local service. Methods of this service will not have security
+ * checks based on the propagated JAAS credentials because this service can only
+ * be accessed from within the same VM.
  * </p>
  *
- * @author khoavu
+ * @author Binhth
  * @see OfficeSiteLocalServiceBaseImpl
  * @see org.opencps.usermgt.service.OfficeSiteLocalServiceUtil
  */
@@ -37,6 +75,239 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.usermgt.service.OfficeSiteLocalServiceUtil} to access the office site local service.
+	 * Never reference this class directly. Always use {@link
+	 * org.opencps.usermgt.service.OfficeSiteLocalServiceUtil} to
+	 * access the office site local service.
 	 */
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public OfficeSite addOfficeSite(long userId, long groupId, String name, String enName, String govAgencyCode,
+			String address, String telNo, String faxNo, String email, String website, long logoFileEntryId,
+			long siteGroupId, long adminUserId, String preferences, ServiceContext serviceContext)
+			throws UnauthenticationException, UnauthorizationException, NoSuchUserException {
+		// authen
+		BackendAuthImpl authImpl = new BackendAuthImpl();
+
+		boolean isAuth = authImpl.isAuth(serviceContext);
+
+		if (!isAuth) {
+			throw new UnauthenticationException();
+		}
+
+		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+				ActionKeys.EDIT_DATA);
+
+		if (!hasPermission) {
+			throw new UnauthorizationException();
+		}
+
+		Date now = new Date();
+		User user = userPersistence.findByPrimaryKey(userId);
+		long OfficeSiteId = counterLocalService.increment(OfficeSite.class.getName());
+
+		OfficeSite officeSite = officeSitePersistence.create(OfficeSiteId);
+
+		officeSite.setGroupId(groupId);
+		officeSite.setUuid(serviceContext.getUuid());
+		officeSite.setCompanyId(user.getCompanyId());
+		officeSite.setUserId(user.getUserId());
+		officeSite.setUserName(user.getFullName());
+		officeSite.setCreateDate(serviceContext.getCreateDate(now));
+		officeSite.setModifiedDate(serviceContext.getCreateDate(now));
+
+		officeSite.setName(name);
+		officeSite.setEnName(enName);
+		officeSite.setGovAgencyCode(govAgencyCode);
+		officeSite.setAddress(address);
+		officeSite.setTelNo(telNo);
+		officeSite.setFaxNo(faxNo);
+		officeSite.setEmail(email);
+		officeSite.setWebsite(website);
+		officeSite.setLogoFileEntryId(logoFileEntryId);
+		officeSite.setSiteGroupId(siteGroupId);
+		officeSite.setAdminUserId(adminUserId);
+		officeSite.setPreferences(preferences);
+
+		officeSite.setExpandoBridgeAttributes(serviceContext);
+
+		officeSitePersistence.update(officeSite);
+
+		return officeSite;
+	}
+
+	@Indexable(type = IndexableType.DELETE)
+	@Override
+	public OfficeSite deleteOfficeSite(long officeSiteId, ServiceContext serviceContext)
+			throws UnauthenticationException, UnauthorizationException, NotFoundException {
+		// authen
+		BackendAuthImpl authImpl = new BackendAuthImpl();
+
+		boolean isAuth = authImpl.isAuth(serviceContext);
+
+		if (!isAuth) {
+			throw new UnauthenticationException();
+		}
+
+		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+				ActionKeys.EDIT_DATA);
+
+		if (!hasPermission) {
+			throw new UnauthorizationException();
+		}
+		OfficeSite OfficeSite;
+
+		try {
+
+			OfficeSite = officeSitePersistence.remove(officeSiteId);
+
+		} catch (NoSuchOfficeSiteException e) {
+			// TODO Auto-generated catch block
+			throw new NotFoundException();
+		}
+		return OfficeSite;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public OfficeSite updateOfficeSite(long userId, long officeSiteId, String name, String enName, String govAgencyCode,
+			String address, String telNo, String faxNo, String email, String website, long logoFileEntryId,
+			long siteGroupId, long adminUserId, String preferences, ServiceContext serviceContext)
+			throws UnauthenticationException, UnauthorizationException, NotFoundException, NoSuchUserException {
+		// authen
+		BackendAuthImpl authImpl = new BackendAuthImpl();
+
+		boolean isAuth = authImpl.isAuth(serviceContext);
+
+		if (!isAuth) {
+			throw new UnauthenticationException();
+		}
+
+		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+				ActionKeys.EDIT_DATA);
+
+		if (!hasPermission) {
+			throw new UnauthorizationException();
+		}
+
+		Date now = new Date();
+		User user = userPersistence.findByPrimaryKey(userId);
+
+		OfficeSite officeSite = officeSitePersistence.fetchByPrimaryKey(officeSiteId);
+
+		officeSite.setUserId(user.getUserId());
+		officeSite.setUserName(user.getFullName());
+		officeSite.setModifiedDate(serviceContext.getCreateDate(now));
+
+		officeSite.setName(name);
+		officeSite.setEnName(enName);
+		officeSite.setGovAgencyCode(govAgencyCode);
+		officeSite.setAddress(address);
+		officeSite.setTelNo(telNo);
+		officeSite.setFaxNo(faxNo);
+		officeSite.setEmail(email);
+		officeSite.setWebsite(website);
+		officeSite.setLogoFileEntryId(logoFileEntryId);
+		officeSite.setSiteGroupId(siteGroupId);
+		officeSite.setAdminUserId(adminUserId);
+		officeSite.setPreferences(preferences);
+
+		officeSite.setExpandoBridgeAttributes(serviceContext);
+
+		officeSitePersistence.update(officeSite);
+
+		return officeSite;
+	}
+
+	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
+			SearchContext searchContext) throws ParseException, SearchException {
+		// TODO
+		MultiMatchQuery query = null;
+		String keywords = (String) params.get("keywords");
+		String groupId = (String) params.get("groupId");
+		String userId = (String) params.get("userId");
+		Indexer<OfficeSite> indexer = IndexerRegistryUtil.nullSafeGetIndexer(OfficeSite.class);
+
+		searchContext.addFullQueryEntryClassName(OfficeSite.class.getName());
+		searchContext.setEntryClassNames(new String[] { OfficeSite.class.getName() });
+		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setLike(true);
+		searchContext.setStart(start);
+		searchContext.setEnd(end);
+		searchContext.setAndSearch(true);
+		searchContext.setSorts(sorts);
+
+		BooleanQuery booleanQuery = null;
+
+		booleanQuery = Validator.isNotNull((String) keywords)
+				? BooleanQueryFactoryUtil.create((SearchContext) searchContext) : indexer.getFullQuery(searchContext);
+
+		if (Validator.isNotNull(groupId)) {
+			query = new MultiMatchQuery(groupId);
+
+			query.addFields(OfficeSiteTerm.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(userId)) {
+			query = new MultiMatchQuery(userId);
+
+			query.addFields(OfficeSiteTerm.USER_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, OfficeSite.class.getName());
+
+		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+	}
+
+	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params,
+			SearchContext searchContext) throws ParseException, SearchException {
+		// TODO
+		MultiMatchQuery query = null;
+		String keywords = (String) params.get("keywords");
+		String groupId = (String) params.get("groupId");
+		String userId = (String) params.get("userId");
+		Indexer<OfficeSite> indexer = IndexerRegistryUtil.nullSafeGetIndexer(OfficeSite.class);
+
+		searchContext.addFullQueryEntryClassName(OfficeSite.class.getName());
+		searchContext.setEntryClassNames(new String[] { OfficeSite.class.getName() });
+		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setLike(true);
+		searchContext.setAndSearch(true);
+
+		BooleanQuery booleanQuery = null;
+
+		booleanQuery = Validator.isNotNull((String) keywords)
+				? BooleanQueryFactoryUtil.create((SearchContext) searchContext) : indexer.getFullQuery(searchContext);
+
+		if (Validator.isNotNull(groupId)) {
+			query = new MultiMatchQuery(groupId);
+
+			query.addFields(OfficeSiteTerm.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(userId)) {
+			query = new MultiMatchQuery(userId);
+
+			query.addFields(OfficeSiteTerm.USER_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, OfficeSite.class.getName());
+
+		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
+	}
+
+	public OfficeSite fetchF_groupId_siteGroupId(long groupId, long siteGroupId) {
+
+		OfficeSite officeSite = officeSitePersistence.fetchByF_groupId_siteGroupId(groupId, siteGroupId);
+
+		return officeSite;
+
+	}
 }

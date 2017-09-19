@@ -88,6 +88,7 @@ public class WorkingUnitIndexer extends BaseIndexer<WorkingUnit> {
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(workingUnit.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(workingUnit.getUserName()));
 
+		document.addNumberSortable(WorkingUnitTerm.GROUP_ID, workingUnit.getGroupId());
 		document.addNumberSortable(WorkingUnitTerm.WORKINGUNIT_ID, workingUnit.getWorkingUnitId());
 		document.addTextSortable(WorkingUnitTerm.NAME, workingUnit.getName());
 		document.addTextSortable(WorkingUnitTerm.ENNAME, workingUnit.getEnName());

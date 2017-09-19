@@ -220,6 +220,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			applicant.setMappingUserId(mappingUserId);
 			applicant.setProfile(profile);
 			applicant.setActivationCode(activationCode);
+			applicant.setTmpPass(password);
 
 		} else {
 			applicant = applicantPersistence.fetchByPrimaryKey(applicantId);
@@ -349,6 +350,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		// reset activationCode
 		applicant.setActivationCode(StringPool.BLANK);
+		applicant.setTmpPass(StringPool.BLANK);
 
 		applicantPersistence.update(applicant);
 
