@@ -1,5 +1,5 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <div class="row row eq-height-lg" id="register_container">
@@ -122,11 +122,14 @@
         url: '${api.server}/applicants',
         type: 'POST',
         data: data,
+        dataType : "json",
         success: function(result){
           notification.show({
             title: "Success",
             message: "Đăng ký thành công."
           }, "success");
+          
+          location.href("${api.server}/confirm-account?active_user_id="+result.applicantId);
         },
         error: function(result){
           notification.show({
