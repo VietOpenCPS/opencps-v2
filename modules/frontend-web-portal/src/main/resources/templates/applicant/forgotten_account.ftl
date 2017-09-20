@@ -12,7 +12,7 @@
 		</div>
 		<div class="col-sm-12">
 			<div class="form-group">
-				<input type="text" id="emailOrPhone" class="form-control" placeholder="Email hoặc số CMTND/ Hộ chiếu/ Mã số thuế" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" >
+				<input type="text" id="emailOrPhone" class="form-control" placeholder="Email hoặc số CMND/ Hộ chiếu/ Mã số thuế" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" >
 			</div>
 		</div>
 		<div class="col-sm-12 text-center MT10 MB15">

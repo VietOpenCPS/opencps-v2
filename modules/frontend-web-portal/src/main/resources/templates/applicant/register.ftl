@@ -26,9 +26,9 @@
     </div>
   </div>
   <div class="row MT15">
-    <div class="col-xs-12 col-sm-12" id="lblApplicantIdNo">Số CMTND/ Hộ chiếu</div>
+    <div class="col-xs-12 col-sm-12" id="lblApplicantIdNo">Số CMND/ Hộ chiếu</div>
     <div class="col-xs-12 col-sm-12 MT5">
-      <input type="text" id="applicantIdNo" name="applicantIdNo" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Số CMTND hoặc số Hộ chiếu"/>
+      <input type="text" id="applicantIdNo" name="applicantIdNo" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Số CMND hoặc số Hộ chiếu"/>
     </div>
   </div>
   <div class="row MT15">
@@ -46,7 +46,7 @@
 <div class="row MT15">
   <div class="col-xs-12 col-sm-12">Số điện thoại</div>
   <div class="col-xs-12 col-sm-12 MT5">
-    <input type="text" id="telNo" name="telNo" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Nhập số điện thoại" />
+    <input type="text" id="telNo" name="telNo" class="form-control" />
   </div>
 </div>
 <div class="row MT15">
@@ -68,7 +68,7 @@
  </div>
 </div>
 <div class="row MT15 MB15 text-center">
- <button class="btn btn-active" title="Đăng ký" id="btn-register">Đăng ký</button>
+ <button class="btn btn-active" title="Đăng ký" id="btn-register" disabled="true">Đăng ký</button>
 </div>
 </form>
 </div>
@@ -141,7 +141,7 @@
     }
 
     $('input[type=radio][name=applicantIdType]').change(function() {
-      if (this.value == '1') {
+      if (this.value == 'citizen') {
         $(this).closest('form').find("input[type=text],input[type=password], textarea").val("");
         $("#lblApplicantName").text("Họ và tên");
         $("#lblApplicantIdNo").text("Số CMTND/ Hộ chiếu");
@@ -166,6 +166,14 @@
      }
    }, 100);
    });
+
+    $("#agreement").click(function(){
+      if($(this).is(':checked')){
+        $("#btn-register").prop("disabled",false);
+      }else {
+        $("#btn-register").prop("disabled",true);
+      }
+    });
 
   })(jQuery);
 

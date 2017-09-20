@@ -91,7 +91,7 @@
  <script type="text/x-kendo-template" id="service_info_template">
    <li class="clearfix item-serviceinfo eq-height-lg" data-pk="#: id #" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
      <div class="col-sm-1 text-center">
-       #:index# 
+       <#-- #:index#  -->
     </div>
     <div class="col-sm-7 service-info-item text-hover-blue" data-pk="#: id #">
       #: serviceName #
@@ -166,7 +166,7 @@
  schema: {
   total: "total",
   data: "data",
-  model : { id: "serviceInfoId" }
+  model : { id: "serviceinfoId" }
 },
 pageSize: 5,
 serverPaging: false,
@@ -188,7 +188,6 @@ serverFiltering: false
         //  the first select dossier template
         //  onSelectDossiertemplate(firstItem.attr("data-pk"));
       }
-
     });
 
     $("#service_info_pager").kendoPager({
@@ -327,14 +326,6 @@ serverFiltering: false
         "domain": $("#domainCodeSearch").val(),
         "level": $("#levelSearch").val(),
         "keywords": $("#input_search_service_info").val()
-      });
-    });
-
-    $(document).on("click",".item-serviceinfo",function(event){
-      var id=$(this).attr("data-pk");
-      console.log(id);
-      $("#serviceinfo-right-content").load("${ajax.serviceinfo_detail}",function(result){
-        pullDataDetail(id);
       });
     });
   })(jQuery);

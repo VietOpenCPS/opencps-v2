@@ -196,7 +196,7 @@
                         }else{
                             $(".submitDossier").html('<button class="btn">Xem hướng dẫn >></button>');
                         }
-                        return "Mức "+result.maxLevel;
+                        return "Mức độ "+result.maxLevel;
                     },
                     fileTemplateDownLoad : function(e){
                         var serviceInfoId = $("#serviceinfoId").val();
@@ -234,7 +234,7 @@
         dataSource : {
             transport : {
                 read : {
-                    url : "${api.server}/serviceconfigs?service="+id+"&applicant=${applicant}",
+                    url : "${api.server}/serviceconfigs?service="+id+"&applicantType=${applicantType}",
                     dataType : "json",
                     type : "GET",
                     beforeSend: function(req) {
