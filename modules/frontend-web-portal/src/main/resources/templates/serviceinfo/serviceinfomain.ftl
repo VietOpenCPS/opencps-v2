@@ -107,6 +107,7 @@
 
       var administrationCode = $(this).attr("dataPk");
       $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
+        $("#administrationCodeSearch").data("kendoComboBox").value(administrationCode);
         $("#service_info_list_view").getKendoListView().dataSource.read({
           "administration": administrationCode
         });
@@ -122,6 +123,7 @@
 
       var domainCode = $(this).attr("dataPk");
       $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
+        $("#domainCodeSearch").data("kendoComboBox").value(domainCode);
         $("#service_info_list_view").getKendoListView().dataSource.read({
           "domain": domainCode
         });
@@ -137,6 +139,7 @@
       var levelCode = $(this).attr("dataPk");
 
       $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
+        $("#levelSearch").data("kendoComboBox").value(levelCode);
         $("#service_info_list_view").getKendoListView().dataSource.read({
           "level": levelCode
         });

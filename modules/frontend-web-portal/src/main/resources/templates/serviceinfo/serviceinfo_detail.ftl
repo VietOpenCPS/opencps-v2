@@ -169,38 +169,8 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-       $("#slAdministration").kendoComboBox({
-        placeholder : "Chọn cơ quan thực hiện",
-        dataTextField : "govAgencyName",
-        dataValueField : "govAgencyCode",
-        dataSource : {
-            transport : {
-                read : {
-                    url : "${api.server}/serverconfigs?service="+$("#serviceinfoId").val()+"&applicant=${applicant}",
-                    dataType : "json",
-                    type : "GET",
-                    beforeSend: function(req) {
-                        req.setRequestHeader('groupId', ${groupId});
-                    },
-                    success : function(result){
 
-                    },
-                    error : function(xhr){
-
-                    }
-                }
-            },
-            schema : {
-                data : "data",
-                total : "total",
-                model : {
-                    id : "id"
-                }
-            }
-        },
-        filter: "contains"
     });
-   });
 
     var pullDataDetail= function(id){
         console.log(id);
@@ -220,24 +190,13 @@
                         }else {
                             $("#maxLevel").addClass("label label-dvc-lv4");
                         }
-
                         if(result.maxLevel>=3){
                             $(".submitDossier").html('<button type="button" class="btn btn-active" data-toggle="modal" data-target="#submitDossierModal">Nộp hồ sơ >></button>');
+                            loadAdministration(id);
                         }else{
                             $(".submitDossier").html('<button class="btn">Xem hướng dẫn >></button>');
                         }
                         return "Mức "+result.maxLevel;
-                    },
-                    fileTypetemp : function(e){
-                        if(e.fileType == "txt"){
-                            return "fa fa-file-text-o";
-                        }else if(e.fileType == "doc" || e.fileType == "docx"){
-                            return "fa fa-file-word-o";
-                        }else if(e.fileType == "jpg"){
-                            return "fa fa-file-image-o";
-                        }else if(e.fileType == "pdf"){
-                            return "fa fa-file-pdf-o";
-                        }
                     },
                     fileTemplateDownLoad : function(e){
                         var serviceInfoId = $("#serviceinfoId").val();
@@ -267,22 +226,56 @@
         });
     }
 
-    $(function(){
-        $("#btn-submit-serviceinfo").click(function(){
-            var data = $("#fmServiceinfo").serialize();
-            var id = $("#serviceinfoId").val();
-            $.ajax({
-                url : "${api.server}/serviceinfos/"+id,
-                dataType : "json",
-                type : "PUT",
-                contentType : "application/x-www-form-urlencoded",
-                success : function(result){
+    var loadAdministration = function(id){
+       $("#slAdministration").kendoComboBox({
+        placeholder : "Chọn cơ quan thực hiện",
+        dataTextField : "govAgencyName",
+        dataValueField : "govAgencyCode",
+        dataSource : {
+            transport : {
+                read : {
+                    url : "${api.server}/serviceconfigs?service="+id+"&applicant=${applicant}",
+                    dataType : "json",
+                    type : "GET",
+                    beforeSend: function(req) {
+                        req.setRequestHeader('groupId', ${groupId});
+                    },
+                    success : function(result){
 
-                },
-                error : function(xhr){
+                    },
+                    error : function(xhr){
 
+                    }
                 }
-            });
+            },
+            schema : {
+                data : "data",
+                total : "total",
+                model : {
+                    id : "govAgencyCode"
+                }
+            }
+        },
+        filter: "contains"
+    });
+   }
+
+   $(function(){
+    $("#btn-submit-serviceinfo").click(function(){
+        var data = $("#fmServiceinfo").serialize();
+        var id = $("#serviceinfoId").val();
+        $.ajax({
+            url : "",
+            dataType : "json",
+            type : "PUT",
+            contentType : "application/x-www-form-urlencoded",
+            success : function(result){
+
+            },
+            error : function(xhr){
+
+            }
         });
     });
+});
 </script>
