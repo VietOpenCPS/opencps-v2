@@ -272,6 +272,10 @@
 		<exception>NoApplicantIdType</exception>
 		<exception>NoApplicantIdNo</exception>
 		<exception>NoApplicantIdDate</exception>
+		<exception>DuplicateApplicantId</exception>
+		<exception>DuplicateContactEmail</exception>
+		<exception>DuplicateContactTelNo</exception>
+		
 	</exceptions>
 	
 </service-builder>

@@ -20,6 +20,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.exception.DuplicateApplicantIdException;
+import org.opencps.usermgt.exception.DuplicateContactEmailException;
+import org.opencps.usermgt.exception.DuplicateContactTelNoException;
 import org.opencps.usermgt.exception.NoApplicantIdDateException;
 import org.opencps.usermgt.exception.NoApplicantIdNoException;
 import org.opencps.usermgt.exception.NoApplicantIdTypeException;
@@ -140,7 +143,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		if (applicantId == 0) {
 			
 			validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate);
-
+			
+			validateDuplicate(contactTelNo, applicantIdNo, contactName);
+			
 			applicantId = counterLocalService.increment(Applicant.class.getName());
 
 			applicant = applicantPersistence.create(applicantId);
@@ -325,6 +330,29 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		if (Validator.isNull(applicantIdDate))
 			throw new NoApplicantIdDateException();
 	}
+	
+	private void validateDuplicate(String contactTelNo, String applicantIdNo, String email)
+			throws PortalException {
+		
+		Applicant applicant = null;
+		
+		applicant = fetchByAppId(applicantIdNo);
+		
+		if (Validator.isNotNull(applicant)) 
+			throw new DuplicateApplicantIdException();
+		
+		applicant = fetchByEmail(email);
+		
+		if (Validator.isNotNull(applicant)) 
+			throw new DuplicateContactEmailException();
+		
+		applicant = fetchByTelNo(contactTelNo);
+		
+		if (Validator.isNotNull(applicant)) 
+			throw new DuplicateContactTelNoException();
+
+	}
+
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Applicant removeProfile(long applicantId) {
@@ -345,6 +373,10 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		User user = userPersistence.fetchByPrimaryKey(applicant.getMappingUserId());
 
 		userLocalService.updateLockout(user, true);
+		
+		user.setLockout(true);
+		
+		userPersistence.update(user);
 		applicant.setLock_(true);
 
 		applicantPersistence.update(applicant);

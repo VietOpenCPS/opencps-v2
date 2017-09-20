@@ -414,12 +414,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			if (isAllowed) {
 				applicant = actions.getApplicantDetail (serviceContext, id);
 
-				JSONObject result = JSONFactoryUtil.createJSONObject();
-
-				result.put("applicantId", applicant.getApplicantId());
-				result.put("profile", applicant.getProfile());
-
-				return Response.status(200).entity(applicant.getProfile()).build();
+				JSONObject result = JSONFactoryUtil.createJSONObject(applicant.getProfile());
+				
+				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -495,12 +492,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			if (isAllowed) {
 				applicant = actions.updateProfile(serviceContext, id, input.getValue());
 
-				JSONObject result = JSONFactoryUtil.createJSONObject();
+				JSONObject result = JSONFactoryUtil.createJSONObject(applicant.getProfile());
 
-				result.put("applicantId", applicant.getApplicantId());
-				result.put("profile", applicant.getProfile());
-
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(applicant.getProfile())).build();
+				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -532,7 +526,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 					} else {
-						error.setMessage(" Internal Server Error.");
+						error.setMessage("Internal Server Error.");
 						error.setCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
 						error.setDescription(" Internal Server Error.");
 
@@ -550,7 +544,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		// TODO Auto-generated method stub
 		ApplicantActions actions = new ApplicantActionsImpl();
 		BackendAuth auth = new BackendAuthImpl();
-		Applicant applicant = null;
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -582,7 +575,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				
 				profile.put(key, input.getValue());
 				
-				applicant = actions.updateProfile(serviceContext, id, profile.toString());
+				actions.updateProfile(serviceContext, id, profile.toString());
 
 				JSONObject result = JSONFactoryUtil.createJSONObject();
 

@@ -29,7 +29,6 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 		if (modelBefore.getActivationCode().length() != 0 && Validator.isNull(model.getActivationCode())) {
 			try {
 				
-				_log.info("Applicant Log trigger!");
 				
 				NotificationQueue queue = null;
 				
