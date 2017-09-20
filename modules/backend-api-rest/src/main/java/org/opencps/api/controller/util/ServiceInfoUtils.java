@@ -2,6 +2,7 @@ package org.opencps.api.controller.util;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
@@ -9,27 +10,36 @@ import org.opencps.api.serviceinfo.model.FileTemplates;
 import org.opencps.api.serviceinfo.model.ServiceInfoDetailModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoInputModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoModel;
+import org.opencps.api.serviceinfo.model.ServiceInfoServiceConfig;
+import org.opencps.dossiermgt.action.ServiceConfigActions;
+import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
+import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 
 public class ServiceInfoUtils {
 
-	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents) {
+	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents,
+			ServiceContext serviceContext) {
 		List<ServiceInfoModel> data = new ArrayList<ServiceInfoModel>();
-		int i = 0;
-		
+
 		for (Document doc : documents) {
-			i++;
 			ServiceInfoModel model = new ServiceInfoModel();
 
 			model.setServiceName(doc.get(ServiceInfoTerm.SERVICE_NAME));
@@ -52,7 +62,39 @@ public class ServiceInfoUtils {
 			model.setDomainCode(doc.get(ServiceInfoTerm.DOMAIN_CODE));
 			model.setDomainName(doc.get(ServiceInfoTerm.DOMAIN_NAME));
 			model.setMaxLevel(GetterUtil.getInteger(doc.get(ServiceInfoTerm.MAX_LEVEL)));
-			model.setIndex(String.valueOf(i));
+
+			List<ServiceInfoServiceConfig> lsServiceConfig = new ArrayList<ServiceInfoServiceConfig>();
+
+			ServiceConfigActions serviceConfigActions = new ServiceConfigActionImpl();
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			params.put(Field.GROUP_ID, String.valueOf(doc.get(Field.GROUP_ID)));
+
+			params.put(ServiceConfigTerm.SERVICE_CODE, doc.get(ServiceInfoTerm.SERVICE_CODE));
+
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, Boolean.getBoolean(StringPool.BLANK)) };
+
+			JSONObject jsonData = serviceConfigActions.getServiceConfigs(serviceContext.getUserId(),
+					serviceContext.getCompanyId(), Long.parseLong(doc.get(Field.GROUP_ID)), params, sorts,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
+
+			List<Document> serviceConfigs = (List<Document>) jsonData.get("data");
+
+			for (Document serviceConfig : serviceConfigs) {
+				ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
+
+				cf.setGovAgencyCode(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_CODE));
+				cf.setGovAgencyName(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_NAME));
+				cf.setServiceInstruction(serviceConfig.get(ServiceConfigTerm.SERVICE_INSTRUCTION));
+				cf.setServiceUr(serviceConfig.get(ServiceConfigTerm.SERVICE_URL));
+				cf.setServiceLevel(Integer.parseInt(serviceConfig.get(ServiceConfigTerm.SERVICE_LEVEL)));
+
+				lsServiceConfig.add(cf);
+			}
+			
+			model.getServiceConfigs().addAll(lsServiceConfig);
 			
 			data.add(model);
 		}
@@ -83,12 +125,13 @@ public class ServiceInfoUtils {
 		return model;
 	}
 
-	public static ServiceInfoDetailModel mappingToServiceInfoDetailModel(ServiceInfo serviceInfo) {
+	public static ServiceInfoDetailModel mappingToServiceInfoDetailModel(ServiceInfo serviceInfo,
+			ServiceContext serviceContext) {
 
 		ServiceInfoDetailModel model = new ServiceInfoDetailModel();
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
-		
+
 		model.setServiceName(serviceInfo.getServiceName());
 		model.setServiceInfoId(serviceInfo.getServiceInfoId());
 		model.setModifiedDate(sdf.format(serviceInfo.getModifiedDate()));
@@ -110,10 +153,42 @@ public class ServiceInfoUtils {
 		model.setDomainName(serviceInfo.getDomainName());
 		model.setMaxLevel(serviceInfo.getMaxLevel());
 		model.setPublic(GetterUtil.getInteger(serviceInfo.getPublic_()));
+		
+		List<ServiceInfoServiceConfig> lsServiceConfig = new ArrayList<ServiceInfoServiceConfig>();
 
 		List<ServiceFileTemplate> serviceFileTemplates = ServiceFileTemplateLocalServiceUtil
 				.getByServiceInfoId(serviceInfo.getServiceInfoId());
+		
+		ServiceConfigActions serviceConfigActions = new ServiceConfigActionImpl();
 
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+		params.put(Field.GROUP_ID, String.valueOf(serviceInfo.getGroupId()));
+
+		params.put(ServiceConfigTerm.SERVICE_CODE, serviceInfo.getServiceCode());
+
+		Sort[] sorts = new Sort[] {
+				SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, Boolean.getBoolean(StringPool.BLANK)) };
+
+		JSONObject jsonData = serviceConfigActions.getServiceConfigs(serviceContext.getUserId(),
+				serviceContext.getCompanyId(), serviceInfo.getGroupId(), params, sorts,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
+
+		List<Document> serviceConfigs = (List<Document>) jsonData.get("data");
+
+		for (Document serviceConfig : serviceConfigs) {
+			ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
+
+			cf.setGovAgencyCode(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_CODE));
+			cf.setGovAgencyName(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_NAME));
+			cf.setServiceInstruction(serviceConfig.get(ServiceConfigTerm.SERVICE_INSTRUCTION));
+			cf.setServiceUr(serviceConfig.get(ServiceConfigTerm.SERVICE_URL));
+			cf.setServiceLevel(Integer.parseInt(serviceConfig.get(ServiceConfigTerm.SERVICE_LEVEL)));
+
+			lsServiceConfig.add(cf);
+		}
+		
+		model.getServiceConfigs().addAll(lsServiceConfig);
 		model.getFileTemplates().addAll(mappingToFileTemplates(serviceFileTemplates));
 
 		return model;
@@ -165,11 +240,9 @@ public class ServiceInfoUtils {
 				_log.error("Can't get ServiceFileTemplate");
 			}
 		}
-		
-		
+
 		return fileTemplate;
 	}
-
 
 	private static Log _log = LogFactoryUtil.getLog(ServiceInfoUtils.class);
 }

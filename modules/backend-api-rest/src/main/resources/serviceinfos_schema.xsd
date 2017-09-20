@@ -60,8 +60,20 @@
 			<xsd:element name="domainName" type="xsd:string" minOccurs="0" />
 			<xsd:element name="maxLevel" type="xsd:int" minOccurs="0" />
 			<xsd:element name="public_" type="xsd:int" minOccurs="0" />
+			<xsd:element name="serviceConfigs" type="ServiceInfoServiceConfig" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
+	
+	<xsd:complexType name="ServiceInfoServiceConfig">
+		<xsd:sequence>
+			<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="serviceInstruction" type="xsd:string" minOccurs="0" />
+			<xsd:element name="serviceLevel" type="xsd:int" minOccurs="0" />
+			<xsd:element name="serviceUr" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+
 	
 	<xsd:element name="ServiceInfoResultsModel">
 		<xsd:complexType>
@@ -96,6 +108,7 @@
 				<xsd:element name="maxLevel" type="xsd:int" minOccurs="0" />
 				<xsd:element name="public_" type="xsd:int" minOccurs="0" />
 				<xsd:element name="fileTemplates" type="FileTemplates" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element name="serviceConfigs" type="ServiceInfoServiceConfig" minOccurs="0" maxOccurs="unbounded"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>

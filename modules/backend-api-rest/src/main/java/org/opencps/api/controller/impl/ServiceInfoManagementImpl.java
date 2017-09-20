@@ -100,7 +100,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			results.setTotal(jsonData.getInt("total"));
 			results.getData()
-					.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data")));
+					.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data"), serviceContext));
 
 			return Response.status(200).entity(results).build();
 
@@ -231,7 +231,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			if (Validator.isNull(serviceInfo)) {
 				throw new Exception();
 			} else {
-				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo);
+				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo, serviceContext);
 			}
 
 			return Response.status(200).entity(results).build();
