@@ -166,7 +166,7 @@
  schema: {
   total: "total",
   data: "data",
-  model : { id: "serviceinfoId" }
+  model : { id: "serviceInfoId" }
 },
 pageSize: 5,
 serverPaging: false,
@@ -256,6 +256,7 @@ serverFiltering: false
       dataTextField: "levelName",
       dataValueField: "level",
       filter: "contains",
+      valueTemplate: '<span class="k-state-default">Mức độ #:data.levelName#</span>',
       template: '<span class="k-state-default">Mức độ #:data.levelName#</span>',
       dataSource: {
         transport :{

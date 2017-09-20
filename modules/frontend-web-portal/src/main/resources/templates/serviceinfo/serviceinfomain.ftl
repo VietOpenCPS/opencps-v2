@@ -98,6 +98,7 @@
       activate: function(e){
         if ($(e.item).val()==1) {
           var administrationId = $("#administration > li:first-child").attr("dataPk");
+          $("#administration > li").removeClass("active");
           $("#administration > li:first-child").addClass("active");
 
           $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
@@ -108,6 +109,7 @@
           });
         }else if($(e.item).val()==2){
           var domainId = $("#domain > li:first-child").attr("dataPk");
+          $("#domain > li").removeClass("active");
           $("#domain > li:first-child").addClass("active");
           $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
             $("#domainCodeSearch").data("kendoComboBox").value(domainId);
@@ -117,6 +119,7 @@
           });
         }else {
           var levelId = $("#level > li:first-child").attr("dataPk");
+          $("#level > li").removeClass("active");
           $("#level > li:first-child").addClass("active");
           $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
             $("#levelSearch").data("kendoComboBox").value(levelId);
