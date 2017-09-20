@@ -17,6 +17,7 @@ import org.opencps.api.usermgt.model.ApplicantInputUpdateModel;
 import org.opencps.api.usermgt.model.ApplicantModel;
 import org.opencps.api.usermgt.model.ApplicantResultsModel;
 import org.opencps.api.usermgt.model.ApplicantSearchModel;
+import org.opencps.api.usermgt.model.ProfileInputModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -26,6 +27,7 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -383,7 +385,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	@Override
 	public Response getApplicantProfile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id) {
-		// TODO Auto-generated method stub
 		ApplicantActions actions = new ApplicantActionsImpl();
 		BackendAuth auth = new BackendAuthImpl();
 		Applicant applicant = null;
@@ -411,14 +412,14 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 			if (isAllowed) {
-				applicant = actions.removeApplicant(serviceContext, id);
+				applicant = actions.getApplicantDetail (serviceContext, id);
 
 				JSONObject result = JSONFactoryUtil.createJSONObject();
 
 				result.put("applicantId", applicant.getApplicantId());
 				result.put("profile", applicant.getProfile());
 
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+				return Response.status(200).entity(applicant.getProfile()).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -464,7 +465,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 	@Override
 	public Response addApplicantProfile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long id, String body) {
+			User user, ServiceContext serviceContext, long id, ProfileInputModel input) {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		BackendAuth auth = new BackendAuthImpl();
 		Applicant applicant = null;
@@ -492,14 +493,14 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 			if (isAllowed) {
-				applicant = actions.updateProfile(serviceContext, id, body);
+				applicant = actions.updateProfile(serviceContext, id, input.getValue());
 
 				JSONObject result = JSONFactoryUtil.createJSONObject();
 
 				result.put("applicantId", applicant.getApplicantId());
 				result.put("profile", applicant.getProfile());
 
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(applicant.getProfile())).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -545,9 +546,91 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 	@Override
 	public Response updateApplicantProfile(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long id, long key, String body) {
+			Locale locale, User user, ServiceContext serviceContext, long id, String key, ProfileInputModel input) {
 		// TODO Auto-generated method stub
-		return null;
+		ApplicantActions actions = new ApplicantActionsImpl();
+		BackendAuth auth = new BackendAuthImpl();
+		Applicant applicant = null;
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			User requestUser = ApplicantUtils.getUser(id);
+
+			boolean isAllowed = false;
+
+			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
+				isAllowed = true;
+			} else {
+				if (Validator.isNull(requestUser)) {
+					throw new NoSuchUserException();
+				} else {
+					// check userLogin is equal userRequest get detail
+					if (requestUser.getUserId() == user.getUserId()) {
+						isAllowed = true;
+					}
+				}
+			}
+
+			if (isAllowed) {
+				
+				Applicant applicantUpdated = ApplicantLocalServiceUtil.getApplicant(id);
+				
+				JSONObject profile = JSONFactoryUtil.createJSONObject(applicantUpdated.getProfile());
+				
+				profile.put(key, input.getValue());
+				
+				applicant = actions.updateProfile(serviceContext, id, profile.toString());
+
+				JSONObject result = JSONFactoryUtil.createJSONObject();
+
+				result.put("key", key);
+				result.put("value", input.getValue());
+
+				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+			} else {
+				throw new UnauthorizationException();
+			}
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					if (e instanceof NoSuchUserException) {
+						error.setMessage("Not Found");
+						error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
+						error.setDescription("Not Found");
+
+						return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
+
+					} else {
+						error.setMessage(" Internal Server Error.");
+						error.setCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
+						error.setDescription(" Internal Server Error.");
+
+						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+					}
+
+				}
+			}
+		}
 	}
 
 	@Override
@@ -640,7 +723,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		Applicant applicant = null;
 		try {
-
+			
+			
 
 			applicant = actions.activationApplicant(serviceContext, id, code);
 
@@ -686,5 +770,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 		}
 	}
+	
+
 
 }

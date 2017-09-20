@@ -87,6 +87,19 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	 * org.opencps.usermgt.service.ApplicantLocalServiceUtil} to access the
 	 * applicant local service.
 	 */
+	
+	public Applicant fetchByEmail(String email){
+		return applicantPersistence.fetchByF_CTE_ID(email);
+	}
+	
+	public Applicant fetchByTelNo(String telNo) {
+		return applicantPersistence.fetchByF_CTT_ID(telNo);
+	}
+	
+	public Applicant fetchByAppId(String appId){
+		return applicantPersistence.fetchByF_APLC_ID(appId);
+	}
+
 
 	/**
 	 * @param context

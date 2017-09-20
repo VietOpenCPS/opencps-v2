@@ -73,7 +73,8 @@ import javax.xml.bind.annotation.XmlType;
     "domainCode",
     "domainName",
     "maxLevel",
-    "_public"
+    "_public",
+    "index"
 })
 public class ServiceInfoModel {
 
@@ -98,6 +99,16 @@ public class ServiceInfoModel {
     protected Integer maxLevel;
     @XmlElement(name = "public_")
     protected Integer _public;
+
+	protected String index;
+
+    public String getIndex() {
+		return index;
+	}
+
+	public void setIndex(String index) {
+		this.index = index;
+	}
 
     /**
      * Gets the value of the serviceInfoId property.

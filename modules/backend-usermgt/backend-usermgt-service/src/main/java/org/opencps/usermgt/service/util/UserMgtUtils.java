@@ -5,6 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
@@ -99,4 +102,20 @@ public class UserMgtUtils {
 
 		return new SplitName(fullName, lastName);
 	};
+	
+	public static Applicant getApplicant(String id) {
+		Applicant applicant = null;
+		
+		applicant = ApplicantLocalServiceUtil.fetchByEmail(id);
+		
+		if (Validator.isNull(applicant)) {
+			applicant = ApplicantLocalServiceUtil.fetchByTelNo(id);
+		}
+		
+		if (Validator.isNull(applicant)) {
+			applicant = ApplicantLocalServiceUtil.fetchByTelNo(id);
+		}
+		
+		return applicant;
+	}
 }

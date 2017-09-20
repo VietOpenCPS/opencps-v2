@@ -34,7 +34,6 @@ public class UserRegisterTaskScheduler extends BaseSchedulerEntryMessageListener
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		System.out.println("UserRegisterTaskScheduler.doReceive()" + new Date());
 		
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 

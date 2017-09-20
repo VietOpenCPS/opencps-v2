@@ -75,7 +75,7 @@ import com.liferay.portal.kernel.util.StringPool;
 @XmlRootElement(name = "ServiceInfoInputModel")
 public class ServiceInfoInputModel {
 
-	@XmlElement(required = true)
+	
 	@DefaultValue("0") @FormParam(value = "serviceInfoId")
     protected Long serviceInfoId;
 
@@ -83,59 +83,59 @@ public class ServiceInfoInputModel {
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "serviceCode")
     protected String serviceCode;
 
-	@XmlElement(required = true)
+	
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "serviceName")
     protected String serviceName;
 
-	@XmlElement(required = true)
+	
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "processText")
     protected String processText;
 
-	@XmlElement(required = true)
+	
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "methodText")
     protected String methodText;
 
-	@XmlElement(required = true)
+	
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "dossierText")
     protected String dossierText;
 
-	@XmlElement(required = true)
+	
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "conditionText")
     protected String conditionText;
 
-	@XmlElement(required = true)
+	
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "durationText")
     protected String durationText;
 
-	@XmlElement(required = true)
+	
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "applicantText")
     protected String applicantText;
 
-	@XmlElement(required = true)
+	
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "resultText")
     protected String resultText;
 
-	@XmlElement(required = true)
+	
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "regularText")
     protected String regularText;
 
-	@XmlElement(required = true)
+	
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "feeText")
     protected String feeText;
 
-	@XmlElement(required = true)
+	
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "administrationCode")
     protected String administrationCode;
 
-	@XmlElement(required = true)
+	
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "domainCode")
     protected String domainCode;
 
-	@XmlElement(name = "public_", required = true)
+	@XmlElement(name = "public_")
 	@DefaultValue("1") @FormParam(value = "_public")
     protected Integer _public;
 
-	@XmlElement(required = true)
+	
 	@DefaultValue("2") @FormParam(value = "maxLevel")
     protected Integer maxLevel;
 

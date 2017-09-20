@@ -218,6 +218,18 @@
 			<order-column name="applicantName"/>
 		</order>
 		
+		<finder return-type="Applicant" name="F_APLC_ID" unique="true">
+			<finder-column name="applicantIdNo"/>
+		</finder>
+
+		<finder return-type="Applicant" name="F_CTT_ID" unique="true">
+			<finder-column name="contactTelNo"/>
+		</finder>
+
+		<finder return-type="Applicant" name="F_CTE_ID" unique="true">
+			<finder-column name="contactEmail"/>
+		</finder>
+		
 		<reference entity="User" package-path="com.liferay.portal" />
 		<reference entity="Role" package-path="com.liferay.portal" />
 	</entity>

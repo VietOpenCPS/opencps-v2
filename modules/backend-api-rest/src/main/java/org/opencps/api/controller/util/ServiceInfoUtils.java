@@ -1,5 +1,6 @@
 package org.opencps.api.controller.util;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +26,10 @@ public class ServiceInfoUtils {
 
 	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents) {
 		List<ServiceInfoModel> data = new ArrayList<ServiceInfoModel>();
-
+		int i = 0;
+		
 		for (Document doc : documents) {
+			i++;
 			ServiceInfoModel model = new ServiceInfoModel();
 
 			model.setServiceName(doc.get(ServiceInfoTerm.SERVICE_NAME));
@@ -41,7 +44,7 @@ public class ServiceInfoUtils {
 			model.setConditionText(doc.get(ServiceInfoTerm.CONDITION_TEXT));
 			model.setDurationText(doc.get(ServiceInfoTerm.DURATION_TEXT));
 			model.setApplicantText(doc.get(ServiceInfoTerm.APPLICANT_TEXT));
-			model.setRegularText(doc.get(ServiceInfoTerm.RESULT_TEXT));
+			model.setResultText(doc.get(ServiceInfoTerm.RESULT_TEXT));
 			model.setRegularText(doc.get(ServiceInfoTerm.REGULAR_TEXT));
 			model.setFeeText(doc.get(ServiceInfoTerm.FEE_TEXT));
 			model.setAdministrationCode(doc.get(ServiceInfoTerm.ADMINISTRATION_CODE));
@@ -49,7 +52,7 @@ public class ServiceInfoUtils {
 			model.setDomainCode(doc.get(ServiceInfoTerm.DOMAIN_CODE));
 			model.setDomainName(doc.get(ServiceInfoTerm.DOMAIN_NAME));
 			model.setMaxLevel(GetterUtil.getInteger(doc.get(ServiceInfoTerm.MAX_LEVEL)));
-			
+			model.setIndex(String.valueOf(i));
 			
 			data.add(model);
 		}
@@ -84,8 +87,12 @@ public class ServiceInfoUtils {
 
 		ServiceInfoDetailModel model = new ServiceInfoDetailModel();
 
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+		
 		model.setServiceName(serviceInfo.getServiceName());
 		model.setServiceInfoId(serviceInfo.getServiceInfoId());
+		model.setModifiedDate(sdf.format(serviceInfo.getModifiedDate()));
+		model.setCreateDate(sdf.format(serviceInfo.getCreateDate()));
 		model.setServiceCode(serviceInfo.getServiceCode());
 		model.setServiceName(serviceInfo.getServiceName());
 		model.setProcessText(serviceInfo.getProcessText());
