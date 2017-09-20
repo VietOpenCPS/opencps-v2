@@ -47,6 +47,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -73,6 +74,7 @@ public class DataManagementImpl implements DataManagement {
 				query.setEnd(-1);
 
 			}
+			
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();

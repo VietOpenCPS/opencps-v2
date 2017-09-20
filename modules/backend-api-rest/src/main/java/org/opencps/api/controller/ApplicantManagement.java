@@ -23,6 +23,7 @@ import org.opencps.api.usermgt.model.ApplicantInputModel;
 import org.opencps.api.usermgt.model.ApplicantModel;
 import org.opencps.api.usermgt.model.ApplicantResultsModel;
 import org.opencps.api.usermgt.model.ApplicantSearchModel;
+import org.opencps.api.usermgt.model.ProfileInputModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.json.JSONObject;
@@ -92,8 +93,9 @@ public interface ApplicantManagement {
 
 	public Response updateApplicant(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id, @BeanParam ApplicantInputUpdateModel input);
-	
+			@Context ServiceContext serviceContext, @PathParam("id") long id,
+			@BeanParam ApplicantInputUpdateModel input);
+
 	@DELETE
 	@Path("/{id}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -122,7 +124,7 @@ public interface ApplicantManagement {
 	public Response getApplicantProfile(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") long id);
-	
+
 	@POST
 	@Path("/{id}/profile")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -136,7 +138,7 @@ public interface ApplicantManagement {
 
 	public Response addApplicantProfile(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id, String body);
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @BeanParam ProfileInputModel input);
 
 	@PUT
 	@Path("/{id}/profile/{key}")
@@ -151,7 +153,8 @@ public interface ApplicantManagement {
 
 	public Response updateApplicantProfile(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("key") long key, String body);
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("key") String key,
+			@BeanParam ProfileInputModel input);
 
 	@POST
 	@Path("/{id}/lock")

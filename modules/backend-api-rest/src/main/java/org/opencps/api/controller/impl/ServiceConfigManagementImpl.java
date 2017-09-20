@@ -73,11 +73,13 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			String agency = query.getAgency();
 			String service = query.getService();
 			String domain = query.getDomain();
+			String applicant = query.getApplicant();
 
 			params.put(ServiceConfigTerm.SERVICE_LEVEL, level);
 			params.put(ServiceConfigTerm.GOVAGENCY_CODE, agency);
 			params.put(ServiceConfigTerm.SERVICE_CODE, service);
 			params.put(ServiceConfigTerm.DOMAIN_CODE, domain);
+			params.put(ServiceConfigTerm.APPICATION_TYPE, applicant);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					Boolean.getBoolean(query.getOrder())) };

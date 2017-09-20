@@ -26,8 +26,10 @@ public class ServiceInfoUtils {
 
 	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents) {
 		List<ServiceInfoModel> data = new ArrayList<ServiceInfoModel>();
-
+		int i = 0;
+		
 		for (Document doc : documents) {
+			i++;
 			ServiceInfoModel model = new ServiceInfoModel();
 
 			model.setServiceName(doc.get(ServiceInfoTerm.SERVICE_NAME));
@@ -50,7 +52,7 @@ public class ServiceInfoUtils {
 			model.setDomainCode(doc.get(ServiceInfoTerm.DOMAIN_CODE));
 			model.setDomainName(doc.get(ServiceInfoTerm.DOMAIN_NAME));
 			model.setMaxLevel(GetterUtil.getInteger(doc.get(ServiceInfoTerm.MAX_LEVEL)));
-			
+			model.setIndex(String.valueOf(i));
 			
 			data.add(model);
 		}

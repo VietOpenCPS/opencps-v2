@@ -29,6 +29,7 @@ import org.opencps.dossiermgt.exception.ServiceLevelException;
 import org.opencps.dossiermgt.exception.ServiceURLOnlineException;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.base.ServiceConfigLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -171,6 +172,12 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			serviceConfig.setRegistration(registration);
 
 		}
+		
+		ServiceInfo si = serviceInfoPersistence.fetchByPrimaryKey(serviceInfoId);
+		
+		si.setMaxLevel(serviceLevel);
+		
+		serviceInfoPersistence.update(si);
 
 		serviceConfigPersistence.update(serviceConfig);
 

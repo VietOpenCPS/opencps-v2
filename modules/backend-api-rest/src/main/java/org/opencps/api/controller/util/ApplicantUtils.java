@@ -9,7 +9,6 @@ import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
 import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactory;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -30,6 +29,8 @@ public class ApplicantUtils {
 
 		ApplicantModel model = new ApplicantModel();
 		model.setApplicantId(GetterUtil.getLong(applicant.getPrimaryKey()));
+		model.setCreateDate(String.valueOf(applicant.getCreateDate()));
+		model.setModifiedDate(String.valueOf(applicant.getModifiedDate()));
 		model.setApplicantName(applicant.getApplicantName());
 		model.setApplicantIdType(applicant.getApplicantIdType());
 		model.setApplicantIdNo(applicant.getApplicantIdNo());
@@ -44,6 +45,26 @@ public class ApplicantUtils {
 		model.setWardName(applicant.getWardName());
 		model.setContactName(applicant.getContactName());
 		model.setContactTelNo(applicant.getContactTelNo());
+		
+		long mappingUserId = applicant.getMappingUserId();
+
+		MappingUser mappingUser = new MappingUser();
+
+		User user = null;
+		
+		try {
+			user = UserLocalServiceUtil.getUser(mappingUserId);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		if (Validator.isNotNull(user)) {
+			mappingUser.setUserId(Long.toString(mappingUserId));
+			mappingUser.setScreenName(user.getScreenName());
+			mappingUser.setLocking(user.getLockout());
+		}
+		
+		 model.setMappingUser(mappingUser);
 
 
 		return model;
@@ -84,7 +105,13 @@ public class ApplicantUtils {
 
 			long mappingUserId = GetterUtil.getLong(doc.get("mappingUserId"));
 			
-			User user = UserUtils.getUser(mappingUserId);
+			User user = null;
+			
+			try {
+				user = UserLocalServiceUtil.getUser(mappingUserId);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 
 			if (Validator.isNotNull(user)) {
 				mappingUser.setUserId(Long.toString(mappingUserId));
