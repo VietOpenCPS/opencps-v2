@@ -11,8 +11,10 @@
         <span class="select-wrapper">
          <select class="ML5" id="slPageSize">
            <option value="5" selected="">5</option>
-           <option value="1">1</option>
-           <option value="2">2</option>
+           <option value="10">10</option>
+           <option value="15">15</option>
+           <option value="25">25</option>
+           <option value="50">50</option>
          </select>
        </span>
      </span>
@@ -128,8 +130,13 @@
         },
         success: function(result) {
           options.success(result);
-          $("#numPerPage").text($("#slPageSize").val());
-          $("#totalItem").text(serviceInfoDataSource.total());
+          if(parseInt($("#slPageSize").val()) > parseInt(serviceInfoDataSource.total())){
+            $("#numPerPage").text(serviceInfoDataSource.total());
+            $("#totalItem").text(serviceInfoDataSource.total());
+          }else {
+            $("#numPerPage").text($("#slPageSize").val());
+            $("#totalItem").text(serviceInfoDataSource.total());
+          }
         },
         error: function(result) {
           options.error(result);
@@ -161,7 +168,7 @@
   data: "data",
   model : { id: "serviceInfoId" }
 },
-pageSize: 10,
+pageSize: 5,
 serverPaging: false,
 serverSorting: false,
 serverFiltering: false
@@ -250,6 +257,7 @@ serverFiltering: false
       dataTextField: "levelName",
       dataValueField: "level",
       filter: "contains",
+      template: '<span class="k-state-default">Mức độ #:data.levelName#</span>',
       dataSource: {
         transport :{
           read : {
@@ -303,7 +311,13 @@ serverFiltering: false
 
     $("#slPageSize").change(function(){
       console.log($(this).val());
-      $("#numPerPage").text($(this).val());
+      if(parseInt($("#slPageSize").val()) > parseInt(serviceInfoDataSource.total())){
+            $("#numPerPage").text(serviceInfoDataSource.total());
+            $("#totalItem").text(serviceInfoDataSource.total());
+          }else {
+            $("#numPerPage").text($(this).val());
+            $("#totalItem").text(serviceInfoDataSource.total());
+          }
       $("#service_info_list_view").getKendoListView().dataSource.pageSize(parseInt($("#slPageSize").val(), 10));
     });
 

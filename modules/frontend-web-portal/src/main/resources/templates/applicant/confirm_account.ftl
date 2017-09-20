@@ -10,7 +10,7 @@
     <p>Vui lòng nhập mã PIN đã được gửi trong email hoặc số điện thoại</p>
   </div>
   <div class="col-xs-12 col-sm-12 MT20">
-    <input type="text" class="form-control" placeholder="Nhập mã PIN">
+    <input id="vertifyPIN" type="text" class="form-control" placeholder="Nhập mã PIN">
   </div>
   <div>
     <div class="col-xs-12 col-sm-6 MT20 MB20">
@@ -27,10 +27,9 @@
 <script type="text/javascript">
   $("#btn-active-account").click(function(){
     $.ajax({
-      url : "${api.server}/applicants/${active_user_id}/activate/8sAk1QT2Ne",
+      url : "${api.server}/applicants/${active_user_id}/activate/"+$("#vertifyPIN").val(),
       dataType : "json",
       type : "GET",
-      data : data,
       success : function(result){
 
       },
