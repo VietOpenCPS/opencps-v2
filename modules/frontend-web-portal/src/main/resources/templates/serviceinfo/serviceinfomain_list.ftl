@@ -91,16 +91,16 @@
  <script type="text/x-kendo-template" id="service_info_template">
    <li class="clearfix item-serviceinfo eq-height-lg" data-pk="#: id #" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
      <div class="col-sm-1 text-center">
-      1
+       #:index# 
     </div>
-    <div class="col-sm-7 service-info-item" data-pk="#: id #">
+    <div class="col-sm-7 service-info-item text-hover-blue" data-pk="#: id #">
       #: serviceName #
     </div>
     <div class="col-sm-2 text-center">
       #: domainName #
     </div>
     <div class="col-sm-2 text-center">
-      #: maxLevel #
+      Mức độ #: maxLevel #
     </div>
   </li>
 </script>
