@@ -13,17 +13,20 @@
 	<div class="col-sm-11">
 		<div class="eq-height-lg">
 			<div class="row" id="imgDomains">
-				<div class="img-domains col-sm-4 pic-1">
+				<div class="img-domains col-sm-4">
+					<div class="pic-1"></div>
 					<div class="center-all">
 						<p>Lĩnh vực <span>VĂN HÓA</span></p>
 					</div>
 				</div>
-				<div class="img-domains col-sm-4 pic-2">
+				<div class="img-domains col-sm-4">
+					<div class="pic-2"></div>
 					<div class="center-all">
 						<p>Lĩnh vực <span>THỂ DỤC - THỂ THAO</span></p>
 					</div>
 				</div>
-				<div class="img-domains col-sm-4 pic-3">
+				<div class="img-domains col-sm-4">
+					<div class="pic-3"></div>
 					<div class="center-all">
 						<p>Lĩnh vực <span>DU LỊCH</span></p>
 					</div>
