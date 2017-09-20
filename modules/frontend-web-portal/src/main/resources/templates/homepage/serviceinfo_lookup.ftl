@@ -13,21 +13,35 @@
 	<div class="col-sm-11">
 		<div class="eq-height-lg">
 			<div class="row" id="imgDomains">
-				
-			</div>
-		</div>
-		<script type="text/x-kendo-template" id="tempDomains">
-			<div class="img-domains col-sm-4">
-				<img src="<#-- #:link#   -->https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4QFniWC6uanzGbP5uxvBxfX7YTnyVwYz1x6lg4CM0yP3p0lwZFw" class="img-responsive full-width"/>
-				<div class="center-all">
-					<p><#-- #:domainName# -->Lĩnh vực <span>DU LỊCH</span></p>
+				<div class="img-domains col-sm-4 pic-1">
+					<div class="center-all">
+						<p>Lĩnh vực <span>VĂN HÓA</span></p>
+					</div>
+				</div>
+				<div class="img-domains col-sm-4 pic-2">
+					<div class="center-all">
+						<p>Lĩnh vực <span>THỂ DỤC - THỂ THAO</span></p>
+					</div>
+				</div>
+				<div class="img-domains col-sm-4 pic-3">
+					<div class="center-all">
+						<p>Lĩnh vực <span>DU LỊCH</span></p>
+					</div>
 				</div>
 			</div>
-		</script>	
+		</div>
+		<#-- <script type="text/x-kendo-template" id="tempDomains">
+			<div class="img-domains col-sm-4 pic-1">
+				 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4QFniWC6uanzGbP5uxvBxfX7YTnyVwYz1x6lg4CM0yP3p0lwZFw" class="img-responsive full-width"/> 
+				<div class="center-all">
+					<p>Lĩnh vực <span>DU LỊCH</span></p>
+				</div>
+			</div>
+		</script>	 -->
 	</div>
 </div>
 <script type="text/javascript">
-	$(document).ready(function(){
+	/*$(document).ready(function(){
 		var templateDomains = kendo.template($("#tempDomains").html());
 		var dataSourceDomains = new kendo.data.DataSource({
 			transport : {
@@ -61,5 +75,5 @@
 			}
 		});
 		dataSourceDomains.read();
-	});
+	});*/
 </script>
