@@ -234,7 +234,7 @@
         dataSource : {
             transport : {
                 read : {
-                    url : "${api.server}/serviceconfigs?service="+id+"&applicantType=${applicantType}",
+                    url : "",
                     dataType : "json",
                     type : "GET",
                     beforeSend: function(req) {
