@@ -31,7 +31,6 @@ import org.opencps.dossiermgt.constants.ProcessOptionTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceInfo;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;

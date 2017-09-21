@@ -713,13 +713,33 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			User user, ServiceContext serviceContext, long id, String code) {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		ApplicantModel results = new ApplicantModel();
+		
+		long applicantId = 0;
+		
+		try {
+			ApplicantLocalServiceUtil.getApplicant(id);
+			
+			applicantId = id;
+			
+		} catch (Exception e) {
+			try {
+				Applicant applc = ApplicantLocalServiceUtil.fetchByMappingID(id);
+				
+				if (Validator.isNotNull(applc)) {
+					applicantId = applc.getApplicantId();
+				}
+			} catch (Exception e2) {
+				// TODO: handle exception
+			}
+			
+		}
 
 		Applicant applicant = null;
 		try {
 			
 			
 
-			applicant = actions.activationApplicant(serviceContext, id, code);
+			applicant = actions.activationApplicant(serviceContext, applicantId, code);
 
 			results = ApplicantUtils.mappingToApplicantModel(applicant);
 

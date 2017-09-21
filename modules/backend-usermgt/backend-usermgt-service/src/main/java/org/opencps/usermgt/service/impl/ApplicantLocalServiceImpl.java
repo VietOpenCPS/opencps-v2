@@ -91,6 +91,10 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	 * applicant local service.
 	 */
 	
+	public Applicant fetchByMappingID(long mappingID) {
+		return applicantPersistence.fetchByF_MAPPING_ID(mappingID);
+	}
+	
 	public Applicant fetchByEmail(String email){
 		return applicantPersistence.fetchByF_CTE_ID(email);
 	}

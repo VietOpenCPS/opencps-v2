@@ -58,7 +58,7 @@ public class ServiceConfigUtils {
 
 		for (Document doc : documents) {
 			ProcessOption processOption = new ProcessOption();
-			processOption.setProcessOptionId(GetterUtil.getInteger(doc.get(Field.CLASS_PK)));
+			processOption.setProcessOptionId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
 			processOption.setSeqOrder(GetterUtil.getInteger(doc.get(ProcessOptionTerm.SEQ_ORDER)));
 			processOption.setAutoSelect(doc.get(ProcessOptionTerm.AUTO_SELECT));
 			processOption.setInstructionNote(doc.get(ProcessOptionTerm.INSTRUCTION_NOTE));
@@ -121,7 +121,9 @@ public class ServiceConfigUtils {
 		model.setForCitizen(Boolean.toString(serviceConfig.getForCitizen()));
 		model.setPostalService(Boolean.toString(serviceConfig.getPostService()));
 		model.setRegistration(Boolean.toString(serviceConfig.getRegistration()));
-
+		model.setCreateDate(String.valueOf(serviceConfig.getCreateDate()));
+		model.setModifiedDate(String.valueOf(serviceConfig.getModifiedDate()));
+		
 		long serviceInfoId = serviceConfig.getServiceInfoId();
 
 		if (serviceInfoId != 0) {
