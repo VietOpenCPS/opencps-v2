@@ -12,13 +12,16 @@ import org.opencps.frontend.web.portal.constants.FrontendWebPortalPortletKeys;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 /**
  * @author phucnv
@@ -56,10 +59,21 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 		boolean rememberMe = ParamUtil.getBoolean(actionRequest, "rememberMe");
 		String authType = CompanyConstants.AUTH_TYPE_EA;
 
-		AuthenticatedSessionManagerUtil.login(
-			request, response, login, password, rememberMe, authType);
+		User user = UserLocalServiceUtil.getUserByEmailAddress(
+			themeDisplay.getCompanyId(), login);
 
-		actionResponse.sendRedirect(themeDisplay.getPathMain());
+		if (user != null &&
+			user.getStatus() == WorkflowConstants.STATUS_PENDING) {
+
+			actionResponse.sendRedirect(
+				"/confirm-account?active_user_id=" + user.getUserId());
+		}
+		else {
+			AuthenticatedSessionManagerUtil.login(
+				request, response, login, password, rememberMe, authType);
+
+			actionResponse.sendRedirect(themeDisplay.getPathMain());
+		}
 
 	}
 
