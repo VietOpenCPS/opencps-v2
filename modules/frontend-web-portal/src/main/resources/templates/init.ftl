@@ -11,6 +11,12 @@
 
 	<@portlet["defineObjects"] />
 
+	<#assign groupId = themeDisplay.getScopeGroupId() />
+	<#assign userId = themeDisplay.getUserId() />
+	<#assign portletNamespace = themeDisplay.getPortletDisplay().getNamespace() />
+	<#assign currentURL = themeDisplay.getURLCurrent() />
+	<#assign request = themeDisplay.getRequest() />
+
 	<#assign api = (Request.api)!>
 	<#assign ajax = (Request.ajax)!>
 </#if>
