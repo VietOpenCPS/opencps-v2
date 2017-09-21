@@ -106,7 +106,7 @@
       Mức độ #: maxLevel #
     </div>
     <div class="col-sm-2 text-center">
-      #if((typeof serivceConfigs !== 'undefined') && (serivceConfigs && serivceConfigs.govAgencyCode) || (serivceConfigs[1] &&serivceConfigs[1].govAgencyCode)){#
+      #if((typeof serivceConfigs !== 'undefined') ){#
       <div class="dropdown">
         <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ
           <span class="caret"></span>
