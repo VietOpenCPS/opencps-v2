@@ -7,7 +7,7 @@ dependencies {
 	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-api")
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-api")
 	compileOnly project(":modules:backend-auth")
-	
+	compileOnly group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
 }
 
 buildService {

@@ -13,10 +13,13 @@ public class ApplicantListenerUtils {
 	public static JSONObject getPayload(String notiType, JSONObject object, long groupId) {
 		JSONObject payload = JSONFactoryUtil.createJSONObject();
 
-		String subject = StringPool.BLANK;
+		Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil
+				.fetchByF_NotificationtemplateByType(groupId, notiType);
 
-		String body = getEmailBody(notiType, object, groupId, subject);
-
+		String body = getEmailBody(notiType, object, groupId);
+		
+		String subject = notificationtemplate.getEmailSubject();
+		
 		payload.put("toName", object.get("toName"));
 		payload.put("toAddress", object.get("toAddress"));
 		payload.put("subject", subject);
@@ -25,7 +28,7 @@ public class ApplicantListenerUtils {
 		return payload;
 	}
 
-	private static String getEmailBody(String notiType, JSONObject object, long groupId, String subject) {
+	private static String getEmailBody(String notiType, JSONObject object, long groupId) {
 
 		try {
 			Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil
@@ -33,7 +36,6 @@ public class ApplicantListenerUtils {
 
 			String emailBody = notificationtemplate.getEmailBody();
 
-			subject = notificationtemplate.getEmailSubject();
 			
 			String [] oldSubs = buildOldSubs(object);
 			

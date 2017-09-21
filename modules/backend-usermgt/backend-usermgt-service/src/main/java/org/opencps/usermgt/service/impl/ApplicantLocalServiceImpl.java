@@ -137,6 +137,11 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String profile, String password)
 			throws PortalException, SystemException {
+		
+		_log.info(applicantName);
+		_log.info(applicantIdNo);
+		_log.info(applicantIdDate);
+		_log.info(applicantIdNo);
 
 		Applicant applicant = null;
 
@@ -161,7 +166,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			boolean autoPassword = false;
 			boolean autoScreenName = true;
-			boolean sendEmail = true;
+			boolean sendEmail = false;
 
 			long[] groupIds = null;
 			long[] organizationIds = null;

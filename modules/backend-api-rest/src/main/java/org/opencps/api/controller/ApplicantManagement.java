@@ -97,7 +97,7 @@ public interface ApplicantManagement {
 			@BeanParam ApplicantInputUpdateModel input);
 
 	@DELETE
-	@Path("/{id}")
+	@Path("/{idd}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@ApiOperation(value = "Remove a applicant", response = ApplicantModel.class)
@@ -108,7 +108,7 @@ public interface ApplicantManagement {
 
 	public Response removeApplicant(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id);
+			@Context ServiceContext serviceContext, @PathParam("idd") long id);
 
 	@GET
 	@Path("/{id}/profile")
