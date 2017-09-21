@@ -205,9 +205,9 @@
       change : function(){
         $("#administration").html(kendo.render(templateAdministration, this.view()));
         $("#administration > li:first-child").addClass("active");
-        /*$("#service_info_list_view").getKendoListView().dataSource.read({
+        $("#service_info_list_view").getKendoListView().dataSource.read({
           "administration": $("#administration > li:first-child").attr("dataPk")
-        });*/
+        });
       }
     });
     dataSourceAdministrations.read();
