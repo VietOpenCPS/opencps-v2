@@ -75,7 +75,7 @@
   padding: 0 15px;
 }
 .select-wrapper select:focus {
-  border-color: #333;
+  border-color: #0b72ba;
   -webkit-box-shadow: none;
   box-shadow: none;
 }
@@ -138,11 +138,31 @@
   border-color: #14bef0;
   border-width: 2px;
 }
+.radio input[type="radio"]:checked + label:before, .radio-inline input[type="radio"]:checked + label:before {
+  border: 0;
+}
 .radio input[type="radio"]:checked + label:after, .radio-inline input[type="radio"]:checked + label:after {
   content: "\f111";
   left: 0;
+  top: 54%;
   font-size: 17px;
   color: #14bef0;
+}
+
+/*------------------------------
+      Label
+------------------------------*/
+.label-dvc-lv1 {
+  background-color: #f1c40f;
+}
+.label-dvc-lv2 {
+  background-color: #e67e22;
+}
+.label-dvc-lv-3 {
+  background-color: #8e44ad;
+}
+.label-dvc-lv4 {
+  background-color: #9e0b0f;
 }
 
 /*------------------------------
@@ -238,23 +258,27 @@ ul.ul-list a i {
 input[type="text"]::-webkit-input-placeholder,
 input[type="password"]::-webkit-input-placeholder {
   color: #ccc;
+  font-size: 13px;
 }
 
 input[type="text"]:-moz-placeholder,
 input[type="password"]:-moz-placeholder {
   color: #ccc;
   opacity: 1;
+  font-size: 13px;
 }
 
 input[type="text"]::-moz-placeholder,
 input[type="password"]::-moz-placeholder {
   color: #ccc;
   opacity: 1;
+  font-size: 13px;
 }
 
 input[type="text"]:-ms-input-placeholder,
 input[type="password"]:-ms-input-placeholder {
   color: #ccc;
+  font-size: 13px;
 }
 
 /*----- Input text + password -----*/
@@ -264,7 +288,7 @@ input[type="text"], input[type="password"] {
 input[type="text"]:focus, input[type="password"]:focus {
   -webkit-box-shadow: none;
   box-shadow: none;
-  border-color: #333;
+  border-color: #0b72ba;
 }
 
 /*----- Input number new -----*/
@@ -313,7 +337,7 @@ input[type="text"]:focus, input[type="password"]:focus {
   color: #14bef0;
 }
 
-.text-blue {
+.text-blue, .text-hover-blue:hover {
   color: #0b72ba;
 }
 
@@ -411,8 +435,9 @@ input[type="text"]:focus, input[type="password"]:focus {
 }
 
 /*------------------------------
-      Navtab
+      Nav-tabs
 ------------------------------*/
+/*----- Kendo -----*/
 .navtab-menu.k-tabstrip > ul {
   margin: 0 !important;
   padding: 0;
@@ -468,11 +493,42 @@ input[type="text"]:focus, input[type="password"]:focus {
   padding: 0px 10px;
 }
 
+/*----- Bootstrap -----*/
+.nav-tabs-wrapper .nav-tabs {
+  border-bottom: 1px solid #14bef0;
+  padding: 0 15px;
+}
+.nav-tabs-wrapper .nav-tabs > li > a {
+  border-color: #ddd;
+  margin: 0 -1px 0 0;
+  border-radius: 0;
+  border-bottom: 0;
+}
+.nav-tabs-wrapper .nav-tabs > li > a:hover:before {
+  content: "";
+  width: 100%;
+  border-bottom: 1px solid #14bef0;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+.nav-tabs-wrapper .nav-tabs > li.active > a {
+  border-color: #14bef0;
+  border-bottom: 0;
+  position: relative;
+  z-index: 5;
+}
+.nav-tabs-wrapper .tab-content {
+  padding: 15px;
+}
+
 /*------------------------------
       Other
 ------------------------------*/
+/*----- Titles -----*/
 .row-header {
   background-color: #e1e2e1;
+  overflow: hidden;
 }
 .row-header .group-icons {
   margin-left: auto;
@@ -489,12 +545,22 @@ input[type="text"]:focus, input[type="password"]:focus {
 .row-header .group-icons a:not(:first-child) {
   margin-left: 10px;
 }
+.row-header .show-per-page {
+  float: right;
+  margin-right: 15px;
+  margin-top: 6px;
+}
+.row-header .show-per-page select {
+  background-color: #f3f3f3;
+  border-radius: 4px;
+  padding: 3px 35px 3px 10px;
+  border-color: #ddd;
+}
 
 .background-triangle-small, .background-triangle-big {
   background-color: #0b72ba;
   display: inline-block;
   padding: 3px;
-  font-size: 13px;
   width: 25px;
   text-align: right;
   color: white;
@@ -516,7 +582,6 @@ input[type="text"]:focus, input[type="password"]:focus {
 
 .background-triangle-big {
   padding: 10px 5px 10px 15px;
-  font-size: 14px;
   width: auto;
   margin-right: 30px;
 }
@@ -525,7 +590,7 @@ input[type="text"]:focus, input[type="password"]:focus {
   right: -4px;
   border-top: 28px solid #0b72ba;
   border-left: 28px solid transparent;
-  border-bottom: 28px solid transparent;
+  border-bottom: 26px solid transparent;
 }
 
 .row-blue {

@@ -1,110 +1,158 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <div class="row">
   <div class="col-xs-12 col-sm-12 panel P0">
     <div class="row-header">
       <div class="background-triangle-big">DANH SÁCH THỦ TỤC HÀNH CHÍNH</div>
-      <span>Hiển thị 5 trên 2055 bản ghi</span>
-      <span class="pull-right MT5 MR10">Hiển thị
-        <select class="ML5" id="slPageSize">
-          <option value="5" selected="">5</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-        </select>
-      </span>
-    </div>
-    <div class="panel-body">
-      <div class="row">
-        <div class="col-sm-8">
-          <div class="row">
-            <div class="col-xs-12 col-sm-4">
-              <select class="form-control" id="administrationCodeSearch" name="administrationCodeSearch" placeholder="Chọn cơ quan quản lý">
-                <#if serviceinfo?has_content && serviceinfo.administrations?has_content>
-                <#list serviceinfo.administrations as administration>
-                <option value="${administration.administrationCode}">${administration.administrationName}</option>
-                </#list>
-                </#if>
-              </select>
-            </div>
-            <div class="col-xs-12 col-sm-4 PL0">
-              <select class="form-control" id="domainCodeSearch" name="domainCodeSearch" placeholder="Chọn lĩnh vực thủ tục">
-                <#if serviceinfo?has_content && serviceinfo.domains?has_content>
-                <#list serviceinfo.domains as domain>
-                <option value="${domain.domainCode}">${domain.domainName}</option>
-                </#list>
-                </#if>
-              </select>
-            </div>
-            <div class="col-xs-12 col-sm-4 PL0">
-              <select class="form-control" id="levelSearch" name="levelSearch" placeholder="Chọn mức độ">
-                <#if serviceinfo?has_content && serviceinfo.levels?has_content>
-                <#list serviceinfo.levels as level>
-                <option value="${level.levelCode}">${level.levelName}</option>
-                </#list>
-                </#if>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="col-xs-12 col-sm-4 PL0">
-          <div class="row">
-            <div class="col-sm-9">
-              <div class="form-group search-icon">
-              <input type="text" name="input_search_service_info" id="input_search_service_info" class="form-control input-sm" placeholder="Nhập từ khóa">
-              </div>
-            </div>
-            <div class="col-sm-3">
-              <button class="btn btn-active btn-small pull-right" id="btn-filter-serviceinfo" type="button">Tìm kiếm</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div>
-      <!-- list view header -->
-      <ul class="mimic-table">
-        <li class="clearfix">
-          <div class="col-sm-1 text-center">
-           <b>STT</b>
-         </div>
-         <div class="col-sm-7 text-center">
-           <b>Tên thủ tục</b>
-         </div>
-         <div class="col-sm-2 text-center">
-           <b>Lĩnh vực thủ tục</b>
-         </div>
-         <div class="col-sm-2 text-center">
-           <b>Mức độ</b>
-         </div>
-       </li>
-     </ul>
-     <ul id ="service_info_list_view" class="mimic-table"></ul>
-     <div id="service_info_pager" class="k-pager-wrap full-width-pager pull-right PR15 PB15"></div>
+      <span>Hiển thị <span id="numPerPage"></span> trên <span id="totalItem"></span> tổng số bản ghi được tìm thấy</span>
+      <span class="show-per-page">Hiển thị
+        <span class="select-wrapper">
+         <select class="ML5" id="slPageSize">
+           <option value="5" selected="">5</option>
+           <option value="10">10</option>
+           <option value="15">15</option>
+           <option value="25">25</option>
+           <option value="50">50</option>
+         </select>
+       </span>
+     </span>
    </div>
-
-   <script type="text/x-kendo-template" id="service_info_template">
-     <li class="clearfix item-serviceinfo eq-height-lg" data-pk="#: id #" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
+   <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-8">
+        <div class="row">
+          <div class="col-xs-12 col-sm-4">
+            <select class="form-control" id="administrationCodeSearch" name="administrationCodeSearch" placeholder="Chọn cơ quan quản lý">
+              <#-- <#if serviceinfo.administrations?has_content>
+              <#list serviceinfo.administrations as administration>
+              <option value="${administration.administrationCode}">${administration.administrationName}</option>
+              </#list>
+              </#if> -->
+            </select>
+          </div>
+          <div class="col-xs-12 col-sm-4 PL0">
+            <select class="form-control" id="domainCodeSearch" name="domainCodeSearch" placeholder="Chọn lĩnh vực thủ tục">
+             <#--  <#if serviceinfo.domains?has_content>
+              <#list serviceinfo.domains as domain>
+              <option value="${domain.domainCode}"> ${domain.domainName}</option>
+              </#list>
+              </#if> -->
+            </select>
+          </div>
+          <div class="col-xs-12 col-sm-4 PL0">
+            <select class="form-control" id="levelSearch" name="levelSearch" placeholder="Chọn mức độ">
+              <#-- <#if serviceinfo.levels?has_content>
+              <#list serviceinfo.levels as level>
+              <option value="${level.levelCode}"> ${level.levelName}</option>
+              </#list>
+              </#if>-->
+            </select> 
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-4 PL0">
+        <div class="row">
+          <div class="col-sm-9">
+            <div class="form-group search-icon">
+              <input type="text" name="input_search_service_info" id="input_search_service_info" class="form-control input-sm" placeholder="Nhập từ khóa">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <button class="btn btn-active btn-small pull-right" id="btn-filter-serviceinfo" type="button">Tìm kiếm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <!-- list view header -->
+    <ul class="mimic-table">
+      <li class="clearfix">
+        <div class="col-sm-1 text-center">
+         <b>STT</b>
+       </div>
+       <div class="col-sm-6 text-center">
+         <b>Tên thủ tục</b>
+       </div>
+       <div class="col-sm-2 text-center">
+         <b>Lĩnh vực thủ tục</b>
+       </div>
        <div class="col-sm-1 text-center">
-        1
-      </div>
-      <div class="col-sm-7 service-info-item" data-pk="#: id #">
-        #: serviceName #
-      </div>
-      <div class="col-sm-2 text-center">
-        #: domainName #
-      </div>
-      <div class="col-sm-2 text-center">
-        #: maxLevel #
-      </div>
-    </li>
-  </script>
+         <b>Mức độ</b>
+       </div>
+       <div class="col-sm-2 text-center">
+         <b>Nộp hồ sơ</b>
+       </div>
+     </li>
+   </ul>
+   <ul id ="service_info_list_view" class="mimic-table"></ul>
+   <div id="service_info_pager" class="k-pager-wrap full-width-pager pull-right PR15 PB15"></div>
+ </div>
+
+ <script type="text/x-kendo-template" id="service_info_template">
+   <li class="clearfix eq-height-lg" data-pk="#: id #" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
+     <div class="col-sm-1 text-center">
+       #:itemIndex #
+     </div>
+     <div class="col-sm-6 item-serviceinfo text-hover-blue" data-pk="#: id #">
+      #: serviceName #
+    </div>
+    <div class="col-sm-2 text-center">
+      #: domainName #
+    </div>
+    <div class="col-sm-1 text-center">
+      Mức độ #: maxLevel #
+    </div>
+    <div class="col-sm-2 text-center">
+      #if((serivceConfigs && serivceConfigs.govAgencyCode) || (serivceConfigs[1] &&serivceConfigs[1].govAgencyCode)){#
+      <div class="dropdown">
+        <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          #
+          var govAgencyCode = "";
+          var govAgencyName = "";
+          var serviceInstruction = "";
+          var serviceLevel = "";
+          var serviceUrl = "";
+          if (serivceConfigs[1]) {
+          for(var i=0; i<serivceConfigs.length;i++){
+          govAgencyCode = serivceConfigs[i].govAgencyCode;
+          govAgencyName = serivceConfigs[i].govAgencyName;
+          serviceInstruction = serivceConfigs[i].serviceInstruction;
+          serviceLevel = serivceConfigs[i].serviceLevel;
+          serviceUrl = serivceConfigs[i].serviceUrl;
+          #
+          <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
+          #}
+        } else {
+        govAgencyCode = serivceConfigs.govAgencyCode;
+        govAgencyName = serivceConfigs.govAgencyName;
+        serviceInstruction = serivceConfigs.serviceInstruction;
+        serviceLevel = serivceConfigs.serviceLevel;
+        serviceUrl = serivceConfigs.serviceUrl;
+        #
+        <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
+        #}#
+      </ul>
+    </div>
+    #}#
+  <#-- #if(true){#
+  <button class="btn btn-small btn-active">Nộp hồ sơ</button>
+  #}# -->
+</div>
+</li>
+</script>
 </div>
 </div>
 
 <script type="text/javascript">
   (function($){
+    var localIndex = 0;
+
     var serviceInfoDataSource = new kendo.data.DataSource({
      transport: {
       read: function(options) {
@@ -112,6 +160,10 @@
         url: "${api.server}" + "/serviceinfos",
         type: "GET",
         dataType: "json",
+        contentType : "application/x-www-form-urlencoded",
+        beforeSend: function(req) {
+          req.setRequestHeader('groupId', ${groupId});
+        },
         data: {
           keyword: options.data.keywords,
           page: options.data.page,
@@ -122,6 +174,13 @@
         },
         success: function(result) {
           options.success(result);
+          if(parseInt($("#slPageSize").val()) > parseInt(serviceInfoDataSource.total())){
+            $("#numPerPage").text(serviceInfoDataSource.total());
+            $("#totalItem").text(serviceInfoDataSource.total());
+          }else {
+            $("#numPerPage").text($("#slPageSize").val());
+            $("#totalItem").text(serviceInfoDataSource.total());
+          }
         },
         error: function(result) {
           options.error(result);
@@ -132,7 +191,7 @@
 
      },
      update: function(options) {
-
+      
      },
      destroy: function(options) {
 
@@ -151,9 +210,9 @@
  schema: {
   total: "total",
   data: "data",
-  model : { id: "serviceinfoId" },
+  model : { id: "serviceInfoId" }
 },
-pageSize: 10,
+pageSize: 5,
 serverPaging: false,
 serverSorting: false,
 serverFiltering: false
@@ -163,18 +222,33 @@ serverFiltering: false
      dataSource: serviceInfoDataSource,
      template: kendo.template($("#service_info_template").html()),
      selectable: true,
-     dataBinding: function() {
+     template: function(data){
+
+      var _pageSize = serviceInfoDataSource.pageSize();
+
+      localIndex++;
+
+      var currentPage = $("#service_info_pager").data("kendoPager").page();
+      var totalPage =  $("#service_info_pager").data("kendoPager").totalPages();
+
+      var index = (currentPage-1)*_pageSize + localIndex;
+      
+      data.itemIndex = index;
+      
+      return kendo.template($("#service_info_template").html())(data);
+      
+    },
+    dataBinding: function() {
       record = (this.dataSource.page() -1) * this.dataSource.pageSize();
     },
     dataBound: function(e) {
-     var listView = e.sender;
-     var firstItem = listView.element.children().first();
-     listView.select(firstItem);
-
+      localIndex=0;
+      var listView = e.sender;
+      var firstItem = listView.element.children().first();
+      listView.select(firstItem);
         //  the first select dossier template
         //  onSelectDossiertemplate(firstItem.attr("data-pk"));
       }
-
     });
 
     $("#service_info_pager").kendoPager({
@@ -184,23 +258,94 @@ serverFiltering: false
    });
 
     $("#administrationCodeSearch").kendoComboBox({
-      change: onSearchServiceInfo,
+      dataTextField: "administrationName",
+      dataValueField: "administrationCode",
       filter: "contains",
-      value:[],
+      dataSource: {
+        transport :{
+          read : {
+            url : "${api.server}/serviceinfos/statistics/agencies",
+            dataType : "json",
+            type : "GET",
+            beforeSend: function(req) {
+              req.setRequestHeader('groupId', ${groupId});
+            },
+            success : function(result){
+
+            },
+            error : function(xhr){
+
+            }
+          }
+        },
+        schema : {
+          data : "data",
+          total : "total"
+        }
+      }
     });
 
     $("#domainCodeSearch").kendoComboBox({
-      change: onSearchServiceInfo,
+      dataTextField: "domainName",
+      dataValueField: "domainCode",
       filter: "contains",
-      value:[],
+      dataSource: {
+        transport :{
+          read : {
+            url : "${api.server}/serviceinfos/statistics/domains",
+            dataType : "json",
+            type : "GET",
+            beforeSend: function(req) {
+              req.setRequestHeader('groupId', ${groupId});
+            },
+            success : function(result){
+
+            },
+            error : function(xhr){
+
+            }
+          }
+        },
+        schema : {
+          data : "data",
+          total : "total"
+        }
+      }
     });
 
     $("#levelSearch").kendoComboBox({
-      change: onSearchServiceInfo,
+      dataTextField: "levelName",
+      dataValueField: "level",
       filter: "contains",
-      value:[],
-    });
+      template: function(data){
+          var levelName = "Mức độ " + data.levelName;
+          data.levelName = levelName;
+          return kendo.template('<span class="k-state-default">#:data.levelName#</span>')(data);
+      },
+      dataSource: {
+        transport :{
+          read : {
+            url : "${api.server}/serviceinfos/statistics/levels",
+            dataType : "json",
+            type : "GET",
+            beforeSend: function(req) {
+              req.setRequestHeader('groupId', ${groupId});
+            },
+            success : function(result){
 
+            },
+            error : function(xhr){
+
+            }
+          }
+        },
+        schema : {
+          data : "data",
+          total : "total"
+        }
+      }
+    });
+    
     // open combobox on focus
     $(function() {
      $("[data-role=combobox]").each(function() {
@@ -212,7 +357,7 @@ serverFiltering: false
    });
 
     $("#input_search_service_info").keyup(function(e){
-     onSearchServiceInfo();
+     /*onSearchServiceInfo();*/
    });
 
     $("#btn_search_service_info").click(function(){
@@ -230,6 +375,13 @@ serverFiltering: false
 
     $("#slPageSize").change(function(){
       console.log($(this).val());
+      if(parseInt($("#slPageSize").val()) > parseInt(serviceInfoDataSource.total())){
+        $("#numPerPage").text(serviceInfoDataSource.total());
+        $("#totalItem").text(serviceInfoDataSource.total());
+      }else {
+        $("#numPerPage").text($(this).val());
+        $("#totalItem").text(serviceInfoDataSource.total());
+      }
       $("#service_info_list_view").getKendoListView().dataSource.pageSize(parseInt($("#slPageSize").val(), 10));
     });
 
@@ -239,14 +391,6 @@ serverFiltering: false
         "domain": $("#domainCodeSearch").val(),
         "level": $("#levelSearch").val(),
         "keywords": $("#input_search_service_info").val()
-      });
-    });
-
-    $(document).on("click",".item-serviceinfo",function(event){
-      var id=$(this).attr("data-pk");
-      console.log(id);
-      $("#serviceinfo-right-content").load("${ajax.serviceinfo_detail}",function(result){
-        pullDataDetail(id);
       });
     });
   })(jQuery);

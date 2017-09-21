@@ -1,12 +1,11 @@
-package frontend.web.portal.portlet;
-
-import frontend.web.portal.constants.FrontendWebPortalPortletKeys;
-
-import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
+package org.opencps.frontend.web.portal.portlet;
 
 import javax.portlet.Portlet;
 
+import org.opencps.frontend.web.portal.constants.FrontendWebPortalPortletKeys;
 import org.osgi.service.component.annotations.Component;
+
+import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
 /**
  * @author huymq
@@ -15,7 +14,7 @@ import org.osgi.service.component.annotations.Component;
 	immediate = true,
 	property = {
 		"com.liferay.portlet.css-class-wrapper=portlet-freemarker",
-		"com.liferay.portlet.display-category=category.sample",
+					"com.liferay.portlet.display-category=category.opencps_v2.portal",
 		"com.liferay.portlet.header-portlet-css=/css/main.css",
 		"com.liferay.portlet.instanceable=true",
 		"javax.portlet.display-name=frontend-web-portal Portlet",
@@ -28,4 +27,5 @@ import org.osgi.service.component.annotations.Component;
 	service = Portlet.class
 )
 public class FrontendWebPortalPortlet extends FreeMarkerPortlet {
+
 }
