@@ -221,14 +221,6 @@ html .k-pager-input {
 .k-animation-container .k-list-container {
     background-color: white;
     border-radius: 4px;
-	border-color: #ddd;
-}
-
-.mBody .k-state-focused {
-	border-color: #0b72ba;
-}
-.k-dropdown-wrap {
-  border-radius: 4px;
 }
 
 body .k-dropdown-wrap, body .k-picker-wrap {
@@ -248,4 +240,19 @@ body .k-dropdown-wrap .k-select, body .k-picker-wrap .k-select {
 
 .accordion .k-combobox {
     margin: 3px 0;
+}
+
+
+
+/*----- Icons -----*/
+
+/* Icon Calendar */
+.k-icon.k-i-calendar {
+	width: 2em;
+	height: 1em;
+}
+.k-icon.k-i-calendar:before {
+	content: "\f073";
+	font-family: FontAwesome;
+	right: 10px;
 }

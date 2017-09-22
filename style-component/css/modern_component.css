@@ -333,27 +333,22 @@ input[type="text"]:focus, input[type="password"]:focus {
 /*------------------------------
       Text
 ------------------------------*/
-.text-light-blue {
+.text-light-blue, .text-hover-light-blue:hover {
   color: #14bef0;
 }
-
-.text-blue, .text-hover-blue:hover {
+.textblue, .text-hover-blue:hover {
   color: #0b72ba;
 }
-
 .text-light-gray {
   color: #939393;
 }
-
 .text-orange {
   color: orange;
 }
-
-.text-underline {
-  border-bottom: 1px solid currentColor;
+.text-text-underline {
   display: inline-block;
+  border-bottom: 1px solid currentColor;
 }
-
 .text-link {
   color: #14bef0;
 }
@@ -370,6 +365,13 @@ input[type="text"]:focus, input[type="password"]:focus {
   min-width: 17px;
   text-align: center;
   padding: 1px 6px;
+}
+
+/*------------------------------
+      Hover
+------------------------------*/
+.hover-pointer:hover {
+  cursor: pointer;
 }
 
 /*------------------------------
@@ -418,7 +420,7 @@ input[type="text"]:focus, input[type="password"]:focus {
       Mimic Table
 ------------------------------*/
 .mimic-table {
-  border: 1px solid #2a2a2a;
+  border: 1px solid #ddd;
   border-width: 1px 0 !important;
   margin-bottom: -1px;
 }
