@@ -219,6 +219,7 @@
         $("#administration").html(kendo.render(templateAdministration, this.view()));
         $("#administration > li:first-child").addClass("active");
         $("#administrationCodeSearch").data("kendoComboBox").value($("#administration > li:first-child").attr("dataPk"));
+        $("#administrationCodeSearch").data("kendoComboBox")._isSelect = false;
         $("#service_info_list_view").getKendoListView().dataSource.read({
           "administration": $("#administration > li:first-child").attr("dataPk")
         });
