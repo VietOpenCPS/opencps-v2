@@ -73,14 +73,17 @@
         <div class="col-sm-1 text-center">
          <b>STT</b>
        </div>
-       <div class="col-sm-7 text-center">
+       <div class="col-sm-6 text-center">
          <b>Tên thủ tục</b>
        </div>
        <div class="col-sm-2 text-center">
          <b>Lĩnh vực thủ tục</b>
        </div>
-       <div class="col-sm-2 text-center">
+       <div class="col-sm-1 text-center">
          <b>Mức độ</b>
+       </div>
+       <div class="col-sm-2 text-center">
+         <b>Nộp hồ sơ</b>
        </div>
      </li>
    </ul>
@@ -89,26 +92,69 @@
  </div>
 
  <script type="text/x-kendo-template" id="service_info_template">
-   <li class="clearfix item-serviceinfo eq-height-lg" data-pk="#: id #" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
+   <li class="clearfix eq-height-lg" data-pk="#: id #" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
      <div class="col-sm-1 text-center">
-       <#-- #:index#  -->
-    </div>
-    <div class="col-sm-7 service-info-item text-hover-blue" data-pk="#: id #">
+       #:itemIndex #
+     </div>
+     <div class="col-sm-6 item-serviceinfo text-hover-blue hover-pointer" data-pk="#: id #">
       #: serviceName #
     </div>
     <div class="col-sm-2 text-center">
       #: domainName #
     </div>
-    <div class="col-sm-2 text-center">
+    <div class="col-sm-1 text-center">
       Mức độ #: maxLevel #
     </div>
-  </li>
+    <div class="col-sm-2 text-center">
+      #if((typeof serviceConfigs !== 'undefined') ){#
+      <div class="dropdown">
+        <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          #
+          var govAgencyCode = "";
+          var govAgencyName = "";
+          var serviceInstruction = "";
+          var serviceLevel = "";
+          var serviceUrl = "";
+          if (serviceConfigs[1]) {
+          for(var i=0; i<serviceConfigs.length;i++){
+          govAgencyCode = serviceConfigs[i].govAgencyCode;
+          govAgencyName = serviceConfigs[i].govAgencyName;
+          serviceInstruction = serviceConfigs[i].serviceInstruction;
+          serviceLevel = serviceConfigs[i].serviceLevel;
+          serviceUrl = serviceConfigs[i].serviceUrl;
+          console.log(govAgencyName);
+          #
+          <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
+          #}
+        } else {
+        govAgencyCode = serviceConfigs.govAgencyCode;
+        govAgencyName = serviceConfigs.govAgencyName;
+        serviceInstruction = serviceConfigs.serviceInstruction;
+        serviceLevel = serviceConfigs.serviceLevel;
+        serviceUrl = serviceConfigs.serviceUrl;
+        console.log(govAgencyName);
+        #
+        <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
+        #}#
+      </ul>
+    </div>
+    #}#
+  <#-- #if(true){#
+  <button class="btn btn-small btn-active">Nộp hồ sơ</button>
+  #}# -->
+</div>
+</li>
 </script>
 </div>
 </div>
 
 <script type="text/javascript">
   (function($){
+    var localIndex = 0;
+
     var serviceInfoDataSource = new kendo.data.DataSource({
      transport: {
       read: function(options) {
@@ -166,7 +212,7 @@
  schema: {
   total: "total",
   data: "data",
-  model : { id: "serviceinfoId" }
+  model : { id: "serviceInfoId" }
 },
 pageSize: 5,
 serverPaging: false,
@@ -178,13 +224,30 @@ serverFiltering: false
      dataSource: serviceInfoDataSource,
      template: kendo.template($("#service_info_template").html()),
      selectable: true,
-     dataBinding: function() {
+     template: function(data){
+
+      var _pageSize = serviceInfoDataSource.pageSize();
+
+      localIndex++;
+
+      var currentPage = $("#service_info_pager").data("kendoPager").page();
+      var totalPage =  $("#service_info_pager").data("kendoPager").totalPages();
+
+      var index = (currentPage-1)*_pageSize + localIndex;
+      
+      data.itemIndex = index;
+      
+      return kendo.template($("#service_info_template").html())(data);
+      
+    },
+    dataBinding: function() {
       record = (this.dataSource.page() -1) * this.dataSource.pageSize();
     },
     dataBound: function(e) {
-     var listView = e.sender;
-     var firstItem = listView.element.children().first();
-     listView.select(firstItem);
+      localIndex=0;
+      var listView = e.sender;
+      var firstItem = listView.element.children().first();
+      listView.select(firstItem);
         //  the first select dossier template
         //  onSelectDossiertemplate(firstItem.attr("data-pk"));
       }
@@ -249,6 +312,9 @@ serverFiltering: false
           data : "data",
           total : "total"
         }
+      },
+      change : function(){
+        console.log("change");
       }
     });
 
@@ -256,7 +322,14 @@ serverFiltering: false
       dataTextField: "levelName",
       dataValueField: "level",
       filter: "contains",
-      template: '<span class="k-state-default">Mức độ #:data.levelName#</span>',
+      template: function(data){
+        var levelName =  data.levelName;
+        if(levelName.toString().indexOf("Mức độ") == -1){
+          levelName = "Mức độ " + data.levelName;
+          data.levelName = levelName;
+        }
+        return kendo.template('<span class="k-state-default">#:data.levelName#</span>')(data);
+      },
       dataSource: {
         transport :{
           read : {
@@ -280,7 +353,7 @@ serverFiltering: false
         }
       }
     });
-
+    
     // open combobox on focus
     $(function() {
      $("[data-role=combobox]").each(function() {
@@ -311,12 +384,12 @@ serverFiltering: false
     $("#slPageSize").change(function(){
       console.log($(this).val());
       if(parseInt($("#slPageSize").val()) > parseInt(serviceInfoDataSource.total())){
-            $("#numPerPage").text(serviceInfoDataSource.total());
-            $("#totalItem").text(serviceInfoDataSource.total());
-          }else {
-            $("#numPerPage").text($(this).val());
-            $("#totalItem").text(serviceInfoDataSource.total());
-          }
+        $("#numPerPage").text(serviceInfoDataSource.total());
+        $("#totalItem").text(serviceInfoDataSource.total());
+      }else {
+        $("#numPerPage").text($(this).val());
+        $("#totalItem").text(serviceInfoDataSource.total());
+      }
       $("#service_info_list_view").getKendoListView().dataSource.pageSize(parseInt($("#slPageSize").val(), 10));
     });
 

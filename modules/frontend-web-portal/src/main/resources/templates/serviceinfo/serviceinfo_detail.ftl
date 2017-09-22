@@ -134,7 +134,6 @@
             </div>
             <div id="ycdk" class="tab-pane fade">
                 <p class="MT10 MB10" data-bind="text:conditionText" id="conditionText"></p>
-
                 <div class="col-sm-12 PL0 MT10 submitDossier">
 
                 </div>
@@ -190,11 +189,26 @@
                         }else {
                             $("#maxLevel").addClass("label label-dvc-lv4");
                         }
-                        if(result.maxLevel>=3){
-                            $(".submitDossier").html('<button type="button" class="btn btn-active" data-toggle="modal" data-target="#submitDossierModal">Nộp hồ sơ >></button>');
-                            loadAdministration(id);
-                        }else{
-                            $(".submitDossier").html('<button class="btn">Xem hướng dẫn >></button>');
+                        if((typeof result.serviceConfigs !== 'undefined')){
+                            console.log("ccc111");
+                            if(result.maxLevel>=3){
+                                console.log("ccc2222");
+                                var submitDsier = '<div class="dropdown"><button class="btn btn-active btn-small  dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ <span class="caret"></span></button><ul class="dropdown-menu">';
+
+                                if (result.serviceConfigs[1]) {
+                                    console.log("ccc3333");
+                                    for(var i=0; i<result.serviceConfigs.length;i++){
+                                        var item = result.serviceConfigs[i];
+                                        submitDsier += '<li><a href='+result.serviceConfigs.serviceUrl+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
+                                    }
+                                }else{
+                                    submitDsier += '<li><a href='+result.serviceConfigs.serviceUrl+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
+                                }
+                                submitDsier += '</ul></div>'
+                                $(".submitDossier").html(submitDsier);
+                            }else{
+                                $(".submitDossier").html('<button class="btn">Xem hướng dẫn >></button>');
+                            }
                         }
                         return "Mức độ "+result.maxLevel;
                     },
@@ -226,7 +240,7 @@
         });
     }
 
-    var loadAdministration = function(id){
+    /*var loadAdministration = function(id){
        $("#slAdministration").kendoComboBox({
         placeholder : "Chọn cơ quan thực hiện",
         dataTextField : "govAgencyName",
@@ -234,7 +248,7 @@
         dataSource : {
             transport : {
                 read : {
-                    url : "${api.server}/serviceconfigs?service="+id+"&applicantType=${applicantType}",
+                    url : "",
                     dataType : "json",
                     type : "GET",
                     beforeSend: function(req) {
@@ -258,7 +272,7 @@
         },
         filter: "contains"
     });
-   }
+   }*/
 
    $(function(){
     $("#btn-submit-serviceinfo").click(function(){

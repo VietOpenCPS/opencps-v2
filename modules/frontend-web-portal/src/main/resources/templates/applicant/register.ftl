@@ -46,7 +46,7 @@
 <div class="row MT15">
   <div class="col-xs-12 col-sm-12">Số điện thoại</div>
   <div class="col-xs-12 col-sm-12 MT5">
-    <input type="text" id="telNo" name="telNo" class="form-control" />
+    <input type="text" id="contactTelNo" name="contactTelNo" class="form-control" />
   </div>
 </div>
 <div class="row MT15">
@@ -129,7 +129,7 @@
             message: "Đăng ký thành công."
           }, "success");
           
-          location.href("${api.server}/confirm-account?active_user_id="+result.applicantId);
+          window.location.href = "${portalURL}/confirm-account?active_user_id="+result.applicantId;
         },
         error: function(result){
           notification.show({
@@ -144,9 +144,9 @@
       if (this.value == 'citizen') {
         $(this).closest('form').find("input[type=text],input[type=password], textarea").val("");
         $("#lblApplicantName").text("Họ và tên");
-        $("#lblApplicantIdNo").text("Số CMTND/ Hộ chiếu");
+        $("#lblApplicantIdNo").text("Số CMND/ Hộ chiếu");
         $("#applicantName").attr("placeholder","Họ và tên");
-        $("#applicantIdNo").attr("placeholder","Số CMTND/ Hộ chiếu");
+        $("#applicantIdNo").attr("placeholder","Số CMND/ Hộ chiếu");
       }
       else  {
         $(this).closest('form').find("input[type=text],input[type=password], textarea").val("");
