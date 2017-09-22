@@ -96,7 +96,7 @@
      <div class="col-sm-1 text-center">
        #:itemIndex #
      </div>
-     <div class="col-sm-6 item-serviceinfo text-hover-blue" data-pk="#: id #">
+     <div class="col-sm-6 item-serviceinfo text-hover-blue hover-pointer" data-pk="#: id #">
       #: serviceName #
     </div>
     <div class="col-sm-2 text-center">
@@ -210,7 +210,7 @@
  schema: {
   total: "total",
   data: "data",
-  model : { id: "serviceinfoId" }
+  model : { id: "serviceInfoId" }
 },
 pageSize: 5,
 serverPaging: false,
@@ -310,6 +310,9 @@ serverFiltering: false
           data : "data",
           total : "total"
         }
+      },
+      change : function(){
+        console.log("change");
       }
     });
 
