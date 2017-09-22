@@ -204,10 +204,12 @@
                                 }else{
                                     submitDsier += '<li><a href='+result.serviceConfigs.serviceUrl+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
                                 }
-                                submitDsier += '</ul></div>'
+                                submitDsier += '</ul>';
+                                submitDsier += '<button class="btn ML5 btn-revert">Quay lại</button>';
+                                submitDsier += '</div>'
                                 $(".submitDossier").html(submitDsier);
                             }else{
-                                $(".submitDossier").html('<button class="btn">Xem hướng dẫn >></button>');
+                                $(".submitDossier").html('<button class="btn">Xem hướng dẫn >></button> <button class="btn ML5 btn-revert">Quay lại</button>');
                             }
                         }
                         return "Mức độ "+result.maxLevel;
@@ -272,9 +274,9 @@
         },
         filter: "contains"
     });
-   }*/
+}*/
 
-   $(function(){
+$(function(){
     $("#btn-submit-serviceinfo").click(function(){
         var data = $("#fmServiceinfo").serialize();
         var id = $("#serviceinfoId").val();
@@ -291,5 +293,7 @@
             }
         });
     });
+
+    
 });
 </script>
