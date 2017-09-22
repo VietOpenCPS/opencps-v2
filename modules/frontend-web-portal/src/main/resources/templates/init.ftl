@@ -19,6 +19,8 @@
 
 	<#assign api = (Request.api)!>
 	<#assign ajax = (Request.ajax)!>
+
+	<#assign portalURL = (themeDisplay.getPortalURL())!>
 </#if>
 
 <!-- popup notification -->
