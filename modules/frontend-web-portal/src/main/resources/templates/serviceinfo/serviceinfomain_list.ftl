@@ -324,7 +324,7 @@ serverFiltering: false
       filter: "contains",
       template: function(data){
         var levelName =  data.levelName;
-        if(levelName.indexOf("Mức độ") == -1){
+        if(levelName.toString().indexOf("Mức độ") == -1){
           levelName = "Mức độ " + data.levelName;
           data.levelName = levelName;
         }

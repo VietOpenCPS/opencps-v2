@@ -189,17 +189,20 @@
                         }else {
                             $("#maxLevel").addClass("label label-dvc-lv4");
                         }
-                        if((typeof result.serivceConfigs !== 'undefined')){
+                        if((typeof result.serviceConfigs !== 'undefined')){
+                            console.log("ccc111");
                             if(result.maxLevel>=3){
+                                console.log("ccc2222");
                                 var submitDsier = '<div class="dropdown"><button class="btn btn-active btn-small  dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ <span class="caret"></span></button><ul class="dropdown-menu">';
 
-                                if (result.serivceConfigs[1]) {
-                                    for(var i=0; i<result.serivceConfigs.length;i++){
-                                        var item = result.serivceConfigs[i];
-                                        submitDsier += '<li><a href='+result.serivceConfigs.serviceUrl+'>'+result.serivceConfigs.govAgencyName+'</a></li>';
+                                if (result.serviceConfigs[1]) {
+                                    console.log("ccc3333");
+                                    for(var i=0; i<result.serviceConfigs.length;i++){
+                                        var item = result.serviceConfigs[i];
+                                        submitDsier += '<li><a href='+result.serviceConfigs.serviceUrl+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
                                     }
                                 }else{
-                                    submitDsier += '<li><a href='+result.serivceConfigs.serviceUrl+'>'+result.serivceConfigs.govAgencyName+'</a></li>';
+                                    submitDsier += '<li><a href='+result.serviceConfigs.serviceUrl+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
                                 }
                                 submitDsier += '</ul></div>'
                                 $(".submitDossier").html(submitDsier);
