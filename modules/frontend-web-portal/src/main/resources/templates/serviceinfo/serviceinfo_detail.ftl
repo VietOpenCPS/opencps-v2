@@ -109,21 +109,21 @@
                     </div>
                 </div>
                 <div id="ttth" class="tab-pane fade">
-                   <p class="" data-bind="text:processText" id="processText"></p>
+                 <p class="" data-bind="text:processText" id="processText"></p>
 
-                   <div class="col-sm-12 PL0 MT10 submitDossier">
+                 <div class="col-sm-12 PL0 MT10 submitDossier">
 
-                   </div>
-               </div>
-               <div id="tphs" class="tab-pane fade">
-                   <p class="MB15 MT10" data-bind="text:dossierText" id="dossierText"></p>
+                 </div>
+             </div>
+             <div id="tphs" class="tab-pane fade">
+                 <p class="MB15 MT10" data-bind="text:dossierText" id="dossierText"></p>
 
-                   <label>File biểu mẫu</label>
-                   <ul class="ML10" id ="service_info_filetemplate" data-template="service_info_filetemplate_template" data-bind="source: fileTemplates">
+                 <label>File biểu mẫu</label>
+                 <ul class="ML10" id ="service_info_filetemplate" data-template="service_info_filetemplate_template" data-bind="source: fileTemplates">
 
-                   </ul>
-                   <script type="text/x-kendo-template" id="service_info_filetemplate_template">
-                       <li class="clearfix item-serviceinfo-filetemplate eq-height-lg" data-bind="attr: {data-pk : fileTemplateNo}" role="option" aria-selected="true">
+                 </ul>
+                 <script type="text/x-kendo-template" id="service_info_filetemplate_template">
+                     <li class="clearfix item-serviceinfo-filetemplate eq-height-lg" data-bind="attr: {data-pk : fileTemplateNo}" role="option" aria-selected="true">
                         <a data-bind="attr : { href: fileTemplateDownLoad}"><i class="fa fa-download" aria-hidden="true"></i> <span data-bind="text: templateName"></span></a>
                     </li>
                 </script>
@@ -189,9 +189,10 @@
                         }else {
                             $("#maxLevel").addClass("label label-dvc-lv4");
                         }
-                        if(result.maxLevel>=3){
-                            var submitDsier = '<div class="dropdown"><button class="btn btn-active btn-small  dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ <span class="caret"></span></button><ul class="dropdown-menu">';
-                            if((typeof result.serivceConfigs !== 'undefined')){
+                        if((typeof result.serivceConfigs !== 'undefined')){
+                            if(result.maxLevel>=3){
+                                var submitDsier = '<div class="dropdown"><button class="btn btn-active btn-small  dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ <span class="caret"></span></button><ul class="dropdown-menu">';
+
                                 if (result.serivceConfigs[1]) {
                                     for(var i=0; i<result.serivceConfigs.length;i++){
                                         var item = result.serivceConfigs[i];
@@ -202,10 +203,9 @@
                                 }
                                 submitDsier += '</ul></div>'
                                 $(".submitDossier").html(submitDsier);
-                                loadAdministration(id);
+                            }else{
+                                $(".submitDossier").html('<button class="btn">Xem hướng dẫn >></button>');
                             }
-                        }else{
-                            $(".submitDossier").html('<button class="btn">Xem hướng dẫn >></button>');
                         }
                         return "Mức độ "+result.maxLevel;
                     },
@@ -237,8 +237,8 @@
         });
     }
 
-    var loadAdministration = function(id){
-     $("#slAdministration").kendoComboBox({
+    /*var loadAdministration = function(id){
+       $("#slAdministration").kendoComboBox({
         placeholder : "Chọn cơ quan thực hiện",
         dataTextField : "govAgencyName",
         dataValueField : "govAgencyCode",
@@ -269,9 +269,9 @@
         },
         filter: "contains"
     });
- }
+   }*/
 
- $(function(){
+   $(function(){
     $("#btn-submit-serviceinfo").click(function(){
         var data = $("#fmServiceinfo").serialize();
         var id = $("#serviceinfoId").val();
