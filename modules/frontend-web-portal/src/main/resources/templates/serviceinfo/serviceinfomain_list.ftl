@@ -106,7 +106,7 @@
       Mức độ #: maxLevel #
     </div>
     <div class="col-sm-2 text-center">
-      #if((typeof serivceConfigs !== 'undefined') ){#
+      #if((typeof serviceConfigs !== 'undefined') ){#
       <div class="dropdown">
         <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ
           <span class="caret"></span>
@@ -120,20 +120,22 @@
           var serviceUrl = "";
           if (serivceConfigs[1]) {
           for(var i=0; i<serivceConfigs.length;i++){
-          govAgencyCode = serivceConfigs[i].govAgencyCode;
-          govAgencyName = serivceConfigs[i].govAgencyName;
-          serviceInstruction = serivceConfigs[i].serviceInstruction;
-          serviceLevel = serivceConfigs[i].serviceLevel;
-          serviceUrl = serivceConfigs[i].serviceUrl;
+          govAgencyCode = serviceConfigs[i].govAgencyCode;
+          govAgencyName = serviceConfigs[i].govAgencyName;
+          serviceInstruction = serviceConfigs[i].serviceInstruction;
+          serviceLevel = serviceConfigs[i].serviceLevel;
+          serviceUrl = serviceConfigs[i].serviceUrl;
+          console.log(govAgencyName);
           #
           <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
           #}
         } else {
-        govAgencyCode = serivceConfigs.govAgencyCode;
-        govAgencyName = serivceConfigs.govAgencyName;
-        serviceInstruction = serivceConfigs.serviceInstruction;
-        serviceLevel = serivceConfigs.serviceLevel;
-        serviceUrl = serivceConfigs.serviceUrl;
+        govAgencyCode = serviceConfigs.govAgencyCode;
+        govAgencyName = serviceConfigs.govAgencyName;
+        serviceInstruction = serviceConfigs.serviceInstruction;
+        serviceLevel = serviceConfigs.serviceLevel;
+        serviceUrl = serviceConfigs.serviceUrl;
+        console.log(govAgencyName);
         #
         <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
         #}#
