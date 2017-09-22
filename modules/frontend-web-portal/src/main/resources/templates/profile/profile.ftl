@@ -1,3 +1,6 @@
+<#if (Request)??>
+<#include "init.ftl">
+</#if>
 <div class="row account-info">
   <div class="col-sm-2 col-xs-12">
     <img src="http://vuicuoi.com.vn/uploads/avatar/11025743_1050901561593820_6159841534685824102_n.jpg" class="img-responsive max-width-100 img-rounded">
