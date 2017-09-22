@@ -118,8 +118,8 @@
           var serviceInstruction = "";
           var serviceLevel = "";
           var serviceUrl = "";
-          if (serivceConfigs[1]) {
-          for(var i=0; i<serivceConfigs.length;i++){
+          if (serviceConfigs[1]) {
+          for(var i=0; i<serviceConfigs.length;i++){
           govAgencyCode = serviceConfigs[i].govAgencyCode;
           govAgencyName = serviceConfigs[i].govAgencyName;
           serviceInstruction = serviceConfigs[i].serviceInstruction;
