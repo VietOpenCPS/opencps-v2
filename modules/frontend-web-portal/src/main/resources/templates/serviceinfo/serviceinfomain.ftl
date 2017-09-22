@@ -102,7 +102,10 @@
           $("#administration > li:first-child").addClass("active");
 
           $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
-            $("#administrationCodeSearch").data("kendoComboBox").value(administrationId);
+            var administrationCombobox =  $("#administrationCodeSearch").data("kendoComboBox");
+            setValue(administrationCombobox,administrationId);
+            administrationCombobox.trigger("change");
+            administrationCombobox._isSelect = false;
             $("#service_info_list_view").getKendoListView().dataSource.read({
               "administration": administrationId
             });
@@ -112,7 +115,11 @@
           $("#domain > li").removeClass("active");
           $("#domain > li:first-child").addClass("active");
           $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
-            $("#domainCodeSearch").data("kendoComboBox").value(domainId);
+            var domainCombobox=  $("#domainCodeSearch").data("kendoComboBox");
+            setValue(domainCombobox,domainId);
+            domainCombobox.trigger("change");
+            domainCombobox._isSelect = false;
+            console.log(domainCombobox);
             $("#service_info_list_view").getKendoListView().dataSource.read({
               "domain": domainId
             });
@@ -122,7 +129,10 @@
           $("#level > li").removeClass("active");
           $("#level > li:first-child").addClass("active");
           $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
-            $("#levelSearch").data("kendoComboBox").value(levelId);
+            var levelCombobox = $("#levelSearch").data("kendoComboBox");
+            setValue(levelCombobox,levelId);
+            levelCombobox.trigger("change");
+            levelCombobox._isSelect = false;
             $("#service_info_list_view").getKendoListView().dataSource.read({
               "level": levelId
             });
@@ -130,6 +140,10 @@
         }
       }
     }).data('kendoTabStrip');
+
+    var setValue = function(combobox,value) {
+      combobox.value(value);
+    }
 
     $(document).on("click",".administration",function(event){
       event.preventDefault();

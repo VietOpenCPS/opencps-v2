@@ -96,7 +96,7 @@
      <div class="col-sm-1 text-center">
        #:itemIndex #
      </div>
-     <div class="col-sm-6 item-serviceinfo text-hover-blue" data-pk="#: id #">
+     <div class="col-sm-6 item-serviceinfo text-hover-blue hover-pointer" data-pk="#: id #">
       #: serviceName #
     </div>
     <div class="col-sm-2 text-center">
@@ -310,6 +310,9 @@ serverFiltering: false
           data : "data",
           total : "total"
         }
+      },
+      change : function(){
+        console.log("change");
       }
     });
 
@@ -318,9 +321,11 @@ serverFiltering: false
       dataValueField: "level",
       filter: "contains",
       template: function(data){
+        if(data.levelName.indexOf("Mức độ") == -1){
           var levelName = "Mức độ " + data.levelName;
           data.levelName = levelName;
-          return kendo.template('<span class="k-state-default">#:data.levelName#</span>')(data);
+        }
+        return kendo.template('<span class="k-state-default">#:data.levelName#</span>')(data);
       },
       dataSource: {
         transport :{
