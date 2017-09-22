@@ -190,10 +190,13 @@
                             $("#maxLevel").addClass("label label-dvc-lv4");
                         }
                         if((typeof result.serivceConfigs !== 'undefined')){
+                            console.log("ccc111");
                             if(result.maxLevel>=3){
+                                console.log("ccc2222");
                                 var submitDsier = '<div class="dropdown"><button class="btn btn-active btn-small  dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ <span class="caret"></span></button><ul class="dropdown-menu">';
 
                                 if (result.serivceConfigs[1]) {
+                                    console.log("ccc3333");
                                     for(var i=0; i<result.serivceConfigs.length;i++){
                                         var item = result.serivceConfigs[i];
                                         submitDsier += '<li><a href='+result.serivceConfigs.serviceUrl+'>'+result.serivceConfigs.govAgencyName+'</a></li>';
