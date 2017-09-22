@@ -6,8 +6,6 @@
 
 <#assign isSignedIn = themeDisplay.isSignedIn() />
 
-<#assign logoutURL = (themeDisplay.getURLPortal() + "/c/portal/logout") />
-
 <#assign userName = themeDisplay.getUser().getFullName() />
 
 <#if themeDisplay.getUser().getFemale()>

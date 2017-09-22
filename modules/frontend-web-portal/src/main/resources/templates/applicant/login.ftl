@@ -40,8 +40,8 @@
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li><a href="#"><i class="fa fa-user"></i> Thông tin tài khoản</a></li>
-                    <li><a href="${logoutURL}"><i class="fa fa-arrow-right"></i> Đăng xuất</a></li>
+                    <li><a href="/profile"><i class="fa fa-user"></i> Thông tin tài khoản</a></li>
+                    <li><a href="/c/portal/logout"><i class="fa fa-arrow-right"></i> Đăng xuất</a></li>
                 </ul>
             </div>
         </div>
