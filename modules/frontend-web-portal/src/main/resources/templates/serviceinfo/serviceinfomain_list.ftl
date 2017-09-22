@@ -118,8 +118,8 @@
           var serviceInstruction = "";
           var serviceLevel = "";
           var serviceUrl = "";
-          if (serivceConfigs[1]) {
-          for(var i=0; i<serivceConfigs.length;i++){
+          if (serviceConfigs[1]) {
+          for(var i=0; i<serviceConfigs.length;i++){
           govAgencyCode = serviceConfigs[i].govAgencyCode;
           govAgencyName = serviceConfigs[i].govAgencyName;
           serviceInstruction = serviceConfigs[i].serviceInstruction;
@@ -323,8 +323,9 @@ serverFiltering: false
       dataValueField: "level",
       filter: "contains",
       template: function(data){
-        if(data.levelName.indexOf("Mức độ") == -1){
-          var levelName = "Mức độ " + data.levelName;
+        var levelName =  data.levelName;
+        if(levelName.indexOf("Mức độ") == -1){
+          levelName = "Mức độ " + data.levelName;
           data.levelName = levelName;
         }
         return kendo.template('<span class="k-state-default">#:data.levelName#</span>')(data);

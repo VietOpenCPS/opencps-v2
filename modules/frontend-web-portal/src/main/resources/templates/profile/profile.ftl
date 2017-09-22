@@ -1,6 +1,9 @@
+<#if (Request)??>
+<#include "init.ftl">
+</#if>
 <div class="row account-info">
   <div class="col-sm-2 col-xs-12">
-    <img src="http://vuicuoi.com.vn/uploads/avatar/11025743_1050901561593820_6159841534685824102_n.jpg" class="img-responsive max-width-100 img-rounded">
+  <img src="" class="img-responsive max-width-100 img-rounded">
     <div class="text-center"><a href="" class="text-light-gray">Thay đổi avatar</a></div>
     <p class="name text-bold text-center">Lương Thị Hạnh</p>
     <div>Số CMND/Hộ chiếu: <span class="text-bold">0123456789</span></div>

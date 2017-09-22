@@ -147,7 +147,6 @@
 
     $(document).on("click",".administration",function(event){
       event.preventDefault();
-
       $("#administration li").removeClass('active');
       $(this).addClass('active');
 
@@ -219,6 +218,7 @@
       change : function(){
         $("#administration").html(kendo.render(templateAdministration, this.view()));
         $("#administration > li:first-child").addClass("active");
+        $("#administrationCodeSearch").data("kendoComboBox").value($("#administration > li:first-child").attr("dataPk"));
         $("#service_info_list_view").getKendoListView().dataSource.read({
           "administration": $("#administration > li:first-child").attr("dataPk")
         });
