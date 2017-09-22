@@ -113,7 +113,7 @@ public class UserMgtUtils {
 		}
 		
 		if (Validator.isNull(applicant)) {
-			applicant = ApplicantLocalServiceUtil.fetchByTelNo(id);
+			applicant = ApplicantLocalServiceUtil.fetchByAppId(id);
 		}
 		
 		return applicant;

@@ -90,7 +90,19 @@ public class ApplicantListenerUtils {
 			sb.append(StringPool.COMMA);
 		}
 		if (Validator.isNotNull(object.get(ApplicantListenerMessageKeys.ACTIVATION_LINK))) {
-			sb.append(object.get(ApplicantListenerMessageKeys.ACTIVATION_LINK));
+			
+			StringBuffer emailLinkSb = new StringBuffer();
+			
+			emailLinkSb.append("<a href=\"");
+			emailLinkSb.append(object.get(ApplicantListenerMessageKeys.ACTIVATION_LINK).toString()
+					+ object.get(ApplicantListenerMessageKeys.ACTIVATION_CODE));
+			emailLinkSb.append("\" >");
+			
+			emailLinkSb.append(object.get(ApplicantListenerMessageKeys.ACTIVATION_LINK));
+			
+			emailLinkSb.append("</a>");
+			
+			sb.append(emailLinkSb.toString());
 			sb.append(StringPool.COMMA);
 		}
 		if (Validator.isNotNull(object.get(ApplicantListenerMessageKeys.USER_NAME))) {
