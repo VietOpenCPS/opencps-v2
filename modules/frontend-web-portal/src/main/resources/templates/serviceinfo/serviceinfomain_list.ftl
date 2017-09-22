@@ -210,7 +210,7 @@
  schema: {
   total: "total",
   data: "data",
-  model : { id: "serviceInfoId" }
+  model : { id: "serviceinfoId" }
 },
 pageSize: 5,
 serverPaging: false,
@@ -318,9 +318,11 @@ serverFiltering: false
       dataValueField: "level",
       filter: "contains",
       template: function(data){
+        if(data.levelName.indexOf("Mức độ") == -1){
           var levelName = "Mức độ " + data.levelName;
           data.levelName = levelName;
-          return kendo.template('<span class="k-state-default">#:data.levelName#</span>')(data);
+        }
+        return kendo.template('<span class="k-state-default">#:data.levelName#</span>')(data);
       },
       dataSource: {
         transport :{
