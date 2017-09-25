@@ -1,6 +1,7 @@
 create unique index IX_58ABB49 on opencps_applicant (applicantIdNo[$COLUMN_LENGTH:75$]);
 create unique index IX_70B3C735 on opencps_applicant (contactEmail[$COLUMN_LENGTH:75$]);
 create unique index IX_7D1942D5 on opencps_applicant (contactTelNo[$COLUMN_LENGTH:75$]);
+create unique index IX_EE04E01F on opencps_applicant (mappingUserId);
 create index IX_58078059 on opencps_applicant (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_35F6491B on opencps_applicant (uuid_[$COLUMN_LENGTH:75$], groupId);
 

@@ -108,11 +108,11 @@
         <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
       </div>
     </div>
-
   </div>
 </div>
 
 <script type="text/javascript">
+  var initServiceinfo;
   $(function() {
     var ts = $("#service_info_tabstrip").kendoTabStrip({
       animation: { open: { effects: "fadeIn"} },
@@ -139,7 +139,7 @@
             var domainCombobox=  $("#domainCodeSearch").data("kendoComboBox");
             setValue(domainCombobox,domainId);
             domainCombobox.trigger("change");
-            domainCombobox._isSelect = false;
+            domainCombobox._isSelect = false; 
             console.log(domainCombobox);
             $("#service_info_list_view").getKendoListView().dataSource.read({
               "domain": domainId
@@ -159,7 +159,8 @@
             });
           });
         }
-      }
+      },
+      scrollable: false
     }).data('kendoTabStrip');
 
     var setValue = function(combobox,value) {
@@ -174,6 +175,7 @@
       var administrationCode = $(this).attr("dataPk");
       $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
         $("#administrationCodeSearch").data("kendoComboBox").value(administrationCode);
+        $("#administrationCodeSearch").data("kendoComboBox")._isSelect=false;
         $("#service_info_list_view").getKendoListView().dataSource.read({
           "administration": administrationCode
         });
@@ -190,6 +192,7 @@
       var domainCode = $(this).attr("dataPk");
       $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
         $("#domainCodeSearch").data("kendoComboBox").value(domainCode);
+        $("#domainCodeSearch").data("kendoComboBox")._isSelect=false;
         $("#service_info_list_view").getKendoListView().dataSource.read({
           "domain": domainCode
         });
@@ -206,6 +209,7 @@
 
       $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
         $("#levelSearch").data("kendoComboBox").value(levelCode);
+        $("#levelSearch").data("kendoComboBox")._isSelect=false;
         $("#service_info_list_view").getKendoListView().dataSource.read({
           "level": levelCode
         });
@@ -337,5 +341,58 @@
       $("#modal-content-instruction").text(instructionContent);
       $("#instructionModal").modal("show");
     });
+
+
+    initServiceinfo = function(){
+      console.log("init function");
+
+      var administration = getUrlParameter('administration');
+      var domain = getUrlParameter('domain');
+      var level = getUrlParameter('level');
+      var keyword = getUrlParameter('keyword');
+
+      console.log(administration);
+      console.log(domain);
+      console.log(level);
+      console.log(keyword);
+
+      if(domain!=null){
+        $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
+          $("#service_info_list_view").getKendoListView().dataSource.read({
+            "administration": administration,
+            "domain": domain,
+            "level": level,
+            "keywords": keyword
+          });
+        });
+        var domainCombobox=  $("#domainCodeSearch").data("kendoComboBox");
+        console.log(domainCombobox);
+        domainCombobox.value(1);
+      }
+
+      if(keyword!=null){
+        $("#input_search_service_info").val(keyword);
+      }
+    }
+
+    var getUrlParameter = function getUrlParameter(sParam) {
+      var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+      sURLVariables = sPageURL.split('&'),
+      sParameterName,
+      i;
+
+      for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+          return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+      }
+    };
+    
   });
+
+$(window).load(function () {
+  initServiceinfo();
+});
 </script>

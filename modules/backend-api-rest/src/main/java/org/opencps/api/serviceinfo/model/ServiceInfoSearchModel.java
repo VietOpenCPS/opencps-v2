@@ -63,7 +63,7 @@ public class ServiceInfoSearchModel {
     protected String administration;
 	@QueryParam(value = "domain")
     protected String domain;
-	@QueryParam(value = "level")
+	@DefaultValue("0") @QueryParam(value = "level")
     protected int level;
 	@QueryParam(value = "start")
     protected int start;

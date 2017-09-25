@@ -40,14 +40,10 @@ public class BackendAPIRestApplication extends Application {
 	public Set<Object> getSingletons() {
 		Set<Object> singletons = new HashSet<Object>();
 		
-		ServiceInfoManagement serviceInfo = new ServiceInfoManagementImpl();
-		ServiceConfigManagement serviceConfig = new ServiceConfigManagementImpl();
-		ApplicantManagement applicant = new ApplicantManagementImpl();
-		
 		// add REST endpoints (resources)
-		singletons.add(serviceInfo);
-		singletons.add(serviceConfig);
-		singletons.add(applicant);
+		singletons.add(new ApplicantManagementImpl());
+		singletons.add(new ServiceInfoManagementImpl());
+		singletons.add( new ServiceConfigManagementImpl());
 		
 		singletons.add(new DataManagementImpl());
 		singletons.add(new HolidayManagementImpl());

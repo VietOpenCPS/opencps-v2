@@ -70,7 +70,7 @@ public class SendMailUtils {
 
 			subscriptionSender.addRuntimeSubscribers(toAddress, toName);
 			
-			subscriptionSender.addRuntimeSubscribers("khoavd@fds.vn", "khoafds");
+			//subscriptionSender.addRuntimeSubscribers("khoavd@fds.vn", "khoafds");
 
 			subscriptionSender.flushNotificationsAsync();
 			

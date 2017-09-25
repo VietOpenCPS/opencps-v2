@@ -108,10 +108,10 @@
     <div class="col-sm-2 text-center">
       #if((typeof serviceConfigs !== 'undefined') ){#
       <div class="dropdown">
-        <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ
+        <button class="btn btn-reset MTN4 dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ
           <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu dropdown-menu-right">
           #
           var govAgencyCode = "";
           var govAgencyName = "";
@@ -254,7 +254,8 @@ serverFiltering: false
       listView.select(firstItem);
         //  the first select dossier template
         //  onSelectDossiertemplate(firstItem.attr("data-pk"));
-      }
+      },
+      autoBind : false
     });
 
     $("#service_info_pager").kendoPager({
