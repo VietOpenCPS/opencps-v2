@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.opencps.frontend.web.portal.constants.FrontendWebPortalPortletKeys;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.util.UserMgtUtils;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.model.CompanyConstants;
@@ -58,6 +60,10 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 		String password = actionRequest.getParameter("password");
 		boolean rememberMe = ParamUtil.getBoolean(actionRequest, "rememberMe");
 		String authType = CompanyConstants.AUTH_TYPE_EA;
+		
+		Applicant applicant = UserMgtUtils.getApplicant(login);
+
+		login = applicant != null ? applicant.getContactEmail() : login;
 
 		User user = UserLocalServiceUtil.getUserByEmailAddress(
 			themeDisplay.getCompanyId(), login);
