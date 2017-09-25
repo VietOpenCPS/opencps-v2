@@ -109,21 +109,21 @@
                     </div>
                 </div>
                 <div id="ttth" class="tab-pane fade">
-                 <p class="" data-bind="text:processText" id="processText"></p>
+                   <p class="" data-bind="text:processText" id="processText"></p>
 
-                 <div class="col-sm-12 PL0 MT10 submitDossier">
+                   <div class="col-sm-12 PL0 MT10 submitDossier">
 
-                 </div>
-             </div>
-             <div id="tphs" class="tab-pane fade">
-                 <p class="MB15 MT10" data-bind="text:dossierText" id="dossierText"></p>
+                   </div>
+               </div>
+               <div id="tphs" class="tab-pane fade">
+                   <p class="MB15 MT10" data-bind="text:dossierText" id="dossierText"></p>
 
-                 <label>File biểu mẫu</label>
-                 <ul class="ML10" id ="service_info_filetemplate" data-template="service_info_filetemplate_template" data-bind="source: fileTemplates">
+                   <label>File biểu mẫu</label>
+                   <ul class="ML10" id ="service_info_filetemplate" data-template="service_info_filetemplate_template" data-bind="source: fileTemplates">
 
-                 </ul>
-                 <script type="text/x-kendo-template" id="service_info_filetemplate_template">
-                     <li class="clearfix item-serviceinfo-filetemplate eq-height-lg" data-bind="attr: {data-pk : fileTemplateNo}" role="option" aria-selected="true">
+                   </ul>
+                   <script type="text/x-kendo-template" id="service_info_filetemplate_template">
+                       <li class="clearfix item-serviceinfo-filetemplate eq-height-lg" data-bind="attr: {data-pk : fileTemplateNo}" role="option" aria-selected="true">
                         <a data-bind="attr : { href: fileTemplateDownLoad}"><i class="fa fa-download" aria-hidden="true"></i> <span data-bind="text: templateName"></span></a>
                     </li>
                 </script>
@@ -190,27 +190,32 @@
                             $("#maxLevel").addClass("label label-dvc-lv4");
                         }
                         if((typeof result.serviceConfigs !== 'undefined')){
-                            console.log("ccc111");
-                            if(result.maxLevel>=3){
-                                console.log("ccc2222");
-                                var submitDsier = '<div class="dropdown"><button class="btn btn-active btn-small  dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ <span class="caret"></span></button><ul class="dropdown-menu">';
+                            var submitDsier = '<div class="dropdown"><button class="btn btn-active btn-small  dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ <span class="caret"></span></button><ul class="dropdown-menu">';
 
-                                if (result.serviceConfigs[1]) {
-                                    console.log("ccc3333");
-                                    for(var i=0; i<result.serviceConfigs.length;i++){
-                                        var item = result.serviceConfigs[i];
-                                        submitDsier += '<li><a href='+result.serviceConfigs.serviceUrl+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
+                            if (result.serviceConfigs[1]) {
+                                console.log("ccc3333");
+                                for(var i=0; i<result.serviceConfigs.length;i++){
+                                    var item = result.serviceConfigs[i];
+                                    if(item.serviceLevel>=3){
+                                        submitDsier += '<li><a href='+item.serviceUrl+'>'+item.govAgencyName+'</a></li>';
+                                    }else{
+                                        submitDsier += '<li><a href="javascript:;" class="showInstruction" serviceInstruction='+item.serviceInstruction+'>'+item.govAgencyName+'</a></li>';
                                     }
-                                }else{
-                                    submitDsier += '<li><a href='+result.serviceConfigs.serviceUrl+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
                                 }
-                                submitDsier += '</ul>';
-                                submitDsier += '<button class="btn ML5 btn-revert">Quay lại</button>';
-                                submitDsier += '</div>'
-                                $(".submitDossier").html(submitDsier);
                             }else{
-                                $(".submitDossier").html('<button class="btn">Xem hướng dẫn >></button> <button class="btn ML5 btn-revert">Quay lại</button>');
+                                if(result.serviceConfigs.serviceLevel>=3){
+                                    submitDsier += '<li><a href='+result.serviceConfigs.serviceUrl+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
+                                }else{
+                                    submitDsier += '<li><a href="javascript:;" class="showInstruction" serviceInstruction='+result.serviceConfigs.serviceInstruction+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
+                                }
                             }
+                            submitDsier += '</ul>';
+                            submitDsier += '<button class="btn ML5 btn-revert">Quay lại</button>';
+                            submitDsier += '</div>'
+                            $(".submitDossier").html(submitDsier);
+                            
+                        }else {
+                            $(".submitDossier").html('<button class="btn ML5 btn-revert">Quay lại</button>');
                         }
                         return "Mức độ "+result.maxLevel;
                     },
@@ -240,7 +245,7 @@
 
             }
         });
-    }
+}
 
     /*var loadAdministration = function(id){
        $("#slAdministration").kendoComboBox({
