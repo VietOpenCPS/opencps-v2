@@ -39,6 +39,7 @@ import io.swagger.annotations.ApiResponses;
 @Path("/applicants")
 @Api(value = "/applicants", tags = "applicants")
 public interface ApplicantManagement {
+	
 	@POST
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -65,7 +66,6 @@ public interface ApplicantManagement {
 
 	@GET
 	@Path("/{id}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@ApiOperation(value = "Get a detail applicant", response = ApplicantModel.class)
 	@ApiResponses(value = {
@@ -77,6 +77,7 @@ public interface ApplicantManagement {
 	public Response getApplicantDetail(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") long id);
+	
 	@PUT
 	@Path("/{id}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -93,14 +94,14 @@ public interface ApplicantManagement {
 			@BeanParam ApplicantInputUpdateModel input);
 
 	@DELETE
-	@Path("/{id}")
+	@Path("{id}")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@ApiOperation(value = "Remove a applicant", response = ApplicantModel.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the applicant was removed", response = ApplicantModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-	public Response removeApplicant(@Context HttpServletRequest request, @Context HttpHeaders header,
+	public Response deleteApplicant(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") long id);
 

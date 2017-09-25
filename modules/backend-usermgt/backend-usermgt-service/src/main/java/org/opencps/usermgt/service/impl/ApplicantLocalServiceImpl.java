@@ -152,7 +152,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate);
 
-			validateDuplicate(contactTelNo, applicantIdNo, contactName);
+			validateDuplicate(context.getCompanyId(), contactTelNo, applicantIdNo, contactEmail);
 
 			applicantId = counterLocalService.increment(Applicant.class.getName());
 
@@ -339,7 +339,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			throw new NoApplicantIdDateException("NoApplicantIdDateException");
 	}
 
-	private void validateDuplicate(String contactTelNo, String applicantIdNo, String email) throws PortalException {
+	private void validateDuplicate(long companyId, String contactTelNo, String applicantIdNo, String email) throws PortalException {
 
 		Applicant applicant = null;
 
@@ -352,7 +352,14 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(applicant))
 			throw new DuplicateContactEmailException("DuplicateContactEmailException");
+		
 
+		User user = userLocalService.fetchUserByEmailAddress(companyId, email);
+
+		if (Validator.isNotNull(user))
+			throw new DuplicateContactEmailException("DuplicateContactEmailException");
+
+		
 		if (Validator.isNotNull(contactTelNo)) {
 
 			applicant = fetchByTelNo(contactTelNo);
@@ -403,7 +410,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		// reset activationCode
 		applicant.setActivationCode(StringPool.BLANK);
-		applicant.setTmpPass(StringPool.BLANK);
+		//applicant.setTmpPass(StringPool.BLANK);
 
 		applicantPersistence.update(applicant);
 

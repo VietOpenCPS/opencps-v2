@@ -26,9 +26,6 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
-import org.opencps.usermgt.exception.DuplicateApplicantIdException;
-import org.opencps.usermgt.exception.DuplicateContactEmailException;
-import org.opencps.usermgt.exception.DuplicateContactTelNoException;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
@@ -76,15 +73,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			error.setMessage("Register unsuccessfully");
 			error.setCode(500);
-			
-			if (e instanceof DuplicateApplicantIdException || e instanceof DuplicateContactTelNoException || e instanceof DuplicateContactEmailException) {
-				error.setDescription(e.getMessage());
-				
-				_log.error(e.getStackTrace());
-				
-				_log.info(e.getMessage());
+			error.setDescription(e.getMessage());
 
-			}
 			
 
 			return Response.status(500).entity(error).build();
@@ -328,7 +318,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	}
 
 	@Override
-	public Response removeApplicant(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+	public Response deleteApplicant(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id) {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		ApplicantModel results = new ApplicantModel();
@@ -755,8 +745,13 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			applicant = actions.activationApplicant(serviceContext, applicantId, code);
 
 			results = ApplicantUtils.mappingToApplicantModel(applicant);
+			
+			JSONObject resultObj = JSONFactoryUtil.createJSONObject();
+			
+			resultObj.put("email", applicant.getContactEmail());
+			resultObj.put("token", applicant.getTmpPass());
 
-			return Response.status(200).entity("Congratulation! You have successfully activated your account.").build();
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(resultObj)).build();
 
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();
