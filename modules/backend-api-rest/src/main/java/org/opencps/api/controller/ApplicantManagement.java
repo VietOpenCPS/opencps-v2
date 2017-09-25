@@ -94,7 +94,6 @@ public interface ApplicantManagement {
 
 	@DELETE
 	@Path("/{id}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@ApiOperation(value = "Remove a applicant", response = ApplicantModel.class)
 	@ApiResponses(value = {
@@ -164,8 +163,7 @@ public interface ApplicantManagement {
 			@Context ServiceContext serviceContext, @PathParam("id") long id);
 	@GET
 	@Path("/{id}/activate/{code}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces("text/plain")
 	@ApiOperation(value = "Get the profile of applicant", response = JSONObject.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the profile of applicant", response = JSONObject.class),

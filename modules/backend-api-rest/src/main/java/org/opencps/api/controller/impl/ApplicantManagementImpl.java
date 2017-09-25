@@ -26,6 +26,9 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
+import org.opencps.usermgt.exception.DuplicateApplicantIdException;
+import org.opencps.usermgt.exception.DuplicateContactEmailException;
+import org.opencps.usermgt.exception.DuplicateContactTelNoException;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
@@ -66,13 +69,23 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		} catch (Exception e) {
 
-			_log.info(e);
 
 			ErrorMsg error = new ErrorMsg();
+			_log.error(e);
+
 
 			error.setMessage("Register unsuccessfully");
 			error.setCode(500);
-			error.setDescription("Internal server error");
+			
+			if (e instanceof DuplicateApplicantIdException || e instanceof DuplicateContactTelNoException || e instanceof DuplicateContactEmailException) {
+				error.setDescription(e.getMessage());
+				
+				_log.error(e.getStackTrace());
+				
+				_log.info(e.getMessage());
+
+			}
+			
 
 			return Response.status(500).entity(error).build();
 		}
@@ -743,7 +756,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			results = ApplicantUtils.mappingToApplicantModel(applicant);
 
-			return Response.status(200).entity(results).build();
+			return Response.status(200).entity("Congratulation! You have successfully activated your account.").build();
 
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();
