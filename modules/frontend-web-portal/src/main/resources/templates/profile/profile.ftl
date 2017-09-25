@@ -3,7 +3,7 @@
 </#if>
 <div class="row account-info">
   <div class="col-sm-2 col-xs-12">
-  <img src="" class="img-responsive max-width-100 img-rounded">
+    <img src="" class="img-responsive max-width-100 img-rounded">
     <div class="text-center"><a href="" class="text-light-gray">Thay đổi avatar</a></div>
     <p class="name text-bold text-center">Lương Thị Hạnh</p>
     <div>Số CMND/Hộ chiếu: <span class="text-bold">0123456789</span></div>
@@ -20,6 +20,7 @@
 
   <div class="col-sm-10 col-xs-12">
     <div class="tab-content box">
+      <#if applicantIdType == "business">
       <div role="tabpanel" class="tab-pane active" id="tttk">
         <div class="row-header">
           <div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div> 
@@ -31,9 +32,9 @@
              <p> Tên công ty</p>
            </div>
            <div class="col-sm-7">
-             <span id="companyName" data-pk="1" data-toggle="#editCompanyName" data-original-title="Enter note" tabindex="-1" class="">Công ty cổ phần dịch vụ Internet MINIK</span>
+             <span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Enter note" tabindex="-1" class="">${applicantName}</span>
              <span class="pull-right">
-               <a href="#" id="editCompanyName" style="float: right"><i class="fa fa-pencil"></i></a>
+               <a href="#" id="editApplicantName" style="float: right"><i class="fa fa-pencil"></i></a>
              </span>
            </div>
          </div>
@@ -42,7 +43,7 @@
             <p>Địa chỉ tổ chức</p>
           </div>
           <div class="col-sm-7">
-            <span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Enter note" tabindex="-1" class="">Tầng 4 tòa nhà VinGroup, số 41 ngõ 3, đường Tôn Đức Thắng, Hà Nội</span>
+            <span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Enter note" tabindex="-1" class="">${address}</span>
             <span class="pull-right">
               <a href="#" id="editAddress" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -53,7 +54,7 @@
             <p>Tỉnh/ Thành phố</p>
           </div>
           <div class="col-sm-7">
-            <span id="city" data-pk="1" data-toggle="#editCity" data-original-title="Enter note" tabindex="-1" class="">Hà Nội</span>
+            <span id="city" data-pk="1" data-toggle="#editCity" data-original-title="Enter note" tabindex="-1" class="">${cityName}</span>
             <span class="pull-right">
               <a href="#" id="editCity" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -64,7 +65,7 @@
             <p>Quận/ Huyện</p>
           </div>
           <div class="col-sm-7">
-            <span id="district" data-pk="1" data-toggle="#editDistrict" data-original-title="Enter note" tabindex="-1" class="">Đống Đa</span>
+            <span id="district" data-pk="1" data-toggle="#editDistrict" data-original-title="Enter note" tabindex="-1" class="">${districtName}</span>
             <span class="pull-right">
               <a href="#" id="editDistrict" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -75,7 +76,7 @@
             <p>Xã/ Phường</p>
           </div>
           <div class="col-sm-7">
-            <span id="wards" data-pk="1" data-toggle="#editWards" data-original-title="Enter note" tabindex="-1" class="">Phường 12</span>
+            <span id="wards" data-pk="1" data-toggle="#editWards" data-original-title="Enter note" tabindex="-1" class="">${wardName}</span>
             <span class="pull-right">
               <a href="#" id="editWards" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -86,7 +87,7 @@
             <p>Điện thoại</p>
           </div>
           <div class="col-sm-7">
-            <span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Enter note" tabindex="-1" class="">(024) 8436393</span>
+            <span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Enter note" tabindex="-1" class="">${contactTelNo}</span>
             <span class="pull-right">
               <a href="#" id="editPhone" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -97,7 +98,7 @@
             <p>Thư điện tử - Email</p>
           </div>
           <div class="col-sm-7">
-            <span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Enter note" tabindex="-1" class="">darkphoenix@fit.com</span>
+            <span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Enter note" tabindex="-1" class="">${contactEmail}</span>
             <span class="pull-right">
               <a href="#" id="editEmail" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -108,13 +109,99 @@
             <p>Tên người đại diện</p>
           </div>
           <div class="col-sm-7">
-            <span id="represntative" data-pk="1" data-toggle="#editRepresntative" data-original-title="Enter note" tabindex="-1" class="">Dark Phoenix</span>
+            <span id="contactName" data-pk="1" data-toggle="#editContactName" data-original-title="Enter note" tabindex="-1" class="">${contactName}</span>
             <span class="pull-right">
-              <a href="#" id="editRepresntative" style="float: right"><i class="fa fa-pencil"></i></a>
+              <a href="#" id="editContactName" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
           </div>
         </div>  
       </div>
+      <#else>
+      <div role="tabpanel" class="tab-pane active" id="tttk">
+        <div class="row-header">
+          <div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div> 
+          <span class="text-bold">Thông tin tài khoản</span>
+        </div>
+        <div class="row-parts-content PB15">
+          <div class="row MB15">
+            <div class="col-sm-2">
+             <p> Tên công ty</p>
+           </div>
+           <div class="col-sm-7">
+             <span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Enter note" tabindex="-1" class="">${applicantName}</span>
+             <span class="pull-right">
+               <a href="#" id="editApplicantName" style="float: right"><i class="fa fa-pencil"></i></a>
+             </span>
+           </div>
+         </div>
+         <div class="row MB15">
+          <div class="col-sm-2">
+            <p>Địa chỉ tổ chức</p>
+          </div>
+          <div class="col-sm-7">
+            <span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Enter note" tabindex="-1" class="">${address}</span>
+            <span class="pull-right">
+              <a href="#" id="editAddress" style="float: right"><i class="fa fa-pencil"></i></a>
+            </span>
+          </div>
+        </div>
+        <div class="row MB15">
+          <div class="col-sm-2">
+            <p>Tỉnh/ Thành phố</p>
+          </div>
+          <div class="col-sm-7">
+            <span id="city" data-pk="1" data-toggle="#editCity" data-original-title="Enter note" tabindex="-1" class="">${cityName}</span>
+            <span class="pull-right">
+              <a href="#" id="editCity" style="float: right"><i class="fa fa-pencil"></i></a>
+            </span>
+          </div>
+        </div>
+        <div class="row MB15">
+          <div class="col-sm-2">
+            <p>Quận/ Huyện</p>
+          </div>
+          <div class="col-sm-7">
+            <span id="district" data-pk="1" data-toggle="#editDistrict" data-original-title="Enter note" tabindex="-1" class="">${districtName}</span>
+            <span class="pull-right">
+              <a href="#" id="editDistrict" style="float: right"><i class="fa fa-pencil"></i></a>
+            </span>
+          </div>
+        </div>
+        <div class="row MB15">
+          <div class="col-sm-2">
+            <p>Xã/ Phường</p>
+          </div>
+          <div class="col-sm-7">
+            <span id="wards" data-pk="1" data-toggle="#editWards" data-original-title="Enter note" tabindex="-1" class="">${wardName}</span>
+            <span class="pull-right">
+              <a href="#" id="editWards" style="float: right"><i class="fa fa-pencil"></i></a>
+            </span>
+          </div>
+        </div>
+        <div class="row MB15">
+          <div class="col-sm-2">
+            <p>Điện thoại</p>
+          </div>
+          <div class="col-sm-7">
+            <span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Enter note" tabindex="-1" class="">${contactTelNo}</span>
+            <span class="pull-right">
+              <a href="#" id="editPhone" style="float: right"><i class="fa fa-pencil"></i></a>
+            </span>
+          </div>
+        </div>
+        <div class="row MB15">
+          <div class="col-sm-2">
+            <p>Thư điện tử - Email</p>
+          </div>
+          <div class="col-sm-7">
+            <span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Enter note" tabindex="-1" class="">${contactEmail}</span>
+            <span class="pull-right">
+              <a href="#" id="editEmail" style="float: right"><i class="fa fa-pencil"></i></a>
+            </span>
+          </div>
+        </div> 
+      </div>
+      </#if>
     </div>
     <div role="tabpanel" class="tab-pane" id="dmk">
       <div class="row-header">

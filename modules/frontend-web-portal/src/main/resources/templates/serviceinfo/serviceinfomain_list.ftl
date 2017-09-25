@@ -212,7 +212,7 @@
  schema: {
   total: "total",
   data: "data",
-  model : { id: "serviceInfoId" }
+  model : { id: "serviceinfoId" }
 },
 pageSize: 5,
 serverPaging: false,

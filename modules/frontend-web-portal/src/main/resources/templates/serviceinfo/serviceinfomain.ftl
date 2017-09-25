@@ -219,6 +219,7 @@
         $("#administration").html(kendo.render(templateAdministration, this.view()));
         $("#administration > li:first-child").addClass("active");
         $("#administrationCodeSearch").data("kendoComboBox").value($("#administration > li:first-child").attr("dataPk"));
+        $("#administrationCodeSearch").data("kendoComboBox")._isSelect = false;
         $("#service_info_list_view").getKendoListView().dataSource.read({
           "administration": $("#administration > li:first-child").attr("dataPk")
         });
@@ -288,7 +289,24 @@
       var id=$(this).attr("data-pk");
       console.log(id);
       $("#serviceinfo-right-content").load("${ajax.serviceinfo_detail}",function(result){
+        console.log(id);
         pullDataDetail(id);
+      });
+    });
+
+    $(document).on("click",".btn-revert",function(){
+      var administrationId = $("#administration > li:first-child").attr("dataPk");
+      $("#administration > li").removeClass("active");
+      $("#administration > li:first-child").addClass("active");
+
+      $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
+        var administrationCombobox =  $("#administrationCodeSearch").data("kendoComboBox");
+        setValue(administrationCombobox,administrationId);
+        administrationCombobox.trigger("change");
+        administrationCombobox._isSelect = false;
+        $("#service_info_list_view").getKendoListView().dataSource.read({
+          "administration": administrationId
+        });
       });
     });
   });
