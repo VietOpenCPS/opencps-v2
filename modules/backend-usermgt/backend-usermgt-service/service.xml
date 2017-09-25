@@ -230,6 +230,10 @@
 			<finder-column name="contactEmail"/>
 		</finder>
 		
+		<finder return-type="Applicant" name="F_MAPPING_ID" unique="true">
+			<finder-column name="mappingUserId"/>
+		</finder>
+		
 		<reference entity="User" package-path="com.liferay.portal" />
 		<reference entity="Role" package-path="com.liferay.portal" />
 	</entity>

@@ -90,19 +90,22 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	 * org.opencps.usermgt.service.ApplicantLocalServiceUtil} to access the
 	 * applicant local service.
 	 */
-	
-	public Applicant fetchByEmail(String email){
+
+	public Applicant fetchByMappingID(long mappingID) {
+		return applicantPersistence.fetchByF_MAPPING_ID(mappingID);
+	}
+
+	public Applicant fetchByEmail(String email) {
 		return applicantPersistence.fetchByF_CTE_ID(email);
 	}
-	
+
 	public Applicant fetchByTelNo(String telNo) {
 		return applicantPersistence.fetchByF_CTT_ID(telNo);
 	}
-	
-	public Applicant fetchByAppId(String appId){
+
+	public Applicant fetchByAppId(String appId) {
 		return applicantPersistence.fetchByF_APLC_ID(appId);
 	}
-
 
 	/**
 	 * @param context
@@ -134,6 +137,11 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			String contactName, String contactTelNo, String contactEmail, String profile, String password)
 			throws PortalException, SystemException {
 
+		_log.info(applicantName);
+		_log.info(applicantIdNo);
+		_log.info(applicantIdDate);
+		_log.info(applicantIdNo);
+
 		Applicant applicant = null;
 
 		Date now = new Date();
@@ -141,11 +149,11 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
 
 		if (applicantId == 0) {
-			
+
 			validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate);
-			
-			validateDuplicate(contactTelNo, applicantIdNo, contactName);
-			
+
+			validateDuplicate(context.getCompanyId(), contactTelNo, applicantIdNo, contactEmail);
+
 			applicantId = counterLocalService.increment(Applicant.class.getName());
 
 			applicant = applicantPersistence.create(applicantId);
@@ -157,7 +165,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			boolean autoPassword = false;
 			boolean autoScreenName = true;
-			boolean sendEmail = true;
+			boolean sendEmail = false;
 
 			long[] groupIds = null;
 			long[] organizationIds = null;
@@ -318,41 +326,48 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	private void validateAdd(String applicantName, String applicantIdType, String applicantIdNo, String applicantIdDate)
 			throws PortalException {
 		if (Validator.isNull(applicantName)) {
-			throw new NoApplicantNameException();
+			throw new NoApplicantNameException("NoApplicantNameException");
 		}
 
 		if (Validator.isNull(applicantIdType))
-			throw new NoApplicantIdTypeException();
+			throw new NoApplicantIdTypeException("NoApplicantIdTypeException");
 
 		if (Validator.isNull(applicantIdNo))
-			throw new NoApplicantIdNoException();
+			throw new NoApplicantIdNoException("NoApplicantIdNoException");
 
 		if (Validator.isNull(applicantIdDate))
-			throw new NoApplicantIdDateException();
+			throw new NoApplicantIdDateException("NoApplicantIdDateException");
 	}
-	
-	private void validateDuplicate(String contactTelNo, String applicantIdNo, String email)
-			throws PortalException {
-		
+
+	private void validateDuplicate(long companyId, String contactTelNo, String applicantIdNo, String email) throws PortalException {
+
 		Applicant applicant = null;
-		
+
 		applicant = fetchByAppId(applicantIdNo);
-		
-		if (Validator.isNotNull(applicant)) 
-			throw new DuplicateApplicantIdException();
-		
+
+		if (Validator.isNotNull(applicant))
+			throw new DuplicateApplicantIdException("DuplicateApplicantIdException");
+
 		applicant = fetchByEmail(email);
-		
-		if (Validator.isNotNull(applicant)) 
-			throw new DuplicateContactEmailException();
-		
-		applicant = fetchByTelNo(contactTelNo);
-		
-		if (Validator.isNotNull(applicant)) 
-			throw new DuplicateContactTelNoException();
 
+		if (Validator.isNotNull(applicant))
+			throw new DuplicateContactEmailException("DuplicateContactEmailException");
+		
+
+		User user = userLocalService.fetchUserByEmailAddress(companyId, email);
+
+		if (Validator.isNotNull(user))
+			throw new DuplicateContactEmailException("DuplicateContactEmailException");
+
+		
+		if (Validator.isNotNull(contactTelNo)) {
+
+			applicant = fetchByTelNo(contactTelNo);
+
+			if (Validator.isNotNull(applicant))
+				throw new DuplicateContactTelNoException("DuplicateContactTelNoException");
+		}
 	}
-
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Applicant removeProfile(long applicantId) {
@@ -373,9 +388,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		User user = userPersistence.fetchByPrimaryKey(applicant.getMappingUserId());
 
 		userLocalService.updateLockout(user, true);
-		
+
 		user.setLockout(true);
-		
+
 		userPersistence.update(user);
 		applicant.setLock_(true);
 
@@ -395,7 +410,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		// reset activationCode
 		applicant.setActivationCode(StringPool.BLANK);
-		applicant.setTmpPass(StringPool.BLANK);
+		//applicant.setTmpPass(StringPool.BLANK);
 
 		applicantPersistence.update(applicant);
 

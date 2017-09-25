@@ -227,6 +227,7 @@ public class ServiceInfoUtils {
 		FileTemplateModel fileTemplate = new FileTemplateModel();
 
 		fileTemplate.setTemplateName(serviceFileTemplate.getTemplateName());
+		fileTemplate.setFileTemplateNo(serviceFileTemplate.getFileTemplateNo());
 
 		if (serviceFileTemplate.getFileEntryId() != 0) {
 

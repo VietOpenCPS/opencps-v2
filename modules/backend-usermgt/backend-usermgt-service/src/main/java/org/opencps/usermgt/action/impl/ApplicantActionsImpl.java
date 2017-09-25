@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 public class ApplicantActionsImpl implements ApplicantActions {
 
@@ -122,8 +123,15 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	@Override
 	public Applicant activationApplicant(ServiceContext context, long applicantId, String activationCode)
 			throws PortalException {
-		Applicant applicant = ApplicantLocalServiceUtil.activateApplicant(applicantId, context);
-		return applicant;
+
+		Applicant applicant = ApplicantLocalServiceUtil.getApplicant(applicantId);
+
+		if (Validator.isNotNull(applicant.getActivationCode())
+				&& applicant.getActivationCode().toLowerCase().contentEquals(activationCode.toLowerCase())) {
+			return ApplicantLocalServiceUtil.activateApplicant(applicantId, context);
+		} else {
+			return null;
+		}
 
 	}
 

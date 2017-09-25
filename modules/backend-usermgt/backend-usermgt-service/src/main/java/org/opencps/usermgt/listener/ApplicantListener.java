@@ -60,7 +60,7 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 				
 				object.put(ApplicantListenerMessageKeys.PASSWORD, modelBefore.getTmpPass());
 				object.put(ApplicantListenerMessageKeys.USER_NAME, model.getApplicantName());
-				object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, StringPool.BLANK);
+				object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, "http://v2.opencps.vn");
 				object.put("toName", model.getApplicantName());
 				object.put("toAddress", model.getContactEmail());
 				
@@ -112,9 +112,9 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 			JSONObject object = JSONFactoryUtil.createJSONObject();
 			
 			object.put(ApplicantListenerMessageKeys.ACTIVATION_CODE, model.getActivationCode());
-			object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, StringPool.SPACE);
+			object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, "http://v2.opencps.vn/o/rest/v2/applicants/"+ model.getApplicantId() +"/activate/");
 			object.put(ApplicantListenerMessageKeys.USER_NAME, model.getApplicantName());
-			object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, StringPool.BLANK);
+			object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, "http://v2.opencps.vn");
 			object.put("toName", model.getApplicantName());
 			object.put("toAddress", model.getContactEmail());
 			

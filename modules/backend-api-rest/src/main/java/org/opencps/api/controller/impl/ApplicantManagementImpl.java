@@ -66,13 +66,16 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		} catch (Exception e) {
 
-			_log.info(e);
 
 			ErrorMsg error = new ErrorMsg();
+			_log.error(e);
+
 
 			error.setMessage("Register unsuccessfully");
 			error.setCode(500);
-			error.setDescription("Internal server error");
+			error.setDescription(e.getMessage());
+
+			
 
 			return Response.status(500).entity(error).build();
 		}
@@ -315,7 +318,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	}
 
 	@Override
-	public Response removeApplicant(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+	public Response deleteApplicant(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id) {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		ApplicantModel results = new ApplicantModel();
@@ -713,17 +716,42 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			User user, ServiceContext serviceContext, long id, String code) {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		ApplicantModel results = new ApplicantModel();
+		
+		long applicantId = 0;
+		
+		try {
+			ApplicantLocalServiceUtil.getApplicant(id);
+			
+			applicantId = id;
+			
+		} catch (Exception e) {
+			try {
+				Applicant applc = ApplicantLocalServiceUtil.fetchByMappingID(id);
+				
+				if (Validator.isNotNull(applc)) {
+					applicantId = applc.getApplicantId();
+				}
+			} catch (Exception e2) {
+				// TODO: handle exception
+			}
+			
+		}
 
 		Applicant applicant = null;
 		try {
 			
 			
 
-			applicant = actions.activationApplicant(serviceContext, id, code);
+			applicant = actions.activationApplicant(serviceContext, applicantId, code);
 
 			results = ApplicantUtils.mappingToApplicantModel(applicant);
+			
+			JSONObject resultObj = JSONFactoryUtil.createJSONObject();
+			
+			resultObj.put("email", applicant.getContactEmail());
+			resultObj.put("token", applicant.getTmpPass());
 
-			return Response.status(200).entity(results).build();
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(resultObj)).build();
 
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();
