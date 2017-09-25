@@ -124,19 +124,46 @@
         data: data,
         dataType : "json",
         success: function(result){
-          notification.show({
-            title: "Success",
-            message: "Đăng ký thành công."
-          }, "success");
-          
-          window.location.href = "${portalURL}/confirm-account?active_user_id="+result.applicantId;
+
         },
         error: function(result){
-          notification.show({
-            title: "Success",
-            message: "Đăng ký không thành công."
-          }, "error");
-        }
+
+        },
+				statusCode: {
+	        200: function(result) {
+						notification.show({
+	            title: "Success",
+	            message: "Đăng ký thành công."
+	          }, "success");
+
+	          setTimeout(function(){
+							window.location.href = "${portalURL}/confirm-account?active_user_id=" + result.applicantId;
+	          }, 2000);
+	        },
+	        500: function(result) {
+						if (JSON.parse(result.responseText).description == 'DuplicateContactEmailException'){
+							notification.show({
+								title: "Error",
+								message: "Email bạn sử dụng đã tồn tại trong hệ thống."
+							}, "error");
+						} else if (JSON.parse(result.responseText).description == 'DuplicateApplicantIdException'){
+							notification.show({
+								title: "Error",
+								message: "Số CMDN đã tồn tại trong hệ thống."
+							}, "error");
+						} else if (JSON.parse(result.responseText).description == 'DuplicateContactTelNoException'){
+							notification.show({
+								title: "Error",
+								message: "Số điện thoại đã được sử dụng trong hệ thống."
+							}, "error");
+						} else {
+							notification.show({
+								title: "Error",
+								message: "Đăng ký không thành công. Vui lòng thử lại."
+							}, "error");
+						}
+	        }
+	      }
       });
     }
 

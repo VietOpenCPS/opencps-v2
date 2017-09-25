@@ -13,7 +13,7 @@
     <ul class="nav nav-tabs" role="tablist">
       <li role="presentation" class="active"><a href="#tttk" role="tab" data-toggle="tab">Thông tin tài khoản</a></li>
       <li role="presentation"><a href="#dmk" role="tab" data-toggle="tab">Đổi mật khẩu</a></li>
-    </ul> 
+    </ul>
     <#-- <button class="btn btn-classic form-control">Thông tin tài khoản</button>
     <button class="btn btn-classic form-control">Đổi mật khẩu</button> -->
   </div>
@@ -23,7 +23,7 @@
       <#if applicantIdType == "business">
       <div role="tabpanel" class="tab-pane active" id="tttk">
         <div class="row-header">
-          <div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div> 
+          <div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div>
           <span class="text-bold">Thông tin tài khoản</span>
         </div>
         <div class="row-parts-content PB15">
@@ -32,7 +32,7 @@
              <p> Tên công ty</p>
            </div>
            <div class="col-sm-7">
-             <span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Enter note" tabindex="-1" class="">${applicantName}</span>
+             <span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Enter note" tabindex="-1" class="">${api.applicant.applicantName}</span>
              <span class="pull-right">
                <a href="#" id="editApplicantName" style="float: right"><i class="fa fa-pencil"></i></a>
              </span>
@@ -43,7 +43,7 @@
             <p>Địa chỉ tổ chức</p>
           </div>
           <div class="col-sm-7">
-            <span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Enter note" tabindex="-1" class="">${address}</span>
+            <span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Enter note" tabindex="-1" class="">${api.applicant.address}</span>
             <span class="pull-right">
               <a href="#" id="editAddress" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -54,7 +54,7 @@
             <p>Tỉnh/ Thành phố</p>
           </div>
           <div class="col-sm-7">
-            <span id="city" data-pk="1" data-toggle="#editCity" data-original-title="Enter note" tabindex="-1" class="">${cityName}</span>
+            <span id="city" data-pk="1" data-toggle="#editCity" data-original-title="Enter note" tabindex="-1" class="">${api.applicant.cityName}</span>
             <span class="pull-right">
               <a href="#" id="editCity" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -65,7 +65,7 @@
             <p>Quận/ Huyện</p>
           </div>
           <div class="col-sm-7">
-            <span id="district" data-pk="1" data-toggle="#editDistrict" data-original-title="Enter note" tabindex="-1" class="">${districtName}</span>
+            <span id="district" data-pk="1" data-toggle="#editDistrict" data-original-title="Enter note" tabindex="-1" class="">${api.applicant.districtName}</span>
             <span class="pull-right">
               <a href="#" id="editDistrict" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -76,7 +76,7 @@
             <p>Xã/ Phường</p>
           </div>
           <div class="col-sm-7">
-            <span id="wards" data-pk="1" data-toggle="#editWards" data-original-title="Enter note" tabindex="-1" class="">${wardName}</span>
+            <span id="wards" data-pk="1" data-toggle="#editWards" data-original-title="Enter note" tabindex="-1" class="">${api.applicant.wardName}</span>
             <span class="pull-right">
               <a href="#" id="editWards" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -87,7 +87,7 @@
             <p>Điện thoại</p>
           </div>
           <div class="col-sm-7">
-            <span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Enter note" tabindex="-1" class="">${contactTelNo}</span>
+            <span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Enter note" tabindex="-1" class="">${api.applicant.contactTelNo}</span>
             <span class="pull-right">
               <a href="#" id="editPhone" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -98,7 +98,7 @@
             <p>Thư điện tử - Email</p>
           </div>
           <div class="col-sm-7">
-            <span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Enter note" tabindex="-1" class="">${contactEmail}</span>
+            <span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Enter note" tabindex="-1" class="">${api.applicant.contactEmail}</span>
             <span class="pull-right">
               <a href="#" id="editEmail" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -109,17 +109,17 @@
             <p>Tên người đại diện</p>
           </div>
           <div class="col-sm-7">
-            <span id="contactName" data-pk="1" data-toggle="#editContactName" data-original-title="Enter note" tabindex="-1" class="">${contactName}</span>
+            <span id="contactName" data-pk="1" data-toggle="#editContactName" data-original-title="Enter note" tabindex="-1" class="">${api.applicant.contactName}</span>
             <span class="pull-right">
               <a href="#" id="editContactName" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
           </div>
-        </div>  
+        </div>
       </div>
       <#else>
       <div role="tabpanel" class="tab-pane active" id="tttk">
         <div class="row-header">
-          <div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div> 
+          <div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div>
           <span class="text-bold">Thông tin tài khoản</span>
         </div>
         <div class="row-parts-content PB15">
@@ -128,7 +128,7 @@
              <p> Tên công ty</p>
            </div>
            <div class="col-sm-7">
-             <span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Enter note" tabindex="-1" class="">${applicantName}</span>
+             <span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Enter note" tabindex="-1" class="">${api.applicant.applicantName}</span>
              <span class="pull-right">
                <a href="#" id="editApplicantName" style="float: right"><i class="fa fa-pencil"></i></a>
              </span>
@@ -139,7 +139,7 @@
             <p>Địa chỉ tổ chức</p>
           </div>
           <div class="col-sm-7">
-            <span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Enter note" tabindex="-1" class="">${address}</span>
+            <span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Enter note" tabindex="-1" class="">${api.applicant.address}</span>
             <span class="pull-right">
               <a href="#" id="editAddress" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -150,7 +150,7 @@
             <p>Tỉnh/ Thành phố</p>
           </div>
           <div class="col-sm-7">
-            <span id="city" data-pk="1" data-toggle="#editCity" data-original-title="Enter note" tabindex="-1" class="">${cityName}</span>
+            <span id="city" data-pk="1" data-toggle="#editCity" data-original-title="Enter note" tabindex="-1" class="">${api.applicant.cityName}</span>
             <span class="pull-right">
               <a href="#" id="editCity" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -161,7 +161,7 @@
             <p>Quận/ Huyện</p>
           </div>
           <div class="col-sm-7">
-            <span id="district" data-pk="1" data-toggle="#editDistrict" data-original-title="Enter note" tabindex="-1" class="">${districtName}</span>
+            <span id="district" data-pk="1" data-toggle="#editDistrict" data-original-title="Enter note" tabindex="-1" class="">${api.applicant.districtName}</span>
             <span class="pull-right">
               <a href="#" id="editDistrict" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -172,7 +172,7 @@
             <p>Xã/ Phường</p>
           </div>
           <div class="col-sm-7">
-            <span id="wards" data-pk="1" data-toggle="#editWards" data-original-title="Enter note" tabindex="-1" class="">${wardName}</span>
+            <span id="wards" data-pk="1" data-toggle="#editWards" data-original-title="Enter note" tabindex="-1" class="">${api.applicant.wardName}</span>
             <span class="pull-right">
               <a href="#" id="editWards" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -183,7 +183,7 @@
             <p>Điện thoại</p>
           </div>
           <div class="col-sm-7">
-            <span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Enter note" tabindex="-1" class="">${contactTelNo}</span>
+            <span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Enter note" tabindex="-1" class="">${api.applicant.contactTelNo}</span>
             <span class="pull-right">
               <a href="#" id="editPhone" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
@@ -194,18 +194,18 @@
             <p>Thư điện tử - Email</p>
           </div>
           <div class="col-sm-7">
-            <span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Enter note" tabindex="-1" class="">${contactEmail}</span>
+            <span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Enter note" tabindex="-1" class="">${api.applicant.contactEmail}</span>
             <span class="pull-right">
               <a href="#" id="editEmail" style="float: right"><i class="fa fa-pencil"></i></a>
             </span>
           </div>
-        </div> 
+        </div>
       </div>
       </#if>
     </div>
     <div role="tabpanel" class="tab-pane" id="dmk">
       <div class="row-header">
-        <div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div> 
+        <div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div>
         <span class="text-bold">Đổi mật khẩu</span>
       </div>
       <form id="fm">
@@ -215,8 +215,8 @@
               <label class="with-input-sm">Mật khẩu hiện tại:</label>
             </div>
             <div class="col-sm-4">
-              <div class="form-group"> 
-                <input type="password" class="form-control" id="old_password"> 
+              <div class="form-group">
+                <input type="password" class="form-control" id="old_password">
               </div>
             </div>
             <div class="col-sm-6 MT5">
@@ -228,8 +228,8 @@
               <label class="with-input-sm">Mật khẩu mới:</label>
             </div>
             <div class="col-sm-4">
-              <div class="form-group"> 
-                <input type="password" class="form-control" id="new_password"> 
+              <div class="form-group">
+                <input type="password" class="form-control" id="new_password">
               </div>
             </div>
             <div class="col-sm-6">
@@ -241,11 +241,11 @@
               <label class="with-input-sm">Nhập lại mật khẩu mới:</label>
             </div>
             <div class="col-sm-4">
-              <div class="form-group"> 
-                <input type="password" class="form-control" id="retype_new_password"> 
+              <div class="form-group">
+                <input type="password" class="form-control" id="retype_new_password">
               </div>
-              <div class="checkbox"> 
-                <input type="checkbox" id="show_password"> <label>Hiển thị mật khẩu</label> 
+              <div class="checkbox">
+                <input type="checkbox" id="show_password"> <label>Hiển thị mật khẩu</label>
               </div>
             </div>
             <div class="col-sm-6">
@@ -364,8 +364,8 @@
        alert(data);
      },
      error:function(xhr) {
-      if(xhr.status == 500) return 'Internal server error'; 
-      console.log(xhr.status); 
+      if(xhr.status == 500) return 'Internal server error';
+      console.log(xhr.status);
     }
   });
     $('#address').editable({
@@ -378,7 +378,7 @@
        alert(data);
      },
      error:function(xhr) {
-      if(xhr.status == 500) return 'Internal server error';  
+      if(xhr.status == 500) return 'Internal server error';
     }
   });
 
@@ -392,7 +392,7 @@
        alert(data);
      },
      error:function(xhr) {
-      if(xhr.status == 500) return 'Internal server error';  
+      if(xhr.status == 500) return 'Internal server error';
     }
   });
 
@@ -407,7 +407,7 @@
        alert(data);
      },
      error:function(xhr) {
-      if(xhr.status == 500) return 'Internal server error';  
+      if(xhr.status == 500) return 'Internal server error';
     }
   });
     $('#wards').editable({
@@ -420,7 +420,7 @@
        alert(data);
      },
      error:function(xhr) {
-      if(xhr.status == 500) return 'Internal server error';  
+      if(xhr.status == 500) return 'Internal server error';
     }
   });
     $('#phone').editable({
@@ -433,7 +433,7 @@
        alert(data);
      },
      error:function(xhr) {
-      if(xhr.status == 500) return 'Internal server error';  
+      if(xhr.status == 500) return 'Internal server error';
     }
   });
     $('#email').editable({
@@ -446,7 +446,7 @@
        alert(data);
      },
      error:function(xhr) {
-      if(xhr.status == 500) return 'Internal server error';  
+      if(xhr.status == 500) return 'Internal server error';
     }
   });
     $('#represntative').editable({
@@ -459,7 +459,7 @@
        alert(data);
      },
      error:function(xhr) {
-      if(xhr.status == 500) return 'Internal server error';  
+      if(xhr.status == 500) return 'Internal server error';
     }
   });
 

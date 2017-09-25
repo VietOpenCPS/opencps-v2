@@ -57,7 +57,8 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 			PortalUtil.getHttpServletResponse(actionResponse);
 
 		String login = ParamUtil.getString(actionRequest, "login");
-		String password = actionRequest.getParameter("password");
+		String password = ParamUtil.getString(actionRequest, "password");
+		String action = ParamUtil.getString(actionRequest, "action");
 		boolean rememberMe = ParamUtil.getBoolean(actionRequest, "rememberMe");
 		String authType = CompanyConstants.AUTH_TYPE_EA;
 		
@@ -81,7 +82,13 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 			AuthenticatedSessionManagerUtil.login(
 				request, response, login, password, rememberMe, authType);
 
-			actionResponse.sendRedirect(themeDisplay.getPathMain());
+			if (action != null && action.equals("confirm_account")) {
+				actionResponse.sendRedirect(
+					themeDisplay.getPortalURL() + "/profile");
+			}
+			else {
+				actionResponse.sendRedirect(themeDisplay.getPathMain());
+			}
 		}
 
 	}

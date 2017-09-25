@@ -48,7 +48,7 @@
               <option value="${level.levelCode}"> ${level.levelName}</option>
               </#list>
               </#if>-->
-            </select> 
+            </select>
           </div>
         </div>
       </div>
@@ -216,7 +216,7 @@
  schema: {
   total: "total",
   data: "data",
-  model : { id: "serviceinfoId" }
+  model : { id: "serviceInfoId" }
 },
 pageSize: 5,
 serverPaging: false,
@@ -238,11 +238,11 @@ serverFiltering: false
       var totalPage =  $("#service_info_pager").data("kendoPager").totalPages();
 
       var index = (currentPage-1)*_pageSize + localIndex;
-      
+
       data.itemIndex = index;
-      
+
       return kendo.template($("#service_info_template").html())(data);
-      
+
     },
     dataBinding: function() {
       record = (this.dataSource.page() -1) * this.dataSource.pageSize();
@@ -357,7 +357,7 @@ serverFiltering: false
         }
       }
     });
-    
+
     // open combobox on focus
     $(function() {
      $("[data-role=combobox]").each(function() {
@@ -439,6 +439,6 @@ serverFiltering: false
       separator: ", "
     });
 
-    
+
   })(jQuery);
 </script>
