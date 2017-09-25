@@ -91,6 +91,27 @@
   </div>
 </div>
 
+<!-- Modal -->
+<div id="instructionModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Hướng dẫn nộp hồ sơ</h4>
+      </div>
+      <div class="modal-body">
+        <p id="modal-content-instruction"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <script type="text/javascript">
   $(function() {
     var ts = $("#service_info_tabstrip").kendoTabStrip({
@@ -102,7 +123,10 @@
           $("#administration > li:first-child").addClass("active");
 
           $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
-            $("#administrationCodeSearch").data("kendoComboBox").value(administrationId);
+            var administrationCombobox =  $("#administrationCodeSearch").data("kendoComboBox");
+            setValue(administrationCombobox,administrationId);
+            administrationCombobox.trigger("change");
+            administrationCombobox._isSelect = false;
             $("#service_info_list_view").getKendoListView().dataSource.read({
               "administration": administrationId
             });
@@ -112,7 +136,11 @@
           $("#domain > li").removeClass("active");
           $("#domain > li:first-child").addClass("active");
           $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
-            $("#domainCodeSearch").data("kendoComboBox").value(domainId);
+            var domainCombobox=  $("#domainCodeSearch").data("kendoComboBox");
+            setValue(domainCombobox,domainId);
+            domainCombobox.trigger("change");
+            domainCombobox._isSelect = false;
+            console.log(domainCombobox);
             $("#service_info_list_view").getKendoListView().dataSource.read({
               "domain": domainId
             });
@@ -122,7 +150,10 @@
           $("#level > li").removeClass("active");
           $("#level > li:first-child").addClass("active");
           $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
-            $("#levelSearch").data("kendoComboBox").value(levelId);
+            var levelCombobox = $("#levelSearch").data("kendoComboBox");
+            setValue(levelCombobox,levelId);
+            levelCombobox.trigger("change");
+            levelCombobox._isSelect = false;
             $("#service_info_list_view").getKendoListView().dataSource.read({
               "level": levelId
             });
@@ -131,9 +162,12 @@
       }
     }).data('kendoTabStrip');
 
+    var setValue = function(combobox,value) {
+      combobox.value(value);
+    }
+
     $(document).on("click",".administration",function(event){
       event.preventDefault();
-
       $("#administration li").removeClass('active');
       $(this).addClass('active');
 
@@ -205,6 +239,8 @@
       change : function(){
         $("#administration").html(kendo.render(templateAdministration, this.view()));
         $("#administration > li:first-child").addClass("active");
+        $("#administrationCodeSearch").data("kendoComboBox").value($("#administration > li:first-child").attr("dataPk"));
+        $("#administrationCodeSearch").data("kendoComboBox")._isSelect = false;
         $("#service_info_list_view").getKendoListView().dataSource.read({
           "administration": $("#administration > li:first-child").attr("dataPk")
         });
@@ -274,8 +310,32 @@
       var id=$(this).attr("data-pk");
       console.log(id);
       $("#serviceinfo-right-content").load("${ajax.serviceinfo_detail}",function(result){
+        console.log(id);
         pullDataDetail(id);
       });
+    });
+
+    $(document).on("click",".btn-revert",function(){
+      var administrationId = $("#administration > li:first-child").attr("dataPk");
+      $("#administration > li").removeClass("active");
+      $("#administration > li:first-child").addClass("active");
+
+      $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
+        var administrationCombobox =  $("#administrationCodeSearch").data("kendoComboBox");
+        setValue(administrationCombobox,administrationId);
+        administrationCombobox.trigger("change");
+        administrationCombobox._isSelect = false;
+        $("#service_info_list_view").getKendoListView().dataSource.read({
+          "administration": administrationId
+        });
+      });
+    });
+
+    $(document).on("click",".showInstruction",function(event){
+      var instructionContent=$(this).attr("serviceInstruction");
+      console.log(instructionContent);
+      $("#modal-content-instruction").text(instructionContent);
+      $("#instructionModal").modal("show");
     });
   });
 </script>

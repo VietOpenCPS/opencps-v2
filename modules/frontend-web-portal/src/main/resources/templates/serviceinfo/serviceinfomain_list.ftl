@@ -2,7 +2,7 @@
 <#include "init.ftl">
 </#if>
 
-<div class="row">
+<div class="">
   <div class="col-xs-12 col-sm-12 panel P0">
     <div class="row-header">
       <div class="background-triangle-big">DANH SÁCH THỦ TỤC HÀNH CHÍNH</div>
@@ -96,7 +96,7 @@
      <div class="col-sm-1 text-center">
        #:itemIndex #
      </div>
-     <div class="col-sm-6 item-serviceinfo text-hover-blue" data-pk="#: id #">
+     <div class="col-sm-6 item-serviceinfo text-hover-blue hover-pointer" data-pk="#: id #">
       #: serviceName #
     </div>
     <div class="col-sm-2 text-center">
@@ -106,7 +106,7 @@
       Mức độ #: maxLevel #
     </div>
     <div class="col-sm-2 text-center">
-      #if((typeof serivceConfigs !== 'undefined') ){#
+      #if((typeof serviceConfigs !== 'undefined') ){#
       <div class="dropdown">
         <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ
           <span class="caret"></span>
@@ -118,28 +118,34 @@
           var serviceInstruction = "";
           var serviceLevel = "";
           var serviceUrl = "";
-          if (serivceConfigs[1]) {
-          for(var i=0; i<serivceConfigs.length;i++){
-          govAgencyCode = serivceConfigs[i].govAgencyCode;
-          govAgencyName = serivceConfigs[i].govAgencyName;
-          serviceInstruction = serivceConfigs[i].serviceInstruction;
-          serviceLevel = serivceConfigs[i].serviceLevel;
-          serviceUrl = serivceConfigs[i].serviceUrl;
+          if (serviceConfigs[1]) {
+          for(var i=0; i<serviceConfigs.length;i++){
+          govAgencyCode = serviceConfigs[i].govAgencyCode;
+          govAgencyName = serviceConfigs[i].govAgencyName;
+          serviceInstruction = serviceConfigs[i].serviceInstruction;
+          serviceLevel = serviceConfigs[i].serviceLevel;
+          serviceUrl = serviceConfigs[i].serviceUrl;
+          console.log(govAgencyName);
+          if(serviceLevel>=3){
           #
           <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
+          #}else {#
+          <li><a class="showInstruction" href="javascript:;" serviceInstruction="#:serviceInstruction#">#:govAgencyName#</a></li>
           #}
-        } else {
-        govAgencyCode = serivceConfigs.govAgencyCode;
-        govAgencyName = serivceConfigs.govAgencyName;
-        serviceInstruction = serivceConfigs.serviceInstruction;
-        serviceLevel = serivceConfigs.serviceLevel;
-        serviceUrl = serivceConfigs.serviceUrl;
-        #
-        <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
-        #}#
-      </ul>
-    </div>
-    #}#
+        }
+      } else {
+      govAgencyCode = serviceConfigs.govAgencyCode;
+      govAgencyName = serviceConfigs.govAgencyName;
+      serviceInstruction = serviceConfigs.serviceInstruction;
+      serviceLevel = serviceConfigs.serviceLevel;
+      serviceUrl = serviceConfigs.serviceUrl;
+      console.log(govAgencyName);
+      #
+      <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
+      #}#
+    </ul>
+  </div>
+  #}#
   <#-- #if(true){#
   <button class="btn btn-small btn-active">Nộp hồ sơ</button>
   #}# -->
@@ -210,7 +216,7 @@
  schema: {
   total: "total",
   data: "data",
-  model : { id: "serviceInfoId" }
+  model : { id: "serviceinfoId" }
 },
 pageSize: 5,
 serverPaging: false,
@@ -310,6 +316,9 @@ serverFiltering: false
           data : "data",
           total : "total"
         }
+      },
+      change : function(){
+        console.log("change");
       }
     });
 
@@ -318,9 +327,12 @@ serverFiltering: false
       dataValueField: "level",
       filter: "contains",
       template: function(data){
-          var levelName = "Mức độ " + data.levelName;
+        var levelName =  data.levelName;
+        if(levelName.toString().indexOf("Mức độ") == -1){
+          levelName = "Mức độ " + data.levelName;
           data.levelName = levelName;
-          return kendo.template('<span class="k-state-default">#:data.levelName#</span>')(data);
+        }
+        return kendo.template('<span class="k-state-default">#:data.levelName#</span>')(data);
       },
       dataSource: {
         transport :{
@@ -365,10 +377,13 @@ serverFiltering: false
    });
 
     function onSearchServiceInfo(){
+      var level = ($("#levelSearch").val()=="") ? 0 : $("#levelSearch").val();
+      console.log($("#levelSearch").val());
+      console.log(level);
       serviceInfoDataSource.read({
         "administration": $("#administrationCodeSearch").val(),
         "domain": $("#domainCodeSearch").val(),
-        "level": $("#levelSearch").val(),
+        "level": level,
         "keywords": $("#input_search_service_info").val()
       });
     }
@@ -386,12 +401,44 @@ serverFiltering: false
     });
 
     $("#btn-filter-serviceinfo").click(function(){
+      var level = ($("#levelSearch").val()==null) ? 0 : $("#levelSearch").val();
       serviceInfoDataSource.read({
         "administration": $("#administrationCodeSearch").val(),
         "domain": $("#domainCodeSearch").val(),
-        "level": $("#levelSearch").val(),
+        "level": level,
         "keywords": $("#input_search_service_info").val()
       });
     });
+
+    $("#input_search_service_info").kendoAutoComplete({
+      dataSource: {
+        transport :{
+          read : {
+            url : "${api.server}/serviceinfos",
+            dataType : "json",
+            type : "GET",
+            beforeSend: function(req) {
+              req.setRequestHeader('groupId', ${groupId});
+            },
+            success : function(result){
+
+            },
+            error : function(xhr){
+
+            }
+          }
+        },
+        schema : {
+          data : "data",
+          total : "total"
+        }
+      },
+      dataTextField: "serviceName",
+      filter: "startswith",
+      placeholder: "Nhập từ khóa",
+      separator: ", "
+    });
+
+    
   })(jQuery);
 </script>

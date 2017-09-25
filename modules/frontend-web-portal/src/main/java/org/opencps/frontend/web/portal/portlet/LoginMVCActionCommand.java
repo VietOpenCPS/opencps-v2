@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package org.opencps.frontend.web.portal.portlet;
 
 import javax.portlet.ActionRequest;
@@ -9,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.opencps.frontend.web.portal.constants.FrontendWebPortalPortletKeys;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.util.UserMgtUtils;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.model.CompanyConstants;
@@ -26,7 +29,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 /**
  * @author phucnv
  * @date Sep 12, 2017
- *
  */
 @Component(property = {
 	"javax.portlet.name=" + FrontendWebPortalPortletKeys.LOGIN_PORTLET_NAME,
@@ -58,15 +60,22 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 		String password = actionRequest.getParameter("password");
 		boolean rememberMe = ParamUtil.getBoolean(actionRequest, "rememberMe");
 		String authType = CompanyConstants.AUTH_TYPE_EA;
+		
+		Applicant applicant = UserMgtUtils.getApplicant(login);
+
+		login = applicant != null ? applicant.getContactEmail() : login;
 
 		User user = UserLocalServiceUtil.getUserByEmailAddress(
 			themeDisplay.getCompanyId(), login);
+
+		hideDefaultSuccessMessage(actionRequest);
 
 		if (user != null &&
 			user.getStatus() == WorkflowConstants.STATUS_PENDING) {
 
 			actionResponse.sendRedirect(
-				"/confirm-account?active_user_id=" + user.getUserId());
+				"/confirm-account?active_user_id=" + user.getUserId() +
+					"&redirectURL=" + themeDisplay.getURLCurrent());
 		}
 		else {
 			AuthenticatedSessionManagerUtil.login(

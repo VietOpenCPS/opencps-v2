@@ -27,4 +27,7 @@ public class FrontendWebPortalPortletKeys {
 
 	public static final String DOSSIER_LOOKUP_PORTLET_NAME =
 		"FrontendWebPortal_DossierLookupPortlet";
+
+	public static final String PROFILE_PORTLET_NAME =
+		"FrontendWebPortal_ProfilePortlet";
 }

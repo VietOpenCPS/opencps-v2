@@ -6,8 +6,6 @@
 
 <#assign isSignedIn = themeDisplay.isSignedIn() />
 
-<#assign logoutURL = (themeDisplay.getURLPortal() + "/c/portal/logout") />
-
 <#assign userName = themeDisplay.getUser().getFullName() />
 
 <#if themeDisplay.getUser().getFemale()>
@@ -20,3 +18,4 @@
 <#assign PortalUtil = objectUtil("com.liferay.portal.kernel.util.PortalUtil") />
 
 <#assign active_user_id = GetterUtil.getString(PortalUtil.getOriginalServletRequest(request).getParameter("active_user_id")) />
+<#assign redirectURL = GetterUtil.getString(PortalUtil.getOriginalServletRequest(request).getParameter("redirectURL")) />

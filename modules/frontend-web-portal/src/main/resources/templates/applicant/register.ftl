@@ -129,7 +129,7 @@
             message: "Đăng ký thành công."
           }, "success");
           
-          location.href("${api.server}/confirm-account?active_user_id="+result.applicantId);
+          window.location.href = "${portalURL}/confirm-account?active_user_id="+result.applicantId;
         },
         error: function(result){
           notification.show({

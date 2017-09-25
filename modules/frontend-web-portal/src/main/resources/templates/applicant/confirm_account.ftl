@@ -34,6 +34,24 @@
       },
       error : function(xhr){
 
+      },
+      statusCode: {
+        200: function(result) {
+          notification.show({
+            title: "Success",
+            message: "Xác thực thành công."
+          }, "success");
+
+          setTimeout(function(){
+            window.location.href = "${redirectURL}";
+          }, 2000);
+        },
+        500: function(result) {
+          notification.show({
+            title: "Error",
+            message: "Xẩy ra lỗi, vui lòng thử lại."
+          }, "error");
+        }
       }
     });
   });
