@@ -7,10 +7,10 @@
     <div>
       <div id="service_info_tabstrip" class="navtab-menu">
         <ul>
-          <li class="k-state-active" value="1">
+          <li class="<#if (domain??) && (domain ? has_content) ><#else>k-state-active</#if>"  value="1">
             <div title="Cơ quan quản lý">CƠ QUAN QUẢN LÝ</div>
           </li>
-          <li value="2">
+          <li class="<#if (domain??) && (domain ? has_content)>k-state-active<#else></#if>" value="2">
             <div title="Lĩnh vực">LĨNH VỰC</div>
           </li>
           <li value="3">
@@ -52,17 +52,25 @@
             </#list>
             </#if> -->
             <script type="text/x-kendo-template" id="tempStatisticsDomains">
-              <li dataPk="#:domainCode#" class='domain'>
-                <a href='javascript:;' >#:domainName#</a>
-                <div class="btn-group">
-                  <span>#:count#</span>
-                </div>
-              </li>
-            </script>
-          </ul>
-        </div>
-        <div>
-         <ul class="ul-default ul-with-right-icon" id="level">
+              # 
+              var active = "";
+              if(typeof(${domain})!="undefined" && ${domain} !=""){
+              if(${domain} == domainCode){
+              active = "active";
+            }
+          }
+          #
+          <li dataPk="#:domainCode#" class='domain #:active#'>
+            <a href='javascript:;' >#:domainName#</a>
+            <div class="btn-group">
+              <span>#:count#</span>
+            </div>
+          </li>
+        </script>
+      </ul>
+    </div>
+    <div>
+     <ul class="ul-default ul-with-right-icon" id="level">
             <#-- <#if serviceinfo.levels?has_content>
             <#list serviceinfo.levels as level>
             <li dataPk="${level.levelCode}" class='level'>
@@ -108,11 +116,11 @@
         <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
       </div>
     </div>
-
   </div>
 </div>
 
 <script type="text/javascript">
+  var initServiceinfo;
   $(function() {
     var ts = $("#service_info_tabstrip").kendoTabStrip({
       animation: { open: { effects: "fadeIn"} },
@@ -139,7 +147,7 @@
             var domainCombobox=  $("#domainCodeSearch").data("kendoComboBox");
             setValue(domainCombobox,domainId);
             domainCombobox.trigger("change");
-            domainCombobox._isSelect = false;
+            domainCombobox._isSelect = false; 
             console.log(domainCombobox);
             $("#service_info_list_view").getKendoListView().dataSource.read({
               "domain": domainId
@@ -159,7 +167,8 @@
             });
           });
         }
-      }
+      },
+      scrollable: false
     }).data('kendoTabStrip');
 
     var setValue = function(combobox,value) {
@@ -174,6 +183,7 @@
       var administrationCode = $(this).attr("dataPk");
       $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
         $("#administrationCodeSearch").data("kendoComboBox").value(administrationCode);
+        $("#administrationCodeSearch").data("kendoComboBox")._isSelect=false;
         $("#service_info_list_view").getKendoListView().dataSource.read({
           "administration": administrationCode
         });
@@ -190,6 +200,7 @@
       var domainCode = $(this).attr("dataPk");
       $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
         $("#domainCodeSearch").data("kendoComboBox").value(domainCode);
+        $("#domainCodeSearch").data("kendoComboBox")._isSelect=false;
         $("#service_info_list_view").getKendoListView().dataSource.read({
           "domain": domainCode
         });
@@ -206,6 +217,7 @@
 
       $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
         $("#levelSearch").data("kendoComboBox").value(levelCode);
+        $("#levelSearch").data("kendoComboBox")._isSelect=false;
         $("#service_info_list_view").getKendoListView().dataSource.read({
           "level": levelCode
         });
@@ -238,12 +250,14 @@
       },
       change : function(){
         $("#administration").html(kendo.render(templateAdministration, this.view()));
-        $("#administration > li:first-child").addClass("active");
-        $("#administrationCodeSearch").data("kendoComboBox").value($("#administration > li:first-child").attr("dataPk"));
-        $("#administrationCodeSearch").data("kendoComboBox")._isSelect = false;
-        $("#service_info_list_view").getKendoListView().dataSource.read({
-          "administration": $("#administration > li:first-child").attr("dataPk")
-        });
+        if(typeof(${domain})=="undefined" || ${domain}<=0 || ${domain}==""){
+          $("#administration > li:first-child").addClass("active");
+          $("#administrationCodeSearch").data("kendoComboBox").value($("#administration > li:first-child").attr("dataPk"));
+          $("#administrationCodeSearch").data("kendoComboBox")._isSelect = false;
+          $("#service_info_list_view").getKendoListView().dataSource.read({
+            "administration": $("#administration > li:first-child").attr("dataPk")
+          });
+        }
       }
     });
     dataSourceAdministrations.read();
@@ -272,6 +286,13 @@
       },
       change : function(){
         $("#domain").html(kendo.render(templateDomains, this.view()));
+        if(typeof(${domain})!="undefined" && ${domain}!=""){
+          $("#domainCodeSearch").data("kendoComboBox").value(${domain});
+          $("#domainCodeSearch").data("kendoComboBox")._isSelect = false;
+          $("#service_info_list_view").getKendoListView().dataSource.read({
+            "domain": ${domain}
+          });
+        }
       }
     });
     dataSourceDomains.read();
@@ -316,19 +337,41 @@
     });
 
     $(document).on("click",".btn-revert",function(){
-      var administrationId = $("#administration > li:first-child").attr("dataPk");
-      $("#administration > li").removeClass("active");
-      $("#administration > li:first-child").addClass("active");
+
+      var tabstrip = $("#service_info_tabstrip").data("kendoTabStrip");
+      var index=tabstrip.select().index();
+      var content=tabstrip.contentElement(index);
+      var id = $(content).find('li.active').attr("dataPk");
+      console.log(id);
 
       $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
+        if(index == 2){
+          $("#service_info_list_view").getKendoListView().dataSource.read({
+            "level": id
+          });
+          var levelCombobox =  $("#levelSearch").data("kendoComboBox");
+          setValue(levelCombobox,id);
+          levelCombobox.trigger("change");
+          levelCombobox._isSelect = false;
+        }else if(index == 1){
+         $("#service_info_list_view").getKendoListView().dataSource.read({
+          "domain": id
+        });
+         var domainCombobox =  $("#domainCodeSearch").data("kendoComboBox");
+         setValue(domainCombobox,id);
+         domainCombobox.trigger("change");
+         domainCombobox._isSelect = false;
+       }else{
+        $("#service_info_list_view").getKendoListView().dataSource.read({
+          "administration": id
+        });
         var administrationCombobox =  $("#administrationCodeSearch").data("kendoComboBox");
-        setValue(administrationCombobox,administrationId);
+        setValue(administrationCombobox,id);
         administrationCombobox.trigger("change");
         administrationCombobox._isSelect = false;
-        $("#service_info_list_view").getKendoListView().dataSource.read({
-          "administration": administrationId
-        });
-      });
+      }
+
+    });
     });
 
     $(document).on("click",".showInstruction",function(event){
@@ -337,5 +380,57 @@
       $("#modal-content-instruction").text(instructionContent);
       $("#instructionModal").modal("show");
     });
+
+
+    /*initServiceinfo = function(){
+      console.log("init function");
+
+      var administration = getUrlParameter('administration');
+      var domain = getUrlParameter('domain');
+      var level = getUrlParameter('level');
+      var keyword = getUrlParameter('keyword');
+
+      console.log(administration);
+      console.log(domain);
+      console.log(level);
+      console.log(keyword);
+
+      if(domain!=null){
+        $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
+          $("#service_info_list_view").getKendoListView().dataSource.read({
+            "administration": administration,
+            "domain": domain,
+            "level": level,
+            "keywords": keyword
+          });
+        });
+        var domainCombobox=  $("#domainCodeSearch").data("kendoComboBox");
+        console.log(domainCombobox);
+        domainCombobox.value(1);
+      }
+
+      if(keyword!=null){
+        $("#input_search_service_info").val(keyword);
+      }
+    }
+
+    var getUrlParameter = function getUrlParameter(sParam) {
+      var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+      sURLVariables = sPageURL.split('&'),
+      sParameterName,i;
+
+      for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+          return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+      }
+    };*/
+    
   });
+
+/*$(window).load(function () {
+  initServiceinfo();
+});*/
 </script>

@@ -142,7 +142,7 @@
     </div>
 </div>
 
-<div id="submitDossierModal" class="modal fade" role="dialog">
+<#-- <div id="submitDossierModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -163,7 +163,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 </div>
 
 <script type="text/javascript">
@@ -281,7 +281,7 @@
     });
 }*/
 
-$(function(){
+/*$(function(){
     $("#btn-submit-serviceinfo").click(function(){
         var data = $("#fmServiceinfo").serialize();
         var id = $("#serviceinfoId").val();
@@ -300,5 +300,5 @@ $(function(){
     });
 
     
-});
+});*/
 </script>
