@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="row">
 	<div class="col-sm-9 col-sm-offset-1 text-center searchbar">
 		<h3 class="text-blue"><i>HỆ THỐNG DỊCH VỤ CÔNG TRỰC TUYẾN</i></h3>
@@ -60,7 +63,8 @@
 			}
 		},
 		dataTextField: "serviceName",
-		filter: "startswith",
-		placeholder: "Nhập từ khóa"
+		filter: "contains",
+		placeholder: "Nhập tên thủ tục hành chính",
+		noDataTemplate: 'Không có dữ liệu'
 	});
 </script>

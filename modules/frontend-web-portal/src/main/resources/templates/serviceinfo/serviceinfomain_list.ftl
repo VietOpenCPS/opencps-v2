@@ -93,22 +93,22 @@
 
  <script type="text/x-kendo-template" id="service_info_template">
    <li class="clearfix eq-height-lg" data-pk="#: id #" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
-     <div class="col-sm-1 text-center">
+     <div class="col-sm-1 text-center center-all">
        #:itemIndex #
      </div>
-     <div class="col-sm-6 item-serviceinfo text-hover-blue hover-pointer" data-pk="#: id #">
+     <div class="col-sm-6 item-serviceinfo text-hover-blue hover-pointer align-middle-lg" data-pk="#: id #">
       #: serviceName #
     </div>
-    <div class="col-sm-2 text-center">
+    <div class="col-sm-2 align-middle-lg text-center">
       #: domainName #
     </div>
-    <div class="col-sm-1 text-center">
+    <div class="col-sm-1 align-middle-lg text-center">
       Mức độ #: maxLevel #
     </div>
     <div class="col-sm-2 text-center">
-      #if((typeof serviceConfigs !== 'undefined') ){#
+      #if((typeof  serviceConfigs !== 'undefined') ){#
       <div class="dropdown">
-        <button class="btn btn-reset MTN4 dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ
+        <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
@@ -118,13 +118,13 @@
           var serviceInstruction = "";
           var serviceLevel = "";
           var serviceUrl = "";
-          if (serviceConfigs[1]) {
-          for(var i=0; i<serviceConfigs.length;i++){
-          govAgencyCode = serviceConfigs[i].govAgencyCode;
-          govAgencyName = serviceConfigs[i].govAgencyName;
-          serviceInstruction = serviceConfigs[i].serviceInstruction;
-          serviceLevel = serviceConfigs[i].serviceLevel;
-          serviceUrl = serviceConfigs[i].serviceUrl;
+          if ( serviceConfigs[1]) {
+          for(var i=0; i< serviceConfigs.length;i++){
+          govAgencyCode =  serviceConfigs[i].govAgencyCode;
+          govAgencyName =  serviceConfigs[i].govAgencyName;
+          serviceInstruction =  serviceConfigs[i].serviceInstruction;
+          serviceLevel =  serviceConfigs[i].serviceLevel;
+          serviceUrl =  serviceConfigs[i].serviceUrl;
           console.log(govAgencyName);
           if(serviceLevel>=3){
           #
@@ -134,11 +134,11 @@
           #}
         }
       } else {
-      govAgencyCode = serviceConfigs.govAgencyCode;
-      govAgencyName = serviceConfigs.govAgencyName;
-      serviceInstruction = serviceConfigs.serviceInstruction;
-      serviceLevel = serviceConfigs.serviceLevel;
-      serviceUrl = serviceConfigs.serviceUrl;
+      govAgencyCode =  serviceConfigs.govAgencyCode;
+      govAgencyName =  serviceConfigs.govAgencyName;
+      serviceInstruction =  serviceConfigs.serviceInstruction;
+      serviceLevel =  serviceConfigs.serviceLevel;
+      serviceUrl =  serviceConfigs.serviceUrl;
       console.log(govAgencyName);
       #
       <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
@@ -435,9 +435,9 @@ serverFiltering: false
         }
       },
       dataTextField: "serviceName",
-      filter: "startswith",
+      filter: "contains",
       placeholder: "Nhập từ khóa",
-      separator: ", "
+      noDataTemplate: 'Không có dữ liệu'
     });
 
     

@@ -7,10 +7,10 @@
     <div>
       <div id="service_info_tabstrip" class="navtab-menu">
         <ul>
-          <li class="k-state-active" value="1">
+          <li  value="1">
             <div title="Cơ quan quản lý">CƠ QUAN QUẢN LÝ</div>
           </li>
-          <li value="2">
+          <li class="k-state-active" value="2">
             <div title="Lĩnh vực">LĨNH VỰC</div>
           </li>
           <li value="3">
@@ -320,19 +320,41 @@
     });
 
     $(document).on("click",".btn-revert",function(){
-      var administrationId = $("#administration > li:first-child").attr("dataPk");
-      $("#administration > li").removeClass("active");
-      $("#administration > li:first-child").addClass("active");
+
+      var tabstrip = $("#service_info_tabstrip").data("kendoTabStrip");
+      var index=tabstrip.select().index();
+      var content=tabstrip.contentElement(index);
+      var id = $(content).find('li.active').attr("dataPk");
+      console.log(id);
 
       $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
+        if(index == 2){
+          $("#service_info_list_view").getKendoListView().dataSource.read({
+            "level": id
+          });
+          var levelCombobox =  $("#levelSearch").data("kendoComboBox");
+          setValue(levelCombobox,id);
+          levelCombobox.trigger("change");
+          levelCombobox._isSelect = false;
+        }else if(index == 1){
+         $("#service_info_list_view").getKendoListView().dataSource.read({
+          "domain": id
+        });
+         var domainCombobox =  $("#domainCodeSearch").data("kendoComboBox");
+         setValue(domainCombobox,id);
+         domainCombobox.trigger("change");
+         domainCombobox._isSelect = false;
+       }else{
+        $("#service_info_list_view").getKendoListView().dataSource.read({
+          "administration": id
+        });
         var administrationCombobox =  $("#administrationCodeSearch").data("kendoComboBox");
-        setValue(administrationCombobox,administrationId);
+        setValue(administrationCombobox,id);
         administrationCombobox.trigger("change");
         administrationCombobox._isSelect = false;
-        $("#service_info_list_view").getKendoListView().dataSource.read({
-          "administration": administrationId
-        });
-      });
+      }
+
+    });
     });
 
     $(document).on("click",".showInstruction",function(event){
@@ -378,8 +400,7 @@
     var getUrlParameter = function getUrlParameter(sParam) {
       var sPageURL = decodeURIComponent(window.location.search.substring(1)),
       sURLVariables = sPageURL.split('&'),
-      sParameterName,
-      i;
+      sParameterName,i;
 
       for (i = 0; i < sURLVariables.length; i++) {
         sParameterName = sURLVariables[i].split('=');
