@@ -121,9 +121,9 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 
 			if (Validator.isNotNull(templateName))
 				dossierTemplate.setTemplateName(templateName);
-
+			/*
 			if (Validator.isNotNull(templateNo))
-				dossierTemplate.setTemplateNo(templateNo);
+				dossierTemplate.setTemplateNo(templateNo);*/
 
 			if (Validator.isNotNull(description))
 				dossierTemplate.setDescription(description);
