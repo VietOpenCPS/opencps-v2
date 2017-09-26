@@ -19,7 +19,7 @@
 				<div class="img-domains col-sm-4">
 					<div class="pic-1"></div>
 					<div class="center-all">
-						<a href="">Lĩnh vực <span>VĂN HÓA</span></a>
+						<a href="http://v2.opencps.vn/thu-tuc-hanh-chinh?domain=">Lĩnh vực <span>VĂN HÓA</span></a>
 					</div>
 				</div>
 				<div class="img-domains col-sm-4">

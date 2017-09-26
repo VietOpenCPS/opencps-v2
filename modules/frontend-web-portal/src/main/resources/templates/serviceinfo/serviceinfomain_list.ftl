@@ -130,22 +130,23 @@
           #
           <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
           #}else {#
-          <li><a class="showInstruction" href="javascript:;" serviceInstruction="#:serviceInstruction#">#:govAgencyName#</a></li>
-          #}
-        }
-      } else {
-      govAgencyCode =  serviceConfigs.govAgencyCode;
-      govAgencyName =  serviceConfigs.govAgencyName;
-      serviceInstruction =  serviceConfigs.serviceInstruction;
-      serviceLevel =  serviceConfigs.serviceLevel;
-      serviceUrl =  serviceConfigs.serviceUrl;
-      console.log(govAgencyName);
-      #
-      <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
-      #}#
-    </ul>
-  </div>
-  #}#
+          <li><a class="showInstruction" href="javascript:;" serviceInstruction="#:serviceInstruction#">
+            #:govAgencyName#</a></li>
+            #}
+          }
+        } else {
+        govAgencyCode =  serviceConfigs.govAgencyCode;
+        govAgencyName =  serviceConfigs.govAgencyName;
+        serviceInstruction =  serviceConfigs.serviceInstruction;
+        serviceLevel =  serviceConfigs.serviceLevel;
+        serviceUrl =  serviceConfigs.serviceUrl;
+        console.log(govAgencyName);
+        #
+        <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
+        #}#
+      </ul>
+    </div>
+    #}#
   <#-- #if(true){#
   <button class="btn btn-small btn-active">Nộp hồ sơ</button>
   #}# -->
