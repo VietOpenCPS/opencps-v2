@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="row">
 	<div class="col-sm-9 col-sm-offset-1 text-center searchbar">
 		<h3 class="text-blue"><i>HỆ THỐNG DỊCH VỤ CÔNG TRỰC TUYẾN</i></h3>
@@ -16,19 +19,19 @@
 				<div class="img-domains col-sm-4">
 					<div class="pic-1"></div>
 					<div class="center-all">
-						<a href="">Lĩnh vực <span>VĂN HÓA</span></a>
+						<a href="http://v2.opencps.vn/thu-tuc-hanh-chinh?domain=LVMT">Lĩnh vực <span>VĂN HÓA</span></a>
 					</div>
 				</div>
 				<div class="img-domains col-sm-4">
 					<div class="pic-2"></div>
 					<div class="center-all">
-						<a href="">Lĩnh vực <span>THỂ DỤC - THỂ THAO</span></a>
+						<a href="http://v2.opencps.vn/thu-tuc-hanh-chinh?domain=ATBX">Lĩnh vực <span>THỂ DỤC - THỂ THAO</span></a>
 					</div>
 				</div>
 				<div class="img-domains col-sm-4">
 					<div class="pic-3"></div>
 					<div class="center-all">
-						<a href="">Lĩnh vực <span>DU LỊCH</span></a>
+						<a href="http://v2.opencps.vn/thu-tuc-hanh-chinh?domain=LVDL">Lĩnh vực <span>DU LỊCH</span></a>
 					</div>
 				</div>
 			</div>
@@ -60,7 +63,8 @@
 			}
 		},
 		dataTextField: "serviceName",
-		filter: "startswith",
-		placeholder: "Nhập từ khóa"
+		filter: "contains",
+		placeholder: "Nhập tên thủ tục hành chính",
+		noDataTemplate: 'Không có dữ liệu'
 	});
 </script>
