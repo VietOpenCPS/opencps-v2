@@ -64,7 +64,7 @@
 
 <div class="row MT15">
  <div class="col-xs-12 col-sm-12">
-   <div class="checkbox-inline"> <input type="checkbox" id="agreement" name="agreement"> <label class="text-normal">Tôi đồng ý với điều khoản sử dụng. </label> </div> <span><a href="#" class="text-light-blue">Chi tiết</a></span>
+   <div class="checkbox-inline"> <input type="checkbox" id="agreement" name="agreement"> <label class="text-normal">Tôi đồng ý với điều khoản sử dụng. </label> </div> <span><a href="/dieu-khoan-su-dung" class="text-light-blue">Chi tiết</a></span>
  </div>
 </div>
 <div class="row MT15 MB15 text-center">

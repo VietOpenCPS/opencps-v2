@@ -26,7 +26,7 @@
 				<div class="img-domains col-sm-4">
 					<div class="pic-2"></div>
 					<div class="center-all">
-						<a href="http://v2.opencps.vn/thu-tuc-hanh-chinh?domain=ATBX">Lĩnh vực <span>THỂ DỤC - THỂ THAO</span></a>
+						<a href="http://v2.opencps.vn/thu-tuc-hanh-chinh?domain=LVATBX">Lĩnh vực <span>THỂ DỤC - THỂ THAO</span></a>
 					</div>
 				</div>
 				<div class="img-domains col-sm-4">

@@ -30,7 +30,7 @@ import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 	"com.liferay.portlet.css-class-wrapper=portlet-freemarker",
 	"com.liferay.portlet.display-category=category.opencps_v2.portal",
 	"com.liferay.portlet.header-portlet-css=/css/main.css",
-	"com.liferay.portlet.instanceable=false",
+	"com.liferay.portlet.instanceable=true",
 	"javax.portlet.display-name=Profile Portlet",
 	"javax.portlet.init-param.template-path=/",
 	"javax.portlet.init-param.view-template=/templates/profile/profile_main.ftl",
