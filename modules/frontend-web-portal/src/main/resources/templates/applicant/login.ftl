@@ -4,12 +4,13 @@
 
 <#if isSignedIn == false>
 	<div class="hidden-xs hidden-sm">
-	  <form action="${loginURL}" method="post" class="eq-height-lg">
+	  <form action="${loginURL}" method="post" class="eq-height-lg" name="login_form">
+			<input name="${portletNamespace}action" id="input_action" type="hidden"/>
 	    <div class="">
-	      <input type="text" class="form-control input-sm" name="${portletNamespace}login" placeholder="Tài khoản đăng nhập" title="Tài khoản đăng nhập">
+	      <input type="text" class="form-control input-sm" name="${portletNamespace}login" id="input_login" placeholder="Tài khoản đăng nhập" title="Tài khoản đăng nhập">
 	    </div>
 	    <div class="">
-	      <input type="password" class="form-control input-sm" name="${portletNamespace}password" placeholder="Mật khẩu" title="Mật khẩu">
+	      <input type="password" class="form-control input-sm" name="${portletNamespace}password" id="input_password" placeholder="Mật khẩu" title="Mật khẩu">
 	    </div>
 	    <div class="">
 	      <button class="btn btn-active btn-sm">Đăng nhập</button>
