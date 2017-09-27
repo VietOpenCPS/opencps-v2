@@ -230,21 +230,21 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="serviceProcessId" type="long" />
-		<field name="preStepCode" type="long" />
-		<field name="postStepCode" type="long" />
+		<field name="preStepCode" type="String" />
+		<field name="postStepCode" type="String" />
 		<field name="autoEvent" type="String" />
 		<field name="preCondition" type="String" />
 		<field name="actionCode" type="String" />
 		<field name="actionName" type="String" />
-		<field name="allowAssignUser" type="String" />
+		<field name="allowAssignUser" type="boolean" />
 		<field name="assignUserId" type="long" />
-		<field name="requestPayment" type="String" />
+		<field name="requestPayment" type="boolean" />
 		<field name="paymentFee" type="String" />
 		<field name="createDossierFiles" type="String" />
 		<field name="returnDossierFiles" type="String" />
 		<field name="makeBriefNote" type="String" />
 		<field name="syncActionCode" type="String" />
-		<field name="rollbackable" type="String" />
+		<field name="rollbackable" type="boolean" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ProcessOption">
 		<field name="uuid" type="String" />
@@ -287,7 +287,7 @@
 		<field name="uuid" type="String" />
 		<field name="processStepId" type="long" />
 		<field name="roleId" type="long" />
-		<field name="moderator" type="int" />
+		<field name="moderator" type="boolean" />
 		<field name="condition" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceConfig">
@@ -361,18 +361,19 @@
 		<field name="durationCount" type="int" />
 		<field name="durationUnit" type="int" />
 		<field name="counter" type="int" />
-		<field name="generateDossierNo" type="String" />
+		<field name="generateDossierNo" type="boolean" />
 		<field name="dossierNoPattern" type="String" />
-		<field name="generateDueDate" type="String" />
+		<field name="generateDueDate" type="boolean" />
 		<field name="dueDatePattern" type="String" />
 		<field name="generatePassword" type="boolean" />
 		<field name="directNotification" type="boolean" />
+		<field name="serverNo" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceProcessRole">
 		<field name="uuid" type="String" />
 		<field name="serviceProcessId" type="long" />
 		<field name="roleId" type="long" />
-		<field name="moderator" type="int" />
+		<field name="moderator" type="boolean" />
 		<field name="condition" type="String" />
 	</model>
 </model-hints>

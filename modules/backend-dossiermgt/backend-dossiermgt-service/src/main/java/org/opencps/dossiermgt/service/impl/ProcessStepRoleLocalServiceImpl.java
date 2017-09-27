@@ -16,6 +16,9 @@ package org.opencps.dossiermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import java.util.List;
+
+import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.service.base.ProcessStepRoleLocalServiceBaseImpl;
 
 /**
@@ -40,4 +43,9 @@ public class ProcessStepRoleLocalServiceImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil} to access the process step role local service.
 	 */
+	
+	public List<ProcessStepRole> findByP_S_ID(long processStepId) {
+		return processStepRolePersistence.findByP_S_ID(processStepId);
+	}
+	
 }

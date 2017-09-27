@@ -40,4 +40,6 @@ public class ServiceProcessLocalServiceImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil} to access the service process local service.
 	 */
+	
+	
 }

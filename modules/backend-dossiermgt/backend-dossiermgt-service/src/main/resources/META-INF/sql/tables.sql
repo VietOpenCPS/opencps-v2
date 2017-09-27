@@ -237,21 +237,21 @@ create table opencps_processaction (
 	createDate DATE null,
 	modifiedDate DATE null,
 	serviceProcessId LONG,
-	preStepCode LONG,
-	postStepCode LONG,
+	preStepCode VARCHAR(75) null,
+	postStepCode VARCHAR(75) null,
 	autoEvent VARCHAR(75) null,
 	preCondition VARCHAR(75) null,
 	actionCode VARCHAR(75) null,
 	actionName VARCHAR(75) null,
-	allowAssignUser VARCHAR(75) null,
+	allowAssignUser BOOLEAN,
 	assignUserId LONG,
-	requestPayment VARCHAR(75) null,
+	requestPayment BOOLEAN,
 	paymentFee VARCHAR(75) null,
 	createDossierFiles VARCHAR(75) null,
 	returnDossierFiles VARCHAR(75) null,
 	makeBriefNote VARCHAR(75) null,
 	syncActionCode VARCHAR(75) null,
-	rollbackable VARCHAR(75) null
+	rollbackable BOOLEAN
 );
 
 create table opencps_processoption (
@@ -297,7 +297,7 @@ create table opencps_processsteprole (
 	uuid_ VARCHAR(75) null,
 	processStepId LONG not null,
 	roleId LONG not null,
-	moderator INTEGER,
+	moderator BOOLEAN,
 	condition_ VARCHAR(75) null,
 	primary key (processStepId, roleId)
 );
@@ -368,19 +368,20 @@ create table opencps_serviceprocess (
 	durationCount INTEGER,
 	durationUnit INTEGER,
 	counter INTEGER,
-	generateDossierNo VARCHAR(75) null,
+	generateDossierNo BOOLEAN,
 	dossierNoPattern VARCHAR(75) null,
-	generateDueDate VARCHAR(75) null,
+	generateDueDate BOOLEAN,
 	dueDatePattern VARCHAR(75) null,
 	generatePassword BOOLEAN,
-	directNotification BOOLEAN
+	directNotification BOOLEAN,
+	serverNo VARCHAR(75) null
 );
 
 create table opencps_serviceprocessrole (
 	uuid_ VARCHAR(75) null,
 	serviceProcessId LONG not null,
 	roleId LONG not null,
-	moderator INTEGER,
+	moderator BOOLEAN,
 	condition_ VARCHAR(75) null,
 	primary key (serviceProcessId, roleId)
 );
