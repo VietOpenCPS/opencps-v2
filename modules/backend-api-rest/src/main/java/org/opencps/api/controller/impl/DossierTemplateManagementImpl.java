@@ -161,12 +161,14 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 		try {
 
 			long dossierTemplateId = GetterUtil.getLong(id);
-
-			DossierTemplate dossierTemplate = actions.getDossierTemplate(dossierTemplateId);
-
-			if (Validator.isNull(dossierTemplate)) {
+			
+			DossierTemplate dossierTemplate = null;
+			try {
+				dossierTemplate = actions.getDossierTemplate(dossierTemplateId);
+			} catch (Exception e) {
 				dossierTemplate = actions.getDossierTemplate(groupId, id);
 			}
+			
 
 			if (Validator.isNull(dossierTemplate)) {
 				throw new NotFoundException("NotFoundException");

@@ -41,7 +41,7 @@ import javax.xml.bind.annotation.XmlType;
     "total",
     "data"
 })
-@XmlRootElement(name = "DossierTemplateResultsModel")
+@XmlRootElement(name = "data")
 public class DossierTemplateResultsModel {
 
     protected Integer total;
