@@ -32,7 +32,7 @@
            <p> Tên công ty</p>
          </div>
          <div class="col-sm-7">
-           <span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Nhập tên công ty" tabindex="-1" class=""> ${applicantName} </span>
+           <span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Nhập tên công ty" tabindex="-1" class=""> ${api.applicant.applicantName} </span>
            <span class="pull-right">
              <a href="#" id="editApplicantName" style="float: right"><i class="fa fa-pencil"></i></a>
            </span>
@@ -54,7 +54,7 @@
           <p>Tỉnh/ Thành phố</p>
         </div>
         <div class="col-sm-7">
-          <span id="city" data-pk="1" data-type="select" data-toggle="#editCity" data-original-title="Chọn thành phố" tabindex="-1" class=""> ${cityName} </span>
+          <span id="city" data-pk="1" data-type="select" data-toggle="#editCity" data-original-title="Chọn thành phố" tabindex="-1" class=""> ${api.applicant.cityName} </span>
           <span class="pull-right">
             <a href="#" id="editCity" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -65,7 +65,7 @@
           <p>Quận/ Huyện</p>
         </div>
         <div class="col-sm-7">
-          <span id="district" data-pk="1" data-type="select" data-toggle="#editDistrict" data-original-title="Chọn quận/ huyện" tabindex="-1" class="">${districtName}</span>
+          <span id="district" data-pk="1" data-type="select" data-toggle="#editDistrict" data-original-title="Chọn quận/ huyện" tabindex="-1" class="">${api.applicant.districtName}</span>
           <span class="pull-right">
             <a href="#" id="editDistrict" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -76,7 +76,7 @@
           <p>Xã/ Phường</p>
         </div>
         <div class="col-sm-7">
-          <span id="wards" data-pk="1" data-type="select" data-toggle="#editWards" data-original-title="Chọn xã/ phường" tabindex="-1" class="">${wardName}</span>
+          <span id="wards" data-pk="1" data-type="select" data-toggle="#editWards" data-original-title="Chọn xã/ phường" tabindex="-1" class="">${api.applicant.wardName}</span>
           <span class="pull-right">
             <a href="#" id="editWards" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -87,7 +87,7 @@
           <p>Điện thoại</p>
         </div>
         <div class="col-sm-7">
-          <span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Nhập số điện thoại" tabindex="-1" class="">${contactTelNo}</span>
+          <span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Nhập số điện thoại" tabindex="-1" class="">${api.applicant.contactTelNo}</span>
           <span class="pull-right">
             <a href="#" id="editPhone" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -98,7 +98,7 @@
           <p>Thư điện tử - Email</p>
         </div>
         <div class="col-sm-7">
-          <span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Nhập email" tabindex="-1" class="">${contactEmail} </span>
+          <span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Nhập email" tabindex="-1" class="">${api.applicant.contactEmail} </span>
           <span class="pull-right">
             <a href="#" id="editEmail" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -109,7 +109,7 @@
           <p>Tên người đại diện</p>
         </div>
         <div class="col-sm-7">
-          <span id="contactName" data-pk="1" data-toggle="#editContactName" data-original-title="Tên người đại diện" tabindex="-1" class="">${contactName}</span>
+          <span id="contactName" data-pk="1" data-toggle="#editContactName" data-original-title="Tên người đại diện" tabindex="-1" class="">${api.applicant.contactName}</span>
           <span class="pull-right">
             <a href="#" id="editContactName" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -128,7 +128,7 @@
            <p>Họ và tên</p>
          </div>
          <div class="col-sm-7">
-           <span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Nhập họ và tên" tabindex="-1" class="">${applicantName}</span>
+           <span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Nhập họ và tên" tabindex="-1" class="">${api.applicant.applicantName}</span>
            <span class="pull-right">
              <a href="#" id="editApplicantName" style="float: right"><i class="fa fa-pencil"></i></a>
            </span>
@@ -139,7 +139,7 @@
           <p>Địa chỉ</p>
         </div>
         <div class="col-sm-7">
-          <span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Nhập địa chỉ" tabindex="-1" class="">${address}</span>
+          <span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Nhập địa chỉ" tabindex="-1" class="">${api.applicant.address}</span>
           <span class="pull-right">
             <a href="#" id="editAddress" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -150,7 +150,7 @@
           <p>Tỉnh/ Thành phố</p>
         </div>
         <div class="col-sm-7">
-          <span id="city" data-pk="1" data-type="select" data-toggle="#editCity" data-original-title="Chọn tỉnh/ thành phố" tabindex="-1" class="">${cityName}</span>
+          <span id="city" data-pk="1" data-type="select" data-toggle="#editCity" data-original-title="Chọn tỉnh/ thành phố" tabindex="-1" class="">${api.applicant.cityName}</span>
           <span class="pull-right">
             <a href="#" id="editCity" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -161,7 +161,7 @@
           <p>Quận/ Huyện</p>
         </div>
         <div class="col-sm-7">
-          <span id="district" data-pk="1" data-type="select" data-toggle="#editDistrict" data-original-title="Chọn quận/ huyện" tabindex="-1" class="">${districtName}</span>
+          <span id="district" data-pk="1" data-type="select" data-toggle="#editDistrict" data-original-title="Chọn quận/ huyện" tabindex="-1" class="">${api.applicant.districtName}</span>
           <span class="pull-right">
             <a href="#" id="editDistrict" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -172,7 +172,7 @@
           <p>Xã/ Phường</p>
         </div>
         <div class="col-sm-7">
-          <span id="wards" data-pk="1" data-type="select" data-toggle="#editWards" data-original-title="Chọn xã/ phường" tabindex="-1" class="">${wardName}</span>
+          <span id="wards" data-pk="1" data-type="select" data-toggle="#editWards" data-original-title="Chọn xã/ phường" tabindex="-1" class="">${api.applicant.wardName}</span>
           <span class="pull-right">
             <a href="#" id="editWards" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -183,7 +183,7 @@
           <p>Điện thoại</p>
         </div>
         <div class="col-sm-7">
-          <span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Nhập số điện thoại" tabindex="-1" class="">${contactTelNo}</span>
+          <span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Nhập số điện thoại" tabindex="-1" class="">${api.applicant.contactTelNo}</span>
           <span class="pull-right">
             <a href="#" id="editPhone" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -194,7 +194,7 @@
           <p>Thư điện tử - Email</p>
         </div>
         <div class="col-sm-7">
-          <span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Nhập email" tabindex="-1" class="">${contactEmail}</span>
+          <span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Nhập email" tabindex="-1" class="">${api.applicant.contactEmail}</span>
           <span class="pull-right">
             <a href="#" id="editEmail" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -417,21 +417,6 @@
         return arrDisplay;
       }
     });
-
-
-    $('#district').editable({
-      url: '${api.server}/applicant',
-      ajaxOptions:{
-        type:'post',
-        dataType: "json"
-      },
-      success: function(data) {
-       alert(data);
-     },
-     error:function(xhr) {
-      if(xhr.status == 500) return 'Internal server error';  
-    }
-  });
 
     $('#district').editable({
       url: 'post.php',
