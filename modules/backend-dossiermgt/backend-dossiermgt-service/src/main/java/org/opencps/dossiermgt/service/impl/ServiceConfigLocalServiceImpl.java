@@ -434,10 +434,5 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 	public static final String CLASS_NAME = ServiceConfig.class.getName();
 
-	public static void main(String[] args) {
-		System.out.println(Boolean.toString(true));
-
-		System.out.println(StringPool.TRUE);
-
-	}
+	
 }

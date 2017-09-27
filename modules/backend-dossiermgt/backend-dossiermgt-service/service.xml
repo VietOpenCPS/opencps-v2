@@ -119,7 +119,16 @@
 		<!-- Order -->
 
 		<!-- Finder methods -->
-
+		
+		<finder return-type="DossierTemplate" name="G_DT_NAME">
+			<finder-column name="groupId"/>
+			<finder-column name="templateName"/>
+		</finder>
+		
+		<finder return-type="DossierTemplate" name="G_DT_NO">
+			<finder-column name="groupId"/>
+			<finder-column name="templateNo"/>
+		</finder>
 		<!-- References -->
 
 	</entity>
@@ -161,7 +170,20 @@
 		<!-- Order -->
 
 		<!-- Finder methods -->
+		
+		<finder return-type="Collection" name="TP_NO">
+			<finder-column name="groupId"/>
+			<finder-column name="templateNo"/>
+		</finder>
+		
+		<finder return-type="DossierPart" name="TP_NO_PART">
+			<finder-column name="groupId"/>
+			<finder-column name="templateNo"/>
+			<finder-column name="partNo"/>
+		</finder>
+		
 
+		
 		<!-- References -->
 
 	</entity>
@@ -662,5 +684,13 @@
 		<exception>RequiredTemplateName</exception>
 		<exception>ServiceURLOnline</exception>
 		<exception>ServiceLevel</exception>
+		
+		<exception>RequiredTemplateName</exception>
+		<exception>RequiredTemplateNo</exception>
+		<exception>DuplicateTemplateNo</exception>
+		<exception>DuplicateTemplateName</exception>
+
+		<exception>HasChildren</exception>		
+		<exception>HasExsist</exception>		
 	</exceptions>
 </service-builder>
