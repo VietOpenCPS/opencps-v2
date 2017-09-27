@@ -14,30 +14,298 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
 
+import org.opencps.dossiermgt.constants.DossierTemplateTerm;
+import org.opencps.dossiermgt.exception.DuplicateTemplateNameException;
+import org.opencps.dossiermgt.exception.DuplicateTemplateNoException;
+import org.opencps.dossiermgt.exception.HasChildrenException;
+import org.opencps.dossiermgt.exception.RequiredFileTemplateNoException;
+import org.opencps.dossiermgt.exception.RequiredTemplateNameException;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.service.base.DossierTemplateLocalServiceBaseImpl;
+
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.BooleanQuery;
+import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the dossier template local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.DossierTemplateLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are
+ * added, rerun ServiceBuilder to copy their definitions into the
+ * {@link org.opencps.dossiermgt.service.DossierTemplateLocalService} interface.
  *
  * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
+ * This is a local service. Methods of this service will not have security
+ * checks based on the propagated JAAS credentials because this service can only
+ * be accessed from within the same VM.
  * </p>
  *
- * @author huymq
+ * @author khoavu
  * @see DossierTemplateLocalServiceBaseImpl
  * @see org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil
  */
 @ProviderType
-public class DossierTemplateLocalServiceImpl
-	extends DossierTemplateLocalServiceBaseImpl {
+public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil} to access the dossier template local service.
+	 * Never reference this class directly. Always use {@link
+	 * org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil} to access
+	 * the dossier template local service.
 	 */
+
+	public DossierTemplate getByTemplateNo(long groupId, String templateNo) throws PortalException {
+		return dossierTemplatePersistence.fetchByG_DT_NO(groupId, templateNo);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierTemplate updateDossierTemplate(long groupId, long dossierTemplateId, String templateName,
+			String templateNo, String description, ServiceContext context) throws PortalException {
+
+		DossierTemplate dossierTemplate = null;
+
+		Date now = new Date();
+
+
+		User userAction = userLocalService.getUser(context.getUserId());
+
+		if (dossierTemplateId == 0) {
+			validateUpdate(groupId, dossierTemplateId, templateName, templateNo, description);
+
+			dossierTemplateId = counterLocalService.increment(DossierTemplate.class.getName());
+
+			dossierTemplate = dossierTemplatePersistence.create(dossierTemplateId);
+
+			dossierTemplate.setGroupId(groupId);
+			dossierTemplate.setCompanyId(context.getCompanyId());
+			dossierTemplate.setCreateDate(now);
+			dossierTemplate.setModifiedDate(now);
+			dossierTemplate.setUserId(userAction.getUserId());
+			dossierTemplate.setUserName(userAction.getFullName());
+
+			dossierTemplate.setTemplateName(templateName);
+			dossierTemplate.setTemplateNo(templateNo);
+			dossierTemplate.setDescription(description);
+
+		} else {
+			dossierTemplate = dossierTemplatePersistence.fetchByPrimaryKey(dossierTemplateId);
+
+			dossierTemplate.setModifiedDate(now);
+			dossierTemplate.setUserId(userAction.getUserId());
+			dossierTemplate.setUserName(userAction.getFullName());
+
+			if (Validator.isNotNull(templateName))
+				dossierTemplate.setTemplateName(templateName);
+			/*
+			if (Validator.isNotNull(templateNo))
+				dossierTemplate.setTemplateNo(templateNo);*/
+
+			if (Validator.isNotNull(description))
+				dossierTemplate.setDescription(description);
+
+		}
+
+		dossierTemplatePersistence.update(dossierTemplate);
+
+		return dossierTemplate;
+	}
+
+	@Indexable(type = IndexableType.DELETE)
+	public DossierTemplate removeDossierTemplate(long dossierTemplateId) throws PortalException {
+
+		DossierTemplate dossierTemplate = dossierTemplatePersistence.fetchByPrimaryKey(dossierTemplateId);
+
+		validateRemove(dossierTemplate.getGroupId(), dossierTemplateId);
+
+		if (Validator.isNotNull(dossierTemplate)) {
+			dossierTemplatePersistence.remove(dossierTemplate);
+		}
+
+		return dossierTemplate;
+	}
+
+	/**
+	 * @author khoavu
+	 * @param params
+	 * @param sorts
+	 * @param start
+	 * @param end
+	 * @param searchContext
+	 * @return
+	 * @throws ParseException
+	 * @throws SearchException
+	 */
+	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
+			SearchContext searchContext) throws ParseException, SearchException {
+
+		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+		String groupId = (String) params.get(Field.GROUP_ID);
+
+		Indexer<DossierTemplate> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierTemplate.class);
+
+		searchContext.addFullQueryEntryClassName(CLASS_NAME);
+		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setLike(true);
+		searchContext.setStart(start);
+		searchContext.setEnd(end);
+		searchContext.setAndSearch(true);
+		searchContext.setSorts(sorts);
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		if (Validator.isNotNull(keywords)) {
+
+			String[] keyword = keywords.split(StringPool.SPACE);
+
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(DossierTemplateTerm.TEMPLATE_NAME, DossierTemplateTerm.DESCRIPTION,
+						DossierTemplateTerm.TEMPLATE_NO);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
+		}
+
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
+
+			query.addFields(Field.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
+
+		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+	}
+
+	public long countLucene(LinkedHashMap<String, Object> params, SearchContext searchContext)
+			throws ParseException, SearchException {
+
+		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+		String groupId = (String) params.get(Field.GROUP_ID);
+
+		Indexer<DossierTemplate> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierTemplate.class);
+
+		searchContext.addFullQueryEntryClassName(CLASS_NAME);
+		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setLike(true);
+		searchContext.setAndSearch(true);
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		if (Validator.isNotNull(keywords)) {
+
+			String[] keyword = keywords.split(StringPool.SPACE);
+
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(DossierTemplateTerm.TEMPLATE_NAME, DossierTemplateTerm.DESCRIPTION,
+						DossierTemplateTerm.TEMPLATE_NO);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
+		}
+
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
+
+			query.addFields(Field.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
+
+		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
+	}
+
+	private void validateUpdate(long groupId, long dossierTemplateId, String templateName, String templateNo,
+			String description) throws PortalException {
+
+		if (Validator.isNull(templateName)) {
+			throw new RequiredTemplateNameException("RequiredTemplateNameException");
+		}
+
+		if (Validator.isNull(templateNo)) {
+			throw new RequiredFileTemplateNoException("RequiredFileTemplateNoException");
+		}
+
+		DossierTemplate dossierTemplate = null;
+
+		dossierTemplate = dossierTemplatePersistence.fetchByG_DT_NAME(groupId, templateName);
+
+		if (Validator.isNotNull(dossierTemplate)) {
+			throw new DuplicateTemplateNameException("DuplicateTemplateNameException");
+		}
+
+		dossierTemplate = dossierTemplatePersistence.fetchByG_DT_NAME(groupId, templateName);
+
+		if (Validator.isNotNull(dossierTemplate)) {
+			throw new DuplicateTemplateNoException("DuplicateTemplateNoException");
+		}
+
+	}
+
+	private void validateRemove(long groupId, long dossierTemplateId) throws PortalException {
+
+		DossierTemplate dossierTemplate = dossierTemplatePersistence.fetchByPrimaryKey(dossierTemplateId);
+
+		List<DossierPart> ls = dossierPartPersistence.findByTP_NO(groupId, dossierTemplate.getTemplateNo());
+
+		if (ls.size() != 0) {
+			throw new HasChildrenException("DossierTemplateHasChildrenException");
+		}
+
+		// TODO add more logic in here
+
+	}
+
+	public static final String CLASS_NAME = DossierTemplate.class.getName();
+
 }

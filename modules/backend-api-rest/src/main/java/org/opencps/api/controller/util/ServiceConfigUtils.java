@@ -123,8 +123,8 @@ public class ServiceConfigUtils {
 		model.setRegistration(Boolean.toString(serviceConfig.getRegistration()));
 		model.setCreateDate(String.valueOf(serviceConfig.getCreateDate()));
 		model.setModifiedDate(String.valueOf(serviceConfig.getModifiedDate()));
-		
 		long serviceInfoId = serviceConfig.getServiceInfoId();
+		model.setServiceInfoId(GetterUtil.getInteger(serviceInfoId));
 
 		if (serviceInfoId != 0) {
 			try {

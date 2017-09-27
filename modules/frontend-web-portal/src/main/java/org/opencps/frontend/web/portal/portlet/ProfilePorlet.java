@@ -11,6 +11,8 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import org.opencps.frontend.web.portal.constants.FrontendWebPortalPortletKeys;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.util.UserMgtUtils;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -28,7 +30,7 @@ import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 	"com.liferay.portlet.css-class-wrapper=portlet-freemarker",
 	"com.liferay.portlet.display-category=category.opencps_v2.portal",
 	"com.liferay.portlet.header-portlet-css=/css/main.css",
-	"com.liferay.portlet.instanceable=false",
+	"com.liferay.portlet.instanceable=true",
 	"javax.portlet.display-name=Profile Portlet",
 	"javax.portlet.init-param.template-path=/",
 	"javax.portlet.init-param.view-template=/templates/profile/profile_main.ftl",
@@ -55,11 +57,35 @@ public class ProfilePorlet extends FreeMarkerPortlet {
 		JSONObject urlObject = JSONFactoryUtil.createJSONObject();
 		JSONObject apiObject = JSONFactoryUtil.createJSONObject();
 
+		Applicant applicant =
+			UserMgtUtils.getApplicant(themeDisplay.getUser().getEmailAddress());
+		
+		JSONObject applicantObj = JSONFactoryUtil.createJSONObject();
+		applicantObj.put(
+			"applicantName",
+			applicant == null ? "" : applicant.getApplicantName());
+		applicantObj.put(
+			"address", applicant == null ? "" : applicant.getAddress());
+		applicantObj.put(
+			"cityName", applicant == null ? "" : applicant.getCityName());
+		applicantObj.put(
+			"districtName",
+			applicant == null ? "" : applicant.getDistrictName());
+		applicantObj.put(
+			"wardName", applicant == null ? "" : applicant.getWardName());
+		applicantObj.put(
+			"contactTelNo",
+			applicant == null ? "" : applicant.getContactTelNo());
+		applicantObj.put(
+			"contactEmail",
+			applicant == null ? "" : applicant.getContactEmail());
+
 		// api
 		apiObject.put("server", themeDisplay.getPortalURL() + "/o/rest/v2");
 		apiObject.put(
 			"portletNamespace",
 			themeDisplay.getPortletDisplay().getNamespace());
+		apiObject.put("applicant", applicantObj);
 
 		// set varible
 		renderRequest.setAttribute("ajax", urlObject);
