@@ -367,7 +367,7 @@ create table opencps_serviceprocess (
 	description VARCHAR(75) null,
 	durationCount INTEGER,
 	durationUnit INTEGER,
-	counter INTEGER,
+	counter LONG,
 	generateDossierNo BOOLEAN,
 	dossierNoPattern VARCHAR(75) null,
 	generateDueDate BOOLEAN,

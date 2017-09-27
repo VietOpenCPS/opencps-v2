@@ -413,7 +413,7 @@
 		<property name="description" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="durationCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="durationUnit" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
-		<property name="counter" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="counter" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="generateDossierNo" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="dossierNoPattern" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="generateDueDate" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />

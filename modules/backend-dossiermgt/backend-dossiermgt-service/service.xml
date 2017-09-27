@@ -525,7 +525,7 @@
 		<column name="description" type="String" />
 		<column name="durationCount" type="int" />
 		<column name="durationUnit" type="int" />
-		<column name="counter" type="int" />
+		<column name="counter" type="long" />
 		<column name="generateDossierNo" type="boolean" />
 		<column name="dossierNoPattern" type="String" />
 		<column name="generateDueDate" type="boolean" />
@@ -536,6 +536,16 @@
 
 		<finder return-type="Collection" name="G_ID">
 			<finder-column name="groupId" />
+		</finder>
+
+		<finder return-type="ServiceProcess" name="G_ID_PNO">
+			<finder-column name="groupId" />
+			<finder-column name="processNo" />
+		</finder>
+		
+		<finder return-type="ServiceProcess" name="G_ID_PNAME">
+			<finder-column name="groupId" />
+			<finder-column name="processName" />
 		</finder>
 
 	</entity>
@@ -583,6 +593,11 @@
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
 		</finder>
+		
+		<finder return-type="ProcessStep" name="SC_GID">
+			<finder-column name="stepCode" />
+			<finder-column name="groupId"/>
+		</finder>
 
 	</entity>
 
@@ -628,6 +643,20 @@
 		<column name="makeBriefNote" type="String" />
 		<column name="syncActionCode" type="String" />
 		<column name="rollbackable" type="boolean" />
+
+		<finder return-type="Collection" name="S_P_ID">
+			<finder-column name="serviceProcessId" />
+		</finder>
+		
+		<finder return-type="Collection" name="PRE_CODE">
+			<finder-column name="preStepCode" />
+			<finder-column name="groupId" />
+		</finder>
+
+		<finder return-type="Collection" name="POST_CODE">
+			<finder-column name="postStepCode" />
+			<finder-column name="groupId" />
+		</finder>
 
 	</entity>
 
@@ -690,8 +719,29 @@
 		<exception>RequiredTemplateNo</exception>
 		<exception>DuplicateTemplateNo</exception>
 		<exception>DuplicateTemplateName</exception>
-
+		
+		<exception>RequiredProcessNo</exception>
+		<exception>RequiredProcessName</exception>
+		<exception>RequiredDossierNoPattern</exception>
+		<exception>RequiredDueDatePattern</exception>
+		<exception>DuplicateProcessNo</exception>
+		<exception>DuplicateProcessName</exception>
+		
+		<exception>RequiredStepNo</exception>
+		<exception>DuplicateStepNo</exception>
+		
+		<exception>InvalidPreStepCode</exception>		
+		<exception>InvalidPostStepCode</exception>		
+		<exception>InvalidAutoEvent</exception>		
+		<exception>InvalidPreCondition</exception>		
+		<exception>InvalidActionName</exception>
+		<exception>InvalidCreateDossierFiles</exception>
+		<exception>InvalidReturnDossierFiles</exception>
+		<exception>RequiredAssignUserId</exception>
+		<exception>RequiredPaymentFee</exception>
+		
+		<exception>DossierURL</exception>		
 		<exception>HasChildren</exception>		
-		<exception>HasExsist</exception>		
+		<exception>HasExsist</exception>
 	</exceptions>
 </service-builder>

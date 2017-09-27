@@ -360,7 +360,7 @@
 		<field name="description" type="String" />
 		<field name="durationCount" type="int" />
 		<field name="durationUnit" type="int" />
-		<field name="counter" type="int" />
+		<field name="counter" type="long" />
 		<field name="generateDossierNo" type="boolean" />
 		<field name="dossierNoPattern" type="String" />
 		<field name="generateDueDate" type="boolean" />
