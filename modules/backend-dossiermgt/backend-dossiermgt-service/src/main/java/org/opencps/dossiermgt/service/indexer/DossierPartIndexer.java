@@ -56,6 +56,7 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 
 		// add text fields
 		document.addTextSortable(DossierPartTerm.TEMPLATE_NO, object.getTemplateNo());
+		document.addTextSortable(DossierPartTerm.PART_NAME, object.getPartName());
 		document.addTextSortable(DossierPartTerm.PART_NO, object.getPartNo());
 		document.addTextSortable(DossierPartTerm.PART_TIP, object.getPartTip());
 

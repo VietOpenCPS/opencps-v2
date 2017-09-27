@@ -44,7 +44,9 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierTemplateManagementImpl implements DossierTemplateManagement {
@@ -628,6 +630,8 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 			String content = actions.getSample(groupId, id, partNo);
 
+			HtmlUtil.escape(content);
+
 			result.setValue(content);
 
 			return Response.status(200).entity(result).build();
@@ -667,6 +671,8 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			}
 			
 			String content = actions.updateFormScript(groupId, id, partNo, input.getValue(), serviceContext);
+			
+			HtmlUtil.escape(content);
 			
 			result.setValue(content);
 			

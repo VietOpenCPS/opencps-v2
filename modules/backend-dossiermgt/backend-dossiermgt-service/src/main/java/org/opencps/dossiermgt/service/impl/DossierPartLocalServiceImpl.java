@@ -209,10 +209,10 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 
 			// Update other fields
 
-			object.setTemplateNo(fileTemplateNo);
-			object.setPartNo(partNo);
+			object.setTemplateNo(templateNo);
+			//object.setPartNo(partNo);
 			object.setPartName(partName);
-			object.setPartName(partName);
+			//object.setPartName(partName);
 			object.setPartTip(partTip);
 			object.setPartType(partType);
 			object.setMultiple(multiple);
@@ -449,11 +449,14 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 	private void validateUpdate(long groupId, long dossierPartId, String templateNo, String partNo, String partName,
 			String partTip, int partType, String fileTemplateNo) throws PortalException {
 
-		DossierPart dossierPart = dossierPartPersistence.fetchByTP_NO_PART(groupId, templateNo, partNo);
+		
+		if (dossierPartId == 0) {
+			DossierPart dossierPart = dossierPartPersistence.fetchByTP_NO_PART(groupId, templateNo, partNo);
 
-		if (Validator.isNotNull(dossierPart)) {
-			throw new HasExsistException("DubplicateTemplatePartNoHasExsistException");
-		}
+			if (Validator.isNotNull(dossierPart)) {
+				throw new HasExsistException("DubplicateTemplatePartNoHasExsistException");
+			}
+		} 
 
 		// TODO add more logic here
 	}

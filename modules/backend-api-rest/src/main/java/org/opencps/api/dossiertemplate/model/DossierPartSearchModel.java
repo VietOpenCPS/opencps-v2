@@ -8,6 +8,7 @@
 
 package org.opencps.api.dossiertemplate.model;
 
+import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -56,14 +57,23 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "DossierPartSearchModel")
 public class DossierPartSearchModel {
 
+	@QueryParam(value = "keyword")
     protected String keyword;
-    protected Integer start;
-    protected Integer end;
+	@QueryParam(value = "start")
+    protected int start;
+	@QueryParam(value = "end")
+    protected int end;
+	@QueryParam(value = "sort")
     protected String sort;
+	@QueryParam(value = "order")
     protected String order;
+	@QueryParam(value = "partType")
     protected String partType;
+	@QueryParam(value = "multiple")
     protected String multiple;
+	@QueryParam(value = "required")
     protected String required;
+	@QueryParam(value = "eSign")
     protected String eSign;
 
     /**
