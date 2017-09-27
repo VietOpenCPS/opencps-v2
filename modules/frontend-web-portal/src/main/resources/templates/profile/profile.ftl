@@ -354,7 +354,7 @@
       }
     });
     */
-    $('#companyName').editable({
+    $('#applicantName').editable({
       url: 'post.php',
       ajaxOptions:{
         type:'post',
