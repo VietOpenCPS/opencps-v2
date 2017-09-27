@@ -2,7 +2,7 @@
 <#include "init.ftl">
 </#if>
 <div class="row account-info">
-  <div class="col-sm-3 col-xs-12">
+  <div class="col-sm-2 col-xs-12">
     <img src="" class="img-responsive max-width-100 img-rounded">
     <div class="text-center"><a href="" class="text-light-gray">Thay đổi avatar</a></div>
     <p class="name text-bold text-center">Lương Thị Hạnh</p>
@@ -18,7 +18,7 @@
     <button class="btn btn-classic form-control">Đổi mật khẩu</button> -->
   </div>
 
-  <div class="col-sm-9 col-xs-12">
+  <div class="col-sm-10 col-xs-12">
     <div class="tab-content box">
      <#if applicantIdType == "business"> 
      <div role="tabpanel" class="tab-pane active" id="tttk">
@@ -360,6 +360,7 @@
         type:'post',
         dataType: "json"
       },
+      emptytext : "",
       success: function(data) {
        alert(data);
      },
@@ -370,6 +371,7 @@
   });
     $('#address').editable({
       url: 'post.php',
+      emptytext : "",
       ajaxOptions:{
         type:'post',
         dataType: "json"
@@ -384,6 +386,7 @@
 
     $('#city').editable({
       url: 'post.php',
+      emptytext : "",
       ajaxOptions:{
         type:'post',
         dataType: "json"
@@ -420,6 +423,7 @@
 
     $('#district').editable({
       url: 'post.php',
+      emptytext : "",
       ajaxOptions:{
         type:'post',
         dataType: "json"
@@ -456,6 +460,7 @@
 
     $('#wards').editable({
       url: 'post.php',
+      emptytext : "",
       ajaxOptions:{
         type:'post',
         dataType: "json"
@@ -492,6 +497,7 @@
 
     $('#phone').editable({
       url: 'post.php',
+      emptytext : "",
       ajaxOptions:{
         type:'post',
         dataType: "json"
@@ -505,6 +511,7 @@
   });
     $('#email').editable({
       url: 'post.php',
+      emptytext : "",
       ajaxOptions:{
         type:'post',
         dataType: "json"
@@ -518,6 +525,7 @@
   });
     $('#represntative').editable({
       url: 'post.php',
+      emptytext : "",
       ajaxOptions:{
         type:'post',
         dataType: "json"
