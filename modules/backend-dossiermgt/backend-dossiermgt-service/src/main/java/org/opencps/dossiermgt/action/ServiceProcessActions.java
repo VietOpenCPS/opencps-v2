@@ -1,50 +1,72 @@
 package org.opencps.dossiermgt.action;
 
+import java.util.LinkedHashMap;
+
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.ServiceContext;
 
 public interface ServiceProcessActions {
-	public JSONObject getServiceProcess();
-		
-	public ServiceProcess getServiceProcessDetail();
-	
-	public ServiceProcess updateServiceProcess();
-	
-	public ServiceProcess removeServiceProcess();
-	
-	public JSONObject getServiceProcessRoles();
-	
-	public ServiceProcessRole updateServiceProcessRole();
-	
-	public ServiceProcessRole removeServiceProcessRole();
-	
-	public JSONObject getProcessSteps();
-	
-	public ProcessStep getProcessStepDetail();
-	
-	public ProcessStep updateProcessStep();
 
-	public ProcessStep deleteProcessStep();
-	
-	public JSONObject getProcessStepRoles();
+	public JSONObject getServiceProcess(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext) throws PortalException;
 
-	public ProcessStepRole getProcessStepRoleDetail();
+	public ServiceProcess getServiceProcessDetail(long serviceProcessId) throws PortalException;
 
-	public ProcessStepRole updateProcessStepRole();
+	public ServiceProcess updateServiceProcess(long groupId, long serviceProcessId, String processNo,
+			String processName, String description, int durationCount, int durationUnit, long counter,
+			boolean generateDossierNo, String dossierNoPattern, boolean generateDueDate, String dueDatePattern,
+			boolean generatePassword, boolean directNotification, String serverNo, ServiceContext context)
+			throws PortalException;
 
-	public ProcessStepRole deleteProcessStepRole();
-	
-	public JSONObject getProcessActions();
+	public ServiceProcess removeServiceProcess(long serviceProcessId) throws PortalException;
 
-	public ProcessAction getProcessActionDetail();
+	public JSONObject getServiceProcessRoles(long serviceProcessId) throws PortalException;
 
-	public ProcessAction updateProcessAction();
+	public ServiceProcessRole updateServiceProcessRole(long groupId, long serviceProcessId, long roleId,
+			boolean moderator, String condition) throws PortalException;
 
-	public ProcessAction deleteProcessAction();
+	public ServiceProcessRole removeServiceProcessRole(long serviceProcessId, long roleId) throws PortalException;
+
+	public JSONObject getProcessSteps(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext) throws PortalException;
+
+	public ProcessStep getProcessStepDetail(long processStepId);
+
+	public ProcessStep updateProcessStep(long groupId, long processStepId, String stepCode, String stepName,
+			long serviceProcessId, String sequenceNo, String dossierStatus, String dossierSubStatus, int durationCount,
+			String customProcessUrl, String stepInstruction, boolean editable, ServiceContext context)
+			throws PortalException;
+
+	public ProcessStep deleteProcessStep(long processStepId) throws PortalException;
+
+	public JSONObject getProcessStepRoles(long processStepId) throws PortalException;
+
+	public ProcessStepRole getProcessStepRoleDetail(long processStepRoleId) throws PortalException;
+
+	public ProcessStepRole updateProcessStepRole(long processStepId, long roleId, boolean moderator, String condition)
+			throws PortalException;
+
+	public ProcessStepRole deleteProcessStepRole(long processStepId, long roleId) throws PortalException;
+
+	public JSONObject getProcessActions(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext) throws PortalException;
+
+	public ProcessAction getProcessActionDetail(long processActionId) throws PortalException;
+
+	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
+			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
+			String actionName, boolean allowAssignUser, long assignUserId, boolean requestPayment, String paymentFee,
+			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
+			boolean rollbackable, ServiceContext context) throws PortalException;
+
+	public ProcessAction deleteProcessAction(long processActionId) throws PortalException;
 
 }
