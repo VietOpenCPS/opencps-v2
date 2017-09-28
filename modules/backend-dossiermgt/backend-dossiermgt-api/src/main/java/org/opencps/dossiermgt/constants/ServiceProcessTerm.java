@@ -19,4 +19,5 @@ public class ServiceProcessTerm {
 	public static final String GENERATE_PASSWORD = "generatePassword";
 	public static final String DIRECT_NOTIFICATION = "directNotification";
 	public static final String SERVER_NO = "serverNo";
+	public static final String SERVER_NAME = "serverName";
 }

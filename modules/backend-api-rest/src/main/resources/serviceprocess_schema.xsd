@@ -238,6 +238,30 @@
 				<xsd:element name="assignUserName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="requestPayment" type="xsd:string" minOccurs="0" />
 				<xsd:element name="paymentFee" type="xsd:string" minOccurs="0" />
+				<xsd:element name="createDossierFiles" type="xsd:string" minOccurs="0" />
+				<xsd:element name="returnDossierFiles" type="xsd:string" minOccurs="0" />
+				<xsd:element name="makeBriefNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="syncActionCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="rollbackable" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ProcessActionReturnModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="processActionId" type="xsd:string" minOccurs="0" />
+				<xsd:element name="actionCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="actionName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="preStepCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postStepCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="autoEvent" type="xsd:string" minOccurs="0" />
+				<xsd:element name="preCondition" type="xsd:string" minOccurs="0" />
+				<xsd:element name="allowAssignUser" type="xsd:string" minOccurs="0" />
+				<xsd:element name="assignUserId" type="xsd:string" minOccurs="0" />
+				<xsd:element name="assignUserName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="requestPayment" type="xsd:string" minOccurs="0" />
+				<xsd:element name="paymentFee" type="xsd:string" minOccurs="0" />
 				<xsd:element name="createDossierFiles" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
 				<xsd:element name="returnDossierFiles" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
 				<xsd:element name="makeBriefNote" type="xsd:string" minOccurs="0" />
@@ -246,5 +270,6 @@
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
+	
 	
 </xsd:schema>
