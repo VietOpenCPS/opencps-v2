@@ -133,7 +133,7 @@ public class ApplicantUtils {
 		try {
 			Applicant applicant = ApplicantLocalServiceUtil.getApplicant(applicantId);
 			
-			user = UserUtils.getUser(applicant.getMappingUserId());
+			user = UserLocalServiceUtil.fetchUser(applicant.getMappingUserId());
 		} catch (Exception e) {
 			
 		}

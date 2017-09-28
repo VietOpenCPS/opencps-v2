@@ -27,6 +27,9 @@ create unique index IX_C61226E1 on opencps_paymentconfig (uuid_[$COLUMN_LENGTH:7
 create index IX_6BE34299 on opencps_paymentfile (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_C65D9B5B on opencps_paymentfile (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_3F5FEA35 on opencps_processaction (postStepCode[$COLUMN_LENGTH:75$], groupId);
+create index IX_C791AD26 on opencps_processaction (preStepCode[$COLUMN_LENGTH:75$], groupId);
+create index IX_6C058331 on opencps_processaction (serviceProcessId);
 create index IX_EBDC8BC on opencps_processaction (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_39594E3E on opencps_processaction (uuid_[$COLUMN_LENGTH:75$], groupId);
 
@@ -35,6 +38,7 @@ create index IX_DF143D7B on opencps_processoption (uuid_[$COLUMN_LENGTH:75$], co
 create unique index IX_C5F3E6BD on opencps_processoption (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_2D87C7C7 on opencps_processstep (serviceProcessId);
+create index IX_490E581F on opencps_processstep (stepCode[$COLUMN_LENGTH:75$], groupId);
 create index IX_D0400D52 on opencps_processstep (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_F6AFC054 on opencps_processstep (uuid_[$COLUMN_LENGTH:75$], groupId);
 
@@ -50,7 +54,8 @@ create index IX_3E222E7E on opencps_serviceinfo (serviceCode[$COLUMN_LENGTH:75$]
 create index IX_D3675C7A on opencps_serviceinfo (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_D630B97C on opencps_serviceinfo (uuid_[$COLUMN_LENGTH:75$], groupId);
 
-create index IX_D00EB5E7 on opencps_serviceprocess (groupId);
+create index IX_55C498C3 on opencps_serviceprocess (groupId, processName[$COLUMN_LENGTH:75$]);
+create index IX_CE466FF9 on opencps_serviceprocess (groupId, processNo[$COLUMN_LENGTH:75$]);
 create index IX_D84A5557 on opencps_serviceprocess (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_8A464599 on opencps_serviceprocess (uuid_[$COLUMN_LENGTH:75$], groupId);
 

@@ -1,13 +1,17 @@
 package org.opencps.dossiermgt.service.indexer;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
-import org.opencps.dossiermgt.constants.DossierPartTerm;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.constants.ServiceProcessRoleTerm;
+import org.opencps.dossiermgt.constants.ServiceProcessTerm;
+import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.ServiceProcessRole;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -21,9 +25,10 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 
-public class DossierPartIndexer extends BaseIndexer<DossierPart> {
-	public static final String CLASS_NAME = DossierPart.class.getName();
+public class ServiceProcessIndexer extends BaseIndexer<ServiceProcess> {
+	public static final String CLASS_NAME = ServiceProcess.class.getName();
 
 	@Override
 	public String getClassName() {
@@ -31,13 +36,13 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 	}
 
 	@Override
-	protected void doDelete(DossierPart object) throws Exception {
+	protected void doDelete(ServiceProcess object) throws Exception {
 		deleteDocument(object.getCompanyId(), object.getPrimaryKey());
 
 	}
 
 	@Override
-	protected Document doGetDocument(DossierPart object) throws Exception {
+	protected Document doGetDocument(ServiceProcess object) throws Exception {
 		Document document = getBaseModelDocument(CLASS_NAME, object);
 
 		// Indexer of audit fields
@@ -51,23 +56,32 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
 
 		// add number fields
-
-		document.addNumberSortable(DossierPartTerm.PART_TYPE, object.getPartType());
+		document.addNumberSortable(ServiceProcessTerm.DURATION_COUNT, object.getDurationCount());
+		document.addNumberSortable(ServiceProcessTerm.DURATION_UNIT, object.getDurationUnit());
+		document.addNumberSortable(ServiceProcessTerm.COUNTER, object.getCounter());
 
 		// add text fields
-		document.addTextSortable(DossierPartTerm.TEMPLATE_NO, object.getTemplateNo());
-		document.addTextSortable(DossierPartTerm.PART_NAME, object.getPartName());
-		document.addTextSortable(DossierPartTerm.PART_NO, object.getPartNo());
-		document.addTextSortable(DossierPartTerm.PART_TIP, object.getPartTip());
+		document.addTextSortable(ServiceProcessTerm.PROCESS_NO, object.getProcessNo());
+		document.addTextSortable(ServiceProcessTerm.PROCESS_NAME, object.getProcessName());
+		document.addTextSortable(ServiceProcessTerm.DESCRIPTION, object.getDescription());
+		document.addTextSortable(ServiceProcessTerm.DOSSIER_NO_PATTERN, object.getDossierNoPattern());
+		document.addTextSortable(ServiceProcessTerm.DUEDATE_PATTERN, object.getDueDatePattern());
+		document.addTextSortable(ServiceProcessTerm.SERVER_NO, object.getServerNo());
 
-		document.addTextSortable(DossierPartTerm.MULTIPLE, Boolean.toString(object.getMultiple()));
-		document.addTextSortable(DossierPartTerm.FORM_SCRIPT, object.getFormScript());
-		document.addTextSortable(DossierPartTerm.FORM_REPORT, object.getFormReport());
-		document.addTextSortable(DossierPartTerm.SAMPLE_DATA, object.getSampleData());
-		document.addTextSortable(DossierPartTerm.REQUIRED, Boolean.toString(object.getRequired()));
-		document.addTextSortable(DossierPartTerm.FILE_TEMPLATE_NO, object.getFileTemplateNo());
-		document.addTextSortable(DossierPartTerm.ESIGN, Boolean.toString(object.getESign()));
-
+		document.addTextSortable(ServiceProcessTerm.GENERATE_DOSSIER_NO,
+				Boolean.toString(object.getGenerateDossierNo()));
+		document.addTextSortable(ServiceProcessTerm.GENERATE_DUE_DATE, Boolean.toString(object.getGenerateDueDate()));
+		document.addTextSortable(ServiceProcessTerm.GENERATE_PASSWORD, Boolean.toString(object.getGeneratePassword()));
+		document.addTextSortable(ServiceProcessTerm.DIRECT_NOTIFICATION,
+				Boolean.toString(object.getDirectNotification()));
+		
+		// add extra fields (ServiceProcessRole)
+		List<ServiceProcessRole> roles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(object.getPrimaryKey());
+		
+		long [] roleArray = ListUtil.toLongArray(roles, ServiceProcessRole.ROLE_ID_ACCESSOR);
+		
+		document.addNumber(ServiceProcessRoleTerm.ROLE_ID, roleArray);
+		
 		return document;
 	}
 
@@ -83,35 +97,34 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 
 	@Override
 	protected void doReindex(String className, long classPK) throws Exception {
-		DossierPart object = DossierPartLocalServiceUtil.getDossierPart(classPK);
-		doReindex(object);
+		ServiceProcess object = ServiceProcessLocalServiceUtil.getServiceProcess(classPK);
 
+		doReindex(object);
 	}
 
 	@Override
 	protected void doReindex(String[] ids) throws Exception {
 		long companyId = GetterUtil.getLong(ids[0]);
 		reindex(companyId);
-
 	}
 
 	@Override
-	protected void doReindex(DossierPart object) throws Exception {
+	protected void doReindex(ServiceProcess object) throws Exception {
 		Document document = getDocument(object);
 		IndexWriterHelperUtil.updateDocument(getSearchEngineId(), object.getCompanyId(), document,
 				isCommitImmediately());
 	}
 
 	protected void reindex(long companyId) throws PortalException {
-		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = DossierPartLocalServiceUtil
+		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = ServiceProcessLocalServiceUtil
 				.getIndexableActionableDynamicQuery();
 
 		indexableActionableDynamicQuery.setCompanyId(companyId);
 		indexableActionableDynamicQuery
-				.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<DossierPart>() {
+				.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<ServiceProcess>() {
 
 					@Override
-					public void performAction(DossierPart object) {
+					public void performAction(ServiceProcess object) {
 						try {
 							Document document = getDocument(object);
 
@@ -128,7 +141,7 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 
 		indexableActionableDynamicQuery.performActions();
 	}
+	
 
-	Log _log = LogFactoryUtil.getLog(DossierPartIndexer.class);
-
+	Log _log = LogFactoryUtil.getLog(ServiceProcessIndexer.class);
 }

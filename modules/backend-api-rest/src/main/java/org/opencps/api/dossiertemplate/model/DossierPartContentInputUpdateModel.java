@@ -8,6 +8,7 @@
 
 package org.opencps.api.dossiertemplate.model;
 
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -39,7 +40,8 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "DossierPartContentInputUpdateModel")
 public class DossierPartContentInputUpdateModel {
-
+	
+	@FormParam(value = "value")
     protected String value;
 
     /**

@@ -14,18 +14,13 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.dossiermgt.constants.DossierPartTerm;
-import org.opencps.dossiermgt.constants.DossierTemplateTerm;
-import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.exception.HasExsistException;
 import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.service.base.DossierPartLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -49,6 +44,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the dossier part local service.
@@ -209,10 +206,10 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 
 			// Update other fields
 
-			object.setTemplateNo(fileTemplateNo);
-			object.setPartNo(partNo);
+			object.setTemplateNo(templateNo);
+			//object.setPartNo(partNo);
 			object.setPartName(partName);
-			object.setPartName(partName);
+			//object.setPartName(partName);
 			object.setPartTip(partTip);
 			object.setPartType(partType);
 			object.setMultiple(multiple);
@@ -449,11 +446,14 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 	private void validateUpdate(long groupId, long dossierPartId, String templateNo, String partNo, String partName,
 			String partTip, int partType, String fileTemplateNo) throws PortalException {
 
-		DossierPart dossierPart = dossierPartPersistence.fetchByTP_NO_PART(groupId, templateNo, partNo);
+		
+		if (dossierPartId == 0) {
+			DossierPart dossierPart = dossierPartPersistence.fetchByTP_NO_PART(groupId, templateNo, partNo);
 
-		if (Validator.isNotNull(dossierPart)) {
-			throw new HasExsistException("DubplicateTemplatePartNoHasExsistException");
-		}
+			if (Validator.isNotNull(dossierPart)) {
+				throw new HasExsistException("DubplicateTemplatePartNoHasExsistException");
+			}
+		} 
 
 		// TODO add more logic here
 	}

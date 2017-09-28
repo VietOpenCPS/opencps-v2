@@ -8,6 +8,7 @@
 
 package org.opencps.api.dossiertemplate.model;
 
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -56,14 +57,23 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "DossierPartInputModel")
 public class DossierPartInputModel {
 
+	@FormParam(value = "partNo")
     protected String partNo;
+	@FormParam(value = "partName")
     protected String partName;
+	@FormParam(value = "partTip")
     protected String partTip;
+	@FormParam(value = "partType")
     protected Integer partType;
+	@FormParam(value = "multiple")
     protected String multiple;
+	@FormParam(value = "required")
     protected String required;
+	@FormParam(value = "fileTemplateNo")
     protected String fileTemplateNo;
+	@FormParam(value = "esign")
     protected String esign;
+	@FormParam(value = "hasForm")
     protected String hasForm;
 
     /**

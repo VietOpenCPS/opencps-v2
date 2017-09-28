@@ -1,13 +1,17 @@
 package org.opencps.dossiermgt.service.indexer;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
-import org.opencps.dossiermgt.constants.DossierPartTerm;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
+import org.opencps.dossiermgt.constants.ProcessStepTerm;
+import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.ProcessStepRole;
+import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -21,9 +25,10 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 
-public class DossierPartIndexer extends BaseIndexer<DossierPart> {
-	public static final String CLASS_NAME = DossierPart.class.getName();
+public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
+	public static final String CLASS_NAME = ProcessStep.class.getName();
 
 	@Override
 	public String getClassName() {
@@ -31,13 +36,13 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 	}
 
 	@Override
-	protected void doDelete(DossierPart object) throws Exception {
+	protected void doDelete(ProcessStep object) throws Exception {
 		deleteDocument(object.getCompanyId(), object.getPrimaryKey());
-
 	}
 
 	@Override
-	protected Document doGetDocument(DossierPart object) throws Exception {
+	protected Document doGetDocument(ProcessStep object) throws Exception {
+		
 		Document document = getBaseModelDocument(CLASS_NAME, object);
 
 		// Indexer of audit fields
@@ -51,23 +56,26 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
 
 		// add number fields
-
-		document.addNumberSortable(DossierPartTerm.PART_TYPE, object.getPartType());
-
+		document.addNumberSortable(ProcessStepTerm.DURATION_COUNT, object.getDurationCount());
+		document.addNumberSortable(ProcessStepTerm.SERVICE_PROCESS_ID, object.getServiceProcessId());
+		
 		// add text fields
-		document.addTextSortable(DossierPartTerm.TEMPLATE_NO, object.getTemplateNo());
-		document.addTextSortable(DossierPartTerm.PART_NAME, object.getPartName());
-		document.addTextSortable(DossierPartTerm.PART_NO, object.getPartNo());
-		document.addTextSortable(DossierPartTerm.PART_TIP, object.getPartTip());
-
-		document.addTextSortable(DossierPartTerm.MULTIPLE, Boolean.toString(object.getMultiple()));
-		document.addTextSortable(DossierPartTerm.FORM_SCRIPT, object.getFormScript());
-		document.addTextSortable(DossierPartTerm.FORM_REPORT, object.getFormReport());
-		document.addTextSortable(DossierPartTerm.SAMPLE_DATA, object.getSampleData());
-		document.addTextSortable(DossierPartTerm.REQUIRED, Boolean.toString(object.getRequired()));
-		document.addTextSortable(DossierPartTerm.FILE_TEMPLATE_NO, object.getFileTemplateNo());
-		document.addTextSortable(DossierPartTerm.ESIGN, Boolean.toString(object.getESign()));
-
+		document.addTextSortable(ProcessStepTerm.STEP_CODE, object.getStepCode());
+		document.addTextSortable(ProcessStepTerm.STEP_NAME, object.getStepName());
+		document.addTextSortable(ProcessStepTerm.SEQUENCE_NO, object.getSequenceNo());
+		document.addTextSortable(ProcessStepTerm.DOSSIER_STATUS, object.getDossierStatus());
+		document.addTextSortable(ProcessStepTerm.DOSSIER_SUB_STATUS, object.getDossierSubStatus());
+		document.addTextSortable(ProcessStepTerm.CUSTOM_PROCESS_URL, object.getCustomProcessUrl());
+		document.addTextSortable(ProcessStepTerm.STEP_INSTRUCTION, object.getStepInstruction());
+		document.addTextSortable(ProcessStepTerm.EDITABLE, Boolean.toString(object.getEditable()));
+		
+		// add extra fields (ProcessStepRole)
+		List<ProcessStepRole> roles = ProcessStepRoleLocalServiceUtil.findByP_S_ID(object.getPrimaryKey());
+		
+		long [] roleArray = ListUtil.toLongArray(roles, ProcessStepRole.ROLE_ID_ACCESSOR);
+		
+		document.addNumber(ProcessStepRoleTerm.ROLE_ID, roleArray);
+		
 		return document;
 	}
 
@@ -83,7 +91,8 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 
 	@Override
 	protected void doReindex(String className, long classPK) throws Exception {
-		DossierPart object = DossierPartLocalServiceUtil.getDossierPart(classPK);
+		ProcessStep object = ProcessStepLocalServiceUtil.getProcessStep(classPK);
+
 		doReindex(object);
 
 	}
@@ -92,26 +101,25 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 	protected void doReindex(String[] ids) throws Exception {
 		long companyId = GetterUtil.getLong(ids[0]);
 		reindex(companyId);
-
 	}
 
 	@Override
-	protected void doReindex(DossierPart object) throws Exception {
+	protected void doReindex(ProcessStep object) throws Exception {
 		Document document = getDocument(object);
 		IndexWriterHelperUtil.updateDocument(getSearchEngineId(), object.getCompanyId(), document,
 				isCommitImmediately());
 	}
-
+	
 	protected void reindex(long companyId) throws PortalException {
-		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = DossierPartLocalServiceUtil
+		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = ProcessStepLocalServiceUtil
 				.getIndexableActionableDynamicQuery();
 
 		indexableActionableDynamicQuery.setCompanyId(companyId);
 		indexableActionableDynamicQuery
-				.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<DossierPart>() {
+				.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<ProcessStep>() {
 
 					@Override
-					public void performAction(DossierPart object) {
+					public void performAction(ProcessStep object) {
 						try {
 							Document document = getDocument(object);
 
@@ -128,7 +136,7 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 
 		indexableActionableDynamicQuery.performActions();
 	}
-
-	Log _log = LogFactoryUtil.getLog(DossierPartIndexer.class);
+	
+	Log _log = LogFactoryUtil.getLog(ProcessStepIndexer.class);
 
 }

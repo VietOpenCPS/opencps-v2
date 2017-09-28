@@ -5,9 +5,9 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
-import org.opencps.dossiermgt.constants.DossierPartTerm;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -22,8 +22,8 @@ import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-public class DossierPartIndexer extends BaseIndexer<DossierPart> {
-	public static final String CLASS_NAME = DossierPart.class.getName();
+public class ProcessActionIndexer extends BaseIndexer<ProcessAction> {
+	public static final String CLASS_NAME = ProcessAction.class.getName();
 
 	@Override
 	public String getClassName() {
@@ -31,13 +31,12 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 	}
 
 	@Override
-	protected void doDelete(DossierPart object) throws Exception {
+	protected void doDelete(ProcessAction object) throws Exception {
 		deleteDocument(object.getCompanyId(), object.getPrimaryKey());
-
 	}
 
 	@Override
-	protected Document doGetDocument(DossierPart object) throws Exception {
+	protected Document doGetDocument(ProcessAction object) throws Exception {
 		Document document = getBaseModelDocument(CLASS_NAME, object);
 
 		// Indexer of audit fields
@@ -51,24 +50,27 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
 
 		// add number fields
-
-		document.addNumberSortable(DossierPartTerm.PART_TYPE, object.getPartType());
+		document.addNumberSortable(ProcessActionTerm.SERVICE_PROCESS_ID, object.getServiceProcessId());
+		document.addNumberSortable(ProcessActionTerm.ASSIGN_USER_ID, object.getAssignUserId());
 
 		// add text fields
-		document.addTextSortable(DossierPartTerm.TEMPLATE_NO, object.getTemplateNo());
-		document.addTextSortable(DossierPartTerm.PART_NAME, object.getPartName());
-		document.addTextSortable(DossierPartTerm.PART_NO, object.getPartNo());
-		document.addTextSortable(DossierPartTerm.PART_TIP, object.getPartTip());
+		document.addTextSortable(ProcessActionTerm.PRESTEP_CODE, object.getPreStepCode());
+		document.addTextSortable(ProcessActionTerm.POSTSTEP_CODE, object.getPostStepCode());
+		document.addTextSortable(ProcessActionTerm.AUTO_EVENT, object.getAutoEvent());
+		document.addTextSortable(ProcessActionTerm.PRE_CONDITION, object.getPreCondition());
+		document.addTextSortable(ProcessActionTerm.ACTION_CODE, object.getActionCode());
+		document.addTextSortable(ProcessActionTerm.ACTION_NAME, object.getActionName());
+		document.addTextSortable(ProcessActionTerm.PAYMENT_FEE, object.getPaymentFee());
+		document.addTextSortable(ProcessActionTerm.CREATE_DOSSIER_FILES, object.getCreateDossierFiles());
+		document.addTextSortable(ProcessActionTerm.RETURN_DOSSIER_FILES, object.getReturnDossierFiles());
+		document.addTextSortable(ProcessActionTerm.MAKE_BRIEF_NOTE, object.getMakeBriefNote());
 
-		document.addTextSortable(DossierPartTerm.MULTIPLE, Boolean.toString(object.getMultiple()));
-		document.addTextSortable(DossierPartTerm.FORM_SCRIPT, object.getFormScript());
-		document.addTextSortable(DossierPartTerm.FORM_REPORT, object.getFormReport());
-		document.addTextSortable(DossierPartTerm.SAMPLE_DATA, object.getSampleData());
-		document.addTextSortable(DossierPartTerm.REQUIRED, Boolean.toString(object.getRequired()));
-		document.addTextSortable(DossierPartTerm.FILE_TEMPLATE_NO, object.getFileTemplateNo());
-		document.addTextSortable(DossierPartTerm.ESIGN, Boolean.toString(object.getESign()));
+		document.addTextSortable(ProcessActionTerm.ALLOW_ASSIGN_USER, Boolean.toString(object.getAllowAssignUser()));
+		document.addTextSortable(ProcessActionTerm.REQUEST_PAYMENT, Boolean.toString(object.getRequestPayment()));
+		document.addTextSortable(ProcessActionTerm.ROLLBACKABLE, Boolean.toString(object.getRollbackable()));
 
 		return document;
+
 	}
 
 	@Override
@@ -83,7 +85,8 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 
 	@Override
 	protected void doReindex(String className, long classPK) throws Exception {
-		DossierPart object = DossierPartLocalServiceUtil.getDossierPart(classPK);
+		ProcessAction object = ProcessActionLocalServiceUtil.getProcessAction(classPK);
+
 		doReindex(object);
 
 	}
@@ -96,22 +99,23 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 	}
 
 	@Override
-	protected void doReindex(DossierPart object) throws Exception {
+	protected void doReindex(ProcessAction object) throws Exception {
 		Document document = getDocument(object);
 		IndexWriterHelperUtil.updateDocument(getSearchEngineId(), object.getCompanyId(), document,
 				isCommitImmediately());
+
 	}
 
 	protected void reindex(long companyId) throws PortalException {
-		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = DossierPartLocalServiceUtil
+		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = ProcessActionLocalServiceUtil
 				.getIndexableActionableDynamicQuery();
 
 		indexableActionableDynamicQuery.setCompanyId(companyId);
 		indexableActionableDynamicQuery
-				.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<DossierPart>() {
+				.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<ProcessAction>() {
 
 					@Override
-					public void performAction(DossierPart object) {
+					public void performAction(ProcessAction object) {
 						try {
 							Document document = getDocument(object);
 
@@ -129,6 +133,6 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 		indexableActionableDynamicQuery.performActions();
 	}
 
-	Log _log = LogFactoryUtil.getLog(DossierPartIndexer.class);
+	Log _log = LogFactoryUtil.getLog(ProcessActionIndexer.class);
 
 }
