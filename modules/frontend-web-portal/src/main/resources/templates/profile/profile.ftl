@@ -3,7 +3,7 @@
 </#if>
 <div class="row account-info">
   <div class="col-sm-2 col-xs-12">
-    <img src="" class="img-responsive max-width-100 img-rounded">
+    <img src="https://jobseekers.vn/wp-content/themes/sb_theme/assets/images/default_avatar.png" class="img-responsive max-width-100 img-rounded">
     <div class="text-center"><a href="" class="text-light-gray">Thay đổi avatar</a></div>
     <p class="name text-bold text-center">Lương Thị Hạnh</p>
     <div>Số CMND/Hộ chiếu: <span class="text-bold">0123456789</span></div>
@@ -13,17 +13,17 @@
     <ul class="nav nav-tabs" role="tablist">
       <li role="presentation" class="active"><a href="#tttk" role="tab" data-toggle="tab">Thông tin tài khoản</a></li>
       <li role="presentation"><a href="#dmk" role="tab" data-toggle="tab">Đổi mật khẩu</a></li>
-    </ul> 
+    </ul>
     <#-- <button class="btn btn-classic form-control">Thông tin tài khoản</button>
     <button class="btn btn-classic form-control">Đổi mật khẩu</button> -->
   </div>
 
   <div class="col-sm-10 col-xs-12">
     <div class="tab-content box">
-     <#if applicantIdType == "business"> 
+     <#if applicantIdType == "business">
      <div role="tabpanel" class="tab-pane active" id="tttk">
       <div class="row-header">
-        <div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div> 
+        <div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div>
         <span class="text-bold">Thông tin tài khoản</span>
       </div>
       <div class="row-parts-content PB15">
@@ -114,12 +114,12 @@
             <a href="#" id="editContactName" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
         </div>
-      </div>  
+      </div>
     </div>
     <#else>
     <div role="tabpanel" class="tab-pane active" id="tttk">
       <div class="row-header">
-        <div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div> 
+        <div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div>
         <span class="text-bold">Thông tin tài khoản</span>
       </div>
       <div class="row-parts-content PB15">
@@ -199,13 +199,13 @@
             <a href="#" id="editEmail" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
         </div>
-      </div> 
+      </div>
     </div>
-    </#if> 
+    </#if>
   </div>
   <div role="tabpanel" class="tab-pane" id="dmk">
     <div class="row-header">
-      <div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div> 
+      <div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div>
       <span class="text-bold">Đổi mật khẩu</span>
     </div>
     <form id="fm">
@@ -215,8 +215,8 @@
             <label class="with-input-sm">Mật khẩu hiện tại:</label>
           </div>
           <div class="col-sm-4">
-            <div class="form-group"> 
-              <input type="password" class="form-control" id="old_password"> 
+            <div class="form-group">
+              <input type="password" class="form-control" id="old_password">
             </div>
           </div>
           <div class="col-sm-6 MT5">
@@ -228,8 +228,8 @@
             <label class="with-input-sm">Mật khẩu mới:</label>
           </div>
           <div class="col-sm-4">
-            <div class="form-group"> 
-              <input type="password" class="form-control" id="new_password"> 
+            <div class="form-group">
+              <input type="password" class="form-control" id="new_password">
             </div>
           </div>
           <div class="col-sm-6">
@@ -241,11 +241,11 @@
             <label class="with-input-sm">Nhập lại mật khẩu mới:</label>
           </div>
           <div class="col-sm-4">
-            <div class="form-group"> 
-              <input type="password" class="form-control" id="retype_new_password"> 
+            <div class="form-group">
+              <input type="password" class="form-control" id="retype_new_password">
             </div>
-            <div class="checkbox"> 
-              <input type="checkbox" id="show_password"> <label>Hiển thị mật khẩu</label> 
+            <div class="checkbox">
+              <input type="checkbox" id="show_password"> <label>Hiển thị mật khẩu</label>
             </div>
           </div>
           <div class="col-sm-6">
@@ -354,48 +354,81 @@
       }
     });
     */
+    var updateProfileURL = 'http://hanoi.fds.vn:2280/o/rest/v2/applicants/${api.applicant.applicantId}';
+
     $('#applicantName').editable({
-      url: 'post.php',
+      url: updateProfileURL,
       ajaxOptions:{
-        type:'post',
+        type:'PUT',
         dataType: "json"
       },
       emptytext : "",
+      params: function(params) {
+        return {
+          applicantName: params.value
+        };
+      },
+      validate: function(value) {
+        // if (value.length < 1){
+        //   return 'Đây là trường bắt buộc';
+        // }
+      },
       success: function(data) {
-       alert(data);
-     },
-     error:function(xhr) {
-      if(xhr.status == 500) return 'Internal server error'; 
-      console.log(xhr.status); 
-    }
-  });
-    $('#address').editable({
-      url: 'post.php',
-      emptytext : "",
-      ajaxOptions:{
-        type:'post',
-        dataType: "json"
+
       },
-      success: function(data){
-       alert(data);
-     },
-     error:function(xhr) {
-      if(xhr.status == 500) return 'Internal server error';  
+      error: function(event, id, obj) {
+        showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
+      }
+    });
+
+
+  $('#address').editable({
+    url: updateProfileURL,
+    ajaxOptions:{
+      type:'PUT',
+      dataType: "json",
+    },
+    emptytext : "",
+    params: function(params) {
+      return {
+        address: params.value
+      };
+    },
+    validate: function(value) {
+      // if (value.length < 1){
+      //   return 'Đây là trường bắt buộc';
+      // }
+    },
+    success: function(data) {
+
+    },
+    error: function(event, id, obj) {
+      showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
     }
   });
 
     $('#city').editable({
-      url: 'post.php',
+      url: updateProfileURL,
       emptytext : "",
       ajaxOptions:{
-        type:'post',
+        type:'PUT',
         dataType: "json"
       },
-      success : function(data){
+      params: function(params) {
+        return {
+          cityCode: params.value,
+        };
+      },
+      validate: function(value) {
+        // if (value.length < 1){
+        //   return 'Đây là trường bắt buộc';
+        // }
+      },
+      success: function(data) {
 
       },
-      error : function(xhr){
-
+      error: function(event, id, obj) {
+        showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
       },
       prepend: "",
       source: function(){
@@ -410,23 +443,31 @@
             for (var i = 0; i < arrDataRes.length; i++) {
               arrDisplay.push({ value: arrDataRes[i].serviceCode, text : arrDataRes[i].serviceName});
             }
-            console.log(arrDisplay);
           },
           error : function(xhr){
 
           }
         });
-        console.log(arrDisplay);
         return arrDisplay;
       }
     });
 
     $('#district').editable({
-      url: 'post.php',
+      url: updateProfileURL,
       emptytext : "",
       ajaxOptions:{
-        type:'post',
+        type:'PUT',
         dataType: "json"
+      },
+      params: function(params) {
+        return {
+          districtCode: params.value
+        };
+      },
+      validate: function(value) {
+        // if (value.length < 1){
+        //   return 'Đây là trường bắt buộc';
+        // }
       },
       success : function(data){
 
@@ -447,23 +488,31 @@
             for (var i = 0; i < arrDataRes.length; i++) {
               arrDisplay.push({ value: arrDataRes[i].serviceCode, text : arrDataRes[i].serviceName});
             }
-            console.log(arrDisplay);
           },
           error : function(xhr){
 
           }
         });
-        console.log(arrDisplay);
         return arrDisplay;
       }
     });
 
     $('#wards').editable({
-      url: 'post.php',
+      url: updateProfileURL,
       emptytext : "",
       ajaxOptions:{
-        type:'post',
+        type:'PUT',
         dataType: "json"
+      },
+      params: function(params) {
+        return {
+          wardCode: params.value
+        };
+      },
+      validate: function(value) {
+        // if (value.length < 1){
+        //   return 'Đây là trường bắt buộc';
+        // }
       },
       success : function(data){
 
@@ -484,57 +533,75 @@
             for (var i = 0; i < arrDataRes.length; i++) {
               arrDisplay.push({ value: arrDataRes[i].serviceCode, text : arrDataRes[i].serviceName});
             }
-            console.log(arrDisplay);
           },
           error : function(xhr){
 
           }
         });
-        console.log(arrDisplay);
         return arrDisplay;
       }
     });
 
     $('#phone').editable({
-      url: 'post.php',
+      url: updateProfileURL,
       emptytext : "",
       ajaxOptions:{
-        type:'post',
+        type:'PUT',
         dataType: "json"
       },
+      params: function(params) {
+        return {
+          contactTelNo: params.value
+        };
+      },
+      validate: function(value) {
+        // if (value.length < 1){
+        //   return 'Đây là trường bắt buộc';
+        // }
+      },
       success: function(data) {
-       alert(data);
-     },
-     error:function(xhr) {
-      if(xhr.status == 500) return 'Internal server error';  
-    }
-  });
+         alert(data);
+       },
+       error:function(xhr) {
+        if(xhr.status == 500) return 'Internal server error';
+      }
+    });
     $('#email').editable({
-      url: 'post.php',
+      url: updateProfileURL,
       emptytext : "",
       ajaxOptions:{
-        type:'post',
+        type:'PUT',
         dataType: "json"
+      },
+      params: function(params) {
+        return {
+          contactEmail: params.value
+        };
+      },
+      validate: function(value) {
+        // if (value.length < 1){
+        //   return 'Đây là trường bắt buộc';
+        // }
       },
       success: function(data) {
        alert(data);
      },
      error:function(xhr) {
-      if(xhr.status == 500) return 'Internal server error';  
+      if(xhr.status == 500) return 'Internal server error';
     }
   });
     $('#represntative').editable({
       url: 'post.php',
       emptytext : "",
       ajaxOptions:{
-        type:'post',
+        type:'PUT',
         dataType: "json"
       },
       success: function(data) {
        alert(data);
      },
      error:function(xhr) {
-      if(xhr.status == 500) return 'Internal server error';  
+      if(xhr.status == 500) return 'Internal server error';
     }
   });
 
