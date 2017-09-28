@@ -95,6 +95,30 @@
 		</xsd:complexType>
 	</xsd:element>
 	
+	<xsd:element name="ServiceProcessDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="serviceProcessId" type="xsd:int" minOccurs="0" />
+				<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="processNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="processName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="description" type="xsd:string" minOccurs="0" />
+				<xsd:element name="durationCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="durationUnit" type="xsd:int" minOccurs="0" />
+				<xsd:element name="counter" type="xsd:int" minOccurs="0" />
+				<xsd:element name="generateDossierNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierNoPattern" type="xsd:string" minOccurs="0" />
+				<xsd:element name="generateDueDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dueDatePattern" type="xsd:string" minOccurs="0" />
+				<xsd:element name="generatePassword" type="xsd:string" minOccurs="0" />
+				<xsd:element name="directNotification" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serverNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serverName" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
 	<xsd:complexType name="RoleDataModel">
 		<xsd:sequence>
 			<xsd:element name="roleId" type="xsd:int" minOccurs="0" />
@@ -152,6 +176,7 @@
 	<xsd:element name="ProcessStepInputModel">
 		<xsd:complexType>
 			<xsd:sequence>
+				<xsd:element name="processStepId" type="xsd:long" minOccurs="0" />
 				<xsd:element name="stepCode" type="xsd:string" minOccurs="0" />
 				<xsd:element name="stepName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="sequenceNo" type="xsd:string" minOccurs="0" />
