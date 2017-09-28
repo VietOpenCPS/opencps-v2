@@ -26,7 +26,7 @@ public interface ServiceProcessActions {
 			boolean generatePassword, boolean directNotification, String serverNo, ServiceContext context)
 			throws PortalException;
 
-	public ServiceProcess removeServiceProcess(long serviceProcessId) throws PortalException;
+	public ServiceProcess removeServiceProcess(long serviceProcessId, long groupId) throws PortalException;
 
 	public JSONObject getServiceProcessRoles(long serviceProcessId) throws PortalException;
 
@@ -38,7 +38,7 @@ public interface ServiceProcessActions {
 	public JSONObject getProcessSteps(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext) throws PortalException;
 
-	public ProcessStep getProcessStepDetail(long processStepId);
+	public ProcessStep getProcessStepDetail(long processStepId) throws PortalException;
 
 	public ProcessStep updateProcessStep(long groupId, long processStepId, String stepCode, String stepName,
 			long serviceProcessId, String sequenceNo, String dossierStatus, String dossierSubStatus, int durationCount,
@@ -49,7 +49,7 @@ public interface ServiceProcessActions {
 
 	public JSONObject getProcessStepRoles(long processStepId) throws PortalException;
 
-	public ProcessStepRole getProcessStepRoleDetail(long processStepRoleId) throws PortalException;
+	public ProcessStepRole getProcessStepRoleDetail(long processStepId, long roleId) throws PortalException;
 
 	public ProcessStepRole updateProcessStepRole(long processStepId, long roleId, boolean moderator, String condition)
 			throws PortalException;
