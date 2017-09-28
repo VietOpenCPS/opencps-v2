@@ -8,6 +8,7 @@
 
 package org.opencps.api.serviceprocess.model;
 
+import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -47,11 +48,15 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "ServiceProcessSearchModel")
 public class ServiceProcessSearchModel {
-
+	@QueryParam(value = "keyword")
     protected String keyword;
-    protected Integer start;
-    protected Integer end;
+	@QueryParam(value = "start")
+    protected int start;
+	@QueryParam(value = "end")
+    protected int end;
+	@QueryParam(value = "sort")
     protected String sort;
+	@QueryParam(value = "order")
     protected String order;
 
     /**

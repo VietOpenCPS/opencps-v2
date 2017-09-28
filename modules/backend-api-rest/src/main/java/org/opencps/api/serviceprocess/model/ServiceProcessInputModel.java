@@ -8,6 +8,8 @@
 
 package org.opencps.api.serviceprocess.model;
 
+import javax.ws.rs.FormParam;
+import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -63,19 +65,31 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "ServiceProcessInputModel")
 public class ServiceProcessInputModel {
-
+	@FormParam("processNo")
     protected String processNo;
+	@FormParam("processName")
     protected String processName;
+	@FormParam("description")
     protected String description;
-    protected Integer durationCount;
-    protected Integer durationUnit;
-    protected Integer counter;
+	@FormParam("durationCount")
+	protected  int durationCount;
+	@FormParam("durationUnit")
+    protected  int durationUnit;
+	@FormParam("counter")
+    protected  int counter;
+	@FormParam("generateDossierNo")
     protected String generateDossierNo;
+	@FormParam("dossierNoPattern")
     protected String dossierNoPattern;
+	@FormParam("generateDueDate")
     protected String generateDueDate;
+	@FormParam("dueDatePattern")
     protected String dueDatePattern;
+	@FormParam("generatePassword")
     protected String generatePassword;
+	@FormParam("directNotification")
     protected String directNotification;
+	@FormParam("serverNo")
     protected String serverNo;
 
     /**
@@ -155,10 +169,10 @@ public class ServiceProcessInputModel {
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link int }
      *     
      */
-    public Integer getDurationCount() {
+    public int getDurationCount() {
         return durationCount;
     }
 
@@ -167,7 +181,7 @@ public class ServiceProcessInputModel {
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link int }
      *     
      */
     public void setDurationCount(Integer value) {
@@ -179,10 +193,10 @@ public class ServiceProcessInputModel {
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link int }
      *     
      */
-    public Integer getDurationUnit() {
+    public int getDurationUnit() {
         return durationUnit;
     }
 
@@ -191,7 +205,7 @@ public class ServiceProcessInputModel {
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link int }
      *     
      */
     public void setDurationUnit(Integer value) {
@@ -203,10 +217,10 @@ public class ServiceProcessInputModel {
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link int }
      *     
      */
-    public Integer getCounter() {
+    public int getCounter() {
         return counter;
     }
 
@@ -215,7 +229,7 @@ public class ServiceProcessInputModel {
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link int }
      *     
      */
     public void setCounter(Integer value) {

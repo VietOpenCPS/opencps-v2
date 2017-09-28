@@ -18,4 +18,14 @@
 	<bean class="org.opencps.dossiermgt.service.indexer.DossierPartIndexer"
 		id="org.opencps.dossiermgt.service.indexer.DossierPartIndexer" />
 
+	<bean class="org.opencps.dossiermgt.service.indexer.ServiceProcessIndexer"
+		id="org.opencps.dossiermgt.service.indexer.ServiceProcessIndexer" />
+
+	<bean class="org.opencps.dossiermgt.service.indexer.ProcessStepIndexer"
+		id="org.opencps.dossiermgt.service.indexer.ProcessStepIndexer" />
+
+	<bean class="org.opencps.dossiermgt.service.indexer.ProcessActionIndexer"
+		id="org.opencps.dossiermgt.service.indexer.ProcessActionIndexer" />
+
+
 </beans>

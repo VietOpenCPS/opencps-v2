@@ -8,6 +8,7 @@
 
 package org.opencps.api.serviceprocess.model;
 
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -45,10 +46,13 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "RoleInputModel")
 public class RoleInputModel {
-
+	@FormParam("roleId")
     protected Integer roleId;
+	@FormParam("roleName")
     protected String roleName;
+	@FormParam("moderator")
     protected String moderator;
+	@FormParam("condition")
     protected String condition;
 
     /**

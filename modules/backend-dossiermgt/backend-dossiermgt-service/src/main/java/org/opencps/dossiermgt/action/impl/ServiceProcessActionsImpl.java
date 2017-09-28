@@ -27,7 +27,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 public class ServiceProcessActionsImpl implements ServiceProcessActions {
 
 	@Override
-	public JSONObject getServiceProcess(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+	public JSONObject getServiceProcesses(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext) throws PortalException {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 

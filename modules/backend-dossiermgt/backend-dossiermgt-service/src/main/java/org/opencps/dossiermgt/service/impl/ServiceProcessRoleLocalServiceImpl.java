@@ -70,11 +70,16 @@ public class ServiceProcessRoleLocalServiceImpl extends ServiceProcessRoleLocalS
 		
 		serviceProcessRole = serviceProcessRolePersistence.fetchByPrimaryKey(pk);
 		
-		if (Validator.isNull(serviceProcessRole)) {
+		if (Validator.isNotNull(serviceProcessRole)) {
+			
+			serviceProcessRole.setModerator(moderator);
+			serviceProcessRole.setCondition(condition);
+		} else {
 			serviceProcessRole = serviceProcessRolePersistence.create(pk);
 			
 			serviceProcessRole.setModerator(moderator);
 			serviceProcessRole.setCondition(condition);
+			
 		}
 		
 		serviceProcessRolePersistence.update(serviceProcessRole);

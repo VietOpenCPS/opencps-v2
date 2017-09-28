@@ -94,11 +94,12 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 		User userAction = userLocalService.getUser(context.getUserId());
 
 		ServiceProcess object = null;
+		
+		validateAdd(groupId,serviceProcessId, processNo, processName, generateDossierNo, dossierNoPattern, generateDueDate,
+				dueDatePattern, context);
 
 		if (serviceProcessId == 0) {
 
-			validateAdd(groupId, processNo, processName, generateDossierNo, dossierNoPattern, generateDueDate,
-					dueDatePattern, context);
 
 			serviceProcessId = counterLocalService.increment(ServiceProcess.class.getName());
 
@@ -129,9 +130,6 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			object.setServerNo(serverNo);
 
 		} else {
-			validateUpdate(groupId, serviceProcessId, processNo, processName, generateDossierNo, dossierNoPattern,
-					generateDueDate, dueDatePattern, context);
-
 			object = serviceProcessPersistence.fetchByPrimaryKey(serviceProcessId);
 
 			// Add audit fields
@@ -279,7 +277,7 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 	}
 
-	private void validateAdd(long groupId, String processNo, String processName, boolean generateDossierNo,
+	private void validateAdd(long groupId, long serviceProcessId, String processNo, String processName, boolean generateDossierNo,
 			String dossierNoPattern, boolean generateDueDate, String dueDatePattern, ServiceContext context)
 			throws PortalException {
 
@@ -290,19 +288,39 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 		if (Validator.isNull(processNo)) {
 			throw new RequiredProcessNameException("RequiredProcessNameException");
 		}
+		
+		if (serviceProcessId == 0) {
+			ServiceProcess serviceProcess = null;
 
-		ServiceProcess serviceProcess = null;
+			serviceProcess = serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
 
-		serviceProcess = serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
+			if (Validator.isNotNull(serviceProcess)) {
+				throw new DuplicateProcessNoException("DuplicateProcessNoException");
+			}
 
-		if (Validator.isNotNull(serviceProcess)) {
-			throw new DuplicateProcessNoException("DuplicateProcessNoException");
+			serviceProcess = serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
+			if (Validator.isNotNull(serviceProcess)) {
+				throw new DuplicateProcessNameException("DuplicateProcessNameException");
+			}
+
+		} else {
+			
+
+			ServiceProcess serviceProcess = null;
+
+			serviceProcess = serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
+
+			if (Validator.isNotNull(serviceProcess) && serviceProcessId != serviceProcess.getPrimaryKey()) {
+				throw new DuplicateProcessNoException("DuplicateProcessNoException");
+			}
+
+			serviceProcess = serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
+			if (Validator.isNotNull(serviceProcess) && serviceProcessId != serviceProcess.getPrimaryKey()) {
+				throw new DuplicateProcessNameException("DuplicateProcessNameException");
+			}
+
 		}
-
-		serviceProcess = serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
-		if (Validator.isNotNull(serviceProcess)) {
-			throw new DuplicateProcessNameException("DuplicateProcessNameException");
-		}
+		
 
 		if (generateDossierNo && Validator.isNull(dossierNoPattern)) {
 			throw new RequiredDossierNoPatternException("RequiredDossierNoPatternException");
@@ -313,7 +331,8 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 		}
 
 	}
-
+	
+	@Deprecated
 	private void validateUpdate(long groupId, long serviceProcessId, String processNo, String processName,
 			boolean generateDossierNo, String dossierNoPattern, boolean generateDueDate, String dueDatePattern,
 			ServiceContext context) throws PortalException {
@@ -321,7 +340,7 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 		ServiceProcess spUpdate = serviceProcessPersistence.fetchByPrimaryKey(serviceProcessId);
 
 		if (!spUpdate.getProcessNo().equals(processNo) || !spUpdate.getProcessName().equals(processName)) {
-			validateAdd(groupId, processNo, processName, generateDossierNo, dossierNoPattern, generateDueDate,
+			validateAdd(groupId,serviceProcessId, processNo, processName, generateDossierNo, dossierNoPattern, generateDueDate,
 					dueDatePattern, context);
 		}
 		

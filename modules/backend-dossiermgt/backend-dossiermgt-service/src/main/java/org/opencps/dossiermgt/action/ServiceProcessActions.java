@@ -15,7 +15,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 
 public interface ServiceProcessActions {
 
-	public JSONObject getServiceProcess(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+	public JSONObject getServiceProcesses(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext) throws PortalException;
 
 	public ServiceProcess getServiceProcessDetail(long serviceProcessId) throws PortalException;
