@@ -31,7 +31,6 @@ import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
-import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 
@@ -46,7 +45,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierTemplateManagementImpl implements DossierTemplateManagement {
@@ -110,7 +108,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceConfig.class.getName(), ActionKeys.ADD_ENTRY)) {
+			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException();
 			}
 
@@ -205,7 +203,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceConfig.class.getName(), ActionKeys.ADD_ENTRY)) {
+			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException();
 			}
 
@@ -259,7 +257,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceConfig.class.getName(), ActionKeys.ADD_ENTRY)) {
+			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException();
 			}
 
@@ -386,7 +384,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceConfig.class.getName(), ActionKeys.ADD_ENTRY)) {
+			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException();
 			}
 
@@ -447,7 +445,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceConfig.class.getName(), ActionKeys.ADD_ENTRY)) {
+			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException();
 			}
 
@@ -511,7 +509,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceConfig.class.getName(), ActionKeys.ADD_ENTRY)) {
+			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException();
 			}
 
@@ -666,7 +664,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceConfig.class.getName(), ActionKeys.ADD_ENTRY)) {
+			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException();
 			}
 			
@@ -729,7 +727,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceConfig.class.getName(), ActionKeys.ADD_ENTRY)) {
+			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException();
 			}
 			
@@ -788,7 +786,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceConfig.class.getName(), ActionKeys.ADD_ENTRY)) {
+			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException();
 			}
 			

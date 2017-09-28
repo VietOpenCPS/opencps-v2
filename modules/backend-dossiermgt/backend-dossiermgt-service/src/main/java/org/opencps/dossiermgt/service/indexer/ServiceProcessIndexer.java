@@ -67,6 +67,11 @@ public class ServiceProcessIndexer extends BaseIndexer<ServiceProcess> {
 		document.addTextSortable(ServiceProcessTerm.DOSSIER_NO_PATTERN, object.getDossierNoPattern());
 		document.addTextSortable(ServiceProcessTerm.DUEDATE_PATTERN, object.getDueDatePattern());
 		document.addTextSortable(ServiceProcessTerm.SERVER_NO, object.getServerNo());
+		
+		// TODO update get server Name
+		String serverName = "TEST";
+		
+		document.addTextSortable(ServiceProcessTerm.SERVER_NAME, serverName);
 
 		document.addTextSortable(ServiceProcessTerm.GENERATE_DOSSIER_NO,
 				Boolean.toString(object.getGenerateDossierNo()));
