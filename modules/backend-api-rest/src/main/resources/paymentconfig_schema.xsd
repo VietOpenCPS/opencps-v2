@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:element name="PaymentConfigSearchModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- default -->
+				<xsd:element name="keyword" type="xsd:string" minOccurs="0" />
+				<xsd:element name="start" type="xsd:int" minOccurs="0" />
+				<xsd:element name="end" type="xsd:int" minOccurs="0" />
+				<xsd:element name="sort" type="xsd:string" minOccurs="0" />
+				<xsd:element name="order" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	
+	<xsd:complexType name="PaymentConfigDataModel">
+		<xsd:sequence>
+			<xsd:element name="paymentConfigId" type="xsd:long" minOccurs="0" /> 
+			<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="govAgencyTaxNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="invoiceTemplateNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="invoiceIssueNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="invoiceLastNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="bankInfo" type="xsd:string" minOccurs="0" />	
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="PaymentConfigResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="PaymentConfigDataModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	
+	<xsd:element name="PaymentConfigInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="paymentConfigId" type="xsd:long" minOccurs="0" /> 
+				<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyTaxNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="invoiceTemplateNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="invoiceIssueNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="invoiceLastNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="bankInfo" type="xsd:string" minOccurs="0" />	
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="PaymentConfigSingleInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="value" type="xsd:string" minOccurs="0" /> 
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+</xsd:schema>

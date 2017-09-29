@@ -20,8 +20,10 @@ import javax.ws.rs.core.Response;
 
 import org.opencps.api.serviceprocess.model.ProcessActionInputModel;
 import org.opencps.api.serviceprocess.model.ProcessActionResultsModel;
+import org.opencps.api.serviceprocess.model.ProcessActionSearchModel;
 import org.opencps.api.serviceprocess.model.ProcessStepInputModel;
 import org.opencps.api.serviceprocess.model.ProcessStepResultsModel;
+import org.opencps.api.serviceprocess.model.ProcessStepSearchModel;
 import org.opencps.api.serviceprocess.model.RoleInputModel;
 import org.opencps.api.serviceprocess.model.RoleResultsModel;
 import org.opencps.api.serviceprocess.model.ServiceProcessDetailModel;
@@ -185,7 +187,7 @@ public interface ServiceProcessManagement {
 
 	public Response getProcessSteps(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id);
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @BeanParam ProcessStepSearchModel query);
 
 	@POST
 	@Path("/{id}/steps")
@@ -305,7 +307,7 @@ public interface ServiceProcessManagement {
 
 	public Response getProcessActions(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id);
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @BeanParam ProcessActionSearchModel query);
 
 	@POST
 	@Path("/{id}/actions")

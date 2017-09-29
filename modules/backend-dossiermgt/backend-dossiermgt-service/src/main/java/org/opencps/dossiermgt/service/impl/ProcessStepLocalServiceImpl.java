@@ -90,10 +90,11 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 		User userAction = userLocalService.getUser(context.getUserId());
 
 		ProcessStep object = null;
+		
+		validateAdd(groupId, processStepId,stepCode, serviceProcessId, sequenceNo, dossierStatus, dossierSubStatus,
+				customProcessUrl);
 
 		if (processStepId == 0) {
-			validateAdd(groupId, stepCode, serviceProcessId, sequenceNo, dossierStatus, dossierSubStatus,
-					customProcessUrl);
 
 			processStepId = counterLocalService.increment(ProcessStep.class.getName());
 
@@ -286,17 +287,29 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 	}
 
-	private void validateAdd(long groupId, String stepCode, long serviceProcessId, String sequenceNo,
-			String dossierStatus, String dossierSubStatus, String customProcessUrl) throws PortalException {
+	public ProcessStep fetchBySC_GID(String stepCode, long groupId, long serviceProcessId) {
+		return processStepPersistence.fetchBySC_GID(stepCode, groupId, serviceProcessId);
+	}
+
+	private void validateAdd(long groupId, long processStepId, String stepCode, long serviceProcessId,
+			String sequenceNo, String dossierStatus, String dossierSubStatus, String customProcessUrl)
+			throws PortalException {
 
 		if (Validator.isNull(stepCode)) {
 			throw new RequiredStepNoException("RequiredStepCodeException");
 		}
 
-		ProcessStep processStep = processStepPersistence.fetchBySC_GID(stepCode, groupId);
+		ProcessStep processStep = processStepPersistence.fetchBySC_GID(stepCode, groupId, serviceProcessId);
 
-		if (Validator.isNotNull(processStep)) {
-			throw new DuplicateStepNoException("DuplicateStepNoException");
+		if (processStepId == 0) {
+			if (Validator.isNotNull(processStep)) {
+				throw new DuplicateStepNoException("DuplicateStepNoException");
+			}
+
+		} else {
+			if (Validator.isNotNull(processStep) && processStep.getPrimaryKey() != processStepId) {
+				throw new DuplicateStepNoException("DuplicateStepNoException");
+			}
 		}
 
 		if (Validator.isNotNull(customProcessUrl) && !Validator.isUrl(customProcessUrl)) {
@@ -306,6 +319,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 		// TODO add validate for DossierStatus and DossierSubStatus
 	}
 
+	@Deprecated
 	private void validateUpdate(long groupId, long processStepId, String stepCode, long serviceProcessId,
 			String sequenceNo, String dossierStatus, String dossierSubStatus, String customProcessUrl)
 			throws PortalException {
@@ -313,7 +327,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 		ProcessStep processStep = processStepPersistence.findByPrimaryKey(processStepId);
 
 		if (!processStep.getStepCode().toLowerCase().contentEquals(stepCode.toLowerCase())) {
-			validateAdd(groupId, stepCode, serviceProcessId, sequenceNo, dossierStatus, dossierSubStatus,
+			validateAdd(groupId, processStepId, stepCode, serviceProcessId, sequenceNo, dossierStatus, dossierSubStatus,
 					customProcessUrl);
 		}
 

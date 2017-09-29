@@ -47,7 +47,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "RoleInputModel")
 public class RoleInputModel {
 	@FormParam("roleId")
-    protected Integer roleId;
+    protected int roleId;
 	@FormParam("roleName")
     protected String roleName;
 	@FormParam("moderator")

@@ -27,5 +27,7 @@
 	<bean class="org.opencps.dossiermgt.service.indexer.ProcessActionIndexer"
 		id="org.opencps.dossiermgt.service.indexer.ProcessActionIndexer" />
 
+	<bean class="org.opencps.dossiermgt.service.indexer.PaymentConfigIndexer"
+		id="org.opencps.dossiermgt.service.indexer.PaymentConfigIndexer" />
 
 </beans>

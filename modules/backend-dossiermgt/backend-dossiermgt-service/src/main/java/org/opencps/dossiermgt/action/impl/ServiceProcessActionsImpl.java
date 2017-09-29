@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
 
 public class ServiceProcessActionsImpl implements ServiceProcessActions {
 
@@ -123,19 +124,30 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 	}
 
 	@Override
-	public ProcessStep updateProcessStep(long groupId, long processStepId, String stepCode, String stepName,
+	public ProcessStep updateProcessStep(long groupId, String stepCode, String stepName,
 			long serviceProcessId, String sequenceNo, String dossierStatus, String dossierSubStatus, int durationCount,
 			String customProcessUrl, String stepInstruction, boolean editable, ServiceContext context)
 			throws PortalException {
-
+		
+		ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
+		
+		long processStepId = 0;
+		
+		if (Validator.isNotNull(step)) {
+			processStepId = step.getProcessStepId();
+		}
+		
 		return ProcessStepLocalServiceUtil.updateProcessStep(groupId, processStepId, stepCode, stepName,
 				serviceProcessId, sequenceNo, dossierStatus, dossierSubStatus, durationCount, customProcessUrl,
 				stepInstruction, editable, context);
 	}
 
 	@Override
-	public ProcessStep deleteProcessStep(long processStepId) throws PortalException {
-		return ProcessStepLocalServiceUtil.deleteProcessStep(processStepId);
+	public ProcessStep deleteProcessStep(String stepCode, long groupId, long serviceProcessId) throws PortalException {
+		
+		ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
+		
+		return ProcessStepLocalServiceUtil.deleteProcessStep(step.getPrimaryKey());
 	}
 
 	@Override
