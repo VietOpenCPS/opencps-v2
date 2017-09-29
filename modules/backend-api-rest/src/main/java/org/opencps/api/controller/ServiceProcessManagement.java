@@ -30,7 +30,6 @@ import org.opencps.api.serviceprocess.model.ServiceProcessDetailModel;
 import org.opencps.api.serviceprocess.model.ServiceProcessInputModel;
 import org.opencps.api.serviceprocess.model.ServiceProcessResultsModel;
 import org.opencps.api.serviceprocess.model.ServiceProcessSearchModel;
-import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.model.Company;
