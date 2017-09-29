@@ -503,6 +503,9 @@
 		<!-- Order -->
 
 		<!-- Finder methods -->
+		<finder return-type="Collection" name="FB_GID">
+			<finder-column name="groupId" />
+		</finder>
 
 		<!-- References -->
 
