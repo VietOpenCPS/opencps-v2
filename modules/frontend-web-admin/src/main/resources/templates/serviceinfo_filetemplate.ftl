@@ -118,7 +118,7 @@
 <div class="row">
 	<div id="serviceInfoFileTempalteDialog" class="modal fade serviceInfoFileTempalteDialog" role="dialog">
 	</div>
-</div>	
+</div>
 
 <script type="text/javascript">
 	var dataSourceFileTemplate=new kendo.data.DataSource({
@@ -146,11 +146,11 @@
 				documentData.append('file', options.file);
 				documentData.append('fileTemplateNo', options.fileTemplateNo);
 				documentData.append('templateName', options.templateName);
-				
+
 				$.ajax({
 					url:"${api.server}/serviceinfos/"+options.serviceinfoId+"/filetemplates",
 					type:"POST",
-					headers: {"groupId": ${serviceInfo.groupId}},
+					headers: {"groupId": ${groupId}},
 					dataType:"json",
 					data: documentData,
 					cache: false,
@@ -168,12 +168,12 @@
 				documentData.append('file', options.file);
 				documentData.append('fileTemplateNo', options.fileTemplateNo);
 				documentData.append('templateName', options.templateName);
-				
+
 				$.ajax({
 					url:"${api.server}/serviceinfos/"+options.serviceinfoId+"/filetemplates/"+options.fileTemplateId,
 					dataType:"json",
 					type:"PUT",
-					headers: {"groupId": ${serviceInfo.groupId}},
+					headers: {"groupId": ${groupId}},
 					data: documentData,
 					cache: false,
 					contentType: false,
@@ -206,7 +206,7 @@
 				});
 			}
 		},
-		error: function(e) {         
+		error: function(e) {
 			this.cancelChanges();
 		},
 		schema:{
@@ -268,7 +268,7 @@
 			}
 		},
 		autoBind:false
-	});	
+	});
 
 	$("#pagerFileTemplate").kendoPager({
 		dataSource:dataSourceFileTemplate,
@@ -283,7 +283,7 @@
 	});
 
 	var updateServieInfoFileTemplate=function(dataPk){
-		
+
 		console.log($("#itemServiceInfoId").val());
 		dataSourceFileTemplate.transport.update({
 			"fileTemplateId":dataPk,
@@ -335,7 +335,7 @@
 				});
 			}
 		}
-		
+
 	});
 
 	$("#btnAddServiceInfoFile").click(function(){

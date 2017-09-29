@@ -22,7 +22,7 @@
               <div class="col-xs-12 col-sm-11">
                  <div class="row MB5">
                     <div class="col-xs-12 col-sm-3"><b>Số thành phần hồ sơ</b></div>
-                    <div class="col-xs-12 col-sm-9">#: partNo #</div>
+                    <div class="col-xs-12 col-sm-9">#: id #</div>
                  </div>
                  <div class="row MB5">
                     <div class="col-xs-12 col-sm-3"><b>Tên thành phần hồ sơ</b></div>
@@ -61,7 +61,7 @@
                  <div class="row">
                     <div class="col-xs-12 col-sm-3"><b>Ký số</b></div>
                     <div class="col-xs-12 col-sm-9">
-                      #if (eSign){#
+                      #if (esign){#
                         <i class="fa fa-check-square"></i>
                       #} else {#
                         <i class="fa fa-close"></i>
@@ -133,7 +133,7 @@
                   sampleData: options.data.sampleData,
                   required: options.data.required,
                   fileTemplateNo: options.data.fileTemplateNo,
-                  eSign: options.data.eSign
+                  esign: options.data.esign
                 },
                 success: function(result) {
                   options.success(result);
@@ -167,7 +167,7 @@
                   sampleData: options.data.sampleData,
                   required: options.data.required,
                   fileTemplateNo: options.data.fileTemplateNo,
-                  eSign: options.data.eSign
+                  esign: options.data.esign
                 },
                 success: function(result) {
                   notification.show({
@@ -215,7 +215,7 @@
        schema: {
           total: "total",
           data: "data",
-          model : { id: "dossierPartId" },
+          model : { id: "partNo" },
        },
        pageSize: 10,
        serverPaging: false,
@@ -252,10 +252,10 @@
     });
 
     var formControl = function(dataPk){
-       var url = "${ajax.dossiertemplate_part_form}";
+       var url = "xxx";
 
        if (dataPk){
-         url = "${ajax.dossiertemplate_part_form}" + "?dossierTemplateId=" + dataPk;
+         url = "xxx" + "?dossierTemplateId=" + dataPk;
        }
 
        $("#dossier_template_form .modal-content").load(
@@ -300,7 +300,7 @@
        dossierTemplatePart.set("sampleData", $("#sampleData").val());
        dossierTemplatePart.set("required", $("#required").val());
        dossierTemplatePart.set("fileTemplateNo", $("#fileTemplateNo").val());
-       dossierTemplatePart.set("eSign", $("#eSign").val());
+       dossierTemplatePart.set("esign", $("#esign").val());
 
        dossierTemplatePartDataSource.sync();
     }
@@ -313,7 +313,7 @@
           "partType": $("#partType").val(),
           "fileTemplateNo": $("#fileTemplateNo").val(),
           "required": $("#required").val(),
-          "eSign": $("#eSign").val(),
+          "esign": $("#esign").val(),
           "formScript": $("#formScript").val(),
           "formReport": $("#formReport").val(),
           "sampleData": $("#sampleData").val(),
