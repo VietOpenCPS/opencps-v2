@@ -124,6 +124,7 @@ public interface PaymentConfigManagement {
 
 	@POST
 	@Path("/{id}/invoiceform")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Add InvoiceForm", response = PaymentConfigSingleInputModel.class)
 	@ApiResponses(value = {
@@ -139,6 +140,7 @@ public interface PaymentConfigManagement {
 
 	@PUT
 	@Path("/{id}/invoiceform")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Update InvoiceForm", response = PaymentConfigSingleInputModel.class)
 	@ApiResponses(value = {
@@ -167,7 +169,8 @@ public interface PaymentConfigManagement {
 			@Context ServiceContext serviceContext, @PathParam("id") long id);
 
 	@POST
-	@Path("/{id}/invoiceform")
+	@Path("/{id}/epaymentconfig")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Add epaymentconfig", response = PaymentConfigSingleInputModel.class)
 	@ApiResponses(value = {
@@ -182,7 +185,8 @@ public interface PaymentConfigManagement {
 			@BeanParam PaymentConfigSingleInputModel input);
 
 	@PUT
-	@Path("/{id}/invoiceform/{key}")
+	@Path("/{id}/epaymentconfig/{key}")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Add epaymentconfig", response = PaymentConfigSingleInputModel.class)
 	@ApiResponses(value = {
@@ -193,7 +197,7 @@ public interface PaymentConfigManagement {
 
 	public Response updateEpaymentconfig(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("key") long key,
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("key") String key,
 			@BeanParam PaymentConfigSingleInputModel input);
 
 }

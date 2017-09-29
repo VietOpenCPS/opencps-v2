@@ -21,6 +21,7 @@ create index IX_7351EDD1 on opencps_dossiertemplate (groupId, templateNo[$COLUMN
 create index IX_3B70A85C on opencps_dossiertemplate (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_167F95DE on opencps_dossiertemplate (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_687E359F on opencps_paymentconfig (groupId);
 create index IX_50A3049F on opencps_paymentconfig (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_C61226E1 on opencps_paymentconfig (uuid_[$COLUMN_LENGTH:75$], groupId);
 

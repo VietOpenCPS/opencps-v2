@@ -172,9 +172,9 @@ public class PaymentConfigLocalServiceImpl extends PaymentConfigLocalServiceBase
 			object.setInvoiceTemplateNo(invoiceTemplateNo);
 			object.setInvoiceIssueNo(invoiceIssueNo);
 			object.setInvoiceLastNo(invoiceLastNo);
-			object.setInvoiceForm(invoiceForm);
+			//object.setInvoiceForm(invoiceForm);
 			object.setBankInfo(bankInfo);
-			object.setEpaymentConfig(epaymentConfig);
+			//object.setEpaymentConfig(epaymentConfig);
 
 		}
 
