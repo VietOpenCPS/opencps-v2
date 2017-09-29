@@ -37,13 +37,21 @@
       },
       statusCode: {
         200: function(result) {
+          console.log('Xác thực thành công');
+          console.log(result);
           notification.show({
             title: "Success",
             message: "Xác thực thành công."
           }, "success");
 
           setTimeout(function(){
-            window.location.href = "${redirectURL}";
+            //window.location.href = "${redirectURL}";
+
+            $("form[name=login_form] #input_login").val(result.email);
+            $("form[name=login_form] #input_password").val(result.token);
+            $("form[name=login_form] #input_action").val("confirm_account");
+
+            $("form[name=login_form]").submit();
           }, 2000);
         },
         500: function(result) {

@@ -1,3 +1,3 @@
 <#include "../init.ftl">
 
-<#assign applicantType = (Request.applicantType)!>
+<#assign applicantIdType = (Request.applicantType)!>

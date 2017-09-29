@@ -52,10 +52,10 @@
             </#list>
             </#if> -->
             <script type="text/x-kendo-template" id="tempStatisticsDomains">
-              # 
+              #
               var active = "";
-              if(typeof(${domain})!="undefined" && ${domain} !=""){
-              if(${domain} == domainCode){
+              if("${domain}"){
+              if("${domain}" == domainCode){
               active = "active";
             }
           }
@@ -147,7 +147,7 @@
             var domainCombobox=  $("#domainCodeSearch").data("kendoComboBox");
             setValue(domainCombobox,domainId);
             domainCombobox.trigger("change");
-            domainCombobox._isSelect = false; 
+            domainCombobox._isSelect = false;
             console.log(domainCombobox);
             $("#service_info_list_view").getKendoListView().dataSource.read({
               "domain": domainId
@@ -250,7 +250,7 @@
       },
       change : function(){
         $("#administration").html(kendo.render(templateAdministration, this.view()));
-        if(typeof(${domain})=="undefined" || ${domain}<=0 || ${domain}==""){
+        if(!"${domain}"){
           $("#administration > li:first-child").addClass("active");
           $("#administrationCodeSearch").data("kendoComboBox").value($("#administration > li:first-child").attr("dataPk"));
           $("#administrationCodeSearch").data("kendoComboBox")._isSelect = false;
@@ -286,11 +286,11 @@
       },
       change : function(){
         $("#domain").html(kendo.render(templateDomains, this.view()));
-        if(typeof(${domain})!="undefined" && ${domain}!=""){
-          $("#domainCodeSearch").data("kendoComboBox").value(${domain});
+        if("${domain}"){
+          $("#domainCodeSearch").data("kendoComboBox").value("${domain}");
           $("#domainCodeSearch").data("kendoComboBox")._isSelect = false;
           $("#service_info_list_view").getKendoListView().dataSource.read({
-            "domain": ${domain}
+            "domain": "${domain}"
           });
         }
       }
@@ -427,7 +427,7 @@
         }
       }
     };*/
-    
+
   });
 
 /*$(window).load(function () {
