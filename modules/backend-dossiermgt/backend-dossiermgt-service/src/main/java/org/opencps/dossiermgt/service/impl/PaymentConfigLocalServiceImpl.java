@@ -71,6 +71,54 @@ public class PaymentConfigLocalServiceImpl extends PaymentConfigLocalServiceBase
 	 * org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil} to access
 	 * the payment config local service.
 	 */
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public PaymentConfig updateInvoidForm(long paymentConfigId, String invoiceForm, ServiceContext context)
+			throws PortalException {
+
+		PaymentConfig object = paymentConfigPersistence.fetchByPrimaryKey(paymentConfigId);
+
+		Date now = new Date();
+
+		User userAction = userLocalService.getUser(context.getUserId());
+
+		// Update audit fields
+		object.setModifiedDate(now);
+		object.setUserId(userAction.getUserId());
+		object.setUserName(userAction.getFullName());
+
+		object.setInvoiceForm(invoiceForm);
+
+		paymentConfigPersistence.update(object);
+
+		return object;
+
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public PaymentConfig updateEConfig(long paymentConfigId, String eConfig, ServiceContext context)
+			throws PortalException {
+		
+		PaymentConfig object = paymentConfigPersistence.fetchByPrimaryKey(paymentConfigId);
+
+		Date now = new Date();
+
+		User userAction = userLocalService.getUser(context.getUserId());
+		
+		// Update audit fields
+		object.setModifiedDate(now);
+		object.setUserId(userAction.getUserId());
+		object.setUserName(userAction.getFullName());
+		
+		
+		object.setEpaymentConfig(eConfig);
+		
+		paymentConfigPersistence.update(object);
+		
+		return object;
+
+	}
+
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentConfig updatePaymentConfig(long groupId, long paymentConfigId, String govAgencyCode,
 			String govAgencyName, String govAgencyTaxNo, String invoiceTemplateNo, String invoiceIssueNo,
