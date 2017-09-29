@@ -38,7 +38,7 @@ create index IX_DF143D7B on opencps_processoption (uuid_[$COLUMN_LENGTH:75$], co
 create unique index IX_C5F3E6BD on opencps_processoption (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_2D87C7C7 on opencps_processstep (serviceProcessId);
-create index IX_490E581F on opencps_processstep (stepCode[$COLUMN_LENGTH:75$], groupId);
+create index IX_388C6AC8 on opencps_processstep (stepCode[$COLUMN_LENGTH:75$], groupId, serviceProcessId);
 create index IX_D0400D52 on opencps_processstep (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_F6AFC054 on opencps_processstep (uuid_[$COLUMN_LENGTH:75$], groupId);
 

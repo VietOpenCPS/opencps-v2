@@ -8,6 +8,7 @@
 
 package org.opencps.api.serviceprocess.model;
 
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -61,18 +62,29 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "ProcessStepInputModel")
 public class ProcessStepInputModel {
-
-    protected Long processStepId;
+	@FormParam("processStepId")
+    protected long processStepId;
+	@FormParam("stepCode")
     protected String stepCode;
+	@FormParam("stepName")
     protected String stepName;
+	@FormParam("sequenceNo")
     protected String sequenceNo;
+	@FormParam("dossierStatus")
     protected String dossierStatus;
+	@FormParam("dossierStatusText")
     protected String dossierStatusText;
+	@FormParam("dossierSubStatus")
     protected String dossierSubStatus;
+	@FormParam("dossierSubStatusText")
     protected String dossierSubStatusText;
+	@FormParam("durationCount")
     protected String durationCount;
+	@FormParam("instructionNote")
     protected String instructionNote;
+	@FormParam("customProcessUrl")
     protected String customProcessUrl;
+	@FormParam("editable")
     protected String editable;
 
     /**

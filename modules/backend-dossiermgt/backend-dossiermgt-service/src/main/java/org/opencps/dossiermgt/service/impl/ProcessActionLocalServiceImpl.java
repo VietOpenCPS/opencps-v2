@@ -114,7 +114,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			object.setPostStepCode(postStepCode);
 			object.setAutoEvent(autoEvent);
 			object.setPreCondition(preCondition);
-			object.setActionCode(syncActionCode);
+			object.setActionCode(actionCode);
 			object.setActionName(actionName);
 			object.setAllowAssignUser(allowAssignUser);
 			object.setAssignUserId(assignUserId);
@@ -138,7 +138,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			object.setPostStepCode(postStepCode);
 			object.setAutoEvent(autoEvent);
 			object.setPreCondition(preCondition);
-			object.setActionCode(syncActionCode);
+			object.setActionCode(actionCode);
 			object.setActionName(actionName);
 			object.setAllowAssignUser(allowAssignUser);
 			object.setAssignUserId(assignUserId);
@@ -341,8 +341,8 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			String returnDossierFiles, String makeBriefNote, String syncActionCode, boolean rollbackable)
 			throws PortalException {
 
-		ProcessStep perStep = processStepPersistence.fetchBySC_GID(preStepCode, groupId);
-		ProcessStep postStep = processStepPersistence.fetchBySC_GID(postStepCode, groupId);
+		ProcessStep perStep = processStepPersistence.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
+		ProcessStep postStep = processStepPersistence.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 
 		if (Validator.isNotNull(preStepCode) && Validator.isNull(perStep)) {
 			throw new InvalidPreStepCodeException("InvalidPreStepCodeException");
