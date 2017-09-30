@@ -1,6 +1,7 @@
 modules/backend-usermgt/backend-usermgt-api/src/main/java/org/opencps/backend/usermgt/** 
 modules/backend-dossiermgt/backend-dossiermgt-service/src/main/java/org/opencps/backend/dossiermgt/service/base/**
 modules/backend-dossiermgt/backend-dossiermgt-api/**
+**/**/**.sql
 **/service/persistence/impl/**
 **/model/impl/**
 **/*.iml
