@@ -41,7 +41,7 @@ import javax.xml.bind.annotation.XmlType;
     "total",
     "data"
 })
-@XmlRootElement(name = "ProcessActionResultsModel")
+@XmlRootElement(name = "data")
 public class ProcessActionResultsModel {
 
     protected Integer total;

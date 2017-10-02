@@ -151,6 +151,7 @@
 	<xsd:complexType name="ProcessStepDataModel">
 		<xsd:sequence>
 			<xsd:element name="stepCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="processStepId" type="xsd:long" minOccurs="0" />
 			<xsd:element name="stepName" type="xsd:string" minOccurs="0" />
 			<xsd:element name="sequenceNo" type="xsd:string" minOccurs="0" />
 			<xsd:element name="dossierStatus" type="xsd:string" minOccurs="0" />

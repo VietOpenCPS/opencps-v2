@@ -503,6 +503,9 @@
 		<!-- Order -->
 
 		<!-- Finder methods -->
+		<finder return-type="Collection" name="FB_GID">
+			<finder-column name="groupId" />
+		</finder>
 
 		<!-- References -->
 
@@ -597,6 +600,7 @@
 		<finder return-type="ProcessStep" name="SC_GID">
 			<finder-column name="stepCode" />
 			<finder-column name="groupId"/>
+			<finder-column name="serviceProcessId"/>
 		</finder>
 
 	</entity>

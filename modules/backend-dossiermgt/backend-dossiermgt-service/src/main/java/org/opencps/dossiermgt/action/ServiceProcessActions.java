@@ -40,12 +40,12 @@ public interface ServiceProcessActions {
 
 	public ProcessStep getProcessStepDetail(long processStepId) throws PortalException;
 
-	public ProcessStep updateProcessStep(long groupId, long processStepId, String stepCode, String stepName,
+	public ProcessStep updateProcessStep(long groupId, String stepCode, String stepName,
 			long serviceProcessId, String sequenceNo, String dossierStatus, String dossierSubStatus, int durationCount,
 			String customProcessUrl, String stepInstruction, boolean editable, ServiceContext context)
 			throws PortalException;
 
-	public ProcessStep deleteProcessStep(long processStepId) throws PortalException;
+	public ProcessStep deleteProcessStep(String stepCode, long groupId, long serviceProcessId) throws PortalException;
 
 	public JSONObject getProcessStepRoles(long processStepId) throws PortalException;
 

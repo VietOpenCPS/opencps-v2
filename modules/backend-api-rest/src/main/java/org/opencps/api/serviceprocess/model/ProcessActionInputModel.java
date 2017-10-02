@@ -8,6 +8,7 @@
 
 package org.opencps.api.serviceprocess.model;
 
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -71,23 +72,39 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "ProcessActionInputModel")
 public class ProcessActionInputModel {
-
-    protected String processActionId;
+	@FormParam("processActionId")
+    protected long processActionId;
+	@FormParam("actionCode")
     protected String actionCode;
+	@FormParam("actionName")
     protected String actionName;
+	@FormParam("preStepCode")
     protected String preStepCode;
+	@FormParam("postStepCode")
     protected String postStepCode;
+	@FormParam("autoEvent")
     protected String autoEvent;
+	@FormParam("preCondition")
     protected String preCondition;
+	@FormParam("allowAssignUser")
     protected String allowAssignUser;
+	@FormParam("assignUserId")
     protected String assignUserId;
+	@FormParam("assignUserName")
     protected String assignUserName;
+	@FormParam("requestPayment")
     protected String requestPayment;
+	@FormParam("paymentFee")
     protected String paymentFee;
+	@FormParam("createDossierFiles")
     protected String createDossierFiles;
+	@FormParam("returnDossierFiles")
     protected String returnDossierFiles;
+	@FormParam("makeBriefNote")
     protected String makeBriefNote;
+	@FormParam("syncActionCode")
     protected String syncActionCode;
+	@FormParam("rollbackable")
     protected String rollbackable;
 
     /**
@@ -98,7 +115,7 @@ public class ProcessActionInputModel {
      *     {@link String }
      *     
      */
-    public String getProcessActionId() {
+    public long getProcessActionId() {
         return processActionId;
     }
 
@@ -110,7 +127,7 @@ public class ProcessActionInputModel {
      *     {@link String }
      *     
      */
-    public void setProcessActionId(String value) {
+    public void setProcessActionId(long value) {
         this.processActionId = value;
     }
 

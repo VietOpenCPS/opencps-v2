@@ -1,17 +1,13 @@
 package org.opencps.dossiermgt.service.indexer;
 
-import java.util.List;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
-import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
-import org.opencps.dossiermgt.constants.ProcessStepTerm;
-import org.opencps.dossiermgt.model.ProcessStep;
-import org.opencps.dossiermgt.model.ProcessStepRole;
-import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
+import org.opencps.dossiermgt.constants.PaymentConfigTerm;
+import org.opencps.dossiermgt.model.PaymentConfig;
+import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -25,10 +21,10 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 
-public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
-	public static final String CLASS_NAME = ProcessStep.class.getName();
+public class PaymentConfigIndexer extends BaseIndexer<PaymentConfig>{
+	
+	public static final String CLASS_NAME = PaymentConfig.class.getName();
 
 	@Override
 	public String getClassName() {
@@ -36,12 +32,12 @@ public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 	}
 
 	@Override
-	protected void doDelete(ProcessStep object) throws Exception {
+	protected void doDelete(PaymentConfig object) throws Exception {
 		deleteDocument(object.getCompanyId(), object.getPrimaryKey());
 	}
 
 	@Override
-	protected Document doGetDocument(ProcessStep object) throws Exception {
+	protected Document doGetDocument(PaymentConfig object) throws Exception {
 		
 		Document document = getBaseModelDocument(CLASS_NAME, object);
 
@@ -55,31 +51,16 @@ public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 		document.addKeywordSortable(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
 
-		// add number fields
-		document.addNumberSortable(ProcessStepTerm.DURATION_COUNT, object.getDurationCount());
-		document.addNumberSortable(ProcessStepTerm.SERVICE_PROCESS_ID, object.getServiceProcessId());
-		
 		// add text fields
-		document.addTextSortable(ProcessStepTerm.STEP_CODE, object.getStepCode());
-		document.addTextSortable(ProcessStepTerm.STEP_NAME, object.getStepName());
-		document.addTextSortable(ProcessStepTerm.SEQUENCE_NO, object.getSequenceNo());
-		document.addTextSortable(ProcessStepTerm.DOSSIER_STATUS, object.getDossierStatus());
-		
-		//TODO Add DossierStatusText
-		document.addTextSortable(ProcessStepTerm.DOSSIER_STATUS_TEXT, object.getDossierStatus());
-		document.addTextSortable(ProcessStepTerm.DOSSIER_SUB_STATUS, object.getDossierSubStatus());
-		//TODO Add DossierStatusText
-		document.addTextSortable(ProcessStepTerm.DOSSIER_SUB_STATUS_TEXT, object.getDossierSubStatus());
-		document.addTextSortable(ProcessStepTerm.CUSTOM_PROCESS_URL, object.getCustomProcessUrl());
-		document.addTextSortable(ProcessStepTerm.STEP_INSTRUCTION, object.getStepInstruction());
-		document.addTextSortable(ProcessStepTerm.EDITABLE, Boolean.toString(object.getEditable()));
-		
-		// add extra fields (ProcessStepRole)
-		List<ProcessStepRole> roles = ProcessStepRoleLocalServiceUtil.findByP_S_ID(object.getPrimaryKey());
-		
-		long [] roleArray = ListUtil.toLongArray(roles, ProcessStepRole.ROLE_ID_ACCESSOR);
-		
-		document.addNumber(ProcessStepRoleTerm.ROLE_ID, roleArray);
+		document.addTextSortable(PaymentConfigTerm.GOV_AGENCY_CODE, object.getGovAgencyCode());
+		document.addTextSortable(PaymentConfigTerm.GOV_AGENCY_NAME, object.getGovAgencyName());
+		document.addTextSortable(PaymentConfigTerm.GOV_AGENCY_TAX_NO, object.getGovAgencyTaxNo());
+		document.addTextSortable(PaymentConfigTerm.INVOICE_TEMPLATE_NO, object.getInvoiceTemplateNo());
+		document.addTextSortable(PaymentConfigTerm.INVOICE_ISSUE_NO, object.getInvoiceIssueNo());
+		document.addTextSortable(PaymentConfigTerm.INVOICE_LAST_NO, object.getInvoiceLastNo());
+		document.addTextSortable(PaymentConfigTerm.INVOICE_FORM, object.getInvoiceForm());
+		document.addTextSortable(PaymentConfigTerm.BANK_INFO, object.getBankInfo());
+		document.addTextSortable(PaymentConfigTerm.EPAYMENT_CONFIG, object.getEpaymentConfig());
 		
 		return document;
 	}
@@ -96,10 +77,9 @@ public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 
 	@Override
 	protected void doReindex(String className, long classPK) throws Exception {
-		ProcessStep object = ProcessStepLocalServiceUtil.getProcessStep(classPK);
-
+		PaymentConfig object = PaymentConfigLocalServiceUtil.getPaymentConfig(classPK);
 		doReindex(object);
-
+		
 	}
 
 	@Override
@@ -109,22 +89,23 @@ public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 	}
 
 	@Override
-	protected void doReindex(ProcessStep object) throws Exception {
+	protected void doReindex(PaymentConfig object) throws Exception {
 		Document document = getDocument(object);
 		IndexWriterHelperUtil.updateDocument(getSearchEngineId(), object.getCompanyId(), document,
 				isCommitImmediately());
+		
 	}
 	
 	protected void reindex(long companyId) throws PortalException {
-		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = ProcessStepLocalServiceUtil
+		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = PaymentConfigLocalServiceUtil
 				.getIndexableActionableDynamicQuery();
 
 		indexableActionableDynamicQuery.setCompanyId(companyId);
 		indexableActionableDynamicQuery
-				.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<ProcessStep>() {
+				.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<PaymentConfig>() {
 
 					@Override
-					public void performAction(ProcessStep object) {
+					public void performAction(PaymentConfig object) {
 						try {
 							Document document = getDocument(object);
 
@@ -141,7 +122,8 @@ public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 
 		indexableActionableDynamicQuery.performActions();
 	}
-	
-	Log _log = LogFactoryUtil.getLog(ProcessStepIndexer.class);
 
+	Log _log = LogFactoryUtil.getLog(PaymentConfigIndexer.class);
+
+	
 }

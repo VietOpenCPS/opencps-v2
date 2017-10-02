@@ -70,6 +70,11 @@ public class ProcessStepRoleLocalServiceImpl extends ProcessStepRoleLocalService
 
 			processStepRole.setModerator(moderator);
 			processStepRole.setCondition(condition);
+		} else {
+			processStepRole = processStepRolePersistence.fetchByPrimaryKey(pk);
+			
+			processStepRole.setModerator(moderator);
+			processStepRole.setCondition(condition);
 		}
 
 		processStepRolePersistence.update(processStepRole);

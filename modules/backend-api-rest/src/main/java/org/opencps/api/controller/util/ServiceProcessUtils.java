@@ -180,12 +180,15 @@ public class ServiceProcessUtils {
 
 		for (Document doc : documents) {
 			ProcessStepDataModel model = new ProcessStepDataModel();
-
+			
+			model.setProcessStepId(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setStepCode(doc.get(ProcessStepTerm.STEP_CODE));
 			model.setStepName(doc.get(ProcessStepTerm.STEP_NAME));
 			model.setSequenceNo(doc.get(ProcessStepTerm.SEQUENCE_NO));
 			model.setDossierStatus(doc.get(ProcessStepTerm.DOSSIER_STATUS));
+			model.setDossierStatusText(doc.get(ProcessStepTerm.DOSSIER_STATUS_TEXT));
 			model.setDossierSubStatus(doc.get(ProcessStepTerm.DOSSIER_SUB_STATUS));
+			model.setDossierSubStatusText(doc.get(ProcessStepTerm.DOSSIER_SUB_STATUS_TEXT));
 			model.setDurationCount(doc.get(ProcessStepTerm.DURATION_COUNT));
 			model.setInstructionNote(doc.get(ProcessStepTerm.STEP_INSTRUCTION));
 			model.setCustomProcessUrl(doc.get(ProcessStepTerm.CUSTOM_PROCESS_URL));
@@ -204,7 +207,7 @@ public class ServiceProcessUtils {
 		for (Document doc : documents) {
 			ProcessActionDataModel model = new ProcessActionDataModel();
 
-			model.setProcessActionId(doc.get(ProcessActionTerm.PROCESS_ACTION_ID));
+			model.setProcessActionId(doc.get(Field.ENTRY_CLASS_PK));
 			model.setActionCode(doc.get(ProcessActionTerm.ACTION_CODE));
 			model.setActionName(doc.get(ProcessActionTerm.ACTION_NAME));
 			model.setPreStepCode(doc.get(ProcessActionTerm.PRESTEP_CODE));
@@ -216,9 +219,9 @@ public class ServiceProcessUtils {
 			model.setRequestPayment(doc.get(ProcessActionTerm.REQUEST_PAYMENT));
 			model.setPaymentFee(doc.get(ProcessActionTerm.PAYMENT_FEE));
 			model.getCreateDossierFiles().addAll(ListUtil
-					.toList(StringUtil.split(doc.get(ProcessActionTerm.CREATE_DOSSIER_FILES), StringPool.COMMA)));
+					.toList(StringUtil.split(doc.get(ProcessActionTerm.CREATE_DOSSIER_FILES).trim(), StringPool.SEMICOLON)));
 			model.getReturnDossierFiles().addAll(ListUtil
-					.toList(StringUtil.split(doc.get(ProcessActionTerm.RETURN_DOSSIER_FILES), StringPool.COMMA)));
+					.toList(StringUtil.split(doc.get(ProcessActionTerm.RETURN_DOSSIER_FILES).trim(), StringPool.SEMICOLON)));
 			model.setMakeBriefNote(doc.get(ProcessActionTerm.MAKE_BRIEF_NOTE));
 			model.setSyncActionCode(doc.get(ProcessActionTerm.SYNC_ACTION_CODE));
 			model.setRollbackable(doc.get(ProcessActionTerm.ROLLBACKABLE));
@@ -233,6 +236,7 @@ public class ServiceProcessUtils {
 		
 		ProcessStepInputModel model = new ProcessStepInputModel();
 		
+		model.setProcessStepId(step.getPrimaryKey());
 		model.setStepCode(step.getStepCode());
 		model.setStepName(step.getStepName());
 		model.setSequenceNo(step.getSequenceNo());
@@ -243,6 +247,7 @@ public class ServiceProcessUtils {
 		model.setDurationCount(String.valueOf(step.getDurationCount()));
 		model.setInstructionNote(step.getStepInstruction());
 		model.setCustomProcessUrl(step.getCustomProcessUrl());
+		model.setEditable(Boolean.toString(step.getEditable()));
 		
 		return model;
 	}
@@ -251,6 +256,7 @@ public class ServiceProcessUtils {
 		
 		ProcessActionReturnModel model = new ProcessActionReturnModel();
 		
+		model.setProcessActionId(String.valueOf(action.getPrimaryKey()));
 		model.setActionCode(action.getActionCode());
 		model.setActionName(action.getActionName());
 		model.setPreStepCode(action.getPreStepCode());
@@ -266,10 +272,10 @@ public class ServiceProcessUtils {
 		model.setRollbackable(Boolean.toString(action.getRollbackable()));
 		
 		model.getCreateDossierFiles().addAll(ListUtil
-					.toList(StringUtil.split(action.getCreateDossierFiles(), StringPool.COLON)));
+					.toList(StringUtil.split(action.getCreateDossierFiles(), StringPool.SEMICOLON)));
 		
 		model.getReturnDossierFiles().addAll(ListUtil
-					.toList(StringUtil.split(action.getReturnDossierFiles(), StringPool.COLON)));
+					.toList(StringUtil.split(action.getReturnDossierFiles(), StringPool.SEMICOLON)));
 		
 		return model;
 	}
