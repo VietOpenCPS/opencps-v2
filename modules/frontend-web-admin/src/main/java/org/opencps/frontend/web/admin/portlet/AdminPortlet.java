@@ -1,15 +1,5 @@
 package org.opencps.frontend.web.admin.portlet;
 
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.portlet.LiferayWindowState;
-import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
-import com.liferay.portal.kernel.theme.PortletDisplay;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
-
 import java.io.IOException;
 import java.util.Collections;
 
@@ -25,6 +15,16 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.frontend.web.admin.constants.AdminPortletKeys;
 import org.osgi.service.component.annotations.Component;
+
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
+import com.liferay.portal.kernel.theme.PortletDisplay;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
 /**
  * @author huymq
@@ -81,10 +81,48 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		serviceFileTemplateFormURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 		serviceFileTemplateFormURL.setParameter("mvcPath", "/templates/serviceinfo_filetemplate_form.ftl");
 		
+		PortletURL dossiertemplateURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		dossiertemplateURL.setPortletMode(PortletMode.VIEW);
+		dossiertemplateURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		dossiertemplateURL.setParameter(
+			"mvcPath", "/templates/dossiertemplate.ftl");
+		
+		PortletURL dossiertemplatePartURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		dossiertemplatePartURL.setPortletMode(PortletMode.VIEW);
+		dossiertemplatePartURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		dossiertemplatePartURL.setParameter(
+			"mvcPath", "/templates/dossiertemplate_path.ftl");
+
+		PortletURL dossiertemplatePartFormURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		dossiertemplatePartFormURL.setPortletMode(PortletMode.VIEW);
+		dossiertemplatePartFormURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		dossiertemplatePartFormURL.setParameter(
+			"mvcPath", "/templates/dossiertemplate_part_form.ftl");
+
+		PortletURL serviceInfoDetailURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		serviceInfoDetailURL.setPortletMode(PortletMode.VIEW);
+		serviceInfoDetailURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		serviceInfoDetailURL.setParameter(
+			"mvcPath", "/templates/serviceinfo_detail.ftl");
+
 		urlObject.put("serviceinfo_list", serviceInfoListURL.toString());
 		urlObject.put("serviceinfo_form", serviceInfoFormURL.toString());
 		urlObject.put("serviceinfo_filetemplate", serviceFileTemplateURL.toString());
 		urlObject.put("serviceinfo_filetemplate_form", serviceFileTemplateFormURL.toString());
+		urlObject.put("dossiertemplate", dossiertemplateURL.toString());
+		urlObject.put(
+			"dossiertemplate_part", dossiertemplatePartURL.toString());
+		urlObject.put(
+			"dossiertemplate_part_form", dossiertemplatePartFormURL.toString());
+		urlObject.put("serviceinfo_detail", serviceInfoDetailURL.toString());
 		
 		// set object edit
 		long serviceInfoId = ParamUtil.getLong(renderRequest, "serviceInfoId");
