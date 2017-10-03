@@ -1,5 +1,5 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <div class="modal-dialog modal-lg">
@@ -31,10 +31,32 @@
 					</div>
 				</div>
 				<div class="row MT10 text-center">
-					<button id="btnSaveFileTemplate" class="k-button btn-primary" title="Ghi lại">Ghi lại</button>
-					<button id="btnCancleFileTemplate" class="k-button btn-default" title="Hủy bỏ" data-dismiss="modal">Đóng</button>
+					<button id="btnSaveFileTemplate" class="btn btn-active" type="button">Ghi lại</button>
+					<button id="btnCancleFileTemplate" class="btn" title="Hủy bỏ" data-dismiss="modal">Đóng</button>
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+	$("#btnSaveFileTemplate").click(function() {
+		var idServiceinfo = $("#itemServiceInfoId").val();
+		if(idServiceinfo>0){
+			var data = $("#serviceInfoFileTemplateForm").serialize();
+			$.ajax({
+				url : "${api.server}/serviceinfos/"+idServiceinfo+"/filetemplates",
+				dataType : "json",
+				type : "POST",
+				data : data,
+				success : function(result){
+					$("#serviceInfoFileTempalteDialog").modal('hide');
+				},
+				error : function(xhr){
+
+				}
+			});
+		}else {
+			
+		}
+	});
+</script>
