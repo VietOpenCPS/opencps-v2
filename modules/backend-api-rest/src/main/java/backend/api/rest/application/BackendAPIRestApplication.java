@@ -23,9 +23,10 @@ import org.opencps.api.controller.impl.NotificationQueueManagementImpl;
 import org.opencps.api.controller.impl.NotificationTemplateImpl;
 import org.opencps.api.controller.impl.NotificationTypeManagementImpl;
 import org.opencps.api.controller.impl.OfficeSiteManagementImpl;
+import org.opencps.api.controller.impl.PaymentConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceInfoManagementImpl;
-import org.opencps.api.controller.impl.TestRest;
+import org.opencps.api.controller.impl.ServiceProcessManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
@@ -44,7 +45,10 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new ServiceInfoManagementImpl());
 		singletons.add( new ServiceConfigManagementImpl());
 		singletons.add( new DossierTemplateManagementImpl());
-		singletons.add( new TestRest());
+		singletons.add(new ServiceProcessManagementImpl());
+		singletons.add(new PaymentConfigManagementImpl());
+		
+		//singletons.add( new TestRest());
 
 		singletons.add(new DataManagementImpl());
 		singletons.add(new HolidayManagementImpl());

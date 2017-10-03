@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:element name="ServiceProcessSearchModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- default -->
+				<xsd:element name="keyword" type="xsd:string" minOccurs="0" />
+				<xsd:element name="start" type="xsd:int" minOccurs="0" />
+				<xsd:element name="end" type="xsd:int" minOccurs="0" />
+				<xsd:element name="sort" type="xsd:string" minOccurs="0" />
+				<xsd:element name="order" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ProcessStepSearchModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- default -->
+				<xsd:element name="keyword" type="xsd:string" minOccurs="0" />
+				<xsd:element name="start" type="xsd:int" minOccurs="0" />
+				<xsd:element name="end" type="xsd:int" minOccurs="0" />
+				<xsd:element name="sort" type="xsd:string" minOccurs="0" />
+				<xsd:element name="order" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceProcessId" type="xsd:int" minOccurs="0" />
+				
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ProcessActionSearchModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- default -->
+				<xsd:element name="keyword" type="xsd:string" minOccurs="0" />
+				<xsd:element name="start" type="xsd:int" minOccurs="0" />
+				<xsd:element name="end" type="xsd:int" minOccurs="0" />
+				<xsd:element name="sort" type="xsd:string" minOccurs="0" />
+				<xsd:element name="order" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceProcessId" type="xsd:int" minOccurs="0" />
+				<xsd:element name="preStepCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postStepCode" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="ServiceProcessDataModel">
+		<xsd:sequence>
+			<xsd:element name="serviceProcessId" type="xsd:int" minOccurs="0" />
+			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="processNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="processName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="description" type="xsd:string" minOccurs="0" />
+			<xsd:element name="durationCount" type="xsd:int" minOccurs="0" />
+			<xsd:element name="durationUnit" type="xsd:int" minOccurs="0" />
+			<xsd:element name="counter" type="xsd:int" minOccurs="0" />
+			<xsd:element name="generateDossierNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierNoPattern" type="xsd:string" minOccurs="0" />
+			<xsd:element name="generateDueDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dueDatePattern" type="xsd:string" minOccurs="0" />
+			<xsd:element name="generatePassword" type="xsd:string" minOccurs="0" />
+			<xsd:element name="directNotification" type="xsd:string" minOccurs="0" />
+			<xsd:element name="serverNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="serverName" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="ServiceProcessResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="ServiceProcessDataModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ServiceProcessInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="processNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="processName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="description" type="xsd:string" minOccurs="0" />
+				<xsd:element name="durationCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="durationUnit" type="xsd:int" minOccurs="0" />
+				<xsd:element name="counter" type="xsd:int" minOccurs="0" />
+				<xsd:element name="generateDossierNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierNoPattern" type="xsd:string" minOccurs="0" />
+				<xsd:element name="generateDueDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dueDatePattern" type="xsd:string" minOccurs="0" />
+				<xsd:element name="generatePassword" type="xsd:string" minOccurs="0" />
+				<xsd:element name="directNotification" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serverNo" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ServiceProcessDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="serviceProcessId" type="xsd:int" minOccurs="0" />
+				<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="processNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="processName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="description" type="xsd:string" minOccurs="0" />
+				<xsd:element name="durationCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="durationUnit" type="xsd:int" minOccurs="0" />
+				<xsd:element name="counter" type="xsd:int" minOccurs="0" />
+				<xsd:element name="generateDossierNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierNoPattern" type="xsd:string" minOccurs="0" />
+				<xsd:element name="generateDueDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dueDatePattern" type="xsd:string" minOccurs="0" />
+				<xsd:element name="generatePassword" type="xsd:string" minOccurs="0" />
+				<xsd:element name="directNotification" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serverNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serverName" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="RoleDataModel">
+		<xsd:sequence>
+			<xsd:element name="roleId" type="xsd:int" minOccurs="0" />
+			<xsd:element name="roleName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="moderator" type="xsd:string" minOccurs="0" />
+			<xsd:element name="condition" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="RoleResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="RoleDataModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="RoleInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="roleId" type="xsd:int" minOccurs="0" />
+				<xsd:element name="roleName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="moderator" type="xsd:string" minOccurs="0" />
+				<xsd:element name="condition" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="ProcessStepDataModel">
+		<xsd:sequence>
+			<xsd:element name="stepCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="processStepId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="stepName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="sequenceNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierStatus" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierStatusText" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierSubStatus" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierSubStatusText" type="xsd:string" minOccurs="0" />
+			<xsd:element name="durationCount" type="xsd:string" minOccurs="0" />
+			<xsd:element name="instructionNote" type="xsd:string" minOccurs="0" />
+			<xsd:element name="customProcessUrl" type="xsd:string" minOccurs="0" />
+			<xsd:element name="editable" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="ProcessStepResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="ProcessStepDataModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ProcessStepInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="processStepId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="stepCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="stepName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="sequenceNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierStatus" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierStatusText" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierSubStatus" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierSubStatusText" type="xsd:string" minOccurs="0" />
+				<xsd:element name="durationCount" type="xsd:string" minOccurs="0" />
+				<xsd:element name="instructionNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="customProcessUrl" type="xsd:string" minOccurs="0" />
+				<xsd:element name="editable" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="ProcessActionDataModel">
+		<xsd:sequence>
+			<xsd:element name="processActionId" type="xsd:string" minOccurs="0" />
+			<xsd:element name="actionCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="actionName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="preStepCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="postStepCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="autoEvent" type="xsd:string" minOccurs="0" />
+			<xsd:element name="preCondition" type="xsd:string" minOccurs="0" />
+			<xsd:element name="allowAssignUser" type="xsd:string" minOccurs="0" />
+			<xsd:element name="assignUserId" type="xsd:string" minOccurs="0" />
+			<xsd:element name="assignUserName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="requestPayment" type="xsd:string" minOccurs="0" />
+			<xsd:element name="paymentFee" type="xsd:string" minOccurs="0" />
+			<xsd:element name="createDossierFiles" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="returnDossierFiles" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="makeBriefNote" type="xsd:string" minOccurs="0" />
+			<xsd:element name="syncActionCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="rollbackable" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="ProcessActionResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="ProcessActionDataModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ProcessActionInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="processActionId" type="xsd:string" minOccurs="0" />
+				<xsd:element name="actionCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="actionName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="preStepCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postStepCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="autoEvent" type="xsd:string" minOccurs="0" />
+				<xsd:element name="preCondition" type="xsd:string" minOccurs="0" />
+				<xsd:element name="allowAssignUser" type="xsd:string" minOccurs="0" />
+				<xsd:element name="assignUserId" type="xsd:string" minOccurs="0" />
+				<xsd:element name="assignUserName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="requestPayment" type="xsd:string" minOccurs="0" />
+				<xsd:element name="paymentFee" type="xsd:string" minOccurs="0" />
+				<xsd:element name="createDossierFiles" type="xsd:string" minOccurs="0" />
+				<xsd:element name="returnDossierFiles" type="xsd:string" minOccurs="0" />
+				<xsd:element name="makeBriefNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="syncActionCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="rollbackable" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ProcessActionReturnModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="processActionId" type="xsd:string" minOccurs="0" />
+				<xsd:element name="actionCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="actionName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="preStepCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postStepCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="autoEvent" type="xsd:string" minOccurs="0" />
+				<xsd:element name="preCondition" type="xsd:string" minOccurs="0" />
+				<xsd:element name="allowAssignUser" type="xsd:string" minOccurs="0" />
+				<xsd:element name="assignUserId" type="xsd:string" minOccurs="0" />
+				<xsd:element name="assignUserName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="requestPayment" type="xsd:string" minOccurs="0" />
+				<xsd:element name="paymentFee" type="xsd:string" minOccurs="0" />
+				<xsd:element name="createDossierFiles" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element name="returnDossierFiles" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element name="makeBriefNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="syncActionCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="rollbackable" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	
+</xsd:schema>

@@ -14,18 +14,32 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
+import java.util.List;
 
+import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.service.base.ProcessStepRoleLocalServiceBaseImpl;
+import org.opencps.dossiermgt.service.persistence.ProcessStepRolePK;
+
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.util.Validator;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the process step role local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.ProcessStepRoleLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are
+ * added, rerun ServiceBuilder to copy their definitions into the
+ * {@link org.opencps.dossiermgt.service.ProcessStepRoleLocalService} interface.
  *
  * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
+ * This is a local service. Methods of this service will not have security
+ * checks based on the propagated JAAS credentials because this service can only
+ * be accessed from within the same VM.
  * </p>
  *
  * @author huymq
@@ -33,11 +47,75 @@ import org.opencps.dossiermgt.service.base.ProcessStepRoleLocalServiceBaseImpl;
  * @see org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil
  */
 @ProviderType
-public class ProcessStepRoleLocalServiceImpl
-	extends ProcessStepRoleLocalServiceBaseImpl {
+public class ProcessStepRoleLocalServiceImpl extends ProcessStepRoleLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil} to access the process step role local service.
+	 * Never reference this class directly. Always use {@link
+	 * org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil} to access
+	 * the process step role local service.
 	 */
+
+	public List<ProcessStepRole> findByP_S_ID(long processStepId) {
+		return processStepRolePersistence.findByP_S_ID(processStepId);
+	}
+
+	public ProcessStepRole updateProcessStepRole(long processStepId, long roleId, boolean moderator, String condition) {
+		ProcessStepRolePK pk = new ProcessStepRolePK(processStepId, roleId);
+
+		ProcessStepRole processStepRole = processStepRolePersistence.fetchByPrimaryKey(pk);
+
+		if (Validator.isNull(processStepRole)) {
+			processStepRole = processStepRolePersistence.create(pk);
+
+			processStepRole.setModerator(moderator);
+			processStepRole.setCondition(condition);
+		} else {
+			processStepRole = processStepRolePersistence.fetchByPrimaryKey(pk);
+			
+			processStepRole.setModerator(moderator);
+			processStepRole.setCondition(condition);
+		}
+
+		processStepRolePersistence.update(processStepRole);
+
+		// Update index
+
+		Indexer<ProcessStep> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ProcessStep.class);
+
+		ProcessStep processStep = processStepPersistence.fetchByPrimaryKey(processStepId);
+
+		try {
+			indexer.reindex(processStep);
+		} catch (SearchException e) {
+			e.printStackTrace();
+		}
+
+		return processStepRole;
+	}
+
+	public ProcessStepRole removeProcessStepRole(long processStepId, long roleId) {
+
+		ProcessStepRolePK pk = new ProcessStepRolePK(processStepId, roleId);
+
+		ProcessStepRole processStepRole = processStepRolePersistence.fetchByPrimaryKey(pk);
+
+		processStepRolePersistence.remove(processStepRole);
+
+		// Update index
+
+		Indexer<ProcessStep> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ProcessStep.class);
+
+		ProcessStep processStep = processStepPersistence.fetchByPrimaryKey(processStepId);
+
+		try {
+			indexer.reindex(processStep);
+		} catch (SearchException e) {
+			e.printStackTrace();
+		}
+
+		return processStepRole;
+
+	}
+
 }

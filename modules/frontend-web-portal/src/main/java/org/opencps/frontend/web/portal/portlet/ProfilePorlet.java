@@ -79,6 +79,8 @@ public class ProfilePorlet extends FreeMarkerPortlet {
 		applicantObj.put(
 			"contactEmail",
 			applicant == null ? "" : applicant.getContactEmail());
+		applicantObj.put(
+			"applicantId", applicant == null ? "" : applicant.getApplicantId());
 
 		// api
 		apiObject.put("server", themeDisplay.getPortalURL() + "/o/rest/v2");
