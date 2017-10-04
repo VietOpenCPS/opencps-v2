@@ -687,8 +687,8 @@
 		<column name="actionNote" type="String" />
 		<column name="actionOverdue" type="int" />
 		<column name="syncActionCode" type="String" />
-		<column name="pending" type="String" />
-		<column name="rollbackable" type="String" />
+		<column name="pending" type="boolean" />
+		<column name="rollbackable" type="boolean" />
 		<column name="stepCode" type="String" />
 		<column name="stepName" type="String" />
 		<column name="dueDate" type="Date" />
