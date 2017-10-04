@@ -210,7 +210,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			DossierTemplate dossierTemplate = actions.updateDossierTemplate(groupId, id, input.getTemplateName(),
 					input.getTemplateNo(), input.getDescription(), serviceContext);
 
-			DossierTemplateInputModel result = DossierTemplateUtils.mappingForTemplatePOST(dossierTemplate);
+			DossierTemplateDetailModel result = DossierTemplateUtils.mappingForTemplateGetDetail(dossierTemplate);
 
 			return Response.status(200).entity(result).build();
 

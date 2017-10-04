@@ -40,7 +40,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "templateName",
     "description",
-    "templateNo"
+    "templateNo",
+    "dossierTemplateId"
+    
 })
 @XmlRootElement(name = "DossierTemplateInputModel")
 public class DossierTemplateInputModel {
@@ -51,6 +53,17 @@ public class DossierTemplateInputModel {
     protected String description;
 	@FormParam(value = "templateNo")
     protected String templateNo;
+	
+    public long getDossierTemplateId() {
+		return dossierTemplateId;
+	}
+
+	public void setDossierTemplateId(long dossierTemplateId) {
+		this.dossierTemplateId = dossierTemplateId;
+	}
+
+	protected long dossierTemplateId;
+
 
     /**
      * Gets the value of the templateName property.

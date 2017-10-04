@@ -51,7 +51,9 @@ create table opencps_dossier (
 	viaPost INTEGER,
 	postAddress VARCHAR(75) null,
 	password_ VARCHAR(75) null,
-	notification BOOLEAN
+	notification BOOLEAN,
+	online_ BOOLEAN,
+	serverNo VARCHAR(75) null
 );
 
 create table opencps_dossieraction (

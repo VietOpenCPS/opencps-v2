@@ -15,6 +15,7 @@ public class ProcessActionTerm {
 	public static final String ACTION_NAME = "actionName";
 	public static final String ALLOW_ASSIGN_USER = "allowAssignUser";
 	public static final String ASSIGN_USER_ID = "assignUserId";
+	public static final String ASSIGN_USER_NAME = "assignUserName";
 	public static final String REQUEST_PAYMENT = "requestPayment";
 	public static final String PAYMENT_FEE = "paymentFee";
 	public static final String CREATE_DOSSIER_FILES = "createDossierFiles";

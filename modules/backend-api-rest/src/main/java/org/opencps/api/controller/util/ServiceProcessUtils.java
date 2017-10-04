@@ -3,6 +3,7 @@ package org.opencps.api.controller.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.cxf.jaxrs.provider.StreamingResponseProvider;
 import org.opencps.api.serviceprocess.model.ProcessActionDataModel;
 import org.opencps.api.serviceprocess.model.ProcessActionReturnModel;
 import org.opencps.api.serviceprocess.model.ProcessStepDataModel;
@@ -23,9 +24,11 @@ import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -216,6 +219,7 @@ public class ServiceProcessUtils {
 			model.setPreCondition(doc.get(ProcessActionTerm.PRE_CONDITION));
 			model.setAllowAssignUser(doc.get(ProcessActionTerm.ALLOW_ASSIGN_USER));
 			model.setAssignUserId(doc.get(ProcessActionTerm.ALLOW_ASSIGN_USER));
+			model.setAssignUserName(doc.get(ProcessActionTerm.ASSIGN_USER_NAME));
 			model.setRequestPayment(doc.get(ProcessActionTerm.REQUEST_PAYMENT));
 			model.setPaymentFee(doc.get(ProcessActionTerm.PAYMENT_FEE));
 			model.getCreateDossierFiles().addAll(ListUtil
@@ -265,6 +269,16 @@ public class ServiceProcessUtils {
 		model.setPreCondition(action.getPreCondition());
 		model.setAllowAssignUser(Boolean.toString(action.getAllowAssignUser()));
 		model.setAssignUserId(String.valueOf(action.getAssignUserId()));
+		
+		String assignName = StringPool.BLANK;
+		
+		if (action.getAssignUserId() != 0) {
+			User user = UserLocalServiceUtil.fetchUser(action.getAssignUserId());
+			
+			assignName = user.getFullName();
+		}
+		
+		model.setAssignUserName(assignName);
 		model.setRequestPayment(Boolean.toString(action.getRequestPayment()));
 		model.setPaymentFee(action.getPaymentFee());
 		model.setMakeBriefNote(action.getMakeBriefNote());

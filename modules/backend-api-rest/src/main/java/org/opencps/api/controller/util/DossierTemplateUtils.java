@@ -43,7 +43,8 @@ public class DossierTemplateUtils {
 
 	public static DossierTemplateInputModel mappingForTemplatePOST(DossierTemplate dossierTemplate) {
 		DossierTemplateInputModel output = new DossierTemplateInputModel();
-
+		
+		output.setDossierTemplateId(dossierTemplate.getPrimaryKey());
 		output.setDescription(dossierTemplate.getDescription());
 		output.setTemplateName(dossierTemplate.getTemplateName());
 		output.setTemplateNo(dossierTemplate.getTemplateNo());
