@@ -40,3 +40,4 @@ modules/backend-usermgt/backend-usermgt-api/src/main/java/org/opencps/usermgt/se
 modules/backend-usermgt/backend-usermgt-service/src/main/java/org/opencps/usermgt/model/
 modules/backend-usermgt/backend-usermgt-service/src/main/java/org/opencps/usermgt/service/base/
 **/service/base/**
+**/service.properties
