@@ -99,7 +99,7 @@
         '${ajax.serviceinfo_list}',
         'employee.ftl',
         '${ajax.dossiertemplate}',
-        'serviceprocess.ftl',
+        '${ajax.serviceprocess}',
         'service.ftl',
         'holiday.ftl',
         'paymentconfig.ftl',
