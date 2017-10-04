@@ -76,6 +76,8 @@
 		<property name="postAddress" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property column="password_" name="password" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="notification" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+		<property column="online_" name="online" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+		<property name="serverNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierActionImpl" table="opencps_dossieraction">
 		<id name="dossierActionId" type="long">

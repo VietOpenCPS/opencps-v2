@@ -55,6 +55,8 @@
 		<field name="postAddress" type="String" />
 		<field name="password" type="String" />
 		<field name="notification" type="boolean" />
+		<field name="online" type="boolean" />
+		<field name="serverNo" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierAction">
 		<field name="uuid" type="String" />

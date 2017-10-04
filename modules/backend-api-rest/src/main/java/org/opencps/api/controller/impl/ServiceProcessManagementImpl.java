@@ -41,6 +41,7 @@ import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
@@ -1019,6 +1020,11 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			
+			if (!auth.hasResource(serviceContext, ProcessAction.class.getName(), ActionKeys.ADD_ENTRY)) {
+				throw new UnauthorizationException("UnauthorizationException");
+			}
+
 
 			ProcessActionReturnModel results = new ProcessActionReturnModel();
 
@@ -1062,6 +1068,10 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			
+			if (!auth.hasResource(serviceContext, ProcessAction.class.getName(), ActionKeys.ADD_ENTRY)) {
+				throw new UnauthorizationException("UnauthorizationException");
+			}
 
 			ProcessActionReturnModel results = new ProcessActionReturnModel();
 
@@ -1102,6 +1112,10 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			
+			if (!auth.hasResource(serviceContext, ProcessAction.class.getName(), ActionKeys.ADD_ENTRY)) {
+				throw new UnauthorizationException("UnauthorizationException");
+			}
 
 			ProcessActionReturnModel results = new ProcessActionReturnModel();
 
@@ -1121,6 +1135,49 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(404).entity(error).build();
 		}
 
+	}
+
+	@Override
+	public Response initServiceProcesses(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
+				throw new UnauthorizationException("UnauthorizationException");
+			}
+
+			String results = "Init Done";
+
+			ServiceProcessLocalServiceUtil.initServiceProcess(groupId, serviceContext);
+
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("Content not found!");
+			error.setCode(404);
+			error.setDescription(e.getMessage());
+
+			return Response.status(404).entity(error).build();
+		}
+	}
+
+	@Override
+	public Response cloneServiceProcesses(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

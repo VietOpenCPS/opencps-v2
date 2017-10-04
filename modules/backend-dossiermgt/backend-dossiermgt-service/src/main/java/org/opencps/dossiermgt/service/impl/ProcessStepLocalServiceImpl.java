@@ -212,7 +212,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		String serviceProcessId = GetterUtil.getString(params.get(ProcessStepTerm.SERVICE_PROCESS_ID));
+		String serviceProcessId = String.valueOf(params.get(ProcessStepTerm.SERVICE_PROCESS_ID));
 
 		if (Validator.isNotNull(serviceProcessId)) {
 			MultiMatchQuery query = new MultiMatchQuery(serviceProcessId);
@@ -272,7 +272,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		String serviceProcessId = GetterUtil.getString(params.get(ProcessStepTerm.SERVICE_PROCESS_ID));
+		String serviceProcessId = String.valueOf(params.get(ProcessStepTerm.SERVICE_PROCESS_ID));
 
 		if (Validator.isNotNull(serviceProcessId)) {
 			MultiMatchQuery query = new MultiMatchQuery(serviceProcessId);
