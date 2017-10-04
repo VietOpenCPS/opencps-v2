@@ -1,59 +1,62 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
-<button class="k-button btn-primary MB10" id="btnAddServiceConfigOption"><i class="glyphicon glyphicon-plus"></i>Thêm cấu hình</button>
-<div class="row MB10" style="border-top:1px solid #ddd;"></div>
-<div class="row">
-	<div class="col-sm-1">
-		<p><b>STT</b></p>
-	</div>
-	<div class="col-sm-6">
-		<p><b>Mã thủ tục</b></p>
-	</div>
-	<div class="col-sm-3 text-center">
-		<p><b>Thứ tự</b></p>
-	</div>
-	<div class="col-sm-2 text-center">
-		<p><b>Thao tác</b></p>
-	</div>
+<button class="btn btn-active" type="button" id="btn-add-serviceconfig-option"><i class="fa fa-plus" aria-hidden="true"></i> Thêm mới quy trình thực hiện dịch vụ</button>
+<div class="form-group search-icon MT15">
+	<input type="text" class="form-control" placeholder="Nhập từ khóa" id="search-serviceconfig-process">
 </div>
-<ul class='ul-with-border'>
+<ul class='ul-with-border MB5'>
 	<div id='serviceConfigOptionListView'></div>
 </ul>
-<div id="pagerServiceConfigOption"></div>
-
-<div class="row">
-	<div id="serviceConfigOptionDialog" class="modal fade serviceConfigOptionDialog" role="dialog">
-	</div>
-</div>
-
-<input type="hidden" name="itemServiceConfigOptionId" id="itemServiceConfigOptionId">
-
+<div id='pagerServiceConfigOption'></div>
 <script type="text/x-kendo-template" id="serviceConfigOptionTemplate">
-	<div class="row">
-		<div class="col-sm-1">
-			<p>1</p>
+	<li style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
+		<div class="row">
+			<div class="col-sm-6">
+				<#-- #
+				var lbl = "text-link";
+				if(serviceLevel == 1){
+					lbl = "text-link";
+				} else if(serviceLevel == 2){
+					lbl = "text-link";
+				} else if(serviceLevel == 3){
+					lbl = "text-orange";
+				}else {
+					lbl = "text-danger";
+				}# -->
+				<span>Cấp phép cho người Việt Nam định cư ở nước ngoài, tổ chức cá nhân Cấp phép cho người Việt Nam định cư ở nước ngoài, tổ chức cá nhân Cấp phép cho người Việt Nam định cư ở nước ngoài, tổ chức cá nhân</span> <br>
+				<i class="fa fa-university"></i> <span class="ML5">Cục điện ảnh</span> <span class="ML5 pull-right text-link">Mức độ 2</span>
+			</div>
+			<div class="col-sm-6 border-left" >
+				<div class="row">
+					<div class="col-sm-11">
+						<p>Tên mẫu hồ sơ: Cấp phép cho người Việt Nam định cư ở nước ngoài, tổ chức cá nhân ...</p>
+					</div>
+					<div class="col-sm-1 PL0 PR0">
+						<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit"><i class="fa fa-pencil"></i></a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-11">
+						<p>Tên quy trình thủ tục: Cấp phép cho người Việt Nam định cư ở nước ngoài, tổ chức cá nhân ...</p>
+					</div>
+					<div class="col-sm-1 PL0 PR0">
+						<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnDelete"><i class="fa fa-trash"></i></a>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="col-sm-6">
-			<p>#:processNo#</p>
-		</div>
-		<div class="col-sm-3 text-center">
-			<p>#:processName#</p>
-		</div>
-		<div class="col-sm-2 text-center">
-			<a href="javascript:;" class="_itemServiceConfig_option_btnEdit" data-pk="#:id#"><i class="glyphicon glyphicon-pencil MB10"></i></a>
-			<a href="javascript:;" class="_itemServiceConfig_option_btnDelete" data-pk="#:id#"><i class="glyphicon glyphicon-remove"></i></a>
-		</div>
-	</div>
+	</li>
 </script>
 <script type="text/javascript">
 	var dataSourceServiceOption=new kendo.data.DataSource({
 		transport:{
 			read:function(options){
 				$.ajax({
-					url:"${api.server}/serviceconfigs/1/processes",
+					url:"${api.server}/serviceconfigs/"+$("#itemServiceConfigId").val()+"/processes",
 					dataType:"json",
 					type:"GET",
+					headers: {"groupId": ${groupId}},
 					success:function(result){
 						options.success(result);
 					},
@@ -67,6 +70,7 @@
 					url:"${api.server}/serviceconfigs/"+options.serviceConfigId+"/processes",
 					dataType:"json",
 					type:"POST",
+					headers: {"groupId": ${groupId}},
 					data:{
 						serviceConfigId:options.serviceConfigId,
 						seqOrder:options.seqOrder,
@@ -90,6 +94,7 @@
 					url:"${api.server}/serviceconfigs/"+options.serviceConfigId+"/processes/"+options.processNo,
 					dataType:"json",
 					type:"PUT",
+					headers: {"groupId": ${groupId}},
 					data:{
 						serviceConfigId:options.serviceConfigId,
 						processNo:options.processNo,
@@ -115,6 +120,7 @@
 					url:"${api.server}/serviceconfigs/"+options.serviceConfigId+"/processes/"+options.processNo,
 					dataType:"json",
 					type:"DELETE",
+					headers: {"groupId": ${groupId}},
 					data:{
 						processNo:options.processNo
 					},
@@ -125,7 +131,7 @@
 						}
 					},
 					error:function(result){
-						
+
 					}
 				});
 			}
@@ -137,7 +143,7 @@
 				id:"processOptionId"
 			}
 		},
-		error: function(e) {         
+		error: function(e) {
 			this.cancelChanges();
 		},
 		autoSync: false,
@@ -152,12 +158,12 @@
 		template:kendo.template($("#serviceConfigOptionTemplate").html()),
 		selectable: true,
 		remove:function(e){
-			if(!confirm('Bạn có muốn xóa ?')){ 
+			if(!confirm('Bạn có muốn xóa ?')){
 				e.preventDefault();
 			}
 		},
-		autoBind: false
-	});	
+		autoBind: true
+	});
 
 	$("#pagerServiceConfigOption").kendoPager({
 		dataSource:dataSourceServiceOption,
@@ -170,114 +176,43 @@
 			of: "/ {0}"
 		}
 	});
-	
-	$(document).on("click", "._itemServiceConfig_option_btnEdit", function(event){
-		event.preventDefault();
-		$("#itemServiceConfigOptionId").val($(this).attr("data-pk"));
-		formControl($(this).attr("data-pk"));
-	});
 
-	$(document).on("click", "._itemServiceConfig_option_btnDelete", function(event){
-		event.preventDefault();
-		$("#itemServiceConfigOptionId").val($(this).attr("data-pk"));
-		dataSourceServiceOption.transport.destroy({
-			"serviceConfigId":$("#itemServiceConfigId").val(),
-			"processNo":$(this).attr("data-pk")
+
+	$("#btn-add-serviceconfig-option").click(function(){
+		console.log("add");
+		$("#xlqtdv").load("${ajax.serviceconfig_option_form}",function(result){
+
 		});
 	});
 
-	$(document).on("click", "#btnAddServiceConfigOption", function(event){
-		event.preventDefault();
-		$("#itemServiceConfigOptionId").val("");
-		formControl();
-	});
+	$("#search-serviceconfig-process").kendoAutoComplete({
+		dataTextField : "templateName",
+		dataSource: {
+			transport : {
+				read : {
+					url : "${api.server}/serviceconfigs/"+$("#itemServiceConfigId").val()+"/processes",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
 
-	var formControl = function(dataPk){
+					},
+					error : function(xhr){
 
-		var url = "${serviceconfig.ajax.serviceconfig_option_form}";
-
-		$("#serviceConfigOptionDialog").load(
-			url,
-			function(result){
-
-				$("#serviceConfigOptionDialog").modal({show: true});
-
-				$("#btnCancleServiceConfigOption").click(function(e){
-					e.preventDefault();
-					$("#serviceConfigOptionDialog").modal("hide");
-				});
-
-				var validator = $("#serviceConfigOptionForm").kendoValidator().data("kendoValidator");
-				$("form").submit(function(event) {
-					event.preventDefault();
-					if (validator.validate()) {
-						if (dataPk){
-							updateServieConfigOption(dataPk);
-						} else {
-							addServiceConfigOption();
-						}
-
-						$("#serviceConfigOptionDialog").modal("hide");
-
-					} else {
-						return false;
 					}
-				});
+				}
+			},
+			schema : {
+				total : "total",
+				data : "data",
+				model : {
+					id : "processOptionId"
+				}
 			}
-			);
-	}
-
-	var updateServieConfigOption = function(dataPk){
-
-		dataSourceServiceOption.transport.update({
-			"serviceConfigId":$("#itemServiceConfigId").val(),
-			"processNo":dataPk,
-			"seqOrder":$("#seqOrder").val(),
-			"dossierTemplateId":$("#dossierTemplateId").val(),
-			"serviceProcessId":$("#serviceProcessId").val(),
-			"submissionNote":$("#submissionNote").val(),
-			"instructionNote":$("#instructionNote").val(),
-			"autoSelect":$("#autoSelect").val()
-		});
-	}
-
-	var updateServieConfigOptionIfSuccess = function(dataPk,result){
-		dataSourceServiceOption.fetch(function(){
-			var item=dataSourceServiceOption.get(dataPk);
-			item.set("processNo",result.processNo);
-			item.set("processName",result.processName);
-			item.set("dossierTemplateId",result.dossierTemplateId);
-			item.set("serviceProcessId",result.serviceProcessId);
-			item.set("submissionNote",result.submissionNote);
-			item.set("instructionNote",result.instructionNote);
-			item.set("autoSelect",result.autoSelect);
-		});
-	}
-
-	var addServiceConfigOption = function(){
-		console.log("itemServiceConfigId"+ $("#itemServiceConfigId").val());
-		dataSourceServiceOption.transport.create({
-			serviceConfigId:$("#itemServiceConfigId").val(),
-			seqOrder:$("#seqOrder").val(),
-			dossierTemplateId:$("#dossierTemplateId").val(),
-			serviceProcessId:$("#serviceProcessId").val(),
-			submissionNote:$("#submissionNote").val(),
-			instructionNote:$("#instructionNote").val(),
-			autoSelect:$("#autoSelect").val()
-		});	
-	};
-
-	var addServiceConfigOptionIfSuccess = function(result){
-		dataSourceServiceOption.add({
-
-			processNo:result.processNo,
-			processName:result.processName,
-			dossierTemplateId:result.dossierTemplateId,
-			serviceProcessId:result.serviceProcessId,
-			submissionNote:result.submissionNote,
-			instructionNote:result.instructionNote,
-			autoSelect:result.autoSelect
-		});	
-	};
+		},
+		filter: "contains",
+		placeholder: "Nhập từ khóa",
+		noDataTemplate: 'Không có dữ liệu'
+	});
 
 </script>

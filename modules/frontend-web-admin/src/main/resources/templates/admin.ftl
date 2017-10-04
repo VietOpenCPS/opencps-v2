@@ -5,7 +5,15 @@
 <div id="admin_management_tabstrip" class="row">
   <div id="admin_tabstrip">
     <ul class="ul-with-border ul-with-border-style-2">
-      <li class="clearfix k-state-active" >
+			<li class="clearfix k-state-active" >
+        <div class="col-sm-2 clearfix ">
+          <a href="javascript:;" >
+          <i class="fa fa-gg" aria-hidden="true"></i>
+          </a>
+        </div>
+        <div class="col-sm-9 PL10 P0">Dữ liệu danh mục</div>
+      </li>
+      <li class="clearfix" >
         <div class="col-sm-2 clearfix ">
           <a href="javascript:;" >
           <i class="fa fa-gg" aria-hidden="true"></i>
@@ -13,7 +21,15 @@
         </div>
         <div class="col-sm-9 PL10 P0">Thủ tục hành chính</div>
       </li>
-      <li class="clearfix k-state-active" >
+			<li class="clearfix" >
+        <div class="col-sm-2 clearfix ">
+          <a href="javascript:;" >
+          <i class="fa fa-gg" aria-hidden="true"></i>
+          </a>
+        </div>
+        <div class="col-sm-9 PL10 P0">Tổ chức cán bộ</div>
+      </li>
+      <li class="clearfix" >
         <div class="col-sm-2 clearfix ">
           <a href="javascript:;" >
           <i class="fa fa-gg" aria-hidden="true"></i>
@@ -21,7 +37,15 @@
         </div>
         <div class="col-sm-9 PL10 P0">Mẫu hồ sơ</div>
       </li>
-      <li class="clearfix k-state-active" >
+      <li class="clearfix" >
+        <div class="col-sm-2 clearfix ">
+          <a href="javascript:;" >
+          <i class="fa fa-gg" aria-hidden="true"></i>
+          </a>
+        </div>
+        <div class="col-sm-9 PL10 P0">Quy trình thủ tục</div>
+      </li>
+			<li class="clearfix" >
         <div class="col-sm-2 clearfix ">
           <a href="javascript:;" >
           <i class="fa fa-gg" aria-hidden="true"></i>
@@ -29,21 +53,37 @@
         </div>
         <div class="col-sm-9 PL10 P0">Dịch vụ công</div>
       </li>
-      <li class="clearfix k-state-active" >
+			<li class="clearfix" >
         <div class="col-sm-2 clearfix ">
           <a href="javascript:;" >
           <i class="fa fa-gg" aria-hidden="true"></i>
           </a>
         </div>
-        <div class="col-sm-9 PL10 P0">Quy trình</div>
+        <div class="col-sm-9 PL10 P0">Ngày làm việc, ngày nghỉ</div>
       </li>
-      <li class="clearfix k-state-active" >
+      <li class="clearfix" >
         <div class="col-sm-2 clearfix ">
           <a href="javascript:;" >
           <i class="fa fa-gg" aria-hidden="true"></i>
           </a>
         </div>
         <div class="col-sm-9 PL10 P0">Cấu hình thanh toán</div>
+      </li>
+			<li class="clearfix" >
+        <div class="col-sm-2 clearfix ">
+          <a href="javascript:;" >
+          <i class="fa fa-gg" aria-hidden="true"></i>
+          </a>
+        </div>
+        <div class="col-sm-9 PL10 P0">Công dân, doanh nghiệp</div>
+      </li>
+			<li class="clearfix" >
+        <div class="col-sm-2 clearfix ">
+          <a href="javascript:;" >
+          <i class="fa fa-gg" aria-hidden="true"></i>
+          </a>
+        </div>
+        <div class="col-sm-9 PL10 P0">Tạo Eform</div>
       </li>
     </ul>
   </div>
@@ -55,11 +95,16 @@
       animation: { open: { effects: "fadeIn"} },
       tabPosition: "left",
       contentUrls: [
+				'datamgt.ftl',
         '${ajax.serviceinfo_list}',
-        'dossiertemplate.ftl',
-        'serviceconfig.ftl',
-        'serviceprocess.ftl',
-        'paymentconfig.ftl'
+        'employee.ftl',
+        '${ajax.dossiertemplate}',
+        '${ajax.serviceprocess}',
+        '${ajax.serviceconfig}',
+        'holiday.ftl',
+        'paymentconfig.ftl',
+        '${ajax.manage_account}',
+        'efrom.ftl'
       ]
     }).data('kendoTabStrip');
   });

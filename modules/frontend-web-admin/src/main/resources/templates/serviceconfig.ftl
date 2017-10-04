@@ -1,33 +1,15 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 <div class="row">
-	<div class="col-sm-12">
-		<div class="row">
-			<div class="">
-				<div class="col-sm-3">
-					<button class="k-button btn-primary" id="btnAddServiceConfig"><i class="glyphicon glyphicon-plus"></i> Thêm dịch vụ công</button>
-				</div>
-				<div class="col-sm-3">
-					<input name="domainSearch" id="domainSearch">
-				</div>
-				<div class="col-sm-3">
-					<input name="govAgencySearch" id="govAgencySearch">
-				</div>
-				<div class="col-sm-3">
-					<div class="input-group">
-						<input id="keyword" class="form-control" name="keyword" placeholder="Nhập từ khóa tìm kiếm"><span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="row MT20">
-	<div class="col-sm-3">
-		<div class="panel panel-body">
+	<div class="col-sm-3 panel P0">
+		<div class="panel-body">
 			<div class="row">
 				<div class="col-sm-12">
+					<button class="btn btn-active form-control" id="btnAddServiceConfig"><i class="glyphicon glyphicon-plus"></i> Thêm dịch vụ công</button>
+					<div class="form-group search-icon MT10">
+						<input type="text" id="keywordSearchServiceConfig" name="keywordSearchServiceConfig" class="form-control" placeholder="Nhập từ khóa">
+					</div>
 					<ul class='ul-with-border'>
 						<div id='serviceConfigListView'></div>
 					</ul>
@@ -36,94 +18,48 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-sm-9 panel">
-		<div class="panel-header">
-			<h4><b>Thông tin chi tiết</b></h4>
-		</div>
-		<div class="panel-body">
-			<div id="detailServiceConfig">
-				<div class="row">
-					<div class="col-sm-8">
-						<div class="row">
-							<div class="col-sm-3">
-								<p><b>Tên thủ tục</b></p>
-							</div>
-							<div class="col-sm-9">
-								<p data-bind="text:serviceInfoName"></p>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-3">
-								<p><b>Cơ quan</b></p>
-							</div>
-							<div class="col-sm-9">
-								<p data-bind="text:govAgencyName"></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="row">
-							<div class="col-sm-6">
-								<p><b>Mức độ</b></p>
-							</div>
-							<div class="col-sm-6">
-								<p data-bind="text:serviceLevel"></p>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-6">
-								<p><b>Chứng nhận</b></p>
-							</div>
-							<div class="col-sm-6">
-								<p data-bind="text:authentication"></p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+	<div class="col-sm-9 PR0" >
+	<div class="panel panel-body" id="serviceConfigDetail">
 
-
-			<div class="row">
-				<div class="col-sm-12">
-					<div id="serviceConfigOption">
-
-					</div>
-				</div>
-			</div>
 		</div>
 	</div>
 </div>
 <script type="text/x-kendo-template" id="serviceConfigTemplate">
 	<li style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
 		<div class="row">
-			<div class="col-sm-2 clearfix PL0 PR0">
-				<a href="javascript:;"  class="PR5">
-					<i style="font-size: 25px;padding: 5px;" class="fa fa-envelope-open" aria-hidden="true"></i> 
-				</a>
+			<div class="col-sm-11 service-config-item PR0" data-pk="#:id#">
+				<p>
+					<#-- #if(serviceName.length>40){#
+					# var dcontent = serviceName.substring(0,38)+"..."; #
+					#:kendo.toString(dcontent)#
+					#}else{#
+					#:serviceName#
+					#}# -->
+					#:serviceName#
+				</p>
 			</div>
-			<div class="col-sm-8 PL0 service-config-item" data-pk="#:id#">
-				<div class="row">
-					<div class="col-sm-12">
-						<p><b>
-							#if(serviceName.length>40){# 
-							# var dcontent = serviceName.substring(0,38)+"..."; # 
-							#:kendo.toString(dcontent)#
-							#}else{#
-							#:serviceName#
-							#}#
-						</b></p>
-					</div>
-					<div class="col-sm-12">
-						<span>#:govAgencyName#</span>
-					</div>
-				</div>
+			<div class="col-sm-1 PL0 PR0">
+				<a class="item-serviceconfig-delete" href="javascript:;" data-pk="#:id#"><i class="fa fa-trash"></i></a>
 			</div>
-			<div class="col-sm-2">
-				<a class="itemServiceConfig-popup-edit" href="javascript:;" data-pk="#:id#"><i class="glyphicon glyphicon-pencil MB10"></i></a>
-				<a class="k-delete-button" href="javascript:;"><i class="glyphicon glyphicon-remove"></i></a>
+			<div class="col-sm-12">
+				<i class="fa fa-university"></i> <span class="ML5">#:govAgencyName#</span>
 			</div>
-		</div>
-	</li>
+			<div class="col-sm-12">
+				#
+				var lbl = "text-link";
+				if(serviceLevel == 1){
+				lbl = "text-link";
+			} else if(serviceLevel == 2){
+			lbl = "text-link";
+		} else if(serviceLevel == 3){
+		lbl = "text-orange";
+	}else {
+	lbl = "text-danger";
+}#
+<span class="#:lbl#">Mức độ <span>#:serviceLevel#</span></span>
+</div>
+</div>
+</li>
 </script>
 
 <input type="hidden" name="itemServiceConfigId" id="itemServiceConfigId">
@@ -131,17 +67,19 @@
 
 </div>
 <script type="text/javascript">
+	var dataSourceServiceConfig;
 	(function($){
 
-		var dataSourceServiceConfig=new kendo.data.DataSource({
+		dataSourceServiceConfig=new kendo.data.DataSource({
 			transport:{
 				read:function(options){
 					$.ajax({
 						url: "${api.server}/serviceconfigs",
 						dataType:"json",
 						type:"GET",
+						headers: {"groupId": ${groupId}},
 						data:{
-							keywords: options.data.keywords,
+							keyword: options.data.keyword,
 							page: options.data.page,
 							pageSize: options.data.pageSize
 						},
@@ -158,6 +96,7 @@
 						url: "${api.server}/serviceconfigs",
 						dataType:"json",
 						type:"POST",
+						headers: {"groupId": ${groupId}},
 						data:{
 							serviceInfoId:options.serviceInfoId,
 							serviceName:options.serviceName,
@@ -173,7 +112,7 @@
 
 						},
 						error:function(result){
-							
+
 						}
 					});
 				},
@@ -182,6 +121,7 @@
 						url: "${api.server}/serviceconfigs/1",
 						dataType:"json",
 						type:"PUT",
+						headers: {"groupId": ${groupId}},
 						data:{
 							serviceConfigId:options.serviceConfigId,
 							serviceInfoId:options.serviceInfoId,
@@ -197,7 +137,7 @@
 							updateServieConfigIfSuccess($("#itemServiceConfigId").val(),result);
 						},
 						error:function(result){
-							
+
 						}
 					});
 				},
@@ -206,6 +146,7 @@
 						url: "${api.server}/serviceconfigs/"+options.data.serviceConfigId,
 						dataType:"json",
 						type:"DELETE",
+						headers: {"groupId": ${groupId}},
 						data:{
 							serviceConfigId:options.data.serviceConfigId
 						},
@@ -213,7 +154,7 @@
 							console.log(options);
 						},
 						error:function(result){
-							
+
 						}
 					});
 				}
@@ -225,8 +166,19 @@
 					id:"serviceConfigId"
 				}
 			},
-			error: function(e) {         
+			error: function(e) {
 				this.cancelChanges();
+			},
+			requestEnd: function(e) {
+				console.log(e);
+				console.log("end");
+				if(typeof e.response.data !== "undefined"){
+					var firstChild = e.response.data[0].serviceConfigId;
+					$("#itemServiceConfigId").val(firstChild);
+					console.log("itemServiceConfigId: "+$("#itemServiceConfigId").val());
+					formControl(firstChild);
+				}
+
 			},
 			autoSync: false,
 			pageSize:5,
@@ -246,36 +198,13 @@
 				}
 			}
 
-		});	
+		});
 
 		$(document).on("click", ".service-config-item", function(event){
 			var id = $(this).attr("data-pk");
 			$("#itemServiceConfigId").val($(this).attr("data-pk"));
 			console.log("itemServiceConfigId: "+$("#itemServiceConfigId").val());
-			$("#serviceConfigOption").load(
-				"${serviceconfig.ajax.serviceconfig_option}",
-				function(result){
-					$("#serviceConfigOptionListView").getKendoListView().dataSource.read({
-						id: id
-					});
-				}
-				);
-
-			var item=dataSourceServiceConfig.get($(this).attr("data-pk"));
-			var viewModel = kendo.observable({	
-				serviceInfoName:item.serviceName,
-				govAgencyName:item.govAgencyName,
-				serviceLevel:item.serviceLevel,
-				authentication:function(){
-					if(item.authentication==1){
-						return "Có";
-					}else{
-						return "Không";
-					}
-				}
-			});
-
-			kendo.bind($("#detailServiceConfig"), viewModel);
+			formControl(id);
 		});
 
 		$("#pager").kendoPager({
@@ -290,84 +219,40 @@
 			}
 		});
 
-		$("#govAgencySearch").kendoComboBox({
-			placeholder:"Chọn mã cơ quan",
-			dataTextField:"",
-			dataValueField:"",
-			filter: "contains",
-			dataSource:{
-				transport:{
-					read:{
-						url:"",
-						dataType:"json",
-						type:"GET",
-						success:function(result){
-
-						},
-						error:function(result){
-
-						}
-					}
-				},
-				schema:{
-					data:"data",
-					total:"total",
-					model:{
-						id:"id"
-					}
-				}
-			},
-			change:function(){
-				dataSourceServiceConfig.read({
-					"govAgencySearch":$("#govAgencySearch").val(),
-					"domainSearch":$("#domainSearch").val(),
-					"keyword":$("#keyword").val()
-				});
-			}
-		});
-
-		$("#domainSearch").kendoComboBox({
-			placeholder:".......",
-			dataTextField:"",
-			dataValueField:"",
-			filter: "contains",
-			dataSource:{
-				transport:{
-					read:{
-						url:"",
-						dataType:"json",
-						type:"GET",
-						success:function(result){
-
-						},
-						error:function(result){
-
-						}
-					}
-				},
-				schema:{
-					data:"data",
-					total:"total",
-					model:{
-						id:"id"
-					}
-				}
-			},
-			change:function(){
-				dataSourceServiceConfig.read({
-					"domainSearch":$("#domainSearch").val(),
-					"govAgencySearch":$("#govAgencySearch").val(),
-					"keyword":$("#keyword").val()
-				});
-			}
-		});
-
-		$("#keyword").change(function(){
+		$("#keywordSearchServiceConfig").change(function(){
 			dataSourceServiceConfig.read({
-				"domainSearch":$("#domainSearch").val(),
-				"govAgencySearch":$("#govAgencySearch").val(),
-				"keyword":$("#keyword").val()
+				"keyword":$("#keywordSearchServiceConfig").val()
 			});
+		});
+
+		$("#keywordSearchServiceConfig").kendoAutoComplete({
+			dataTextField : "serviceName",
+			dataSource: {
+				transport : {
+					read : {
+						url : "${api.server}/serviceconfigs",
+						dataType : "json",
+						type : "GET",
+						headers: {"groupId": ${groupId}},
+						success : function(result){
+
+						},
+						error : function(xhr){
+
+						}
+					}
+				},
+				schema : {
+					total : "total",
+					data : "data",
+					model : {
+						id : "serviceConfigId"
+					}
+				}
+			},
+			filter: "contains",
+			placeholder: "Nhập từ khóa",
+			noDataTemplate: 'Không có dữ liệu'
 		});
 
 		$(function() {
@@ -380,56 +265,55 @@
 		});
 
 
-		$(document).on("click", ".itemServiceConfig-popup-edit", function(event){
-
+		$(document).on("click", ".item-serviceconfig-delete", function(event){
 			event.preventDefault();
-			$("#itemServiceConfigId").val($(this).attr("data-pk"));
-			console.log($("#itemServiceConfigId").val());
-			formControl($(this).attr("data-pk"));
+			var id = $(this).attr("data-pk");
+			if(id && id > 0){
+				var item =  dataSourceServiceConfig.get(id);
+				var cf = confirm("Bạn có muốn xóa "+item.serviceCode+"!");
+				if(cf){
+					$.ajax({
+						url : "${api.server}"+"/serviceconfigs/"+id,
+						dataType : "json",
+						type : "DELETE",
+						headers: {"groupId": ${groupId}},
+						success : function(result){
+							if(item){
+								var index = dataSourceServiceConfig.remove(item);
+							}
+						},
+						error : function(xhr){
+
+						}
+					});
+				}else {
+					return;
+				}
+			}
 		});
 
 		$(document).on("click", "#btnAddServiceConfig", function(event){
 
 			event.preventDefault();
 			$("#itemServiceConfigId").val("");
+			console.log("add click");
 			console.log($("#itemServiceConfigId").val());
 			formControl();
 		});
 
 		var formControl = function(dataPk){
 
-			var url = "${serviceconfig.ajax.serviceconfig_form}";
+			var url = "${ajax.serviceconfig_detail}";
 
-			$("#serviceConfigDialog").load(
-				url,
-				function(result){
+			$("#serviceConfigDetail").load(url,function(result){
+				if(dataPk){
+					pullServiceConfigDetail(dataPk);
+				}else {
 
-					$("#serviceConfigDialog").modal({show: true});
-
-					$("#btnCancleServiceConfig").click(function(e){
-						e.preventDefault();
-						$("#serviceConfigDialog").modal("hide");
-					});
-
-					var validator = $("#serviceConfigForm").kendoValidator().data("kendoValidator");
-
-					$("form").submit(function(event) {
-						event.preventDefault();
-						if (validator.validate()) {
-							if (dataPk){
-								updateServieConfig(dataPk);
-							} else {
-								addServiceConfig();
-							}
-
-							$("#serviceConfigDialog").modal("hide");
-
-						} else {
-							return false;
-						}
-					});
 				}
-				);
+				funcCheckValueItem();
+			});
+
 		}
 
 		var updateServieConfig = function(dataPk){
@@ -446,49 +330,57 @@
 			});
 		}
 
-		var updateServieConfigIfSuccess = function(dataPk,result){
-			console.log(dataPk);
-			dataSourceServiceConfig.fetch(function(){
-				if(dataPk>0){
-					var item=dataSourceServiceConfig.get(dataPk);
-					item.set("serviceInfoId",result.serviceInfoId);
-					item.set("govAgencyCode",result.govAgencyCode);
 
-					item.set("serviceName",result.serviceName);
-					item.set("govAgencyName",result.govAgencyName);
-
-					item.set("serviceLevel",result.serviceLevel);
-					item.set("serviceInstruction",result.serviceInstruction);
-					item.set("serviceUrl",result.serviceUrl);
-					item.set("authentication",result.authentication);
-				}
-
-			});
-		}
 
 		var addServiceConfig = function(){
 			dataSourceServiceConfig.transport.create({
 				"serviceInfoId":$("#serviceInfoId").val(),
 				"govAgencyCode":$("#govAgencyCode").val(),
+				"serviceName":$("#serviceName").val(),
 				"serviceLevel":$("#serviceLevel").val(),
 				"serviceInstruction":$("#serviceInstruction").val(),
 				"authentication":$("#authentication").val(),
 				"serviceUrl":$("#serviceUrl").val()
-			});	
+			});
 		};
 
-		var addServiceConfigIfSuccess = function(result){
-			dataSourceServiceConfig.add({
-				"serviceInfoId":result.serviceInfoId,
-				"serviceName":result.serviceName,
-				"govAgencyName":result.govAgencyName,
-				"govAgencyCode":result.govAgencyCode,
-				"serviceLevel":result.serviceLevel,
-				"serviceInstruction":result.serviceInstruction,
-				"authentication":result.authentication,
-				"serviceUrl":result.serviceUrl
-			});	
-		};
+		//edit or delete serviceconfig option
+		$(document).on("click", "._itemServiceConfig_option_btnEdit", function(event){
+			event.preventDefault();
+			console.log("edit");
+			var id = $(this).attr("data-pk");
+			$("#xlqtdv").load("${ajax.serviceconfig_option_form}",function(result){
+				pullServiceConfigOptionDetail(id);
+			});
+		});
+
+		$(document).on("click", "._itemServiceConfig_option_btnDelete", function(event){
+			event.preventDefault();
+			var id = $(this).attr("data-pk");
+			var idServiceConfig = $("#itemServiceConfigId").val();
+			if(idServiceConfig > 0 && id > 0){
+				var itemDelete = dataSourceServiceOption.get(id);
+				var cf = confirm("Bạn có muốn xóa !");
+				if(cf){
+					$.ajax({
+						url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes/"+id,
+						dataType : "json",
+						type : "DELETE",
+						headers: {"groupId": ${groupId}},
+						success : function(result){
+							if(itemDelete){
+								var index = dataSourceServiceOption.remove(itemDelete);
+							}
+						},
+						error : function(xhr){
+
+						}
+					});
+				}else{
+					return;
+				}
+			}
+		});
 
 	})(jQuery);
 </script>

@@ -1,11 +1,13 @@
 {
 	"api": {
-		"server": "http://localhost:8081/api"
+		"server": "http://hanoi.fds.vn:2281/api"
 	},
 	"ajax": {
+		"data_mgt":"data_mgt.ftl",
 		"serviceinfo_list":"serviceinfo.ftl",
 		"serviceinfo_form":"serviceinfo_form.ftl",
 		"filetemplate_form":"filetemplate_form.ftl",
+		"dossiertemplate":"dossiertemplate.ftl",
 		"dossiertemplate_form":"dossiertemplate_form.ftl",
 		"dossiertemplate_part_form":"dossiertemplate_part_form.ftl",
 		"dossierpart_form":"dossierpart_form.ftl",
@@ -16,8 +18,13 @@
 		"serviceprocess_detail_formaction": "serviceprocess_detail_formaction.ftl",
 		"paymentconfig_form": "paymentconfig_form.ftl",
 		"serviceinfo_filetemplate":"serviceinfo_filetemplate.ftl",
-	  	"serviceinfo_filetemplate_form":"serviceinfo_filetemplate_form.ftl"
+	  	"serviceinfo_filetemplate_form":"serviceinfo_filetemplate_form.ftl",
+	  	"serviceinfo_detail" : "serviceinfo_detail.ftl",
+	  	"serviceconfig_detail" : "serviceconfig_detail.ftl",
+	  	"serviceconfig_option" : "serviceconfig_option.ftl",
+	  	"serviceconfig_option_form" : "serviceconfig_option_form.ftl"
 	},
+	"groupId": "11111",
 	"serviceInfo" : {
 	  "serviceInfoId": 1,
 	  "createDate": "2017-08-01T03:38:46.385Z",
@@ -115,6 +122,42 @@
 	    "id": 181,
 	    "name": "exercitation",
 	    "level": 3
+	  }
+	],
+	"levels" : [
+	  {
+	    "id": 1,
+	    "name": "Mức độ 1"
+	  },
+	  {
+	    "id": 2,
+	    "name": "Mức độ 2"
+	  },
+	  {
+	    "id": 3,
+	    "name": "Mức độ 3"
+	  },
+	  {
+	    "id": 4,
+	    "name": "Mức độ 4"
+	  }
+	],
+	"status" : [
+	  {
+	    "id": 1,
+	    "name": "Công khai"
+	  },
+	  {
+	    "id": 2,
+	    "name": "Đã tiếp nhận"
+	  },
+	  {
+	    "id": 3,
+	    "name": "Đang xử lý"
+	  },
+	  {
+	    "id": 4,
+	    "name": "Chờ xử lý"
 	  }
 	],
 	"serviceInfoStatuses": [{
