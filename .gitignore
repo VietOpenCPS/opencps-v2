@@ -1,6 +1,11 @@
 modules/backend-usermgt/backend-usermgt-api/src/main/java/org/opencps/backend/usermgt/** 
 modules/backend-dossiermgt/backend-dossiermgt-service/src/main/java/org/opencps/backend/dossiermgt/service/base/**
 modules/backend-dossiermgt/backend-dossiermgt-api/**
+**/indexes.sql
+**/sequences.sql
+**/tables.sql
+**/module-hbm.xml
+**/portlet-model-hints.xml
 **/module-spring.xml 
 **/service.properties
 **/sql/**
