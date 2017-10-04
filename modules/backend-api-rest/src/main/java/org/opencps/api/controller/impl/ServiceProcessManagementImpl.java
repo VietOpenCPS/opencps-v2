@@ -1175,9 +1175,37 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 	@Override
 	public Response cloneServiceProcesses(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext) {
-		// TODO Auto-generated method stub
-		return null;
+			Locale locale, User user, ServiceContext serviceContext, long id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
+				throw new UnauthorizationException("UnauthorizationException");
+			}
+
+			String results = "Clone done";
+
+			ServiceProcessLocalServiceUtil.cloneServiceProcess(id, groupId, serviceContext);
+
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("Content not found!");
+			error.setCode(404);
+			error.setDescription(e.getMessage());
+
+			return Response.status(404).entity(error).build();
+		}
+
 	}
 
 }
