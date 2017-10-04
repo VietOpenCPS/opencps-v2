@@ -15,6 +15,7 @@ import org.opencps.api.context.provider.ServiceContextProvider;
 import org.opencps.api.context.provider.UserContextProvider;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
+import org.opencps.api.controller.impl.DossierManagementImpl;
 import org.opencps.api.controller.impl.DossierTemplateManagementImpl;
 import org.opencps.api.controller.impl.EmployeeManagementImpl;
 import org.opencps.api.controller.impl.HolidayManagementImpl;
@@ -30,6 +31,9 @@ import org.opencps.api.controller.impl.ServiceProcessManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
+import org.opencps.dossiermgt.model.impl.DossierFileImpl;
+import org.opencps.dossiermgt.model.impl.DossierLogImpl;
+import org.opencps.dossiermgt.model.impl.PaymentFileImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -47,8 +51,13 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add( new DossierTemplateManagementImpl());
 		singletons.add(new ServiceProcessManagementImpl());
 		singletons.add(new PaymentConfigManagementImpl());
+		singletons.add(new PaymentFileImpl());
+		singletons.add(new DossierManagementImpl());
+		singletons.add(new DossierFileImpl());
+		singletons.add(new DossierLogImpl());
 		
-		//singletons.add( new TestRest());
+//		singletons.add( new TestRest());
+//		singletons.add( new CloneTest());
 
 		singletons.add(new DataManagementImpl());
 		singletons.add(new HolidayManagementImpl());
