@@ -36,9 +36,12 @@ import org.opencps.dossiermgt.exception.RequiredProcessNameException;
 import org.opencps.dossiermgt.exception.RequiredProcessNoException;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.base.ServiceProcessLocalServiceBaseImpl;
+import org.opencps.dossiermgt.service.persistence.ProcessStepRolePK;
+import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -97,7 +100,158 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	static final String PROCESS_NO = "DEFAULT_SERVICE_PROCESS";
 	
 	@Indexable(type = IndexableType.REINDEX)
-	public void cloneServiceProcess(long serviceProcessId, ServiceContext serviceContext) {
+	public void cloneServiceProcess(long serviceProcessId, long groupId, ServiceContext serviceContext) throws PortalException {
+		
+		ServiceProcess originServiceProcess = serviceProcessPersistence.fetchByPrimaryKey(serviceProcessId);
+		
+		long cloneServiceProcessId = counterLocalService.increment(ServiceProcess.class.getName());
+		
+		ServiceProcess cloneServiceProcess = serviceProcessPersistence.create(cloneServiceProcessId);
+
+		Date now = new Date();
+
+		User userAction = userLocalService.getUser(serviceContext.getUserId());
+
+		// Add audit fields
+		cloneServiceProcess.setCompanyId(serviceContext.getCompanyId());
+		cloneServiceProcess.setGroupId(groupId);
+		cloneServiceProcess.setCreateDate(now);
+		cloneServiceProcess.setModifiedDate(now);
+		cloneServiceProcess.setUserId(userAction.getUserId());
+		cloneServiceProcess.setUserName(userAction.getFullName());
+		
+		// Add other fields
+		cloneServiceProcess.setProcessNo(originServiceProcess.getProcessNo() + "_CLONE");
+		cloneServiceProcess.setProcessName(originServiceProcess.getProcessName());
+		cloneServiceProcess.setDescription(originServiceProcess.getDescription());
+		cloneServiceProcess.setDurationCount(originServiceProcess.getDurationCount());
+		cloneServiceProcess.setDurationUnit(originServiceProcess.getDurationUnit());
+		cloneServiceProcess.setCounter(0);
+		cloneServiceProcess.setGenerateDossierNo(originServiceProcess.getGenerateDossierNo());
+		cloneServiceProcess.setDossierNoPattern(originServiceProcess.getDossierNoPattern());
+		cloneServiceProcess.setGenerateDueDate(originServiceProcess.getGenerateDueDate());
+		cloneServiceProcess.setDueDatePattern(originServiceProcess.getDueDatePattern());
+		cloneServiceProcess.setGeneratePassword(originServiceProcess.getGeneratePassword());
+		cloneServiceProcess.setDirectNotification(originServiceProcess.getDirectNotification());
+		cloneServiceProcess.setServerNo(originServiceProcess.getServerNo());
+
+		serviceProcessPersistence.update(cloneServiceProcess);
+		
+		List<ServiceProcessRole> processRoles = serviceProcessRolePersistence.findByP_S_ID(serviceProcessId);
+		
+		//clone processRole
+		for (ServiceProcessRole sp : processRoles) {
+			//long roleId = counterLocalService.increment(ServiceProcessRole.class.getName());
+			
+			ServiceProcessRolePK pk = new ServiceProcessRolePK(cloneServiceProcessId, sp.getRoleId());
+			
+			ServiceProcessRole cloneRole = serviceProcessRolePersistence.create(pk);
+			
+			cloneRole.setModerator(sp.getModerator());
+			cloneRole.setCondition(sp.getCondition());
+			
+			
+			serviceProcessRolePersistence.update(cloneRole);
+		}
+		
+		Indexer<ServiceProcess> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ServiceProcess.class);
+		
+		try {
+			indexer.reindex(cloneServiceProcess);
+		} catch (SearchException se) {
+			se.printStackTrace();
+		}
+
+		Indexer<ProcessStep> stepindexer = IndexerRegistryUtil.nullSafeGetIndexer(ProcessStep.class);
+
+		Indexer<ProcessAction> actionindexer = IndexerRegistryUtil.nullSafeGetIndexer(ProcessAction.class);
+
+		List<ProcessStep> originSteps = processStepPersistence.findByS_P_ID(serviceProcessId);
+		
+		for (ProcessStep step : originSteps) {
+			long cloneStepId = counterLocalService.increment(ProcessStep.class.getName());
+			
+			ProcessStep cloneStep = processStepPersistence.create(cloneStepId);
+			
+			// Add audit fields
+			cloneStep.setCompanyId(serviceContext.getCompanyId());
+			cloneStep.setGroupId(groupId);
+			cloneStep.setCreateDate(now);
+			cloneStep.setModifiedDate(now);
+			cloneStep.setUserId(userAction.getUserId());
+			cloneStep.setUserName(userAction.getFullName());
+
+			// Add other fields
+
+			cloneStep.setStepCode(step.getStepCode() + "_CLONE");
+			cloneStep.setServiceProcessId(cloneServiceProcessId);
+			cloneStep.setStepName(step.getStepName());
+			cloneStep.setSequenceNo(step.getSequenceNo());
+			cloneStep.setDossierStatus(step.getDossierStatus());
+			cloneStep.setDossierSubStatus(step.getDossierSubStatus());
+			cloneStep.setDurationCount(step.getDurationCount());
+			cloneStep.setCustomProcessUrl(step.getCustomProcessUrl());
+			cloneStep.setStepInstruction(step.getStepInstruction());
+			cloneStep.setEditable(step.getEditable());
+			
+			processStepPersistence.update(cloneStep);
+			
+			try {
+				stepindexer.reindex(cloneStep);
+			} catch (SearchException se) {
+				se.printStackTrace();
+			}
+
+			
+			List<ProcessStepRole> stepRoles = processStepRolePersistence.findByP_S_ID(cloneStepId);
+			
+			for (ProcessStepRole role : stepRoles) {
+				ProcessStepRolePK pk = new ProcessStepRolePK(cloneStepId, role.getRoleId());
+				
+				ProcessStepRole cloneStepRole = processStepRolePersistence.create(pk);
+				
+				cloneStepRole.setModerator(role.getModerator());
+				cloneStepRole.setCondition(role.getCondition());
+				
+				processStepRolePersistence.update(cloneStepRole);
+			}
+		}
+		
+		List<ProcessAction> originActions = processActionPersistence.findByS_P_ID(serviceProcessId);
+		
+		for (ProcessAction act : originActions) {
+			long cloneActionId = counterLocalService.increment(ProcessAction.class.getName());
+			
+			ProcessAction cloneaction = processActionPersistence.create(cloneActionId);
+			
+			// Add audit fields
+			cloneaction.setCompanyId(serviceContext.getCompanyId());
+			cloneaction.setGroupId(groupId);
+			cloneaction.setCreateDate(now);
+			cloneaction.setModifiedDate(now);
+			cloneaction.setUserId(userAction.getUserId());
+			cloneaction.setUserName(userAction.getFullName());
+
+			cloneaction.setServiceProcessId(cloneServiceProcessId);
+			cloneaction.setAutoEvent(act.getAutoEvent());
+			cloneaction.setPreCondition(act.getPreCondition());
+			cloneaction.setActionCode(act.getActionCode());
+			cloneaction.setActionName(act.getActionName());
+			cloneaction.setAllowAssignUser(act.getAllowAssignUser());
+			cloneaction.setAssignUserId(act.getAssignUserId());
+			cloneaction.setRequestPayment(act.getRequestPayment());
+			cloneaction.setMakeBriefNote(act.getMakeBriefNote());
+			cloneaction.setRollbackable(act.getRollbackable());
+			
+			processActionPersistence.update(cloneaction);
+			
+			try {
+				actionindexer.reindex(cloneaction);
+			} catch (SearchException se) {
+				se.printStackTrace();
+			}
+
+		}
 	}
 	
 	@Indexable(type = IndexableType.REINDEX)
@@ -190,7 +344,6 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 				sequenceNo++;
 				
-				System.out.println(key + " -- " + props.getProperty(key));
 			}
 
 		} catch (Exception e) {
@@ -327,7 +480,6 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			object.setUserName(userAction.getFullName());
 
 			// Add other fields
-
 			object.setProcessNo(processNo);
 			object.setProcessName(processName);
 			object.setDescription(description);
