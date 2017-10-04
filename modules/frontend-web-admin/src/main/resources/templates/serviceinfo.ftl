@@ -12,16 +12,16 @@
 						<option value=""></option>
 						<#list administrations as item>
 						<option value="${item.id}">${item.name}</option>
-						</#list> 
+						</#list>
 					</select>
 					<select class="form-control" id="domainCodeSearch" name="domainCodeSearch">
 						<option value=""></option>
 						<#list domains as item>
 						<option value="${item.id}">${item.name}</option>
-						</#list> 
+						</#list>
 					</select>
-					<div class="form-group search-icon"> 
-						<input type="text" id="keyword" name="keyword" class="form-control" placeholder="Nhập từ khóa"> 
+					<div class="form-group search-icon">
+						<input type="text" id="keyword" name="keyword" class="form-control" placeholder="Nhập từ khóa">
 					</div>
 				</div>
 				<div class="col-sm-12">
@@ -33,9 +33,9 @@
 						<li>
 							<div class="row">
 								<div class="col-sm-12 MB5">
-									#:serviceCode# 
-									#if(public) {#
-									<i class="fa fa-check ML5" aria-hidden="true"></i> 
+									#:serviceCode#
+									#if(typeof public !== "undefined" && public) {#
+									<i class="fa fa-check ML5" aria-hidden="true"></i>
 									#} #
 									<i class="fa fa-trash pull-right _itemServiceinfo_btnDelete" data-pk="#:id#"></i>
 								</div>
@@ -43,7 +43,7 @@
 									<p class="showServiceinfoDetail" data-pk="#:id#">#:serviceName#</p>
 								</div>
 								<div class="col-sm-12">
-									<i class="fa fa-suitcase" aria-hidden="true"></i> <span>#:domainName#</span>  
+									<i class="fa fa-suitcase" aria-hidden="true"></i> <span>#:domainName#</span>
 								</div>
 								<div class="col-sm-12">
 									<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i>#:administrationName#</i>
@@ -53,7 +53,7 @@
 					</script>
 				</div>
 			</div>
-			
+
 		</div>
 	</div>
 	<div class="col-sm-9 PR0">
@@ -61,7 +61,7 @@
 
 		</div>
 	</div>
-	<input type="hidden" name="itemServiceInfoId" id="itemServiceInfoId">	
+	<input type="hidden" name="itemServiceInfoId" id="itemServiceInfoId">
 </div>
 <script type="text/javascript">
 	var dataSourceTTHC=new kendo.data.DataSource({
@@ -70,7 +70,8 @@
 				$.ajax({
 					url: "${api.server}"+"/serviceinfos",
 					dataType: "json",
-					type:"GET", 
+					type:"GET",
+					headers: {"groupId": ${groupId}},
 					data:{
 						domain: options.data.domain,
 						administration: options.data.administration,
@@ -89,7 +90,7 @@
 			}
 
 		},
-		error: function(e) {         
+		error: function(e) {
 			this.cancelChanges();
 		},
 		schema:{
@@ -109,7 +110,7 @@
 			console.log(e.items[0].id);
 			$("#itemServiceInfoId").val(e.items[0].id);
 			formControl(e.items[0].id);
-			
+
 		}
 	});
 
@@ -276,7 +277,7 @@
 
 	var addServiceInfo = function(){
 		dataSourceTTHC.transport.create({
-			"serviceCode":$("#serviceCode").val(),	
+			"serviceCode":$("#serviceCode").val(),
 			"serviceName":$("#serviceName").val(),
 			"processText":$("#serviceProcess").val(),
 			"methodText":$("#methodText").val(),
@@ -336,6 +337,7 @@
 					url : "${api.server}"+"/serviceinfos/"+id,
 					dataType : "json",
 					type : "DELETE",
+					headers: {"groupId": ${groupId}},
 					success : function(result){
 
 						if(item){
@@ -350,7 +352,7 @@
 				return;
 			}
 		}
-		
+
 	});
 
 	var crtAddOrEdit = function(){
@@ -379,5 +381,5 @@
 	}
 
 	//-------------------------------------------------
-	
+
 </script>

@@ -8,23 +8,23 @@
 			<input class="form-control" id="dossierTemplate" name="dossierTemplate" required="required" validationMessage="Bạn phải chọn mẫu hồ sơ" required="required"  />
 			<span data-for="dossierTemplate" class="k-invalid-msg"></span>
 		</div>
-		
+
 		<div class="col-sm-12 MB15">
 			<label>Tên quy trình xử lý thủ tục</label>
-			<input name="serviceProcess" id="serviceProcess" class="form-control" placeholder="Tên thủ tục" data-bind="value:serviceProcess" validationMessage="Bạn phải chọn quy trình xử lý" required="required"> 
+			<input name="serviceProcess" id="serviceProcess" class="form-control" placeholder="Tên thủ tục" data-bind="value:serviceProcess" validationMessage="Bạn phải chọn quy trình xử lý" required="required">
 			<span data-for="serviceProcess" class="k-invalid-msg"></span>
 		</div>
 
 		<div class="col-sm-12 MB15">
 			<label>Chuỗi pattern xác định việc lựa chọn tự động theo đối tượng xử lý hồ sơ</label>
-			<input name="pattern" id="pattern" class="form-control" placeholder="Chuỗi pattern" data-bind="value:pattern" validationMessage="Bạn phải điền chuỗi pattern" required="required"> 
+			<input name="pattern" id="pattern" class="form-control" placeholder="Chuỗi pattern" data-bind="value:pattern" validationMessage="Bạn phải điền chuỗi pattern" required="required">
 			<span data-for="pattern" class="k-invalid-msg"></span>
 		</div>
 
 		<div class="col-sm-12 ">
 			<div class="form-group">
 				<label class="control-label">Hướng dẫn chi tiết để chuẩn bị hồ sơ
-				</label> 
+				</label>
 				<div class="" id="instructionNote" name="instructionNote" validationMessage="Bạn phải điền hướng dẫn chi tiết" required="required"></div>
 				<span data-for="instructionNote" class="k-invalid-msg"></span>
 			</div>
@@ -33,7 +33,7 @@
 		<div class="col-sm-12 ">
 			<div class="form-group">
 				<label class="control-label">Hướng dẫn sau khi nộp hồ sơ
-				</label> 
+				</label>
 				<div class="" id="submissionNote" name="submissionNote" validationMessage="Bạn phải điền hướng dẫn sau khi nộp hồ sơ" required="required"></div>
 				<span data-for="submissionNote" class="k-invalid-msg"></span>
 			</div>
@@ -64,13 +64,13 @@
 							</div>
 						</div>
 					</div>
-					
+
 				</div>
 			</li>
 		</script>
 
 		<div class="col-sm-12 text-center MT15 MB15">
-			<button class="btn btn-active" id="btn-submit-established-process" type="button">Ghi lại</button> <button class="btn" type="button" id="btn-revert-serviceoptions">Hủy bỏ</button> 
+			<button class="btn btn-active" id="btn-submit-established-process" type="button">Ghi lại</button> <button class="btn" type="button" id="btn-revert-serviceoptions">Hủy bỏ</button>
 		</div>
 	</div>
 </form>
@@ -83,6 +83,7 @@
 					url:"${api.server}/serviceconfigs",
 					dataType:"json",
 					type:"GET",
+					headers: {"groupId": ${groupId}},
 					success:function(result){
 						options.success(result);
 					},
@@ -99,7 +100,7 @@
 				id:"serviceConfigId"
 			}
 		},
-		error: function(e) {         
+		error: function(e) {
 			this.cancelChanges();
 		},
 		autoSync: false,
@@ -130,7 +131,7 @@
 		dataBound: function() {
 			checkedForServiceConfig(arr);
 		}
-	});	
+	});
 
 	$("#pagerChoiseServiceConfig").kendoPager({
 		dataSource : dataSourceServiceConfigChoise,
@@ -160,6 +161,7 @@
 					url : "${api.server}/serviceconfigs",
 					dataType : "json",
 					type : "GET",
+					headers: {"groupId": ${groupId}},
 					success : function(result){
 
 					},
@@ -192,6 +194,7 @@
 					url:"${api.server}/serviceprocesses",
 					dataType:"json",
 					type:"GET",
+					headers: {"groupId": ${groupId}},
 					success:function(result){
 
 					},
@@ -223,6 +226,7 @@
 					url:"${api.server}/serviceprocesses",
 					dataType:"json",
 					type:"GET",
+					headers: {"groupId": ${groupId}},
 					success:function(result){
 
 					},
@@ -266,6 +270,7 @@
 				url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes/"+id,
 				dataType : "json",
 				type : "GET",
+				headers: {"groupId": ${groupId}},
 				success : function(result){
 					console.log(result);
 					var viewModel = kendo.observable({
@@ -294,7 +299,7 @@
 
 	var addServiceConfigForServiceOption = function(id){
 		console.log(arr);
-		if(arr){	
+		if(arr){
 			for(var i=0 ;i< arr.length ;i++){
 				if(arr[i] === id){
 					arr.splice(i,1);
@@ -316,6 +321,7 @@
 						url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes",
 						dataType : "json",
 						type : "POST",
+						headers: {"groupId": ${groupId}},
 						data : {
 							dossierTemplate : $("#dossierTemplate").val(),
 							serviceProcess : $("#serviceProcess").val(),
@@ -337,6 +343,7 @@
 						url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes/"+id,
 						dataType : "json",
 						type : "PUT",
+						headers: {"groupId": ${groupId}},
 						data : {
 							dossierTemplate : $("#dossierTemplate").val(),
 							serviceProcess : $("#serviceProcess").val(),
@@ -354,8 +361,8 @@
 				}
 			}
 		}
-		
-		
+
+
 	});
 
 	var addServiceConfigOptionIfSuccess = function(result){
@@ -365,7 +372,7 @@
 			"instructionNote":result.instructionNote,
 			"submissionNote":result.submissionNote,
 			"pattern" : result.pattern
-		});	
+		});
 	};
 
 	var updateServieConfigoptionIfSuccess = function(dataPk,result){
@@ -384,4 +391,3 @@
 	}
 
 </script>
-

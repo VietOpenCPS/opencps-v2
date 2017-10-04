@@ -1,3 +1,4 @@
+
 package org.opencps.frontend.web.admin.portlet;
 
 import java.io.IOException;
@@ -29,58 +30,64 @@ import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 /**
  * @author huymq
  */
-@Component(
-	immediate = true,
-	property = {
-		"com.liferay.portlet.display-category=category.opencps.admin",
-		"com.liferay.portlet.instanceable=true",
-		"javax.portlet.display-name=frontend-web-admin Portlet",
-		"javax.portlet.name=" + AdminPortletKeys.ADMIN_PORTLET,
-		"javax.portlet.init-param.template-path=/",
-		"javax.portlet.init-param.view-template=/templates/admin.ftl",
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=power-user,user"
-	},
-	service = Portlet.class
-)
+@Component(immediate = true, property = {
+	"com.liferay.portlet.display-category=category.opencps.admin",
+	"com.liferay.portlet.instanceable=true",
+	"javax.portlet.display-name=frontend-web-admin Portlet",
+	"javax.portlet.name=" + AdminPortletKeys.ADMIN_PORTLET,
+	"javax.portlet.init-param.template-path=/",
+	"javax.portlet.init-param.view-template=/templates/admin.ftl",
+	"javax.portlet.resource-bundle=content.Language",
+	"javax.portlet.security-role-ref=power-user,user"
+}, service = Portlet.class)
 public class AdminPortlet extends FreeMarkerPortlet {
+
 	@Override
 	public void render(
-			RenderRequest renderRequest, RenderResponse renderResponse)
+		RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
-		
-		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
-		PortletDisplay portletDisplay= themeDisplay.getPortletDisplay();
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
 		String portletId = portletDisplay.getId();
-		
+
 		JSONObject urlObject = JSONFactoryUtil.createJSONObject();
 		JSONObject apiObject = JSONFactoryUtil.createJSONObject();
-		
+
 		// url
 		PortletURL serviceInfoListURL = PortletURLFactoryUtil.create(
-				renderRequest, portletId, themeDisplay.getPlid(), PortletRequest.RENDER_PHASE);
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
 		serviceInfoListURL.setPortletMode(PortletMode.VIEW);
 		serviceInfoListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-		serviceInfoListURL.setParameter("mvcPath", "/templates/serviceinfo.ftl");
-		
+		serviceInfoListURL.setParameter(
+			"mvcPath", "/templates/serviceinfo.ftl");
+
 		PortletURL serviceInfoFormURL = PortletURLFactoryUtil.create(
-				renderRequest, portletId, themeDisplay.getPlid(), PortletRequest.RENDER_PHASE);
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
 		serviceInfoFormURL.setPortletMode(PortletMode.VIEW);
 		serviceInfoFormURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-		serviceInfoFormURL.setParameter("mvcPath", "/templates/serviceinfo_form.ftl");
-		
+		serviceInfoFormURL.setParameter(
+			"mvcPath", "/templates/serviceinfo_form.ftl");
+
 		PortletURL serviceFileTemplateURL = PortletURLFactoryUtil.create(
-				renderRequest, portletId, themeDisplay.getPlid(), PortletRequest.RENDER_PHASE);
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
 		serviceFileTemplateURL.setPortletMode(PortletMode.VIEW);
 		serviceFileTemplateURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-		serviceFileTemplateURL.setParameter("mvcPath", "/templates/serviceinfo_filetemplate.ftl");
-		
+		serviceFileTemplateURL.setParameter(
+			"mvcPath", "/templates/serviceinfo_filetemplate.ftl");
+
 		PortletURL serviceFileTemplateFormURL = PortletURLFactoryUtil.create(
-				renderRequest, portletId, themeDisplay.getPlid(), PortletRequest.RENDER_PHASE);
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
 		serviceFileTemplateFormURL.setPortletMode(PortletMode.VIEW);
 		serviceFileTemplateFormURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-		serviceFileTemplateFormURL.setParameter("mvcPath", "/templates/serviceinfo_filetemplate_form.ftl");
-		
+		serviceFileTemplateFormURL.setParameter(
+			"mvcPath", "/templates/serviceinfo_filetemplate_form.ftl");
+
 		PortletURL dossiertemplateURL = PortletURLFactoryUtil.create(
 			renderRequest, portletId, themeDisplay.getPlid(),
 			PortletRequest.RENDER_PHASE);
@@ -88,7 +95,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		dossiertemplateURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 		dossiertemplateURL.setParameter(
 			"mvcPath", "/templates/dossiertemplate.ftl");
-		
+
 		PortletURL dossiertemplatePartURL = PortletURLFactoryUtil.create(
 			renderRequest, portletId, themeDisplay.getPlid(),
 			PortletRequest.RENDER_PHASE);
@@ -113,40 +120,105 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		serviceInfoDetailURL.setParameter(
 			"mvcPath", "/templates/serviceinfo_detail.ftl");
 
+		PortletURL serviceProcesslURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		serviceProcesslURL.setPortletMode(PortletMode.VIEW);
+		serviceProcesslURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		serviceProcesslURL.setParameter(
+			"mvcPath", "/templates/serviceprocess.ftl");
+
+		PortletURL serviceConfiglURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		serviceConfiglURL.setPortletMode(PortletMode.VIEW);
+		serviceConfiglURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		serviceConfiglURL.setParameter(
+			"mvcPath", "/templates/serviceconfig.ftl");
+
+		PortletURL serviceConfigDetaillURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		serviceConfigDetaillURL.setPortletMode(PortletMode.VIEW);
+		serviceConfigDetaillURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		serviceConfigDetaillURL.setParameter(
+			"mvcPath", "/templates/serviceconfig_detail.ftl");
+
+		PortletURL serviceConfigOptionFormURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		serviceConfigOptionFormURL.setPortletMode(PortletMode.VIEW);
+		serviceConfigOptionFormURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		serviceConfigOptionFormURL.setParameter(
+			"mvcPath", "/templates/serviceconfig_option_form.ftl");
+
+		PortletURL serviceConfigOptionURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		serviceConfigOptionURL.setPortletMode(PortletMode.VIEW);
+		serviceConfigOptionURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		serviceConfigOptionURL.setParameter(
+			"mvcPath", "/templates/serviceconfig_option.ftl");
+
+		PortletURL manageAccountURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		manageAccountURL.setPortletMode(PortletMode.VIEW);
+		manageAccountURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		manageAccountURL.setParameter(
+			"mvcPath", "/templates/manage_account.ftl");
+
 		urlObject.put("serviceinfo_list", serviceInfoListURL.toString());
 		urlObject.put("serviceinfo_form", serviceInfoFormURL.toString());
-		urlObject.put("serviceinfo_filetemplate", serviceFileTemplateURL.toString());
-		urlObject.put("serviceinfo_filetemplate_form", serviceFileTemplateFormURL.toString());
+		urlObject.put(
+			"serviceinfo_filetemplate", serviceFileTemplateURL.toString());
+		urlObject.put(
+			"serviceinfo_filetemplate_form",
+			serviceFileTemplateFormURL.toString());
 		urlObject.put("dossiertemplate", dossiertemplateURL.toString());
 		urlObject.put(
 			"dossiertemplate_part", dossiertemplatePartURL.toString());
 		urlObject.put(
 			"dossiertemplate_part_form", dossiertemplatePartFormURL.toString());
 		urlObject.put("serviceinfo_detail", serviceInfoDetailURL.toString());
-		
+		urlObject.put("serviceprocess", serviceProcesslURL.toString());
+		urlObject.put("serviceconfig", serviceConfiglURL.toString());
+		urlObject.put(
+			"serviceconfig_detail", serviceConfigDetaillURL.toString());
+		urlObject.put(
+			"serviceconfig_option_form", serviceConfigOptionFormURL.toString());
+		urlObject.put(
+			"serviceconfig_option", serviceConfigOptionURL.toString());
+		urlObject.put("manage_account", manageAccountURL.toString());
+
 		// set object edit
 		long serviceInfoId = ParamUtil.getLong(renderRequest, "serviceInfoId");
-		if(serviceInfoId > 0) {
+		if (serviceInfoId > 0) {
 			try {
-				ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getServiceInfo(serviceInfoId);
-				
+				ServiceInfo serviceInfo =
+					ServiceInfoLocalServiceUtil.getServiceInfo(serviceInfoId);
+
 				renderRequest.setAttribute("SERVICE_INFO", serviceInfo);
-			} catch (Exception e) {
-				
+			}
+			catch (Exception e) {
+
 			}
 		}
-		
+
 		// api
 		apiObject.put("server", themeDisplay.getPortalURL() + "/o/rest/v2");
-		apiObject.put("portletNamespace", themeDisplay.getPortletDisplay().getNamespace());
-		
+		apiObject.put(
+			"portletNamespace",
+			themeDisplay.getPortletDisplay().getNamespace());
+
 		// set varible
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("api", apiObject);
 		renderRequest.setAttribute("administrations", Collections.EMPTY_LIST);
 		renderRequest.setAttribute("domains", Collections.EMPTY_LIST);
-		renderRequest.setAttribute("serviceInfoStatuses", Collections.EMPTY_LIST);
-		
+		renderRequest.setAttribute("status", Collections.EMPTY_LIST);
+		renderRequest.setAttribute("levels", Collections.EMPTY_LIST);
+
 		super.render(renderRequest, renderResponse);
 	}
 }

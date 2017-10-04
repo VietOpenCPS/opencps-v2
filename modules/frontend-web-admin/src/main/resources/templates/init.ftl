@@ -18,6 +18,8 @@
 	<#assign serviceInfoStatuses = (Request.serviceInfoStatuses)!>
 	<#assign serviceInfo = (Request.SERVICE_INFO)!>
 	<#assign portletNamespace = (Request.portletNamespace)!>
+	<#assign levels = (Request.levels)!>
+	<#assign status = (Request.status)!>
 
 	<#assign groupId = themeDisplay.getScopeGroupId() />
 	<#assign userId = themeDisplay.getUserId() />
@@ -68,3 +70,19 @@
     }).data("kendoNotification");
   });
 </script>
+
+<style type="text/css">
+    /* Over the pointer-events:none, set the cursor to not-allowed.
+    On this way you will have a more user friendly cursor. */
+    .disabled-tab {
+        cursor: not-allowed;
+    }
+    /* Clicks are not permitted and change the opacity. */
+    li.disabled-tab > a[data-toggle="tab"] {
+        pointer-events: none;
+        filter: alpha(opacity=65);
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        opacity: .65;
+    }
+</style>

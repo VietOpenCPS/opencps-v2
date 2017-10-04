@@ -99,11 +99,11 @@
         '${ajax.serviceinfo_list}',
         'employee.ftl',
         '${ajax.dossiertemplate}',
-        'serviceprocess.ftl',
-        'service.ftl',
+        '${ajax.serviceprocess}',
+        '${ajax.serviceconfig}',
         'holiday.ftl',
         'paymentconfig.ftl',
-        'citizen_business.ftl',
+        '${ajax.manage_account}',
         'efrom.ftl'
       ]
     }).data('kendoTabStrip');
