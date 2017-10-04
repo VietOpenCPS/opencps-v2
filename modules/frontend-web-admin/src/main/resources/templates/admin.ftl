@@ -100,10 +100,10 @@
         'employee.ftl',
         '${ajax.dossiertemplate}',
         '${ajax.serviceprocess}',
-        'service.ftl',
+        '${ajax.serviceconfig}',
         'holiday.ftl',
         'paymentconfig.ftl',
-        'citizen_business.ftl',
+        '${ajax.manage_account}',
         'efrom.ftl'
       ]
     }).data('kendoTabStrip');

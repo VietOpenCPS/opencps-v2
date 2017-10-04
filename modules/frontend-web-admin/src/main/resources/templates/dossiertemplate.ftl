@@ -41,7 +41,9 @@
    	</div>
 
     <div class="col-xs-12 col-sm-9">
-      <#include "dossiertemplate_detail.ftl">
+			<div class="panel panel-body">
+				<#include "dossiertemplate_detail.ftl">
+			</div>
     </div>
 </div>
 

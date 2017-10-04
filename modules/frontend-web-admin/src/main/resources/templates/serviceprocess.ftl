@@ -41,7 +41,9 @@
    	</div>
 
     <div class="col-xs-12 col-sm-9" id="serviceprocess_detail_container">
-      <#include "serviceprocess_detail.ftl">
+			<div class="panel panel-body">
+				<#include "serviceprocess_detail.ftl">
+			</div>
     </div>
 </div>
 

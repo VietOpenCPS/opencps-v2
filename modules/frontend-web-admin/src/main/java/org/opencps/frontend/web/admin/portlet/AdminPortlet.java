@@ -128,6 +128,46 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		serviceProcesslURL.setParameter(
 			"mvcPath", "/templates/serviceprocess.ftl");
 
+		PortletURL serviceConfiglURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		serviceConfiglURL.setPortletMode(PortletMode.VIEW);
+		serviceConfiglURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		serviceConfiglURL.setParameter(
+			"mvcPath", "/templates/serviceconfig.ftl");
+
+		PortletURL serviceConfigDetaillURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		serviceConfigDetaillURL.setPortletMode(PortletMode.VIEW);
+		serviceConfigDetaillURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		serviceConfigDetaillURL.setParameter(
+			"mvcPath", "/templates/serviceconfig_detail.ftl");
+
+		PortletURL serviceConfigOptionFormURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		serviceConfigOptionFormURL.setPortletMode(PortletMode.VIEW);
+		serviceConfigOptionFormURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		serviceConfigOptionFormURL.setParameter(
+			"mvcPath", "/templates/serviceconfig_option_form.ftl");
+
+		PortletURL serviceConfigOptionURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		serviceConfigOptionURL.setPortletMode(PortletMode.VIEW);
+		serviceConfigOptionURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		serviceConfigOptionURL.setParameter(
+			"mvcPath", "/templates/serviceconfig_option.ftl");
+
+		PortletURL manageAccountURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		manageAccountURL.setPortletMode(PortletMode.VIEW);
+		manageAccountURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		manageAccountURL.setParameter(
+			"mvcPath", "/templates/manage_account.ftl");
+
 		urlObject.put("serviceinfo_list", serviceInfoListURL.toString());
 		urlObject.put("serviceinfo_form", serviceInfoFormURL.toString());
 		urlObject.put(
@@ -142,6 +182,14 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			"dossiertemplate_part_form", dossiertemplatePartFormURL.toString());
 		urlObject.put("serviceinfo_detail", serviceInfoDetailURL.toString());
 		urlObject.put("serviceprocess", serviceProcesslURL.toString());
+		urlObject.put("serviceconfig", serviceConfiglURL.toString());
+		urlObject.put(
+			"serviceconfig_detail", serviceConfigDetaillURL.toString());
+		urlObject.put(
+			"serviceconfig_option_form", serviceConfigOptionFormURL.toString());
+		urlObject.put(
+			"serviceconfig_option", serviceConfigOptionURL.toString());
+		urlObject.put("manage_account", manageAccountURL.toString());
 
 		// set object edit
 		long serviceInfoId = ParamUtil.getLong(renderRequest, "serviceInfoId");
@@ -168,8 +216,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute("api", apiObject);
 		renderRequest.setAttribute("administrations", Collections.EMPTY_LIST);
 		renderRequest.setAttribute("domains", Collections.EMPTY_LIST);
-		renderRequest.setAttribute(
-			"status", Collections.EMPTY_LIST);
+		renderRequest.setAttribute("status", Collections.EMPTY_LIST);
 		renderRequest.setAttribute("levels", Collections.EMPTY_LIST);
 
 		super.render(renderRequest, renderResponse);
