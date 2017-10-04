@@ -320,7 +320,7 @@
 		<column name="dossierSubStatusText" type="String" />
 		<column name="folderId" type="long" />
 		<column name="dossierActionId" type="long" />
-		<column name="viaPost" type="int" />
+		<column name="viaPostal" type="int" />
 		<column name="postAddress" type="String" />
 		<column name="password" type="String" />
 		<column name="notification" type="boolean" />
