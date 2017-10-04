@@ -1,16 +1,16 @@
 package org.opencps.dossiermgt.constants;
 
 public class DossierActionSyncTerm {
-	public static final String dossierActionSyncId = "dossierActionSyncId";
-	public static final String groupId = "groupId";
-	public static final String userId = "userId";
-	public static final String createDate = "createDate";
-	public static final String modifiedDate = "modifiedDate";
-	public static final String dossierId = "dossierId";
-	public static final String dossierActionId = "dossierActionId";
-	public static final String createDossier = "createDossier";
-	public static final String referenceUid = "referenceUid";
-	public static final String actionCode = "actionCode";
-	public static final String actionUser = "actionUser";
-	public static final String actionNote = "actionNote";
+	public static final String DOSSIER_ACTIONSYNC_ID = "dossierActionSyncId";
+	public static final String GROUP_ID = "groupId";
+	public static final String USER_ID = "userId";
+	public static final String CREATE_DATE = "createDate";
+	public static final String MODIFIED_DATE = "modifiedDate";
+	public static final String DOSSIER_ID = "dossierId";
+	public static final String DOSSIER_ACTION_ID = "dossierActionId";
+	public static final String CREATE_DOSSIER = "createDossier";
+	public static final String REFERENCE_UID = "referenceUid";
+	public static final String ACTION_CODE = "actionCode";
+	public static final String ACTION_USER = "actionUser";
+	public static final String ACTION_NOTE = "actionNote";
 }
