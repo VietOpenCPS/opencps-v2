@@ -72,7 +72,7 @@
 		<property name="dossierSubStatusText" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="folderId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="dossierActionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="viaPost" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="viaPostal" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="postAddress" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property column="password_" name="password" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="notification" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />

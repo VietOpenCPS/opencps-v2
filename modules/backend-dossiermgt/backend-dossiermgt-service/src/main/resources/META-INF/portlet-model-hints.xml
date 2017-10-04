@@ -51,7 +51,7 @@
 		<field name="dossierSubStatusText" type="String" />
 		<field name="folderId" type="long" />
 		<field name="dossierActionId" type="long" />
-		<field name="viaPost" type="int" />
+		<field name="viaPostal" type="int" />
 		<field name="postAddress" type="String" />
 		<field name="password" type="String" />
 		<field name="notification" type="boolean" />

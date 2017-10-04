@@ -43,7 +43,7 @@ public class DossierTerm {
 	public static final String DOSSIER_STATUS = "dossierStatus";
 	public static final String DOSSIER_STATUS_TEXT = "dossierStatusText";
 	public static final String DOSSIER_SUB_STATUS = "dossierSubStatus";
-	public static final String DOSSIER_SUB_STATU_STEXT = "dossierSubStatusText";
+	public static final String DOSSIER_SUB_STATUS_TEXT = "dossierSubStatusText";
 	public static final String FOLDER_ID = "folderId";
 	public static final String DOSSIER_ACTION_ID = "dossierActionId";
 	public static final String VIA_POSTAL = "viaPostal";

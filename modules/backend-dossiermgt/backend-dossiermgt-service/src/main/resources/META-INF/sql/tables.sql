@@ -48,7 +48,7 @@ create table opencps_dossier (
 	dossierSubStatusText VARCHAR(75) null,
 	folderId LONG,
 	dossierActionId LONG,
-	viaPost INTEGER,
+	viaPostal INTEGER,
 	postAddress VARCHAR(75) null,
 	password_ VARCHAR(75) null,
 	notification BOOLEAN,
