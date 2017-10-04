@@ -360,7 +360,7 @@
 		<column name="referenceUid" type="String" />
 		<column name="dossierTemplateNo" type="String" />
 		<column name="dossierPartNo" type="String" />
-		<column name="dossierPartType" type="String" />
+		<column name="dossierPartType" type="int" />
 		<column name="fileTemplateNo" type="String" />
 		<column name="displayName" type="String" />
 		<column name="formData" type="String" />
@@ -407,7 +407,7 @@
 		<column name="dossierId" type="long" />
 		<column name="author" type="String" />
 		<column name="content" type="String" />
-		<column name="notificationType" type="int" />
+		<column name="notificationType" type="String" />
 		<column name="payload" type="String" />
 
 		<!-- Order -->
