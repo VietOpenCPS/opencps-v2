@@ -19,7 +19,7 @@
 		</div>
 	</div>
 	<div class="col-sm-9 PR0" >
-	<div class="panel panel-body" id="serviceConfigDetail">
+	<div class="panel panel-body PL0 PR0" id="serviceConfigDetail">
 
 		</div>
 	</div>

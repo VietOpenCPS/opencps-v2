@@ -57,7 +57,7 @@
 		</div>
 	</div>
 	<div class="col-sm-9 PR0">
-		<div class="panel panel-body" id="serviceinfo_detail">
+		<div class="panel panel-body PL0 PR0" id="serviceinfo_detail">
 
 		</div>
 	</div>

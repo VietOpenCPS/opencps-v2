@@ -2,7 +2,7 @@
 	<#include "init.ftl">
 </#if>
 
-<div class="row nav-tabs-wrapper panel panel-body PT0">
+<div class="row nav-tabs-wrapper">
   <ul class="nav nav-tabs">
       <li class="active">
           <a data-toggle="tab" href="#tab_process_info">Thông tin quy trình</a>
