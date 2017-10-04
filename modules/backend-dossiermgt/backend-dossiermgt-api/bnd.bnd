@@ -7,4 +7,4 @@ Export-Package: \
 	org.opencps.dossiermgt.service,\
 	org.opencps.dossiermgt.service.persistence,\
 	org.opencps.dossiermgt.constants
--includeresource: META-INF/service.xml=../backend-dossiermgt-service/service.xml
+-includeresource: META-INF/service.xml=../backend-dossiermgt-service/service.xml 
