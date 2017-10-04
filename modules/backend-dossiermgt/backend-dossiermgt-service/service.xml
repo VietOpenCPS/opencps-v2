@@ -708,6 +708,29 @@
 		<column name="visited" type="boolean" />
 	</entity>
 
+	<entity local-service="true" name="DossierActionSync"
+		remote-service="false" table="opencps_dossieractionsync" uuid="true">
+		
+		<column name="dossierActionSyncId" type="long" primary="true" />
+		
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		
+		<column name="dossierId" type="long"/>
+		<column name="dossierActionId" type="long"/>
+		<column name="createDossier" type="boolean"/>
+		<column name="referenceUid" type="String"/>
+		<column name="actionCode" type="String"/>
+		<column name="actionUser" type="String"/>
+		<column name="actionNote" type="String"/>
+
+	</entity>
+
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>DuplicateServiceCode</exception>
