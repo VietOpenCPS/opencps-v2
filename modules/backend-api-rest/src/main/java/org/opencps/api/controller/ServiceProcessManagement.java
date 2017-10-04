@@ -62,7 +62,7 @@ public interface ServiceProcessManagement {
 			@Context ServiceContext serviceContext);
 
 	@POST
-	@Path("/clone")
+	@Path("/{id}/clone")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "clone a ServiceProcesses", response = String.class)
@@ -74,7 +74,7 @@ public interface ServiceProcessManagement {
 
 	public Response cloneServiceProcesses(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext);
+			@Context ServiceContext serviceContext, @PathParam("id") long id);
 
 
 	@GET
