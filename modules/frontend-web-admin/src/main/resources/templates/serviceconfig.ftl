@@ -7,8 +7,8 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<button class="btn btn-active form-control" id="btnAddServiceConfig"><i class="glyphicon glyphicon-plus"></i> Thêm dịch vụ công</button>
-					<div class="form-group search-icon MT10"> 
-						<input type="text" id="keywordSearchServiceConfig" name="keywordSearchServiceConfig" class="form-control" placeholder="Nhập từ khóa"> 
+					<div class="form-group search-icon MT10">
+						<input type="text" id="keywordSearchServiceConfig" name="keywordSearchServiceConfig" class="form-control" placeholder="Nhập từ khóa">
 					</div>
 					<ul class='ul-with-border'>
 						<div id='serviceConfigListView'></div>
@@ -29,8 +29,8 @@
 		<div class="row">
 			<div class="col-sm-11 service-config-item PR0" data-pk="#:id#">
 				<p>
-					<#-- #if(serviceName.length>40){# 
-					# var dcontent = serviceName.substring(0,38)+"..."; # 
+					<#-- #if(serviceName.length>40){#
+					# var dcontent = serviceName.substring(0,38)+"..."; #
 					#:kendo.toString(dcontent)#
 					#}else{#
 					#:serviceName#
@@ -77,6 +77,7 @@
 						url: "${api.server}/serviceconfigs",
 						dataType:"json",
 						type:"GET",
+						headers: {"groupId": ${groupId}},
 						data:{
 							keyword: options.data.keyword,
 							page: options.data.page,
@@ -95,6 +96,7 @@
 						url: "${api.server}/serviceconfigs",
 						dataType:"json",
 						type:"POST",
+						headers: {"groupId": ${groupId}},
 						data:{
 							serviceInfoId:options.serviceInfoId,
 							serviceName:options.serviceName,
@@ -110,7 +112,7 @@
 
 						},
 						error:function(result){
-							
+
 						}
 					});
 				},
@@ -119,6 +121,7 @@
 						url: "${api.server}/serviceconfigs/1",
 						dataType:"json",
 						type:"PUT",
+						headers: {"groupId": ${groupId}},
 						data:{
 							serviceConfigId:options.serviceConfigId,
 							serviceInfoId:options.serviceInfoId,
@@ -134,7 +137,7 @@
 							updateServieConfigIfSuccess($("#itemServiceConfigId").val(),result);
 						},
 						error:function(result){
-							
+
 						}
 					});
 				},
@@ -143,6 +146,7 @@
 						url: "${api.server}/serviceconfigs/"+options.data.serviceConfigId,
 						dataType:"json",
 						type:"DELETE",
+						headers: {"groupId": ${groupId}},
 						data:{
 							serviceConfigId:options.data.serviceConfigId
 						},
@@ -150,7 +154,7 @@
 							console.log(options);
 						},
 						error:function(result){
-							
+
 						}
 					});
 				}
@@ -162,7 +166,7 @@
 					id:"serviceConfigId"
 				}
 			},
-			error: function(e) {         
+			error: function(e) {
 				this.cancelChanges();
 			},
 			requestEnd: function(e) {
@@ -174,7 +178,7 @@
 					console.log("itemServiceConfigId: "+$("#itemServiceConfigId").val());
 					formControl(firstChild);
 				}
-				
+
 			},
 			autoSync: false,
 			pageSize:5,
@@ -194,7 +198,7 @@
 				}
 			}
 
-		});	
+		});
 
 		$(document).on("click", ".service-config-item", function(event){
 			var id = $(this).attr("data-pk");
@@ -229,6 +233,7 @@
 						url : "${api.server}/serviceconfigs",
 						dataType : "json",
 						type : "GET",
+						headers: {"groupId": ${groupId}},
 						success : function(result){
 
 						},
@@ -271,6 +276,7 @@
 						url : "${api.server}"+"/serviceconfigs/"+id,
 						dataType : "json",
 						type : "DELETE",
+						headers: {"groupId": ${groupId}},
 						success : function(result){
 							if(item){
 								var index = dataSourceServiceConfig.remove(item);
@@ -324,7 +330,7 @@
 			});
 		}
 
-		
+
 
 		var addServiceConfig = function(){
 			dataSourceServiceConfig.transport.create({
@@ -335,7 +341,7 @@
 				"serviceInstruction":$("#serviceInstruction").val(),
 				"authentication":$("#authentication").val(),
 				"serviceUrl":$("#serviceUrl").val()
-			});	
+			});
 		};
 
 		//edit or delete serviceconfig option
@@ -360,6 +366,7 @@
 						url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes/"+id,
 						dataType : "json",
 						type : "DELETE",
+						headers: {"groupId": ${groupId}},
 						success : function(result){
 							if(itemDelete){
 								var index = dataSourceServiceOption.remove(itemDelete);

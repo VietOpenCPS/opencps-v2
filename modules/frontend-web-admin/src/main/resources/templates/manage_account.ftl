@@ -24,8 +24,8 @@
 					</div>
 				</div>
 				<div class="col-sm-8">
-					<div class="form-group"> 
-						<input type="text" id="searchApplicant" name="searchApplicant" class="form-control" placeholder="Nhập từ khóa"> 
+					<div class="form-group">
+						<input type="text" id="searchApplicant" name="searchApplicant" class="form-control" placeholder="Nhập từ khóa">
 
 					</div>
 				</div>
@@ -82,7 +82,7 @@
 						</tr>
 					</thead>
 					<tbody id='citizenListView'>
-						
+
 					</tbody>
 				</table>
 				<div id='pagerCitizen'></div>
@@ -144,7 +144,7 @@
 			<div id="mndn" class="tab-pane fade in PL0 PR0"  >
 				<#-- <ul class="mimic-table">
 					<li class="clearfix">
-						
+
 						<tr>
 							<td>John</td>
 							<td>Doe</td>
@@ -205,7 +205,7 @@
 						</tr>
 					</thead>
 					<tbody id='businessListView'>
-						
+
 					</tbody>
 				</table>
 				<div id='pagerBussiness'></div>
@@ -278,6 +278,7 @@
 					url : "${api.server}/applicants",
 					dataType : "json",
 					type : "GET",
+					headers: {"groupId": ${groupId}},
 					data : {
 						status : options.data.statusApplicant,
 						keyword : options.data.searchApplicant
@@ -308,6 +309,7 @@
 					url : "${api.server}/applicants",
 					dataType : "json",
 					type : "GET",
+					headers: {"groupId": ${groupId}},
 					data : {
 						status : options.data.statusApplicant,
 						keyword : options.data.searchApplicant
@@ -341,7 +343,7 @@
 			}
 		},
 		template: function(data){
-			
+
 
 			var _pageSize = dataSourceCitizen.pageSize();
 
@@ -361,7 +363,7 @@
 			localIndexCitizen = 0;
 		}
 
-	});	
+	});
 
 	$("#pagerCitizen").kendoPager({
 		dataSource : dataSourceCitizen,
@@ -404,7 +406,7 @@
 			localIndexBusiness = 0;
 		}
 
-	});	
+	});
 
 	$("#pagerBussiness").kendoPager({
 		dataSource : dataSourceBusiness,
@@ -443,6 +445,7 @@
 			url : "",
 			dataType : "json",
 			type : "PUT",
+			headers: {"groupId": ${groupId}},
 			success : function(result){
 				var item = dataSourceCitizen.get(id);
 				if(item){
@@ -464,6 +467,7 @@
 				url : "",
 				dataType : "json",
 				type : "DELETE",
+				headers: {"groupId": ${groupId}},
 				success : function(result){
 					var item = dataSourceCitizen.get(id);
 					var index = dataSourceCitizen.remove(item);
@@ -481,6 +485,7 @@
 			url : "",
 			dataType : "json",
 			type : "PUT",
+			headers: {"groupId": ${groupId}},
 			success : function(result){
 				var item = dataSourceBusiness.get(id);
 				if(item){
@@ -500,6 +505,7 @@
 			url : "",
 			dataType : "json",
 			type : "PUT",
+			headers: {"groupId": ${groupId}},
 			success : function(result){
 				var item = dataSourceBusiness.get(id);
 				if(item){
@@ -521,6 +527,7 @@
 				url : "",
 				dataType : "json",
 				type : "DELETE",
+				headers: {"groupId": ${groupId}},
 				success : function(result){
 					var item = dataSourceBusiness.get(id);
 					var index = dataSourceBusiness.remove(item);
@@ -575,6 +582,7 @@
 					url : "${api.server}/applicants",
 					dataType : "json",
 					type : "GET",
+					headers: {"groupId": ${groupId}},
 					success : function(result){
 
 					},
@@ -606,7 +614,7 @@
 			"statusApplicant" : $("#statusApplicant").val(),
 			"searchApplicant" : $("#searchApplicant").val()
 		});
-	});	
+	});
 
 	$(function() {
 		$("[data-role=combobox]").each(function() {

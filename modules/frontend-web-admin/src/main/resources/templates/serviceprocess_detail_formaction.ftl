@@ -1,131 +1,202 @@
 <#if (Request)??>
 	<#include "init.ftl">
 </#if>
-<div class="modal-header">
-	<a href="#" data-dismiss="modal" class="class pull-right">
-		<span class="glyphicon glyphicon-remove"></span>
-	</a>
-	<h3 class="modal-title">Thêm hành động</h3>
-</div>
-<div class="modal-body">
-	<form id="fm">
-		<div class="row">
-			<div class="col-xs-12 col-sm-3">Mã hành động</div>
-			<div class="col-xs-12 col-sm-9">
-				<input id="actionCode" name="actionCode" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" value="<#if (processactions.actionCode)??>${processactions.actionCode}</#if>"/>
+
+<div class="">
+	<h4>Thêm mới thao tác xử lý</h4>
+	<form class="" name="fm" method="post">
+		<div class="row MT20">
+			<div class="col-xs-12 col-sm-5">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						Tên thao tác
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						<input id="actionName" name="actionName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:actionName"/>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-2"></div>
+			<div class="col-xs-12 col-sm-5">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						Kích hoạt sự kiện
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						<select class="form-control" name="" data-bind="value:">
+							<option value="">Chọn sự kiện</option>
+						</select>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="row MT10">
-			<div class="col-xs-12 col-sm-3">Tên hành động</div>
-			<div class="col-xs-12 col-sm-9">
-				<input id="actionName" name="actionName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" value="<#if (processactions.actionName)??>${processactions.actionName}</#if>"/>
+			<div class="col-xs-12 col-sm-5">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						Điều kiện kiểm tra
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						<input id="preCondition" name="preCondition" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:preCondition"/>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-2"></div>
+			<div class="col-xs-12 col-sm-5">
+				<div class="row"></div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						<div class="checkbox"> <input type="checkbox" data-bind="value:"> <label>Là bước hoàn thành</label> </div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="row MT10">
-			<div class="col-xs-12 col-sm-3">Bước thực hiện thao tác</div>
-			<div class="col-xs-12 col-sm-9">
-				<input id="preProcessStepId" name="preProcessStepId" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" value="<#if (processactions.preProcessStepId)??>${processactions.preProcessStepId}</#if>"/>
+			<div class="col-xs-12 col-sm-5">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						Bước thực hiện thao tác
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						<input id="preProcessStepId" name="preProcessStepId" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:preProcessStepId"/>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-2"></div>
+			<div class="col-xs-12 col-sm-5">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						Bước sau thực hiện thao tác
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						<input id="postProcessStepId" name="postProcessStepId" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:postProcessStepId"/>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="row MT10">
-			<div class="col-xs-12 col-sm-3">Bước sau thực hiện thao tác</div>
-			<div class="col-xs-12 col-sm-9">
-				<input id="postProcessStepId" name="postProcessStepId" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" value="<#if (processactions.postProcessStepId)??>${processactions.postProcessStepId}</#if>"/>
+			<div class="col-xs-12 col-sm-5">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						<div class="checkbox"> <input type="checkbox" data-bind="value:"> <label>Phân công người xử lý</label> </div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						<select class="form-control" name="" data-bind="value:">
+							<option value="">Chọn vai trò</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="service-process-form-action-controls">
+			<div class="service-process-form-action-entry">
+				<div class="row MT10">
+					<div class="col-xs-12 col-sm-12">Kết quả trả về</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-5">
+						<select class="form-control" id="returnDossierFiles" name="returnDossierFiles" data-bind="value:returnDossierFiles">
+							<option value=""></option>
+
+						</select>
+					</div>
+					<div class="col-xs-12 col-sm-2">
+						<div class="checkbox"> <input type="checkbox" name="" data-bind="value:"> <label>Bắt buộc</label> </div>
+					</div>
+					<div class="col-xs-12 col-sm-2">
+						<div class="checkbox"> <input type="checkbox" name="" data-bind="value:"> <label>Ký số</label> </div>
+					</div>
+					<div class="col-xs-12 col-sm-2">
+						<div class="checkbox"> <input type="checkbox" name="" data-bind="value:"> <label>Trả về</label> </div>
+					</div>
+					<div class="col-xs-12 col-sm-1">
+						<button class="btn btn-success btn-add-action-role" type="button">
+							<span class="glyphicon glyphicon-plus"></span>
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="row MT10">
-			<div class="col-xs-12 col-sm-3">Điều kiện thực hiện</div>
-			<div class="col-xs-12 col-sm-9">
-				<input id="preCondition" name="preCondition" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" value="<#if (processactions.preCondition)??>${processactions.preCondition}</#if>"/>
-			</div>
-		</div>
-		<div class="row MT10">
-			<div class="col-xs-12 col-sm-3">Kích hoạt tự động</div>
-			<div class="col-xs-12 col-sm-9">
-				<input id="autoEvent" name="autoEvent" class="form-control" value="<#if (processactions.autoEvent)??>${processactions.autoEvent}</#if>"/>
-			</div>
-		</div>
-		<div class="row MT10">
-			<div class="col-xs-12 col-sm-3">Phân công người xử lý</div>
-			<div class="col-xs-12 col-sm-9">
-				<input id="allowAssignUser" name="allowAssignUser" type="checkbox" ${processactions.allowAssignUser?string('checked', '')}/>
-			</div>
-		</div>
-		<div class="row MT10">
-			<div class="col-xs-12 col-sm-3">Người xử lý</div>
-			<div class="col-xs-12 col-sm-9">
-				<input id="assignUserId" name="assignUserId" class="form-control" value="${processactions.assignUserId}"/>
-			</div>
-		</div>
-		<div class="row MT10">
-			<div class="col-xs-12 col-sm-3">Có thanh toán</div>
-			<div class="col-xs-12 col-sm-9">
-				<input id="requestPayment" name="requestPayment" type="checkbox" ${processactions.requestPayment?string('checked', '')}/>
-			</div>
-		</div>
-		<div class="row MT10">
-			<div class="col-xs-12 col-sm-3">Phí thanh toán</div>
-			<div class="col-xs-12 col-sm-9">
-				<input id="paymentFee" name="paymentFee" class="k-textbox form-control" value="<#if (processactions.paymentFee)??>${processactions.paymentFee}</#if>"/>
-			</div>
-		</div>
-		<div class="row MT10">
-			<div class="col-xs-12 col-sm-3">Tạo file hồ sơ</div>
-			<div class="col-xs-12 col-sm-9">
-				<input id="createDossierFiles" name="createDossierFiles" class="k-textbox form-control" value="<#if (processactions.createDossierFiles)??>${processactions.createDossierFiles}</#if>"/>
-			</div>
-		</div>
-		<div class="row MT10">
-			<div class="col-xs-12 col-sm-3">Trả lại file hồ hồ</div>
-			<div class="col-xs-12 col-sm-9">
-				<input id="returnDossierFiles" name="returnDossierFiles" class="k-textbox form-control" value="<#if (processactions.returnDossierFiles)??>${processactions.returnDossierFiles}</#if>"/>
-			</div>
-		</div>
-		<div class="row MT10">
-			<div class="col-xs-12 col-sm-3">Mã đồng bộ</div>
-			<div class="col-xs-12 col-sm-9">
-				<input id="syncActionCode" name="syncActionCode" class="k-textbox form-control" value="<#if (processactions.syncActionCode)??>${processactions.syncActionCode}</#if>"/>
-			</div>
-		</div>
-		<div class="row MT10">
-			<div class="col-xs-12 col-sm-3">rollback</div>
-			<div class="col-xs-12 col-sm-9">
-				<input id="rollback" name="rollback" type="checkbox" ${processactions.rollback?string('checked', '')}/>
+			<div class="col-xs-12 col-sm-5">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						<div class="checkbox"> <input type="checkbox" name="requestPayment" data-bind="value:requestPayment"> <label>Yêu cầu thanh toán</label> </div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						<input class="form-control" type="text" name="" value="" data-bind="value:stepName">
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="row MT10 text-center">
-			<button id="btn_save_service_process" class="k-button btn-primary" title="Ghi lại">Ghi lại</button>
-			<button id="btn_cancle_service_process" class="k-button btn-default" title="Hủy bỏ">Hủy bỏ</button>
+			<button id="btn_save_service_process_action" class="k-button btn-primary" title="Ghi lại">Ghi lại</button>
+			<button id="btn_cancle_service_process_action" class="k-button btn-default" title="Hủy bỏ">Hủy bỏ</button>
 		</div>
 	</form>
 </div>
 
 <script type="text/javascript">
+
+	$(document).on('click', '.btn-add-action-role', function(e){
+		e.preventDefault();
+
+		var controlForm = $('.service-process-form-action-controls'),
+				currentEntry = $(this).parents('.service-process-form-action-entry:first'),
+				newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+		newEntry.find('select').val('');
+		newEntry.find('input [type="radio"]').val('');
+
+		controlForm.find('.service-process-form-action-entry:not(:last) .btn-add-action-role')
+				.removeClass('btn-add-action-role').addClass('btn-remove-action-role')
+				.removeClass('btn-success').addClass('btn-danger')
+				.html('<span class="glyphicon glyphicon-minus"></span>');
+		}).on('click', '.btn-remove-action-role', function(e){
+			$(this).parents('.service-process-form-action-entry:first').remove();
+			e.preventDefault();
+			return false;
+	});
+
 	$("#preProcessStepId").kendoComboBox({
 		dataTextField: "preProcessStepId",
 		dataValueField: "preProcessStepName",
-		dataSource: ${processactions.preProcessStep},
+		dataSource: "",
 		filter: "contains"
 	});
 
 	$("#postProcessStepId").kendoComboBox({
 		dataTextField: "postProcessStepId",
 		dataValueField: "postProcessStepName",
-		dataSource: ${processactions.postProcessStep},
+		dataSource: "",
 		filter: "contains"
 	});
 
 	// $("#autoEvent").kendoComboBox({
 	// 	dataTextField: "activeStatusName",
 	// 	dataValueField: "activeStatusCode",
-	// 	dataSource: ${processactions.autoEvent},
+	// 	dataSource: "",
 	// 	filter: "contains"
 	// });
 
 	$("#assignUserId").kendoComboBox({
 		dataTextField: "assignUserName",
 		dataValueField: "assignUserId",
-		dataSource: ${processactions.assignUser},
+		dataSource: "",
 		filter: "contains"
 	});
 

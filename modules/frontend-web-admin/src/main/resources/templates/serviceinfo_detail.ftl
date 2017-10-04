@@ -28,8 +28,8 @@
 						<label>Số hiệu:</label>
 					</div>
 					<div class="col-sm-10">
-						<div class="form-group"> 
-							<input type="text" name="serviceCode" id="serviceCode" class="form-control" placeholder="Số hiệu" data-bind="value:serviceCode" required="required" validationMessage="Bạn phải điền số hiệu"> 
+						<div class="form-group">
+							<input type="text" name="serviceCode" id="serviceCode" class="form-control" placeholder="Số hiệu" data-bind="value:serviceCode" required="required" validationMessage="Bạn phải điền số hiệu">
 							<span data-for="serviceCode" class="k-invalid-msg"></span>
 						</div>
 					</div>
@@ -39,8 +39,8 @@
 						<label>Thủ tục hành chính:</label>
 					</div>
 					<div class="col-sm-10">
-						<div class="form-group"> 
-							<input type="text" name="serviceName" id="serviceName" class="form-control" placeholder="Tên thủ tục" data-bind="value:serviceName" required="required" validationMessage="Bạn phải điền thủ tục"> 
+						<div class="form-group">
+							<input type="text" name="serviceName" id="serviceName" class="form-control" placeholder="Tên thủ tục" data-bind="value:serviceName" required="required" validationMessage="Bạn phải điền thủ tục">
 							<span data-for="serviceName" class="k-invalid-msg"></span>
 						</div>
 					</div>
@@ -56,7 +56,7 @@
 									<option value=""></option>
 									<#list administrations as item>
 									<option value="${item.id}">${item.name}</option>
-									</#list> 
+									</#list>
 								</select>
 								<span data-for="administration" class="k-invalid-msg"></span>
 							</div>
@@ -72,7 +72,7 @@
 									<option value=""></option>
 									<#list domains as item>
 									<option value="${item.id}">${item.name}</option>
-									</#list> 
+									</#list>
 								</select>
 								<span data-for="domain" class="k-invalid-msg"></span>
 							</div>
@@ -90,7 +90,7 @@
 									<option value=""></option>
 									<#list levels as item>
 									<option value="${item.id}">${item.name}</option>
-									</#list> 
+									</#list>
 								</select>
 								<span data-for="level" class="k-invalid-msg"></span>
 							</div>
@@ -106,7 +106,7 @@
 									<option value=""></option>
 									<#list status as item>
 									<option value="${item.id}">${item.name}</option>
-									</#list> 
+									</#list>
 								</select>
 								<span data-for="status" class="k-invalid-msg"></span>
 							</div>
@@ -115,7 +115,7 @@
 				</div>
 				<div class="row MT15">
 					<div class="col-sm-12 text-center">
-						<button class="btn btn-active" id="btn-submit-serviceinfo-general" type="button">Ghi lại</button> <button class="btn" type="reset">Hủy bỏ</button> 
+						<button class="btn btn-active" id="btn-submit-serviceinfo-general" type="button">Ghi lại</button> <button class="btn" type="reset">Hủy bỏ</button>
 					</div>
 				</div>
 			</form>
@@ -216,107 +216,6 @@
 	$("#status").kendoComboBox({
 		placeholder : "Chọn trạng thái"
 	});
-	/*var dataSourceFileTemplate=new kendo.data.DataSource({
-		transport:{
-			read:function(options){
-				$.ajax({
-					url:"${api.server}/serviceinfos/1/filetemplates",
-					dataType:"json",
-					type:"GET",
-					data:{
-
-					},
-					success:function(result){
-						console.log(options.data.id);
-						options.success(result);
-					},
-					error:function(result){
-						console.log(options.data.id);
-						options.error(result);
-					}
-				});
-			},
-			create:function(options){
-				var documentData = new FormData();
-				documentData.append('file', options.file);
-				documentData.append('fileTemplateNo', options.fileTemplateNo);
-				documentData.append('templateName', options.templateName);
-				
-				$.ajax({
-					url:"${api.server}/serviceinfos/"+options.serviceinfoId+"/filetemplates",
-					type:"POST",
-					headers: {"groupId": ${serviceInfo.groupId}},
-					dataType:"json",
-					data: documentData,
-					cache: false,
-					contentType: false,
-					processData: false,
-					success:function(result){
-						addFileTemplateIfSuccess(result);
-					},
-					error:function(result){
-					}
-				});
-			},
-			update:function(options){
-				var documentData = new FormData();
-				documentData.append('file', options.file);
-				documentData.append('fileTemplateNo', options.fileTemplateNo);
-				documentData.append('templateName', options.templateName);
-				
-				$.ajax({
-					url:"${api.server}/serviceinfos/"+options.serviceinfoId+"/filetemplates/"+options.fileTemplateId,
-					dataType:"json",
-					type:"PUT",
-					headers: {"groupId": ${serviceInfo.groupId}},
-					data: documentData,
-					cache: false,
-					contentType: false,
-					processData: false,
-					success:function(result){
-						updateFileTemplateIfSuccess(options.fileTemplateId,result);
-
-					},
-					error:function(result){
-
-					}
-				});
-			},
-			destroy:function(options){
-				$.ajax({
-					url:"${api.server}/serviceinfos/"+options.serviceinfoId+"/filetemplates/"+options.fileTemplateId,
-					dataType:"json",
-					type:"DELETE",
-					data:{
-						fileTemplateId:options.fileTemplateId
-					},
-					success:function(result){
-						var item=dataSourceFileTemplate.get(options.fileTemplateId);
-						if(item!=null){
-							dataSourceFileTemplate.remove(item);
-						}
-					},
-					error:function(result){
-					}
-				});
-			}
-		},
-		error: function(e) {         
-			this.cancelChanges();
-		},
-		schema:{
-			total:"total",
-			data:"data",
-			model:{
-				id:"fileTemplateNo"
-			}
-		},
-		autoSync:false,
-		pageSize: 5,
-		serverPaging: false,
-		serverSorting: false,
-		serverFiltering: false
-	});*/
 
 	var pullDataDetail= function(id){
 		console.log(id);
@@ -439,18 +338,6 @@
 			);
 	}
 
-	/*var updateServieInfoFileTemplate=function(dataPk){
-		
-		console.log($("#itemServiceInfoId").val());
-		dataSourceFileTemplate.transport.update({
-			"fileTemplateId":dataPk,
-			"serviceinfoId":$("#itemServiceInfoId").val(),
-			"fileNo":$("#fileNo").val(),
-			"fileName":$("#fileName").val(),
-			"file": $('input#file')[0].files[0]
-		});
-	}*/
-
 	var addServieInfoFileTemplate=function(){
 		dataSourceFileTemplate.transport.create({
 			"serviceinfoId":$("#itemServiceInfoId").val(),
@@ -460,14 +347,6 @@
 		});
 	}
 
-	/*var updateFileTemplateIfSuccess = function(dataPk,result){
-		console.log("id:"+dataPk);
-		dataSourceFileTemplate.fetch(function() {
-			var item = dataSourceFileTemplate.get(dataPk);
-			item.set("fileTemplateNo",result.fileTemplateNo);
-			item.set("templateName",result.templateName);
-		});
-	}*/
 	var addFileTemplateIfSuccess=function(result){
 		dataSourceFileTemplate.add({
 			"fileTemplateNo":result.fileTemplateNo,
@@ -539,7 +418,7 @@
 				}
 			});
 		}
-		
+
 	});
 
 	$("#btn-submit-serviceinfo-general").click(function(){
@@ -580,7 +459,7 @@
 				});
 			}
 		}
-		
+
 	});
 
 	$("#add-file-template").click(function(){
