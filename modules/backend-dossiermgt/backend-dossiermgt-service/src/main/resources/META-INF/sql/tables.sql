@@ -48,7 +48,7 @@ create table opencps_dossier (
 	dossierSubStatusText VARCHAR(75) null,
 	folderId LONG,
 	dossierActionId LONG,
-	viaPost INTEGER,
+	viaPostal INTEGER,
 	postAddress VARCHAR(75) null,
 	password_ VARCHAR(75) null,
 	notification BOOLEAN,
@@ -74,14 +74,32 @@ create table opencps_dossieraction (
 	actionNote VARCHAR(75) null,
 	actionOverdue INTEGER,
 	syncActionCode VARCHAR(75) null,
-	pending VARCHAR(75) null,
-	rollbackable VARCHAR(75) null,
+	pending BOOLEAN,
+	rollbackable BOOLEAN,
 	stepCode VARCHAR(75) null,
 	stepName VARCHAR(75) null,
 	dueDate DATE null,
 	nextActionId LONG,
 	payload VARCHAR(75) null,
 	stepInstruction VARCHAR(75) null
+);
+
+create table opencps_dossieractionsync (
+	uuid_ VARCHAR(75) null,
+	dossierActionSyncId LONG not null primary key,
+	companyId LONG,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	dossierId LONG,
+	dossierActionId LONG,
+	createDossier BOOLEAN,
+	referenceUid VARCHAR(75) null,
+	actionCode VARCHAR(75) null,
+	actionUser VARCHAR(75) null,
+	actionNote VARCHAR(75) null
 );
 
 create table opencps_dossieractionuser (

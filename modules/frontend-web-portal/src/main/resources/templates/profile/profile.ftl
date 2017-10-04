@@ -590,6 +590,7 @@
       if(xhr.status == 500) return 'Internal server error';
     }
   });
+    
     $('#represntative').editable({
       url: 'post.php',
       emptytext : "",

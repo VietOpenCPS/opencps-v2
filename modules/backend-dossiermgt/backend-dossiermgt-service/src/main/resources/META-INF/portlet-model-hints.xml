@@ -51,7 +51,7 @@
 		<field name="dossierSubStatusText" type="String" />
 		<field name="folderId" type="long" />
 		<field name="dossierActionId" type="long" />
-		<field name="viaPost" type="int" />
+		<field name="viaPostal" type="int" />
 		<field name="postAddress" type="String" />
 		<field name="password" type="String" />
 		<field name="notification" type="boolean" />
@@ -76,14 +76,31 @@
 		<field name="actionNote" type="String" />
 		<field name="actionOverdue" type="int" />
 		<field name="syncActionCode" type="String" />
-		<field name="pending" type="String" />
-		<field name="rollbackable" type="String" />
+		<field name="pending" type="boolean" />
+		<field name="rollbackable" type="boolean" />
 		<field name="stepCode" type="String" />
 		<field name="stepName" type="String" />
 		<field name="dueDate" type="Date" />
 		<field name="nextActionId" type="long" />
 		<field name="payload" type="String" />
 		<field name="stepInstruction" type="String" />
+	</model>
+	<model name="org.opencps.dossiermgt.model.DossierActionSync">
+		<field name="uuid" type="String" />
+		<field name="dossierActionSyncId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dossierId" type="long" />
+		<field name="dossierActionId" type="long" />
+		<field name="createDossier" type="boolean" />
+		<field name="referenceUid" type="String" />
+		<field name="actionCode" type="String" />
+		<field name="actionUser" type="String" />
+		<field name="actionNote" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierActionUser">
 		<field name="uuid" type="String" />

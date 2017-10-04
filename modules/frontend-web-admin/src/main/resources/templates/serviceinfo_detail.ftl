@@ -29,17 +29,19 @@
 					</div>
 					<div class="col-sm-10">
 						<div class="form-group"> 
-							<input type="text" name="serviceCode" id="serviceCode" class="form-control" placeholder="Số hiệu" data-bind="value:serviceCode" > 
+							<input type="text" name="serviceCode" id="serviceCode" class="form-control" placeholder="Số hiệu" data-bind="value:serviceCode" required="required" validationMessage="Bạn phải điền số hiệu"> 
+							<span data-for="serviceCode" class="k-invalid-msg"></span>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-2">
-						<label>Tên thủ tục:</label>
+						<label>Thủ tục hành chính:</label>
 					</div>
 					<div class="col-sm-10">
 						<div class="form-group"> 
-							<input type="text" name="serviceName" id="serviceName" class="form-control" placeholder="Tên thủ tục" data-bind="value:serviceName" > 
+							<input type="text" name="serviceName" id="serviceName" class="form-control" placeholder="Tên thủ tục" data-bind="value:serviceName" required="required" validationMessage="Bạn phải điền thủ tục"> 
+							<span data-for="serviceName" class="k-invalid-msg"></span>
 						</div>
 					</div>
 				</div>
@@ -50,12 +52,13 @@
 								<label>Cơ quan:</label>
 							</div>
 							<div class="col-sm-8">
-								<select class="form-control" id="administration" name="administration" data-bind="value: administrationName">
+								<select class="form-control" id="administration" name="administration" data-bind="value: administrationName" required="required" validationMessage="Bạn phải chọn cơ quan">
 									<option value=""></option>
 									<#list administrations as item>
 									<option value="${item.id}">${item.name}</option>
 									</#list> 
 								</select>
+								<span data-for="administration" class="k-invalid-msg"></span>
 							</div>
 						</div>
 					</div>
@@ -65,12 +68,13 @@
 								<label>Lĩnh vực:</label>
 							</div>
 							<div class="col-sm-8">
-								<select class="form-control" id="domain" name="domain" data-bind="value: domainName">
+								<select class="form-control" id="domain" name="domain" data-bind="value: domainName" required="required" validationMessage="Bạn phải chọn lĩnh vực">
 									<option value=""></option>
 									<#list domains as item>
 									<option value="${item.id}">${item.name}</option>
 									</#list> 
 								</select>
+								<span data-for="domain" class="k-invalid-msg"></span>
 							</div>
 						</div>
 					</div>
@@ -82,12 +86,13 @@
 								<label>Mức độ:</label>
 							</div>
 							<div class="col-sm-8">
-								<select class="form-control" id="level" name="level" data-bind="value: levelName">
+								<select class="form-control" id="level" name="level" data-bind="value: levelName" required="required" validationMessage="Bạn phải chọn mức độ">
 									<option value=""></option>
 									<#list levels as item>
 									<option value="${item.id}">${item.name}</option>
 									</#list> 
 								</select>
+								<span data-for="level" class="k-invalid-msg"></span>
 							</div>
 						</div>
 					</div>
@@ -97,19 +102,20 @@
 								<label>Trạng thái:</label>
 							</div>
 							<div class="col-sm-8">
-								<select class="form-control" id="status" name="status">
+								<select class="form-control" id="status" name="status" required="required" validationMessage="Bạn phải chọn trạng thái">
 									<option value=""></option>
 									<#list status as item>
 									<option value="${item.id}">${item.name}</option>
 									</#list> 
 								</select>
+								<span data-for="status" class="k-invalid-msg"></span>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="row MT15">
 					<div class="col-sm-12 text-center">
-						<button class="btn btn-active" id="btn-submit-serviceinfo-general" type="button">Ghi lại</button> <button class="btn" type="reset">hủy bỏ</button> 
+						<button class="btn btn-active" id="btn-submit-serviceinfo-general" type="button">Ghi lại</button> <button class="btn" type="reset">Hủy bỏ</button> 
 					</div>
 				</div>
 			</form>
@@ -538,39 +544,43 @@
 
 	$("#btn-submit-serviceinfo-general").click(function(){
 		var idServiceinfo = $("#itemServiceInfoId").val();
-		if(idServiceinfo>0){
-			var data = $("#frmServiceinfoGenaral").serialize();
-			$.ajax({
-				url : "${api.server}/serviceinfos/"+idServiceinfo,
-				type : "PUT",
-				dataType : "json",
-				data : data,
-				success : function(result){
-					updateServieInfoIfSuccess(idServiceinfo,result);
-				},
-				error : function(xhr){
+		var validator = $("#frmServiceinfoGenaral").kendoValidator().data("kendoValidator");
+		if(validator.validate()){
+			if(idServiceinfo>0){
+				var data = $("#frmServiceinfoGenaral").serialize();
+				$.ajax({
+					url : "${api.server}/serviceinfos/"+idServiceinfo,
+					type : "PUT",
+					dataType : "json",
+					data : data,
+					success : function(result){
+						updateServieInfoIfSuccess(idServiceinfo,result);
+					},
+					error : function(xhr){
 
-				}
-			});
-		}else{
-			var data = $("#fmServiceinfoDetail").serialize();
-			$.ajax({
-				url : "${api.server}/serviceinfos",
-				type : "POST",
-				dataType : "json",
-				data : data,
-				success : function(result){
-					$("#itemServiceInfoId").val(result.serviceinfoId.toString());
-					console.log($("#itemServiceInfoId").val());
-					addServiceInfoIfSuccess(result);
-					console.log($("#itemServiceInfoId").val());
-					crtAddOrEdit();
-				},
-				error : function(xhr){
+					}
+				});
+			}else{
+				var data = $("#fmServiceinfoDetail").serialize();
+				$.ajax({
+					url : "${api.server}/serviceinfos",
+					type : "POST",
+					dataType : "json",
+					data : data,
+					success : function(result){
+						$("#itemServiceInfoId").val(result.serviceinfoId.toString());
+						console.log($("#itemServiceInfoId").val());
+						addServiceInfoIfSuccess(result);
+						console.log($("#itemServiceInfoId").val());
+						crtAddOrEdit();
+					},
+					error : function(xhr){
 
-				}
-			});
+					}
+				});
+			}
 		}
+		
 	});
 
 	$("#add-file-template").click(function(){
