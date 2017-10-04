@@ -34,7 +34,7 @@
 							<div class="row">
 								<div class="col-sm-12 MB5">
 									#:serviceCode#
-									#if(public) {#
+									#if(typeof public !== "undefined" && public) {#
 									<i class="fa fa-check ML5" aria-hidden="true"></i>
 									#} #
 									<i class="fa fa-trash pull-right _itemServiceinfo_btnDelete" data-pk="#:id#"></i>
