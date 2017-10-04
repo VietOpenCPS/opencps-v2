@@ -4,6 +4,7 @@
 <hibernate-mapping auto-import="false" default-lazy="false">
 	<import class="org.opencps.dossiermgt.model.Dossier" />
 	<import class="org.opencps.dossiermgt.model.DossierAction" />
+	<import class="org.opencps.dossiermgt.model.DossierActionSync" />
 	<import class="org.opencps.dossiermgt.model.DossierActionUser" />
 	<import class="org.opencps.dossiermgt.model.DossierFile" />
 	<import class="org.opencps.dossiermgt.model.DossierLog" />
@@ -72,7 +73,7 @@
 		<property name="dossierSubStatusText" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="folderId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="dossierActionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="viaPost" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="viaPostal" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="postAddress" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property column="password_" name="password" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="notification" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
@@ -99,14 +100,33 @@
 		<property name="actionNote" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="actionOverdue" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="syncActionCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="pending" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="rollbackable" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="pending" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+		<property name="rollbackable" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="stepCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="stepName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="dueDate" type="org.hibernate.type.TimestampType" />
 		<property name="nextActionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="stepInstruction" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="org.opencps.dossiermgt.model.impl.DossierActionSyncImpl" table="opencps_dossieractionsync">
+		<id name="dossierActionSyncId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="dossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="dossierActionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="createDossier" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+		<property name="referenceUid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="actionCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="actionUser" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="actionNote" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierActionUserImpl" table="opencps_dossieractionuser">
 		<composite-id class="org.opencps.dossiermgt.service.persistence.DossierActionUserPK" name="primaryKey">
