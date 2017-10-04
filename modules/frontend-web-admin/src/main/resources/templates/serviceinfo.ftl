@@ -3,56 +3,63 @@
 </#if>
 
 <div class="row">
-	<div class="col-sm-3 panel">
+	<div class="col-sm-3 panel P0">
 		<div class='panel-body'>
 			<div class="row">
-				<button class="k-button btn-primary form-control MB5" id="btnAddServiceInfo"><i class="glyphicon glyphicon-plus"></i> Thêm thủ tục </button>
-				<select class="form-control" id="administrationCodeSearch" name="administrationCodeSearch">
-					<option value=""></option>
-					<#list administrations as item>
-					<option value="${item.id}">${item.name}</option>
-					</#list> 
-				</select>
-				<select class="form-control" id="domainCodeSearch" name="domainCodeSearch">
-					<option value=""></option>
-					<#list domains as item>
-					<option value="${item.id}">${item.name}</option>
-					</#list> 
-				</select>
-				<div class="input-group">
-					<input id="keyword" class="form-control" name="keyword" placeholder="Nhap tu khoa tim kiem"><span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+				<div class="col-sm-12">
+					<button class="btn btn-active form-control MB5" id="btnAddServiceInfo"><i class="glyphicon glyphicon-plus"></i> Thêm thủ tục </button>
+					<select class="form-control" id="administrationCodeSearch" name="administrationCodeSearch">
+						<option value=""></option>
+						<#list administrations as item>
+						<option value="${item.id}">${item.name}</option>
+						</#list> 
+					</select>
+					<select class="form-control" id="domainCodeSearch" name="domainCodeSearch">
+						<option value=""></option>
+						<#list domains as item>
+						<option value="${item.id}">${item.name}</option>
+						</#list> 
+					</select>
+					<div class="form-group search-icon"> 
+						<input type="text" id="keyword" name="keyword" class="form-control" placeholder="Nhập từ khóa"> 
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<ul class='ul-with-border '>
+						<div id='listViewTTHC'></div>
+					</ul>
+					<div id='pagerTTHC' class='k-pager-wrap k-widget k-floatwrap'></div>
+					<script type="text/x-kendo-template" id="templateTTHC" >
+						<li>
+							<div class="row">
+								<div class="col-sm-12 MB5">
+									#:serviceCode# 
+									#if(public) {#
+									<i class="fa fa-check ML5" aria-hidden="true"></i> 
+									#} #
+									<i class="fa fa-trash pull-right _itemServiceinfo_btnDelete" data-pk="#:id#"></i>
+								</div>
+								<div class="col-sm-12">
+									<p class="showServiceinfoDetail" data-pk="#:id#">#:serviceName#</p>
+								</div>
+								<div class="col-sm-12">
+									<i class="fa fa-suitcase" aria-hidden="true"></i> <span>#:domainName#</span>  
+								</div>
+								<div class="col-sm-12">
+									<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i>#:administrationName#</i>
+								</div>
+							</div>
+						</li>
+					</script>
 				</div>
 			</div>
-			<ul class='ul-with-border MT10'>
-				<div id='listViewTTHC'></div>
-			</ul>
-			<div id='pagerTTHC' class='k-pager-wrap k-widget k-floatwrap'></div>
-			<script type="text/x-kendo-template" id="templateTTHC" >
-				<li class="PL0 PR0">
-					<div class="row">
-						<div class="col-sm-12 P0 MB5">
-							#:serviceCode# 
-							#if(public) {#
-							<i class="fa fa-check ML5" aria-hidden="true"></i> 
-							#} #
-							<i class="fa fa-trash pull-right _itemServiceinfo_btnDelete" data-pk="#:id#"></i>
-						</div>
-						<div class="col-sm-12 P0">
-							<p class="showServiceinfoDetail" data-pk="#:id#">#:serviceName#</p>
-						</div>
-						<div class="col-sm-12 P0">
-							<i class="fa fa-suitcase" aria-hidden="true"></i> <span>#:domainName#</span>  
-						</div>
-						<div class="col-sm-12 P0">
-							<i class="fa fa-steam-square" aria-hidden="true"></i> <i>#:administrationName#</i>
-						</div>
-					</div>
-				</li>
-			</script>
+			
 		</div>
 	</div>
-	<div class="col-sm-9 panel panel-body" id="serviceinfo_detail">
+	<div class="col-sm-9 PR0">
+		<div class="panel panel-body" id="serviceinfo_detail">
 
+		</div>
 	</div>
 	<input type="hidden" name="itemServiceInfoId" id="itemServiceInfoId">	
 </div>
@@ -140,7 +147,8 @@
 				"keyword": $("#keyword").val()
 			});
 		},
-		filter:"contains"
+		filter:"contains",
+		noDataTemplate: 'Không có dữ liệu'
 	});
 
 	$("#domainCodeSearch").kendoComboBox({
@@ -155,6 +163,7 @@
 			});
 		},
 		filter:"contains",
+		noDataTemplate: 'Không có dữ liệu'
 	});
 
 	$("#keyword").change(function(){
@@ -163,6 +172,35 @@
 			"administration": $("#administrationCodeSearch").val(),
 			"keyword": $("#keyword").val()
 		});
+	});
+
+	$("#keyword").kendoAutoComplete({
+		dataTextField : "serviceName",
+		dataSource: {
+			transport : {
+				read : {
+					url : "${api.server}/serviceinfos",
+					dataType : "json",
+					type : "GET",
+					success : function(result){
+
+					},
+					error : function(xhr){
+
+					}
+				}
+			},
+			schema : {
+				total : "total",
+				data : "data",
+				model : {
+					id : "serviceinfoId"
+				}
+			}
+		},
+		filter: "contains",
+		placeholder: "Nhập từ khóa",
+		noDataTemplate: 'Không có dữ liệu'
 	});
 
 	$(function() {
