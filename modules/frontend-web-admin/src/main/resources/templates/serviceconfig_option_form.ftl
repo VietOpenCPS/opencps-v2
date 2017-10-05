@@ -261,36 +261,21 @@
 		});
 	});
 
-	var pullServiceConfigOptionDetail= function(id){
+	var pullServiceConfigOptionDetail= function(item){
 		console.log("detail_serviceconfig");
-		var idServiceConfig = $("#itemServiceConfigId").val();
-		console.log("pull-detail-serviceoption");
-		console.log(idServiceConfig);
-		if(idServiceConfig > 0 ){
-			$.ajax({
-				url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes/"+id,
-				dataType : "json",
-				type : "GET",
-				headers: {"groupId": ${groupId}},
-				success : function(result){
-					console.log(result);
-					var viewModel = kendo.observable({
-						dossierTemplate : result.dossierTemplate,
-						serviceProcess : result.serviceProcess,
-						instructionNote : result.instructionNote,
-						submissionNote : result.submissionNote,
-						serviceConfigs : function(){
-							checkedForServiceConfig(result.serviceConfigs);
-							arr = result.serviceConfigs;
-						}
-					});
-
-					kendo.bind($("#frmEstablishedProcess"), viewModel);
-				},
-				error : function(xhr){
-
+		if(item){
+			var viewModel = kendo.observable({
+				dossierTemplate : item.dossierTemplateId,
+				serviceProcess : item.processName,
+				instructionNote : item.instructionNote,
+				submissionNote : item.submissionNote,
+				serviceConfigs : function(){
+					checkedForServiceConfig(item.serviceConfigs);
+					arr = item.serviceConfigs;
 				}
 			});
+			
+			kendo.bind($("#frmEstablishedProcess"), viewModel);
 		}
 	}
 

@@ -354,8 +354,9 @@
 			event.preventDefault();
 			console.log("edit");
 			var id = $(this).attr("data-pk");
+			var item = dataSourceServiceOption.get(id);
 			$("#xlqtdv").load("${ajax.serviceconfig_option_form}",function(result){
-				pullServiceConfigOptionDetail(id);
+				pullServiceConfigOptionDetail(item);
 				$("#itemServiceConfigOption").val(id);
 			});
 		});
