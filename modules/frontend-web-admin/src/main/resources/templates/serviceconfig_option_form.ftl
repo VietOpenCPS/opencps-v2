@@ -293,7 +293,7 @@
 	}
 
 	$(document).on("change", ".cbxServiceConfig", function () {
-		if(this).prop("checked"){
+		if($(this).prop("checked")){
 			addServiceConfigForServiceOption($(this).attr("data-pk"));
 		}else{
 			removeServiceConfigForServiceOption($(this).attr("data-pk"));
