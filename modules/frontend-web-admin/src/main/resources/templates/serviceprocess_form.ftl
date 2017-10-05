@@ -21,7 +21,7 @@
 			<textarea id="description" name="description" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:description"></textarea>
 		</div>
 	</div>
-	<div class="row MT10">
+	<div class="row MT10 align-middle-lg">
 		<div class="col-xs-12 col-sm-3">Thời gian xử lý</div>
 		<div class="col-xs-12 col-sm-3">
 			<input id="durationCount" name="durationCount" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:durationCount"/>
@@ -35,7 +35,7 @@
 	</div>
 	<div class="service-process-form-controls">
 		<div class="service-process-form-entry">
-			<div class="row MT10">
+			<div class="row MT10 align-middle-lg">
 				<div class="col-xs-12 col-sm-3">Vai trò xử lý</div>
 				<div class="col-xs-12 col-sm-3">
 					<select class="form-control" id="administration" name="administration" data-bind="value: administrationName">
