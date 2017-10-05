@@ -38,11 +38,19 @@ gradle-local.properties
 
 **/.DS_Store
 
-!modules/
-modules/**-api/**
+**/opencps/datamgt/exception/**
+**/opencps/datamgt/model/**
+**/opencps/datamgt/service/**
 
-**/exception/**
-**/service/**
-**/model/**
-**/service/base/**
-**/service/persistence/impl/**
+**/opencps/usermgt/exception/**
+**/opencps/usermgt/model/**
+**/opencps/usermgt/service/**
+
+**/opencps/communicationmgt/exception/**
+**/opencps/communicationmgt/model/**
+**/opencps/communicationmgt/service/**
+
+**/opencps/dossiermgt/exception/**
+**/opencps/dossiermgt/model/**
+**/opencps/dossiermgt/service/**
+
