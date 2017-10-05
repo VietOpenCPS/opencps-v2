@@ -275,6 +275,7 @@
 									url : "${api.server}/serviceinfos/"+idServiceinfo+"/filetemplates/"+idFileTemplate,
 									type : "DELETE",
 									dataType : "json",
+									headers: {"groupId": ${groupId}},
 									data : {
 										filetemplates : idFileTemplate
 									},
@@ -372,6 +373,7 @@
 				url : "${api.server}/serviceinfos/"+idServiceinfo,
 				type : "PUT",
 				dataType : "json",
+				headers: {"groupId": ${groupId}},
 				data : {
 					resultText : $("#resultText").summernote("code").toString(),
 					feeText : $("#feeText").summernote("code").toString(),
@@ -397,6 +399,7 @@
 				url : "${api.server}/serviceinfos",
 				type : "POST",
 				dataType : "json",
+				headers: {"groupId": ${groupId}},
 				data : {
 					resultText : $("#resultText").summernote("code").toString(),
 					feeText : $("#feeText").summernote("code").toString(),
@@ -431,6 +434,7 @@
 					url : "${api.server}/serviceinfos/"+idServiceinfo,
 					type : "PUT",
 					dataType : "json",
+					headers: {"groupId": ${groupId}},
 					data : data,
 					success : function(result){
 						updateServieInfoIfSuccess(idServiceinfo,result);
@@ -440,11 +444,12 @@
 					}
 				});
 			}else{
-				var data = $("#fmServiceinfoDetail").serialize();
+				var data = $("#frmServiceinfoGenaral").serialize();
 				$.ajax({
 					url : "${api.server}/serviceinfos",
 					type : "POST",
 					dataType : "json",
+					headers: {"groupId": ${groupId}},
 					data : data,
 					success : function(result){
 						$("#itemServiceInfoId").val(result.serviceinfoId.toString());
