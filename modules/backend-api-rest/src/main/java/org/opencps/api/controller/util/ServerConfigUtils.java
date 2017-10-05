@@ -34,7 +34,7 @@ public class ServerConfigUtils {
 		return outputs;
 	}
 
-	public ServerConfigDetailModel mappingToDetailModel(ServerConfig cf) {
+	public static ServerConfigDetailModel mappingToDetailModel(ServerConfig cf) {
 		ServerConfigDetailModel model = new ServerConfigDetailModel();
 
 		model.setServerConfigId(cf.getPrimaryKey());

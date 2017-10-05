@@ -133,7 +133,7 @@ public interface ServerConfigManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
 
-	public Response getConfig(@Context HttpServletRequest request, @Context HttpHeaders header,
+	public Response addConfig(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") long id, @BeanParam ServerConfigSingleInputModel input);
 }
