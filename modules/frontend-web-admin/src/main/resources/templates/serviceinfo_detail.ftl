@@ -226,7 +226,7 @@
 			success : function(result){
 				var viewModel = kendo.observable({
 					fileTemplateDownLoad : function(e){
-						var serviceInfoId = $("#serviceinfoId").val();
+						var serviceInfoId = $("#itemServiceInfoId").val();
 						return '${api.server}/serviceinfos/'+serviceInfoId+'/filetemplates/'+e.fileTemplateNo
 					},
 					serviceinfoId: result.serviceInfoId,
@@ -268,7 +268,7 @@
 						var idFileTemplate = e.data.fileTemplateNo;
 						var idServiceinfo = $("#itemServiceInfoId").val();
 						console.log(e.data.fileTemplateNo);
-						if(idFileTemplate>0 && idServiceinfo>0){
+						if(idFileTemplate && idServiceinfo>0){
 							var cf = confirm("Bạn có muốn xóa file "+e.data.templateName+"!");
 							if (cf == true) {
 								$.ajax({
@@ -461,6 +461,46 @@
 		}
 
 	});
+
+	var addServiceInfoIfSuccess=function(result){
+		dataSourceTTHC.insert(0,{
+			"serviceInfoId": result.serviceInfoId,
+			"serviceCode":result.serviceCode,
+			"serviceName":result.serviceName,
+			"processText":result.processText,
+			"methodText":result.methodText,
+			"dossierText":result.dossierText,
+			"conditionText":result.conditionText,
+			"durationText":result.durationText,
+			"resultText":result.resultText,
+			"administrationCode":result.administrationCode,
+			"domainCode":result.domainCode,
+			"activeStatus":result.activeStatus,
+			"administrationName":result.administrationName,
+			"domainName":result.domainName,
+			"fileTemplates":result.fileTemplates
+		});
+	}
+
+	var updateServieInfoIfSuccess = function(dataPk,result){
+		dataSourceTTHC.fetch(function() {
+			var item = dataSourceTTHC.get(dataPk);
+			item.set("serviceCode",result.serviceCode);
+			item.set("serviceName",result.serviceName);
+			item.set("processText",result.processText);
+			item.set("methodText",result.methodText);
+			item.set("dossierText",result.dossierText);
+			item.set("conditionText",result.conditionText);
+			item.set("durationText",result.durationText);
+			item.set("resultText",result.resultText);
+			item.set("administrationCode",result.administrationCode);
+			item.set("domainCode",result.domainCode);
+			item.set("activeStatus",result.activeStatus);
+			item.set("administrationName",result.administrationName);
+			item.set("domainName",result.domainName);
+
+		});
+	}
 
 	$("#add-file-template").click(function(){
 		$("#serviceInfoFileTempalteDialog").load("${ajax.serviceinfo_filetemplate_form}",function(result){

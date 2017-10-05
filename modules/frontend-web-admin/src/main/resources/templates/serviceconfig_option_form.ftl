@@ -64,7 +64,6 @@
 							</div>
 						</div>
 					</div>
-
 				</div>
 			</li>
 		</script>
@@ -294,10 +293,26 @@
 	}
 
 	$(document).on("change", ".cbxServiceConfig", function () {
-		addServiceConfigForServiceOption($(this).attr("data-pk"));
+		if(this).prop("checked"){
+			addServiceConfigForServiceOption($(this).attr("data-pk"));
+		}else{
+			removeServiceConfigForServiceOption($(this).attr("data-pk"));
+		}
 	});
 
 	var addServiceConfigForServiceOption = function(id){
+		console.log(arr);
+		if(arr){
+			for(var i=0 ;i< arr.length ;i++){
+				if(arr[i] === id){
+					return ;
+				}
+			}
+			arr.push(id);
+		}
+	}
+
+	var removeServiceConfigForServiceOption = function(id){
 		console.log(arr);
 		if(arr){
 			for(var i=0 ;i< arr.length ;i++){
@@ -306,7 +321,6 @@
 					return ;
 				}
 			}
-			arr.push(id);
 		}
 	}
 

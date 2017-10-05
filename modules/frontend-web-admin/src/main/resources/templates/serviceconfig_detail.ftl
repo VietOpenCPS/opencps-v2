@@ -103,7 +103,10 @@
 </div>
 
 <script type="text/javascript">
-	
+	$("#serviceInstruction").summernote({
+		height: 150
+	});
+
 	$(function() {
 		$("[data-role=combobox]").each(function() {
 			var widget = $(this).getKendoComboBox();
@@ -138,7 +141,9 @@
 					domainName: result.domainName,
 					govAgencyCode: result.govAgencyCode,
 					govAgencyName: result.govAgencyName,
-					serviceInstruction: result.serviceInstruction,
+					serviceInstruction: function(e){
+						$('#serviceInstruction').summernote('code', result.serviceInstruction);
+					},
 					serviceLevel: function(e){
 						return "Mức độ "+result.serviceLevel;
 					},
@@ -262,9 +267,7 @@
 		});	
 	};
 
-	$("#serviceInstruction").summernote({
-		height: 150
-	});
+	
 	$("#serviceLevel").kendoComboBox({
 		placeholder : "Chọn mức độ",
 		dataTextField:"processName",

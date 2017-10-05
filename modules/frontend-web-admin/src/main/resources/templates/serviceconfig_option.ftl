@@ -263,4 +263,10 @@
 		noDataTemplate: 'Không có dữ liệu'
 	});
 
+	$("#search-serviceconfig-process").change(function(){
+		dataSourceServiceOption.read({
+			keyword : $("#search-serviceconfig-process").val()
+		});
+	});
+
 </script>

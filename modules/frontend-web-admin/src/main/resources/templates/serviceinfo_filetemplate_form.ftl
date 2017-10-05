@@ -15,13 +15,13 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-3">Số biểu mẫu</div>
 					<div class="col-xs-12 col-sm-9">
-						<input id="fileNo" name="fileNo" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" value="<#if (filetemplate.fileNo)??>${filetemplate.fileNo}</#if>"/>
+						<input id="fileTemplateNo" name="fileTemplateNo" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" value="<#if (filetemplate.fileNo)??>${filetemplate.fileNo}</#if>"/>
 					</div>
 				</div>
 				<div class="row MT10">
 					<div class="col-xs-12 col-sm-3">Tên biểu mẫu</div>
 					<div class="col-xs-12 col-sm-9">
-						<input id="fileName" name="fileName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" value="<#if (filetemplate.fileName)??>${filetemplate.fileName}</#if>"/>
+						<input id="templateName" name="templateName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" value="<#if (filetemplate.fileName)??>${filetemplate.fileName}</#if>"/>
 					</div>
 				</div>
 				<div class="row MT10">

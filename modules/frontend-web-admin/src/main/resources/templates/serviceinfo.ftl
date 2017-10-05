@@ -266,25 +266,6 @@
 		});
 	}
 
-	var updateServieInfoIfSuccess = function(dataPk,result){
-		dataSourceTTHC.fetch(function() {
-			var item = dataSourceTTHC.get(dataPk);
-			item.set("serviceCode",result.serviceCode);
-			item.set("serviceName",result.serviceName);
-			item.set("processText",result.processText);
-			item.set("methodText",result.methodText);
-			item.set("dossierText",result.dossierText);
-			item.set("conditionText",result.conditionText);
-			item.set("durationText",result.durationText);
-			item.set("resultText",result.resultText);
-			item.set("administrationCode",result.administrationCode);
-			item.set("domainCode",result.domainCode);
-			item.set("activeStatus",result.activeStatus);
-			item.set("administrationName",result.administrationName);
-			item.set("domainName",result.domainName);
-
-		});
-	}
 
 	var addServiceInfo = function(){
 		dataSourceTTHC.transport.create({
@@ -303,25 +284,7 @@
 		});
 	};
 
-	var addServiceInfoIfSuccess=function(result){
-		dataSourceTTHC.add({
-			"serviceInfoId": result.serviceInfoId,
-			"serviceCode":result.serviceCode,
-			"serviceName":result.serviceName,
-			"processText":result.processText,
-			"methodText":result.methodText,
-			"dossierText":result.dossierText,
-			"conditionText":result.conditionText,
-			"durationText":result.durationText,
-			"resultText":result.resultText,
-			"administrationCode":result.administrationCode,
-			"domainCode":result.domainCode,
-			"activeStatus":result.activeStatus,
-			"administrationName":result.administrationName,
-			"domainName":result.domainName,
-			"fileTemplates":result.fileTemplates
-		});
-	}
+	
 
 	var setDefaultValueMultiSelect=function(dataPk){
 		if(dataPk>0){
