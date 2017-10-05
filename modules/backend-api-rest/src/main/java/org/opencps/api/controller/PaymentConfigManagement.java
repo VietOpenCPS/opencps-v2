@@ -82,7 +82,7 @@ public interface PaymentConfigManagement {
 	@Path("/{id}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "Add a PaymentConfig", response = PaymentConfigInputModel.class)
+	@ApiOperation(value = "Update a PaymentConfig", response = PaymentConfigInputModel.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the PaymentConfig was updated", response = PaymentConfigInputModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
@@ -95,11 +95,10 @@ public interface PaymentConfigManagement {
 
 	@DELETE
 	@Path("/{id}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Remove a PaymentConfig", response = PaymentConfigInputModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the PaymentConfig was created", response = PaymentConfigInputModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the PaymentConfig was deleted", response = PaymentConfigInputModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
