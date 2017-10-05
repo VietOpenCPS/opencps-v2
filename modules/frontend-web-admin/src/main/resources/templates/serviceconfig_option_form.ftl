@@ -71,6 +71,8 @@
 		<div class="col-sm-12 text-center MT15 MB15">
 			<button class="btn btn-active" id="btn-submit-established-process" type="button">Ghi lại</button> <button class="btn" type="button" id="btn-revert-serviceoptions">Hủy bỏ</button>
 		</div>
+
+		<input type="hidden" name="itemServiceConfigOption" id="itemServiceConfigOption">
 	</div>
 </form>
 <script type="text/javascript">
@@ -325,34 +327,12 @@
 	}
 
 	$("#btn-submit-established-process").click(function(){
-		var id = $(this).attr("data-pk");
+		var id = $("#itemServiceConfigOption").val();
 		var idServiceConfig = $("#itemServiceConfigId").val();
 		var validator = $("#frmEstablishedProcess").kendoValidator().data("kendoValidator");
 		if(validator.validate()){
-			if(idServiceConfig > 0){
-				if(id > 0){
-					$.ajax({
-						url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes",
-						dataType : "json",
-						type : "POST",
-						headers: {"groupId": ${groupId}},
-						data : {
-							dossierTemplate : $("#dossierTemplate").val(),
-							serviceProcess : $("#serviceProcess").val(),
-							instructionNote : $("#instructionNote").val(),
-							submissionNote : $("#submissionNote").val(),
-							pattern : $("#pattern").val()
-						},
-						success : function(result){
-							addServiceConfigOptionIfSuccess(result);
-						},
-						error : function(xhr){
-
-						}
-					});
-
-				}else {
-
+			if(idServiceConfig){
+				if(id){
 					$.ajax({
 						url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes/"+id,
 						dataType : "json",
@@ -372,6 +352,28 @@
 
 						}
 					});
+
+				}else {
+					$.ajax({
+						url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes",
+						dataType : "json",
+						type : "POST",
+						headers: {"groupId": ${groupId}},
+						data : {
+							dossierTemplate : $("#dossierTemplate").val(),
+							serviceProcess : $("#serviceProcess").val(),
+							instructionNote : $("#instructionNote").val(),
+							submissionNote : $("#submissionNote").val(),
+							pattern : $("#pattern").val()
+						},
+						success : function(result){
+							addServiceConfigOptionIfSuccess(result);
+						},
+						error : function(xhr){
+
+						}
+					});
+					
 				}
 			}
 		}

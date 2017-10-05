@@ -229,7 +229,7 @@
 	$("#btn-add-serviceconfig-option").click(function(){
 		console.log("add");
 		$("#xlqtdv").load("${ajax.serviceconfig_option_form}",function(result){
-
+			$("#itemServiceConfigOption").val("");
 		});
 	});
 
