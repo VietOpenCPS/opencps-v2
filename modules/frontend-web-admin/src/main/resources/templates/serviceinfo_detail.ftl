@@ -457,7 +457,14 @@
 					type : "POST",
 					dataType : "json",
 					headers: {"groupId": ${groupId}},
-					data : data,
+					data : {
+						serviceCode : $("#serviceCode").val(),
+						serviceName : $("#serviceName").val(),
+						administrationCode : $("#administration").val(),
+						domainCode : $("#domain").val(),
+						maxLevel : $("#level").val(),
+						public : $("#status").val()
+					},
 					success : function(result){
 						$("#itemServiceInfoId").val(result.serviceinfoId.toString());
 						console.log($("#itemServiceInfoId").val());
