@@ -25,6 +25,7 @@ import org.opencps.api.controller.impl.NotificationTemplateImpl;
 import org.opencps.api.controller.impl.NotificationTypeManagementImpl;
 import org.opencps.api.controller.impl.OfficeSiteManagementImpl;
 import org.opencps.api.controller.impl.PaymentConfigManagementImpl;
+import org.opencps.api.controller.impl.ServerConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceInfoManagementImpl;
 import org.opencps.api.controller.impl.ServiceProcessManagementImpl;
@@ -55,6 +56,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new DossierManagementImpl());
 		singletons.add(new DossierFileImpl());
 		singletons.add(new DossierLogImpl());
+		singletons.add(new ServerConfigManagementImpl());
 		
 //		singletons.add( new TestRest());
 //		singletons.add( new CloneTest());

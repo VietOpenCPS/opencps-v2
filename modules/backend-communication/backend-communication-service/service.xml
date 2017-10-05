@@ -128,5 +128,54 @@
 
 	</entity>
 	
+	<entity name="ServerConfig" local-service="true"
+		remote-service="false" table="opencps_serverconfig">
+
+		<!-- PK fields -->
+
+		<column name="serverConfigId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="serverNo" type="String" />
+		<column name="serverName" type="String" />
+		<column name="protocol" type="String" />
+		<column name="configs" type="String" />
+		<column name="lastSync" type="Date" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="serverNo" />
+		</order>
+		
+		<finder return-type="ServerConfig" name="CF_CD">
+			<finder-column name="serverNo"/>
+		</finder>
+		
+		<finder return-type="ServerConfig" name="CF_NM">
+			<finder-column name="serverName"/>
+		</finder>
+		
+	</entity>
+	
+	<exceptions>
+		<exception>ServerNo</exception>
+		<exception>ServerName</exception>
+		<exception>ServerNoDuplicate</exception>
+		<exception>ServerNameDuplicate</exception>
+	</exceptions>
 
 </service-builder>
