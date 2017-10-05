@@ -70,86 +70,15 @@
 								},
 								success: function(result) {
 									 options.success(result);
-								},
-								error: function(result) {
-									options.error(result);
-									notification.show({
-										message: "Xẩy ra lỗi, vui lòng thử lại"
-									}, "error");
-								}
-						 });
-					},
-					create: function(options) {
-						 $.ajax({
-								url: "${api.server}" + "/dossiertemplates/" + options.data.dossierTemplateId + "/parts",
-								type: "POST",
-								dataType: "json",
-								data: {
-									templateNo: options.data.templateNo,
-									partNo: options.data.partNo,
-									partName: options.data.partName,
-									partTip: options.data.partTip,
-									partType: options.data.partType,
-									multiple: options.data.multiple,
-									formScript: options.data.formScript,
-									formReport: options.data.formReport,
-									sampleData: options.data.sampleData,
-									required: options.data.required,
-									fileTemplateNo: options.data.fileTemplateNo,
-									esign: options.data.esign
-								},
-								success: function(result) {
-									options.success(result);
-									notification.show({
-										message: "Yêu cầu được thực hiện thành công"
-									}, "success");
-								},
-								error: function(result) {
-									options.error(result);
-									notification.show({
-										message: "Xẩy ra lỗi, vui lòng thử lại"
-									}, "error");
-								}
-						 });
-					},
-					update: function(options) {
-						 $.ajax({
-								url: "${api.server}" + "/dossierparts/" + options.data.fileTemplateId,
-								type: "PUT",
-								dataType: "json",
-								data: {
-									dossierPartId: options.data.dossierPartId,
-									templateNo: options.data.templateNo,
-									partNo: options.data.partNo,
-									partName: options.data.partName,
-									partTip: options.data.partTip,
-									partType: options.data.partType,
-									multiple: options.data.multiple,
-									formScript: options.data.formScript,
-									formReport: options.data.formReport,
-									sampleData: options.data.sampleData,
-									required: options.data.required,
-									fileTemplateNo: options.data.fileTemplateNo,
-									esign: options.data.esign
-								},
-								success: function(result) {
-									notification.show({
-										message: "Yêu cầu được thực hiện thành công"
-									}, "success");
-								},
-								error: function(result) {
-									fileTemplateDataSource.cancelChanges();
-									notification.show({
-										message: "Xẩy ra lỗi, vui lòng thử lại"
-									}, "error");
 								}
 						 });
 					},
 					destroy: function(options) {
 						 $.ajax({
-								url: "${api.server}" + "/dossierparts/" + options.data.fileTemplateId,
+								url: "${api.server}" + "/dossiertemplates/" + $("#btn_save_dossier_template").attr("data-pk") + "/parts/" + options.data.partNo,
 								dataType: "json",
 								type: "DELETE",
+								headers: {"groupId": ${groupId}},
 								success: function(result) {
 									options.success(result);
 									notification.show({
@@ -189,6 +118,8 @@
 		var localIndex = 0;
 		$("#dossier_template_part_listview").kendoListView({
 			 dataSource: dossierTemplatePartDataSource,
+			 selectable: true,
+			 autoBind: false,
 			 template: function(data){
 					var _pageSize = dossierTemplatePartDataSource.pageSize();
 					localIndex++;
@@ -198,34 +129,17 @@
 					data.itemIndex = index;
 					return kendo.template($("#dossier_template_part_template").html())(data);
 				},
-			 selectable: true,
 			 remove: function(e) {
 					if(!confirm("Xác nhận xóa thành phần hồ sơ: " + e.model.get("partName") + "?")){
 						 e.preventDefault();
 					}
 			 },
-			 change: function() {
-				 var index = this.select().index();
-				 var dataItem = this.dataSource.view()[index];
+			 dataBound: function() {
+					localIndex = 0;
+		    },
+				dataBinding: function() {
 
-				 console.log(dataItem);
-
-				 $("#dossiertemplate_part_container").hide();
-				 $("#dossiertemplate_part_form_container").show();
-
-				 var viewModel = kendo.observable({
-						 partNo : dataItem.partNo,
-						 partName : dataItem.partName,
-						 partTip : dataItem.partTip,
-						 partType : dataItem.partType,
-						 fileTemplateNo : dataItem.fileTemplateNo,
-						 required : dataItem.required,
-						 esign : dataItem.esign,
-				 });
-
-				 kendo.bind($("#dossier_template_part_model"), viewModel);
-		   },
-			 autoBind: false
+		    }
 		});
 
 		$("#pager_dossier_template_part").kendoPager({
@@ -236,7 +150,68 @@
 
 		$(document).on("click", ".btn-edit-dossier-template-part", function(event){
 			 event.preventDefault();
-			 formControl($(this).attr("data-pk"));
+			 $("#dossiertemplate_part_container").hide();
+			 $("#dossiertemplate_part_form_container").show();
+
+			 $("#btn_save_dossier_template_part").attr("data-pk", $(this).attr("data-pk"));
+
+			 var dataItem = dossierTemplatePartDataSource.get($(this).attr("data-pk"));
+
+			var dossierTemplateDatasource = $("#dossier_template_list_view").data("kendoListView");
+				var indexDossierTemplateSelected = dossierTemplateDatasource.select().index(),
+				    dossierTemplateSelected = dossierTemplateDatasource.dataSource.view()[indexDossierTemplateSelected];
+			var formscript, formReport, sampleData;
+			$.ajax({
+					url: "${api.server}" + "/dossiertemplates/" + dossierTemplateSelected.id + "/parts/" + dataItem.partNo + "/formscript",
+					type: "GET",
+					dataType: "json",
+					headers: {"groupId": ${groupId}},
+					async: false,
+					success: function(result) {
+						console.log("formscript: ");
+						console.log(result);
+						formscript = result;
+					}
+			 });
+			 $.ajax({
+ 					url: "${api.server}" + "/dossiertemplates/" + dossierTemplateSelected.id + "/parts/" + dataItem.partNo + "/formReport",
+ 					type: "GET",
+ 					dataType: "json",
+ 					headers: {"groupId": ${groupId}},
+ 					async: false,
+ 					success: function(result) {
+ 						console.log("formReport: ");
+ 						console.log(result);
+ 						formReport = result;
+ 					}
+ 			 });
+			 $.ajax({
+ 					url: "${api.server}" + "/dossiertemplates/" + dossierTemplateSelected.id + "/parts/" + dataItem.partNo + "/sampleData",
+ 					type: "GET",
+ 					dataType: "json",
+ 					headers: {"groupId": ${groupId}},
+ 					async: false,
+ 					success: function(result) {
+ 						console.log("sampleData: ");
+ 						console.log(result);
+ 						sampleData = result;
+ 					}
+ 			 });
+
+			 var viewModel = kendo.observable({
+					 partNo: dataItem.partNo,
+					 partName: dataItem.partName,
+					 partTip: dataItem.partTip,
+					 partType: dataItem.partType,
+					 fileTemplateNo: dataItem.fileTemplateNo,
+					 required: dataItem.required,
+					 esign: dataItem.esign,
+					 formscript: formscript,
+					 formReport: formReport,
+					 sampleData: sampleData,
+			 });
+
+			 kendo.bind($("#dossier_template_part_model"), viewModel);
 		});
 
 		$(document).on("click", "#btn_add_dossier_template_part", function(event){
@@ -255,40 +230,9 @@
 			 });
 
 			 kendo.bind($("#dossier_template_part_model"), viewModel);
+
+			 $("#btn_save_dossier_template_part").attr("data-pk", "");
 		});
-
-		var updateDossierTemplatePart = function(dataPk){
-			 var dossierTemplatePart = dossierTemplatePartDataSource.get(dataPk);
-
-			 dossierTemplatePart.set("partNo", $("#partNo").val());
-			 dossierTemplatePart.set("partName", $("#partName").val());
-			 dossierTemplatePart.set("partTip", $("#partTip").val());
-			 dossierTemplatePart.set("partType", $("#partType").val());
-			 dossierTemplatePart.set("formScript", $("#formScript").val());
-			 dossierTemplatePart.set("formReport", $("#formReport").val());
-			 dossierTemplatePart.set("sampleData", $("#sampleData").val());
-			 dossierTemplatePart.set("required", $("#required").val());
-			 dossierTemplatePart.set("fileTemplateNo", $("#fileTemplateNo").val());
-			 dossierTemplatePart.set("esign", $("#esign").val());
-
-			 dossierTemplatePartDataSource.sync();
-		}
-
-		var addDossierTemplatePart = function(){
-			 dossierTemplatePartDataSource.add({
-					"partNo": $("#partNo").val(),
-					"partName": $("#partName").val(),
-					"partTip": $("#partTip").val(),
-					"partType": $("#partType").val(),
-					"fileTemplateNo": $("#fileTemplateNo").val(),
-					"required": $("#required").val(),
-					"esign": $("#esign").val(),
-					"formScript": $("#formScript").val(),
-					"formReport": $("#formReport").val(),
-					"sampleData": $("#sampleData").val(),
-			 });
-			 dossierTemplatePartDataSource.sync();
-		};
 
 	})(jQuery);
 </script>

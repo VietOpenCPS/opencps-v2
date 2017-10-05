@@ -64,12 +64,6 @@
                 },
                 success: function(result) {
                   options.success(result);
-                },
-                error: function(result) {
-                  options.error(result);
-                  notification.show({
-                    message: "Xẩy ra lỗi, vui lòng thử lại"
-                  }, "error");
                 }
              });
           },
@@ -89,6 +83,12 @@
                   notification.show({
                     message: "Yêu cầu được thực hiện thành công"
                   }, "success");
+
+									console.log('create dossier template');
+									console.log(result);
+
+									var dossierTemplateListView = $("#dossier_template_list_view").data("kendoListView");
+									//dossierTemplateListView.select(dossierTemplateListView.element.children().last());
                 },
                 error: function(result) {
                   options.error(result);
@@ -172,6 +172,7 @@
        template: kendo.template($("#dossier_template_template").html()),
        selectable: true,
        dataBound: function(e) {
+
          var listView = e.sender;
          var firstItem = listView.element.children().first();
          listView.select(firstItem);
@@ -198,12 +199,21 @@
 					kendo.bind($("#ttmhs"), viewModel);
 
 					$("#btn_save_dossier_template").attr("data-pk", dataItem.id);
+
+					// reset state for left tab
+					$('.nav-tabs a[href="#ttmhs"]').tab('show');
+	 			  $("ul.nav.nav-tabs li:not(:first)").removeClass("disabled-tab");
+
+					$("#dossiertemplate_part_container").show();
+					$("#dossiertemplate_part_form_container").hide();
+
+					onSelectDossiertemplate(dataItem.id);
 				}
     });
 
-    $(document).on("click", ".dossier-template-item", function(event){
-      onSelectDossiertemplate($(this).attr("data-pk"));
-    });
+    // $(document).on("click", ".dossier-template-item", function(event){
+    //   onSelectDossiertemplate($(this).attr("data-pk"));
+    // });
 
     var onSelectDossiertemplate = function(id){
       $("#dossier_template_part_listview").getKendoListView().dataSource.read({
@@ -251,6 +261,11 @@
 
     $(document).on("click", "#btn_add_dossier_template", function(event){
        event.preventDefault();
+
+			 $("#dossier_template_list_view li.k-state-selected").removeClass("k-state-selected");
+			 $('.nav-tabs a[href="#ttmhs"]').tab('show');
+			 $("ul.nav.nav-tabs li:not(:first)").addClass("disabled-tab");
+
 			 var viewModel = kendo.observable({
 					 templateNo : "",
 					 templateName : "",
@@ -264,12 +279,36 @@
 
 		$(document).on("click", "#btn_save_dossier_template", function(event){
        event.preventDefault();
+			 // TODO select item that allready added
+			 $("ul.nav.nav-tabs li:not(:first)").removeClass("disabled-tab");
+
 			 var dataPk = $(this).attr("data-pk");
 			 if (dataPk){
 				 updateDossiertemplate(dataPk);
 			 } else {
 				 addDossierTemplete();
 			 }
+    });
+
+		$(document).on("click", "#btn_cancle_dossier_template", function(event){
+       event.preventDefault();
+
+			 $("ul.nav.nav-tabs li:not(:first)").removeClass("disabled-tab");
+			 $("#dossier_template_list_view li:first").addClass("k-state-selected");
+
+			 var dataItem = dossierTemplateDataSource.view()[0];
+
+			 var viewModel = kendo.observable({
+					 templateNo : dataItem.templateNo,
+					 templateName : dataItem.templateName,
+					 description : dataItem.description
+			 });
+
+			 kendo.bind($("#ttmhs"), viewModel);
+
+			 $("#btn_save_dossier_template").attr("data-pk", dataItem.id);
+
+			 onSelectDossiertemplate(dataItem.id);
     });
 
     var updateDossiertemplate = function(dataPk){
@@ -283,7 +322,12 @@
     }
 
     var addDossierTemplete = function(){
-       dossierTemplateDataSource.add({
+      //  dossierTemplateDataSource.add({
+      //     "templateNo": $("#templateNo").val(),
+      //     "templateName": $("#templateName").val(),
+      //     "description": $("#description").val(),
+      //  });
+       dossierTemplateDataSource.insert(0, {
           "templateNo": $("#templateNo").val(),
           "templateName": $("#templateName").val(),
           "description": $("#description").val(),
