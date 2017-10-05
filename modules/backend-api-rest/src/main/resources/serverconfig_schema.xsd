@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:element name="ServerConfigSearchModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- default -->
+				<xsd:element name="keyword" type="xsd:string" minOccurs="0" />
+				<xsd:element name="start" type="xsd:int" minOccurs="0" />
+				<xsd:element name="end" type="xsd:int" minOccurs="0" />
+				<xsd:element name="sort" type="xsd:string" minOccurs="0" />
+				<xsd:element name="order" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	
+	<xsd:complexType name="ServerConfigDataModel">
+		<xsd:sequence>
+			<xsd:element name="serverConfigId" type="xsd:long" minOccurs="0" /> 
+			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="serverNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="serverName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="protocol" type="xsd:string" minOccurs="0" />
+			<xsd:element name="lastSync" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="ServerConfigResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="ServerConfigDataModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	
+	<xsd:element name="ServerConfigInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="serverNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serverName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="protocol" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ServerConfigDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="serverConfigId" type="xsd:long" minOccurs="0" /> 
+				<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serverNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serverName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="protocol" type="xsd:string" minOccurs="0" />
+				<xsd:element name="lastSync" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ServerConfigSingleInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="value" type="xsd:string" minOccurs="0" /> 
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>
