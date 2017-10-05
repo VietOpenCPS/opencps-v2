@@ -19,7 +19,7 @@
 		</div>
 	</div>
 	<div class="col-sm-9 PR0" >
-	<div class="panel panel-body PL0 PR0" id="serviceConfigDetail">
+		<div class="panel panel-body PL0 PR0" id="serviceConfigDetail">
 
 		</div>
 	</div>
@@ -27,8 +27,8 @@
 <script type="text/x-kendo-template" id="serviceConfigTemplate">
 	<li style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
 		<div class="row">
-			<div class="col-sm-11 service-config-item PR0" data-pk="#:id#">
-				<p>
+			<div class="col-sm-11 PR0">
+				<p class="service-config-item" data-pk="#:id#">
 					<#-- #if(serviceName.length>40){#
 					# var dcontent = serviceName.substring(0,38)+"..."; #
 					#:kendo.toString(dcontent)#
@@ -42,24 +42,24 @@
 				<a class="item-serviceconfig-delete" href="javascript:;" data-pk="#:id#"><i class="fa fa-trash"></i></a>
 			</div>
 			<div class="col-sm-12">
-				<i class="fa fa-university"></i> <span class="ML5">#:govAgencyName#</span>
+				<i class="fa fa-university"></i> <span class="ML5 service-config-item" data-pk="#:id#">#:govAgencyName#</span>
 			</div>
 			<div class="col-sm-12">
 				#
 				var lbl = "text-link";
 				if(serviceLevel == 1){
-				lbl = "text-link";
-			} else if(serviceLevel == 2){
-			lbl = "text-link";
-		} else if(serviceLevel == 3){
-		lbl = "text-orange";
-	}else {
-	lbl = "text-danger";
-}#
-<span class="#:lbl#">Mức độ <span>#:serviceLevel#</span></span>
-</div>
-</div>
-</li>
+					lbl = "text-link";
+				} else if(serviceLevel == 2){
+					lbl = "text-link";
+				} else if(serviceLevel == 3){
+					lbl = "text-orange";
+				}else {
+					lbl = "text-danger";
+				}#
+				<span class="#:lbl# service-config-item" data-pk="#:id#">Mức độ <span>#:serviceLevel#</span></span>
+			</div>
+		</div>
+	</li>
 </script>
 
 <input type="hidden" name="itemServiceConfigId" id="itemServiceConfigId">
@@ -169,17 +169,6 @@
 			error: function(e) {
 				this.cancelChanges();
 			},
-			requestEnd: function(e) {
-				console.log(e);
-				console.log("end");
-				if(typeof e.response.data !== "undefined"){
-					var firstChild = e.response.data[0].serviceConfigId;
-					$("#itemServiceConfigId").val(firstChild);
-					console.log("itemServiceConfigId: "+$("#itemServiceConfigId").val());
-					formControl(firstChild);
-				}
-
-			},
 			autoSync: false,
 			pageSize:5,
 			serverPaging:false,
@@ -191,10 +180,22 @@
 		$("#serviceConfigListView").kendoListView({
 			dataSource:dataSourceServiceConfig,
 			template:kendo.template($("#serviceConfigTemplate").html()),
-			selectable: true,
 			remove:function(e){
 				if(!confirm('Bạn có muốn xóa ?')){
 					e.preventDefault();
+				}
+			},
+			dataBound : function(){
+				console.log(dataSourceServiceConfig.view());
+				console.log($("#listViewTTHC > li"));
+				if(dataSourceServiceConfig.view()[0]){
+					var firstChild = dataSourceServiceConfig.view()[0].id;
+
+					$("#serviceConfigListView > li").removeClass("active");
+					$("#serviceConfigListView > li:first-child").addClass("active");
+
+					$("#itemServiceConfigId").val(firstChild);
+					formControl(firstChild);
 				}
 			}
 
@@ -202,7 +203,11 @@
 
 		$(document).on("click", ".service-config-item", function(event){
 			var id = $(this).attr("data-pk");
+
 			$("#itemServiceConfigId").val($(this).attr("data-pk"));
+			$("#serviceConfigListView > li").removeClass("active");
+
+			$(this).parent().parent().parent().addClass("active");
 			console.log("itemServiceConfigId: "+$("#itemServiceConfigId").val());
 			formControl(id);
 		});

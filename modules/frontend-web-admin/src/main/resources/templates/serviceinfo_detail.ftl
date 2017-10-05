@@ -409,7 +409,7 @@
 					conditionText : $("#conditionText").summernote("code").toString()
 				},
 				success : function(result){
-					$("#itemServiceInfoId").val(result.serviceinfoId);
+					$("#itemServiceInfoId").val(result.serviceInfoId);
 					crtAddOrEdit();
 					addServiceInfoIfSuccess(result);
 				},

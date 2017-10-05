@@ -25,12 +25,12 @@
 					</div>
 				</div>
 				<div class="col-sm-12">
-					<ul class='ul-with-border '>
-						<div id='listViewTTHC'></div>
+					<ul class='ul-with-border' id="listViewTTHC">
+
 					</ul>
 					<div id='pagerTTHC' class='k-pager-wrap k-widget k-floatwrap'></div>
 					<script type="text/x-kendo-template" id="templateTTHC" >
-						<li>
+						<li class="">
 							<div class="row">
 								<div class="col-sm-12 MB5">
 									#:serviceCode#
@@ -43,10 +43,10 @@
 									<p class="showServiceinfoDetail" data-pk="#:id#">#:serviceName#</p>
 								</div>
 								<div class="col-sm-12">
-									<i class="fa fa-suitcase" aria-hidden="true"></i> <span>#:domainName#</span>
+									<i class="fa fa-suitcase" aria-hidden="true"></i> <span class="showServiceinfoDetail" data-pk="#:id#">#:domainName#</span>
 								</div>
 								<div class="col-sm-12">
-									<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i>#:administrationName#</i>
+									<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i class="showServiceinfoDetail" data-pk="#:id#">#:administrationName#</i>
 								</div>
 							</div>
 						</li>
@@ -97,21 +97,14 @@
 			total:"total",
 			data:"data",
 			model:{
-				id:"serviceinfoId"
+				id:"serviceInfoId"
 			}
 		},
 		pageSize: 5,
 		serverPaging: false,
 		serverSorting: false,
-		serverFiltering: false,
-		change : function(e){
-			console.log("change");
-			console.log(e);
-			console.log(e.items[0].id);
-			$("#itemServiceInfoId").val(e.items[0].id);
-			formControl(e.items[0].id);
+		serverFiltering: false
 
-		}
 	});
 
 	$("#listViewTTHC").kendoListView({
@@ -122,7 +115,20 @@
 				e.preventDefault();
 			}
 		},
-		seperatorColor:"transparent"
+		seperatorColor:"transparent",
+		dataBound : function(){
+			console.log(dataSourceTTHC.view());
+			console.log($("#listViewTTHC > li"));
+			if(dataSourceTTHC.view()[0]){
+				var id = dataSourceTTHC.view()[0].id;
+
+				$("#listViewTTHC > li").removeClass("active");
+				$("#listViewTTHC > li:first-child").addClass("active");
+
+				$("#itemServiceInfoId").val(id);
+				formControl(id);
+			}
+		}
 	});
 
 	$("#pagerTTHC").kendoPager({
@@ -217,6 +223,11 @@
 		event.preventDefault();
 		$("#itemServiceInfoId").val($(this).attr("data-pk"));
 		console.log($(this).attr("data-pk"));
+
+		$("#listViewTTHC > li").removeClass("active");
+		console.log($(this).parent().parent().parent());
+		$(this).parent().parent().parent().addClass("active");
+
 		formControl($(this).attr("data-pk"));
 	});
 
@@ -239,7 +250,7 @@
 
 	var updateServieInfo = function(dataPk){
 		dataSourceTTHC.transport.update({
-			"serviceinfoid":dataPk,
+			"serviceInfoId":dataPk,
 			"serviceCode":$("#serviceCode").val(),
 			"serviceName":$("#serviceName").val(),
 			"processText":$("#serviceProcess").val(),
@@ -294,7 +305,7 @@
 
 	var addServiceInfoIfSuccess=function(result){
 		dataSourceTTHC.add({
-			"serviceinfoId": result.serviceinfoId,
+			"serviceInfoId": result.serviceInfoId,
 			"serviceCode":result.serviceCode,
 			"serviceName":result.serviceName,
 			"processText":result.processText,

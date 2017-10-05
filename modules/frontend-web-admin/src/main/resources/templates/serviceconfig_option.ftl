@@ -10,27 +10,16 @@
 </ul>
 <div id='pagerServiceConfigOption'></div>
 <script type="text/x-kendo-template" id="serviceConfigOptionTemplate">
-	<li style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
+	<li style="padding: 10px 0 10px 5px;" role="option" aria-selected="true" class="bindServiceConfig">
 		<div class="row">
 			<div class="col-sm-6">
-				<#-- #
-				var lbl = "text-link";
-				if(serviceLevel == 1){
-					lbl = "text-link";
-				} else if(serviceLevel == 2){
-					lbl = "text-link";
-				} else if(serviceLevel == 3){
-					lbl = "text-orange";
-				}else {
-					lbl = "text-danger";
-				}# -->
-				<span>Cấp phép cho người Việt Nam định cư ở nước ngoài, tổ chức cá nhân Cấp phép cho người Việt Nam định cư ở nước ngoài, tổ chức cá nhân Cấp phép cho người Việt Nam định cư ở nước ngoài, tổ chức cá nhân</span> <br>
-				<i class="fa fa-university"></i> <span class="ML5">Cục điện ảnh</span> <span class="ML5 pull-right text-link">Mức độ 2</span>
+				<span>#:itemIndex#. <span data-bind="text: serviceName"></span></span> <br>
+				<i class="fa fa-university"></i> <span class="ML5" data-bind="text: govAgencyName"></span> <span class="ML5 pull-right serviceLevelConfig" data-bind="text: serviceLevel" > </span>
 			</div>
 			<div class="col-sm-6 border-left" >
 				<div class="row">
 					<div class="col-sm-11">
-						<p>Tên mẫu hồ sơ: Cấp phép cho người Việt Nam định cư ở nước ngoài, tổ chức cá nhân ...</p>
+						<p>Tên mẫu hồ sơ: #:templateName#</p>
 					</div>
 					<div class="col-sm-1 PL0 PR0">
 						<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit"><i class="fa fa-pencil"></i></a>
@@ -38,7 +27,7 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-11">
-						<p>Tên quy trình thủ tục: Cấp phép cho người Việt Nam định cư ở nước ngoài, tổ chức cá nhân ...</p>
+						<p>Tên quy trình thủ tục: #:processName#</p>
 					</div>
 					<div class="col-sm-1 PL0 PR0">
 						<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnDelete"><i class="fa fa-trash"></i></a>
@@ -49,6 +38,8 @@
 	</li>
 </script>
 <script type="text/javascript">
+
+	var localIndexServiceOption = 0;
 	var dataSourceServiceOption=new kendo.data.DataSource({
 		transport:{
 			read:function(options){
@@ -147,7 +138,7 @@
 			this.cancelChanges();
 		},
 		autoSync: false,
-		pageSize:6,
+		pageSize:3,
 		serverPaging:false,
 		serverSorting:false,
 		serverFiltering:false
@@ -162,8 +153,65 @@
 				e.preventDefault();
 			}
 		},
-		autoBind: true
+		autoBind: true,
+		template: function(data){
+
+			var _pageSize = dataSourceServiceOption.pageSize();
+
+			localIndexServiceOption++;
+
+			var currentPage = $("#pagerServiceConfigOption").data("kendoPager").page();
+			var totalPage =  $("#pagerServiceConfigOption").data("kendoPager").totalPages();
+
+			var index = (currentPage-1)*_pageSize + localIndexServiceOption;
+
+			data.itemIndex = index;
+
+			return kendo.template($("#serviceConfigOptionTemplate").html())(data);
+
+		},
+		dataBinding: function() {
+			localIndexServiceOption = 0;
+		},
+		dataBound: function() {
+			bindServiceConfig();
+		}
 	});
+
+	var bindServiceConfig = function(){
+		var serviceConfigId = $("#itemServiceConfigId").val();
+		if(serviceConfigId > 0){
+			$.ajax({
+				url: "${api.server}/serviceconfigs/"+serviceConfigId,
+				dataType:"json",
+				type:"GET",
+				headers: {"groupId": ${groupId}},
+				success:function(result){
+					var viewModel = kendo.observable({
+						serviceName : result.serviceName,
+						govAgencyName : result.govAgencyName,
+						serviceLevel : function(e){
+							if(result.serviceLevel == 1){
+								$(".serviceLevelConfig").addClass("text-link");
+							} else if(result.serviceLevel == 2){
+								$(".serviceLevelConfig").addClass("text-link");
+							} else if(result.serviceLevel == 3){
+								$(".serviceLevelConfig").addClass("text-orange");
+							}else {
+								$(".serviceLevelConfig").addClass("text-danger");
+							}
+							return "Mức độ "+result.serviceLevel
+						}
+					});
+
+					kendo.bind($(".bindServiceConfig"), viewModel);
+				},
+				error:function(result){
+
+				}
+			});
+		}
+	};
 
 	$("#pagerServiceConfigOption").kendoPager({
 		dataSource:dataSourceServiceOption,
