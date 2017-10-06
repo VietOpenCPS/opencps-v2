@@ -222,6 +222,7 @@
 	$(document).on("click", ".showServiceinfoDetail", function(event){
 		event.preventDefault();
 		$("#itemServiceInfoId").val($(this).attr("data-pk"));
+		console.log("show detail");
 		console.log($(this).attr("data-pk"));
 
 		$("#listViewTTHC > li").removeClass("active");

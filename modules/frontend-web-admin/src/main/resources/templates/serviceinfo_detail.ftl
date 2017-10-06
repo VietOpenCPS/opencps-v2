@@ -52,7 +52,7 @@
 								<label>Cơ quan thực hiện:</label>
 							</div>
 							<div class="col-sm-8">
-								<select class="form-control" id="administration" name="administration" data-bind="value: administrationName" required="required" validationMessage="Bạn phải chọn cơ quan">
+								<select class="form-control" id="administration" name="administration" data-bind="value: administrationCode" required="required" validationMessage="Bạn phải chọn cơ quan">
 									<option value=""></option>
 									<#list administrations as item>
 									<option value="${item.id}">${item.name}</option>
@@ -68,7 +68,7 @@
 								<label>Lĩnh vực:</label>
 							</div>
 							<div class="col-sm-8">
-								<select class="form-control" id="domain" name="domain" data-bind="value: domainName" required="required" validationMessage="Bạn phải chọn lĩnh vực">
+								<select class="form-control" id="domain" name="domain" data-bind="value:domainCode" required="required" validationMessage="Bạn phải chọn lĩnh vực">
 									<option value=""></option>
 									<#list domains as item>
 									<option value="${item.id}">${item.name}</option>
@@ -270,6 +270,7 @@
 			dataType : "json",
 			type : "GET",
 			success : function(result){
+				console.log(result.domainName);
 				var viewModel = kendo.observable({
 					fileTemplateDownLoad : function(e){
 						var serviceInfoId = $("#itemServiceInfoId").val();
