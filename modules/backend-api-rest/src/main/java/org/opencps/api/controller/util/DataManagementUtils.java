@@ -73,6 +73,7 @@ public class DataManagementUtils {
 			for (Document document : listDocument) {
 				ett = new Groups();
 
+				ett.setDictGroupId(Long.valueOf(document.get("entryClassPK")));
 				ett.setGroupCode(document.get(DictGroupTerm.GROUP_CODE));
 				ett.setGroupName(document.get(DictGroupTerm.GROUP_NAME));
 				ett.setGroupNameEN(document.get(DictGroupTerm.GROUP_NAME_EN));

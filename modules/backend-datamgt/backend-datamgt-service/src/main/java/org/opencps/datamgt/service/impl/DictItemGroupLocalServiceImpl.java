@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.constants.DictItemGroupTerm;
 import org.opencps.datamgt.exception.NoSuchDictItemGroupException;
 import org.opencps.datamgt.model.DictItemGroup;
@@ -182,7 +183,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 		if (!hasPermission) {
 			throw new UnauthorizationException();
 		}
-		DictItemGroup dictItemGroup = dictItemGroupPersistence.fetchByPrimaryKey(dictItemGroupId);
+		DictItemGroup dictItemGroup = null;
 		try {
 
 			dictItemGroup = dictItemGroupPersistence.remove(dictItemGroupId);
@@ -318,7 +319,8 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 		String groupId = (String) params.get(DictItemGroupTerm.GROUP_ID);
 		String userId = (String) params.get(DictItemGroupTerm.USER_ID);
 		String dictItemId = (String) params.get(DictItemGroupTerm.DICT_ITEM_ID);
-
+		String groupCode = (String) params.get(DictGroupTerm.GROUP_CODE);
+		
 		Indexer<DictItemGroup> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DictItemGroup.class);
 
 		searchContext.addFullQueryEntryClassName(DictItemGroup.class.getName());
@@ -371,7 +373,17 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 		}
+		
+		if (Validator.isNotNull(groupCode)) {
 
+			MultiMatchQuery query = new MultiMatchQuery(groupCode);
+
+			query.addFields(DictGroupTerm.GROUP_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+		}
+		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, DictItemGroup.class.getName());
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -386,7 +398,8 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 		String groupId = (String) params.get(DictItemGroupTerm.GROUP_ID);
 		String userId = (String) params.get(DictItemGroupTerm.USER_ID);
 		String dictItemId = (String) params.get(DictItemGroupTerm.DICT_ITEM_ID);
-
+		String groupCode = (String) params.get(DictGroupTerm.GROUP_CODE);
+		
 		Indexer<DictItemGroup> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DictItemGroup.class);
 
 		searchContext.addFullQueryEntryClassName(DictItemGroup.class.getName());
@@ -436,6 +449,17 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 		}
+		
+		if (Validator.isNotNull(groupCode)) {
+
+			MultiMatchQuery query = new MultiMatchQuery(groupCode);
+
+			query.addFields(DictGroupTerm.GROUP_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+		}
+		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, DictItemGroup.class.getName());
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);

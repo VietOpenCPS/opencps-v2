@@ -1,12 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
 
-<service-builder auto-namespace-tables="false"
-	package-path="org.opencps.datamgt">
+<service-builder auto-namespace-tables="false" package-path="org.opencps.datamgt">
 	<author>khoavu</author>
 	<namespace>DataMgt</namespace>
-
-
+	
 	<entity name="DictCollection" uuid="true" local-service="true"
 		remote-service="false" table="opencps_dictcollection">
 
@@ -72,7 +70,6 @@
 		<column name="level" type="int" />
 		<column name="sibling" type="String" />
 		<column name="treeIndex" type="String" />
-		<column name="dataForm" type="String" />
 		<column name="metaData" type="String" />
 
 		<!-- Order -->
@@ -101,6 +98,11 @@
 			<finder-column name="dictCollectionId"></finder-column>
 			<finder-column name="groupId"></finder-column>
 		</finder>
+		
+		<finder return-type="Collection" name="F_parentItemId">
+			<finder-column name="parentItemId"></finder-column>
+		</finder>
+		
 	</entity>
 
 	<entity name="DictGroup" uuid="true" local-service="true"
@@ -126,7 +128,7 @@
 		<column name="groupName" type="String" />
 		<column name="groupNameEN" type="String" />
 		<column name="groupDescription" type="String" />
-
+		
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="dictGroupId" />
@@ -137,9 +139,9 @@
 			<finder-column name="groupCode"></finder-column>
 			<finder-column name="groupId"></finder-column>
 		</finder>
-
+		
 	</entity>
-
+	
 	<entity name="DictItemGroup" uuid="true" local-service="true"
 		remote-service="false" table="opencps_dictitemgroup">
 
@@ -161,6 +163,11 @@
 		<column name="dictGroupId" type="long" />
 		<column name="dictItemId" type="long" />
 
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="dictGroupId" />
+		</order>
+
 		<finder return-type="DictItemGroup" name="F_dictItemId_dictGroupId">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="dictGroupId"></finder-column>
@@ -176,9 +183,9 @@
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="dictItemId"></finder-column>
 		</finder>
-
+		
 	</entity>
-
+	
 	<entity name="WorkTime" uuid="true" local-service="true"
 		remote-service="false" table="opencps_workTime">
 
@@ -202,14 +209,14 @@
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>
-
+		
 		<finder return-type="WorkTime" name="F_day">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="day"></finder-column>
 		</finder>
-
+		
 	</entity>
-
+	
 	<entity name="Holiday" uuid="true" local-service="true"
 		remote-service="false" table="opencps_holiday">
 
@@ -239,7 +246,7 @@
 			<finder-column name="holidayDate"></finder-column>
 		</finder>
 	</entity>
-
+	
 	<entity name="Comment" uuid="true" local-service="true"
 		remote-service="false" table="opencps_comment">
 
@@ -263,9 +270,9 @@
 		<column name="parent" type="long" />
 		<column name="content" type="String" />
 		<column name="fileEntryId" type="long" />
-		<column name="upvoteCount" type="long" />
+		<column name="pings" type="String"></column>
+		<column name="upvoteCount" type="int" />
 		<column name="userHasUpvoted" type="String" />
-		<column name="createdByCurrentUser" type="long" />
 
 		<!-- Order -->
 		<order by="asc">
@@ -273,7 +280,7 @@
 		</order>
 
 	</entity>
-
+	
 	<entity name="Voting" uuid="true" local-service="true"
 		remote-service="false" table="opencps_voting">
 
@@ -293,9 +300,11 @@
 		<column name="className" type="String" />
 		<column name="classPK" type="String" />
 		<column name="subject" type="String" />
-		<column name="answers" type="String" />
-		<column name="dueDate" type="Date" />
+		<column name="choices" type="String" />
 
+		<!-- extend -->
+		<column name="templateNo" type="String" />
+		<column name="commentable" type="boolean" />
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />
@@ -320,7 +329,6 @@
 		<!-- Other fields -->
 
 		<column name="votingId" type="long" />
-		<column name="toUserId" type="long" />
 		<column name="fullname" type="String" />
 		<column name="email" type="String" />
 		<column name="comment" type="String" />

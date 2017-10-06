@@ -23,6 +23,7 @@
 			<xsd:element name="serverName" type="xsd:string" minOccurs="0" />
 			<xsd:element name="protocol" type="xsd:string" minOccurs="0" />
 			<xsd:element name="lastSync" type="xsd:string" minOccurs="0" />
+			<xsd:element name="configs" type="xsd:string" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -56,6 +57,7 @@
 				<xsd:element name="serverName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="protocol" type="xsd:string" minOccurs="0" />
 				<xsd:element name="lastSync" type="xsd:string" minOccurs="0" />
+				<xsd:element name="configs" type="xsd:string" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>

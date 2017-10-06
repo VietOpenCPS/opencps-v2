@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -41,10 +42,11 @@ import javax.xml.bind.annotation.XmlType;
     "total",
     "groups"
 })
-@XmlRootElement(name = "DictGroupResults")
+@XmlRootElement(name = "data")
 public class DictGroupResults {
 
     protected long total;
+    @XmlElement(name = "data")
     protected List<Groups> groups;
 
     /**

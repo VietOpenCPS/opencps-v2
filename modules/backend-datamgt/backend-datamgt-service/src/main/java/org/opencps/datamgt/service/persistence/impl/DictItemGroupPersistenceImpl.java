@@ -107,7 +107,8 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 			DictItemGroupModelImpl.FINDER_CACHE_ENABLED,
 			DictItemGroupImpl.class, FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 			"findByUuid", new String[] { String.class.getName() },
-			DictItemGroupModelImpl.UUID_COLUMN_BITMASK);
+			DictItemGroupModelImpl.UUID_COLUMN_BITMASK |
+			DictItemGroupModelImpl.DICTGROUPID_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_UUID = new FinderPath(DictItemGroupModelImpl.ENTITY_CACHE_ENABLED,
 			DictItemGroupModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
@@ -908,7 +909,8 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 			"findByUuid_C",
 			new String[] { String.class.getName(), Long.class.getName() },
 			DictItemGroupModelImpl.UUID_COLUMN_BITMASK |
-			DictItemGroupModelImpl.COMPANYID_COLUMN_BITMASK);
+			DictItemGroupModelImpl.COMPANYID_COLUMN_BITMASK |
+			DictItemGroupModelImpl.DICTGROUPID_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_UUID_C = new FinderPath(DictItemGroupModelImpl.ENTITY_CACHE_ENABLED,
 			DictItemGroupModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
@@ -2317,7 +2319,8 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 			"findByF_dictItemId",
 			new String[] { Long.class.getName(), Long.class.getName() },
 			DictItemGroupModelImpl.GROUPID_COLUMN_BITMASK |
-			DictItemGroupModelImpl.DICTITEMID_COLUMN_BITMASK);
+			DictItemGroupModelImpl.DICTITEMID_COLUMN_BITMASK |
+			DictItemGroupModelImpl.DICTGROUPID_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_F_DICTITEMID = new FinderPath(DictItemGroupModelImpl.ENTITY_CACHE_ENABLED,
 			DictItemGroupModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_dictItemId",
