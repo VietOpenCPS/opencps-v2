@@ -88,9 +88,9 @@
 							<div class="col-sm-8">
 								<select class="form-control" id="level" name="level" data-bind="value: levelName" required="required" validationMessage="Bạn phải chọn mức độ">
 									<option value=""></option>
-									<#list levels as item>
-									<option value="${item.id}">${item.name}</option>
-									</#list>
+									<option value="2">Mức độ 2</option>
+									<option value="3">Mức độ 3</option>
+									<option value="4">Mức độ 4</option>
 								</select>
 								<span data-for="level" class="k-invalid-msg"></span>
 							</div>
@@ -266,12 +266,6 @@
 		placeholder : "Chọn mức độ",
 		dataTextFiled : "name",
 		dataValueField : "value",
-		data : [
-		{ name : "Mức độ 1", value : 1},
-		{ name : "Mức độ 2", value : 2},
-		{ name : "Mức độ 3", value : 3},
-		{ name : "Mức độ 4", value : 4}
-		],
 		noDataTemplate: 'Không có dữ liệu'
 	});
 	$("#status").kendoComboBox({

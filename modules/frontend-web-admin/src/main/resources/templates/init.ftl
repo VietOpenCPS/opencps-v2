@@ -47,6 +47,7 @@
 
 <!-- script -->
 <script type="text/javascript">
+	// notification
   var notification;
   $(document).ready(function() {
     notification = $("#notification").kendoNotification({
@@ -68,6 +69,14 @@
           }
         ]
     }).data("kendoNotification");
+
+    // kendo combo box auto open when click
+		$("[data-role=combobox]").each(function() {
+      var widget = $(this).getKendoComboBox();
+      widget.input.on("focus", function() {
+        widget.open();
+      });
+    });
   });
 </script>
 
