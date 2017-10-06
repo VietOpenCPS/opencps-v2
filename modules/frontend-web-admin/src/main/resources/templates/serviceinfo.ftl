@@ -33,7 +33,7 @@
 						<li class="">
 							<div class="row">
 								<div class="col-sm-12 MB5">
-									#:serviceCode#
+									<span class="showServiceinfoDetail" data-pk="#:id#">#:serviceCode# </span>
 									#if(typeof public !== "undefined" && public) {#
 									<i class="fa fa-check ML5" aria-hidden="true"></i>
 									#} #
@@ -64,6 +64,7 @@
 	<input type="hidden" name="itemServiceInfoId" id="itemServiceInfoId">
 </div>
 <script type="text/javascript">
+	var loadFirst = true;
 	var dataSourceTTHC=new kendo.data.DataSource({
 		transport:{
 			read: function(options) {
@@ -100,7 +101,7 @@
 				id:"serviceInfoId"
 			}
 		},
-		pageSize: 5,
+		pageSize: 2,
 		serverPaging: false,
 		serverSorting: false,
 		serverFiltering: false
@@ -116,18 +117,21 @@
 			}
 		},
 		seperatorColor:"transparent",
-		dataBound : function(){
+		dataBinding : function(){
 			console.log(dataSourceTTHC.view());
 			console.log($("#listViewTTHC > li"));
-			if(dataSourceTTHC.view()[0]){
-				var id = dataSourceTTHC.view()[0].id;
+			if(loadFirst){
+				if(dataSourceTTHC.view()[0]){
+					var id = dataSourceTTHC.view()[0].id;
 
-				$("#listViewTTHC > li").removeClass("active");
-				$("#listViewTTHC > li:first-child").addClass("active");
+					$("#listViewTTHC > li").removeClass("active");
+					$("#listViewTTHC > li:first-child").addClass("active");
 
-				$("#itemServiceInfoId").val(id);
-				formControl(id);
+					$("#itemServiceInfoId").val(id);
+					formControl(id);
+				}
 			}
+			loadFirst = false;
 		}
 	});
 
