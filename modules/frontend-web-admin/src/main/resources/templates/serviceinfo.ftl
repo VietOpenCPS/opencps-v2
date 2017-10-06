@@ -165,6 +165,7 @@
 				total : "total"
 			}
 		},
+		index : -1,
 		change:function(){
 			dataSourceTTHC.read({
 				"domain": $("#domainCodeSearch").val(),
@@ -207,6 +208,7 @@
 				total : "total"
 			}
 		},
+		index : -1,
 		filter:"contains",
 		noDataTemplate: 'Không có dữ liệu'
 	});
