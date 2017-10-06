@@ -243,6 +243,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 		if (Validator.isNotNull(activeStatus))
 			serviceInfo.setPublic_(GetterUtil.getBoolean(activeStatus));
+		
 		serviceInfoPersistence.update(serviceInfo);
 
 		return serviceInfo;

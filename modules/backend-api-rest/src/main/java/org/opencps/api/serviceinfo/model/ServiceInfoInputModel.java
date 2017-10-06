@@ -70,7 +70,10 @@ import com.liferay.portal.kernel.util.StringPool;
     "administrationCode",
     "domainCode",
     "_public",
-    "maxLevel"
+    "maxLevel",
+    "administrationName",
+    "domainName"
+
 })
 @XmlRootElement(name = "ServiceInfoInputModel")
 public class ServiceInfoInputModel {
@@ -131,13 +134,32 @@ public class ServiceInfoInputModel {
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "domainCode")
     protected String domainCode;
 
-	@XmlElement(name = "public_")
-	@DefaultValue("1") @FormParam(value = "_public")
-    protected Integer _public;
+	@XmlElement(name = "public")
+	@FormParam(value = "_public")
+    protected String _public;
 
 	
 	@DefaultValue("2") @FormParam(value = "maxLevel")
     protected Integer maxLevel;
+	
+    public String getAdministrationName() {
+		return administrationName;
+	}
+
+	public void setAdministrationName(String administrationName) {
+		this.administrationName = administrationName;
+	}
+
+	public String getDomainName() {
+		return domainName;
+	}
+
+	public void setDomainName(String domainName) {
+		this.domainName = domainName;
+	}
+
+	protected String administrationName;
+    protected String domainName;
 
     /**
      * Gets the value of the serviceInfoId property.
@@ -483,7 +505,7 @@ public class ServiceInfoInputModel {
      *     {@link Integer }
      *     
      */
-    public Integer getPublic() {
+    public String getPublic() {
         return _public;
     }
 
@@ -495,7 +517,7 @@ public class ServiceInfoInputModel {
      *     {@link Integer }
      *     
      */
-    public void setPublic(Integer value) {
+    public void setPublic(String value) {
         this._public = value;
     }
 

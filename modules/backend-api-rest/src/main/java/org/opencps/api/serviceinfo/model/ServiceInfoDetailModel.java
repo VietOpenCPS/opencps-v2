@@ -104,8 +104,8 @@ public class ServiceInfoDetailModel {
     protected String domainCode;
     protected String domainName;
     protected Integer maxLevel;
-    @XmlElement(name = "public_")
-    protected Integer _public;
+    @XmlElement(name = "public")
+    protected String _public;
     protected List<FileTemplates> fileTemplates;
     protected List<ServiceInfoServiceConfig> serviceConfigs;
 
@@ -573,7 +573,7 @@ public class ServiceInfoDetailModel {
      *     {@link Integer }
      *     
      */
-    public Integer getPublic() {
+    public String getPublic() {
         return _public;
     }
 
@@ -585,7 +585,7 @@ public class ServiceInfoDetailModel {
      *     {@link Integer }
      *     
      */
-    public void setPublic(Integer value) {
+    public void setPublic(String value) {
         this._public = value;
     }
 
