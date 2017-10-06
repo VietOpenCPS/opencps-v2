@@ -35,7 +35,7 @@
 					<div class="col-sm-6 MB15">
 						<label>Cơ quan thực hiện</label>
 						<select class="form-control" id="govAgency" name="govAgency" data-bind="value: govAgencyName" required="required" validationMessage="Bạn phải chọn cơ quan thực hiện">
-							
+
 						</select>
 						<span data-for="govAgency" class="k-invalid-msg"></span>
 					</div>
@@ -48,10 +48,6 @@
 					<div class="col-sm-12 MB15">
 						<label>Quy trình thực hiện dịch vụ</label>
 						<select class="form-control" id="process" name="process" data-bind="value: processName" required="required" validationMessage="Bạn phải chọn quy trình">
-							<option value=""></option>
-							<#list levels as item>
-							<option value="${item.id}">${item.name}</option>
-							</#list> 
 						</select>
 						<span data-for="process" class="k-invalid-msg"></span>
 					</div>
