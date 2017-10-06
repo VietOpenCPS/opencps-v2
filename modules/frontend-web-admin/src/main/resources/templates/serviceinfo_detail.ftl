@@ -88,9 +88,9 @@
 							<div class="col-sm-8">
 								<select class="form-control" id="level" name="level" data-bind="value: levelName" required="required" validationMessage="Bạn phải chọn mức độ">
 									<option value=""></option>
-									<#list levels as item>
-									<option value="${item.id}">${item.name}</option>
-									</#list>
+									<option value="2">Mức độ 2</option>
+									<option value="3">Mức độ 3</option>
+									<option value="4">Mức độ 4</option>
 								</select>
 								<span data-for="level" class="k-invalid-msg"></span>
 							</div>
@@ -256,7 +256,8 @@
 		noDataTemplate: 'Không có dữ liệu'
 	});
 	$("#level").kendoComboBox({
-		placeholder : "Chọn mức độ"
+		placeholder : "Chọn mức độ",
+		noDataTemplate: 'Không có dữ liệu'
 	});
 
 	$("#status").kendoComboBox({
@@ -550,8 +551,7 @@
 	});
 
 	var addServiceInfoIfSuccess=function(result){
-		console.log(result.serviceCode);
-		console.log(result.domainName);
+		console.log(result);
 		dataSourceTTHC.insert(0,{
 			"serviceInfoId": result.serviceInfoId,
 			"serviceCode":result.serviceCode,

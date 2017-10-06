@@ -102,7 +102,7 @@
         '${ajax.serviceprocess}',
         '${ajax.serviceconfig}',
         'holiday.ftl',
-        'paymentconfig.ftl',
+        '${ajax.payment_config}',
         '${ajax.manage_account}',
         'efrom.ftl'
       ]
