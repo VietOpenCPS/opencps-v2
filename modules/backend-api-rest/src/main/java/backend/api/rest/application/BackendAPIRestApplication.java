@@ -57,9 +57,6 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new DossierFileImpl());
 		singletons.add(new DossierLogImpl());
 		singletons.add(new ServerConfigManagementImpl());
-		
-//		singletons.add( new TestRest());
-//		singletons.add( new CloneTest());
 
 		singletons.add(new DataManagementImpl());
 		singletons.add(new HolidayManagementImpl());

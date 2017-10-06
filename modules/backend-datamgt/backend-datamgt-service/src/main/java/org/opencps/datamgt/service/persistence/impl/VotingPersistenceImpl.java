@@ -1827,8 +1827,9 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 		votingImpl.setClassName(voting.getClassName());
 		votingImpl.setClassPK(voting.getClassPK());
 		votingImpl.setSubject(voting.getSubject());
-		votingImpl.setAnswers(voting.getAnswers());
-		votingImpl.setDueDate(voting.getDueDate());
+		votingImpl.setChoices(voting.getChoices());
+		votingImpl.setTemplateNo(voting.getTemplateNo());
+		votingImpl.setCommentable(voting.isCommentable());
 
 		return votingImpl;
 	}

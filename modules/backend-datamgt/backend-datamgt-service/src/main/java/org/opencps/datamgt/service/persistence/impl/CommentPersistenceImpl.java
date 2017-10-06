@@ -1833,9 +1833,9 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		commentImpl.setParent(comment.getParent());
 		commentImpl.setContent(comment.getContent());
 		commentImpl.setFileEntryId(comment.getFileEntryId());
+		commentImpl.setPings(comment.getPings());
 		commentImpl.setUpvoteCount(comment.getUpvoteCount());
 		commentImpl.setUserHasUpvoted(comment.getUserHasUpvoted());
-		commentImpl.setCreatedByCurrentUser(comment.getCreatedByCurrentUser());
 
 		return commentImpl;
 	}

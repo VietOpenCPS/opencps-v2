@@ -20,11 +20,14 @@ import java.util.List;
 
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.exception.NoSuchDictItemException;
+import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.base.DictItemLocalServiceBaseImpl;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -51,7 +54,9 @@ import com.liferay.portal.kernel.search.generic.MatchQuery.Operator;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.TermQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
@@ -152,7 +157,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		dictItem.setParentItemId(parentItemId);
 		dictItem.setSibling(sibling);
 		dictItem.setTreeIndex(treeIndex);
-		dictItem.setLevel(level);
+		dictItem.setLevel(StringUtil.count(treeIndex, StringPool.PERIOD));
 		dictItem.setMetaData(metaData);
 
 		// referent dictcollection
@@ -161,13 +166,14 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		dictItem.setExpandoBridgeAttributes(baseModel);
 
 		dictItemPersistence.update(dictItem);
-
+		
 		return dictItem;
 	}
 
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public DictItem deleteDictItem(long dictItemId, ServiceContext serviceContext) throws Exception {
+	public DictItem deleteDictItem(long dictItemId, ServiceContext serviceContext)
+			throws UnauthenticationException, UnauthorizationException, NotFoundException {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
@@ -187,7 +193,15 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		try {
 
-			dictItem = dictItemPersistence.remove(dictItemId);
+			List<DictItem> listItem = dictItemPersistence.findByF_parentItemId(dictItemId);
+
+			if (Validator.isNotNull(listItem) && listItem.size() > 0) {
+				throw new UnauthorizationException();
+			} else {
+
+				dictItem = dictItemPersistence.remove(dictItemId);
+
+			}
 
 		} catch (NoSuchDictItemException e) {
 			throw new NotFoundException();
@@ -272,7 +286,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		DictItem dictColl = dictItemPersistence.fetchByF_dictItemCode(itemCode, dictItem.getGroupId());
 
-		if (dictColl.getDictItemId() != dictItemId) {
+		if (Validator.isNotNull(dictColl) && dictColl.getDictItemId() != dictItemId) {
 
 			throw new DuplicateCategoryException();
 
@@ -295,13 +309,12 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		dictItem.setItemDescription(itemDescription);
 		dictItem.setParentItemId(parentItemId);
 		dictItem.setSibling(sibling);
-		dictItem.setLevel(level);
 		dictItem.setMetaData(metaData);
 
 		String treeIndex = getTreeIndex(dictItemId, parentItemId, sibling);
 
 		dictItem.setTreeIndex(treeIndex);
-
+		dictItem.setLevel(StringUtil.count(treeIndex, StringPool.PERIOD));
 		// referent dictcollection
 		BaseModel<?> baseModel = DictCollectionLocalServiceUtil.fetchDictCollection(dictCollectionId);
 
@@ -332,6 +345,11 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 			DictItem parentItem = dictItemPersistence.findByPrimaryKey(dictParentItemId);
 
+//			if(Validator.isNull(sibling) || GetterUtil.get(sibling, 0) == 0){
+//				DictItem ett = dictItemPersistence.fetchByF_parentItemId_Last(parentItem.getDictItemId(), null);
+//				sibling 
+//			}
+			
 			String ext = "";
 
 			for (int i = 0; i < 4 - sibling.length(); i++) {
