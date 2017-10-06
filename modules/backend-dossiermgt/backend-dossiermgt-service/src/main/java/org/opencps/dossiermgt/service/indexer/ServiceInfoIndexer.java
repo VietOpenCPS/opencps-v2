@@ -70,7 +70,8 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 		document.addKeywordSortable(ServiceInfoTerm.DOMAIN_NAME, object.getDomainName());
 		document.addKeywordSortable(ServiceInfoTerm.DOMAIN_INDEX, object.getDomainIndex());
 		document.addNumberSortable(ServiceInfoTerm.MAX_LEVEL, object.getMaxLevel());
-		document.addKeywordSortable(ServiceInfoTerm.PUBLIC_, object.getPublic_());
+		
+		document.addKeywordSortable(ServiceInfoTerm.PUBLIC_, Boolean.toString(object.getPublic_()));
 
 		return document;
 	}
