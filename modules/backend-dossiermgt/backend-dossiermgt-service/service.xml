@@ -730,6 +730,28 @@
 		<column name="actionNote" type="String"/>
 
 	</entity>
+	
+	<entity local-service="true" name="DossierSync"
+		remote-service="false" table="opencps_dossiersync" uuid="true">
+		
+		<column name="dossierSyncId" type="long" primary="true" />
+		
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		
+		<column name="dossierId" type="long"/>
+		<column name="dossierReferenceUid" type="String"/>
+		<column name="createDossier" type="boolean"/>
+		<column name="method" type="int"/>
+		<column name="classPK" type="long"/>
+		<column name="fileReferenceUid" type="String"/>
+		<column name="serverNo" type="String"/>
+	</entity>
 
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
