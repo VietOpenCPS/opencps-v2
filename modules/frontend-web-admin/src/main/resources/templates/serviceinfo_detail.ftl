@@ -86,7 +86,7 @@
 								<label>Mức độ:</label>
 							</div>
 							<div class="col-sm-8">
-								<select class="form-control" id="level" name="level" data-bind="value: levelName" required="required" validationMessage="Bạn phải chọn mức độ">
+								<select class="form-control" id="level" name="level" data-bind="value: maxLevel" required="required" validationMessage="Bạn phải chọn mức độ">
 									<option value="2">Mức độ 2</option>
 									<option value="3">Mức độ 3</option>
 									<option value="4">Mức độ 4</option>
@@ -280,6 +280,8 @@
 					serviceCode: result.serviceCode,
 					administrationName: result.administrationName,
 					domainName: result.domainName,
+					administrationCode: result.administrationCode,
+					domainCode: result.domainCode,
 					resultText: function(e){
 						$('#resultText').summernote('code', result.resultText);
 					},
@@ -308,7 +310,7 @@
 						$('#conditionText').summernote('code', result.conditionText);
 					},
 					fileTemplates : result.fileTemplates,
-					levelName: result.levelName,
+					maxLevel: result.maxLevel,
 					deleteFileTemplate : function(e){
 						var fileTemplates = this.get("fileTemplates");
 						var idFileTemplate = e.data.fileTemplateNo;
