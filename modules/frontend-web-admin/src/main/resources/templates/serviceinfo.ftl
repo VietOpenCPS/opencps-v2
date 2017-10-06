@@ -356,7 +356,7 @@
 						if(item){
 							var index = dataSourceTTHC.remove(item);
 							var currentItemId = $("#itemServiceInfoId").val();
-							if(item.id === currentItemId){
+							if(id === currentItemId){
 								$("#itemServiceInfoId").val("");
 								formControl();
 							}
