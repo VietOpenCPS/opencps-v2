@@ -101,7 +101,7 @@
 				id:"serviceInfoId"
 			}
 		},
-		pageSize: 2,
+		pageSize: 10,
 		serverPaging: false,
 		serverSorting: false,
 		serverFiltering: false
@@ -310,6 +310,7 @@
 		var id = $(this).attr("data-pk");
 		if(id && id > 0){
 			var item =  dataSourceTTHC.get(id);
+			console.log(item);
 			var cf = confirm("Bạn có muốn xóa "+item.serviceCode+"!");
 			if(cf){
 				$.ajax({
@@ -318,13 +319,24 @@
 					type : "DELETE",
 					headers: {"groupId": ${groupId}},
 					success : function(result){
-
 						if(item){
 							var index = dataSourceTTHC.remove(item);
+							var currentItemId = $("#itemServiceInfoId").val();
+							if(item.id === currentItemId){
+								$("#itemServiceInfoId").val("");
+								formControl();
+							}
 						}
+
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
+
 					},
 					error : function(xhr){
-
+						notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");
 					}
 				});
 			}else {
