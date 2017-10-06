@@ -10,8 +10,7 @@
 					<div class="form-group search-icon MT10">
 						<input type="text" id="keywordSearchServiceConfig" name="keywordSearchServiceConfig" class="form-control" placeholder="Nhập từ khóa">
 					</div>
-					<ul class='ul-with-border'>
-						<div id='serviceConfigListView'></div>
+					<ul class='ul-with-border' id="serviceConfigListView">
 					</ul>
 					<div id='pager'></div>
 				</div>
@@ -191,8 +190,8 @@
 				if(dataSourceServiceConfig.view()[0]){
 					var firstChild = dataSourceServiceConfig.view()[0].id;
 
-					$("#serviceConfigListView > li").removeClass("active");
-					$("#serviceConfigListView > li:first-child").addClass("active");
+					$("#serviceConfigListView > li").removeClass("k-state-selected");
+					$("#serviceConfigListView > li:first-child").addClass("k-state-selected");
 
 					$("#itemServiceConfigId").val(firstChild);
 					formControl(firstChild);
@@ -205,9 +204,9 @@
 			var id = $(this).attr("data-pk");
 
 			$("#itemServiceConfigId").val($(this).attr("data-pk"));
-			$("#serviceConfigListView > li").removeClass("active");
+			$("#serviceConfigListView > li").removeClass("k-state-selected");
 
-			$(this).parent().parent().parent().addClass("active");
+			$(this).parent().parent().parent().addClass("k-state-selected");
 			console.log("itemServiceConfigId: "+$("#itemServiceConfigId").val());
 			formControl(id);
 		});

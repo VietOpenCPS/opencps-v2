@@ -338,6 +338,36 @@
 							}
 
 						}
+					},
+					addFiletemplate : function(e){
+						var idServiceinfo = $("#itemServiceInfoId").val();
+						if(idServiceinfo>0){
+							var data = $("#serviceInfoFileTemplateForm").serialize();
+							$.ajax({
+								url : "${api.server}/serviceinfos/"+idServiceinfo+"/filetemplates",
+								dataType : "json",
+								type : "POST",
+								data : data,
+								success : function(result){
+									notification.show({
+										message: "Yêu cầu được thực hiện thành công"
+									}, "success");
+									this.get("fileTemplates").push({
+										fileTemplateNo: $("#fileTemplateNo").val(),
+										templateName: $("#templateName").val(),
+									});
+									$("#serviceInfoFileTempalteDialog").modal('hide');
+
+								},
+								error : function(xhr){
+									notification.show({
+										message: "Xẩy ra lỗi, vui lòng thử lại"
+									}, "error");
+								}
+							});
+						}else {
+
+						}
 					}
 				});
 

@@ -114,8 +114,8 @@
 				if(dataSourceTTHC.view()[0]){
 					var id = dataSourceTTHC.view()[0].id;
 
-					$("#listViewTTHC > li").removeClass("active");
-					$("#listViewTTHC > li:first-child").addClass("active");
+					$("#listViewTTHC > li").removeClass("k-state-selected");
+					$("#listViewTTHC > li:first-child").addClass("k-state-selected");
 
 					$("#itemServiceInfoId").val(id);
 					formControl(id);
@@ -259,9 +259,9 @@
 		console.log("show detail");
 		console.log($(this).attr("data-pk"));
 
-		$("#listViewTTHC > li").removeClass("active");
+		$("#listViewTTHC > li").removeClass("k-state-selected");
 		console.log($(this).parent().parent().parent());
-		$(this).parent().parent().parent().addClass("active");
+		$(this).parent().parent().parent().addClass("k-state-selected");
 
 		formControl($(this).attr("data-pk"));
 	});
