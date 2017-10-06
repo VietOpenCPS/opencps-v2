@@ -10,15 +10,9 @@
 					<button class="btn btn-active form-control MB5" id="btnAddServiceInfo"><i class="glyphicon glyphicon-plus"></i> Thêm thủ tục </button>
 					<select class="form-control" id="administrationCodeSearch" name="administrationCodeSearch">
 						<option value=""></option>
-						<#list administrations as item>
-						<option value="${item.id}">${item.name}</option>
-						</#list>
 					</select>
 					<select class="form-control" id="domainCodeSearch" name="domainCodeSearch">
 						<option value=""></option>
-						<#list domains as item>
-						<option value="${item.id}">${item.name}</option>
-						</#list>
 					</select>
 					<div class="form-group search-icon">
 						<input type="text" id="keyword" name="keyword" class="form-control" placeholder="Nhập từ khóa">
@@ -149,8 +143,28 @@
 
 	$("#administrationCodeSearch").kendoComboBox({
 		placeholder:"Chọn cơ quan",
-		dataTextField:"administrationName",
-		dataValueField:"administrationCode",
+		dataTextField:"itemName",
+		dataValueField:"itemCode",
+		dataSource : {
+			transport : {
+				read : {
+					url : "${api.server}/dictcollections/GOVERNMENT_AGENCY/dictitems",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
+
+					},
+					error : function(xhr){
+
+					}
+				}
+			},
+			schema: {
+				data : "data",
+				total : "total"
+			}
+		},
 		change:function(){
 			dataSourceTTHC.read({
 				"domain": $("#domainCodeSearch").val(),
@@ -164,14 +178,34 @@
 
 	$("#domainCodeSearch").kendoComboBox({
 		placeholder:"Chọn lĩnh vực",
-		dataTextField:"domainName",
-		dataValueField:"domainCode",
+		dataTextField:"itemName",
+		dataValueField:"itemCode",
 		change:function(){
 			dataSourceTTHC.read({
 				"domain": $("#domainCodeSearch").val(),
 				"administration" :$("#administrationCodeSearch").val(),
 				"keyword": $("#keyword").val()
 			});
+		},
+		dataSource : {
+			transport : {
+				read : {
+					url : "${api.server}/dictcollections/SERVICE_DOMAIN/dictitems",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
+
+					},
+					error : function(xhr){
+
+					}
+				}
+			},
+			schema: {
+				data : "data",
+				total : "total"
+			}
 		},
 		filter:"contains",
 		noDataTemplate: 'Không có dữ liệu'
