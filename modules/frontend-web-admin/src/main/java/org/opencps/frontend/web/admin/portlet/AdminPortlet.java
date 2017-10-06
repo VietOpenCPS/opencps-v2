@@ -2,7 +2,6 @@
 package org.opencps.frontend.web.admin.portlet;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
@@ -232,10 +231,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		// set varible
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("api", apiObject);
-		renderRequest.setAttribute("administrations", Collections.EMPTY_LIST);
-		renderRequest.setAttribute("domains", Collections.EMPTY_LIST);
-		renderRequest.setAttribute("status", Collections.EMPTY_LIST);
-		renderRequest.setAttribute("levels", Collections.EMPTY_LIST);
 
 		super.render(renderRequest, renderResponse);
 	}

@@ -13,13 +13,9 @@
 
 	<#assign ajax = (Request.ajax)!>
 	<#assign api = (Request.api)!>
-	<#assign administrations = (Request.administrations)!>
-	<#assign domains = (Request.domains)!>
 	<#assign serviceInfoStatuses = (Request.serviceInfoStatuses)!>
 	<#assign serviceInfo = (Request.SERVICE_INFO)!>
 	<#assign portletNamespace = (Request.portletNamespace)!>
-	<#assign levels = (Request.levels)!>
-	<#assign status = (Request.status)!>
 
 	<#assign groupId = themeDisplay.getScopeGroupId() />
 	<#assign userId = themeDisplay.getUserId() />

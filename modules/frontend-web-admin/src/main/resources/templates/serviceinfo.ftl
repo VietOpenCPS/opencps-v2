@@ -8,12 +8,8 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<button class="btn btn-active form-control MB5" id="btnAddServiceInfo"><i class="glyphicon glyphicon-plus"></i> Thêm thủ tục </button>
-					<select class="form-control" id="administrationCodeSearch" name="administrationCodeSearch">
-						<option value=""></option>
-					</select>
-					<select class="form-control" id="domainCodeSearch" name="domainCodeSearch">
-						<option value=""></option>
-					</select>
+					<select class="form-control" id="administrationCodeSearch" name="administrationCodeSearch"></select>
+					<select class="form-control" id="domainCodeSearch" name="domainCodeSearch"></select>
 					<div class="form-group search-icon">
 						<input type="text" id="keyword" name="keyword" class="form-control" placeholder="Nhập từ khóa">
 					</div>
@@ -40,7 +36,7 @@
 									<i class="fa fa-suitcase" aria-hidden="true"></i> <span class="showServiceinfoDetail" data-pk="#:id#">#:domainName#</span>
 								</div>
 								<div class="col-sm-12">
-									<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i class="showServiceinfoDetail" data-pk="#:id#">#:administrationName#</i> 
+									<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i class="showServiceinfoDetail" data-pk="#:id#">#:administrationName#</i>
 								</div>
 							</div>
 						</li>
@@ -165,7 +161,6 @@
 				total : "total"
 			}
 		},
-		index : -1,
 		change:function(){
 			dataSourceTTHC.read({
 				"domain": $("#domainCodeSearch").val(),
@@ -208,7 +203,6 @@
 				total : "total"
 			}
 		},
-		index : -1,
 		filter:"contains",
 		noDataTemplate: 'Không có dữ liệu'
 	});
@@ -325,7 +319,7 @@
 		});
 	};
 
-	
+
 
 	var setDefaultValueMultiSelect=function(dataPk){
 		if(dataPk>0){
