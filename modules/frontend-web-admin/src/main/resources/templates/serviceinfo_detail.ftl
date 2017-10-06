@@ -87,7 +87,6 @@
 							</div>
 							<div class="col-sm-8">
 								<select class="form-control" id="level" name="level" data-bind="value: levelName" required="required" validationMessage="Bạn phải chọn mức độ">
-									<option value=""></option>
 									<option value="2">Mức độ 2</option>
 									<option value="3">Mức độ 3</option>
 									<option value="4">Mức độ 4</option>
@@ -103,7 +102,6 @@
 							</div>
 							<div class="col-sm-8">
 								<select class="form-control" id="status" name="status" required="required" validationMessage="Bạn phải chọn trạng thái">
-									<option value=""></option>
 									<option value="true">Công khai</option>
 									<option value="false">Không công khai</option>
 								</select>
@@ -205,7 +203,7 @@
 
 	$("#administration").kendoComboBox({
 		placeholder : "Chọn cơ quan thực hiện",
-		dataTextFiled : "itemName",
+		dataTextField : "itemName",
 		dataValueField : "itemCode",
 		dataSource : {
 			transport : {
@@ -231,7 +229,7 @@
 	});
 	$("#domain").kendoComboBox({
 		placeholder : "Chọn lĩnh vực thủ tục",
-		dataTextFiled : "itemName",
+		dataTextField : "itemName",
 		dataValueField : "itemCode",
 		dataSource : {
 			transport : {
