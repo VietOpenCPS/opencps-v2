@@ -67,6 +67,7 @@
 </div>
 <script type="text/javascript">
 	var dataSourceServiceConfig;
+	var firstLoadServiceConfig =true;
 	(function($){
 
 		dataSourceServiceConfig=new kendo.data.DataSource({
@@ -187,15 +188,19 @@
 			dataBound : function(){
 				console.log(dataSourceServiceConfig.view());
 				console.log($("#listViewTTHC > li"));
-				if(dataSourceServiceConfig.view()[0]){
-					var firstChild = dataSourceServiceConfig.view()[0].id;
+				if(firstLoadServiceConfig){
+					if(dataSourceServiceConfig.view()[0]){
+						var firstChild = dataSourceServiceConfig.view()[0].id;
 
-					$("#serviceConfigListView > li").removeClass("k-state-selected");
-					$("#serviceConfigListView > li:first-child").addClass("k-state-selected");
+						$("#serviceConfigListView > li").removeClass("k-state-selected");
+						$("#serviceConfigListView > li:first-child").addClass("k-state-selected");
 
-					$("#itemServiceConfigId").val(firstChild);
-					formControl(firstChild);
+						$("#itemServiceConfigId").val(firstChild);
+						formControl(firstChild);
+					}
 				}
+				
+				firstLoadServiceConfig =false;
 			}
 
 		});

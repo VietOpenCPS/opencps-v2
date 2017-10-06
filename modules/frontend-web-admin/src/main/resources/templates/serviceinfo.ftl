@@ -107,7 +107,7 @@
 			}
 		},
 		seperatorColor:"transparent",
-		dataBinding : function(){
+		dataBound : function(){
 			console.log(dataSourceTTHC.view());
 			console.log($("#listViewTTHC > li"));
 			if(loadFirst){
@@ -262,8 +262,7 @@
 		$("#listViewTTHC > li").removeClass("k-state-selected");
 		console.log($(this).parent().parent().parent());
 		$(this).parent().parent().parent().addClass("k-state-selected");
-
-		formControl($(this).attr("data-pk"));
+		pullDataDetail($(this).attr("data-pk"));
 	});
 
 	$(document).on("click", "#btnAddServiceInfo", function(event){
