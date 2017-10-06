@@ -48,18 +48,18 @@
 				#
 				var lbl = "text-link";
 				if(serviceLevel == 1){
-					lbl = "text-link";
-				} else if(serviceLevel == 2){
-					lbl = "text-link";
-				} else if(serviceLevel == 3){
-					lbl = "text-orange";
-				}else {
-					lbl = "text-danger";
-				}#
-				<span class="#:lbl# service-config-item" data-pk="#:id#">Mức độ <span>#:serviceLevel#</span></span>
-			</div>
-		</div>
-	</li>
+				lbl = "text-link";
+			} else if(serviceLevel == 2){
+			lbl = "text-link";
+		} else if(serviceLevel == 3){
+		lbl = "text-orange";
+	}else {
+	lbl = "text-danger";
+}#
+<span class="#:lbl# service-config-item" data-pk="#:id#">Mức độ <span>#:serviceLevel#</span></span>
+</div>
+</div>
+</li>
 </script>
 
 <input type="hidden" name="itemServiceConfigId" id="itemServiceConfigId">
@@ -378,9 +378,14 @@
 							if(itemDelete){
 								var index = dataSourceServiceOption.remove(itemDelete);
 							}
+							notification.show({
+								message: "Yêu cầu được thực hiện thành công"
+							}, "success");
 						},
 						error : function(xhr){
-
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
 						}
 					});
 				}else{

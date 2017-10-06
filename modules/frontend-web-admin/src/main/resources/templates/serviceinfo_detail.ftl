@@ -49,7 +49,7 @@
 					<div class="col-sm-6">
 						<div class="row">
 							<div class="col-sm-4">
-								<label>Cơ quan:</label>
+								<label>Cơ quan thực hiện:</label>
 							</div>
 							<div class="col-sm-8">
 								<select class="form-control" id="administration" name="administration" data-bind="value: administrationName" required="required" validationMessage="Bạn phải chọn cơ quan">
@@ -205,16 +205,103 @@
 	});
 
 	$("#administration").kendoComboBox({
-		placeholder : "Chọn cơ quan thực hiện"
+		placeholder : "Chọn cơ quan thực hiện",
+		dataTextFiled : "",
+		dataValueField : "",
+		dataSource : {
+			transport : {
+				read : {
+					url : "",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
+
+					},
+					error : function(xhr){
+
+					}
+				}
+			},
+			schema: {
+				data : "data",
+				total : "total",
+				model : {
+					id : "id"
+				}
+			}
+		},
+		noDataTemplate: 'Không có dữ liệu'
 	});
 	$("#domain").kendoComboBox({
-		placeholder : "Chọn lĩnh vực thủ tục"
+		placeholder : "Chọn lĩnh vực thủ tục",
+		dataTextFiled : "",
+		dataValueField : "",
+		dataSource : {
+			transport : {
+				read : {
+					url : "",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
+
+					},
+					error : function(xhr){
+
+					}
+				}
+			},
+			schema: {
+				data : "data",
+				total : "total",
+				model : {
+					id : "id"
+				}
+			}
+		},
+		noDataTemplate: 'Không có dữ liệu'
 	});
 	$("#level").kendoComboBox({
-		placeholder : "Chọn mức độ"
+		placeholder : "Chọn mức độ",
+		dataTextFiled : "name",
+		dataValueField : "value",
+		data : [
+		{ name : "Mức độ 1", value : 1},
+		{ name : "Mức độ 2", value : 2},
+		{ name : "Mức độ 3", value : 3},
+		{ name : "Mức độ 4", value : 4}
+		],
+		noDataTemplate: 'Không có dữ liệu'
 	});
 	$("#status").kendoComboBox({
-		placeholder : "Chọn trạng thái"
+		placeholder : "Chọn trạng thái",
+		dataTextFiled : "",
+		dataValueField : "",
+		dataSource : {
+			transport : {
+				read : {
+					url : "",
+					dataType : "json",
+					headers: {"groupId": ${groupId}},
+					type : "GET",
+					success : function(result){
+
+					},
+					error : function(xhr){
+
+					}
+				}
+			},
+			schema: {
+				data : "data",
+				total : "total",
+				model : {
+					id : "id"
+				}
+			}
+		},
+		noDataTemplate: 'Không có dữ liệu'
 	});
 
 	var pullDataDetail= function(id){
@@ -387,9 +474,14 @@
 				},
 				success : function(result){
 					updateServieInfoIfSuccess(idServiceinfo,result);
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công"
+					}, "success");
 				},
 				error : function(xhr){
-
+					notification.show({
+						message: "Xẩy ra lỗi, vui lòng thử lại"
+					}, "error");
 				}
 			});
 		}else{
@@ -415,9 +507,15 @@
 					$("#itemServiceInfoId").val(result.serviceInfoId);
 					crtAddOrEdit();
 					addServiceInfoIfSuccess(result);
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công"
+					}, "success");
+
 				},
 				error : function(xhr){
-
+					notification.show({
+						message: "Xẩy ra lỗi, vui lòng thử lại"
+					}, "error");
 				}
 			});
 		}
@@ -445,9 +543,14 @@
 					},
 					success : function(result){
 						updateServieInfoIfSuccess(idServiceinfo,result);
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
 					},
 					error : function(xhr){
-
+						notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");
 					}
 				});
 			}else{
@@ -471,9 +574,14 @@
 						addServiceInfoIfSuccess(result);
 						console.log($("#itemServiceInfoId").val());
 						crtAddOrEdit();
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
 					},
 					error : function(xhr){
-
+						notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");
 					}
 				});
 			}
@@ -503,6 +611,8 @@
 	}
 
 	var updateServieInfoIfSuccess = function(dataPk,result){
+		console.log(result.serviceCode);
+		console.log(result.domainName);
 		dataSourceTTHC.fetch(function() {
 			var item = dataSourceTTHC.get(dataPk);
 			item.set("serviceCode",result.serviceCode);

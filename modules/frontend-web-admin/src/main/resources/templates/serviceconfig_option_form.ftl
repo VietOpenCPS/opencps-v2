@@ -332,9 +332,14 @@
 						},
 						success : function(result){
 							updateServieConfigoptionIfSuccess(id,result);
+							notification.show({
+								message: "Yêu cầu được thực hiện thành công"
+							}, "success");
 						},
 						error : function(xhr){
-
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
 						}
 					});
 
@@ -353,9 +358,14 @@
 						},
 						success : function(result){
 							addServiceConfigOptionIfSuccess(result);
+							notification.show({
+								message: "Yêu cầu được thực hiện thành công"
+							}, "success");
 						},
 						error : function(xhr){
-
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
 						}
 					});
 					
