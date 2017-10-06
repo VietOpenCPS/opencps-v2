@@ -168,6 +168,22 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		manageAccountURL.setParameter(
 			"mvcPath", "/templates/manage_account.ftl");
 
+		PortletURL paymentConfigtURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		paymentConfigtURL.setPortletMode(PortletMode.VIEW);
+		paymentConfigtURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		paymentConfigtURL.setParameter(
+			"mvcPath", "/templates/paymentconfig.ftl");
+
+		PortletURL paymentConfigFormURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		paymentConfigFormURL.setPortletMode(PortletMode.VIEW);
+		paymentConfigFormURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		paymentConfigFormURL.setParameter(
+			"mvcPath", "/templates/paymentconfig_form.ftl");
+
 		urlObject.put("serviceinfo_list", serviceInfoListURL.toString());
 		urlObject.put("serviceinfo_form", serviceInfoFormURL.toString());
 		urlObject.put(
@@ -190,6 +206,8 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		urlObject.put(
 			"serviceconfig_option", serviceConfigOptionURL.toString());
 		urlObject.put("manage_account", manageAccountURL.toString());
+		urlObject.put("payment_config", paymentConfigtURL.toString());
+		urlObject.put("paymentconfig_form", paymentConfigFormURL.toString());
 
 		// set object edit
 		long serviceInfoId = ParamUtil.getLong(renderRequest, "serviceInfoId");

@@ -466,7 +466,7 @@
 						public : $("#status").val()
 					},
 					success : function(result){
-						$("#itemServiceInfoId").val(result.serviceinfoId.toString());
+						$("#itemServiceInfoId").val(result.serviceInfoId);
 						console.log($("#itemServiceInfoId").val());
 						addServiceInfoIfSuccess(result);
 						console.log($("#itemServiceInfoId").val());
@@ -482,6 +482,7 @@
 	});
 
 	var addServiceInfoIfSuccess=function(result){
+		console.log(result);
 		dataSourceTTHC.insert(0,{
 			"serviceInfoId": result.serviceInfoId,
 			"serviceCode":result.serviceCode,
