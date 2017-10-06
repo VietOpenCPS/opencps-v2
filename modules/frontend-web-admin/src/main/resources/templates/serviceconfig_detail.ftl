@@ -35,20 +35,13 @@
 					<div class="col-sm-6 MB15">
 						<label>Cơ quan thực hiện</label>
 						<select class="form-control" id="govAgency" name="govAgency" data-bind="value: govAgencyName" required="required" validationMessage="Bạn phải chọn cơ quan thực hiện">
-							<option value=""></option>
-							<#list administrations as item>
-							<option value="${item.id}">${item.name}</option>
-							</#list> 
+							
 						</select>
 						<span data-for="govAgency" class="k-invalid-msg"></span>
 					</div>
 					<div class="col-sm-6 MB15">
 						<label>Mức độ</label>
 						<select class="form-control" id="serviceLevel" name="serviceLevel" data-bind="value: serviceLevel" required="required" validationMessage="Bạn phải chọn mức độ">
-							<option value=""></option>
-							<#list levels as item>
-							<option value="${item.id}">${item.name}</option>
-							</#list> 
 						</select>
 						<span data-for="serviceLevel" class="k-invalid-msg"></span>
 					</div>
@@ -311,34 +304,31 @@
 
 	$("#govAgency").kendoComboBox({
 		placeholder : "Chọn cơ quan",
-		dataTextField:"processName",
-		dataValueField:"processNo",
+		dataTextField:"itemName",
+		dataValueField:"itemCode",
 		noDataTemplate: 'Không có dữ liệu',
 		filter: "contains",
-		/*dataSource:Ơ
-			transport:Ơ
-				read:Ơ
-					url:"${api.server}/serviceprocesses",
-					dataType:"json",
-					type:"GET",
-					success:function(result)Ơ
+		dataSource : {
+			transport : {
+				read : {
+					url : "${api.server}/dictcollections/SERVICE_DOMAIN/dictitems",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
 
-					Ư,
-					ẻo:function(result)Ơ
+					},
+					error : function(xhr){
 
-					Ư
-				Ư
-			Ư,
-			schema:Ơ
-				dât:"dât",
-				total:"total",
-				model:Ơ
-					id:"processNo"
-				Ư
-			Ư
-			Ư*/
-			dataSource : []
-		});
+					}
+				}
+			},
+			schema: {
+				data : "data",
+				total : "total"
+			}
+		}
+	});
 	
 	$("#process").kendoComboBox({
 		placeholder : "Chọn tiến trình",
@@ -374,33 +364,30 @@
 
 	$("#domainCode").kendoComboBox({
 		placeholder : "Chọn lĩnh vực",
-		dataTextField:"processName",
-		dataValueField:"processNo",
+		dataTextField:"itemName",
+		dataValueField:"itemCode",
 		noDataTemplate: 'Không có dữ liệu',
 		filter: "contains",
-		/*dataSource:{
-			transport:{
-				read:{
-					url:"${api.server}/serviceprocesses",
-					dataType:"json",
-					type:"GET",
-					success:function(result){
+		dataSource : {
+			transport : {
+				read : {
+					url : "${api.server}/dictcollections/SERVICE_DOMAIN/dictitems",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
 
 					},
-					error:function(result){
+					error : function(xhr){
 
 					}
 				}
 			},
-			schema:{
-				data:"data",
-				total:"total",
-				model:{
-					id:"processNo"
-				}
+			schema: {
+				data : "data",
+				total : "total"
 			}
-		}*/
-		dataSource : []
+		}
 	});
 
 	$("#service").kendoComboBox({
