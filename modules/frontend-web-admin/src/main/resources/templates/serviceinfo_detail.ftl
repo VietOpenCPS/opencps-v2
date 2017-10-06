@@ -53,10 +53,8 @@
 							</div>
 							<div class="col-sm-8">
 								<select class="form-control" id="administration" name="administration" data-bind="value: administrationCode" required="required" validationMessage="Bạn phải chọn cơ quan">
-									<option value=""></option>
-									<#list administrations as item>
-									<option value="${item.id}">${item.name}</option>
-									</#list>
+									
+									
 								</select>
 								<span data-for="administration" class="k-invalid-msg"></span>
 							</div>
@@ -69,10 +67,8 @@
 							</div>
 							<div class="col-sm-8">
 								<select class="form-control" id="domain" name="domain" data-bind="value:domainCode" required="required" validationMessage="Bạn phải chọn lĩnh vực">
-									<option value=""></option>
-									<#list domains as item>
-									<option value="${item.id}">${item.name}</option>
-									</#list>
+									
+									
 								</select>
 								<span data-for="domain" class="k-invalid-msg"></span>
 							</div>
