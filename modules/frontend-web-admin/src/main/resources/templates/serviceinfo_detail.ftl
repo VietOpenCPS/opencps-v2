@@ -104,9 +104,8 @@
 							<div class="col-sm-8">
 								<select class="form-control" id="status" name="status" required="required" validationMessage="Bạn phải chọn trạng thái">
 									<option value=""></option>
-									<#list status as item>
-									<option value="${item.id}">${item.name}</option>
-									</#list>
+									<option value="true">Công khai</option>
+									<option value="false">Không công khai</option>
 								</select>
 								<span data-for="status" class="k-invalid-msg"></span>
 							</div>
@@ -206,12 +205,12 @@
 
 	$("#administration").kendoComboBox({
 		placeholder : "Chọn cơ quan thực hiện",
-		dataTextFiled : "",
-		dataValueField : "",
+		dataTextFiled : "itemName",
+		dataValueField : "itemCode",
 		dataSource : {
 			transport : {
 				read : {
-					url : "",
+					url : "${api.server}/dictcollections/GOVERNMENT_AGENCY/dictitems",
 					dataType : "json",
 					type : "GET",
 					headers: {"groupId": ${groupId}},
@@ -225,22 +224,19 @@
 			},
 			schema: {
 				data : "data",
-				total : "total",
-				model : {
-					id : "id"
-				}
+				total : "total"
 			}
 		},
 		noDataTemplate: 'Không có dữ liệu'
 	});
 	$("#domain").kendoComboBox({
 		placeholder : "Chọn lĩnh vực thủ tục",
-		dataTextFiled : "",
-		dataValueField : "",
+		dataTextFiled : "itemName",
+		dataValueField : "itemCode",
 		dataSource : {
 			transport : {
 				read : {
-					url : "",
+					url : "${api.server}/dictcollections/SERVICE_DOMAIN/dictitems",
 					dataType : "json",
 					type : "GET",
 					headers: {"groupId": ${groupId}},
@@ -254,53 +250,17 @@
 			},
 			schema: {
 				data : "data",
-				total : "total",
-				model : {
-					id : "id"
-				}
+				total : "total"
 			}
 		},
 		noDataTemplate: 'Không có dữ liệu'
 	});
 	$("#level").kendoComboBox({
-		placeholder : "Chọn mức độ",
-		dataTextFiled : "name",
-		dataValueField : "value",
-		data : [
-		{ name : "Mức độ 1", value : 1},
-		{ name : "Mức độ 2", value : 2},
-		{ name : "Mức độ 3", value : 3},
-		{ name : "Mức độ 4", value : 4}
-		],
-		noDataTemplate: 'Không có dữ liệu'
+		placeholder : "Chọn mức độ"
 	});
+
 	$("#status").kendoComboBox({
 		placeholder : "Chọn trạng thái",
-		dataTextFiled : "",
-		dataValueField : "",
-		dataSource : {
-			transport : {
-				read : {
-					url : "",
-					dataType : "json",
-					headers: {"groupId": ${groupId}},
-					type : "GET",
-					success : function(result){
-
-					},
-					error : function(xhr){
-
-					}
-				}
-			},
-			schema: {
-				data : "data",
-				total : "total",
-				model : {
-					id : "id"
-				}
-			}
-		},
 		noDataTemplate: 'Không có dữ liệu'
 	});
 
