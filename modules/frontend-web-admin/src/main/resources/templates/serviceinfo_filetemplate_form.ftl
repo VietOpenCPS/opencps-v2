@@ -49,10 +49,17 @@
 				type : "POST",
 				data : data,
 				success : function(result){
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công"
+					}, "success");
+
 					$("#serviceInfoFileTempalteDialog").modal('hide');
+
 				},
 				error : function(xhr){
-
+					notification.show({
+						message: "Xẩy ra lỗi, vui lòng thử lại"
+					}, "error");
 				}
 			});
 		}else {

@@ -46,7 +46,7 @@
 									<i class="fa fa-suitcase" aria-hidden="true"></i> <span class="showServiceinfoDetail" data-pk="#:id#">#:domainName#</span>
 								</div>
 								<div class="col-sm-12">
-									<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i class="showServiceinfoDetail" data-pk="#:id#">#:administrationName#</i>
+									<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i class="showServiceinfoDetail" data-pk="#:id#">#:administrationName#</i> 
 								</div>
 							</div>
 						</li>

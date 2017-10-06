@@ -186,9 +186,14 @@
 					},
 					success : function(result){
 						updateServieConfigIfSuccess(id,result);
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
 					},
 					error : function(xhr){
-
+						notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");
 					}
 				});
 			}else {
@@ -213,10 +218,15 @@
 						addServiceConfigIfSuccess(result);
 						$("#itemServiceConfigId").val(result.serviceConfigId);
 						funcCheckValueItem();
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
 					},
 					error : function(xhr){
-
-					}
+						notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");
+					}	
 				});
 			}
 		}
