@@ -1,5 +1,5 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <div class="">
@@ -100,6 +100,35 @@
 				</div>
 			</div>
 		</div>
+		<div class="service-process-create-dossier-file-form-action-controls">
+			<div class="service-process-create-dossier-file-form-action-entry">
+				<div class="row MT10">
+					<div class="col-xs-12 col-sm-12">Tài liệu tạo mới</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-5">
+						<select class="form-control" id="createDossierFiles" name="createDossierFiles" data-bind="value:createDossierFiles">
+							<option value=""></option>
+
+						</select>
+					</div>
+					<div class="col-xs-12 col-sm-2">
+						<div class="checkbox"> <input type="checkbox" name="" data-bind="value:"> <label>Bắt buộc</label> </div>
+					</div>
+					<div class="col-xs-12 col-sm-2">
+						<div class="checkbox"> <input type="checkbox" name="" data-bind="value:"> <label>Ký số</label> </div>
+					</div>
+					<#-- <div class="col-xs-12 col-sm-2">
+						<div class="checkbox"> <input type="checkbox" name="" dât-bind="value:"> <label>Trả về</label> </div>
+					</div> -->
+					<div class="col-xs-12 col-sm-3">
+						<button class="btn btn-success btn-add-action-role-create-dossier-file" type="button">
+							<span class="glyphicon glyphicon-plus"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="service-process-form-action-controls">
 			<div class="service-process-form-action-entry">
 				<div class="row MT10">
@@ -118,10 +147,10 @@
 					<div class="col-xs-12 col-sm-2">
 						<div class="checkbox"> <input type="checkbox" name="" data-bind="value:"> <label>Ký số</label> </div>
 					</div>
-					<div class="col-xs-12 col-sm-2">
-						<div class="checkbox"> <input type="checkbox" name="" data-bind="value:"> <label>Trả về</label> </div>
-					</div>
-					<div class="col-xs-12 col-sm-1">
+					<#-- <div class="col-xs-12 col-sm-2">
+						<div class="checkbox"> <input type="checkbox" name="" dât-bind="value:"> <label>Trả về</label> </div>
+					</div> -->
+					<div class="col-xs-12 col-sm-3">
 						<button class="btn btn-success btn-add-action-role" type="button">
 							<span class="glyphicon glyphicon-plus"></span>
 						</button>
@@ -130,7 +159,7 @@
 			</div>
 		</div>
 		<div class="row MT10">
-			<div class="col-xs-12 col-sm-5">
+			<div class="col-xs-12 col-sm-12">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
 						<div class="checkbox"> <input type="checkbox" name="requestPayment" data-bind="value:requestPayment"> <label>Yêu cầu thanh toán</label> </div>
@@ -139,6 +168,12 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
 						<input class="form-control" type="text" name="" value="" data-bind="value:stepName">
+					</div>
+				</div>
+				<div class="row">
+					<label>Mã đồng bộ</label>
+					<div class="col-xs-12 col-sm-12">
+						<input class="form-control" type="text" name="syncActionCode" id="syncActionCode" value="" data-bind="value:stepName">
 					</div>
 				</div>
 			</div>
@@ -156,20 +191,39 @@
 		e.preventDefault();
 
 		var controlForm = $('.service-process-form-action-controls'),
-				currentEntry = $(this).parents('.service-process-form-action-entry:first'),
-				newEntry = $(currentEntry.clone()).appendTo(controlForm);
+		currentEntry = $(this).parents('.service-process-form-action-entry:first'),
+		newEntry = $(currentEntry.clone()).appendTo(controlForm);
 
 		newEntry.find('select').val('');
 		newEntry.find('input [type="radio"]').val('');
 
 		controlForm.find('.service-process-form-action-entry:not(:last) .btn-add-action-role')
-				.removeClass('btn-add-action-role').addClass('btn-remove-action-role')
-				.removeClass('btn-success').addClass('btn-danger')
-				.html('<span class="glyphicon glyphicon-minus"></span>');
-		}).on('click', '.btn-remove-action-role', function(e){
-			$(this).parents('.service-process-form-action-entry:first').remove();
-			e.preventDefault();
-			return false;
+		.removeClass('btn-add-action-role').addClass('btn-remove-action-role')
+		.removeClass('btn-success').addClass('btn-danger')
+		.html('<span class="glyphicon glyphicon-minus"></span>');
+	}).on('click', '.btn-remove-action-role', function(e){
+		$(this).parents('.service-process-form-action-entry:first').remove();
+		e.preventDefault();
+		return false;
+	});
+
+	$(document).on("click",".btn-add-action-role-create-dossier-file",function(e){
+		e.preventDefault();
+
+		var controlForm = $('.service-process-create-dossier-file-form-action-controls'),
+		currentEntry = $(this).parents('.service-process-create-dossier-file-form-action-entry:first'),
+		newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+		newEntry.find('select').val('');
+		newEntry.find('input [type="radio"]').val('');
+
+		controlForm.find('.service-process-create-dossier-file-form-action-entry:not(:last) .btn-add-action-role-create-dossier-file')
+		.removeClass('btn-add-action-role-create-dossier-file').addClass('btn-remove-action-role-create-dossier-file')
+		.removeClass('btn-success').addClass('btn-danger')
+	}).on('click', '.btn-remove-action-role-create-dossier-file', function(e){
+		$(this).parents('.service-process-create-dossier-file-form-action-entry:first').remove();
+		e.preventDefault();
+		return false;
 	});
 
 	$("#preProcessStepId").kendoComboBox({

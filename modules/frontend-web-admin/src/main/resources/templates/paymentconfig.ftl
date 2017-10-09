@@ -3,6 +3,7 @@
 </#if>
 <div class="row panel panel-body">
  <div class="col-sm-6">
+  <label>Tên cơ quan thực hiện  </label>
   <select class="form-control" id="govAgencyCode" name="govAgencyCode" data-bind="value: govAgencyCode" required="required" validationMessage="Bạn phải chọn cơ quan">
     <option value=""></option>
 
