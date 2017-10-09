@@ -34,9 +34,17 @@ public class WorkspaceTerm {
 
 	public static final String WORKSPACE_NAME = "name";
 	
+	public static final String SCOPE = "scope";
+	
 	public static final String SEQ_ORDER = "seqOrder";
 	
 	public static final String OWN_USER = "ownUser";
+	
+	public static final String PARENT_ID = "parentId";
+	
+	public static final String TREE_INDEX = "treeIndex";
+	
+	public static final String LEVEL = "level";
 	
 	public static final String WORKSPACE_ID_SORTABLE = "workspaceId_sortable";
 
@@ -54,7 +62,15 @@ public class WorkspaceTerm {
 
 	public static final String WORKSPACE_NAME_SORTABLE = "name_sortable";
 	
+	public static final String SCOPE_SORTABLE = "scope_sortable";
+	
 	public static final String SEQ_ORDER_SORTABLE = "seqOrder_sortable";
+	
+	public static final String PARENT_ID_SORTABLE = "parentId_sortable";
+	
+	public static final String TREE_INDEX_SORTABLE = "treeIndex_sortable";
+	
+	public static final String LEVEL_SORTABLE = "level_sortable";
 	
 	public WorkspaceTerm() {
 
@@ -70,7 +86,19 @@ public class WorkspaceTerm {
 	private Date createDate;
 	private Date modifiedDate;
 	private int seqOrder;
+	private String scope;
+	private long parentId;
+	private String treeIndex;
+	private int level;
 	
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
+
 	public long getWorkspaceId() {
 		return workspaceId;
 	}
@@ -144,6 +172,30 @@ public class WorkspaceTerm {
 
 	public void setSeqOrder(int seqOrder) {
 		this.seqOrder = seqOrder;
+	}
+
+	public long getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(long parentId) {
+		this.parentId = parentId;
+	}
+
+	public String getTreeIndex() {
+		return treeIndex;
+	}
+
+	public void setTreeIndex(String treeIndex) {
+		this.treeIndex = treeIndex;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
 
 }

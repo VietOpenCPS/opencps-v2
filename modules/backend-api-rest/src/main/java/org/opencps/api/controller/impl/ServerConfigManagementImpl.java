@@ -64,7 +64,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("s!");
+			error.setMessage("Content not found!");
 			error.setCode(404);
 			error.setDescription(e.getMessage());
 
@@ -356,6 +356,62 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			}
 		}
 
+	}
+
+	@Override
+	public Response updateConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, ServerConfigSingleInputModel input) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			if (!auth.hasResource(serviceContext, ServerConfig.class.getName(), ActionKeys.ADD_ENTRY)) {
+				throw new UnauthorizationException();
+			}
+
+			ServerConfig oldConfig = ServerConfigLocalServiceUtil.getServerConfig(id);
+
+			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, id, oldConfig.getServerNo(),
+					oldConfig.getServerName(), oldConfig.getProtocol(), input.getValue(), new Date(), serviceContext);
+
+			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					error.setMessage(" Internal Server Error.");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+
+				}
+			}
+		}
 	}
 
 }

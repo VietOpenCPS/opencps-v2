@@ -81,7 +81,7 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 	public ServerConfig updateServerConfig(long groupId, long serverConfigId, String serverNo, String serverName,
 			String protocol, String configs, Date lastSync, ServiceContext context) throws PortalException {
 
-		validateUpdate(serverConfigId, serverNo, serverName, protocol, configs, lastSync);
+		validateAdd(serverConfigId, serverNo, serverName, protocol, configs, lastSync);
 
 		Date now = new Date();
 		long userId = context.getUserId();
@@ -127,7 +127,7 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 
 	}
 
-	private void validateUpdate(long serverConfigId, String serverNo, String serverName, String protocol,
+	private void validateAdd(long serverConfigId, String serverNo, String serverName, String protocol,
 			String configs, Date lastSync) throws PortalException {
 		if (Validator.isNull(serverName)) {
 			throw new ServerNoException("ServerNameIsNull");
@@ -159,13 +159,13 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 
 				ServerConfig scByNo = serverConfigPersistence.fetchByCF_CD(serverNo);
 
-				if (scByNo.getPrimaryKey() != serverConfigId) {
+				if (Validator.isNotNull(scByNo) && (scByNo.getPrimaryKey() != serverConfigId)) {
 					throw new ServerNoDuplicateException("ServerNoDuplicateException");
 				}
 
 				ServerConfig scByName = serverConfigPersistence.fetchByCF_NM(serverName);
 
-				if (scByName.getPrimaryKey() != serverConfigId) {
+				if (Validator.isNotNull(scByName) && scByName.getPrimaryKey() != serverConfigId) {
 					throw new ServerNameDuplicateException("ServerNameDuplicateException");
 				}
 			}

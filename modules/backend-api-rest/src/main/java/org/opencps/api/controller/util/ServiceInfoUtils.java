@@ -62,7 +62,8 @@ public class ServiceInfoUtils {
 			model.setDomainCode(doc.get(ServiceInfoTerm.DOMAIN_CODE));
 			model.setDomainName(doc.get(ServiceInfoTerm.DOMAIN_NAME));
 			model.setMaxLevel(GetterUtil.getInteger(doc.get(ServiceInfoTerm.MAX_LEVEL)));
-
+			model.setPublic(doc.get(ServiceInfoTerm.PUBLIC_));
+			
 			List<ServiceInfoServiceConfig> lsServiceConfig = new ArrayList<ServiceInfoServiceConfig>();
 
 			ServiceConfigActions serviceConfigActions = new ServiceConfigActionImpl();
@@ -119,8 +120,11 @@ public class ServiceInfoUtils {
 		model.setResultText(serviceInfo.getResultText());
 		model.setFeeText(serviceInfo.getFeeText());
 		model.setAdministrationCode(serviceInfo.getAdministrationCode());
+		model.setAdministrationName(serviceInfo.getAdministrationName());
 		model.setDomainCode(serviceInfo.getDomainCode());
+		model.setDomainName(serviceInfo.getDomainName());
 		model.setMaxLevel(serviceInfo.getMaxLevel());
+		model.setPublic(Boolean.toString(serviceInfo.getPublic_()));
 
 		return model;
 	}
@@ -131,7 +135,8 @@ public class ServiceInfoUtils {
 		ServiceInfoDetailModel model = new ServiceInfoDetailModel();
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
-
+		
+		model.setServiceInfoId(serviceInfo.getServiceInfoId());
 		model.setServiceName(serviceInfo.getServiceName());
 		model.setServiceInfoId(serviceInfo.getServiceInfoId());
 		model.setModifiedDate(sdf.format(serviceInfo.getModifiedDate()));
@@ -152,7 +157,7 @@ public class ServiceInfoUtils {
 		model.setDomainCode(serviceInfo.getDomainCode());
 		model.setDomainName(serviceInfo.getDomainName());
 		model.setMaxLevel(serviceInfo.getMaxLevel());
-		model.setPublic(GetterUtil.getInteger(serviceInfo.getPublic_()));
+		model.setPublic(Boolean.toString(serviceInfo.getPublic_()));
 		
 		List<ServiceInfoServiceConfig> lsServiceConfig = new ArrayList<ServiceInfoServiceConfig>();
 

@@ -108,7 +108,7 @@ public interface DataManagement {
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "code that need to be get detail", required = true) @PathParam("code") String code);
 
-	@POST
+	@PUT
 	@Path("/{code}/dataform")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -129,7 +129,7 @@ public interface DataManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getDictgroups(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@BeanParam DataSearchModel query);
+			@PathParam("code") String code, @BeanParam DataSearchModel query);
 
 	@POST
 	@Path("/{code}/dictgroups")
@@ -177,7 +177,7 @@ public interface DataManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response deleteDictgroupsDictItems(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@PathParam("code") String code, @PathParam("groupCode") String groupCode, @FormParam("itemCode") String itemCode);
+			@PathParam("code") String code, @PathParam("groupCode") String groupCode, @PathParam("itemCode") String itemCode);
 	
 	@GET
 	@Path("/{code}/dictitems")

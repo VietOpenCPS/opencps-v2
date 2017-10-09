@@ -9,6 +9,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.DataManagement;
+import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DataManagementUtils;
 import org.opencps.api.datamgt.model.DataSearchModel;
 import org.opencps.api.datamgt.model.DictCollectionInputModel;
@@ -22,9 +23,12 @@ import org.opencps.api.datamgt.model.DictItemInputModel;
 import org.opencps.api.datamgt.model.DictItemModel;
 import org.opencps.api.datamgt.model.DictItemResults;
 import org.opencps.api.datamgt.model.Groups;
-import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.auth.api.exception.NotFoundException;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
+import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictGroup;
@@ -47,13 +51,9 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
 
 public class DataManagementImpl implements DataManagement {
 
@@ -74,7 +74,6 @@ public class DataManagementImpl implements DataManagement {
 				query.setEnd(-1);
 
 			}
-			
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -457,7 +456,7 @@ public class DataManagementImpl implements DataManagement {
 
 	@Override
 	public Response getDictgroups(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, DataSearchModel query) {
+			User user, ServiceContext serviceContext, String code, DataSearchModel query) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictGroupResults result = new DictGroupResults();
 		SearchContext searchContext = new SearchContext();
@@ -478,7 +477,8 @@ public class DataManagementImpl implements DataManagement {
 
 			params.put("groupId", String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
-
+			params.put(DictGroupTerm.DICT_COLLECTION_CODE, code);
+			
 			Sort[] sorts = new Sort[] {
 					SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, false) };
 
@@ -739,7 +739,9 @@ public class DataManagementImpl implements DataManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put("groupId", String.valueOf(groupId));
-
+			params.put(DictItemTerm.DICT_COLLECTION_CODE, code);
+			params.put(DictGroupTerm.GROUP_CODE, groupCode);
+			
 			JSONObject jsonData = dictItemDataUtil.getDictgroupsDictItems(user.getUserId(), company.getCompanyId(),
 					groupId, code, groupCode, full, params, new Sort[] {}, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 					serviceContext);
@@ -867,7 +869,7 @@ public class DataManagementImpl implements DataManagement {
 			}
 
 		} catch (Exception e) {
-
+			_log.error("@DELETE: " + e);
 			if (e instanceof UnauthenticationException) {
 
 				_log.error("@POST: " + e);
@@ -948,7 +950,8 @@ public class DataManagementImpl implements DataManagement {
 			params.put("keywords", query.getKeywords());
 			params.put("itemLv", query.getLevel());
 			params.put(DictItemTerm.PARENT_ITEM_CODE, query.getParent());
-
+			params.put(DictItemTerm.DICT_COLLECTION_CODE, code);
+			
 			Sort[] sorts = new Sort[] {
 					SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, false) };
 
@@ -1035,6 +1038,19 @@ public class DataManagementImpl implements DataManagement {
 
 			}
 
+			if (e instanceof DuplicateCategoryException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+			
 			return Response.status(500).build();
 		}
 	}
@@ -1080,8 +1096,8 @@ public class DataManagementImpl implements DataManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 			DictItem ett = dictItemDataUtil.updateDictItemByItemCode(user.getUserId(), groupId, serviceContext, code,
-					input.getItemCode(), input.getItemName(), input.getItemNameEN(), input.getItemDescription(),
-					input.getSibling());
+					itemCode, input.getItemCode(), input.getItemName(), input.getItemNameEN(), input.getItemDescription(),
+					input.getSibling(), input.getParentItemCode());
 
 			if (Validator.isNull(ett)) {
 
@@ -1143,7 +1159,20 @@ public class DataManagementImpl implements DataManagement {
 				return Response.status(409).entity(error).build();
 
 			}
+			
+			if (e instanceof DuplicateCategoryException) {
 
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+			
 			return Response.status(500).build();
 		}
 	}
@@ -1328,7 +1357,7 @@ public class DataManagementImpl implements DataManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 			DictItem ett = dictItemDataUtil.updateMetaDataByItemCode(user.getUserId(), groupId, serviceContext, code,
-					input.getItemCode(), input.getMetaData());
+					itemCode, input.getMetaData());
 
 			if (Validator.isNull(ett)) {
 

@@ -37,6 +37,8 @@ public class DictGroupTerm {
 	public static final String MODIFIED_DATE = "modifiedDate";
 
 	public static final String DICT_COLLECTIONID = "dictCollectionId";
+	
+	public static final String DICT_COLLECTION_CODE = "dictCollectionCode";
 
 	public static final String GROUP_CODE = "groupCode";
 	

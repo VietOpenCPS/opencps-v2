@@ -1841,7 +1841,6 @@ public class VotingResultPersistenceImpl extends BasePersistenceImpl<VotingResul
 		votingResultImpl.setCreateDate(votingResult.getCreateDate());
 		votingResultImpl.setModifiedDate(votingResult.getModifiedDate());
 		votingResultImpl.setVotingId(votingResult.getVotingId());
-		votingResultImpl.setToUserId(votingResult.getToUserId());
 		votingResultImpl.setFullname(votingResult.getFullname());
 		votingResultImpl.setEmail(votingResult.getEmail());
 		votingResultImpl.setComment(votingResult.getComment());

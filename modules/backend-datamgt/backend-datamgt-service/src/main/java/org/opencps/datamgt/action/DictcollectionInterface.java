@@ -56,7 +56,7 @@ public interface DictcollectionInterface {
 	public DictGroup updateDictgroups(long userId, long groupId, String code, String groupCodeRoot, String groupCode,
 			String groupName, String groupNameEN, String groupDescription, ServiceContext serviceContext)
 			throws NoSuchUserException, UnauthenticationException, UnauthorizationException,
-			DuplicateCategoryException;
+			DuplicateCategoryException, NotFoundException;
 	
 	public boolean deleteDictgroups(String groupCode, long groupId, ServiceContext serviceContext)
 			throws NotFoundException, UnauthenticationException, UnauthorizationException;
@@ -81,8 +81,8 @@ public interface DictcollectionInterface {
 			ServiceContext serviceContext) throws NoSuchUserException, NoSuchDictItemException,
 			UnauthenticationException, UnauthorizationException, DuplicateCategoryException, SystemException;
 	
-	public DictItem updateDictItemByItemCode(long userId, long groupId, ServiceContext serviceContext, String code, String itemCode,
-			String itemName, String itemNameEN, String itemDescription, String sibling) throws DuplicateCategoryException, UnauthenticationException,
+	public DictItem updateDictItemByItemCode(long userId, long groupId, ServiceContext serviceContext, String code, String itemCode, String itemCodeInput, 
+			String itemName, String itemNameEN, String itemDescription, String sibling, String parentItemCode) throws DuplicateCategoryException, UnauthenticationException,
 			UnauthorizationException, NoSuchUserException, NotFoundException, PortalException;
 	
 	public DictItem updateMetaDataByItemCode(long userId, long groupId, ServiceContext serviceContext, String code, String itemCode,

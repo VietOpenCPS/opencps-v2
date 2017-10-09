@@ -3109,6 +3109,518 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		"dictItem.dictCollectionId = ? AND ";
 	private static final String _FINDER_COLUMN_F_DICTITEMCODE_DICTCOLLECTIONID_GROUPID_2 =
 		"dictItem.groupId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_PARENTITEMID =
+		new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
+			DictItemModelImpl.FINDER_CACHE_ENABLED, DictItemImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_parentItemId",
+			new String[] {
+				Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_PARENTITEMID =
+		new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
+			DictItemModelImpl.FINDER_CACHE_ENABLED, DictItemImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByF_parentItemId",
+			new String[] { Long.class.getName() },
+			DictItemModelImpl.PARENTITEMID_COLUMN_BITMASK |
+			DictItemModelImpl.TREEINDEX_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_PARENTITEMID = new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
+			DictItemModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_parentItemId",
+			new String[] { Long.class.getName() });
+
+	/**
+	 * Returns all the dict items where parentItemId = &#63;.
+	 *
+	 * @param parentItemId the parent item ID
+	 * @return the matching dict items
+	 */
+	@Override
+	public List<DictItem> findByF_parentItemId(long parentItemId) {
+		return findByF_parentItemId(parentItemId, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dict items where parentItemId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param parentItemId the parent item ID
+	 * @param start the lower bound of the range of dict items
+	 * @param end the upper bound of the range of dict items (not inclusive)
+	 * @return the range of matching dict items
+	 */
+	@Override
+	public List<DictItem> findByF_parentItemId(long parentItemId, int start,
+		int end) {
+		return findByF_parentItemId(parentItemId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dict items where parentItemId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param parentItemId the parent item ID
+	 * @param start the lower bound of the range of dict items
+	 * @param end the upper bound of the range of dict items (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dict items
+	 */
+	@Override
+	public List<DictItem> findByF_parentItemId(long parentItemId, int start,
+		int end, OrderByComparator<DictItem> orderByComparator) {
+		return findByF_parentItemId(parentItemId, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dict items where parentItemId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param parentItemId the parent item ID
+	 * @param start the lower bound of the range of dict items
+	 * @param end the upper bound of the range of dict items (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dict items
+	 */
+	@Override
+	public List<DictItem> findByF_parentItemId(long parentItemId, int start,
+		int end, OrderByComparator<DictItem> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_PARENTITEMID;
+			finderArgs = new Object[] { parentItemId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_PARENTITEMID;
+			finderArgs = new Object[] {
+					parentItemId,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<DictItem> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<DictItem>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (DictItem dictItem : list) {
+					if ((parentItemId != dictItem.getParentItemId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_DICTITEM_WHERE);
+
+			query.append(_FINDER_COLUMN_F_PARENTITEMID_PARENTITEMID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DictItemModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(parentItemId);
+
+				if (!pagination) {
+					list = (List<DictItem>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<DictItem>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first dict item in the ordered set where parentItemId = &#63;.
+	 *
+	 * @param parentItemId the parent item ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dict item
+	 * @throws NoSuchDictItemException if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem findByF_parentItemId_First(long parentItemId,
+		OrderByComparator<DictItem> orderByComparator)
+		throws NoSuchDictItemException {
+		DictItem dictItem = fetchByF_parentItemId_First(parentItemId,
+				orderByComparator);
+
+		if (dictItem != null) {
+			return dictItem;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("parentItemId=");
+		msg.append(parentItemId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchDictItemException(msg.toString());
+	}
+
+	/**
+	 * Returns the first dict item in the ordered set where parentItemId = &#63;.
+	 *
+	 * @param parentItemId the parent item ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dict item, or <code>null</code> if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem fetchByF_parentItemId_First(long parentItemId,
+		OrderByComparator<DictItem> orderByComparator) {
+		List<DictItem> list = findByF_parentItemId(parentItemId, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last dict item in the ordered set where parentItemId = &#63;.
+	 *
+	 * @param parentItemId the parent item ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dict item
+	 * @throws NoSuchDictItemException if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem findByF_parentItemId_Last(long parentItemId,
+		OrderByComparator<DictItem> orderByComparator)
+		throws NoSuchDictItemException {
+		DictItem dictItem = fetchByF_parentItemId_Last(parentItemId,
+				orderByComparator);
+
+		if (dictItem != null) {
+			return dictItem;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("parentItemId=");
+		msg.append(parentItemId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchDictItemException(msg.toString());
+	}
+
+	/**
+	 * Returns the last dict item in the ordered set where parentItemId = &#63;.
+	 *
+	 * @param parentItemId the parent item ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dict item, or <code>null</code> if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem fetchByF_parentItemId_Last(long parentItemId,
+		OrderByComparator<DictItem> orderByComparator) {
+		int count = countByF_parentItemId(parentItemId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<DictItem> list = findByF_parentItemId(parentItemId, count - 1,
+				count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the dict items before and after the current dict item in the ordered set where parentItemId = &#63;.
+	 *
+	 * @param dictItemId the primary key of the current dict item
+	 * @param parentItemId the parent item ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next dict item
+	 * @throws NoSuchDictItemException if a dict item with the primary key could not be found
+	 */
+	@Override
+	public DictItem[] findByF_parentItemId_PrevAndNext(long dictItemId,
+		long parentItemId, OrderByComparator<DictItem> orderByComparator)
+		throws NoSuchDictItemException {
+		DictItem dictItem = findByPrimaryKey(dictItemId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			DictItem[] array = new DictItemImpl[3];
+
+			array[0] = getByF_parentItemId_PrevAndNext(session, dictItem,
+					parentItemId, orderByComparator, true);
+
+			array[1] = dictItem;
+
+			array[2] = getByF_parentItemId_PrevAndNext(session, dictItem,
+					parentItemId, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected DictItem getByF_parentItemId_PrevAndNext(Session session,
+		DictItem dictItem, long parentItemId,
+		OrderByComparator<DictItem> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_DICTITEM_WHERE);
+
+		query.append(_FINDER_COLUMN_F_PARENTITEMID_PARENTITEMID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(DictItemModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(parentItemId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(dictItem);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<DictItem> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the dict items where parentItemId = &#63; from the database.
+	 *
+	 * @param parentItemId the parent item ID
+	 */
+	@Override
+	public void removeByF_parentItemId(long parentItemId) {
+		for (DictItem dictItem : findByF_parentItemId(parentItemId,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(dictItem);
+		}
+	}
+
+	/**
+	 * Returns the number of dict items where parentItemId = &#63;.
+	 *
+	 * @param parentItemId the parent item ID
+	 * @return the number of matching dict items
+	 */
+	@Override
+	public int countByF_parentItemId(long parentItemId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_PARENTITEMID;
+
+		Object[] finderArgs = new Object[] { parentItemId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_DICTITEM_WHERE);
+
+			query.append(_FINDER_COLUMN_F_PARENTITEMID_PARENTITEMID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(parentItemId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_PARENTITEMID_PARENTITEMID_2 = "dictItem.parentItemId = ?";
 
 	public DictItemPersistenceImpl() {
 		setModelClass(DictItem.class);
@@ -3554,6 +4066,25 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DICTITEMBYGROUP,
 					args);
 			}
+
+			if ((dictItemModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_PARENTITEMID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						dictItemModelImpl.getOriginalParentItemId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_PARENTITEMID,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_PARENTITEMID,
+					args);
+
+				args = new Object[] { dictItemModelImpl.getParentItemId() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_PARENTITEMID,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_PARENTITEMID,
+					args);
+			}
 		}
 
 		entityCache.putResult(DictItemModelImpl.ENTITY_CACHE_ENABLED,
@@ -3594,7 +4125,6 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		dictItemImpl.setLevel(dictItem.getLevel());
 		dictItemImpl.setSibling(dictItem.getSibling());
 		dictItemImpl.setTreeIndex(dictItem.getTreeIndex());
-		dictItemImpl.setDataForm(dictItem.getDataForm());
 		dictItemImpl.setMetaData(dictItem.getMetaData());
 
 		return dictItemImpl;

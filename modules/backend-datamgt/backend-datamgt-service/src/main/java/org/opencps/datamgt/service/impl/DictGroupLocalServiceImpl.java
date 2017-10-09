@@ -333,6 +333,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 		String keywords = (String) params.get("keywords");
 		String groupId = (String) params.get(DictGroupTerm.GROUP_ID);
 		String userId = (String) params.get(DictGroupTerm.USER_ID);
+		String dictCollectionCode = (String) params.get(DictGroupTerm.DICT_COLLECTION_CODE);
 		
 		Indexer<DictGroup> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DictGroup.class);
 
@@ -396,7 +397,18 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 		}
+		
+		if (Validator.isNotNull(dictCollectionCode)) {
 
+			MultiMatchQuery query = new MultiMatchQuery(dictCollectionCode);
+
+			query.addFields(DictGroupTerm.DICT_COLLECTION_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+		}
+		
+		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, DictGroup.class.getName());
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -410,7 +422,8 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 		String keywords = (String) params.get("keywords");
 		String groupId = (String) params.get(DictGroupTerm.GROUP_ID);
 		String userId = (String) params.get(DictGroupTerm.USER_ID);
-
+		String dictCollectionCode = (String) params.get(DictGroupTerm.DICT_COLLECTION_CODE);
+		
 		Indexer<DictGroup> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DictGroup.class);
 
 		searchContext.addFullQueryEntryClassName(DictGroup.class.getName());
@@ -471,6 +484,16 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		}
 
+		if (Validator.isNotNull(dictCollectionCode)) {
+
+			MultiMatchQuery query = new MultiMatchQuery(dictCollectionCode);
+
+			query.addFields(DictGroupTerm.DICT_COLLECTION_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+		}
+		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, DictGroup.class.getName());
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
