@@ -96,38 +96,6 @@
 
 	</entity>
 	
-	<entity name="HmacAuth" local-service="true"
-		remote-service="false" table="opencps_hmacauth">
-
-		<!-- PK fields -->
-
-		<column name="hmacAuthId" primary="true" type="long" />
-
-		<!-- Group instance -->
-
-		<column name="groupId" type="long" />
-
-		<!-- Audit fields -->
-
-		<column name="companyId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-
-		<column name="secret" type="String" />
-		<column name="lastConnect" type="Date" />
-
-		<!-- Order -->
-
-		<order by="asc">
-			<order-column name="createDate" />
-		</order>
-
-	</entity>
-	
 	<entity name="ServerConfig" local-service="true"
 		remote-service="false" table="opencps_serverconfig">
 

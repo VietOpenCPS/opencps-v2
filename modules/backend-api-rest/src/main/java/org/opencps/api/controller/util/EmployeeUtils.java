@@ -62,6 +62,9 @@ public class EmployeeUtils {
 				ett.setMobile(document.get(EmployeeTerm.MOBILE));
 				ett.setEmail(document.get(EmployeeTerm.EMAIL));
 				ett.setWorkingStatus(document.get(EmployeeTerm.WORKING_STATUS));
+				ett.setBirthdate(
+						Validator.isNotNull(document.get(EmployeeTerm.BIRTH_DATE)) ? APIDateTimeUtils.convertDateToString(
+								document.getDate(EmployeeTerm.BIRTH_DATE), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 				// TODO
 				ett.setPermission("read");
 
@@ -88,7 +91,8 @@ public class EmployeeUtils {
 				ett.getMappingUser().add(mappingUser);
 
 				// Roles
-
+				ett.setWorkingUnitName(document.get(EmployeeTerm.WORKING_UNIT_NAME));
+				ett.setJobPosTitle(document.get(EmployeeTerm.JOB_POS_TITLE));
 				results.add(ett);
 			}
 
@@ -207,6 +211,9 @@ public class EmployeeUtils {
 			ett.setMobile(employee.getMobile());
 			ett.setEmail(employee.getEmail());
 			ett.setWorkingStatus(String.valueOf(employee.getWorkingStatus()));
+			ett.setBirthdate(Validator.isNotNull(employee.getBirthdate())
+					? APIDateTimeUtils.convertDateToString(employee.getBirthdate(), APIDateTimeUtils._TIMESTAMP)
+					: StringPool.BLANK);
 			// TODO
 			ett.setPermission("read");
 

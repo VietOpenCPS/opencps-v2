@@ -274,6 +274,14 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		return employeeJobPos;
 	}
 
+	public EmployeeJobPos fetchByF_EmployeeId_jobPostId(long groupId, long employeeId, long jobPostId) {
+		return employeeJobPosPersistence.fetchByF_EmployeeId_jobPostId(groupId, employeeId, jobPostId);
+	}
+	
+	public List<EmployeeJobPos> findByF_EmployeeId(long employeeId) {
+		return employeeJobPosPersistence.findByF_EmployeeId(employeeId);
+	}
+	
 	@SuppressWarnings("deprecation")
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {

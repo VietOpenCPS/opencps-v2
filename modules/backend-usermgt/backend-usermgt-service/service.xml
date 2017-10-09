@@ -7,7 +7,7 @@
 	<namespace>UserMgt</namespace>
 
 	<entity name="OfficeSite" uuid="true" local-service="true"
-		remote-service="false" table="opencps_officesite">
+		remote-service="false" table="m_officesite">
 
 		<!-- PK fields -->
 		<column name="officeSiteId" type="long" primary="true" />
@@ -34,6 +34,7 @@
 		<column name="siteGroupId" type="long" />
 		<column name="adminUserId" type="long" />
 		<column name="preferences" type="String" />
+		<column name="ceremonyDate" type="Date" />
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />
@@ -46,7 +47,7 @@
 	</entity>
 	
 	<entity name="WorkingUnit" uuid="true" local-service="true"
-		remote-service="false" table="opencps_workingunit">
+		remote-service="false" table="m_workingunit">
 
 		<!-- PK fields -->
 		<column name="workingUnitId" type="long" primary="true" />
@@ -74,40 +75,20 @@
 		<column name="website" type="String" />
 		<column name="logoFileEntryId" type="long" />
 		<column name="level" type="int" />
+		<column name="ceremonyDate" type="Date" />
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="treeIndex" />
 		</order>
+		
+		<finder return-type="WorkingUnit" name="F_govAgencyCode">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="govAgencyCode"></finder-column>
+		</finder>
 	</entity>
 
-	<entity name="JobPos" uuid="true" local-service="true"
-		remote-service="false" table="opencps_jobpos">
-
-		<!-- PK fields -->
-		<column name="jobPosId" type="long" primary="true" />
-
-		<!-- Audit fields -->
-		<column name="companyId" type="long" />
-		<column name="groupId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-		<column name="title" type="String" />
-		<column name="description" type="String" />
-		<column name="mappingRoleId" type="long" />
-		<column name="leader" type="int" />
-		<!-- Order -->
-		<order by="asc">
-			<order-column name="createDate" />
-		</order>
-		<!-- Finder -->
-	</entity>
-
-	<entity name="Employee" uuid="true" local-service="true"
-		remote-service="false" table="opencps_employee">
+<entity name="Employee" uuid="true" local-service="true"
+		remote-service="false" table="m_employee">
 
 		<!-- PK fields -->
 		<column name="employeeId" type="long" primary="true" />
@@ -143,10 +124,55 @@
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="mappingUserId"></finder-column>
 		</finder>
+		
+		<finder return-type="Collection" name="F_groupId">
+			<finder-column name="groupId"></finder-column>
+		</finder>
+		
+		<finder return-type="Collection" name="F_employeeNo">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="employeeNo"></finder-column>
+		</finder>
+		
+		<finder return-type="Collection" name="F_email">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="email"></finder-column>
+		</finder>
+		
 	</entity>
+	<entity name="JobPos" uuid="true" local-service="true"
+		remote-service="false" table="m_jobpos">
 
-	<entity name="EmployeeJobPos" uuid="true" local-service="true"
-		remote-service="false" table="opencps_employee_jobpos">
+		<!-- PK fields -->
+		<column name="jobPosId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="title" type="String" />
+		<column name="description" type="String" />
+		<column name="mappingRoleId" type="long" />
+		<column name="leader" type="int" />
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+		<!-- Finder -->
+		<finder return-type="JobPos" name="F_title">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="title"></finder-column>
+		</finder>
+	</entity>
+	
+	
+		<entity name="EmployeeJobPos" uuid="true" local-service="true"
+		remote-service="false" table="m_employee_jobpos">
 
 		<!-- PK fields -->
 		<column name="employeeJobPosId" type="long" primary="true" />
@@ -171,7 +197,195 @@
 		<finder return-type="Collection" name="F_EmployeeId">
 			<finder-column name="employeeId"></finder-column>
 		</finder>
+		
+		<finder return-type="EmployeeJobPos" name="F_EmployeeId_jobPostId">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="employeeId"></finder-column>
+			<finder-column name="jobPostId"></finder-column>
+		</finder>
+		
 	</entity>
+	
+			<entity name="ResourceUser" uuid="true" local-service="true"
+		remote-service="false" table="opencps_resourceuser">
+
+		<!-- PK fields -->
+
+		<column name="resourceUserId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="className" type="String" />
+		<column name="classPK" type="String" />
+		<column name="toUserId" type="long" />
+		<column name="fullname" type="String" />
+		<column name="email" type="String" />
+		<column name="readonly" type="int" />
+		<order by="asc">
+			<order-column name="createDate"></order-column>
+		</order>
+		
+		<finder return-type="ResourceUser" name="F_className_classPK_toUserId">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="className"></finder-column>
+			<finder-column name="classPK"></finder-column>
+			<finder-column name="toUserId"></finder-column>
+		</finder>
+		
+		<finder return-type="Collection" name="F_className_classPK">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="className"></finder-column>
+			<finder-column name="classPK"></finder-column>
+		</finder>
+		
+	</entity>
+	
+	<entity name="ResourceRole" uuid="true" local-service="true"
+		remote-service="false" table="opencps_resourcerole">
+
+		<!-- PK fields -->
+
+		<column name="resourceRoleId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="className" type="String" />
+		<column name="classPK" type="String" />
+		<column name="roleId" type="long" />
+		<column name="readonly" type="int" />
+		
+		<order by="asc">
+			<order-column name="createDate"></order-column>
+		</order>
+		
+		<finder return-type="ResourceRole" name="F_className_classPK_roleId">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="className"></finder-column>
+			<finder-column name="classPK"></finder-column>
+			<finder-column name="roleId"></finder-column>
+		</finder>
+		
+		<finder return-type="Collection" name="F_className_classPK">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="className"></finder-column>
+			<finder-column name="classPK"></finder-column>
+		</finder>
+		
+	</entity>
+	
+	<entity name="Visibility" uuid="true" local-service="true"
+		remote-service="false" table="opencps_visibility">
+
+		<!-- PK fields -->
+		<column name="visibilityId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="className" type="String" />
+		<column name="classPK" type="String" />
+		<column name="visibility" type="int" />
+		<column name="security" type="String" />
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+	</entity>
+
+	
+	<entity name="Preferences" uuid="true" local-service="true"
+		remote-service="false" table="opencps_preferences">
+
+		<!-- PK fields -->
+
+		<column name="preferencesId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="preferences" type="String" />
+		
+		<order by="asc">
+			<order-column name="createDate"></order-column>
+		</order>
+		
+		<finder return-type="Preferences" name="F_userId" unique="true">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="userId"></finder-column>
+		</finder>
+		
+	</entity>
+	
+	<entity name="HmacAuthen" local-service="true"
+		remote-service="false" table="opencps_hmacauth">
+
+		<!-- PK fields -->
+
+		<column name="hmacAuthId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="secret" type="String" />
+		<column name="permanent" type="boolean" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+
+	</entity>
+	
 	
 	<entity name="Applicant" uuid="true" local-service="true"
 		remote-service="false" table="opencps_applicant">
@@ -237,40 +451,6 @@
 		<reference entity="User" package-path="com.liferay.portal" />
 		<reference entity="Role" package-path="com.liferay.portal" />
 	</entity>
-	
-	<entity name="Preferences" uuid="true" local-service="true"
-		remote-service="false" table="opencps_preferences">
-
-		<!-- PK fields -->
-
-		<column name="preferencesId" primary="true" type="long" />
-
-		<!-- Group instance -->
-
-		<column name="groupId" type="long" />
-
-		<!-- Audit fields -->
-
-		<column name="companyId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-		<column name="preferences" type="String" />
-		
-		<order by="asc">
-			<order-column name="createDate"></order-column>
-		</order>
-		
-		<finder return-type="Preferences" name="F_userId" unique="true">
-			<finder-column name="groupId"></finder-column>
-			<finder-column name="userId"></finder-column>
-		</finder>
-		
-	</entity>
-	
 	<exceptions>
 		<exception>NoApplicantName</exception>
 		<exception>NoApplicantIdType</exception>

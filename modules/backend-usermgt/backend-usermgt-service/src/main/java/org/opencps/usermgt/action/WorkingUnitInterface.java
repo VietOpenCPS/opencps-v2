@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 
 import org.opencps.usermgt.model.WorkingUnit;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -26,15 +27,17 @@ public interface WorkingUnitInterface {
 	public WorkingUnit create(long userId, long companyId, long groupId, String address, String email, String enName,
 			String faxNo, String govAgencyCode, String name, String telNo, String website, long parentWorkingUnitId,
 			int sibling, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
-			UnauthorizationException, NumberFormatException, NotFoundException;
+			UnauthorizationException, NumberFormatException, NotFoundException, DuplicateCategoryException;
 
 	public WorkingUnit update(long userId, long companyId, long groupId, long id, String address, String email,
 			String enName, String faxNo, String govAgencyCode, String name, String telNo, String website,
-			long parentWorkingUnitId, int sibling, ServiceContext serviceContext) throws NoSuchUserException,
-			UnauthenticationException, UnauthorizationException, NumberFormatException, NotFoundException;
+			long parentWorkingUnitId, int sibling, ServiceContext serviceContext)
+			throws NoSuchUserException, UnauthenticationException, UnauthorizationException, NumberFormatException,
+			NotFoundException, DuplicateCategoryException;
 
 	public FileEntry getFileEntry(long id, ServiceContext serviceContext);
 
 	public File updateLogo(long userId, long companyId, long groupId, long id, InputStream inputStream, String fileName,
-			String fileType, long fileSize, String destination, String desc, ServiceContext serviceContext) throws Exception;
+			String fileType, long fileSize, String destination, String desc, ServiceContext serviceContext)
+			throws Exception;
 }
