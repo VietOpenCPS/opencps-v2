@@ -356,10 +356,11 @@
 		//edit or delete serviceconfig option
 		$(document).on("click", "._itemServiceConfig_option_btnEdit", function(event){
 			event.preventDefault();
-			console.log("edit");
+			console.log("edit service config");
 			var id = $(this).attr("data-pk");
 			var item = dataSourceServiceOption.get(id);
 			$("#xlqtdv").load("${ajax.serviceconfig_option_form}",function(result){
+				console.log(item);
 				pullServiceConfigOptionDetail(item);
 				$("#itemServiceConfigOption").val(id);
 			});

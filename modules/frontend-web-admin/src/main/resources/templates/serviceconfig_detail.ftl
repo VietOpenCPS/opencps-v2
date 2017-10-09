@@ -335,10 +335,10 @@
 		dataValueField:"processNo",
 		noDataTemplate: 'Không có dữ liệu',
 		filter: "contains",
-		/*dataSource:{
+		dataSource:{
 			transport:{
 				read:{
-					url:"${api.server}/serviceprocesses",
+					url:"${api.server}/serviceconfigs/"+id,
 					dataType:"json",
 					type:"GET",
 					success:function(result){
@@ -356,8 +356,7 @@
 					id:"processNo"
 				}
 			}
-		}*/
-		dataSource : []
+		}
 	});
 
 
