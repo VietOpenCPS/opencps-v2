@@ -47,6 +47,10 @@ public class EmployeeTerm {
 	
 	public static final String TITLE = "title";
 	
+	public static final String WORKING_UNIT_NAME = "workingUnitName";
+	
+	public static final String JOB_POS_TITLE = "jobPosTitle";
+	
 	// sortable
 	public static final String EMPLOYEE_ID_SORTABLE = "employeeId_sortable";
 

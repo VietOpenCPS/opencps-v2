@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.EmployeeManagement;
+import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.EmployeeUtils;
 import org.opencps.api.employee.model.DataSearchModel;
 import org.opencps.api.employee.model.EmployeeAccountInputModel;
@@ -26,7 +27,8 @@ import org.opencps.api.employee.model.EmployeeJobposModel;
 import org.opencps.api.employee.model.EmployeeJobposResults;
 import org.opencps.api.employee.model.EmployeeModel;
 import org.opencps.api.employee.model.EmployeeResults;
-import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.action.impl.EmployeeActions;
@@ -36,6 +38,7 @@ import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -50,9 +53,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
-
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
 
 public class EmployeeManagementImpl implements EmployeeManagement {
 
@@ -188,6 +188,19 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			}
 
+			if (e instanceof DuplicateCategoryException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+			
 			return Response.status(500).build();
 		}
 	}
@@ -517,6 +530,19 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			}
 
+			if (e instanceof DuplicateCategoryException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+			
 			return Response.status(500).build();
 		}
 	}

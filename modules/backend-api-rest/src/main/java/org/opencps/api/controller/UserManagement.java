@@ -101,4 +101,39 @@ public interface UserManagement {
 			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("key") String key,
 			@FormParam("value") String value);
 
+	@POST
+	@Path("/{id}/changepass")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response addChangepass(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id,
+			@FormParam("oldPassword") String oldPassword, @FormParam("newPassword") String newPassword);
+
+	@GET
+	@Path("/{id}/permissions")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getPermissions(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @FormParam("full") String full);
+
+	@GET
+	@Path("/{id}/{screenname_email}/forgot")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getForgot(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id,
+			@PathParam("screenname_email") String screenname_email);
+
+	@GET
+	@Path("/{id}/{screenname_email}/forgot/confirm/{code}")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getForgotConfirm(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id,
+			@PathParam("screenname_email") String screenname_email, @PathParam("code") String code);
+
 }

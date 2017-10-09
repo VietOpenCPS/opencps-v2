@@ -6,13 +6,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
+import org.opencps.auth.api.exception.NotFoundException;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.utils.FileUploadUtils;
 import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
-import org.opencps.usermgt.model.OfficeSite;
 import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -41,11 +43,6 @@ import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.utils.FileUploadUtils;
 
 public class EmployeeActions implements EmployeeInterface {
 
@@ -169,10 +166,10 @@ public class EmployeeActions implements EmployeeInterface {
 	public FileEntry getFileEntry(long id, ServiceContext serviceContext) {
 		FileEntry fileEntry = null;
 
-		OfficeSite officeSite = OfficeSiteLocalServiceUtil.fetchOfficeSite(id);
+		Employee employee = EmployeeLocalServiceUtil.fetchEmployee(id);
 
 		try {
-			fileEntry = DLAppLocalServiceUtil.getFileEntry(officeSite.getLogoFileEntryId());
+			fileEntry = DLAppLocalServiceUtil.getFileEntry(employee.getPhotoFileEntryId());
 		} catch (PortalException e) {
 			e.printStackTrace();
 		}
@@ -194,7 +191,7 @@ public class EmployeeActions implements EmployeeInterface {
 					fileSize, destination, desc, serviceContext);
 
 			Employee employee = EmployeeLocalServiceUtil.fetchEmployee(id);
-
+			
 			employee = EmployeeLocalServiceUtil.updateEmployee(userId, employee.getEmployeeId(), employee.getFullName(),
 					employee.getEmployeeNo(), employee.getGender(), employee.getBirthdate(), employee.getTelNo(),
 					employee.getMobile(), employee.getEmail(), employee.getWorkingStatus(), employee.getMainJobPostId(),

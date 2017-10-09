@@ -7,12 +7,9 @@ import org.opencps.api.user.model.UserProfileModel;
 import org.opencps.api.user.model.UserRolesModel;
 import org.opencps.api.user.model.UserSitesModel;
 import org.opencps.datamgt.constants.LabelTerm;
-import org.opencps.usermgt.model.Applicant;
-import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -95,21 +92,6 @@ public class UserUtils {
 
 		return ett;
 	}
-	
-	public static User getUser(long applicantId) {
-		User user = null;
-		
-		try {
-			Applicant applicant = ApplicantLocalServiceUtil.getApplicant(applicantId);
-			
-			user = UserUtils.getUser(applicant.getMappingUserId());
-		} catch (Exception e) {
-			
-		}
-		
-		return user;
-	}
-
 
 	static Log _log = LogFactoryUtil.getLog(UserUtils.class);
 }
