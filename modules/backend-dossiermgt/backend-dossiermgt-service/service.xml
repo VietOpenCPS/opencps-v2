@@ -321,7 +321,10 @@
 		<column name="folderId" type="long" />
 		<column name="dossierActionId" type="long" />
 		<column name="viaPostal" type="int" />
-		<column name="postAddress" type="String" />
+		<column name="postalAddress" type="String" />
+		<column name="postalCityCode" type="String" />
+		<column name="postalCityName" type="String" />
+		<column name="postalTelNo" type="String" />
 		<column name="password" type="String" />
 		<column name="notification" type="boolean" />
 		<column name="online" type="boolean" />
@@ -805,6 +808,15 @@
 		<exception>InvalidReturnDossierFiles</exception>
 		<exception>RequiredAssignUserId</exception>
 		<exception>RequiredPaymentFee</exception>
+		
+		<exception>DossierInvalidService</exception>
+		<exception>DossierInvalidDossierTemplate</exception>
+		<exception>DossierInvalidGovAgency</exception>
+		<exception>DossierInvalidLocation</exception>
+		<exception>DossierInvalidContact</exception>
+		<exception>DossierInvalidStatus</exception>
+		<exception>DossierInvalidServerSync</exception>
+		<exception>DossierActionNotAllowed</exception>
 		
 		<exception>DossierURL</exception>		
 		<exception>HasChildren</exception>		
