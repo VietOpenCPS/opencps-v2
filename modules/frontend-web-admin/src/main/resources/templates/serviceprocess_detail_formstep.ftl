@@ -103,26 +103,6 @@
 				</div>
 			</div>
 		</div>
-		<div class="service-process-form-step-paper-result-controls">
-			<div class="service-process-form-step-paper-result-entry">
-				<div class="row MT10">
-					<div class="col-xs-12 col-sm-12">Giấy tờ kết quả kèm theo</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12 col-sm-6">
-						<select class="form-control" id="administration" name="administration" data-bind="value: administrationName">
-							<option value="">Chọn giấy tờ kết quả</option>
-
-						</select>
-					</div>
-					<div class="col-xs-12 col-sm-1">
-						<button class="btn btn-success btn-add-paper-result" type="button">
-							<span class="glyphicon glyphicon-plus"></span>
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
 		<div class="row MT10">
 			<div class="col-xs-12 col-sm-12">
 				<div class="row">
@@ -162,26 +142,6 @@
 				.html('<span class="glyphicon glyphicon-minus"></span>');
 		}).on('click', '.btn-remove-step-role', function(e){
 			$(this).parents('.service-process-form-step-entry:first').remove();
-			e.preventDefault();
-			return false;
-	});
-
-	$(document).on('click', '.btn-add-paper-result', function(e){
-		e.preventDefault();
-
-		var controlForm = $('.service-process-form-step-paper-result-controls'),
-				currentEntry = $(this).parents('.service-process-form-step-paper-result-entry:first'),
-				newEntry = $(currentEntry.clone()).appendTo(controlForm);
-
-		newEntry.find('select').val('');
-		newEntry.find('input [type="radio"]').val('');
-
-		controlForm.find('.service-process-form-step-paper-result-entry:not(:last) .btn-add-paper-result')
-				.removeClass('btn-add-paper-result').addClass('btn-remove-paper-result')
-				.removeClass('btn-success').addClass('btn-danger')
-				.html('<span class="glyphicon glyphicon-minus"></span>');
-		}).on('click', '.btn-remove-paper-result', function(e){
-			$(this).parents('.service-process-form-step-paper-result-entry:first').remove();
 			e.preventDefault();
 			return false;
 	});

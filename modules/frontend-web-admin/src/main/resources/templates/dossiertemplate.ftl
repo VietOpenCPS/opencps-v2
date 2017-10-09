@@ -25,13 +25,13 @@
 
       <script type="text/x-kendo-template" id="dossier_template_template">
          <li class="clearfix" data-pk="#: id #" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
-           <div class="PL0 dossier-template-item" data-pk="#: id #">
+           <div class="P0 col-xs-12 col-sm-12 dossier-template-item" data-pk="#: id #">
               <strong>#: templateNo #</strong>
 							<a class="btn-group k-delete-button pull-right" href="\\#" title="Xóa">
 									<i aria-hidden="true" class="fa fa-trash"></i>
 							</a>
            </div>
-           <div class="PL0">
+           <div class="P0 col-xs-12 col-sm-12">
               <div class="edit-buttons">
                 <span class="btn-block">#: templateName #</span>
               </div>
@@ -67,64 +67,6 @@
                 }
              });
           },
-          create: function(options) {
-             $.ajax({
-                url: "${api.server}" + "/dossiertemplates",
-                type: "POST",
-                dataType: "json",
-								headers: {"groupId": ${groupId}},
-                data: {
-                  templateNo: options.data.templateNo,
-                  templateName: options.data.templateName,
-                  description: options.data.description
-                },
-                success: function(result) {
-                  options.success(result);
-                  notification.show({
-                    message: "Yêu cầu được thực hiện thành công"
-                  }, "success");
-
-									console.log('create dossier template');
-									console.log(result);
-
-									var dossierTemplateListView = $("#dossier_template_list_view").data("kendoListView");
-									//dossierTemplateListView.select(dossierTemplateListView.element.children().last());
-                },
-                error: function(result) {
-                  options.error(result);
-                  notification.show({
-                    message: "Xẩy ra lỗi, vui lòng thử lại"
-                  }, "error");
-                }
-             });
-          },
-          update: function(options) {
-             $.ajax({
-                url: "${api.server}" + "/dossiertemplates/" + options.data.dossierTemplateId,
-                type: "PUT",
-                dataType: "json",
-								headers: {"groupId": ${groupId}},
-                data: {
-                  dossierTemplateId: options.data.dossierTemplateId,
-                  templateNo: options.data.templateNo,
-                  templateName: options.data.templateName,
-                  description: options.data.description
-                },
-                success: function(result) {
-                  options.success(result);
-                  notification.show({
-                    message: "Yêu cầu được thực hiện thành công"
-                  }, "success");
-                },
-                error: function(result) {
-                  options.error(result);
-                  fileTemplateDataSource.cancelChanges();
-                  notification.show({
-                    message: "Xẩy ra lỗi, vui lòng thử lại"
-                  }, "error");
-                }
-             });
-          },
           destroy: function(options) {
              $.ajax({
                 url: "${api.server}" + "/dossiertemplates/" + options.data.dossierTemplateId,
@@ -136,12 +78,32 @@
                   notification.show({
                     message: "Yêu cầu được thực hiện thành công"
                   }, "success");
+
+									$("#dossier_template_list_view li.k-state-selected").removeClass("k-state-selected");
+					 			 $('.nav-tabs a[href="#ttmhs"]').tab('show');
+					 			 $("ul.nav.nav-tabs li:not(:first)").addClass("disabled-tab");
+
+					 			 var viewModel = kendo.observable({
+					 					 templateNo : "",
+					 					 templateName : "",
+					 					 description : ""
+					 			 });
+
+					 			 kendo.bind($("#ttmhs"), viewModel);
+
+					 			 $("#btn_save_dossier_template").attr("data-pk", "");
                 },
                 error: function(result) {
                   options.error(result);
-                  notification.show({
-                    message: "Xẩy ra lỗi, vui lòng thử lại"
-                  }, "error");
+                  if (result.responseJSON.description == "DossierTemplateHasChildrenException"){
+										notification.show({
+	                    message: "Xóa không thành công do Mẫu hồ sơ có thành phần hồ sơ."
+	                  }, "error");
+									} else {
+										notification.show({
+	                    message: "Xẩy ra lỗi, vui lòng thử lại"
+	                  }, "error");
+									}
                 }
              });
           },
@@ -167,19 +129,24 @@
        serverFiltering: false
     });
 
+		var firstTimeLoad = true;
     $("#dossier_template_list_view").kendoListView({
        dataSource: dossierTemplateDataSource,
        template: kendo.template($("#dossier_template_template").html()),
        selectable: true,
        dataBound: function(e) {
 
-         var listView = e.sender;
-         var firstItem = listView.element.children().first();
-         listView.select(firstItem);
+         if (firstTimeLoad){
+					 var listView = e.sender;
+	         var firstItem = listView.element.children().first();
+	         listView.select(firstItem);
 
-        //  the first select dossier template
-         onSelectDossiertemplate(firstItem.attr("data-pk"));
-				 $("#btn_save_dossier_template").attr("data-pk", firstItem.attr("data-pk"));
+	        //  the first select dossier template
+	         onSelectDossiertemplate(firstItem.attr("data-pk"));
+					 $("#btn_save_dossier_template").attr("data-pk", firstItem.attr("data-pk"));
+
+					 firstTimeLoad = false;
+				 }
        },
        remove: function(e) {
           if(!confirm("Xác nhận xóa mẫu hồ sơ: " + e.model.get("templateName") + "?")){
@@ -279,7 +246,7 @@
 
 		$(document).on("click", "#btn_save_dossier_template", function(event){
        event.preventDefault();
-			 // TODO select item that allready added
+
 			 $("ul.nav.nav-tabs li:not(:first)").removeClass("disabled-tab");
 
 			 var dataPk = $(this).attr("data-pk");
@@ -312,27 +279,76 @@
     });
 
     var updateDossiertemplate = function(dataPk){
-       var dossierTemplate = dossierTemplateDataSource.get(dataPk);
+			 $.ajax({
+					url: "${api.server}" + "/dossiertemplates/" + dataPk,
+					type: "PUT",
+					dataType: "json",
+					headers: {"groupId": ${groupId}},
+					data: {
+						dossierTemplateId: dataPk,
+						templateNo: $("#templateNo").val(),
+						templateName: $("#templateName").val(),
+						description: $("#description").val()
+					},
+					success: function(result) {
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
 
-       dossierTemplate.set("templateNo", $("#templateNo").val());
-       dossierTemplate.set("templateName", $("#templateName").val());
-       dossierTemplate.set("description", $("#description").val());
+						var dossierTemplate = dossierTemplateDataSource.get(dataPk);
 
-       dossierTemplateDataSource.sync();
+		        dossierTemplate.set("templateNo", $("#templateNo").val());
+		        dossierTemplate.set("templateName", $("#templateName").val());
+		        dossierTemplate.set("description", $("#description").val());
+					},
+					error: function(result) {
+						notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");
+					}
+			 });
     }
 
     var addDossierTemplete = function(){
-      //  dossierTemplateDataSource.add({
-      //     "templateNo": $("#templateNo").val(),
-      //     "templateName": $("#templateName").val(),
-      //     "description": $("#description").val(),
-      //  });
-       dossierTemplateDataSource.insert(0, {
-          "templateNo": $("#templateNo").val(),
-          "templateName": $("#templateName").val(),
-          "description": $("#description").val(),
-       });
-       dossierTemplateDataSource.sync();
+			$.ajax({
+				 url: "${api.server}" + "/dossiertemplates",
+				 type: "POST",
+				 dataType: "json",
+				 headers: {"groupId": ${groupId}},
+				 data: {
+					 templateNo: $("#templateNo").val(),
+					 templateName: $("#templateName").val(),
+					 description: $("#description").val()
+				 },
+				 success: function(result) {
+					 notification.show({
+						 message: "Yêu cầu được thực hiện thành công"
+					 }, "success");
+
+					  dossierTemplateDataSource.insert(0, {
+							"dossierTemplateId": result.dossierTemplateId,
+		           "templateNo": result.templateNo,
+		           "templateName": result.templateName,
+		           "description": result.description
+		        });
+
+						$("#dossier_template_list_view div[data-pk=" + result.dossierTemplateId + "]").closest("li").addClass("k-state-selected");
+						$("#btn_save_dossier_template").attr("data-pk", result.dossierTemplateId);
+
+					 $("#dossier_template_part_listview").data("kendoListView").dataSource.read({dossierTemplateId: result.dossierTemplateId});
+				 },
+				 error: function(result) {
+					 if (result.responseJSON.description == "DuplicateTemplateNameException"){
+						 notification.show({
+							 message: "Lỗi trùng lặp Mã mẫu hồ sơ."
+						 }, "error");
+					 } else {
+						 notification.show({
+							 message: "Xẩy ra lỗi, vui lòng thử lại"
+						 }, "error");
+					 }
+				 }
+			});
     };
 
   })(jQuery);

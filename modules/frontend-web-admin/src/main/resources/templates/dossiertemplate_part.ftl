@@ -160,7 +160,7 @@
 			var dossierTemplateDatasource = $("#dossier_template_list_view").data("kendoListView");
 				var indexDossierTemplateSelected = dossierTemplateDatasource.select().index(),
 				    dossierTemplateSelected = dossierTemplateDatasource.dataSource.view()[indexDossierTemplateSelected];
-			var formscript, formReport, sampleData;
+			var formScript, formReport, sampleData;
 			$.ajax({
 					url: "${api.server}" + "/dossiertemplates/" + dossierTemplateSelected.id + "/parts/" + dataItem.partNo + "/formscript",
 					type: "GET",
@@ -168,33 +168,27 @@
 					headers: {"groupId": ${groupId}},
 					async: false,
 					success: function(result) {
-						console.log("formscript: ");
-						console.log(result);
-						formscript = result;
+						formScript = result.value;
 					}
 			 });
 			 $.ajax({
- 					url: "${api.server}" + "/dossiertemplates/" + dossierTemplateSelected.id + "/parts/" + dataItem.partNo + "/formReport",
+ 					url: "${api.server}" + "/dossiertemplates/" + dossierTemplateSelected.id + "/parts/" + dataItem.partNo + "/formreport",
  					type: "GET",
  					dataType: "json",
  					headers: {"groupId": ${groupId}},
  					async: false,
  					success: function(result) {
- 						console.log("formReport: ");
- 						console.log(result);
- 						formReport = result;
+ 						formReport = result.value;
  					}
  			 });
 			 $.ajax({
- 					url: "${api.server}" + "/dossiertemplates/" + dossierTemplateSelected.id + "/parts/" + dataItem.partNo + "/sampleData",
+ 					url: "${api.server}" + "/dossiertemplates/" + dossierTemplateSelected.id + "/parts/" + dataItem.partNo + "/sampledata",
  					type: "GET",
  					dataType: "json",
  					headers: {"groupId": ${groupId}},
  					async: false,
  					success: function(result) {
- 						console.log("sampleData: ");
- 						console.log(result);
- 						sampleData = result;
+ 						sampleData = result.value;
  					}
  			 });
 
@@ -206,7 +200,7 @@
 					 fileTemplateNo: dataItem.fileTemplateNo,
 					 required: dataItem.required,
 					 esign: dataItem.esign,
-					 formscript: formscript,
+					 formScript: formScript,
 					 formReport: formReport,
 					 sampleData: sampleData,
 			 });

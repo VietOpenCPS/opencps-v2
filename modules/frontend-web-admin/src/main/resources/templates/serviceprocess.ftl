@@ -25,13 +25,13 @@
 
       <script type="text/x-kendo-template" id="service_process_template">
 				<li class="clearfix" data-pk="#: id #" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
-					<div class="PL0 dossier-template-item" data-pk="#: id #">
+					<div class="P0 col-xs-12 col-sm-12 dossier-template-item" data-pk="#: id #">
 						 <strong>#: processNo #</strong>
 						 <a class="btn-group k-delete-button pull-right" href="\\#" title="Xóa">
 								 <i aria-hidden="true" class="fa fa-trash"></i>
 						 </a>
 					</div>
-					<div class="PL0">
+					<div class="P0 col-xs-12 col-sm-12">
 						 <div class="edit-buttons">
 							 <span class="btn-block">#: processName #</span>
 						 </div>

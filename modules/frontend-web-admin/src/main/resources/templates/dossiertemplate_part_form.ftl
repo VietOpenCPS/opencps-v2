@@ -1,5 +1,5 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <div class="row">
@@ -148,16 +148,16 @@
 
 <script type="text/javascript">
 	$(document).on("click", "#btn_cancle_dossier_template_part", function(event){
-		 event.preventDefault();
-		 $("#dossiertemplate_part_container").show();
-		 $("#dossiertemplate_part_form_container").hide();
+		event.preventDefault();
+		$("#dossiertemplate_part_container").show();
+		$("#dossiertemplate_part_form_container").hide();
 	});
 
 	$(document).on("click", "#btn_save_dossier_template_part", function(event){
-		 event.preventDefault();
-		 var dossierTemplateDataPk = $("#btn_save_dossier_template").attr("data-pk");
-		 var dossierTemplatePartDataPk = $(this).attr("data-pk");
-		 updateDossierTemplatePart(dossierTemplateDataPk, dossierTemplatePartDataPk);
+		event.preventDefault();
+		var dossierTemplateDataPk = $("#btn_save_dossier_template").attr("data-pk");
+		var dossierTemplatePartDataPk = $(this).attr("data-pk");
+		updateDossierTemplatePart(dossierTemplateDataPk, dossierTemplatePartDataPk);
 	});
 
 	var updateDossierTemplatePart = function(dossierTemplateDataPk, dossierTemplatePartDataPk){
@@ -181,28 +181,76 @@
 			headers: {"groupId": ${groupId}},
 			data: {
 				partNo: $("#partNo").val(),
- 				partName: $("#partName").val(),
- 				partTip: $("#partTip").val(),
- 				partType: $("#partType").val(),
- 				fileTemplateNo: $("#fileTemplateNo").val(),
- 				required: $("#required").val(),
- 				esign: $("#esign").val(),
-			 },
-			 success: function(result) {
-				 notification.show({
-					 message: "Yêu cầu được thực hiện thành công"
-				 }, "success");
+				partName: $("#partName").val(),
+				partTip: $("#partTip").val(),
+				partType: $("#partType").val(),
+				fileTemplateNo: $("#fileTemplateNo").val(),
+				required: $('#required').is(':checked'),
+				esign: $('#esign').is(':checked'),
+			},
+			success: function(result) {
+				notification.show({
+					message: "Yêu cầu được thực hiện thành công"
+				}, "success");
 
-				 $("#dossiertemplate_part_container").show();
-				 $("#dossiertemplate_part_form_container").hide();
+				var upFormscriptSuccess = false, upFormReportSuccess = false, upSampleDataSuccess = false;
+				$.ajax({
+					url: "${api.server}" + "/dossiertemplates/" + dossierTemplateDataPk + "/parts/" + dossierTemplatePartDataPk + "/formscript",
+					type: "PUT",
+					dataType: "json",
+					headers: {"groupId": ${groupId}},
+					async: false,
+					data: {
+						value: $("#formScript").val()
+					},
+					success: function(result) {
+						upFormscriptSuccess = true;
+					}
+				});
+				$.ajax({
+					url: "${api.server}" + "/dossiertemplates/" + dossierTemplateDataPk + "/parts/" + dossierTemplatePartDataPk + "/formreport",
+					type: "PUT",
+					dataType: "json",
+					headers: {"groupId": ${groupId}},
+					async: false,
+					data: {
+						value: $("#formReport").val()
+					},
+					success: function(result) {
+						upFormReportSuccess = true;
+					}
+				});
+				$.ajax({
+					url: "${api.server}" + "/dossiertemplates/" + dossierTemplateDataPk + "/parts/" + dossierTemplatePartDataPk + "/sampledata",
+					type: "PUT",
+					dataType: "json",
+					headers: {"groupId": ${groupId}},
+					async: false,
+					data: {
+						value: $("#sampleData").val()
+					},
+					success: function(result) {
+						upSampleDataSuccess = true;
+					}
+				});
 
-				 $("#dossier_template_part_listview").data("kendoListView").dataSource.read({dossierTemplateId: dossierTemplateDataPk});
-			 },
-			 error: function(result) {
-				 notification.show({
-					 message: "Xẩy ra lỗi, vui lòng thử lại"
-				 }, "error");
-			 }
+				if (upFormscriptSuccess && upFormReportSuccess && upSampleDataSuccess){
+					$("#dossiertemplate_part_container").show();
+					$("#dossiertemplate_part_form_container").hide();
+
+					$("#dossier_template_part_listview").data("kendoListView").dataSource.read({dossierTemplateId: dossierTemplateDataPk});
+				} else {
+					notification.show({
+						message: "Xẩy ra lỗi, vui lòng thử lại"
+					}, "error");
+				}
+
+			},
+			error: function(result) {
+				notification.show({
+					message: "Xẩy ra lỗi, vui lòng thử lại"
+				}, "error");
+			}
 		});
 	};
 </script>
