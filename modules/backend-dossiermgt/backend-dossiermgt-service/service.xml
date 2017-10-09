@@ -333,7 +333,31 @@
 		<!-- Order -->
 
 		<!-- Finder methods -->
-
+		<finder return-type="Collection" name="G_UID">
+			<finder-column name="groupId"/>
+			<finder-column name="userId"/>
+		</finder>
+		
+		<finder return-type="Dossier" name="G_REF">
+			<finder-column name="groupId"/>
+			<finder-column name="referenceUid"/>
+		</finder>
+		
+		<finder return-type="Collection" name="G_SC">
+			<finder-column name="groupId"/>
+			<finder-column name="serviceCode"/>
+		</finder>
+		
+		<finder return-type="Collection" name="G_GAC">
+			<finder-column name="groupId"/>
+			<finder-column name="serviceCode"/>
+		</finder>
+		
+		<finder return-type="Collection" name="G_DTN">
+			<finder-column name="groupId"/>
+			<finder-column name="dossierTemplateNo"/>
+		</finder>
+		
 		<!-- References -->
 
 	</entity>
