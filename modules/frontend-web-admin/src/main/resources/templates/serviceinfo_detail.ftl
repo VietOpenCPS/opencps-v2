@@ -97,7 +97,7 @@
 								<label>Trạng thái:</label>
 							</div>
 							<div class="col-sm-8">
-								<select class="form-control" id="status" name="status" required="required" validationMessage="Bạn phải chọn trạng thái">
+								<select class="form-control" id="status" name="status" required="required" validationMessage="Bạn phải chọn trạng thái" data-bind="value:public">
 									<option value="true">Công khai</option>
 									<option value="false">Không công khai</option>
 								</select>
@@ -113,36 +113,36 @@
 				</div>
 			</form>
 		</div>
-		<div id="ttct" class="tab-pane fade in MT15">
+		<div id="ttct" class="tab-pane fade in MT10">
 			<form id="fmServiceinfoDetail">
 				<label>Trình tự thực hiện</label>
 				<div id="processText" name="processText" data-bind="text:processText"></div>
 
-				<label class="MT15">Cách thức thực hiện</label>
+				<label class="">Cách thức thực hiện</label>
 				<div id="methodText" name="methodText" data-bind="text:methodText"></div>
 
-				<label class="MT15">Thành phần hồ sơ</label>
+				<label class="">Thành phần hồ sơ</label>
 				<div id="dossierText" name="dossierText" data-bind="text:dossierText"></div>
 
-				<label class="MT15">Điều kiện thực hiện</label>
+				<label class="">Điều kiện thực hiện</label>
 				<div id="conditionText" name="conditionText" data-bind="text:conditionText"></div>
 
-				<label class="MT15">Thời gian giải quyết</label>
+				<label class="">Thời gian giải quyết</label>
 				<div id="durationText" name="durationText" data-bind="text:durationText"></div>
 
-				<label class="MT15">Đối tượng thực hiện</label>
+				<label class="">Đối tượng thực hiện</label>
 				<div id="applicantText" name="applicantText" data-bind="text:applicantText"></div>
 
-				<label class="MT15">Lệ phí thủ tục</label>
+				<label class="">Lệ phí thủ tục</label>
 				<div id="feeText" name="feeText" data-bind="text:feeText"></div>
 
-				<label class="MT15">Kết quả thực hiện</label>
+				<label class="">Kết quả thực hiện</label>
 				<div id="resultText" name="resultText" data-bind="text:resultText"></div>
 
-				<label class="MT15">Căn cứ pháp lý</label>
+				<label class="">Căn cứ pháp lý</label>
 				<div id="regularText" name="regularText" data-bind="text:regularText"></div>
 
-				<div class="col-sm-12 text-center MT15">
+				<div class="col-sm-12 text-center MT10">
 					<button class=" btn btn-active" id="btn-submit-serviceinfo-detail" type="button">Ghi lại</button> <button class=" btn" type="reset">Hủy bỏ</button>
 				</div>
 			</form>
@@ -162,39 +162,164 @@
 				</li>
 			</script>
 		</div>
+		<div id="serviceInfoFileTempalteDialog" class="modal fade serviceInfoFileTempalteDialog" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<a href="#" data-dismiss="modal" class="class pull-right">
+							<span class="glyphicon glyphicon-remove"></span>
+						</a>
+						<h3 class="modal-title">Thêm biểu mẫu thủ tục hành chính</h3>
+					</div>
+					<div class="modal-body">
+						<form id="serviceInfoFileTemplateForm">
+							<div class="row">
+								<div class="col-xs-12 col-sm-3">Số biểu mẫu</div>
+								<div class="col-xs-12 col-sm-9">
+									<input id="fileTemplateNo" name="fileTemplateNo" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" value="<#if (filetemplate.fileNo)??>${filetemplate.fileNo}</#if>"/>
+								</div>
+							</div>
+							<div class="row MT10">
+								<div class="col-xs-12 col-sm-3">Tên biểu mẫu</div>
+								<div class="col-xs-12 col-sm-9">
+									<input id="templateName" name="templateName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" value="<#if (filetemplate.fileName)??>${filetemplate.fileName}</#if>"/>
+								</div>
+							</div>
+							<div class="row MT10">
+								<div class="col-xs-12 col-sm-3">Tệp đính kèm</div>
+								<div class="col-xs-12 col-sm-9">
+									<input id="file" class="" type="file"/>
+								</div>
+							</div>
+							<div class="row MT10 text-center">
+								<button id="btnSaveFileTemplate" class="btn btn-active" type="button" data-bind="events:{ click: addFiletemplate }">Ghi lại</button>
+								<button id="btnCancleFileTemplate" class="btn" title="Hủy bỏ" data-dismiss="modal">Đóng</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-</div>
-
-<div id="serviceInfoFileTempalteDialog" class="modal fade serviceInfoFileTempalteDialog" role="dialog">
 </div>
 
 <script type="text/javascript">
 	$("#processText").summernote({
-		height: 150
+		height: 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
 	});
 	$("#methodText").summernote({
-		height: 150
+		height: 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
 	});
 	$("#dossierText").summernote({
-		height: 150
+		height: 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
 	});
 	$("#conditionText").summernote({
-		height: 150
+		height: 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
 	});
 	$("#durationText").summernote({
-		height: 150
+		height: 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
 	});
 	$("#applicantText").summernote({
-		height: 150
+		height: 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
 	});
 	$("#feeText").summernote({
-		height: 150
+		height: 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
 	});
 	$("#resultText").summernote({
-		height: 150
+		height: 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
 	});
 	$("#regularText").summernote({
-		height: 150
+		height: 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
 	});
 
 	$("#administration").kendoComboBox({
@@ -268,6 +393,43 @@
 			success : function(result){
 				console.log(result.domainName);
 				var viewModel = kendo.observable({
+					addFiletemplate : function(e){
+						var idServiceinfo = $("#itemServiceInfoId").val();
+						console.log("Add file");
+						console.log(idServiceinfo);
+						if(idServiceinfo>0){
+							var form = $('#serviceInfoFileTemplateForm')[0];
+							var data = new FormData(form);
+							$.ajax({
+								url : "${api.server}/serviceinfos/"+idServiceinfo+"/filetemplates",
+								enctype: 'multipart/form-data',
+								dataType : "json",
+								type : "POST",
+								data : data,
+								processData: false,
+								contentType: false,
+								cache: false,
+								success : function(result){
+									notification.show({
+										message: "Yêu cầu được thực hiện thành công"
+									}, "success");
+									this.get("fileTemplates").push({
+										fileTemplateNo: $("#fileTemplateNo").val(),
+										templateName: $("#templateName").val(),
+									});
+									$("#serviceInfoFileTempalteDialog").modal('hide');
+
+								},
+								error : function(xhr){
+									notification.show({
+										message: "Xẩy ra lỗi, vui lòng thử lại"
+									}, "error");
+								}
+							});
+						}else {
+
+						}
+					},
 					fileTemplateDownLoad : function(e){
 						var serviceInfoId = $("#itemServiceInfoId").val();
 						return '${api.server}/serviceinfos/'+serviceInfoId+'/filetemplates/'+e.fileTemplateNo
@@ -308,6 +470,7 @@
 					},
 					fileTemplates : result.fileTemplates,
 					maxLevel: result.maxLevel,
+					public : result.public,
 					deleteFileTemplate : function(e){
 						var fileTemplates = this.get("fileTemplates");
 						var idFileTemplate = e.data.fileTemplateNo;
@@ -338,36 +501,6 @@
 							}
 
 						}
-					},
-					addFiletemplate : function(e){
-						var idServiceinfo = $("#itemServiceInfoId").val();
-						if(idServiceinfo>0){
-							var data = $("#serviceInfoFileTemplateForm").serialize();
-							$.ajax({
-								url : "${api.server}/serviceinfos/"+idServiceinfo+"/filetemplates",
-								dataType : "json",
-								type : "POST",
-								data : data,
-								success : function(result){
-									notification.show({
-										message: "Yêu cầu được thực hiện thành công"
-									}, "success");
-									this.get("fileTemplates").push({
-										fileTemplateNo: $("#fileTemplateNo").val(),
-										templateName: $("#templateName").val(),
-									});
-									$("#serviceInfoFileTempalteDialog").modal('hide');
-
-								},
-								error : function(xhr){
-									notification.show({
-										message: "Xẩy ra lỗi, vui lòng thử lại"
-									}, "error");
-								}
-							});
-						}else {
-
-						}
 					}
 				});
 
@@ -393,23 +526,6 @@
 					e.preventDefault();
 					$("#serviceInfoFileTempalteDialog").modal("hide");
 				});
-
-				var validator = $("#serviceInfoFileTemplateForm").kendoValidator().data("kendoValidator");
-				$("form").submit(function(event) {
-					event.preventDefault();
-					if (validator.validate()) {
-						if (dataPk){
-							updateServieInfoFileTemplate(dataPk);
-						} else {
-							addServieInfoFileTemplate();
-						}
-
-						$("#serviceInfoFileTempalteDialog").modal("hide");
-
-					} else {
-						return false;
-					}
-				});
 			}
 			);
 	}
@@ -431,7 +547,7 @@
 	}
 
 	$("#btnAddServiceInfoFile").click(function(){
-		formControlFileTemplate();
+		$("#serviceInfoFileTempalteDialog").modal({show: true});
 	});
 
 	$(document).on("click",".btn-delete-filetemplate",function(event){
@@ -621,9 +737,7 @@
 	}
 
 	$("#add-file-template").click(function(){
-		$("#serviceInfoFileTempalteDialog").load("${ajax.serviceinfo_filetemplate_form}",function(result){
-			$(this).modal('show');
-		});
+		$("#serviceInfoFileTempalteDialog").modal({show: true});
 	});
 
 </script>

@@ -28,13 +28,13 @@
 					<div class="col-sm-12">
 						<div class="form-group">
 							<label>Tên thủ tục</label>
-							<input name="service" id="service" class="form-control" placeholder="Tên thủ tục" data-bind="value:serviceName" validationMessage="Bạn phải chọn thủ tục hành chính" required="required"> 
+							<input name="service" id="service" class="form-control" placeholder="Tên thủ tục" data-bind="value:serviceCode" validationMessage="Bạn phải chọn thủ tục hành chính" required="required"> 
 						</div>
 						<span data-for="service" class="k-invalid-msg"></span>
 					</div>
 					<div class="col-sm-6 MB15">
 						<label>Cơ quan thực hiện</label>
-						<select class="form-control" id="govAgency" name="govAgency" data-bind="value: govAgencyName" required="required" validationMessage="Bạn phải chọn cơ quan thực hiện">
+						<select class="form-control" id="govAgency" name="govAgency" data-bind="value: govAgencyCode" required="required" validationMessage="Bạn phải chọn cơ quan thực hiện">
 
 						</select>
 						<span data-for="govAgency" class="k-invalid-msg"></span>
@@ -124,6 +124,7 @@
 			url : "${api.server}/serviceconfigs/"+id,
 			dataType : "json",
 			type : "GET",
+			headers: {"groupId": ${groupId}},
 			success : function(result){
 				console.log(result);
 				var viewModel = kendo.observable({
@@ -131,14 +132,12 @@
 					serviceName: result.serviceName,
 					domainCode: result.domainCode,
 					domainName: result.domainName,
-					govAgencyCode: result.govAgencyCode,
-					govAgencyName: result.govAgencyName,
+					govAgencyCode: result.administrationCode,
+					govAgencyName: result.administrationName,
 					serviceInstruction: function(e){
 						$('#serviceInstruction').summernote('code', result.serviceInstruction);
 					},
-					serviceLevel: function(e){
-						return "Mức độ "+result.serviceLevel;
-					},
+					serviceLevel: result.serviceLevel,
 					serviceUrl: result.serviceUrl,
 					forCitizen: result.forCitizen,
 					forBusiness: result.forBusiness,
@@ -163,14 +162,14 @@
 					url : "${api.server}/serviceconfigs/"+id,
 					dataType : "json",
 					type : "PUT",
+					headers: {"groupId": ${groupId}},
 					data : {
-						domainCode : $("#domainCode").val(),
 						serviceInfoId : $("#service").val(),
 						govAgencyCode : $("#govAgency").val(),
 						serviceLevel :$("#serviceLevel").val(),
 						process : $("#process").val(),
 						serviceInstruction :$("#serviceInstruction").val(),
-						address : $("#address").val(),
+						serviceUrl : $("#address").val(),
 						forCitizen : $("#forCitizen").val(),
 						postalService : $("#postService").val(),
 						forBusiness : $("#forBusiness").val(),
@@ -193,14 +192,14 @@
 					url : "${api.server}/serviceconfigs",
 					dataType : "json",
 					type : "POST",
+					headers: {"groupId": ${groupId}},
 					data : {
-						domainCode : $("#domainCode").val(),
 						serviceInfoId : $("#service").val(),
 						govAgencyCode : $("#govAgency").val(),
 						serviceLevel :$("#serviceLevel").val(),
 						process : $("#process").val(),
 						serviceInstruction :$("#serviceInstruction").val(),
-						address : $("#address").val(),
+						serviceUrl : $("#address").val(),
 						forCitizen : $("#forCitizen").val(),
 						postalService : $("#postService").val(),
 						forBusiness : $("#forBusiness").val(),
@@ -272,33 +271,8 @@
 	
 	$("#serviceLevel").kendoComboBox({
 		placeholder : "Chọn mức độ",
-		dataTextField:"processName",
-		dataValueField:"processNo",
 		noDataTemplate: 'Không có dữ liệu',
-		filter: "contains",
-		/*dataSource:{
-			transport:{
-				read:{
-					url:"${api.server}/serviceprocesses",
-					dataType:"json",
-					type:"GET",
-					success:function(result){
-
-					},
-					error:function(result){
-
-					}
-				}
-			},
-			schema:{
-				data:"data",
-				total:"total",
-				model:{
-					id:"processNo"
-				}
-			}
-		}*/
-		dataSource : []
+		filter: "contains"
 	});
 
 	$("#govAgency").kendoComboBox({
@@ -310,7 +284,7 @@
 		dataSource : {
 			transport : {
 				read : {
-					url : "${api.server}/dictcollections/SERVICE_DOMAIN/dictitems",
+					url : "${api.server}/dictcollections/GOVERNMENT_AGENCY/dictitems",
 					dataType : "json",
 					type : "GET",
 					headers: {"groupId": ${groupId}},
@@ -331,16 +305,15 @@
 	
 	$("#process").kendoComboBox({
 		placeholder : "Chọn tiến trình",
-		dataTextField:"processName",
-		dataValueField:"processNo",
-		noDataTemplate: 'Không có dữ liệu',
-		filter: "contains",
+		dataTextField: "processName",
+		dataValueField: "processNo",
 		dataSource:{
 			transport:{
 				read:{
-					url:"${api.server}/serviceconfigs/"+id,
+					url:"${api.server}/serviceconfigs/"+$("#itemServiceConfigId").val()+"/processes",
 					dataType:"json",
 					type:"GET",
+					headers: {"groupId": ${groupId}},
 					success:function(result){
 
 					},
@@ -351,12 +324,12 @@
 			},
 			schema:{
 				data:"data",
-				total:"total",
-				model:{
-					id:"processNo"
-				}
+				total:"total"
 			}
-		}
+		},
+		filter: "contains",
+		noDataTemplate: 'Không có dữ liệu'
+
 	});
 
 
@@ -385,37 +358,46 @@
 				data : "data",
 				total : "total"
 			}
+		},
+		change : function(e){
+			var value = this.value();
+			$("#service").data("kendoComboBox").dataSource.read({
+				domain : value
+			});
 		}
 	});
 
 	$("#service").kendoComboBox({
 		placeholder : "Chọn thủ tục",
-		dataTextField:"processName",
-		dataValueField:"processNo",
+		dataTextField:"serviceName",
+		dataValueField:"serviceCode",
 		noDataTemplate: 'Không có dữ liệu',
 		filter: "contains",
-		/*dataSource:{
+		dataSource:{
 			transport:{
-				read:{
-					url:"${api.server}/serviceprocesses",
-					dataType:"json",
-					type:"GET",
-					success:function(result){
-
-					},
-					error:function(result){
-
-					}
+				read:function(options) {
+					$.ajax({
+						url:"${api.server}/serviceinfos",
+						dataType:"json",
+						type:"GET",
+						headers: {"groupId": ${groupId}},
+						data : {
+							domain : options.data.domain
+						},
+						success:function(result){
+							options.success(result);
+						},
+						error:function(result){
+							options.error(result);
+						}
+					});
 				}
 			},
 			schema:{
 				data:"data",
-				total:"total",
-				model:{
-					id:"processNo"
-				}
+				total:"total"
 			}
-		}*/
-		dataSource : []
+		},
+		autoBind: false
 	});
 </script>

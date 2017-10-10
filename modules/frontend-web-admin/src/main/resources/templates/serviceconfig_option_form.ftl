@@ -5,27 +5,29 @@
 	<div class="row">
 		<div class="col-sm-12 MB15">
 			<label>Tên mẫu hồ sơ</label>
-			<input class="form-control" id="dossierTemplate" name="dossierTemplate" required="required" validationMessage="Bạn phải chọn mẫu hồ sơ" required="required"  />
+			<select class="form-control" id="dossierTemplate" name="dossierTemplate" data-bind="value: dossierTemplate" required="required" validationMessage="Bạn phải chọn mẫu hồ sơ">
+			</select>
 			<span data-for="dossierTemplate" class="k-invalid-msg"></span>
 		</div>
 
 		<div class="col-sm-12 MB15">
 			<label>Tên quy trình xử lý thủ tục</label>
-			<input name="serviceProcess" id="serviceProcess" class="form-control" placeholder="Tên thủ tục" data-bind="value:serviceProcess" validationMessage="Bạn phải chọn quy trình xử lý" required="required">
+			<select class="form-control" id="serviceProcess" name="serviceProcess" data-bind="value: serviceProcess" required="required" validationMessage="Bạn phải chọn quy trình xử lý">
+			</select>
 			<span data-for="serviceProcess" class="k-invalid-msg"></span>
 		</div>
 
 		<div class="col-sm-12 MB15">
 			<label>Chuỗi pattern xác định việc lựa chọn tự động theo đối tượng xử lý hồ sơ</label>
-			<input name="pattern" id="pattern" class="form-control" placeholder="Chuỗi pattern" data-bind="value:pattern" validationMessage="Bạn phải điền chuỗi pattern" required="required">
-			<span data-for="pattern" class="k-invalid-msg"></span>
+			<input name="autoSelect" id="autoSelect" class="form-control" placeholder="Chuỗi pattern" data-bind="value:autoSelect" validationMessage="Bạn phải điền chuỗi pattern" required="required">
+			<span data-for="autoSelect" class="k-invalid-msg"></span>
 		</div>
 
 		<div class="col-sm-12 ">
 			<div class="form-group">
 				<label class="control-label">Hướng dẫn chi tiết để chuẩn bị hồ sơ
 				</label>
-				<div class="" id="instructionNote" name="instructionNote" validationMessage="Bạn phải điền hướng dẫn chi tiết" required="required"></div>
+				<div class="" id="instructionNote" name="instructionNote" validationMessage="Bạn phải điền hướng dẫn chi tiết" required="required" data-bind="value: instructionNote"></div>
 				<span data-for="instructionNote" class="k-invalid-msg"></span>
 			</div>
 		</div>
@@ -34,7 +36,7 @@
 			<div class="form-group">
 				<label class="control-label">Hướng dẫn sau khi nộp hồ sơ
 				</label>
-				<div class="" id="submissionNote" name="submissionNote" validationMessage="Bạn phải điền hướng dẫn sau khi nộp hồ sơ" required="required"></div>
+				<div class="" id="submissionNote" name="submissionNote" validationMessage="Bạn phải điền hướng dẫn sau khi nộp hồ sơ" required="required" data-bind="value: submissionNote"></div>
 				<span data-for="submissionNote" class="k-invalid-msg"></span>
 			</div>
 		</div>
@@ -146,14 +148,6 @@
 		}
 	});
 
-	$("#instructionNote").summernote({
-		height : 150
-	});
-
-	$("#submissionNote").summernote({
-		height : 150
-	});
-
 	$("#keywordChoiseDossier").kendoAutoComplete({
 		dataTextField : "serviceName",
 		dataSource: {
@@ -185,14 +179,14 @@
 
 	$("#dossierTemplate").kendoComboBox({
 		placeholder : "Chọn mẫu hồ sơ",
-		dataTextField:"processName",
-		dataValueField:"processNo",
+		dataTextField:"templateName",
+		dataValueField:"dossierTemplateId",
 		noDataTemplate: 'Không có dữ liệu',
 		filter: "contains",
-		/*dataSource:{
+		dataSource:{
 			transport:{
 				read:{
-					url:"${api.server}/serviceprocesses",
+					url:"${api.server}/dossiertemplates",
 					dataType:"json",
 					type:"GET",
 					headers: {"groupId": ${groupId}},
@@ -206,22 +200,18 @@
 			},
 			schema:{
 				data:"data",
-				total:"total",
-				model:{
-					id:"processNo"
-				}
+				total:"total"			
 			}
-		}*/
-		dataSource : []
+		}
 	});
 
 	$("#serviceProcess").kendoComboBox({
 		placeholder : "Chọn tiến trình",
 		dataTextField:"processName",
-		dataValueField:"processNo",
+		dataValueField:"serviceProcessId",
 		noDataTemplate: 'Không có dữ liệu',
 		filter: "contains",
-		/*dataSource:{
+		dataSource:{
 			transport:{
 				read:{
 					url:"${api.server}/serviceprocesses",
@@ -238,20 +228,36 @@
 			},
 			schema:{
 				data:"data",
-				total:"total",
-				model:{
-					id:"processNo"
-				}
+				total:"total"
 			}
-		}*/
-		dataSource : []
+		}
 	});
 
 	$("#instructionNote").summernote({
-		height : 150
+		height : 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
 	});
 	$("#submissionNote").summernote({
-		height : 150
+		height : 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
 	});
 
 	$("#btn-revert-serviceoptions").click(function(){
@@ -266,9 +272,14 @@
 		if(item){
 			var viewModel = kendo.observable({
 				dossierTemplate : item.dossierTemplateId,
-				serviceProcess : item.processName,
-				instructionNote : item.instructionNote,
-				submissionNote : item.submissionNote,
+				serviceProcess : item.serviceProcessId,
+				instructionNote : function(e){
+					$("#instructionNote").summernote('code', item.instructionNote);
+				},
+				submissionNote : function(e){
+					$("#submissionNote").summernote('code', item.submissionNote);
+				},
+				autoSelect : item.autoSelect,
 				serviceConfigs : function(){
 					checkedForServiceConfig(item.serviceConfigs);
 					arr = item.serviceConfigs;
@@ -324,14 +335,14 @@
 						type : "PUT",
 						headers: {"groupId": ${groupId}},
 						data : {
-							dossierTemplate : $("#dossierTemplate").val(),
-							serviceProcess : $("#serviceProcess").val(),
-							instructionNote : $("#instructionNote").val(),
-							submissionNote :$("#submissionNote").val(),
-							pattern : $("#pattern").val()
+							dossierTemplateId : $("#dossierTemplate").val(),
+							serviceProcessId : $("#serviceProcess").val(),
+							instructionNote : $("#instructionNote").summernote("code").toString(),
+							submissionNote :$("#submissionNote").summernote("code").toString(),
+							autoSelect : $("#autoSelect").val()
 						},
 						success : function(result){
-							updateServieConfigoptionIfSuccess(id,result);
+							//updateServieConfigoptionIfSuccess(id,result);
 							notification.show({
 								message: "Yêu cầu được thực hiện thành công"
 							}, "success");
@@ -350,14 +361,14 @@
 						type : "POST",
 						headers: {"groupId": ${groupId}},
 						data : {
-							dossierTemplate : $("#dossierTemplate").val(),
-							serviceProcess : $("#serviceProcess").val(),
-							instructionNote : $("#instructionNote").val(),
-							submissionNote : $("#submissionNote").val(),
-							pattern : $("#pattern").val()
+							dossierTemplateId : $("#dossierTemplate").val(),
+							serviceProcessId : $("#serviceProcess").val(),
+							instructionNote : $("#instructionNote").summernote("code").toString(),
+							submissionNote : $("#submissionNote").summernote("code").toString(),
+							autoSelect : $("#autoSelect").val()
 						},
 						success : function(result){
-							addServiceConfigOptionIfSuccess(result);
+							//addServiceConfigOptionIfSuccess(result);
 							notification.show({
 								message: "Yêu cầu được thực hiện thành công"
 							}, "success");
@@ -373,7 +384,6 @@
 			}
 		}
 
-
 	});
 
 	var addServiceConfigOptionIfSuccess = function(result){
@@ -382,7 +392,7 @@
 			"serviceProcess":result.serviceProcess,
 			"instructionNote":result.instructionNote,
 			"submissionNote":result.submissionNote,
-			"pattern" : result.pattern
+			"autoSelect" : result.autoSelect
 		});
 	};
 
@@ -395,7 +405,7 @@
 				item.set("serviceProcess",result.serviceProcess);
 				item.set("instructionNote",result.instructionNote);
 				item.set("submissionNote",result.submissionNote);
-				item.set("pattern", result.pattern);
+				item.set("autoSelect", result.autoSelect);
 			}
 
 		});
