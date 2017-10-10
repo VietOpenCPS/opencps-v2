@@ -39,7 +39,5 @@
 	</div>
 </div>
 <script type="text/javascript">
-	$("#btnSaveFileTemplate").click(function() {
-		
-	});
+	
 </script>
