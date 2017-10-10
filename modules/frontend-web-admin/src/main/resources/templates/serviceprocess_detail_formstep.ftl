@@ -1,5 +1,5 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <div>
@@ -7,7 +7,7 @@
 	<form name="fm" class="" method="post">
 		<div class="row MT20">
 			<div class="col-xs-12 col-sm-6">
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
 						Tên bước
 					</div>
@@ -25,7 +25,7 @@
 						Số thứ tự
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
 						<input id="sequenceNo" name="sequenceNo" class="k-textbox form-control" data-bind="value:sequenceNo"/>
 					</div>
@@ -39,7 +39,7 @@
 						Trạng thái chính
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
 						<input id="dossierStatus" name="dossierStatus" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:dossierStatus"/>
 					</div>
@@ -52,7 +52,7 @@
 						Thời gian xử lý
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
 						<input id="durationCount" name="durationCount" type="number" class="k-textbox form-control" data-bind="value:durationCount"/>
 					</div>
@@ -66,7 +66,7 @@
 						Trạng thái phụ
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
 						<input id="dossierSubStatus" name="dossierSubStatus" class="form-control" data-bind="value:dossierSubStatus"/>
 					</div>
@@ -82,7 +82,7 @@
 				<div class="row MT10">
 					<div class="col-xs-12 col-sm-12">Vai trò xử lý</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-6">
 						<select class="form-control" id="administration" name="administration" data-bind="value: administrationName">
 							<option value="">Chọn vai trò</option>
@@ -107,12 +107,40 @@
 			<div class="col-xs-12 col-sm-12">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
+						Hướng dẫn
+					</div>
+				</div>
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<textarea class="form-control" name="name"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row MT10">
+			<div class="col-xs-12 col-sm-12">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						Tóm tắt hồ sơ
+					</div>
+				</div>
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<textarea class="form-control" name="name"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row MT10">
+			<div class="col-xs-12 col-sm-12">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
 						Nhúng ajax của phần nghiệp vụ
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<textarea class="form-control" name="name" rows="4"></textarea>
+						<textarea class="form-control" name="name"></textarea>
 					</div>
 				</div>
 			</div>
@@ -129,21 +157,29 @@
 	$(document).on('click', '.btn-add-step-role', function(e){
 		e.preventDefault();
 
-		var controlForm = $('.service-process-form-step-controls'),
-				currentEntry = $(this).parents('.service-process-form-step-entry:first'),
-				newEntry = $(currentEntry.clone()).appendTo(controlForm);
+		var controlForm = $('.service-process-form-step-controls');
+		var	currentEntry = $(this).parents('.service-process-form-step-entry:first');
+
+		var radioValue = currentEntry.find('input[type=radio]:checked').val();
+
+		var newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+		var index = controlForm.children().length;
+		var name = 'moderator_' + index;
+		newEntry.find('input[type=radio]').attr('name', name);
 
 		newEntry.find('select').val('');
-		newEntry.find('input [type="radio"]').val('');
+		newEntry.find('input[type=radio]:checked').prop('checked',false);
+		currentEntry.find('input[type=radio][value=' + radioValue + ']').prop('checked',true);
 
 		controlForm.find('.service-process-form-step-entry:not(:last) .btn-add-step-role')
-				.removeClass('btn-add-step-role').addClass('btn-remove-step-role')
-				.removeClass('btn-success').addClass('btn-danger')
-				.html('<span class="glyphicon glyphicon-minus"></span>');
-		}).on('click', '.btn-remove-step-role', function(e){
-			$(this).parents('.service-process-form-step-entry:first').remove();
-			e.preventDefault();
-			return false;
+		.removeClass('btn-add-step-role').addClass('btn-remove-step-role')
+		.removeClass('btn-success').addClass('btn-danger')
+		.html('<span class="glyphicon glyphicon-minus"></span>');
+	}).on('click', '.btn-remove-step-role', function(e){
+		$(this).parents('.service-process-form-step-entry:first').remove();
+		e.preventDefault();
+		return false;
 	});
 
 	(function($){
@@ -211,11 +247,11 @@
 		});
 
 		$("#tabstrip_service_process_step_modal").kendoTabStrip({
-				animation:  {
-						open: {
-								effects: "fadeIn"
-						}
+			animation:  {
+				open: {
+					effects: "fadeIn"
 				}
+			}
 		});
 
 	})(jQuery);

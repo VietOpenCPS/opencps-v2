@@ -2,6 +2,7 @@
 package org.opencps.frontend.web.admin.portlet;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
@@ -18,8 +19,10 @@ import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -222,11 +225,16 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			}
 		}
 
+		// roles
+		List<Role> roles =
+			RoleLocalServiceUtil.getRoles(themeDisplay.getCompanyId());
+
 		// api
 		apiObject.put("server", themeDisplay.getPortalURL() + "/o/rest/v2");
 		apiObject.put(
 			"portletNamespace",
 			themeDisplay.getPortletDisplay().getNamespace());
+		apiObject.put("roles", roles);
 
 		// set varible
 		renderRequest.setAttribute("ajax", urlObject);

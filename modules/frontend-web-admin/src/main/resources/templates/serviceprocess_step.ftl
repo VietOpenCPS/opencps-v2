@@ -3,12 +3,12 @@
 </#if>
 
 <div>
-  <div class="row MT10">
+  <div class="row">
      <div class="col-xs-12 col-sm-12">
         <button id="btn_add_service_process_step" class="k-button btn-primary" title="Thêm bước xử lý"><i class="glyphicon glyphicon-plus"></i> Thêm bước xử lý </button>
      </div>
   </div>
-  <div class="row">
+  <div class="row MT10">
 		<div>
 	    <!-- list view header -->
 	    <ul class="mimic-table">
@@ -248,6 +248,8 @@
          event.preventDefault();
 				 $("#serviceprocess_step_container").hide();
 				 $("#serviceprocess_detail_formstep_container").show();
+
+         $("#btn_save_service_process_step").attr("data-pk", "");
       });
 
       var updateServiceProcessStep = function(dataPk){
