@@ -526,7 +526,13 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	@Indexable(type = IndexableType.DELETE)
 	public ServiceProcess removeServiceProcess(long serviceProcessId, long groupId) throws PortalException {
 		validateRemove(serviceProcessId, groupId);
+		
+		List<ServiceProcessRole> processRoles = serviceProcessRolePersistence.findByP_S_ID(serviceProcessId);
 
+		for (ServiceProcessRole processRole : processRoles) {
+			serviceProcessRolePersistence.remove(processRole);
+		}
+		
 		ServiceProcess serviceProcess = serviceProcessPersistence.fetchByPrimaryKey(serviceProcessId);
 
 		serviceProcessPersistence.remove(serviceProcess);
@@ -719,13 +725,13 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 	private void validateRemove(long serviceProcessId, long groupId) throws PortalException {
 
-		List<ServiceProcessRole> processRoles = serviceProcessRolePersistence.findByP_S_ID(serviceProcessId);
+		//List<ServiceProcessRole> processRoles = serviceProcessRolePersistence.findByP_S_ID(serviceProcessId);
 
 		List<ProcessStep> processSteps = processStepPersistence.findByS_P_ID(serviceProcessId);
 
 		List<ProcessAction> processActions = processActionPersistence.findByS_P_ID(serviceProcessId);
 
-		if (processRoles.size() != 0 || processSteps.size() != 0 || processActions.size() != 0) {
+		if (processSteps.size() != 0 || processActions.size() != 0) {
 			throw new HasChildrenException("HasChildrenException");
 		}
 	}

@@ -154,6 +154,12 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 	@Indexable(type = IndexableType.DELETE)
 	public ProcessStep removeProcessStep(long processStepId) throws PortalException {
 		validateRemove(processStepId);
+		
+		List<ProcessStepRole> processStepRoles = processStepRolePersistence.findByP_S_ID(processStepId);
+		
+		for (ProcessStepRole stepRole : processStepRoles) {
+			processStepRolePersistence.remove(stepRole);
+		}
 
 		ProcessStep processStep = processStepPersistence.fetchByPrimaryKey(processStepId);
 
@@ -340,7 +346,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 
 		ProcessStep processStep = processStepPersistence.findByPrimaryKey(processStepId);
 
-		List<ProcessStepRole> processStepRoles = processStepRolePersistence.findByP_S_ID(processStepId);
+		//List<ProcessStepRole> processStepRoles = processStepRolePersistence.findByP_S_ID(processStepId);
 
 		List<ProcessAction> preActions = processActionPersistence.findByPRE_CODE(processStep.getStepCode(),
 				processStep.getGroupId());
@@ -348,7 +354,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 		List<ProcessAction> postActions = processActionPersistence.findByPOST_CODE(processStep.getStepCode(),
 				processStep.getGroupId());
 
-		if (processStepRoles.size() != 0 || preActions.size() != 0 || postActions.size() != 0) {
+		if (preActions.size() != 0 || postActions.size() != 0) {
 			throw new HasChildrenException("HasChildrenException");
 		}
 	}
