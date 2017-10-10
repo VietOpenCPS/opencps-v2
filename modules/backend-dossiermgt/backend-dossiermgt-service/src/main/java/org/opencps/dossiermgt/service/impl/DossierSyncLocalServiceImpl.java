@@ -62,7 +62,18 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 		dossierSync.setModifiedDate(now);
 		
 		dossierSync.setGroupId(groupId);
+		dossierSync.setUserId(userId);
 		
-		return null;
+		dossierSync.setDossierId(dossierId);
+		dossierSync.setDossierReferenceUid(dossierReferenceUid);
+		dossierSync.setCreateDossier(createDossier);
+		dossierSync.setMethod(method);
+		dossierSync.setClassPK(classPK);
+		dossierSync.setFileReferenceUid(fileReferenceUid);
+		dossierSync.setServerNo(serverNo);
+		
+		dossierSyncPersistence.update(dossierSync);
+		
+		return dossierSync;
 	}
 }
