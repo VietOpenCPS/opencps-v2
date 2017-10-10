@@ -620,6 +620,7 @@
 		<column name="durationCount" type="int" />
 		<column name="customProcessUrl" type="String" />
 		<column name="stepInstruction" type="String" />
+		<column name="briefNote" type="String" />
 		<column name="editable" type="boolean" />
 
 		<finder return-type="Collection" name="S_P_ID">
