@@ -167,16 +167,16 @@
 
 				$("#btn_save_dossier_template").attr("data-pk", dataItem.id);
 
-					// reset state for left tab
-					$('.nav-tabs a[href="#ttmhs"]').tab('show');
-					$("ul.nav.nav-tabs li:not(:first)").removeClass("disabled-tab");
+				// reset state for left tab
+				$('.nav-tabs a[href="#ttmhs"]').tab('show');
+				$("ul.nav.nav-tabs li:not(:first)").removeClass("disabled-tab");
 
-					$("#dossiertemplate_part_container").show();
-					$("#dossiertemplate_part_form_container").hide();
+				$("#dossiertemplate_part_container").show();
+				$("#dossiertemplate_part_form_container").hide();
 
-					onSelectDossiertemplate(dataItem.id);
-				}
-			});
+				onSelectDossiertemplate(dataItem.id);
+			}
+		});
 
 		// $(document).on("click", ".dossier-template-item", function(event){
 		//   onSelectDossiertemplate($(this).attr("data-pk"));

@@ -3,18 +3,17 @@
 </#if>
 
 <div class="">
-	<h4>Thêm mới thao tác xử lý</h4>
 	<form class="" name="fm" method="post">
-		<div class="row MT20">
+		<div class="row">
 			<div class="col-xs-12 col-sm-5">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
 						Tên thao tác
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="actionName" name="actionName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:actionName"/>
+						<input id="actionName" name="actionName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: actionName"/>
 					</div>
 				</div>
 			</div>
@@ -25,9 +24,9 @@
 						Kích hoạt sự kiện
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<select class="form-control" name="" data-bind="value:">
+						<select class="form-control" name="autoEvent" data-bind="value: autoEvent">
 							<option value="">Chọn sự kiện</option>
 						</select>
 					</div>
@@ -41,9 +40,9 @@
 						Điều kiện kiểm tra
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="preCondition" name="preCondition" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:preCondition"/>
+						<input id="preCondition" name="preCondition" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: preCondition"/>
 					</div>
 				</div>
 			</div>
@@ -64,9 +63,9 @@
 						Bước thực hiện thao tác
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="preProcessStepId" name="preProcessStepId" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:preProcessStepId"/>
+						<input id="preProcessStepId" name="preProcessStepId" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: preProcessStepId"/>
 					</div>
 				</div>
 			</div>
@@ -77,9 +76,9 @@
 						Bước sau thực hiện thao tác
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="postProcessStepId" name="postProcessStepId" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:postProcessStepId"/>
+						<input id="postProcessStepId" name="postProcessStepId" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: postProcessStepId"/>
 					</div>
 				</div>
 			</div>
@@ -88,7 +87,7 @@
 			<div class="col-xs-12 col-sm-5">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<div class="checkbox"> <input type="checkbox" data-bind="value:"> <label>Phân công người xử lý</label> </div>
+						<div class="checkbox"> <input type="checkbox" name="allowAssignUser" data-bind="value: allowAssignUser"> <label>Phân công người xử lý</label> </div>
 					</div>
 				</div>
 				<div class="row">
@@ -99,13 +98,17 @@
 					</div>
 				</div>
 			</div>
+			<div class="col-xs-12 col-sm-2"></div>
+			<div class="col-xs-12 col-sm-5">
+				<div class="checkbox"> <input type="checkbox" name="rollbackable" data-bind="checked: rollbackable"> <label>Cho phép rollback</label> </div>
+			</div>
 		</div>
 		<div class="service-process-create-dossier-file-form-action-controls">
 			<div class="service-process-create-dossier-file-form-action-entry">
 				<div class="row MT10">
 					<div class="col-xs-12 col-sm-12">Tài liệu tạo mới</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-5">
 						<select class="form-control" id="createDossierFiles" name="createDossierFiles" data-bind="value:createDossierFiles">
 							<option value=""></option>
@@ -134,7 +137,7 @@
 				<div class="row MT10">
 					<div class="col-xs-12 col-sm-12">Kết quả trả về</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-5">
 						<select class="form-control" id="returnDossierFiles" name="returnDossierFiles" data-bind="value:returnDossierFiles">
 							<option value=""></option>
@@ -147,9 +150,6 @@
 					<div class="col-xs-12 col-sm-2">
 						<div class="checkbox"> <input type="checkbox" name="" data-bind="value:"> <label>Ký số</label> </div>
 					</div>
-					<#-- <div class="col-xs-12 col-sm-2">
-						<div class="checkbox"> <input type="checkbox" name="" dât-bind="value:"> <label>Trả về</label> </div>
-					</div> -->
 					<div class="col-xs-12 col-sm-3">
 						<button class="btn btn-success btn-add-action-role" type="button">
 							<span class="glyphicon glyphicon-plus"></span>
@@ -167,13 +167,19 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<input class="form-control" type="text" name="" value="" data-bind="value:stepName">
+						<input class="form-control" type="text" name="" value="" data-bind="value: paymentFee">
 					</div>
 				</div>
+			</div>
+		</div>
+		<div class="row MT10">
+			<div class="col-xs-12 col-sm-12">
 				<div class="row">
-					<label>Mã đồng bộ</label>
+					<div class="col-xs-12 col-sm-12">Mã đồng bộ</div>
+				</div>
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input class="form-control" type="text" name="syncActionCode" id="syncActionCode" value="" data-bind="value:stepName">
+						<input class="form-control" type="text" name="syncActionCode" id="syncActionCode" value="" data-bind="value: syncActionCode">
 					</div>
 				</div>
 			</div>
@@ -254,12 +260,4 @@
 		filter: "contains"
 	});
 
-	$(function() {
-		$("[data-role=combobox]").each(function() {
-			var widget = $(this).getKendoComboBox();
-			widget.input.on("focus", function() {
-				widget.open();
-			});
-		});
-	});
 </script>

@@ -143,6 +143,16 @@
 
 				$("#btn_save_service_process").attr("data-pk", dataItem.id);
 
+				// reset state for left tab
+				$('.nav-tabs a[href="#tab_process_info"]').tab('show');
+				$("ul.nav.nav-tabs li:not(:first)").removeClass("disabled-tab");
+
+				$("#serviceprocess_step_container").show();
+				$("#serviceprocess_detail_formstep_container").hide();
+
+				$("#serviceprocess_action_container").show();
+				$("#serviceprocess_detail_formaction_container").hide();
+
 				$.ajax({
 					url: "${api.server}" + "/serviceprocesses/" + dataItem.id + "/roles",
 					type: "GET",
@@ -303,6 +313,13 @@
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
+
+					var serviceProcess = serviceProcessDataSource.get(dataPk);
+					serviceProcess.set("processNo", $("#processNo").val());
+					serviceProcess.set("processName", $("#processName").val());
+					serviceProcess.set("description", $("#description").val());
+					serviceProcess.set("durationCount", $("#durationCount").val());
+					serviceProcess.set("durationUnit", $("input[name=durationUnit]:checked").val());
 				},
 				error: function(result) {
 					notification.show({
@@ -311,6 +328,7 @@
 				}
 			});
 
+			// edit roles
 			$.ajax({
 				url: "${api.server}" + "/serviceprocesses/" + dataPk + "/roles",
 				type: "GET",
@@ -387,8 +405,6 @@
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
 
-					$("#btn_save_service_process").attr("data-pk", result.serviceProcessId);
-
 					$(".service-process-form-entry").each(function(){
 						if ($(this).find('select[name=roleId]').val()){
 							$.ajax({
@@ -396,6 +412,7 @@
 								type: "POST",
 								dataType: "json",
 								headers: {"groupId": ${groupId}},
+								async: false,
 								data: {
 									roleId: $(this).find('select[name=roleId]').val(),
 									moderator: $(this).find('input[type=radio]:checked').val(),
@@ -408,6 +425,17 @@
 							});
 						}
 					});
+
+					serviceProcessDataSource.insert(0, {
+						"serviceProcessId": result.serviceProcessId,
+						"processNo": result.processNo,
+						"processName": result.processName,
+						"description": result.description,
+						"durationCount": result.durationCount,
+						"durationUnit": result.durationUnit,
+					});
+
+					$("#btn_save_service_process").attr("data-pk", result.serviceProcessId);
 				},
 				error: function(result) {
 					notification.show({

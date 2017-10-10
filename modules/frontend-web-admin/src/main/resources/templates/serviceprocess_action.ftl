@@ -4,12 +4,12 @@
 </#if>
 
 <div>
-  <div class="row MT10">
+  <div class="row">
      <div class="col-xs-12 col-sm-12">
         <button id="btn_add_service_process_action" class="k-button btn-primary" title="Thêm hành động"><i class="glyphicon glyphicon-plus"></i> Thêm hành động </button>
      </div>
   </div>
-  <div class="row">
+  <div class="row MT10">
 		<div>
 	    <!-- list view header -->
 	    <ul class="mimic-table">
