@@ -38,4 +38,7 @@ public interface DossierActions {
 	public void doRollback();
 	
 	public void getContacts();
+	
+	public void doDossierSync();
+	
 }

@@ -217,9 +217,9 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		String serviceProcessId = GetterUtil.getString(params.get(ProcessActionTerm.SERVICE_PROCESS_ID));
-		String preStepCode = GetterUtil.getString(params.get(ProcessActionTerm.PRESTEP_CODE));
-		String postStepCode = GetterUtil.getString(params.get(ProcessActionTerm.POSTSTEP_CODE));
+		String serviceProcessId = String.valueOf(params.get(ProcessActionTerm.SERVICE_PROCESS_ID));
+		String preStepCode = String.valueOf(params.get(ProcessActionTerm.PRESTEP_CODE));
+		String postStepCode = String.valueOf(params.get(ProcessActionTerm.POSTSTEP_CODE));
 
 		if (Validator.isNotNull(serviceProcessId)) {
 			MultiMatchQuery query = new MultiMatchQuery(serviceProcessId);
@@ -296,9 +296,9 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		String serviceProcessId = GetterUtil.getString(params.get(ProcessActionTerm.SERVICE_PROCESS_ID));
-		String preStepCode = GetterUtil.getString(params.get(ProcessActionTerm.PRESTEP_CODE));
-		String postStepCode = GetterUtil.getString(params.get(ProcessActionTerm.POSTSTEP_CODE));
+		String serviceProcessId = String.valueOf(params.get(ProcessActionTerm.SERVICE_PROCESS_ID));
+		String preStepCode = String.valueOf(params.get(ProcessActionTerm.PRESTEP_CODE));
+		String postStepCode = String.valueOf(params.get(ProcessActionTerm.POSTSTEP_CODE));
 
 		if (Validator.isNotNull(serviceProcessId)) {
 			MultiMatchQuery query = new MultiMatchQuery(serviceProcessId);

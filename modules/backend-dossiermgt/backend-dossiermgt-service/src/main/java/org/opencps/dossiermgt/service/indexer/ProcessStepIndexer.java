@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringPool;
 
 public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 	public static final String CLASS_NAME = ProcessStep.class.getName();
@@ -72,6 +73,7 @@ public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 		document.addTextSortable(ProcessStepTerm.DOSSIER_SUB_STATUS_TEXT, object.getDossierSubStatus());
 		document.addTextSortable(ProcessStepTerm.CUSTOM_PROCESS_URL, object.getCustomProcessUrl());
 		document.addTextSortable(ProcessStepTerm.STEP_INSTRUCTION, object.getStepInstruction());
+		document.addTextSortable(ProcessStepTerm.BRIEF_NOTE, object.getBriefNote());
 		document.addTextSortable(ProcessStepTerm.EDITABLE, Boolean.toString(object.getEditable()));
 		
 		// add extra fields (ProcessStepRole)

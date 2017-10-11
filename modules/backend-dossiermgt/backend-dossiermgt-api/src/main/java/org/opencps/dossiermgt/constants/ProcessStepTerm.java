@@ -17,6 +17,7 @@ public class ProcessStepTerm {
 	public static final String DURATION_COUNT = "durationCount";
 	public static final String CUSTOM_PROCESS_URL = "customProcessUrl";
 	public static final String STEP_INSTRUCTION = "stepInstruction";
+	public static final String BRIEF_NOTE = "briefNote";
 	public static final String EDITABLE = "editable";
 
 }

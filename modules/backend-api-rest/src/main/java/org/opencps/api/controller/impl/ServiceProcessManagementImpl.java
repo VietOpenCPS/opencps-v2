@@ -582,7 +582,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			ProcessStep step = actions.updateProcessStep(groupId, input.getStepCode(), input.getStepName(), id,
 					input.getSequenceNo(), input.getDossierStatus(), input.getDossierSubStatus(),
 					GetterUtil.getInteger(input.getDurationCount()), input.getCustomProcessUrl(),
-					input.getInstructionNote(), GetterUtil.getBoolean(input.getEditable()), serviceContext);
+					input.getStepInstruction(), input.getBriefNote(), GetterUtil.getBoolean(input.getEditable()), serviceContext);
 
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 
@@ -645,7 +645,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			ProcessStep step = actions.updateProcessStep(groupId, code, input.getStepName(), id, input.getSequenceNo(),
 					input.getDossierStatus(), input.getDossierSubStatus(),
 					GetterUtil.getInteger(input.getDurationCount()), input.getCustomProcessUrl(),
-					input.getInstructionNote(), GetterUtil.getBoolean(input.getEditable()), serviceContext);
+					input.getStepInstruction(), input.getBriefNote(), GetterUtil.getBoolean(input.getEditable()), serviceContext);
 
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 
