@@ -7,6 +7,9 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<button class="btn btn-active form-control" id="btnAddServiceConfig"><i class="glyphicon glyphicon-plus"></i> Thêm dịch vụ công</button>
+					<button class="btn btn-active form-control" id="btnAddServiceConfigS"><i class="glyphicon glyphicon-plus"></i> Tạo nhiề DVC</button>
+				</div>
+				<div class="col-sm-12">
 					<div class="form-group search-icon MT10">
 						<input type="text" id="keywordSearchServiceConfig" name="keywordSearchServiceConfig" class="form-control" placeholder="Nhập từ khóa">
 					</div>
@@ -19,7 +22,7 @@
 	</div>
 	<div class="col-sm-9 PR0" >
 		<div class="panel panel-body PL0 PR0" id="serviceConfigDetail">
-
+			<#include "serviceconfig_option_form.ftl">
 		</div>
 	</div>
 </div>
@@ -310,6 +313,13 @@
 			formControl();
 		});
 
+		$("#btnAddServiceConfigS").click(function(){
+			$("#itemServiceConfigId").val("");
+			$("#serviceConfigDetail").load("${ajax.create_serviceconfigs}",function(result){
+
+			});
+		});
+
 		var formControl = function(dataPk){
 
 			var url = "${ajax.serviceconfig_detail}";
@@ -323,6 +333,30 @@
 				funcCheckValueItem();
 			});
 
+		}
+
+		var funcCheckValueItem = function(){
+			if($("#itemServiceConfigId").val() !== ""){
+				activateTabServiceConfig();
+				dataSourceServiceOption.read({
+
+				});
+			}else{
+				disabledTabServiceConfig();
+			}
+		}
+
+		var activateTabServiceConfig=function() {
+			$("#serviceconfig-tabstrip > li").removeClass("disabled");
+			$("#serviceconfig-tabstrip > li > a").attr("data-toggle","tab");
+
+		}
+
+		var disabledTabServiceConfig = function () {
+			$("#serviceconfig-tabstrip > li").addClass("disabled");
+			$("#serviceconfig-tabstrip > li > a").removeAttr("data-toggle");
+			$("#serviceconfig-tabstrip > li").first().removeClass("disabled");
+			$("#serviceconfig-tabstrip > li > a").first().attr("data-toggle","tab");
 		}
 
 		var updateServieConfig = function(dataPk){
@@ -359,11 +393,8 @@
 			console.log("edit service config");
 			var id = $(this).attr("data-pk");
 			var item = dataSourceServiceOption.get(id);
-			$("#xlqtdv").load("${ajax.serviceconfig_option_form}",function(result){
-				console.log(item);
-				pullServiceConfigOptionDetail(item);
-				$("#itemServiceConfigOption").val(id);
-			});
+			pullServiceConfigOptionDetail(item);
+			$("#itemServiceConfigOption").val(id);
 		});
 
 		$(document).on("click", "._itemServiceConfig_option_btnDelete", function(event){

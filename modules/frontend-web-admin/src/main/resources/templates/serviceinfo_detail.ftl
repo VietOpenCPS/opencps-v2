@@ -49,7 +49,7 @@
 					<div class="col-sm-6">
 						<div class="row">
 							<div class="col-sm-4">
-								<label>Cơ quan thực hiện:</label>
+								<label>Cơ quan quản lý:</label>
 							</div>
 							<div class="col-sm-8">
 								<select class="form-control" id="administration" name="administration" data-bind="value: administrationCode" required="required" validationMessage="Bạn phải chọn cơ quan">
@@ -209,6 +209,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -222,6 +223,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -235,6 +237,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -248,6 +251,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -261,6 +265,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -274,6 +279,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -287,6 +293,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -300,6 +307,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -313,6 +321,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -323,13 +332,13 @@
 	});
 
 	$("#administration").kendoComboBox({
-		placeholder : "Chọn cơ quan thực hiện",
+		placeholder : "Chọn cơ quan quản lý",
 		dataTextField : "itemName",
 		dataValueField : "itemCode",
 		dataSource : {
 			transport : {
 				read : {
-					url : "${api.server}/dictcollections/GOVERNMENT_AGENCY/dictitems",
+					url : "${api.server}/dictcollections/SERVICE_ADMINISTRATION/dictitems",
 					dataType : "json",
 					type : "GET",
 					headers: {"groupId": ${groupId}},
@@ -397,12 +406,17 @@
 						var idServiceinfo = $("#itemServiceInfoId").val();
 						console.log("Add file");
 						console.log(idServiceinfo);
+						
 						if(idServiceinfo>0){
 							var form = $('#serviceInfoFileTemplateForm')[0];
 							var data = new FormData(form);
+							var file = document.getElementById("file").files[0];
+							data.append( 'fileType', file.type );
+							data.append( 'fileName', file.name );
+							data.append( 'fileSize', file.size );
+							console.log(file);
 							$.ajax({
 								url : "${api.server}/serviceinfos/"+idServiceinfo+"/filetemplates",
-								enctype: 'multipart/form-data',
 								dataType : "json",
 								type : "POST",
 								data : data,
@@ -710,7 +724,8 @@
 			"activeStatus":result.activeStatus,
 			"administrationName":result.administrationName,
 			"domainName":result.domainName,
-			"fileTemplates":result.fileTemplates
+			"fileTemplates":result.fileTemplates,
+			"public" : result.public
 		});
 	}
 
@@ -732,7 +747,7 @@
 			item.set("activeStatus",result.activeStatus);
 			item.set("administrationName",result.administrationName);
 			item.set("domainName",result.domainName);
-
+			item.set("public",result.public);
 		});
 	}
 
