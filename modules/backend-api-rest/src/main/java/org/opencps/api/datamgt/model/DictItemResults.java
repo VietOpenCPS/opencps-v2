@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlType;
     "total",
     "dictItemModel"
 })
-@XmlRootElement(name = "DictItemResults")
+@XmlRootElement(name = "data")
 public class DictItemResults {
 
     protected long total;

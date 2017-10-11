@@ -6,6 +6,14 @@ import java.util.Locale;
 
 import org.opencps.api.jobpos.model.JobposModel;
 import org.opencps.api.jobpos.model.JobposPermissionModel;
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.keys.Constants;
+import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.usermgt.constants.JobPosTerm;
 import org.opencps.usermgt.model.JobPos;
 
@@ -17,12 +25,26 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.keys.ModelNameKeys;
-import org.opencps.auth.utils.APIDateTimeUtils;
-
 public class JobposUtils {
 
+	public static long getTotal(long groupId) {
+		long result = 0;
+		
+		try {
+
+			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(Constants.CHECKLIST_TYPE, groupId);
+			
+			List<DictItem> list = DictItemLocalServiceUtil.findByF_dictCollectionId(dictCollection.getDictCollectionId());
+			
+			result = list.size();
+			
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return result;
+	}
+	
 	public static List<JobposModel> mapperJobposList(List<Document> listDocument) {
 
 		List<JobposModel> results = new ArrayList<>();
@@ -44,7 +66,7 @@ public class JobposUtils {
 				ett.setTitle(document.get(JobPosTerm.TITLE));
 				ett.setDescription(document.get(JobPosTerm.DESCRIPTION));
 				ett.setLeader(Integer.valueOf(document.get(JobPosTerm.LEADER)));
-				ett.setMappingRoleId(Long.valueOf(document.get(JobPosTerm.MAPPING_ROLE_ID)));
+				ett.setRoleId(Long.valueOf(document.get(JobPosTerm.MAPPING_ROLE_ID)));
 
 				results.add(ett);
 			}
@@ -56,6 +78,7 @@ public class JobposUtils {
 		return results;
 	}
 
+	
 	public static JobposModel mapperJobposModel(JobPos jobPos) {
 
 		JobposModel ett = new JobposModel();

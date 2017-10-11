@@ -10,6 +10,7 @@ import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -91,7 +92,7 @@ public class WorkingUnitActions implements WorkingUnitInterface {
 	public WorkingUnit create(long userId, long companyId, long groupId, String address, String email, String enName,
 			String faxNo, String govAgencyCode, String name, String telNo, String website, long parentWorkingUnitId,
 			int sibling, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
-			UnauthorizationException, NumberFormatException, NotFoundException {
+			UnauthorizationException, NumberFormatException, NotFoundException, DuplicateCategoryException {
 		WorkingUnit ett = null;
 
 		ett = WorkingUnitLocalServiceUtil.addWorkingUnit(userId, groupId, name, enName, govAgencyCode,
@@ -104,7 +105,7 @@ public class WorkingUnitActions implements WorkingUnitInterface {
 	public WorkingUnit update(long userId, long companyId, long groupId, long id, String address, String email,
 			String enName, String faxNo, String govAgencyCode, String name, String telNo, String website,
 			long parentWorkingUnitId, int sibling, ServiceContext serviceContext) throws NoSuchUserException,
-			UnauthenticationException, UnauthorizationException, NumberFormatException, NotFoundException {
+			UnauthenticationException, UnauthorizationException, NumberFormatException, NotFoundException, DuplicateCategoryException {
 
 		WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchWorkingUnit(id);
 
@@ -198,8 +199,7 @@ public class WorkingUnitActions implements WorkingUnitInterface {
 
 		FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, inputStream, fileName, fileType,
 				fileSize, destination, desc, serviceContext);
-System.out.println("WorkingUnitActions.updateLogo(id)"+id);
-System.out.println("WorkingUnitActions.updateLogo(fileEntry)"+fileEntry);
+
 		WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchWorkingUnit(id);
 
 		workingUnit = WorkingUnitLocalServiceUtil.updateWorkingUnit(userId, workingUnit.getWorkingUnitId(),

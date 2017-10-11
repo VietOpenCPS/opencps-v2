@@ -70,7 +70,7 @@ public class LabelTerm {
 
 	private String name;
 	private String color;
-	private int scope;
+	private String scope;
 	
 	public LabelTerm() {
 
@@ -150,11 +150,11 @@ public class LabelTerm {
 		this.color = color;
 	}
 
-	public int getScope() {
+	public String getScope() {
 		return scope;
 	}
 
-	public void setScope(int scope) {
+	public void setScope(String scope) {
 		this.scope = scope;
 	}
 

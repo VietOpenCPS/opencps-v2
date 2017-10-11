@@ -14,11 +14,12 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.UserManagement;
-import org.opencps.api.controller.util.UserUtils;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.UserUtils;
 import org.opencps.api.user.model.UserProfileModel;
 import org.opencps.api.user.model.UserRolesResults;
 import org.opencps.api.user.model.UserSitesResults;
+import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.UserActions;
 
@@ -32,7 +33,6 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 
 public class UserManagementImpl implements UserManagement {
@@ -314,6 +314,34 @@ public class UserManagementImpl implements UserManagement {
 
 			return Response.status(404).entity(error).build();
 		}
+	}
+
+	@Override
+	public Response addChangepass(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, String oldPassword, String newPassword) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response getPermissions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, String full) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response getForgot(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, long id, String screenname_email) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response getForgotConfirm(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, String screenname_email, String code) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

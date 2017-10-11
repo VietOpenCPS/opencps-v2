@@ -25,7 +25,6 @@ public class DictCollectionUtils {
 
 			item = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getDictCollectionId(), groupId);
 		} catch (Exception e) {
-			_log.error(e);
 		}
 
 		return item;

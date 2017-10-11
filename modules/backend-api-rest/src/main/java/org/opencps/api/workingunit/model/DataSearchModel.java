@@ -64,7 +64,7 @@ public class DataSearchModel {
 	@QueryParam(value = "end")
 	protected int end;
 	@QueryParam(value = "parent")
-    protected long parent;
+    protected String parent;
 
     /**
      * Gets the value of the keywords property.
@@ -175,7 +175,7 @@ public class DataSearchModel {
      * Gets the value of the parent property.
      * 
      */
-    public long getParent() {
+    public String getParent() {
         return parent;
     }
 
@@ -183,7 +183,7 @@ public class DataSearchModel {
      * Sets the value of the parent property.
      * 
      */
-    public void setParent(long value) {
+    public void setParent(String value) {
         this.parent = value;
     }
 

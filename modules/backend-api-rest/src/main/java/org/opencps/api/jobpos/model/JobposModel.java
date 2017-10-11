@@ -51,7 +51,7 @@ import javax.xml.bind.annotation.XmlType;
     "workingUnitId",
     "workingUnitName",
     "leader",
-    "mappingRoleId"
+    "roleId"
 })
 @XmlRootElement(name = "JobposModel")
 public class JobposModel {
@@ -64,7 +64,7 @@ public class JobposModel {
     protected Long workingUnitId;
     protected String workingUnitName;
     protected Integer leader;
-    protected Long mappingRoleId;
+    protected Long roleId;
 
     /**
      * Gets the value of the jobPosId property.
@@ -258,28 +258,12 @@ public class JobposModel {
         this.leader = value;
     }
 
-    /**
-     * Gets the value of the mappingRoleId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Long }
-     *     
-     */
-    public Long getMappingRoleId() {
-        return mappingRoleId;
-    }
+	public Long getRoleId() {
+		return roleId;
+	}
 
-    /**
-     * Sets the value of the mappingRoleId property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Long }
-     *     
-     */
-    public void setMappingRoleId(Long value) {
-        this.mappingRoleId = value;
-    }
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
+	}
 
 }

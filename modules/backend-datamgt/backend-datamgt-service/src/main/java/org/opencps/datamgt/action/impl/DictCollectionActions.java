@@ -294,7 +294,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 		return result;
 	}
-	
+
 	/**
 	 * @author binhth
 	 * @param userId
@@ -332,7 +332,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 		return result;
 	}
-	
+
 	/**
 	 * @author binhth
 	 * @param userId
@@ -372,11 +372,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 	 * @param groupDescription
 	 * @param serviceContext
 	 * @return DictGroup
+	 * @throws NotFoundException
 	 */
 	public DictGroup updateDictgroups(long userId, long groupId, String code, String groupCodeRoot, String groupCode,
 			String groupName, String groupNameEN, String groupDescription, ServiceContext serviceContext)
-			throws NoSuchUserException, UnauthenticationException, UnauthorizationException,
-			DuplicateCategoryException {
+			throws NoSuchUserException, UnauthenticationException, UnauthorizationException, DuplicateCategoryException,
+			NotFoundException {
 		DictGroup dictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCodeRoot.toUpperCase(), groupId);
 
 		if (Validator.isNotNull(groupCode)) {
@@ -403,9 +404,9 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 		}
 
-		dictGroup = DictGroupLocalServiceUtil.addDictGroup(userId, groupId, dictGroup.getDictCollectionId(),
-				dictGroup.getGroupCode(), dictGroup.getGroupName(), dictGroup.getGroupNameEN(),
-				dictGroup.getGroupDescription(), serviceContext);
+		dictGroup = DictGroupLocalServiceUtil.updateDictGroup(userId, dictGroup.getDictGroupId(),
+				dictGroup.getDictCollectionId(), dictGroup.getGroupCode(), dictGroup.getGroupName(),
+				dictGroup.getGroupNameEN(), dictGroup.getGroupDescription(), serviceContext);
 
 		return dictGroup;
 	}
@@ -444,10 +445,11 @@ public class DictCollectionActions implements DictcollectionInterface {
 		DictItemGroup dictItemGroup = null;
 
 		DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
-		
+
 		DictGroup dictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
 
-		DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dictCollection.getDictCollectionId(), groupId);
+		DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode,
+				dictCollection.getDictCollectionId(), groupId);
 
 		dictItemGroup = DictItemGroupLocalServiceUtil.addDictItemGroup(userId, groupId, dictGroup.getDictGroupId(),
 				dictItem.getDictItemId(), serviceContext);
@@ -463,12 +465,13 @@ public class DictCollectionActions implements DictcollectionInterface {
 		DictGroup dictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
 
 		DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
-		
-		DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dictCollection.getDictCollectionId(), groupId);
+
+		DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode,
+				dictCollection.getDictCollectionId(), groupId);
 
 		DictItemGroup dictItemGroup = DictItemGroupLocalServiceUtil.fetchByF_dictItemId_dictGroupId(groupId,
-				dictItem.getDictItemId(), dictGroup.getDictGroupId());
-
+				dictGroup.getDictGroupId(), dictItem.getDictItemId());
+		
 		if (Validator.isNull(dictItemGroup)) {
 
 			flag = false;
@@ -562,6 +565,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 			result.put("total", total);
 
+			
 		} catch (ParseException e) {
 			_log.error(e);
 		} catch (SearchException e) {
@@ -586,7 +590,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 		}
 
 		DictItem parentItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(parentItemCode, dictCollectionId, groupId);
-		
+
 		long parentItemId = 0;
 
 		if (Validator.isNotNull(parentItem)) {
@@ -601,16 +605,18 @@ public class DictCollectionActions implements DictcollectionInterface {
 		return dictItem;
 	}
 
-	public DictItem updateDictItemByItemCode(long userId, long groupId, ServiceContext serviceContext, String code, String itemCode,
-			String itemName, String itemNameEN, String itemDescription, String sibling) throws DuplicateCategoryException, UnauthenticationException,
-			UnauthorizationException, NoSuchUserException, NotFoundException, PortalException {
+	public DictItem updateDictItemByItemCode(long userId, long groupId, ServiceContext serviceContext, String code,
+			String itemCode, String itemCodeInput, String itemName, String itemNameEN, String itemDescription, String sibling, String parentItemCode)
+			throws DuplicateCategoryException, UnauthenticationException, UnauthorizationException, NoSuchUserException,
+			NotFoundException, PortalException {
 		DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
-		
-		DictItem ett = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dictCollection.getDictCollectionId(), groupId);
-		
-		if (Validator.isNotNull(itemCode)) {
 
-			ett.setItemCode(itemCode);
+		DictItem ett = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dictCollection.getDictCollectionId(),
+				groupId);
+
+		if (Validator.isNotNull(itemCodeInput)) {
+
+			ett.setItemCode(itemCodeInput);
 
 		}
 
@@ -638,21 +644,31 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 		}
 
+		if (Validator.isNotNull(parentItemCode)) {
+
+			DictItem ettParent = DictItemLocalServiceUtil.fetchByF_dictItemCode(parentItemCode, dictCollection.getDictCollectionId(),
+					groupId);
+			
+			ett.setParentItemId(Validator.isNotNull(ettParent)?ettParent.getDictItemId():0);
+
+		}
+		
 		DictItem dictItem = DictItemLocalServiceUtil.updateDictItem(userId, ett.getDictItemId(),
 				ett.getDictCollectionId(), ett.getItemCode(), ett.getItemName(), ett.getItemNameEN(),
-				ett.getItemDescription(), ett.getParentItemId(), ett.getSibling(), ett.getLevel(),
-				ett.getMetaData(), serviceContext);
-		
+				ett.getItemDescription(), ett.getParentItemId(), ett.getSibling(), ett.getLevel(), ett.getMetaData(),
+				serviceContext);
+
 		return dictItem;
 	}
 
-	public DictItem updateMetaDataByItemCode(long userId, long groupId, ServiceContext serviceContext, String code, String itemCode,
-			String metaData) throws DuplicateCategoryException, UnauthenticationException,
+	public DictItem updateMetaDataByItemCode(long userId, long groupId, ServiceContext serviceContext, String code,
+			String itemCode, String metaData) throws DuplicateCategoryException, UnauthenticationException,
 			UnauthorizationException, NoSuchUserException, NotFoundException, PortalException {
 		DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
-		
-		DictItem ett = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dictCollection.getDictCollectionId(), groupId);
-		
+
+		DictItem ett = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dictCollection.getDictCollectionId(),
+				groupId);
+
 		if (Validator.isNotNull(metaData)) {
 
 			ett.setMetaData(metaData);
@@ -661,20 +677,21 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 		DictItem dictItem = DictItemLocalServiceUtil.updateDictItem(userId, ett.getDictItemId(),
 				ett.getDictCollectionId(), ett.getItemCode(), ett.getItemName(), ett.getItemNameEN(),
-				ett.getItemDescription(), ett.getParentItemId(), ett.getSibling(), ett.getLevel(),
-				ett.getMetaData(), serviceContext);
-		
+				ett.getItemDescription(), ett.getParentItemId(), ett.getSibling(), ett.getLevel(), ett.getMetaData(),
+				serviceContext);
+
 		return dictItem;
 	}
-	
+
 	public Log _log = LogFactoryUtil.getLog(DictCollectionActions.class);
 
 	@Override
 	public DictItem getDictItemByItemCode(String code, String itemCode, long groupId, ServiceContext serviceContext) {
 		DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
-		
-		DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dictCollection.getDictCollectionId(), groupId);
-		
+
+		DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode,
+				dictCollection.getDictCollectionId(), groupId);
+
 		return dictItem;
 	}
 

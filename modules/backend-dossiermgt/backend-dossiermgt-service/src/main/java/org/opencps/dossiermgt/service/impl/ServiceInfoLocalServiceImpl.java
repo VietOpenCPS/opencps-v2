@@ -82,7 +82,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 	 * org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil} to access the
 	 * service info local service.
 	 */
-
+	@Indexable(type = IndexableType.DELETE)
 	public ServiceInfo removeServiceInfo(long serviceInfoId) throws PortalException {
 		ServiceInfo serviceInfo = serviceInfoPersistence.fetchByPrimaryKey(serviceInfoId);
 
@@ -243,6 +243,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 		if (Validator.isNotNull(activeStatus))
 			serviceInfo.setPublic_(GetterUtil.getBoolean(activeStatus));
+		
 		serviceInfoPersistence.update(serviceInfo);
 
 		return serviceInfo;

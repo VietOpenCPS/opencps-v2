@@ -27,7 +27,8 @@ public class ServerConfigUtils {
 			model.setProtocol(cf.getProtocol());
 			model.setLastSync(
 					APIDateTimeUtils.convertDateToString(cf.getLastSync(), APIDateTimeUtils._NORMAL_PARTTERN));
-
+			model.setConfigs(cf.getConfigs());
+			
 			outputs.add(model);
 		}
 
@@ -46,6 +47,7 @@ public class ServerConfigUtils {
 		model.setServerName(cf.getServerName());
 		model.setProtocol(cf.getProtocol());
 		model.setLastSync(APIDateTimeUtils.convertDateToString(cf.getLastSync(), APIDateTimeUtils._NORMAL_PARTTERN));
+		model.setConfigs(cf.getConfigs());
 
 		return model;
 	}

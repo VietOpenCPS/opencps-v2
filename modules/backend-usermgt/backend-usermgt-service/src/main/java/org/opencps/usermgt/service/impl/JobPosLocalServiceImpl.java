@@ -23,6 +23,7 @@ import org.opencps.usermgt.exception.NoSuchJobPosException;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.base.JobPosLocalServiceBaseImpl;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.ResourceAction;
@@ -160,6 +161,12 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			throw new UnauthorizationException();
 		}
 
+		JobPos jobPosCheck = jobPosPersistence.fetchByF_title(groupId, title);
+		
+		if (Validator.isNotNull(jobPosCheck)) {
+			throw new DuplicateCategoryException();
+		}
+		
 		Date now = new Date();
 
 		User user = userPersistence.findByPrimaryKey(userId);
@@ -241,9 +248,9 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public JobPos updateJobPos(long userId, long JobPosId, String title, String description, int leader,
+	public JobPos updateJobPos(long userId, long jobPosId, String title, String description, int leader,
 			ServiceContext serviceContext)
-			throws UnauthenticationException, UnauthorizationException, NoSuchUserException, NotFoundException {
+			throws UnauthenticationException, UnauthorizationException, NoSuchUserException, NotFoundException, DuplicateCategoryException {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
@@ -264,8 +271,14 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
-		JobPos jobPos = jobPosPersistence.fetchByPrimaryKey(JobPosId);
+		JobPos jobPos = jobPosPersistence.fetchByPrimaryKey(jobPosId);
 
+		JobPos jobPosCheck = jobPosPersistence.fetchByF_title(jobPos.getGroupId(), title);
+		
+		if (Validator.isNotNull(jobPosCheck) && jobPosCheck.getJobPosId() != jobPosId) {
+			throw new DuplicateCategoryException();
+		}
+		
 		// Audit fields
 		jobPos.setUserId(user.getUserId());
 		jobPos.setUserName(user.getFullName());

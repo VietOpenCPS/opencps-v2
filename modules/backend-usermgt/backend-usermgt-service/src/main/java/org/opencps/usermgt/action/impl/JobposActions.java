@@ -8,8 +8,11 @@ import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -76,8 +79,8 @@ public class JobposActions implements JobposInterface {
 
 	@Override
 	public JobPos update(long userId, long groupId, long id, String title, String description, int leader,
-			ServiceContext serviceContext)
-			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException {
+			ServiceContext serviceContext) throws NoSuchUserException, NotFoundException, UnauthenticationException,
+			UnauthorizationException, DuplicateCategoryException {
 
 		JobPos mJobPos = JobPosLocalServiceUtil.fetchJobPos(id);
 
@@ -116,40 +119,37 @@ public class JobposActions implements JobposInterface {
 	public String createPermissions(long companyId, long id, String actionId, ServiceContext serviceContext) {
 
 		JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(id);
-		
+
 		Role role = RoleLocalServiceUtil.fetchRole(jobPos.getMappingRoleId());
-		
+
 		List<String> actionIds = new ArrayList<>();
-		
+
 		for (String actionKey : ActionKeys.LIST_PERMISSION_DATA) {
 
 			boolean hasPermission = false;
-			
+
 			try {
-				
-				hasPermission = ResourcePermissionLocalServiceUtil.hasResourcePermission(
-						companyId, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
-						ResourceConstants.SCOPE_INDIVIDUAL,
-						Long.toString(role.getRoleId()), role.getRoleId(),
-						actionKey);
-				
-				if(hasPermission){
+
+				hasPermission = ResourcePermissionLocalServiceUtil.hasResourcePermission(companyId,
+						ModelNameKeys.WORKINGUNIT_MGT_CENTER, ResourceConstants.SCOPE_INDIVIDUAL,
+						Long.toString(role.getRoleId()), role.getRoleId(), actionKey);
+
+				if (hasPermission) {
 					actionIds.add(actionKey);
 				}
-				
+
 			} catch (PortalException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
+
 		}
-		
+
 		actionIds.remove(actionId);
 		actionIds.add(actionId);
-		
+
 		String[] actionKey = actionIds.toArray(new String[actionIds.size()]);
-		
+
 		JobPosLocalServiceUtil.assignPermission(id, actionKey, serviceContext);
 
 		return actionId;
@@ -157,42 +157,65 @@ public class JobposActions implements JobposInterface {
 
 	@Override
 	public void deletePermissionByKey(long companyId, long id, String actionId, ServiceContext serviceContext) {
-		
+
 		JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(id);
-		
+
 		Role role = RoleLocalServiceUtil.fetchRole(jobPos.getMappingRoleId());
-		
+
 		List<String> actionIds = new ArrayList<>();
-		
+
 		for (String actionKey : ActionKeys.LIST_PERMISSION_DATA) {
 
 			boolean hasPermission = false;
-			
+
 			try {
-				
-				hasPermission = ResourcePermissionLocalServiceUtil.hasResourcePermission(
-						companyId, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
-						ResourceConstants.SCOPE_INDIVIDUAL,
-						Long.toString(role.getRoleId()), role.getRoleId(),
-						actionKey);
-				
-				if(hasPermission){
+
+				hasPermission = ResourcePermissionLocalServiceUtil.hasResourcePermission(companyId,
+						ModelNameKeys.WORKINGUNIT_MGT_CENTER, ResourceConstants.SCOPE_INDIVIDUAL,
+						Long.toString(role.getRoleId()), role.getRoleId(), actionKey);
+
+				if (hasPermission) {
 					actionIds.add(actionKey);
 				}
-				
+
 			} catch (PortalException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
+
 		}
-		
+
 		actionIds.remove(actionId);
-		
+
 		String[] actionKey = actionIds.toArray(new String[actionIds.size()]);
-		
+
 		JobPosLocalServiceUtil.assignPermission(id, actionKey, serviceContext);
-		
+
 	}
+
+	@Override
+	public void createPermissionsPatch(long userId, long companyId, long groupId, long id, String permissions,
+			ServiceContext serviceContext) {
+		try {
+
+			JSONArray jPermissions = JSONFactoryUtil.createJSONArray(permissions);
+
+			List<String> actionIds = new ArrayList<>();
+			for (int n = 0; n < jPermissions.length(); n++) {
+				JSONObject action = jPermissions.getJSONObject(n);
+
+				actionIds.add(action.getString("actionId"));
+
+			}
+
+			String[] actionKey = actionIds.toArray(new String[actionIds.size()]);
+
+			JobPosLocalServiceUtil.assignPermission(id, actionKey, serviceContext);
+
+		} catch (JSONException e) {
+			_log.error(e);
+		}
+
+	}
+
 }

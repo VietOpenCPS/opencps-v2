@@ -8,7 +8,9 @@ import javax.portlet.PortletResponse;
 
 import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.constants.DictItemGroupTerm;
+import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictGroup;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -26,6 +28,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DictGroupIndexer extends BaseIndexer<DictGroup> {
@@ -75,7 +78,13 @@ public class DictGroupIndexer extends BaseIndexer<DictGroup> {
 		document.addTextSortable(DictGroupTerm.GROUP_NAME, dictGroup.getGroupName());
 		document.addTextSortable(DictGroupTerm.GROUP_NAME_EN, dictGroup.getGroupNameEN());
 		document.addTextSortable(DictGroupTerm.GROUP_DESCRIPTION, dictGroup.getGroupDescription());
-
+		
+		DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchDictCollection(dictGroup.getDictCollectionId());
+		
+		String dictCollectionCode = Validator.isNotNull(dictCollection)?dictCollection.getCollectionCode():StringPool.BLANK;
+		
+		document.addTextSortable(DictGroupTerm.DICT_COLLECTION_CODE, dictCollectionCode);
+		
 		return document;
 	}
 

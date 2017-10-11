@@ -38,19 +38,27 @@ gradle-local.properties
 
 **/.DS_Store
 
-**/opencps/datamgt/exception/**
-**/opencps/datamgt/model/**
-**/opencps/datamgt/service/**
+##Ignore tracking in service layer
+**/model/impl/
+**/service/base/
+**/service/persistence/impl/
 
-**/opencps/usermgt/exception/**
-**/opencps/usermgt/model/**
-**/opencps/usermgt/service/**
+**/backend-usermgt-api/**/model/
+**/backend-usermgt-api/**/exception/
+**/backend-usermgt-api/**/service/
+**/backend-usermgt-api/**/service/persistence/
 
-**/opencps/communicationmgt/exception/**
-**/opencps/communicationmgt/model/**
-**/opencps/communicationmgt/service/**
+**/backend-communitication-api/**/model/
+**/backend-communitication-api/**/exception/
+**/backend-communitication-api/**/service/
+**/backend-communitication-api/**/service/persistence/
 
-**/opencps/dossiermgt/exception/**
-**/opencps/dossiermgt/model/**
-**/opencps/dossiermgt/service/**
+**/backend-datamgt-api/**/model/
+**/backend-datamgt-api/**/exception/
+**/backend-datamgt-api/**/service/
+**/backend-datamgt-api/**/service/persistence/
 
+**/backend-dossiermgt-api/**/model/
+**/backend-dossiermgt-api/**/exception/
+**/backend-dossiermgt-api/**/service/
+**/backend-dossiermgt-api/**/service/persistence/

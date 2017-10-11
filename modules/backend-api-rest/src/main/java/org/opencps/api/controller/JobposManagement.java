@@ -7,6 +7,7 @@ import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -82,6 +83,14 @@ public interface JobposManagement {
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@DefaultValue("0") @PathParam("id") long id, @BeanParam JobposInputModel input);
 
+	@POST
+	@Path("/{id}/permissions/update")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response createPermissionsPatch(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@DefaultValue("0") @PathParam("id") long id, @FormParam("permissions") String permissions);
+	
 	@DELETE
 	@Path("/{id}/permissions/{actionId}")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
@@ -89,4 +98,6 @@ public interface JobposManagement {
 	public Response deletePermissionByKey(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@DefaultValue("0") @PathParam("id") long id, @PathParam("actionId") String actionId);
+	
+
 }

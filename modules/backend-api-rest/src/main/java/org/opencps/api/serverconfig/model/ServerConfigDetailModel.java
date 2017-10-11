@@ -47,7 +47,8 @@ import javax.xml.bind.annotation.XmlType;
     "serverNo",
     "serverName",
     "protocol",
-    "lastSync"
+    "lastSync",
+    "configs"
 })
 @XmlRootElement(name = "ServerConfigDetailModel")
 public class ServerConfigDetailModel {
@@ -59,8 +60,17 @@ public class ServerConfigDetailModel {
     protected String serverName;
     protected String protocol;
     protected String lastSync;
+    protected String configs;
 
-    /**
+    public String getConfigs() {
+		return configs;
+	}
+
+	public void setConfigs(String configs) {
+		this.configs = configs;
+	}
+
+	/**
      * Gets the value of the serverConfigId property.
      * 
      * @return
