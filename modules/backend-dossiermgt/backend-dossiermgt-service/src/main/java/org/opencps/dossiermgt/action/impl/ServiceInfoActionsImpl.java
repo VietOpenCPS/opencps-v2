@@ -83,13 +83,13 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		if (serviceInfoId == 0) {
 			serviceInfo = ServiceInfoLocalServiceUtil.addServiceInfo(userId, groupId, serviceCode, serviceName,
 					processText, methodText, dossierText, conditionText, durationText, applicantText, resultText,
-					regularText, feeText, administrationCode, domainCode, maxLevel, GetterUtil.getInteger(public_),
+					regularText, feeText, administrationCode, domainCode, maxLevel, public_,
 					serviceContext);
 		} else {
 			serviceInfo = ServiceInfoLocalServiceUtil.updateServiceInfo(groupId, serviceInfoId, serviceCode,
 					serviceName, processText, methodText, dossierText, conditionText, durationText, applicantText,
 					resultText, regularText, feeText, administrationCode, domainCode, maxLevel,
-					GetterUtil.getInteger(public_), serviceContext);
+					public_, serviceContext);
 		}
 
 		return serviceInfo;
