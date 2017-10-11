@@ -97,7 +97,7 @@
       contentUrls: [
 				'datamgt.ftl',
         '${ajax.serviceinfo_list}',
-        'employee.ftl',
+        '${ajax.employee_index}',
         '${ajax.dossiertemplate}',
         '${ajax.serviceprocess}',
         '${ajax.serviceconfig}',
