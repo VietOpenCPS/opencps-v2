@@ -403,11 +403,31 @@
 
 
 		<!-- Order -->
+		
+		<order>
+			<order-column name="dossierPartNo" order-by="asc" />
+		</order>
 
 		<!-- Finder methods -->
+		
+		<finder return-type="Collection" name="DossierId">
+			<finder-column name="dossierId"/>
+			<finder-column name="removed"/>
+		</finder>
+		
+		<finder return-type="Collection" name="D_DPT">
+			<finder-column name="dossierId"/>
+			<finder-column name="dossierPartType"/>
+			<finder-column name="removed"/>
+		</finder>
+		
+		<finder return-type="DossierFile" name="D_RUID">
+			<finder-column name="dossierId"/>
+			<finder-column name="referenceUid"/>
+			<finder-column name="removed"/>
+		</finder>
 
 		<!-- References -->
-
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -846,5 +866,7 @@
 		<exception>DossierURL</exception>		
 		<exception>HasChildren</exception>		
 		<exception>HasExsist</exception>
+		
+		<exception>InvalidDossierStatus</exception>
 	</exceptions>
 </service-builder>
