@@ -42,7 +42,7 @@ public interface ServiceProcessActions {
 
 	public ProcessStep updateProcessStep(long groupId, String stepCode, String stepName,
 			long serviceProcessId, String sequenceNo, String dossierStatus, String dossierSubStatus, int durationCount,
-			String customProcessUrl, String stepInstruction, boolean editable, ServiceContext context)
+			String customProcessUrl, String stepInstruction, String briefNote, boolean editable, ServiceContext context)
 			throws PortalException;
 
 	public ProcessStep deleteProcessStep(String stepCode, long groupId, long serviceProcessId) throws PortalException;

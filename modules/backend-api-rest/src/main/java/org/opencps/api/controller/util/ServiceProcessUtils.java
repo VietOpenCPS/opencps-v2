@@ -192,7 +192,8 @@ public class ServiceProcessUtils {
 			model.setDossierSubStatus(doc.get(ProcessStepTerm.DOSSIER_SUB_STATUS));
 			model.setDossierSubStatusText(doc.get(ProcessStepTerm.DOSSIER_SUB_STATUS_TEXT));
 			model.setDurationCount(doc.get(ProcessStepTerm.DURATION_COUNT));
-			model.setInstructionNote(doc.get(ProcessStepTerm.STEP_INSTRUCTION));
+			model.setStepInstruction(doc.get(ProcessStepTerm.STEP_INSTRUCTION));
+			model.setBriefNote(doc.get(ProcessStepTerm.BRIEF_NOTE));
 			model.setCustomProcessUrl(doc.get(ProcessStepTerm.CUSTOM_PROCESS_URL));
 			model.setEditable(doc.get(ProcessStepTerm.EDITABLE));
 
@@ -248,7 +249,8 @@ public class ServiceProcessUtils {
 		model.setDossierSubStatus(step.getDossierSubStatus());
 		model.setDossierSubStatusText(_getStatusText(step.getDossierSubStatus()));
 		model.setDurationCount(String.valueOf(step.getDurationCount()));
-		model.setInstructionNote(step.getStepInstruction());
+		model.setStepInstruction(step.getStepInstruction());
+		model.setBriefNote(step.getBriefNote());
 		model.setCustomProcessUrl(step.getCustomProcessUrl());
 		model.setEditable(Boolean.toString(step.getEditable()));
 		

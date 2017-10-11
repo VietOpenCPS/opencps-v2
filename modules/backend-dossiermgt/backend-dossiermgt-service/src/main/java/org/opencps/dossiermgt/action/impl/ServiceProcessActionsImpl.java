@@ -126,7 +126,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 	@Override
 	public ProcessStep updateProcessStep(long groupId, String stepCode, String stepName,
 			long serviceProcessId, String sequenceNo, String dossierStatus, String dossierSubStatus, int durationCount,
-			String customProcessUrl, String stepInstruction, boolean editable, ServiceContext context)
+			String customProcessUrl, String stepInstruction, String briefNote, boolean editable, ServiceContext context)
 			throws PortalException {
 		
 		ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
@@ -139,7 +139,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		
 		return ProcessStepLocalServiceUtil.updateProcessStep(groupId, processStepId, stepCode, stepName,
 				serviceProcessId, sequenceNo, dossierStatus, dossierSubStatus, durationCount, customProcessUrl,
-				stepInstruction, editable, context);
+				stepInstruction, briefNote, editable, context);
 	}
 
 	@Override

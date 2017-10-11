@@ -56,7 +56,8 @@ import javax.xml.bind.annotation.XmlType;
     "dossierSubStatus",
     "dossierSubStatusText",
     "durationCount",
-    "instructionNote",
+    "stepInstruction",
+    "briefNote",
     "customProcessUrl",
     "editable"
 })
@@ -80,14 +81,24 @@ public class ProcessStepInputModel {
     protected String dossierSubStatusText;
 	@FormParam("durationCount")
     protected String durationCount;
-	@FormParam("instructionNote")
-    protected String instructionNote;
+	@FormParam("stepInstruction")
+    protected String stepInstruction;
 	@FormParam("customProcessUrl")
     protected String customProcessUrl;
+	@FormParam("briefNote")
+    protected String briefNote;
 	@FormParam("editable")
     protected String editable;
 
-    /**
+    public String getBriefNote() {
+		return briefNote;
+	}
+
+	public void setBriefNote(String briefNote) {
+		this.briefNote = briefNote;
+	}
+
+	/**
      * Gets the value of the processStepId property.
      * 
      * @return
@@ -311,8 +322,8 @@ public class ProcessStepInputModel {
      *     {@link String }
      *     
      */
-    public String getInstructionNote() {
-        return instructionNote;
+    public String getStepInstruction() {
+        return stepInstruction;
     }
 
     /**
@@ -323,8 +334,8 @@ public class ProcessStepInputModel {
      *     {@link String }
      *     
      */
-    public void setInstructionNote(String value) {
-        this.instructionNote = value;
+    public void setStepInstruction(String value) {
+        this.stepInstruction = value;
     }
 
     /**
