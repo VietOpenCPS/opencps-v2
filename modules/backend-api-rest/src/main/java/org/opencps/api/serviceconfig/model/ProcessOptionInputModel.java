@@ -49,7 +49,8 @@ import com.liferay.portal.kernel.util.StringPool;
     "instructionNote",
     "submissionNote",
     "dossierTemplateId",
-    "serviceProcessId"
+    "serviceProcessId",
+    "optionName"
 })
 @XmlRootElement(name = "ProcessOptionInputModel")
 public class ProcessOptionInputModel {
@@ -66,6 +67,15 @@ public class ProcessOptionInputModel {
     protected Integer dossierTemplateId;
 	@DefaultValue("0") @FormParam(value = "serviceProcessId")
     protected Integer serviceProcessId;
+    public String getOptionName() {
+		return optionName;
+	}
+
+	public void setOptionName(String optionName) {
+		this.optionName = optionName;
+	}
+
+	protected String optionName;
 
     /**
      * Gets the value of the seqOrder property.

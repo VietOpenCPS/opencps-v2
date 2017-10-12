@@ -434,7 +434,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	@Override
 	public Response addFileTemplateToServiceInfo(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String fileTemplateNo,
-			String templateName, String fileType, int fileSize) {
+			String templateName, String fileType, int fileSize, String fileName) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
@@ -464,7 +464,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 
 			serviceFileTemplate = actions.addServiceFileTemplate(userId, groupId, GetterUtil.getLong(id),
-					fileTemplateNo, templateName, System.currentTimeMillis() + StringPool.DASH + templateName,
+					fileTemplateNo, templateName, fileName,
 					inputStream, fileType, fileSize, serviceContext);
 
 			FileTemplateModel result = ServiceInfoUtils.mappingToFileTemplateModel(serviceFileTemplate);

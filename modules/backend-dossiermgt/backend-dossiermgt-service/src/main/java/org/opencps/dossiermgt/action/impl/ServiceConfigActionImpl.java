@@ -101,10 +101,10 @@ public class ServiceConfigActionImpl implements ServiceConfigActions {
 	}
 
 	@Override
-	public ProcessOption updateOption(long groupId, long processOptionId, long serviceConfigId, int seqOrder,
+	public ProcessOption updateOption(long groupId, String optionName, long processOptionId, long serviceConfigId, int seqOrder,
 			String autoSelect, String instructionNote, String submissionNote, long dossierTemplateId,
 			long serviceProcessId, ServiceContext context) throws PortalException {
-		return ProcessOptionLocalServiceUtil.updateProcessOption(groupId, processOptionId, serviceConfigId, seqOrder,
+		return ProcessOptionLocalServiceUtil.updateProcessOption(groupId, optionName, processOptionId, serviceConfigId, seqOrder,
 				autoSelect, instructionNote, submissionNote, dossierTemplateId, serviceProcessId, context);
 	}
 

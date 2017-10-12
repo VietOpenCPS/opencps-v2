@@ -14,4 +14,5 @@ public class ProcessOptionTerm {
 	public static final String PROCESS_NAME = "processName";
 	public static final String APPLICATION_TYPE = "aplicationType";
 	public static final String SERVICE_CONFIG_ID = "serviceConfigId";
+	public static final String OPTION_NAME = "optionName";
 }

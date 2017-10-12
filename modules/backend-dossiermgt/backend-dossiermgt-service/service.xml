@@ -246,6 +246,7 @@
 
 		<column name="serviceConfigId" type="long" />
 		<column name="optionOrder" type="int" />
+		<column name="optionName" type="String" />
 		<column name="autoSelect" type="String" />
 		<column name="dossierTemplateId" type="long" />
 		<column name="serviceProcessId" type="long" />
