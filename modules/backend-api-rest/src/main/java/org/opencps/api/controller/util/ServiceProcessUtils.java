@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class ServiceProcessUtils {
 
@@ -182,7 +183,7 @@ public class ServiceProcessUtils {
 
 		for (Document doc : documents) {
 			ProcessStepDataModel model = new ProcessStepDataModel();
-			
+
 			model.setProcessStepId(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setStepCode(doc.get(ProcessStepTerm.STEP_CODE));
 			model.setStepName(doc.get(ProcessStepTerm.STEP_NAME));
@@ -222,14 +223,14 @@ public class ServiceProcessUtils {
 			model.setAssignUserName(doc.get(ProcessActionTerm.ASSIGN_USER_NAME));
 			model.setRequestPayment(doc.get(ProcessActionTerm.REQUEST_PAYMENT));
 			model.setPaymentFee(doc.get(ProcessActionTerm.PAYMENT_FEE));
-			model.getCreateDossierFiles().addAll(ListUtil
-					.toList(StringUtil.split(doc.get(ProcessActionTerm.CREATE_DOSSIER_FILES).trim(), StringPool.SEMICOLON)));
-			model.getReturnDossierFiles().addAll(ListUtil
-					.toList(StringUtil.split(doc.get(ProcessActionTerm.RETURN_DOSSIER_FILES).trim(), StringPool.SEMICOLON)));
+			model.getCreateDossierFiles().addAll(ListUtil.toList(
+					StringUtil.split(doc.get(ProcessActionTerm.CREATE_DOSSIER_FILES).trim(), StringPool.COMMA)));
+			model.getReturnDossierFiles().addAll(ListUtil.toList(
+					StringUtil.split(doc.get(ProcessActionTerm.RETURN_DOSSIER_FILES).trim(), StringPool.COMMA)));
 			model.setMakeBriefNote(doc.get(ProcessActionTerm.MAKE_BRIEF_NOTE));
 			model.setSyncActionCode(doc.get(ProcessActionTerm.SYNC_ACTION_CODE));
 			model.setRollbackable(doc.get(ProcessActionTerm.ROLLBACKABLE));
-			
+
 			outputs.add(model);
 		}
 
@@ -237,9 +238,9 @@ public class ServiceProcessUtils {
 	}
 
 	public static ProcessStepInputModel mapptingToStepPOST(ProcessStep step) {
-		
+
 		ProcessStepInputModel model = new ProcessStepInputModel();
-		
+
 		model.setProcessStepId(step.getPrimaryKey());
 		model.setStepCode(step.getStepCode());
 		model.setStepName(step.getStepName());
@@ -253,14 +254,14 @@ public class ServiceProcessUtils {
 		model.setBriefNote(step.getBriefNote());
 		model.setCustomProcessUrl(step.getCustomProcessUrl());
 		model.setEditable(Boolean.toString(step.getEditable()));
-		
+
 		return model;
 	}
 
 	public static ProcessActionReturnModel mappingToActionPOST(ProcessAction action) {
-		
+
 		ProcessActionReturnModel model = new ProcessActionReturnModel();
-		
+
 		model.setProcessActionId(String.valueOf(action.getPrimaryKey()));
 		model.setActionCode(action.getActionCode());
 		model.setActionName(action.getActionName());
@@ -270,28 +271,31 @@ public class ServiceProcessUtils {
 		model.setPreCondition(action.getPreCondition());
 		model.setAllowAssignUser(Boolean.toString(action.getAllowAssignUser()));
 		model.setAssignUserId(String.valueOf(action.getAssignUserId()));
-		
+
 		String assignName = StringPool.BLANK;
-		
+
 		if (action.getAssignUserId() != 0) {
 			User user = UserLocalServiceUtil.fetchUser(action.getAssignUserId());
-			
-			assignName = user.getFullName();
+
+			if (Validator.isNotNull(user)) {
+
+				assignName = user.getFullName();
+			}
 		}
-		
+
 		model.setAssignUserName(assignName);
 		model.setRequestPayment(Boolean.toString(action.getRequestPayment()));
 		model.setPaymentFee(action.getPaymentFee());
 		model.setMakeBriefNote(action.getMakeBriefNote());
 		model.setSyncActionCode(action.getSyncActionCode());
 		model.setRollbackable(Boolean.toString(action.getRollbackable()));
-		
-		model.getCreateDossierFiles().addAll(ListUtil
-					.toList(StringUtil.split(action.getCreateDossierFiles(), StringPool.SEMICOLON)));
-		
-		model.getReturnDossierFiles().addAll(ListUtil
-					.toList(StringUtil.split(action.getReturnDossierFiles(), StringPool.SEMICOLON)));
-		
+
+		model.getCreateDossierFiles()
+				.addAll(ListUtil.toList(StringUtil.split(action.getCreateDossierFiles(), StringPool.COMMA)));
+
+		model.getReturnDossierFiles()
+				.addAll(ListUtil.toList(StringUtil.split(action.getReturnDossierFiles(), StringPool.COMMA)));
+
 		return model;
 	}
 
@@ -305,12 +309,12 @@ public class ServiceProcessUtils {
 		}
 		return roleName;
 	}
-	
+
 	private static String _getStatusText(String statusCode) {
-		//TODO update get status text
-		
+		// TODO update get status text
+
 		String statusText = StringPool.BLANK;
-		
+
 		return statusText;
 	}
 }
