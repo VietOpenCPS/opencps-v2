@@ -39,10 +39,7 @@
 				<div class="col-xs-12 col-sm-3">Vai trò xử lý</div>
 				<div class="col-xs-12 col-sm-3">
 					<select class="form-control" name="roleId" data-bind="value: roleId">
-						<option value="">Chọn vai trò</option>
-						<#list api.roles as role>
-						<option value="${role.roleId}">${role.name}</option>
-						</#list>
+						<option value=""></option>
 					</select>
 				</div>
 				<div class="col-xs-12 col-sm-3">
@@ -92,6 +89,26 @@
 		$(this).parents('.service-process-form-entry:first').remove();
 		e.preventDefault();
 		return false;
+	});
+
+	$(document).ready(function(){
+		$.ajax({
+			url: "${api.server}" + "/jobpos",
+			type: "GET",
+			dataType: "json",
+			headers: {"groupId": ${groupId}},
+			async: false,
+			success: function(result) {
+				console.log(result);
+				if (result && result.data && result.data.length > 0){
+					result.data.forEach(function(jobpos){
+						var newOpt = $(".service-process-form-entry select")[0].appendChild(document.createElement('option'));
+						newOpt.value = jobpos.jobPosId;
+						newOpt.text = jobpos.title;
+					});
+				}
+			}
+		});
 	});
 
 </script>
