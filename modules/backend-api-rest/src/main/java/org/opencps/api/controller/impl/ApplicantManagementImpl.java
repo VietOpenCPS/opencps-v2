@@ -114,6 +114,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			params.put("groupId", String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
+			params.put("type", query.getType());
+			params.put("lock", query.getLock());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					Boolean.getBoolean(query.getOrder())) };

@@ -111,7 +111,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 	public ServiceInfo addServiceInfo(long userId, long groupId, String serviceCode, String serviceName,
 			String processText, String methodText, String dossierText, String conditionText, String durationText,
 			String applicantText, String resultText, String regularText, String feeText, String administrationCode,
-			String domainCode, int maxLevel, int activeStatus, ServiceContext serviceContext) throws PortalException {
+			String domainCode, int maxLevel, boolean activeStatus, ServiceContext serviceContext) throws PortalException {
 
 		User user = userLocalService.getUser(userId);
 
@@ -146,14 +146,9 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		serviceInfo.setDomainCode(domainCode);
 		serviceInfo.setMaxLevel(maxLevel);
 
-		boolean ispublic = false;
-
-		if (activeStatus == 1) {
-			ispublic = true;
-		}
-
 		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE, administrationCode,
 				groupId);
+		
 		DictItem dom = DictCollectionUtils.getDictItemByCode(DataMGTConstants.SERVICE_DOMAIN, domainCode, groupId);
 
 		if (Validator.isNotNull(adm)) {
@@ -166,7 +161,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			serviceInfo.setDomainIndex(dom.getTreeIndex());
 		}
 
-		serviceInfo.setPublic_(ispublic);
+		serviceInfo.setPublic_(activeStatus);
 
 		serviceInfoPersistence.update(serviceInfo);
 
@@ -189,7 +184,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 	public ServiceInfo updateServiceInfo(long groupId, long serviceInfoId, String serviceCode, String serviceName,
 			String processText, String methodText, String dossierText, String conditionText, String durationText,
 			String applicantText, String resultText, String regularText, String feeText, String administrationCode,
-			String domainCode, int maxLevel, int activeStatus, ServiceContext serviceContext) throws PortalException {
+			String domainCode, int maxLevel, boolean activeStatus, ServiceContext serviceContext) throws PortalException {
 
 		Date now = new Date();
 
@@ -241,8 +236,24 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		if (Validator.isNotNull(maxLevel))
 			serviceInfo.setMaxLevel(maxLevel);
 
-		if (Validator.isNotNull(activeStatus))
-			serviceInfo.setPublic_(GetterUtil.getBoolean(activeStatus));
+		
+		serviceInfo.setPublic_(activeStatus);
+		
+		
+		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE, administrationCode,
+				groupId);
+		DictItem dom = DictCollectionUtils.getDictItemByCode(DataMGTConstants.SERVICE_DOMAIN, domainCode, groupId);
+
+		if (Validator.isNotNull(adm)) {
+			serviceInfo.setAdministrationName(adm.getItemName());
+			serviceInfo.setAdministrationIndex(adm.getTreeIndex());
+		}
+
+		if (Validator.isNotNull(dom)) {
+			serviceInfo.setDomainName(dom.getItemName());
+			serviceInfo.setDomainIndex(dom.getTreeIndex());
+		}
+
 		
 		serviceInfoPersistence.update(serviceInfo);
 

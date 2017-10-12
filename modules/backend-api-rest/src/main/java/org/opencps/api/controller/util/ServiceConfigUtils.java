@@ -30,7 +30,8 @@ public class ServiceConfigUtils {
 		model.setInstructionNote(input.getInstructionNote());
 		model.setSubmissionNote(input.getSubmissionNote());
 		model.setDossierTemplateId(GetterUtil.getInteger(input.getDossierTemplateId()));
-
+		model.setOptionName(input.getOptionName());
+		
 		try {
 			DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil
 					.getDossierTemplate(input.getDossierTemplateId());
@@ -69,6 +70,7 @@ public class ServiceConfigUtils {
 			processOption.setServiceProcessId(GetterUtil.getInteger(doc.get(ProcessOptionTerm.SERVICE_PROCESS_ID)));
 			processOption.setProcessNo(doc.get(ProcessOptionTerm.PROCESS_NO));
 			processOption.setProcessName(doc.get(ProcessOptionTerm.PROCESS_NAME));
+			processOption.setOptionName(doc.get(ProcessOptionTerm.OPTION_NAME));
 
 			processes.add(processOption);
 		}

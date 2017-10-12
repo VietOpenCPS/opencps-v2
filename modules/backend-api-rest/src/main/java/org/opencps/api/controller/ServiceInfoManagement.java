@@ -188,7 +188,7 @@ public interface ServiceInfoManagement {
 			@ApiParam(value = "Metadata of FileTemplate", required = true) @Multipart("fileTemplateNo") String fileTemplateNo,
 			@ApiParam(value = "Metadata of FileTemplate") @Multipart("templateName") String templateName,
 			@ApiParam(value = "Metadata of FileType") @Multipart("fileType") String fileType,
-			@ApiParam(value = "Metadata of FileSize") @Multipart("fileSize") int fileSize);
+			@ApiParam(value = "Metadata of FileSize") @Multipart("fileSize") int fileSize, @Multipart("fileName") String fileName);
 
 	@GET
 	@Path("/{id}/filetemplates/{templateNo}")

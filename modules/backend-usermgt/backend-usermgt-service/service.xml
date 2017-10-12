@@ -7,7 +7,7 @@
 	<namespace>UserMgt</namespace>
 
 	<entity name="OfficeSite" uuid="true" local-service="true"
-		remote-service="false" table="m_officesite">
+		remote-service="false" table="opencps_officesite">
 
 		<!-- PK fields -->
 		<column name="officeSiteId" type="long" primary="true" />
@@ -47,7 +47,7 @@
 	</entity>
 	
 	<entity name="WorkingUnit" uuid="true" local-service="true"
-		remote-service="false" table="m_workingunit">
+		remote-service="false" table="opencps_workingunit">
 
 		<!-- PK fields -->
 		<column name="workingUnitId" type="long" primary="true" />
@@ -88,7 +88,7 @@
 	</entity>
 
 <entity name="Employee" uuid="true" local-service="true"
-		remote-service="false" table="m_employee">
+		remote-service="false" table="opencps_employee">
 
 		<!-- PK fields -->
 		<column name="employeeId" type="long" primary="true" />
@@ -141,7 +141,7 @@
 		
 	</entity>
 	<entity name="JobPos" uuid="true" local-service="true"
-		remote-service="false" table="m_jobpos">
+		remote-service="false" table="opencps_jobpos">
 
 		<!-- PK fields -->
 		<column name="jobPosId" type="long" primary="true" />
@@ -172,7 +172,7 @@
 	
 	
 		<entity name="EmployeeJobPos" uuid="true" local-service="true"
-		remote-service="false" table="m_employee_jobpos">
+		remote-service="false" table="opencps_employee_jobpos">
 
 		<!-- PK fields -->
 		<column name="employeeJobPosId" type="long" primary="true" />

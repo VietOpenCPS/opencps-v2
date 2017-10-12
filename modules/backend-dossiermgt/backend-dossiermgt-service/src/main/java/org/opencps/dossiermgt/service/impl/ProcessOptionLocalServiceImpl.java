@@ -90,7 +90,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		return option;
 	}
 	@Indexable(type = IndexableType.REINDEX)
-	public ProcessOption updateProcessOption(long groupId, long processOptionId, long serviceConfigId, int seqOrder,
+	public ProcessOption updateProcessOption(long groupId, String optionName, long processOptionId, long serviceConfigId, int seqOrder,
 			String autoSelect, String instructionNote, String submissionNote, long dossierTemplateId,
 			long serviceProcessId, ServiceContext context) throws PortalException {
 

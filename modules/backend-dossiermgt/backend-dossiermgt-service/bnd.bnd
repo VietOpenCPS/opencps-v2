@@ -3,9 +3,12 @@ Bundle-SymbolicName: org.opencps.backend.dossiermgt.service
 Bundle-Version: 1.0.0
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
+
 Export-Package: \
-	org.opencps.dossiermgt.action,\
 	org.opencps.dossiermgt.action.impl,\
 	org.opencps.backend.dossiermgt.service.util,\
 	org.opencps.dossiermgt.action.util,\
+	org.opencps.dossiermgt.action,\
 	org.opencps.dossiermgt.model.impl
+
+	
