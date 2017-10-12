@@ -81,8 +81,7 @@
 			</form>
 		</div>
 		<div id="xlqtdv" class="tab-pane fade in MT5">
-
-
+		<#include "serviceconfig_option.ftl">
 		</div>
 	</div>
 </div>
@@ -151,6 +150,7 @@
 			}
 		});
 	}
+
 
 	$("#btn-submit-serviceconfig").click(function(){
 		var id =$("#itemServiceConfigId").val();
@@ -370,6 +370,7 @@
 		},
 		change : function(e){
 			var domainCode = $("#service").data("kendoComboBox").dataItem().domainCode;
+			console.log(domainCode);
 			if(domainCode){
 				$("#domainCode").data("kendoComboBox").value(domainCode);
 				$("#domainCode").data("kendoComboBox")._isSelect = false;

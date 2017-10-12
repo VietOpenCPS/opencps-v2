@@ -6,8 +6,8 @@
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-sm-12">
-					<button class="btn btn-active form-control" id="btnAddServiceConfig"><i class="glyphicon glyphicon-plus"></i> Thêm dịch vụ công</button>
-					<button class="btn btn-active form-control" id="btnAddServiceConfigS"><i class="glyphicon glyphicon-plus"></i> Tạo nhiề DVC</button>
+					<button class="btn btn-active form-control MB5" id="btnAddServiceConfig"><i class="glyphicon glyphicon-plus"></i> Thêm dịch vụ công</button>
+					<button class="btn btn-active form-control" id="btnAddServiceConfigS"><i class="glyphicon glyphicon-plus"></i> Tạo nhiều DVC</button>
 				</div>
 				<div class="col-sm-12">
 					<div class="form-group search-icon MT10">
@@ -205,7 +205,6 @@
 				
 				firstLoadServiceConfig =false;
 			}
-
 		});
 
 		$(document).on("click", ".service-config-item", function(event){
@@ -290,12 +289,25 @@
 						type : "DELETE",
 						headers: {"groupId": ${groupId}},
 						success : function(result){
+							var currentItemId = $("#itemServiceConfigId").val();
 							if(item){
 								var index = dataSourceServiceConfig.remove(item);
 							}
+
+							if(currentItemId === id){
+								$("#itemServiceConfigId").val("");
+								formControl();
+							}
+
+							notification.show({
+								message: "Yêu cầu được thực hiện thành công"
+							}, "success");
+
 						},
 						error : function(xhr){
-
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
 						}
 					});
 				}else {
@@ -315,7 +327,7 @@
 
 		$("#btnAddServiceConfigS").click(function(){
 			$("#itemServiceConfigId").val("");
-			$("#serviceConfigDetail").load("${ajax.create_serviceconfigs}",function(result){
+			$("#serviceConfigDetail").load("",function(result){
 
 			});
 		});

@@ -18,7 +18,7 @@
 		<div class="col-sm-2 text-center">
 			<b>Hành động</b>
 		</div>
-	</li>
+	</li> 
 </ul>
 <ul class='mimic-table' id="serviceConfigOptionListView">
 
@@ -30,7 +30,7 @@
 			<span>#:itemIndex#</span>
 		</div>
 		<div class="col-sm-5">
-			<a href="javascript:;" data-pk="#:id#" class="f"><span>#:processName#</span></a>
+			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit"><span>#:optionName#</span></a>
 		</div>
 		<div class="col-sm-2 text-center">
 			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit"><span>#:templateNo#</span></a>
@@ -61,8 +61,8 @@
 
 		<div class="col-sm-12 MB15">
 			<label>Tên quy trình xác lập dịch vụ</label>
-			<input name="processOptionName" id="processOptionName" class="form-control" placeholder="Tên quy trình xác lập dịch vụ" data-bind="value:processOptionName" validationMessage="Bạn phải điền tên quy trình xác lập" required="required">
-			<span data-for="processOptionName" class="k-invalid-msg"></span>
+			<input name="optionName" id="optionName" class="form-control" placeholder="Tên quy trình xác lập dịch vụ" data-bind="value:optionName" validationMessage="Bạn phải điền tên quy trình xác lập" required="required">
+			<span data-for="optionName" class="k-invalid-msg"></span>
 		</div>
 
 		<div class="col-sm-12 MB15">
@@ -212,22 +212,21 @@
 			this.cancelChanges();
 		},
 		autoSync: false,
-		pageSize:3,
+		pageSize:10,
 		serverPaging:false,
 		serverSorting:false,
 		serverFiltering:false
 	});
 
 	$("#serviceConfigOptionListView").kendoListView({
-		dataSource:dataSourceServiceOption,
-		template:kendo.template($("#serviceConfigOptionTemplate").html()),
-		selectable: true,
-		remove:function(e){
+		dataSource : dataSourceServiceOption,
+		template : kendo.template($("#serviceConfigOptionTemplate").html()),
+		remove : function(e){
 			if(!confirm('Bạn có muốn xóa ?')){
 				e.preventDefault();
 			}
 		},
-		autoBind: false,
+		autoBind: true,
 		template: function(data){
 
 			var _pageSize = dataSourceServiceOption.pageSize();
@@ -276,8 +275,10 @@
 	});
 
 	var clearForm = function(){
-		$("#dossierTemplate").data("kendoComboBox").suggest();
-		$("#serviceProcess").data("kendoComboBox").suggest();
+		$("#seqOrder").val("");
+		$("#optionName").val("");
+		$("#dossierTemplate").data("kendoComboBox").value("");
+		$("#serviceProcess").data("kendoComboBox").value("");
 		$("#instructionNote").summernote('code', "");
 		$("#submissionNote").summernote('code', "");
 		$("#autoSelect").val("");
@@ -295,6 +296,8 @@
 					type : "PUT",
 					headers: {"groupId": ${groupId}},
 					data : {
+						seqOrder : $("#seqOrder").val(),
+						optionName : $("#optionName").val(),
 						dossierTemplateId : $("#dossierTemplate").val(),
 						serviceProcessId : $("#serviceProcess").val(),
 						instructionNote : $("#instructionNote").summernote("code").toString(),
@@ -305,7 +308,7 @@
 						notification.show({
 							message: "Yêu cầu được thực hiện thành công"
 						}, "success");
-
+						dataSourceServiceOption.read();
 					},
 					error : function(xhr){
 						notification.show({
@@ -320,6 +323,8 @@
 					type : "POST",
 					headers: {"groupId": ${groupId}},
 					data : {
+						seqOrder : $("#seqOrder").val(),
+						optionName : $("#optionName").val(),
 						dossierTemplateId : $("#dossierTemplate").val(),
 						serviceProcessId : $("#serviceProcess").val(),
 						instructionNote : $("#instructionNote").summernote("code").toString(),
@@ -330,7 +335,7 @@
 						notification.show({
 							message: "Yêu cầu được thực hiện thành công"
 						}, "success");
-
+						dataSourceServiceOption.read();
 					},
 					error : function(xhr){
 						notification.show({
@@ -349,6 +354,8 @@
 		console.log("detail_serviceconfig");
 		if(item){
 			var viewModel = kendo.observable({
+				seqOrder : item.seqOrder,
+				optionName : item.optionName,
 				dossierTemplate : item.dossierTemplateId,
 				serviceProcess : item.serviceProcessId,
 				instructionNote : function(e){
