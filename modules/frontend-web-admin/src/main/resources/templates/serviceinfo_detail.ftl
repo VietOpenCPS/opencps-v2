@@ -49,7 +49,7 @@
 					<div class="col-sm-6">
 						<div class="row">
 							<div class="col-sm-4">
-								<label>Cơ quan thực hiện:</label>
+								<label>Cơ quan quản lý:</label>
 							</div>
 							<div class="col-sm-8">
 								<select class="form-control" id="administration" name="administration" data-bind="value: administrationCode" required="required" validationMessage="Bạn phải chọn cơ quan">
@@ -188,7 +188,7 @@
 							<div class="row MT10">
 								<div class="col-xs-12 col-sm-3">Tệp đính kèm</div>
 								<div class="col-xs-12 col-sm-9">
-									<input id="file" class="" type="file"/>
+									<input id="file" class="" name="file" type="file"/>
 								</div>
 							</div>
 							<div class="row MT10 text-center">
@@ -209,6 +209,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -222,6 +223,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -235,6 +237,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -248,6 +251,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -261,6 +265,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -274,6 +279,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -287,6 +293,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -300,6 +307,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -313,6 +321,7 @@
 		toolbar: [
 		['style', ['bold', 'italic', 'underline', 'clear']],
 		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontname', ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New']],
 		['fontsize', ['fontsize']],
 		['color', ['color']],
 		['para', ['ul', 'ol', 'paragraph']],
@@ -323,13 +332,13 @@
 	});
 
 	$("#administration").kendoComboBox({
-		placeholder : "Chọn cơ quan thực hiện",
+		placeholder : "Chọn cơ quan quản lý",
 		dataTextField : "itemName",
 		dataValueField : "itemCode",
 		dataSource : {
 			transport : {
 				read : {
-					url : "${api.server}/dictcollections/GOVERNMENT_AGENCY/dictitems",
+					url : "${api.server}/dictcollections/SERVICE_ADMINISTRATION/dictitems",
 					dataType : "json",
 					type : "GET",
 					headers: {"groupId": ${groupId}},
@@ -394,28 +403,36 @@
 				console.log(result.domainName);
 				var viewModel = kendo.observable({
 					addFiletemplate : function(e){
+						var that = this;
 						var idServiceinfo = $("#itemServiceInfoId").val();
 						console.log("Add file");
 						console.log(idServiceinfo);
+						
 						if(idServiceinfo>0){
 							var form = $('#serviceInfoFileTemplateForm')[0];
 							var data = new FormData(form);
+							var file = document.getElementById("file").files[0];
+							data.append( 'fileType', file.type );
+							data.append( 'fileName', file.name );
+							data.append( 'fileSize', file.size );
+							console.log(file);
 							$.ajax({
 								url : "${api.server}/serviceinfos/"+idServiceinfo+"/filetemplates",
-								enctype: 'multipart/form-data',
 								dataType : "json",
 								type : "POST",
 								data : data,
+								headers: {"groupId": ${groupId}},
 								processData: false,
 								contentType: false,
 								cache: false,
+								async : false,
 								success : function(result){
 									notification.show({
 										message: "Yêu cầu được thực hiện thành công"
 									}, "success");
-									this.get("fileTemplates").push({
-										fileTemplateNo: $("#fileTemplateNo").val(),
-										templateName: $("#templateName").val(),
+									that.get("fileTemplates").push({
+										fileTemplateNo: result.fileTemplateNo,
+										templateName: result.templateName
 									});
 									$("#serviceInfoFileTempalteDialog").modal('hide');
 
@@ -491,9 +508,15 @@
 										var fileDelete = e.data;
 										var index = fileTemplates.indexOf(fileDelete);
 										fileTemplates.splice(index, 1);
+										notification.show({
+											message: "Yêu cầu được thực hiện thành công"
+										}, "success");
+
 									},
 									error : function(xhr){
-
+										notification.show({
+											message: "Xẩy ra lỗi, vui lòng thử lại"
+										}, "error");
 									}
 								});
 							} else {
@@ -512,69 +535,138 @@
 		});
 	}
 
-	var formControlFileTemplate = function(dataPk){
+var formControlFileTemplate = function(dataPk){
 
-		var url = "${ajax.serviceinfo_filetemplate_form}";
+	var url = "${ajax.serviceinfo_filetemplate_form}";
 
-		$("#serviceInfoFileTempalteDialog").load(
-			url,
-			function(result){
+	$("#serviceInfoFileTempalteDialog").load(
+		url,
+		function(result){
 
-				$("#serviceInfoFileTempalteDialog").modal({show: true});
+			$("#serviceInfoFileTempalteDialog").modal({show: true});
 
-				$("#btnCancleServiceConfigOption").click(function(e){
-					e.preventDefault();
-					$("#serviceInfoFileTempalteDialog").modal("hide");
-				});
+			$("#btnCancleServiceConfigOption").click(function(e){
+				e.preventDefault();
+				$("#serviceInfoFileTempalteDialog").modal("hide");
+			});
+		}
+		);
+}
+
+var addServieInfoFileTemplate=function(){
+	dataSourceFileTemplate.transport.create({
+		"serviceinfoId":$("#itemServiceInfoId").val(),
+		"fileNo":$("#fileNo").val(),
+		"fileName":$("#fileName").val(),
+		"file": $('input#file')[0].files[0]
+	});
+}
+
+var addFileTemplateIfSuccess=function(result){
+	dataSourceFileTemplate.add({
+		"fileTemplateNo":result.fileTemplateNo,
+		"templateName":result.templateName
+	});
+}
+
+$("#btnAddServiceInfoFile").click(function(){
+	$("#serviceInfoFileTempalteDialog").modal({show: true});
+});
+
+$(document).on("click",".btn-delete-filetemplate",function(event){
+	var idFileTemplate = $(this).attr("data-pk");
+	console.log(idFileTemplate);
+});
+
+$("#btn-submit-serviceinfo-detail").click(function(){
+	var idServiceinfo = $("#itemServiceInfoId").val();
+	if(idServiceinfo>0){
+		console.log($("#processText").summernote("code"));
+		console.log($("#methodText").summernote("code"));
+		$.ajax({
+			url : "${api.server}/serviceinfos/"+idServiceinfo,
+			type : "PUT",
+			dataType : "json",
+			headers: {"groupId": ${groupId}},
+			data : {
+				resultText : $("#resultText").summernote("code").toString(),
+				feeText : $("#feeText").summernote("code").toString(),
+				methodText : $("#methodText").summernote("code").toString(),
+				durationText : $("#durationText").summernote("code").toString(),
+				dossierText : $("#dossierText").summernote("code").toString(),
+				processText : $("#processText").summernote("code").toString(),
+				applicantText : $("#applicantText").summernote("code").toString(),
+				regularText : $("#regularText").summernote("code").toString(),
+				conditionText : $("#conditionText").summernote("code").toString()
+			},
+			success : function(result){
+				updateServieInfoIfSuccess(idServiceinfo,result);
+				notification.show({
+					message: "Yêu cầu được thực hiện thành công"
+				}, "success");
+			},
+			error : function(xhr){
+				notification.show({
+					message: "Xẩy ra lỗi, vui lòng thử lại"
+				}, "error");
 			}
-			);
-	}
+		});
+	}else{
+		console.log($("#processText").summernote("code"));
+		console.log($("#methodText").summernote("code"));
+		$.ajax({
+			url : "${api.server}/serviceinfos",
+			type : "POST",
+			dataType : "json",
+			headers: {"groupId": ${groupId}},
+			data : {
+				resultText : $("#resultText").summernote("code").toString(),
+				feeText : $("#feeText").summernote("code").toString(),
+				methodText : $("#methodText").summernote("code").toString(),
+				durationText : $("#durationText").summernote("code").toString(),
+				dossierText : $("#dossierText").summernote("code").toString(),
+				processText : $("#processText").summernote("code").toString(),
+				applicantText : $("#applicantText").summernote("code").toString(),
+				regularText : $("#regularText").summernote("code").toString(),
+				conditionText : $("#conditionText").summernote("code").toString()
+			},
+			success : function(result){
+				$("#itemServiceInfoId").val(result.serviceInfoId);
+				crtAddOrEdit();
+				addServiceInfoIfSuccess(result);
+				notification.show({
+					message: "Yêu cầu được thực hiện thành công"
+				}, "success");
 
-	var addServieInfoFileTemplate=function(){
-		dataSourceFileTemplate.transport.create({
-			"serviceinfoId":$("#itemServiceInfoId").val(),
-			"fileNo":$("#fileNo").val(),
-			"fileName":$("#fileName").val(),
-			"file": $('input#file')[0].files[0]
+			},
+			error : function(xhr){
+				notification.show({
+					message: "Xẩy ra lỗi, vui lòng thử lại"
+				}, "error");
+			}
 		});
 	}
 
-	var addFileTemplateIfSuccess=function(result){
-		dataSourceFileTemplate.add({
-			"fileTemplateNo":result.fileTemplateNo,
-			"templateName":result.templateName
-		});
-	}
+});
 
-	$("#btnAddServiceInfoFile").click(function(){
-		$("#serviceInfoFileTempalteDialog").modal({show: true});
-	});
-
-	$(document).on("click",".btn-delete-filetemplate",function(event){
-		var idFileTemplate = $(this).attr("data-pk");
-		console.log(idFileTemplate);
-	});
-
-	$("#btn-submit-serviceinfo-detail").click(function(){
-		var idServiceinfo = $("#itemServiceInfoId").val();
+$("#btn-submit-serviceinfo-general").click(function(){
+	var idServiceinfo = $("#itemServiceInfoId").val();
+	var validator = $("#frmServiceinfoGenaral").kendoValidator().data("kendoValidator");
+	if(validator.validate()){
 		if(idServiceinfo>0){
-			console.log($("#processText").summernote("code"));
-			console.log($("#methodText").summernote("code"));
+			var data = $("#frmServiceinfoGenaral").serialize();
 			$.ajax({
 				url : "${api.server}/serviceinfos/"+idServiceinfo,
 				type : "PUT",
 				dataType : "json",
 				headers: {"groupId": ${groupId}},
 				data : {
-					resultText : $("#resultText").summernote("code").toString(),
-					feeText : $("#feeText").summernote("code").toString(),
-					methodText : $("#methodText").summernote("code").toString(),
-					durationText : $("#durationText").summernote("code").toString(),
-					dossierText : $("#dossierText").summernote("code").toString(),
-					processText : $("#processText").summernote("code").toString(),
-					applicantText : $("#applicantText").summernote("code").toString(),
-					regularText : $("#regularText").summernote("code").toString(),
-					conditionText : $("#conditionText").summernote("code").toString()
+					serviceCode : $("#serviceCode").val(),
+					serviceName : $("#serviceName").val(),
+					administrationCode : $("#administration").val(),
+					domainCode : $("#domain").val(),
+					maxLevel : $("#level").val(),
+					public : $("#status").val()
 				},
 				success : function(result){
 					updateServieInfoIfSuccess(idServiceinfo,result);
@@ -589,32 +681,29 @@
 				}
 			});
 		}else{
-			console.log($("#processText").summernote("code"));
-			console.log($("#methodText").summernote("code"));
+			var data = $("#frmServiceinfoGenaral").serialize();
 			$.ajax({
 				url : "${api.server}/serviceinfos",
 				type : "POST",
 				dataType : "json",
 				headers: {"groupId": ${groupId}},
 				data : {
-					resultText : $("#resultText").summernote("code").toString(),
-					feeText : $("#feeText").summernote("code").toString(),
-					methodText : $("#methodText").summernote("code").toString(),
-					durationText : $("#durationText").summernote("code").toString(),
-					dossierText : $("#dossierText").summernote("code").toString(),
-					processText : $("#processText").summernote("code").toString(),
-					applicantText : $("#applicantText").summernote("code").toString(),
-					regularText : $("#regularText").summernote("code").toString(),
-					conditionText : $("#conditionText").summernote("code").toString()
+					serviceCode : $("#serviceCode").val(),
+					serviceName : $("#serviceName").val(),
+					administrationCode : $("#administration").val(),
+					domainCode : $("#domain").val(),
+					maxLevel : $("#level").val(),
+					public : $("#status").val()
 				},
 				success : function(result){
 					$("#itemServiceInfoId").val(result.serviceInfoId);
-					crtAddOrEdit();
+					console.log($("#itemServiceInfoId").val());
 					addServiceInfoIfSuccess(result);
+					console.log($("#itemServiceInfoId").val());
+					crtAddOrEdit();
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
-
 				},
 				error : function(xhr){
 					notification.show({
@@ -623,121 +712,56 @@
 				}
 			});
 		}
-
-	});
-
-	$("#btn-submit-serviceinfo-general").click(function(){
-		var idServiceinfo = $("#itemServiceInfoId").val();
-		var validator = $("#frmServiceinfoGenaral").kendoValidator().data("kendoValidator");
-		if(validator.validate()){
-			if(idServiceinfo>0){
-				var data = $("#frmServiceinfoGenaral").serialize();
-				$.ajax({
-					url : "${api.server}/serviceinfos/"+idServiceinfo,
-					type : "PUT",
-					dataType : "json",
-					headers: {"groupId": ${groupId}},
-					data : {
-						serviceCode : $("#serviceCode").val(),
-						serviceName : $("#serviceName").val(),
-						administrationCode : $("#administration").val(),
-						domainCode : $("#domain").val(),
-						maxLevel : $("#level").val(),
-						public : $("#status").val()
-					},
-					success : function(result){
-						updateServieInfoIfSuccess(idServiceinfo,result);
-						notification.show({
-							message: "Yêu cầu được thực hiện thành công"
-						}, "success");
-					},
-					error : function(xhr){
-						notification.show({
-							message: "Xẩy ra lỗi, vui lòng thử lại"
-						}, "error");
-					}
-				});
-			}else{
-				var data = $("#frmServiceinfoGenaral").serialize();
-				$.ajax({
-					url : "${api.server}/serviceinfos",
-					type : "POST",
-					dataType : "json",
-					headers: {"groupId": ${groupId}},
-					data : {
-						serviceCode : $("#serviceCode").val(),
-						serviceName : $("#serviceName").val(),
-						administrationCode : $("#administration").val(),
-						domainCode : $("#domain").val(),
-						maxLevel : $("#level").val(),
-						public : $("#status").val()
-					},
-					success : function(result){
-						$("#itemServiceInfoId").val(result.serviceInfoId);
-						console.log($("#itemServiceInfoId").val());
-						addServiceInfoIfSuccess(result);
-						console.log($("#itemServiceInfoId").val());
-						crtAddOrEdit();
-						notification.show({
-							message: "Yêu cầu được thực hiện thành công"
-						}, "success");
-					},
-					error : function(xhr){
-						notification.show({
-							message: "Xẩy ra lỗi, vui lòng thử lại"
-						}, "error");
-					}
-				});
-			}
-		}
-
-	});
-
-	var addServiceInfoIfSuccess=function(result){
-		console.log(result);
-		dataSourceTTHC.insert(0,{
-			"serviceInfoId": result.serviceInfoId,
-			"serviceCode":result.serviceCode,
-			"serviceName":result.serviceName,
-			"processText":result.processText,
-			"methodText":result.methodText,
-			"dossierText":result.dossierText,
-			"conditionText":result.conditionText,
-			"durationText":result.durationText,
-			"resultText":result.resultText,
-			"administrationCode":result.administrationCode,
-			"domainCode":result.domainCode,
-			"activeStatus":result.activeStatus,
-			"administrationName":result.administrationName,
-			"domainName":result.domainName,
-			"fileTemplates":result.fileTemplates
-		});
 	}
 
-	var updateServieInfoIfSuccess = function(dataPk,result){
-		console.log(result.serviceCode);
-		console.log(result.domainName);
-		dataSourceTTHC.fetch(function() {
-			var item = dataSourceTTHC.get(dataPk);
-			item.set("serviceCode",result.serviceCode);
-			item.set("serviceName",result.serviceName);
-			item.set("processText",result.processText);
-			item.set("methodText",result.methodText);
-			item.set("dossierText",result.dossierText);
-			item.set("conditionText",result.conditionText);
-			item.set("durationText",result.durationText);
-			item.set("resultText",result.resultText);
-			item.set("administrationCode",result.administrationCode);
-			item.set("domainCode",result.domainCode);
-			item.set("activeStatus",result.activeStatus);
-			item.set("administrationName",result.administrationName);
-			item.set("domainName",result.domainName);
+});
 
-		});
-	}
-
-	$("#add-file-template").click(function(){
-		$("#serviceInfoFileTempalteDialog").modal({show: true});
+var addServiceInfoIfSuccess=function(result){
+	console.log(result);
+	dataSourceTTHC.insert(0,{
+		"serviceInfoId": result.serviceInfoId,
+		"serviceCode":result.serviceCode,
+		"serviceName":result.serviceName,
+		"processText":result.processText,
+		"methodText":result.methodText,
+		"dossierText":result.dossierText,
+		"conditionText":result.conditionText,
+		"durationText":result.durationText,
+		"resultText":result.resultText,
+		"administrationCode":result.administrationCode,
+		"domainCode":result.domainCode,
+		"activeStatus":result.activeStatus,
+		"administrationName":result.administrationName,
+		"domainName":result.domainName,
+		"fileTemplates":result.fileTemplates,
+		"public" : result.public
 	});
+}
+
+var updateServieInfoIfSuccess = function(dataPk,result){
+	console.log(result.serviceCode);
+	console.log(result.domainName);
+	dataSourceTTHC.fetch(function() {
+		var item = dataSourceTTHC.get(dataPk);
+		item.set("serviceCode",result.serviceCode);
+		item.set("serviceName",result.serviceName);
+		item.set("processText",result.processText);
+		item.set("methodText",result.methodText);
+		item.set("dossierText",result.dossierText);
+		item.set("conditionText",result.conditionText);
+		item.set("durationText",result.durationText);
+		item.set("resultText",result.resultText);
+		item.set("administrationCode",result.administrationCode);
+		item.set("domainCode",result.domainCode);
+		item.set("activeStatus",result.activeStatus);
+		item.set("administrationName",result.administrationName);
+		item.set("domainName",result.domainName);
+		item.set("public",result.public);
+	});
+}
+
+$("#add-file-template").click(function(){
+	$("#serviceInfoFileTempalteDialog").modal({show: true});
+});
 
 </script>

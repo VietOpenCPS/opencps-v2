@@ -1,42 +1,116 @@
 <#if (Request)??>
 <#include "init.ftl">
 </#if>
-<button class="btn btn-active" type="button" id="btn-add-serviceconfig-option"><i class="fa fa-plus" aria-hidden="true"></i> Thêm mới quy trình thực hiện dịch vụ</button>
-<div class="form-group search-icon MT15">
-	<input type="text" class="form-control" placeholder="Nhập từ khóa" id="search-serviceconfig-process">
-</div>
-<ul class='ul-with-border MB5'>
-	<div id='serviceConfigOptionListView'></div>
+<ul class="mimic-table">
+	<li class="clearfix">
+		<div class="col-sm-1 text-center">
+			<b>STT</b>
+		</div>
+		<div class="col-sm-5">
+			<b>Tên quy trình xác lập dịch vụ</b>
+		</div>
+		<div class="col-sm-2 text-center">
+			<b>Mã mẫu hồ sơ</b>
+		</div>
+		<div class="col-sm-2 text-center">
+			<b>Mã quy trình</b>
+		</div>
+		<div class="col-sm-2 text-center">
+			<b>Hành động</b>
+		</div>
+	</li> 
+</ul>
+<ul class='mimic-table' id="serviceConfigOptionListView">
+
 </ul>
 <div id='pagerServiceConfigOption'></div>
 <script type="text/x-kendo-template" id="serviceConfigOptionTemplate">
-	<li style="padding: 10px 0 10px 5px;" role="option" aria-selected="true" class="bindServiceConfig">
-		<div class="row">
-			<div class="col-sm-6">
-				<span>#:itemIndex#. <span data-bind="text: serviceName"></span></span> <br>
-				<i class="fa fa-university"></i> <span class="ML5" data-bind="text: govAgencyName"></span> <span class="ML5 pull-right serviceLevelConfig" data-bind="text: serviceLevel" > </span>
-			</div>
-			<div class="col-sm-6 border-left" >
-				<div class="row">
-					<div class="col-sm-11">
-						<p>Tên mẫu hồ sơ: #:templateName#</p>
-					</div>
-					<div class="col-sm-1 PL0 PR0">
-						<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit"><i class="fa fa-pencil"></i></a>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-11">
-						<p>Tên quy trình thủ tục: #:processName#</p>
-					</div>
-					<div class="col-sm-1 PL0 PR0">
-						<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnDelete"><i class="fa fa-trash"></i></a>
-					</div>
-				</div>
-			</div>
+	<li class="clearfix eq-height-lg" data-pk="#:id#" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
+		<div class="col-sm-1 text-center">
+			<span>#:itemIndex#</span>
+		</div>
+		<div class="col-sm-5">
+			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit"><span>#:optionName#</span></a>
+		</div>
+		<div class="col-sm-2 text-center">
+			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit"><span>#:templateNo#</span></a>
+		</div>
+		<div class="col-sm-2 text-center">
+			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit"><span>#:processNo#</span></a>
+		</div>
+		<div class="col-sm-2 text-center">
+			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnDelete">
+				<i class="fa fa-trash"></i>
+			</a>
 		</div>
 	</li>
 </script>
+
+<div class="col-sm-12 text-right MB20">
+	<button class="btn btn-active" type="button" id="btn-add-serviceconfig-option"><i class="fa fa-plus" aria-hidden="true"></i> Thêm quy trình dịch vụ</button>
+</div>
+
+<form id="frmEstablishedProcess">
+	<div class="row">
+
+		<div class="col-sm-12 MB15">
+			<label>Số thứ tự</label>
+			<input name="seqOrder" id="seqOrder" class="form-control" placeholder="Số thứ tự" data-bind="value:seqOrder" >
+			<span data-for="seqOrder" class="k-invalid-msg"></span>
+		</div>
+
+		<div class="col-sm-12 MB15">
+			<label>Tên quy trình xác lập dịch vụ</label>
+			<input name="optionName" id="optionName" class="form-control" placeholder="Tên quy trình xác lập dịch vụ" data-bind="value:optionName" validationMessage="Bạn phải điền tên quy trình xác lập" required="required">
+			<span data-for="optionName" class="k-invalid-msg"></span>
+		</div>
+
+		<div class="col-sm-12 MB15">
+			<label>Tên mẫu hồ sơ</label>
+			<select class="form-control" id="dossierTemplate" name="dossierTemplate" data-bind="value: dossierTemplate" required="required" validationMessage="Bạn phải chọn mẫu hồ sơ">
+			</select>
+			<span data-for="dossierTemplate" class="k-invalid-msg"></span>
+		</div>
+
+		<div class="col-sm-12 MB15">
+			<label>Tên quy trình xử lý thủ tục</label>
+			<select class="form-control" id="serviceProcess" name="serviceProcess" data-bind="value: serviceProcess" required="required" validationMessage="Bạn phải chọn quy trình xử lý">
+			</select>
+			<span data-for="serviceProcess" class="k-invalid-msg"></span>
+		</div>
+
+		<div class="col-sm-12 MB15">
+			<label>Chuỗi pattern xác định việc lựa chọn tự động theo đối tượng xử lý hồ sơ</label>
+			<input name="autoSelect" id="autoSelect" class="form-control" placeholder="Chuỗi pattern" data-bind="value:autoSelect" validationMessage="Bạn phải điền chuỗi pattern" required="required">
+			<span data-for="autoSelect" class="k-invalid-msg"></span>
+		</div>
+
+		<div class="col-sm-12 ">
+			<div class="form-group">
+				<label class="control-label">Hướng dẫn chi tiết để chuẩn bị hồ sơ
+				</label>
+				<div class="" id="instructionNote" name="instructionNote" validationMessage="Bạn phải điền hướng dẫn chi tiết" required="required" data-bind="value: instructionNote"></div>
+				<span data-for="instructionNote" class="k-invalid-msg"></span>
+			</div>
+		</div>
+
+		<div class="col-sm-12 ">
+			<div class="form-group">
+				<label class="control-label">Hướng dẫn sau khi nộp hồ sơ
+				</label>
+				<div class="" id="submissionNote" name="submissionNote" validationMessage="Bạn phải điền hướng dẫn sau khi nộp hồ sơ" required="required" data-bind="value: submissionNote"></div>
+				<span data-for="submissionNote" class="k-invalid-msg"></span>
+			</div>
+		</div>
+
+		<div class="col-sm-12 text-center MT15 MB15">
+			<button class="btn btn-active" id="btn-submit-established-process" type="button">Ghi lại</button> <button class="btn" type="button" id="btn-revert-serviceoptions">Hủy bỏ</button>
+		</div>
+
+		<input type="hidden" name="itemServiceConfigOption" id="itemServiceConfigOption">
+	</div>
+</form>
+
 <script type="text/javascript">
 
 	var localIndexServiceOption = 0;
@@ -138,17 +212,16 @@
 			this.cancelChanges();
 		},
 		autoSync: false,
-		pageSize:3,
+		pageSize:10,
 		serverPaging:false,
 		serverSorting:false,
 		serverFiltering:false
 	});
 
 	$("#serviceConfigOptionListView").kendoListView({
-		dataSource:dataSourceServiceOption,
-		template:kendo.template($("#serviceConfigOptionTemplate").html()),
-		selectable: true,
-		remove:function(e){
+		dataSource : dataSourceServiceOption,
+		template : kendo.template($("#serviceConfigOptionTemplate").html()),
+		remove : function(e){
 			if(!confirm('Bạn có muốn xóa ?')){
 				e.preventDefault();
 			}
@@ -174,44 +247,8 @@
 			localIndexServiceOption = 0;
 		},
 		dataBound: function() {
-			bindServiceConfig();
 		}
 	});
-
-	var bindServiceConfig = function(){
-		var serviceConfigId = $("#itemServiceConfigId").val();
-		if(serviceConfigId > 0){
-			$.ajax({
-				url: "${api.server}/serviceconfigs/"+serviceConfigId,
-				dataType:"json",
-				type:"GET",
-				headers: {"groupId": ${groupId}},
-				success:function(result){
-					var viewModel = kendo.observable({
-						serviceName : result.serviceName,
-						govAgencyName : result.govAgencyName,
-						serviceLevel : function(e){
-							if(result.serviceLevel == 1){
-								$(".serviceLevelConfig").addClass("text-link");
-							} else if(result.serviceLevel == 2){
-								$(".serviceLevelConfig").addClass("text-link");
-							} else if(result.serviceLevel == 3){
-								$(".serviceLevelConfig").addClass("text-orange");
-							}else {
-								$(".serviceLevelConfig").addClass("text-danger");
-							}
-							return "Mức độ "+result.serviceLevel
-						}
-					});
-
-					kendo.bind($(".bindServiceConfig"), viewModel);
-				},
-				error:function(result){
-
-				}
-			});
-		}
-	};
 
 	$("#pagerServiceConfigOption").kendoPager({
 		dataSource:dataSourceServiceOption,
@@ -228,45 +265,197 @@
 
 	$("#btn-add-serviceconfig-option").click(function(){
 		console.log("add");
-		$("#xlqtdv").load("${ajax.serviceconfig_option_form}",function(result){
-			$("#itemServiceConfigOption").val("");
-		});
+		$("#itemServiceConfigOption").val("");
+		clearForm();
 	});
 
-	$("#search-serviceconfig-process").kendoAutoComplete({
-		dataTextField : "templateName",
-		dataSource: {
-			transport : {
-				read : {
-					url : "${api.server}/serviceconfigs/"+$("#itemServiceConfigId").val()+"/processes",
-					dataType : "json",
-					type : "GET",
-					headers: {"groupId": ${groupId}},
-					success : function(result){
+	$("#btn-cancel-serviceoptions").click(function(){
+		console.log("list-serviceconfig-option");
+		clearForm();
+	});
 
+	var clearForm = function(){
+		$("#seqOrder").val("");
+		$("#optionName").val("");
+		$("#dossierTemplate").data("kendoComboBox").value("");
+		$("#serviceProcess").data("kendoComboBox").value("");
+		$("#instructionNote").summernote('code', "");
+		$("#submissionNote").summernote('code', "");
+		$("#autoSelect").val("");
+	}
+
+	$("#btn-submit-established-process").click(function(){
+		var id = $("#itemServiceConfigOption").val();
+		var idServiceConfig = $("#itemServiceConfigId").val();
+		var validator = $("#frmEstablishedProcess").kendoValidator().data("kendoValidator");
+		if(validator.validate()){
+			if(id && idServiceConfig){
+				$.ajax({
+					url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes/"+id,
+					dataType : "json",
+					type : "PUT",
+					headers: {"groupId": ${groupId}},
+					data : {
+						seqOrder : $("#seqOrder").val(),
+						optionName : $("#optionName").val(),
+						dossierTemplateId : $("#dossierTemplate").val(),
+						serviceProcessId : $("#serviceProcess").val(),
+						instructionNote : $("#instructionNote").summernote("code").toString(),
+						submissionNote :$("#submissionNote").summernote("code").toString(),
+						autoSelect : $("#autoSelect").val()
+					},
+					success : function(result){
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
+						dataSourceServiceOption.read();
 					},
 					error : function(xhr){
+						notification.show({
+							message: "Yêu cầu thất bại"
+						}, "error");
+					}	
+				});
+			}else {
+				$.ajax({
+					url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes",
+					dataType : "json",
+					type : "POST",
+					headers: {"groupId": ${groupId}},
+					data : {
+						seqOrder : $("#seqOrder").val(),
+						optionName : $("#optionName").val(),
+						dossierTemplateId : $("#dossierTemplate").val(),
+						serviceProcessId : $("#serviceProcess").val(),
+						instructionNote : $("#instructionNote").summernote("code").toString(),
+						submissionNote : $("#submissionNote").summernote("code").toString(),
+						autoSelect : $("#autoSelect").val()
+					},
+					success : function(result){
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
+						dataSourceServiceOption.read();
+					},
+					error : function(xhr){
+						notification.show({
+							message: "Yêu cầu thất bại"
+						}, "error");
+					}
+				});
+
+			}
+
+		}
+
+	});
+
+	var pullServiceConfigOptionDetail= function(item){
+		console.log("detail_serviceconfig");
+		if(item){
+			var viewModel = kendo.observable({
+				seqOrder : item.seqOrder,
+				optionName : item.optionName,
+				dossierTemplate : item.dossierTemplateId,
+				serviceProcess : item.serviceProcessId,
+				instructionNote : function(e){
+					$("#instructionNote").summernote('code', item.instructionNote);
+				},
+				submissionNote : function(e){
+					$("#submissionNote").summernote('code', item.submissionNote);
+				},
+				autoSelect : item.autoSelect,
+				serviceConfigs : function(){
+					checkedForServiceConfig(item.serviceConfigs);
+					arr = item.serviceConfigs;
+				}
+			});
+
+			kendo.bind($("#frmEstablishedProcess"), viewModel);
+		}
+	}
+
+	$("#dossierTemplate").kendoComboBox({
+		placeholder : "Chọn mẫu hồ sơ",
+		dataTextField:"templateName",
+		dataValueField:"dossierTemplateId",
+		noDataTemplate: 'Không có dữ liệu',
+		filter: "contains",
+		dataSource:{
+			transport:{
+				read:{
+					url:"${api.server}/dossiertemplates",
+					dataType:"json",
+					type:"GET",
+					headers: {"groupId": ${groupId}},
+					success:function(result){
+
+					},
+					error:function(result){
 
 					}
 				}
 			},
-			schema : {
-				total : "total",
-				data : "data",
-				model : {
-					id : "processOptionId"
-				}
+			schema:{
+				data:"data",
+				total:"total"			
 			}
-		},
-		filter: "contains",
-		placeholder: "Nhập từ khóa",
-		noDataTemplate: 'Không có dữ liệu'
+		}
 	});
 
-	$("#search-serviceconfig-process").change(function(){
-		dataSourceServiceOption.read({
-			keyword : $("#search-serviceconfig-process").val()
-		});
+	$("#serviceProcess").kendoComboBox({
+		placeholder : "Chọn tiến trình",
+		dataTextField:"processName",
+		dataValueField:"serviceProcessId",
+		noDataTemplate: 'Không có dữ liệu',
+		filter: "contains",
+		dataSource:{
+			transport:{
+				read:{
+					url:"${api.server}/serviceprocesses",
+					dataType:"json",
+					type:"GET",
+					headers: {"groupId": ${groupId}},
+					success:function(result){
+
+					},
+					error:function(result){
+
+					}
+				}
+			},
+			schema:{
+				data:"data",
+				total:"total"
+			}
+		}
+	});
+
+	$("#instructionNote").summernote({
+		height : 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
+	});
+	$("#submissionNote").summernote({
+		height : 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
 	});
 
 </script>

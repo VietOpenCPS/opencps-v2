@@ -11,6 +11,18 @@
 		</div>
 
 		<div class="col-sm-12 MB15">
+			<label>Số thứ tự</label>
+			<input name="seqOrder" id="seqOrder" class="form-control" placeholder="Số thứ tự" data-bind="value:seqOrder" >
+			<span data-for="seqOrder" class="k-invalid-msg"></span>
+		</div>
+
+		<div class="col-sm-12 MB15">
+			<label>Tên quy trình xác lập dịch vụ</label>
+			<input name="processOptionName" id="processOptionName" class="form-control" placeholder="Tên quy trình xác lập dịch vụ" data-bind="value:processOptionName" validationMessage="Bạn phải điền tên quy trình xác lập" required="required">
+			<span data-for="processOptionName" class="k-invalid-msg"></span>
+		</div>
+
+		<div class="col-sm-12 MB15">
 			<label>Tên quy trình xử lý thủ tục</label>
 			<select class="form-control" id="serviceProcess" name="serviceProcess" data-bind="value: serviceProcess" required="required" validationMessage="Bạn phải chọn quy trình xử lý">
 			</select>
@@ -71,14 +83,14 @@
 		</script>
 
 		<div class="col-sm-12 text-center MT15 MB15">
-			<button class="btn btn-active" id="btn-submit-established-process" type="button">Ghi lại</button> <button class="btn" type="button" id="btn-revert-serviceoptions">Hủy bỏ</button>
+			<button class="btn btn-active" id="btn-submit-established-process" type="button">Ghi lại</button> <button class="btn" type="button" id="btn-cancel-serviceoptions">Hủy bỏ</button>
 		</div>
 
 		<input type="hidden" name="itemServiceConfigOption" id="itemServiceConfigOption">
 	</div>
 </form>
 <script type="text/javascript">
-	var arr = [301,302,303];
+	var arr = [];
 	var dataSourceServiceConfigChoise=new kendo.data.DataSource({
 		transport:{
 			read:function(options){
@@ -260,11 +272,9 @@
 		]
 	});
 
-	$("#btn-revert-serviceoptions").click(function(){
+	$("#btn-cancel-serviceoptions").click(function(){
 		console.log("list-serviceconfig-option");
-		$("#xlqtdv").load("${ajax.serviceconfig_option}",function(result){
-
-		});
+		
 	});
 
 	var pullServiceConfigOptionDetail= function(item){
@@ -273,6 +283,8 @@
 			var viewModel = kendo.observable({
 				dossierTemplate : item.dossierTemplateId,
 				serviceProcess : item.serviceProcessId,
+				seqOrder : result.seqOrder,
+				processOptionName : result.processOptionName,
 				instructionNote : function(e){
 					$("#instructionNote").summernote('code', item.instructionNote);
 				},
@@ -292,96 +304,92 @@
 
 	$(document).on("change", ".cbxServiceConfig", function () {
 		if($(this).prop("checked")){
-			addServiceConfigForServiceOption($(this).attr("data-pk"));
-		}else{
-			removeServiceConfigForServiceOption($(this).attr("data-pk"));
+			arr.push($(this).attr("data-pk"));
 		}
 	});
 
-	var addServiceConfigForServiceOption = function(id){
-		console.log(arr);
-		if(arr){
-			for(var i=0 ;i< arr.length ;i++){
-				if(arr[i] === id){
-					return ;
-				}
-			}
-			arr.push(id);
-		}
-	}
-
-	var removeServiceConfigForServiceOption = function(id){
-		console.log(arr);
-		if(arr){
-			for(var i=0 ;i< arr.length ;i++){
-				if(arr[i] === id){
-					arr.splice(i,1);
-					return ;
-				}
+	var removeCoincident = function(arrS){
+		var arrLength = arrS.length;
+		var arrR = [];
+		for( var i = 0; i < arrLength; i++ ) {
+			if( arrR.indexOf(arrS[i] ) < 0) {
+				arrR.push( arrS[i] );
 			}
 		}
+		return arrR;
 	}
 
 	$("#btn-submit-established-process").click(function(){
 		var id = $("#itemServiceConfigOption").val();
 		var idServiceConfig = $("#itemServiceConfigId").val();
 		var validator = $("#frmEstablishedProcess").kendoValidator().data("kendoValidator");
+		var checkSuccess = 0;
 		if(validator.validate()){
-			if(idServiceConfig){
-				if(id){
-					$.ajax({
-						url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes/"+id,
-						dataType : "json",
-						type : "PUT",
-						headers: {"groupId": ${groupId}},
-						data : {
-							dossierTemplateId : $("#dossierTemplate").val(),
-							serviceProcessId : $("#serviceProcess").val(),
-							instructionNote : $("#instructionNote").summernote("code").toString(),
-							submissionNote :$("#submissionNote").summernote("code").toString(),
-							autoSelect : $("#autoSelect").val()
-						},
-						success : function(result){
-							//updateServieConfigoptionIfSuccess(id,result);
-							notification.show({
-								message: "Yêu cầu được thực hiện thành công"
-							}, "success");
-						},
-						error : function(xhr){
-							notification.show({
-								message: "Xẩy ra lỗi, vui lòng thử lại"
-							}, "error");
-						}
-					});
+			var arrServiceConfig = removeCoincident(arr);
+			console.log(arrServiceConfig);
+			for(var i=0;i< arrServiceConfig.length;i++){
+				if(arrServiceConfig[i]){
+					if(id){
+						$.ajax({
+							url : "${api.server}/serviceconfigs/"+arrServiceConfig[i]+"/processes/"+id,
+							dataType : "json",
+							type : "PUT",
+							headers: {"groupId": ${groupId}},
+							async : false,
+							data : {
+								dossierTemplateId : $("#dossierTemplate").val(),
+								serviceProcessId : $("#serviceProcess").val(),
+								instructionNote : $("#instructionNote").summernote("code").toString(),
+								submissionNote :$("#submissionNote").summernote("code").toString(),
+								autoSelect : $("#autoSelect").val()
+							},
+							success : function(result){
+								checkSuccess ++;
 
-				}else {
-					$.ajax({
-						url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes",
-						dataType : "json",
-						type : "POST",
-						headers: {"groupId": ${groupId}},
-						data : {
-							dossierTemplateId : $("#dossierTemplate").val(),
-							serviceProcessId : $("#serviceProcess").val(),
-							instructionNote : $("#instructionNote").summernote("code").toString(),
-							submissionNote : $("#submissionNote").summernote("code").toString(),
-							autoSelect : $("#autoSelect").val()
-						},
-						success : function(result){
-							//addServiceConfigOptionIfSuccess(result);
-							notification.show({
-								message: "Yêu cầu được thực hiện thành công"
-							}, "success");
-						},
-						error : function(xhr){
-							notification.show({
-								message: "Xẩy ra lỗi, vui lòng thử lại"
-							}, "error");
-						}
-					});
-					
+							},
+							error : function(xhr){
+
+							}
+						});
+					}else {
+						$.ajax({
+							url : "${api.server}/serviceconfigs/"+arrServiceConfig[i]+"/processes",
+							dataType : "json",
+							type : "POST",
+							headers: {"groupId": ${groupId}},
+							async : false,
+							data : {
+								dossierTemplateId : $("#dossierTemplate").val(),
+								serviceProcessId : $("#serviceProcess").val(),
+								instructionNote : $("#instructionNote").summernote("code").toString(),
+								submissionNote : $("#submissionNote").summernote("code").toString(),
+								autoSelect : $("#autoSelect").val()
+							},
+							success : function(result){
+								checkSuccess ++;
+
+							},
+							error : function(xhr){
+
+							}
+						});
+
+					}
 				}
 			}
+			console.log("chcekSucces!");
+			console.log(checkSuccess);
+			if(checkSuccess === arrServiceConfig.length){
+				notification.show({
+					message: "Yêu cầu được thực hiện thành công"
+				}, "success");
+			}else{
+				var message = checkSuccess + " Yêu cầu được thực hiện thành công "+ (arrServiceConfig.length-checkSuccess) +" Yêu cầu thất bại"
+				notification.show({
+					message: message
+				}, "error");
+			}
+
 		}
 
 	});
