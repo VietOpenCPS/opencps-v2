@@ -2,9 +2,9 @@
 	<#include "init.ftl">
 </#if>
 
-<div class="row nav-tabs-wrapper panel panel-body PT0">
+<div class="row nav-tabs-wrapper">
   <ul class="nav nav-tabs">
-      <li class="active">
+      <li class="active" id="dossiertemplate_detail_tab_1">
           <a data-toggle="tab" href="#ttmhs">
               Thông tin mẫu hồ sơ
           </a>
@@ -29,3 +29,11 @@
      </div>
 	 </div>
  </div>
+
+<script type="text/javascript">
+	$(document).on("click", "#dossiertemplate_detail_tab_1", function(event){
+		 event.preventDefault();
+		 $("#dossiertemplate_part_container").show();
+		 $("#dossiertemplate_part_form_container").hide();
+	});
+</script>

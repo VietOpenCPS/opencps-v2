@@ -5,27 +5,41 @@
 	<div class="row">
 		<div class="col-sm-12 MB15">
 			<label>Tên mẫu hồ sơ</label>
-			<input class="form-control" id="dossierTemplate" name="dossierTemplate" required="required" validationMessage="Bạn phải chọn mẫu hồ sơ" required="required"  />
+			<select class="form-control" id="dossierTemplate" name="dossierTemplate" data-bind="value: dossierTemplate" required="required" validationMessage="Bạn phải chọn mẫu hồ sơ">
+			</select>
 			<span data-for="dossierTemplate" class="k-invalid-msg"></span>
 		</div>
 
 		<div class="col-sm-12 MB15">
+			<label>Số thứ tự</label>
+			<input name="seqOrder" id="seqOrder" class="form-control" placeholder="Số thứ tự" data-bind="value:seqOrder" >
+			<span data-for="seqOrder" class="k-invalid-msg"></span>
+		</div>
+
+		<div class="col-sm-12 MB15">
+			<label>Tên quy trình xác lập dịch vụ</label>
+			<input name="processOptionName" id="processOptionName" class="form-control" placeholder="Tên quy trình xác lập dịch vụ" data-bind="value:processOptionName" validationMessage="Bạn phải điền tên quy trình xác lập" required="required">
+			<span data-for="processOptionName" class="k-invalid-msg"></span>
+		</div>
+
+		<div class="col-sm-12 MB15">
 			<label>Tên quy trình xử lý thủ tục</label>
-			<input name="serviceProcess" id="serviceProcess" class="form-control" placeholder="Tên thủ tục" data-bind="value:serviceProcess" validationMessage="Bạn phải chọn quy trình xử lý" required="required">
+			<select class="form-control" id="serviceProcess" name="serviceProcess" data-bind="value: serviceProcess" required="required" validationMessage="Bạn phải chọn quy trình xử lý">
+			</select>
 			<span data-for="serviceProcess" class="k-invalid-msg"></span>
 		</div>
 
 		<div class="col-sm-12 MB15">
 			<label>Chuỗi pattern xác định việc lựa chọn tự động theo đối tượng xử lý hồ sơ</label>
-			<input name="pattern" id="pattern" class="form-control" placeholder="Chuỗi pattern" data-bind="value:pattern" validationMessage="Bạn phải điền chuỗi pattern" required="required">
-			<span data-for="pattern" class="k-invalid-msg"></span>
+			<input name="autoSelect" id="autoSelect" class="form-control" placeholder="Chuỗi pattern" data-bind="value:autoSelect" validationMessage="Bạn phải điền chuỗi pattern" required="required">
+			<span data-for="autoSelect" class="k-invalid-msg"></span>
 		</div>
 
 		<div class="col-sm-12 ">
 			<div class="form-group">
 				<label class="control-label">Hướng dẫn chi tiết để chuẩn bị hồ sơ
 				</label>
-				<div class="" id="instructionNote" name="instructionNote" validationMessage="Bạn phải điền hướng dẫn chi tiết" required="required"></div>
+				<div class="" id="instructionNote" name="instructionNote" validationMessage="Bạn phải điền hướng dẫn chi tiết" required="required" data-bind="value: instructionNote"></div>
 				<span data-for="instructionNote" class="k-invalid-msg"></span>
 			</div>
 		</div>
@@ -34,7 +48,7 @@
 			<div class="form-group">
 				<label class="control-label">Hướng dẫn sau khi nộp hồ sơ
 				</label>
-				<div class="" id="submissionNote" name="submissionNote" validationMessage="Bạn phải điền hướng dẫn sau khi nộp hồ sơ" required="required"></div>
+				<div class="" id="submissionNote" name="submissionNote" validationMessage="Bạn phải điền hướng dẫn sau khi nộp hồ sơ" required="required" data-bind="value: submissionNote"></div>
 				<span data-for="submissionNote" class="k-invalid-msg"></span>
 			</div>
 		</div>
@@ -64,18 +78,19 @@
 							</div>
 						</div>
 					</div>
-
 				</div>
 			</li>
 		</script>
 
 		<div class="col-sm-12 text-center MT15 MB15">
-			<button class="btn btn-active" id="btn-submit-established-process" type="button">Ghi lại</button> <button class="btn" type="button" id="btn-revert-serviceoptions">Hủy bỏ</button>
+			<button class="btn btn-active" id="btn-submit-established-process" type="button">Ghi lại</button> <button class="btn" type="button" id="btn-cancel-serviceoptions">Hủy bỏ</button>
 		</div>
+
+		<input type="hidden" name="itemServiceConfigOption" id="itemServiceConfigOption">
 	</div>
 </form>
 <script type="text/javascript">
-	var arr = [301,302,303];
+	var arr = [];
 	var dataSourceServiceConfigChoise=new kendo.data.DataSource({
 		transport:{
 			read:function(options){
@@ -145,14 +160,6 @@
 		}
 	});
 
-	$("#instructionNote").summernote({
-		height : 150
-	});
-
-	$("#submissionNote").summernote({
-		height : 150
-	});
-
 	$("#keywordChoiseDossier").kendoAutoComplete({
 		dataTextField : "serviceName",
 		dataSource: {
@@ -184,14 +191,14 @@
 
 	$("#dossierTemplate").kendoComboBox({
 		placeholder : "Chọn mẫu hồ sơ",
-		dataTextField:"processName",
-		dataValueField:"processNo",
+		dataTextField:"templateName",
+		dataValueField:"dossierTemplateId",
 		noDataTemplate: 'Không có dữ liệu',
 		filter: "contains",
-		/*dataSource:{
+		dataSource:{
 			transport:{
 				read:{
-					url:"${api.server}/serviceprocesses",
+					url:"${api.server}/dossiertemplates",
 					dataType:"json",
 					type:"GET",
 					headers: {"groupId": ${groupId}},
@@ -205,22 +212,18 @@
 			},
 			schema:{
 				data:"data",
-				total:"total",
-				model:{
-					id:"processNo"
-				}
+				total:"total"			
 			}
-		}*/
-		dataSource : []
+		}
 	});
 
 	$("#serviceProcess").kendoComboBox({
 		placeholder : "Chọn tiến trình",
 		dataTextField:"processName",
-		dataValueField:"processNo",
+		dataValueField:"serviceProcessId",
 		noDataTemplate: 'Không có dữ liệu',
 		filter: "contains",
-		/*dataSource:{
+		dataSource:{
 			transport:{
 				read:{
 					url:"${api.server}/serviceprocesses",
@@ -237,131 +240,157 @@
 			},
 			schema:{
 				data:"data",
-				total:"total",
-				model:{
-					id:"processNo"
-				}
+				total:"total"
 			}
-		}*/
-		dataSource : []
+		}
 	});
 
 	$("#instructionNote").summernote({
-		height : 150
+		height : 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
 	});
 	$("#submissionNote").summernote({
-		height : 150
+		height : 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
 	});
 
-	$("#btn-revert-serviceoptions").click(function(){
+	$("#btn-cancel-serviceoptions").click(function(){
 		console.log("list-serviceconfig-option");
-		$("#xlqtdv").load("${ajax.serviceconfig_option}",function(result){
-
-		});
+		
 	});
 
-	var pullServiceConfigOptionDetail= function(id){
+	var pullServiceConfigOptionDetail= function(item){
 		console.log("detail_serviceconfig");
-		var idServiceConfig = $("#itemServiceConfigId").val();
-		console.log("pull-detail-serviceoption");
-		console.log(idServiceConfig);
-		if(idServiceConfig > 0 ){
-			$.ajax({
-				url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes/"+id,
-				dataType : "json",
-				type : "GET",
-				headers: {"groupId": ${groupId}},
-				success : function(result){
-					console.log(result);
-					var viewModel = kendo.observable({
-						dossierTemplate : result.dossierTemplate,
-						serviceProcess : result.serviceProcess,
-						instructionNote : result.instructionNote,
-						submissionNote : result.submissionNote,
-						serviceConfigs : function(){
-							checkedForServiceConfig(result.serviceConfigs);
-							arr = result.serviceConfigs;
-						}
-					});
-
-					kendo.bind($("#frmEstablishedProcess"), viewModel);
+		if(item){
+			var viewModel = kendo.observable({
+				dossierTemplate : item.dossierTemplateId,
+				serviceProcess : item.serviceProcessId,
+				seqOrder : result.seqOrder,
+				processOptionName : result.processOptionName,
+				instructionNote : function(e){
+					$("#instructionNote").summernote('code', item.instructionNote);
 				},
-				error : function(xhr){
-
+				submissionNote : function(e){
+					$("#submissionNote").summernote('code', item.submissionNote);
+				},
+				autoSelect : item.autoSelect,
+				serviceConfigs : function(){
+					checkedForServiceConfig(item.serviceConfigs);
+					arr = item.serviceConfigs;
 				}
 			});
+			
+			kendo.bind($("#frmEstablishedProcess"), viewModel);
 		}
 	}
 
 	$(document).on("change", ".cbxServiceConfig", function () {
-		addServiceConfigForServiceOption($(this).attr("data-pk"));
+		if($(this).prop("checked")){
+			arr.push($(this).attr("data-pk"));
+		}
 	});
 
-	var addServiceConfigForServiceOption = function(id){
-		console.log(arr);
-		if(arr){
-			for(var i=0 ;i< arr.length ;i++){
-				if(arr[i] === id){
-					arr.splice(i,1);
-					return ;
-				}
+	var removeCoincident = function(arrS){
+		var arrLength = arrS.length;
+		var arrR = [];
+		for( var i = 0; i < arrLength; i++ ) {
+			if( arrR.indexOf(arrS[i] ) < 0) {
+				arrR.push( arrS[i] );
 			}
-			arr.push(id);
 		}
+		return arrR;
 	}
 
 	$("#btn-submit-established-process").click(function(){
-		var id = $(this).attr("data-pk");
+		var id = $("#itemServiceConfigOption").val();
 		var idServiceConfig = $("#itemServiceConfigId").val();
 		var validator = $("#frmEstablishedProcess").kendoValidator().data("kendoValidator");
+		var checkSuccess = 0;
 		if(validator.validate()){
-			if(idServiceConfig > 0){
-				if(id > 0){
-					$.ajax({
-						url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes",
-						dataType : "json",
-						type : "POST",
-						headers: {"groupId": ${groupId}},
-						data : {
-							dossierTemplate : $("#dossierTemplate").val(),
-							serviceProcess : $("#serviceProcess").val(),
-							instructionNote : $("#instructionNote").val(),
-							submissionNote : $("#submissionNote").val(),
-							pattern : $("#pattern").val()
-						},
-						success : function(result){
-							addServiceConfigOptionIfSuccess(result);
-						},
-						error : function(xhr){
+			var arrServiceConfig = removeCoincident(arr);
+			console.log(arrServiceConfig);
+			for(var i=0;i< arrServiceConfig.length;i++){
+				if(arrServiceConfig[i]){
+					if(id){
+						$.ajax({
+							url : "${api.server}/serviceconfigs/"+arrServiceConfig[i]+"/processes/"+id,
+							dataType : "json",
+							type : "PUT",
+							headers: {"groupId": ${groupId}},
+							async : false,
+							data : {
+								dossierTemplateId : $("#dossierTemplate").val(),
+								serviceProcessId : $("#serviceProcess").val(),
+								instructionNote : $("#instructionNote").summernote("code").toString(),
+								submissionNote :$("#submissionNote").summernote("code").toString(),
+								autoSelect : $("#autoSelect").val()
+							},
+							success : function(result){
+								checkSuccess ++;
 
-						}
-					});
+							},
+							error : function(xhr){
 
-				}else {
+							}
+						});
+					}else {
+						$.ajax({
+							url : "${api.server}/serviceconfigs/"+arrServiceConfig[i]+"/processes",
+							dataType : "json",
+							type : "POST",
+							headers: {"groupId": ${groupId}},
+							async : false,
+							data : {
+								dossierTemplateId : $("#dossierTemplate").val(),
+								serviceProcessId : $("#serviceProcess").val(),
+								instructionNote : $("#instructionNote").summernote("code").toString(),
+								submissionNote : $("#submissionNote").summernote("code").toString(),
+								autoSelect : $("#autoSelect").val()
+							},
+							success : function(result){
+								checkSuccess ++;
 
-					$.ajax({
-						url : "${api.server}/serviceconfigs/"+idServiceConfig+"/processes/"+id,
-						dataType : "json",
-						type : "PUT",
-						headers: {"groupId": ${groupId}},
-						data : {
-							dossierTemplate : $("#dossierTemplate").val(),
-							serviceProcess : $("#serviceProcess").val(),
-							instructionNote : $("#instructionNote").val(),
-							submissionNote :$("#submissionNote").val(),
-							pattern : $("#pattern").val()
-						},
-						success : function(result){
-							updateServieConfigoptionIfSuccess(id,result);
-						},
-						error : function(xhr){
+							},
+							error : function(xhr){
 
-						}
-					});
+							}
+						});
+
+					}
 				}
 			}
-		}
+			console.log("chcekSucces!");
+			console.log(checkSuccess);
+			if(checkSuccess === arrServiceConfig.length){
+				notification.show({
+					message: "Yêu cầu được thực hiện thành công"
+				}, "success");
+			}else{
+				var message = checkSuccess + " Yêu cầu được thực hiện thành công "+ (arrServiceConfig.length-checkSuccess) +" Yêu cầu thất bại"
+				notification.show({
+					message: message
+				}, "error");
+			}
 
+		}
 
 	});
 
@@ -371,7 +400,7 @@
 			"serviceProcess":result.serviceProcess,
 			"instructionNote":result.instructionNote,
 			"submissionNote":result.submissionNote,
-			"pattern" : result.pattern
+			"autoSelect" : result.autoSelect
 		});
 	};
 
@@ -384,7 +413,7 @@
 				item.set("serviceProcess",result.serviceProcess);
 				item.set("instructionNote",result.instructionNote);
 				item.set("submissionNote",result.submissionNote);
-				item.set("pattern", result.pattern);
+				item.set("autoSelect", result.autoSelect);
 			}
 
 		});

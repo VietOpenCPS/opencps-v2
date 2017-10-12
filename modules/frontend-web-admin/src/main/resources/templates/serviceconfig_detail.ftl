@@ -2,7 +2,7 @@
 <#include "init.ftl">
 </#if>
 <div class="nav-tabs-wrapper">
-	<ul class="nav nav-tabs" id="serviceinfo-tabstrip">
+	<ul class="nav nav-tabs" id="serviceconfig-tabstrip">
 		<li class="active"  value="1">
 			<a data-toggle="tab" href="#ttdvc">
 				Thông tin dịch vụ công
@@ -21,46 +21,31 @@
 					<div class="col-sm-12">
 						<div class="form-group">
 							<label>Lĩnh vực thủ tục</label>
-							<input class="form-control" id="domainCode" name="domainCode" required="required" validationMessage="Bạn phải chọn lĩnh vực" data-bind="value: domainCode"/>
+							<input class="form-control" id="domainCode" name="domainCode" data-bind="value: domainCode"/>
 						</div>
 						<span data-for="domain" class="k-invalid-msg"></span>
 					</div>
 					<div class="col-sm-12">
 						<div class="form-group">
 							<label>Tên thủ tục</label>
-							<input name="service" id="service" class="form-control" placeholder="Tên thủ tục" data-bind="value:serviceName" validationMessage="Bạn phải chọn thủ tục hành chính" required="required"> 
+							<input name="service" id="service" class="form-control" placeholder="Tên thủ tục" data-bind="value:serviceInfoId" validationMessage="Bạn phải chọn thủ tục hành chính" required="required"> 
 						</div>
 						<span data-for="service" class="k-invalid-msg"></span>
 					</div>
 					<div class="col-sm-6 MB15">
 						<label>Cơ quan thực hiện</label>
-						<select class="form-control" id="govAgency" name="govAgency" data-bind="value: govAgencyName" required="required" validationMessage="Bạn phải chọn cơ quan thực hiện">
-							<option value=""></option>
-							<#list administrations as item>
-							<option value="${item.id}">${item.name}</option>
-							</#list> 
+						<select class="form-control" id="govAgency" name="govAgency" data-bind="value: govAgencyCode" required="required" validationMessage="Bạn phải chọn cơ quan thực hiện">
+
 						</select>
 						<span data-for="govAgency" class="k-invalid-msg"></span>
 					</div>
 					<div class="col-sm-6 MB15">
 						<label>Mức độ</label>
 						<select class="form-control" id="serviceLevel" name="serviceLevel" data-bind="value: serviceLevel" required="required" validationMessage="Bạn phải chọn mức độ">
-							<option value=""></option>
-							<#list levels as item>
-							<option value="${item.id}">${item.name}</option>
-							</#list> 
+							<option value="3">Mức độ 3</option>
+							<option value="4">Mức độ 4</option>
 						</select>
 						<span data-for="serviceLevel" class="k-invalid-msg"></span>
-					</div>
-					<div class="col-sm-12 MB15">
-						<label>Quy trình thực hiện dịch vụ</label>
-						<select class="form-control" id="process" name="process" data-bind="value: processName" required="required" validationMessage="Bạn phải chọn quy trình">
-							<option value=""></option>
-							<#list levels as item>
-							<option value="${item.id}">${item.name}</option>
-							</#list> 
-						</select>
-						<span data-for="process" class="k-invalid-msg"></span>
 					</div>
 					<div class="col-sm-12 ">
 						<div class="form-group">
@@ -74,7 +59,7 @@
 						<div class="form-group">
 							<label class="control-label">Địa chỉ nộp hồ sơ trực tuyến: 
 							</label> 
-							<textarea class="form-control" rows="3" id="address" name="address" data-bind="text:address" ></textarea>
+							<textarea class="form-control" rows="3" id="serviceUrl" name="serviceUrl" data-bind="text:serviceUrl" ></textarea>
 						</div>
 					</div>
 					<div class="col-sm-6">
@@ -96,14 +81,26 @@
 			</form>
 		</div>
 		<div id="xlqtdv" class="tab-pane fade in MT5">
-
-
+		<#include "serviceconfig_option.ftl">
 		</div>
 	</div>
 </div>
 
 <script type="text/javascript">
-	
+	$("#serviceInstruction").summernote({
+		height: 150,
+		toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']],
+		['table', ['table']],
+		['insert', ['link', 'picture' , 'video']]
+		]
+	});
+
 	$(function() {
 		$("[data-role=combobox]").each(function() {
 			var widget = $(this).getKendoComboBox();
@@ -129,19 +126,16 @@
 			url : "${api.server}/serviceconfigs/"+id,
 			dataType : "json",
 			type : "GET",
+			headers: {"groupId": ${groupId}},
 			success : function(result){
 				console.log(result);
 				var viewModel = kendo.observable({
-					serviceCode: result.serviceCode,
-					serviceName: result.serviceName,
-					domainCode: result.domainCode,
-					domainName: result.domainName,
+					serviceInfoId: result.serviceInfoId,
 					govAgencyCode: result.govAgencyCode,
-					govAgencyName: result.govAgencyName,
-					serviceInstruction: result.serviceInstruction,
-					serviceLevel: function(e){
-						return "Mức độ "+result.serviceLevel;
+					serviceInstruction: function(e){
+						$('#serviceInstruction').summernote('code', result.serviceInstruction);
 					},
+					serviceLevel: result.serviceLevel,
 					serviceUrl: result.serviceUrl,
 					forCitizen: result.forCitizen,
 					forBusiness: result.forBusiness,
@@ -157,6 +151,7 @@
 		});
 	}
 
+
 	$("#btn-submit-serviceconfig").click(function(){
 		var id =$("#itemServiceConfigId").val();
 		var validator = $("#frmServiceConfigDetail").kendoValidator().data("kendoValidator");
@@ -166,14 +161,14 @@
 					url : "${api.server}/serviceconfigs/"+id,
 					dataType : "json",
 					type : "PUT",
+					headers: {"groupId": ${groupId}},
 					data : {
-						domainCode : $("#domainCode").val(),
 						serviceInfoId : $("#service").val(),
 						govAgencyCode : $("#govAgency").val(),
 						serviceLevel :$("#serviceLevel").val(),
 						process : $("#process").val(),
 						serviceInstruction :$("#serviceInstruction").val(),
-						address : $("#address").val(),
+						serviceUrl : $("textarea#serviceUrl").val(),
 						forCitizen : $("#forCitizen").val(),
 						postalService : $("#postService").val(),
 						forBusiness : $("#forBusiness").val(),
@@ -181,9 +176,14 @@
 					},
 					success : function(result){
 						updateServieConfigIfSuccess(id,result);
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
 					},
 					error : function(xhr){
-
+						notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");
 					}
 				});
 			}else {
@@ -191,14 +191,14 @@
 					url : "${api.server}/serviceconfigs",
 					dataType : "json",
 					type : "POST",
+					headers: {"groupId": ${groupId}},
 					data : {
-						domainCode : $("#domainCode").val(),
 						serviceInfoId : $("#service").val(),
 						govAgencyCode : $("#govAgency").val(),
 						serviceLevel :$("#serviceLevel").val(),
 						process : $("#process").val(),
 						serviceInstruction :$("#serviceInstruction").val(),
-						address : $("#address").val(),
+						serviceUrl : $("textarea#serviceUrl").val(),
 						forCitizen : $("#forCitizen").val(),
 						postalService : $("#postService").val(),
 						forBusiness : $("#forBusiness").val(),
@@ -208,10 +208,15 @@
 						addServiceConfigIfSuccess(result);
 						$("#itemServiceConfigId").val(result.serviceConfigId);
 						funcCheckValueItem();
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
 					},
 					error : function(xhr){
-
-					}
+						notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");
+					}	
 				});
 			}
 		}
@@ -226,7 +231,7 @@
 
 				item.set("serviceInfoId",result.serviceInfoId);
 				item.set("serviceCode",result.serviceCode);
-				item.set("serviceName",result.serviceName);
+				item.set("serviceName",$("#service").data("kendoComboBox").text());
 				item.set("domainCode",result.domainCode);
 				item.set("domainName",result.domainName);
 				item.set("govAgencyCode",result.govAgencyCode);
@@ -243,11 +248,11 @@
 		});
 	}
 	var addServiceConfigIfSuccess = function(result){
-		dataSourceServiceConfig.add({
+		dataSourceServiceConfig.insert(0,{
 			"serviceConfigId" : result.serviceConfigId,
 			"serviceInfoId" : result.serviceInfoId,
 			"serviceCode" : result.serviceCode,
-			"serviceName" : result.serviceName,
+			"serviceName" : $("#service").data("kendoComboBox").text(),
 			"domainCode" : result.domainCode,
 			"domainName" : result.domainName,
 			"govAgencyCode" : result.govAgencyCode,
@@ -262,162 +267,114 @@
 		});	
 	};
 
-	$("#serviceInstruction").summernote({
-		height: 150
-	});
+	
 	$("#serviceLevel").kendoComboBox({
 		placeholder : "Chọn mức độ",
-		dataTextField:"processName",
-		dataValueField:"processNo",
 		noDataTemplate: 'Không có dữ liệu',
-		filter: "contains",
-		/*dataSource:{
-			transport:{
-				read:{
-					url:"${api.server}/serviceprocesses",
-					dataType:"json",
-					type:"GET",
-					success:function(result){
-
-					},
-					error:function(result){
-
-					}
-				}
-			},
-			schema:{
-				data:"data",
-				total:"total",
-				model:{
-					id:"processNo"
-				}
-			}
-		}*/
-		dataSource : []
+		filter: "contains"
 	});
 
 	$("#govAgency").kendoComboBox({
 		placeholder : "Chọn cơ quan",
-		dataTextField:"processName",
-		dataValueField:"processNo",
+		dataTextField:"itemName",
+		dataValueField:"itemCode",
 		noDataTemplate: 'Không có dữ liệu',
 		filter: "contains",
-		/*dataSource:Ơ
-			transport:Ơ
-				read:Ơ
-					url:"${api.server}/serviceprocesses",
-					dataType:"json",
-					type:"GET",
-					success:function(result)Ơ
-
-					Ư,
-					ẻo:function(result)Ơ
-
-					Ư
-				Ư
-			Ư,
-			schema:Ơ
-				dât:"dât",
-				total:"total",
-				model:Ơ
-					id:"processNo"
-				Ư
-			Ư
-			Ư*/
-			dataSource : []
-		});
-	
-	$("#process").kendoComboBox({
-		placeholder : "Chọn tiến trình",
-		dataTextField:"processName",
-		dataValueField:"processNo",
-		noDataTemplate: 'Không có dữ liệu',
-		filter: "contains",
-		/*dataSource:{
-			transport:{
-				read:{
-					url:"${api.server}/serviceprocesses",
-					dataType:"json",
-					type:"GET",
-					success:function(result){
+		dataSource : {
+			transport : {
+				read : {
+					url : "${api.server}/dictcollections/GOVERNMENT_AGENCY/dictitems",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
 
 					},
-					error:function(result){
+					error : function(xhr){
 
 					}
 				}
 			},
-			schema:{
-				data:"data",
-				total:"total",
-				model:{
-					id:"processNo"
-				}
+			schema: {
+				data : "data",
+				total : "total"
 			}
-		}*/
-		dataSource : []
+		}
 	});
 
 
 	$("#domainCode").kendoComboBox({
 		placeholder : "Chọn lĩnh vực",
-		dataTextField:"processName",
-		dataValueField:"processNo",
+		dataTextField:"itemName",
+		dataValueField:"itemCode",
 		noDataTemplate: 'Không có dữ liệu',
 		filter: "contains",
-		/*dataSource:{
-			transport:{
-				read:{
-					url:"${api.server}/serviceprocesses",
-					dataType:"json",
-					type:"GET",
-					success:function(result){
+		dataSource : {
+			transport : {
+				read : {
+					url : "${api.server}/dictcollections/SERVICE_DOMAIN/dictitems",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
 
 					},
-					error:function(result){
+					error : function(xhr){
 
 					}
 				}
 			},
-			schema:{
-				data:"data",
-				total:"total",
-				model:{
-					id:"processNo"
-				}
+			schema: {
+				data : "data",
+				total : "total"
 			}
-		}*/
-		dataSource : []
+		},
+		change : function(e){
+			var value = this.value();
+			$("#service").data("kendoComboBox").dataSource.read({
+				domain : value
+			});
+		}
 	});
 
 	$("#service").kendoComboBox({
 		placeholder : "Chọn thủ tục",
-		dataTextField:"processName",
-		dataValueField:"processNo",
+		dataTextField:"serviceName",
+		dataValueField:"serviceInfoId",
 		noDataTemplate: 'Không có dữ liệu',
 		filter: "contains",
-		/*dataSource:{
+		dataSource:{
 			transport:{
-				read:{
-					url:"${api.server}/serviceprocesses",
-					dataType:"json",
-					type:"GET",
-					success:function(result){
-
-					},
-					error:function(result){
-
-					}
+				read:function(options) {
+					$.ajax({
+						url:"${api.server}/serviceinfos",
+						dataType:"json",
+						type:"GET",
+						headers: {"groupId": ${groupId}},
+						data : {
+							domain : options.data.domain
+						},
+						success:function(result){
+							options.success(result);
+						},
+						error:function(result){
+							options.error(result);
+						}
+					});
 				}
 			},
 			schema:{
 				data:"data",
-				total:"total",
-				model:{
-					id:"processNo"
-				}
+				total:"total"
 			}
-		}*/
-		dataSource : []
+		},
+		change : function(e){
+			var domainCode = $("#service").data("kendoComboBox").dataItem().domainCode;
+			console.log(domainCode);
+			if(domainCode){
+				$("#domainCode").data("kendoComboBox").value(domainCode);
+				$("#domainCode").data("kendoComboBox")._isSelect = false;
+			}
+		}
 	});
 </script>
