@@ -4,8 +4,25 @@ Bundle-Version: 1.0.0
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
 Export-Package: \
-	org.opencps.dossiermgt.action,\
 	org.opencps.dossiermgt.action.impl,\
 	org.opencps.backend.dossiermgt.service.util,\
 	org.opencps.dossiermgt.action.util,\
-	org.opencps.dossiermgt.model.impl
+	org.opencps.dossiermgt.model.impl,\
+	com.lowagie.text.pdf,\
+	com.lowagie.text.pdf.*,\
+	com.lowagie.text,\
+	com.lowagie.text.*,\
+	com.fasterxml.jackson.databind.node,\
+	com.fasterxml.jackson.databind.node.*,\
+	com.fasterxml.jackson.databind,\
+	com.fasterxml.jackson.databind.*,\
+	com.fasterxml.jackson.core,\
+	com.fasterxml.jackson.core.*,\
+	net.sf.jasperreports.engine,\
+	net.sf.jasperreports.engine.*,\
+	org.opencps.dossiermgt.action
+
+Import-Package: \
+	!jxl,\
+
+	
