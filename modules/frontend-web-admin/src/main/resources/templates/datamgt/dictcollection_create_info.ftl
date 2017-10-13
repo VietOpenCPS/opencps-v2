@@ -1,5 +1,6 @@
+<#if (Request)??>
 <#include "init.ftl">
-
+</#if>
 <div class="modal-header form-group">
 
 	<button type="button" class="close" data-dismiss="modal" aria-label="Close">

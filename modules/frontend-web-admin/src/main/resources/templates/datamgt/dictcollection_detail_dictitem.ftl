@@ -1,5 +1,6 @@
+<#if (Request)??>
 <#include "init.ftl">
-
+</#if>
 <div class="row MT20">
 		
 	<div class="col-xs-4 col-sm-4">
@@ -150,7 +151,8 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 
 (function($) {
 	
-	var _collectionSub_dictItem_BaseUrl_detail = "${api.endpoint}/dictcollections/${(dictCollection_dictCollection.collectionCode)!}/dictitems",
+	var _collectionSub_dictItem_BaseUrl_detail = "${api.server
+}/dictcollections/${(dictCollection_dictCollection.collectionCode)!}/dictitems",
 	
 		_collectionSub_dictItem_dataSource_detail = new kendo.data.DataSource({
 		

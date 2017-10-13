@@ -1,4 +1,6 @@
+<#if (Request)??>
 <#include "init.ftl">
+</#if>
 
 <div class="row">
 	
@@ -115,7 +117,7 @@
 	
 	(function($) {
 	
-		var _collection_BaseUrl = "${api.endpoint}/dictcollections";
+		var _collection_BaseUrl = "${api.server}/dictcollections";
 
 		var _collection_dataSource = new kendo.data.DataSource({
 			

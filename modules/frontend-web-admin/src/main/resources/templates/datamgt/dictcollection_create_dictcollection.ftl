@@ -1,4 +1,6 @@
+<#if (Request)??>
 <#include "init.ftl">
+</#if>
 
 <div class="modal-header">
 
@@ -101,7 +103,7 @@
 			return;
 		} else {
 
-			var _collectionAdd_BaseUrl = "${api.endpoint}/dictcollections";
+			var _collectionAdd_BaseUrl = "${api.server}/dictcollections";
 
 			$.ajax({
 				url: _collectionAdd_BaseUrl,

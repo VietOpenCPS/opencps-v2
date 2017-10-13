@@ -1,5 +1,6 @@
+<#if (Request)??>
 <#include "init.ftl">
-
+</#if>
 <div class="modal-header form-group">
 
 	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -335,7 +336,8 @@
 
 (function($) {
 
-	var _collectionSub_dictItem_BaseUrl_detail = "${api.endpoint}/dictcollections/${(dictCollection_dictCollection.collectionCode)!}/dictitems",
+	var _collectionSub_dictItem_BaseUrl_detail = "${api.server
+}/dictcollections/${(dictCollection_dictCollection.collectionCode)!}/dictitems",
 
 	_collectionSub_dictItem_dataSource_detail = new kendo.data.DataSource({
 
@@ -416,7 +418,8 @@
 	}
 
 	
-	var _collectionSub_group_BaseUrl_detail = "${api.endpoint}/dictcollections/${(dictCollection_dictCollection.collectionCode)!}/dictgroups",
+	var _collectionSub_group_BaseUrl_detail = "${api.server
+}/dictcollections/${(dictCollection_dictCollection.collectionCode)!}/dictgroups",
 		
 	_collectionSub_group_dataSource_detail = new kendo.data.DataSource({
 	
