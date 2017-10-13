@@ -97,12 +97,12 @@
       contentUrls: [
 				'datamgt.ftl',
         '${ajax.serviceinfo_list}',
-        'employee.ftl',
+        '${ajax.employee_index}',
         '${ajax.dossiertemplate}',
         '${ajax.serviceprocess}',
         '${ajax.serviceconfig}',
         'holiday.ftl',
-        'paymentconfig.ftl',
+        '${ajax.payment_config}',
         '${ajax.manage_account}',
         'efrom.ftl'
       ]

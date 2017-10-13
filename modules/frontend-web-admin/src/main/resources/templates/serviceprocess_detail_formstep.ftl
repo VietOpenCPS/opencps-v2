@@ -1,20 +1,19 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <div>
-	<h4>Thêm bước xử lý</h4>
-	<form name="fm" class="" method="post">
-		<div class="row MT20">
+	<form id="process_detail_form" name="fm" class="" method="post">
+		<div class="row">
 			<div class="col-xs-12 col-sm-6">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
 						Tên bước
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="stepName" name="stepName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:stepName"/>
+						<input id="stepName" name="stepName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: stepName"/>
 					</div>
 				</div>
 			</div>
@@ -25,9 +24,9 @@
 						Số thứ tự
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="sequenceNo" name="sequenceNo" class="k-textbox form-control" data-bind="value:sequenceNo"/>
+						<input id="sequenceNo" name="sequenceNo" class="k-textbox form-control" data-bind="value: sequenceNo"/>
 					</div>
 				</div>
 			</div>
@@ -39,22 +38,24 @@
 						Trạng thái chính
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="dossierStatus" name="dossierStatus" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:dossierStatus"/>
+						<input id="dossierStatus" name="dossierStatus" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: dossierStatus"/>
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-2"></div>
-			<div class="col-xs-12 col-sm-4">
-				<div class="row">
-					<div class="col-xs-12 col-sm-12">
-						Thời gian xử lý
+			<div class="col-xs-12 col-sm-2"></div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-4">
+					<div class="row">
+						<div class="col-xs-12 col-sm-12">
+							Mã bước quy trình
+						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12 col-sm-12">
-						<input id="durationCount" name="durationCount" type="number" class="k-textbox form-control" data-bind="value:durationCount"/>
+					<div class="row MT5">
+						<div class="col-xs-12 col-sm-12">
+							<input id="stepCode" name="stepCode" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: stepCode"/>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -66,15 +67,30 @@
 						Trạng thái phụ
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="dossierSubStatus" name="dossierSubStatus" class="form-control" data-bind="value:dossierSubStatus"/>
+						<input id="dossierSubStatus" name="dossierSubStatus" class="form-control" data-bind="value: dossierSubStatus"/>
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-2"></div>
+			<div class="col-xs-12 col-sm-2"></div>
 			<div class="col-xs-12 col-sm-4">
-				<div class="checkbox"> <input type="checkbox"> <label>Cho phép sửa hồ sơ</label> </div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						Thời gian xử lý
+					</div>
+				</div>
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<input id="durationCount" name="durationCount" type="text" class="k-textbox form-control" data-bind="value: durationCount"/>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row MT10">
+			<div class="col-xs-12 col-sm-8"></div>
+			<div class="col-xs-12 col-sm-4">
+				<div class="checkbox"> <input type="checkbox" name="editable" id="editable" data-bind="checked: editable"> <label>Cho phép sửa hồ sơ</label> </div>
 			</div>
 		</div>
 		<div class="service-process-form-step-controls">
@@ -82,18 +98,17 @@
 				<div class="row MT10">
 					<div class="col-xs-12 col-sm-12">Vai trò xử lý</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-6">
-						<select class="form-control" id="administration" name="administration" data-bind="value: administrationName">
-							<option value="">Chọn vai trò</option>
-
+						<select class="form-control" id="roleId" name="roleId" data-bind="value: roleId">
+							<option value=""></option>
 						</select>
 					</div>
 					<div class="col-xs-12 col-sm-3">
-						<div class="radio-inline"> <input type="radio" name="stepAllowance" value="stepAllowanceViewOnly" data-bind="value:stepAllowanceViewOnly"> <label>Theo dõi</label> </div>
+						<div class="radio-inline"> <input type="radio" name="moderator_1" value="false" data-bind="checked: moderator"> <label>Theo dõi</label> </div>
 					</div>
 					<div class="col-xs-12 col-sm-2">
-						<div class="radio-inline"> <input type="radio" name="stepAllowance" value="stepAllowance" data-bind="value:stepAllowance"> <label>Chủ trì</label> </div>
+						<div class="radio-inline"> <input type="radio" name="moderator_1" value="true" data-bind="checked: moderator"> <label>Chủ trì</label> </div>
 					</div>
 					<div class="col-xs-12 col-sm-1">
 						<button class="btn btn-success btn-add-step-role" type="button">
@@ -103,22 +118,30 @@
 				</div>
 			</div>
 		</div>
-		<div class="service-process-form-step-paper-result-controls">
-			<div class="service-process-form-step-paper-result-entry">
-				<div class="row MT10">
-					<div class="col-xs-12 col-sm-12">Giấy tờ kết quả kèm theo</div>
-				</div>
+		<div class="row MT10">
+			<div class="col-xs-12 col-sm-12">
 				<div class="row">
-					<div class="col-xs-12 col-sm-6">
-						<select class="form-control" id="administration" name="administration" data-bind="value: administrationName">
-							<option value="">Chọn giấy tờ kết quả</option>
-
-						</select>
+					<div class="col-xs-12 col-sm-12">
+						Hướng dẫn
 					</div>
-					<div class="col-xs-12 col-sm-1">
-						<button class="btn btn-success btn-add-paper-result" type="button">
-							<span class="glyphicon glyphicon-plus"></span>
-						</button>
+				</div>
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<textarea class="form-control" name="stepInstruction" id="stepInstruction" data-bind="value: stepInstruction"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row MT10">
+			<div class="col-xs-12 col-sm-12">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						Tóm tắt hồ sơ
+					</div>
+				</div>
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<textarea class="form-control" name="briefNote" id="briefNote" data-bind="value: briefNote"></textarea>
 					</div>
 				</div>
 			</div>
@@ -130,9 +153,9 @@
 						Nhúng ajax của phần nghiệp vụ
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<textarea class="form-control" name="name" rows="4"></textarea>
+						<textarea class="form-control" name="customProcessUrl" id="customProcessUrl" data-bind="value: customProcessUrl"></textarea>
 					</div>
 				</div>
 			</div>
@@ -149,56 +172,84 @@
 	$(document).on('click', '.btn-add-step-role', function(e){
 		e.preventDefault();
 
-		var controlForm = $('.service-process-form-step-controls'),
-				currentEntry = $(this).parents('.service-process-form-step-entry:first'),
-				newEntry = $(currentEntry.clone()).appendTo(controlForm);
+		var controlForm = $('.service-process-form-step-controls');
+		var	currentEntry = $(this).parents('.service-process-form-step-entry:first');
+
+		var radioValue = currentEntry.find('input[type=radio]:checked').val();
+
+		var newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+		var index = controlForm.children().length;
+		var name = 'moderator_' + index;
+		newEntry.find('input[type=radio]').attr('name', name);
 
 		newEntry.find('select').val('');
-		newEntry.find('input [type="radio"]').val('');
+		newEntry.find('input[type=radio]:checked').prop('checked',false);
+		currentEntry.find('input[type=radio][value=' + radioValue + ']').prop('checked',true);
 
 		controlForm.find('.service-process-form-step-entry:not(:last) .btn-add-step-role')
-				.removeClass('btn-add-step-role').addClass('btn-remove-step-role')
-				.removeClass('btn-success').addClass('btn-danger')
-				.html('<span class="glyphicon glyphicon-minus"></span>');
-		}).on('click', '.btn-remove-step-role', function(e){
-			$(this).parents('.service-process-form-step-entry:first').remove();
-			e.preventDefault();
-			return false;
-	});
-
-	$(document).on('click', '.btn-add-paper-result', function(e){
+		.removeClass('btn-add-step-role').addClass('btn-remove-step-role')
+		.removeClass('btn-success').addClass('btn-danger')
+		.html('<span class="glyphicon glyphicon-minus"></span>');
+	}).on('click', '.btn-remove-step-role', function(e){
+		$(this).parents('.service-process-form-step-entry:first').remove();
 		e.preventDefault();
-
-		var controlForm = $('.service-process-form-step-paper-result-controls'),
-				currentEntry = $(this).parents('.service-process-form-step-paper-result-entry:first'),
-				newEntry = $(currentEntry.clone()).appendTo(controlForm);
-
-		newEntry.find('select').val('');
-		newEntry.find('input [type="radio"]').val('');
-
-		controlForm.find('.service-process-form-step-paper-result-entry:not(:last) .btn-add-paper-result')
-				.removeClass('btn-add-paper-result').addClass('btn-remove-paper-result')
-				.removeClass('btn-success').addClass('btn-danger')
-				.html('<span class="glyphicon glyphicon-minus"></span>');
-		}).on('click', '.btn-remove-paper-result', function(e){
-			$(this).parents('.service-process-form-step-paper-result-entry:first').remove();
-			e.preventDefault();
-			return false;
+		return false;
 	});
 
 	(function($){
 		$("#dossierStatus").kendoComboBox({
-			dataTextField: "dossierStatusName",
-			dataValueField: "dossierStatusCode",
-			dataSource: "",
-			filter: "contains"
+			dataTextField: "itemName",
+			dataValueField: "itemCode",
+			filter: "contains",
+			dataSource : {
+				transport : {
+					read : {
+						url : "${api.server}/dictcollections/DOSSIER_STATUS/dictitems",
+						dataType : "json",
+						type : "GET",
+						headers: {"groupId": ${groupId}},
+						success : function(result){
+
+						},
+						error : function(xhr){
+
+						}
+					}
+				},
+				schema: {
+					data : "data",
+					total : "total"
+				}
+			},
+			noDataTemplate: 'Không có dữ liệu'
 		});
 
 		$("#dossierSubStatus").kendoComboBox({
-			dataTextField: "dossierSubStatusName",
-			dataValueField: "dossierSubStatusCode",
-			dataSource: "",
-			filter: "contains"
+			dataTextField: "itemName",
+			dataValueField: "itemCode",
+			filter: "contains",
+			dataSource : {
+				transport : {
+					read : {
+						url : "${api.server}/dictcollections/DOSSIER_STATUS/dictitems",
+						dataType : "json",
+						type : "GET",
+						headers: {"groupId": ${groupId}},
+						success : function(result){
+
+						},
+						error : function(xhr){
+
+						}
+					}
+				},
+				schema: {
+					data : "data",
+					total : "total"
+				}
+			},
+			noDataTemplate: 'Không có dữ liệu'
 		});
 
 		$(function() {
@@ -210,53 +261,33 @@
 			});
 		});
 
-		$("#stepAllowance").kendoMultiSelect({
-			placeholder: "Xử lý chính",
-			dataTextField: "roleName",
-			dataValueField: "roleId",
-			autoClose: false,
-			dataSource: {
-				transport:{
-					read:{
-						url:"${api.server}/processsteps/id/stepallowances",
-						dataType:"json",
-						type:"GET"
-					}
-				},
-				schema:{
-					data:"data"
-				}
-			},
-			filter: "contains"
-		});
-
-		$("#stepAllowanceViewOnly").kendoMultiSelect({
-			placeholder: "Chỉ xem",
-			dataTextField: "roleName",
-			dataValueField: "roleId",
-			autoClose: false,
-			dataSource: {
-				transport:{
-					read:{
-						url:"${api.server}/processsteps/id/stepallowances",
-						dataType:"json",
-						type:"GET"
-					}
-				},
-				schema:{
-					data:"data"
-				}
-			},
-			filter: "contains"
-		});
-
 		$("#tabstrip_service_process_step_modal").kendoTabStrip({
-				animation:  {
-						open: {
-								effects: "fadeIn"
-						}
+			animation:  {
+				open: {
+					effects: "fadeIn"
 				}
+			}
 		});
 
 	})(jQuery);
+
+	$(document).ready(function(){
+		$.ajax({
+			url: "${api.server}" + "/jobpos",
+			type: "GET",
+			dataType: "json",
+			headers: {"groupId": ${groupId}},
+			async: false,
+			success: function(result) {
+				console.log(result);
+				if (result && result.data && result.data.length > 0){
+					result.data.forEach(function(jobpos){
+						var newOpt = $(".service-process-form-step-entry select")[0].appendChild(document.createElement('option'));
+						newOpt.value = jobpos.jobPosId;
+						newOpt.text = jobpos.title;
+					});
+				}
+			}
+		});
+	});
 </script>

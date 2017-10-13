@@ -6,12 +6,14 @@
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-sm-12">
-					<button class="btn btn-active form-control" id="btnAddServiceConfig"><i class="glyphicon glyphicon-plus"></i> Thêm dịch vụ công</button>
+					<button class="btn btn-active form-control MB5" id="btnAddServiceConfig"><i class="glyphicon glyphicon-plus"></i> Thêm dịch vụ công</button>
+					<button class="btn btn-active form-control" id="btnAddServiceConfigS"><i class="glyphicon glyphicon-plus"></i> Tạo nhiều DVC</button>
+				</div>
+				<div class="col-sm-12">
 					<div class="form-group search-icon MT10">
 						<input type="text" id="keywordSearchServiceConfig" name="keywordSearchServiceConfig" class="form-control" placeholder="Nhập từ khóa">
 					</div>
-					<ul class='ul-with-border'>
-						<div id='serviceConfigListView'></div>
+					<ul class='ul-with-border' id="serviceConfigListView">
 					</ul>
 					<div id='pager'></div>
 				</div>
@@ -19,16 +21,16 @@
 		</div>
 	</div>
 	<div class="col-sm-9 PR0" >
-	<div class="panel panel-body" id="serviceConfigDetail">
-
+		<div class="panel panel-body PL0 PR0" id="serviceConfigDetail">
+			<#include "serviceconfig_option_form.ftl">
 		</div>
 	</div>
 </div>
 <script type="text/x-kendo-template" id="serviceConfigTemplate">
 	<li style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
 		<div class="row">
-			<div class="col-sm-11 service-config-item PR0" data-pk="#:id#">
-				<p>
+			<div class="col-sm-11 PR0">
+				<p class="service-config-item" data-pk="#:id#">
 					<#-- #if(serviceName.length>40){#
 					# var dcontent = serviceName.substring(0,38)+"..."; #
 					#:kendo.toString(dcontent)#
@@ -42,7 +44,7 @@
 				<a class="item-serviceconfig-delete" href="javascript:;" data-pk="#:id#"><i class="fa fa-trash"></i></a>
 			</div>
 			<div class="col-sm-12">
-				<i class="fa fa-university"></i> <span class="ML5">#:govAgencyName#</span>
+				<i class="fa fa-university"></i> <span class="ML5 service-config-item" data-pk="#:id#">#:govAgencyName#</span>
 			</div>
 			<div class="col-sm-12">
 				#
@@ -56,7 +58,7 @@
 	}else {
 	lbl = "text-danger";
 }#
-<span class="#:lbl#">Mức độ <span>#:serviceLevel#</span></span>
+<span class="#:lbl# service-config-item" data-pk="#:id#">Mức độ <span>#:serviceLevel#</span></span>
 </div>
 </div>
 </li>
@@ -68,6 +70,7 @@
 </div>
 <script type="text/javascript">
 	var dataSourceServiceConfig;
+	var firstLoadServiceConfig =true;
 	(function($){
 
 		dataSourceServiceConfig=new kendo.data.DataSource({
@@ -169,17 +172,6 @@
 			error: function(e) {
 				this.cancelChanges();
 			},
-			requestEnd: function(e) {
-				console.log(e);
-				console.log("end");
-				if(typeof e.response.data !== "undefined"){
-					var firstChild = e.response.data[0].serviceConfigId;
-					$("#itemServiceConfigId").val(firstChild);
-					console.log("itemServiceConfigId: "+$("#itemServiceConfigId").val());
-					formControl(firstChild);
-				}
-
-			},
 			autoSync: false,
 			pageSize:5,
 			serverPaging:false,
@@ -191,18 +183,37 @@
 		$("#serviceConfigListView").kendoListView({
 			dataSource:dataSourceServiceConfig,
 			template:kendo.template($("#serviceConfigTemplate").html()),
-			selectable: true,
 			remove:function(e){
 				if(!confirm('Bạn có muốn xóa ?')){
 					e.preventDefault();
 				}
-			}
+			},
+			dataBound : function(){
+				console.log(dataSourceServiceConfig.view());
+				console.log($("#listViewTTHC > li"));
+				if(firstLoadServiceConfig){
+					if(dataSourceServiceConfig.view()[0]){
+						var firstChild = dataSourceServiceConfig.view()[0].id;
 
+						$("#serviceConfigListView > li").removeClass("k-state-selected");
+						$("#serviceConfigListView > li:first-child").addClass("k-state-selected");
+
+						$("#itemServiceConfigId").val(firstChild);
+						formControl(firstChild);
+					}
+				}
+				
+				firstLoadServiceConfig =false;
+			}
 		});
 
 		$(document).on("click", ".service-config-item", function(event){
 			var id = $(this).attr("data-pk");
+
 			$("#itemServiceConfigId").val($(this).attr("data-pk"));
+			$("#serviceConfigListView > li").removeClass("k-state-selected");
+
+			$(this).parent().parent().parent().addClass("k-state-selected");
 			console.log("itemServiceConfigId: "+$("#itemServiceConfigId").val());
 			formControl(id);
 		});
@@ -278,12 +289,25 @@
 						type : "DELETE",
 						headers: {"groupId": ${groupId}},
 						success : function(result){
+							var currentItemId = $("#itemServiceConfigId").val();
 							if(item){
 								var index = dataSourceServiceConfig.remove(item);
 							}
+
+							if(currentItemId === id){
+								$("#itemServiceConfigId").val("");
+								formControl();
+							}
+
+							notification.show({
+								message: "Yêu cầu được thực hiện thành công"
+							}, "success");
+
 						},
 						error : function(xhr){
-
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
 						}
 					});
 				}else {
@@ -301,6 +325,13 @@
 			formControl();
 		});
 
+		$("#btnAddServiceConfigS").click(function(){
+			$("#itemServiceConfigId").val("");
+			$("#serviceConfigDetail").load("",function(result){
+
+			});
+		});
+
 		var formControl = function(dataPk){
 
 			var url = "${ajax.serviceconfig_detail}";
@@ -314,6 +345,30 @@
 				funcCheckValueItem();
 			});
 
+		}
+
+		var funcCheckValueItem = function(){
+			if($("#itemServiceConfigId").val() !== ""){
+				activateTabServiceConfig();
+				dataSourceServiceOption.read({
+
+				});
+			}else{
+				disabledTabServiceConfig();
+			}
+		}
+
+		var activateTabServiceConfig=function() {
+			$("#serviceconfig-tabstrip > li").removeClass("disabled");
+			$("#serviceconfig-tabstrip > li > a").attr("data-toggle","tab");
+
+		}
+
+		var disabledTabServiceConfig = function () {
+			$("#serviceconfig-tabstrip > li").addClass("disabled");
+			$("#serviceconfig-tabstrip > li > a").removeAttr("data-toggle");
+			$("#serviceconfig-tabstrip > li").first().removeClass("disabled");
+			$("#serviceconfig-tabstrip > li > a").first().attr("data-toggle","tab");
 		}
 
 		var updateServieConfig = function(dataPk){
@@ -347,11 +402,11 @@
 		//edit or delete serviceconfig option
 		$(document).on("click", "._itemServiceConfig_option_btnEdit", function(event){
 			event.preventDefault();
-			console.log("edit");
+			console.log("edit service config");
 			var id = $(this).attr("data-pk");
-			$("#xlqtdv").load("${ajax.serviceconfig_option_form}",function(result){
-				pullServiceConfigOptionDetail(id);
-			});
+			var item = dataSourceServiceOption.get(id);
+			pullServiceConfigOptionDetail(item);
+			$("#itemServiceConfigOption").val(id);
 		});
 
 		$(document).on("click", "._itemServiceConfig_option_btnDelete", function(event){
@@ -371,9 +426,14 @@
 							if(itemDelete){
 								var index = dataSourceServiceOption.remove(itemDelete);
 							}
+							notification.show({
+								message: "Yêu cầu được thực hiện thành công"
+							}, "success");
 						},
 						error : function(xhr){
-
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
 						}
 					});
 				}else{

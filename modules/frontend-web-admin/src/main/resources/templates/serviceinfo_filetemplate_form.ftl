@@ -15,13 +15,13 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-3">Số biểu mẫu</div>
 					<div class="col-xs-12 col-sm-9">
-						<input id="fileNo" name="fileNo" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" value="<#if (filetemplate.fileNo)??>${filetemplate.fileNo}</#if>"/>
+						<input id="fileTemplateNo" name="fileTemplateNo" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" value="<#if (filetemplate.fileNo)??>${filetemplate.fileNo}</#if>"/>
 					</div>
 				</div>
 				<div class="row MT10">
 					<div class="col-xs-12 col-sm-3">Tên biểu mẫu</div>
 					<div class="col-xs-12 col-sm-9">
-						<input id="fileName" name="fileName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" value="<#if (filetemplate.fileName)??>${filetemplate.fileName}</#if>"/>
+						<input id="templateName" name="templateName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" value="<#if (filetemplate.fileName)??>${filetemplate.fileName}</#if>"/>
 					</div>
 				</div>
 				<div class="row MT10">
@@ -31,7 +31,7 @@
 					</div>
 				</div>
 				<div class="row MT10 text-center">
-					<button id="btnSaveFileTemplate" class="btn btn-active" type="button">Ghi lại</button>
+					<button id="btnSaveFileTemplate" class="btn btn-active" type="button" data-bind="click: addFiletemplate">Ghi lại</button>
 					<button id="btnCancleFileTemplate" class="btn" title="Hủy bỏ" data-dismiss="modal">Đóng</button>
 				</div>
 			</form>
@@ -39,24 +39,5 @@
 	</div>
 </div>
 <script type="text/javascript">
-	$("#btnSaveFileTemplate").click(function() {
-		var idServiceinfo = $("#itemServiceInfoId").val();
-		if(idServiceinfo>0){
-			var data = $("#serviceInfoFileTemplateForm").serialize();
-			$.ajax({
-				url : "${api.server}/serviceinfos/"+idServiceinfo+"/filetemplates",
-				dataType : "json",
-				type : "POST",
-				data : data,
-				success : function(result){
-					$("#serviceInfoFileTempalteDialog").modal('hide');
-				},
-				error : function(xhr){
-
-				}
-			});
-		}else {
-			
-		}
-	});
+	
 </script>

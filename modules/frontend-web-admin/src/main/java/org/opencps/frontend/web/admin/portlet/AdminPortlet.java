@@ -2,7 +2,7 @@
 package org.opencps.frontend.web.admin.portlet;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.List;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
@@ -19,8 +19,10 @@ import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -168,6 +170,22 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		manageAccountURL.setParameter(
 			"mvcPath", "/templates/manage_account.ftl");
 
+		PortletURL paymentConfigtURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		paymentConfigtURL.setPortletMode(PortletMode.VIEW);
+		paymentConfigtURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		paymentConfigtURL.setParameter(
+			"mvcPath", "/templates/paymentconfig.ftl");
+
+		PortletURL paymentConfigFormURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		paymentConfigFormURL.setPortletMode(PortletMode.VIEW);
+		paymentConfigFormURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		paymentConfigFormURL.setParameter(
+			"mvcPath", "/templates/paymentconfig_form.ftl");
+
 		urlObject.put("serviceinfo_list", serviceInfoListURL.toString());
 		urlObject.put("serviceinfo_form", serviceInfoFormURL.toString());
 		urlObject.put(
@@ -190,6 +208,8 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		urlObject.put(
 			"serviceconfig_option", serviceConfigOptionURL.toString());
 		urlObject.put("manage_account", manageAccountURL.toString());
+		urlObject.put("payment_config", paymentConfigtURL.toString());
+		urlObject.put("paymentconfig_form", paymentConfigFormURL.toString());
 
 		// set object edit
 		long serviceInfoId = ParamUtil.getLong(renderRequest, "serviceInfoId");
@@ -205,19 +225,20 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			}
 		}
 
+		// roles
+		List<Role> roles =
+			RoleLocalServiceUtil.getRoles(themeDisplay.getCompanyId());
+
 		// api
 		apiObject.put("server", themeDisplay.getPortalURL() + "/o/rest/v2");
 		apiObject.put(
 			"portletNamespace",
 			themeDisplay.getPortletDisplay().getNamespace());
+		apiObject.put("roles", roles);
 
 		// set varible
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("api", apiObject);
-		renderRequest.setAttribute("administrations", Collections.EMPTY_LIST);
-		renderRequest.setAttribute("domains", Collections.EMPTY_LIST);
-		renderRequest.setAttribute("status", Collections.EMPTY_LIST);
-		renderRequest.setAttribute("levels", Collections.EMPTY_LIST);
 
 		super.render(renderRequest, renderResponse);
 	}

@@ -24,7 +24,7 @@
 	<div class="row MT10">
 		<div class="col-xs-12 col-sm-3"></div>
 		<div class="col-xs-12 col-sm-9">
-			<input type="checkbox" name="" >Báo mất giấy tờ</input>
+			<div class="checkbox"> <input type="checkbox" name=""> <label>Báo mất giấy tờ</label> </div>
 		</div>
 	</div>
 	<div class="row MT10 text-center">
