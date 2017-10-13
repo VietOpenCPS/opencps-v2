@@ -136,7 +136,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -221,7 +221,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -273,7 +273,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -357,7 +357,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -410,7 +410,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -495,7 +495,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -553,7 +553,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 

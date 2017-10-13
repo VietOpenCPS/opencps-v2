@@ -154,7 +154,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -191,9 +191,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 			} else {
-				error.setMessage(" Internal Server Error.");
+				error.setMessage("Internal Server Error");
 				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription(" Internal Server Error.");
+				error.setDescription(e.getMessage());
 
 				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 
@@ -252,9 +252,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(" Internal Server Error.");
+					error.setDescription(e.getMessage());
 
 					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 
@@ -307,9 +307,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(" Internal Server Error.");
+					error.setDescription(e.getMessage());
 
 					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 
@@ -421,9 +421,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(" Internal Server Error.");
+					error.setDescription(e.getMessage());
 
 					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 
@@ -479,9 +479,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(" Internal Server Error.");
+					error.setDescription(e.getMessage());
 
 					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 
@@ -535,9 +535,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(" Internal Server Error.");
+					error.setDescription(e.getMessage());
 
 					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 

@@ -138,7 +138,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -233,7 +233,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -286,7 +286,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -421,7 +421,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -485,7 +485,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -545,7 +545,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -696,7 +696,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -757,7 +757,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -816,7 +816,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
