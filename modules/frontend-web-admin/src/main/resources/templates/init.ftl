@@ -23,8 +23,13 @@
 <#assign request = themeDisplay.getRequest() />
 <#assign portalURL = (themeDisplay.getPortalURL())!>
 
+<#assign url = (Request.url)!>
+<#assign api = (Request.api)!>
+<#assign constant = (Request.constant)!>
+
+
 <!--INIT EMPLOYEE-->
-<#-- <#if Request.employee_workingStatus??>
+<#if Request.employee_workingStatus??>
 <#assign employee_workingStatus = Request.employee_workingStatus>
 </#if>
 
@@ -40,19 +45,15 @@
 <#assign employee_jobPos = Request.employee_jobPos>
 </#if>
 
-<#assign url = Request.url?eval>
-<#assign api = Request.api?eval>
+
 <#if Request.params??>
 <#assign params = Request.params?eval>
 </#if>
 <#if Request.constants??>
 <#assign constants = Request.constants?eval>
-</#if> -->
+</#if>
 
 <!--INIT  WORKING UNIT-->
-
-<#-- <#assign url = Request.url?eval>
-<#assign api = Request.api?eval>
 
 <#if Request.activityType_dictItem??>
 <#assign activityType_dictItem = Request.activityType_dictItem>
@@ -118,11 +119,7 @@
 <#assign workspace_jobposes = Request.workspace_jobposes>
 </#if>
 
-<#assign api = Request.api?eval>
-<#assign groupId = Request.groupId>
-<#assign userId = Request.userId>
 <#assign isOmniadmin = Request.isOmniadmin>
-<#assign portletNamespace = Request.portletNamespace> -->
 </#if>
 
 <!-- popup notification -->
@@ -263,4 +260,70 @@
       showMessageToastr(status, message);
 
     }
-</script>
+
+    function arrayToTree(arr, idKey, parentKey, childrenKey) {
+      var tree = [],
+      mappedArr = {},
+      arrElem,
+      mappedElem;
+
+  //remove level cause kendo panelBar have a function level()
+  arr = arr.map(function(item) {
+    
+    if (item.hasOwnProperty('level')) {
+      item.treeLevel = item.level;
+      delete item.level;
+    }
+    return item; 
+  });
+
+  idKey = (idKey==null || idKey=="" || idKey === undefined)?"id":idKey;
+  parentKey = (parentKey==null || parentKey=="" || parentKey === undefined)?"parentId":parentKey;
+  childrenKey = (childrenKey==null || childrenKey=="" || childrenKey === undefined)?"childrens":childrenKey; 
+
+  // First map the nodes of the array to an object -> create a hash table.
+  for(var i = 0, len = arr.length; i < len; i++) {
+    arrElem = arr[i];
+    mappedArr[arrElem[idKey]] = arrElem;
+    mappedArr[arrElem[idKey]][childrenKey] = [];
+  }
+
+
+  for (var id in mappedArr) {
+    
+    if (mappedArr.hasOwnProperty(id)) {
+      mappedElem = mappedArr[id];
+      // If the element is not at the root level, add it to its parent array of children.
+      if (mappedElem[parentKey]) {
+        mappedArr[mappedElem[parentKey]][childrenKey].push(mappedElem);
+      }
+      // If the element is at the root level, add it to first level elements array.
+      else {
+        tree.push(mappedElem);
+      }
+    }
+  }
+  return tree;
+}
+
+function getImageBlob(url, imgTarget){
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", url);
+  xhr.setRequestHeader("groupId", parseInt("${groupId}"));
+  xhr.responseType = "arraybuffer";
+  xhr.onerror = function() {};
+  xhr.onload = function () {
+    if (this.readyState == 4 && this.status === 200) {
+            //console.log(this.response, typeof this.response);
+            //console.log(this.getResponseHeader('content-type'));
+            var blob = new Blob([xhr.response], {type: this.getResponseHeader('content-type')});
+            var objectUrl = URL.createObjectURL(blob);
+            //window.open(objectUrl);
+            imgTarget.attr("src", objectUrl);
+          }
+        };
+        xhr.send();
+      }
+
+    </script>
+

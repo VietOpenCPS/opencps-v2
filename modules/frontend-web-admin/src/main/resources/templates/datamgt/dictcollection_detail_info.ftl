@@ -70,7 +70,7 @@
 			data-pk="${(dictCollection_dictCollection.collectionCode)!}" 
 			data-title="Mã nhóm danh mục:" 
 			data-value="${(dictCollection_dictCollection.collectionCode)!}">
-					
+				
 				${(dictCollection_dictCollection.collectionCode)!}
 
 		</a>
@@ -305,9 +305,7 @@ function _collectionSub_group_autocompleteSearch(val) {
 }
 
 (function($) {
-	
-	var _collectionSub_group_BaseUrl_detail = "${api.server
-}/dictcollections/"+$("#_collectionSub_code").text().trim()+"/dictgroups",
+	var _collectionSub_group_BaseUrl_detail = "${api.server}/dictcollections/"+$("#_collectionSub_code").text().trim()+"/dictgroups",
 		
 	_collectionSub_group_dataSource_detail = new kendo.data.DataSource({
 	

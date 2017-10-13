@@ -23,6 +23,13 @@
 	  	"serviceconfig_detail" : "serviceconfig_detail.ftl",
 	  	"serviceconfig_option" : "serviceconfig_option.ftl",
 	  	"serviceconfig_option_form" : "serviceconfig_option_form.ftl"
+	  	"serviceprocess" : "serviceprocess.ftl",
+		"serviceconfig" : "serviceconfig.ftl",
+		"manage_account" : "manage_account.ftl",
+		"payment_config" : "payment_config.ftl",
+		"create_serviceconfigs" : "create_serviceconfigs.ftl",
+		"employee_index" : "employee_index.ftl",
+		"dictcollection_index" : "datamgt/dictcollection_index.ftl"
 	},
 	"groupId": "11111",
 	"serviceInfo" : {

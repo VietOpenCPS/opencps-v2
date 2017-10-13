@@ -84,8 +84,7 @@
 		event.stopPropagation();
 		event.stopImmediatePropagation();
 
-		var _collectionSub_dataForm_BaseUrl_detail = "${api.server
-}/dictcollections/${(dictCollection_dictCollection.collectionCode)!}/dataform"
+		var _collectionSub_dataForm_BaseUrl_detail = "${api.server}/dictcollections/${(dictCollection_dictCollection.collectionCode)!}/dataform"
 
 		$.ajax({
 			url: _collectionSub_dataForm_BaseUrl_detail,

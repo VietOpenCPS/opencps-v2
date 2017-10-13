@@ -97,7 +97,7 @@
       contentUrls: [
 				'${ajax.dictcollection_index}',
         '${ajax.serviceinfo_list}',
-        '',
+        '${ajax.employee_index}',
         '${ajax.dossiertemplate}',
         '${ajax.serviceprocess}',
         '${ajax.serviceconfig}',

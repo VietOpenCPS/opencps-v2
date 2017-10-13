@@ -1,4 +1,6 @@
+<#if (Request)??>
 <#include "init.ftl">
+</#if>
 
  <form id="fm-employee-detail-fileupload" action="" method="POST" enctype="multipart/form-data">
 	<div class="row">
@@ -27,7 +29,8 @@
 					<#list employee_fileAttachs as oAttach>
 						<li id="attachment-${(oAttach.fileAttachId)!}" class="PL0">
 							<i class="fa fa-angle-double-right icon-left" aria-hidden="true"></i>
-							<a class="attachment-name" href="${api.endpoint}/fileattachs/${(oAttach.fileAttachId)!}">${(oAttach.fileName)!}</a>
+							<a class="attachment-name" href="${api.server
+}/fileattachs/${(oAttach.fileAttachId)!}">${(oAttach.fileName)!}</a>
 							<div class="full-width">
 								<div class="col-sm-12">
 									
@@ -52,7 +55,7 @@
 <script type="text/javascript">
 $(function () {
 
-	var employeeAttachFileBaseUrl = "${api.endpoint}/fileattachs";
+	var employeeAttachFileBaseUrl = "${api.server}/fileattachs";
 
 	$('#fm-employee-detail-fileupload').fileupload({
 		

@@ -1,4 +1,6 @@
+<#if (Request)??>
 <#include "init.ftl">
+</#if>
 <div class="row">
 
 	<div class="col-sm-12">

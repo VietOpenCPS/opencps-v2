@@ -1,5 +1,6 @@
+<#if (Request)??>
 <#include "init.ftl">
-
+</#if>
 <div class="employee-deatil-info-wraper">
 	
 	<div class="row">
@@ -355,7 +356,7 @@
 
 <script type="text/javascript" charset="utf-8" >
 
-var employeeUpdateBaseUrl = '${api.endpoint}/employees';
+var employeeUpdateBaseUrl = '${api.server}/employees';
 
 function employeeChangeAvatar(fileInput) {
 	
@@ -492,7 +493,7 @@ function employeeChangeAvatar(fileInput) {
 	$.fn.editable.defaults.mode = 'inline';
 	$.fn.editable.defaults.send = "always";
 	
-	var employeeUpdatBaseUrl = '${api.endpoint}/employees';
+	var employeeUpdatBaseUrl = '${api.server}/employees';
 	
 	$(document).on('click', '#employee-detail-employeeno-icon', function(e){
 		

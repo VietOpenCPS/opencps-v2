@@ -12,7 +12,7 @@
 
 <div class="row">
 
-	<!— left —>
+	<!-- left -->
 	<div class="col-md-3 panel P0">
 
 		<!--search-->
@@ -32,14 +32,14 @@
 	
 			</div>
 	
-			<span data-toggle="modal" class="btn btn-primary image-preview-input btn-block MT15"
+			<a data-toggle="modal" class="btn btn-primary image-preview-input btn-block MT15"
 				href="${url.adminDataMgtPortlet.dictcollection_create_dictcollection}" data-target="#modal"> 
 				<i class="fa fa-book" aria-hidden="true"></i>
 				<span class="p-xxs" >Tổng số</span> 
 				<span id="dictCollectionCounterList">0</span>
 				<span class="p-xxs" >Nhóm danh muc</span> 
 				<i class="fa fa-plus-circle"></i> 
-			</span>
+			</a>
 			
 		</div>
 				
@@ -86,7 +86,7 @@
 		</script>
 
 	</div>
-	<!— end left —>
+	<!-- end left-->
 
 	<!--load right-->
 	<div class="col-md-9 " id="_collection_right-page"> </div>
@@ -285,6 +285,8 @@
 				return data[$(item).index()].collectionCode;
 			
 			});
+			console.log("get item id index");
+			console.log(selected);
 			
 			$("#_collection_hidden_new_id").val(selected[0]);
 	

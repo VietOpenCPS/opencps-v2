@@ -136,7 +136,7 @@
 				$.ajax({
 					url : "${api.server}/applicants",
 					dataType : "json",
-					type : "GET",
+					type : "GET",		
 					headers: {"groupId": ${groupId}},
 					data : {
 						type : "citizen",

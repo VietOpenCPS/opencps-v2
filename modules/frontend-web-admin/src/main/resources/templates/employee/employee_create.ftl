@@ -1,4 +1,6 @@
+<#if (Request)??>
 <#include "init.ftl">
+</#if>
 
 <div class="modal-header">
 
@@ -150,9 +152,9 @@
 	
 (function($) {
 	
-	var createEmployeeBaseUrl = "${api.endpoint}/employees";
+	var createEmployeeBaseUrl = "${api.server}/employees";
 
-	var getTitleDataBaseUrl = "${api.endpoint}/dictcollections/ACADEMIC_TYPE/dictitems";
+	var getTitleDataBaseUrl = "${api.server}/dictcollections/ACADEMIC_TYPE/dictitems";
 
 	var getTitleDataSource = new kendo.data.DataSource({
 		
