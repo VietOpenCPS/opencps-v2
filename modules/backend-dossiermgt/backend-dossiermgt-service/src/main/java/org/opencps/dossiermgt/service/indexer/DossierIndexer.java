@@ -99,7 +99,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addTextSortable(DossierTerm.DOSSIER_STATUS_TEXT, object.getDossierStatusText());
 		document.addTextSortable(DossierTerm.DOSSIER_SUB_STATUS, object.getDossierSubStatus());
 		document.addTextSortable(DossierTerm.DOSSIER_SUB_STATUS_TEXT, object.getDossierSubStatusText());
-		document.addTextSortable(DossierTerm.POSTAL_ADDRESS, object.getPostAddress());
+		document.addTextSortable(DossierTerm.POSTAL_ADDRESS, object.getPostalAddress());
+		document.addTextSortable(DossierTerm.POSTAL_CITY_CODE, object.getPostalCityCode());
+		document.addTextSortable(DossierTerm.POSTAL_CITY_NAME, object.getPostalCityName());
+		document.addTextSortable(DossierTerm.POSTAL_TEL_NO, object.getPostalTelNo());
 		document.addTextSortable(DossierTerm.PASSWORD, object.getPassword());
 		document.addTextSortable(DossierTerm.NOTIFICATION, Boolean.toString(object.getNotification()));
 		document.addTextSortable(DossierTerm.ONLINE, Boolean.toString(object.getOnline()));

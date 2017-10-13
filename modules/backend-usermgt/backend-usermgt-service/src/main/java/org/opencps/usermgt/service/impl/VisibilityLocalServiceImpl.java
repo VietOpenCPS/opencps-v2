@@ -12,31 +12,31 @@
  * details.
  */
 
-package org.opencps.communication.service.impl;
+package org.opencps.usermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import org.opencps.communication.service.base.HmacAuthLocalServiceBaseImpl;
+import org.opencps.usermgt.service.base.VisibilityLocalServiceBaseImpl;
 
 /**
- * The implementation of the hmac auth local service.
+ * The implementation of the visibility local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.communication.service.HmacAuthLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.usermgt.service.VisibilityLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
  * </p>
  *
  * @author Binhth
- * @see HmacAuthLocalServiceBaseImpl
- * @see org.opencps.communication.service.HmacAuthLocalServiceUtil
+ * @see VisibilityLocalServiceBaseImpl
+ * @see org.opencps.usermgt.service.VisibilityLocalServiceUtil
  */
 @ProviderType
-public class HmacAuthLocalServiceImpl extends HmacAuthLocalServiceBaseImpl {
+public class VisibilityLocalServiceImpl extends VisibilityLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.communication.service.HmacAuthLocalServiceUtil} to access the hmac auth local service.
+	 * Never reference this class directly. Always use {@link org.opencps.usermgt.service.VisibilityLocalServiceUtil} to access the visibility local service.
 	 */
 }

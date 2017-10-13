@@ -3,7 +3,7 @@
 </#if>
 
 <div class="">
-	<form class="" name="fm" method="post">
+	<form id="serviceprocesses_detail_form_action" name="fm" method="post">
 		<div class="row">
 			<div class="col-xs-12 col-sm-5">
 				<div class="row">
@@ -21,14 +21,12 @@
 			<div class="col-xs-12 col-sm-5">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						Kích hoạt sự kiện
+						Mã thao tác
 					</div>
 				</div>
 				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<select class="form-control" name="autoEvent" data-bind="value: autoEvent">
-							<option value="">Chọn sự kiện</option>
-						</select>
+						<input id="actionCode" name="actionCode" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: actionCode"/>
 					</div>
 				</div>
 			</div>
@@ -46,12 +44,20 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-2"></div>
+			<div class="col-xs-2 col-sm-2"></div>
 			<div class="col-xs-12 col-sm-5">
-				<div class="row"></div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<div class="checkbox"> <input type="checkbox" data-bind="value:"> <label>Là bước hoàn thành</label> </div>
+						Kích hoạt sự kiện
+					</div>
+				</div>
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<select class="form-control" id="autoEvent" name="autoEvent" data-bind="value: autoEvent">
+							<option value=""></option>
+							<option value="submit">submit</option>
+							<option value="timmer">timmer</option>
+						</select>
 					</div>
 				</div>
 			</div>
@@ -65,7 +71,7 @@
 				</div>
 				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="preProcessStepId" name="preProcessStepId" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: preProcessStepId"/>
+						<input id="preStepCode" name="preStepCode" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: preStepCode"/>
 					</div>
 				</div>
 			</div>
@@ -78,7 +84,7 @@
 				</div>
 				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="postProcessStepId" name="postProcessStepId" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: postProcessStepId"/>
+						<input id="postStepCode" name="postStepCode" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: postStepCode"/>
 					</div>
 				</div>
 			</div>
@@ -87,20 +93,19 @@
 			<div class="col-xs-12 col-sm-5">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<div class="checkbox"> <input type="checkbox" name="allowAssignUser" data-bind="value: allowAssignUser"> <label>Phân công người xử lý</label> </div>
+						<div class="checkbox"> <input type="checkbox" id="allowAssignUser" name="allowAssignUser" data-bind="value: allowAssignUser"> <label>Phân công người xử lý</label> </div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<select class="form-control" name="" data-bind="value:">
-							<option value="">Chọn vai trò</option>
+						<select class="form-control" id="assignUserId" name="assignUserId" data-bind="value: assignUserId">
 						</select>
 					</div>
 				</div>
 			</div>
 			<div class="col-xs-12 col-sm-2"></div>
 			<div class="col-xs-12 col-sm-5">
-				<div class="checkbox"> <input type="checkbox" name="rollbackable" data-bind="checked: rollbackable"> <label>Cho phép rollback</label> </div>
+				<div class="checkbox"> <input type="checkbox" id="rollbackable" name="rollbackable" data-bind="checked: rollbackable"> <label>Cho phép rollback</label> </div>
 			</div>
 		</div>
 		<div class="service-process-create-dossier-file-form-action-controls">
@@ -115,15 +120,6 @@
 
 						</select>
 					</div>
-					<div class="col-xs-12 col-sm-2">
-						<div class="checkbox"> <input type="checkbox" name="" data-bind="value:"> <label>Bắt buộc</label> </div>
-					</div>
-					<div class="col-xs-12 col-sm-2">
-						<div class="checkbox"> <input type="checkbox" name="" data-bind="value:"> <label>Ký số</label> </div>
-					</div>
-					<#-- <div class="col-xs-12 col-sm-2">
-						<div class="checkbox"> <input type="checkbox" name="" dât-bind="value:"> <label>Trả về</label> </div>
-					</div> -->
 					<div class="col-xs-12 col-sm-3">
 						<button class="btn btn-success btn-add-action-role-create-dossier-file" type="button">
 							<span class="glyphicon glyphicon-plus"></span>
@@ -133,7 +129,7 @@
 			</div>
 		</div>
 		<div class="service-process-form-action-controls">
-			<div class="service-process-form-action-entry">
+			<div class="service-process-return-dossier-file-form-action-entry">
 				<div class="row MT10">
 					<div class="col-xs-12 col-sm-12">Kết quả trả về</div>
 				</div>
@@ -143,12 +139,6 @@
 							<option value=""></option>
 
 						</select>
-					</div>
-					<div class="col-xs-12 col-sm-2">
-						<div class="checkbox"> <input type="checkbox" name="" data-bind="value:"> <label>Bắt buộc</label> </div>
-					</div>
-					<div class="col-xs-12 col-sm-2">
-						<div class="checkbox"> <input type="checkbox" name="" data-bind="value:"> <label>Ký số</label> </div>
 					</div>
 					<div class="col-xs-12 col-sm-3">
 						<button class="btn btn-success btn-add-action-role" type="button">
@@ -162,12 +152,12 @@
 			<div class="col-xs-12 col-sm-12">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<div class="checkbox"> <input type="checkbox" name="requestPayment" data-bind="value:requestPayment"> <label>Yêu cầu thanh toán</label> </div>
+						<div class="checkbox"> <input type="checkbox" id="requestPayment" name="requestPayment" data-bind="value:requestPayment"> <label>Yêu cầu thanh toán</label> </div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<input class="form-control" type="text" name="" value="" data-bind="value: paymentFee">
+						<input class="form-control" type="text" name="paymentFee" id="paymentFee" data-bind="value: paymentFee">
 					</div>
 				</div>
 			</div>
@@ -197,18 +187,17 @@
 		e.preventDefault();
 
 		var controlForm = $('.service-process-form-action-controls'),
-		currentEntry = $(this).parents('.service-process-form-action-entry:first'),
+		currentEntry = $(this).parents('.service-process-return-dossier-file-form-action-entry:first'),
 		newEntry = $(currentEntry.clone()).appendTo(controlForm);
 
 		newEntry.find('select').val('');
-		newEntry.find('input [type="radio"]').val('');
 
-		controlForm.find('.service-process-form-action-entry:not(:last) .btn-add-action-role')
+		controlForm.find('.service-process-return-dossier-file-form-action-entry:not(:last) .btn-add-action-role')
 		.removeClass('btn-add-action-role').addClass('btn-remove-action-role')
 		.removeClass('btn-success').addClass('btn-danger')
 		.html('<span class="glyphicon glyphicon-minus"></span>');
 	}).on('click', '.btn-remove-action-role', function(e){
-		$(this).parents('.service-process-form-action-entry:first').remove();
+		$(this).parents('.service-process-return-dossier-file-form-action-entry:first').remove();
 		e.preventDefault();
 		return false;
 	});
@@ -221,43 +210,46 @@
 		newEntry = $(currentEntry.clone()).appendTo(controlForm);
 
 		newEntry.find('select').val('');
-		newEntry.find('input [type="radio"]').val('');
 
 		controlForm.find('.service-process-create-dossier-file-form-action-entry:not(:last) .btn-add-action-role-create-dossier-file')
 		.removeClass('btn-add-action-role-create-dossier-file').addClass('btn-remove-action-role-create-dossier-file')
 		.removeClass('btn-success').addClass('btn-danger')
+		.html('<span class="glyphicon glyphicon-minus"></span>');
 	}).on('click', '.btn-remove-action-role-create-dossier-file', function(e){
 		$(this).parents('.service-process-create-dossier-file-form-action-entry:first').remove();
 		e.preventDefault();
 		return false;
 	});
 
-	$("#preProcessStepId").kendoComboBox({
-		dataTextField: "preProcessStepId",
-		dataValueField: "preProcessStepName",
-		dataSource: "",
+	$("#autoEvent").kendoComboBox({
 		filter: "contains"
 	});
-
-	$("#postProcessStepId").kendoComboBox({
-		dataTextField: "postProcessStepId",
-		dataValueField: "postProcessStepName",
-		dataSource: "",
-		filter: "contains"
-	});
-
-	// $("#autoEvent").kendoComboBox({
-	// 	dataTextField: "activeStatusName",
-	// 	dataValueField: "activeStatusCode",
-	// 	dataSource: "",
-	// 	filter: "contains"
-	// });
 
 	$("#assignUserId").kendoComboBox({
-		dataTextField: "assignUserName",
-		dataValueField: "assignUserId",
-		dataSource: "",
-		filter: "contains"
+		dataTextField: "fullName",
+		dataValueField: "employeeId",
+		filter: "contains",
+		dataSource : {
+			transport : {
+				read : {
+					url : "${api.server}/employees",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
+
+					},
+					error : function(xhr){
+
+					}
+				}
+			},
+			schema: {
+				data : "data",
+				total : "total"
+			}
+		},
+		noDataTemplate: 'Không có dữ liệu'
 	});
 
 </script>

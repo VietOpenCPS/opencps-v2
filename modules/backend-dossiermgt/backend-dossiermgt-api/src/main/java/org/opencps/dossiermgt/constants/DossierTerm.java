@@ -48,6 +48,9 @@ public class DossierTerm {
 	public static final String DOSSIER_ACTION_ID = "dossierActionId";
 	public static final String VIA_POSTAL = "viaPostal";
 	public static final String POSTAL_ADDRESS = "postalAddress";
+	public static final String POSTAL_CITY_CODE = "postalCityCode";
+	public static final String POSTAL_CITY_NAME = "postalCityName";
+	public static final String POSTAL_TEL_NO = "postalTelNo";
 	public static final String PASSWORD = "password";
 	public static final String NOTIFICATION = "notification";
 	public static final String ONLINE = "online";

@@ -14,8 +14,6 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,15 +21,11 @@ import java.util.List;
 import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.exception.NoSuchEmployeeException;
 import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.model.EmployeeJobPos;
-import org.opencps.usermgt.model.JobPos;
-import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.base.EmployeeLocalServiceBaseImpl;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -48,10 +42,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
-import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -112,6 +103,18 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			throw new UnauthorizationException();
 		}
 
+		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(groupId, employeeNo);
+
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0) {
+			throw new DuplicateCategoryException();
+		}
+
+		employeeCheck = employeePersistence.findByF_email(groupId, email);
+
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0) {
+			throw new DuplicateCategoryException();
+		}
+
 		Date now = new Date();
 
 		User user = userPersistence.findByPrimaryKey(userId);
@@ -146,48 +149,53 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		employee.setExpandoBridgeAttributes(serviceContext);
 
-//		if (isCreateUser) {
-//			// add user
-//			JobPos mJobPos = JobPosLocalServiceUtil.fetchJobPos(mainJobPostId);
-//
-//			long[] userGroupIds = {};
-//			long[] roleIds = {};
-//			if (Validator.isNotNull(mJobPos)) {
-//				roleIds = new long[] { mJobPos.getMappingRoleId() };
-//			}
-//			long[] organizationIds = new long[] {};
-//			long[] groupIds = { groupId };
-//
-//			String screenName = email.substring(0, email.indexOf("@"));
-//
-//			String passWord = PwdGenerator.getPassword();
-//
-//			// System.out.println("EmployeeLocalServiceImpl.mAddEmployee()"+passWord);
-//
-//			String[] fullNameSub = fullName.split(" ");
-//
-//			String firstName = StringPool.BLANK;
-//			String lastName = StringPool.BLANK;
-//
-//			if (fullNameSub.length > 1) {
-//				firstName = fullName.replaceFirst(fullNameSub[0], firstName);
-//				lastName = fullNameSub[0];
-//			} else {
-//				firstName = screenName;
-//				lastName = fullName;
-//			}
-//
-//			User newUser = UserLocalServiceUtil.addUser(0, user.getCompanyId(), false, passWord, passWord, false,
-//					screenName.toLowerCase(), email, 0, StringPool.BLANK, serviceContext.getLocale(), firstName,
-//					StringPool.BLANK, lastName, 0, 0, true, Calendar.JANUARY, 1, 1979, StringPool.BLANK, groupIds,
-//					organizationIds, roleIds, userGroupIds, false, serviceContext);
-//
-//			Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
-//
-//			indexer.reindex(newUser);
-//
-//			employee.setMappingUserId(newUser.getUserId());
-//		}
+		// if (isCreateUser) {
+		// // add user
+		// JobPos mJobPos = JobPosLocalServiceUtil.fetchJobPos(mainJobPostId);
+		//
+		// long[] userGroupIds = {};
+		// long[] roleIds = {};
+		// if (Validator.isNotNull(mJobPos)) {
+		// roleIds = new long[] { mJobPos.getMappingRoleId() };
+		// }
+		// long[] organizationIds = new long[] {};
+		// long[] groupIds = { groupId };
+		//
+		// String screenName = email.substring(0, email.indexOf("@"));
+		//
+		// String passWord = PwdGenerator.getPassword();
+		//
+		// //
+		// System.out.println("EmployeeLocalServiceImpl.mAddEmployee()"+passWord);
+		//
+		// String[] fullNameSub = fullName.split(" ");
+		//
+		// String firstName = StringPool.BLANK;
+		// String lastName = StringPool.BLANK;
+		//
+		// if (fullNameSub.length > 1) {
+		// firstName = fullName.replaceFirst(fullNameSub[0], firstName);
+		// lastName = fullNameSub[0];
+		// } else {
+		// firstName = screenName;
+		// lastName = fullName;
+		// }
+		//
+		// User newUser = UserLocalServiceUtil.addUser(0, user.getCompanyId(),
+		// false, passWord, passWord, false,
+		// screenName.toLowerCase(), email, 0, StringPool.BLANK,
+		// serviceContext.getLocale(), firstName,
+		// StringPool.BLANK, lastName, 0, 0, true, Calendar.JANUARY, 1, 1979,
+		// StringPool.BLANK, groupIds,
+		// organizationIds, roleIds, userGroupIds, false, serviceContext);
+		//
+		// Indexer<User> indexer =
+		// IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+		//
+		// indexer.reindex(newUser);
+		//
+		// employee.setMappingUserId(newUser.getUserId());
+		// }
 
 		employeePersistence.update(employee);
 
@@ -256,6 +264,18 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		Employee employee = employeePersistence.fetchByPrimaryKey(employeeId);
 
+		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(employee.getGroupId(), employeeNo);
+
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 && employeeCheck.get(0).getEmployeeId() != employeeId) {
+			throw new DuplicateCategoryException();
+		}
+
+		employeeCheck = employeePersistence.findByF_email(employee.getGroupId(), email);
+
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 && employeeCheck.get(0).getEmployeeId() != employeeId) {
+			throw new DuplicateCategoryException();
+		}
+		
 		// Audit fields
 		employee.setUserId(user.getUserId());
 		employee.setUserName(user.getFullName());
@@ -273,26 +293,29 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		employee.setMainJobPostId(mainJobPostId);
 		employee.setPhotoFileEntryId(photoFileEntryId);
 		employee.setMappingUserId(mappingUserId);
-//		User newUser = UserLocalServiceUtil.fetchUser(employee.getMappingUserId());
-//
-//		JobPos mJobPos = JobPosLocalServiceUtil.fetchJobPos(mainJobPostId);
-//
-//		List<Role> roleIds = new ArrayList<Role>();
-//		roleIds.add(RoleLocalServiceUtil.fetchRole(mJobPos.getMappingRoleId()));
-//
-//		List<EmployeeJobPos> listEmJobPos = employeeJobPosPersistence.findByF_EmployeeId(employee.getEmployeeId());
-//
-//		for (EmployeeJobPos EmployeeJobPos : listEmJobPos) {
-//			roleIds.add(RoleLocalServiceUtil
-//					.fetchRole(JobPosLocalServiceUtil.fetchJobPos(EmployeeJobPos.getJobPostId()).getMappingRoleId()));
-//		}
-//
-//		RoleLocalServiceUtil.clearUserRoles(newUser.getUserId());
-//		RoleLocalServiceUtil.addUserRoles(newUser.getUserId(), roleIds);
-//
-//		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
-//
-//		indexer.reindex(newUser);
+		// User newUser =
+		// UserLocalServiceUtil.fetchUser(employee.getMappingUserId());
+		//
+		// JobPos mJobPos = JobPosLocalServiceUtil.fetchJobPos(mainJobPostId);
+		//
+		// List<Role> roleIds = new ArrayList<Role>();
+		// roleIds.add(RoleLocalServiceUtil.fetchRole(mJobPos.getMappingRoleId()));
+		//
+		// List<EmployeeJobPos> listEmJobPos =
+		// employeeJobPosPersistence.findByF_EmployeeId(employee.getEmployeeId());
+		//
+		// for (EmployeeJobPos EmployeeJobPos : listEmJobPos) {
+		// roleIds.add(RoleLocalServiceUtil
+		// .fetchRole(JobPosLocalServiceUtil.fetchJobPos(EmployeeJobPos.getJobPostId()).getMappingRoleId()));
+		// }
+		//
+		// RoleLocalServiceUtil.clearUserRoles(newUser.getUserId());
+		// RoleLocalServiceUtil.addUserRoles(newUser.getUserId(), roleIds);
+		//
+		// Indexer<User> indexer =
+		// IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+		//
+		// indexer.reindex(newUser);
 
 		employee.setExpandoBridgeAttributes(serviceContext);
 
@@ -304,7 +327,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	public Employee fetchByF_mappingUserId(long groupId, long mappingUserId) {
 		return employeePersistence.fetchByF_mappingUserId(groupId, mappingUserId);
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
@@ -396,8 +419,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	}
 
 	@SuppressWarnings("deprecation")
-	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params,
-			SearchContext searchContext) throws ParseException, SearchException {
+	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
+			throws ParseException, SearchException {
 		String keywords = (String) params.get("keywords");
 		String employeeId = (String) params.get(EmployeeTerm.EMPLOYEE_ID);
 		String groupId = (String) params.get(EmployeeTerm.GROUP_ID);

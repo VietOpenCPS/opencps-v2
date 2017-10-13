@@ -153,6 +153,9 @@
 				$("#serviceprocess_action_container").show();
 				$("#serviceprocess_detail_formaction_container").hide();
 
+				$("#service_process_step_listview").data("kendoListView").dataSource.read({serviceProcessId: dataItem.id});
+				$("#service_process_action_listview").data("kendoListView").dataSource.read({serviceProcessId: dataItem.id});
+
 				$.ajax({
 					url: "${api.server}" + "/serviceprocesses/" + dataItem.id + "/roles",
 					type: "GET",

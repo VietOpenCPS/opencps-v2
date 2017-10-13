@@ -8,20 +8,6 @@
 			<div class="col-xs-12 col-sm-6">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						Số hiệu bước
-					</div>
-				</div>
-				<div class="row MT5">
-					<div class="col-xs-12 col-sm-12">
-						<input id="stepCode" name="stepCode" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: stepCode"/>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row MT10">
-			<div class="col-xs-12 col-sm-6">
-				<div class="row">
-					<div class="col-xs-12 col-sm-12">
 						Tên bước
 					</div>
 				</div>
@@ -58,16 +44,18 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-2"></div>
-			<div class="col-xs-12 col-sm-4">
-				<div class="row">
-					<div class="col-xs-12 col-sm-12">
-						Thời gian xử lý
+			<div class="col-xs-12 col-sm-2"></div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-4">
+					<div class="row">
+						<div class="col-xs-12 col-sm-12">
+							Mã bước quy trình
+						</div>
 					</div>
-				</div>
-				<div class="row MT5">
-					<div class="col-xs-12 col-sm-12">
-						<input id="durationCount" name="durationCount" type="text" class="k-textbox form-control" data-bind="value: durationCount"/>
+					<div class="row MT5">
+						<div class="col-xs-12 col-sm-12">
+							<input id="stepCode" name="stepCode" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: stepCode"/>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -85,7 +73,22 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-2"></div>
+			<div class="col-xs-12 col-sm-2"></div>
+			<div class="col-xs-12 col-sm-4">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						Thời gian xử lý
+					</div>
+				</div>
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<input id="durationCount" name="durationCount" type="text" class="k-textbox form-control" data-bind="value: durationCount"/>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row MT10">
+			<div class="col-xs-12 col-sm-8"></div>
 			<div class="col-xs-12 col-sm-4">
 				<div class="checkbox"> <input type="checkbox" name="editable" id="editable" data-bind="checked: editable"> <label>Cho phép sửa hồ sơ</label> </div>
 			</div>
@@ -98,10 +101,7 @@
 				<div class="row MT5">
 					<div class="col-xs-12 col-sm-6">
 						<select class="form-control" id="roleId" name="roleId" data-bind="value: roleId">
-							<option value="">Chọn vai trò</option>
-							<#list api.roles as role>
-							<option value="${role.roleId}">${role.name}</option>
-							</#list>
+							<option value=""></option>
 						</select>
 					</div>
 					<div class="col-xs-12 col-sm-3">
@@ -270,4 +270,24 @@
 		});
 
 	})(jQuery);
+
+	$(document).ready(function(){
+		$.ajax({
+			url: "${api.server}" + "/jobpos",
+			type: "GET",
+			dataType: "json",
+			headers: {"groupId": ${groupId}},
+			async: false,
+			success: function(result) {
+				console.log(result);
+				if (result && result.data && result.data.length > 0){
+					result.data.forEach(function(jobpos){
+						var newOpt = $(".service-process-form-step-entry select")[0].appendChild(document.createElement('option'));
+						newOpt.value = jobpos.jobPosId;
+						newOpt.text = jobpos.title;
+					});
+				}
+			}
+		});
+	});
 </script>

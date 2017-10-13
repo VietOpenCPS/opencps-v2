@@ -246,6 +246,7 @@
 
 		<column name="serviceConfigId" type="long" />
 		<column name="optionOrder" type="int" />
+		<column name="optionName" type="String" />
 		<column name="autoSelect" type="String" />
 		<column name="dossierTemplateId" type="long" />
 		<column name="serviceProcessId" type="long" />
@@ -321,7 +322,10 @@
 		<column name="folderId" type="long" />
 		<column name="dossierActionId" type="long" />
 		<column name="viaPostal" type="int" />
-		<column name="postAddress" type="String" />
+		<column name="postalAddress" type="String" />
+		<column name="postalCityCode" type="String" />
+		<column name="postalCityName" type="String" />
+		<column name="postalTelNo" type="String" />
 		<column name="password" type="String" />
 		<column name="notification" type="boolean" />
 		<column name="online" type="boolean" />
@@ -330,7 +334,31 @@
 		<!-- Order -->
 
 		<!-- Finder methods -->
-
+		<finder return-type="Collection" name="G_UID">
+			<finder-column name="groupId"/>
+			<finder-column name="userId"/>
+		</finder>
+		
+		<finder return-type="Dossier" name="G_REF">
+			<finder-column name="groupId"/>
+			<finder-column name="referenceUid"/>
+		</finder>
+		
+		<finder return-type="Collection" name="G_SC">
+			<finder-column name="groupId"/>
+			<finder-column name="serviceCode"/>
+		</finder>
+		
+		<finder return-type="Collection" name="G_GAC">
+			<finder-column name="groupId"/>
+			<finder-column name="serviceCode"/>
+		</finder>
+		
+		<finder return-type="Collection" name="G_DTN">
+			<finder-column name="groupId"/>
+			<finder-column name="dossierTemplateNo"/>
+		</finder>
+		
 		<!-- References -->
 
 	</entity>
@@ -376,11 +404,31 @@
 
 
 		<!-- Order -->
+		
+		<order>
+			<order-column name="dossierPartNo" order-by="asc" />
+		</order>
 
 		<!-- Finder methods -->
+		
+		<finder return-type="Collection" name="DossierId">
+			<finder-column name="dossierId"/>
+			<finder-column name="removed"/>
+		</finder>
+		
+		<finder return-type="Collection" name="D_DPT">
+			<finder-column name="dossierId"/>
+			<finder-column name="dossierPartType"/>
+			<finder-column name="removed"/>
+		</finder>
+		
+		<finder return-type="DossierFile" name="D_RUID">
+			<finder-column name="dossierId"/>
+			<finder-column name="referenceUid"/>
+			<finder-column name="removed"/>
+		</finder>
 
 		<!-- References -->
-
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -593,6 +641,7 @@
 		<column name="durationCount" type="int" />
 		<column name="customProcessUrl" type="String" />
 		<column name="stepInstruction" type="String" />
+		<column name="briefNote" type="String" />
 		<column name="editable" type="boolean" />
 
 		<finder return-type="Collection" name="S_P_ID">
@@ -751,6 +800,21 @@
 		<column name="classPK" type="long"/>
 		<column name="fileReferenceUid" type="String"/>
 		<column name="serverNo" type="String"/>
+		
+		<finder return-type="Collection" name="G_ID">
+			<finder-column name="groupId"/>
+		</finder>
+		
+		<finder return-type="Collection" name="G_ID_DID">
+			<finder-column name="groupId"/>
+			<finder-column name="dossierId"/>
+		</finder>
+		
+		<finder return-type="Collection" name="G_ID_DRF">
+			<finder-column name="groupId"/>
+			<finder-column name="dossierReferenceUid"/>
+		</finder>
+		
 	</entity>
 
 	<exceptions>
@@ -782,7 +846,7 @@
 		<exception>DuplicateStepNo</exception>
 		
 		<exception>InvalidPreStepCode</exception>		
-		<exception>InvalidPostStepCode</exception>		
+		<exception>InvalidPostStepCode</exception>	
 		<exception>InvalidAutoEvent</exception>		
 		<exception>InvalidPreCondition</exception>		
 		<exception>InvalidActionName</exception>
@@ -791,8 +855,19 @@
 		<exception>RequiredAssignUserId</exception>
 		<exception>RequiredPaymentFee</exception>
 		
+		<exception>DossierInvalidService</exception>
+		<exception>DossierInvalidDossierTemplate</exception>
+		<exception>DossierInvalidGovAgency</exception>
+		<exception>DossierInvalidLocation</exception>
+		<exception>DossierInvalidContact</exception>
+		<exception>DossierInvalidStatus</exception>
+		<exception>DossierInvalidServerSync</exception>
+		<exception>DossierActionNotAllowed</exception>
+		
 		<exception>DossierURL</exception>		
 		<exception>HasChildren</exception>		
 		<exception>HasExsist</exception>
+		
+		<exception>InvalidDossierStatus</exception>
 	</exceptions>
 </service-builder>

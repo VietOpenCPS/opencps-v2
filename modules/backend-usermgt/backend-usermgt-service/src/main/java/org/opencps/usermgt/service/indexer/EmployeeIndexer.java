@@ -8,7 +8,13 @@ import javax.portlet.PortletResponse;
 
 import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
+import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -25,9 +31,8 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
-
-
 
 public class EmployeeIndexer extends BaseIndexer<Employee> {
 
@@ -69,7 +74,7 @@ public class EmployeeIndexer extends BaseIndexer<Employee> {
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(employee.getUserName()));
 
 		document.addNumberSortable(EmployeeTerm.EMPLOYEE_ID, employee.getEmployeeId());
-		
+
 		document.addNumberSortable(EmployeeTerm.GROUP_ID, employee.getGroupId());
 		document.addTextSortable(EmployeeTerm.TITLE, employee.getTitle());
 		document.addTextSortable(EmployeeTerm.FULL_NAME, employee.getFullName());
@@ -83,22 +88,29 @@ public class EmployeeIndexer extends BaseIndexer<Employee> {
 		document.addNumberSortable(EmployeeTerm.MAPPING_USER_ID, employee.getMappingUserId());
 		document.addNumberSortable(EmployeeTerm.MAIN_JOBPOST_ID, employee.getMainJobPostId());
 
-		return document;
-	}
-
-	@Override
-	protected String doGetSortField(String orderByCol) {
-		if (orderByCol.equals("email-address")) {
-			return "emailAddress";
-		} else if (orderByCol.equals("first-name")) {
-			return "firstName";
-		} else if (orderByCol.equals("job-title")) {
-			return "jobTitle";
-		} else if (orderByCol.equals("last-name")) {
-			return "lastName";
-		} else {
-			return orderByCol;
+		EmployeeJobPos employeeJobPos = EmployeeJobPosLocalServiceUtil.fetchByF_EmployeeId_jobPostId(
+				employee.getGroupId(), employee.getEmployeeId(), employee.getMainJobPostId());
+		
+		long workingUnitId = Validator.isNotNull(employeeJobPos)?employeeJobPos.getWorkingUnitId():0;
+		
+		String workingUnitName = StringPool.BLANK;
+		
+		if(workingUnitId > 0){
+			
+			WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchWorkingUnit(workingUnitId);
+			
+			workingUnitName = Validator.isNotNull(workingUnit)?workingUnit.getName():StringPool.BLANK;
+			
 		}
+		
+		JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(employee.getMainJobPostId());
+		
+		String jobPosTitle = Validator.isNotNull(jobPos)?jobPos.getTitle():StringPool.BLANK;
+		
+		document.addTextSortable(EmployeeTerm.WORKING_UNIT_NAME, workingUnitName);
+		document.addTextSortable(EmployeeTerm.WORKING_UNIT_NAME, jobPosTitle);
+		
+		return document;
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.WorkingUnitManagement;
 import org.opencps.api.controller.util.WorkingUnitUtils;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.workingunit.model.DataSearchModel;
 import org.opencps.api.workingunit.model.WorkingUnitInputModel;
 import org.opencps.api.workingunit.model.WorkingUnitModel;
 import org.opencps.api.workingunit.model.WorkingUnitResults;
@@ -50,7 +51,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 	@Override
 	public Response getWorkingUnits(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, org.opencps.api.workingunit.model.DataSearchModel query) {
+			User user, ServiceContext serviceContext, DataSearchModel query) {
 
 		WorkingUnitInterface actions = new WorkingUnitActions();
 		WorkingUnitResults result = new WorkingUnitResults();
@@ -71,7 +72,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			params.put("groupId", String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
-			params.put(WorkingUnitTerm.PARENT_WORKING_UNIT_ID, String.valueOf(query.getParent()));
+			params.put(WorkingUnitTerm.PARENT_WORKING_UNIT_ID, query.getParent());
 			
 			Sort[] sorts = new Sort[] {
 					SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, Boolean.valueOf(query.getOrder())) };

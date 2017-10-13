@@ -17,6 +17,8 @@ import org.opencps.api.jobpos.model.JobposModel;
 import org.opencps.api.jobpos.model.JobposPermissionModel;
 import org.opencps.api.jobpos.model.JobposPermissionResults;
 import org.opencps.api.jobpos.model.JobposResults;
+import org.opencps.api.jobpos.model.JobposWorkModel;
+import org.opencps.api.jobpos.model.JobposWorkResults;
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.model.JobPos;
@@ -325,7 +327,8 @@ public class JobposManagementImpl implements JobposManagement {
 		JobposPermissionModel result = new JobposPermissionModel();
 		try {
 
-			String actionId = actions.createPermissions(company.getCompanyId(), id, input.getActionId(), serviceContext);
+			String actionId = actions.createPermissions(company.getCompanyId(), id, input.getActionId(),
+					serviceContext);
 
 			result = JobposUtils.mapperJobposPermissionModel(actionId);
 
@@ -397,5 +400,71 @@ public class JobposManagementImpl implements JobposManagement {
 			return Response.status(500).build();
 		}
 	}
+
+	@Override
+	public Response createPermissionsPatch(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id, String permissions) {
+		JobposInterface actions = new JobposActions();
+		JobposPermissionResults result = new JobposPermissionResults();
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			actions.createPermissionsPatch(user.getUserId(), company.getCompanyId(), groupId, id, permissions,
+					serviceContext);
+
+			JSONObject jsonData = actions.getJobposPermissions();
+
+			result.setTotal(jsonData.getLong("total"));
+			result.getJobposPermissionModel().addAll(JobposUtils
+					.mapperJobposPermissionsList((String[]) jsonData.get("data"), user.getUserId(), serviceContext));
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			_log.error("@POST: " + e);
+			if (e instanceof UnauthenticationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+
+			}
+
+			if (e instanceof UnauthorizationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			}
+
+			if (e instanceof NoSuchUserException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+
+			return Response.status(500).build();
+		}
+	}
+
 
 }

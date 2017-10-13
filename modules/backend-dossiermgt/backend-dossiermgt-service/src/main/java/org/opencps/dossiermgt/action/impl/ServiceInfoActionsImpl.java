@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
@@ -25,7 +23,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -38,7 +35,6 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
 public class ServiceInfoActionsImpl implements ServiceInfoActions {
@@ -83,13 +79,13 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		if (serviceInfoId == 0) {
 			serviceInfo = ServiceInfoLocalServiceUtil.addServiceInfo(userId, groupId, serviceCode, serviceName,
 					processText, methodText, dossierText, conditionText, durationText, applicantText, resultText,
-					regularText, feeText, administrationCode, domainCode, maxLevel, GetterUtil.getInteger(public_),
+					regularText, feeText, administrationCode, domainCode, maxLevel, public_,
 					serviceContext);
 		} else {
 			serviceInfo = ServiceInfoLocalServiceUtil.updateServiceInfo(groupId, serviceInfoId, serviceCode,
 					serviceName, processText, methodText, dossierText, conditionText, durationText, applicantText,
 					resultText, regularText, feeText, administrationCode, domainCode, maxLevel,
-					GetterUtil.getInteger(public_), serviceContext);
+					public_, serviceContext);
 		}
 
 		return serviceInfo;
@@ -156,11 +152,10 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		ServiceFileTemplate serviceFileTemplate = null;
 
 		try {
-
-			FileEntry fileEntry = FileUploadUtils.uploadFile(userId, serviceContext.getCompanyId(), groupId, is,
-					fileName, fileType, fileSize, System.currentTimeMillis() + StringPool.DASH + fileName, templateName,
-					serviceContext);
-
+			
+			
+			FileEntry fileEntry = FileUploadUtils.uploadFile(userId, groupId, is, fileName, fileType, fileSize, null, serviceContext);
+					
 			serviceFileTemplate = ServiceFileTemplateLocalServiceUtil.addServiceFileTemplate(serviceInfoId,
 					fileTemplateNo, templateName, fileEntry.getFileEntryId(), serviceContext);
 

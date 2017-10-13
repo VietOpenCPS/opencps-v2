@@ -54,7 +54,8 @@ import javax.xml.bind.annotation.XmlType;
     "dossierSubStatus",
     "dossierSubStatusText",
     "durationCount",
-    "instructionNote",
+    "stepInstruction",
+    "briefNote",
     "customProcessUrl",
     "editable"
 })
@@ -69,9 +70,19 @@ public class ProcessStepDataModel {
     protected String dossierSubStatus;
     protected String dossierSubStatusText;
     protected String durationCount;
-    protected String instructionNote;
+    protected String stepInstruction;
     protected String customProcessUrl;
     protected String editable;
+
+    public String getBriefNote() {
+		return briefNote;
+	}
+
+	public void setBriefNote(String briefNote) {
+		this.briefNote = briefNote;
+	}
+
+	protected String briefNote;
 
     /**
      * Gets the value of the stepCode property.
@@ -297,8 +308,8 @@ public class ProcessStepDataModel {
      *     {@link String }
      *     
      */
-    public String getInstructionNote() {
-        return instructionNote;
+    public String getStepInstruction() {
+        return stepInstruction;
     }
 
     /**
@@ -309,8 +320,8 @@ public class ProcessStepDataModel {
      *     {@link String }
      *     
      */
-    public void setInstructionNote(String value) {
-        this.instructionNote = value;
+    public void setStepInstruction(String value) {
+        this.stepInstruction = value;
     }
 
     /**

@@ -135,7 +135,7 @@ public class ServiceInfoInputModel {
     protected String domainCode;
 
 	@XmlElement(name = "public")
-	@FormParam(value = "_public")
+	@FormParam(value = "public")
     protected String _public;
 
 	

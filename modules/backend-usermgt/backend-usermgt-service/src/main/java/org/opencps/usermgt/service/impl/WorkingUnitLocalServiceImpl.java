@@ -16,12 +16,15 @@ package org.opencps.usermgt.service.impl;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.usermgt.constants.WorkingUnitTerm;
 import org.opencps.usermgt.exception.NoSuchWorkingUnitException;
+import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.base.WorkingUnitLocalServiceBaseImpl;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -84,8 +87,8 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 	@Override
 	public WorkingUnit addWorkingUnit(long userId, long groupId, String name, String enName, String govAgencyCode,
 			long parentWorkingUnitId, String sibling, String address, String telNo, String faxNo, String email,
-			String website, ServiceContext serviceContext)
-			throws UnauthenticationException, UnauthorizationException, NoSuchUserException, NotFoundException {
+			String website, ServiceContext serviceContext) throws UnauthenticationException, UnauthorizationException,
+			NoSuchUserException, NotFoundException, DuplicateCategoryException {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
@@ -100,6 +103,12 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 
 		if (!hasPermission) {
 			throw new UnauthorizationException();
+		}
+
+		WorkingUnit workingUnitCheck = workingUnitPersistence.fetchByF_govAgencyCode(groupId, govAgencyCode);
+
+		if (Validator.isNotNull(workingUnitCheck)) {
+			throw new DuplicateCategoryException();
 		}
 
 		Date now = new Date();
@@ -161,12 +170,14 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
 				ActionKeys.EDIT_DATA);
 
-		if (!hasPermission) {
+		WorkingUnit workingUnit = workingUnitPersistence.fetchByPrimaryKey(workingUnitId);
+		
+		List<Employee> listEmp = employeePersistence.findByF_groupId(workingUnit.getGroupId());
+
+		if (!hasPermission || (Validator.isNotNull(listEmp) && listEmp.size() > 0)) {
 			throw new UnauthorizationException();
 		}
-
-		WorkingUnit workingUnit;
-
+		
 		try {
 
 			workingUnit = workingUnitPersistence.remove(workingUnitId);
@@ -184,7 +195,8 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 	public WorkingUnit updateWorkingUnit(long userId, long workingUnitId, String name, String enName,
 			String govAgencyCode, long parentWorkingUnitId, String sibling, String address, String telNo, String faxNo,
 			String email, String website, long logoFileEntryId, ServiceContext serviceContext)
-			throws UnauthenticationException, UnauthorizationException, NoSuchUserException, NotFoundException {
+			throws UnauthenticationException, UnauthorizationException, NoSuchUserException, NotFoundException,
+			DuplicateCategoryException {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
@@ -200,11 +212,19 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		if (!hasPermission) {
 			throw new UnauthorizationException();
 		}
+
 		Date now = new Date();
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
 		WorkingUnit workingUnit = workingUnitPersistence.fetchByPrimaryKey(workingUnitId);
+
+		WorkingUnit workingUnitCheck = workingUnitPersistence.fetchByF_govAgencyCode(workingUnit.getGroupId(),
+				govAgencyCode);
+
+		if (Validator.isNotNull(workingUnitCheck) && workingUnitId != workingUnitCheck.getWorkingUnitId()) {
+			throw new DuplicateCategoryException();
+		}
 
 		// Audit fields
 		workingUnit.setUserId(user.getUserId());

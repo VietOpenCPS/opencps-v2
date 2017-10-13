@@ -65,46 +65,50 @@
 			var serviceProcessStepDataSource = new kendo.data.DataSource({
 				transport: {
 					read: function(options) {
-						$.ajax({
-							url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/steps",
-							type: "GET",
-							dataType: "json",
-							headers: {"groupId": ${groupId}},
-							data: {
-								keywords: options.data.keywords,
-								page: options.data.page,
-								pageSize: options.data.pageSize
-							},
-							success: function(result) {
-								options.success(result);
-							},
-							error: function(result) {
-								options.error(result);
-								notification.show({
-									message: "Xẩy ra lỗi, vui lòng thử lại"
-								}, "error");
-							}
-						});
+						if (options && options.data && options.data.serviceProcessId){
+							$.ajax({
+								url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/steps",
+								type: "GET",
+								dataType: "json",
+								headers: {"groupId": ${groupId}},
+								data: {
+									keywords: options.data.keywords,
+									page: options.data.page,
+									pageSize: options.data.pageSize
+								},
+								success: function(result) {
+									options.success(result);
+								},
+								error: function(result) {
+									options.error(result);
+									notification.show({
+										message: "Xẩy ra lỗi, vui lòng thử lại"
+									}, "error");
+								}
+							});
+						}
 					},
 					destroy: function(options) {
-						$.ajax({
-							url: "${api.server}" + "/serviceprocesses/" + $("#btn_save_service_process").attr("data-pk") + "/steps/" + options.data.stepCode,
-							dataType: "json",
-							type: "DELETE",
-							headers: {"groupId": ${groupId}},
-							success: function(result) {
-								options.success(result);
-								notification.show({
-									message: "Yêu cầu được thực hiện thành công"
-								}, "success");
-							},
-							error: function(result) {
-								options.error(result);
-								notification.show({
-									message: "Xẩy ra lỗi, vui lòng thử lại"
-								}, "error");
-							}
-						});
+						if (options && options.data && options.data.stepCode){
+							$.ajax({
+								url: "${api.server}" + "/serviceprocesses/" + $("#btn_save_service_process").attr("data-pk") + "/steps/" + options.data.stepCode,
+								dataType: "json",
+								type: "DELETE",
+								headers: {"groupId": ${groupId}},
+								success: function(result) {
+									options.success(result);
+									notification.show({
+										message: "Yêu cầu được thực hiện thành công"
+									}, "success");
+								},
+								error: function(result) {
+									options.error(result);
+									notification.show({
+										message: "Xẩy ra lỗi, vui lòng thử lại"
+									}, "error");
+								}
+							});
+						}
 					},
 					parameterMap: function(options, operation) {
 						if (operation !== "read" && options.models) {
@@ -120,7 +124,7 @@
 				schema: {
 					total: "total",
 					data: "data",
-					model : { id: "stepCode" },
+					model : { id: "processStepId" },
 				},
 				pageSize: 10,
 				serverPaging: false,
@@ -143,7 +147,6 @@
 				dataBound: function() {
 					localIndex = 0;
 				},
-				selectable: true,
 				autoBind: false,
 				remove: function(e) {
 					if(!confirm("Xác nhận xóa bước: " + e.model.get("stepName") + "?")){
@@ -168,10 +171,10 @@
 				$("#serviceprocess_step_container").hide();
 				$("#serviceprocess_detail_formstep_container").show();
 
-				var stepCode = $(this).attr("data-pk");
+				var processStepId = $(this).attr("data-pk");
 				var serviceProcessId = $("#btn_save_service_process").attr("data-pk");
 
-				var processStep = serviceProcessStepDataSource.get(stepCode);
+				var processStep = serviceProcessStepDataSource.get(processStepId);
 
 				var viewModel = kendo.observable({
 					stepCode: processStep.stepCode,
@@ -189,7 +192,7 @@
 				kendo.bind($("#process_detail_form"), viewModel);
 
 				$.ajax({
-					url: "${api.server}" + "/serviceprocesses/" + serviceProcessId + "/steps/" + stepCode + "/roles",
+					url: "${api.server}" + "/serviceprocesses/" + serviceProcessId + "/steps/" + processStep.stepCode + "/roles",
 					type: "GET",
 					dataType: "json",
 					headers: {"groupId": ${groupId}},
@@ -269,6 +272,8 @@
 
 				kendo.bind($("#process_detail_form"), viewModel);
 
+				$(".service-process-form-step-entry:not(:last)").remove();
+
 				$("#btn_save_service_process_step").attr("data-pk", "");
 			});
 
@@ -278,16 +283,18 @@
 				$(".service-process-detail ul.nav.nav-tabs li:not(:first)").removeClass("disabled-tab");
 
 				var serviceProcessId = $("#btn_save_service_process").attr("data-pk");
-				var stepCode = $(this).attr("data-pk");
+				var processStepId = $(this).attr("data-pk");
 
-				if (stepCode){
-					updateServiceProcessStep(serviceProcessId, stepCode);
+				if (processStepId){
+					updateServiceProcessStep(serviceProcessId, processStepId);
 				} else {
 					addServiceProcessStep(serviceProcessId);
 				}
 			});
 
-			var updateServiceProcessStep = function(serviceProcessId, stepCode){
+			var updateServiceProcessStep = function(serviceProcessId, processStepId){
+
+				var stepCode = serviceProcessStepDataSource.get(processStepId).stepCode;
 
 				$.ajax({
 					url: "${api.server}" + "/serviceprocesses/" + serviceProcessId + "/steps/" + stepCode,
@@ -312,18 +319,18 @@
 							message: "Yêu cầu được thực hiện thành công"
 						}, "success");
 
-						var serviceProcessStep = serviceProcessStepDataSource.get(stepCode);
+						var serviceProcessStep = serviceProcessStepDataSource.get(processStepId);
 
-						serviceProcessStep.set("stepCode", $("#stepCode").val());
-						serviceProcessStep.set("stepName", $("#stepName").val());
-						serviceProcessStep.set("sequenceNo", $("#sequenceNo").val());
-						serviceProcessStep.set("dossierStatus", $("#dossierStatus").val());
-						serviceProcessStep.set("dossierSubStatus", $("#dossierSubStatus").val());
-						serviceProcessStep.set("editable", $("#editable").val());
-						serviceProcessStep.set("durationCount", $("#durationCount").val());
-						serviceProcessStep.set("customProcessUrl", $("#customProcessUrl").val());
-						serviceProcessStep.set("briefNote", $("#briefNote").val());
-						serviceProcessStep.set("stepInstruction", $("#stepInstruction").val());
+						// serviceProcessStep.set("stepCode", $("#stepCode").val());
+						// serviceProcessStep.set("stepName", $("#stepName").val());
+						// serviceProcessStep.set("sequenceNo", $("#sequenceNo").val());
+						// serviceProcessStep.set("dossierStatus", $("#dossierStatus").val());
+						// serviceProcessStep.set("dossierSubStatus", $("#dossierSubStatus").val());
+						// serviceProcessStep.set("editable", $("#editable").val());
+						// serviceProcessStep.set("durationCount", $("#durationCount").val());
+						// serviceProcessStep.set("customProcessUrl", $("#customProcessUrl").val());
+						// serviceProcessStep.set("briefNote", $("#briefNote").val());
+						// serviceProcessStep.set("stepInstruction", $("#stepInstruction").val());
 
 						$("#serviceprocess_step_container").show();
 						$("#serviceprocess_detail_formstep_container").hide();

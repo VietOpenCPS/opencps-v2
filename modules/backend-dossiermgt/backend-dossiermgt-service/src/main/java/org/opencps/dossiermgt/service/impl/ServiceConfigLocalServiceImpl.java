@@ -201,14 +201,14 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		}
 
 		if (Validator.isNotNull(serviceUrl) && !Validator.isUrl(serviceUrl)) {
-			throw new ServiceURLOnlineException();
+			throw new ServiceURLOnlineException("ServiceURLOnlineException");
 		}
 
 		try {
 			serviceInfoPersistence.fetchByPrimaryKey(serviceInfoId);
 
 		} catch (Exception e) {
-			throw new RequiredServiceCodeException();
+			throw new RequiredServiceCodeException("RequiredServiceCodeException");
 		}
 
 	}
