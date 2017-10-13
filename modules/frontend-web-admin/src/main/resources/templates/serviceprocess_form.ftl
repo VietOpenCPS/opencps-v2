@@ -60,7 +60,7 @@
 								<div class="col-xs-12 col-sm-5">
 									<div class="radio-inline"> <input type="radio" name="moderator_1" value="true" data-bind="checked: moderator"> <label>Chủ trì</label> </div>
 								</div>
-								<div class="col-xs-12 col-sm-2">
+								<div class="col-xs-12 col-sm-2 PL0">
 									<button class="btn btn-success btn-add" type="button">
 										<span class="glyphicon glyphicon-plus"></span>
 									</button>

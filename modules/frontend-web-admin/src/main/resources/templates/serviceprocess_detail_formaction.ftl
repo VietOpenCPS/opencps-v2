@@ -108,40 +108,46 @@
 				<div class="checkbox"> <input type="checkbox" id="rollbackable" name="rollbackable" data-bind="checked: rollbackable"> <label>Cho phép rollback</label> </div>
 			</div>
 		</div>
-		<div class="service-process-create-dossier-file-form-action-controls">
-			<div class="service-process-create-dossier-file-form-action-entry">
-				<div class="row MT10">
-					<div class="col-xs-12 col-sm-12">Tài liệu tạo mới</div>
-				</div>
-				<div class="row MT5">
-					<div class="col-xs-12 col-sm-5">
-						<select class="form-control" id="createDossierFiles" name="createDossierFiles" data-bind="value:createDossierFiles">
-							<option value=""></option>
-						</select>
-					</div>
-					<div class="col-xs-12 col-sm-3">
-						<button class="btn btn-success btn-add-action-role-create-dossier-file" type="button">
-							<span class="glyphicon glyphicon-plus"></span>
-						</button>
+		<div class="row">
+			<div class="col-xs-12 col-sm-6">
+				<div class="service-process-create-dossier-file-form-action-controls">
+					<div class="service-process-create-dossier-file-form-action-entry">
+						<div class="row MT10">
+							<div class="col-xs-12 col-sm-12">Tài liệu tạo mới</div>
+						</div>
+						<div class="row MT5">
+							<div class="col-xs-12 col-sm-10">
+								<select class="form-control" id="createDossierFiles" name="createDossierFiles" data-bind="value:createDossierFiles">
+									<option value=""></option>
+								</select>
+							</div>
+							<div class="col-xs-12 col-sm-2">
+								<button class="btn btn-success btn-add-action-role-create-dossier-file" type="button">
+									<span class="glyphicon glyphicon-plus"></span>
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="service-process-form-action-controls">
-			<div class="service-process-return-dossier-file-form-action-entry">
-				<div class="row MT10">
-					<div class="col-xs-12 col-sm-12">Kết quả trả về</div>
-				</div>
-				<div class="row MT5">
-					<div class="col-xs-12 col-sm-5">
-						<select class="form-control" id="returnDossierFiles" name="returnDossierFiles" data-bind="value:returnDossierFiles">
-							<option value=""></option>
-						</select>
-					</div>
-					<div class="col-xs-12 col-sm-3">
-						<button class="btn btn-success btn-add-action-role" type="button">
-							<span class="glyphicon glyphicon-plus"></span>
-						</button>
+			<div class="col-xs-12 col-sm-6">
+				<div class="service-process-form-action-controls">
+					<div class="service-process-return-dossier-file-form-action-entry">
+						<div class="row MT10">
+							<div class="col-xs-12 col-sm-12">Kết quả trả về</div>
+						</div>
+						<div class="row MT5">
+							<div class="col-xs-12 col-sm-10">
+								<select class="form-control" id="returnDossierFiles" name="returnDossierFiles" data-bind="value:returnDossierFiles">
+									<option value=""></option>
+								</select>
+							</div>
+							<div class="col-xs-12 col-sm-2">
+								<button class="btn btn-success btn-add-action-role" type="button">
+									<span class="glyphicon glyphicon-plus"></span>
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
