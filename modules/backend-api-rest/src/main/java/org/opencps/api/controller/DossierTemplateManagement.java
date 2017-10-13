@@ -172,6 +172,20 @@ public interface DossierTemplateManagement {
 			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("partno") String partNo);
 
 	@GET
+	@Path("/parts/{fileTemplateNo}")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Remove a DossierPart of a DossierTemplate", response = DossierPartContentInputUpdateModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the DossierPart was removed", response = DossierPartContentInputUpdateModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+
+	public Response getDossierPart(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("fileTemplateNo") String fileTemplateNo);
+
+	@GET
 	@Path("/{id}/parts/{partno}/formscript")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Get formscript of a DossierPart", response = DossierPartContentInputUpdateModel.class)

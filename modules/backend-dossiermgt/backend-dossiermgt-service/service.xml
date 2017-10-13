@@ -182,7 +182,10 @@
 			<finder-column name="partNo"/>
 		</finder>
 		
-
+		<finder return-type="DossierPart" name="GID_FTN">
+			<finder-column name="groupId"/>
+			<finder-column name="fileTemplateNo"/>
+		</finder>
 		
 		<!-- References -->
 
