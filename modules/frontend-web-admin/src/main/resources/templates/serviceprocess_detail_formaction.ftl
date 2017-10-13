@@ -117,7 +117,6 @@
 					<div class="col-xs-12 col-sm-5">
 						<select class="form-control" id="createDossierFiles" name="createDossierFiles" data-bind="value:createDossierFiles">
 							<option value=""></option>
-
 						</select>
 					</div>
 					<div class="col-xs-12 col-sm-3">
@@ -137,7 +136,6 @@
 					<div class="col-xs-12 col-sm-5">
 						<select class="form-control" id="returnDossierFiles" name="returnDossierFiles" data-bind="value:returnDossierFiles">
 							<option value=""></option>
-
 						</select>
 					</div>
 					<div class="col-xs-12 col-sm-3">
@@ -250,6 +248,27 @@
 			}
 		},
 		noDataTemplate: 'Không có dữ liệu'
+	});
+
+	$.ajax({
+		url: "${api.server}" + "/dossiertemplates/0/parts",
+		type: "GET",
+		dataType: "json",
+		headers: {"groupId": ${groupId}},
+		async: false,
+		success: function(result) {
+			if (result && result.data && result.data.length > 0){
+				result.data.forEach(function(part){
+					var newOpt = $(".service-process-create-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
+					newOpt.value = part.fileTemplateNo;
+					newOpt.text = part.partName;
+
+					newOpt = $(".service-process-return-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
+					newOpt.value = part.fileTemplateNo;
+					newOpt.text = part.partName;
+				});
+			}
+		}
 	});
 
 </script>

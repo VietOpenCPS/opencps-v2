@@ -2,11 +2,6 @@
 <#include "init.ftl">
 </#if>
 
-<div class="row">
-	<div class="col-xs-12 col-sm-12">
-		<h4>Thêm mới thành phần hồ sơ</h4>
-	</div>
-</div>
 <div id="dossier_template_part_model">
 	<form id="fm">
 		<div class="row">
@@ -70,7 +65,10 @@
 				</div>
 				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="partType" name="partType" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:partType"/>
+						<select class="form-control" id="partType" name="partType" data-bind="value: partType">
+							<option value="1">Giấy tờ nộp vào</option>
+							<option value="2">Giấy tờ kết quả xử lý</option>
+						</select>
 					</div>
 				</div>
 			</div>
@@ -253,4 +251,8 @@
 			}
 		});
 	};
+
+	$("#partType").kendoComboBox({
+		filter: "contains",
+	});
 </script>
