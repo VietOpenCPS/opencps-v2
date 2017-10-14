@@ -23,6 +23,8 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.frontend.web.admin.constants.AdminPortletKeys;
 import org.opencps.frontend.web.admin.constants.FrontendWebAdminPortletConstants;
+import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -425,6 +427,21 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			"url", generateURL(renderRequest, renderResponse));
 
 		renderRequest.setAttribute("constant", generalConstant());
+		
+		long workingUnitId = ParamUtil.getLong(renderRequest, "workingUnitId");
+
+		WorkingUnit workingUnit = null;
+
+		if (workingUnitId > 0) {
+			try {
+				workingUnit =
+					WorkingUnitLocalServiceUtil.fetchWorkingUnit(workingUnitId);
+			}
+			catch (Exception e) {
+				_log.error(e);
+			}
+		}
+		renderRequest.setAttribute("workingUnit", workingUnit);
 
 		super.render(renderRequest, renderResponse);
 
@@ -695,7 +712,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 			PortletURL workingUnitListURL = renderResponse.createRenderURL();
 			workingUnitListURL.setParameter(
-				"mvcPath", "/templates/datamgt/working_unit_list.ftl");
+				"mvcPath", "/templates/working-unit/working_unit_list.ftl");
 			workingUnitListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
 			adminWorkingUnitPortlet.put(
@@ -703,7 +720,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 			PortletURL workingUnitDetailURL = renderResponse.createRenderURL();
 			workingUnitDetailURL.setParameter(
-				"mvcPath", "/templates/datamgt/working_unit_detail.ftl");
+				"mvcPath", "/templates/working-unit/working_unit_detail.ftl");
 			workingUnitDetailURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
 			adminWorkingUnitPortlet.put(
@@ -711,7 +728,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 			PortletURL workingUnitCreateURL = renderResponse.createRenderURL();
 			workingUnitCreateURL.setParameter(
-				"mvcPath", "/templates/datamgt/working_unit_create.ftl");
+				"mvcPath", "/templates/working-unit/working_unit_create.ftl");
 			workingUnitCreateURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
 			adminWorkingUnitPortlet.put(
