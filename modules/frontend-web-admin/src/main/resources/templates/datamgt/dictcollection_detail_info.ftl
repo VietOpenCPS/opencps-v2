@@ -2,7 +2,7 @@
 <#include "init.ftl">
 </#if>
 
-<div class="row MT20">
+<div class="row MB15">
 
 	<!--_collectionSub_name-->
 
@@ -30,8 +30,9 @@
 		</a>
 		
 	</div>
+</div>
 
-	<div class="hr-line-dashed"></div>  
+<div class="row MB15">
 
 	<label class="col-sm-3">Tên tiếng anh:</label>
 
@@ -57,7 +58,9 @@
 
 	</div>
 
-	<div class="hr-line-dashed"></div>  
+</div> 
+
+<div class="row MB15"> 
 	
 	<!--_collectionSub_name-->
 
@@ -87,7 +90,9 @@
 		
 	</div>
 	
-	<div class="hr-line-dashed"></div> 
+</div>
+
+<div class="row"> 
 
 	<label class="col-sm-3">Mô tả chi tiết:</label>
 
@@ -121,7 +126,7 @@
 
 	<div class="col-xs-3 col-sm-3">
 	
-		<span data-toggle="modal" class="btn btn-primary image-preview-input btn-block"
+		<span data-toggle="modal" class="btn btn-active image-preview-input btn-block"
 			href="${url.adminDataMgtPortlet.dictcollection_create_dictgroup}" data-target="#modal"> 
 			<i class="fa fa-book" aria-hidden="true"></i>
 			
@@ -194,7 +199,7 @@
 	
 	<li class="PT10 PB10 line-dashed">
 	
-		<div class="row M0 eq-height" >
+		<div class="row M0 eq-height-break" >
 		
 			<div class="col-xs-1 col-sm-1 PL0 align-middle" >
 				

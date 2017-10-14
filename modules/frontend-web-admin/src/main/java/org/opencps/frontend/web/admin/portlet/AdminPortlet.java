@@ -208,7 +208,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		dataMgtURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 		dataMgtURL.setParameter(
 			"mvcPath", "/templates/datamgt/dictcollection_index.ftl");
-		
+
 		PortletURL employeeURL = PortletURLFactoryUtil.create(
 			renderRequest, portletId, themeDisplay.getPlid(),
 			PortletRequest.RENDER_PHASE);
@@ -294,7 +294,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		long userId = themeDisplay.getUserId();
 
 		boolean isOmniadmin = true;
-			//backendAuthImpl.isAdmin(serviceContext, StringPool.BLANK);
+		// backendAuthImpl.isAdmin(serviceContext, StringPool.BLANK);
 
 		if (type.equals(
 			FrontendWebAdminPortletConstants.AdminMenuItemType.ACTIVITY.toString()) ||
@@ -332,11 +332,11 @@ public class AdminPortlet extends FreeMarkerPortlet {
 						collectionCode, itemCode, groupId, serviceContext);
 				}
 
-				/*if (Validator.isNotNull(groupCode)) {
-					dictGroup =
-						DictGroupLocalServiceUtil.fetchByF_DictGroupCode(
-							groupCode, groupId);
-				}*/
+				/*
+				 * if (Validator.isNotNull(groupCode)) { dictGroup =
+				 * DictGroupLocalServiceUtil.fetchByF_DictGroupCode( groupCode,
+				 * groupId); }
+				 */
 
 				params.put("dictCollection_groupCode", groupCode);
 
@@ -370,35 +370,35 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			FrontendWebAdminPortletConstants.AdminMenuItemType.LABEL.toString())) {
 			long labelId = ParamUtil.getLong(renderRequest, "labelId");
 
-			/*Label label = LabelLocalServiceUtil.fetchLabel(labelId);*/
+			/* Label label = LabelLocalServiceUtil.fetchLabel(labelId); */
 
-			/*renderRequest.setAttribute("label", label);
-
-			params.put("label_labelId", labelId);*/
+			/*
+			 * renderRequest.setAttribute("label", label);
+			 * params.put("label_labelId", labelId);
+			 */
 		}
 		else if (type.equals(
 			FrontendWebAdminPortletConstants.AdminMenuItemType.LOCATION.toString())) {
 			long locationId = ParamUtil.getLong(renderRequest, "locationId");
 
-			/*Location location =
-				LocationLocalServiceUtil.fetchLocation(locationId);*/
+			/*
+			 * Location location =
+			 * LocationLocalServiceUtil.fetchLocation(locationId);
+			 */
 
-			/*renderRequest.setAttribute("location", location);
-
-			double[] geolocation = new double[] {
-				0, 0
-			};
-
-			if (location != null &&
-				Validator.isNotNull(location.getGeolocation())) {
-				geolocation = StringUtil.split(location.getGeolocation(), 0.0);
-
-			}*/
+			/*
+			 * renderRequest.setAttribute("location", location); double[]
+			 * geolocation = new double[] { 0, 0 }; if (location != null &&
+			 * Validator.isNotNull(location.getGeolocation())) { geolocation =
+			 * StringUtil.split(location.getGeolocation(), 0.0); }
+			 */
 
 			params.put("location_locationId", locationId);
 
-			/*params.put("locationLat", geolocation[0]);
-			params.put("locationLng", geolocation[1]);*/
+			/*
+			 * params.put("locationLat", geolocation[0]);
+			 * params.put("locationLng", geolocation[1]);
+			 */
 
 		}
 		else if (type.equals(
@@ -418,8 +418,8 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			"portletNamespace",
 			themeDisplay.getPortletDisplay().getNamespace());
 
-//		renderRequest.setAttribute(
-//			"api", themeDisplay.getPortalURL() + "/o/rest/v2");
+		// renderRequest.setAttribute(
+		// "api", themeDisplay.getPortalURL() + "/o/rest/v2");
 
 		renderRequest.setAttribute(
 			"url", generateURL(renderRequest, renderResponse));
@@ -716,6 +716,49 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 			adminWorkingUnitPortlet.put(
 				"working_unit_create", workingUnitCreateURL);
+
+			JSONObject employeePortlet = JSONFactoryUtil.createJSONObject();
+
+			PortletURL employeeListURL = renderResponse.createRenderURL();
+			employeeListURL.setParameter(
+				"mvcPath", "/templates/employee/employee_list.ftl");
+			employeeListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+			employeePortlet.put("employee_list", employeeListURL);
+
+			PortletURL employeeCreateURL = renderResponse.createRenderURL();
+			employeeCreateURL.setParameter(
+				"mvcPath", "/templates/employee/employee_create.ftl");
+			employeeCreateURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+			employeePortlet.put("employee_create", employeeCreateURL);
+
+			PortletURL employeeDetailURL = renderResponse.createRenderURL();
+			employeeDetailURL.setParameter(
+				"mvcPath", "/templates/employee/employee_detail.ftl");
+			employeeDetailURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+			employeePortlet.put("employee_detail", employeeDetailURL);
+
+			PortletURL employeeDetaiUpdateJobposlURL =
+				renderResponse.createRenderURL();
+			employeeDetaiUpdateJobposlURL.setParameter(
+				"mvcPath",
+				"/templates/employee/employee_detail_update_jobpos.ftl");
+			employeeDetaiUpdateJobposlURL.setWindowState(
+				LiferayWindowState.EXCLUSIVE);
+
+			employeePortlet.put(
+				"employee_detail_update_jobpos", employeeDetaiUpdateJobposlURL);
+
+			PortletURL employeeBirthdatelURL = renderResponse.createRenderURL();
+			employeeBirthdatelURL.setParameter(
+				"mvcPath", "/templates/employee/employee_birthdate.ftl");
+			employeeBirthdatelURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+			employeePortlet.put("employee_birthdate", employeeBirthdatelURL);
+
+			portletURLs.put("employeePortlet", employeePortlet);
 
 			portletURLs.put("adminWorkingUnitPortlet", adminWorkingUnitPortlet);
 

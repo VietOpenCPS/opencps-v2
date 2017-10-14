@@ -8,8 +8,8 @@
 		
 		  <div class="btn-group">
 
-			<button type="button" class="btn btn-primary image-preview-input" id="_dictCollection_formtemplate_btnScript">Script</button>
-			<button type="button" class="btn btn-primary image-preview-input" id="_dictCollection_formtemplate_btnHtml">View html</button>
+			<button type="button" class="btn btn-active image-preview-input" id="_dictCollection_formtemplate_btnScript">Script</button>
+			<button type="button" class="btn btn-active image-preview-input" id="_dictCollection_formtemplate_btnHtml">View html</button>
 			
 		</div>
 
@@ -26,7 +26,7 @@
 
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 PT20 text-center">
 		
-		<button class="btn btn-sm btn-primary btn-default" id="_dictCollection_formtemplate_submit" name="_dictCollection_formtemplate_submit" type="button" >
+		<button class="btn btn-sm btn-active btn-default" id="_dictCollection_formtemplate_submit" name="_dictCollection_formtemplate_submit" type="button" >
 			
 			<i class="fa fa-check-circle"></i> 
 			<span class="lfr-btn-label">Cập nhật thay đổi</span>
