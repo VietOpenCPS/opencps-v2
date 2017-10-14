@@ -32,7 +32,7 @@
 	
 			</div>
 	
-			<a data-toggle="modal" class="btn btn-primary image-preview-input btn-block MT15"
+			<a data-toggle="modal" class="btn btn-active image-preview-input btn-block MT15"
 				href="${url.adminDataMgtPortlet.dictcollection_create_dictcollection}" data-target="#modal"> 
 				<i class="fa fa-book" aria-hidden="true"></i>
 				<span class="p-xxs" >Tổng số</span> 
@@ -44,7 +44,7 @@
 		</div>
 				
 			
-		<ul class="ul-with-border ul-with-border-style-2 mh-head-2" id="_collection_listView"></ul>
+		<ul class="ul-with-border ul-default mh-head-2" id="_collection_listView"></ul>
 		
 		<script type="text/x-kendo-tmpl" id="_collection_template">
 		

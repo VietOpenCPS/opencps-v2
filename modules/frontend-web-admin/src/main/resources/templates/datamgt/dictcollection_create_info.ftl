@@ -54,7 +54,7 @@
 		
 			<div class="col-xs-12 col-sm-6">
 				
-				<button class="btn btn-sm btn-primary btn-default" id="_collectionSub_dictItem_edit_editDictGroup" name="_collectionSub_dictItem_edit_editDictGroup" type="button" >
+				<button class="btn btn-sm btn-active btn-default" id="_collectionSub_dictItem_edit_editDictGroup" name="_collectionSub_dictItem_edit_editDictGroup" type="button" >
 					<i class="fa fa-check-circle"></i>
 					<span class="lfr-btn-label">Cập nhật thay đổi</span>
 				</button>

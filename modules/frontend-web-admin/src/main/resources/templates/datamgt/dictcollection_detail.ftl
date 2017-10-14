@@ -2,9 +2,9 @@
 <#include "init.ftl">
 </#if>
 
-<div class="row panel panel-body">
+<div class="box-s2">
 		
-	<div id="_collectionDetail_tabstrip" class="col-xs-12 col-sm-12">
+	<div id="_collectionDetail_tabstrip" class="col-xs-12 col-sm-12 tabstrip-hoz">
 
 		<ul>
 

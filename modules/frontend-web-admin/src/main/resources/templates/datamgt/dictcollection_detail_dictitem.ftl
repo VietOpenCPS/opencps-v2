@@ -5,7 +5,7 @@
 		
 	<div class="col-xs-4 col-sm-4">
 	
-		<span data-toggle="modal" class="btn btn-primary image-preview-input btn-block"
+		<span data-toggle="modal" class="btn btn-active image-preview-input btn-block"
 			href="${url.adminDataMgtPortlet.dictcollection_create_dictitem}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}collectionCode=${(dictCollection_dictCollection.collectionCode)!}" data-target="#modal-lg"> 
 			<i class="fa fa-book" aria-hidden="true"></i>
 			
