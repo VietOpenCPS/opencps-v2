@@ -2,6 +2,8 @@
 	"api": {
 		"server": "http://hanoi.fds.vn:2281/api"
 	},
+	"groupId": "11111",
+	
 	"ajax": {
 		"data_mgt":"data_mgt.ftl",
 		"serviceinfo_list":"serviceinfo.ftl",
@@ -23,397 +25,56 @@
 	  	"serviceconfig_detail" : "serviceconfig_detail.ftl",
 	  	"serviceconfig_option" : "serviceconfig_option.ftl",
 	  	"serviceconfig_option_form" : "serviceconfig_option_form.ftl"
+	  	"serviceprocess" : "serviceprocess.ftl",
+		"serviceconfig" : "serviceconfig.ftl",
+		"manage_account" : "manage_account.ftl",
+		"payment_config" : "payment_config.ftl",
+		"create_serviceconfigs" : "create_serviceconfigs.ftl",
+		"employee_index" : "employee/employee_index.ftl",
+		"dictcollection_index" : "datamgt/dictcollection_index.ftl"
 	},
-	"groupId": "11111",
-	"serviceInfo" : {
-	  "serviceInfoId": 1,
-	  "createDate": "2017-08-01T03:38:46.385Z",
-	  "modifiedDate": "2017-08-01T03:38:46.385Z",
-	  "serviceCode": "lorem",
-	  "serviceName": "lorem",
-	  "processText": "lorem",
-	  "methodText": "lorem",
-	  "dossierText": "lorem",
-	  "conditionText": "lorem",
-	  "durationText": "lorem",
-	  "resultText": "lorem",
-	  "regularText": "lorem",
-	  "feeText": "lorem",
-	  "administrationCode": "lorem",
-	  "administrationName": "lorem",
-	  "domainCode": "lorem",
-	  "domainName": "lorem",
-	  "domainIndex": "lorem",
-	  "activeStatus": 1,
-	  "maxLevel": 3,
-	  "groupId":20143,
-	  "fileTemplates": [{
-	    "fileTemplateNo": 1,
-	    "templateName": "lorem",
-	    "fileType": "pdf",
-	    "fileSize": 1000
-	  }, {
-	    "fileTemplateNo": 2,
-	    "templateName": "2 lorem",
-	    "fileType": "doc",
-	    "fileSize": 1000
-	  }, {
-	    "fileTemplateNo": 3,
-	    "templateName": "3 lorem",
-	    "fileType": "docx",
-	    "fileSize": 1000
-	  }],
-	  "itemDetail":{
-	  	"serviceCode":"lorem",
-		"serviceName":"lorem",
-		"administrationName":"lorem",
-		"domainName":"lorem",
-		"activeStatus":"Đang có hiệu lực"
-	  }
-	},
-	"administrations": [
-	  {
-	    "id": 516,
-	    "name": "cillum",
-	    "level": 3
-	  },
-	  {
-	    "id": 973,
-	    "name": "est",
-	    "level": 3
-	  },
-	  {
-	    "id": 987,
-	    "name": "commodo",
-	    "level": 3
-	  },
-	  {
-	    "id": 312,
-	    "name": "adipisicing",
-	    "level": 2
-	  },
-	  {
-	    "id": 352,
-	    "name": "in",
-	    "level": 3
-	  }
-	],
-	"domains": [{
-	    "id": 452,
-	    "name": "voluptate",
-	    "level": 3
-	  },
-	  {
-	    "id": 799,
-	    "name": "mollit",
-	    "level": 2
-	  },
-	  {
-	    "id": 441,
-	    "name": "amet",
-	    "level": 1
-	  },
-	  {
-	    "id": 734,
-	    "name": "cillum",
-	    "level": 2
-	  },
-	  {
-	    "id": 181,
-	    "name": "exercitation",
-	    "level": 3
-	  }
-	],
-	"levels" : [
-	  {
-	    "id": 1,
-	    "name": "Mức độ 1"
-	  },
-	  {
-	    "id": 2,
-	    "name": "Mức độ 2"
-	  },
-	  {
-	    "id": 3,
-	    "name": "Mức độ 3"
-	  },
-	  {
-	    "id": 4,
-	    "name": "Mức độ 4"
-	  }
-	],
-	"status" : [
-	  {
-	    "id": 1,
-	    "name": "Công khai"
-	  },
-	  {
-	    "id": 2,
-	    "name": "Đã tiếp nhận"
-	  },
-	  {
-	    "id": 3,
-	    "name": "Đang xử lý"
-	  },
-	  {
-	    "id": 4,
-	    "name": "Chờ xử lý"
-	  }
-	],
-	"serviceInfoStatuses": [{
-		"activeStatusCode": "0",
-		"activeStatusName": "Đang biên soạn"
-	},{
-		"activeStatusCode": "1",
-		"activeStatusName": "Đang có hiệu lực"
-	},{
-		"activeStatusCode": "2",
-		"activeStatusName": "Hết hiệu lực thi hành"
-	}],
-	"filetemplate" : {
-		"fileTemplateId": 3874,
-		"groupId": 8046,
-		"userId": 4207,
-		"createDate": "2016-07-08T04:57:43 -07:00",
-		"modifiedDate": "2016-03-12T08:46:09 -07:00",
-		"fileName": "anim sit quis ex laborum labore non excepteur voluptate aliqua in adipisicing id magna esse",
-		"fileNo": "596480d4ac87883f58c98d9d",
-		"fileEntryId": 1006,
-	},
-	"dossiertemplate" : {
-		"dossierTemplateId": 1118,
-    "groupId": 8189,
-    "userId": 3290,
-    "createDate": "2017-03-31T07:51:15 -07:00",
-    "modifiedDate": "2017-05-19T02:44:53 -07:00",
-    "templateNo": "59683cbe782e63ef69f7a186",
-    "templateName": "eu incididunt elit dolor in enim aute reprehenderit dolore minim laboris labore culpa ad incididunt",
-    "description": "qui ullamco voluptate nisi eiusmod quis quis enim laboris voluptate aliqua veniam consectetur in cillum culpa id nisi aliqua sit sint eu ex velit enim labore excepteur proident nisi anim ad officia elit et ex aliquip nostrud consectetur aliqua occaecat",
-	},
-	"dossiertemplate_part" : {
-		"dossierPartId": 4406,
-		"groupId": 6564,
-		"userId": 2145,
-		"createDate": "2015-06-23T12:27:30 -07:00",
-		"modifiedDate": "2017-01-16T01:15:24 -07:00",
-		"templateNo": "596c6c806d81529264d08a3e",
-		"partNo": "596c6c806b1c8efd3bd97b67",
-		"partName": "cillum occaecat eiusmod veniam officia culpa enim proident duis culpa eu ipsum pariatur aliqua labore",
-		"partTip": "exercitation irure occaecat voluptate incididunt occaecat pariatur nulla consequat laborum eiusmod irure do fugiat consequat est voluptate consectetur sit enim commodo aliquip quis incididunt velit officia excepteur proident reprehenderit laborum esse sint id dolore magna est magna ipsum proident anim",
-		"partType": 9,
-		"multiple": false,
-		"formScript": "nulla laboris sit esse exercitation ex in incididunt dolor deserunt tempor deserunt esse laborum aliqua dolor nostrud irure nulla sit sunt velit mollit amet occaecat ad quis laborum minim consequat dolor aute ea quis labore esse tempor adipisicing irure velit labore elit tempor excepteur incididunt quis adipisicing quis aliqua qui non sint id velit quis incididunt exercitation proident in laboris ea officia non nostrud eiusmod incididunt voluptate eiusmod eu culpa quis ad et magna est occaecat elit nisi cillum cillum ipsum irure dolor laboris excepteur est veniam anim id mollit incididunt ex irure esse ipsum irure nisi aliqua voluptate incididunt",
-		"formReport": "laborum sint veniam et aliqua laboris excepteur velit nostrud nulla excepteur fugiat tempor eu mollit consequat non pariatur ipsum irure do Lorem pariatur reprehenderit exercitation sunt incididunt dolor consectetur et occaecat Lorem officia pariatur cupidatat incididunt laborum qui ipsum et irure tempor cupidatat fugiat incididunt culpa laborum do amet proident proident magna cillum aliquip id id irure occaecat eiusmod do sint pariatur pariatur qui reprehenderit occaecat magna eiusmod eu do officia mollit pariatur aliqua esse pariatur pariatur deserunt fugiat Lorem id commodo tempor in in sint est aute voluptate anim velit cupidatat consequat ullamco ut veniam ut ullamco consequat non",
-		"sampleData": "aliqua aliquip anim in officia nulla commodo mollit ut nisi deserunt nisi aute mollit consectetur amet laboris sunt velit occaecat ipsum velit ipsum aute commodo in cillum et ad aliqua officia anim sint fugiat non dolore occaecat dolore laboris quis duis dolor reprehenderit est nostrud enim incididunt dolor duis velit ex adipisicing aute elit et qui velit est consectetur id dolor cupidatat voluptate sint Lorem aliqua ut sit aute et eiusmod exercitation ipsum adipisicing proident consequat incididunt quis laboris sit in consequat aliqua laborum non laborum dolore laborum eu tempor quis officia ad in eu sit laboris eiusmod incididunt commodo",
-		"required": true,
-		"fileTemplateNo": "596c6c802e8b349e5418d6ec",
-		"eSign": false
-	},
-	"serviceconfig":{
-		"serviceConfigId":3,
-		"serviceInfoId":1,
-		"serviceName":"lorem",
-		"govAgencyCode":"lorem",
-		"govAgencyName":"lorem",
-		"serviceInstruction":"lorem",
-		"serviceLevel":3,
-		"serviceUrl":"lorem",
-		"authentication":1,
-		"api":{
-			"read": "datasource/serviceconfig_list.json",
-			"search": "datasource/",
-			"create": "datasource/serviceconfig_create.json",
-			"update": "datasource/serviceconfig_update.json",
-			"delete": "datasource/serviceconfig_delete.json"
+	"url":{
+		"adminWorkingUnitPortlet": {
+			"working_unit_list": "working-unit/working_unit_list.ftl?p_p_lifecycle=1",
+			"working_unit_detail": "working-unit/working_unit_detail.ftl?p_p_lifecycle=1",
+			"working_unit_create": "working-unit/working_unit_create.ftl?p_p_lifecycle=1"
 		},
-		"ajax":{
-			"serviceconfig_form":"serviceconfig_form.ftl",
-			"serviceconfig_form_edit":"serviceconfig_form_edit.ftl",
-			"serviceconfig_option_form":"serviceconfig_option_form.ftl",
-			"serviceconfig_option_form_edit":"serviceconfig_option_form_edit.ftl",
-			"serviceconfig_option":"serviceconfig_option.ftl"
+		"adminDataMgtPortlet" : {
+			"dictcollection_list": "datamgt/dictcollection_list.ftl?p_p_lifecycle=1",
+			"dictcollection_detail": "datamgt/dictcollection_detail.ftl?p_p_lifecycle=1",
+
+			"dictcollection_detail_info": "datamgt/dictcollection_detail_info.ftl?p_p_lifecycle=1",
+
+			"dictcollection_detail_dictitem": "datamgt/dictcollection_detail_dictitem.ftl?p_p_lifecycle=1",
+
+			"dictcollection_detail_formtemplate": "datamgt/dictcollection_detail_formtemplate.ftl?p_p_lifecycle=1",
+
+			"dictcollection_create_dictcollection": "datamgt/dictcollection_create_dictcollection.ftl?p_p_lifecycle=1",
+			
+			"dictcollection_create_dictitem": "datamgt/dictcollection_create_dictitem.ftl?p_p_lifecycle=1",
+
+			"dictcollection_create_dictgroup": "datamgt/dictcollection_create_dictgroup.ftl?p_p_lifecycle=1",
+
+			"dictcollection_dictitem_edit_action": "dictCollectionDictitemEditActionURL"
+		},
+		"employeePortlet": {
+			"employee_list": "employee/employee_list.ftl?p_p_lifecycle=1",
+            "employee_birthdate": "employee/employee_birthdate.ftl?p_p_lifecycle=1",
+			"employee_detail": "employee/employee_detail.ftl?p_p_lifecycle=1",
+			"employee_create": "employee/employee_create.ftl?p_p_lifecycle=1",
+			"employee_detail_update_jobpos": "employee/employee_detail_update_jobpos.ftl?p_p_lifecycle=1"
 		}
 	},
-	"serviceoptions":{
-		"serviceConfigId":1,
-		"optionCode":"lorem",
-		"optionName":"lorem",
-		"optionOrder":1,
-		"autoSelect":"lorem",
-		"dossierTemplateId":1,
-		"serviceProcessId":3,
-		"processNo":"lorem",
-		"processDescription":"lorem",
-		"templateName":"lorem",
-		"templateNo":"lorem",
-		"instructionNote":"lorem"
+	"portletNamespace" : "abc",
+	"constant" : {
+		type_workingUnit : "cvcvc",
+		"type_dictCollection" : "cc"
 	},
-	"serviceprocess": {
-    "serviceProcessId": 111,
-    "processNo": "1-lorem",
-    "processName": "1-lorem",
-    "description": "lorem",
-    "durationCount": 1,
-    "durationUnit": 0,
-    "counter": 3,
-    "generateDossierNo": false,
-    "dossierNoPattern": "lorem",
-    "generateDueDate": true,
-    "dueDatePattern": "lorem"
-  },
-	"processsteps": {
-		"processStepId": 1,
-		"stepCode": "lorem",
-		"serviceProcessId": 1,
-		"stepName": "lorem",
-		"sequenceNo": "lorem",
-		"dossierStatus": "lorem",
-		"dossierSubStatus": "lorem",
-		"durationCount": 1,
-		"customProcessUrl": "lorem",
-		"stepallowance": [
-			{
-				"roleId": 1,
-				"roleName": "lorem",
-				"moderator": 1
-			},
-			{
-				"roleId": 2,
-				"roleName": "lorem",
-				"moderator": 0
-			},
-			{
-				"roleId": 3,
-				"roleName": "lorem",
-				"moderator": 0
-			}
-		],
+	param : {
+		"workingUnit_workingUnitId" : 233
 	},
-	"dossierStatus": '[
-		{
-			"dossierStatusCode":1,
-			"dossierStatusName":"mot",
-		},
-		{
-			"dossierStatusCode":2,
-			"dossierStatusName":"hai",
-		},
-		{
-			"dossierStatusCode":3,
-			"dossierStatusName":"ba",
-		},
-		{
-			"dossierStatusCode":4,
-			"dossierStatusName":"bon",
-		}
-	]',
-	"dossierSubStatus": '[
-		{
-			"dossierSubStatusCode":1,
-			"dossierSubStatusName":"mot",
-		},
-		{
-			"dossierSubStatusCode":2,
-			"dossierSubStatusName":"hai",
-		},
-		{
-			"dossierSubStatusCode":3,
-			"dossierSubStatusName":"ba",
-		},
-		{
-			"dossierSubStatusCode":4,
-			"dossierSubStatusName":"bon",
-		}
-	]',
-	"processactions": {
-    "processActionId": 5,
-    "serviceProcessId": 1,
-    "preProcessStepId": 3,
-    "postProcessStepId": 4,
-    "autoEvent": "lorem",
-    "preCondition": "lorem",
-    "actionCode": "lorem",
-    "actionName": "lorem",
-    "allowAssignUser": false,
-    "assignUserId": 0,
-    "requestPayment": false,
-    "paymentFee": "lorem",
-    "createDossierFiles": "lorem",
-    "returnDossierFiles": "lorem",
-    "syncActionCode": "lorem",
-    "rollback": true,
-		"preProcessStep": '[
-			{
-				"preProcessStepId":1,
-				"preProcessStepName":"mot",
-			},
-			{
-				"preProcessStepId":2,
-				"preProcessStepName":"hai",
-			},
-			{
-				"preProcessStepId":3,
-				"preProcessStepName":"ba",
-			},
-			{
-				"preProcessStepId":4,
-				"preProcessStepName":"bon",
-			}
-		]',
-		"postProcessStep": '[
-			{
-				"postProcessStepId":1,
-				"postProcessStepName":"mot",
-			},
-			{
-				"postProcessStepId":2,
-				"postProcessStepName":"hai",
-			},
-			{
-				"postProcessStepId":3,
-				"postProcessStepName":"ba",
-			},
-			{
-				"postProcessStepId":4,
-				"postProcessStepName":"bon",
-			}
-		]',
-		"assignUser": '[
-			{
-				"assignUserId":1,
-				"assignUserName":"mot",
-			},
-			{
-				"assignUserId":2,
-				"assignUserName":"hai",
-			},
-			{
-				"assignUserId":3,
-				"assignUserName":"ba",
-			},
-			{
-				"assignUserId":4,
-				"assignUserName":"bon",
-			}
-		]'
-  },
-	"paymentconfigs": {
-    "paymentConfigId": 1,
-    "govAgencyCode": "lorem",
-    "govAgencyName": "lorem",
-    "govAgencyTaxNo": "lorem",
-    "invoiceTemplateNo": "lorem",
-    "invoiceIssueNo": "lorem",
-    "invoiceLastNo": "lorem",
-    "bankInfo": "lorem",
-    "placeInfo": "lorem",
-    "paymentDomain": "lorem",
-    "paymentVersion": "lorem",
-    "paymentMerchantCode": "lorem",
-    "paymentSecureKey": "lorem",
-    "reportTemplate": "lorem",
-    "paymentGateType": "lorem",
-    "returnUrl": "lorem",
-    "paymentConfigNo": "lorem"
-  }
+	dictCollection_dictCollection : {
+		"collectionCode" : 101,
+		"description" : "fdfdfdfd"
+	}
 }

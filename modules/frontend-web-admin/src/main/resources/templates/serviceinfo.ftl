@@ -25,7 +25,7 @@
 							<div class="row">
 								<div class="col-sm-12 MB5">
 									<span class="showServiceinfoDetail" data-pk="#:id#">#:serviceCode# </span>
-									#if(typeof public !== "undefined" && public) {#
+									#if(typeof active !== "undefined" && active) {#
 									<i class="fa fa-check ML5" aria-hidden="true"></i>
 									#} #
 									<i class="fa fa-trash pull-right _itemServiceinfo_btnDelete" data-pk="#:id#"></i>
@@ -224,6 +224,7 @@
 					url : "${api.server}/serviceinfos",
 					dataType : "json",
 					type : "GET",
+					headers: {"groupId": ${groupId}},
 					success : function(result){
 
 					},
@@ -234,10 +235,7 @@
 			},
 			schema : {
 				total : "total",
-				data : "data",
-				model : {
-					id : "serviceinfoId"
-				}
+				data : "data"
 			}
 		},
 		filter: "contains",
@@ -264,11 +262,13 @@
 		console.log($(this).parent().parent().parent());
 		$(this).parent().parent().parent().addClass("k-state-selected");
 		pullDataDetail($(this).attr("data-pk"));
+		crtAddOrEdit();
 	});
 
 	$(document).on("click", "#btnAddServiceInfo", function(event){
 		event.preventDefault();
 		$("#itemServiceInfoId").val("");
+		$("#listViewTTHC > li").removeClass("k-state-selected");
 		formControl();
 	});
 

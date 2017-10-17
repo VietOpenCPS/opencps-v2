@@ -336,7 +336,6 @@
 						$("#serviceprocess_detail_formstep_container").hide();
 					},
 					error: function(result) {
-						fileTemplateDataSource.cancelChanges();
 						notification.show({
 							message: "Xẩy ra lỗi, vui lòng thử lại"
 						}, "error");

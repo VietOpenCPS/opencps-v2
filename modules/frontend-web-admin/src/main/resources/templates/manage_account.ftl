@@ -55,24 +55,24 @@
 				<script type="text/x-kendo-template" id="templateCitizen">
 					<tr>
 						<td class="text-center">#:itemIndex#</td>
-						<td>#:contactName#</td>
+						<td>#:applicantName#</td>
 						<td>#:applicantIdNo#</td>
 						<td>#:contactEmail#</td>
 						<td>#:contactTelNo#</td>
 						<td>#:createDate#</td>
 						<td>
 							#if(mappingUser.locking){#
-								<span>Chưa kích hoạt</span>
+							<span>Chưa kích hoạt</span>
 							#}else {#
-								<span>Hoàn thành</span>
+							<span>Hoàn thành</span>
 							#}#
 						</td>
 						<td class="text-center">
 							#if(mappingUser.locking){#
-							<button class="btn btn-sm btn-unlock-account-business" type="button">Kích hoạt</button>
-							<button class="btn btn-sm btn-delete-account-business" type="button">Xóa</button>
+							<button class="btn btn-sm btn-unlock-account-citizen" type="button" data-pk="#:id#">Kích hoạt</button>
+							<button class="btn btn-sm btn-delete-account-citizen" type="button" data-pk="#:id#">Xóa</button>
 							#}else {#
-							<button class="btn btn-sm btn-lock-account-business" type="button">Khóa tài khoản</button>
+							<button class="btn btn-sm btn-lock-account-citizen" type="button" data-pk="#:id#">Khóa tài khoản</button>
 							#}#
 						</td>
 					</tr>
@@ -99,25 +99,25 @@
 				<div id='pagerBussiness'></div>
 				<script type="text/x-kendo-template" id="templateBusiness">
 					<tr>
-						<td>#:itemIndex#</td>
-						<td>#:contactName#</td>
+						<td class="text-center">#:itemIndex#</td>
+						<td>#:applicantName#</td>
 						<td>#:applicantIdNo#</td>
 						<td>#:contactEmail#</td>
 						<td>#:contactTelNo#</td>
 						<td>#:createDate#</td>
 						<td>
 							#if(mappingUser.locking){#
-								<span>Chưa kích hoạt</span>
+							<span>Chưa kích hoạt</span>
 							#}else {#
-								<span>Hoàn thành</span>
+							<span>Hoàn thành</span>
 							#}#
 						</td>
 						<td class="text-center">
 							#if(mappingUser.locking){#
-							<button class="btn btn-sm btn-unlock-account-business" type="button">Kích hoạt</button>
-							<button class="btn btn-sm btn-delete-account-business" type="button">Xóa</button>
+							<button class="btn btn-sm btn-unlock-account-business" type="button" data-pk="#:id#">Kích hoạt</button>
+							<button class="btn btn-sm btn-delete-account-business" type="button" data-pk="#:id#">Xóa</button>
 							#}else {#
-							<button class="btn btn-sm btn-lock-account-business" type="button">Khóa tài khoản</button>
+							<button class="btn btn-sm btn-lock-account-business" type="button" data-pk="#:id#">Khóa tài khoản</button>
 							#}#
 						</td>
 					</tr>
@@ -136,7 +136,7 @@
 				$.ajax({
 					url : "${api.server}/applicants",
 					dataType : "json",
-					type : "GET",
+					type : "GET",		
 					headers: {"groupId": ${groupId}},
 					data : {
 						type : "citizen",
@@ -267,7 +267,7 @@
 			localIndexBusiness = 0;
 		}
 	});
-
+	
 	$("#pagerBussiness").kendoPager({
 		dataSource : dataSourceBusiness,
 		input : true,
@@ -291,11 +291,17 @@
 				locked : true
 			},
 			success : function(result){
+				console.log(id);
 				var item = dataSourceCitizen.get(id);
+				console.log(item);
 				if(item){
 					var mappingUser = item.mappingUser;
 					mappingUser.locking = true;
-					item.set("mappingUser",mappingUser);
+					console.log(mappingUser);
+					
+					dataSourceCitizen.fetch(function(){
+						item.set("mappingUser",mappingUser);
+					});
 				}
 			},
 			error : function(xhr){
@@ -306,7 +312,7 @@
 
 	$(document).on("click",".btn-unlock-account-citizen",function(event){
 		var id = $(this).attr("data-pk");
-		/*$.ajax({
+		$.ajax({
 			url : "${api.server}/applicants/"+id+"/lock",
 			dataType : "json",
 			type : "POST",
@@ -325,7 +331,7 @@
 			error : function(xhr){
 
 			}
-		});*/
+		});
 	});
 
 	$(document).on("click",".btn-delete-account-citizen",function(event){
@@ -360,6 +366,7 @@
 			},
 			success : function(result){
 				var item = dataSourceBusiness.get(id);
+
 				if(item){
 					var mappingUser = item.mappingUser;
 					mappingUser.locking = true;
@@ -374,7 +381,7 @@
 
 	$(document).on("click",".btn-unlock-account-business",function(event){
 		var id = $(this).attr("data-pk");
-		/*$.ajax({
+		$.ajax({
 			url : "${api.server}/applicants/"+id+"/lock",
 			dataType : "json",
 			type : "POST",
@@ -393,7 +400,7 @@
 			error : function(xhr){
 
 			}
-		});*/
+		});
 	});
 
 	$(document).on("click",".btn-delete-account-business",function(event){

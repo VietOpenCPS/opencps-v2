@@ -1,4 +1,6 @@
+<#if (Request)??>
 <#include "init.ftl">
+</#if>
 <div class="row">
 
 	<div class="col-sm-12">
@@ -88,7 +90,7 @@
 
 	$('#this-month').html(thisMonth);
 	
-	var getEmployeeBaseUrl = "${api.endpoint}/employees";
+	var getEmployeeBaseUrl = "${api.server}/employees";
 	
 	var getEmployeeDataSource = new kendo.data.DataSource({
 		
@@ -161,7 +163,7 @@
 			
 			var children = employeeListview.element.children();
 
-			var employeeBirthdateAvataBaseUrl = '${api.endpoint}/employees';
+			var employeeBirthdateAvataBaseUrl = '${api.server}/employees';
 			
 			for (var x = 0; x < children.length; x++) {
 				
