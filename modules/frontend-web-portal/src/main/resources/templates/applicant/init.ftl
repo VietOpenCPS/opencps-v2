@@ -1,17 +1,16 @@
+<#if (Request)??>
 <#include "../init.ftl">
-
 <@liferay_portlet.actionURL name="/login/login" var="loginURL" >
-	<@liferay_portlet.param name="mvcRenderCommandName" value="/login/login" />
+<@liferay_portlet.param name="mvcRenderCommandName" value="/login/login" />
 </@>
-
 <#assign isSignedIn = themeDisplay.isSignedIn() />
 
 <#assign userName = themeDisplay.getUser().getFullName() />
 
 <#if themeDisplay.getUser().getFemale()>
-	<#assign preUserName = "Bà" />
+<#assign preUserName = "Bà" />
 <#else>
-	<#assign preUserName = "Ông" />
+<#assign preUserName = "Ông" />
 </#if>
 
 <#assign GetterUtil = objectUtil("com.liferay.portal.kernel.util.GetterUtil") />
@@ -19,3 +18,6 @@
 
 <#assign active_user_id = GetterUtil.getString(PortalUtil.getOriginalServletRequest(request).getParameter("active_user_id")) />
 <#assign redirectURL = GetterUtil.getString(PortalUtil.getOriginalServletRequest(request).getParameter("redirectURL")) />
+</#if>
+
+

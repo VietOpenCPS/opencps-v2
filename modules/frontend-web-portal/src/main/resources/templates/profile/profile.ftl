@@ -1,13 +1,13 @@
 <#if (Request)??>
 <#include "init.ftl">
 </#if>
-<div class="row account-info">
+<div class="row account-info" id="frmDetailAccount">
   <div class="col-sm-2 col-xs-12">
     <img src="https://jobseekers.vn/wp-content/themes/sb_theme/assets/images/default_avatar.png" class="img-responsive max-width-100 img-rounded">
     <div class="text-center"><a href="" class="text-light-gray">Thay đổi avatar</a></div>
-    <p class="name text-bold text-center">Lương Thị Hạnh</p>
-    <div>Số CMND/Hộ chiếu: <span class="text-bold">0123456789</span></div>
-    <div>Ngày cấp: <span class="text-bold">26/09/2015</span></div>
+    <p class="name text-bold text-center" data-bind="text:applicantName">Lương Thị Hạnh</p>
+    <div>Số CMND/Hộ chiếu: <span class="text-bold" data-bind="text:contactTelNo">0123456789</span></div>
+    <div>Ngày cấp: <span class="text-bold" data-bind="text:applicantIdDate">26/09/2015</span></div>
     <div>Thư điện tử: <span class="text-bold">hanhlt@gmail.com</span></div>
 
     <ul class="nav nav-tabs" role="tablist">
@@ -32,7 +32,7 @@
            <p> Tên công ty</p>
          </div>
          <div class="col-sm-7">
-           <span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Nhập tên công ty" tabindex="-1" class=""> ${api.applicant.applicantName} </span>
+           <span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Nhập tên công ty" tabindex="-1" class="" data-bind="text:applicantName"> <#-- ${api.applicant.applicantName} --> </span>
            <span class="pull-right">
              <a href="#" id="editApplicantName" style="float: right"><i class="fa fa-pencil"></i></a>
            </span>
@@ -43,7 +43,7 @@
           <p>Địa chỉ tổ chức</p>
         </div>
         <div class="col-sm-7">
-          <span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Nhập địa chỉ" tabindex="-1" class=""> ${address} </span>
+          <span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Nhập địa chỉ" tabindex="-1" class="" data-bind="text:address"> ${address} </span>
           <span class="pull-right">
             <a href="#" id="editAddress" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -54,7 +54,7 @@
           <p>Tỉnh/ Thành phố</p>
         </div>
         <div class="col-sm-7">
-          <span id="city" data-pk="1" data-type="select" data-toggle="#editCity" data-original-title="Chọn thành phố" tabindex="-1" class=""> ${api.applicant.cityName} </span>
+          <span id="city" data-pk="1" data-type="select" data-toggle="#editCity" data-original-title="Chọn thành phố" tabindex="-1" class="" data-bind="text:cityName"><#--  ${api.applicant.cityName} --> </span>
           <span class="pull-right">
             <a href="#" id="editCity" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -65,7 +65,7 @@
           <p>Quận/ Huyện</p>
         </div>
         <div class="col-sm-7">
-          <span id="district" data-pk="1" data-type="select" data-toggle="#editDistrict" data-original-title="Chọn quận/ huyện" tabindex="-1" class="">${api.applicant.districtName}</span>
+          <span id="district" data-pk="1" data-type="select" data-toggle="#editDistrict" data-original-title="Chọn quận/ huyện" tabindex="-1" class="" data-bind="text:districtName"><#-- ${api.applicant.districtName} --></span>
           <span class="pull-right">
             <a href="#" id="editDistrict" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -76,7 +76,7 @@
           <p>Xã/ Phường</p>
         </div>
         <div class="col-sm-7">
-          <span id="wards" data-pk="1" data-type="select" data-toggle="#editWards" data-original-title="Chọn xã/ phường" tabindex="-1" class="">${api.applicant.wardName}</span>
+          <span id="wards" data-pk="1" data-type="select" data-toggle="#editWards" data-original-title="Chọn xã/ phường" tabindex="-1" class="" data-bind="text:wardName"><#-- ${api.applicant.wardName} --></span>
           <span class="pull-right">
             <a href="#" id="editWards" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -87,7 +87,7 @@
           <p>Điện thoại</p>
         </div>
         <div class="col-sm-7">
-          <span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Nhập số điện thoại" tabindex="-1" class="">${api.applicant.contactTelNo}</span>
+          <span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Nhập số điện thoại" tabindex="-1" class="" data-bind="text:contactTelNo"><#-- ${api.applicant.contactTelNo} --></span>
           <span class="pull-right">
             <a href="#" id="editPhone" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -98,7 +98,7 @@
           <p>Thư điện tử - Email</p>
         </div>
         <div class="col-sm-7">
-          <span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Nhập email" tabindex="-1" class="">${api.applicant.contactEmail} </span>
+          <span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Nhập email" tabindex="-1" class="" data-bind="text:contactEmail"><#-- ${api.applicant.contactEmail} --> </span>
           <span class="pull-right">
             <a href="#" id="editEmail" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -109,7 +109,7 @@
           <p>Tên người đại diện</p>
         </div>
         <div class="col-sm-7">
-          <span id="contactName" data-pk="1" data-toggle="#editContactName" data-original-title="Tên người đại diện" tabindex="-1" class="">${api.applicant.contactName}</span>
+          <span id="contactName" data-pk="1" data-toggle="#editContactName" data-original-title="Tên người đại diện" tabindex="-1" class="" data-bind="text:contactName"><#-- ${api.applicant.contactName} --></span>
           <span class="pull-right">
             <a href="#" id="editContactName" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -128,7 +128,7 @@
            <p>Họ và tên</p>
          </div>
          <div class="col-sm-7">
-           <span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Nhập họ và tên" tabindex="-1" class="">${api.applicant.applicantName}</span>
+           <span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Nhập họ và tên" tabindex="-1" class="" data-bind="text:applicantName"><#-- ${api.applicant.applicantName} --></span>
            <span class="pull-right">
              <a href="#" id="editApplicantName" style="float: right"><i class="fa fa-pencil"></i></a>
            </span>
@@ -139,7 +139,7 @@
           <p>Địa chỉ</p>
         </div>
         <div class="col-sm-7">
-          <span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Nhập địa chỉ" tabindex="-1" class="">${api.applicant.address}</span>
+          <span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Nhập địa chỉ" tabindex="-1" class="" data-bind="text:address"><#-- ${api.applicant.address} --></span>
           <span class="pull-right">
             <a href="#" id="editAddress" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -150,7 +150,7 @@
           <p>Tỉnh/ Thành phố</p>
         </div>
         <div class="col-sm-7">
-          <span id="city" data-pk="1" data-type="select" data-toggle="#editCity" data-original-title="Chọn tỉnh/ thành phố" tabindex="-1" class="">${api.applicant.cityName}</span>
+          <span id="city" data-pk="1" data-type="select" data-toggle="#editCity" data-original-title="Chọn tỉnh/ thành phố" tabindex="-1" class="" data-bind="text:cityName"><#-- ${api.applicant.cityName} --></span>
           <span class="pull-right">
             <a href="#" id="editCity" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -161,7 +161,7 @@
           <p>Quận/ Huyện</p>
         </div>
         <div class="col-sm-7">
-          <span id="district" data-pk="1" data-type="select" data-toggle="#editDistrict" data-original-title="Chọn quận/ huyện" tabindex="-1" class="">${api.applicant.districtName}</span>
+          <span id="district" data-pk="1" data-type="select" data-toggle="#editDistrict" data-original-title="Chọn quận/ huyện" tabindex="-1" class="" data-bind="text:districtName"><#-- ${api.applicant.districtName} --></span>
           <span class="pull-right">
             <a href="#" id="editDistrict" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -172,7 +172,7 @@
           <p>Xã/ Phường</p>
         </div>
         <div class="col-sm-7">
-          <span id="wards" data-pk="1" data-type="select" data-toggle="#editWards" data-original-title="Chọn xã/ phường" tabindex="-1" class="">${api.applicant.wardName}</span>
+          <span id="wards" data-pk="1" data-type="select" data-toggle="#editWards" data-original-title="Chọn xã/ phường" tabindex="-1" class="" data-bind="text:wardName"><#-- ${api.applicant.wardName} --></span>
           <span class="pull-right">
             <a href="#" id="editWards" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -183,7 +183,7 @@
           <p>Điện thoại</p>
         </div>
         <div class="col-sm-7">
-          <span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Nhập số điện thoại" tabindex="-1" class="">${api.applicant.contactTelNo}</span>
+          <span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Nhập số điện thoại" tabindex="-1" class="" data-bind="text:contactTelNo"><#-- ${api.applicant.contactTelNo} --></span>
           <span class="pull-right">
             <a href="#" id="editPhone" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -194,7 +194,7 @@
           <p>Thư điện tử - Email</p>
         </div>
         <div class="col-sm-7">
-          <span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Nhập email" tabindex="-1" class="">${api.applicant.contactEmail}</span>
+          <span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Nhập email" tabindex="-1" class="" data-bind="text:contactEmail"><#-- ${api.applicant.contactEmail} --></span>
           <span class="pull-right">
             <a href="#" id="editEmail" style="float: right"><i class="fa fa-pencil"></i></a>
           </span>
@@ -305,6 +305,7 @@
      url: "${api.server}" + "/checkOldPassword",
      type: "GET",
      dataType: "json",
+     headers: {"groupId": ${groupId}},
      data: {
        userId: userId,
        oldPassword: oldPassword,
@@ -328,6 +329,7 @@
        newPassword: newPassword,
        retypeNewPassword: retypeNewPassword
      },
+     headers: {"groupId": ${groupId}},
      success: function(res) {
        notification.show({
          message: "Đổi mật khẩu thành công"
@@ -354,13 +356,14 @@
       }
     });
     */
-    var updateProfileURL = 'http://hanoi.fds.vn:2280/o/rest/v2/applicants/${api.applicant.applicantId}';
+    var updateProfileURL = '/o/rest/v2/applicants/3802';
 
     $('#applicantName').editable({
       url: updateProfileURL,
       ajaxOptions:{
         type:'PUT',
-        dataType: "json"
+        dataType: "json",
+        headers: {"groupId": ${groupId}}
       },
       emptytext : "",
       params: function(params) {
@@ -377,24 +380,25 @@
 
       },
       error: function(event, id, obj) {
-        showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
+
       }
     });
 
 
-  $('#address').editable({
-    url: updateProfileURL,
-    ajaxOptions:{
-      type:'PUT',
-      dataType: "json",
-    },
-    emptytext : "",
-    params: function(params) {
-      return {
-        address: params.value
-      };
-    },
-    validate: function(value) {
+    $('#address').editable({
+      url: updateProfileURL,
+      ajaxOptions:{
+        type:'PUT',
+        dataType: "json",
+        headers: {"groupId": ${groupId}}
+      },
+      emptytext : "",
+      params: function(params) {
+        return {
+          address: params.value
+        };
+      },
+      validate: function(value) {
       // if (value.length < 1){
       //   return 'Đây là trường bắt buộc';
       // }
@@ -403,7 +407,7 @@
 
     },
     error: function(event, id, obj) {
-      showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
+
     }
   });
 
@@ -412,7 +416,8 @@
       emptytext : "",
       ajaxOptions:{
         type:'PUT',
-        dataType: "json"
+        dataType: "json",
+        headers: {"groupId": ${groupId}}
       },
       params: function(params) {
         return {
@@ -424,24 +429,50 @@
         //   return 'Đây là trường bắt buộc';
         // }
       },
-      success: function(data) {
+      success: function(response, newValue) {
+        console.log(newValue);
+        var arr = new Array();
+        $.ajax({
+          url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+          dataType : "json",
+          type : "GET",
+          async: false,
+          headers: {"groupId": ${groupId}},
+          data : {
+            parent : newValue
+          },
+          success : function(result){
+            var arrDataRes = result.data;
+            for (var i = 0; i < arrDataRes.length; i++) {
+              arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+            }
+            arr = arrDataRes;
+          },
+          error : function(xhr){
 
+          }
+        });
+        $('#district').editable('option', 'source', arr);
       },
       error: function(event, id, obj) {
-        showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
+
       },
       prepend: "",
       source: function(){
         var arrDisplay = new Array();
         $.ajax({
-          url : "http://hanoi.fds.vn:2281/api/serviceinfos",
+          url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
           dataType : "json",
           type : "GET",
           async: false,
+          headers: {"groupId": ${groupId}},
+          data : {
+            parent : 0
+          },
           success : function(result){
             var arrDataRes = result.data;
             for (var i = 0; i < arrDataRes.length; i++) {
-              arrDisplay.push({ value: arrDataRes[i].serviceCode, text : arrDataRes[i].serviceName});
+              arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
             }
           },
           error : function(xhr){
@@ -452,12 +483,14 @@
       }
     });
 
+
     $('#district').editable({
       url: updateProfileURL,
       emptytext : "",
       ajaxOptions:{
         type:'PUT',
-        dataType: "json"
+        dataType: "json",
+        headers: {"groupId": ${groupId}}
       },
       params: function(params) {
         return {
@@ -470,31 +503,34 @@
         // }
       },
       success : function(data){
-
-      },
-      error : function(xhr){
-
-      },
-      prepend: "",
-      source: function(){
-        var arrDisplay = new Array();
+        console.log(newValue);
+        var arr = new Array();
         $.ajax({
-          url : "http://hanoi.fds.vn:2281/api/serviceinfos",
+          url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
           dataType : "json",
           type : "GET",
           async: false,
+          headers: {"groupId": ${groupId}},
+          data : {
+            parent : newValue
+          },
           success : function(result){
             var arrDataRes = result.data;
             for (var i = 0; i < arrDataRes.length; i++) {
-              arrDisplay.push({ value: arrDataRes[i].serviceCode, text : arrDataRes[i].serviceName});
+              arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
             }
+            arr = arrDataRes;
           },
           error : function(xhr){
 
           }
         });
-        return arrDisplay;
-      }
+        $('#wards').editable('option', 'source', arr);
+      },
+      error : function(xhr){
+
+      },
+      prepend: ""
     });
 
     $('#wards').editable({
@@ -502,7 +538,8 @@
       emptytext : "",
       ajaxOptions:{
         type:'PUT',
-        dataType: "json"
+        dataType: "json",
+        headers: {"groupId": ${groupId}}
       },
       params: function(params) {
         return {
@@ -520,26 +557,7 @@
       error : function(xhr){
 
       },
-      prepend: "",
-      source: function(){
-        var arrDisplay = new Array();
-        $.ajax({
-          url : "http://hanoi.fds.vn:2281/api/serviceinfos",
-          dataType : "json",
-          type : "GET",
-          async: false,
-          success : function(result){
-            var arrDataRes = result.data;
-            for (var i = 0; i < arrDataRes.length; i++) {
-              arrDisplay.push({ value: arrDataRes[i].serviceCode, text : arrDataRes[i].serviceName});
-            }
-          },
-          error : function(xhr){
-
-          }
-        });
-        return arrDisplay;
-      }
+      prepend: ""
     });
 
     $('#phone').editable({
@@ -547,7 +565,8 @@
       emptytext : "",
       ajaxOptions:{
         type:'PUT',
-        dataType: "json"
+        dataType: "json",
+        headers: {"groupId": ${groupId}}
       },
       params: function(params) {
         return {
@@ -560,18 +579,19 @@
         // }
       },
       success: function(data) {
-         alert(data);
-       },
-       error:function(xhr) {
-        if(xhr.status == 500) return 'Internal server error';
-      }
-    });
+       alert(data);
+     },
+     error:function(xhr) {
+      if(xhr.status == 500) return 'Internal server error';
+    }
+  });
     $('#email').editable({
       url: updateProfileURL,
       emptytext : "",
       ajaxOptions:{
         type:'PUT',
-        dataType: "json"
+        dataType: "json",
+        headers: {"groupId": ${groupId}}
       },
       params: function(params) {
         return {
@@ -596,7 +616,8 @@
       emptytext : "",
       ajaxOptions:{
         type:'PUT',
-        dataType: "json"
+        dataType: "json",
+        headers: {"groupId": ${groupId}}
       },
       success: function(data) {
        alert(data);
@@ -645,5 +666,32 @@
       e.stopPropagation();
       $('#represntative').editable('toggle');
     });
+
   });
+
+var pullDetailProfile = function(){
+  $.ajax({
+    url : "${api.server}/applicants/${applicantId}",
+    dataType : "json",
+    type : "GET",
+    headers: {"groupId": ${groupId}},
+    success : function(result){
+      var viewModel = kendo.observable({
+        applicantName : result.applicantName,
+        address : result.address,
+        cityName : result.cityName,
+        districtName : result.districtName,
+        wardName : result.wardName,
+        contactName : result.contactName,
+        contactTelNo : result.contactTelNo,
+        contactEmail : result.contactEmail
+      });
+
+      kendo.bind($("#frmDetailAccount"), viewModel);
+    },
+    error : function(xhr){
+
+    }
+  });
+}
 </script>
