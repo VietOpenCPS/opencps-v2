@@ -1,12 +1,17 @@
 package org.opencps.dossiermgt.service.indexer;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -21,6 +26,8 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 public class DossierIndexer extends BaseIndexer<Dossier> {
 	public static final String CLASS_NAME = Dossier.class.getName();
@@ -65,9 +72,45 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addNumberSortable(DossierTerm.DOSSIER_ACTION_ID, object.getDossierActionId());
 		document.addNumberSortable(DossierTerm.VIA_POSTAL, object.getViaPostal());
 		document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());
-		document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());
-		document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());
-		document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());
+
+		if (Validator.isNotNull(object.getReceiveDate())) {
+			Calendar cal = Calendar.getInstance();
+
+			cal.setTime(object.getReceiveDate());
+
+			int yearDossier = cal.get(Calendar.YEAR);
+			int monthDossier = cal.get(Calendar.MONTH) + 1;
+
+			document.addNumber(DossierTerm.YEAR_DOSSIER, yearDossier);
+			document.addNumber(DossierTerm.MONTH_DOSSIER, monthDossier);
+		}
+
+		// DossierAction fields
+
+		if (object.getDossierActionId() != 0) {
+			Date now = new Date();
+			
+			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(object.getDossierActionId());
+			
+			document.addDateSortable(DossierTerm.LAST_ACTION_DATE, now);
+			document.addTextSortable(DossierTerm.LAST_ACTION_CODE, dossierAction.getActionCode());
+			document.addTextSortable(DossierTerm.LAST_ACTION_NAME, dossierAction.getActionName());
+			document.addTextSortable(DossierTerm.LAST_ACTION_USER, dossierAction.getActionUser());
+			document.addTextSortable(DossierTerm.LAST_ACTION_NOTE, dossierAction.getActionNote());
+			
+			document.addTextSortable(DossierTerm.STEP_CODE, dossierAction.getStepCode());
+			document.addTextSortable(DossierTerm.STEP_NAME, dossierAction.getStepName());
+			
+			if (dossierAction.getActionOverdue() != 0) {
+				document.addTextSortable(DossierTerm.STEP_OVER_DUE, StringPool.TRUE);
+			} else {
+				document.addTextSortable(DossierTerm.STEP_OVER_DUE, StringPool.FALSE);
+			}
+			
+			Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getActionOverdue(), new Date());
+			
+			document.addDateSortable(DossierTerm.STEP_DUE_DATE, stepDuedate);
+		}
 
 		// add text fields
 		document.addTextSortable(DossierTerm.REFERENCE_UID, object.getReferenceUid());
