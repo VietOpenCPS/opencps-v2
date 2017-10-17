@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-	<xsd:element name="SearchListAction">
+	<xsd:element name="ActionSearchModel">
 		<xsd:complexType>
 			<xsd:sequence>
 				<!-- default -->
@@ -15,7 +15,7 @@
 		</xsd:complexType>
 	</xsd:element>
 
-	<xsd:element name="ListAction">
+	<xsd:element name="ActionResultModel">
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="total" type="xsd:int" minOccurs="0" />
