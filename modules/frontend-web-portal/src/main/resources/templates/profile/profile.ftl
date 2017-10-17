@@ -8,7 +8,7 @@
     <p class="name text-bold text-center" data-bind="text:applicantName">Lương Thị Hạnh</p>
     <div>Số CMND/Hộ chiếu: <span class="text-bold" data-bind="text:contactTelNo">0123456789</span></div>
     <div>Ngày cấp: <span class="text-bold" data-bind="text:applicantIdDate">26/09/2015</span></div>
-    <div>Thư điện tử: <span class="text-bold">hanhlt@gmail.com</span></div>
+    <div>Thư điện tử: <span class="text-bold" data-bind="text:contactEmail">hanhlt@gmail.com</span></div>
 
     <ul class="nav nav-tabs" role="tablist">
       <li role="presentation" class="active"><a href="#tttk" role="tab" data-toggle="tab">Thông tin tài khoản</a></li>
@@ -694,4 +694,5 @@ var pullDetailProfile = function(){
     }
   });
 }
+pullDetailProfile();
 </script>
