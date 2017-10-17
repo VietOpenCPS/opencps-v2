@@ -267,7 +267,7 @@
 			localIndexBusiness = 0;
 		}
 	});
-
+	
 	$("#pagerBussiness").kendoPager({
 		dataSource : dataSourceBusiness,
 		input : true,
@@ -312,7 +312,7 @@
 
 	$(document).on("click",".btn-unlock-account-citizen",function(event){
 		var id = $(this).attr("data-pk");
-		/*$.ajax({
+		$.ajax({
 			url : "${api.server}/applicants/"+id+"/lock",
 			dataType : "json",
 			type : "POST",
@@ -331,7 +331,7 @@
 			error : function(xhr){
 
 			}
-		});*/
+		});
 	});
 
 	$(document).on("click",".btn-delete-account-citizen",function(event){
@@ -381,7 +381,7 @@
 
 	$(document).on("click",".btn-unlock-account-business",function(event){
 		var id = $(this).attr("data-pk");
-		/*$.ajax({
+		$.ajax({
 			url : "${api.server}/applicants/"+id+"/lock",
 			dataType : "json",
 			type : "POST",
@@ -400,7 +400,7 @@
 			error : function(xhr){
 
 			}
-		});*/
+		});
 	});
 
 	$(document).on("click",".btn-delete-account-business",function(event){

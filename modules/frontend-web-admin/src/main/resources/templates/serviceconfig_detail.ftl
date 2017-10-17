@@ -42,6 +42,7 @@
 					<div class="col-sm-6 MB15">
 						<label>Mức độ</label>
 						<select class="form-control" id="serviceLevel" name="serviceLevel" data-bind="value: serviceLevel" required="required" validationMessage="Bạn phải chọn mức độ">
+							<option value="2">Mức độ 2</option>
 							<option value="3">Mức độ 3</option>
 							<option value="4">Mức độ 4</option>
 						</select>
@@ -81,7 +82,7 @@
 			</form>
 		</div>
 		<div id="xlqtdv" class="tab-pane fade in MT5">
-		<#include "serviceconfig_option.ftl">
+			<#include "serviceconfig_option.ftl">
 		</div>
 	</div>
 </div>

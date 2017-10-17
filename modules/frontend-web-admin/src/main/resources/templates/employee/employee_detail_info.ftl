@@ -11,7 +11,7 @@
 
 				<div class="col-sm-7"> 
 				
-					<div class="label-control clearfix fs20 xeditable-left">
+					<div class="label-control row fs20 xeditable-left">
 				
 						<div id="employee-back-list-page" class="col-sm-1">
 			
@@ -47,7 +47,7 @@
 
 				<div class="col-sm-5"> 
 				
-					<div class="label-control clearfix text-right" >
+					<div class="label-control row text-right" >
 				
 						<div class="col-sm-12">
 							
@@ -161,9 +161,9 @@
 
 						data-pk="${(employee.employeeId)!}" 
 						data-title="Ngày sinh:" 
-						data-value="${(employee.birthdate)!}">
+						data-value="${(employee.birthDate)!}">
 								
-							${(employee.birthdate)!}
+							${(employee.birthDate)!}
 
 					</a>
 				</div>

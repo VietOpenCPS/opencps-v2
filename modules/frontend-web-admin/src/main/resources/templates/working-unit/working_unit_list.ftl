@@ -10,7 +10,7 @@
 		<!--search-->
 		<div class="panel-body">
 	
-			<span id="_workingUnit_editWorkingUnit" class="btn btn-primary image-preview-input btn-block"> 
+			<span id="_workingUnit_editWorkingUnit" class="btn btn-active image-preview-input btn-block"> 
 				<i class="fa fa-outdent" aria-hidden="true"></i>
 				<span class="p-xxs" >Tổng số</span> 
 				<span id="_workingUnit_CounterList">0</span>
@@ -29,7 +29,7 @@
 		</div>
 				
 			
-		<ul class="ul-with-border ul-with-border-style-2 mh-head-2" id="_workingUnit_listView"></ul>
+		<ul class="ul-with-border ul-default mh-head-2" id="_workingUnit_listView"></ul>
 		
 		<script type="text/x-kendo-tmpl" id="_workingUnit_template">
 		

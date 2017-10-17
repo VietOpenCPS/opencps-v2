@@ -2,7 +2,7 @@
 <#include "init.ftl">
 </#if>
 
-<div  class="row">
+<div  class="row" id="employee_list">
 
 	<div class="col-md-9 PR0-lg">
 
@@ -16,7 +16,7 @@
 
 						<div class="col-xs-12 col-sm-12">
 
-							<button data-toggle="modal" class="btn btn-primary btn-block border-rad-4"
+							<button data-toggle="modal" class="btn btn-active btn-block border-rad-4"
 							href="${(url.employeePortlet.employee_create)!}" data-target="#modal-lg"> 
 							<i class="fa fa-user" aria-hidden="true"></i>
 
@@ -31,37 +31,31 @@
 						<ul id="employee-list-filter-by-workingunit" class="contact-navigator"></ul>
 
 						<script type="text/x-kendo-tmpl" id="employee-list-filter-by-workingunit-template">
+							# if( item.treeLevel == 0 ) { # 
+							<span class="nav-icon">
 
-							<div class="MB10">
+								<i class="fa fa-book fa-1.5x" aria-hidden="true"></i>
 
-								# if( item.treeLevel == 0 ) { # 
-								<span class="nav-icon">
+							</span>
+							# } #
 
-									<i class="fa fa-book fa-1.5x" aria-hidden="true"></i>
-
-								</span>
-								# } #
-
-								<span class="filter-workingunit" id="workingUnitId_#=item.workingUnitId#"
-								data-vl="#=item.workingUnitId#">
-								#=item.name# 
-							</span> 
-
-						</div>
-
+							<span class="filter-workingunit" id="workingUnitId_#=item.workingUnitId#"
+							data-vl="#=item.workingUnitId#">
+							#=item.name# 
+						</span>
 					</script>
 
 				</div>
 
 				<div class="col-sm-12 MT15">
 
-					<select id="employee-list-filter-by-jobpos" name="jobpos" class="form-control employee-list-filter"></select>
+					<select id="employee-list-filter-by-jobpos" name="jobpos" class="form-control contact-navigator-filter"></select>
 
 				</div>
 
 				<div class="col-sm-12 MT15">
 
-					<select id="employee-list-filter-by-working-status" name="status" class="form-control employee-list-filter">
+					<select id="employee-list-filter-by-working-status" name="status" class="form-control contact-navigator-filter">
 					</select>
 
 				</div>
@@ -72,15 +66,15 @@
 
 		<div id="employee-list-wrapper" class="col-sm-9 PL0-lg">
 
-			<div class="row M0">
+			<div class="row M0 box-s3">
 
-				<div class="col-sm-12 box-panel">
+				<div class="col-sm-12">
 
-					<div class="row eq-height">
+					<div class="row align-middle">
 
 						<div class="col-sm-8 align-middle">
 
-							<h4 class="MT5" id="emoloyee-list-title"></h4>
+							<h4 class="M0" id="emoloyee-list-title"></h4>
 
 							<div class="text-gray ML15">
 
@@ -92,7 +86,7 @@
 
 						</div>
 
-						<div class="col-sm-4 align-middle">
+						<div class="col-sm-4">
 							
 							<div class="input-group">
 
@@ -113,7 +107,7 @@
 
 				</div>
 
-				<div class="col-sm-12 MT15 box-panel">
+				<div class="col-sm-12 MT15">
 
 					<div class="row PT15 PB15">
 
@@ -148,7 +142,7 @@
 						<ul id="employee-listview">
 						</ul>
 
-						<div class="col-sm-offset-6 col-sm-6 k-pager-style2 eq-height-lg">
+						<div class="col-sm-12 k-pager-style2 eq-height-lg">
 
 							<div class="align-middle-lg">
 								<span class="text-nowrap MR10">Hiển thị </span>
@@ -238,6 +232,10 @@
 
 </div>
 
+<div class="" id="employee_detail">
+	
+</div>
+
 
 
 <script type="text/javascript">
@@ -278,10 +276,12 @@
 			event.preventDefault();
 			event.stopPropagation();
 			event.stopImmediatePropagation();
-			
+			$("#employee_list").hide();
+			$("#employee_detail").show();
+
 			var employeeId = $(this).attr('data-pk');
 
-			$( "#employee-index-page").load("${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+employeeId);
+			$( "#employee_detail").load("${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+employeeId);
 
 		});
 

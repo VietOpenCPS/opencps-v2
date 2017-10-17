@@ -310,6 +310,7 @@
 		}
 
 		var addDossierTemplete = function(){
+			console.log($("#templateName").val());
 			$.ajax({
 				url: "${api.server}" + "/dossiertemplates",
 				type: "POST",
