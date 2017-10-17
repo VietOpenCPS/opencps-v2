@@ -74,7 +74,8 @@ public class ProcessOptionInputModel {
 	public void setOptionName(String optionName) {
 		this.optionName = optionName;
 	}
-
+	
+	@DefaultValue("noname") @FormParam(value = "optionName")
 	protected String optionName;
 
     /**
