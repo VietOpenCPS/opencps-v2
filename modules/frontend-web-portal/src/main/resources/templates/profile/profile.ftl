@@ -208,7 +208,7 @@
       <div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div>
       <span class="text-bold">Đổi mật khẩu</span>
     </div>
-    <form id="fm">
+    <form id="fmChangePasswordUser">
       <div class="row-parts-content PB15">
         <div class="row">
           <div class="col-sm-2">
@@ -219,8 +219,8 @@
               <input type="password" class="form-control" id="old_password">
             </div>
           </div>
-          <div class="col-sm-6 MT5">
-            <span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message">Mật khẩu nhập bị sai</span></span>
+          <div class="col-sm-6 MT5" id="messagePassword">
+            <span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message"></span></span>
           </div>
         </div>
         <div class="row">
@@ -257,7 +257,7 @@
 
           </div>
           <div class="col-sm-10">
-            <button class="btn btn-active">Lưu thay đổi</button>
+            <button class="btn btn-active" id="btn-change-password-user" data-bind="attr:{data-pk : userId}">Lưu thay đổi</button>
           </div>
         </div>
       </div>
@@ -270,6 +270,29 @@
 </div>
 
 <script type="text/javascript">
+
+  $('#btn-change-password-user').click(function(){
+    var userId = $(this).attr("data-pk");
+    $.ajax({
+      url : "${api.server}/users/"+userId+"/changepass",
+      dataType : "json",
+      type : "PUT",
+      data : {
+        oldPassword : $("#old_password").val(),
+        newPassword : $("#retype_new_password").val()
+      },
+      success : function(result){
+        notification.show({
+          message: "Yêu cầu được thực hiện thành công"
+        }, "success");
+        $("#messagePassword").html(' <span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message"></span></span>');
+      },
+      error : function(xhr){
+        $("#messagePassword").html('<span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message"></span></span>');
+      }
+    });
+  });
+
   $("#show_password").click(function(){
     if ($("#show_password").is(":checked")){
       $("#old_password")[0]['type'] = 'input';
@@ -684,7 +707,8 @@ var pullDetailProfile = function(){
         wardName : result.wardName,
         contactName : result.contactName,
         contactTelNo : result.contactTelNo,
-        contactEmail : result.contactEmail
+        contactEmail : result.contactEmail,
+        userId : result.mappingUser.userId
       });
 
       kendo.bind($("#frmDetailAccount"), viewModel);
