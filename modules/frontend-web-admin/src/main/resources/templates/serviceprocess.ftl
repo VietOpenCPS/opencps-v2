@@ -137,6 +137,13 @@
 					description : dataItem.description,
 					durationCount : dataItem.durationCount,
 					durationUnit : dataItem.durationUnit,
+					generateDossierNo : dataItem.generateDossierNo,
+					generateDueDate : dataItem.generateDueDate,
+					dossierNoPattern : dataItem.dossierNoPattern,
+					dueDatePattern : dataItem.dueDatePattern,
+					generatePassword : dataItem.generatePassword,
+					directNotification : dataItem.directNotification,
+					serverNo : dataItem.serverNo,
 				});
 
 				kendo.bind($("#fm_process_info"), viewModel);
