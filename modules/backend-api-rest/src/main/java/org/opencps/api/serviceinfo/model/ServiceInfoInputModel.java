@@ -72,13 +72,25 @@ import com.liferay.portal.kernel.util.StringPool;
     "_public",
     "maxLevel",
     "administrationName",
-    "domainName"
+    "domainName",
+    "active"
 
 })
 @XmlRootElement(name = "ServiceInfoInputModel")
 public class ServiceInfoInputModel {
+	
+	@FormParam(value = "active")
+	protected String active;
 
 	
+	public String getActive() {
+		return active;
+	}
+
+	public void setActive(String active) {
+		this.active = active;
+	}
+
 	@DefaultValue("0") @FormParam(value = "serviceInfoId")
     protected Long serviceInfoId;
 
@@ -133,12 +145,19 @@ public class ServiceInfoInputModel {
 	
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "domainCode")
     protected String domainCode;
-
-	@XmlElement(name = "public")
+	
+    @XmlElement(name = "public")
 	@FormParam(value = "public")
     protected String _public;
-
 	
+	public String get_public() {
+		return _public;
+	}
+
+	public void set_public(String _public) {
+		this._public = _public;
+	}
+
 	@DefaultValue("2") @FormParam(value = "maxLevel")
     protected Integer maxLevel;
 	

@@ -142,7 +142,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					input.getServiceCode(), input.getServiceName(), input.getProcessText(), input.getMethodText(),
 					input.getDossierText(), input.getConditionText(), input.getDurationText(), input.getApplicantText(),
 					input.getResultText(), input.getRegularText(), input.getFeeText(), input.getAdministrationCode(),
-					input.getDomainCode(), input.getMaxLevel(), GetterUtil.getBoolean(input.getPublic()),
+					input.getDomainCode(), input.getMaxLevel(), GetterUtil.getBoolean(input.getActive()),
 					serviceContext);
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
@@ -272,7 +272,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					input.getServiceCode(), input.getServiceName(), input.getProcessText(), input.getMethodText(),
 					input.getDossierText(), input.getConditionText(), input.getDurationText(), input.getApplicantText(),
 					input.getResultText(), input.getRegularText(), input.getFeeText(), input.getAdministrationCode(),
-					input.getDomainCode(), input.getMaxLevel(), GetterUtil.getBoolean(input.getPublic()),
+					input.getDomainCode(), input.getMaxLevel(), GetterUtil.getBoolean(input.getActive()),
 					serviceContext);
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
