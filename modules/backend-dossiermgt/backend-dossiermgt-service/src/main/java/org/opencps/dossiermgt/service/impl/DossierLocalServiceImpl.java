@@ -23,6 +23,8 @@ import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 /**
@@ -152,6 +154,58 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossierPersistence.update(dossier);
 
 		return dossier;
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier submitting(long groupId, long id, String refId, ServiceContext context) throws PortalException {
+		
+		validateSubmitting();
+		
+		Dossier dossier = null;
+		
+		if (id != 0) {
+			dossier = dossierPersistence.fetchByPrimaryKey(id);
+		} else {
+			dossier = dossierPersistence.fetchByG_REF(groupId, refId);
+		}
+		
+		dossier.setSubmitting(true);
+		
+		dossierPersistence.update(dossier);
+		
+		return dossier;
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier reset(long groupId, long id, String refId, ServiceContext context) throws PortalException {
+		
+		validateReset();
+		
+		Dossier dossier = null;
+		
+		if (id != 0) {
+			dossier = dossierPersistence.fetchByPrimaryKey(id);
+		} else {
+			dossier = dossierPersistence.fetchByG_REF(groupId, refId);
+		}
+		
+		dossier.setSubmitting(false);
+		
+		//TODO add reset for DossierFile and PaymentFile (isNew => false)
+		
+		//TODO add remove DossierFile out system
+		
+		dossierPersistence.update(dossier);
+		
+		return dossier;
+	}
+	
+	private void validateSubmitting() throws PortalException {
+		//TODO add validate for submitting 
+	}
+
+	private void validateReset() throws PortalException {
+		//TODO add validate for submitting
 	}
 
 	private void validateUpdateDossier(long groupId, long dossierId, String referenceUid, String serviceCode,

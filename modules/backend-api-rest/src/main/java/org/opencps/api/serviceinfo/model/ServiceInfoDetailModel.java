@@ -80,7 +80,8 @@ import javax.xml.bind.annotation.XmlType;
     "maxLevel",
     "_public",
     "fileTemplates",
-    "serviceConfigs"
+    "serviceConfigs",
+    "active"
 })
 @XmlRootElement(name = "ServiceInfoDetailModel")
 public class ServiceInfoDetailModel {
@@ -106,6 +107,16 @@ public class ServiceInfoDetailModel {
     protected Integer maxLevel;
     @XmlElement(name = "public")
     protected String _public;
+    public String getActive() {
+		return active;
+	}
+
+	public void setActive(String active) {
+		this.active = active;
+	}
+
+	protected String active;
+
     protected List<FileTemplates> fileTemplates;
     protected List<ServiceInfoServiceConfig> serviceConfigs;
 
