@@ -271,7 +271,14 @@
 				processName : "",
 				description : "",
 				durationCount : 1,
-				durationUnit: 0
+				durationUnit: 0,
+				generateDossierNo : "",
+				generateDueDate : "",
+				dossierNoPattern : "",
+				dueDatePattern : "",
+				generatePassword : "",
+				directNotification : "",
+				serverNo : "",
 			});
 
 			kendo.bind($("#fm_process_info"), viewModel);
