@@ -29,7 +29,7 @@
 <script type="text/x-kendo-template" id="serviceConfigTemplate">
 	<li style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
 		<div class="row">
-			<div class="col-sm-11 PR0">
+			<div class="col-sm-11 PR0 service-config-item" data-pk="#:id#">
 				<p class="service-config-item" data-pk="#:id#">
 					<#-- #if(serviceName.length>40){#
 					# var dcontent = serviceName.substring(0,38)+"..."; #
@@ -43,10 +43,10 @@
 			<div class="col-sm-1 PL0 PR0">
 				<a class="item-serviceconfig-delete" href="javascript:;" data-pk="#:id#"><i class="fa fa-trash"></i></a>
 			</div>
-			<div class="col-sm-12">
+			<div class="col-sm-12 service-config-item" data-pk="#:id#">
 				<i class="fa fa-university"></i> <span class="ML5 service-config-item" data-pk="#:id#">#:govAgencyName#</span>
 			</div>
-			<div class="col-sm-12">
+			<div class="col-sm-12 service-config-item" data-pk="#:id#">
 				#
 				var lbl = "text-link";
 				if(serviceLevel == 1){
@@ -403,6 +403,7 @@
 		$(document).on("click", "._itemServiceConfig_option_btnEdit", function(event){
 			event.preventDefault();
 			console.log("edit service config");
+			$("#frmEstablishedProcess").show();
 			var id = $(this).attr("data-pk");
 			var item = dataSourceServiceOption.get(id);
 			pullServiceConfigOptionDetail(item);

@@ -11,7 +11,7 @@
   <span data-for="govAgencyCode" class="k-invalid-msg"></span>
 </div>
 <div class="col-sm-6">
-  
+
 </div>
 <div class="col-sm-6">
  <label>Mã số thuế cơ quan</label>
@@ -114,26 +114,27 @@
           govAgencyCode : value
         },
         success : function(result){
-          console.log(result.data[0]);
-          var dataObj = result.data[0];
-          if(dataObj){
-            $("#itemPaymentConfig").val(dataObj.paymentConfigId);
+          console.log(result.data);
+          if(result.data){
+            var dataObj = result.data[0];
+            if(dataObj){
+              $("#itemPaymentConfig").val(dataObj.paymentConfigId);
 
-            var viewModel = kendo.observable({
-              govAgencyCode : dataObj.govAgencyCode,
-              govAgencyName : dataObj.govAgencyName,
-              govAgencyTaxNo : dataObj.govAgencyTaxNo,
-              invoiceTemplateNo : dataObj.invoiceTemplateNo,
-              invoiceIssueNo : dataObj.invoiceIssueNo,
-              invoiceLastNo : dataObj.invoiceLastNo,
-              bankInfo : dataObj.bankInfo
-            });
+              var viewModel = kendo.observable({
+                govAgencyCode : dataObj.govAgencyCode,
+                govAgencyName : dataObj.govAgencyName,
+                govAgencyTaxNo : dataObj.govAgencyTaxNo,
+                invoiceTemplateNo : dataObj.invoiceTemplateNo,
+                invoiceIssueNo : dataObj.invoiceIssueNo,
+                invoiceLastNo : dataObj.invoiceLastNo,
+                bankInfo : dataObj.bankInfo
+              });
 
-            kendo.bind($("#frmPaymentConfig"), viewModel);
-          }else{
-            $("#itemPaymentConfig").val("");
+              kendo.bind($("#frmPaymentConfig"), viewModel);
+            }else{
+              $("#itemPaymentConfig").val("");
+            }
           }
-          
         },
         error : function(xhr){
 
@@ -221,7 +222,7 @@
     $.ajax({
       url : "${api.server}/paymentconfigs",
       dataType : "json",
-      type : "PUT",
+      type : "POST",
       headers: {"groupId": ${groupId}},
       data : {
         govAgencyCode  : $("#govAgencyCode").val(),

@@ -50,7 +50,7 @@
 	<button class="btn btn-active" type="button" id="btn-add-serviceconfig-option"><i class="fa fa-plus" aria-hidden="true"></i> Thêm quy trình dịch vụ</button>
 </div>
 
-<form id="frmEstablishedProcess">
+<form id="frmEstablishedProcess" style="display: none;">
 	<div class="row">
 
 		<div class="col-sm-12 MB15">
@@ -81,8 +81,7 @@
 
 		<div class="col-sm-12 MB15">
 			<label>Chuỗi pattern xác định việc lựa chọn tự động theo đối tượng xử lý hồ sơ</label>
-			<input name="autoSelect" id="autoSelect" class="form-control" placeholder="Chuỗi pattern" data-bind="value:autoSelect" validationMessage="Bạn phải điền chuỗi pattern" required="required">
-			<span data-for="autoSelect" class="k-invalid-msg"></span>
+			<input name="autoSelect" id="autoSelect" class="form-control" placeholder="Chuỗi pattern" data-bind="value:autoSelect">
 		</div>
 
 		<div class="col-sm-12 ">
@@ -266,6 +265,7 @@
 	$("#btn-add-serviceconfig-option").click(function(){
 		console.log("add");
 		$("#itemServiceConfigOption").val("");
+		$("#frmEstablishedProcess").show();
 		clearForm();
 	});
 
