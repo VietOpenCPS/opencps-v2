@@ -82,12 +82,12 @@
 								<label>Mức độ:</label>
 							</div>
 							<div class="col-sm-8">
-								<select class="form-control" id="level" name="level" data-bind="value: maxLevel" required="required" validationMessage="Bạn phải chọn mức độ">
+								<select class="form-control" id="level" name="level" data-bind="value: maxLevel" >
 									<option value="2">Mức độ 2</option>
 									<option value="3">Mức độ 3</option>
 									<option value="4">Mức độ 4</option>
 								</select>
-								<span data-for="level" class="k-invalid-msg"></span>
+								
 							</div>
 						</div>
 					</div>
