@@ -24,20 +24,24 @@
 						<li class="">
 							<div class="row">
 								<div class="col-sm-12 MB5">
-									<span class="showServiceinfoDetail" data-pk="#:id#">#:serviceCode# </span>
-									#if(typeof active !== "undefined" && active) {#
-									<i class="fa fa-check ML5" aria-hidden="true"></i>
-									#} #
+									<div class="showServiceinfoDetail">
+										<span class="showServiceinfoDetail" data-pk="#:id#">#:serviceCode# </span>
+										#if(typeof active !== "undefined" && active) {#
+										<i class="fa fa-check ML5" aria-hidden="true"></i>
+										#} #
+									</div>
 									<i class="fa fa-trash pull-right _itemServiceinfo_btnDelete" data-pk="#:id#"></i>
 								</div>
-								<div class="col-sm-12">
-									<p class="showServiceinfoDetail" data-pk="#:id#">#:serviceName#</p>
-								</div>
-								<div class="col-sm-12">
-									<i class="fa fa-suitcase" aria-hidden="true"></i> <span class="showServiceinfoDetail" data-pk="#:id#">#:domainName#</span>
-								</div>
-								<div class="col-sm-12">
-									<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i class="showServiceinfoDetail" data-pk="#:id#">#:administrationName#</i>
+								<div class="showServiceinfoDetail">
+									<div class="col-sm-12">
+										<p class="showServiceinfoDetail" data-pk="#:id#">#:serviceName#</p>
+									</div>
+									<div class="col-sm-12">
+										<i class="fa fa-suitcase" aria-hidden="true"></i> <span class="showServiceinfoDetail" data-pk="#:id#">#:domainName#</span>
+									</div>
+									<div class="col-sm-12">
+										<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i class="showServiceinfoDetail" data-pk="#:id#">#:administrationName#</i>
+									</div>
 								</div>
 							</div>
 						</li>
