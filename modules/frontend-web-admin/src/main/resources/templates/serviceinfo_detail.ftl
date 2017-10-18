@@ -458,9 +458,15 @@
 
 								},
 								error : function(xhr){
-									notification.show({
-										message: "Xẩy ra lỗi, vui lòng thử lại mã biểu mẫu"
-									}, "error");
+									if (result.responseJSON.description == "No Content."){
+										notification.show({
+											message: "Thêm không thành công do số biểu mẫu bị trùng."
+										}, "error");
+									} else {
+										notification.show({
+											message: "Xẩy ra lỗi, vui lòng thử lại"
+										}, "error");
+									}
 								}
 							});
 						}else {
@@ -643,7 +649,7 @@ $("#btn-submit-serviceinfo-detail").click(function(){
 			error : function(xhr){
 				if (result.responseJSON.description == "DuplicateServiceCodeException"){
 					notification.show({
-						message: "Xóa không thành công do Mẫu hồ sơ có thành phần hồ sơ."
+						message: "Sửa không thành công do mã thủ tục bị trùng."
 					}, "error");
 				} else {
 					notification.show({
@@ -690,7 +696,7 @@ $("#btn-submit-serviceinfo-detail").click(function(){
 
 				if (result.responseJSON.description == "DuplicateServiceCodeException"){
 					notification.show({
-						message: "Xóa không thành công do Mẫu hồ sơ có thành phần hồ sơ."
+						message: "Thêm không thành công do mã thủ tục bị trùng."
 					}, "error");
 				} else {
 					notification.show({
