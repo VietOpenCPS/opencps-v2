@@ -219,7 +219,7 @@ public class ServiceProcessUtils {
 			model.setAutoEvent(doc.get(ProcessActionTerm.AUTO_EVENT));
 			model.setPreCondition(doc.get(ProcessActionTerm.PRE_CONDITION));
 			model.setAllowAssignUser(doc.get(ProcessActionTerm.ALLOW_ASSIGN_USER));
-			model.setAssignUserId(doc.get(ProcessActionTerm.ALLOW_ASSIGN_USER));
+			model.setAssignUserId(doc.get(ProcessActionTerm.ASSIGN_USER_ID));
 			model.setAssignUserName(doc.get(ProcessActionTerm.ASSIGN_USER_NAME));
 			model.setRequestPayment(doc.get(ProcessActionTerm.REQUEST_PAYMENT));
 			model.setPaymentFee(doc.get(ProcessActionTerm.PAYMENT_FEE));

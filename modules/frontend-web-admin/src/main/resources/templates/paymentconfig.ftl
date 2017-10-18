@@ -11,7 +11,7 @@
   <span data-for="govAgencyCode" class="k-invalid-msg"></span>
 </div>
 <div class="col-sm-6">
-
+  
 </div>
 <div class="col-sm-6">
  <label>Mã số thuế cơ quan</label>
@@ -47,14 +47,13 @@
    </label> 
    <textarea class="form-control" rows="3" id="invoiceForm" name="invoiceForm" data-bind="text:invoiceForm" ></textarea>
  </div>
- 
- <div class="col-sm-12">
+</div>
+<div class="col-sm-12">
   <label>Thông tin tài khoản ngân hàng</label>
   <div class="form-group">
     <input type="text" name="bankInfo" id="bankInfo" class="form-control" placeholder="Số hiệu" data-bind="value:bankInfo" required="required" validationMessage="Bạn phải điền thông tin tài khoản ngân hàng">
     <span data-for="bankInfo" class="k-invalid-msg"></span>
   </div>
-</div>
 </div>
 <div class="col-sm-12">
  <div class="form-group">

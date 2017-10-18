@@ -1,4 +1,6 @@
+<#if (Request)??>
 <#include "init.ftl">
+</#if>
 
 <div class="modal-header form-group">
 
@@ -83,7 +85,7 @@
 	
 (function($) {
 	
-	var getJobPosBaseUrl = "${api.endpoint}/jobpos";
+	var getJobPosBaseUrl = "${api.server}/jobpos";
 
 	var getJobPosDataSource = new kendo.data.DataSource({
 		
@@ -140,7 +142,7 @@
 		
 	});
 
-	var getWorkingUnitBaseUrl = "${api.endpoint}/workingunits";
+	var getWorkingUnitBaseUrl = "${api.server}/workingunits";
 
 	var getWorkingUnitDataSource = new kendo.data.DataSource({
 		
@@ -203,7 +205,7 @@
 		event.stopPropagation();
 		event.stopImmediatePropagation();
 
-		var createEmployeeJobposBaseUrl = "${api.endpoint}/employees/"+ $(this).attr('data-pk') +"/jobpos";
+		var createEmployeeJobposBaseUrl = "${api.server}/employees/"+ $(this).attr('data-pk') +"/jobpos";
 		
 		var checkFormValidate = $("#employee-jobpos-create-form").kendoValidator().data("kendoValidator");
 

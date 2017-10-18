@@ -30,9 +30,7 @@
 								</span>
 							</label> 
 							<select class="form-control" id="administrationCode" name="administrationCode" required="required" validationMessage="Bạn phải chọn cơ quan quản lý">
-								<#list administrations as item>
-								<option value="${item.id}">${item.name}</option>
-								</#list> 
+								
 							</select>
 							<span data-for="administrationCode" class="k-invalid-msg"></span>
 						</div>
@@ -43,9 +41,7 @@
 							</label> 
 							
 							<select class="form-control" id="domainCode" name="domainCode">
-								<#list domains as domain>
-								<option value="${domain.id}">${domain.name}</option>
-								</#list> 
+								
 							</select>
 						</div>				
 					</div>
@@ -69,9 +65,7 @@
 							<label class="control-label">Trạng thái: 
 							</label> 
 							<select class="form-control" id="activeStatus" name="activeStatus">
-								<#list serviceInfoStatuses as item>
-								<option value="${item.activeStatusCode}">${item.activeStatusName}</option>
-								</#list> 
+								
 							</select>
 						</div>
 					</div>

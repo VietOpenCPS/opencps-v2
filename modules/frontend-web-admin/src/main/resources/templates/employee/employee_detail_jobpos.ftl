@@ -1,4 +1,6 @@
+<#if (Request)??>
 <#include "init.ftl">
+</#if>
 <div  class="row">
 
 	<div class="col-sm-12">
@@ -85,7 +87,7 @@
 	var birthdate = $('#employee-detail-birthdate');
 	//birthdate.text(kendo.toString(kendo.parseDate(birthdate.text().trim(), 'yyyy-MM-dd'), 'dd/MM/yyyy'));
 
-	var employeeDeleteJobPosBaseUrl = "${api.endpoint}/employees/${(employee.employeeId)!}/jobpos";
+	var employeeDeleteJobPosBaseUrl = "${api.server}/employees/${(employee.employeeId)!}/jobpos";
 
 	$(document).on('click', '.employee-detail-delete-jobpos', function(event){
 		

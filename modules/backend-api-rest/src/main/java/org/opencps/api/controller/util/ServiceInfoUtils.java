@@ -62,7 +62,8 @@ public class ServiceInfoUtils {
 			model.setDomainCode(doc.get(ServiceInfoTerm.DOMAIN_CODE));
 			model.setDomainName(doc.get(ServiceInfoTerm.DOMAIN_NAME));
 			model.setMaxLevel(GetterUtil.getInteger(doc.get(ServiceInfoTerm.MAX_LEVEL)));
-			model.setPublic(doc.get(ServiceInfoTerm.PUBLIC_));
+			//model.setPublic(doc.get(ServiceInfoTerm.PUBLIC_));
+			model.setActive(doc.get(ServiceInfoTerm.PUBLIC_));
 			
 			List<ServiceInfoServiceConfig> lsServiceConfig = new ArrayList<ServiceInfoServiceConfig>();
 
@@ -124,7 +125,7 @@ public class ServiceInfoUtils {
 		model.setDomainCode(serviceInfo.getDomainCode());
 		model.setDomainName(serviceInfo.getDomainName());
 		model.setMaxLevel(serviceInfo.getMaxLevel());
-		model.setPublic(Boolean.toString(serviceInfo.getPublic_()));
+		model.setActive(Boolean.toString(serviceInfo.getPublic_()));
 
 		return model;
 	}
@@ -157,7 +158,7 @@ public class ServiceInfoUtils {
 		model.setDomainCode(serviceInfo.getDomainCode());
 		model.setDomainName(serviceInfo.getDomainName());
 		model.setMaxLevel(serviceInfo.getMaxLevel());
-		model.setPublic(Boolean.toString(serviceInfo.getPublic_()));
+		model.setActive(Boolean.toString(serviceInfo.getPublic_()));
 		
 		List<ServiceInfoServiceConfig> lsServiceConfig = new ArrayList<ServiceInfoServiceConfig>();
 
