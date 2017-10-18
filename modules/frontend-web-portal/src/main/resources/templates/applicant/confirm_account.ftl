@@ -45,7 +45,7 @@
           }, "success");
 
           setTimeout(function(){
-            //window.location.href = "${redirectURL}";
+            /*<--window.location.href = "${redirectURL}";-->*/
 
             $("form[name=login_form] #input_login").val(result.email);
             $("form[name=login_form] #input_password").val(result.token);
