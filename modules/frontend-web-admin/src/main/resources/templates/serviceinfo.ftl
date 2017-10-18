@@ -266,8 +266,8 @@
 		console.log($(this).attr("data-pk"));
 
 		$("#listViewTTHC > li").removeClass("k-state-selected");
-		console.log($(this).parent().parent().parent().parent());
-		$(this).parent().parent().parent().parent().addClass("k-state-selected");
+		console.log($(this).parent().parent().parent());
+		$(this).parent().parent().parent().addClass("k-state-selected");
 		pullDataDetail($(this).attr("data-pk"));
 		crtAddOrEdit();
 	});
