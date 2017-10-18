@@ -462,6 +462,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossier;
 
 	}
+	
+	public Dossier getByRef(long groupId, String refId) throws PortalException {
+		return dossierPersistence.fetchByG_REF(groupId, refId);
+	}
 
 	private void validateDossierAction(long groupId, long id, String refId, long dossierActionId)
 			throws PortalException {
