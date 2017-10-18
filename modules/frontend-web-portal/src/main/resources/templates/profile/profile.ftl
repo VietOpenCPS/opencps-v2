@@ -5,10 +5,10 @@
   <div class="col-sm-2 col-xs-12">
     <img src="https://jobseekers.vn/wp-content/themes/sb_theme/assets/images/default_avatar.png" class="img-responsive max-width-100 img-rounded">
     <div class="text-center"><a href="" class="text-light-gray">Thay đổi avatar</a></div>
-    <p class="name text-bold text-center" data-bind="text:applicantName" id="profileName">Lương Thị Hạnh</p>
-    <div>Số CMND/Hộ chiếu: <span class="text-bold" data-bind="text:applicantIdNo" id="profileIdNo">0123456789</span></div>
-    <div>Ngày cấp: <span class="text-bold" data-bind="text:applicantIdDate" id="profileDate">26/09/2015</span></div>
-    <div>Thư điện tử: <span class="text-bold" data-bind="text:contactEmail" id="profileEmail">hanhlt@gmail.com</span></div>
+    <p class="name text-bold text-center" data-bind="text:applicantName" id="profileName"></p>
+    <div>Số CMND/Hộ chiếu: <span class="text-bold" data-bind="text:applicantIdNo" id="profileIdNo"></span></div>
+    <div>Ngày cấp: <span class="text-bold" data-bind="text:applicantIdDate" id="profileDate"></span></div>
+    <div>Thư điện tử: <span class="text-bold" data-bind="text:contactEmail" id="profileEmail"></span></div>
 
     <ul class="nav nav-tabs" role="tablist">
       <li role="presentation" class="active"><a href="#tttk" role="tab" data-toggle="tab">Thông tin tài khoản</a></li>
@@ -380,7 +380,7 @@
       }
     });
     */
-    var updateProfileURL = '/o/rest/v2/applicants/3802';
+    var updateProfileURL = '/o/rest/v2/applicants/${applicantId}';
     
     $('#applicantName').editable({
       url: updateProfileURL,
