@@ -30,7 +30,7 @@
 	<li style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
 		<div class="row">
 			<div class="col-sm-11 PR0 service-config-item" data-pk="#:id#">
-				<p class="service-config-item" data-pk="#:id#">
+				<p class="" data-pk="#:id#">
 					<#-- #if(serviceName.length>40){#
 					# var dcontent = serviceName.substring(0,38)+"..."; #
 					#:kendo.toString(dcontent)#
@@ -58,7 +58,7 @@
 	}else {
 	lbl = "text-danger";
 }#
-<span class="#:lbl# service-config-item" data-pk="#:id#">Mức độ <span>#:serviceLevel#</span></span>
+<span class="#:lbl#" data-pk="#:id#">Mức độ <span>#:serviceLevel#</span></span>
 </div>
 </div>
 </li>
@@ -214,7 +214,7 @@
 			$("#itemServiceConfigId").val($(this).attr("data-pk"));
 			$("#serviceConfigListView > li").removeClass("k-state-selected");
 
-			$(this).parent().parent().parent().addClass("k-state-selected");
+			$(this).parent().parent().addClass("k-state-selected");
 			console.log("itemServiceConfigId: "+$("#itemServiceConfigId").val());
 			formControl(id);
 		});
