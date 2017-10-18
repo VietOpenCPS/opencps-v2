@@ -49,9 +49,11 @@
 			</button>
 		</div>
 	</div>
+	<div id="detailView"></div> <!--render thông tin hồ sơ cơ bản--> 
 	
 </div>
-<script type="text/javascript">
+<#-- Render search input -->
+<#-- <script type="text/javascript">
 	$("#input_search_serviceinfo").kendoAutoComplete({
 		dataSource: {
 			transport :{
@@ -80,4 +82,4 @@
 		placeholder: "Nhập tên thủ tục hành chính",
 		noDataTemplate: 'Không có dữ liệu'
 	});
-</script>
+</script> -->

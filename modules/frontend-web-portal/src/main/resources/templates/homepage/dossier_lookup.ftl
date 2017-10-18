@@ -45,7 +45,19 @@
 	});
 	$("#lvDossierResult").kendoListView({
 		dataSource : dataSourceDossierResult,
-		template : kendo.template($("#tempDossierResult").html())
+		template : kendo.template($("#tempDossierResult").html()),
+		selectable: true,
+	    change: function() {
+                   var index = this.select().index(),
+                       dataItem = this.dataSource.view()[index];
+                   $("#detailView").load("${ajax.dossierinfo_detail}?id=" + dataItem.dossierId);
+                },
+        dataBound: function(e) {
+           var listView = e.sender;
+           var firstItem = listView.element.children().first();
+           listView.select(firstItem);
+        }
+
 	});
 	$("#pagerDossirResult").kendoPager({
 		dataSource : dataSourceDossierResult,
