@@ -5,10 +5,10 @@
   <div class="col-sm-2 col-xs-12">
     <img src="https://jobseekers.vn/wp-content/themes/sb_theme/assets/images/default_avatar.png" class="img-responsive max-width-100 img-rounded">
     <div class="text-center"><a href="" class="text-light-gray">Thay đổi avatar</a></div>
-    <p class="name text-bold text-center" data-bind="text:applicantName">Lương Thị Hạnh</p>
-    <div>Số CMND/Hộ chiếu: <span class="text-bold" data-bind="text:contactTelNo">0123456789</span></div>
-    <div>Ngày cấp: <span class="text-bold" data-bind="text:applicantIdDate">26/09/2015</span></div>
-    <div>Thư điện tử: <span class="text-bold" data-bind="text:contactEmail">hanhlt@gmail.com</span></div>
+    <p class="name text-bold text-center" data-bind="text:applicantName" id="profileName">Lương Thị Hạnh</p>
+    <div>Số CMND/Hộ chiếu: <span class="text-bold" data-bind="text:applicantIdNo" id="profileIdNo">0123456789</span></div>
+    <div>Ngày cấp: <span class="text-bold" data-bind="text:applicantIdDate" id="profileDate">26/09/2015</span></div>
+    <div>Thư điện tử: <span class="text-bold" data-bind="text:contactEmail" id="profileEmail">hanhlt@gmail.com</span></div>
 
     <ul class="nav nav-tabs" role="tablist">
       <li role="presentation" class="active"><a href="#tttk" role="tab" data-toggle="tab">Thông tin tài khoản</a></li>
@@ -220,7 +220,7 @@
             </div>
           </div>
           <div class="col-sm-6 MT5" id="messagePassword">
-            <span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message"></span></span>
+
           </div>
         </div>
         <div class="row">
@@ -277,6 +277,7 @@
       url : "${api.server}/users/"+userId+"/changepass",
       dataType : "json",
       type : "PUT",
+      headers: {"groupId": ${groupId}},
       data : {
         oldPassword : $("#old_password").val(),
         newPassword : $("#retype_new_password").val()
@@ -288,7 +289,7 @@
         $("#messagePassword").html(' <span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message"></span></span>');
       },
       error : function(xhr){
-        $("#messagePassword").html('<span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message"></span></span>');
+        $("#messagePassword").html('<span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message">Mật khẩu hoặc tài khoản không đúng</span></span>');
       }
     });
   });
@@ -380,7 +381,7 @@
     });
     */
     var updateProfileURL = '/o/rest/v2/applicants/3802';
-
+    
     $('#applicantName').editable({
       url: updateProfileURL,
       ajaxOptions:{
@@ -399,8 +400,8 @@
         //   return 'Đây là trường bắt buộc';
         // }
       },
-      success: function(data) {
-
+      success: function(response, newValue) {
+        $("#profileName").html(newValue);
       },
       error: function(event, id, obj) {
 
@@ -626,8 +627,9 @@
         //   return 'Đây là trường bắt buộc';
         // }
       },
-      success: function(data) {
-       alert(data);
+      success: function(response, newValue) {
+       $("#profileEmail").html(newValue);
+
      },
      error:function(xhr) {
       if(xhr.status == 500) return 'Internal server error';
@@ -700,16 +702,41 @@ var pullDetailProfile = function(){
     headers: {"groupId": ${groupId}},
     success : function(result){
       var viewModel = kendo.observable({
-        applicantName : result.applicantName,
-        address : result.address,
-        cityName : result.cityName,
-        districtName : result.districtName,
-        wardName : result.wardName,
-        contactName : result.contactName,
-        contactTelNo : result.contactTelNo,
-        contactEmail : result.contactEmail,
-        userId : result.mappingUser.userId
-      });
+        applicantName : function(){
+          $('#applicantName').editable("setValue",result.applicantName); 
+          return result.applicantName;
+        },
+        address : function(){
+         $('#address').editable("setValue",result.address); 
+         return result.address;
+       },
+       cityName : function(){
+        $('#city').editable("setValue",result.cityName); 
+        return result.cityName;
+      },
+      districtName : function(){
+        $('#district').editable("setValue",result.districtName); 
+        return result.districtName
+      },
+      wardName : function(){
+        $('#wards').editable("setValue",result.wardName); 
+        return result.wardName
+      },
+      contactName : function(){
+        $('#contactName').editable("setValue",result.contactName); 
+        return result.contactName;
+      },
+      contactTelNo : function(){
+        $('#phone').editable("setValue",result.contactTelNo); 
+        return result.contactTelNo;
+      },
+      contactEmail : function(){
+        $('#email').editable("setValue",result.contactEmail); 
+        return result.contactEmail;
+      },
+      applicantIdNo : result.applicantIdNo,
+      userId : result.mappingUser.userId
+    });
 
       kendo.bind($("#frmDetailAccount"), viewModel);
     },
