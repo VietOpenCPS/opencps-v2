@@ -401,6 +401,10 @@
 			type : "GET",
 			success : function(result){
 				console.log(result.domainName);
+				var arrFile = result.fileTemplates;
+				if(arrFile){
+					arrFile = [];
+				}
 				var viewModel = kendo.observable({
 					addFiletemplate : function(e){
 						var that = this;
@@ -454,7 +458,7 @@
 								},
 								error : function(xhr){
 									notification.show({
-										message: "Xẩy ra lỗi, vui lòng thử lại"
+										message: "Xẩy ra lỗi, vui lòng thử lại mã biểu mẫu"
 									}, "error");
 								}
 							});
@@ -500,7 +504,7 @@
 					conditionText : function(e){
 						$('#conditionText').summernote('code', result.conditionText);
 					},
-					fileTemplates : result.fileTemplates,
+					fileTemplates : arrFile,
 					maxLevel: result.maxLevel,
 					active : result.active,
 					deleteFileTemplate : function(e){
