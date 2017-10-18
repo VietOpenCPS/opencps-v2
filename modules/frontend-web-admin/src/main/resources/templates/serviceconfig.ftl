@@ -29,7 +29,7 @@
 <script type="text/x-kendo-template" id="serviceConfigTemplate">
 	<li style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
 		<div class="row">
-			<div class="col-sm-11 PR0">
+			<div class="col-sm-11 PR0 service-config-item" data-pk="#:id#">
 				<p class="service-config-item" data-pk="#:id#">
 					<#-- #if(serviceName.length>40){#
 					# var dcontent = serviceName.substring(0,38)+"..."; #
