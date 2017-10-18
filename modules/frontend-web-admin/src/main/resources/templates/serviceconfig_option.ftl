@@ -30,16 +30,16 @@
 			<span>#:itemIndex#</span>
 		</div>
 		<div class="col-sm-5">
-			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit"><span>#:optionName#</span></a>
+			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit text-hover-blue"><span>#:optionName#</span></a>
 		</div>
 		<div class="col-sm-2 text-center">
-			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit"><span>#:templateNo#</span></a>
+			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit text-hover-blue"><span>#:templateNo#</span></a>
 		</div>
 		<div class="col-sm-2 text-center">
-			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit"><span>#:processNo#</span></a>
+			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit text-hover-blue"><span>#:processNo#</span></a>
 		</div>
 		<div class="col-sm-2 text-center">
-			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnDelete">
+			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnDelete text-hover-blue">
 				<i class="fa fa-trash"></i>
 			</a>
 		</div>
