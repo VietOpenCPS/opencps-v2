@@ -3,7 +3,7 @@
 </#if>
 
 <div class="row">
-	<div class="col-sm-9 col-sm-offset-1 text-center searchbar">
+	<#-- <div class="col-sm-9 col-sm-offset-1 text-center searchbar">
 		<h3 class="text-blue"><i>HỆ THỐNG DỊCH VỤ CÔNG TRỰC TUYẾN</i></h3>
 		<div class="input-group MB15">
 			<input id="input_search_serviceinfo" type="text" class="form-control" placeholder="Nhập tên thủ tục hành chính">
@@ -37,7 +37,19 @@
 				</div>
 			</div>
 		</div>
+	</div> -->
+	<div class="col-sm-12">
+		<span class="title">TRA CỨU HỒ SƠ</span>
 	</div>
+	<div class="input-group col-md-6">
+		<input id="input_search_serviceinfo" type="text" class="form-control" placeholder="Nhập mã hồ sơ / Họ và tên">
+		<div class="input-group-btn">
+			<button class="btn btn-default" type="submit">
+				<i class="glyphicon glyphicon-search"></i>
+			</button>
+		</div>
+	</div>
+	
 </div>
 <script type="text/javascript">
 	$("#input_search_serviceinfo").kendoAutoComplete({
