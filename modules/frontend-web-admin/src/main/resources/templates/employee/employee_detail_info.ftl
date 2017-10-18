@@ -1,5 +1,6 @@
+<#if (Request)??>
 <#include "init.ftl">
-
+</#if>
 <div class="employee-deatil-info-wraper">
 	
 	<div class="row">
@@ -10,7 +11,7 @@
 
 				<div class="col-sm-7"> 
 				
-					<div class="label-control clearfix fs20 xeditable-left">
+					<div class="label-control row fs20 xeditable-left">
 				
 						<div id="employee-back-list-page" class="col-sm-1">
 			
@@ -46,7 +47,7 @@
 
 				<div class="col-sm-5"> 
 				
-					<div class="label-control clearfix text-right" >
+					<div class="label-control row text-right" >
 				
 						<div class="col-sm-12">
 							
@@ -160,9 +161,9 @@
 
 						data-pk="${(employee.employeeId)!}" 
 						data-title="Ngày sinh:" 
-						data-value="${(employee.birthdate)!}">
+						data-value="${(employee.birthDate)!}">
 								
-							${(employee.birthdate)!}
+							${(employee.birthDate)!}
 
 					</a>
 				</div>
@@ -355,7 +356,7 @@
 
 <script type="text/javascript" charset="utf-8" >
 
-var employeeUpdateBaseUrl = '${api.endpoint}/employees';
+var employeeUpdateBaseUrl = '${api.server}/employees';
 
 function employeeChangeAvatar(fileInput) {
 	
@@ -492,7 +493,7 @@ function employeeChangeAvatar(fileInput) {
 	$.fn.editable.defaults.mode = 'inline';
 	$.fn.editable.defaults.send = "always";
 	
-	var employeeUpdatBaseUrl = '${api.endpoint}/employees';
+	var employeeUpdatBaseUrl = '${api.server}/employees';
 	
 	$(document).on('click', '#employee-detail-employeeno-icon', function(e){
 		

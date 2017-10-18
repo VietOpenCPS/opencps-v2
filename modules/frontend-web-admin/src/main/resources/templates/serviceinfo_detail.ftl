@@ -97,7 +97,7 @@
 								<label>Trạng thái:</label>
 							</div>
 							<div class="col-sm-8">
-								<select class="form-control" id="status" name="status" required="required" validationMessage="Bạn phải chọn trạng thái" data-bind="value:public">
+								<select class="form-control" id="status" name="status" required="required" validationMessage="Bạn phải chọn trạng thái" data-bind="value:active">
 									<option value="true">Công khai</option>
 									<option value="false">Không công khai</option>
 								</select>
@@ -118,28 +118,28 @@
 				<label>Trình tự thực hiện</label>
 				<div id="processText" name="processText" data-bind="text:processText"></div>
 
-				<label class="">Cách thức thực hiện</label>
+				<label class="MT15">Cách thức thực hiện</label>
 				<div id="methodText" name="methodText" data-bind="text:methodText"></div>
 
-				<label class="">Thành phần hồ sơ</label>
+				<label class="MT15">Thành phần hồ sơ</label>
 				<div id="dossierText" name="dossierText" data-bind="text:dossierText"></div>
 
-				<label class="">Điều kiện thực hiện</label>
+				<label class="MT15">Điều kiện thực hiện</label>
 				<div id="conditionText" name="conditionText" data-bind="text:conditionText"></div>
 
-				<label class="">Thời gian giải quyết</label>
+				<label class="MT15">Thời gian giải quyết</label>
 				<div id="durationText" name="durationText" data-bind="text:durationText"></div>
 
-				<label class="">Đối tượng thực hiện</label>
+				<label class="MT15">Đối tượng thực hiện</label>
 				<div id="applicantText" name="applicantText" data-bind="text:applicantText"></div>
 
-				<label class="">Lệ phí thủ tục</label>
+				<label class="MT15">Lệ phí thủ tục</label>
 				<div id="feeText" name="feeText" data-bind="text:feeText"></div>
 
-				<label class="">Kết quả thực hiện</label>
+				<label class="MT15">Kết quả thực hiện</label>
 				<div id="resultText" name="resultText" data-bind="text:resultText"></div>
 
-				<label class="">Căn cứ pháp lý</label>
+				<label class="MT15">Căn cứ pháp lý</label>
 				<div id="regularText" name="regularText" data-bind="text:regularText"></div>
 
 				<div class="col-sm-12 text-center MT10">
@@ -430,10 +430,25 @@
 									notification.show({
 										message: "Yêu cầu được thực hiện thành công"
 									}, "success");
+
+									if(that.get("fileTemplates")){
+										if(!that.get("fileTemplates")[0]){
+											var fileObj = that.get("fileTemplates");
+											if(typeof fileObj.length === 'undefined'){
+												console.log("Object");
+												var arr = new Array();
+												arr.push(fileObj);
+												that.set("fileTemplates",arr);
+											}
+										}
+									}else{
+										that.set("fileTemplates",[]);
+									}
 									that.get("fileTemplates").push({
 										fileTemplateNo: result.fileTemplateNo,
 										templateName: result.templateName
 									});
+									console.log(that.get("fileTemplates"));
 									$("#serviceInfoFileTempalteDialog").modal('hide');
 
 								},
@@ -487,8 +502,9 @@
 					},
 					fileTemplates : result.fileTemplates,
 					maxLevel: result.maxLevel,
-					public : result.public,
+					active : result.active,
 					deleteFileTemplate : function(e){
+						var that = this;
 						var fileTemplates = this.get("fileTemplates");
 						var idFileTemplate = e.data.fileTemplateNo;
 						var idServiceinfo = $("#itemServiceInfoId").val();
@@ -501,16 +517,24 @@
 									type : "DELETE",
 									dataType : "json",
 									headers: {"groupId": ${groupId}},
+									async : false,
 									data : {
 										filetemplates : idFileTemplate
 									},
 									success : function(result){
+										
 										var fileDelete = e.data;
-										var index = fileTemplates.indexOf(fileDelete);
-										fileTemplates.splice(index, 1);
+										if(fileTemplates[0]){
+											var index = fileTemplates.indexOf(fileDelete);
+											fileTemplates.splice(index, 1);
+										}else{
+											that.set("fileTemplates", []);
+										}
+										
 										notification.show({
 											message: "Yêu cầu được thực hiện thành công"
 										}, "success");
+										console.log(fileTemplates);
 
 									},
 									error : function(xhr){
@@ -527,13 +551,13 @@
 					}
 				});
 
-				kendo.bind($("#dataDetailServiceInfo"), viewModel);
-			},
-			error : function(xhr){
+kendo.bind($("#dataDetailServiceInfo"), viewModel);
+},
+error : function(xhr){
 
-			}
-		});
-	}
+}
+});
+}
 
 var formControlFileTemplate = function(dataPk){
 
@@ -589,6 +613,12 @@ $("#btn-submit-serviceinfo-detail").click(function(){
 			dataType : "json",
 			headers: {"groupId": ${groupId}},
 			data : {
+				serviceCode : $("#serviceCode").val(),
+				serviceName : $("#serviceName").val(),
+				administrationCode : $("#administration").val(),
+				domainCode : $("#domain").val(),
+				maxLevel : $("#level").val(),
+				active : $("#status").val(),
 				resultText : $("#resultText").summernote("code").toString(),
 				feeText : $("#feeText").summernote("code").toString(),
 				methodText : $("#methodText").summernote("code").toString(),
@@ -620,6 +650,12 @@ $("#btn-submit-serviceinfo-detail").click(function(){
 			dataType : "json",
 			headers: {"groupId": ${groupId}},
 			data : {
+				serviceCode : $("#serviceCode").val(),
+				serviceName : $("#serviceName").val(),
+				administrationCode : $("#administration").val(),
+				domainCode : $("#domain").val(),
+				maxLevel : $("#level").val(),
+				active : $("#status").val(),
 				resultText : $("#resultText").summernote("code").toString(),
 				feeText : $("#feeText").summernote("code").toString(),
 				methodText : $("#methodText").summernote("code").toString(),
@@ -666,7 +702,7 @@ $("#btn-submit-serviceinfo-general").click(function(){
 					administrationCode : $("#administration").val(),
 					domainCode : $("#domain").val(),
 					maxLevel : $("#level").val(),
-					public : $("#status").val()
+					active : $("#status").val()
 				},
 				success : function(result){
 					updateServieInfoIfSuccess(idServiceinfo,result);
@@ -693,7 +729,7 @@ $("#btn-submit-serviceinfo-general").click(function(){
 					administrationCode : $("#administration").val(),
 					domainCode : $("#domain").val(),
 					maxLevel : $("#level").val(),
-					public : $("#status").val()
+					active : $("#status").val()
 				},
 				success : function(result){
 					$("#itemServiceInfoId").val(result.serviceInfoId);
@@ -704,6 +740,7 @@ $("#btn-submit-serviceinfo-general").click(function(){
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
+					pullDataDetail(result.serviceInfoId);
 				},
 				error : function(xhr){
 					notification.show({
@@ -734,7 +771,7 @@ var addServiceInfoIfSuccess=function(result){
 		"administrationName":result.administrationName,
 		"domainName":result.domainName,
 		"fileTemplates":result.fileTemplates,
-		"public" : result.public
+		"active" : result.active
 	});
 }
 
@@ -756,7 +793,7 @@ var updateServieInfoIfSuccess = function(dataPk,result){
 		item.set("activeStatus",result.activeStatus);
 		item.set("administrationName",result.administrationName);
 		item.set("domainName",result.domainName);
-		item.set("public",result.public);
+		item.set("active",result.active);
 	});
 }
 

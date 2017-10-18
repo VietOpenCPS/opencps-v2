@@ -1,6 +1,8 @@
+<#if (Request)??>
 <#include "init.ftl">
+</#if>
 
-<div  class="row">
+<div  class="row" id="employee_list">
 
 	<div class="col-md-9 PR0-lg">
 
@@ -9,216 +11,206 @@
 			<div class="row">
 
 				<div id="employee-list-filter" class="col-sm-3">
-							
+
 					<div class="row">
-				
+
 						<div class="col-xs-12 col-sm-12">
+
+							<button data-toggle="modal" class="btn btn-active btn-block border-rad-4"
+							href="${(url.employeePortlet.employee_create)!}" data-target="#modal-lg"> 
+							<i class="fa fa-user" aria-hidden="true"></i>
+
+							<span class="p-xxs" >Thêm nhân sự</span> 
+							<i class="fa fa-plus-circle"></i> 
+						</button>
 						
-							<button data-toggle="modal" class="btn btn-primary btn-block border-rad-4"
-								href="${(url.employeePortlet.employee_create)!}" data-target="#modal-lg"> 
-								<i class="fa fa-user" aria-hidden="true"></i>
-								
-								<span class="p-xxs" >Thêm nhân sự</span> 
-								<i class="fa fa-plus-circle"></i> 
-							</button>
-						
+					</div>
+
+					<div class="col-sm-12 MT15">
+
+						<ul id="employee-list-filter-by-workingunit" class="contact-navigator"></ul>
+
+						<script type="text/x-kendo-tmpl" id="employee-list-filter-by-workingunit-template">
+							# if( item.treeLevel == 0 ) { # 
+							<span class="nav-icon">
+
+								<i class="fa fa-book fa-1.5x" aria-hidden="true"></i>
+
+							</span>
+							# } #
+
+							<span class="filter-workingunit" id="workingUnitId_#=item.workingUnitId#"
+							data-vl="#=item.workingUnitId#">
+							#=item.name# 
+						</span>
+					</script>
+
+				</div>
+
+				<div class="col-sm-12 MT15">
+
+					<select id="employee-list-filter-by-jobpos" name="jobpos" class="form-control contact-navigator-filter"></select>
+
+				</div>
+
+				<div class="col-sm-12 MT15">
+
+					<select id="employee-list-filter-by-working-status" name="status" class="form-control contact-navigator-filter">
+					</select>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<div id="employee-list-wrapper" class="col-sm-9 PL0-lg">
+
+			<div class="row M0 box-s3">
+
+				<div class="col-sm-12">
+
+					<div class="row align-middle">
+
+						<div class="col-sm-8 align-middle">
+
+							<h4 class="M0" id="emoloyee-list-title"></h4>
+
+							<div class="text-gray ML15">
+
+								<i>
+									Tổng số <span id="emoloyee-list-counter">0</span> tài khoản được tìm thấy
+								</i>
+
+							</div>
+
 						</div>
-						
-						<div class="col-sm-12 MT15">
+
+						<div class="col-sm-4">
 							
-							<ul id="employee-list-filter-by-workingunit" class="contact-navigator"></ul>
-							
-							<script type="text/x-kendo-tmpl" id="employee-list-filter-by-workingunit-template">
-								
-								<div class="MB10">
-									
-									# if( item.treeLevel == 0 ) { # 
-										<span class="nav-icon">
+							<div class="input-group">
 
-											<i class="fa fa-book fa-1.5x" aria-hidden="true"></i>
+								<input type="text" class="form-control border-rad-Lside" id="employeeKeySearch"
+								placeholder="Tìm theo tên, email, điện thoại...">
 
-										</span>
-									# } #
+								<div class="input-group-addon btn-primary border-rad-Rside">
 
-									<span class="filter-workingunit" id="workingUnitId_#=item.workingUnitId#"
-									data-vl="#=item.workingUnitId#">
-										#=item.name# 
-									</span> 
+									<i class="fa fa-search" aria-hidden="true"></i>
 
 								</div>
 
-							</script>
-							
-						</div>
+							</div>
 
-						<div class="col-sm-12 MT15">
-							
-							<select id="employee-list-filter-by-jobpos" name="jobpos" class="form-control employee-list-filter"></select>
-							
-						</div>
-
-						<div class="col-sm-12 MT15">
-							
-							<select id="employee-list-filter-by-working-status" name="status" class="form-control employee-list-filter">
-							</select>
-							
 						</div>
 
 					</div>
 
 				</div>
 
-				<div id="employee-list-wrapper" class="col-sm-9 PL0-lg">
-					
-					<div class="row M0">
-						
-						<div class="col-sm-12 box-panel">
+				<div class="col-sm-12 MT15">
 
-							<div class="row eq-height">
-								
-								<div class="col-sm-8 align-middle">
-								
-									<h4 class="MT5" id="emoloyee-list-title"></h4>
+					<div class="row PT15 PB15">
 
-									<div class="text-gray ML15">
-										
-										<i>
-											Tổng số <span id="emoloyee-list-counter">0</span> tài khoản được tìm thấy
-										</i>
-										
-									</div>
+						<div class="form-group row M0 border-bottom PB5 border-color-lightblue">
 
-								</div>
-								
-								<div class="col-sm-4 align-middle">
-							
-									<div class="input-group">
+							<div class="col-sm-1">
 
-										<input type="text" class="form-control border-rad-Lside" id="employeeKeySearch"
-											placeholder="Tìm theo tên, email, điện thoại...">
+								<strong>Mã</strong>
 
-										<div class="input-group-addon btn-primary border-rad-Rside">
-											
-											<i class="fa fa-search" aria-hidden="true"></i>
+							</div>
 
-										</div>
+							<div class="col-sm-4">
 
-									</div>
+								<strong>Họ và tên</strong>
 
-								</div>
+							</div>
+
+							<div class="col-sm-3">
+
+								<strong>Chức vụ</strong>
+
+							</div>
+
+							<div class="col-sm-4">
+
+								<strong>Liên lạc</strong>
 
 							</div>
 
 						</div>
 
-						<div class="col-sm-12 MT15 box-panel">
-							
-							<div class="row PT15 PB15">
-											
-								<div class="form-group row M0 border-bottom PB5 border-color-lightblue">
+						<ul id="employee-listview">
+						</ul>
 
-									<div class="col-sm-1">
-										
-										<strong>Mã</strong>
-									
-									</div>
-									
-									<div class="col-sm-4">
-										
-										<strong>Họ và tên</strong>
-									
-									</div>
+						<div class="col-sm-12 k-pager-style2 eq-height-lg">
 
-									<div class="col-sm-3">
-										
-										<strong>Chức vụ</strong>
-									
-									</div>
-									
-									<div class="col-sm-4">
-										
-										<strong>Liên lạc</strong>
-									
-									</div>
+							<div class="align-middle-lg">
+								<span class="text-nowrap MR10">Hiển thị </span>
 
-								</div>
-
-								<ul id="employee-listview">
-								</ul>
-
-								<div class="col-sm-offset-6 col-sm-6 k-pager-style2 eq-height-lg">
-
-									<div class="align-middle-lg">
-										<span class="text-nowrap MR10">Hiển thị </span>
-									
-										<input type="text" name="employee-select-page" id="employee-select-page">
-									</div>
-
-									<div id="employee-listview-pager">
-										
-									</div>
-
-								</div>
-
+								<input type="text" name="employee-select-page" id="employee-select-page">
 							</div>
 
-							
-							<script type="text/x-kendo-tmpl" id="employee-listview-template">
-							
-								<li class="PT10 PB10 border-bottom">
-								
-									<div class="row M0 ">
+							<div id="employee-listview-pager">
 
-										<div class="col-sm-1">
-											
-											#=employeeNo#
-												
-										</div>
-										
-										<div class="col-sm-4 text-ellipsis">
-										
-											<strong>
-
-												<a href="javascript:;" class="link-detail-employee" data-pk="#=employeeId#" >
-											
-													#=fullName#
-
-												</a>
-
-											</strong>
-
-											<br>#= kendo.toString(kendo.parseDate(birthdate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#
-										
-										</div>
-
-										<div class="col-sm-3 text-ellipsis">
-											#=jobPosTitle#<br>#=workingUnitName#
-										</div>
-
-										<div class="col-sm-3 text-ellipsis">
-											#=telNo#<br>#=email#
-										</div>
-
-										<div class="col-xs-1 col-sm-1 text-right">
-
-												<span class="ML10 k-delete-button">
-
-													<i aria-hidden="true" class="fa fa-times"></i>
-
-												</span>
-
-										</div>
-
-
-									</div>	
-										
-								 </li>
-
-							</script>
+							</div>
 
 						</div>
 
 					</div>
+
+
+					<script type="text/x-kendo-tmpl" id="employee-listview-template">
+
+						<li class="PT10 PB10 border-bottom">
+
+							<div class="row M0 ">
+
+								<div class="col-sm-1">
+
+									#=employeeNo#
+
+								</div>
+
+								<div class="col-sm-4 text-ellipsis">
+
+									<strong>
+
+										<a href="javascript:;" class="link-detail-employee" data-pk="#=employeeId#" >
+											
+											#=fullName#
+
+										</a>
+
+									</strong>
+
+									<br>#= kendo.toString(kendo.parseDate(birthdate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#
+
+								</div>
+
+								<div class="col-sm-3 text-ellipsis">
+									#=jobPosTitle#<br>#=workingUnitName#
+								</div>
+
+								<div class="col-sm-3 text-ellipsis">
+									#=telNo#<br>#=email#
+								</div>
+
+								<div class="col-xs-1 col-sm-1 text-right">
+
+									<span class="ML10 k-delete-button">
+
+										<i aria-hidden="true" class="fa fa-times"></i>
+
+									</span>
+
+								</div>
+
+
+							</div>	
+
+						</li>
+
+					</script>
 
 				</div>
 
@@ -228,12 +220,20 @@
 
 	</div>
 
-	<div class="col-md-3">
-		
-		<div id="employee-birthdate"></div>
+</div>
 
-	</div>
+</div>
 
+<div class="col-md-3">
+
+	<div id="employee-birthdate"></div>
+
+</div>
+
+</div>
+
+<div class="" id="employee_detail">
+	
 </div>
 
 
@@ -256,9 +256,9 @@
 			}
 		}).register();
 
-		var getWorkingUnitBaseUrl = "${api.endpoint}/workingunits";
+		var getWorkingUnitBaseUrl = "${api.server}/workingunits";
 
-		var getJobPosBaseUrl = "${api.endpoint}/jobpos";
+		var getJobPosBaseUrl = "${api.server}/jobpos";
 
 		var employeeList = initEmployeeList( empMenuFilter.filterKeys );
 
@@ -272,14 +272,16 @@
 		});
 
 		$(document).on('click', '.link-detail-employee', function(event){
-		
+
 			event.preventDefault();
 			event.stopPropagation();
 			event.stopImmediatePropagation();
-			
+			$("#employee_list").hide();
+			$("#employee_detail").show();
+
 			var employeeId = $(this).attr('data-pk');
 
-			$( "#employee-index-page").load("${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+employeeId);
+			$( "#employee_detail").load("${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+employeeId);
 
 		});
 
@@ -289,11 +291,11 @@
 			dataTextField: "text",
 			dataValueField: "value",
 			dataSource: [
-				{text: "5", value: 5 },
-				{text: "10", value: 10 },
-				{text: "15", value: 15 },
-				{text: "25", value: 25 },
-				{text: "50", value: 50 }
+			{text: "5", value: 5 },
+			{text: "10", value: 10 },
+			{text: "15", value: 15 },
+			{text: "25", value: 25 },
+			{text: "50", value: 50 }
 			],
 			select: function (e) {
 
@@ -306,7 +308,7 @@
 
 		//Init panelbar
 		$.ajax({
-		  
+
 			url: getWorkingUnitBaseUrl,
 			dataType: "json",
 			type: 'GET',
@@ -323,7 +325,7 @@
 				initEmployeePanelBar( result );
 				
 			}
-		
+
 		});
 
 		function rescusiveSaveListWorkingUnit (workingUnitId) {
@@ -354,8 +356,8 @@
 			dataTextField: "text",
 			dataValueField: "value",
 			dataSource: [
-				{text: "Đang làm việc", value: "1" },
-				{text: "Đã nghỉ việc", value: "0" }
+			{text: "Đang làm việc", value: "1" },
+			{text: "Đã nghỉ việc", value: "0" }
 			],
 			value: empMenuFilter.filterKeys.status
 			
@@ -364,11 +366,11 @@
 		var getJobPosDataSource = new kendo.data.DataSource({
 			
 			transport: {
-			
+
 				read: function(options) {
 					
 					$.ajax({
-					  
+
 						url: getJobPosBaseUrl,
 						dataType: "json",
 						type: 'GET',
@@ -385,7 +387,7 @@
 							options.success(result);
 							
 						}
-					
+
 					});
 				},
 				
@@ -438,7 +440,7 @@
 
 		function initEmployeeList(filterKeys){
 
-			var getEmployeeBaseUrl = "${api.endpoint}/employees";
+			var getEmployeeBaseUrl = "${api.server}/employees";
 			
 			var getEmployeeDataSource = new kendo.data.DataSource({
 				
@@ -450,7 +452,7 @@
 						var pageSize = options.data.pageSize;
 
 						$.ajax({
-						
+
 							url: getEmployeeBaseUrl,
 							dataType: "json",
 							type: 'GET',
@@ -503,9 +505,9 @@
 							error: function(xhr, textStatus, errorThrown) {
 								
 								showMessageToastr("error", 'Yêu cầu của bạn xử lý thất bại!');
-							
+
 							}
-						
+
 						});
 
 					},
@@ -525,9 +527,9 @@
 								
 								options.error(xhr, textStatus, errorThrown);
 								showMessageByAPICode(xhr.status);
-							
+
 							}
-			
+
 						});
 					},
 					parameterMap: function(options, operation) {
@@ -590,13 +592,13 @@
 			});
 			
 			var  employeeListView = $("#employee-listview").kendoListView({
-			
+
 				remove: function(e) {
 					
 					if (!confirm("Xác nhận xoá " + e.model.get("fullName") + "?")) {
 						
 						e.preventDefault();
-					
+
 					}
 					
 				},
@@ -628,7 +630,7 @@
 		}
 
 		function initEmployeePanelBar ( dataSource ) {
-
+			console.log(dataSource.data);
 			var dataTree = dataSource.total > 0 ? arrayToTree(dataSource.data, "workingUnitId", "parentWorkingUnitId", "childrens") : [];
 			var dataSourceWorkingUnit = new kendo.data.HierarchicalDataSource({
 
@@ -665,7 +667,7 @@
 			if ( empPanelBar != null ) {
 
 				empPanelBar.expand(function(){
-			
+
 					for ( var i = empMenuFilter.filterKeys.dataExpand.length; i > 0; ) {
 						
 						i--;
@@ -691,4 +693,69 @@
 		
 	})(jQuery);
 
+
+	
+	function arrayToTree(arr, idKey, parentKey, childrenKey) {
+		var tree = [],
+		mappedArr = {},
+		arrElem,
+		mappedElem;
+
+  //remove level cause kendo panelBar have a function level()
+  arr = arr.map(function(item) {
+
+  	if (item.hasOwnProperty('level')) {
+  		item.treeLevel = item.level;
+  		delete item.level;
+  	}
+  	return item; 
+  });
+
+  idKey = (idKey==null || idKey=="" || idKey === undefined)?"id":idKey;
+  parentKey = (parentKey==null || parentKey=="" || parentKey === undefined)?"parentId":parentKey;
+  childrenKey = (childrenKey==null || childrenKey=="" || childrenKey === undefined)?"childrens":childrenKey; 
+
+  // First map the nodes of the array to an object -> create a hash table.
+  for(var i = 0, len = arr.length; i < len; i++) {
+  	arrElem = arr[i];
+  	mappedArr[arrElem[idKey]] = arrElem;
+  	mappedArr[arrElem[idKey]][childrenKey] = [];
+  }
+
+
+  for (var id in mappedArr) {
+
+  	if (mappedArr.hasOwnProperty(id)) {
+  		mappedElem = mappedArr[id];
+      // If the element is not at the root level, add it to its parent array of children.
+      if (mappedElem[parentKey]) {
+      	mappedArr[mappedElem[parentKey]][childrenKey].push(mappedElem);
+      }
+      // If the element is at the root level, add it to first level elements array.
+      else {
+      	tree.push(mappedElem);
+      }
+  }
+}
+return tree;
+}
+
+function getImageBlob(url, imgTarget){
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", url);
+	xhr.setRequestHeader("groupId", parseInt("${groupId}"));
+	xhr.responseType = "arraybuffer";
+	xhr.onerror = function() {};
+	xhr.onload = function () {
+		if (this.readyState == 4 && this.status === 200) {
+            //console.log(this.response, typeof this.response);
+            //console.log(this.getResponseHeader('content-type'));
+            var blob = new Blob([xhr.response], {type: this.getResponseHeader('content-type')});
+            var objectUrl = URL.createObjectURL(blob);
+            //window.open(objectUrl);
+            imgTarget.attr("src", objectUrl);
+        }
+    };
+    xhr.send();
+}
 </script>

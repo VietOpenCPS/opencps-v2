@@ -311,6 +311,13 @@
 					description: $("#description").val(),
 					durationCount: $("#durationCount").val(),
 					durationUnit: $("input[name=durationUnit]:checked").val(),
+					generateDossierNo: $("#generateDossierNo").val(),
+					dossierNoPattern: $("#dossierNoPattern").val(),
+					generateDueDate: $("#generateDueDate").val(),
+					dueDatePattern: $("#dueDatePattern").val(),
+					generatePassword: $("#generatePassword").val(),
+					directNotification: $("#directNotification").val(),
+					serverNo: $("#serverNo").val(),
 				},
 				success: function(result) {
 					notification.show({
@@ -323,6 +330,13 @@
 					serviceProcess.set("description", $("#description").val());
 					serviceProcess.set("durationCount", $("#durationCount").val());
 					serviceProcess.set("durationUnit", $("input[name=durationUnit]:checked").val());
+					serviceProcess.set("generateDossierNo", $("#generateDossierNo").val());
+					serviceProcess.set("dossierNoPattern", $("#dossierNoPattern").val());
+					serviceProcess.set("generateDueDate", $("#generateDueDate").val());
+					serviceProcess.set("dueDatePattern", $("#dueDatePattern").val());
+					serviceProcess.set("generatePassword", $("#generatePassword").val());
+					serviceProcess.set("directNotification", $("#directNotification").val());
+					serviceProcess.set("serverNo", $("#serverNo").val());
 				},
 				error: function(result) {
 					notification.show({
@@ -402,6 +416,13 @@
 					description: $("#description").val(),
 					durationCount: $("#durationCount").val(),
 					durationUnit: $("input[name=durationUnit]:checked").val(),
+					generateDossierNo: $("#generateDossierNo").val(),
+					dossierNoPattern: $("#dossierNoPattern").val(),
+					generateDueDate: $("#generateDueDate").val(),
+					dueDatePattern: $("#dueDatePattern").val(),
+					generatePassword: $("#generatePassword").val(),
+					directNotification: $("#directNotification").val(),
+					serverNo: $("#serverNo").val(),
 				},
 				success: function(result) {
 					notification.show({
@@ -436,6 +457,13 @@
 						"description": result.description,
 						"durationCount": result.durationCount,
 						"durationUnit": result.durationUnit,
+						"generateDossierNo": result.generateDossierNo,
+						"dossierNoPattern": result.dossierNoPattern,
+						"generateDueDate": result.generateDueDate,
+						"dueDatePattern": result.dueDatePattern,
+						"generatePassword": result.generatePassword,
+						"directNotification": result.directNotification,
+						"serverNo": result.serverNo,
 					});
 
 					$("#btn_save_service_process").attr("data-pk", result.serviceProcessId);
