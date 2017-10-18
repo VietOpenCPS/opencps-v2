@@ -35,7 +35,7 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-sm-2">
+					<div class="col-sm-2 PR0">
 						<label>Thủ tục hành chính:</label>
 					</div>
 					<div class="col-sm-10">
@@ -641,9 +641,15 @@ $("#btn-submit-serviceinfo-detail").click(function(){
 				}, "success");
 			},
 			error : function(xhr){
-				notification.show({
-					message: "Xẩy ra lỗi, vui lòng thử lại"
-				}, "error");
+				if (result.responseJSON.description == "DuplicateServiceCodeException"){
+					notification.show({
+						message: "Xóa không thành công do Mẫu hồ sơ có thành phần hồ sơ."
+					}, "error");
+				} else {
+					notification.show({
+						message: "Xẩy ra lỗi, vui lòng thử lại"
+					}, "error");
+				}
 			}
 		});
 	}else{
@@ -681,9 +687,16 @@ $("#btn-submit-serviceinfo-detail").click(function(){
 
 			},
 			error : function(xhr){
-				notification.show({
-					message: "Xẩy ra lỗi, vui lòng thử lại"
-				}, "error");
+
+				if (result.responseJSON.description == "DuplicateServiceCodeException"){
+					notification.show({
+						message: "Xóa không thành công do Mẫu hồ sơ có thành phần hồ sơ."
+					}, "error");
+				} else {
+					notification.show({
+						message: "Xẩy ra lỗi, vui lòng thử lại"
+					}, "error");
+				}
 			}
 		});
 	}
