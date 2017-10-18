@@ -43,10 +43,10 @@
 			<div class="col-sm-1 PL0 PR0">
 				<a class="item-serviceconfig-delete" href="javascript:;" data-pk="#:id#"><i class="fa fa-trash"></i></a>
 			</div>
-			<div class="col-sm-12">
+			<div class="col-sm-12 service-config-item" data-pk="#:id#">
 				<i class="fa fa-university"></i> <span class="ML5 service-config-item" data-pk="#:id#">#:govAgencyName#</span>
 			</div>
-			<div class="col-sm-12">
+			<div class="col-sm-12 service-config-item" data-pk="#:id#">
 				#
 				var lbl = "text-link";
 				if(serviceLevel == 1){
@@ -403,6 +403,7 @@
 		$(document).on("click", "._itemServiceConfig_option_btnEdit", function(event){
 			event.preventDefault();
 			console.log("edit service config");
+			$("#frmEstablishedProcess").show();
 			var id = $(this).attr("data-pk");
 			var item = dataSourceServiceOption.get(id);
 			pullServiceConfigOptionDetail(item);

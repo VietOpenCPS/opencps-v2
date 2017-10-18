@@ -138,10 +138,18 @@
 					},
 					serviceLevel: result.serviceLevel,
 					serviceUrl: result.serviceUrl,
-					forCitizen: result.forCitizen,
-					forBusiness: result.forBusiness,
-					postService: result.postService,
-					registration: result.registration
+					forCitizen: function(){
+						$("#forCitizen").prop("checked",result.forCitizen);
+					},
+					forBusiness: function(){
+						$("#forBusiness").prop("checked",result.forBusiness);
+					},
+					postService: function(){
+						$("#postService").prop("checked",result.postService);
+					},
+					registration: function(){
+						$("#registration").prop("checked",result.registration);
+					},
 				});
 
 				kendo.bind($("#frmServiceConfigDetail"), viewModel);
