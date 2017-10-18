@@ -24,15 +24,15 @@
 						<li class="">
 							<div class="row">
 								<div class="col-sm-12 MB5">
-									<div class="showServiceinfoDetail">
+									<span class="showServiceinfoDetail" data-pk="#:id#">
 										<span class="showServiceinfoDetail" data-pk="#:id#">#:serviceCode# </span>
 										#if(typeof active !== "undefined" && active) {#
 										<i class="fa fa-check ML5" aria-hidden="true"></i>
 										#} #
-									</div>
+									</span>
 									<i class="fa fa-trash pull-right _itemServiceinfo_btnDelete" data-pk="#:id#"></i>
 								</div>
-								<div class="showServiceinfoDetail">
+								<div class="showServiceinfoDetail" data-pk="#:id#">
 									<div class="col-sm-12">
 										<p class="showServiceinfoDetail" data-pk="#:id#">#:serviceName#</p>
 									</div>
@@ -263,8 +263,8 @@
 		console.log($(this).attr("data-pk"));
 
 		$("#listViewTTHC > li").removeClass("k-state-selected");
-		console.log($(this).parent().parent().parent());
-		$(this).parent().parent().parent().addClass("k-state-selected");
+		console.log($(this).parent().parent().parent().parent());
+		$(this).parent().parent().parent().parent().addClass("k-state-selected");
 		pullDataDetail($(this).attr("data-pk"));
 		crtAddOrEdit();
 	});

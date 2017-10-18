@@ -170,10 +170,10 @@
 						process : $("#process").val(),
 						serviceInstruction :$("#serviceInstruction").val(),
 						serviceUrl : $("textarea#serviceUrl").val(),
-						forCitizen : $("#forCitizen").val(),
-						postalService : $("#postService").val(),
-						forBusiness : $("#forBusiness").val(),
-						registration : $("#registration").val()
+						forCitizen : $("#forCitizen").prop( "checked" ),
+						postalService : $("#postService").prop( "checked" ),
+						forBusiness : $("#forBusiness").prop( "checked" ),
+						registration : $("#registration").prop( "checked" )
 					},
 					success : function(result){
 						updateServieConfigIfSuccess(id,result);
@@ -200,10 +200,10 @@
 						process : $("#process").val(),
 						serviceInstruction :$("#serviceInstruction").val(),
 						serviceUrl : $("textarea#serviceUrl").val(),
-						forCitizen : $("#forCitizen").val(),
-						postalService : $("#postService").val(),
-						forBusiness : $("#forBusiness").val(),
-						registration : $("#registration").val()
+						forCitizen : $("#forCitizen").prop( "checked" ),
+						postalService : $("#postService").prop( "checked" ),
+						forBusiness : $("#forBusiness").prop( "checked" ),
+						registration : $("#registration").prop( "checked" )
 					},
 					success : function(result){
 						addServiceConfigIfSuccess(result);
