@@ -1,26 +1,27 @@
 <#if (Request)??>
-	<#assign aui = PortletJspTagLibs["/META-INF/liferay-aui.tld"] />
-	<#assign liferay_portlet = PortletJspTagLibs["/META-INF/liferay-portlet-ext.tld"] />
-	<#assign liferay_security = PortletJspTagLibs["/META-INF/liferay-security.tld"] />
-	<#assign liferay_theme = PortletJspTagLibs["/META-INF/liferay-theme.tld"] />
-	<#assign liferay_ui = PortletJspTagLibs["/META-INF/liferay-ui.tld"] />
-	<#assign liferay_util = PortletJspTagLibs["/META-INF/liferay-util.tld"] />
-	<#assign portlet = PortletJspTagLibs["/META-INF/liferay-portlet.tld"] />
+<#assign aui = PortletJspTagLibs["/META-INF/liferay-aui.tld"] />
+<#assign liferay_portlet = PortletJspTagLibs["/META-INF/liferay-portlet-ext.tld"] />
+<#assign liferay_security = PortletJspTagLibs["/META-INF/liferay-security.tld"] />
+<#assign liferay_theme = PortletJspTagLibs["/META-INF/liferay-theme.tld"] />
+<#assign liferay_ui = PortletJspTagLibs["/META-INF/liferay-ui.tld"] />
+<#assign liferay_util = PortletJspTagLibs["/META-INF/liferay-util.tld"] />
+<#assign portlet = PortletJspTagLibs["/META-INF/liferay-portlet.tld"] />
 
-	<@liferay_theme["defineObjects"] />
+<@liferay_theme["defineObjects"] />
 
-	<@portlet["defineObjects"] />
+<@portlet["defineObjects"] />
 
-	<#assign groupId = themeDisplay.getScopeGroupId() />
-	<#assign userId = themeDisplay.getUserId() />
-	<#assign portletNamespace = themeDisplay.getPortletDisplay().getNamespace() />
-	<#assign currentURL = themeDisplay.getURLCurrent() />
-	<#assign request = themeDisplay.getRequest() />
+<#assign groupId = themeDisplay.getScopeGroupId() />
+<#assign userId = themeDisplay.getUserId() />
+<#assign portletNamespace = themeDisplay.getPortletDisplay().getNamespace() />
+<#assign currentURL = themeDisplay.getURLCurrent() />
+<#assign request = themeDisplay.getRequest() />
 
-	<#assign api = (Request.api)!>
-	<#assign ajax = (Request.ajax)!>
+<#assign api = (Request.api)!>
+<#assign ajax = (Request.ajax)!>
+<#assign applicantId = (Request.applicantId)!>
 
-	<#assign portalURL = (themeDisplay.getPortalURL())!>
+<#assign portalURL = (themeDisplay.getPortalURL())!>
 </#if>
 
 <!-- popup notification -->
@@ -45,23 +46,23 @@
   var notification;
   $(document).ready(function() {
     notification = $("#notification").kendoNotification({
-        position: {
-            pinned: true,
-            top: 30,
-            right: 30
-        },
-        autoHideAfter: 3500,
-        stacking: "down",
-        templates: [
-          {
-            type: "success",
-            template: $("#successTemplate").html()
-          },
-          {
-            type: "error",
-            template: $("#errorTemplate").html()
-          }
-        ]
+      position: {
+        pinned: true,
+        top: 30,
+        right: 30
+      },
+      autoHideAfter: 3500,
+      stacking: "down",
+      templates: [
+      {
+        type: "success",
+        template: $("#successTemplate").html()
+      },
+      {
+        type: "error",
+        template: $("#errorTemplate").html()
+      }
+      ]
     }).data("kendoNotification");
   });
 </script>
