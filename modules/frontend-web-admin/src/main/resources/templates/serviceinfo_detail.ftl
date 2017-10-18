@@ -402,7 +402,8 @@
 			success : function(result){
 				console.log(result.domainName);
 				var arrFile = result.fileTemplates;
-				if(arrFile){
+				if(!arrFile){
+					console.log("Empty");
 					arrFile = [];
 				}
 				var viewModel = kendo.observable({

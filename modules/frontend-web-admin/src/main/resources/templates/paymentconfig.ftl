@@ -114,7 +114,6 @@
           govAgencyCode : value
         },
         success : function(result){
-          console.log(result.data);
           if(result.data){
             var dataObj = result.data[0];
             if(dataObj){
