@@ -183,6 +183,7 @@
 		$("#serviceConfigListView").kendoListView({
 			dataSource:dataSourceServiceConfig,
 			template:kendo.template($("#serviceConfigTemplate").html()),
+			selectable : "single",
 			remove:function(e){
 				if(!confirm('Bạn có muốn xóa ?')){
 					e.preventDefault();
