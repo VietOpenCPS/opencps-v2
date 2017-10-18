@@ -119,6 +119,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			object.setAllowAssignUser(allowAssignUser);
 			object.setAssignUserId(assignUserId);
 			object.setRequestPayment(requestPayment);
+			object.setPaymentFee(paymentFee);
 			object.setCreateDossierFiles(createDossierFiles);
 			object.setReturnDossierFiles(returnDossierFiles);
 			object.setMakeBriefNote(makeBriefNote);
@@ -143,6 +144,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			object.setAllowAssignUser(allowAssignUser);
 			object.setAssignUserId(assignUserId);
 			object.setRequestPayment(requestPayment);
+			object.setPaymentFee(paymentFee);
 			object.setCreateDossierFiles(createDossierFiles);
 			object.setReturnDossierFiles(returnDossierFiles);
 			object.setMakeBriefNote(makeBriefNote);
