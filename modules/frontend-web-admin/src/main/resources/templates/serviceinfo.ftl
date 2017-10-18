@@ -32,15 +32,17 @@
 									</span>
 									<i class="fa fa-trash pull-right _itemServiceinfo_btnDelete" data-pk="#:id#"></i>
 								</div>
-								<div class="showServiceinfoDetail" data-pk="#:id#">
-									<div class="col-sm-12">
-										<p class="" data-pk="#:id#">#:serviceName#</p>
-									</div>
-									<div class="col-sm-12">
-										<i class="fa fa-suitcase" aria-hidden="true"></i> <span class="" data-pk="#:id#">#:domainName#</span>
-									</div>
-									<div class="col-sm-12">
-										<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i class="" data-pk="#:id#">#:administrationName#</i>
+								<div>
+									<div class="showServiceinfoDetail" data-pk="#:id#">
+										<div class="col-sm-12">
+											<p class="" data-pk="#:id#">#:serviceName#</p>
+										</div>
+										<div class="col-sm-12">
+											<i class="fa fa-suitcase" aria-hidden="true"></i> <span class="" data-pk="#:id#">#:domainName#</span>
+										</div>
+										<div class="col-sm-12">
+											<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i class="" data-pk="#:id#">#:administrationName#</i>
+										</div>
 									</div>
 								</div>
 							</div>
