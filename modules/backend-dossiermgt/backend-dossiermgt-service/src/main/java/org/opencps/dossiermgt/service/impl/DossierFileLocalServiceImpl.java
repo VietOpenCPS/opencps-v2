@@ -24,8 +24,7 @@ import java.util.List;
 
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
-import org.opencps.dossiermgt.constants.DossierFileTerm;
-import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.exception.DuplicateDossierFileException;
 import org.opencps.dossiermgt.exception.InvalidDossierStatusException;
 import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
 import org.opencps.dossiermgt.jasperreport.util.JRReportUtil;
@@ -93,7 +92,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		
 		long userId = serviceContext.getUserId();
 
-		validateDossierFile(groupId, dossierId, referenceUid, 
+		validateAddDossierFile(groupId, dossierId, referenceUid, 
 				dossierTemplateNo, dossierPartNo, fileTemplateNo);
 		
 		DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(
@@ -279,9 +278,10 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		long fileEntryId = 0;
 		
 		try {
-			File file = FileUtil.createTempFile("pdf");
+			File file = FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
 			
-			String sourceFileName = System.currentTimeMillis() + ".pdf";
+			String sourceFileName = System.currentTimeMillis() + StringPool.PERIOD + 
+					JRReportUtil.DocType.PDF.toString();
 			
 			JRReportUtil.createReportFile(jrxmlTemplate, formData, null, file.getCanonicalPath());
 			
@@ -525,6 +525,12 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 	}
 	
+	/**
+	 * Deny if status of dossier not new or waiting
+	 * 
+	 * @param dossierFile
+	 * @throws PortalException
+	 */
 	private void validateDeleteDossierFile(DossierFile dossierFile) 
 		throws PortalException {
 
@@ -539,12 +545,22 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		}
 	}
 
-	private void validateDossierFile(long groupId, long dossierId, 
+	private void validateAddDossierFile(long groupId, long dossierId, 
 			String referenceUid, String dossierTemplateNo,
 			String dossierPartNo, String fileTemplateNo) 
 		throws PortalException {
-
+		
 		// TODO add more logic here
+		
+		dossierPersistence.findByPrimaryKey(dossierId);
+		
+		if(Validator.isNotNull(referenceUid)) {
+			DossierFile dossierFile = dossierFilePersistence.fetchByD_RUID(dossierId, referenceUid, false);
+			
+			if(dossierFile != null) {
+				throw new DuplicateDossierFileException();
+			}
+		}
 	}
 
 	public static final String CLASS_NAME = DossierFile.class.getName();

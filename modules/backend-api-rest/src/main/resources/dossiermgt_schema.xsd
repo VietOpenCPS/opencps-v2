@@ -735,50 +735,45 @@
 		</xsd:complexType>
 	</xsd:element>
 
-	<xsd:element name="DossierFileModel">
+	<xsd:complexType name="DossierFileModel">
+		<xsd:sequence>
+			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierTemplateNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierPartNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierPartType" type="xsd:int" minOccurs="0" />
+			<xsd:element name="fileTemplateNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="displayName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="fileType" type="xsd:string" minOccurs="0" />
+			<xsd:element name="fileSize" type="xsd:long" minOccurs="0" />
+			<xsd:element name="fileVersion" type="xsd:string" minOccurs="0" />
+			<xsd:element name="isNew" type="xsd:boolean" minOccurs="0" />
+			<xsd:element name="signCheck" type="xsd:int" minOccurs="0" />
+			<xsd:element name="signInfo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="removed" type="xsd:boolean" minOccurs="0" />
+			<xsd:element name="eForm" type="xsd:boolean" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="DossierFileCopyInputModel">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="createDate" type="xsd:date" minOccurs="0" />
-				<xsd:element name="modifiedDate" type="xsd:date" minOccurs="0" />
-				<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
 				<xsd:element name="dossierTemplateNo" type="xsd:string" minOccurs="0" />
 				<xsd:element name="dossierPartNo" type="xsd:string" minOccurs="0" />
-				<xsd:element name="dossierPartType" type="xsd:int" minOccurs="0" />
-				<xsd:element name="fileTemplateNo" type="xsd:string" minOccurs="0" />
-				<xsd:element name="displayName" type="xsd:string" minOccurs="0" />
-				<xsd:element name="fileType" type="xsd:int" minOccurs="0" />
-				<xsd:element name="fileSize" type="xsd:int" minOccurs="0" />
-				<xsd:element name="fileVersion" type="xsd:string" minOccurs="0" />
-				<xsd:element name="dossierFileNo" type="xsd:string" minOccurs="0" />
-				<xsd:element name="dossierFileDate" type="xsd:date" minOccurs="0" />
-				<xsd:element name="original" type="xsd:boolean" minOccurs="0" />
-				<xsd:element name="isNew" type="xsd:boolean" minOccurs="0" />
-				<xsd:element name="signCheck" type="xsd:int" minOccurs="0" />
-				<xsd:element name="signInfo" type="xsd:string" minOccurs="0" />
-				<xsd:element name="hasData" type="xsd:boolean" minOccurs="0" />
+				<xsd:element name="dossierFileId" type="xsd:long" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
-
-	<xsd:element name="DossierFileInputModel">
+	
+	<xsd:element name="DossierFileSearchModel">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
-				<xsd:element name="dossierTemplateNo" type="xsd:string" minOccurs="0" />
-				<xsd:element name="dossierPartNo" type="xsd:string" minOccurs="0" />
-				<xsd:element name="dossierPartType" type="xsd:int" minOccurs="0" />
-				<xsd:element name="fileTemplateNo" type="xsd:string" minOccurs="0" />
-				<xsd:element name="displayName" type="xsd:string" minOccurs="0" />
-				<xsd:element name="fileType" type="xsd:int" minOccurs="0" />
-				<xsd:element name="fileSize" type="xsd:int" minOccurs="0" />
-				<xsd:element name="fileVersion" type="xsd:string" minOccurs="0" />
-				<xsd:element name="dossierFileNo" type="xsd:string" minOccurs="0" />
-				<xsd:element name="dossierFileDate" type="xsd:date" minOccurs="0" />
+				<xsd:element name="keyword" type="xsd:string" minOccurs="0" />
+				<xsd:element name="template" type="xsd:string" minOccurs="0" />
+				<xsd:element name="type" type="xsd:int" minOccurs="0" />
+				<xsd:element name="owner" type="xsd:boolean" minOccurs="0" />
 				<xsd:element name="original" type="xsd:boolean" minOccurs="0" />
-				<xsd:element name="isNew" type="xsd:boolean" minOccurs="0" />
-				<xsd:element name="signCheck" type="xsd:int" minOccurs="0" />
-				<xsd:element name="signInfo" type="xsd:string" minOccurs="0" />
-				<xsd:element name="hasData" type="xsd:boolean" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
@@ -787,21 +782,38 @@
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="total" type="xsd:int" minOccurs="0" />
-				<xsd:element ref="DossierFileModel"  minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element name="data" type="DossierFileModel"  minOccurs="0" maxOccurs="unbounded" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
 
-	<xsd:element name="DossierFileInputShortModel">
+	<xsd:complexType name="DossierFileSearchResultModel">
+		<xsd:sequence>
+			<xsd:element name="dossierId" type="xsd:int" minOccurs="0" />
+			<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierTemplateNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierPartNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierPartType" type="xsd:int" minOccurs="0" />
+			<xsd:element name="fileTemplateNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="displayName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="fileType" type="xsd:string" minOccurs="0" />
+			<xsd:element name="fileSize" type="xsd:int" minOccurs="0" />
+			<xsd:element name="original" type="xsd:boolean" minOccurs="0" />
+			<xsd:element name="isNew" type="xsd:boolean" minOccurs="0" />
+			<xsd:element name="signCheck" type="xsd:int" minOccurs="0" />
+			<xsd:element name="signInfo" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="DossierFileSearchResultsModel">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="displayName" type="xsd:string" minOccurs="0" />
-				<xsd:element name="dossierFileNo" type="xsd:string" minOccurs="0" />
-				<xsd:element name="dossierFileDate" type="xsd:date" minOccurs="0" />
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="DossierFileSearchResultModel" minOccurs="0" maxOccurs="unbounded" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
-	
+
 	<xsd:element name="PaymentModel">
 		<xsd:complexType>
 			<xsd:sequence>

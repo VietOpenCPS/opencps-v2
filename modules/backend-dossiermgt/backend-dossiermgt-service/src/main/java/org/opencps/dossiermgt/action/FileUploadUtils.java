@@ -1,6 +1,9 @@
 package org.opencps.dossiermgt.action;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
@@ -140,10 +143,15 @@ public class FileUploadUtils {
 		
 		FileEntry fileEntry = null;
 
-		if (inputStream != null && fileSize > 0 && Validator.isNotNull(sourceFileName)) {
+		if (inputStream != null && Validator.isNotNull(sourceFileName)) {
 			
 			if(Validator.isNull(fileType)) {
 				fileType = MimeTypesUtil.getContentType(sourceFileName);
+			}
+			
+			if(fileSize == 0) {
+				byte[] bytes = FileUtil.getBytes(inputStream, -1, false);
+				fileSize = bytes.length;
 			}
 			
 			String title = getFileName(sourceFileName);
