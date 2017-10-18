@@ -12,7 +12,7 @@
 			<div class="row MT10">
 				<div class="col-xs-12 col-sm-12">
 					<div class="input-group">
-						<input type="text" class="form-control" id="input_search_dossier_template" placeholder="Số hồ sơ, Tên hồ sơ" title="Nhập Sô hồ sơ hoặc Tên hồ sơ để tìm kiếm">
+						<input type="text" class="form-control" id="input_search_dossier_template" placeholder="Số mẫu hồ sơ, Tên mẫu hồ sơ" title="Nhập Sô hồ sơ hoặc Tên hồ sơ để tìm kiếm">
 						<div class="input-group-addon btn-primary" id="btn_search_dossier_template" title="Tìm kiếm"><i class="fa fa-search" aria-hidden="true"></i></div>
 					</div>
 				</div>
@@ -318,7 +318,7 @@
 				headers: {"groupId": ${groupId}},
 				data: {
 					templateNo: $("#templateNo").val(),
-					templateName: $("#templateName").val(),
+					templateName: $("#templateName_").val(),
 					description: $("#description").val()
 				},
 				success: function(result) {

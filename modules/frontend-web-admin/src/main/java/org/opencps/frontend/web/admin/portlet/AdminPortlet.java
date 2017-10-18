@@ -27,8 +27,10 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.frontend.web.admin.constants.AdminPortletKeys;
 import org.opencps.frontend.web.admin.constants.FrontendWebAdminPortletConstants;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
@@ -372,6 +374,9 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			}
 		}
 
+		Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(
+			themeDisplay.getUserId());
+
 		// roles
 		List<Role> roles =
 			RoleLocalServiceUtil.getRoles(themeDisplay.getCompanyId());
@@ -386,6 +391,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		// set varible
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("api", apiObject);
+		renderRequest.setAttribute("applicantId", applicant.getApplicantId());
 
 		ServiceContext serviceContext = null;
 
