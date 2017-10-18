@@ -116,7 +116,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -197,7 +197,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -249,7 +249,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -291,7 +291,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 			} else {
-				error.setMessage(" Internal Server Error.");
+				error.setMessage("Internal Server Error");
 				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 				error.setDescription(e.getMessage());
 
@@ -346,7 +346,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -403,7 +403,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 

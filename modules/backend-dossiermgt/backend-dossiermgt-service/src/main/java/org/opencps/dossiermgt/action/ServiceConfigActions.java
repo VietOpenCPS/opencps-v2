@@ -27,7 +27,7 @@ public interface ServiceConfigActions {
 	public JSONObject getProcessOptions(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
 
-	public ProcessOption updateOption(long groupId, long processOptionId, long serviceConfigId, int seqOrder,
+	public ProcessOption updateOption(long groupId, String optionName, long processOptionId, long serviceConfigId, int seqOrder,
 			String autoSelect, String instructionNote, String submissionNote, long dossierTemplateId,
 			long serviceProcessId, ServiceContext context) throws PortalException;
 	

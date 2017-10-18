@@ -1,35 +1,32 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <div class="">
-	<h4>Thêm mới thao tác xử lý</h4>
-	<form class="" name="fm" method="post">
-		<div class="row MT20">
+	<form id="serviceprocesses_detail_form_action" name="fm" method="post">
+		<div class="row">
 			<div class="col-xs-12 col-sm-5">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
 						Tên thao tác
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="actionName" name="actionName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:actionName"/>
+						<input id="actionName" name="actionName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: actionName"/>
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-2"></div>
+			<div class="col-xs-1"></div>
 			<div class="col-xs-12 col-sm-5">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						Kích hoạt sự kiện
+						Mã thao tác
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<select class="form-control" name="" data-bind="value:">
-							<option value="">Chọn sự kiện</option>
-						</select>
+						<input id="actionCode" name="actionCode" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: actionCode"/>
 					</div>
 				</div>
 			</div>
@@ -41,18 +38,26 @@
 						Điều kiện kiểm tra
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="preCondition" name="preCondition" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:preCondition"/>
+						<input id="preCondition" name="preCondition" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: preCondition"/>
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-2"></div>
+			<div class="col-xs-2 col-sm-1"></div>
 			<div class="col-xs-12 col-sm-5">
-				<div class="row"></div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<div class="checkbox"> <input type="checkbox" data-bind="value:"> <label>Là bước hoàn thành</label> </div>
+						Kích hoạt sự kiện
+					</div>
+				</div>
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<select class="form-control" id="autoEvent" name="autoEvent" data-bind="value: autoEvent">
+							<option value=""></option>
+							<option value="submit">submit</option>
+							<option value="timmer">timmer</option>
+						</select>
 					</div>
 				</div>
 			</div>
@@ -64,22 +69,22 @@
 						Bước thực hiện thao tác
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="preProcessStepId" name="preProcessStepId" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:preProcessStepId"/>
+						<input id="preStepCode" name="preStepCode" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: preStepCode"/>
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-2"></div>
+			<div class="col-xs-1"></div>
 			<div class="col-xs-12 col-sm-5">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
 						Bước sau thực hiện thao tác
 					</div>
 				</div>
-				<div class="row">
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="postProcessStepId" name="postProcessStepId" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:postProcessStepId"/>
+						<input id="postStepCode" name="postStepCode" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: postStepCode"/>
 					</div>
 				</div>
 			</div>
@@ -88,57 +93,87 @@
 			<div class="col-xs-12 col-sm-5">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<div class="checkbox"> <input type="checkbox" data-bind="value:"> <label>Phân công người xử lý</label> </div>
+						<div class="checkbox"> <input type="checkbox" id="allowAssignUser" name="allowAssignUser" data-bind="checked: allowAssignUser"> <label>Phân công người xử lý</label> </div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<select class="form-control" name="" data-bind="value:">
-							<option value="">Chọn vai trò</option>
+						<select class="form-control" id="assignUserId" name="assignUserId" data-bind="value: assignUserId">
 						</select>
 					</div>
 				</div>
 			</div>
+			<div class="col-xs-12 col-sm-1"></div>
+			<div class="col-xs-12 col-sm-5">
+				<div class="checkbox"> <input type="checkbox" id="rollbackable" name="rollbackable" data-bind="checked: rollbackable"> <label>Cho phép rollback</label> </div>
+			</div>
 		</div>
-		<div class="service-process-form-action-controls">
-			<div class="service-process-form-action-entry">
-				<div class="row MT10">
-					<div class="col-xs-12 col-sm-12">Kết quả trả về</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-6">
+				<div class="service-process-create-dossier-file-form-action-controls">
+					<div class="service-process-create-dossier-file-form-action-entry">
+						<div class="row MT10">
+							<div class="col-xs-12 col-sm-12">Tài liệu tạo mới</div>
+						</div>
+						<div class="row MT5">
+							<div class="col-xs-12 col-sm-10">
+								<select class="form-control" id="createDossierFiles" name="createDossierFiles">
+									<option value=""></option>
+								</select>
+							</div>
+							<div class="col-xs-12 col-sm-2">
+								<button class="btn btn-success btn-add-action-create-dossier-file" type="button">
+									<span class="glyphicon glyphicon-plus"></span>
+								</button>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="row">
-					<div class="col-xs-12 col-sm-5">
-						<select class="form-control" id="returnDossierFiles" name="returnDossierFiles" data-bind="value:returnDossierFiles">
-							<option value=""></option>
-
-						</select>
-					</div>
-					<div class="col-xs-12 col-sm-2">
-						<div class="checkbox"> <input type="checkbox" name="" data-bind="value:"> <label>Bắt buộc</label> </div>
-					</div>
-					<div class="col-xs-12 col-sm-2">
-						<div class="checkbox"> <input type="checkbox" name="" data-bind="value:"> <label>Ký số</label> </div>
-					</div>
-					<div class="col-xs-12 col-sm-2">
-						<div class="checkbox"> <input type="checkbox" name="" data-bind="value:"> <label>Trả về</label> </div>
-					</div>
-					<div class="col-xs-12 col-sm-1">
-						<button class="btn btn-success btn-add-action-role" type="button">
-							<span class="glyphicon glyphicon-plus"></span>
-						</button>
+			</div>
+			<div class="col-xs-12 col-sm-6">
+				<div class="service-process-return-dossier-file-form-action-controls">
+					<div class="service-process-return-dossier-file-form-action-entry">
+						<div class="row MT10">
+							<div class="col-xs-12 col-sm-12">Kết quả trả về</div>
+						</div>
+						<div class="row MT5">
+							<div class="col-xs-12 col-sm-10">
+								<select class="form-control" id="returnDossierFiles" name="returnDossierFiles">
+									<option value=""></option>
+								</select>
+							</div>
+							<div class="col-xs-12 col-sm-2">
+								<button class="btn btn-success btn-add-action-return-dossier-file" type="button">
+									<span class="glyphicon glyphicon-plus"></span>
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="row MT10">
-			<div class="col-xs-12 col-sm-5">
+			<div class="col-xs-12 col-sm-12">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<div class="checkbox"> <input type="checkbox" name="requestPayment" data-bind="value:requestPayment"> <label>Yêu cầu thanh toán</label> </div>
+						<div class="checkbox"> <input type="checkbox" id="requestPayment" name="requestPayment" data-bind="checked:requestPayment"> <label>Yêu cầu thanh toán</label> </div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<input class="form-control" type="text" name="" value="" data-bind="value:stepName">
+						<input class="form-control" type="text" name="paymentFee" id="paymentFee" data-bind="value: paymentFee">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row MT10">
+			<div class="col-xs-12 col-sm-12">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">Mã đồng bộ</div>
+				</div>
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<input class="form-control" type="text" name="syncActionCode" id="syncActionCode" value="" data-bind="value: syncActionCode">
 					</div>
 				</div>
 			</div>
@@ -152,60 +187,94 @@
 
 <script type="text/javascript">
 
-	$(document).on('click', '.btn-add-action-role', function(e){
+	$(document).on('click', '.btn-add-action-return-dossier-file', function(e){
 		e.preventDefault();
 
-		var controlForm = $('.service-process-form-action-controls'),
-				currentEntry = $(this).parents('.service-process-form-action-entry:first'),
-				newEntry = $(currentEntry.clone()).appendTo(controlForm);
+		var controlForm = $('.service-process-return-dossier-file-form-action-controls'),
+		currentEntry = $(this).parents('.service-process-return-dossier-file-form-action-entry:first'),
+		newEntry = $(currentEntry.clone()).appendTo(controlForm);
 
 		newEntry.find('select').val('');
-		newEntry.find('input [type="radio"]').val('');
 
-		controlForm.find('.service-process-form-action-entry:not(:last) .btn-add-action-role')
-				.removeClass('btn-add-action-role').addClass('btn-remove-action-role')
-				.removeClass('btn-success').addClass('btn-danger')
-				.html('<span class="glyphicon glyphicon-minus"></span>');
-		}).on('click', '.btn-remove-action-role', function(e){
-			$(this).parents('.service-process-form-action-entry:first').remove();
-			e.preventDefault();
-			return false;
+		controlForm.find('.service-process-return-dossier-file-form-action-entry:not(:last) .btn-add-action-return-dossier-file')
+		.removeClass('btn-add-action-return-dossier-file').addClass('btn-remove-action-role')
+		.removeClass('btn-success').addClass('btn-danger')
+		.html('<span class="glyphicon glyphicon-minus"></span>');
+	}).on('click', '.btn-remove-action-role', function(e){
+		$(this).parents('.service-process-return-dossier-file-form-action-entry:first').remove();
+		e.preventDefault();
+		return false;
 	});
 
-	$("#preProcessStepId").kendoComboBox({
-		dataTextField: "preProcessStepId",
-		dataValueField: "preProcessStepName",
-		dataSource: "",
+	$(document).on("click",".btn-add-action-create-dossier-file",function(e){
+		e.preventDefault();
+
+		var controlForm = $('.service-process-create-dossier-file-form-action-controls'),
+		currentEntry = $(this).parents('.service-process-create-dossier-file-form-action-entry:first'),
+		newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+		newEntry.find('select').val('');
+
+		controlForm.find('.service-process-create-dossier-file-form-action-entry:not(:last) .btn-add-action-create-dossier-file')
+		.removeClass('btn-add-action-create-dossier-file').addClass('btn-remove-action-role-create-dossier-file')
+		.removeClass('btn-success').addClass('btn-danger')
+		.html('<span class="glyphicon glyphicon-minus"></span>');
+	}).on('click', '.btn-remove-action-role-create-dossier-file', function(e){
+		$(this).parents('.service-process-create-dossier-file-form-action-entry:first').remove();
+		e.preventDefault();
+		return false;
+	});
+
+	$("#autoEvent").kendoComboBox({
 		filter: "contains"
 	});
-
-	$("#postProcessStepId").kendoComboBox({
-		dataTextField: "postProcessStepId",
-		dataValueField: "postProcessStepName",
-		dataSource: "",
-		filter: "contains"
-	});
-
-	// $("#autoEvent").kendoComboBox({
-	// 	dataTextField: "activeStatusName",
-	// 	dataValueField: "activeStatusCode",
-	// 	dataSource: "",
-	// 	filter: "contains"
-	// });
 
 	$("#assignUserId").kendoComboBox({
-		dataTextField: "assignUserName",
-		dataValueField: "assignUserId",
-		dataSource: "",
-		filter: "contains"
+		dataTextField: "fullName",
+		dataValueField: "employeeId",
+		filter: "contains",
+		dataSource : {
+			transport : {
+				read : {
+					url : "${api.server}/employees",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
+
+					},
+					error : function(xhr){
+
+					}
+				}
+			},
+			schema: {
+				data : "data",
+				total : "total"
+			}
+		},
+		noDataTemplate: 'Không có dữ liệu'
 	});
 
-	$(function() {
-		$("[data-role=combobox]").each(function() {
-			var widget = $(this).getKendoComboBox();
-			widget.input.on("focus", function() {
-				widget.open();
-			});
-		});
+	$.ajax({
+		url: "${api.server}" + "/dossiertemplates/0/parts",
+		type: "GET",
+		dataType: "json",
+		headers: {"groupId": ${groupId}},
+		async: false,
+		success: function(result) {
+			if (result && result.data && result.data.length > 0){
+				result.data.forEach(function(part){
+					var newOpt = $(".service-process-create-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
+					newOpt.value = part.fileTemplateNo;
+					newOpt.text = part.partName;
+
+					newOpt = $(".service-process-return-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
+					newOpt.value = part.fileTemplateNo;
+					newOpt.text = part.partName;
+				});
+			}
+		}
 	});
+
 </script>

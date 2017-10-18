@@ -68,7 +68,7 @@ public class ServiceConfigSearchModel {
     protected Integer start;
 	@DefaultValue("0") @QueryParam(value = "end")
     protected Integer end;
-	@DefaultValue("govAgencyName") @QueryParam(value = "sort")
+	@DefaultValue("createDate") @QueryParam(value = "sort")
     protected String sort;
 	@QueryParam(value = "order")
     protected String order;

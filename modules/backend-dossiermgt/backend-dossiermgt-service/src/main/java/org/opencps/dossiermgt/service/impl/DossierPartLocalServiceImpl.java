@@ -74,6 +74,10 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 	 * org.opencps.dossiermgt.service.DossierPartLocalServiceUtil} to access the
 	 * dossier part local service.
 	 */
+	 
+	public DossierPart getByFileTemplateNo(long groupId, String fileTemplateNo) {
+		return dossierPartPersistence.fetchByGID_FTN(groupId, fileTemplateNo);
+	}
 	
 	/**
 	 * @param groupId

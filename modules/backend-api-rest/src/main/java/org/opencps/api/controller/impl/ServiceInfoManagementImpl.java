@@ -142,7 +142,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					input.getServiceCode(), input.getServiceName(), input.getProcessText(), input.getMethodText(),
 					input.getDossierText(), input.getConditionText(), input.getDurationText(), input.getApplicantText(),
 					input.getResultText(), input.getRegularText(), input.getFeeText(), input.getAdministrationCode(),
-					input.getDomainCode(), input.getMaxLevel(), GetterUtil.getBoolean(input.getPublic()),
+					input.getDomainCode(), input.getMaxLevel(), GetterUtil.getBoolean(input.getActive()),
 					serviceContext);
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
@@ -198,9 +198,9 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 						return Response.status(HttpURLConnection.HTTP_NOT_ACCEPTABLE).entity(error).build();
 
 					} else {
-						error.setMessage(" Internal Server Error.");
+						error.setMessage("Internal Server Error");
 						error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-						error.setDescription(" Internal Server Error.");
+						error.setDescription(e.getMessage());
 
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 					}
@@ -272,7 +272,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					input.getServiceCode(), input.getServiceName(), input.getProcessText(), input.getMethodText(),
 					input.getDossierText(), input.getConditionText(), input.getDurationText(), input.getApplicantText(),
 					input.getResultText(), input.getRegularText(), input.getFeeText(), input.getAdministrationCode(),
-					input.getDomainCode(), input.getMaxLevel(), GetterUtil.getBoolean(input.getPublic()),
+					input.getDomainCode(), input.getMaxLevel(), GetterUtil.getBoolean(input.getActive()),
 					serviceContext);
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
@@ -328,9 +328,9 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 						return Response.status(HttpURLConnection.HTTP_NOT_ACCEPTABLE).entity(error).build();
 
 					} else {
-						error.setMessage(" Internal Server Error.");
+						error.setMessage("Internal Server Error");
 						error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-						error.setDescription(" Internal Server Error.");
+						error.setDescription(e.getMessage());
 
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 					}
@@ -434,7 +434,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	@Override
 	public Response addFileTemplateToServiceInfo(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String fileTemplateNo,
-			String templateName, String fileType, int fileSize) {
+			String templateName, String fileType, int fileSize, String fileName) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
@@ -464,7 +464,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 
 			serviceFileTemplate = actions.addServiceFileTemplate(userId, groupId, GetterUtil.getLong(id),
-					fileTemplateNo, templateName, System.currentTimeMillis() + StringPool.DASH + templateName,
+					fileTemplateNo, templateName, fileName,
 					inputStream, fileType, fileSize, serviceContext);
 
 			FileTemplateModel result = ServiceInfoUtils.mappingToFileTemplateModel(serviceFileTemplate);

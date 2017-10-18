@@ -14,18 +14,12 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
 import java.util.Date;
 import java.util.LinkedHashMap;
 
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
-import org.opencps.dossiermgt.constants.ServiceConfigTerm;
-import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.base.ProcessOptionLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -50,6 +44,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the process option local service.
@@ -90,7 +86,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		return option;
 	}
 	@Indexable(type = IndexableType.REINDEX)
-	public ProcessOption updateProcessOption(long groupId, long processOptionId, long serviceConfigId, int seqOrder,
+	public ProcessOption updateProcessOption(long groupId, String optionName, long processOptionId, long serviceConfigId, int seqOrder,
 			String autoSelect, String instructionNote, String submissionNote, long dossierTemplateId,
 			long serviceProcessId, ServiceContext context) throws PortalException {
 
@@ -121,6 +117,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 			processOption.setSubmissionNote(submissionNote);
 			processOption.setDossierTemplateId(dossierTemplateId);
 			processOption.setServiceProcessId(serviceProcessId);
+			processOption.setOptionName(optionName);
 
 		} else {
 
@@ -137,6 +134,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 			processOption.setSubmissionNote(submissionNote);
 			processOption.setDossierTemplateId(dossierTemplateId);
 			processOption.setServiceProcessId(serviceProcessId);
+			processOption.setOptionName(optionName);
 
 		}
 

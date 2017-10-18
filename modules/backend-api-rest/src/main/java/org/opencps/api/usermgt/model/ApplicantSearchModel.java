@@ -51,7 +51,9 @@ import com.liferay.portal.kernel.util.StringPool;
     "domain",
     "level",
     "min",
-    "max"
+    "max",
+    "type",
+    "lock"
 })
 @XmlRootElement(name = "ApplicantSearchModel")
 public class ApplicantSearchModel {
@@ -87,10 +89,10 @@ public class ApplicantSearchModel {
 		this.end = end;
 	}
 
-	public int getType() {
+	public String getType() {
 		return type;
 	}
-	public void setType(int type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 
@@ -105,6 +107,15 @@ public class ApplicantSearchModel {
 	@QueryParam(value = "end")
     protected int end;
 	@QueryParam(value = "type")
-    protected int type;
+    protected String type;
+	@QueryParam(value = "lock")
+    protected String lock;
+	public String getLock() {
+		return lock;
+	}
+	public void setLock(String lock) {
+		this.lock = lock;
+	}
+
 
 }

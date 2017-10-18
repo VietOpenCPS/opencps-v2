@@ -27,7 +27,7 @@ import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.exception.DuplicateDossierFileException;
 import org.opencps.dossiermgt.exception.InvalidDossierStatusException;
 import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
-import org.opencps.dossiermgt.jasperreport.util.JRReportUtil;
+//import org.opencps.dossiermgt.jasperreport.util.JRReportUtil;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
@@ -283,7 +283,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			String sourceFileName = System.currentTimeMillis() + StringPool.PERIOD + 
 					JRReportUtil.DocType.PDF.toString();
 			
-			JRReportUtil.createReportFile(jrxmlTemplate, formData, null, file.getCanonicalPath());
+			//JRReportUtil.createReportFile(jrxmlTemplate, formData, null, file.getCanonicalPath());
 			
 			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
 				user.getPrimaryKey(), groupId, file, sourceFileName, serviceContext);

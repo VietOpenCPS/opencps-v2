@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.datamgt.constants.DictItemTerm;
+import org.opencps.datamgt.constants.HolidayTerm;
 import org.opencps.datamgt.exception.NoSuchDictItemException;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
@@ -407,10 +408,6 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 				query.addFields(DictItemTerm.ITEM_NAME, DictItemTerm.ITEM_NAME_EN, DictItemTerm.ITEM_CODE);
 
-				Operator operator = Operator.OR;
-
-				query.setOperator(operator);
-
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 			}
@@ -458,16 +455,23 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+//		if (Validator.isNotNull(groupId)) {
+//			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
+//					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
+//					: indexer.getFullQuery(searchContext);
+//			TermQuery catQuery1 = new TermQueryImpl(DictItemTerm.GROUP_ID, groupId);
+//			TermQuery catQuery2 = new TermQueryImpl(DictItemTerm.GROUP_ID, String.valueOf(0));
+//
+//			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
+//			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
+//			booleanQuery.add(categoryQuery, BooleanClauseOccur.MUST);
+//		}
 		if (Validator.isNotNull(groupId)) {
-			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
-					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
-					: indexer.getFullQuery(searchContext);
-			TermQuery catQuery1 = new TermQueryImpl(DictItemTerm.GROUP_ID, groupId);
-			TermQuery catQuery2 = new TermQueryImpl(DictItemTerm.GROUP_ID, String.valueOf(0));
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
-			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
-			booleanQuery.add(categoryQuery, BooleanClauseOccur.MUST);
+			query.addFields(HolidayTerm.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(userId)) {
@@ -534,10 +538,6 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 				query.addFields(DictItemTerm.ITEM_NAME, DictItemTerm.ITEM_NAME_EN, DictItemTerm.ITEM_CODE);
 
-				Operator operator = Operator.OR;
-
-				query.setOperator(operator);
-
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 			}
@@ -586,15 +586,11 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(groupId)) {
-			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
-					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
-					: indexer.getFullQuery(searchContext);
-			TermQuery catQuery1 = new TermQueryImpl(DictItemTerm.GROUP_ID, groupId);
-			TermQuery catQuery2 = new TermQueryImpl(DictItemTerm.GROUP_ID, String.valueOf(0));
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
-			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
-			booleanQuery.add(categoryQuery, BooleanClauseOccur.MUST);
+			query.addFields(HolidayTerm.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(userId)) {

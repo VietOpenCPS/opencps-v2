@@ -35,9 +35,6 @@ import org.opencps.api.controller.impl.ServiceProcessManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
-import org.opencps.dossiermgt.model.impl.DossierFileImpl;
-import org.opencps.dossiermgt.model.impl.DossierLogImpl;
-import org.opencps.dossiermgt.model.impl.PaymentFileImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 

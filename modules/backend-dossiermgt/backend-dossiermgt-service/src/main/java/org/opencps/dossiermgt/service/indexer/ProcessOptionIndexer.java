@@ -69,6 +69,7 @@ public class ProcessOptionIndexer extends BaseIndexer<ProcessOption> {
 		document.addTextSortable(ProcessOptionTerm.AUTO_SELECT, object.getAutoSelect());
 		document.addTextSortable(ProcessOptionTerm.INSTRUCTION_NOTE, object.getInstructionNote());
 		document.addTextSortable(ProcessOptionTerm.SUBMISSION_NOTE, object.getSubmissionNote());
+		document.addTextSortable(ProcessOptionTerm.OPTION_NAME, object.getOptionName());
 
 		
 		// add extend fields

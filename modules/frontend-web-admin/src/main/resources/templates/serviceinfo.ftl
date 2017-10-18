@@ -8,33 +8,24 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<button class="btn btn-active form-control MB5" id="btnAddServiceInfo"><i class="glyphicon glyphicon-plus"></i> Thêm thủ tục </button>
-					<select class="form-control" id="administrationCodeSearch" name="administrationCodeSearch">
-						<option value=""></option>
-						<#list administrations as item>
-						<option value="${item.id}">${item.name}</option>
-						</#list>
-					</select>
-					<select class="form-control" id="domainCodeSearch" name="domainCodeSearch">
-						<option value=""></option>
-						<#list domains as item>
-						<option value="${item.id}">${item.name}</option>
-						</#list>
-					</select>
+					<select class="form-control" id="administrationCodeSearch" name="administrationCodeSearch"></select>
+					<select class="form-control" id="domainCodeSearch" name="domainCodeSearch"></select>
 					<div class="form-group search-icon">
 						<input type="text" id="keyword" name="keyword" class="form-control" placeholder="Nhập từ khóa">
 					</div>
 				</div>
+				
 				<div class="col-sm-12">
-					<ul class='ul-with-border '>
-						<div id='listViewTTHC'></div>
+					<ul class='ul-with-border' id="listViewTTHC">
+
 					</ul>
 					<div id='pagerTTHC' class='k-pager-wrap k-widget k-floatwrap'></div>
 					<script type="text/x-kendo-template" id="templateTTHC" >
-						<li>
+						<li class="">
 							<div class="row">
 								<div class="col-sm-12 MB5">
-									#:serviceCode#
-									#if(typeof public !== "undefined" && public) {#
+									<span class="showServiceinfoDetail" data-pk="#:id#">#:serviceCode# </span>
+									#if(typeof active !== "undefined" && active) {#
 									<i class="fa fa-check ML5" aria-hidden="true"></i>
 									#} #
 									<i class="fa fa-trash pull-right _itemServiceinfo_btnDelete" data-pk="#:id#"></i>
@@ -43,10 +34,10 @@
 									<p class="showServiceinfoDetail" data-pk="#:id#">#:serviceName#</p>
 								</div>
 								<div class="col-sm-12">
-									<i class="fa fa-suitcase" aria-hidden="true"></i> <span>#:domainName#</span>
+									<i class="fa fa-suitcase" aria-hidden="true"></i> <span class="showServiceinfoDetail" data-pk="#:id#">#:domainName#</span>
 								</div>
 								<div class="col-sm-12">
-									<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i>#:administrationName#</i>
+									<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i class="showServiceinfoDetail" data-pk="#:id#">#:administrationName#</i>
 								</div>
 							</div>
 						</li>
@@ -57,13 +48,14 @@
 		</div>
 	</div>
 	<div class="col-sm-9 PR0">
-		<div class="panel panel-body" id="serviceinfo_detail">
+		<div class="panel panel-body PL0 PR0" id="serviceinfo_detail">
 
 		</div>
 	</div>
 	<input type="hidden" name="itemServiceInfoId" id="itemServiceInfoId">
 </div>
 <script type="text/javascript">
+	var loadFirst = true;
 	var dataSourceTTHC=new kendo.data.DataSource({
 		transport:{
 			read: function(options) {
@@ -97,21 +89,14 @@
 			total:"total",
 			data:"data",
 			model:{
-				id:"serviceinfoId"
+				id:"serviceInfoId"
 			}
 		},
-		pageSize: 5,
+		pageSize: 10,
 		serverPaging: false,
 		serverSorting: false,
-		serverFiltering: false,
-		change : function(e){
-			console.log("change");
-			console.log(e);
-			console.log(e.items[0].id);
-			$("#itemServiceInfoId").val(e.items[0].id);
-			formControl(e.items[0].id);
+		serverFiltering: false
 
-		}
 	});
 
 	$("#listViewTTHC").kendoListView({
@@ -122,7 +107,23 @@
 				e.preventDefault();
 			}
 		},
-		seperatorColor:"transparent"
+		seperatorColor:"transparent",
+		dataBound : function(){
+			console.log(dataSourceTTHC.view());
+			console.log($("#listViewTTHC > li"));
+			if(loadFirst){
+				if(dataSourceTTHC.view()[0]){
+					var id = dataSourceTTHC.view()[0].id;
+
+					$("#listViewTTHC > li").removeClass("k-state-selected");
+					$("#listViewTTHC > li:first-child").addClass("k-state-selected");
+
+					$("#itemServiceInfoId").val(id);
+					formControl(id);
+				}
+			}
+			loadFirst = false;
+		}
 	});
 
 	$("#pagerTTHC").kendoPager({
@@ -139,8 +140,28 @@
 
 	$("#administrationCodeSearch").kendoComboBox({
 		placeholder:"Chọn cơ quan",
-		dataTextField:"administrationName",
-		dataValueField:"administrationCode",
+		dataTextField:"itemName",
+		dataValueField:"itemCode",
+		dataSource : {
+			transport : {
+				read : {
+					url : "${api.server}/dictcollections/GOVERNMENT_AGENCY/dictitems",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
+
+					},
+					error : function(xhr){
+
+					}
+				}
+			},
+			schema: {
+				data : "data",
+				total : "total"
+			}
+		},
 		change:function(){
 			dataSourceTTHC.read({
 				"domain": $("#domainCodeSearch").val(),
@@ -154,14 +175,34 @@
 
 	$("#domainCodeSearch").kendoComboBox({
 		placeholder:"Chọn lĩnh vực",
-		dataTextField:"domainName",
-		dataValueField:"domainCode",
+		dataTextField:"itemName",
+		dataValueField:"itemCode",
 		change:function(){
 			dataSourceTTHC.read({
 				"domain": $("#domainCodeSearch").val(),
 				"administration" :$("#administrationCodeSearch").val(),
 				"keyword": $("#keyword").val()
 			});
+		},
+		dataSource : {
+			transport : {
+				read : {
+					url : "${api.server}/dictcollections/SERVICE_DOMAIN/dictitems",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
+
+					},
+					error : function(xhr){
+
+					}
+				}
+			},
+			schema: {
+				data : "data",
+				total : "total"
+			}
 		},
 		filter:"contains",
 		noDataTemplate: 'Không có dữ liệu'
@@ -183,6 +224,7 @@
 					url : "${api.server}/serviceinfos",
 					dataType : "json",
 					type : "GET",
+					headers: {"groupId": ${groupId}},
 					success : function(result){
 
 					},
@@ -193,10 +235,7 @@
 			},
 			schema : {
 				total : "total",
-				data : "data",
-				model : {
-					id : "serviceinfoId"
-				}
+				data : "data"
 			}
 		},
 		filter: "contains",
@@ -216,13 +255,20 @@
 	$(document).on("click", ".showServiceinfoDetail", function(event){
 		event.preventDefault();
 		$("#itemServiceInfoId").val($(this).attr("data-pk"));
+		console.log("show detail");
 		console.log($(this).attr("data-pk"));
-		formControl($(this).attr("data-pk"));
+
+		$("#listViewTTHC > li").removeClass("k-state-selected");
+		console.log($(this).parent().parent().parent());
+		$(this).parent().parent().parent().addClass("k-state-selected");
+		pullDataDetail($(this).attr("data-pk"));
+		crtAddOrEdit();
 	});
 
 	$(document).on("click", "#btnAddServiceInfo", function(event){
 		event.preventDefault();
 		$("#itemServiceInfoId").val("");
+		$("#listViewTTHC > li").removeClass("k-state-selected");
 		formControl();
 	});
 
@@ -239,7 +285,7 @@
 
 	var updateServieInfo = function(dataPk){
 		dataSourceTTHC.transport.update({
-			"serviceinfoid":dataPk,
+			"serviceInfoId":dataPk,
 			"serviceCode":$("#serviceCode").val(),
 			"serviceName":$("#serviceName").val(),
 			"processText":$("#serviceProcess").val(),
@@ -255,25 +301,6 @@
 		});
 	}
 
-	var updateServieInfoIfSuccess = function(dataPk,result){
-		dataSourceTTHC.fetch(function() {
-			var item = dataSourceTTHC.get(dataPk);
-			item.set("serviceCode",result.serviceCode);
-			item.set("serviceName",result.serviceName);
-			item.set("processText",result.processText);
-			item.set("methodText",result.methodText);
-			item.set("dossierText",result.dossierText);
-			item.set("conditionText",result.conditionText);
-			item.set("durationText",result.durationText);
-			item.set("resultText",result.resultText);
-			item.set("administrationCode",result.administrationCode);
-			item.set("domainCode",result.domainCode);
-			item.set("activeStatus",result.activeStatus);
-			item.set("administrationName",result.administrationName);
-			item.set("domainName",result.domainName);
-
-		});
-	}
 
 	var addServiceInfo = function(){
 		dataSourceTTHC.transport.create({
@@ -292,25 +319,7 @@
 		});
 	};
 
-	var addServiceInfoIfSuccess=function(result){
-		dataSourceTTHC.add({
-			"serviceinfoId": result.serviceinfoId,
-			"serviceCode":result.serviceCode,
-			"serviceName":result.serviceName,
-			"processText":result.processText,
-			"methodText":result.methodText,
-			"dossierText":result.dossierText,
-			"conditionText":result.conditionText,
-			"durationText":result.durationText,
-			"resultText":result.resultText,
-			"administrationCode":result.administrationCode,
-			"domainCode":result.domainCode,
-			"activeStatus":result.activeStatus,
-			"administrationName":result.administrationName,
-			"domainName":result.domainName,
-			"fileTemplates":result.fileTemplates
-		});
-	}
+
 
 	var setDefaultValueMultiSelect=function(dataPk){
 		if(dataPk>0){
@@ -331,6 +340,7 @@
 		var id = $(this).attr("data-pk");
 		if(id && id > 0){
 			var item =  dataSourceTTHC.get(id);
+			console.log(item);
 			var cf = confirm("Bạn có muốn xóa "+item.serviceCode+"!");
 			if(cf){
 				$.ajax({
@@ -339,13 +349,24 @@
 					type : "DELETE",
 					headers: {"groupId": ${groupId}},
 					success : function(result){
-
 						if(item){
 							var index = dataSourceTTHC.remove(item);
+							var currentItemId = $("#itemServiceInfoId").val();
+							if(id === currentItemId){
+								$("#itemServiceInfoId").val("");
+								formControl();
+							}
 						}
+
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
+
 					},
 					error : function(xhr){
-
+						notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");
 					}
 				});
 			}else {

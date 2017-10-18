@@ -339,7 +339,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			throw new NoApplicantIdDateException("NoApplicantIdDateException");
 	}
 
-	private void validateDuplicate(long companyId, String contactTelNo, String applicantIdNo, String email) throws PortalException {
+	private void validateDuplicate(long companyId, String contactTelNo, String applicantIdNo, String email)
+			throws PortalException {
 
 		Applicant applicant = null;
 
@@ -352,14 +353,12 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(applicant))
 			throw new DuplicateContactEmailException("DuplicateContactEmailException");
-		
 
 		User user = userLocalService.fetchUserByEmailAddress(companyId, email);
 
 		if (Validator.isNotNull(user))
 			throw new DuplicateContactEmailException("DuplicateContactEmailException");
 
-		
 		if (Validator.isNotNull(contactTelNo)) {
 
 			applicant = fetchByTelNo(contactTelNo);
@@ -410,7 +409,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		// reset activationCode
 		applicant.setActivationCode(StringPool.BLANK);
-		//applicant.setTmpPass(StringPool.BLANK);
+		// applicant.setTmpPass(StringPool.BLANK);
 
 		applicantPersistence.update(applicant);
 
@@ -479,6 +478,25 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+		String type = String.valueOf(params.get("type"));
+		String lock = String.valueOf(params.get("lock"));
+
+		if (Validator.isNotNull(type)) {
+			MultiMatchQuery query = new MultiMatchQuery(type);
+
+			query.addFields(ApplicantTerm.APPLICANTIDTYPE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(lock)) {
+			MultiMatchQuery query = new MultiMatchQuery(lock);
+
+			query.addFields(ApplicantTerm.LOCK);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Applicant.class.getName());
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -526,6 +544,25 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
 			query.addFields(ApplicantTerm.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		String type = String.valueOf(params.get("type"));
+		String lock = String.valueOf(params.get("lock"));
+
+		if (Validator.isNotNull(type)) {
+			MultiMatchQuery query = new MultiMatchQuery(type);
+
+			query.addFields(ApplicantTerm.APPLICANTIDTYPE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(lock)) {
+			MultiMatchQuery query = new MultiMatchQuery(lock);
+
+			query.addFields(ApplicantTerm.LOCK);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

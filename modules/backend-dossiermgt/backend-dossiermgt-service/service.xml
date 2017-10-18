@@ -182,7 +182,10 @@
 			<finder-column name="partNo"/>
 		</finder>
 		
-
+		<finder return-type="DossierPart" name="GID_FTN">
+			<finder-column name="groupId"/>
+			<finder-column name="fileTemplateNo"/>
+		</finder>
 		
 		<!-- References -->
 
@@ -246,6 +249,7 @@
 
 		<column name="serviceConfigId" type="long" />
 		<column name="optionOrder" type="int" />
+		<column name="optionName" type="String" />
 		<column name="autoSelect" type="String" />
 		<column name="dossierTemplateId" type="long" />
 		<column name="serviceProcessId" type="long" />

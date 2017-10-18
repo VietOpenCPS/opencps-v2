@@ -76,7 +76,8 @@ import javax.xml.bind.annotation.XmlType;
     "domainName",
     "maxLevel",
     "_public",
-    "serviceConfigs"
+    "serviceConfigs",
+    "active"
 })
 public class ServiceInfoModel {
 
@@ -101,6 +102,15 @@ public class ServiceInfoModel {
     protected Integer maxLevel;
     @XmlElement(name = "public")
     protected String _public;
+    public String getActive() {
+		return active;
+	}
+
+	public void setActive(String active) {
+		this.active = active;
+	}
+
+	protected String active;
     protected List<ServiceInfoServiceConfig> serviceConfigs;
 
     /**

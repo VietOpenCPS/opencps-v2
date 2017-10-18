@@ -61,6 +61,7 @@ public class ProcessActionIndexer extends BaseIndexer<ProcessAction> {
 		document.addTextSortable(ProcessActionTerm.ACTION_CODE, object.getActionCode());
 		document.addTextSortable(ProcessActionTerm.ACTION_NAME, object.getActionName());
 		document.addTextSortable(ProcessActionTerm.PAYMENT_FEE, object.getPaymentFee());
+		document.addTextSortable(ProcessActionTerm.SYNC_ACTION_CODE, object.getSyncActionCode());
 		document.addTextSortable(ProcessActionTerm.CREATE_DOSSIER_FILES, object.getCreateDossierFiles());
 		document.addTextSortable(ProcessActionTerm.RETURN_DOSSIER_FILES, object.getReturnDossierFiles());
 		document.addTextSortable(ProcessActionTerm.MAKE_BRIEF_NOTE, object.getMakeBriefNote());

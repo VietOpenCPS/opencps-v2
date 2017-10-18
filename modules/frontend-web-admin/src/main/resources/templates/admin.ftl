@@ -27,8 +27,17 @@
           <i class="fa fa-gg" aria-hidden="true"></i>
           </a>
         </div>
-        <div class="col-sm-9 PL10 P0">Tổ chức cán bộ</div>
+        <div class="col-sm-9 PL10 P0">Tổ chức</div>
       </li>
+      <li class="clearfix" >
+        <div class="col-sm-2 clearfix ">
+          <a href="javascript:;" >
+          <i class="fa fa-gg" aria-hidden="true"></i>
+          </a>
+        </div>
+        <div class="col-sm-9 PL10 P0">Cán bộ</div>
+      </li>
+      
       <li class="clearfix" >
         <div class="col-sm-2 clearfix ">
           <a href="javascript:;" >
@@ -95,14 +104,15 @@
       animation: { open: { effects: "fadeIn"} },
       tabPosition: "left",
       contentUrls: [
-				'datamgt.ftl',
+				'${ajax.dictcollection_index}',
         '${ajax.serviceinfo_list}',
-        'employee.ftl',
+        '${url.adminWorkingUnitPortlet.working_unit_list}',
+        '${ajax.employee_index}',
         '${ajax.dossiertemplate}',
         '${ajax.serviceprocess}',
         '${ajax.serviceconfig}',
         'holiday.ftl',
-        'paymentconfig.ftl',
+        '${ajax.payment_config}',
         '${ajax.manage_account}',
         'efrom.ftl'
       ]

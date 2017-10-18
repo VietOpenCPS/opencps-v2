@@ -154,7 +154,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 
@@ -191,9 +191,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 			} else {
-				error.setMessage(" Internal Server Error.");
+				error.setMessage("Internal Server Error");
 				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription(" Internal Server Error.");
+				error.setDescription(e.getMessage());
 
 				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 
@@ -252,9 +252,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(" Internal Server Error.");
+					error.setDescription(e.getMessage());
 
 					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 
@@ -307,9 +307,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(" Internal Server Error.");
+					error.setDescription(e.getMessage());
 
 					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 
@@ -394,7 +394,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			ProcessOption serviceConfig = actions.updateOption(groupId, 0l, id, input.getSeqOrder(),
+			ProcessOption serviceConfig = actions.updateOption(groupId,input.getOptionName(), 0l, id, input.getSeqOrder(),
 					input.getAutoSelect(), input.getInstructionNote(), input.getSubmissionNote(), input.getDossierTemplateId(),
 					input.getServiceProcessId(), serviceContext);
 
@@ -421,9 +421,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(" Internal Server Error.");
+					error.setDescription(e.getMessage());
 
 					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 
@@ -452,7 +452,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			ProcessOption processOption = actions.updateOption(groupId, optionId, id, input.getSeqOrder(),
+			ProcessOption processOption = actions.updateOption(groupId, input.getOptionName(), optionId, id, input.getSeqOrder(),
 					input.getAutoSelect(), input.getInstructionNote(), input.getSubmissionNote(), input.getDossierTemplateId(),
 					input.getServiceProcessId(), serviceContext);
 
@@ -479,9 +479,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(" Internal Server Error.");
+					error.setDescription(e.getMessage());
 
 					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 
@@ -535,9 +535,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(" Internal Server Error.");
+					error.setDescription(e.getMessage());
 
 					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 

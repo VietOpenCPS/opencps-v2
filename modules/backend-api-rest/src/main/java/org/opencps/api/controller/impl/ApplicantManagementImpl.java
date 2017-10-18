@@ -114,6 +114,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			params.put("groupId", String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
+			params.put("type", query.getType());
+			params.put("lock", query.getLock());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					Boolean.getBoolean(query.getOrder())) };
@@ -146,9 +148,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				} else {
 
-					error.setMessage(" Internal Server Error.");
+					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(" Internal Server Error.");
+					error.setDescription(e.getMessage());
 
 					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 
@@ -224,9 +226,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 					} else {
-						error.setMessage(" Internal Server Error.");
+						error.setMessage("Internal Server Error");
 						error.setCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
-						error.setDescription(" Internal Server Error.");
+						error.setDescription(e.getMessage());
 
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 					}
@@ -305,9 +307,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 					} else {
-						error.setMessage(" Internal Server Error.");
+						error.setMessage("Internal Server Error");
 						error.setCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
-						error.setDescription(" Internal Server Error.");
+						error.setDescription(e.getMessage());
 
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 					}
@@ -373,9 +375,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 					} else {
-						error.setMessage(" Internal Server Error.");
+						error.setMessage("Internal Server Error");
 						error.setCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
-						error.setDescription(" Internal Server Error.");
+						error.setDescription(e.getMessage());
 
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 					}
@@ -451,9 +453,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 					} else {
-						error.setMessage(" Internal Server Error.");
+						error.setMessage("Internal Server Error");
 						error.setCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
-						error.setDescription(" Internal Server Error.");
+						error.setDescription(e.getMessage());
 
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 					}
@@ -531,7 +533,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					} else {
 						error.setMessage("Internal Server Error.");
 						error.setCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
-						error.setDescription(" Internal Server Error.");
+						error.setDescription(e.getMessage());
 
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 					}
@@ -617,9 +619,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 					} else {
-						error.setMessage(" Internal Server Error.");
+						error.setMessage("Internal Server Error");
 						error.setCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
-						error.setDescription(" Internal Server Error.");
+						error.setDescription(e.getMessage());
 
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 					}
@@ -698,9 +700,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 					} else {
-						error.setMessage(" Internal Server Error.");
+						error.setMessage("Internal Server Error");
 						error.setCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
-						error.setDescription(" Internal Server Error.");
+						error.setDescription(e.getMessage());
 
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 					}
@@ -780,9 +782,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 					} else {
-						error.setMessage(" Internal Server Error.");
+						error.setMessage("Internal Server Error");
 						error.setCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
-						error.setDescription(" Internal Server Error.");
+						error.setDescription(e.getMessage());
 
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 					}

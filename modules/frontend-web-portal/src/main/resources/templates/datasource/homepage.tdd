@@ -1,0 +1,15 @@
+{
+	"api" : {
+		
+	},
+	"groupId" : 20147,
+	"homepage" : {
+		"groupId" : 20147
+	},
+	"applicantIdType" : "citizen",
+	"applicantId" : 1,
+	"domain" : 1,
+	"active_user_id" : 123,
+	"redirectURL" : "google.com",
+	"portalURL" : "google.com"
+}
