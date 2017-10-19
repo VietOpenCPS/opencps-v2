@@ -735,9 +735,15 @@ $("#btn-submit-serviceinfo-general").click(function(){
 					}, "success");
 				},
 				error : function(xhr){
-					notification.show({
-						message: "Xẩy ra lỗi, vui lòng thử lại"
-					}, "error");
+					if (result.responseJSON.description == "DuplicateServiceCodeException"){
+						notification.show({
+							message: "Sửa không thành công do mã hồ sơ bị trùng."
+						}, "error");
+					} else {
+						notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");
+					}
 				}
 			});
 		}else{
@@ -767,9 +773,15 @@ $("#btn-submit-serviceinfo-general").click(function(){
 					pullDataDetail(result.serviceInfoId);
 				},
 				error : function(xhr){
-					notification.show({
-						message: "Xẩy ra lỗi, vui lòng thử lại"
-					}, "error");
+					if (result.responseJSON.description == "DuplicateServiceCodeException"){
+						notification.show({
+							message: "Thêm không thành công do mã hồ sơ bị trùng."
+						}, "error");
+					} else {
+						notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");
+					}
 				}
 			});
 		}
