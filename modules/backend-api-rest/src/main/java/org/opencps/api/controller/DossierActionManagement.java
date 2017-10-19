@@ -18,10 +18,12 @@ import javax.ws.rs.core.Response;
 
 import org.opencps.api.dossier.model.ActionExecutedModel;
 import org.opencps.api.dossier.model.ActionModel;
+import org.opencps.api.dossier.model.ActionResultModel;
 import org.opencps.api.dossier.model.ActionSearchModel;
 import org.opencps.api.dossier.model.ExecuteOneAction;
-import org.opencps.api.dossier.model.LogProcess;
+
 import org.opencps.api.dossier.model.ReadActionExecuted;
+import org.opencps.api.dossier.model.ListContacts;
 import org.opencps.api.serviceprocess.model.ProcessStepInputModel;
 
 import org.opencps.api.serviceprocess.model.ServiceProcessDetailModel;
@@ -42,18 +44,18 @@ import io.swagger.annotations.ApiResponses;
 public interface DossierActionManagement {
 	
 	@GET
-	@Path("/{referenceUid}/nextactions")
+	@Path("/{id}/nextactions")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "Get List Actions", response = ActionModel.class)
+	@ApiOperation(value = "Get List Actions", response = ActionResultModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns detail of ServiceProcesses", response = ServiceProcessDetailModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns list action can execute", response = ActionResultModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
 	
 	public Response getListActions(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("referenceUid") String referenceUid,
+			@Context ServiceContext serviceContext, @PathParam("id") String id,
 			@BeanParam ActionSearchModel query);
 	
 	
@@ -62,7 +64,7 @@ public interface DossierActionManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Read List Action Executed", response = ReadActionExecuted.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns detail of ServiceProcesses", response = ServiceProcessDetailModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns list action executed", response = ReadActionExecuted.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
@@ -78,7 +80,7 @@ public interface DossierActionManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Execute One Action", response = ExecuteOneAction.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a ProcessStep was added", response = ProcessStepInputModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a Action be executed", response = ExecuteOneAction.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
@@ -90,9 +92,9 @@ public interface DossierActionManagement {
 	@GET
 	@Path("/{id}/logs")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "Get Contacts", response = LogProcess.class)
+	@ApiOperation(value = "Get List Contacts", response = ListContacts.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns detail of ServiceProcesses", response = ServiceProcessDetailModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns list contacts", response = ListContacts.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
@@ -100,5 +102,32 @@ public interface DossierActionManagement {
 	public Response getListContacts(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") long id);
+	
+	@GET
+	@Path("/{id}/visited")
+	@ApiOperation(value = "Get file be visited", response = String.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns file be visited", response = String.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
+	public Response getVisited(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") String id);
+	
+	
+	@GET
+	@Path("/{id}/rollback")
+	@ApiOperation(value = "rollback", response = String.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns rollback is success", response = String.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
+	public Response getRollback(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") String id);
+	
+	
 	
 }

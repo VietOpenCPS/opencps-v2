@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-	<xsd:element name="Search">
-		<xsd:complexType>
-			<xsd:sequence>
-				<!-- default -->
-				<xsd:element name="keyword" type="xsd:string" minOccurs="0" />
-				<xsd:element name="start" type="xsd:int" minOccurs="0" />
-				<xsd:element name="end" type="xsd:int" minOccurs="0" />
-				<xsd:element name="sort" type="xsd:string" minOccurs="0" />
-				<xsd:element name="order" type="xsd:string" minOccurs="0" />
-			</xsd:sequence>
-		</xsd:complexType>
-	</xsd:element>
-
-
 	<xsd:element name="ActionSearchModel">
 		<xsd:complexType>
 			<xsd:sequence>
@@ -128,7 +114,7 @@
 		</xsd:complexType>
 	</xsd:element>
 
-	<xsd:element name="LogProcess">
+	<xsd:element name="ListContacts">
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="userId" type="xsd:int" minOccurs="0" />
