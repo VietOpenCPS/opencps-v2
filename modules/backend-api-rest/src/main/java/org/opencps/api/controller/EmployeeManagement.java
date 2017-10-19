@@ -29,6 +29,7 @@ import org.opencps.api.employee.model.EmployeeJobposInputModel;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringPool;
 
 @Path("/employees")
 public interface EmployeeManagement {
@@ -140,5 +141,15 @@ public interface EmployeeManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") long id,
 			@DefaultValue("false") @FormParam("locked") boolean locked);
+	
+	@GET
+	@Path("/exits/{{employeeNo}}/{{email}}")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response validateExits(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, 
+			@DefaultValue(StringPool.BLANK) @PathParam("employeeNo") String employeeNo, 
+			@DefaultValue(StringPool.BLANK) @PathParam("email") String email);
 
 }

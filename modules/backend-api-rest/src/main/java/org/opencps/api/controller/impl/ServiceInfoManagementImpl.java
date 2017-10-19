@@ -93,7 +93,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			params.put(ServiceInfoTerm.MAX_LEVEL, query.getLevel());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);

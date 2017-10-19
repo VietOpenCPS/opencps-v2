@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -81,7 +82,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			params.put(ServiceConfigTerm.APPICATION_TYPE, applicant);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					GetterUtil.getBoolean(query.getOrder())) };
+			
+			
 
 			JSONObject jsonData = actions.getServiceConfigs(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
@@ -351,7 +354,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			params.put(ProcessOptionTerm.APPLICATION_TYPE, applicantType);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getProcessOptions(userId, serviceContext.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);

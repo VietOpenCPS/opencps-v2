@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
+import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
+import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 
@@ -16,9 +18,9 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public interface EmployeeInterface {
 
@@ -28,12 +30,12 @@ public interface EmployeeInterface {
 	Employee create(long userId, long companyId, long groupId, String employeeNo, String fullName, String email,
 			String gender, Date birthDate, String telNo, String mobile, String title, String workingStatus,
 			ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
-			UnauthorizationException, DuplicateCategoryException, PortalException;
+			UnauthorizationException, DuplicateEmployeeNoException, DuplicateEmployeeEmailException, PortalException;
 
 	Employee update(long userId, long companyId, long groupId, long id, String employeeNo, String fullName,
 			String email, String gender, Date birthDate, String telNo, String mobile, String title,
 			String workingStatus, ServiceContext serviceContext) throws NoSuchUserException, NotFoundException,
-			UnauthenticationException, UnauthorizationException, DuplicateCategoryException, PortalException;
+			UnauthenticationException, UnauthorizationException, DuplicateEmployeeNoException, DuplicateEmployeeEmailException, PortalException;
 
 	File getEmployeePhoto(long id, ServiceContext serviceContext);
 
@@ -61,5 +63,8 @@ public interface EmployeeInterface {
 
 	JSONObject lockEmployeeAccount(long userId, long companyId, long groupId, long id, boolean locked,
 			ServiceContext serviceContext) throws PortalException;
+
+	void validateExits(long userId, long companyId, long groupId, String employeeNo, String email,
+			ServiceContext serviceContext) throws DuplicateEmployeeEmailException, DuplicateEmployeeNoException;
 
 }

@@ -63,7 +63,7 @@ public class HolidayManagementImpl implements HolidayManagement {
 			params.put("year", query.getYear());
 			
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getHolidays(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					query.getStart(), query.getEnd(), serviceContext);

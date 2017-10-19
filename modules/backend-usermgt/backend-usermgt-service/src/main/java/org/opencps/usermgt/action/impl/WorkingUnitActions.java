@@ -5,10 +5,9 @@ import java.io.InputStream;
 import java.util.LinkedHashMap;
 
 import org.opencps.usermgt.action.WorkingUnitInterface;
-import org.opencps.usermgt.model.OfficeSite;
 import org.opencps.usermgt.model.WorkingUnit;
-import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
+import org.opencps.usermgt.utils.DateTimeUtils;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -28,10 +27,10 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.utils.FileUploadUtils;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
+import backend.utils.FileUploadUtils;
 
 public class WorkingUnitActions implements WorkingUnitInterface {
 
@@ -65,9 +64,13 @@ public class WorkingUnitActions implements WorkingUnitInterface {
 	}
 
 	@Override
-	public File getLogo(long id, ServiceContext serviceContext) {
+	public File getLogo(long id, ServiceContext serviceContext) throws NotFoundException {
 
 		WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchWorkingUnit(id);
+
+		if (Validator.isNull(workingUnit)) {
+			throw new NotFoundException();
+		}
 
 		long fileEntryId = workingUnit.getLogoFileEntryId();
 
@@ -91,12 +94,12 @@ public class WorkingUnitActions implements WorkingUnitInterface {
 	@Override
 	public WorkingUnit create(long userId, long companyId, long groupId, String address, String email, String enName,
 			String faxNo, String govAgencyCode, String name, String telNo, String website, long parentWorkingUnitId,
-			int sibling, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
+			int sibling, String ceremonyDate, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, NumberFormatException, NotFoundException, DuplicateCategoryException {
 		WorkingUnit ett = null;
-
+		
 		ett = WorkingUnitLocalServiceUtil.addWorkingUnit(userId, groupId, name, enName, govAgencyCode,
-				parentWorkingUnitId, String.valueOf(sibling), address, telNo, faxNo, email, website, serviceContext);
+				parentWorkingUnitId, String.valueOf(sibling), address, telNo, faxNo, email, website, DateTimeUtils.convertStringToDateAPI(ceremonyDate), serviceContext);
 
 		return ett;
 	}
@@ -104,8 +107,9 @@ public class WorkingUnitActions implements WorkingUnitInterface {
 	@Override
 	public WorkingUnit update(long userId, long companyId, long groupId, long id, String address, String email,
 			String enName, String faxNo, String govAgencyCode, String name, String telNo, String website,
-			long parentWorkingUnitId, int sibling, ServiceContext serviceContext) throws NoSuchUserException,
-			UnauthenticationException, UnauthorizationException, NumberFormatException, NotFoundException, DuplicateCategoryException {
+			long parentWorkingUnitId, int sibling, String ceremonyDate, ServiceContext serviceContext)
+			throws NoSuchUserException, UnauthenticationException, UnauthorizationException, NumberFormatException,
+			NotFoundException, DuplicateCategoryException {
 
 		WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchWorkingUnit(id);
 
@@ -168,11 +172,17 @@ public class WorkingUnitActions implements WorkingUnitInterface {
 
 		}
 
+		if (Validator.isNotNull(ceremonyDate)) {
+
+			workingUnit.setCeremonyDate(DateTimeUtils.convertStringToDateAPI(ceremonyDate));
+
+		}
+		
 		workingUnit = WorkingUnitLocalServiceUtil.updateWorkingUnit(userId, workingUnit.getWorkingUnitId(),
 				workingUnit.getName(), workingUnit.getEnName(), workingUnit.getGovAgencyCode(),
 				workingUnit.getParentWorkingUnitId(), workingUnit.getSibling(), workingUnit.getAddress(),
 				workingUnit.getTelNo(), workingUnit.getFaxNo(), workingUnit.getEmail(), workingUnit.getWebsite(),
-				workingUnit.getLogoFileEntryId(), serviceContext);
+				workingUnit.getLogoFileEntryId(), workingUnit.getCeremonyDate(), serviceContext);
 
 		return workingUnit;
 	}
@@ -182,7 +192,7 @@ public class WorkingUnitActions implements WorkingUnitInterface {
 		FileEntry fileEntry = null;
 
 		WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchWorkingUnit(id);
-		
+
 		try {
 			fileEntry = DLAppLocalServiceUtil.getFileEntry(workingUnit.getLogoFileEntryId());
 		} catch (PortalException e) {
@@ -194,7 +204,8 @@ public class WorkingUnitActions implements WorkingUnitInterface {
 
 	@Override
 	public File updateLogo(long userId, long companyId, long groupId, long id, InputStream inputStream, String fileName,
-			String fileType, long fileSize, String destination, String desc, ServiceContext serviceContext) throws Exception {
+			String fileType, long fileSize, String destination, String desc, ServiceContext serviceContext)
+			throws Exception {
 		File file = null;
 
 		FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, inputStream, fileName, fileType,
@@ -206,10 +217,10 @@ public class WorkingUnitActions implements WorkingUnitInterface {
 				workingUnit.getName(), workingUnit.getEnName(), workingUnit.getGovAgencyCode(),
 				workingUnit.getParentWorkingUnitId(), workingUnit.getSibling(), workingUnit.getAddress(),
 				workingUnit.getTelNo(), workingUnit.getFaxNo(), workingUnit.getEmail(), workingUnit.getWebsite(),
-				fileEntry.getFileEntryId(), serviceContext);
+				fileEntry.getFileEntryId(), workingUnit.getCeremonyDate(), serviceContext);
 
 		file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), false);
-		
+
 		return file;
 	}
 

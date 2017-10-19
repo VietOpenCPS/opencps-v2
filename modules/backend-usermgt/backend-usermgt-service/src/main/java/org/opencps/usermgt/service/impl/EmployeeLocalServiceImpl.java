@@ -19,6 +19,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.usermgt.constants.EmployeeTerm;
+import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
+import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
 import org.opencps.usermgt.exception.NoSuchEmployeeException;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.base.EmployeeLocalServiceBaseImpl;
@@ -47,12 +49,12 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.auth.api.keys.ModelNameKeys;
+import backend.auth.api.BackendAuthImpl;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
+import backend.auth.api.keys.ActionKeys;
+import backend.auth.api.keys.ModelNameKeys;
 
 /**
  * The implementation of the employee local service.
@@ -85,12 +87,12 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	@Override
 	public Employee addEmployee(long userId, long groupId, String fullName, String employeeNo, int gender,
 			Date birthDate, String telNo, String mobile, String email, int workingStatus, long mainJobPostId,
-			String title, boolean isCreateUser, ServiceContext serviceContext) throws DuplicateCategoryException,
+			String title, boolean isCreateUser, ServiceContext serviceContext) throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException,
 			UnauthenticationException, UnauthorizationException, NoSuchUserException, PortalException {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -105,14 +107,14 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(groupId, employeeNo);
 
-		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0) {
-			throw new DuplicateCategoryException();
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 && Validator.isNotNull(employeeNo)) {
+			throw new DuplicateEmployeeNoException();
 		}
 
 		employeeCheck = employeePersistence.findByF_email(groupId, email);
 
-		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0) {
-			throw new DuplicateCategoryException();
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 && Validator.isNotNull(email)) {
+			throw new DuplicateEmployeeEmailException();
 		}
 
 		Date now = new Date();
@@ -210,7 +212,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -238,14 +240,14 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	@Override
 	public Employee updateEmployee(long userId, long employeeId, String fullName, String employeeNo, int gender,
 			Date birthDate, String telNo, String mobile, String email, int workingStatus, long mainJobPostId,
-			long photoFileEntryId, long mappingUserId, ServiceContext serviceContext)
-			throws DuplicateCategoryException, UnauthenticationException, UnauthorizationException, NoSuchUserException,
+			long photoFileEntryId, long mappingUserId, String title, ServiceContext serviceContext)
+			throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException, UnauthenticationException, UnauthorizationException, NoSuchUserException,
 			NotFoundException, PortalException {
 
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -267,13 +269,13 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(employee.getGroupId(), employeeNo);
 
 		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 && employeeCheck.get(0).getEmployeeId() != employeeId) {
-			throw new DuplicateCategoryException();
+			throw new DuplicateEmployeeNoException();
 		}
 
 		employeeCheck = employeePersistence.findByF_email(employee.getGroupId(), email);
 
 		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 && employeeCheck.get(0).getEmployeeId() != employeeId) {
-			throw new DuplicateCategoryException();
+			throw new DuplicateEmployeeEmailException();
 		}
 		
 		// Audit fields
@@ -293,6 +295,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		employee.setMainJobPostId(mainJobPostId);
 		employee.setPhotoFileEntryId(photoFileEntryId);
 		employee.setMappingUserId(mappingUserId);
+		employee.setTitle(title);
 		// User newUser =
 		// UserLocalServiceUtil.fetchUser(employee.getMappingUserId());
 		//
@@ -328,6 +331,22 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		return employeePersistence.fetchByF_mappingUserId(groupId, mappingUserId);
 	}
 
+	public void isExits(long groupId, String employeeNo, String email) throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException {
+		
+		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(groupId, employeeNo);
+
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0) {
+			throw new DuplicateEmployeeNoException();
+		}
+
+		employeeCheck = employeePersistence.findByF_email(groupId, email);
+
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0) {
+			throw new DuplicateEmployeeEmailException();
+		}
+		
+	}
+	
 	@SuppressWarnings("deprecation")
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {

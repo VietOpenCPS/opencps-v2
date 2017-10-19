@@ -62,7 +62,7 @@ public class WorkTimeManagementImpl implements WorkTimeManagement {
 			params.put("keywords", query.getKeywords());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getWorkTimes(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					query.getStart(), query.getEnd(), serviceContext);
