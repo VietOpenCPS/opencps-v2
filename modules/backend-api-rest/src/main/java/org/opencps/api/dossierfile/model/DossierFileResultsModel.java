@@ -6,7 +6,7 @@
 //
 
 
-package org.opencps.api.dossierfilemodel;
+package org.opencps.api.dossierfile.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="total" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="data" type="{}DossierFileSearchResultModel" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="data" type="{}DossierFileModel" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -41,11 +41,11 @@ import javax.xml.bind.annotation.XmlType;
     "total",
     "data"
 })
-@XmlRootElement(name = "DossierFileSearchResultsModel")
-public class DossierFileSearchResultsModel {
+@XmlRootElement(name = "DossierFileResultsModel")
+public class DossierFileResultsModel {
 
     protected Integer total;
-    protected List<DossierFileSearchResultModel> data;
+    protected List<DossierFileModel> data;
 
     /**
      * Gets the value of the total property.
@@ -89,13 +89,13 @@ public class DossierFileSearchResultsModel {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link DossierFileSearchResultModel }
+     * {@link DossierFileModel }
      * 
      * 
      */
-    public List<DossierFileSearchResultModel> getData() {
+    public List<DossierFileModel> getData() {
         if (data == null) {
-            data = new ArrayList<DossierFileSearchResultModel>();
+            data = new ArrayList<DossierFileModel>();
         }
         return this.data;
     }

@@ -774,6 +774,10 @@
 				<xsd:element name="type" type="xsd:int" minOccurs="0" />
 				<xsd:element name="owner" type="xsd:boolean" minOccurs="0" />
 				<xsd:element name="original" type="xsd:boolean" minOccurs="0" />
+				<xsd:element name="start" type="xsd:int" minOccurs="0" />
+				<xsd:element name="end" type="xsd:int" minOccurs="0" />
+				<xsd:element name="sort" type="xsd:string" minOccurs="0" />
+				<xsd:element name="order" type="xsd:string" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
