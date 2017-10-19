@@ -391,7 +391,8 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		// set varible
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("api", apiObject);
-		renderRequest.setAttribute("applicantId", applicant.getApplicantId());
+		renderRequest.setAttribute(
+			"applicantId", applicant == null ? "" : applicant.getApplicantId());
 
 		ServiceContext serviceContext = null;
 
@@ -565,7 +566,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		
 		long employeeId = ParamUtil.getLong(renderRequest, "employeeId");
 		
-		System.out.println(">>>>>>>>>>>>>>>>>>>>> "+employeeId);
 		/*JSONObject employee = JSONFactoryUtil.createJSONObject();*/
 		
 		Employee employeeObj= EmployeeLocalServiceUtil.fetchEmployee(employeeId);

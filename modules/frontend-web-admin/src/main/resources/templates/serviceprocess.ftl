@@ -325,12 +325,12 @@
 					description: $("#description").val(),
 					durationCount: $("#durationCount").val(),
 					durationUnit: $("input[name=durationUnit]:checked").val(),
-					generateDossierNo: $("#generateDossierNo").val(),
+					generateDossierNo: $("#generateDossierNo").prop("checked"),
 					dossierNoPattern: $("#dossierNoPattern").val(),
-					generateDueDate: $("#generateDueDate").val(),
+					generateDueDate: $("#generateDueDate").prop("checked"),
 					dueDatePattern: $("#dueDatePattern").val(),
-					generatePassword: $("#generatePassword").val(),
-					directNotification: $("#directNotification").val(),
+					generatePassword: $("#generatePassword").prop("checked"),
+					directNotification: $("#directNotification").prop("checked"),
 					serverNo: $("#serverNo").val(),
 				},
 				success: function(result) {
@@ -344,12 +344,12 @@
 					serviceProcess.set("description", $("#description").val());
 					serviceProcess.set("durationCount", $("#durationCount").val());
 					serviceProcess.set("durationUnit", $("input[name=durationUnit]:checked").val());
-					serviceProcess.set("generateDossierNo", $("#generateDossierNo").val());
+					serviceProcess.set("generateDossierNo", $("#generateDossierNo").prop("checked"));
 					serviceProcess.set("dossierNoPattern", $("#dossierNoPattern").val());
-					serviceProcess.set("generateDueDate", $("#generateDueDate").val());
+					serviceProcess.set("generateDueDate", $("#generateDueDate").prop("checked"));
 					serviceProcess.set("dueDatePattern", $("#dueDatePattern").val());
-					serviceProcess.set("generatePassword", $("#generatePassword").val());
-					serviceProcess.set("directNotification", $("#directNotification").val());
+					serviceProcess.set("generatePassword", $("#generatePassword").prop("checked"));
+					serviceProcess.set("directNotification", $("#directNotification").prop("checked"));
 					serviceProcess.set("serverNo", $("#serverNo").val());
 				},
 				error: function(result) {
@@ -430,12 +430,12 @@
 					description: $("#description").val(),
 					durationCount: $("#durationCount").val(),
 					durationUnit: $("input[name=durationUnit]:checked").val(),
-					generateDossierNo: $("#generateDossierNo").val(),
+					generateDossierNo: $("#generateDossierNo").prop("checked"),
 					dossierNoPattern: $("#dossierNoPattern").val(),
-					generateDueDate: $("#generateDueDate").val(),
+					generateDueDate: $("#generateDueDate").prop("checked"),
 					dueDatePattern: $("#dueDatePattern").val(),
-					generatePassword: $("#generatePassword").val(),
-					directNotification: $("#directNotification").val(),
+					generatePassword: $("#generatePassword").prop("checked"),
+					directNotification: $("#directNotification").prop("checked"),
 					serverNo: $("#serverNo").val(),
 				},
 				success: function(result) {

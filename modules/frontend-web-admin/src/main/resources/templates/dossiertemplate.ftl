@@ -60,7 +60,8 @@
 						data: {
 							keywords: options.data.keywords,
 							page: options.data.page,
-							pageSize: options.data.pageSize
+							pageSize: options.data.pageSize,
+							order: true
 						},
 						success: function(result) {
 							options.success(result);
@@ -133,7 +134,6 @@
 		$("#dossier_template_list_view").kendoListView({
 			dataSource: dossierTemplateDataSource,
 			template: kendo.template($("#dossier_template_template").html()),
-			selectable: true,
 			dataBound: function(e) {
 
 				if (firstTimeLoad){
@@ -192,7 +192,8 @@
 			dataSource: dossierTemplateDataSource,
 			buttonCount: 2,
 			messages: {
-				display: "{0}-{1} : {2}"
+				display: "Hiển thị {0}-{1} trong {2} kết quả",
+				empty: "Không có kết quả phù hợp!"
 			}
 		});
 
@@ -287,7 +288,7 @@
 				data: {
 					dossierTemplateId: dataPk,
 					templateNo: $("#templateNo").val(),
-					templateName: $("#templateName").val(),
+					templateName: $("#templateName_").val(),
 					description: $("#description").val()
 				},
 				success: function(result) {
@@ -298,8 +299,10 @@
 					var dossierTemplate = dossierTemplateDataSource.get(dataPk);
 
 					dossierTemplate.set("templateNo", $("#templateNo").val());
-					dossierTemplate.set("templateName", $("#templateName").val());
+					dossierTemplate.set("templateName", $("#templateName_").val());
 					dossierTemplate.set("description", $("#description").val());
+
+					$("#dossier_template_list_view li[data-pk=" + dataPk + "]").addClass("k-state-selected");
 				},
 				error: function(result) {
 					notification.show({

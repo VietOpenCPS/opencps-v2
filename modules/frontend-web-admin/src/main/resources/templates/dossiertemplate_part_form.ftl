@@ -8,7 +8,7 @@
 			<div class="col-xs-12 col-sm-8">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						Số thành phần
+						Mã thành phần
 					</div>
 				</div>
 				<div class="row MT5">
@@ -191,6 +191,10 @@
 					message: "Yêu cầu được thực hiện thành công"
 				}, "success");
 
+				if (!dossierTemplatePartDataPk){
+					dossierTemplatePartDataPk = result.partNo;
+				}
+
 				var upFormscriptSuccess = false, upFormReportSuccess = false, upSampleDataSuccess = false;
 				$.ajax({
 					url: "${api.server}" + "/dossiertemplates/" + dossierTemplateDataPk + "/parts/" + dossierTemplatePartDataPk + "/formscript",
@@ -242,7 +246,6 @@
 						message: "Xẩy ra lỗi, vui lòng thử lại"
 					}, "error");
 				}
-
 			},
 			error: function(result) {
 				notification.show({
