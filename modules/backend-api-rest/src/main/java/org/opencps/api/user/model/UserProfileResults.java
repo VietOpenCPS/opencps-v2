@@ -42,11 +42,11 @@ import javax.xml.bind.annotation.XmlType;
     "total",
     "userProfileModel"
 })
-@XmlRootElement(name = "UserProfileResults")
+@XmlRootElement(name = "data")
 public class UserProfileResults {
 
     protected long total;
-    @XmlElement(name = "UserProfileModel")
+    @XmlElement(name = "data")
     protected List<UserProfileModel> userProfileModel;
 
     /**

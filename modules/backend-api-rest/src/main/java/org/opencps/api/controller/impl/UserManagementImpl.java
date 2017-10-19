@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.DigestException;
 import java.util.List;
 import java.util.Locale;
 
@@ -14,13 +15,21 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.UserManagement;
-import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.JobposUtils;
 import org.opencps.api.controller.util.UserUtils;
+import org.opencps.api.error.model.ErrorMsg;
+import org.opencps.api.jobpos.model.JobposPermissionResults;
+import org.opencps.api.user.model.UserAccountModel;
+import org.opencps.api.user.model.UserModel;
 import org.opencps.api.user.model.UserProfileModel;
+import org.opencps.api.user.model.UserResults;
 import org.opencps.api.user.model.UserRolesResults;
 import org.opencps.api.user.model.UserSitesResults;
-import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.api.user.model.UserWorksModel;
+import org.opencps.api.user.model.UserWorksResults;
+import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.UserInterface;
+import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.action.impl.UserActions;
 
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -33,7 +42,8 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-import org.opencps.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public class UserManagementImpl implements UserManagement {
 
@@ -319,27 +329,238 @@ public class UserManagementImpl implements UserManagement {
 	@Override
 	public Response addChangepass(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String oldPassword, String newPassword) {
-		// TODO Auto-generated method stub
-		return null;
+		UserInterface actions = new UserActions();
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword, serviceContext);
+
+			return Response.status(200).entity(String.valueOf(flag)).build();
+
+		} catch (Exception e) {
+			_log.error("/ @GET: " + e);
+			
+			if (e instanceof DigestException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+				
+			} else {
+				
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("not found!");
+				error.setCode(404);
+				error.setDescription("not found!");
+
+				return Response.status(404).entity(error).build();
+				
+			}
+			
+		}
 	}
 
 	@Override
 	public Response getPermissions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String full) {
-		// TODO Auto-generated method stub
-		return null;
+		JobposInterface actions = new JobposActions();
+		JobposPermissionResults result = new JobposPermissionResults();
+		try {
+
+			JSONObject jsonData = actions.getJobposPermissions();
+
+			result.setTotal(jsonData.getLong("total"));
+			result.getJobposPermissionModel().addAll(UserUtils
+					.mapperUsersPermissionsList((String[]) jsonData.get("data"), id, serviceContext));
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			_log.error("/ @GET: " + e);
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(404).entity(error).build();
+		}
 	}
 
 	@Override
 	public Response getForgot(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
-			ServiceContext serviceContext, long id, String screenname_email) {
-		// TODO Auto-generated method stub
-		return null;
+			ServiceContext serviceContext,String screenname_email) {
+		UserInterface actions = new UserActions();
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			Document document = actions.getForgot(groupId, company.getCompanyId(), screenname_email, serviceContext);
+
+			UserAccountModel userAccountModel = UserUtils.mapperUserAccountModel(document);
+			
+			return Response.status(200).entity(userAccountModel).build();
+
+		} catch (Exception e) {
+			_log.error("/ @GET: " + e);
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(404).entity(error).build();
+		}
 	}
 
 	@Override
 	public Response getForgotConfirm(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long id, String screenname_email, String code) {
+			User user, ServiceContext serviceContext, String screenname_email, String code) {
+		UserInterface actions = new UserActions();
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			Document document = actions.getForgotConfirm(groupId, company.getCompanyId(), screenname_email, code, serviceContext);
+
+			UserAccountModel userAccountModel = UserUtils.mapperUserAccountModel(document);
+			
+			return Response.status(200).entity(userAccountModel).build();
+
+		} catch (Exception e) {
+			_log.error("/ @GET: " + e);
+			
+			if (e instanceof DigestException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+				
+			} else {
+				
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("not found!");
+				error.setCode(404);
+				error.setDescription("not found!");
+
+				return Response.status(404).entity(error).build();
+				
+			}
+			
+		}
+	}
+
+	@Override
+	public Response getUsers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext) {
+		UserInterface actions = new UserActions();
+		UserResults result = new UserResults();
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			JSONObject jsonData = actions.getUsers(groupId, serviceContext);
+
+			result.setTotal(jsonData.getLong("total"));
+			result.getUserModel().addAll(UserUtils.mapperUserList((List<User>) jsonData.get("data"), groupId));
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			_log.error("/ @GET: " + e);
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(404).entity(error).build();
+		}
+	}
+
+	@Override
+	public Response getUserById(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id) {
+		UserInterface actions = new UserActions();
+		UserModel userModel = new UserModel();
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			User userCustom = actions.getUserById(groupId, company.getCompanyId(), id, serviceContext);
+
+			userModel = UserUtils.mapperUserModel(userCustom, groupId);
+
+			return Response.status(200).entity(userModel).build();
+
+		} catch (Exception e) {
+			_log.error("/ @GET: " + e);
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(404).entity(error).build();
+		}
+	}
+
+
+
+	@Override
+	public Response getCheckpass(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, String password) {
+		UserInterface actions = new UserActions();
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			boolean flag = actions.getCheckpass(groupId, company.getCompanyId(), id, password, serviceContext);
+
+			return Response.status(200).entity(String.valueOf(flag)).build();
+
+		} catch (Exception e) {
+			_log.error("/ @GET: " + e);
+			
+			if (e instanceof DigestException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+				
+			} else {
+				
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("not found!");
+				error.setCode(404);
+				error.setDescription("not found!");
+
+				return Response.status(404).entity(error).build();
+				
+			}
+			
+		}
+	}
+
+	@Override
+	public Response getUserWorks(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

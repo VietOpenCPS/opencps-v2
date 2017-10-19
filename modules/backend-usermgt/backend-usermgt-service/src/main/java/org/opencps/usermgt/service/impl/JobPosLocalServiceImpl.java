@@ -53,12 +53,12 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.auth.api.keys.ModelNameKeys;
+import backend.auth.api.BackendAuthImpl;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
+import backend.auth.api.keys.ActionKeys;
+import backend.auth.api.keys.ModelNameKeys;
 
 /**
  * The implementation of the job pos local service.
@@ -110,8 +110,6 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 				ResourceAction resourceAction = ResourceActionLocalServiceUtil
 						.fetchResourceAction(UserMGTConstants.WORKINGUNIT_MGT_CENTER, actionId);
 
-				System.out.println("JobPosLocalServiceImpl.assignPermission()"+resourceAction);
-				
 				if (Validator.isNotNull(resourceAction)) {
 					resourceAction.setBitwiseValue((long) Math.pow(2, i));
 					ResourceActionLocalServiceUtil.updateResourceAction(resourceAction);
@@ -148,7 +146,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -179,7 +177,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		role_name = title + jobPosId;
 
 		// add role
-		Role role = RoleLocalServiceUtil.addRole(userId, JobPos.class.getName(), counterLocalService.increment(),
+		Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
 				role_name, null, null, 1, "", serviceContext);
 
 		JobPos jobPos = jobPosPersistence.create(jobPosId);
@@ -219,7 +217,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -254,7 +252,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -294,6 +292,10 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		return jobPos;
 	}
 
+	public JobPos fetchByF_mappingRoleId(long groupId, long mappingRoleId) {
+		return jobPosPersistence.fetchByF_mappingRoleId(groupId, mappingRoleId);
+	}
+	
 	@SuppressWarnings("deprecation")
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {

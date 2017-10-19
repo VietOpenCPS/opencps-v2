@@ -10,15 +10,13 @@ import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.JobposManagement;
 import org.opencps.api.controller.util.JobposUtils;
-import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.api.jobpos.model.DataSearchModel;
 import org.opencps.api.jobpos.model.JobposInputModel;
 import org.opencps.api.jobpos.model.JobposModel;
 import org.opencps.api.jobpos.model.JobposPermissionModel;
 import org.opencps.api.jobpos.model.JobposPermissionResults;
 import org.opencps.api.jobpos.model.JobposResults;
-import org.opencps.api.jobpos.model.JobposWorkModel;
-import org.opencps.api.jobpos.model.JobposWorkResults;
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.model.JobPos;
@@ -37,8 +35,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public class JobposManagementImpl implements JobposManagement {
 
@@ -304,7 +302,7 @@ public class JobposManagementImpl implements JobposManagement {
 
 			result.setTotal(jsonData.getLong("total"));
 			result.getJobposPermissionModel().addAll(JobposUtils
-					.mapperJobposPermissionsList((String[]) jsonData.get("data"), user.getUserId(), serviceContext));
+					.mapperJobposPermissionsList((String[]) jsonData.get("data"), user.getUserId(), id, serviceContext));
 
 			return Response.status(200).entity(result).build();
 
@@ -401,6 +399,7 @@ public class JobposManagementImpl implements JobposManagement {
 		}
 	}
 
+
 	@Override
 	public Response createPermissionsPatch(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long id, String permissions) {
@@ -417,7 +416,7 @@ public class JobposManagementImpl implements JobposManagement {
 
 			result.setTotal(jsonData.getLong("total"));
 			result.getJobposPermissionModel().addAll(JobposUtils
-					.mapperJobposPermissionsList((String[]) jsonData.get("data"), user.getUserId(), serviceContext));
+					.mapperJobposPermissionsList((String[]) jsonData.get("data"), user.getUserId(), id, serviceContext));
 
 			return Response.status(200).entity(result).build();
 
@@ -465,6 +464,7 @@ public class JobposManagementImpl implements JobposManagement {
 			return Response.status(500).build();
 		}
 	}
+
 
 
 }

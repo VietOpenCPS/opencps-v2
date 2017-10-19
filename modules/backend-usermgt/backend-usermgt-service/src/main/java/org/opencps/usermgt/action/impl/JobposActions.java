@@ -29,11 +29,11 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.auth.api.keys.ModelNameKeys;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
+import backend.auth.api.keys.ActionKeys;
+import backend.auth.api.keys.ModelNameKeys;
 
 public class JobposActions implements JobposInterface {
 
@@ -93,6 +93,12 @@ public class JobposActions implements JobposInterface {
 		if (Validator.isNotNull(description)) {
 
 			mJobPos.setDescription(description);
+
+		}
+		
+		if (Validator.isNotNull(leader)) {
+
+			mJobPos.setLeader(leader);
 
 		}
 
@@ -217,5 +223,4 @@ public class JobposActions implements JobposInterface {
 		}
 
 	}
-
 }
