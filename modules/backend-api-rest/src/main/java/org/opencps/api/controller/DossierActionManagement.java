@@ -42,7 +42,7 @@ import io.swagger.annotations.ApiResponses;
 public interface DossierActionManagement {
 	
 	@GET
-	@Path("/{id|referenceUid}/nextactions")
+	@Path("/{referenceUid}/nextactions")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Get List Actions", response = ActionModel.class)
 	@ApiResponses(value = {
@@ -58,7 +58,7 @@ public interface DossierActionManagement {
 	
 	
 	@GET
-	@Path("/{id|referenceUid}/actions")
+	@Path("/{id}/actions")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Read List Action Executed", response = ReadActionExecuted.class)
 	@ApiResponses(value = {
@@ -73,7 +73,7 @@ public interface DossierActionManagement {
 	
 	
 	@POST
-	@Path("/{id|referenceUid}/actions")
+	@Path("/{id}/actions")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Execute One Action", response = ExecuteOneAction.class)
