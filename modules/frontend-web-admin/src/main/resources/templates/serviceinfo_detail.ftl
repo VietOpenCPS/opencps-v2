@@ -725,7 +725,7 @@ $("#btn-submit-serviceinfo-general").click(function(){
 					serviceName : $("#serviceName").val(),
 					administrationCode : $("#administration").val(),
 					domainCode : $("#domain").val(),
-					maxLevel : $("#level").val(),
+					maxLevel : ($("#level").val()) ? $("#level").val() : 2,
 					active : $("#status").val()
 				},
 				success : function(result){
@@ -758,7 +758,7 @@ $("#btn-submit-serviceinfo-general").click(function(){
 					serviceName : $("#serviceName").val(),
 					administrationCode : $("#administration").val(),
 					domainCode : $("#domain").val(),
-					maxLevel : $("#level").val(),
+					maxLevel : ($("#level").val()) ? $("#level").val() : 2,
 					active : $("#status").val()
 				},
 				success : function(result){
