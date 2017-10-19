@@ -41,17 +41,26 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "className",
     "classPK",
-    "toUserId"
+    "toUserId",
+    "fullName",
+    "email",
+    "readonly"
 })
 @XmlRootElement(name = "ResourceUserInputModel")
 public class ResourceUserInputModel {
-
+	
 	@FormParam(value = "className")
     protected String className;
 	@FormParam(value = "classPK")
     protected String classPK;
 	@DefaultValue("0") @FormParam(value = "userId")
     protected Long userId;
+	@FormParam(value = "fullName")
+    protected String fullName;
+	@FormParam(value = "email")
+    protected String email;
+	@FormParam(value = "readonly")
+    protected String readonly;
 
     /**
      * Gets the value of the className property.
@@ -124,5 +133,29 @@ public class ResourceUserInputModel {
     public void setUserId(Long value) {
         this.userId = value;
     }
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getReadonly() {
+		return readonly;
+	}
+
+	public void setReadonly(String readonly) {
+		this.readonly = readonly;
+	}
 
 }

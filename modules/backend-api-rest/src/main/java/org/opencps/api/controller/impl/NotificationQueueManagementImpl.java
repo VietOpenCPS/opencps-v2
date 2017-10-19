@@ -1,6 +1,5 @@
 package org.opencps.api.controller.impl;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -10,23 +9,23 @@ import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.NotificationQueueManagement;
 import org.opencps.api.controller.util.NotificationTemplateUtils;
-import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.api.notificationtemplate.model.DataSearchModel;
+import org.opencps.api.notificationtemplate.model.NotificationQueueModel;
 import org.opencps.api.notificationtemplate.model.NotificationQueueResults;
-import org.opencps.api.notificationtemplate.model.NotificationtemplateResults;
-import org.opencps.communication.action.NotificationTemplateInterface;
-import org.opencps.communication.action.impl.NotificationTemplateActions;
+import org.opencps.api.notificationtemplate.model.NotificationQueueShortModel;
+import org.opencps.communication.action.NotificationQueueInterface;
+import org.opencps.communication.action.impl.NotificationQueueActions;
+import org.opencps.communication.model.NotificationQueue;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class NotificationQueueManagementImpl implements NotificationQueueManagement {
 
@@ -35,35 +34,16 @@ public class NotificationQueueManagementImpl implements NotificationQueueManagem
 	@Override
 	public Response getNotificationQueues(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, DataSearchModel query) {
-		NotificationTemplateInterface actions = new NotificationTemplateActions();
+		NotificationQueueInterface actions = new NotificationQueueActions();
 		NotificationQueueResults result = new NotificationQueueResults();
 
 		try {
 
-			if (query.getEnd() == 0) {
-
-				query.setStart(-1);
-
-				query.setEnd(-1);
-
-			}
-
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
-			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-
-			params.put("groupId", String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
-
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create("notificationType_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean(query.getOrder())) };
-
-			JSONObject jsonData = actions.getNotificationTemplates(user.getUserId(), company.getCompanyId(), groupId,
-					params, sorts, query.getStart(), query.getEnd(), serviceContext);
+			JSONObject jsonData = actions.getNotificationQueues(serviceContext);
 
 			result.setTotal(jsonData.getLong("total"));
-			result.getNotificationQueueModel().addAll(
-					NotificationTemplateUtils.mapperNotificationQueueList((List<Document>) jsonData.get("data")));
+			result.getNotificationQueueShortModel().addAll(NotificationTemplateUtils
+					.mapperNotificationQueueList((List<NotificationQueue>) jsonData.get("data")));
 
 			return Response.status(200).entity(result).build();
 
@@ -79,5 +59,33 @@ public class NotificationQueueManagementImpl implements NotificationQueueManagem
 		}
 	}
 
+	@Override
+	public Response getNotificationQueuesByID(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id) {
+		NotificationQueueInterface actions = new NotificationQueueActions();
+		NotificationQueueShortModel notificationQueueModel = new NotificationQueueShortModel();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		NotificationQueue notificationQueue = actions.read(id, serviceContext);
+
+		if (Validator.isNotNull(notificationQueue)) {
+
+			notificationQueueModel = NotificationTemplateUtils.mapperNotificationQueueModel(notificationQueue);
+
+			return Response.status(200).entity(notificationQueueModel).build();
+
+		} else {
+
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(404).entity(error).build();
+
+		}
+	}
 
 }

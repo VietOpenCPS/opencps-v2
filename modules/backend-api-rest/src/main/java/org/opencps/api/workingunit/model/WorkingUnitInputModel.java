@@ -58,7 +58,8 @@ import com.liferay.portal.kernel.util.StringPool;
     "telNo",
     "faxNo",
     "email",
-    "website"
+    "website",
+    "ceremonyDate"
 })
 @XmlRootElement(name = "WorkingUnitInputModel")
 public class WorkingUnitInputModel {
@@ -83,7 +84,8 @@ public class WorkingUnitInputModel {
     protected String email;
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "website")
     protected String website;
-
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "ceremonyDate")
+	protected String ceremonyDate;
     /**
      * Gets the value of the name property.
      * 
@@ -307,5 +309,13 @@ public class WorkingUnitInputModel {
     public void setWebsite(String value) {
         this.website = value;
     }
+
+	public String getCeremonyDate() {
+		return ceremonyDate;
+	}
+
+	public void setCeremonyDate(String ceremonyDate) {
+		this.ceremonyDate = ceremonyDate;
+	}
 
 }

@@ -1,37 +1,57 @@
 package org.opencps.api.controller.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import org.opencps.api.notificationtemplate.model.NotificationQueueModel;
+import org.opencps.api.notificationtemplate.model.NotificationQueueShortModel;
 import org.opencps.api.notificationtemplate.model.NotificationTypeModel;
 import org.opencps.api.notificationtemplate.model.NotificationtemplateModel;
 import org.opencps.communication.constants.NotificationMGTConstants;
 import org.opencps.communication.constants.NotificationTemplateTerm;
+import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.model.Notificationtemplate;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
-import org.opencps.auth.utils.APIDateTimeUtils;
+import backend.utils.APIDateTimeUtils;
 
 public class NotificationTemplateUtils {
 
-	public static List<NotificationQueueModel> mapperNotificationQueueList(List<Document> listDocument) {
+	public static List<NotificationQueueShortModel> mapperNotificationQueueList(List<NotificationQueue> listDocument) {
 
-		List<NotificationQueueModel> results = new ArrayList<>();
+		List<NotificationQueueShortModel> results = new ArrayList<>();
 
 		try {
 
-			NotificationQueueModel ett = null;
+			NotificationQueueShortModel ett = null;
 
-			for (Document document : listDocument) {
-				ett = new NotificationQueueModel();
-
+			for (NotificationQueue notificationQueue : listDocument) {
+				
+				ett = new NotificationQueueShortModel();
+				ett.setNotificationQueueId(notificationQueue.getNotificationQueueId());
+				ett.setNotificationType(notificationQueue.getNotificationType());
+				ett.setClassName(notificationQueue.getClassName());
+				ett.setClassPK(notificationQueue.getClassPK());
+				ett.setPayload(notificationQueue.getPayload());
+				ett.setFromUsername(notificationQueue.getFromUsername());
+				ett.setToUsername(notificationQueue.getToUsername());
+				ett.setToUserId(String.valueOf(notificationQueue.getToUserId()));
+				ett.setToEmail(notificationQueue.getToEmail());
+				ett.setToTelNo(notificationQueue.getToTelNo());
+				ett.setExpireDate(Validator.isNotNull(notificationQueue.getExpireDate()) ? APIDateTimeUtils.convertDateToString(
+						notificationQueue.getExpireDate(), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+				ett.setPublicationDate(Validator.isNotNull(notificationQueue.getCreateDate()) ? APIDateTimeUtils.convertDateToString(
+						notificationQueue.getCreateDate(), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+				
 				results.add(ett);
 			}
 
@@ -41,7 +61,7 @@ public class NotificationTemplateUtils {
 
 		return results;
 	}
-	
+
 	public static List<NotificationTypeModel> mapperNotificationTypeList(Map<String, String> initTemplates) {
 
 		List<NotificationTypeModel> results = new ArrayList<>();
@@ -53,11 +73,20 @@ public class NotificationTemplateUtils {
 			for (String key : initTemplates.keySet()) {
 
 				ett = new NotificationTypeModel();
-				
+
 				ett.setTypeCode(key);
 				ett.setTypeName(initTemplates.get(key));
-				
+
 				results.add(ett);
+			}
+
+			if (!results.isEmpty()) {
+				Collections.sort(results, new Comparator<NotificationTypeModel>() {
+					@Override
+					public int compare(NotificationTypeModel c1, NotificationTypeModel c2) {
+						return c1.getTypeCode().compareTo(c2.getTypeCode());
+					}
+				});
 			}
 
 		} catch (Exception e) {
@@ -66,7 +95,7 @@ public class NotificationTemplateUtils {
 
 		return results;
 	}
-	
+
 	public static List<NotificationtemplateModel> mapperNotificationtemplateList(List<Document> listDocument) {
 
 		List<NotificationtemplateModel> results = new ArrayList<>();
@@ -91,7 +120,12 @@ public class NotificationTemplateUtils {
 				ett.setTextMessage(document.get(NotificationTemplateTerm.NOTIFICATION_TEXT_MESSAGE));
 				ett.setSendEmail(Boolean.valueOf(document.get(NotificationTemplateTerm.SEND_EMAIL)));
 				ett.setSendSMS(Boolean.valueOf(document.get(NotificationTemplateTerm.NOTIFICATION_SEND_SMS)));
-
+				ett.setExpireDuration(Integer.valueOf(document.get(NotificationTemplateTerm.EXPIRE_DURATION)));
+				ett.setUserUrlPattern(document.get(NotificationTemplateTerm.USER_URL_PARTTERN));
+				ett.setGuestUrlPattern(document.get(NotificationTemplateTerm.GUEST_URL_PARTTERN));
+				ett.setInterval(document.get(NotificationTemplateTerm.INTERVAL));
+				ett.setGrouping(Boolean.valueOf(document.get(NotificationTemplateTerm.GROUPING)));
+				
 				results.add(ett);
 			}
 
@@ -121,13 +155,52 @@ public class NotificationTemplateUtils {
 			ett.setTextMessage(notificationtemplate.getTextMessage());
 			ett.setSendEmail(notificationtemplate.getSendEmail());
 			ett.setSendSMS(notificationtemplate.getSendSMS());
-
+			ett.setExpireDuration(notificationtemplate.getExpireDuration());
+			ett.setUserUrlPattern(notificationtemplate.getUserUrlPattern());
+			ett.setGuestUrlPattern(notificationtemplate.getGuestUrlPattern());
+			ett.setInterval(notificationtemplate.getInterval());
+			ett.setGrouping(notificationtemplate.getGrouping());
 		} catch (Exception e) {
 			_log.error(e);
 		}
 
 		return ett;
 	}
+	
+	public static NotificationQueueShortModel mapperNotificationQueueModel(NotificationQueue notificationQueue) {
 
+		NotificationQueueShortModel ett = new NotificationQueueShortModel();
+
+		try {
+
+			ett.setNotificationQueueId(notificationQueue.getNotificationQueueId());
+			ett.setNotificationType(notificationQueue.getNotificationType());
+			ett.setClassName(notificationQueue.getClassName());
+			ett.setClassPK(notificationQueue.getClassPK());
+			ett.setPayload(notificationQueue.getPayload());
+			ett.setFromUsername(notificationQueue.getFromUsername());
+			ett.setToUsername(notificationQueue.getToUsername());
+			ett.setToUserId(String.valueOf(notificationQueue.getToUserId()));
+			ett.setToEmail(notificationQueue.getToEmail());
+			ett.setToTelNo(notificationQueue.getToTelNo());
+			ett.setExpireDate(Validator.isNotNull(notificationQueue.getExpireDate()) ? APIDateTimeUtils.convertDateToString(
+					notificationQueue.getExpireDate(), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+			ett.setPublicationDate(Validator.isNotNull(notificationQueue.getCreateDate()) ? APIDateTimeUtils.convertDateToString(
+					notificationQueue.getCreateDate(), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+//			ett.setEmailSubject(notificationQueue.get);
+//			ett.setEmailBody(notificationQueue.get);
+//			ett.setTextMessage(notificationQueue.get);
+//			ett.setUrlLink(notificationQueue.get);
+//			ett.setSendEmail(notificationQueue.get);
+//			ett.setSendSMS(notificationQueue.get);
+			
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return ett;
+	}
+	
+	
 	static Log _log = LogFactoryUtil.getLog(NotificationTemplateUtils.class);
 }

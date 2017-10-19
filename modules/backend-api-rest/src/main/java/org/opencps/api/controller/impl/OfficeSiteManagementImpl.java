@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.OfficeSiteManagement;
 import org.opencps.api.controller.util.OfficeSiteUtils;
-import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.api.officesite.model.DataSearchModel;
 import org.opencps.api.officesite.model.OfficeSiteInputModel;
 import org.opencps.api.officesite.model.OfficeSiteModel;
@@ -43,8 +43,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
@@ -71,7 +71,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 			params.put("keywords", query.getKeywords());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean(query.getOrder())) };
+					Boolean.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getOfficeSites(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);

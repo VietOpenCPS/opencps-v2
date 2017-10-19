@@ -27,6 +27,29 @@ import com.liferay.portal.kernel.service.ServiceContext;
 public interface UserManagement {
 
 	@GET
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getUsers(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext);
+	
+	@GET
+	@Path("/{id}")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getUserById(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id);
+	
+	@GET
+	@Path("/{id}/works")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getUserWorks(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id);
+	
+	@GET
 	@Path("/{id}/photo")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public Response getUserPhoto(@Context HttpServletRequest request, @Context HttpHeaders header,
@@ -83,7 +106,7 @@ public interface UserManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("key") String key);
 
-	@POST
+	@PUT
 	@Path("/{id}/preferences")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -119,21 +142,30 @@ public interface UserManagement {
 			@Context ServiceContext serviceContext, @PathParam("id") long id, @FormParam("full") String full);
 
 	@GET
-	@Path("/{id}/{screenname_email}/forgot")
+	@Path("/{screenname_email}/forgot")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getForgot(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id,
+			@Context ServiceContext serviceContext, 
 			@PathParam("screenname_email") String screenname_email);
 
 	@GET
-	@Path("/{id}/{screenname_email}/forgot/confirm/{code}")
+	@Path("/{screenname_email}/forgot/confirm/{code}")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getForgotConfirm(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id,
+			@Context ServiceContext serviceContext, 
 			@PathParam("screenname_email") String screenname_email, @PathParam("code") String code);
+	
+	@GET
+	@Path("/{id}/checkpass/{password}")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getCheckpass(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,  @PathParam("id") long id,
+			@PathParam("password") String password);
 
 }

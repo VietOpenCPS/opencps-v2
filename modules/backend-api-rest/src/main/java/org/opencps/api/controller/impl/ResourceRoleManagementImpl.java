@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 import org.opencps.api.controller.ResourceRoleManagement;
 import org.opencps.api.controller.util.ResourceRoleUtils;
 import org.opencps.api.controller.util.ResourceUserUtils;
-import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.api.resourcerole.model.DataSearchModel;
 import org.opencps.api.resourcerole.model.ResourceRoleInputModel;
 import org.opencps.api.resourcerole.model.ResourceRoleModel;
@@ -39,8 +39,9 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 
@@ -69,9 +70,9 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 			params.put("keywords", query.getKeywords());
 			params.put(ResourceRoleTerm.CLASS_NAME, String.valueOf(className));
 			params.put(ResourceRoleTerm.CLASS_PK, String.valueOf(classPK));
-			
+
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean(query.getOrder())) };
+					Boolean.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getResourceRoles(className, classPK, user.getUserId(), company.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext, query.isFull());
@@ -152,6 +153,19 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 
 			}
 
+			if (e instanceof NotFoundException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("notfound!");
+				error.setCode(404);
+				error.setDescription("notfound!");
+
+				return Response.status(404).entity(error).build();
+
+			}
+			
 			return Response.status(500).build();
 		}
 	}
@@ -239,16 +253,103 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			actions.createResourceRolePatch(input.getClassName(), input.getClassPK(), user.getUserId(), company.getCompanyId(),
-					groupId, roles, serviceContext);
-			
+			actions.createResourceRolePatch(input.getClassName(), input.getClassPK(), user.getUserId(),
+					company.getCompanyId(), groupId, roles, serviceContext);
+
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put("groupId", String.valueOf(groupId));
 			params.put(ResourceUserTerm.CLASS_NAME, input.getClassName());
 			params.put(ResourceUserTerm.CLASS_PK, input.getClassPK());
+
+			JSONObject jsonData = actions.getResourceRoles(input.getClassName(), input.getClassPK(), user.getUserId(),
+					company.getCompanyId(), groupId, params, new Sort[] {}, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					serviceContext, false);
+
+			result.setTotal(jsonData.getLong("total"));
+			result.getResourceRoleModel()
+					.addAll(ResourceRoleUtils.mapperResourceRoleList((List<Document>) jsonData.get("data")));
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			_log.error("@POST: " + e);
+			if (e instanceof UnauthenticationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+
+			}
+
+			if (e instanceof UnauthorizationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			}
+
+			if (e instanceof NoSuchUserException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
 			
-			JSONObject jsonData = actions.getResourceRoles(input.getClassName(), input.getClassPK(), user.getUserId(), company.getCompanyId(),
+			if (e instanceof NotFoundException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("notfound!");
+				error.setCode(404);
+				error.setDescription("notfound!");
+
+				return Response.status(404).entity(error).build();
+
+			}
+
+			return Response.status(500).build();
+		}
+	}
+
+	@Override
+	public Response clone(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, String className, String classPK, String sourcePK) {
+		ResourceRoleInterface actions = new ResourceRoleActions();
+		ResourceRoleResults result = new ResourceRoleResults();
+
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			actions.clone(className, classPK, user.getUserId(), company.getCompanyId(), groupId, sourcePK,
+					serviceContext);
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			params.put("groupId", String.valueOf(groupId));
+			params.put(ResourceUserTerm.CLASS_NAME, className);
+			params.put(ResourceUserTerm.CLASS_PK, sourcePK);
+
+			JSONObject jsonData = actions.getResourceRoles(className, sourcePK, user.getUserId(), company.getCompanyId(),
 					groupId, params, new Sort[] {}, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext, false);
 
 			result.setTotal(jsonData.getLong("total"));

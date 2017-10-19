@@ -49,12 +49,12 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.auth.api.keys.ModelNameKeys;
+import backend.auth.api.BackendAuthImpl;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
+import backend.auth.api.keys.ActionKeys;
+import backend.auth.api.keys.ModelNameKeys;
 
 /**
  * The implementation of the notificationtemplate local service.
@@ -89,6 +89,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 	@Override
 	public Notificationtemplate addNotificationTemplate(long userId, long groupId, String notificationType,
 			String emailSubject, String emailBody, String textMessage, boolean sendSMS, boolean sendEmail,
+			String userUrlPattern, String guestUrlPattern, String interval, boolean grouping,
 			ServiceContext serviceContext) throws UnauthenticationException, UnauthorizationException,
 			NoSuchUserException, DuplicateCategoryException {
 
@@ -104,7 +105,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -142,16 +143,14 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 		notificationTemplate.setEmailBody(emailBody);
 		notificationTemplate.setTextMessage(textMessage);
 		notificationTemplate.setSendSMS(sendSMS);
-		
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(now);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		
-		notificationTemplate.setExpireDuration(cal.getTime());
-		
+
+		notificationTemplate.setExpireDuration(24);
+
+		notificationTemplate.setUserUrlPattern(userUrlPattern);
+		notificationTemplate.setGuestUrlPattern(guestUrlPattern);
+		notificationTemplate.setInterval(interval);
+		notificationTemplate.setGrouping(grouping);
+
 		notificationTemplate.setExpandoBridgeAttributes(serviceContext);
 
 		notificationtemplatePersistence.update(notificationTemplate);
@@ -171,7 +170,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -199,13 +198,14 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 	@Override
 	public Notificationtemplate updateNotificationTemplate(long userId, long notificationTemplateId,
 			String notificationType, String emailSubject, String emailBody, String textMessage, boolean sendSMS,
-			boolean sendEmail, Date expireDuration, ServiceContext serviceContext)
+			boolean sendEmail, int expireDuration, String userUrlPattern, String guestUrlPattern, String interval,
+			boolean grouping, ServiceContext serviceContext)
 			throws UnauthenticationException, UnauthorizationException, NotFoundException, NoSuchUserException {
 
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -237,6 +237,11 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 		notificationTemplate.setTextMessage(textMessage);
 		notificationTemplate.setSendSMS(sendSMS);
 		notificationTemplate.setExpireDuration(expireDuration);
+
+		notificationTemplate.setUserUrlPattern(userUrlPattern);
+		notificationTemplate.setGuestUrlPattern(guestUrlPattern);
+		notificationTemplate.setInterval(interval);
+		notificationTemplate.setGrouping(grouping);
 		
 		notificationTemplate.setExpandoBridgeAttributes(serviceContext);
 
