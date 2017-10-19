@@ -50,7 +50,11 @@
 	    change: function() {
                    var index = this.select().index(),
                        dataItem = this.dataSource.view()[index];
-                   $("#detailView").load("${ajax.dossierinfo_detail}?id=" + dataItem.dossierId);
+                   $("#detailView").load("${ajax.dossierinfo_detail}",
+	                   	function(success){
+	                   		pullDataDetail(dataItem.dossierId);
+	                   	}
+                   	);
                 },
         dataBound: function(e) {
            var listView = e.sender;
