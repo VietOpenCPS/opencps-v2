@@ -154,7 +154,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		try {
 			
 			
-			FileEntry fileEntry = FileUploadUtils.uploadFile(userId, groupId, is, fileName, fileType, fileSize, null, serviceContext);
+			FileEntry fileEntry = FileUploadUtils.uploadFile(userId, groupId, 0, is, fileName, fileType, fileSize, null, serviceContext);
 					
 			serviceFileTemplate = ServiceFileTemplateLocalServiceUtil.addServiceFileTemplate(serviceInfoId,
 					fileTemplateNo, templateName, fileEntry.getFileEntryId(), serviceContext);

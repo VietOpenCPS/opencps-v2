@@ -37,7 +37,7 @@ public class OneMinute extends BaseSchedulerEntryMessageListener {
 
 	private void doProcessNotification(Message message) {
 		// TODO Auto-generated method stub
-		_log.info("doProcessNotification: ");
+		//_log.info("doProcessNotification: ");
 	}
 
 	@Activate
