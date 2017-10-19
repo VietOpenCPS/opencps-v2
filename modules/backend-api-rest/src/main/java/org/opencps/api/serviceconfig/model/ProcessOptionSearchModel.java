@@ -60,7 +60,7 @@ public class ProcessOptionSearchModel {
     protected Integer start;
 	@DefaultValue("0") @QueryParam(value = "end")
     protected Integer end;
-	@DefaultValue(StringPool.BLANK) @QueryParam(value = "sort")
+	@DefaultValue("createDate") @QueryParam("sort")
     protected String sort;
 	@DefaultValue(StringPool.BLANK) @QueryParam(value = "order")
     protected String order;
