@@ -53,12 +53,12 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.auth.api.keys.ModelNameKeys;
+import backend.auth.api.BackendAuthImpl;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
+import backend.auth.api.keys.ActionKeys;
+import backend.auth.api.keys.ModelNameKeys;
 
 /**
  * The implementation of the employee job pos local service.
@@ -97,7 +97,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -135,35 +135,40 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		employeeJobPos.setWorkingUnitId(workingUnitId);
 
 		// role
-		// Employee mEmployee =
-		// employeePersistence.fetchByPrimaryKey(employeeJobPos.getEmployeeId());
+		Employee mEmployee = employeePersistence.fetchByPrimaryKey(employeeJobPos.getEmployeeId());
 
-		// User newUser =
-		// UserLocalServiceUtil.fetchUser(mEmployee.getMappingUserId());
+		User newUser = UserLocalServiceUtil.fetchUser(mEmployee.getMappingUserId());
 		//
-		// JobPos mJobPos =
-		// JobPosLocalServiceUtil.fetchJobPos(mEmployee.getMainJobPostId());
-		// JobPos currentJobPos = JobPosLocalServiceUtil.fetchJobPos(jobPostId);
+		JobPos mJobPos = JobPosLocalServiceUtil.fetchJobPos(mEmployee.getMainJobPostId());
+		JobPos currentJobPos = JobPosLocalServiceUtil.fetchJobPos(jobPostId);
 		//
-		// List<Role> roleIds = new ArrayList<Role>();
-		// roleIds.add(RoleLocalServiceUtil.fetchRole(mJobPos.getMappingRoleId()));
-		// roleIds.add(RoleLocalServiceUtil.fetchRole(currentJobPos.getMappingRoleId()));
+		List<Role> roleIds = new ArrayList<Role>();
+		
+		roleIds.add(RoleLocalServiceUtil.fetchRole(mJobPos.getMappingRoleId()));
+		roleIds.add(RoleLocalServiceUtil.fetchRole(currentJobPos.getMappingRoleId()));
 		//
-		// List<EmployeeJobPos> listEmJobPos =
-		// employeeJobPosPersistence.findByF_EmployeeId(mEmployee.getEmployeeId());
+		List<EmployeeJobPos> listEmJobPos = employeeJobPosPersistence.findByF_EmployeeId(mEmployee.getEmployeeId());
 		//
-		// for (EmployeeJobPos ett : listEmJobPos) {
-		// roleIds.add(RoleLocalServiceUtil
-		// .fetchRole(JobPosLocalServiceUtil.fetchJobPos(ett.getJobPostId()).getMappingRoleId()));
-		// }
+		for (EmployeeJobPos ett : listEmJobPos) {
+			roleIds.add(RoleLocalServiceUtil
+					.fetchRole(JobPosLocalServiceUtil.fetchJobPos(ett.getJobPostId()).getMappingRoleId()));
+		}
 		//
-		// RoleLocalServiceUtil.clearUserRoles(newUser.getUserId());
-		// RoleLocalServiceUtil.addUserRoles(newUser.getUserId(), roleIds);
+		RoleLocalServiceUtil.deleteUserRoles(newUser.getUserId(), roleIds);
+		RoleLocalServiceUtil.clearUserRoles(newUser.getUserId());
+		
+		for (Role role : roleIds) {
+			try {
+				RoleLocalServiceUtil.addUserRole(newUser.getUserId(), role.getRoleId());
+			} catch (Exception e) {
+			}
+		}
+		
+//		RoleLocalServiceUtil.addUserRoles(newUser.getUserId(), roleIds);
 		//
-		// Indexer<User> indexer =
-		// IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
 		//
-		// indexer.reindex(newUser);
+		indexer.reindex(newUser);
 
 		employeeJobPos.setExpandoBridgeAttributes(serviceContext);
 
@@ -180,7 +185,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -225,8 +230,19 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 						.fetchRole(JobPosLocalServiceUtil.fetchJobPos(ett.getJobPostId()).getMappingRoleId()));
 			}
 
+			RoleLocalServiceUtil.deleteUserRoles(newUser.getUserId(), roleIds);
 			RoleLocalServiceUtil.clearUserRoles(newUser.getUserId());
-			RoleLocalServiceUtil.addUserRoles(newUser.getUserId(), roleIds);
+			for (Role role : roleIds) {
+				try {
+					RoleLocalServiceUtil.addUserRole(newUser.getUserId(), role.getRoleId());
+				} catch (Exception e) {
+				}
+			}
+			
+			Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+			//
+			indexer.reindex(newUser);
+			
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -242,7 +258,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -277,11 +293,11 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 	public EmployeeJobPos fetchByF_EmployeeId_jobPostId(long groupId, long employeeId, long jobPostId) {
 		return employeeJobPosPersistence.fetchByF_EmployeeId_jobPostId(groupId, employeeId, jobPostId);
 	}
-	
+
 	public List<EmployeeJobPos> findByF_EmployeeId(long employeeId) {
 		return employeeJobPosPersistence.findByF_EmployeeId(employeeId);
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {

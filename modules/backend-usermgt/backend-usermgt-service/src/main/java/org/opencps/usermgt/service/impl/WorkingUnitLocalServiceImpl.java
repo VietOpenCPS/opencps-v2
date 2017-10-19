@@ -21,6 +21,7 @@ import java.util.List;
 import org.opencps.usermgt.constants.WorkingUnitTerm;
 import org.opencps.usermgt.exception.NoSuchWorkingUnitException;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.base.WorkingUnitLocalServiceBaseImpl;
 
@@ -48,12 +49,12 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.auth.api.keys.ModelNameKeys;
+import backend.auth.api.BackendAuthImpl;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
+import backend.auth.api.keys.ActionKeys;
+import backend.auth.api.keys.ModelNameKeys;
 
 /**
  * The implementation of the working unit local service.
@@ -87,12 +88,12 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 	@Override
 	public WorkingUnit addWorkingUnit(long userId, long groupId, String name, String enName, String govAgencyCode,
 			long parentWorkingUnitId, String sibling, String address, String telNo, String faxNo, String email,
-			String website, ServiceContext serviceContext) throws UnauthenticationException, UnauthorizationException,
+			String website, Date ceremonyDate, ServiceContext serviceContext) throws UnauthenticationException, UnauthorizationException,
 			NoSuchUserException, NotFoundException, DuplicateCategoryException {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -104,7 +105,9 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		if (!hasPermission) {
 			throw new UnauthorizationException();
 		}
-
+		System.out.println("WorkingUnitLocalServiceImpl.addWorkingUnit()"+parentWorkingUnitId + "//"+ groupId);
+		sibling = getSibling(groupId, parentWorkingUnitId, sibling);
+		
 		WorkingUnit workingUnitCheck = workingUnitPersistence.fetchByF_govAgencyCode(groupId, govAgencyCode);
 
 		if (Validator.isNotNull(workingUnitCheck)) {
@@ -136,9 +139,9 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		workingUnit.setGovAgencyCode(govAgencyCode);
 		workingUnit.setParentWorkingUnitId(parentWorkingUnitId);
 		workingUnit.setSibling(sibling);
-
+System.out.println("WorkingUnitLocalServiceImpl.addWorkingUnit()"+parentWorkingUnitId);
 		String treeIndex = getTreeIndex(workingUnitId, parentWorkingUnitId, sibling);
-
+		System.out.println("WorkingUnitLocalServiceImpl.addWorkingUnit()"+treeIndex);
 		workingUnit.setTreeIndex(treeIndex);
 		workingUnit.setLevel(StringUtil.count(treeIndex, StringPool.PERIOD));
 		workingUnit.setAddress(address);
@@ -146,7 +149,8 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		workingUnit.setFaxNo(faxNo);
 		workingUnit.setEmail(email);
 		workingUnit.setWebsite(website);
-
+		workingUnit.setCeremonyDate(ceremonyDate);
+		
 		workingUnit.setExpandoBridgeAttributes(serviceContext);
 
 		workingUnitPersistence.update(workingUnit);
@@ -161,7 +165,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -172,7 +176,9 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 
 		WorkingUnit workingUnit = workingUnitPersistence.fetchByPrimaryKey(workingUnitId);
 		
-		List<Employee> listEmp = employeePersistence.findByF_groupId(workingUnit.getGroupId());
+		
+		//TODO
+		List<EmployeeJobPos> listEmp = employeeJobPosPersistence.findByF_workingUnitId(workingUnitId);
 
 		if (!hasPermission || (Validator.isNotNull(listEmp) && listEmp.size() > 0)) {
 			throw new UnauthorizationException();
@@ -194,13 +200,13 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 	@Override
 	public WorkingUnit updateWorkingUnit(long userId, long workingUnitId, String name, String enName,
 			String govAgencyCode, long parentWorkingUnitId, String sibling, String address, String telNo, String faxNo,
-			String email, String website, long logoFileEntryId, ServiceContext serviceContext)
+			String email, String website, long logoFileEntryId, Date ceremonyDate, ServiceContext serviceContext)
 			throws UnauthenticationException, UnauthorizationException, NoSuchUserException, NotFoundException,
 			DuplicateCategoryException {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -248,10 +254,35 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		workingUnit.setEmail(email);
 		workingUnit.setWebsite(website);
 		workingUnit.setLogoFileEntryId(logoFileEntryId);
-
+		workingUnit.setCeremonyDate(ceremonyDate);
+		
 		workingUnitPersistence.update(workingUnit);
 
 		return workingUnit;
+	}
+
+	protected String getSibling(long groupId, long parentId, String sibling){
+		int level = 0;
+		
+		if(parentId == 0){
+			
+		} else {
+			
+			WorkingUnit parentItem = workingUnitPersistence.fetchByPrimaryKey(parentId);
+			
+			level = Validator.isNotNull(parentItem)?parentItem.getLevel() + 1: 0;
+		}
+		WorkingUnit workingUnit = workingUnitPersistence.fetchByF_parentId_level_Last(groupId, parentId, level, null);
+		if((Validator.isNotNull(workingUnit) && sibling.equals("0")) || sibling.equals("0")){
+			try {
+				sibling = workingUnit.getSibling() + 1 + StringPool.BLANK;
+			} catch (Exception e) {
+				sibling = String.valueOf(1);
+			}
+		}
+		
+		return sibling;
+
 	}
 
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
@@ -431,17 +462,20 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 			WorkingUnit parentItem;
 			try {
 				parentItem = workingUnitPersistence.findByPrimaryKey(parentWorkingUnitId);
+
+				String ext = "";
+	
+				for (int i = 0; i < 4 - sibling.length(); i++) {
+					ext += "0";
+				}
+				
+				System.out.println("WorkingUnitLocalServiceImpl.getTreeIndex()"+parentItem);
+				System.out.println("WorkingUnitLocalServiceImpl.getTreeIndex()"+sibling);
+				return parentItem.getTreeIndex() + StringPool.PERIOD + ext + Integer.toHexString(Integer.valueOf(sibling));
+			
 			} catch (NoSuchWorkingUnitException e) {
 				throw new NotFoundException();
 			}
-
-			String ext = "";
-
-			for (int i = 0; i < 4 - sibling.length(); i++) {
-				ext += "0";
-			}
-
-			return parentItem.getTreeIndex() + StringPool.PERIOD + ext + Integer.toHexString(Integer.valueOf(sibling));
 		} else {
 			throw new NotFoundException();
 		}

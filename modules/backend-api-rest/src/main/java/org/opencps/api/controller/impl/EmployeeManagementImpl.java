@@ -16,7 +16,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.EmployeeManagement;
-import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.EmployeeUtils;
 import org.opencps.api.employee.model.DataSearchModel;
 import org.opencps.api.employee.model.EmployeeAccountInputModel;
@@ -27,16 +26,17 @@ import org.opencps.api.employee.model.EmployeeJobposModel;
 import org.opencps.api.employee.model.EmployeeJobposResults;
 import org.opencps.api.employee.model.EmployeeModel;
 import org.opencps.api.employee.model.EmployeeResults;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.datamgt.utils.DateTimeUtils;
+import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.constants.EmployeeJobPosTerm;
+import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
+import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.utils.DateTimeUtils;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -53,6 +53,9 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public class EmployeeManagementImpl implements EmployeeManagement {
 
@@ -81,7 +84,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			params.put("keywords", query.getKeywords());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean(query.getOrder())) };
+					Boolean.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					query.getStart(), query.getEnd(), serviceContext);
@@ -180,22 +183,35 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 				_log.error("@POST: " + e);
 				ErrorMsg error = new ErrorMsg();
 
-				error.setMessage("conflict!");
+				error.setMessage("conflict! User");
 				error.setCode(409);
-				error.setDescription("conflict!");
+				error.setDescription("conflict! User");
 
 				return Response.status(409).entity(error).build();
 
 			}
 
-			if (e instanceof DuplicateCategoryException) {
+			if (e instanceof DuplicateEmployeeNoException) {
 
 				_log.error("@POST: " + e);
 				ErrorMsg error = new ErrorMsg();
 
-				error.setMessage("conflict!");
+				error.setMessage("duplicate-employee-no");
 				error.setCode(409);
-				error.setDescription("conflict!");
+				error.setDescription("duplicate-employee-no");
+
+				return Response.status(409).entity(error).build();
+
+			}
+			
+			if (e instanceof DuplicateEmployeeEmailException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("duplicate-employee-email");
+				error.setCode(409);
+				error.setDescription("duplicate-employee-email");
 
 				return Response.status(409).entity(error).build();
 
@@ -261,6 +277,32 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 				error.setMessage("conflict!");
 				error.setCode(409);
 				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+			
+			if (e instanceof DuplicateEmployeeNoException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("duplicate employeeNo");
+				error.setCode(409);
+				error.setDescription("duplicate employeeNo");
+
+				return Response.status(409).entity(error).build();
+
+			}
+			
+			if (e instanceof DuplicateEmployeeEmailException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("duplicate employee email");
+				error.setCode(409);
+				error.setDescription("duplicate employee email");
 
 				return Response.status(409).entity(error).build();
 
@@ -450,7 +492,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			params.put(EmployeeJobPosTerm.EMPLOYEE_ID, String.valueOf(id));
 			
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean(query.getOrder())) };
+					Boolean.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getEmployeeJobpos(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					query.getStart(), query.getEnd(), serviceContext);
@@ -677,7 +719,16 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			employeeAccountModel = EmployeeUtils.mapperEmployeeAccountModel(jsonObject);
 
-			return Response.status(200).entity(employeeAccountModel).build();
+			if(Validator.isNotNull(jsonObject.getString("duplicate")) && jsonObject.getString("duplicate").equals(Boolean.TRUE.toString())){
+				
+				return Response.status(409).entity(employeeAccountModel).build();
+				
+			} else {
+				
+				return Response.status(200).entity(employeeAccountModel).build();
+				
+			}
+			
 
 		} catch (Exception e) {
 			_log.error("@POST: " + e);
@@ -720,6 +771,19 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			}
 
+			if (e instanceof DuplicateCategoryException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("account already exits!");
+				error.setCode(409);
+				error.setDescription("account already exits!");
+
+				return Response.status(200).entity(error).build();
+
+			}
+			
 			return Response.status(500).build();
 		}
 	}
@@ -769,6 +833,38 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			}
 
 			if (e instanceof NoSuchUserException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+
+			return Response.status(500).build();
+		}
+	}
+
+	@Override
+	public Response validateExits(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String employeeNo, String email) {
+		EmployeeInterface actions = new EmployeeActions();
+
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			actions.validateExits(user.getUserId(), company.getCompanyId(), groupId, employeeNo, email, serviceContext);
+
+			return Response.status(200).build();
+
+		} catch (Exception e) {
+
+			if (e instanceof DuplicateCategoryException) {
 
 				_log.error("@POST: " + e);
 				ErrorMsg error = new ErrorMsg();

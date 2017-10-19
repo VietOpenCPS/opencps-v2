@@ -100,6 +100,21 @@ public class NotificationTemplateIndexer extends BaseIndexer<Notificationtemplat
 		document.addTextSortable(NotificationTemplateTerm.NOTIFICATION_SEND_SMS,
 				String.valueOf(notificationtemplates.getSendSMS()));
 
+		document.addNumberSortable(NotificationTemplateTerm.EXPIRE_DURATION,
+				notificationtemplates.getExpireDuration());
+		
+		document.addTextSortable(NotificationTemplateTerm.USER_URL_PARTTERN,
+				notificationtemplates.getUserUrlPattern());
+		
+		document.addTextSortable(NotificationTemplateTerm.GUEST_URL_PARTTERN,
+				notificationtemplates.getGuestUrlPattern());
+		
+		document.addTextSortable(NotificationTemplateTerm.INTERVAL,
+				notificationtemplates.getInterval());
+		
+		document.addTextSortable(NotificationTemplateTerm.GROUPING,
+				String.valueOf(notificationtemplates.getGrouping()));
+		
 		document.setSortableTextFields(new String[] { NotificationTemplateTerm.NOTIFICATTION_TYPE });
 
 		return document;

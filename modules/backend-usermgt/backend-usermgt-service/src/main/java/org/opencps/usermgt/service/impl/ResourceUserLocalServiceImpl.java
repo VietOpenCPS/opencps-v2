@@ -47,12 +47,12 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.auth.api.keys.ModelNameKeys;
+import backend.auth.api.BackendAuthImpl;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
+import backend.auth.api.keys.ActionKeys;
+import backend.auth.api.keys.ModelNameKeys;
 
 /**
  * The implementation of the resource user local service.
@@ -85,12 +85,12 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public ResourceUser addResourceUser(long userId, long groupId, String className, String classPK, long toUserId,
-			ServiceContext serviceContext)
-			throws UnauthenticationException, UnauthorizationException, NoSuchUserException {
+			String fullname, String email, boolean readonly, ServiceContext serviceContext)
+			throws UnauthenticationException, UnauthorizationException, NoSuchUserException, NotFoundException {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -102,6 +102,13 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 		if (!hasPermission) {
 			throw new UnauthorizationException();
 		}
+		
+		User toUser = userPersistence.fetchByPrimaryKey(toUserId);
+		
+		if (Validator.isNull(toUser)) {
+			throw new NotFoundException();
+		}
+		
 		Date now = new Date();
 
 		User user = userPersistence.findByPrimaryKey(userId);
@@ -124,6 +131,9 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 		resourceUser.setClassName(className);
 		resourceUser.setClassPK(classPK);
 		resourceUser.setToUserId(toUserId);
+		resourceUser.setFullname(fullname);
+		resourceUser.setEmail(email);
+		resourceUser.setReadonly(readonly);
 
 		resourceUser.setExpandoBridgeAttributes(serviceContext);
 
@@ -145,7 +155,7 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -176,12 +186,12 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public ResourceUser updateResourceUser(long userId, long resourceUserId, String className, String classPK,
-			long toUserId, ServiceContext serviceContext)
+			long toUserId, String fullname, String email, boolean readonly, ServiceContext serviceContext)
 			throws UnauthenticationException, UnauthorizationException, NotFoundException, NoSuchUserException {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -194,6 +204,12 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 			throw new UnauthorizationException();
 		}
 
+		User toUser = userPersistence.fetchByPrimaryKey(toUserId);
+		
+		if (Validator.isNull(toUser)) {
+			throw new NotFoundException();
+		}
+		
 		Date now = new Date();
 
 		User user = userPersistence.findByPrimaryKey(userId);
@@ -214,7 +230,10 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 		resourceUser.setClassName(className);
 		resourceUser.setClassPK(classPK);
 		resourceUser.setToUserId(toUserId);
-
+		resourceUser.setFullname(fullname);
+		resourceUser.setEmail(email);
+		resourceUser.setReadonly(readonly);
+		
 		resourceUser.setExpandoBridgeAttributes(serviceContext);
 
 		resourceUserPersistence.update(resourceUser);
