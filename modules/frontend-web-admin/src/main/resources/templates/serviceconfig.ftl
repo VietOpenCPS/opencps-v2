@@ -84,7 +84,8 @@
 						data:{
 							keyword: options.data.keyword,
 							page: options.data.page,
-							pageSize: options.data.pageSize
+							pageSize: options.data.pageSize,
+							order = true
 						},
 						success:function(result){
 							options.success(result);
