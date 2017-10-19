@@ -90,7 +90,7 @@ public interface DossierActionManagement {
 			@Context ServiceContext serviceContext, @PathParam("id") String id, @BeanParam ExecuteOneAction input);
 	
 	@GET
-	@Path("/{id}/logs")
+	@Path("/{id}/contacts")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Get List Contacts", response = ListContacts.class)
 	@ApiResponses(value = {

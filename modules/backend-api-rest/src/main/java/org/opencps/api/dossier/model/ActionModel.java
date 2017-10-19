@@ -65,7 +65,7 @@ public class ActionModel {
     protected Integer preStepCode;
     protected String postStepCode;
     protected String autoEvent;
-    @XmlElement(name = "preCondition ")
+    @XmlElement(name = "preCondition")
     protected String preCondition0020;
     protected String allowAssignUser;
     protected Integer assignUserId;
