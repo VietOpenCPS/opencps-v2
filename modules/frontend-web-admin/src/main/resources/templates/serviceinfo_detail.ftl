@@ -35,7 +35,7 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-sm-2">
+					<div class="col-sm-2 PR0">
 						<label>Thủ tục hành chính:</label>
 					</div>
 					<div class="col-sm-10">
@@ -82,12 +82,12 @@
 								<label>Mức độ:</label>
 							</div>
 							<div class="col-sm-8">
-								<select class="form-control" id="level" name="level" data-bind="value: maxLevel" required="required" validationMessage="Bạn phải chọn mức độ">
+								<select class="form-control" id="level" name="level" data-bind="value: maxLevel" >
 									<option value="2">Mức độ 2</option>
 									<option value="3">Mức độ 3</option>
 									<option value="4">Mức độ 4</option>
 								</select>
-								<span data-for="level" class="k-invalid-msg"></span>
+								
 							</div>
 						</div>
 					</div>
@@ -458,9 +458,15 @@
 
 								},
 								error : function(xhr){
-									notification.show({
-										message: "Xẩy ra lỗi, vui lòng thử lại mã biểu mẫu"
-									}, "error");
+									if (result.responseJSON.description == "No Content."){
+										notification.show({
+											message: "Thêm không thành công do số biểu mẫu bị trùng."
+										}, "error");
+									} else {
+										notification.show({
+											message: "Xẩy ra lỗi, vui lòng thử lại"
+										}, "error");
+									}
 								}
 							});
 						}else {
@@ -641,9 +647,15 @@ $("#btn-submit-serviceinfo-detail").click(function(){
 				}, "success");
 			},
 			error : function(xhr){
-				notification.show({
-					message: "Xẩy ra lỗi, vui lòng thử lại"
-				}, "error");
+				if (result.responseJSON.description == "DuplicateServiceCodeException"){
+					notification.show({
+						message: "Sửa không thành công do mã thủ tục bị trùng."
+					}, "error");
+				} else {
+					notification.show({
+						message: "Xẩy ra lỗi, vui lòng thử lại"
+					}, "error");
+				}
 			}
 		});
 	}else{
@@ -681,9 +693,16 @@ $("#btn-submit-serviceinfo-detail").click(function(){
 
 			},
 			error : function(xhr){
-				notification.show({
-					message: "Xẩy ra lỗi, vui lòng thử lại"
-				}, "error");
+
+				if (result.responseJSON.description == "DuplicateServiceCodeException"){
+					notification.show({
+						message: "Thêm không thành công do mã thủ tục bị trùng."
+					}, "error");
+				} else {
+					notification.show({
+						message: "Xẩy ra lỗi, vui lòng thử lại"
+					}, "error");
+				}
 			}
 		});
 	}
