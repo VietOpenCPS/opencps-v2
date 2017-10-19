@@ -457,7 +457,7 @@
 									$("#serviceInfoFileTempalteDialog").modal('hide');
 
 								},
-								error : function(xhr){
+								error : function(result){
 									if (result.responseJSON.description == "No Content."){
 										notification.show({
 											message: "Thêm không thành công do số biểu mẫu bị trùng."
@@ -646,7 +646,7 @@ $("#btn-submit-serviceinfo-detail").click(function(){
 					message: "Yêu cầu được thực hiện thành công"
 				}, "success");
 			},
-			error : function(xhr){
+			error : function(result){
 				if (result.responseJSON.description == "DuplicateServiceCodeException"){
 					notification.show({
 						message: "Sửa không thành công do mã thủ tục bị trùng."
@@ -692,7 +692,7 @@ $("#btn-submit-serviceinfo-detail").click(function(){
 				}, "success");
 
 			},
-			error : function(xhr){
+			error : function(result){
 
 				if (result.responseJSON.description == "DuplicateServiceCodeException"){
 					notification.show({
@@ -734,7 +734,7 @@ $("#btn-submit-serviceinfo-general").click(function(){
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
 				},
-				error : function(xhr){
+				error : function(result){
 					if (result.responseJSON.description == "DuplicateServiceCodeException"){
 						notification.show({
 							message: "Sửa không thành công do mã hồ sơ bị trùng."
@@ -772,7 +772,7 @@ $("#btn-submit-serviceinfo-general").click(function(){
 					}, "success");
 					pullDataDetail(result.serviceInfoId);
 				},
-				error : function(xhr){
+				error : function(result){
 					if (result.responseJSON.description == "DuplicateServiceCodeException"){
 						notification.show({
 							message: "Thêm không thành công do mã hồ sơ bị trùng."
