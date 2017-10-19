@@ -93,9 +93,9 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 
 
 		User userAction = userLocalService.getUser(context.getUserId());
+		validateUpdate(groupId, dossierTemplateId, templateName, templateNo, description);
 
 		if (dossierTemplateId == 0) {
-			validateUpdate(groupId, dossierTemplateId, templateName, templateNo, description);
 
 			dossierTemplateId = counterLocalService.increment(DossierTemplate.class.getName());
 
@@ -121,9 +121,9 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 
 			if (Validator.isNotNull(templateName))
 				dossierTemplate.setTemplateName(templateName);
-			/*
+			
 			if (Validator.isNotNull(templateNo))
-				dossierTemplate.setTemplateNo(templateNo);*/
+				dossierTemplate.setTemplateNo(templateNo);
 
 			if (Validator.isNotNull(description))
 				dossierTemplate.setDescription(description);
@@ -284,7 +284,7 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 			throw new DuplicateTemplateNameException("DuplicateTemplateNameException");
 		}
 
-		dossierTemplate = dossierTemplatePersistence.fetchByG_DT_NAME(groupId, templateName);
+		dossierTemplate = dossierTemplatePersistence.fetchByG_DT_NO(groupId, templateNo);
 
 		if (Validator.isNotNull(dossierTemplate)) {
 			throw new DuplicateTemplateNoException("DuplicateTemplateNoException");
