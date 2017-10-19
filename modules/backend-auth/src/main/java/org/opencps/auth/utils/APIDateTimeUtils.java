@@ -21,6 +21,10 @@ public class APIDateTimeUtils {
 	
 	public static final String _NORMAL_PARTTERN = "dd/MM/yyyy HH:mm:ss";
 
+	public static String convertDateToString(Date date) {
+		return convertDateToString(date, _NORMAL_PARTTERN);
+	}
+
 	public static String convertDateToString(Date date, String pattern) {
 		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
 			pattern);
