@@ -1,12 +1,15 @@
 package org.opencps.api.controller.impl;
 
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
@@ -28,8 +31,11 @@ import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -58,32 +64,7 @@ public class DossierFileManagementImpl implements DossierFileManagement{
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("No Content.");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription("No Content.");
-
-					return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
-
-				}
-			}
+			return processException(e);
 		}
 	}
 
@@ -113,32 +94,7 @@ public class DossierFileManagementImpl implements DossierFileManagement{
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("No Content.");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription("No Content.");
-
-					return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
-
-				}
-			}
+			return processException(e);
 		}
 	}
 
@@ -170,32 +126,7 @@ public class DossierFileManagementImpl implements DossierFileManagement{
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("No Content.");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription("No Content.");
-
-					return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
-
-				}
-			}
+			return processException(e);
 		}
 	}
 
@@ -230,62 +161,148 @@ public class DossierFileManagementImpl implements DossierFileManagement{
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("No Content.");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription("No Content.");
-
-					return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
-
-				}
-			}
+			return processException(e);
 		}
 	}
 
 	@Override
-	public Response cloneDossierFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, long id, DossierFileCopyInputModel input) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response cloneDossierFile(HttpServletRequest request, HttpHeaders header, 
+			Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, DossierFileCopyInputModel input) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+		
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			DossierFileActions action = new DossierFileActionsImpl();
+			
+			DossierFile dossierFile = action.cloneDossierFile(groupId, id, input.getDossierFileId(),
+					input.getDossierTemplateNo(), input.getDossierPartNo(), serviceContext);
+					
+			DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
 	}
 
 	@Override
 	public Response downloadByDossierId_ReferenceUid(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long id, String referenceUid) {
-		// TODO Auto-generated method stub
-		return null;
+			Locale locale, User user, ServiceContext serviceContext, long id, String referenceUid, String password) {
+		
+		// TODO: check user is loged or password for access dossier file
+		BackendAuth auth = new BackendAuthImpl();
+		
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(id, referenceUid);
+
+			if(dossierFile.getFileEntryId() > 0) {
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
+	
+				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
+	
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+	
+				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileEntry.getFileName() + "\"");
+				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+	
+				return responseBuilder.build();
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		} catch (Exception e) {
+			return processException(e);
+		}
 	}
 
 	@Override
 	public Response downloadByDossierReferenceUid_ReferenceUid(HttpServletRequest request, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String dossierReferenceUid,
-			String referenceUid) {
-		// TODO Auto-generated method stub
-		return null;
+			String referenceUid, String password) {
+		
+		// TODO: check user is loged or password for access dossier file
+		BackendAuth auth = new BackendAuthImpl();
+		
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, dossierReferenceUid);
+			
+			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossier.getDossierId(), referenceUid);
+
+			if(dossierFile.getFileEntryId() > 0) {
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
+	
+				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
+	
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+	
+				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileEntry.getFileName() + "\"");
+				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+	
+				return responseBuilder.build();
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		} catch (Exception e) {
+			return processException(e);
+		}
 	}
 
 	@Override
-	public Response updateDossierFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, long id, String referenceUid, Attachment file) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response updateDossierFile(HttpServletRequest request, HttpHeaders header, 
+			Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, 
+			String referenceUid, Attachment file) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+		
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		DataHandler dataHandle = file.getDataHandler();
+		
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			DossierFileActions action = new DossierFileActionsImpl();
+			
+			DossierFile dossierFile = action.updateDossierFile(groupId, id, referenceUid, dataHandle.getName(),
+					dataHandle.getInputStream(), serviceContext);
+					
+			DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
 	}
 
 	@Override
@@ -321,5 +338,34 @@ public class DossierFileManagementImpl implements DossierFileManagement{
 			User user, ServiceContext serviceContext, DossierFileSearchModel query) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private Response processException(Exception e) {
+		ErrorMsg error = new ErrorMsg();
+
+		if (e instanceof UnauthenticationException) {
+			error.setMessage("Non-Authoritative Information.");
+			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+			error.setDescription("Non-Authoritative Information.");
+
+			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+		} else {
+			if (e instanceof UnauthorizationException) {
+				error.setMessage("Unauthorized.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Unauthorized.");
+
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+			} else {
+
+				error.setMessage("No Content.");
+				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+				error.setDescription("No Content.");
+
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
+
+			}
+		}
 	}
 }

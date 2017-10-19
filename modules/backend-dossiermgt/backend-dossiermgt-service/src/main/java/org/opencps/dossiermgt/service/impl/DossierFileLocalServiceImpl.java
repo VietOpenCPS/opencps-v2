@@ -248,6 +248,63 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		}
 	}
 	
+	/**
+	 * POST /dossiers/{id|referenceUid}/files/{referenceUid}
+	 */
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierFile updateDossierFile(long groupId, long dossierId, String referenceUid, 
+			String displayName,
+			String sourceFileName, InputStream inputStream, ServiceContext serviceContext)
+		throws PortalException, SystemException {
+		
+		long userId = serviceContext.getUserId();
+		
+		DossierFile dossierFile = dossierFileLocalService.getDossierFileByReferenceUid(
+				dossierId, referenceUid);
+
+		long fileEntryId = 0;
+		
+		try {
+			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, 
+					groupId, dossierFile.getFileEntryId(), inputStream, sourceFileName, null, 0,
+					serviceContext);
+			
+			if(fileEntry != null) {
+				fileEntryId = fileEntry.getFileEntryId();
+			}
+		} catch(Exception e) {
+			throw new SystemException(e);
+		}
+
+		Date now = new Date();
+
+		User userAction = userLocalService.getUser(userId);
+
+		// Add audit fields
+		dossierFile.setModifiedDate(now);
+		dossierFile.setUserId(userAction.getUserId());
+		dossierFile.setUserName(userAction.getFullName());
+
+		// Add other fields
+
+		dossierFile.setDossierId(dossierId);
+		if(Validator.isNull(referenceUid)) {
+			referenceUid = PortalUUIDUtil.generate();
+		}
+		
+		dossierFile.setFileEntryId(fileEntryId);
+		if(Validator.isNull(displayName)) {
+			displayName = sourceFileName;
+		}
+		
+		dossierFile.setDisplayName(displayName);
+		dossierFile.setOriginal(true);
+		dossierFile.setIsNew(true);
+
+		return dossierFilePersistence.update(dossierFile);
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile updateFormData(long groupId, long dossierId, String referenceUid, String formData,
 			ServiceContext serviceContext) 
 			throws PortalException, SystemException {
@@ -277,7 +334,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		// auto generate pdf
 		long fileEntryId = 0;
 		
-		try {
+		/*try {
 			File file = FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
 			
 			String sourceFileName = System.currentTimeMillis() + StringPool.PERIOD + 
@@ -291,7 +348,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			fileEntryId = fileEntry.getFileEntryId();
 		} catch(Exception e) {
 			throw new SystemException(e);
-		}
+		}*/
 		
 		dossierFile.setFileEntryId(fileEntryId);
 		

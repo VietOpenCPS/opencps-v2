@@ -3,7 +3,13 @@ package org.opencps.api.controller.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.dossierfilemodel.DossierFileModel;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.model.DossierFile;
 

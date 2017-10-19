@@ -15,4 +15,11 @@ public interface DossierFileActions {
 			InputStream inputStream, ServiceContext serviceContext)
 		throws SystemException, PortalException ;
 
+	public DossierFile cloneDossierFile(long groupId, long dossierId, long dossierFileId, String dossierTemplateNo,
+			String dossierPartNo, ServiceContext serviceContext) 
+		throws SystemException, PortalException;
+
+	public DossierFile updateDossierFile(long groupId, long dossierId, String referenceUid, String sourceFileName,
+			InputStream inputStream, ServiceContext serviceContext) 
+		throws SystemException, PortalException;
 }

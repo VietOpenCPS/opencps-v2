@@ -124,7 +124,7 @@ public interface DossierFileManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response cloneDossierFile(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
 			@ApiParam(value = "body params for post") @BeanParam DossierFileCopyInputModel input);
 
@@ -141,7 +141,8 @@ public interface DossierFileManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, 
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id, 
-			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid);
+			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid,
+			@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
 	
 	@GET
 	@Path("/dossiers/{dossierReferenceUid}/files/{referenceUid}")
@@ -156,7 +157,8 @@ public interface DossierFileManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, 
 			@ApiParam(value = "referenceUid of dossier", required = true) @PathParam("dossierReferenceUid") String dossierReferenceUid, 
-			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid);
+			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid,
+			@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
 	
 	@POST
 	@Path("/dossiers/{id}/files/{referenceUid}")
@@ -170,6 +172,7 @@ public interface DossierFileManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response updateDossierFile(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, 
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
 			@ApiParam(value = "reference of dossierfile", required = true) @PathParam("referenceUid") String referenceUid,
 			@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file);
