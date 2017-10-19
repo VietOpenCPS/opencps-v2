@@ -6,7 +6,7 @@
 //
 
 
-package org.opencps.api.dossierfilemodel;
+package org.opencps.api.dossierfile.model;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;

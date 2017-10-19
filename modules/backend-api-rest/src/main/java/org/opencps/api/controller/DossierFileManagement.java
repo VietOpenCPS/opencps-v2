@@ -21,11 +21,11 @@ import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import org.opencps.api.dossierfilemodel.DossierFileCopyInputModel;
-import org.opencps.api.dossierfilemodel.DossierFileModel;
-import org.opencps.api.dossierfilemodel.DossierFileResultsModel;
-import org.opencps.api.dossierfilemodel.DossierFileSearchModel;
-import org.opencps.api.dossierfilemodel.DossierFileSearchResultsModel;
+import org.opencps.api.dossierfile.model.DossierFileCopyInputModel;
+import org.opencps.api.dossierfile.model.DossierFileModel;
+import org.opencps.api.dossierfile.model.DossierFileResultsModel;
+import org.opencps.api.dossierfile.model.DossierFileSearchModel;
+import org.opencps.api.dossierfile.model.DossierFileSearchResultsModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.json.JSONObject;
@@ -134,7 +134,7 @@ public interface DossierFileManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@ApiOperation(value = "getDossierFilesByDossierReferenceUid", response = DossierFileResultsModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list", response = DossierFileResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "downloadByDossierId_ReferenceUid"),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response downloadByDossierId_ReferenceUid(@Context HttpServletRequest request, @Context HttpHeaders header,
@@ -150,7 +150,7 @@ public interface DossierFileManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@ApiOperation(value = "getDossierFilesByDossierReferenceUid", response = DossierFileResultsModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list", response = DossierFileResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "downloadByDossierReferenceUid_ReferenceUid"),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response downloadByDossierReferenceUid_ReferenceUid(@Context HttpServletRequest request, @Context HttpHeaders header,
@@ -219,7 +219,7 @@ public interface DossierFileManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
-	public Response updateDossierFile(@Context HttpServletRequest request, @Context HttpHeaders header,
+	public Response updateDossierFileFormData(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, 
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id, 
@@ -236,7 +236,7 @@ public interface DossierFileManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
-	public Response deleteServiceInfo(@Context HttpServletRequest request, @Context HttpHeaders header,
+	public Response deleteDossierFile(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
@@ -252,7 +252,23 @@ public interface DossierFileManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 
-	public Response getDossiers(@Context HttpServletRequest request, @Context HttpHeaders header,
+	public Response getDossierFiles(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @BeanParam DossierFileSearchModel query);
+	
+	@GET
+	@Path("/dossiers/{id}/download")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "downloadByDossierId")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "downloadByDossierId"),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+
+	public Response downloadByDossierId(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, 
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
+			@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
 }
