@@ -872,5 +872,6 @@
 		<exception>HasExsist</exception>
 		
 		<exception>InvalidDossierStatus</exception>
+		<exception>DuplicateDossierFile</exception>
 	</exceptions>
 </service-builder>
