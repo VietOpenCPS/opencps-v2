@@ -23,6 +23,7 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.exception.HasExsistException;
 import org.opencps.dossiermgt.exception.RequiredAgencyCodeException;
 import org.opencps.dossiermgt.exception.RequiredServiceCodeException;
 import org.opencps.dossiermgt.exception.ServiceLevelException;
@@ -209,6 +210,12 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 		} catch (Exception e) {
 			throw new RequiredServiceCodeException("RequiredServiceCodeException");
+		}
+		
+		ServiceConfig config = serviceConfigPersistence.fetchByGID_SI_GAC(groupId, serviceInfoId, govAgencyCode);
+		
+		if (Validator.isNotNull(config)) {
+			throw new HasExsistException("ServiceConfigHasExsist");
 		}
 
 	}

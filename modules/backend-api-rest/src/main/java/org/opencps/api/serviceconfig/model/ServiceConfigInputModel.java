@@ -65,8 +65,8 @@ public class ServiceConfigInputModel {
     protected String govAgencyCode;
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "serviceInstruction")
     protected String serviceInstruction;
-	@DefaultValue(StringPool.BLANK) @FormParam(value = "serviceLevel")
-    protected Integer serviceLevel;
+	@FormParam(value = "serviceLevel")
+    protected int serviceLevel;
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "serviceUrl")
     protected String serviceUrl;
 	@DefaultValue(StringPool.FALSE) @FormParam(value = "forCitizen")

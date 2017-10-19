@@ -211,9 +211,8 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 			// Update other fields
 
 			object.setTemplateNo(templateNo);
-			//object.setPartNo(partNo);
+			object.setPartNo(partNo);
 			object.setPartName(partName);
-			//object.setPartName(partName);
 			object.setPartTip(partTip);
 			object.setPartType(partType);
 			object.setMultiple(multiple);
@@ -457,7 +456,13 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 			if (Validator.isNotNull(dossierPart)) {
 				throw new HasExsistException("DubplicateTemplatePartNoHasExsistException");
 			}
-		} 
+		} else {
+			DossierPart dossierPart = dossierPartPersistence.fetchByTP_NO_PART(groupId, templateNo, partNo);
+
+			if (Validator.isNotNull(dossierPart) && dossierPart.getPrimaryKey() != dossierPartId) {
+				throw new HasExsistException("DubplicateTemplatePartNoHasExsistException");
+			}
+		}
 
 		// TODO add more logic here
 	}
