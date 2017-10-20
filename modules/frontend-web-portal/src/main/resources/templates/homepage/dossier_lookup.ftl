@@ -1,17 +1,21 @@
+<#-- List-view hồ sơ đã có kết quả -->
 <div class="dossier-with-result">
 	<div class="col-sm-12">
 		<span class="title">HỒ SƠ ĐÃ CÓ KẾT QUẢ</span>
 	</div>
 	<div class="col-sm-12">
 		<ul class="PT10 PB5" id="lvDossierResult"></ul>
+		<#-- Template render list -->
 		<script type="text/x-kendo-template" id="tempDossierResult">
 			<li class="">#:applicantName# - #:dossierId#</li>
 		</script>
 	</div>
+	<#-- element handle pagiantion-->
 	<div class="pager pull-left" id="pagerDossirResult"></div>
 </div>
 
 <script type="text/javascript">
+	// Cấu hình dataSource
 	var dataSourceDossierResult = new kendo.data.DataSource({
 		transport : {
 			read : function(options){
@@ -48,7 +52,7 @@
 		template : kendo.template($("#tempDossierResult").html()),
 		selectable: true,
 	    change: function() {
-                   var index = this.select().index(),
+                   var index = this.select().index();
                        dataItem = this.dataSource.view()[index];
                    $("#detailView").load("${ajax.dossierinfo_detail}",
 	                   	function(success){
@@ -61,7 +65,6 @@
            var firstItem = listView.element.children().first();
            listView.select(firstItem);
         }
-
 	});
 	$("#pagerDossirResult").kendoPager({
 		dataSource : dataSourceDossierResult,

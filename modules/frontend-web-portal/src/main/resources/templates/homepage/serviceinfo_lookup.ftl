@@ -42,16 +42,66 @@
 		<span class="title">TRA CỨU HỒ SƠ</span>
 	</div>
 	<div class="input-group col-md-6">
-		<input id="input_search_serviceinfo" type="text" class="form-control" placeholder="Nhập mã hồ sơ / Họ và tên">
+		<input id="input_search_dossierinfo" type="text" class="form-control" placeholder="Nhập mã hồ sơ / Họ và tên">
 		<div class="input-group-btn">
-			<button class="btn btn-default" type="submit">
+			<button class="btn btn-default" id="#filterButton">
 				<i class="glyphicon glyphicon-search"></i>
 			</button>
 		</div>
 	</div>
-	<div id="detailView"></div> <!--render thông tin hồ sơ cơ bản--> 
+	<#--Render list hồ sơ tìm kiếm theo mã hồ sơ/ họ tên-->
+	<div class="demo-section k-content wide">
+        <div class="col-sm-12">
+			<ul class="PT10 PB5" id="lvDossierResultSearch"></ul>
+		</div>	
+	</div>
+	<!--Render thông tin hồ sơ cơ bản-->
+	<div id="detailView"></div>
 	
 </div>
+<script type="text/javascript">
+	$(document).ready(function(){
+		var dataSourceDossierResultSearch = new kendo.data.DataSource({
+			transport: {
+			    read: function (options) {
+			        $.ajax({
+			            url: "${api.server}/dossiers",
+			            dataType: "json",
+			            type: 'GET',
+			            data: {
+			            	page: options.data.page,
+			                pageSize: options.data.pageSize,
+			                param1: options.data.param1,
+			                param2: options.data.param2,
+			            },
+			            success: function (result) {
+			                options.success(result);
+			            }
+			        });
+			     }
+			}
+			schema : {
+				total : "total",
+				data : "data",
+				model : {
+					id : "id"
+				}
+			}
+		});
+		$("#lvDossierResultSearch").kendoListView({
+			dataSource : dataSourceDossierResult,
+			template : kendo.template($("#tempDossierResult").html()),
+			selectable: true
+		});
+		var evenSearch = function(){
+		    var elementListView = $("#listView").getKendoListView();
+		    elementListView.dataSource.read({param1: "value1", param2: "value2"})
+		};
+
+	    $("#input_search_dossierinfo").keypress( evenSearch() );
+		$(document).on('click', '#filterButton', evenSearch());
+	});
+</script>
 <#-- Render search input -->
 <#-- <script type="text/javascript">
 	$("#input_search_serviceinfo").kendoAutoComplete({
