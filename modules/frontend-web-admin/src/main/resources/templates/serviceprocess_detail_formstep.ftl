@@ -82,7 +82,7 @@
 				</div>
 				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="durationCount" name="durationCount" type="text" class="k-textbox form-control" data-bind="value: durationCount"/>
+						<input id="durationCount_" name="durationCount" type="text" class="k-textbox form-control" data-bind="value: durationCount"/>
 					</div>
 				</div>
 			</div>

@@ -33,16 +33,16 @@
 					<p>#: partName # #if (required){#<span style="color: red;">&nbsp;*</span>#}#</p>
 					<p>Kiểu thành phần:
 						#if (partType == "1"){
-						#Giấy tờ nộp vào#
-					} else if (partType == "2"){
-					#Giấy tờ kết quả xử lý#
-				}#
-			</p>
-			<p>Mô tả: #: partTip #</p>
-		</div>
-	</div>
-</li>
-</script>
+								#Giấy tờ nộp vào#
+						} else if (partType == "2"){
+							#Giấy tờ kết quả xử lý#
+						}#
+					</p>
+					<p>Mô tả: #: partTip #</p>
+				</div>
+			</div>
+		</li>
+	</script>
 </div>
 
 <script type="text/javascript">

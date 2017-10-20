@@ -269,9 +269,10 @@
 		clearForm();
 	});
 
-	$("#btn-cancel-serviceoptions").click(function(){
+	$("#btn-revert-serviceoptions").click(function(){
 		console.log("list-serviceconfig-option");
 		clearForm();
+		$("#frmEstablishedProcess").hide();
 	});
 
 	var clearForm = function(){

@@ -285,8 +285,6 @@
 				return data[$(item).index()].collectionCode;
 			
 			});
-			console.log("get item id index");
-			console.log(selected);
 			
 			$("#_collection_hidden_new_id").val(selected[0]);
 	

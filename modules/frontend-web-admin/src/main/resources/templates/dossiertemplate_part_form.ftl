@@ -159,6 +159,9 @@
 	});
 
 	var updateDossierTemplatePart = function(dossierTemplateDataPk, dossierTemplatePartDataPk){
+		if (!validateTemplatePart()){
+			return false;
+		}
 
 		var url = "";
 		var type = "";
@@ -254,6 +257,28 @@
 			}
 		});
 	};
+
+	function validateTemplatePart(){
+		if (!$("#partNo").val()){
+			notification.show({
+				message: "Mời nhập mã thành phần"
+			}, "error");
+			return false;
+		}
+		if (!$("#partName").val()){
+			notification.show({
+				message: "Mời nhập tên thành phần"
+			}, "error");
+			return false;
+		}
+		if (!$("#fileTemplateNo").val()){
+			notification.show({
+				message: "Mời nhập mã mẫu tài liệu"
+			}, "error");
+			return false;
+		}
+		return true;
+	}
 
 	$("#partType").kendoComboBox({
 		filter: "contains",

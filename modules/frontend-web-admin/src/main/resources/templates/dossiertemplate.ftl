@@ -134,6 +134,7 @@
 		$("#dossier_template_list_view").kendoListView({
 			dataSource: dossierTemplateDataSource,
 			template: kendo.template($("#dossier_template_template").html()),
+			selectable: true,
 			dataBound: function(e) {
 
 				if (firstTimeLoad){
