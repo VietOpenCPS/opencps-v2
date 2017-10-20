@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
 import javax.portlet.PortletMode;
@@ -15,20 +16,27 @@ import javax.portlet.RenderResponse;
 import javax.portlet.WindowStateException;
 
 import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictGroup;
 import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.frontend.web.admin.constants.AdminPortletKeys;
 import org.opencps.frontend.web.admin.constants.FrontendWebAdminPortletConstants;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -43,7 +51,6 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
@@ -62,6 +69,111 @@ import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 	"javax.portlet.security-role-ref=power-user,user"
 }, service = Portlet.class)
 public class AdminPortlet extends FreeMarkerPortlet {
+
+	public void saveDictItem(
+		ActionRequest actionRequest, ActionResponse actionResponse)
+		throws IOException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+		long groupId = themeDisplay.getScopeGroupId();
+
+		long userId = themeDisplay.getUserId();
+
+		String itemCode = ParamUtil.getString(actionRequest, "itemCode");
+		String itemName = ParamUtil.getString(actionRequest, "itemName");
+		String itemNameEN = ParamUtil.getString(actionRequest, "itemNameEN");
+		String itemCodeOld = ParamUtil.getString(actionRequest, "itemCodeOld");
+		String collectionCode =
+			ParamUtil.getString(actionRequest, "collectionCode");
+		String itemDescription =
+			ParamUtil.getString(actionRequest, "itemDescription");
+		int sibling = ParamUtil.getInteger(actionRequest, "sibling");
+		String parentItemCode =
+			ParamUtil.getString(actionRequest, "parentItemCode");
+		// String groupCode = ParamUtil.getString(actionRequest, "groupCode");
+
+		String metaData = ParamUtil.getString(actionRequest, "metaData");
+
+		DictCollectionActions dictCollectionActions =
+			new DictCollectionActions();
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+			ServiceContext serviceContext =
+				ServiceContextFactory.getInstance(actionRequest);
+
+			DictItem dictItem = null;
+
+			if (Validator.isNotNull(itemCodeOld)) {
+
+				dictItem = dictCollectionActions.updateDictItemByItemCode(
+					userId, groupId, serviceContext, collectionCode,
+					itemCodeOld, itemCode, itemName, itemNameEN,
+					itemDescription, String.valueOf(sibling), parentItemCode);
+			}
+			else {
+				dictItem = dictCollectionActions.addDictItems(
+					userId, groupId, collectionCode, parentItemCode, itemCode,
+					itemName, itemNameEN, itemDescription,
+					String.valueOf(sibling), 0, metaData, serviceContext);
+			}
+
+			result.put(
+				"createDate", DateTimeUtils.convertDateToString(
+					dictItem.getCreateDate(), DateTimeUtils._TIMESTAMP));
+			result.put(
+				"modifiedDate", DateTimeUtils.convertDateToString(
+					dictItem.getModifiedDate(), DateTimeUtils._TIMESTAMP));
+			result.put("itemCode", dictItem.getItemCode());
+			result.put(
+				"itemName", Validator.isNotNull(dictItem.getItemName())
+					? dictItem.getItemName() : StringPool.BLANK);
+			result.put(
+				"itemNameEN", Validator.isNotNull(dictItem.getItemNameEN())
+					? dictItem.getItemNameEN() : StringPool.BLANK);
+			result.put("itemDescription", dictItem.getItemDescription());
+			result.put("parentItem", dictItem.getParentItemId());
+			result.put("level", dictItem.getLevel());
+			result.put("sibling", dictItem.getSibling());
+			result.put("treeIndex", dictItem.getTreeIndex());
+			result.put("dicItemId", dictItem.getDictItemId());
+
+		}
+		catch (Exception e) {
+			_log.error(e);
+			if (e instanceof UnauthenticationException) {
+
+				result.put("statusCode", 401);
+
+			}
+
+			if (e instanceof UnauthorizationException) {
+
+				result.put("statusCode", 403);
+
+			}
+
+			if (e instanceof NoSuchUserException) {
+
+				result.put("statusCode", 401);
+
+			}
+
+			if (e instanceof DuplicateCategoryException) {
+
+				result.put("statusCode", 409);
+
+			}
+			result.put("msg", "error");
+		}
+		finally {
+			writeJSON(actionRequest, actionResponse, result);
+		}
+
+	}
 
 	@Override
 	public void render(
@@ -262,6 +374,9 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			}
 		}
 
+		Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(
+			themeDisplay.getUserId());
+
 		// roles
 		List<Role> roles =
 			RoleLocalServiceUtil.getRoles(themeDisplay.getCompanyId());
@@ -276,6 +391,8 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		// set varible
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("api", apiObject);
+		renderRequest.setAttribute(
+			"applicantId", applicant == null ? "" : applicant.getApplicantId());
 
 		ServiceContext serviceContext = null;
 
@@ -449,7 +566,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		
 		long employeeId = ParamUtil.getLong(renderRequest, "employeeId");
 		
-		System.out.println(">>>>>>>>>>>>>>>>>>>>> "+employeeId);
 		/*JSONObject employee = JSONFactoryUtil.createJSONObject();*/
 		
 		Employee employeeObj= EmployeeLocalServiceUtil.fetchEmployee(employeeId);

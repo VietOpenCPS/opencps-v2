@@ -30,16 +30,16 @@
 			<span>#:itemIndex#</span>
 		</div>
 		<div class="col-sm-5">
-			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit"><span>#:optionName#</span></a>
+			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit text-hover-blue"><span>#:optionName#</span></a>
 		</div>
 		<div class="col-sm-2 text-center">
-			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit"><span>#:templateNo#</span></a>
+			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit text-hover-blue"><span>#:templateNo#</span></a>
 		</div>
 		<div class="col-sm-2 text-center">
-			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit"><span>#:processNo#</span></a>
+			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnEdit text-hover-blue"><span>#:processNo#</span></a>
 		</div>
 		<div class="col-sm-2 text-center">
-			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnDelete">
+			<a href="javascript:;" data-pk="#:id#" class="_itemServiceConfig_option_btnDelete text-hover-blue">
 				<i class="fa fa-trash"></i>
 			</a>
 		</div>
@@ -50,7 +50,7 @@
 	<button class="btn btn-active" type="button" id="btn-add-serviceconfig-option"><i class="fa fa-plus" aria-hidden="true"></i> Thêm quy trình dịch vụ</button>
 </div>
 
-<form id="frmEstablishedProcess">
+<form id="frmEstablishedProcess" style="display: none;">
 	<div class="row">
 
 		<div class="col-sm-12 MB15">
@@ -81,8 +81,7 @@
 
 		<div class="col-sm-12 MB15">
 			<label>Chuỗi pattern xác định việc lựa chọn tự động theo đối tượng xử lý hồ sơ</label>
-			<input name="autoSelect" id="autoSelect" class="form-control" placeholder="Chuỗi pattern" data-bind="value:autoSelect" validationMessage="Bạn phải điền chuỗi pattern" required="required">
-			<span data-for="autoSelect" class="k-invalid-msg"></span>
+			<input name="autoSelect" id="autoSelect" class="form-control" placeholder="Chuỗi pattern" data-bind="value:autoSelect">
 		</div>
 
 		<div class="col-sm-12 ">
@@ -266,12 +265,14 @@
 	$("#btn-add-serviceconfig-option").click(function(){
 		console.log("add");
 		$("#itemServiceConfigOption").val("");
+		$("#frmEstablishedProcess").show();
 		clearForm();
 	});
 
-	$("#btn-cancel-serviceoptions").click(function(){
+	$("#btn-revert-serviceoptions").click(function(){
 		console.log("list-serviceconfig-option");
 		clearForm();
+		$("#frmEstablishedProcess").hide();
 	});
 
 	var clearForm = function(){

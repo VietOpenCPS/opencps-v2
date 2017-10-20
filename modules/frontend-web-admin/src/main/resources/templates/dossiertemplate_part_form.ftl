@@ -8,7 +8,7 @@
 			<div class="col-xs-12 col-sm-8">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						Số thành phần
+						Mã thành phần
 					</div>
 				</div>
 				<div class="row MT5">
@@ -159,6 +159,9 @@
 	});
 
 	var updateDossierTemplatePart = function(dossierTemplateDataPk, dossierTemplatePartDataPk){
+		if (!validateTemplatePart()){
+			return false;
+		}
 
 		var url = "";
 		var type = "";
@@ -190,6 +193,10 @@
 				notification.show({
 					message: "Yêu cầu được thực hiện thành công"
 				}, "success");
+
+				if (!dossierTemplatePartDataPk){
+					dossierTemplatePartDataPk = result.partNo;
+				}
 
 				var upFormscriptSuccess = false, upFormReportSuccess = false, upSampleDataSuccess = false;
 				$.ajax({
@@ -242,7 +249,6 @@
 						message: "Xẩy ra lỗi, vui lòng thử lại"
 					}, "error");
 				}
-
 			},
 			error: function(result) {
 				notification.show({
@@ -251,6 +257,28 @@
 			}
 		});
 	};
+
+	function validateTemplatePart(){
+		if (!$("#partNo").val()){
+			notification.show({
+				message: "Mời nhập mã thành phần"
+			}, "error");
+			return false;
+		}
+		if (!$("#partName").val()){
+			notification.show({
+				message: "Mời nhập tên thành phần"
+			}, "error");
+			return false;
+		}
+		if (!$("#fileTemplateNo").val()){
+			notification.show({
+				message: "Mời nhập mã mẫu tài liệu"
+			}, "error");
+			return false;
+		}
+		return true;
+	}
 
 	$("#partType").kendoComboBox({
 		filter: "contains",

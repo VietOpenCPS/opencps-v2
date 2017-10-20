@@ -12,7 +12,10 @@
 	</div>
 
 	<div class="dossier-general-info P15">
-		<h5 class="text-bold">Thông tin chung hồ sơ</h5>
+		<div class="col-sm-12">
+			Cơ quan thực hiện <span class="text-bold">Cục bản quyền tác gỉa</span>
+		</div>
+		<#-- <h5 class="text-bold">Thông tin chung hồ sơ</h5>
 		<div class="row">
 			<div class="col-xs-12 col-sm-4">
 				<p class="MB5">Bà <span class="text-bold"><#if (customer.dossierDetail.govAgencyName)??>${customer.dossierDetail.govAgencyName}</#if></span></p>
@@ -26,7 +29,7 @@
 				<p class="MB5">Mã tiếp nhận: <#if (customer.dossierDetail.referenceUid)??>${customer.dossierDetail.referenceUid}</#if></p>
 				<p class="MB0"><a href="javascript:;" id="dossier-submit-info" class="text-link text-underline">Thông tin nộp hồ sơ</a></i></p>
 			</div>
-		</div>
+		</div> -->
 	</div>
 
 	<div class="guide-section">
@@ -56,6 +59,78 @@
 			</p>
 		</div>
 		<p class="MB0 text-light-blue"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p>
+	</div>
+
+	<div class="dossier-parts">
+		<div class="head-part align-middle">
+			<div class="background-triangle-small">I</div> <span class="text-uppercase">Thông tin chủ hồ sơ</span>
+		</div>
+		<div class="content-part">
+			<div class="row-parts-head MT5">
+				<div class="col-sm-2">
+					Họ và tên
+				</div>
+				<div class="col-sm-10">
+					<div class="form-group"> 
+						<input type="text" class="form-control"> 
+					</div>
+				</div>
+
+				<div class="col-sm-2">
+					Địa chỉ
+				</div>
+				<div class="col-sm-10">
+					<div class="form-group"> 
+						<input type="text" class="form-control"> 
+					</div>
+				</div>
+
+				<div class="col-sm-2">
+					Tỉnh/ Thành phố
+				</div>
+				<div class="col-sm-2">
+					<div class="form-group"> 
+						<input type="text" class="form-control"> 
+					</div>
+				</div>
+
+				<div class="col-sm-2">
+					Quận/ Huyện
+				</div>
+				<div class="col-sm-2">
+					<div class="form-group"> 
+						<input type="text" class="form-control"> 
+					</div>
+				</div>
+
+				<div class="col-sm-2">
+					Xã/ Phường
+				</div>
+				<div class="col-sm-2">
+					<div class="form-group"> 
+						<input type="text" class="form-control"> 
+					</div>
+				</div>
+
+				<div class="col-sm-2">
+					Điện thoại
+				</div>
+				<div class="col-sm-2">
+					<div class="form-group"> 
+						<input type="text" class="form-control" > 
+					</div>
+				</div>
+
+				<div class="col-sm-2">
+					Địa chỉ email
+				</div>
+				<div class="col-sm-4">
+					<div class="form-group"> 
+						<input type="text" class="form-control" > 
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<form id="dossierFormSubmiting">

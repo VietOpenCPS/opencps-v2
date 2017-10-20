@@ -18,7 +18,7 @@
 	<div class="row MT10">
 		<div class="col-xs-12 col-sm-3">Mô tả</div>
 		<div class="col-xs-12 col-sm-9">
-			<textarea id="description" name="description" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: description"></textarea>
+			<textarea id="description" name="description" class="k-textbox form-control" data-bind="value: description"></textarea>
 		</div>
 	</div>
 	<div class="row MT10 align-middle-lg">
@@ -93,7 +93,7 @@
 					<input id="dossierNoPattern" name="dossierNoPattern" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: dossierNoPattern"/>
 				</div>
 				<div class="col-xs-12 col-sm-6">
-					<input id="dueDatePattern" name="dueDatePattern" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: dueDatePattern"/>
+					<input id="dueDatePattern" name="dueDatePattern" class="k-textbox form-control" data-bind="value: dueDatePattern"/>
 				</div>
 			</div>
 		</div>

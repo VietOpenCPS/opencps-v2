@@ -35,7 +35,7 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-sm-2">
+					<div class="col-sm-2 PR0">
 						<label>Thủ tục hành chính:</label>
 					</div>
 					<div class="col-sm-10">
@@ -82,12 +82,12 @@
 								<label>Mức độ:</label>
 							</div>
 							<div class="col-sm-8">
-								<select class="form-control" id="level" name="level" data-bind="value: maxLevel" required="required" validationMessage="Bạn phải chọn mức độ">
+								<select class="form-control" id="level" name="level" data-bind="value: maxLevel" >
 									<option value="2">Mức độ 2</option>
 									<option value="3">Mức độ 3</option>
 									<option value="4">Mức độ 4</option>
 								</select>
-								<span data-for="level" class="k-invalid-msg"></span>
+								
 							</div>
 						</div>
 					</div>
@@ -401,6 +401,11 @@
 			type : "GET",
 			success : function(result){
 				console.log(result.domainName);
+				var arrFile = result.fileTemplates;
+				if(!arrFile){
+					console.log("Empty");
+					arrFile = [];
+				}
 				var viewModel = kendo.observable({
 					addFiletemplate : function(e){
 						var that = this;
@@ -452,10 +457,16 @@
 									$("#serviceInfoFileTempalteDialog").modal('hide');
 
 								},
-								error : function(xhr){
-									notification.show({
-										message: "Xẩy ra lỗi, vui lòng thử lại"
-									}, "error");
+								error : function(result){
+									if (result.responseJSON.description == "No Content."){
+										notification.show({
+											message: "Thêm không thành công do số biểu mẫu bị trùng."
+										}, "error");
+									} else {
+										notification.show({
+											message: "Xẩy ra lỗi, vui lòng thử lại"
+										}, "error");
+									}
 								}
 							});
 						}else {
@@ -500,7 +511,7 @@
 					conditionText : function(e){
 						$('#conditionText').summernote('code', result.conditionText);
 					},
-					fileTemplates : result.fileTemplates,
+					fileTemplates : arrFile,
 					maxLevel: result.maxLevel,
 					active : result.active,
 					deleteFileTemplate : function(e){
@@ -617,7 +628,7 @@ $("#btn-submit-serviceinfo-detail").click(function(){
 				serviceName : $("#serviceName").val(),
 				administrationCode : $("#administration").val(),
 				domainCode : $("#domain").val(),
-				maxLevel : $("#level").val(),
+				maxLevel : ($("#level").val()) ? $("#level").val() : 2,
 				active : $("#status").val(),
 				resultText : $("#resultText").summernote("code").toString(),
 				feeText : $("#feeText").summernote("code").toString(),
@@ -635,10 +646,16 @@ $("#btn-submit-serviceinfo-detail").click(function(){
 					message: "Yêu cầu được thực hiện thành công"
 				}, "success");
 			},
-			error : function(xhr){
-				notification.show({
-					message: "Xẩy ra lỗi, vui lòng thử lại"
-				}, "error");
+			error : function(result){
+				if (result.responseJSON.description == "DuplicateServiceCodeException"){
+					notification.show({
+						message: "Sửa không thành công do mã thủ tục bị trùng."
+					}, "error");
+				} else {
+					notification.show({
+						message: "Xẩy ra lỗi, vui lòng thử lại"
+					}, "error");
+				}
 			}
 		});
 	}else{
@@ -654,7 +671,7 @@ $("#btn-submit-serviceinfo-detail").click(function(){
 				serviceName : $("#serviceName").val(),
 				administrationCode : $("#administration").val(),
 				domainCode : $("#domain").val(),
-				maxLevel : $("#level").val(),
+				maxLevel : ($("#level").val()) ? $("#level").val() : 2,
 				active : $("#status").val(),
 				resultText : $("#resultText").summernote("code").toString(),
 				feeText : $("#feeText").summernote("code").toString(),
@@ -675,10 +692,17 @@ $("#btn-submit-serviceinfo-detail").click(function(){
 				}, "success");
 
 			},
-			error : function(xhr){
-				notification.show({
-					message: "Xẩy ra lỗi, vui lòng thử lại"
-				}, "error");
+			error : function(result){
+
+				if (result.responseJSON.description == "DuplicateServiceCodeException"){
+					notification.show({
+						message: "Thêm không thành công do mã thủ tục bị trùng."
+					}, "error");
+				} else {
+					notification.show({
+						message: "Xẩy ra lỗi, vui lòng thử lại"
+					}, "error");
+				}
 			}
 		});
 	}
@@ -701,7 +725,7 @@ $("#btn-submit-serviceinfo-general").click(function(){
 					serviceName : $("#serviceName").val(),
 					administrationCode : $("#administration").val(),
 					domainCode : $("#domain").val(),
-					maxLevel : $("#level").val(),
+					maxLevel : ($("#level").val()) ? $("#level").val() : 2,
 					active : $("#status").val()
 				},
 				success : function(result){
@@ -710,10 +734,16 @@ $("#btn-submit-serviceinfo-general").click(function(){
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
 				},
-				error : function(xhr){
-					notification.show({
-						message: "Xẩy ra lỗi, vui lòng thử lại"
-					}, "error");
+				error : function(result){
+					if (result.responseJSON.description == "DuplicateServiceCodeException"){
+						notification.show({
+							message: "Sửa không thành công do mã hồ sơ bị trùng."
+						}, "error");
+					} else {
+						notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");
+					}
 				}
 			});
 		}else{
@@ -728,7 +758,7 @@ $("#btn-submit-serviceinfo-general").click(function(){
 					serviceName : $("#serviceName").val(),
 					administrationCode : $("#administration").val(),
 					domainCode : $("#domain").val(),
-					maxLevel : $("#level").val(),
+					maxLevel : ($("#level").val()) ? $("#level").val() : 2,
 					active : $("#status").val()
 				},
 				success : function(result){
@@ -742,10 +772,16 @@ $("#btn-submit-serviceinfo-general").click(function(){
 					}, "success");
 					pullDataDetail(result.serviceInfoId);
 				},
-				error : function(xhr){
-					notification.show({
-						message: "Xẩy ra lỗi, vui lòng thử lại"
-					}, "error");
+				error : function(result){
+					if (result.responseJSON.description == "DuplicateServiceCodeException"){
+						notification.show({
+							message: "Thêm không thành công do mã hồ sơ bị trùng."
+						}, "error");
+					} else {
+						notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");
+					}
 				}
 			});
 		}
