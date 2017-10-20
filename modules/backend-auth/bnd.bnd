@@ -5,4 +5,8 @@ Export-Package: \
 	org.opencps.auth.api,\
 	org.opencps.auth.api.exception,\
 	org.opencps.auth.api.keys,\
-	org.opencps.auth.utils
+	org.opencps.auth.utils,\
+	backend.auth.api,\
+	backend.auth.api.exception,\
+	backend.auth.api.keys,\
+	backend.utils

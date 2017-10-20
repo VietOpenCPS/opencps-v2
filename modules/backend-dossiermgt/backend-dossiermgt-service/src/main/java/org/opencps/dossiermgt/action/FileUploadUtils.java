@@ -67,7 +67,16 @@ public class FileUploadUtils {
 			String fileType, long fileSize, ServiceContext serviceContext) 
 		throws Exception {
 		
-		return uploadFile(userId, groupId, inputStream, sourceFileName, 
+		return uploadFile(userId, groupId, 0, inputStream, sourceFileName, 
+				fileType, fileSize, FOLDER_NAME_DOSSIER_FILE, serviceContext);
+	}
+	
+	public static FileEntry uploadDossierFile(long userId, long groupId, long fileEntryId,
+			InputStream inputStream, String sourceFileName,
+			String fileType, long fileSize, ServiceContext serviceContext) 
+		throws Exception {
+		
+		return uploadFile(userId, groupId, fileEntryId, inputStream, sourceFileName, 
 				fileType, fileSize, FOLDER_NAME_DOSSIER_FILE, serviceContext);
 	}
 	
@@ -75,7 +84,7 @@ public class FileUploadUtils {
 			File file, String sourceFileName, ServiceContext serviceContext) 
 		throws Exception {
 		
-		return uploadFile(userId, groupId, file, sourceFileName, null, FOLDER_NAME_DOSSIER_FILE, serviceContext);
+		return uploadFile(userId, groupId, 0, file, sourceFileName, null, FOLDER_NAME_DOSSIER_FILE, serviceContext);
 	}
 	
 	public static FileEntry cloneDossierFile(long userId, long groupId, 
@@ -134,16 +143,21 @@ public class FileUploadUtils {
 	 * @return null if inputStream is null or sourceFileName is null
 	 * @throws Exception
 	 */
-	public static FileEntry uploadFile(long userId, long groupId, InputStream inputStream, String sourceFileName,
+	public static FileEntry uploadFile(long userId, long groupId, long fileEntryId, InputStream inputStream, String sourceFileName,
 			String fileType, long fileSize, String destination, ServiceContext serviceContext) 
 		throws Exception {
 		
 		FileEntry fileEntry = null;
 
-		if (inputStream != null && fileSize > 0 && Validator.isNotNull(sourceFileName)) {
+		if (inputStream != null && Validator.isNotNull(sourceFileName)) {
 			
 			if(Validator.isNull(fileType)) {
 				fileType = MimeTypesUtil.getContentType(sourceFileName);
+			}
+			
+			if(fileSize == 0) {
+				byte[] bytes = FileUtil.getBytes(inputStream, -1, false);
+				fileSize = bytes.length;
 			}
 			
 			String title = getFileName(sourceFileName);
@@ -171,16 +185,34 @@ public class FileUploadUtils {
 			PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
 			PermissionThreadLocal.setPermissionChecker(checker);
 			
-			fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), title,
+			if(fileEntryId > 0) {
+				fileEntry = DLAppLocalServiceUtil.updateFileEntry(userId, fileEntryId, sourceFileName, 
+						fileType, title, title, title, true, inputStream, fileSize, serviceContext);
+			} else {
+				fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), title,
 					fileType, title, title,
 					StringPool.BLANK, inputStream, fileSize, serviceContext);
+			}
 
 		}
 
 		return fileEntry;
 	}
 	
-	public static FileEntry uploadFile(long userId, long groupId, File file, String sourceFileName,
+	/**
+	 * 
+	 * @param userId
+	 * @param groupId
+	 * @param file
+	 * @param sourceFileName
+	 * @param fileType
+	 * @param destination
+	 * @param serviceContext
+	 * @return null if inputStream is null or sourceFileName is null
+	 * @throws Exception
+	 */
+	public static FileEntry uploadFile(long userId, long groupId, long fileEntryId, 
+			File file, String sourceFileName,
 			String fileType, String destination, ServiceContext serviceContext) 
 		throws Exception {
 		
@@ -217,9 +249,15 @@ public class FileUploadUtils {
 			PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
 			PermissionThreadLocal.setPermissionChecker(checker);
 			
-			fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), title,
+			if(fileEntryId > 0) {
+				fileEntry = DLAppLocalServiceUtil.updateFileEntry(userId, fileEntryId, 
+						sourceFileName, fileType, title,
+						title, title, true, file, serviceContext);
+			} else {
+				fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), title,
 					fileType, title, title,
 					StringPool.BLANK, file, serviceContext);
+			}
 
 		}
 

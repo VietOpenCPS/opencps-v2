@@ -3,9 +3,13 @@ package org.opencps.usermgt.action.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.DigestException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.OfficeSite;
@@ -32,20 +36,24 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ImageLocalServiceUtil;
+import com.liferay.portal.kernel.service.PasswordTrackerLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.utils.FileUploadUtils;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
+import backend.auth.api.keys.Constants;
+import backend.utils.FileUploadUtils;
 
 public class UserActions implements UserInterface {
 
+	public static Locale locale = new Locale("vi", "VN");
 	private static final Log _log = LogFactoryUtil.getLog(UserActions.class);
 
 	@Override
@@ -109,10 +117,20 @@ public class UserActions implements UserInterface {
 				OfficeSite officeSite = OfficeSiteLocalServiceUtil.fetchF_groupId_siteGroupId(groupId,
 						group.getGroupId());
 
-				document.addNumberSortable("entryClassPK", officeSite.getOfficeSiteId());
-				document.addTextSortable("siteName", officeSite.getName());
+				if(Validator.isNotNull(officeSite)){
+					
+					document.addNumberSortable("entryClassPK", officeSite.getOfficeSiteId());
+					document.addTextSortable("siteName", officeSite.getName());
+					
+				} else {
+					
+					document.addNumberSortable("entryClassPK", 0);
+					document.addTextSortable("siteName", group.getName(locale));
+					
+				}
+				
 				document.addNumberSortable("siteGroupId", group.getGroupId());
-
+				
 				boolean isCurrent = false;
 
 				if (group.getGroupId() == groupId) {
@@ -265,6 +283,179 @@ public class UserActions implements UserInterface {
 		
 		
 		return preferences.getPreferences();
+	}
+
+	@Override
+	public JSONObject getUsers(long groupId, ServiceContext serviceContext) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		
+		List<User> users = UserLocalServiceUtil.getGroupUsers(groupId);
+		
+		result.put("data", users);
+
+		long total = users.size();
+
+		result.put("total", total);
+		
+		return result;
+	}
+
+	@Override
+	public User getUserById(long groupId, long companyId, long id, ServiceContext serviceContext) {
+		return UserLocalServiceUtil.fetchUser(id);
+	}
+
+	@Override
+	public Document getForgot(long groupId, long companyId, String screenname_email, ServiceContext serviceContext) {
+		Document document = new DocumentImpl();
+		
+		User user = UserLocalServiceUtil.fetchUserByEmailAddress(companyId, screenname_email);
+		
+		if(Validator.isNull(user)){
+			user = UserLocalServiceUtil.fetchUserByScreenName(companyId, screenname_email);
+		}
+		
+		long mappingUserId = Validator.isNotNull(user)?user.getUserId():0;
+		String userName = Validator.isNotNull(user)?user.getFullName():StringPool.BLANK;
+		
+		
+		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, mappingUserId);
+		
+		document.addTextSortable("userId", String.valueOf(mappingUserId));
+		document.addTextSortable("userName", Validator.isNotNull(employee)?employee.getFullName():userName);
+		document.addTextSortable("contactEmail", Validator.isNotNull(employee)?employee.getEmail():StringPool.BLANK);
+		document.addTextSortable("contactTelNo", Validator.isNotNull(employee)?employee.getTelNo():StringPool.BLANK);
+		
+		//changePassWord
+		String passWord = PwdGenerator.getPassword();
+		
+		try {
+			
+			user.setDigest(passWord);
+			
+			user = UserLocalServiceUtil.updateUser(user);
+		
+			JSONObject payLoad = JSONFactoryUtil.createJSONObject();
+			
+			payLoad.put("USERNAME", user.getScreenName());
+			payLoad.put("USEREMAIL", user.getEmailAddress());
+			payLoad.put("PASSWORD_CODE", passWord);
+			
+			NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId, Constants.USER_03,
+					User.class.getName(), String.valueOf(user.getUserId()),
+					payLoad.toJSONString(), "SYSTEM", employee.getFullName(),
+					employee.getMappingUserId(), employee.getEmail(), employee.getTelNo(), new Date(),
+					null, serviceContext);
+			
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return document;
+	}
+
+	@Override
+	public Document getForgotConfirm(long groupId, long companyId, String screenname_email, String code,
+			ServiceContext serviceContext) throws DigestException {
+		Document document = new DocumentImpl();
+		
+		User user = UserLocalServiceUtil.fetchUserByEmailAddress(companyId, screenname_email);
+		
+		if(Validator.isNull(user)){
+			user = UserLocalServiceUtil.fetchUserByScreenName(companyId, screenname_email);
+		}
+		
+		long mappingUserId = Validator.isNotNull(user)?user.getUserId():0;
+		String userName = Validator.isNotNull(user)?user.getFullName():StringPool.BLANK;
+		
+		//changePassWord
+		String passWord = PwdGenerator.getPassword();
+				
+		try {
+			
+			if(user.getDigest().equals(code)){
+				user = UserLocalServiceUtil.updatePassword(user.getUserId(), passWord, passWord, Boolean.TRUE);
+				
+				user.setDigest(passWord + System.currentTimeMillis());
+				
+				UserLocalServiceUtil.updateUser(user);
+				
+			} else {
+				
+				throw new DigestException();
+				
+			}
+			
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, mappingUserId);
+			
+			document.addTextSortable("userId", String.valueOf(mappingUserId));
+			document.addTextSortable("userName", Validator.isNotNull(employee)?employee.getFullName():userName);
+			document.addTextSortable("contactEmail", Validator.isNotNull(employee)?employee.getEmail():StringPool.BLANK);
+			document.addTextSortable("contactTelNo", Validator.isNotNull(employee)?employee.getTelNo():StringPool.BLANK);
+			
+			JSONObject payLoad = JSONFactoryUtil.createJSONObject();
+			
+			payLoad.put("USERNAME", user.getScreenName());
+			payLoad.put("USEREMAIL", user.getEmailAddress());
+			payLoad.put("PASSWORD", passWord);
+			
+			NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId, Constants.USER_04,
+					User.class.getName(), String.valueOf(user.getUserId()),
+					payLoad.toJSONString(), "SYSTEM", employee.getFullName(),
+					employee.getMappingUserId(), employee.getEmail(), employee.getTelNo(), new Date(),
+					null, serviceContext);
+			
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return document;
+	}
+
+	@Override
+	public boolean getCheckpass(long groupId, long companyId, long id, String password, ServiceContext serviceContext) {
+		boolean flag = false;
+
+		try {
+			flag = PasswordTrackerLocalServiceUtil.isSameAsCurrentPassword(id, password);
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return flag;
+	}
+
+	@Override
+	public boolean addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword,
+			ServiceContext serviceContext) {
+		boolean flag = getCheckpass(groupId, companyId, id, oldPassword, serviceContext);
+			
+		if(flag){
+			try {
+				
+				User user = UserLocalServiceUtil.updatePassword(id, newPassword, newPassword, Boolean.FALSE);
+				
+				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+				
+				JSONObject payLoad = JSONFactoryUtil.createJSONObject();
+				
+				payLoad.put("USERNAME", user.getScreenName());
+				payLoad.put("USEREMAIL", user.getEmailAddress());
+				payLoad.put("PASSWORD", newPassword);
+				
+				NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId, Constants.USER_04,
+						User.class.getName(), String.valueOf(user.getUserId()),
+						payLoad.toJSONString(), "SYSTEM", user.getFullName(),
+						user.getUserId(), employee.getEmail(), StringPool.BLANK, new Date(),
+						null, serviceContext);
+				
+			} catch (PortalException e) {
+				flag = false;
+			}
+		}
+		
+		return flag;
 	}
 
 }

@@ -13,6 +13,7 @@ import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
@@ -28,7 +29,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
-import org.opencps.auth.utils.APIDateTimeUtils;
+import backend.utils.APIDateTimeUtils;
 
 public class EmployeeUtils {
 
@@ -216,7 +217,50 @@ public class EmployeeUtils {
 					: StringPool.BLANK);
 			// TODO
 			ett.setPermission("read");
-
+			
+			EmployeeJobPos employeeJobPos = EmployeeJobPosLocalServiceUtil.fetchByF_EmployeeId_jobPostId(
+					employee.getGroupId(), employee.getEmployeeId(), employee.getMainJobPostId());
+			
+			long workingUnitId = Validator.isNotNull(employeeJobPos)?employeeJobPos.getWorkingUnitId():0;
+			
+			String workingUnitName = StringPool.BLANK;
+			
+			if(workingUnitId > 0){
+				
+				WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchWorkingUnit(workingUnitId);
+				
+				workingUnitName = Validator.isNotNull(workingUnit)?workingUnit.getName():StringPool.BLANK;
+				
+			}
+			
+			JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(employee.getMainJobPostId());
+			
+			String jobPosTitle = Validator.isNotNull(jobPos)?jobPos.getTitle():StringPool.BLANK;
+			
+			ett.setWorkingUnitName(workingUnitName);
+			ett.setJobPosTitle(jobPosTitle);
+			
+			User user = UserLocalServiceUtil.fetchUser(employee.getMappingUserId());
+			
+			MappingUser mappingUser = new MappingUser();
+			
+			if(Validator.isNotNull(user)){
+				mappingUser.setUserId(user.getUserId());
+				mappingUser.setScreenName(user.getScreenName());
+				
+				boolean lock = false;
+				
+				if(user.getStatus() == WorkflowConstants.STATUS_DENIED){
+					lock = true;
+				}
+				
+				mappingUser.setLocking(lock);
+				
+			}
+			
+			ett.getMappingUser().add(mappingUser);
+			
+			
 		} catch (Exception e) {
 			_log.error(e);
 		}

@@ -223,7 +223,12 @@
 		<column name="postService" type="boolean" />
 		<column name="registration" type="boolean" />
 
-
+		<finder return-type="ServiceConfig" name="GID_SI_GAC">
+			<finder-column name="groupId"/>
+			<finder-column name="serviceInfoId"/>
+			<finder-column name="govAgencyCode"/>
+		</finder>
+		
 	</entity>
 
 	<entity name="ProcessOption" table="opencps_processoption"
@@ -872,5 +877,6 @@
 		<exception>HasExsist</exception>
 		
 		<exception>InvalidDossierStatus</exception>
+		<exception>DuplicateDossierFile</exception>
 	</exceptions>
 </service-builder>

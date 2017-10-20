@@ -118,7 +118,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			params.put("lock", query.getLock());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getApplicants(serviceContext, serviceContext.getUserId(),
 					serviceContext.getCompanyId(), groupId, params, sorts, query.getStart(), query.getEnd(),

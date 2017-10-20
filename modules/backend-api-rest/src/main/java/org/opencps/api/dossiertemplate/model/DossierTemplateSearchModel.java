@@ -58,7 +58,7 @@ public class DossierTemplateSearchModel {
     protected int start;
 	@QueryParam(value = "end")
     protected int end;
-	@QueryParam(value = "sort")
+	@DefaultValue("createDate") @QueryParam(value = "sort")
     protected String sort;
 	@QueryParam(value = "order")
     protected String order;

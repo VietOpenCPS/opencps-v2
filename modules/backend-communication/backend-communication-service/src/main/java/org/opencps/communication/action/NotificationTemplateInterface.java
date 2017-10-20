@@ -9,9 +9,9 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public interface NotificationTemplateInterface {
 
@@ -24,7 +24,9 @@ public interface NotificationTemplateInterface {
 	public Notificationtemplate read(long userId, long groupId, String type, ServiceContext serviceContext);
 
 	public Notificationtemplate update(long userId, long groupId, String type, String emailBody, String emailSubject,
-			String sendEmail, String textMessage, String textSMS, String expireDuration, ServiceContext serviceContext) throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException;
+			String sendEmail, String textMessage, String textSMS, String expireDuration, String userUrlPattern,
+			String guestUrlPattern, String interval, String grouping, ServiceContext serviceContext)
+			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException;
 
 	public JSONObject getNotificationTypes();
 }

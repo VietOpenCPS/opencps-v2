@@ -46,7 +46,11 @@ import javax.xml.bind.annotation.XmlType;
     "emailBody",
     "textMessage",
     "textSMS",
-    "expireDuration"
+    "expireDuration",
+    "userUrlPattern",
+    "guestUrlPattern",
+    "interval",
+    "grouping"
 })
 @XmlRootElement(name = "NotificationtemplateInputModel")
 public class NotificationtemplateInputModel {
@@ -68,6 +72,14 @@ public class NotificationtemplateInputModel {
     protected String sendSMS;
     @FormParam(value = "expireDuration")
     protected String expireDuration;
+    @FormParam(value = "userUrlPattern")
+    protected String userUrlPattern;
+    @FormParam(value = "guestUrlPattern")
+    protected String guestUrlPattern;
+    @FormParam(value = "interval")
+    protected String interval;
+    @FormParam(value = "grouping")
+    protected String grouping;
 
     /**
      * Gets the value of the sendEmail property.
@@ -203,6 +215,38 @@ public class NotificationtemplateInputModel {
 
 	public void setExpireDuration(String expireDuration) {
 		this.expireDuration = expireDuration;
+	}
+
+	public String getUserUrlPattern() {
+		return userUrlPattern;
+	}
+
+	public void setUserUrlPattern(String userUrlPattern) {
+		this.userUrlPattern = userUrlPattern;
+	}
+
+	public String getGuestUrlPattern() {
+		return guestUrlPattern;
+	}
+
+	public void setGuestUrlPattern(String guestUrlPattern) {
+		this.guestUrlPattern = guestUrlPattern;
+	}
+
+	public String getInterval() {
+		return interval;
+	}
+
+	public void setInterval(String interval) {
+		this.interval = interval;
+	}
+
+	public String getGrouping() {
+		return grouping;
+	}
+
+	public void setGrouping(String grouping) {
+		this.grouping = grouping;
 	}
 
 }
