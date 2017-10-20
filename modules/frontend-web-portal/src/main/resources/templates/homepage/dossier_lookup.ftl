@@ -1,16 +1,16 @@
-<#-- List-view hồ sơ đã có kết quả -->
+<!-- List-view hồ sơ đã có kết quả -->
 <div class="dossier-with-result">
 	<div class="col-sm-12">
 		<span class="title">HỒ SƠ ĐÃ CÓ KẾT QUẢ</span>
 	</div>
 	<div class="col-sm-12">
-		<ul class="PT10 PB5" id="lvDossierResult"></ul>
-		<#-- Template render list -->
+		<ul class="ul-default" id="lvDossierResult"></ul>
+		<!-- Template render list -->
 		<script type="text/x-kendo-template" id="tempDossierResult">
 			<li class="">#:applicantName# - #:dossierId#</li>
 		</script>
 	</div>
-	<#-- element handle pagiantion-->
+	<!-- element handle pagination -->
 	<div class="pager pull-left" id="pagerDossirResult"></div>
 </div>
 
@@ -52,19 +52,19 @@
 		template : kendo.template($("#tempDossierResult").html()),
 		selectable: true,
 	    change: function() {
-                   var index = this.select().index();
+                	var index = this.select().index();
                        dataItem = this.dataSource.view()[index];
-                   $("#detailView").load("${ajax.dossierinfo_detail}",
+                	$("#detailView").load("${ajax.dossierinfo}",
 	                   	function(success){
 	                   		pullDataDetail(dataItem.dossierId);
 	                   	}
                    	);
                 },
-        dataBound: function(e) {
-           var listView = e.sender;
-           var firstItem = listView.element.children().first();
-           listView.select(firstItem);
-        }
+        // dataBound: function(e) {
+        //    var listView = e.sender;
+        //    var firstItem = listView.element.children().first();
+        //    listView.select(firstItem);
+        // }
 	});
 	$("#pagerDossirResult").kendoPager({
 		dataSource : dataSourceDossierResult,

@@ -17,7 +17,10 @@
 	<#--Render list hồ sơ tìm kiếm theo mã hồ sơ / họ tên-->
 	<div class="demo-section k-content wide">
         <div class="col-sm-12">
-			<ul class="PT10 PB5" id="lvDossierResultSearch"></ul>
+			<ul class="ul-default" id="lvDossierResultSearch"></ul>
+			<script type="text/x-kendo-template" id="tempDossierResultSearch">
+				<li class="">#:applicantName# - #:dossierId#</li>
+			</script>
 		</div>	
 	</div>
 </div>
@@ -25,8 +28,12 @@
 <div class="row">
 	<div id="detailView"></div>
 </div>
+<!--Render thông tin chi tiết-->
+<div class="row">
+	<div id="detailView2"></div>
+</div>
 <script type="text/javascript">
-	// Cấu hình dataSource
+	// Cấu hình dataSource search thông tin hồ sơ cơ bản
 	$(function(){
 		var dataSourceDossierResultSearch = new kendo.data.DataSource({
 			type: "json",
@@ -43,7 +50,7 @@
 			                options.success(result);
 			            },
 			            error : function(xhr){
-
+			            	options.error(xhr);
           				}
 			        });
 			     }
@@ -55,8 +62,17 @@
 		});
 		$("#lvDossierResultSearch").kendoListView({
 			dataSource : dataSourceDossierResultSearch,
-			template : kendo.template($("#tempDossierResult").html()),
+			template : kendo.template($("#tempDossierResultSearch").html()),
 			selectable: true,
+			change: function() {
+               var index = this.select().index();
+                   dataItem = this.dataSource.view()[index];
+               $("#detailView").load("${ajax.dossierinfo_detail}",
+                   	function(success){
+                   		pullDataDetail(dataItem.dossierId);
+                   	}
+               	);
+            },
 			autoBind:false
 		});
 		// event truyền tham số vào read dataSource
@@ -93,6 +109,17 @@
 			}
 		);
 	}) 
- 
+</script>
+<script type="text/javascript">
+	$("#btn_dossierinfo_detail").click(
+		function() {
+	    	var password = $("#input_search_dossierinfo2").val();
+	    	$("#detailView2").load("${ajax.dossier_detail}",
+	           	function(success){
+	           		pullDataDetail2(password);
+	           	}
+	       	);
+    	}
+	)	
 </script>
 

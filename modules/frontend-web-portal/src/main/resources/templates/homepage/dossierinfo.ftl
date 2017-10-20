@@ -1,3 +1,4 @@
+<#-- Template thông tin hồ sơ cơ bản -->
 <div class="panel panel-default" id="DossiersDetailInfo">
 	<div class="panel-heading"> 
 		<span class="text-bold">THÔNG TIN HỒ SƠ | </span> <span data-bind="text:applicantName"> </span>
@@ -33,9 +34,9 @@
 			<p>Bạn muốn xem chi tiết thông tin hồ sơ >></p>
 		</div>
 		<div class="input-group MB15">
-			<input id="input_search_serviceinfo" type="text" class="form-control" placeholder="Nhập mã bí mật">
+			<input id="#input_search_dossierinfo2" type="text" class="form-control" placeholder="Nhập mã bí mật">
 			<div class="input-group-btn">
-				<button class="btn btn-default" type="submit">Tra cứu</button>
+				<button class="btn btn-default" type="submit" id="btn_dossierinfo_detail">Tra cứu</button>
 			</div>
 		</div>
 	</div>
