@@ -374,10 +374,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		} else {
 			dossier = dossierPersistence.fetchByG_REF(groupId, refId);
 		}
+		
+		
 
 		dossier.setModifiedDate(now);
 
 		dossier.setCancellingDate(date);
+		
+		dossier.setSubmitting(true);
 
 		dossierPersistence.update(dossier);
 
@@ -430,6 +434,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setModifiedDate(now);
 
 		dossier.setCorrecttingDate(date);
+		
+		dossier.setSubmitting(true);
 
 		dossierPersistence.update(dossier);
 
@@ -463,8 +469,38 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	}
 	
+
 	public Dossier getByRef(long groupId, String refId) throws PortalException {
 		return dossierPersistence.fetchByG_REF(groupId, refId);
+	}
+	
+	@Indexable(type = IndexableType.DELETE)
+	public Dossier removeDossier(long groupId, long dossierId, String refId) throws PortalException {
+		//TODO remove dossierLog
+
+		//TODO remove dossierFile
+		
+		//TODO remove dossierAction
+		
+		//TODO remove PaymentFile
+		
+		validateRemoveDossier(groupId, dossierId, refId);
+		
+		Dossier dossier = null;
+		
+		if (dossierId != 0) {
+			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
+		} else {
+			dossier = dossierPersistence.findByG_REF(groupId, refId);
+		}
+		
+		return dossierPersistence.remove(dossier);
+		
+	}
+
+
+	private void validateRemoveDossier(long groupId, long dossierId, String refId) throws PortalException {
+		// TODO add validate for remove Dossier
 	}
 
 	private void validateDossierAction(long groupId, long id, String refId, long dossierActionId)

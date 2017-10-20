@@ -79,7 +79,7 @@ public class ServiceConfigDetailModel {
     protected Integer serviceInfoId;
     protected String serviceCode;
     protected String serviceName;
-    @XmlElement(name = "domainCode ")
+    @XmlElement(name = "domainCode")
     protected String domainCode0020;
     protected String domainName;
     protected String govAgencyCode;

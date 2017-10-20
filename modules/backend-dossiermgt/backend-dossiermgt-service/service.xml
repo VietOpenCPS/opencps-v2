@@ -265,6 +265,11 @@
 			<finder-column name="serviceConfigId"/>
 		</finder>
 
+		<finder return-type="ProcessOption" name="SC_DT">
+			<finder-column name="serviceConfigId"/>
+			<finder-column name="dossierTemplateId"/>
+		</finder>
+
 	</entity>
 
 	<entity name="Dossier" table="opencps_dossier" local-service="true"
@@ -709,6 +714,11 @@
 
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
+		</finder>
+		
+		<finder return-type="Collection" name="GI_AC">
+			<finder-column name="groupId" />
+			<finder-column name="actionCode" />
 		</finder>
 		
 		<finder return-type="Collection" name="PRE_CODE">
