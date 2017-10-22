@@ -5,9 +5,6 @@
 	</div>
 	<div class="panel-body">
 		<div class="col-sm-12">
-            <span class="text-bold"></span>
-        </div>
-		<div class="col-sm-12">
             <span data-bind="text:serviceCode"> </span>
         </div>
         <div class="col-sm-12">
@@ -32,7 +29,7 @@
     </div>
 </div>
 <script type="text/javascript">
-    // function đổ dữ liệu theo password
+    // function load thông tin chi tiết hồ sơ
     var pullDataDetail2= function(password){
         console.log(password);
         $.ajax({
@@ -42,12 +39,7 @@
             success : function(result){
                 var viewModel = kendo.observable({
                     applicantName: result.applicantName,
-                    serviceName: result.serviceName,
-                    dossierNo: result.dossierNo,
-                    govAgencyName: result.govAgencyName,
-                    submitDate: result.submitDate,
-                    receiveDate: result.receiveDate,
-                    dossierStatusText: result.dossierStatusText
+                    serviceName: result.serviceName
                 });
                 kendo.bind($("#DossiersDetailInfo2"), viewModel);
             },

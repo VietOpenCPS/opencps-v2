@@ -4,7 +4,7 @@
 
 <div class="row">
 	<div class="col-sm-12">
-		<span class="title">TRA CỨU HỒ SƠ</span>
+		<span class="title text-light-blue text-bold">TRA CỨU HỒ SƠ</span>
 	</div>
 	<div class="input-group col-md-6">
 		<input id="input_search_dossierinfo" type="text" class="form-control" placeholder="Nhập mã hồ sơ / Họ và tên">
@@ -14,12 +14,12 @@
 			</button>
 		</div>
 	</div>
-	<#--Render list hồ sơ tìm kiếm theo mã hồ sơ / họ tên-->
+	<!--Render listview tìm kiếm theo mã hồ sơ / họ tên-->
 	<div class="demo-section k-content wide">
         <div class="col-sm-12">
-			<ul class="ul-default" id="lvDossierResultSearch"></ul>
+			<ul class="ul-default ul-with-left-icon" id="lvDossierResultSearch"></ul>
 			<script type="text/x-kendo-template" id="tempDossierResultSearch">
-				<li class="">#:applicantName# - #:dossierId#</li>
+				<li class=""><i class="fa fa-angle-double-right icon-left"></i>#:applicantName# - #:dossierId#</li>
 			</script>
 		</div>	
 	</div>
@@ -33,8 +33,8 @@
 	<div id="detailView2"></div>
 </div>
 <script type="text/javascript">
-	// Cấu hình dataSource search thông tin hồ sơ cơ bản
 	$(function(){
+		// Cấu hình dataSource tìm kiếm hồ sơ
 		var dataSourceDossierResultSearch = new kendo.data.DataSource({
 			type: "json",
 			transport: {
@@ -63,11 +63,12 @@
 		$("#lvDossierResultSearch").kendoListView({
 			dataSource : dataSourceDossierResultSearch,
 			template : kendo.template($("#tempDossierResultSearch").html()),
+			navigatable: true,
 			selectable: true,
 			change: function() {
                var index = this.select().index();
                    dataItem = this.dataSource.view()[index];
-               $("#detailView").load("${ajax.dossierinfo_detail}",
+               $("#detailView").load("${ajax.dossierinfo}",
                    	function(success){
                    		pullDataDetail(dataItem.dossierId);
                    	}
@@ -78,43 +79,23 @@
 		// event truyền tham số vào read dataSource
 		var evenSearch = function(){
 			var paraValue = $("#input_search_dossierinfo").val();
-			if (paraValue == "") {
-				$("#lvDossierResultSearch").html("<span>Nhập thông tin tiềm kiếm</span>")
-			} else{
-				console.log(paraValue);
-		    	$("#lvDossierResultSearch").getKendoListView().dataSource.read({keyword: paraValue})
-			}
+			console.log(paraValue);
+		    dataSourceDossierResultSearch.read({keyword: paraValue})
 		}
-
-		$("#input_search_dossierinfo").change( 
-			function(){
-				var paraValue = $("#input_search_dossierinfo").val();
-				if (paraValue == "") {
-					$("#lvDossierResultSearch").html("<span>Nhập thông tin tiềm kiếm</span>")
-				} else{
-					console.log(paraValue);
-			    	$("#lvDossierResultSearch").getKendoListView().dataSource.read({param1: paraValue})
-				}
-			}
+		$("#input_search_dossierinfo").change(
+			function(){ evenSearch() }
 		);
 		$("#filterButton").click(
-			function(){
-				var paraValue = $("#input_search_dossierinfo").val();
-				if (paraValue == "") {
-					$("#detailView").html("<span>Nhập thông tin tiềm kiếm</span>")
-				} else{
-					console.log(paraValue);
-			    	$("#detailView").getKendoListView().dataSource.read({param1: paraValue})
-				}
-			}
-		);
-	}) 
+			function(){ evenSearch() }
+		)
+	})
+		
 </script>
 <script type="text/javascript">
 	$("#btn_dossierinfo_detail").click(
 		function() {
 	    	var password = $("#input_search_dossierinfo2").val();
-	    	$("#detailView2").load("${ajax.dossier_detail}",
+	    	$("#detailView2").load("${ajax.dossierinfo_detail}",
 	           	function(success){
 	           		pullDataDetail2(password);
 	           	}

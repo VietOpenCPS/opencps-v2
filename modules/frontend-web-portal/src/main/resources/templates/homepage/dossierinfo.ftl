@@ -1,7 +1,7 @@
 <#-- Template thông tin hồ sơ cơ bản -->
 <div class="panel panel-default" id="DossiersDetailInfo">
 	<div class="panel-heading"> 
-		<span class="text-bold">THÔNG TIN HỒ SƠ | </span> <span data-bind="text:applicantName"> </span>
+		<span class="text-bold text-light-blue">THÔNG TIN HỒ SƠ | </span> <span data-bind="text:applicantName"> </span>
 	</div>
 	<div class="panel-body">
 		<div class="col-sm-12">
@@ -23,21 +23,22 @@
             <span class="text-bold">Ngày nộp: </span> <span data-bind="text:submitDate"> </span>
         </div>
         <div class="col-sm-12">
-            <span class="text-bold">Ngày hẹn trả: </span> <span data-bind="text:receiveDate"> </span>
+            <span class="text-bold">Ngày hẹn trả: </span> <span data-bind="text:dueDate"> </span>
         </div>
         <div class="col-sm-12">
             <span class="text-bold">Tình trạng hồ sơ: </span> <span data-bind="text:dossierStatusText"> </span>
         </div>
 	</div>
-	<div class="panel-footer">
-		<div class="col-sm-6">
+    <hr>
+	<div class="clearfix">
+		<div class="form-group col-sm-6">
 			<p>Bạn muốn xem chi tiết thông tin hồ sơ >></p>
 		</div>
-		<div class="input-group MB15">
-			<input id="#input_search_dossierinfo2" type="text" class="form-control" placeholder="Nhập mã bí mật">
-			<div class="input-group-btn">
-				<button class="btn btn-default" type="submit" id="btn_dossierinfo_detail">Tra cứu</button>
-			</div>
+		<div class="form-group col-sm-6">
+            <div class="col-sm-8">
+                <input id="#input_search_dossierinfo2" type="text" class="form-control" placeholder="Nhập mã bí mật">
+            </div>
+			<button class="btn btn-border-color col-sm-3 col-sm-offset-1" type="submit" id="btn_dossierinfo_detail">Tra cứu</button>
 		</div>
 	</div>
 </div>
@@ -55,7 +56,7 @@
                     dossierNo: result.dossierNo,
                     govAgencyName: result.govAgencyName,
                     submitDate: result.submitDate,
-                    receiveDate: result.receiveDate,
+                    dueDate: result.dueDate,
                     dossierStatusText: result.dossierStatusText
                 });
                 kendo.bind($("#DossiersDetailInfo"), viewModel);
