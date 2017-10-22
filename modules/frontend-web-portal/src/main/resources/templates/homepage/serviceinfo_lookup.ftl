@@ -3,10 +3,10 @@
 </#if>
 
 <div class="row">
-	<div class="col-sm-12">
+	<div class="MB10">
 		<span class="title text-light-blue text-bold">TRA CỨU HỒ SƠ</span>
 	</div>
-	<div class="input-group col-md-6">
+	<div class="input-group col-md-6 MB15">
 		<input id="input_search_dossierinfo" type="text" class="form-control" placeholder="Nhập mã hồ sơ / Họ và tên">
 		<div class="input-group-btn">
 			<button class="btn btn-default" id="#filterButton">

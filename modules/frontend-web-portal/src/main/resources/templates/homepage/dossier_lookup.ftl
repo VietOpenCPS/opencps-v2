@@ -1,7 +1,7 @@
 <!-- List-view hồ sơ đã có kết quả -->
-<div class="dossier-with-result">
-	<div class="col-sm-12">
-		<span class="title">HỒ SƠ ĐÃ CÓ KẾT QUẢ</span>
+<div class="dossier-with-result box clearfix">
+	<div class="col-sm-12 box-title">
+		<span>HỒ SƠ ĐÃ CÓ KẾT QUẢ</span>
 	</div>
 	<div class="col-sm-12">
 		<ul class="ul-default" id="lvDossierResult"></ul>
@@ -10,8 +10,9 @@
 			<li class="">#:applicantName# - #:dossierId#</li>
 		</script>
 	</div>
+	<hr class="col-sm-12 P0 M0 MP15">
 	<!-- element handle pagination -->
-	<div class="pager pull-left" id="pagerDossirResult"></div>
+	<div class="pull-left" id="pagerDossirResult"></div>
 </div>
 
 <script type="text/javascript">
