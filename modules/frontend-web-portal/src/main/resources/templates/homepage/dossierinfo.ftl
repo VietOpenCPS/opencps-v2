@@ -69,4 +69,93 @@
             }
         });
     }
+    
+    // Cấu hình dataSource thông tin chi tiết hồ sơ
+    var dataSourceDossierFileDetail = new kendo.data.DataSource({
+        type: "json",
+        transport: {
+            read: function (options) {
+                $.ajax({
+                    url: "${api.server}/dossiers/"+dataItem.dossierId+"/files",
+                    dataType: "json",
+                    type: 'GET',
+                    data: {
+                        password: options.data.password
+                    },
+                    beforeSend: function(req) {
+                        req.setRequestHeader('groupId', ${groupId});
+                    },
+                    success: function (result) {
+                        options.success(result);
+                    },
+                    error : function(xhr){
+                        $("#DossierDetailFile").html("<span>Không có dữ liệu</span>")
+                    }
+                });
+             }
+        },
+        schema : {
+            total : "total",
+            data : "data"
+        }
+    });
+    var dataSourceDossierLogDetail = new kendo.data.DataSource({
+        type: "json",
+        transport: {
+            read: function (options) {
+                $.ajax({
+                    url: "${api.server}/dossiers/"+dataItem.dossierId+"/logs",
+                    dataType: "json",
+                    type: 'GET',
+                    data: {
+                        password: options.data.password
+                    },
+                    beforeSend: function(req) {
+                        req.setRequestHeader('groupId', ${groupId});
+                    },
+                    success: function (result) {
+                        options.success(result);
+                    },
+                    error : function(xhr){
+                        $("#DossierDetailLog").html("<span>Không có dữ liệu</span>")
+                    }
+                });
+             }
+        },
+        schema : {
+            total : "total",
+            data : "data"
+        }
+    });
+    $("#DossierDetailFile").kendoListView({
+        dataSource : dataSourceDossierFileDetail,
+        template : kendo.template($("#tempDossierDetailFile").html()),
+        navigatable: false,
+        selectable: false,
+        autoBind:false
+    });
+    $("#DossierDetailLog").kendoListView({
+        dataSource : dataSourceDossierLogDetail,
+        template : kendo.template($("#tempDossierDetailLog").html()),
+
+        navigatable: false,
+        selectable: false,
+        autoBind:false
+    });
+    var paraValue2 = $("#input_dossier_detail").val();
+    var evenDataDossierFileDetail = function(){
+        console.log(paraValue2);
+        dataSourceDossierFileDetail.read({password: paraValue2})
+    };
+    var evenDataDossierLogDetail = function(){
+        console.log(paraValue2);
+        dataSourceDossierLogDetail.read({password: paraValue2})
+    };
+    $("#btn_dossierinfo_detail").click(
+                            function(){
+                                $("#detailView2").show();
+                                evenDataDossierFileDetail();
+                                evenDataDossierLogDetail()
+                            }
+                        )   
 </script>

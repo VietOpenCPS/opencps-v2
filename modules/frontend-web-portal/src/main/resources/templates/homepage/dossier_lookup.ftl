@@ -58,7 +58,8 @@
 	                   	function(success){
 	                   		pullDataDetail(dataItem.dossierId);
 	                   	}
-                   	)
+                   	);
+                   	$("#detailView2").hide();
                 },
         dataBound: function(e) {
         	if(dataSourceDossierResult.total() == 1){
@@ -75,9 +76,5 @@
 		selectTemplate: '<li class="k-link"><i class="fa fa-circle" aria-hidden="true"></i></li>',
 		linkTemplate: '<li><a href="\\#" class="k-link" data-#=ns#page="#=idx#"><i class="fa fa-circle" aria-hidden="true"></i></a></li>'
 	});
-	$(".item-listview").click(function(){
-		console.log("aaaaaaaaaa");
-		$("#lvDossierResult li").removeClass("active");
-        $(this).addClass("active")
-	})
+
 </script>
