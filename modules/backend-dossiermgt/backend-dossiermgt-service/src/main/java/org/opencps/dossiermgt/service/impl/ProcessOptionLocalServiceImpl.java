@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
+import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.service.base.ProcessOptionLocalServiceBaseImpl;
 
@@ -85,10 +86,11 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 
 		return option;
 	}
+
 	@Indexable(type = IndexableType.REINDEX)
-	public ProcessOption updateProcessOption(long groupId, String optionName, long processOptionId, long serviceConfigId, int seqOrder,
-			String autoSelect, String instructionNote, String submissionNote, long dossierTemplateId,
-			long serviceProcessId, ServiceContext context) throws PortalException {
+	public ProcessOption updateProcessOption(long groupId, String optionName, long processOptionId,
+			long serviceConfigId, int seqOrder, String autoSelect, String instructionNote, String submissionNote,
+			long dossierTemplateId, long serviceProcessId, ServiceContext context) throws PortalException {
 
 		validateAdd(processOptionId, seqOrder, autoSelect, instructionNote, submissionNote);
 
@@ -210,7 +212,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 			MultiMatchQuery query = new MultiMatchQuery(applicantType);
 
 			Operator operator = Operator.OR;
-			
+
 			query.addFields(ActionKeys.APPLICANT_CTZ, ActionKeys.APPLICANT_BUSINESS);
 
 			query.setOperator(operator);
@@ -291,6 +293,15 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
+	}
+
+	public ProcessOption getByDTPLNoAndServiceCF(long groupId, String dossierTemplateNo, long serviceConfigId)
+			throws PortalException {
+		
+		DossierTemplate dossierTemplate = dossierTemplatePersistence.fetchByG_DT_NO(groupId, dossierTemplateNo);
+		
+		return processOptionPersistence.fetchBySC_DT(serviceConfigId, dossierTemplate.getDossierTemplateId());
+		
 	}
 
 	private void validateAdd(long processOptionId, int seqOrder, String autoSelect, String instructionNote,

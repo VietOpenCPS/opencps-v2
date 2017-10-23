@@ -33,26 +33,26 @@ public interface DossierActions {
 
 	public Dossier removeDossier(long groupId, long dossierId, String referenceUid) throws PortalException;
 
-	public Dossier cancelDossier(long groupId, long dossierId, String referenceUid) throws PortalException;
+	public Dossier cancelDossier(long groupId, long dossierId, String referenceUid, ServiceContext context) throws PortalException;
 
-	public Dossier correctDossier(long groupId, long dossierId, String referenceUid) throws PortalException;
+	public Dossier correctDossier(long groupId, long dossierId, String referenceUid, ServiceContext context) throws PortalException;
 
-	public Dossier submitDossier(long groupId, long dossierId, String referenceUid) throws PortalException;
+	public Dossier submitDossier(long groupId, long dossierId, String referenceUid, ServiceContext context) throws PortalException;
 
-	public Dossier resetDossier(long groupId, long dossierId, String referenceUid) throws PortalException;
+	public Dossier resetDossier(long groupId, long dossierId, String referenceUid, ServiceContext context) throws PortalException;
 
 	public List<ProcessAction> getNextActions(long groupId, long dossierId, String referenceUid) throws PortalException;
 
 	public List<DossierAction> getDossierActions(long groupId, long dossierId, String referenceUid)
 			throws PortalException;
 
-	public void doAction(long groupId, long dossierId, String referenceUid, String actionCode, String actionUser,
-			String actionNote, long assignUserId) throws PortalException;
+	public DossierAction doAction(long groupId, long dossierId, String referenceUid, String actionCode, long processActionId, String actionUser,
+			String actionNote, long assignUserId, long userId, ServiceContext context) throws PortalException;
 
 	public Dossier markerVisited(long groupId, long dossierId, String referenceUid) throws PortalException;
 
-	public void doRollback(long groupId, long dossierId, String referenceUid, long userId) throws PortalException;
+	public DossierAction doRollback(long groupId, long dossierId, String referenceUid, long userId) throws PortalException;
 
-	public void getContacts(long groupId, long dossierId, String referenceUid) throws PortalException;
+	public JSONObject getContacts(long groupId, long dossierId, String referenceUid) throws PortalException;
 
 }
