@@ -28,37 +28,42 @@
 </div>
 <#-- Template thông tin hồ sơ chi tiết -->
 <div id="detailView2">
-	<div class="row">
-	    <div class="panel panel-default MB0">
-	        <div class="panel-heading"> 
-	            <span class="text-bold text-light-blue">Kết quả xử lý</span>
-	        </div>
-	        <div class="panel-body P5 PL15">
-	            <ul class="ul-default" id="DossierDetailFile"></ul>
-	            <script type="text/x-kendo-template" id="tempDossierDetailFile">
-	                <li><span><i class="fa fa-download"></i></span> <span class="ML10">#:displayName#</span></li>
-	            </script>
-	        </div>
-	    </div>
-	</div>
-	<!--Render thông tin chi tiết DossierLog-->
-	<div class="row">
-	    <div class="panel panel-default MB0">
-	        <div class="panel-heading"> 
-	            <span class="text-bold text-light-blue">Tiến trình xử lý hồ sơ</span>
-	        </div>
-	        <div class="panel-body P5 PL15">
-	            <ul class="ul-default" id="DossierDetailLog"></ul>
-	            <script type="text/x-kendo-template" id="tempDossierDetailLog">
-	                <li>
-	                    <span class="text-bold stt">STT</span>
-	                    <span>Văn bản yêu cầu bổ sung</span>
-	                </li>
-	            </script>
-	        </div>
-	    </div>
-	</div>
-</div>	
+    <div class="row">
+        <div class="panel panel-default MB0">
+            <div class="panel-heading"> 
+                <span class="text-bold text-light-blue">Kết quả xử lý</span>
+            </div>
+            <div class="panel-body P5 PL15">
+                <ul class="ul-default" id="DossierDetailFile"></ul>
+                <script type="text/x-kendo-template" id="tempDossierDetailFile">
+                    <li><span><i class="fa fa-download"></i></span> <span class="ML10">#:displayName#</span></li>
+                </script>
+            </div>
+        </div>
+    </div>
+    <!--Render thông tin chi tiết DossierLog-->
+    <div class="row">
+        <div class="panel panel-default MB0">
+            <div class="panel-heading"> 
+                <span class="text-bold text-light-blue">Tiến trình xử lý hồ sơ</span>
+            </div>
+            <div class="panel-body P0">
+                <ul class="ul-default" id="DossierDetailLog"></ul>
+                <script type="text/x-kendo-template" id="tempDossierDetailLog">
+                    <li class="clearfix P0">
+                        <span class="row-blue orderNo col-sm-1 P0" style="height: 100%"></span>
+                        <p class="col-sm-11 M0 P10">
+                            <span>#:author#</span> <span> </span> <span class="text-light-blue"></span><br>
+                            <span>#:createDate#</span><br>
+                            <span>#:content#</span> 
+                        </p>
+                        <hr class="col-sm-12 P0 M0">
+                    </li>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
 	$(function(){
 		$("#detailView2").hide();

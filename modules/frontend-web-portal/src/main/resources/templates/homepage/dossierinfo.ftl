@@ -36,7 +36,7 @@
 		</div>
 		<div class="form-group col-sm-6">
             <div class="col-sm-10">
-                <input id="#input_dossier_detail" type="text" class="form-control" placeholder="Nhập mã bí mật">
+                <input id="input_dossier_detail" type="text" class="form-control" placeholder="Nhập mã bí mật">
             </div>
 			<button class="btn btn-border-color col-sm-2" id="btn_dossierinfo_detail">Tra cứu</button>
 		</div>
@@ -68,9 +68,8 @@
 
             }
         });
-    }
-    
-    // Cấu hình dataSource thông tin chi tiết hồ sơ
+    };
+    // Cấu hình dataSource chi tiết thông tin hồ sơ
     var dataSourceDossierFileDetail = new kendo.data.DataSource({
         type: "json",
         transport: {
@@ -115,6 +114,11 @@
                     },
                     success: function (result) {
                         options.success(result);
+                        var index = 0;
+                        $("#DossierDetailLog .orderNo").each(function(){
+                            index+=1;
+                            $(this).html(index) 
+                        })
                     },
                     error : function(xhr){
                         $("#DossierDetailLog").html("<span>Không có dữ liệu</span>")
@@ -137,19 +141,17 @@
     $("#DossierDetailLog").kendoListView({
         dataSource : dataSourceDossierLogDetail,
         template : kendo.template($("#tempDossierDetailLog").html()),
-
         navigatable: false,
         selectable: false,
         autoBind:false
     });
-    var paraValue2 = $("#input_dossier_detail").val();
     var evenDataDossierFileDetail = function(){
-        console.log(paraValue2);
+        var paraValue2 = $("#input_dossier_detail").val(); 
         dataSourceDossierFileDetail.read({password: paraValue2})
     };
     var evenDataDossierLogDetail = function(){
-        console.log(paraValue2);
-        dataSourceDossierLogDetail.read({password: paraValue2})
+        var paraValue2 = $("#input_dossier_detail").val();
+        dataSourceDossierLogDetail.read({password: paraValue2});
     };
     $("#btn_dossierinfo_detail").click(
                             function(){
