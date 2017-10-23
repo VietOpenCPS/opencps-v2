@@ -3,11 +3,11 @@
 	<div class="col-sm-12 box-title">
 		<span>HỒ SƠ ĐÃ CÓ KẾT QUẢ</span>
 	</div>
-	<div class="col-sm-12">
+	<div class="col-sm-12 P0">
 		<ul class="ul-default" id="lvDossierResult"></ul>
 		<!-- Template listview -->
 		<script type="text/x-kendo-template" id="tempDossierResult">
-			<li class="">#:applicantName# - #:dossierId#</li>
+			<li class="PL15 item-listview">#:applicantName# - #:dossierId#</li>
 		</script>
 	</div>
 	<hr class="col-sm-12 P0 M0 MP15">
@@ -58,13 +58,15 @@
 	                   	function(success){
 	                   		pullDataDetail(dataItem.dossierId);
 	                   	}
-                   	);
+                   	)
                 },
-        // dataBound: function(e) {
-        //    var listView = e.sender;
-        //    var firstItem = listView.element.children().first();
-        //    listView.select(firstItem);
-        // }
+        dataBound: function(e) {
+        	if(dataSourceDossierResult.total() == 1){
+        		var listView = e.sender;
+            	var firstItem = listView.element.children().first();
+            	listView.select(firstItem);
+        	}
+        }
 	});
 	$("#pagerDossirResult").kendoPager({
 		dataSource : dataSourceDossierResult,
@@ -73,4 +75,9 @@
 		selectTemplate: '<li class="k-link"><i class="fa fa-circle" aria-hidden="true"></i></li>',
 		linkTemplate: '<li><a href="\\#" class="k-link" data-#=ns#page="#=idx#"><i class="fa fa-circle" aria-hidden="true"></i></a></li>'
 	});
+	$(".item-listview").click(function(){
+		console.log("aaaaaaaaaa");
+		$("#lvDossierResult li").removeClass("active");
+        $(this).addClass("active")
+	})
 </script>

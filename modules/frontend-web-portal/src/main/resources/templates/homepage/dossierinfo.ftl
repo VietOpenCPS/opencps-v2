@@ -35,10 +35,10 @@
 			<p>Bạn muốn xem chi tiết thông tin hồ sơ >></p>
 		</div>
 		<div class="form-group col-sm-6">
-            <div class="col-sm-8">
-                <input id="#input_search_dossierinfo2" type="text" class="form-control" placeholder="Nhập mã bí mật">
+            <div class="col-sm-10">
+                <input id="#input_dossier_detail" type="text" class="form-control" placeholder="Nhập mã bí mật">
             </div>
-			<button class="btn btn-border-color col-sm-3 col-sm-offset-1" type="submit" id="btn_dossierinfo_detail">Tra cứu</button>
+			<button class="btn btn-border-color col-sm-2" id="btn_dossierinfo_detail">Tra cứu</button>
 		</div>
 	</div>
 </div>
@@ -46,9 +46,12 @@
 	var pullDataDetail= function(id){
         console.log(id);
         $.ajax({
-            url : "http://hanoi.fds.vn:2281/api/dossiers/"+id,
+            url : "${api.server}/dossiers/"+id,
             dataType : "json",
             type : "GET",
+            beforeSend: function(req) {
+                        req.setRequestHeader('groupId', ${groupId});
+                    },
             success : function(result){
                 var viewModel = kendo.observable({
 	                applicantName: result.applicantName,
@@ -65,5 +68,5 @@
 
             }
         });
-}
+    }
 </script>
