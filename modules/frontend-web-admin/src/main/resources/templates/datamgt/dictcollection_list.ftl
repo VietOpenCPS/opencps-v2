@@ -3,14 +3,6 @@
 </#if>
 
 <div class="row">
-	
-	<h3 class="detail-header MT5"> 
-		<span> Quản lý dữ liệu danh mục </span> 
-	</h3>
-
-</div>
-
-<div class="row">
 
 	<!-- left -->
 	<div class="col-md-3 panel P0">
@@ -48,7 +40,7 @@
 		
 		<script type="text/x-kendo-tmpl" id="_collection_template">
 		
-			<li class="clearfix PT20 PR0 PB20 PL15">
+			<li class="clearfix PT20 PR0 PB20 PL15" data-pk="#: id #">
 	
 				<div class="col-sm-2 clearfix PL0 PR0">
 					

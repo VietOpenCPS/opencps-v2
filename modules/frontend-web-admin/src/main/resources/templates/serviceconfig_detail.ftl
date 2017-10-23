@@ -154,10 +154,10 @@
 
 
 	$("#btn-submit-serviceconfig").click(function(){
-		var id =$("#itemServiceConfigId").val();
+		var id = $("#itemServiceConfigId").val();
 		var validator = $("#frmServiceConfigDetail").kendoValidator().data("kendoValidator");
 		if(validator.validate()){
-			if(id && id >0){
+			if(id && id > 0){
 				$.ajax({
 					url : "${api.server}/serviceconfigs/"+id,
 					dataType : "json",
@@ -214,9 +214,15 @@
 						}, "success");
 					},
 					error : function(xhr){
-						notification.show({
-							message: "Xẩy ra lỗi, vui lòng thử lại"
-						}, "error");
+						if (xhr.responseJSON.description == "ServiceConfigHasExsist"){
+							notification.show({
+								message: "Dịch vụ công đã tồn tại"
+							}, "error");
+						} else {
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
+						}
 					}	
 				});
 			}

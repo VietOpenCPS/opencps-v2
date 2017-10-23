@@ -2,7 +2,7 @@
 <#include "init.ftl">
 </#if>
 
-<div class="row">
+<div class="row serviceinfo">
 	<div class="col-sm-3 panel P0">
 		<div class='panel-body'>
 			<div class="row">
@@ -117,8 +117,6 @@
 		seperatorColor:"transparent",
 		selectable : "single",
 		dataBound : function(){
-			console.log(dataSourceTTHC.view());
-			console.log($("#listViewTTHC > li"));
 			if(loadFirst){
 				if(dataSourceTTHC.view()[0]){
 					var id = dataSourceTTHC.view()[0].id;

@@ -310,6 +310,7 @@
 							message: "Yêu cầu được thực hiện thành công"
 						}, "success");
 						dataSourceServiceOption.read();
+						$("#frmEstablishedProcess").hide();
 					},
 					error : function(xhr){
 						notification.show({
@@ -337,6 +338,7 @@
 							message: "Yêu cầu được thực hiện thành công"
 						}, "success");
 						dataSourceServiceOption.read();
+						$("#frmEstablishedProcess").hide();
 					},
 					error : function(xhr){
 						notification.show({

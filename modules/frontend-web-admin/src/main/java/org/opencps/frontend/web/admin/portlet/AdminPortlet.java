@@ -22,6 +22,7 @@ import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictGroup;
 import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
@@ -394,6 +395,17 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute(
 			"applicantId", applicant == null ? "" : applicant.getApplicantId());
 
+		// code from mobilink
+		setRenderParams(renderRequest, renderResponse, themeDisplay);
+
+		super.render(renderRequest, renderResponse);
+
+	}
+
+	private void setRenderParams(
+		RenderRequest renderRequest, RenderResponse renderResponse,
+		ThemeDisplay themeDisplay)
+		throws WindowStateException {
 		ServiceContext serviceContext = null;
 
 		try {
@@ -453,11 +465,11 @@ public class AdminPortlet extends FreeMarkerPortlet {
 						collectionCode, itemCode, groupId, serviceContext);
 				}
 
-				/*
-				 * if (Validator.isNotNull(groupCode)) { dictGroup =
-				 * DictGroupLocalServiceUtil.fetchByF_DictGroupCode( groupCode,
-				 * groupId); }
-				 */
+				if (Validator.isNotNull(groupCode)) {
+					dictGroup =
+						DictGroupLocalServiceUtil.fetchByF_DictGroupCode(
+							groupCode, groupId);
+				}
 
 				params.put("dictCollection_groupCode", groupCode);
 
@@ -573,9 +585,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 /*		String employee = JSONFactoryUtil.serialize(employeeObj);*/
 		
 		renderRequest.setAttribute("employee", employeeObj);
-
-		super.render(renderRequest, renderResponse);
-
 	}
 
 	private JSONObject generalConstant() {

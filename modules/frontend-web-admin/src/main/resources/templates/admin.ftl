@@ -117,9 +117,34 @@
 		]
 	}).data('kendoTabStrip');
 
-	// ts.tabGroup.on('click','li',function(e){
-	// 	ts.reload($(this));
-	// });
+	ts.tabGroup.on('click','li',function(e){
+		resetRightPanelState();
+	});
+
+	function resetRightPanelState(){
+		resetDataMgtPanelState();
+		resetServiceInfoPanelState();
+	}
+
+	function resetDataMgtPanelState(){
+
+	}
+
+	function resetServiceInfoPanelState(){
+		$(".serviceinfo #administrationCodeSearch").val("");
+		$(".serviceinfo #domainCodeSearch").val("");
+		$(".serviceinfo #keyword").val("");
+
+		$('.serviceinfo .nav-tabs a[href="#ttc"]').tab('show');
+
+		var listView = $(".serviceinfo #listViewTTHC").data("kendoListView");
+		if (listView){
+			var firstItem = listView.element.children().first();
+			listView.select(firstItem);
+			pullDataDetail($(firstItem.find("span")[0]).attr("data-pk"));
+			activateTab();
+		}
+	}
 </script>
 
 <!-- popup notification -->

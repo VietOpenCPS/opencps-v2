@@ -80,7 +80,7 @@
 				</div>
 				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="fileTemplateNo" name="fileTemplateNo" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:fileTemplateNo"/>
+						<input id="fileTemplateNo_" name="fileTemplateNo" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:fileTemplateNo"/>
 					</div>
 				</div>
 			</div>
@@ -185,7 +185,7 @@
 				partName: $("#partName").val(),
 				partTip: $("#partTip").val(),
 				partType: $("#partType").val(),
-				fileTemplateNo: $("#fileTemplateNo").val(),
+				fileTemplateNo: $("#fileTemplateNo_").val(),
 				required: $('#required').is(':checked'),
 				esign: $('#esign').is(':checked'),
 			},
@@ -194,9 +194,7 @@
 					message: "Yêu cầu được thực hiện thành công"
 				}, "success");
 
-				if (!dossierTemplatePartDataPk){
-					dossierTemplatePartDataPk = result.partNo;
-				}
+				dossierTemplatePartDataPk = result.partNo;
 
 				var upFormscriptSuccess = false, upFormReportSuccess = false, upSampleDataSuccess = false;
 				$.ajax({
@@ -271,7 +269,7 @@
 			}, "error");
 			return false;
 		}
-		if (!$("#fileTemplateNo").val()){
+		if (!$("#fileTemplateNo_").val()){
 			notification.show({
 				message: "Mời nhập mã mẫu tài liệu"
 			}, "error");

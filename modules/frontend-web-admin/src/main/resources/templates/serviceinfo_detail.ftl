@@ -393,25 +393,20 @@
 		noDataTemplate: 'Không có dữ liệu'
 	});
 
-	var pullDataDetail= function(id){
-		console.log(id);
+	var pullDataDetail = function(id){
 		$.ajax({
 			url : "${api.server}/serviceinfos/"+id,
 			dataType : "json",
 			type : "GET",
 			success : function(result){
-				console.log(result.domainName);
 				var arrFile = result.fileTemplates;
 				if(!arrFile){
-					console.log("Empty");
 					arrFile = [];
 				}
 				var viewModel = kendo.observable({
 					addFiletemplate : function(e){
 						var that = this;
 						var idServiceinfo = $("#itemServiceInfoId").val();
-						console.log("Add file");
-						console.log(idServiceinfo);
 						
 						if(idServiceinfo>0){
 							var form = $('#serviceInfoFileTemplateForm')[0];
@@ -440,7 +435,6 @@
 										if(!that.get("fileTemplates")[0]){
 											var fileObj = that.get("fileTemplates");
 											if(typeof fileObj.length === 'undefined'){
-												console.log("Object");
 												var arr = new Array();
 												arr.push(fileObj);
 												that.set("fileTemplates",arr);
@@ -453,7 +447,6 @@
 										fileTemplateNo: result.fileTemplateNo,
 										templateName: result.templateName
 									});
-									console.log(that.get("fileTemplates"));
 									$("#serviceInfoFileTempalteDialog").modal('hide');
 
 								},
@@ -545,7 +538,6 @@
 										notification.show({
 											message: "Yêu cầu được thực hiện thành công"
 										}, "success");
-										console.log(fileTemplates);
 
 									},
 									error : function(xhr){
@@ -562,159 +554,62 @@
 					}
 				});
 
-kendo.bind($("#dataDetailServiceInfo"), viewModel);
-},
-error : function(xhr){
-
-}
-});
-}
-
-var formControlFileTemplate = function(dataPk){
-
-	var url = "${ajax.serviceinfo_filetemplate_form}";
-
-	$("#serviceInfoFileTempalteDialog").load(
-		url,
-		function(result){
-
-			$("#serviceInfoFileTempalteDialog").modal({show: true});
-
-			$("#btnCancleServiceConfigOption").click(function(e){
-				e.preventDefault();
-				$("#serviceInfoFileTempalteDialog").modal("hide");
-			});
-		}
-		);
-}
-
-var addServieInfoFileTemplate=function(){
-	dataSourceFileTemplate.transport.create({
-		"serviceinfoId":$("#itemServiceInfoId").val(),
-		"fileNo":$("#fileNo").val(),
-		"fileName":$("#fileName").val(),
-		"file": $('input#file')[0].files[0]
-	});
-}
-
-var addFileTemplateIfSuccess=function(result){
-	dataSourceFileTemplate.add({
-		"fileTemplateNo":result.fileTemplateNo,
-		"templateName":result.templateName
-	});
-}
-
-$("#btnAddServiceInfoFile").click(function(){
-	$("#serviceInfoFileTempalteDialog").modal({show: true});
-});
-
-$(document).on("click",".btn-delete-filetemplate",function(event){
-	var idFileTemplate = $(this).attr("data-pk");
-	console.log(idFileTemplate);
-});
-
-$("#btn-submit-serviceinfo-detail").click(function(){
-	var idServiceinfo = $("#itemServiceInfoId").val();
-	if(idServiceinfo>0){
-		console.log($("#processText").summernote("code"));
-		console.log($("#methodText").summernote("code"));
-		$.ajax({
-			url : "${api.server}/serviceinfos/"+idServiceinfo,
-			type : "PUT",
-			dataType : "json",
-			headers: {"groupId": ${groupId}},
-			data : {
-				serviceCode : $("#serviceCode").val(),
-				serviceName : $("#serviceName").val(),
-				administrationCode : $("#administration").val(),
-				domainCode : $("#domain").val(),
-				maxLevel : ($("#level").val()) ? $("#level").val() : 2,
-				active : $("#status").val(),
-				resultText : $("#resultText").summernote("code").toString(),
-				feeText : $("#feeText").summernote("code").toString(),
-				methodText : $("#methodText").summernote("code").toString(),
-				durationText : $("#durationText").summernote("code").toString(),
-				dossierText : $("#dossierText").summernote("code").toString(),
-				processText : $("#processText").summernote("code").toString(),
-				applicantText : $("#applicantText").summernote("code").toString(),
-				regularText : $("#regularText").summernote("code").toString(),
-				conditionText : $("#conditionText").summernote("code").toString()
+				kendo.bind($("#dataDetailServiceInfo"), viewModel);
 			},
-			success : function(result){
-				updateServieInfoIfSuccess(idServiceinfo,result);
-				notification.show({
-					message: "Yêu cầu được thực hiện thành công"
-				}, "success");
-			},
-			error : function(result){
-				if (result.responseJSON.description == "DuplicateServiceCodeException"){
-					notification.show({
-						message: "Sửa không thành công do mã thủ tục bị trùng."
-					}, "error");
-				} else {
-					notification.show({
-						message: "Xẩy ra lỗi, vui lòng thử lại"
-					}, "error");
-				}
-			}
-		});
-	}else{
-		console.log($("#processText").summernote("code"));
-		console.log($("#methodText").summernote("code"));
-		$.ajax({
-			url : "${api.server}/serviceinfos",
-			type : "POST",
-			dataType : "json",
-			headers: {"groupId": ${groupId}},
-			data : {
-				serviceCode : $("#serviceCode").val(),
-				serviceName : $("#serviceName").val(),
-				administrationCode : $("#administration").val(),
-				domainCode : $("#domain").val(),
-				maxLevel : ($("#level").val()) ? $("#level").val() : 2,
-				active : $("#status").val(),
-				resultText : $("#resultText").summernote("code").toString(),
-				feeText : $("#feeText").summernote("code").toString(),
-				methodText : $("#methodText").summernote("code").toString(),
-				durationText : $("#durationText").summernote("code").toString(),
-				dossierText : $("#dossierText").summernote("code").toString(),
-				processText : $("#processText").summernote("code").toString(),
-				applicantText : $("#applicantText").summernote("code").toString(),
-				regularText : $("#regularText").summernote("code").toString(),
-				conditionText : $("#conditionText").summernote("code").toString()
-			},
-			success : function(result){
-				$("#itemServiceInfoId").val(result.serviceInfoId);
-				crtAddOrEdit();
-				addServiceInfoIfSuccess(result);
-				notification.show({
-					message: "Yêu cầu được thực hiện thành công"
-				}, "success");
+			error : function(xhr){
 
-			},
-			error : function(result){
-
-				if (result.responseJSON.description == "DuplicateServiceCodeException"){
-					notification.show({
-						message: "Thêm không thành công do mã thủ tục bị trùng."
-					}, "error");
-				} else {
-					notification.show({
-						message: "Xẩy ra lỗi, vui lòng thử lại"
-					}, "error");
-				}
 			}
 		});
 	}
 
-});
+	var formControlFileTemplate = function(dataPk){
 
-$("#btn-submit-serviceinfo-general").click(function(){
-	var idServiceinfo = $("#itemServiceInfoId").val();
-	var validator = $("#frmServiceinfoGenaral").kendoValidator().data("kendoValidator");
-	if(validator.validate()){
+		var url = "${ajax.serviceinfo_filetemplate_form}";
+
+		$("#serviceInfoFileTempalteDialog").load(
+			url,
+			function(result){
+
+				$("#serviceInfoFileTempalteDialog").modal({show: true});
+
+				$("#btnCancleServiceConfigOption").click(function(e){
+					e.preventDefault();
+					$("#serviceInfoFileTempalteDialog").modal("hide");
+				});
+			}
+		);
+	}
+
+	var addServieInfoFileTemplate=function(){
+		dataSourceFileTemplate.transport.create({
+			"serviceinfoId":$("#itemServiceInfoId").val(),
+			"fileNo":$("#fileNo").val(),
+			"fileName":$("#fileName").val(),
+			"file": $('input#file')[0].files[0]
+		});
+	}
+
+	var addFileTemplateIfSuccess=function(result){
+		dataSourceFileTemplate.add({
+			"fileTemplateNo":result.fileTemplateNo,
+			"templateName":result.templateName
+		});
+	}
+
+	$("#btnAddServiceInfoFile").click(function(){
+		$("#serviceInfoFileTempalteDialog").modal({show: true});
+	});
+
+	$(document).on("click",".btn-delete-filetemplate",function(event){
+		var idFileTemplate = $(this).attr("data-pk");
+		console.log(idFileTemplate);
+	});
+
+	$("#btn-submit-serviceinfo-detail").click(function(){
+		var idServiceinfo = $("#itemServiceInfoId").val();
 		if(idServiceinfo>0){
-			var data = $("#frmServiceinfoGenaral").serialize();
+			console.log($("#processText").summernote("code"));
+			console.log($("#methodText").summernote("code"));
 			$.ajax({
 				url : "${api.server}/serviceinfos/"+idServiceinfo,
 				type : "PUT",
@@ -726,7 +621,16 @@ $("#btn-submit-serviceinfo-general").click(function(){
 					administrationCode : $("#administration").val(),
 					domainCode : $("#domain").val(),
 					maxLevel : ($("#level").val()) ? $("#level").val() : 2,
-					active : $("#status").val()
+					active : $("#status").val(),
+					resultText : $("#resultText").summernote("code").toString(),
+					feeText : $("#feeText").summernote("code").toString(),
+					methodText : $("#methodText").summernote("code").toString(),
+					durationText : $("#durationText").summernote("code").toString(),
+					dossierText : $("#dossierText").summernote("code").toString(),
+					processText : $("#processText").summernote("code").toString(),
+					applicantText : $("#applicantText").summernote("code").toString(),
+					regularText : $("#regularText").summernote("code").toString(),
+					conditionText : $("#conditionText").summernote("code").toString()
 				},
 				success : function(result){
 					updateServieInfoIfSuccess(idServiceinfo,result);
@@ -737,7 +641,7 @@ $("#btn-submit-serviceinfo-general").click(function(){
 				error : function(result){
 					if (result.responseJSON.description == "DuplicateServiceCodeException"){
 						notification.show({
-							message: "Sửa không thành công do mã hồ sơ bị trùng."
+							message: "Sửa không thành công do mã thủ tục bị trùng."
 						}, "error");
 					} else {
 						notification.show({
@@ -747,7 +651,8 @@ $("#btn-submit-serviceinfo-general").click(function(){
 				}
 			});
 		}else{
-			var data = $("#frmServiceinfoGenaral").serialize();
+			console.log($("#processText").summernote("code"));
+			console.log($("#methodText").summernote("code"));
 			$.ajax({
 				url : "${api.server}/serviceinfos",
 				type : "POST",
@@ -759,23 +664,31 @@ $("#btn-submit-serviceinfo-general").click(function(){
 					administrationCode : $("#administration").val(),
 					domainCode : $("#domain").val(),
 					maxLevel : ($("#level").val()) ? $("#level").val() : 2,
-					active : $("#status").val()
+					active : $("#status").val(),
+					resultText : $("#resultText").summernote("code").toString(),
+					feeText : $("#feeText").summernote("code").toString(),
+					methodText : $("#methodText").summernote("code").toString(),
+					durationText : $("#durationText").summernote("code").toString(),
+					dossierText : $("#dossierText").summernote("code").toString(),
+					processText : $("#processText").summernote("code").toString(),
+					applicantText : $("#applicantText").summernote("code").toString(),
+					regularText : $("#regularText").summernote("code").toString(),
+					conditionText : $("#conditionText").summernote("code").toString()
 				},
 				success : function(result){
 					$("#itemServiceInfoId").val(result.serviceInfoId);
-					console.log($("#itemServiceInfoId").val());
-					addServiceInfoIfSuccess(result);
-					console.log($("#itemServiceInfoId").val());
 					crtAddOrEdit();
+					addServiceInfoIfSuccess(result);
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
-					pullDataDetail(result.serviceInfoId);
+
 				},
 				error : function(result){
+
 					if (result.responseJSON.description == "DuplicateServiceCodeException"){
 						notification.show({
-							message: "Thêm không thành công do mã hồ sơ bị trùng."
+							message: "Thêm không thành công do mã thủ tục bị trùng."
 						}, "error");
 					} else {
 						notification.show({
@@ -785,56 +698,130 @@ $("#btn-submit-serviceinfo-general").click(function(){
 				}
 			});
 		}
+
+	});
+
+	$("#btn-submit-serviceinfo-general").click(function(){
+		var idServiceinfo = $("#itemServiceInfoId").val();
+		var validator = $("#frmServiceinfoGenaral").kendoValidator().data("kendoValidator");
+		if(validator.validate()){
+			if(idServiceinfo>0){
+				var data = $("#frmServiceinfoGenaral").serialize();
+				$.ajax({
+					url : "${api.server}/serviceinfos/"+idServiceinfo,
+					type : "PUT",
+					dataType : "json",
+					headers: {"groupId": ${groupId}},
+					data : {
+						serviceCode : $("#serviceCode").val(),
+						serviceName : $("#serviceName").val(),
+						administrationCode : $("#administration").val(),
+						domainCode : $("#domain").val(),
+						maxLevel : ($("#level").val()) ? $("#level").val() : 2,
+						active : $("#status").val()
+					},
+					success : function(result){
+						updateServieInfoIfSuccess(idServiceinfo,result);
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
+					},
+					error : function(result){
+						if (result.responseJSON.description == "DuplicateServiceCodeException"){
+							notification.show({
+								message: "Sửa không thành công do mã hồ sơ bị trùng."
+							}, "error");
+						} else {
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
+						}
+					}
+				});
+			}else{
+				var data = $("#frmServiceinfoGenaral").serialize();
+				$.ajax({
+					url : "${api.server}/serviceinfos",
+					type : "POST",
+					dataType : "json",
+					headers: {"groupId": ${groupId}},
+					data : {
+						serviceCode : $("#serviceCode").val(),
+						serviceName : $("#serviceName").val(),
+						administrationCode : $("#administration").val(),
+						domainCode : $("#domain").val(),
+						maxLevel : ($("#level").val()) ? $("#level").val() : 2,
+						active : $("#status").val()
+					},
+					success : function(result){
+						$("#itemServiceInfoId").val(result.serviceInfoId);
+						addServiceInfoIfSuccess(result);
+						crtAddOrEdit();
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
+						pullDataDetail(result.serviceInfoId);
+					},
+					error : function(result){
+						if (result.responseJSON.description == "DuplicateServiceCodeException"){
+							notification.show({
+								message: "Thêm không thành công do mã hồ sơ bị trùng."
+							}, "error");
+						} else {
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
+						}
+					}
+				});
+			}
+		}
+
+	});
+
+	var addServiceInfoIfSuccess=function(result){
+		dataSourceTTHC.insert(0,{
+			"serviceInfoId": result.serviceInfoId,
+			"serviceCode":result.serviceCode,
+			"serviceName":result.serviceName,
+			"processText":result.processText,
+			"methodText":result.methodText,
+			"dossierText":result.dossierText,
+			"conditionText":result.conditionText,
+			"durationText":result.durationText,
+			"resultText":result.resultText,
+			"administrationCode":result.administrationCode,
+			"domainCode":result.domainCode,
+			"activeStatus":result.activeStatus,
+			"administrationName":result.administrationName,
+			"domainName":result.domainName,
+			"fileTemplates":result.fileTemplates,
+			"active" : result.active
+		});
 	}
 
-});
+	var updateServieInfoIfSuccess = function(dataPk,result){
+		dataSourceTTHC.fetch(function() {
+			var item = dataSourceTTHC.get(dataPk);
+			item.set("serviceCode",result.serviceCode);
+			item.set("serviceName",result.serviceName);
+			item.set("processText",result.processText);
+			item.set("methodText",result.methodText);
+			item.set("dossierText",result.dossierText);
+			item.set("conditionText",result.conditionText);
+			item.set("durationText",result.durationText);
+			item.set("resultText",result.resultText);
+			item.set("administrationCode",result.administrationCode);
+			item.set("domainCode",result.domainCode);
+			item.set("activeStatus",result.activeStatus);
+			item.set("administrationName",result.administrationName);
+			item.set("domainName",result.domainName);
+			item.set("active",result.active);
+		});
+	}
 
-var addServiceInfoIfSuccess=function(result){
-	console.log(result);
-	dataSourceTTHC.insert(0,{
-		"serviceInfoId": result.serviceInfoId,
-		"serviceCode":result.serviceCode,
-		"serviceName":result.serviceName,
-		"processText":result.processText,
-		"methodText":result.methodText,
-		"dossierText":result.dossierText,
-		"conditionText":result.conditionText,
-		"durationText":result.durationText,
-		"resultText":result.resultText,
-		"administrationCode":result.administrationCode,
-		"domainCode":result.domainCode,
-		"activeStatus":result.activeStatus,
-		"administrationName":result.administrationName,
-		"domainName":result.domainName,
-		"fileTemplates":result.fileTemplates,
-		"active" : result.active
+	$("#add-file-template").click(function(){
+		$("#serviceInfoFileTempalteDialog").modal({show: true});
 	});
-}
-
-var updateServieInfoIfSuccess = function(dataPk,result){
-	console.log(result.serviceCode);
-	console.log(result.domainName);
-	dataSourceTTHC.fetch(function() {
-		var item = dataSourceTTHC.get(dataPk);
-		item.set("serviceCode",result.serviceCode);
-		item.set("serviceName",result.serviceName);
-		item.set("processText",result.processText);
-		item.set("methodText",result.methodText);
-		item.set("dossierText",result.dossierText);
-		item.set("conditionText",result.conditionText);
-		item.set("durationText",result.durationText);
-		item.set("resultText",result.resultText);
-		item.set("administrationCode",result.administrationCode);
-		item.set("domainCode",result.domainCode);
-		item.set("activeStatus",result.activeStatus);
-		item.set("administrationName",result.administrationName);
-		item.set("domainName",result.domainName);
-		item.set("active",result.active);
-	});
-}
-
-$("#add-file-template").click(function(){
-	$("#serviceInfoFileTempalteDialog").modal({show: true});
-});
 
 </script>
