@@ -1,7 +1,3 @@
-<#if (Request)??>
-	<#include "init.ftl">
-</#if>
-
 <div class="row">
 	<div class="MB10">
 		<span class="title text-light-blue text-bold">TRA CỨU HỒ SƠ</span>
@@ -36,7 +32,8 @@
             <div class="panel-body P5 PL15">
                 <ul class="ul-default" id="DossierDetailFile"></ul>
                 <script type="text/x-kendo-template" id="tempDossierDetailFile">
-                    <li><span><i class="fa fa-download"></i></span> <span class="ML10">#:displayName#</span></li>
+					#dossierId = dataItem.dossierId#
+                    <li><a href="${api.server}/dossiers/#:dossierId#/files/#:referenceUid#"> <span><i class="fa fa-download"></i></span> <span class="ML10">#:displayName#</span> </a></li>
                 </script>
             </div>
         </div>
@@ -67,7 +64,7 @@
 <script type="text/javascript">
 	$(function(){
 		$("#detailView2").hide();
-		// Cấu hình dataSource tìm kiếm hồ sơ
+		// dataSource tìm kiếm hồ sơ
 		var dataSourceDossierResultSearch = new kendo.data.DataSource({
 			type: "json",
 			transport: {

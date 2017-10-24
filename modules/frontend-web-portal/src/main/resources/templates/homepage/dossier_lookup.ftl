@@ -16,7 +16,7 @@
 </div>
 
 <script type="text/javascript">
-	// Cấu hình dataSource listview trái
+	// dataSource listview trái
 	var dataSourceDossierResult = new kendo.data.DataSource({
 		transport : {
 			read : function(options){
@@ -50,7 +50,7 @@
 		template : kendo.template($("#tempDossierResult").html()),
 		navigatable: true,
 		selectable: true,
-		// Click item listview hiển thị thông tin hồ sơ cơ bản
+		// Load dossierinfo.ftl
 	    change: function() {
                 	var index = this.select().index();
                        dataItem = this.dataSource.view()[index];
@@ -65,7 +65,7 @@
         	if(dataSourceDossierResult.total() == 1){
         		var listView = e.sender;
             	var firstItem = listView.element.children().first();
-            	listView.select(firstItem);
+            	listView.select(firstItem)
         	}
         }
 	});
@@ -75,6 +75,5 @@
 		buttonCount: 5,
 		selectTemplate: '<li class="k-link"><i class="fa fa-circle" aria-hidden="true"></i></li>',
 		linkTemplate: '<li><a href="\\#" class="k-link" data-#=ns#page="#=idx#"><i class="fa fa-circle" aria-hidden="true"></i></a></li>'
-	});
-
+	})
 </script>
