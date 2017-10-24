@@ -763,6 +763,7 @@
 		<column name="payload" type="String" />
 		<column name="stepInstruction" type="String" />
 
+		
 	</entity>
 
 	<entity local-service="true" name="DossierActionUser"
@@ -888,5 +889,9 @@
 		
 		<exception>InvalidDossierStatus</exception>
 		<exception>DuplicateDossierFile</exception>
+		
+		<exception>DossierPassword</exception>
+		<exception>DossierAccess</exception>
+		
 	</exceptions>
 </service-builder>
