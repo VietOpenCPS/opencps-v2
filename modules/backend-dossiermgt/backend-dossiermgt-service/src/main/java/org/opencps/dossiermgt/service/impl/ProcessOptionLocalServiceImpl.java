@@ -97,10 +97,15 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		ProcessOption processOption = null;
 
 		Date now = new Date();
+		
+		int autoSeqOrder = processOptionPersistence.countBySC_ID(serviceConfigId);
 
 		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
 
 		if (processOptionId == 0) {
+			
+			autoSeqOrder = autoSeqOrder + 1;
+			
 			processOptionId = counterLocalService.increment(ProcessOption.class.getName());
 
 			processOption = processOptionPersistence.create(processOptionId);
@@ -113,7 +118,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 			processOption.setUserName(auditUser.getFullName());
 
 			processOption.setServiceConfigId(serviceConfigId);
-			processOption.setOptionOrder(seqOrder);
+			processOption.setOptionOrder(autoSeqOrder);
 			processOption.setAutoSelect(autoSelect);
 			processOption.setInstructionNote(instructionNote);
 			processOption.setSubmissionNote(submissionNote);
@@ -122,7 +127,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 			processOption.setOptionName(optionName);
 
 		} else {
-
+			
 			processOption = processOptionPersistence.fetchByPrimaryKey(processOptionId);
 
 			processOption.setModifiedDate(now);
@@ -130,7 +135,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 			processOption.setUserName(auditUser.getFullName());
 
 			processOption.setServiceConfigId(serviceConfigId);
-			processOption.setOptionOrder(seqOrder);
+			//processOption.setOptionOrder(seqOrder);
 			processOption.setAutoSelect(autoSelect);
 			processOption.setInstructionNote(instructionNote);
 			processOption.setSubmissionNote(submissionNote);

@@ -215,7 +215,9 @@ public class ServiceProcessUtils {
 			model.setActionCode(doc.get(ProcessActionTerm.ACTION_CODE));
 			model.setActionName(doc.get(ProcessActionTerm.ACTION_NAME));
 			model.setPreStepCode(doc.get(ProcessActionTerm.PRESTEP_CODE));
+			model.setPreStepName(doc.get(ProcessActionTerm.PRESTEP_NAME));
 			model.setPostStepCode(doc.get(ProcessActionTerm.POSTSTEP_CODE));
+			model.setPostStepName(doc.get(ProcessActionTerm.POSTSTEP_NAME));
 			model.setAutoEvent(doc.get(ProcessActionTerm.AUTO_EVENT));
 			model.setPreCondition(doc.get(ProcessActionTerm.PRE_CONDITION));
 			model.setAllowAssignUser(doc.get(ProcessActionTerm.ALLOW_ASSIGN_USER));
