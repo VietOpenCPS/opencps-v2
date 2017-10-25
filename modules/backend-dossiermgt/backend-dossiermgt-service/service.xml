@@ -265,6 +265,11 @@
 			<finder-column name="serviceConfigId"/>
 		</finder>
 
+		<finder return-type="ProcessOption" name="SC_ID_OP">
+			<finder-column name="serviceConfigId"/>
+			<finder-column name="optionOrder"/>
+		</finder>
+
 		<finder return-type="ProcessOption" name="SC_DT">
 			<finder-column name="serviceConfigId"/>
 			<finder-column name="dossierTemplateId"/>
@@ -892,6 +897,7 @@
 		
 		<exception>DossierPassword</exception>
 		<exception>DossierAccess</exception>
+		<exception>SeqOrder</exception>
 		
 	</exceptions>
 </service-builder>
