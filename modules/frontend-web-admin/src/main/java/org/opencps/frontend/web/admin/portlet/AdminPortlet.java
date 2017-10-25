@@ -550,9 +550,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			"portletNamespace",
 			themeDisplay.getPortletDisplay().getNamespace());
 
-		// renderRequest.setAttribute(
-		// "api", themeDisplay.getPortalURL() + "/o/rest/v2");
-
 		renderRequest.setAttribute(
 			"url", generateURL(renderRequest, renderResponse));
 
@@ -572,18 +569,25 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			}
 		}
 		
+		String wu = JSONFactoryUtil.looseSerialize(workingUnit);
+		JSONObject workingUnitObj = null;
+		try {
+			workingUnitObj = JSONFactoryUtil.createJSONObject(wu);
+			workingUnitObj.put(
+				"ceremonyDate", DateTimeUtils.convertDateToString(
+					workingUnit.getCeremonyDate(), DateTimeUtils._TIMESTAMP));
+		}
+		catch (Exception e) {
+		}
+
 		params.put("workingUnit_workingUnitId", workingUnitId);
-		renderRequest.setAttribute("workingUnit", workingUnit);
+		renderRequest.setAttribute("workingUnit", workingUnitObj);
 		renderRequest.setAttribute("param", params);
 		
 		long employeeId = ParamUtil.getLong(renderRequest, "employeeId");
 		
-		/*JSONObject employee = JSONFactoryUtil.createJSONObject();*/
-		
 		Employee employeeObj= EmployeeLocalServiceUtil.fetchEmployee(employeeId);
 
-/*		String employee = JSONFactoryUtil.serialize(employeeObj);*/
-		
 		renderRequest.setAttribute("employee", employeeObj);
 	}
 

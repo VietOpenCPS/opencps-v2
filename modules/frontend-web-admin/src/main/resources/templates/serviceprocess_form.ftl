@@ -164,7 +164,7 @@
 				if (result && result.data && result.data.length > 0){
 					result.data.forEach(function(jobpos){
 						var newOpt = $(".service-process-form-entry select")[0].appendChild(document.createElement('option'));
-						newOpt.value = jobpos.jobPosId;
+						newOpt.value = jobpos.mappingRoleId;
 						newOpt.text = jobpos.title;
 					});
 				}

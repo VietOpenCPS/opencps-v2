@@ -180,21 +180,7 @@
 				data: "data",
 				total: "total",
 				model: {
-					id: "collectionCode",
-					fields: {
-						
-						collectionCode: {
-							type: "string",
-							editable: false,
-							nullable: true
-						},
-						collectionName: {
-							type: "string"
-						},
-						description: {
-							type: "string"
-						}
-					}
+					id: "collectionCode"
 				}
 			},
 			error: function(e) {

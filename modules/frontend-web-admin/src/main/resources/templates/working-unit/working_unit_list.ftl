@@ -371,7 +371,9 @@
 			
 			$("#_workingUnit_right-page").load(
 				'${url.adminWorkingUnitPortlet.working_unit_detail}'
-				);
+			);
+
+			$("#_workingUnit_listView .k-state-selected").removeClass("k-state-selected");
 			
 		});
 		

@@ -21,7 +21,7 @@
 				
 				<input type="file" id="_workingUnitDetail_logoFileEntryId" accept="image/*"  onchange="_workingUnitDetail_changeLogoFileEntry(this)" style="display: none;" />
 				
-				<img id="_workingUnitDetail_logo_thumbnil" class="img-responsive center-block" style="max-width: 368px; max-height: 120px;"  src="/o/org.mobilink.frontend.portlet/images/default-thumbnail.jpg" alt=""/>
+				<img id="_workingUnitDetail_logo_thumbnil" class="img-responsive center-block" style="max-width: 368px; max-height: 120px;"  src="/o/org.opencps.frontend.admin/images/default-thumbnail.jpg" alt=""/>
 
 				<button id="_workingUnitDetail_change_logo_btn" class="btn btn-active image-preview-input btn-block MB15">Thay đổi logo</button>
 
@@ -92,11 +92,11 @@
 			
 			<div class="form-group col-sm-6" >
 				
-				<label for="_workingUnitDetail_ceremonyDate">Ngày  thành lập :
+				<label for="_workingUnitDetail_ceremonyDate">Ngày thành lập :
 				</label>
 				
 				<input type="text" id="_workingUnitDetail_ceremonyDate" name="_workingUnitDetail_ceremonyDate" class="form-control"
-				placeholder="Ngày  thành lập" value="${(workingUnit.ceremonyDate)!}" />
+				placeholder="Ngày thành lập" value="${(workingUnit.ceremonyDate)!}" />
 				
 			</div>
 			
@@ -274,49 +274,49 @@
 			
 			if (workingUnitId!=null && workingUnitId !="" && workingUnitId > 0) {
 				
-			// create a new working unit
-			$("#_workingUnit_listView").getKendoListView().dataSource.transport.update({
-				
-				workingUnitId: workingUnitId,
-				parentWorkingUnitId: _parentWorkingUnitId_val,
-				govAgencyCode: $( "#_workingUnitDetail_govAgencyCode" ).val(),
-				name: $( "#_workingUnitDetail_name" ).val(),
-				enName: $( "#_workingUnitDetail_enName" ).val(),
-				address: $( "#_workingUnitDetail_address" ).val(),
-				telNo: $( "#_workingUnitDetail_telNo" ).val(),
-				faxNo: $( "#_workingUnitDetail_faxNo" ).val(),
-				email: $( "#_workingUnitDetail_email" ).val(),
-				website: $( "#_workingUnitDetail_website" ).val(),
-				sibling: _workingUnitDetail_sibling_val,
-				ceremonyDate: ceremonyDate
-				
-			});
+				// create a new working unit
+				$("#_workingUnit_listView").getKendoListView().dataSource.transport.update({
+					
+					workingUnitId: workingUnitId,
+					parentWorkingUnitId: _parentWorkingUnitId_val,
+					govAgencyCode: $( "#_workingUnitDetail_govAgencyCode" ).val(),
+					name: $( "#_workingUnitDetail_name" ).val(),
+					enName: $( "#_workingUnitDetail_enName" ).val(),
+					address: $( "#_workingUnitDetail_address" ).val(),
+					telNo: $( "#_workingUnitDetail_telNo" ).val(),
+					faxNo: $( "#_workingUnitDetail_faxNo" ).val(),
+					email: $( "#_workingUnitDetail_email" ).val(),
+					website: $( "#_workingUnitDetail_website" ).val(),
+					sibling: _workingUnitDetail_sibling_val,
+					ceremonyDate: ceremonyDate
+					
+				});
 
-		} else {
+			} else {
 
-			$("#_workingUnit_listView").getKendoListView().dataSource.add({
-				
-				parentWorkingUnitId: _parentWorkingUnitId_val,
-				govAgencyCode: $( "#_workingUnitDetail_govAgencyCode" ).val(),
-				name: $( "#_workingUnitDetail_name" ).val(),
-				enName: $( "#_workingUnitDetail_enName" ).val(),
-				address: $( "#_workingUnitDetail_address" ).val(),
-				telNo: $( "#_workingUnitDetail_telNo" ).val(),
-				faxNo: $( "#_workingUnitDetail_faxNo" ).val(),
-				email: $( "#_workingUnitDetail_email" ).val(),
-				website: $( "#_workingUnitDetail_website" ).val(),
-				sibling: _workingUnitDetail_sibling_val,
-				ceremonyDate: ceremonyDate,
-				level: 0
-				
-			});
+				$("#_workingUnit_listView").getKendoListView().dataSource.add({
+					
+					parentWorkingUnitId: _parentWorkingUnitId_val,
+					govAgencyCode: $( "#_workingUnitDetail_govAgencyCode" ).val(),
+					name: $( "#_workingUnitDetail_name" ).val(),
+					enName: $( "#_workingUnitDetail_enName" ).val(),
+					address: $( "#_workingUnitDetail_address" ).val(),
+					telNo: $( "#_workingUnitDetail_telNo" ).val(),
+					faxNo: $( "#_workingUnitDetail_faxNo" ).val(),
+					email: $( "#_workingUnitDetail_email" ).val(),
+					website: $( "#_workingUnitDetail_website" ).val(),
+					sibling: _workingUnitDetail_sibling_val,
+					ceremonyDate: ceremonyDate,
+					level: 0
+					
+				});
 
-			// save the created working unit
-			$("#_workingUnit_listView").getKendoListView().dataSource.sync(); 
+				// save the created working unit
+				$("#_workingUnit_listView").getKendoListView().dataSource.sync(); 
 
-		}
-		
-	});
+			}
+			
+		});
 
 		$("#_workingUnitDetail_ceremonyDate").kendoDatePicker({
 			start: "month",

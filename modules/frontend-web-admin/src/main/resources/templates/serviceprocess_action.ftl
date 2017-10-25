@@ -44,10 +44,10 @@
 					#: actionName #
 				</div>
 				<div class="col-sm-2 align-middle-lg text-center">
-					#: preStepCode #
+					#: preStepName #
 				</div>
 				<div class="col-sm-2 align-middle-lg text-center">
-					#: postStepCode #
+					#: postStepName #
 				</div>
 				<div class="col-sm-2 text-center">
 					<a class="btn-group btn-edit-service-process-action" data-pk="#: id #" href="\\#" title="Sửa">
