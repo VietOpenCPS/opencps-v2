@@ -123,8 +123,8 @@
                     error : function(xhr){
                         $("#DossierDetailLog").html("<span>Không có dữ liệu</span>")
                     }
-                });
-             }
+                })
+            }
         },
         schema : {
             total : "total",
@@ -147,17 +147,13 @@
     });
     var evenDataDossierFileDetail = function(){
         var paraValue2 = $("#input_dossier_detail").val(); 
-        dataSourceDossierFileDetail.read({password: paraValue2})
-    };
-    var evenDataDossierLogDetail = function(){
-        var paraValue2 = $("#input_dossier_detail").val();
-        dataSourceDossierLogDetail.read({password: paraValue2});
+        dataSourceDossierFileDetail.read({password: paraValue2});
+        dataSourceDossierLogDetail.read({password: paraValue2})
     };
     $("#btn_dossierinfo_detail").click(
                             function(){
                                 $("#detailView2").show();
-                                evenDataDossierFileDetail();
-                                evenDataDossierLogDetail()
+                                evenDataDossierFileDetail()
                             }
                         )   
 </script>

@@ -4,8 +4,7 @@
 		"server": "http://hanoi.fds.vn:2281/api"
 	},
 	"ajax": {
-    "dossierinfo": "dossierinfo.ftl"
-    "dossierinfo_detail": "dossierinfo_detail.ftl"
+    "dossierinfo": "dossierinfo.ftl",
 		"serviceinfo_detail": "serviceinfo_detail.ftl",
 		"serviceinfomain_list": "serviceinfomain_list.ftl",
 		"register_result": "register_result.ftl",
