@@ -8,7 +8,9 @@ public class ProcessActionTerm {
 	public static final String MODIFIED_DATE = "modifiedDate";
 	public static final String SERVICE_PROCESS_ID = "serviceProcessId";
 	public static final String PRESTEP_CODE = "preStepCode";
+	public static final String PRESTEP_NAME = "preStepName";
 	public static final String POSTSTEP_CODE = "postStepCode";
+	public static final String POSTSTEP_NAME = "postStepName";
 	public static final String AUTO_EVENT = "autoEvent";
 	public static final String PRE_CONDITION = "preCondition";
 	public static final String ACTION_CODE = "actionCode";

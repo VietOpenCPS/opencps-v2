@@ -66,6 +66,7 @@ public class DossierTerm {
 	public static final String STEP_NAME = "stepName";
 	public static final String STEP_DUE_DATE = "stepDuedate";
 	public static final String STEP_OVER_DUE = "stepOverdue";
+	public static final String DOSSIER_OVER_DUE = "dossierOverdue";
 
 	
 	public static final String STATUS = "status";
