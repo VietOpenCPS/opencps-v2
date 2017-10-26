@@ -113,13 +113,13 @@
 
 						<div class="form-group row M0 border-bottom PB5 border-color-lightblue">
 
-							<div class="col-sm-1">
+							<div class="col-sm-2">
 
 								<strong>Mã</strong>
 
 							</div>
 
-							<div class="col-sm-4">
+							<div class="col-sm-3">
 
 								<strong>Họ và tên</strong>
 
@@ -165,13 +165,13 @@
 
 							<div class="row M0 ">
 
-								<div class="col-sm-1">
+								<div class="col-sm-2">
 
 									#=employeeNo#
 
 								</div>
 
-								<div class="col-sm-4 text-ellipsis">
+								<div class="col-sm-3 text-ellipsis">
 
 									<strong>
 

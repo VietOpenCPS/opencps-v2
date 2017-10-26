@@ -141,7 +141,8 @@
 					data : {
 						type : "citizen",
 						keyword : options.data.searchApplicant,
-						lock : options.data.lock
+						lock : options.data.lock,
+						order: true
 					},
 					success : function (result) {
 						options.success(result);
@@ -281,6 +282,7 @@
 	});
 
 	$(document).on("click",".btn-lock-account-citizen",function(event){
+		var that = this;
 		var id = $(this).attr("data-pk");
 		$.ajax({
 			url : "${api.server}/applicants/"+id+"/lock",
@@ -291,17 +293,16 @@
 				locked : true
 			},
 			success : function(result){
-				console.log(id);
 				var item = dataSourceCitizen.get(id);
-				console.log(item);
 				if(item){
 					var mappingUser = item.mappingUser;
 					mappingUser.locking = true;
-					console.log(mappingUser);
 					
 					dataSourceCitizen.fetch(function(){
 						item.set("mappingUser",mappingUser);
 					});
+
+					$(that).closest("td").html('<button class="btn btn-sm btn-unlock-account-citizen" type="button" data-pk="' + id + '">Kích hoạt</button><button class="btn btn-sm btn-delete-account-citizen" type="button" data-pk="' + id + '">Xóa</button>');
 				}
 			},
 			error : function(xhr){
@@ -311,6 +312,7 @@
 	});
 
 	$(document).on("click",".btn-unlock-account-citizen",function(event){
+		var that = this;
 		var id = $(this).attr("data-pk");
 		$.ajax({
 			url : "${api.server}/applicants/"+id+"/lock",
@@ -327,9 +329,11 @@
 					mappingUser.locking = false;
 					item.set("mappingUser",mappingUser);
 				}
+
+				$(that).closest("td").html('<button class="btn btn-sm btn-lock-account-citizen" type="button" data-pk="' + id + '">Khóa tài khoản</button>');
 			},
 			error : function(xhr){
-
+				showMessageByAPICode(xhr.status);
 			}
 		});
 	});
@@ -348,13 +352,14 @@
 					var index = dataSourceCitizen.remove(item);
 				},
 				error : function(xhr){
-
+					showMessageByAPICode(xhr.status);
 				}
 			});
 		}
 	});
 
 	$(document).on("click",".btn-lock-account-business",function(event){
+		var that = this;
 		var id = $(this).attr("data-pk");
 		$.ajax({
 			url : "${api.server}/applicants/"+id+"/lock",
@@ -372,14 +377,18 @@
 					mappingUser.locking = true;
 					item.set("mappingUser",mappingUser);
 				}
+
+				$(that).closest("td").html('<button class="btn btn-sm btn-unlock-account-business" type="button" data-pk="' + id + '">Kích hoạt</button><button class="btn btn-sm btn-delete-account-business" type="button" data-pk="' + id + '">Xóa</button>');
+
 			},
 			error : function(xhr){
-
+				showMessageByAPICode(xhr.status);
 			}
 		});
 	});
 
 	$(document).on("click",".btn-unlock-account-business",function(event){
+		var that = this;
 		var id = $(this).attr("data-pk");
 		$.ajax({
 			url : "${api.server}/applicants/"+id+"/lock",
@@ -396,9 +405,11 @@
 					mappingUser.locking = false;
 					item.set("mappingUser",mappingUser);
 				}
+
+				$(that).closest("td").html('<button class="btn btn-sm btn-lock-account-business" type="button" data-pk="' + id + '">Khóa tài khoản</button>');
 			},
 			error : function(xhr){
-
+				showMessageByAPICode(xhr.status);
 			}
 		});
 	});
@@ -417,7 +428,7 @@
 					var index = dataSourceBusiness.remove(item);
 				},
 				error : function(xhr){
-
+					showMessageByAPICode(xhr.status);
 				}
 			});
 		}

@@ -5,13 +5,7 @@
 </@>
 <#assign isSignedIn = themeDisplay.isSignedIn() />
 
-<#assign userName = themeDisplay.getUser().getFullName() />
-
-<#if themeDisplay.getUser().getFemale()>
-<#assign preUserName = "Bà" />
-<#else>
-<#assign preUserName = "Ông" />
-</#if>
+<#assign userName = themeDisplay.getUser().getFirstName() />
 
 <#assign GetterUtil = objectUtil("com.liferay.portal.kernel.util.GetterUtil") />
 <#assign PortalUtil = objectUtil("com.liferay.portal.kernel.util.PortalUtil") />
