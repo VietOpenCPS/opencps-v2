@@ -793,7 +793,7 @@
 
 	<xsd:complexType name="DossierFileSearchResultModel">
 		<xsd:sequence>
-			<xsd:element name="dossierId" type="xsd:int" minOccurs="0" />
+			<xsd:element name="dossierId" type="xsd:long" minOccurs="0" />
 			<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
 			<xsd:element name="dossierTemplateNo" type="xsd:string" minOccurs="0" />
 			<xsd:element name="dossierPartNo" type="xsd:string" minOccurs="0" />
@@ -801,7 +801,7 @@
 			<xsd:element name="fileTemplateNo" type="xsd:string" minOccurs="0" />
 			<xsd:element name="displayName" type="xsd:string" minOccurs="0" />
 			<xsd:element name="fileType" type="xsd:string" minOccurs="0" />
-			<xsd:element name="fileSize" type="xsd:int" minOccurs="0" />
+			<xsd:element name="fileSize" type="xsd:long" minOccurs="0" />
 			<xsd:element name="original" type="xsd:boolean" minOccurs="0" />
 			<xsd:element name="isNew" type="xsd:boolean" minOccurs="0" />
 			<xsd:element name="signCheck" type="xsd:int" minOccurs="0" />

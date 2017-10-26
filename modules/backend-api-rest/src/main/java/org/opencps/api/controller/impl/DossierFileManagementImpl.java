@@ -19,6 +19,7 @@ import org.opencps.api.dossierfile.model.DossierFileCopyInputModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileResultsModel;
 import org.opencps.api.dossierfile.model.DossierFileSearchModel;
+import org.opencps.api.dossierfile.model.DossierFileSearchResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -36,6 +37,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -412,11 +414,18 @@ public class DossierFileManagementImpl implements DossierFileManagement{
 				throw new UnauthenticationException();
 			}
 			
+			DossierFileSearchResultsModel results = new DossierFileSearchResultsModel();
+			
 			DossierFileActions action = new DossierFileActionsImpl();
 			
 			JSONObject dossierFileJsonObject = action.getDossierFiles(groupId, query.getKeyword(), 
 					query.getTemplate(), query.getType(), query.isOwner(), query.isOriginal(), query.getStart(),
 					query.getEnd(), query.getSort(), query.getOrder(), serviceContext);
+			
+			List<Document> documents = (List<Document>) dossierFileJsonObject.get("data");
+			
+			results.setTotal(dossierFileJsonObject.getInt("total"));
+			results.getData().addAll(DossierFileUtils.mappingToDossierFileSearchResultsModel(documents));
 
 			return Response.status(200).entity(dossierFileJsonObject).build();
 
