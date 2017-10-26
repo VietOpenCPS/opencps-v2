@@ -637,6 +637,10 @@
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
+
+					setTimeout(function(){
+						$("#listViewTTHC li[data-pk=" + idServiceinfo + "]").addClass("k-state-selected");
+					}, 100);
 				},
 				error : function(result){
 					if (result.responseJSON.description == "DuplicateServiceCodeException"){
@@ -683,6 +687,9 @@
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
 
+					setTimeout(function(){
+						$("#listViewTTHC li[data-pk=" + result.serviceInfoId + "]").addClass("k-state-selected");
+					}, 100);
 				},
 				error : function(result){
 
@@ -725,6 +732,10 @@
 						notification.show({
 							message: "Yêu cầu được thực hiện thành công"
 						}, "success");
+
+						setTimeout(function(){
+							$("#listViewTTHC li[data-pk=" + idServiceinfo + "]").addClass("k-state-selected");
+						}, 100);
 					},
 					error : function(result){
 						if (result.responseJSON.description == "DuplicateServiceCodeException"){
@@ -761,6 +772,10 @@
 							message: "Yêu cầu được thực hiện thành công"
 						}, "success");
 						pullDataDetail(result.serviceInfoId);
+
+						setTimeout(function(){
+							$("#listViewTTHC li[data-pk=" + result.serviceInfoId + "]").addClass("k-state-selected");
+						}, 100);
 					},
 					error : function(result){
 						if (result.responseJSON.description == "DuplicateServiceCodeException"){

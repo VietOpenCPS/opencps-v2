@@ -313,9 +313,15 @@
 						$("#frmEstablishedProcess").hide();
 					},
 					error : function(xhr){
-						notification.show({
-							message: "Yêu cầu thất bại"
-						}, "error");
+						if (result.responseJSON.description == "DuplicateSeqOrderException"){
+							notification.show({
+								message: "Lỗi trùng số thứ tự"
+							}, "error");
+						} else {
+							notification.show({
+								message: "Yêu cầu thất bại"
+							}, "error");
+						}
 					}	
 				});
 			}else {

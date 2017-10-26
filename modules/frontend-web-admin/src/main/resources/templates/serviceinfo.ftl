@@ -21,14 +21,14 @@
 					</ul>
 					<div id='pagerTTHC' class='k-pager-wrap k-widget k-floatwrap'></div>
 					<script type="text/x-kendo-template" id="templateTTHC" >
-						<li class="">
+						<li class="" data-pk="#:id#">
 							<div class="row">
 								<div class="col-sm-12 MB5">
 									<span class="showServiceinfoDetail" data-pk="#:id#">
 										<span class="" data-pk="#:id#">#:serviceCode# </span>
 										#if(typeof active !== "undefined" && active) {#
 										<i class="fa fa-check ML5" aria-hidden="true"></i>
-										#} #
+										#}#
 									</span>
 									<i class="fa fa-trash pull-right _itemServiceinfo_btnDelete" data-pk="#:id#"></i>
 								</div>

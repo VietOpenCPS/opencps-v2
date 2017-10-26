@@ -35,9 +35,16 @@
 						<i class="fa fa-gg" aria-hidden="true"></i>
 					</a>
 				</div>
+				<div class="col-sm-9 PL10 P0">Chức vụ</div>
+			</li>
+			<li class="clearfix employee" >
+				<div class="col-sm-2 clearfix ">
+					<a href="javascript:;" >
+						<i class="fa fa-gg" aria-hidden="true"></i>
+					</a>
+				</div>
 				<div class="col-sm-9 PL10 P0">Cán bộ</div>
 			</li>
-			
 			<li class="clearfix" >
 				<div class="col-sm-2 clearfix ">
 					<a href="javascript:;" >
@@ -103,17 +110,18 @@
 		animation: { open: { effects: "fadeIn"} },
 		tabPosition: "left",
 		contentUrls: [
-		'${ajax.dictcollection_index}',
-		'${ajax.serviceinfo_list}',
-		'${url.adminWorkingUnitPortlet.working_unit_list}',
-		'${ajax.employee_index}',
-		'${ajax.dossiertemplate}',
-		'${ajax.serviceprocess}',
-		'${ajax.serviceconfig}',
-		'holiday.ftl',
-		'${ajax.payment_config}',
-		'${ajax.manage_account}',
-		'efrom.ftl'
+			'${ajax.dictcollection_index}',
+			'${ajax.serviceinfo_list}',
+			'${url.adminWorkingUnitPortlet.working_unit_list}',
+			'${url.adminJobPosPortlet.jobpos_list}',
+			'${url.employeePortlet.employee_list}',
+			'${ajax.dossiertemplate}',
+			'${ajax.serviceprocess}',
+			'${ajax.serviceconfig}',
+			'holiday.ftl',
+			'${ajax.payment_config}',
+			'${ajax.manage_account}',
+			'efrom.ftl'
 		]
 	}).data('kendoTabStrip');
 
@@ -357,3 +365,4 @@
 
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;"> <div class="modal-dialog" style="position: relative !important;"> <div class="modal-content" style="padding-bottom: 15px;"> </div> </div> <!-- /.modal-dialog --> </div>
 
+<div class="modal fade" id="modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;"> <div class="modal-dialog modal-lg" style="position: relative !important;"> <div class="modal-content" style="padding-bottom: 15px;"> </div> </div> <!-- /.modal-dialog --> </div>
