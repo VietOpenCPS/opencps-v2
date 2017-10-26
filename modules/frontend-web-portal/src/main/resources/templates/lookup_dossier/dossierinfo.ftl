@@ -145,7 +145,7 @@
         selectable: false,
         autoBind:false
     });
-    var evenDataDossierFileDetail = function(){
+    var evenDataDossierDetail = function(){
         var paraValue2 = $("#input_dossier_detail").val(); 
         dataSourceDossierFileDetail.read({password: paraValue2});
         dataSourceDossierLogDetail.read({password: paraValue2})
@@ -153,7 +153,7 @@
     $("#btn_dossierinfo_detail").click(
                             function(){
                                 $("#detailView2").show();
-                                evenDataDossierFileDetail()
+                                evenDataDossierDetail()
                             }
                         )   
 </script>
