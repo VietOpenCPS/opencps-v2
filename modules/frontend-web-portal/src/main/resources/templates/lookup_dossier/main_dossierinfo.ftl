@@ -65,7 +65,7 @@
 						        	#}
 						        })
 				        	#
-                            
+                           
                         </div>
                         <hr class="col-sm-12 P0 M0">
                     </li>
@@ -129,7 +129,7 @@
 			console.log(paraValue);
 		    dataSourceDossierResultSearch.read({keyword: paraValue})
 		}
-		$("#input_search_dossierinfo").change(
+		$("#input_search_dossierinfo").keyup(
 			function(){ evenSearch() }
 		);
 		$("#filterButton").click(
