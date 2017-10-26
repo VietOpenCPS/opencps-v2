@@ -694,7 +694,7 @@
 
   });
 
-var pullDetailProfile = function(){
+var pullDetailProfile = function(id){
   $.ajax({
     url : "${api.server}/applicants/${applicantId}",
     dataType : "json",
