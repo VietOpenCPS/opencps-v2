@@ -77,6 +77,7 @@
 		dataValueField:"itemCode",
 		noDataTemplate: 'Không có dữ liệu',
 		filter: "contains",
+		index: -1,
 		dataSource : {
 			transport : {
 				read : {
@@ -100,6 +101,9 @@
 		change : function(e){
 			var value = this.value();
 			pullPaymentConfig(value);
+		},
+		dataBound: function(e){
+			pullPaymentConfig($("#govAgencyCode").data("kendoComboBox").value());
 		}
 	});
 
@@ -114,25 +118,71 @@
 					//govAgencyCode : value
 				},
 				success : function(result){
+					var hasPaymentConfig = false;
 					if(result.data){
-						var dataObj = result.data[0];
-						if(dataObj){
-							$("#itemPaymentConfig").val(dataObj.paymentConfigId);
+						if (result.data[0]){
+							for (var i = 0; i < result.data.length; i++){
+								var dataObj = result.data[i];
 
-							var viewModel = kendo.observable({
-								govAgencyCode : dataObj.govAgencyCode,
-								govAgencyName : dataObj.govAgencyName,
-								govAgencyTaxNo : dataObj.govAgencyTaxNo,
-								invoiceTemplateNo : dataObj.invoiceTemplateNo,
-								invoiceIssueNo : dataObj.invoiceIssueNo,
-								invoiceLastNo : dataObj.invoiceLastNo,
-								bankInfo : dataObj.bankInfo
-							});
+								if (dataObj.govAgencyCode == value){
+									hasPaymentConfig = true;
+									var viewModel = kendo.observable({
+										govAgencyCode : dataObj.govAgencyCode,
+										govAgencyName : dataObj.govAgencyName,
+										govAgencyTaxNo : dataObj.govAgencyTaxNo,
+										invoiceTemplateNo : dataObj.invoiceTemplateNo,
+										invoiceIssueNo : dataObj.invoiceIssueNo,
+										invoiceLastNo : dataObj.invoiceLastNo,
+										bankInfo : dataObj.bankInfo,
+									});
 
-							kendo.bind($("#frmPaymentConfig"), viewModel);
-						}else{
-							$("#itemPaymentConfig").val("");
+									kendo.bind($("#frmPaymentConfig"), viewModel);
+
+									$("#itemPaymentConfig").val(dataObj.paymentConfigId);
+
+									pullOtherField(dataObj.paymentConfigId);
+								}
+							}
+						} else {
+							var dataObj = result.data;
+
+							if (dataObj.govAgencyCode == value){
+								hasPaymentConfig = true;
+								var viewModel = kendo.observable({
+									govAgencyCode : dataObj.govAgencyCode,
+									govAgencyName : dataObj.govAgencyName,
+									govAgencyTaxNo : dataObj.govAgencyTaxNo,
+									invoiceTemplateNo : dataObj.invoiceTemplateNo,
+									invoiceIssueNo : dataObj.invoiceIssueNo,
+									invoiceLastNo : dataObj.invoiceLastNo,
+									bankInfo : dataObj.bankInfo,
+								});
+
+								kendo.bind($("#frmPaymentConfig"), viewModel);
+
+								$("#itemPaymentConfig").val(dataObj.paymentConfigId);
+
+								pullOtherField(dataObj.paymentConfigId);
+							}
 						}
+					}
+
+					if (!hasPaymentConfig){
+						var viewModel = kendo.observable({
+							govAgencyCode : "",
+							govAgencyName : "",
+							govAgencyTaxNo : "",
+							invoiceTemplateNo : "",
+							invoiceIssueNo : "",
+							invoiceLastNo : "",
+							bankInfo : "",
+							invoiceForm: "",
+							epaymentConfig: ""
+						});
+
+						kendo.bind($("#frmPaymentConfig"), viewModel);
+
+						$("#itemPaymentConfig").val("");
 					}
 				},
 				error : function(xhr){
@@ -142,50 +192,33 @@
 		}
 	}
 
-	var updatePaymentConfig = function(dataPk){
-		var paymentConfig = paymentConfigDataSource.get(dataPk);
+	function pullOtherField(paymentConfigId){
+		$.ajax({
+			url : "${api.server}/paymentconfigs/" + paymentConfigId + "/invoiceform",
+			dataType : "json",
+			type : "GET",
+			headers: {"groupId": ${groupId}},
+			success : function(result){
+				$("textarea#invoiceForm").val(result.value);
+			},
+			error : function(xhr){
 
-		paymentConfig.set("govAgencyCode", $("#govAgencyCode").val());
-		paymentConfig.set("govAgencyName", $("#govAgencyName").val());
-		paymentConfig.set("govAgencyTaxNo", $("#govAgencyTaxNo").val());
-		paymentConfig.set("invoiceTemplateNo", $("#invoiceTemplateNo").val());
-		paymentConfig.set("invoiceIssueNo", $("#invoiceIssueNo").val());
-		paymentConfig.set("invoiceLastNo", $("#invoiceLastNo").val());
-		paymentConfig.set("bankInfo", $("#bankInfo").val());
-		paymentConfig.set("placeInfo", $("#placeInfo").val());
-		paymentConfig.set("paymentDomain", $("#paymentDomain").val());
-		paymentConfig.set("paymentVersion", $("#paymentVersion").val());
-		paymentConfig.set("paymentMerchantCode", $("#paymentMerchantCode").val());
-		paymentConfig.set("paymentSecureKey", $("#paymentSecureKey").val());
-		paymentConfig.set("reportTemplate", $("#reportTemplate").val());
-		paymentConfig.set("paymentGateType", $("#paymentGateType").val());
-		paymentConfig.set("returnUrl", $("#returnUrl").val());
-		paymentConfig.set("paymentConfigNo", $("#paymentConfigNo").val());
-
-		paymentConfigDataSource.sync();
-	}
-
-	var addPaymentConfig = function(){
-		paymentConfigDataSource.add({
-			"govAgencyCode": $("#govAgencyCode").val(),
-			"govAgencyName": $("#govAgencyName").val(),
-			"govAgencyTaxNo": $("#govAgencyTaxNo").val(),
-			"invoiceTemplateNo": $("#invoiceTemplateNo").val(),
-			"invoiceIssueNo": $("#invoiceIssueNo").val(),
-			"invoiceLastNo": $("#invoiceLastNo").val(),
-			"bankInfo": $("#bankInfo").val(),
-			"placeInfo": $("#placeInfo").val(),
-			"paymentDomain": $("#paymentDomain").val(),
-			"paymentVersion": $("#paymentVersion").val(),
-			"paymentMerchantCode": $("#paymentMerchantCode").val(),
-			"paymentSecureKey": $("#paymentSecureKey").val(),
-			"reportTemplate": $("#reportTemplate").val(),
-			"paymentGateType": $("#paymentGateType").val(),
-			"returnUrl": $("#returnUrl").val(),
-			"paymentConfigNo": $("#paymentConfigNo").val(),
+			}
 		});
-		paymentConfigDataSource.sync();
-	};
+
+		$.ajax({
+			url : "${api.server}/paymentconfigs/" + paymentConfigId + "/epaymentconfig",
+			dataType : "json",
+			type : "GET",
+			headers: {"groupId": ${groupId}},
+			success : function(result){
+				$("textarea#epaymentConfig").val(result.value);
+			},
+			error : function(xhr){
+
+			}
+		});
+	}
 
 	$("#btn-submit-paymentconfig").click(function(e){
 		e.preventDefault();
@@ -205,8 +238,6 @@
 					invoiceIssueNo : $("#invoiceIssueNo").val(),
 					invoiceLastNo : $("#invoiceLastNo").val(),
 					bankInfo : $("#bankInfo").val(),
-					invoiceForm : $("textarea#invoiceForm").val(),
-					epaymentConfig : $("textarea#epaymentConfig").val()
 				},
 				success : function(result){
 					notification.show({
@@ -217,6 +248,38 @@
 					notification.show({
 						message: "Xẩy ra lỗi, vui lòng thử lại"
 					}, "error");
+				}
+			});
+
+			$.ajax({
+				url : "${api.server}/paymentconfigs/" + id + "/invoiceform",
+				dataType : "json",
+				type : "POST",
+				headers: {"groupId": ${groupId}},
+				data : {
+					value: $("textarea#invoiceForm").val()
+				},
+				success : function(result){
+					
+				},
+				error : function(xhr){
+					
+				}
+			});
+
+			$.ajax({
+				url : "${api.server}/paymentconfigs/" + id + "/epaymentconfig",
+				dataType : "json",
+				type : "POST",
+				headers: {"groupId": ${groupId}},
+				data : {
+					value: $("textarea#epaymentconfig").val()
+				},
+				success : function(result){
+					
+				},
+				error : function(xhr){
+					
 				}
 			});
 		}else{
@@ -233,10 +296,40 @@
 					invoiceIssueNo : $("#invoiceIssueNo").val(),
 					invoiceLastNo : $("#invoiceLastNo").val(),
 					bankInfo : $("#bankInfo").val(),
-					invoiceForm : $("textarea#invoiceForm").val(),
-					epaymentConfig : $("textarea#epaymentConfig").val()
 				},
 				success : function(result){
+					$.ajax({
+						url : "${api.server}/paymentconfigs/" + result.paymentConfigId + "/invoiceform",
+						dataType : "json",
+						type : "POST",
+						headers: {"groupId": ${groupId}},
+						data : {
+							value: $("textarea#invoiceForm").val()
+						},
+						success : function(result){
+							
+						},
+						error : function(xhr){
+							
+						}
+					});
+
+					$.ajax({
+						url : "${api.server}/paymentconfigs/" + result.paymentConfigId + "/epaymentconfig",
+						dataType : "json",
+						type : "POST",
+						headers: {"groupId": ${groupId}},
+						data : {
+							value: $("textarea#epaymentconfig").val()
+						},
+						success : function(result){
+							
+						},
+						error : function(xhr){
+							
+						}
+					});
+
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");

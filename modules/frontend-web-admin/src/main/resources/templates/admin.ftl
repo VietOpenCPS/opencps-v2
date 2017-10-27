@@ -226,6 +226,13 @@
 			});
 		});
 
+		$("[role=combobox]").each(function() {
+			var widget = $(this).getKendoComboBox();
+			widget.input.on("focus", function() {
+				widget.open();
+			});
+		});
+
 		//////////////////////////
 		showMessageToastr = function(type, message){
 			toastr.options = {
