@@ -273,7 +273,7 @@
 				type : "POST",
 				headers: {"groupId": ${groupId}},
 				data : {
-					value: $("textarea#epaymentconfig").val()
+					value: $("textarea#epaymentConfig").val()
 				},
 				success : function(result){
 					
@@ -320,7 +320,7 @@
 						type : "POST",
 						headers: {"groupId": ${groupId}},
 						data : {
-							value: $("textarea#epaymentconfig").val()
+							value: $("textarea#epaymentConfig").val()
 						},
 						success : function(result){
 							

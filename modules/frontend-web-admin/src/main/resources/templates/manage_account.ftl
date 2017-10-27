@@ -60,7 +60,7 @@
 						<td>#:contactEmail#</td>
 						<td>#:contactTelNo#</td>
 						<td>#:createDate#</td>
-						<td>
+						<td class="applicant-status">
 							#if(mappingUser.locking){#
 							<span>Chưa kích hoạt</span>
 							#}else {#
@@ -303,6 +303,7 @@
 					});
 
 					$(that).closest("td").html('<button class="btn btn-sm btn-unlock-account-citizen" type="button" data-pk="' + id + '">Kích hoạt</button><button class="btn btn-sm btn-delete-account-citizen" type="button" data-pk="' + id + '">Xóa</button>');
+					$(that).closest("tr").find(".applicant-status").html("<span>Chưa kích hoạt</span>");
 				}
 			},
 			error : function(xhr){
@@ -331,6 +332,7 @@
 				}
 
 				$(that).closest("td").html('<button class="btn btn-sm btn-lock-account-citizen" type="button" data-pk="' + id + '">Khóa tài khoản</button>');
+				$(that).closest("tr").find(".applicant-status").html("<span>Hoàn thành</span>");
 			},
 			error : function(xhr){
 				showMessageByAPICode(xhr.status);
@@ -379,7 +381,7 @@
 				}
 
 				$(that).closest("td").html('<button class="btn btn-sm btn-unlock-account-business" type="button" data-pk="' + id + '">Kích hoạt</button><button class="btn btn-sm btn-delete-account-business" type="button" data-pk="' + id + '">Xóa</button>');
-
+				$(that).closest("tr").find(".applicant-status").html("<span>Chưa kích hoạt</span>");
 			},
 			error : function(xhr){
 				showMessageByAPICode(xhr.status);
@@ -407,6 +409,7 @@
 				}
 
 				$(that).closest("td").html('<button class="btn btn-sm btn-lock-account-business" type="button" data-pk="' + id + '">Khóa tài khoản</button>');
+				$(that).closest("tr").find(".applicant-status").html("<span>Hoàn thành</span>");
 			},
 			error : function(xhr){
 				showMessageByAPICode(xhr.status);
