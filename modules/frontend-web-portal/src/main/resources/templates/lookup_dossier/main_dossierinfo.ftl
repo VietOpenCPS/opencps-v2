@@ -39,12 +39,12 @@
                 <span class="text-bold text-light-blue">Tiến trình xử lý hồ sơ</span>
             </div>
             <div class="panel-body P0">
-                <ul class="ul-default" id="DossierDetailLog"></ul>
+                <ul class="ul-default mimic-table" id="DossierDetailLog"></ul>
                 <script type="text/x-kendo-template" id="tempDossierDetailLog">
-                    <li class="clearfix P0">
+                    <li class="clearfix eq-height-lg P0">
                     	<div class="orderNo col-sm-1 text-center center-all row-blue"></div>
                         <div class="col-sm-11 M0 P10">
-                            <span class="text-bold">#:author#</span><span>( #:payload.jobposTitle# )</span><span class="text-light-blue">#:payload.briefNote#</span><br>
+                            <span class="text-bold">#:author#</span><span>( #:payload.jobposTitle# ) </span><span class="text-light-blue">#:payload.briefNote#</span><br>
                             <span>#:createDate#</span><br>
                             <span>#:content#</span><br>
                             <#-- #
@@ -59,7 +59,6 @@
 						        })
 				        	#  -->
                         </div>
-                        <hr class="col-sm-12 P0 M0">
                     </li>
                 </script>
             </div>
@@ -192,14 +191,11 @@
 	                	var index = this.select().index();
 	                       dataItem = this.dataSource.view()[index];
 	                    $("#input_search_dossierinfo").val(dataItem.dossierId);
-	                    // console.log(dataItem.dossierId+"Run");
 	                	$("#detailView").load("${ajax.dossierinfo}",
 		                   	function(success){
 		                   		pullDataDetail(dataItem.dossierId);
 		                   	}
-	                	);
-	                	// refreshData();
-	                   	
+	                	)
 	                },
 	        dataBound: function(e) {
 	        	if(dataSourceDossierResult.total() == 1){
