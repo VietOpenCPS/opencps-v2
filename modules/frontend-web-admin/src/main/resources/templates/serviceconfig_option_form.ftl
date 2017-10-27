@@ -326,7 +326,6 @@
 		var checkSuccess = 0;
 		if(validator.validate()){
 			var arrServiceConfig = removeCoincident(arr);
-			console.log(arrServiceConfig);
 			for(var i=0;i< arrServiceConfig.length;i++){
 				if(arrServiceConfig[i]){
 					if(id){
@@ -377,8 +376,7 @@
 					}
 				}
 			}
-			console.log("chcekSucces!");
-			console.log(checkSuccess);
+			
 			if(checkSuccess === arrServiceConfig.length){
 				notification.show({
 					message: "Yêu cầu được thực hiện thành công"
@@ -405,7 +403,6 @@
 	};
 
 	var updateServieConfigoptionIfSuccess = function(dataPk,result){
-		console.log(dataPk);
 		dataSourceServiceOption.fetch(function(){
 			if(dataPk>0){
 				var item=dataSourceServiceOption.get(dataPk);

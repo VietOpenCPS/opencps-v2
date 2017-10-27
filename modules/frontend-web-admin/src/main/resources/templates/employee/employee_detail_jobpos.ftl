@@ -17,7 +17,7 @@
 				
 			</div>
 			
-			<span data-toggle="modal" class="btn btn-primary image-preview-input MLA"
+			<span data-toggle="modal" class="btn btn-active image-preview-input MLA"
 				href="${(url.employeePortlet.employee_detail_update_jobpos)!}&${portletNamespace}employeeId=${(employee.employeeId)!}" data-target="#modal">
 				
 				<i class="fa fa-plus-circle"></i> 

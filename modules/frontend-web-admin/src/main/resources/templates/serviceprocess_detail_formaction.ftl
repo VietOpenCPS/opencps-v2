@@ -99,6 +99,7 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
 						<select class="form-control" id="assignUserId" name="assignUserId" data-bind="value: assignUserId">
+							<option></option>
 						</select>
 					</div>
 				</div>
@@ -106,6 +107,22 @@
 			<div class="col-xs-12 col-sm-1"></div>
 			<div class="col-xs-12 col-sm-5">
 				<div class="checkbox"> <input type="checkbox" id="rollbackable" name="rollbackable" data-bind="checked: rollbackable"> <label>Cho phép rollback</label> </div>
+			</div>
+		</div>
+		<div class="row MT10">
+			<div class="col-xs-12 col-sm-12">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						Mẫu hồ sơ
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						<select class="form-control" id="dossiertemplates_file_filter" name="dossiertemplates_file_filter" data-bind="value: dossiertemplatesFileFilter">
+							<option></option>
+						</select>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="row">
@@ -256,25 +273,69 @@
 		noDataTemplate: 'Không có dữ liệu'
 	});
 
-	$.ajax({
-		url: "${api.server}" + "/dossiertemplates/0/parts",
-		type: "GET",
-		dataType: "json",
-		headers: {"groupId": ${groupId}},
-		async: false,
-		success: function(result) {
-			if (result && result.data && result.data.length > 0){
-				result.data.forEach(function(part){
-					var newOpt = $(".service-process-create-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
-					newOpt.value = part.fileTemplateNo;
-					newOpt.text = part.partName;
+	$("#dossiertemplates_file_filter").kendoComboBox({
+		dataTextField: "templateName",
+		dataValueField: "dossierTemplateId",
+		filter: "contains",
+		dataSource : {
+			transport : {
+				read : {
+					url : "${api.server}/dossiertemplates",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
 
-					newOpt = $(".service-process-return-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
-					newOpt.value = part.fileTemplateNo;
-					newOpt.text = part.partName;
-				});
+					},
+					error : function(xhr){
+
+					}
+				}
+			},
+			schema: {
+				data : "data",
+				total : "total"
 			}
-		}
+		},
+
+		noDataTemplate: 'Không có dữ liệu'
+	});
+
+	$("#dossiertemplates_file_filter").change(function(){
+		var dossierTemplateId = $("#dossiertemplates_file_filter").val();
+
+		$(".service-process-create-dossier-file-form-action-entry:not(:last)").remove();
+		$(".service-process-return-dossier-file-form-action-entry:not(:last)").remove();
+
+		$(".service-process-create-dossier-file-form-action-entry:last").find("select").val("");
+		$(".service-process-return-dossier-file-form-action-entry:last").find("select").val("");
+
+		$(".service-process-create-dossier-file-form-action-entry:last").find("select").empty();
+		$(".service-process-return-dossier-file-form-action-entry:last").find("select").empty();
+
+		$(".service-process-create-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
+		$(".service-process-return-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
+
+		$.ajax({
+			url: "${api.server}" + "/dossiertemplates/" + dossierTemplateId + "/parts",
+			type: "GET",
+			dataType: "json",
+			headers: {"groupId": ${groupId}},
+			async: false,
+			success: function(result) {
+				if (result && result.data && result.data.length > 0){
+					result.data.forEach(function(part){
+						var newOpt = $(".service-process-create-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
+						newOpt.value = part.fileTemplateNo;
+						newOpt.text = part.partName;
+
+						newOpt = $(".service-process-return-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
+						newOpt.value = part.fileTemplateNo;
+						newOpt.text = part.partName;
+					});
+				}
+			}
+		});
 	});
 
 </script>

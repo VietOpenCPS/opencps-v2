@@ -48,13 +48,4 @@
 
 	</div>
 
-	<div class="col-sm-12 text-center MT10">
-		<button class="btn" id="btn-back-employee">Quay lại</button>
-	</div>
 </div>
-<script type="text/javascript">
-	$("#btn-back-employee").click(function(){
-		$("#employee_list").show();
-		$("#employee_detail").hide();
-	});
-</script>
