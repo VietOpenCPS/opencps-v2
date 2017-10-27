@@ -111,7 +111,7 @@
 				type : "GET",
 				headers: {"groupId": ${groupId}},
 				data : {
-					govAgencyCode : value
+					//govAgencyCode : value
 				},
 				success : function(result){
 					if(result.data){

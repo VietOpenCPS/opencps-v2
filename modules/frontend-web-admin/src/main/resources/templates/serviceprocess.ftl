@@ -186,6 +186,7 @@
 							var entry = $('.service-process-form-entry:first');
 							entry.find('input[type=radio]').attr('name', "moderator_1");
 							entry.find('select').val(role.roleId);
+							entry.find('input[name=condition]').val("");
 							entry.find('input[type=radio][value='+role.moderator+']').prop('checked',true);
 
 							for (var i = 1; i < data.length; i++) {
@@ -202,6 +203,7 @@
 								newEntry.find('input[type=radio]').attr('name', name);
 
 								newEntry.find('select').val(role.roleId);
+								newEntry.find('input[name=condition]').val(role.condition);
 								newEntry.find('input[type=radio][value=' + role.moderator + ']').prop('checked',true);
 								currentEntry.find('input[type=radio][value=' + radioValue + ']').prop('checked',true);
 
@@ -214,6 +216,7 @@
 							var viewModel = kendo.observable({
 								roleId: "",
 								moderator: "",
+								condition: ""
 							});
 
 							kendo.bind($(".service-process-form-entry")[0], viewModel);
@@ -221,30 +224,30 @@
 					}
 				});
 
-				$.ajax({
-					url: "${api.server}" + "/dossiertemplates/0/parts",
-					type: "GET",
-					dataType: "json",
-					headers: {"groupId": ${groupId}},
-					async: false,
-					success: function(result) {
-						$(".service-process-create-dossier-file-form-action-entry select").empty();
-						$(".service-process-return-dossier-file-form-action-entry select").empty();
-						$(".service-process-create-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
-						$(".service-process-return-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
-						if (result && result.data && result.data.length > 0){
-							result.data.forEach(function(part){
-								var newOpt = $(".service-process-create-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
-								newOpt.value = part.fileTemplateNo;
-								newOpt.text = part.partName;
+				// $.ajax({
+				// 	url: "${api.server}" + "/dossiertemplates/0/parts",
+				// 	type: "GET",
+				// 	dataType: "json",
+				// 	headers: {"groupId": ${groupId}},
+				// 	async: false,
+				// 	success: function(result) {
+				// 		$(".service-process-create-dossier-file-form-action-entry select").empty();
+				// 		$(".service-process-return-dossier-file-form-action-entry select").empty();
+				// 		$(".service-process-create-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
+				// 		$(".service-process-return-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
+				// 		if (result && result.data && result.data.length > 0){
+				// 			result.data.forEach(function(part){
+				// 				var newOpt = $(".service-process-create-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
+				// 				newOpt.value = part.fileTemplateNo;
+				// 				newOpt.text = part.partName;
 
-								newOpt = $(".service-process-return-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
-								newOpt.value = part.fileTemplateNo;
-								newOpt.text = part.partName;
-							});
-						}
-					}
-				});
+				// 				newOpt = $(".service-process-return-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
+				// 				newOpt.value = part.fileTemplateNo;
+				// 				newOpt.text = part.partName;
+				// 			});
+				// 		}
+				// 	}
+				// });
 			}
 		});
 
@@ -320,6 +323,7 @@ $(document).on("click", "#btn_add_service_process", function(event){
 	var entry = $('.service-process-form-entry:first');
 	entry.find('input[type=radio]').attr('name', "moderator_1");
 	entry.find('select').val('');
+	entry.find('input[name=condition]').val('');
 	entry.find('input[type=radio]:checked').prop('checked', false);
 
 	$("#btn_save_service_process").attr("data-pk", "");
@@ -379,6 +383,7 @@ $(document).on("click", "#btn_cancle_service_process", function(event){
 					var entry = $('.service-process-form-entry:first');
 					entry.find('input[type=radio]').attr('name', "moderator_1");
 					entry.find('select').val(role.roleId);
+					entry.find('input[name=condition]').val(role.condition);
 					entry.find('input[type=radio][value='+role.moderator+']').prop('checked',true);
 
 					for (var i = 1; i < data.length; i++) {
@@ -395,6 +400,7 @@ $(document).on("click", "#btn_cancle_service_process", function(event){
 						newEntry.find('input[type=radio]').attr('name', name);
 
 						newEntry.find('select').val(role.roleId);
+						newEntry.find('input[name=condition]').val(role.condition);
 						newEntry.find('input[type=radio][value=' + role.moderator + ']').prop('checked',true);
 						currentEntry.find('input[type=radio][value=' + radioValue + ']').prop('checked',true);
 
@@ -407,6 +413,7 @@ $(document).on("click", "#btn_cancle_service_process", function(event){
 					var viewModel = kendo.observable({
 						roleId: "",
 						moderator: "",
+						condition: ""
 					});
 
 					kendo.bind($(".service-process-form-entry")[0], viewModel);
@@ -470,7 +477,6 @@ var updateServiceProcess = function(dataPk){
 				headers: {"groupId": ${groupId}},
 				async: false,
 				success: function(result) {
-					console.log(result);
 					if (result && result.data && result.data.length > 0){
 						result.data.forEach(function(role){
 							$.ajax({
@@ -507,6 +513,7 @@ var updateServiceProcess = function(dataPk){
 						headers: {"groupId": ${groupId}},
 						data: {
 							moderator: $(this).find('input[type=radio]:checked').val(),
+							condition: $(this).find('input[name=condition]').val(),
 						},
 						success: function(result) {
 
@@ -559,6 +566,7 @@ var updateServiceProcess = function(dataPk){
 								data: {
 									roleId: $(this).find('select[name=roleId]').val(),
 									moderator: $(this).find('input[type=radio]:checked').val(),
+									condition: $(this).find('input[name=condition]').val(),
 								},
 								error: function(result) {
 									notification.show({

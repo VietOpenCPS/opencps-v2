@@ -266,6 +266,7 @@
 							var entry = $('.service-process-form-step-entry:first');
 							entry.find('input[type=radio]').attr('name', "moderator_1");
 							entry.find('select').val(role.roleId);
+							entry.find('input[name=condition]').val(role.condition);
 							entry.find('input[type=radio][value='+role.moderator+']').prop('checked',true);
 
 							for (var i = 1; i < data.length; i++) {
@@ -282,6 +283,7 @@
 								newEntry.find('input[type=radio]').attr('name', name);
 
 								newEntry.find('select').val(role.roleId);
+								newEntry.find('input[name=condition]').val(role.condition);
 								newEntry.find('input[type=radio][value=' + role.moderator + ']').prop('checked',true);
 								currentEntry.find('input[type=radio][value=' + radioValue + ']').prop('checked',true);
 
@@ -294,6 +296,7 @@
 							var viewModel = kendo.observable({
 								roleId: "",
 								moderator: "",
+								condition: ""
 							});
 
 							kendo.bind($(".service-process-form-entry")[0], viewModel);
@@ -447,6 +450,7 @@
 							async: false,
 							data: {
 								moderator: $(this).find('input[type=radio]:checked').val(),
+								condition: $(this).find('input[name=condition]').val(),
 							},
 							error: function(result) {
 								notification.show({
@@ -509,6 +513,7 @@
 									data: {
 										roleId: $(this).find('select[name=roleId]').val(),
 										moderator: $(this).find('input[type=radio]:checked').val(),
+										condition: $(this).find('input[name=condition]').val(),
 									},
 									error: function(result) {
 										notification.show({

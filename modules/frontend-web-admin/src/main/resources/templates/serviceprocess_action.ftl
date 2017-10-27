@@ -190,7 +190,8 @@
 					requestPayment: serviceProcessAction.requestPayment,
 					paymentFee: serviceProcessAction.paymentFee,
 					syncActionCode: serviceProcessAction.syncActionCode,
-					rollbackable: serviceProcessAction.rollbackable
+					rollbackable: serviceProcessAction.rollbackable,
+					dossiertemplatesFileFilter: ""
 				});
 
 				kendo.bind($("#serviceprocesses_detail_form_action"), viewModel);
@@ -318,7 +319,8 @@
 					createDossierFiles: "",
 					returnDossierFiles: "",
 					syncActionCode: "",
-					rollbackable: ""
+					rollbackable: "",
+					dossiertemplatesFileFilter: ""
 				});
 
 				initStepCombobox();

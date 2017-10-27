@@ -100,9 +100,18 @@
 				</div>
 				<div class="row MT5">
 					<div class="col-xs-12 col-sm-6">
-						<select class="form-control" id="roleId" name="roleId" data-bind="value: roleId">
-							<option value=""></option>
-						</select>
+						<div class="row">
+							<div class="col-xs-12 col-sm-12">
+								<select class="form-control" name="roleId" data-bind="value: roleId">
+									<option value=""></option>
+								</select>
+							</div>
+						</div>
+						<div class="row MT5">
+							<div class="col-xs-12 col-sm-12">
+								<div class="form-group"> <input name="condition" type="text" class="form-control" placeholder="Điều kiện phân công xử lý" data-bind="value: condition"> </div>
+							</div>
+						</div>
 					</div>
 					<div class="col-xs-12 col-sm-3">
 						<div class="radio-inline"> <input type="radio" name="moderator_1" value="false" data-bind="checked: moderator"> <label>Theo dõi</label> </div>
@@ -184,6 +193,7 @@
 		newEntry.find('input[type=radio]').attr('name', name);
 
 		newEntry.find('select').val('');
+		newEntry.find('input[name=condition]').val('');
 		newEntry.find('input[type=radio]:checked').prop('checked',false);
 		currentEntry.find('input[type=radio][value=' + radioValue + ']').prop('checked',true);
 
