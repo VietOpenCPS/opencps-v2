@@ -69,7 +69,7 @@
             }
         });
     };
-    // Cấu hình dataSource chi tiết thông tin hồ sơ
+    //dataSource chi tiết thông tin hồ sơ
     var dataSourceDossierFileDetail = new kendo.data.DataSource({
         type: "json",
         transport: {
