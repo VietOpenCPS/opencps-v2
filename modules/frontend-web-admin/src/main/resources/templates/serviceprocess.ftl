@@ -186,7 +186,7 @@
 							var entry = $('.service-process-form-entry:first');
 							entry.find('input[type=radio]').attr('name', "moderator_1");
 							entry.find('select').val(role.roleId);
-							entry.find('input[name=condition]').val("");
+							entry.find('input[name=condition]').val(role.condition);
 							entry.find('input[type=radio][value='+role.moderator+']').prop('checked',true);
 
 							for (var i = 1; i < data.length; i++) {
@@ -461,6 +461,10 @@ var updateServiceProcess = function(dataPk){
 				serviceProcess.set("generatePassword", $("#generatePassword").prop("checked"));
 				serviceProcess.set("directNotification", $("#directNotification").prop("checked"));
 				serviceProcess.set("serverNo", $("#serverNo").val());
+
+				setTimeout(function(){
+					$("#service_process_list_view li[data-pk=" + dataPk + "]").addClass("k-state-selected");
+				}, 100);
 			},
 			error: function(result) {
 				notification.show({
@@ -594,6 +598,10 @@ var updateServiceProcess = function(dataPk){
 					});
 
 					$("#btn_save_service_process").attr("data-pk", result.serviceProcessId);
+
+					setTimeout(function(){
+						$("#service_process_list_view li[data-pk=" + result.serviceProcessId + "]").addClass("k-state-selected");
+					}, 100);
 				},
 				error: function(result) {
 					if (result.responseJSON.description == "DuplicateProcessNoException"){

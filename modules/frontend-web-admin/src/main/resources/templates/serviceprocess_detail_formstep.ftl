@@ -109,7 +109,7 @@
 						</div>
 						<div class="row MT5">
 							<div class="col-xs-12 col-sm-12">
-								<div class="form-group"> <input name="condition" type="text" class="form-control" placeholder="Điều kiện phân công xử lý" data-bind="value: condition"> </div>
+								<div class="form-group"> <input name="condition" type="text" class="form-control" placeholder="Điều kiện phân công xử lý" data-bind="value: condition" title="Điều kiện phân công xử lý"> </div>
 							</div>
 						</div>
 					</div>
@@ -293,7 +293,7 @@
 				if (result && result.data && result.data.length > 0){
 					result.data.forEach(function(jobpos){
 						var newOpt = $(".service-process-form-step-entry select")[0].appendChild(document.createElement('option'));
-						newOpt.value = jobpos.jobPosId;
+						newOpt.value = jobpos.roleId;
 						newOpt.text = jobpos.title;
 					});
 				}
