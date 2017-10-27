@@ -1,6 +1,6 @@
 {
 	"api" : {
-		
+		"server": "http://hanoi.fds.vn:2281/api"
 	},
 	"groupId" : 20147,
 	"homepage" : {

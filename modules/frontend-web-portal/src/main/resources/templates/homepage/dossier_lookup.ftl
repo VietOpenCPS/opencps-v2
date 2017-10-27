@@ -1,3 +1,20 @@
+<!-- List-view hồ sơ đã có kết quả -->
+<div class="dossier-with-result box clearfix">
+	<div class="col-sm-12 box-title">
+		<span>HỒ SƠ ĐÃ CÓ KẾT QUẢ</span>
+	</div>
+	<div class="col-sm-12 P0">
+		<ul class="ul-default" id="lvDossierResult"></ul>
+		<!-- Template listview -->
+		<script type="text/x-kendo-template" id="tempDossierResult">
+			<li class="PL15 item-listview hover-pointer text-hover-blue align-middle-lg">#:applicantName# - #:dossierId#</li>
+		</script>
+	</div>
+	<hr class="col-sm-12 P0 M0 MP15">
+	<!-- element handle pagination -->
+	<div class="pull-left" id="pagerDossirResult"></div>
+</div>
+
 <div class="dossier-with-result">
 	<div class="col-sm-12">
 		<span class="title">HỒ SƠ ĐÃ CÓ KẾT QUẢ</span>
@@ -51,19 +68,16 @@
 			}
 		}
 	});
-
 	$("#lvDossierResult").kendoListView({
 		dataSource : dataSourceDossierResult,
 		template : kendo.template($("#tempDossierResult").html())
 	});
-
 	$("#pagerDossirResult").kendoPager({
 		dataSource : dataSourceDossierResult,
 		info : false,
 		selectTemplate: '<li class="k-link"><i class="fa fa-circle" aria-hidden="true"></i></li>',
 		linkTemplate: '<li><a href="\\#" class="k-link" data-#=ns#page="#=idx#"><i class="fa fa-circle" aria-hidden="true"></i></a></li>'
 	});
-
 	$("#btn-search-dossier").click(function(){
 		dataSourceDossierResult.read({
 			dossierCode : $("#searchDossierCode").val()

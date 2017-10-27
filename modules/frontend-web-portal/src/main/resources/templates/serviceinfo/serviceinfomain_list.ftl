@@ -438,7 +438,7 @@ serverFiltering: false
       dataTextField: "serviceName",
       filter: "contains",
       placeholder: "Nhập từ khóa",
-      noDataTemplate: 'Không có dữ liệu'
+      noDataTemplate: "Không có dữ liệu"
     });
 
 
