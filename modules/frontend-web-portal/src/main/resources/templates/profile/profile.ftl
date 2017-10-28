@@ -3,7 +3,7 @@
 </#if>
 <div class="row account-info" id="frmDetailAccount">
 	<div class="col-sm-2 col-xs-12">
-		<img src="https://jobseekers.vn/wp-content/themes/sb_theme/assets/images/default_avatar.png" class="img-responsive max-width-100 img-rounded">
+		<img src="/o/frontend.web.portal/images/default_avatar.png" class="img-responsive max-width-100 img-rounded">
 		<div class="text-center"><a href="" class="text-light-gray">Thay đổi avatar</a></div>
 		<p class="name text-bold text-center" data-bind="text:applicantName" id="profileName"></p>
 		<div>Số CMND/Hộ chiếu: <span class="text-bold" data-bind="text:applicantIdNo" id="profileIdNo"></span></div>
