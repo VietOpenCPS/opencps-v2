@@ -326,7 +326,6 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		// TODO
 		if (applicant.contentEquals(org.opencps.auth.api.keys.ActionKeys.APPLICANT_BUSINESS)) {
 			MultiMatchQuery query = new MultiMatchQuery(Boolean.toString(true));
 
@@ -434,7 +433,6 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		// TODO
 		if (applicant.contentEquals(org.opencps.auth.api.keys.ActionKeys.APPLICANT_BUSINESS)) {
 			MultiMatchQuery query = new MultiMatchQuery(Boolean.toString(true));
 

@@ -131,7 +131,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	 */
 
 	@Indexable(type = IndexableType.REINDEX)
-	public Applicant updateApplication(ServiceContext context, long applicantId, String applicantName,
+	public Applicant updateApplication(ServiceContext context, long groupId, long applicantId, String applicantName,
 			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String profile, String password)
@@ -161,13 +161,13 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
 
 			String activationCode = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
-			;
+			
 
 			boolean autoPassword = false;
 			boolean autoScreenName = true;
 			boolean sendEmail = false;
 
-			long[] groupIds = null;
+			long[] groupIds = new long [] {groupId};
 			long[] organizationIds = null;
 			long[] roleIds = null;
 			long[] userGroupIds = null;
@@ -227,7 +227,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			applicant.setCompanyId(context.getCompanyId());
 			applicant.setUserId(context.getUserId());
 			applicant.setUserName(auditUser.getFullName());
-			applicant.setGroupId(context.getScopeGroupId());
+			applicant.setGroupId(groupId);
 
 			applicant.setApplicantName(applicantName);
 			applicant.setApplicantIdType(applicantIdType);
@@ -385,13 +385,21 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		Applicant applicant = applicantLocalService.fetchApplicant(applicantId);
 
 		User user = userPersistence.fetchByPrimaryKey(applicant.getMappingUserId());
+		
+		boolean lockStatus = user.getLockout();
+		
+		if (lockStatus) {
+			lockStatus = false;
+		} else {
+			lockStatus = true;
+		}
 
-		userLocalService.updateLockout(user, true);
+		userLocalService.updateLockout(user, lockStatus);
 
-		user.setLockout(true);
-
+		user.setLockout(lockStatus);
 		userPersistence.update(user);
-		applicant.setLock_(true);
+		
+		applicant.setLock_(lockStatus);
 
 		applicantPersistence.update(applicant);
 

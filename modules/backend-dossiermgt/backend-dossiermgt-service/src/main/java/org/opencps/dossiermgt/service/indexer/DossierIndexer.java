@@ -7,6 +7,10 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -219,6 +223,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		indexableActionableDynamicQuery.performActions();
 	}
 
+	
 	Log _log = LogFactoryUtil.getLog(DossierIndexer.class);
 
 }

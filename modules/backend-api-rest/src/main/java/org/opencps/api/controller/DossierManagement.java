@@ -109,7 +109,7 @@ public interface DossierManagement {
 			@Context ServiceContext serviceContext, @PathParam("id") String id);
 	
 	@GET
-	@Path("/{id}")
+	@Path("/{id}/cancelling")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Owner requset cancalling for Dossier", response = DossierDetailModel.class)
 	@ApiResponses(value = {
@@ -123,7 +123,7 @@ public interface DossierManagement {
 			@Context ServiceContext serviceContext, @PathParam("id") String id);
 	
 	@GET
-	@Path("/{id}")
+	@Path("/{id}/correcting")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Owner requset correcting for Dossier", response = DossierDetailModel.class)
 	@ApiResponses(value = {
@@ -137,7 +137,7 @@ public interface DossierManagement {
 			@Context ServiceContext serviceContext, @PathParam("id") String id);
 
 	@GET
-	@Path("/{id}")
+	@Path("/{id}/submitting")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Owner submitting Dossier", response = DossierDetailModel.class)
 	@ApiResponses(value = {

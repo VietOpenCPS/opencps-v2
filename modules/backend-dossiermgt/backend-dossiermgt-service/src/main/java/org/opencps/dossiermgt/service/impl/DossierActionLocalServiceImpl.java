@@ -72,7 +72,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		User userAction = userLocalService.getUser(context.getUserId());
 
-		if (dossierActionId != 0) {
+		if (dossierActionId == 0) {
 			dossierActionId = counterLocalService.increment(DossierAction.class.getName());
 
 			object = dossierActionPersistence.create(dossierActionId);
@@ -88,7 +88,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			object.setDossierId(dossierId);
 			object.setServiceProcessId(serviceProcessId);
 			object.setPreviousActionId(previousActionId);
-			object.setActionCode(syncActionCode);
+			object.setActionCode(actionCode);
 			object.setActionUser(actionUser);
 			object.setActionName(actionName);
 			object.setActionNote(actionNote);

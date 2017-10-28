@@ -618,6 +618,11 @@
 			<finder-column name="groupId" />
 			<finder-column name="processName" />
 		</finder>
+		
+		<finder return-type="ServiceProcess" name="GID_SN">
+			<finder-column name="groupId" />
+			<finder-column name="serverNo" />
+		</finder>
 
 	</entity>
 

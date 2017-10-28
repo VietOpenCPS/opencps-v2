@@ -13,6 +13,8 @@ import org.opencps.api.serviceprocess.model.ServiceProcessDataModel;
 import org.opencps.api.serviceprocess.model.ServiceProcessDetailModel;
 import org.opencps.api.serviceprocess.model.ServiceProcessInputModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
@@ -85,6 +87,8 @@ public class ServiceProcessUtils {
 		output.setServerNo(serviceProcess.getServerNo());
 
 		return output;
+
+
 	}
 
 	public static ServiceProcessDetailModel mappingToDetail(ServiceProcess serviceProcess) {
@@ -108,13 +112,19 @@ public class ServiceProcessUtils {
 		output.setGeneratePassword(Boolean.toString(serviceProcess.getGeneratePassword()));
 		output.setDirectNotification(Boolean.toString(serviceProcess.getDirectNotification()));
 		output.setServerNo(serviceProcess.getServerNo());
-
-		// TODO add logic get serverName
-		String serverName = "TEST";
+		
+		ServerConfig server = ServerConfigLocalServiceUtil.getByCode(serviceProcess.getServerNo());
+		
+		String serverName = StringPool.BLANK;
+		
+		if (Validator.isNotNull(server))
+			serverName = server.getServerName();
 
 		output.setServerName(serverName);
 
 		return output;
+
+
 	}
 
 	public static List<RoleDataModel> mappingToServiceRole(List<ServiceProcessRole> processRoles) {

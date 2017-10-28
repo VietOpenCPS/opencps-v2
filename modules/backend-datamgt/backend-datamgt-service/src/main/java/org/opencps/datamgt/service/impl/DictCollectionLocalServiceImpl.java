@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.datamgt.constants.DictCollectionTerm;
+import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.exception.NoSuchDictCollectionException;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
@@ -41,8 +42,10 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.TermQuery;
 import com.liferay.portal.kernel.search.generic.MatchQuery.Operator;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.search.generic.TermQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -301,6 +304,10 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 	 * @return DictCollection
 	 */
 	public DictCollection fetchByF_dictCollectionCode(String collectionCode, long groupId) {
+		
+		if (collectionCode.equalsIgnoreCase("ADMINISTRATIVE_REGION")) {
+			groupId = 0;
+		}
 
 		return dictCollectionPersistence.fetchByF_dictCollectionCode(collectionCode.toUpperCase(), groupId);
 
@@ -407,14 +414,27 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		}
 
 		if (Validator.isNotNull(groupId)) {
+			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
+					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
+					: indexer.getFullQuery(searchContext);
 
-			MultiMatchQuery query = new MultiMatchQuery(groupId);
+			TermQuery catQuery1 = new TermQueryImpl(DictItemTerm.GROUP_ID, groupId);
+			TermQuery catQuery2 = new TermQueryImpl(DictItemTerm.GROUP_ID, String.valueOf(0));
 
-			query.addFields(DictCollectionTerm.GROUP_ID);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-
+			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
+			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
+			booleanQuery.add(categoryQuery, BooleanClauseOccur.MUST);
 		}
+
+		// if (Validator.isNotNull(groupId)) {
+		//
+		// MultiMatchQuery query = new MultiMatchQuery(groupId);
+		//
+		// query.addFields(DictCollectionTerm.GROUP_ID);
+		//
+		// booleanQuery.add(query, BooleanClauseOccur.MUST);
+		//
+		// }
 
 		if (Validator.isNotNull(userId)) {
 
@@ -491,14 +511,27 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		}
 
 		if (Validator.isNotNull(groupId)) {
+			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
+					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
+					: indexer.getFullQuery(searchContext);
 
-			MultiMatchQuery query = new MultiMatchQuery(groupId);
+			TermQuery catQuery1 = new TermQueryImpl(DictItemTerm.GROUP_ID, groupId);
+			TermQuery catQuery2 = new TermQueryImpl(DictItemTerm.GROUP_ID, String.valueOf(0));
 
-			query.addFields(DictCollectionTerm.GROUP_ID);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-
+			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
+			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
+			booleanQuery.add(categoryQuery, BooleanClauseOccur.MUST);
 		}
+
+		// if (Validator.isNotNull(groupId)) {
+		//
+		// MultiMatchQuery query = new MultiMatchQuery(groupId);
+		//
+		// query.addFields(DictCollectionTerm.GROUP_ID);
+		//
+		// booleanQuery.add(query, BooleanClauseOccur.MUST);
+		//
+		// }
 
 		if (Validator.isNotNull(userId)) {
 
