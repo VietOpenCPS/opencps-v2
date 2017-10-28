@@ -339,45 +339,45 @@
 
 		if (files.length > 0) {
 
-		//show client
-		for (var i = 0; i < files.length; i++) {
-			
-			var file = files[i];
-			var imageType = /image.*/; 
-			
-			if ( i>0 ) {
-				continue;
-			}
-
-			if (!file.type.match(imageType)) {
-				continue;
-			}
-			
-			var img=document.getElementById("_workingUnitDetail_logo_thumbnil");
-			img.file = file;
-			var reader = new FileReader();
-			
-			reader.onload = (function(aImg) { 
+			//show client
+			for (var i = 0; i < files.length; i++) {
 				
-				return function(e) { 
-					aImg.src = e.target.result;
-				}; 
+				var file = files[i];
+				var imageType = /image.*/; 
+				
+				if ( i>0 ) {
+					continue;
+				}
 
-			})(img);
-			
-			reader.readAsDataURL(file);
-			
+				if (!file.type.match(imageType)) {
+					continue;
+				}
+				
+				var img=document.getElementById("_workingUnitDetail_logo_thumbnil");
+				img.file = file;
+				var reader = new FileReader();
+				
+				reader.onload = (function(aImg) { 
+					
+					return function(e) { 
+						aImg.src = e.target.result;
+					}; 
+
+				})(img);
+				
+				reader.readAsDataURL(file);
+				
+			}
+
 		}
 
 	}
 
-}
+	function _workingUnitDetail_uploadLogoFileEntry(fileInput, workingUnitId) {
+		
+		var files = fileInput.files;
 
-function _workingUnitDetail_uploadLogoFileEntry(fileInput, workingUnitId) {
-	
-	var files = fileInput.files;
-
-	if (files.length > 0) {
+		if (files.length > 0) {
 
 		//show client
 		for (var i = 0; i < files.length; i++) {

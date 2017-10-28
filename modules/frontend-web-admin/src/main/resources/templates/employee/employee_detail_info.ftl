@@ -87,7 +87,7 @@
 				
 				<input type="file" id="employee-avatar" accept="image/*"  onchange="employeeChangeAvatar(this)" style="display: none;" />
 
-				<img id="employee-avatar-thumbnil" class="img-responsive center-block" style="max-height: 200px;"  src="/o/frontend-web-usermgt/images/user_02.png" alt=""/>
+				<img id="employee-avatar-thumbnil" class="img-responsive center-block" style="max-height: 200px;"  src="/o/org.opencps.frontend.admin/images/default_avatar.png" alt=""/>
 
 				<button id="employee-avatar-btn" data-pk="${(employee.employeeId)!}" class="btn btn-active  btn-block"> 
 					Tải ảnh đại diện
@@ -581,7 +581,7 @@ function employeeChangeAvatar(fileInput) {
 		e.stopPropagation();
 		e.stopImmediatePropagation();
 		
-		var pk = $(this).attr('datas-pk');
+		var pk = $(this).attr('data-pk');
 		
 		$('#employee-detail-gender').editable({
 			name: 'gender',
