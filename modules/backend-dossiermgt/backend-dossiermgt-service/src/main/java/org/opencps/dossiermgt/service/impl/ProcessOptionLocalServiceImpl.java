@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
+import org.opencps.dossiermgt.exception.SeqOrderException;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.service.base.ProcessOptionLocalServiceBaseImpl;
@@ -92,15 +93,20 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 			long serviceConfigId, int seqOrder, String autoSelect, String instructionNote, String submissionNote,
 			long dossierTemplateId, long serviceProcessId, ServiceContext context) throws PortalException {
 
-		validateAdd(processOptionId, seqOrder, autoSelect, instructionNote, submissionNote);
+		validateAdd(processOptionId, seqOrder, autoSelect, instructionNote, submissionNote, serviceConfigId);
 
 		ProcessOption processOption = null;
 
 		Date now = new Date();
+		
+		//int autoSeqOrder = processOptionPersistence.countBySC_ID(serviceConfigId);
 
 		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
 
 		if (processOptionId == 0) {
+			
+			//autoSeqOrder = autoSeqOrder + 1;
+			
 			processOptionId = counterLocalService.increment(ProcessOption.class.getName());
 
 			processOption = processOptionPersistence.create(processOptionId);
@@ -122,7 +128,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 			processOption.setOptionName(optionName);
 
 		} else {
-
+			
 			processOption = processOptionPersistence.fetchByPrimaryKey(processOptionId);
 
 			processOption.setModifiedDate(now);
@@ -305,8 +311,23 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 	}
 
 	private void validateAdd(long processOptionId, int seqOrder, String autoSelect, String instructionNote,
-			String submissionNote) throws PortalException {
-		// TODO add more business logic here
+			String submissionNote, long serviceConfigId) throws PortalException {
+		
+		if (processOptionId != 0) {
+			ProcessOption option = processOptionPersistence.fetchBySC_ID_OP(serviceConfigId, seqOrder);
+			
+			if (Validator.isNotNull(option) && option.getPrimaryKey() != processOptionId) {
+				throw new SeqOrderException("DuplicateSeqOrderException");
+			}
+			
+		} else {
+			ProcessOption option = processOptionPersistence.fetchBySC_ID_OP(serviceConfigId, seqOrder);
+			
+			if (Validator.isNotNull(option)) {
+				throw new SeqOrderException("DuplicateSeqOrderException");
+			}
+		}
+		
 	}
 
 	private void validateRemove(long processOptionId) throws PortalException {

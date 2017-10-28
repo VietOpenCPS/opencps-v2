@@ -51,10 +51,8 @@
 						req.setRequestHeader('groupId', ${groupId});
 					},
 					success : function(result){
-
 					},
 					error : function(xhr){
-
 					}
 				}
 			},

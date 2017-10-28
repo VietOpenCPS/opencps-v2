@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.action.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,7 +13,6 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -187,7 +187,7 @@ public class DossierActionsImpl implements DossierActions {
 		}
 
 		long serviceProcessId = option.getServiceProcessId();
-		
+
 		ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 
 		ProcessAction processAction = null;
@@ -254,14 +254,14 @@ public class DossierActionsImpl implements DossierActions {
 					processAction.getSyncActionCode(), hasForedDossierSync, processAction.getRollbackable(),
 					curStep.getStepCode(), curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(),
 					context);
-			
-			//SyncAction
+
+			// SyncAction
 			int method = 1;
-			
+
 			DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
 					isCreateDossier, method, dossier.getPrimaryKey(), StringPool.BLANK, serviceProcess.getServerNo());
-			
-			//TODO add SYNC for DossierFile and PaymentFile here
+
+			// TODO add SYNC for DossierFile and PaymentFile here
 		}
 
 		return dossierAction;
@@ -285,10 +285,11 @@ public class DossierActionsImpl implements DossierActions {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	protected long getNextActionId(long groupId, long dossierId, String refId, ProcessAction currentAction) {
-		//TODO get the recently DOSSIER_ACTION, set nextActionId for the recently DOSSIER_ACTION by currentActionId
-		
+		// TODO get the recently DOSSIER_ACTION, set nextActionId for the
+		// recently DOSSIER_ACTION by currentActionId
+
 		return 0l;
 	}
 
@@ -438,6 +439,41 @@ public class DossierActionsImpl implements DossierActions {
 		}
 
 		return action;
+	}
+
+
+	@Override
+	public Dossier initDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
+			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
+			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
+			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
+			boolean online, boolean notification, String applicantNote, ServiceContext context) throws PortalException {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+		 
+		Date appIdDate = null;
+		
+		try {
+			appIdDate = sdf.parse(applicantIdDate);
+		} catch (Exception e) {
+			
+		}
+		return DossierLocalServiceUtil.initDossier(groupId, dossierId, referenceUid, counter, serviceCode, serviceName,
+				govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate, address,
+				cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
+				contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode, postalCityName,
+				postalTelNo, online, notification, applicantNote, context);
+	}
+
+	@Override
+	public Dossier assignDossierToProcess(long dossierId, String dossierNote, String submissionNote, String briefNote,
+			String dossierNo, long folderId, long dossierActionId, String serverNo, ServiceContext context)
+			throws PortalException {
+
+		return DossierLocalServiceUtil.assignToProcess(dossierId, dossierNote, submissionNote, briefNote, dossierNo,
+				folderId, dossierActionId, serverNo, context);
 	}
 
 	protected Log _log = LogFactoryUtil.getLog(DossierActionsImpl.class);

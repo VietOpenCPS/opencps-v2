@@ -68,7 +68,9 @@ import javax.xml.bind.annotation.XmlType;
     "returnDossierFiles",
     "makeBriefNote",
     "syncActionCode",
-    "rollbackable"
+    "rollbackable",
+    "preStepName",
+    "postStepName"
 })
 public class ProcessActionDataModel {
 
@@ -76,7 +78,9 @@ public class ProcessActionDataModel {
     protected String actionCode;
     protected String actionName;
     protected String preStepCode;
+    protected String preStepName;
     protected String postStepCode;
+    protected String postStepName;
     protected String autoEvent;
     protected String preCondition;
     protected String allowAssignUser;
@@ -90,7 +94,23 @@ public class ProcessActionDataModel {
     protected String syncActionCode;
     protected String rollbackable;
 
-    /**
+    public String getPreStepName() {
+		return preStepName;
+	}
+
+	public void setPreStepName(String preStepName) {
+		this.preStepName = preStepName;
+	}
+
+	public String getPostStepName() {
+		return postStepName;
+	}
+
+	public void setPostStepName(String postStepName) {
+		this.postStepName = postStepName;
+	}
+
+	/**
      * Gets the value of the processActionId property.
      * 
      * @return
