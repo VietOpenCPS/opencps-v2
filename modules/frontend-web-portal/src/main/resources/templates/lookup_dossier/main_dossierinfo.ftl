@@ -47,7 +47,7 @@
                             <span class="text-bold">#:author#</span><span>( #:payload.jobposTitle# ) </span><span class="text-light-blue">#:payload.briefNote#</span><br>
                             <span>#:createDate#</span><br>
                             <span>#:content#</span><br>
-                            <#-- #
+                            #
 					        	dossierId = dataItem.dossierId;
 					        	$.each(payload.dossierFiles, function(index, file) {
 					        		if (file.fileType == "docx") {#
@@ -57,7 +57,7 @@
 						        		<span><img src="images/pdf.png" alt=""> <a href="${api.server}/dossiers/#:dossierId#/files/#:file.referenceUid#" class="text-greyy"></a></span><br>
 						        	#}
 						        })
-				        	#  -->
+				        	# 
                         </div>
                     </li>
                 </script>
