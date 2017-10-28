@@ -59,7 +59,7 @@
 		</div>
 
 		<div class="form-group">
-			<button class="btn btn-sm btn-primary btn-default" id="addJobpos" name="addJobpos" type="button" >
+			<button class="btn btn-sm btn-active btn-default" id="addJobpos" name="addJobpos" type="button" >
 				<i class="fa fa-check-circle"></i>
 				<span class="lfr-btn-label">Xác nhận</span>
 				
