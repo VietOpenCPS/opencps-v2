@@ -61,26 +61,12 @@ public class ProfilePorlet extends FreeMarkerPortlet {
 			UserMgtUtils.getApplicant(themeDisplay.getUser().getEmailAddress());
 		
 		JSONObject applicantObj = JSONFactoryUtil.createJSONObject();
-		applicantObj.put(
-			"applicantName",
-			applicant == null ? "" : applicant.getApplicantName());
-		applicantObj.put(
-			"address", applicant == null ? "" : applicant.getAddress());
-		applicantObj.put(
-			"cityName", applicant == null ? "" : applicant.getCityName());
-		applicantObj.put(
-			"districtName",
-			applicant == null ? "" : applicant.getDistrictName());
-		applicantObj.put(
-			"wardName", applicant == null ? "" : applicant.getWardName());
-		applicantObj.put(
-			"contactTelNo",
-			applicant == null ? "" : applicant.getContactTelNo());
-		applicantObj.put(
-			"contactEmail",
-			applicant == null ? "" : applicant.getContactEmail());
-		applicantObj.put(
-			"applicantId", applicant == null ? "" : applicant.getApplicantId());
+		String jsonObj = JSONFactoryUtil.looseSerialize(applicant);
+		try {
+			applicantObj = JSONFactoryUtil.createJSONObject(jsonObj);
+		}
+		catch (Exception e) {
+		}
 
 		// api
 		apiObject.put("server", themeDisplay.getPortalURL() + "/o/rest/v2");
