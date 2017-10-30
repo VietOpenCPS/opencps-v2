@@ -85,19 +85,21 @@
 							req.setRequestHeader('groupId', ${groupId});
 						},
 			            success: function (result) {
-			                var NoItem = result.data.length;
-			            	if (NoItem == 1) {
-			            		$("#detailView").load("${ajax.dossierinfo}",
-				                 	function(success){
-				                 		dataItem = result.data[0];
-				                  		pullDataDetail(dataItem.dossierId);
-				                  	}
-				              	);
-				            	$("#detailView2").hide()
-			            	};
-			            	if (NoItem > 1) {
-			            		options.success(result)
-			            	}
+			                if (result.data) {
+			                	var NoItem = result.data.length;
+				            	if (NoItem == 1) {
+				            		$("#detailView").load("${ajax.dossierinfo}",
+					                 	function(success){
+					                 		dataItem = result.data[0];
+					                  		pullDataDetail(dataItem.dossierId);
+					                  	}
+					              	);
+					            	$("#detailView2").hide()
+				            	};
+				            	if (NoItem > 1) {
+				            		options.success(result)
+				            	}
+			                }
 			            },
 			            error : function(xhr){
 			            	options.error(xhr);
