@@ -8,7 +8,7 @@
 			<div class="col-xs-12 col-sm-8">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						Số thành phần
+						Mã thành phần
 					</div>
 				</div>
 				<div class="row MT5">
@@ -80,7 +80,7 @@
 				</div>
 				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
-						<input id="fileTemplateNo" name="fileTemplateNo" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:fileTemplateNo"/>
+						<input id="fileTemplateNo_" name="fileTemplateNo" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:fileTemplateNo"/>
 					</div>
 				</div>
 			</div>
@@ -159,6 +159,9 @@
 	});
 
 	var updateDossierTemplatePart = function(dossierTemplateDataPk, dossierTemplatePartDataPk){
+		if (!validateTemplatePart()){
+			return false;
+		}
 
 		var url = "";
 		var type = "";
@@ -182,7 +185,7 @@
 				partName: $("#partName").val(),
 				partTip: $("#partTip").val(),
 				partType: $("#partType").val(),
-				fileTemplateNo: $("#fileTemplateNo").val(),
+				fileTemplateNo: $("#fileTemplateNo_").val(),
 				required: $('#required').is(':checked'),
 				esign: $('#esign').is(':checked'),
 			},
@@ -190,6 +193,8 @@
 				notification.show({
 					message: "Yêu cầu được thực hiện thành công"
 				}, "success");
+
+				dossierTemplatePartDataPk = result.partNo;
 
 				var upFormscriptSuccess = false, upFormReportSuccess = false, upSampleDataSuccess = false;
 				$.ajax({
@@ -242,7 +247,6 @@
 						message: "Xẩy ra lỗi, vui lòng thử lại"
 					}, "error");
 				}
-
 			},
 			error: function(result) {
 				notification.show({
@@ -251,6 +255,28 @@
 			}
 		});
 	};
+
+	function validateTemplatePart(){
+		if (!$("#partNo").val()){
+			notification.show({
+				message: "Mời nhập mã thành phần"
+			}, "error");
+			return false;
+		}
+		if (!$("#partName").val()){
+			notification.show({
+				message: "Mời nhập tên thành phần"
+			}, "error");
+			return false;
+		}
+		if (!$("#fileTemplateNo_").val()){
+			notification.show({
+				message: "Mời nhập mã mẫu tài liệu"
+			}, "error");
+			return false;
+		}
+		return true;
+	}
 
 	$("#partType").kendoComboBox({
 		filter: "contains",

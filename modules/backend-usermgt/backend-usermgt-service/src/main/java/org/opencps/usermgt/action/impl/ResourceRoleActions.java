@@ -39,9 +39,9 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public class ResourceRoleActions implements ResourceRoleInterface {
 
@@ -133,7 +133,7 @@ public class ResourceRoleActions implements ResourceRoleInterface {
 
 	public ResourceRole create(long userId, long groupId, String className, String classPK, Long roleId,
 			ServiceContext serviceContext)
-			throws NoSuchUserException, UnauthenticationException, UnauthorizationException {
+			throws NoSuchUserException, UnauthenticationException, UnauthorizationException, NotFoundException {
 		ResourceRole ett = null;
 
 		ett = ResourceRoleLocalServiceUtil.addResourceRole(userId, groupId, className, classPK, roleId, serviceContext);
@@ -149,14 +149,15 @@ public class ResourceRoleActions implements ResourceRoleInterface {
 
 			List<ResourceRole> resourceRoles = new ArrayList<>(
 					ResourceRoleLocalServiceUtil.findByF_className_classPK(groupId, className, classPK));
-
+			
 			JSONArray jRoles = JSONFactoryUtil.createJSONArray(roles);
-
+			
+			
 			// jUser to resource user
 			ResourceRole resourceRole = null;
 			for (int n = 0; n < jRoles.length(); n++) {
 				JSONObject role = jRoles.getJSONObject(n);
-
+				
 				resourceRole = ResourceRoleLocalServiceUtil.fetchByF_className_classPK_roleId(groupId, className,
 						classPK, role.getLong("roleId"));
 
@@ -182,6 +183,29 @@ public class ResourceRoleActions implements ResourceRoleInterface {
 		} catch (JSONException e) {
 			_log.error(e);
 		}
+	}
+
+	@Override
+	public void clone(String className, String classPK, long userId, long companyId, long groupId, String sourcePK,
+			ServiceContext serviceContext)
+			throws NotFoundException, UnauthenticationException, UnauthorizationException, NoSuchUserException {
+		List<ResourceRole> resourceRoles = new ArrayList<>(
+				ResourceRoleLocalServiceUtil.findByF_className_classPK(groupId, className, classPK));
+		
+		if(Validator.isNotNull(resourceRoles) && resourceRoles.size() > 0){
+			//Nothing to do here
+		} else {
+			
+			List<ResourceRole> resourceRolesSourcePK = new ArrayList<>(
+					ResourceRoleLocalServiceUtil.findByF_className_classPK(groupId, className, sourcePK));
+			
+			for (ResourceRole resourceRole : resourceRolesSourcePK) {
+			
+				ResourceRoleLocalServiceUtil.addResourceRole(userId, groupId, className, classPK, resourceRole.getRoleId(), serviceContext);
+			}
+			
+		}
+		
 	}
 
 }

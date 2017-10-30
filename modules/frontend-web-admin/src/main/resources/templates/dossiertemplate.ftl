@@ -12,7 +12,7 @@
 			<div class="row MT10">
 				<div class="col-xs-12 col-sm-12">
 					<div class="input-group">
-						<input type="text" class="form-control" id="input_search_dossier_template" placeholder="Số hồ sơ, Tên hồ sơ" title="Nhập Sô hồ sơ hoặc Tên hồ sơ để tìm kiếm">
+						<input type="text" class="form-control" id="input_search_dossier_template" placeholder="Số mẫu hồ sơ, Tên mẫu hồ sơ" title="Nhập Sô hồ sơ hoặc Tên hồ sơ để tìm kiếm">
 						<div class="input-group-addon btn-primary" id="btn_search_dossier_template" title="Tìm kiếm"><i class="fa fa-search" aria-hidden="true"></i></div>
 					</div>
 				</div>
@@ -60,7 +60,8 @@
 						data: {
 							keywords: options.data.keywords,
 							page: options.data.page,
-							pageSize: options.data.pageSize
+							pageSize: options.data.pageSize,
+							order: true
 						},
 						success: function(result) {
 							options.success(result);
@@ -192,7 +193,8 @@
 			dataSource: dossierTemplateDataSource,
 			buttonCount: 2,
 			messages: {
-				display: "{0}-{1} : {2}"
+				display: "Hiển thị {0}-{1} trong {2} kết quả",
+				empty: "Không có kết quả phù hợp!"
 			}
 		});
 
@@ -287,7 +289,7 @@
 				data: {
 					dossierTemplateId: dataPk,
 					templateNo: $("#templateNo").val(),
-					templateName: $("#templateName").val(),
+					templateName: $("#templateName_").val(),
 					description: $("#description").val()
 				},
 				success: function(result) {
@@ -298,8 +300,10 @@
 					var dossierTemplate = dossierTemplateDataSource.get(dataPk);
 
 					dossierTemplate.set("templateNo", $("#templateNo").val());
-					dossierTemplate.set("templateName", $("#templateName").val());
+					dossierTemplate.set("templateName", $("#templateName_").val());
 					dossierTemplate.set("description", $("#description").val());
+
+					$("#dossier_template_list_view li[data-pk=" + dataPk + "]").addClass("k-state-selected");
 				},
 				error: function(result) {
 					notification.show({
@@ -318,7 +322,7 @@
 				headers: {"groupId": ${groupId}},
 				data: {
 					templateNo: $("#templateNo").val(),
-					templateName: $("#templateName").val(),
+					templateName: $("#templateName_").val(),
 					description: $("#description").val()
 				},
 				success: function(result) {

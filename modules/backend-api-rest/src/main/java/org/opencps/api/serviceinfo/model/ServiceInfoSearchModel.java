@@ -69,7 +69,7 @@ public class ServiceInfoSearchModel {
     protected int start;
 	@QueryParam(value = "end")
     protected int end;
-	@DefaultValue("serviceName") @QueryParam(value = "sort")
+	@DefaultValue("createDate") @QueryParam("sort")
     protected String sort;
 	@QueryParam(value = "order")
     protected String order;

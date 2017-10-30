@@ -8,6 +8,7 @@ import javax.portlet.PortletResponse;
 
 import org.opencps.usermgt.constants.ResourceUserTerm;
 import org.opencps.usermgt.constants.WorkingUnitTerm;
+import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.ResourceUser;
 import org.opencps.usermgt.service.ResourceUserLocalServiceUtil;
 
@@ -80,15 +81,19 @@ public class ResourceUserIndexer extends BaseIndexer<ResourceUser> {
 		User user = UserLocalServiceUtil.fetchUser(resourceUser.getToUserId());
 		
 		String userName = StringPool.BLANK;
+		String email = StringPool.BLANK;
 		
 		if(Validator.isNotNull(user)){
 			
 			userName = user.getFullName();
+			email = user.getEmailAddress();
 			
 		}
 		
 		document.addTextSortable(ResourceUserTerm.TO_USERNAME, userName);
-
+		document.addTextSortable(ResourceUserTerm.EMAIL, email);
+		document.addTextSortable(ResourceUserTerm.USERCLASS, Employee.class.getName());
+		
 		return document;
 	}
 

@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.NotificationTypeManagement;
 import org.opencps.api.controller.util.NotificationTemplateUtils;
-import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.api.notificationtemplate.model.DataSearchModel;
 import org.opencps.api.notificationtemplate.model.NotificationTypeResults;
 import org.opencps.communication.action.NotificationTemplateInterface;

@@ -223,7 +223,12 @@
 		<column name="postService" type="boolean" />
 		<column name="registration" type="boolean" />
 
-
+		<finder return-type="ServiceConfig" name="GID_SI_GAC">
+			<finder-column name="groupId"/>
+			<finder-column name="serviceInfoId"/>
+			<finder-column name="govAgencyCode"/>
+		</finder>
+		
 	</entity>
 
 	<entity name="ProcessOption" table="opencps_processoption"
@@ -258,6 +263,16 @@
 		
 		<finder return-type="Collection" name="SC_ID">
 			<finder-column name="serviceConfigId"/>
+		</finder>
+
+		<finder return-type="ProcessOption" name="SC_ID_OP">
+			<finder-column name="serviceConfigId"/>
+			<finder-column name="optionOrder"/>
+		</finder>
+
+		<finder return-type="ProcessOption" name="SC_DT">
+			<finder-column name="serviceConfigId"/>
+			<finder-column name="dossierTemplateId"/>
 		</finder>
 
 	</entity>
@@ -603,6 +618,11 @@
 			<finder-column name="groupId" />
 			<finder-column name="processName" />
 		</finder>
+		
+		<finder return-type="ServiceProcess" name="GID_SN">
+			<finder-column name="groupId" />
+			<finder-column name="serverNo" />
+		</finder>
 
 	</entity>
 
@@ -706,6 +726,11 @@
 			<finder-column name="serviceProcessId" />
 		</finder>
 		
+		<finder return-type="Collection" name="GI_AC">
+			<finder-column name="groupId" />
+			<finder-column name="actionCode" />
+		</finder>
+		
 		<finder return-type="Collection" name="PRE_CODE">
 			<finder-column name="preStepCode" />
 			<finder-column name="groupId" />
@@ -748,6 +773,7 @@
 		<column name="payload" type="String" />
 		<column name="stepInstruction" type="String" />
 
+		
 	</entity>
 
 	<entity local-service="true" name="DossierActionUser"
@@ -872,5 +898,11 @@
 		<exception>HasExsist</exception>
 		
 		<exception>InvalidDossierStatus</exception>
+		<exception>DuplicateDossierFile</exception>
+		
+		<exception>DossierPassword</exception>
+		<exception>DossierAccess</exception>
+		<exception>SeqOrder</exception>
+		
 	</exceptions>
 </service-builder>

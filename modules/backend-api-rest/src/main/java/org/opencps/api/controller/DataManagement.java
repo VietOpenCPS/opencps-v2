@@ -41,7 +41,7 @@ import io.swagger.annotations.ApiResponses;
 @Path("/dictcollections")
 @Api(value = "/dictCollections", description = "APIs for DictCollection", tags = "dictcollection")
 public interface DataManagement {
-
+ 
 	@GET
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

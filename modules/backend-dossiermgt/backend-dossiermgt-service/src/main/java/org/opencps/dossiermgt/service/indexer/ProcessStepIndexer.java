@@ -6,6 +6,10 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.constants.ProcessStepTerm;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -27,6 +31,7 @@ import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 	public static final String CLASS_NAME = ProcessStep.class.getName();
@@ -66,15 +71,15 @@ public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 		document.addTextSortable(ProcessStepTerm.SEQUENCE_NO, object.getSequenceNo());
 		document.addTextSortable(ProcessStepTerm.DOSSIER_STATUS, object.getDossierStatus());
 		
-		//TODO Add DossierStatusText
-		document.addTextSortable(ProcessStepTerm.DOSSIER_STATUS_TEXT, object.getDossierStatus());
+		document.addTextSortable(ProcessStepTerm.DOSSIER_STATUS_TEXT, getDictItemName(object.getGroupId(), DOSSIER_STATUS, object.getDossierStatus()) );
 		document.addTextSortable(ProcessStepTerm.DOSSIER_SUB_STATUS, object.getDossierSubStatus());
-		//TODO Add DossierStatusText
-		document.addTextSortable(ProcessStepTerm.DOSSIER_SUB_STATUS_TEXT, object.getDossierSubStatus());
+		document.addTextSortable(ProcessStepTerm.DOSSIER_SUB_STATUS_TEXT, getDictItemName(object.getGroupId(), DOSSIER_STATUS, object.getDossierSubStatus()) );
 		document.addTextSortable(ProcessStepTerm.CUSTOM_PROCESS_URL, object.getCustomProcessUrl());
 		document.addTextSortable(ProcessStepTerm.STEP_INSTRUCTION, object.getStepInstruction());
 		document.addTextSortable(ProcessStepTerm.BRIEF_NOTE, object.getBriefNote());
 		document.addTextSortable(ProcessStepTerm.EDITABLE, Boolean.toString(object.getEditable()));
+		
+	
 		
 		// add extra fields (ProcessStepRole)
 		List<ProcessStepRole> roles = ProcessStepRoleLocalServiceUtil.findByP_S_ID(object.getPrimaryKey());
@@ -143,6 +148,24 @@ public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 
 		indexableActionableDynamicQuery.performActions();
 	}
+	
+	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
+
+		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
+
+		if (Validator.isNotNull(dc)) {
+			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
+
+			return it.getItemName();
+
+		} else {
+			return StringPool.BLANK;
+		}
+
+	}
+	
+	private static String DOSSIER_STATUS = "DOSSIER_STATUS";
+
 	
 	Log _log = LogFactoryUtil.getLog(ProcessStepIndexer.class);
 

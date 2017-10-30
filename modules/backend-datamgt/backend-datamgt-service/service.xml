@@ -99,6 +99,13 @@
 			<finder-column name="groupId"></finder-column>
 		</finder>
 		
+		
+		<finder return-type="DictItem" name="IC_DCI">
+			<finder-column name="itemCode"/>
+			<finder-column name="dictCollectionId"/>
+		</finder>
+		
+		
 		<finder return-type="Collection" name="F_parentItemId">
 			<finder-column name="parentItemId"></finder-column>
 		</finder>

@@ -2,17 +2,19 @@ package org.opencps.usermgt.action;
 
 import java.io.File;
 import java.io.InputStream;
+import java.security.DigestException;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public interface UserInterface {
 
@@ -40,4 +42,18 @@ public interface UserInterface {
 	public String updatePreferences(long id, long groupId, String key, String value, ServiceContext serviceContext)
 			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException,
 			DuplicateCategoryException;
+
+	public JSONObject getUsers(long groupId, ServiceContext serviceContext);
+
+	public User getUserById(long groupId, long companyId, long id, ServiceContext serviceContext);
+
+	public Document getForgot(long groupId, long companyId, String screenname_email, ServiceContext serviceContext);
+
+	public Document getForgotConfirm(long groupId, long companyId, String screenname_email, String code,
+			ServiceContext serviceContext) throws DigestException;
+
+	public boolean getCheckpass(long groupId, long companyId, long id, String password, ServiceContext serviceContext);
+
+	public boolean addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword,
+			ServiceContext serviceContext);
 }

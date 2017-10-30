@@ -128,8 +128,15 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 			
 			DictItem parentItem = DictItemLocalServiceUtil.fetchDictItem(dictItem.getParentItemId());
 			
-			parentCode = parentItem.getItemCode();
-		} 
+			if (Validator.isNotNull(parentItem) && Validator.isNotNull(parentItem.getItemCode())) {
+				parentCode = parentItem.getItemCode();
+			} else {
+				_log.info(parentItem.getItemCode());
+			}
+			
+		}  else {
+			parentCode = "0";
+		}
 		
 		document.addTextSortable(DictItemTerm.PARENT_ITEM_CODE, parentCode);
 		

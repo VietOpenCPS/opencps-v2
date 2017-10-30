@@ -5,16 +5,18 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.utils.FileUploadUtils;
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.usermgt.action.EmployeeInterface;
+import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
+import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.OfficeSite;
 import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -23,6 +25,7 @@ import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -44,8 +47,16 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
+import backend.auth.api.keys.Constants;
+import backend.utils.FileUploadUtils;
+import backend.utils.SendMailUtils;
+
 public class EmployeeActions implements EmployeeInterface {
 
+	public static Locale locale = new Locale("vi", "VN");
 	private static final Log _log = LogFactoryUtil.getLog(EmployeeActions.class);
 
 	@Override
@@ -79,11 +90,11 @@ public class EmployeeActions implements EmployeeInterface {
 	public Employee create(long userId, long companyId, long groupId, String employeeNo, String fullName, String email,
 			String gender, Date birthDate, String telNo, String mobile, String title, String workingStatus,
 			ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
-			UnauthorizationException, DuplicateCategoryException, PortalException {
+			UnauthorizationException, DuplicateEmployeeNoException, DuplicateEmployeeEmailException, PortalException {
 		Employee ett = null;
 
 		ett = EmployeeLocalServiceUtil.addEmployee(userId, groupId, fullName, employeeNo, GetterUtil.get(gender, 0),
-				birthDate, telNo, mobile, email, GetterUtil.get(workingStatus, 0), 0l, title, false, serviceContext);
+				birthDate, telNo, mobile, email, GetterUtil.get(workingStatus, 1), 0l, title, false, serviceContext);
 
 		return ett;
 	}
@@ -91,12 +102,12 @@ public class EmployeeActions implements EmployeeInterface {
 	@Override
 	public Employee update(long userId, long companyId, long groupId, long id, String employeeNo, String fullName,
 			String email, String gender, Date birthDate, String telNo, String mobile, String title,
-			String workingStatus, ServiceContext serviceContext) throws NoSuchUserException, NotFoundException,
-			UnauthenticationException, UnauthorizationException, DuplicateCategoryException, PortalException {
+			String workingStatus, ServiceContext serviceContext)
+			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException,
+			DuplicateEmployeeNoException, DuplicateEmployeeEmailException, PortalException {
 
-		System.out.println("EmployeeActions.update()" + id);
 		Employee employee = EmployeeLocalServiceUtil.fetchEmployee(id);
-		System.out.println("EmployeeActions.update(employee)" + employee);
+
 		if (Validator.isNotNull(employeeNo)) {
 			employee.setEmployeeNo(employeeNo);
 		}
@@ -135,7 +146,7 @@ public class EmployeeActions implements EmployeeInterface {
 		employee = EmployeeLocalServiceUtil.updateEmployee(userId, employee.getEmployeeId(), employee.getFullName(),
 				employee.getEmployeeNo(), employee.getGender(), employee.getBirthdate(), employee.getTelNo(),
 				employee.getMobile(), employee.getEmail(), employee.getWorkingStatus(), employee.getMainJobPostId(),
-				employee.getPhotoFileEntryId(), employee.getMappingUserId(), serviceContext);
+				employee.getPhotoFileEntryId(), employee.getMappingUserId(), employee.getTitle(), serviceContext);
 
 		return employee;
 	}
@@ -191,11 +202,11 @@ public class EmployeeActions implements EmployeeInterface {
 					fileSize, destination, desc, serviceContext);
 
 			Employee employee = EmployeeLocalServiceUtil.fetchEmployee(id);
-			
+
 			employee = EmployeeLocalServiceUtil.updateEmployee(userId, employee.getEmployeeId(), employee.getFullName(),
 					employee.getEmployeeNo(), employee.getGender(), employee.getBirthdate(), employee.getTelNo(),
 					employee.getMobile(), employee.getEmail(), employee.getWorkingStatus(), employee.getMainJobPostId(),
-					fileEntry.getFileEntryId(), employee.getMappingUserId(), serviceContext);
+					fileEntry.getFileEntryId(), employee.getMappingUserId(), employee.getTitle(), serviceContext);
 
 			file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), false);
 
@@ -224,7 +235,7 @@ public class EmployeeActions implements EmployeeInterface {
 			employee = EmployeeLocalServiceUtil.updateEmployee(userId, employee.getEmployeeId(), employee.getFullName(),
 					employee.getEmployeeNo(), employee.getGender(), employee.getBirthdate(), employee.getTelNo(),
 					employee.getMobile(), employee.getEmail(), employee.getWorkingStatus(), employee.getMainJobPostId(),
-					employee.getPhotoFileEntryId(), employee.getMappingUserId(), serviceContext);
+					employee.getPhotoFileEntryId(), employee.getMappingUserId(), employee.getTitle(), serviceContext);
 
 		}
 
@@ -253,7 +264,7 @@ public class EmployeeActions implements EmployeeInterface {
 			employee = EmployeeLocalServiceUtil.updateEmployee(userId, employee.getEmployeeId(), employee.getFullName(),
 					employee.getEmployeeNo(), employee.getGender(), employee.getBirthdate(), employee.getTelNo(),
 					employee.getMobile(), employee.getEmail(), employee.getWorkingStatus(), employee.getMainJobPostId(),
-					employee.getPhotoFileEntryId(), employee.getMappingUserId(), serviceContext);
+					employee.getPhotoFileEntryId(), employee.getMappingUserId(), employee.getTitle(), serviceContext);
 
 		}
 
@@ -289,10 +300,19 @@ public class EmployeeActions implements EmployeeInterface {
 
 	@Override
 	public JSONObject createEmployeeAccount(long userId, long companyId, long groupId, long id, String screenName,
-			String email, boolean exist, ServiceContext serviceContext) throws PortalException {
+			String email, boolean exist, ServiceContext serviceContext)
+			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException,
+			DuplicateEmployeeEmailException, DuplicateEmployeeNoException, PortalException {
+
+		if (Validator.isNull(screenName)) {
+			screenName = email.substring(0, email.indexOf("@"));
+		}
+
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
 		Employee employee = EmployeeLocalServiceUtil.fetchEmployee(id);
+
+		User user = UserLocalServiceUtil.fetchUserByEmailAddress(companyId, email);
 
 		if (Validator.isNotNull(employee) && employee.getMappingUserId() > 0) {
 			throw new DuplicateCategoryException();
@@ -300,54 +320,78 @@ public class EmployeeActions implements EmployeeInterface {
 
 			if (exist) {
 
-				User user = UserLocalServiceUtil.fetchUserByEmailAddress(companyId, email);
 				jsonObject.put("screenName", user.getScreenName());
 				jsonObject.put("email", user.getEmailAddress());
 				jsonObject.put("exist", exist);
-				
+				jsonObject.put("duplicate", Boolean.FALSE.toString());
+
 				employee = EmployeeLocalServiceUtil.updateEmployee(userId, employee.getEmployeeId(),
 						employee.getFullName(), employee.getEmployeeNo(), employee.getGender(), employee.getBirthdate(),
 						employee.getTelNo(), employee.getMobile(), employee.getEmail(), employee.getWorkingStatus(),
 						employee.getMainJobPostId(), employee.getPhotoFileEntryId(), user.getUserId(),
-						serviceContext);
-				
+						employee.getTitle(), serviceContext);
+
 			} else {
 
-				long[] userGroupIds = {};
-				long[] roleIds = {};
+				try {
 
-				Role role = RoleLocalServiceUtil.fetchRole(companyId, "employee");
+					long[] userGroupIds = {};
+					long[] roleIds = {};
 
-				if (Validator.isNotNull(role)) {
-					roleIds = new long[] { role.getRoleId() };
+					Role role = RoleLocalServiceUtil.fetchRole(companyId, "employee");
+
+					if (Validator.isNotNull(role)) {
+						roleIds = new long[] { role.getRoleId() };
+					}
+
+					long[] organizationIds = new long[] {};
+					long[] groupIds = { groupId };
+
+					String passWord = PwdGenerator.getPassword();
+
+					User newUser = UserLocalServiceUtil.addUser(0, companyId, false, passWord, passWord, false,
+							screenName.toLowerCase(), email, 0, StringPool.BLANK, serviceContext.getLocale(),
+							screenName, StringPool.BLANK, screenName, 0, 0, true, Calendar.JANUARY, 1, 1979,
+							StringPool.BLANK, groupIds, organizationIds, roleIds, userGroupIds, false, serviceContext);
+
+					Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+
+					indexer.reindex(newUser);
+
+					employee.setMappingUserId(newUser.getUserId());
+
+					employee = EmployeeLocalServiceUtil.updateEmployee(userId, employee.getEmployeeId(),
+							employee.getFullName(), employee.getEmployeeNo(), employee.getGender(),
+							employee.getBirthdate(), employee.getTelNo(), employee.getMobile(), employee.getEmail(),
+							employee.getWorkingStatus(), employee.getMainJobPostId(), employee.getPhotoFileEntryId(),
+							employee.getMappingUserId(), employee.getTitle(), serviceContext);
+
+					User fromUser = UserLocalServiceUtil.fetchUser(userId);
+
+					JSONObject payLoad = JSONFactoryUtil.createJSONObject();
+					
+					payLoad.put("USERNAME", newUser.getScreenName());
+					payLoad.put("USEREMAIL", newUser.getEmailAddress());
+					payLoad.put("PASSWORD", passWord);
+					
+					NotificationQueueLocalServiceUtil.addNotificationQueue(userId, groupId, Constants.USER_01,
+							User.class.getName(), String.valueOf(newUser.getUserId()),
+							payLoad.toJSONString(), fromUser.getFullName(), employee.getFullName(),
+							employee.getMappingUserId(), employee.getEmail(), employee.getTelNo(), new Date(),
+							null, serviceContext);
+
+					jsonObject.put("screenName", newUser.getScreenName());
+					jsonObject.put("email", newUser.getEmailAddress());
+					jsonObject.put("exist", exist);
+					jsonObject.put("duplicate", Boolean.FALSE.toString());
+
+				} catch (Exception e) {
+					jsonObject.put("screenName", user.getScreenName());
+					jsonObject.put("email", user.getEmailAddress());
+					jsonObject.put("exist", Boolean.TRUE);
+					jsonObject.put("duplicate", Boolean.TRUE.toString());
 				}
 
-				long[] organizationIds = new long[] {};
-				long[] groupIds = { groupId };
-
-				String passWord = PwdGenerator.getPassword();
-
-				User newUser = UserLocalServiceUtil.addUser(0, companyId, false, passWord, passWord, false,
-						screenName.toLowerCase(), email, 0, StringPool.BLANK, serviceContext.getLocale(), screenName,
-						StringPool.BLANK, screenName, 0, 0, true, Calendar.JANUARY, 1, 1979, StringPool.BLANK, groupIds,
-						organizationIds, roleIds, userGroupIds, false, serviceContext);
-
-				Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
-
-				indexer.reindex(newUser);
-
-				employee.setMappingUserId(newUser.getUserId());
-
-				employee = EmployeeLocalServiceUtil.updateEmployee(userId, employee.getEmployeeId(),
-						employee.getFullName(), employee.getEmployeeNo(), employee.getGender(), employee.getBirthdate(),
-						employee.getTelNo(), employee.getMobile(), employee.getEmail(), employee.getWorkingStatus(),
-						employee.getMainJobPostId(), employee.getPhotoFileEntryId(), employee.getMappingUserId(),
-						serviceContext);
-
-				jsonObject.put("screenName", newUser.getScreenName());
-				jsonObject.put("email", newUser.getEmailAddress());
-				jsonObject.put("exist", exist);
-				
 			}
 
 		}
@@ -359,33 +403,52 @@ public class EmployeeActions implements EmployeeInterface {
 	public JSONObject lockEmployeeAccount(long userId, long companyId, long groupId, long id, boolean locked,
 			ServiceContext serviceContext) throws PortalException {
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-		
+
 		Employee employee = EmployeeLocalServiceUtil.fetchEmployee(id);
-		
+
 		if (Validator.isNotNull(employee) && employee.getMappingUserId() < 0) {
 			throw new NoSuchUserException();
 		} else {
-			
+
 			User user = UserLocalServiceUtil.fetchUser(employee.getMappingUserId());
-			
-			if(locked){
+
+			if (locked) {
 				user.setStatus(WorkflowConstants.STATUS_DENIED);
 			} else {
 				user.setStatus(WorkflowConstants.STATUS_APPROVED);
 			}
-			
+
 			UserLocalServiceUtil.updateUser(user);
-			
+
 			Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
 
 			indexer.reindex(user);
-			
+
 			jsonObject.put("screenName", user.getScreenName());
 			jsonObject.put("email", user.getEmailAddress());
 			jsonObject.put("exist", true);
+			
+			JSONObject payLoad = JSONFactoryUtil.createJSONObject();
+			
+			payLoad.put("USERNAME", user.getScreenName());
+			payLoad.put("USEREMAIL", user.getEmailAddress());
+			payLoad.put("USERSTATUS", user.getStatus());
+			
+			NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId, Constants.USER_02,
+					User.class.getName(), String.valueOf(user.getUserId()),
+					payLoad.toJSONString(), "SYSTEM", user.getFullName(),
+					employee.getMappingUserId(), employee.getEmail(), employee.getTelNo(), new Date(),
+					null, serviceContext);
+			
 		}
-		
+
 		return jsonObject;
+	}
+
+	@Override
+	public void validateExits(long userId, long companyId, long groupId, String employeeNo, String email,
+			ServiceContext serviceContext) throws DuplicateEmployeeEmailException, DuplicateEmployeeNoException {
+		EmployeeLocalServiceUtil.isExits(groupId, employeeNo, email);
 	}
 
 }

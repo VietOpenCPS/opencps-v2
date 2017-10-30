@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
 import javax.portlet.PortletMode;
@@ -15,20 +16,31 @@ import javax.portlet.RenderResponse;
 import javax.portlet.WindowStateException;
 
 import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictGroup;
 import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
+import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.frontend.web.admin.constants.AdminPortletKeys;
 import org.opencps.frontend.web.admin.constants.FrontendWebAdminPortletConstants;
+import org.opencps.usermgt.action.impl.JobposActions;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -43,7 +55,6 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
@@ -213,14 +224,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		dataMgtURL.setParameter(
 			"mvcPath", "/templates/datamgt/dictcollection_index.ftl");
 
-		PortletURL employeeURL = PortletURLFactoryUtil.create(
-			renderRequest, portletId, themeDisplay.getPlid(),
-			PortletRequest.RENDER_PHASE);
-		employeeURL.setPortletMode(PortletMode.VIEW);
-		employeeURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-		employeeURL.setParameter(
-			"mvcPath", "/templates/employee/employee_index.ftl");
-
 		urlObject.put("serviceinfo_list", serviceInfoListURL.toString());
 		urlObject.put("serviceinfo_form", serviceInfoFormURL.toString());
 		urlObject.put(
@@ -246,7 +249,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		urlObject.put("payment_config", paymentConfigtURL.toString());
 		urlObject.put("paymentconfig_form", paymentConfigFormURL.toString());
 		urlObject.put("dictcollection_index", dataMgtURL.toString());
-		urlObject.put("employee_index", employeeURL.toString());
 
 		// set object edit
 		long serviceInfoId = ParamUtil.getLong(renderRequest, "serviceInfoId");
@@ -262,12 +264,16 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			}
 		}
 
+		Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(
+			themeDisplay.getUserId());
+
 		// roles
 		List<Role> roles =
 			RoleLocalServiceUtil.getRoles(themeDisplay.getCompanyId());
 
 		// api
 		apiObject.put("server", themeDisplay.getPortalURL() + "/o/rest/v2");
+		apiObject.put("endpoint", themeDisplay.getPortalURL() + "/o/rest/v2");
 		apiObject.put(
 			"portletNamespace",
 			themeDisplay.getPortletDisplay().getNamespace());
@@ -276,7 +282,20 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		// set varible
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("api", apiObject);
+		renderRequest.setAttribute(
+			"applicantId", applicant == null ? "" : applicant.getApplicantId());
 
+		// code from mobilink
+		setRenderParams(renderRequest, renderResponse, themeDisplay);
+
+		super.render(renderRequest, renderResponse);
+
+	}
+
+	private void setRenderParams(
+		RenderRequest renderRequest, RenderResponse renderResponse,
+		ThemeDisplay themeDisplay)
+		throws WindowStateException {
 		ServiceContext serviceContext = null;
 
 		try {
@@ -336,11 +355,11 @@ public class AdminPortlet extends FreeMarkerPortlet {
 						collectionCode, itemCode, groupId, serviceContext);
 				}
 
-				/*
-				 * if (Validator.isNotNull(groupCode)) { dictGroup =
-				 * DictGroupLocalServiceUtil.fetchByF_DictGroupCode( groupCode,
-				 * groupId); }
-				 */
+				if (Validator.isNotNull(groupCode)) {
+					dictGroup =
+						DictGroupLocalServiceUtil.fetchByF_DictGroupCode(
+							groupCode, groupId);
+				}
 
 				params.put("dictCollection_groupCode", groupCode);
 
@@ -421,9 +440,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			"portletNamespace",
 			themeDisplay.getPortletDisplay().getNamespace());
 
-		// renderRequest.setAttribute(
-		// "api", themeDisplay.getPortalURL() + "/o/rest/v2");
-
 		renderRequest.setAttribute(
 			"url", generateURL(renderRequest, renderResponse));
 
@@ -443,23 +459,43 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			}
 		}
 		
+		String wu = JSONFactoryUtil.looseSerialize(workingUnit);
+		JSONObject workingUnitObj = null;
+		try {
+			workingUnitObj = JSONFactoryUtil.createJSONObject(wu);
+			workingUnitObj.put(
+				"ceremonyDate", DateTimeUtils.convertDateToString(
+					workingUnit.getCeremonyDate(), DateTimeUtils._TIMESTAMP));
+		}
+		catch (Exception e) {
+		}
+
+		// params for jobpos begin
+		long jobPosId = ParamUtil.getLong(renderRequest, "jobPosId");
+		params.put("jobPos_jobPosId", jobPosId);
+
+		JobPos jobPos = null;
+
+		if (jobPosId > 0) {
+			try {
+				jobPos = JobPosLocalServiceUtil.fetchJobPos(jobPosId);
+			}
+			catch (Exception e) {
+				_log.error(e);
+			}
+		}
+		renderRequest.setAttribute("jobPos", jobPos);
+		// params for jobpos end
+
 		params.put("workingUnit_workingUnitId", workingUnitId);
-		renderRequest.setAttribute("workingUnit", workingUnit);
+		renderRequest.setAttribute("workingUnit", workingUnitObj);
 		renderRequest.setAttribute("param", params);
 		
 		long employeeId = ParamUtil.getLong(renderRequest, "employeeId");
 		
-		System.out.println(">>>>>>>>>>>>>>>>>>>>> "+employeeId);
-		/*JSONObject employee = JSONFactoryUtil.createJSONObject();*/
-		
 		Employee employeeObj= EmployeeLocalServiceUtil.fetchEmployee(employeeId);
 
-/*		String employee = JSONFactoryUtil.serialize(employeeObj);*/
-		
 		renderRequest.setAttribute("employee", employeeObj);
-
-		super.render(renderRequest, renderResponse);
-
 	}
 
 	private JSONObject generalConstant() {
@@ -508,6 +544,11 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		constants.put(
 			"officeSite_officeSiteClassName",
 			FrontendWebAdminPortletConstants._OFFICESITE_CLASSNAME);
+
+		// jobpos
+		constants.put(
+			"type_jobPos",
+			FrontendWebAdminPortletConstants.AdminMenuItemType.JOBPOS.toString());
 
 		return constants;
 	}
@@ -727,7 +768,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 			PortletURL workingUnitListURL = renderResponse.createRenderURL();
 			workingUnitListURL.setParameter(
-				"mvcPath", "/templates/working-unit/working_unit_list.ftl");
+				"mvcPath", "/templates/workingunit/working_unit_list.ftl");
 			workingUnitListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
 			adminWorkingUnitPortlet.put(
@@ -735,7 +776,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 			PortletURL workingUnitDetailURL = renderResponse.createRenderURL();
 			workingUnitDetailURL.setParameter(
-				"mvcPath", "/templates/working-unit/working_unit_detail.ftl");
+				"mvcPath", "/templates/workingunit/working_unit_detail.ftl");
 			workingUnitDetailURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
 			adminWorkingUnitPortlet.put(
@@ -743,7 +784,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 			PortletURL workingUnitCreateURL = renderResponse.createRenderURL();
 			workingUnitCreateURL.setParameter(
-				"mvcPath", "/templates/working-unit/working_unit_create.ftl");
+				"mvcPath", "/templates/workingunit/working_unit_create.ftl");
 			workingUnitCreateURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
 			adminWorkingUnitPortlet.put(
@@ -801,6 +842,36 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			// Contact -> include portlet
 
 			// Jobpos -> include portlet
+			JSONObject adminJobPosPortlet = JSONFactoryUtil.createJSONObject();
+
+			PortletURL jobposListURL = renderResponse.createRenderURL();
+			jobposListURL.setParameter(
+				"mvcPath", "/templates/jobpos/jobpos_list.ftl");
+			jobposListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+			adminJobPosPortlet.put("jobpos_list", jobposListURL);
+
+			PortletURL jobposDetailURL = renderResponse.createRenderURL();
+			jobposDetailURL.setParameter(
+				"mvcPath", "/templates/jobpos/jobpos_detail.ftl");
+			jobposDetailURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+			adminJobPosPortlet.put("jobpos_detail", jobposDetailURL);
+
+			PortletURL jobposCreateURL = renderResponse.createRenderURL();
+			jobposCreateURL.setParameter(
+				"mvcPath", "/templates/jobpos/jobpos_create.ftl");
+			jobposCreateURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+			adminJobPosPortlet.put("jobpos_create", jobposCreateURL);
+
+			PortletURL jobposSaveURL = renderResponse.createActionURL();
+
+			jobposSaveURL.setParameter(ActionRequest.ACTION_NAME, "saveJobPos");
+			jobposSaveURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+			adminJobPosPortlet.put("jobpos_edit_action", jobposSaveURL);
+
+			portletURLs.put("adminJobPosPortlet", adminJobPosPortlet);
 
 		}
 		catch (Exception e) {
@@ -808,6 +879,202 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		}
 
 		return portletURLs;
+	}
+
+	public void saveDictItem(
+		ActionRequest actionRequest, ActionResponse actionResponse)
+		throws IOException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+		long groupId = themeDisplay.getScopeGroupId();
+
+		long userId = themeDisplay.getUserId();
+
+		String itemCode = ParamUtil.getString(actionRequest, "itemCode");
+		String itemName = ParamUtil.getString(actionRequest, "itemName");
+		String itemNameEN = ParamUtil.getString(actionRequest, "itemNameEN");
+		String itemCodeOld = ParamUtil.getString(actionRequest, "itemCodeOld");
+		String collectionCode =
+			ParamUtil.getString(actionRequest, "collectionCode");
+		String itemDescription =
+			ParamUtil.getString(actionRequest, "itemDescription");
+		int sibling = ParamUtil.getInteger(actionRequest, "sibling");
+		String parentItemCode =
+			ParamUtil.getString(actionRequest, "parentItemCode");
+		// String groupCode = ParamUtil.getString(actionRequest, "groupCode");
+
+		String metaData = ParamUtil.getString(actionRequest, "metaData");
+
+		DictCollectionActions dictCollectionActions =
+			new DictCollectionActions();
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+			ServiceContext serviceContext =
+				ServiceContextFactory.getInstance(actionRequest);
+
+			DictItem dictItem = null;
+
+			if (Validator.isNotNull(itemCodeOld)) {
+
+				dictItem = dictCollectionActions.updateDictItemByItemCode(
+					userId, groupId, serviceContext, collectionCode,
+					itemCodeOld, itemCode, itemName, itemNameEN,
+					itemDescription, String.valueOf(sibling), parentItemCode);
+			}
+			else {
+				dictItem = dictCollectionActions.addDictItems(
+					userId, groupId, collectionCode, parentItemCode, itemCode,
+					itemName, itemNameEN, itemDescription,
+					String.valueOf(sibling), 0, metaData, serviceContext);
+			}
+
+			result.put(
+				"createDate", DateTimeUtils.convertDateToString(
+					dictItem.getCreateDate(), DateTimeUtils._TIMESTAMP));
+			result.put(
+				"modifiedDate", DateTimeUtils.convertDateToString(
+					dictItem.getModifiedDate(), DateTimeUtils._TIMESTAMP));
+			result.put("itemCode", dictItem.getItemCode());
+			result.put(
+				"itemName", Validator.isNotNull(dictItem.getItemName())
+					? dictItem.getItemName() : StringPool.BLANK);
+			result.put(
+				"itemNameEN", Validator.isNotNull(dictItem.getItemNameEN())
+					? dictItem.getItemNameEN() : StringPool.BLANK);
+			result.put("itemDescription", dictItem.getItemDescription());
+			result.put("parentItem", dictItem.getParentItemId());
+			result.put("level", dictItem.getLevel());
+			result.put("sibling", dictItem.getSibling());
+			result.put("treeIndex", dictItem.getTreeIndex());
+			result.put("dicItemId", dictItem.getDictItemId());
+
+		}
+		catch (Exception e) {
+			_log.error(e);
+			if (e instanceof UnauthenticationException) {
+
+				result.put("statusCode", 401);
+
+			}
+
+			if (e instanceof UnauthorizationException) {
+
+				result.put("statusCode", 403);
+
+			}
+
+			if (e instanceof NoSuchUserException) {
+
+				result.put("statusCode", 401);
+
+			}
+
+			if (e instanceof DuplicateCategoryException) {
+
+				result.put("statusCode", 409);
+
+			}
+			result.put("msg", "error");
+		}
+		finally {
+			writeJSON(actionRequest, actionResponse, result);
+		}
+
+	}
+
+	// jobpos
+	public void saveJobPos(
+		ActionRequest actionRequest, ActionResponse actionResponse)
+		throws IOException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+		JobposActions jobposActions = new JobposActions();
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		long groupId = themeDisplay.getScopeGroupId();
+
+		long userId = themeDisplay.getUserId();
+
+		long jobPosId = ParamUtil.getLong(actionRequest, "jobPosId");
+
+		String title = ParamUtil.getString(actionRequest, "title");
+		String description = ParamUtil.getString(actionRequest, "description");
+		String permissions = ParamUtil.getString(actionRequest, "permissions");
+		String works = ParamUtil.getString(actionRequest, "works");
+
+		int leader = ParamUtil.getInteger(actionRequest, "leader");
+
+		try {
+			ServiceContext serviceContext =
+				ServiceContextFactory.getInstance(actionRequest);
+			JobPos jobPos = null;
+			if (jobPosId > 0) {
+				jobPos = jobposActions.update(
+					userId, groupId, jobPosId, title, description, leader,
+					serviceContext);
+
+			}
+			else {
+				jobPos = jobposActions.create(
+					userId, groupId, title, description, leader,
+					serviceContext);
+			}
+
+			// if (Validator.isNotNull(permissions)) {
+			jobposActions.createPermissionsPatch(
+				userId, serviceContext.getCompanyId(), groupId,
+				jobPos.getJobPosId(), permissions, serviceContext);
+			// }
+
+			// if (Validator.isNotNull(works)) {
+			// jobposActions.createJobposWorksPatch(
+			// userId, serviceContext.getCompanyId(), groupId,
+			// jobPos.getJobPosId(), works, serviceContext);
+			// }
+
+			result.put("jobPosId", jobPos.getJobPosId());
+			result.put(
+				"createDate", DateTimeUtils.convertDateToString(
+					jobPos.getCreateDate(), DateTimeUtils._TIMESTAMP));
+			result.put(
+				"modifiedDate", DateTimeUtils.convertDateToString(
+					jobPos.getModifiedDate(), DateTimeUtils._TIMESTAMP));
+			result.put(
+				"title", Validator.isNotNull(jobPos.getTitle())
+					? jobPos.getTitle() : StringPool.BLANK);
+			result.put(
+				"description", Validator.isNotNull(jobPos.getDescription())
+					? jobPos.getDescription() : StringPool.BLANK);
+			result.put("leader", jobPos.getLeader());
+			result.put("mappingRoleId", jobPos.getMappingRoleId());
+
+		}
+		catch (Exception e) {
+			_log.error(e);
+			if (e instanceof UnauthenticationException) {
+				result.put("statusCode", 401);
+			}
+
+			else if (e instanceof UnauthorizationException) {
+				result.put("statusCode", 403);
+			}
+
+			else if (e instanceof NoSuchUserException) {
+				result.put("statusCode", 409);
+			}
+			result.put("msg", "error");
+		}
+		finally {
+			writeJSON(actionRequest, actionResponse, result);
+		}
+
 	}
 
 	private Log _log = LogFactoryUtil.getLog(AdminPortlet.class.getName());

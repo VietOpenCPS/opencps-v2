@@ -108,7 +108,7 @@ public class EmployeeIndexer extends BaseIndexer<Employee> {
 		String jobPosTitle = Validator.isNotNull(jobPos)?jobPos.getTitle():StringPool.BLANK;
 		
 		document.addTextSortable(EmployeeTerm.WORKING_UNIT_NAME, workingUnitName);
-		document.addTextSortable(EmployeeTerm.WORKING_UNIT_NAME, jobPosTitle);
+		document.addTextSortable(EmployeeTerm.JOB_POS_TITLE, jobPosTitle);
 		
 		return document;
 	}

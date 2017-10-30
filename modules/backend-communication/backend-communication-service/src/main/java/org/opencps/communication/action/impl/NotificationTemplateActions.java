@@ -20,11 +20,12 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public class NotificationTemplateActions implements NotificationTemplateInterface {
 
@@ -57,8 +58,9 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 					try {
 
 						NotificationtemplateLocalServiceUtil.addNotificationTemplate(userId, groupId, key,
-								initTemplates.get(key), initTemplates.get(key), initTemplates.get(key), Boolean.FALSE,
-								Boolean.FALSE, serviceContext);
+								initTemplates.get(key), initTemplates.get(key), initTemplates.get(key), Boolean.TRUE,
+								Boolean.FALSE, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, Boolean.FALSE,
+								serviceContext);
 
 					} catch (Exception e) {
 						_log.error(e);
@@ -106,7 +108,8 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 
 	@Override
 	public Notificationtemplate update(long userId, long groupId, String type, String emailBody, String emailSubject,
-			String sendEmail, String textMessage, String sendSMS, String expireDuration, ServiceContext serviceContext)
+			String sendEmail, String textMessage, String sendSMS, String expireDuration, String userUrlPattern,
+			String guestUrlPattern, String interval, String grouping, ServiceContext serviceContext)
 			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException {
 		Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil
 				.fetchByF_NotificationtemplateByType(groupId, type);
@@ -143,15 +146,39 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 
 		if (Validator.isNotNull(expireDuration)) {
 
-			notificationtemplate.setExpireDuration(DateTimeUtils.convertStringToDateAPI(expireDuration));
+			notificationtemplate.setExpireDuration(Integer.valueOf(expireDuration));
 
 		}
+		
+		if (Validator.isNotNull(userUrlPattern)) {
+
+			notificationtemplate.setUserUrlPattern(userUrlPattern);
+
+		}
+		if (Validator.isNotNull(guestUrlPattern)) {
+
+			notificationtemplate.setGuestUrlPattern(guestUrlPattern);
+
+		}
+		if (Validator.isNotNull(interval)) {
+
+			notificationtemplate.setInterval(interval);
+
+		}
+		if (Validator.isNotNull(grouping)) {
+
+			notificationtemplate.setGrouping(Boolean.valueOf(grouping));
+
+		}
+
 
 		notificationtemplate = NotificationtemplateLocalServiceUtil.updateNotificationTemplate(userId,
 				notificationtemplate.getNotificationTemplateId(), notificationtemplate.getNotificationType(),
 				notificationtemplate.getEmailSubject(), notificationtemplate.getEmailBody(),
 				notificationtemplate.getTextMessage(), notificationtemplate.getSendSMS(),
-				notificationtemplate.getSendEmail(), notificationtemplate.getExpireDuration(), serviceContext);
+				notificationtemplate.getSendEmail(), notificationtemplate.getExpireDuration(),
+				notificationtemplate.getUserUrlPattern(), notificationtemplate.getGuestUrlPattern(),
+				notificationtemplate.getInterval(), notificationtemplate.getGrouping(), serviceContext);
 
 		return notificationtemplate;
 	}

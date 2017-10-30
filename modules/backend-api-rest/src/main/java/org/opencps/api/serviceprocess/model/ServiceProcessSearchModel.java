@@ -8,6 +8,7 @@
 
 package org.opencps.api.serviceprocess.model;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -54,7 +55,7 @@ public class ServiceProcessSearchModel {
     protected int start;
 	@QueryParam(value = "end")
     protected int end;
-	@QueryParam(value = "sort")
+	@DefaultValue("createDate") @QueryParam("sort")
     protected String sort;
 	@QueryParam(value = "order")
     protected String order;

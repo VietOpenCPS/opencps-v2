@@ -9,13 +9,17 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.ResourceUserManagement;
+import org.opencps.api.controller.util.ResourceRoleUtils;
 import org.opencps.api.controller.util.ResourceUserUtils;
-import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.error.model.ErrorMsg;
+import org.opencps.api.resourcerole.model.ResourceRoleResults;
 import org.opencps.api.resourceuser.model.DataSearchModel;
 import org.opencps.api.resourceuser.model.ResourceUserInputModel;
 import org.opencps.api.resourceuser.model.ResourceUserModel;
 import org.opencps.api.resourceuser.model.ResourceUserResults;
+import org.opencps.usermgt.action.ResourceRoleInterface;
 import org.opencps.usermgt.action.ResourceUserInterface;
+import org.opencps.usermgt.action.impl.ResourceRoleActions;
 import org.opencps.usermgt.action.impl.ResourceUserActions;
 import org.opencps.usermgt.constants.ResourceUserTerm;
 import org.opencps.usermgt.model.ResourceUser;
@@ -33,8 +37,9 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public class ResourceUserManagementImpl implements ResourceUserManagement {
 
@@ -99,7 +104,7 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 			ResourceUser ResourceUser = actions.create(user.getUserId(), groupId, input.getClassName(),
-					input.getClassPK(), input.getUserId(), serviceContext);
+					input.getClassPK(), input.getUserId(), input.getFullName(), input.getEmail(), Boolean.valueOf(input.getReadonly()), serviceContext);
 
 			ResourceUserModel = ResourceUserUtils.mapperResourceUserModel(ResourceUser);
 
@@ -146,6 +151,18 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 
 			}
 
+			if (e instanceof NotFoundException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("notfound!");
+				error.setCode(404);
+				error.setDescription("notfound!");
+
+				return Response.status(404).entity(error).build();
+
+			}
 			return Response.status(500).build();
 		}
 	}
@@ -294,8 +311,93 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 
 			}
 
+			if (e instanceof NotFoundException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("notfound!");
+				error.setCode(404);
+				error.setDescription("notfound!");
+
+				return Response.status(404).entity(error).build();
+
+			}
 			return Response.status(500).build();
 		}
 	}
 
+	@Override
+	public Response clone(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, String className, String classPK, String sourcePK) {
+		ResourceUserInterface actions = new ResourceUserActions();
+		ResourceUserResults result = new ResourceUserResults();
+
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			actions.clone(className, classPK, user.getUserId(), company.getCompanyId(), groupId, sourcePK,
+					serviceContext);
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			params.put("groupId", String.valueOf(groupId));
+			params.put(ResourceUserTerm.CLASS_NAME, className);
+			params.put(ResourceUserTerm.CLASS_PK, sourcePK);
+
+			JSONObject jsonData = actions.getResourceUsers(className, sourcePK, user.getUserId(),
+					company.getCompanyId(), groupId, params, new Sort[] {}, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					serviceContext, false);
+
+			result.setTotal(jsonData.getLong("total"));
+			result.getResourceUserModel()
+					.addAll(ResourceUserUtils.mapperResourceUserList((List<Document>) jsonData.get("data")));
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			_log.error("@POST: " + e);
+			if (e instanceof UnauthenticationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+
+			}
+
+			if (e instanceof UnauthorizationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			}
+
+			if (e instanceof NoSuchUserException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+
+			return Response.status(500).build();
+		}
+	}
 }

@@ -7,7 +7,9 @@ import javax.portlet.PortletResponse;
 
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -21,6 +23,8 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 public class ProcessActionIndexer extends BaseIndexer<ProcessAction> {
 	public static final String CLASS_NAME = ProcessAction.class.getName();
@@ -55,7 +59,9 @@ public class ProcessActionIndexer extends BaseIndexer<ProcessAction> {
 
 		// add text fields
 		document.addTextSortable(ProcessActionTerm.PRESTEP_CODE, object.getPreStepCode());
+		document.addTextSortable(ProcessActionTerm.PRESTEP_NAME, getStepName(object.getGroupId(), object.getPreStepCode(), object.getServiceProcessId()));
 		document.addTextSortable(ProcessActionTerm.POSTSTEP_CODE, object.getPostStepCode());
+		document.addTextSortable(ProcessActionTerm.POSTSTEP_NAME, getStepName(object.getGroupId(), object.getPostStepCode(), object.getServiceProcessId()));
 		document.addTextSortable(ProcessActionTerm.AUTO_EVENT, object.getAutoEvent());
 		document.addTextSortable(ProcessActionTerm.PRE_CONDITION, object.getPreCondition());
 		document.addTextSortable(ProcessActionTerm.ACTION_CODE, object.getActionCode());
@@ -132,6 +138,17 @@ public class ProcessActionIndexer extends BaseIndexer<ProcessAction> {
 		indexableActionableDynamicQuery.setSearchEngineId(getSearchEngineId());
 
 		indexableActionableDynamicQuery.performActions();
+	}
+	
+	private String getStepName(long groupId, String stepCode, long serviceProcessId) {
+		String sName = StringPool.BLANK;
+		
+		ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
+		
+		if (Validator.isNotNull(step)) {
+			sName = step.getStepName();
+		}
+		return sName;
 	}
 
 	Log _log = LogFactoryUtil.getLog(ProcessActionIndexer.class);

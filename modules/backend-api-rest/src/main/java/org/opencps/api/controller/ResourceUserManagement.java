@@ -61,4 +61,13 @@ public interface ResourceUserManagement {
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@DefaultValue(StringPool.BLANK) @PathParam("className") String className, @DefaultValue(StringPool.BLANK) @PathParam("classPK") String classPK,
 			@DefaultValue("0") @PathParam("email") String email);
+	
+	@GET
+	@Path("/{className}/{classPK}/cloning/{sourcePK}")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response clone(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@DefaultValue(StringPool.BLANK) @PathParam("className") String className, @DefaultValue(StringPool.BLANK) @PathParam("classPK") String classPK,
+			@DefaultValue(StringPool.BLANK) @PathParam("sourcePK") String sourcePK);
 }

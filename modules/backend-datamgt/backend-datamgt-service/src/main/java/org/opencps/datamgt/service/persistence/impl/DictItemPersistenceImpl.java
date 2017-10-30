@@ -3109,6 +3109,271 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		"dictItem.dictCollectionId = ? AND ";
 	private static final String _FINDER_COLUMN_F_DICTITEMCODE_DICTCOLLECTIONID_GROUPID_2 =
 		"dictItem.groupId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_IC_DCI = new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
+			DictItemModelImpl.FINDER_CACHE_ENABLED, DictItemImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByIC_DCI",
+			new String[] { String.class.getName(), Long.class.getName() },
+			DictItemModelImpl.ITEMCODE_COLUMN_BITMASK |
+			DictItemModelImpl.DICTCOLLECTIONID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_IC_DCI = new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
+			DictItemModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByIC_DCI",
+			new String[] { String.class.getName(), Long.class.getName() });
+
+	/**
+	 * Returns the dict item where itemCode = &#63; and dictCollectionId = &#63; or throws a {@link NoSuchDictItemException} if it could not be found.
+	 *
+	 * @param itemCode the item code
+	 * @param dictCollectionId the dict collection ID
+	 * @return the matching dict item
+	 * @throws NoSuchDictItemException if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem findByIC_DCI(String itemCode, long dictCollectionId)
+		throws NoSuchDictItemException {
+		DictItem dictItem = fetchByIC_DCI(itemCode, dictCollectionId);
+
+		if (dictItem == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("itemCode=");
+			msg.append(itemCode);
+
+			msg.append(", dictCollectionId=");
+			msg.append(dictCollectionId);
+
+			msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDictItemException(msg.toString());
+		}
+
+		return dictItem;
+	}
+
+	/**
+	 * Returns the dict item where itemCode = &#63; and dictCollectionId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param itemCode the item code
+	 * @param dictCollectionId the dict collection ID
+	 * @return the matching dict item, or <code>null</code> if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem fetchByIC_DCI(String itemCode, long dictCollectionId) {
+		return fetchByIC_DCI(itemCode, dictCollectionId, true);
+	}
+
+	/**
+	 * Returns the dict item where itemCode = &#63; and dictCollectionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param itemCode the item code
+	 * @param dictCollectionId the dict collection ID
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching dict item, or <code>null</code> if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem fetchByIC_DCI(String itemCode, long dictCollectionId,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { itemCode, dictCollectionId };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_IC_DCI,
+					finderArgs, this);
+		}
+
+		if (result instanceof DictItem) {
+			DictItem dictItem = (DictItem)result;
+
+			if (!Objects.equals(itemCode, dictItem.getItemCode()) ||
+					(dictCollectionId != dictItem.getDictCollectionId())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_DICTITEM_WHERE);
+
+			boolean bindItemCode = false;
+
+			if (itemCode == null) {
+				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_1);
+			}
+			else if (itemCode.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_3);
+			}
+			else {
+				bindItemCode = true;
+
+				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_2);
+			}
+
+			query.append(_FINDER_COLUMN_IC_DCI_DICTCOLLECTIONID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindItemCode) {
+					qPos.add(itemCode);
+				}
+
+				qPos.add(dictCollectionId);
+
+				List<DictItem> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_IC_DCI,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DictItemPersistenceImpl.fetchByIC_DCI(String, long, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					DictItem dictItem = list.get(0);
+
+					result = dictItem;
+
+					cacheResult(dictItem);
+
+					if ((dictItem.getItemCode() == null) ||
+							!dictItem.getItemCode().equals(itemCode) ||
+							(dictItem.getDictCollectionId() != dictCollectionId)) {
+						finderCache.putResult(FINDER_PATH_FETCH_BY_IC_DCI,
+							finderArgs, dictItem);
+					}
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_IC_DCI, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (DictItem)result;
+		}
+	}
+
+	/**
+	 * Removes the dict item where itemCode = &#63; and dictCollectionId = &#63; from the database.
+	 *
+	 * @param itemCode the item code
+	 * @param dictCollectionId the dict collection ID
+	 * @return the dict item that was removed
+	 */
+	@Override
+	public DictItem removeByIC_DCI(String itemCode, long dictCollectionId)
+		throws NoSuchDictItemException {
+		DictItem dictItem = findByIC_DCI(itemCode, dictCollectionId);
+
+		return remove(dictItem);
+	}
+
+	/**
+	 * Returns the number of dict items where itemCode = &#63; and dictCollectionId = &#63;.
+	 *
+	 * @param itemCode the item code
+	 * @param dictCollectionId the dict collection ID
+	 * @return the number of matching dict items
+	 */
+	@Override
+	public int countByIC_DCI(String itemCode, long dictCollectionId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_IC_DCI;
+
+		Object[] finderArgs = new Object[] { itemCode, dictCollectionId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_DICTITEM_WHERE);
+
+			boolean bindItemCode = false;
+
+			if (itemCode == null) {
+				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_1);
+			}
+			else if (itemCode.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_3);
+			}
+			else {
+				bindItemCode = true;
+
+				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_2);
+			}
+
+			query.append(_FINDER_COLUMN_IC_DCI_DICTCOLLECTIONID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindItemCode) {
+					qPos.add(itemCode);
+				}
+
+				qPos.add(dictCollectionId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_IC_DCI_ITEMCODE_1 = "dictItem.itemCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_IC_DCI_ITEMCODE_2 = "dictItem.itemCode = ? AND ";
+	private static final String _FINDER_COLUMN_IC_DCI_ITEMCODE_3 = "(dictItem.itemCode IS NULL OR dictItem.itemCode = '') AND ";
+	private static final String _FINDER_COLUMN_IC_DCI_DICTCOLLECTIONID_2 = "dictItem.dictCollectionId = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_PARENTITEMID =
 		new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
 			DictItemModelImpl.FINDER_CACHE_ENABLED, DictItemImpl.class,
@@ -3649,6 +3914,10 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 				dictItem.getGroupId()
 			}, dictItem);
 
+		finderCache.putResult(FINDER_PATH_FETCH_BY_IC_DCI,
+			new Object[] { dictItem.getItemCode(), dictItem.getDictCollectionId() },
+			dictItem);
+
 		dictItem.resetOriginalValues();
 	}
 
@@ -3746,6 +4015,16 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			args, Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_DICTITEMCODE_DICTCOLLECTIONID,
 			args, dictItemModelImpl, false);
+
+		args = new Object[] {
+				dictItemModelImpl.getItemCode(),
+				dictItemModelImpl.getDictCollectionId()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_IC_DCI, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_IC_DCI, args,
+			dictItemModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -3816,6 +4095,27 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 				args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_DICTITEMCODE_DICTCOLLECTIONID,
 				args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					dictItemModelImpl.getItemCode(),
+					dictItemModelImpl.getDictCollectionId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_IC_DCI, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_IC_DCI, args);
+		}
+
+		if ((dictItemModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_IC_DCI.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					dictItemModelImpl.getOriginalItemCode(),
+					dictItemModelImpl.getOriginalDictCollectionId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_IC_DCI, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_IC_DCI, args);
 		}
 	}
 

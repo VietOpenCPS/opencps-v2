@@ -39,7 +39,7 @@
 
 						<button id="employee-formtemplate-submit-btn" 
 							data-pk="${(employee.employeeId)!}" 
-							class="btn btn-primary image-preview-input border-rad-4"> 
+							class="btn btn-active image-preview-input border-rad-4"> 
 							
 							<i class="fa fa-check-circle"></i>
 							<span class="lfr-btn-label">Cập nhật thông tin</span>

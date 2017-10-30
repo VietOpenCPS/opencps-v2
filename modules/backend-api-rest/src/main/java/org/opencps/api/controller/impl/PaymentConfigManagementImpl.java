@@ -65,12 +65,12 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					GetterUtil.getBoolean(query.getOrder())) };
 
 			Hits hits = PaymentConfigLocalServiceUtil.searchLucene(params, sorts, query.getStart(), query.getEnd(),
 					searchContext);
 
-			long total = PaymentConfigLocalServiceUtil.searchLucene(params, searchContext);
+			long total = PaymentConfigLocalServiceUtil.countLucene(params, searchContext);
 
 			PaymentConfigResultsModel results = new PaymentConfigResultsModel();
 

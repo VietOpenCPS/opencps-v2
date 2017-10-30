@@ -85,8 +85,8 @@ public class ServiceConfigUtils {
 			ServiceConfig config = new ServiceConfig();
 
 			config.setServiceConfigId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
-			config.setCreateDate(Field.CREATE_DATE);
-			config.setModifiedDate(Field.MODIFIED_DATE);
+			config.setCreateDate(doc.get(Field.CREATE_DATE));
+			config.setModifiedDate(doc.get(Field.MODIFIED_DATE));
 			config.setServiceInfoId(GetterUtil.getInteger(doc.get(ServiceConfigTerm.SERVICEINFO_ID)));
 			config.setServiceCode(doc.get(ServiceConfigTerm.SERVICE_CODE));
 			config.setServiceName(doc.get(ServiceConfigTerm.SERVICE_NAME));

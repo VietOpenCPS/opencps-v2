@@ -23,6 +23,7 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.exception.HasExsistException;
 import org.opencps.dossiermgt.exception.RequiredAgencyCodeException;
 import org.opencps.dossiermgt.exception.RequiredServiceCodeException;
 import org.opencps.dossiermgt.exception.ServiceLevelException;
@@ -103,6 +104,14 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		return config;
 	}
 
+	public ServiceConfig getBySICodeAndGAC(long groupId, String serviceInfoCode, String govAgencyCode)
+			throws PortalException {
+
+		ServiceInfo info = serviceInfoPersistence.findBySC_GI(serviceInfoCode, groupId);
+
+		return serviceConfigPersistence.fetchByGID_SI_GAC(groupId, info.getServiceInfoId(), govAgencyCode);
+	}
+
 	private void validateRemove(long serviceConfigId) throws PortalException {
 		// TODO: add more business logic
 	}
@@ -115,7 +124,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 		JSONObject objName = JSONFactoryUtil.createJSONObject();
 
-		validate(groupId, serviceInfoId, govAgencyCode, serviceLevel, serviceUrl, objName);
+		validate(groupId, serviceConfigId, serviceInfoId, govAgencyCode, serviceLevel, serviceUrl, objName);
 
 		ServiceConfig serviceConfig = null;
 
@@ -172,11 +181,11 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			serviceConfig.setRegistration(registration);
 
 		}
-		
+
 		ServiceInfo si = serviceInfoPersistence.fetchByPrimaryKey(serviceInfoId);
-		
+
 		si.setMaxLevel(serviceLevel);
-		
+
 		serviceInfoPersistence.update(si);
 
 		serviceConfigPersistence.update(serviceConfig);
@@ -184,7 +193,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		return serviceConfig;
 	}
 
-	private void validate(long groupId, long serviceInfoId, String govAgencyCode, int serviceLevel, String serviceUrl,
+	private void validate(long groupId, long serviceConfigId, long serviceInfoId, String govAgencyCode, int serviceLevel, String serviceUrl,
 			JSONObject objName) throws PortalException {
 
 		DictItem agc = DictCollectionUtils.getDictItemByCode(DataMGTConstants.GOVERNMENT_AGENCY, govAgencyCode,
@@ -210,6 +219,22 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		} catch (Exception e) {
 			throw new RequiredServiceCodeException("RequiredServiceCodeException");
 		}
+		
+		ServiceConfig config = serviceConfigPersistence.fetchByGID_SI_GAC(groupId, serviceInfoId, govAgencyCode);
+
+		
+		if (serviceConfigId == 0) {
+
+			if (Validator.isNotNull(config)) {
+				throw new HasExsistException("ServiceConfigHasExsist");
+			}
+		} else {
+			
+			if (Validator.isNotNull(config) && config.getPrimaryKey() != serviceConfigId) {
+				throw new HasExsistException("ServiceConfigHasExsist");
+			}
+		}
+		
 
 	}
 
@@ -301,7 +326,6 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		// TODO
 		if (applicant.contentEquals(org.opencps.auth.api.keys.ActionKeys.APPLICANT_BUSINESS)) {
 			MultiMatchQuery query = new MultiMatchQuery(Boolean.toString(true));
 
@@ -409,7 +433,6 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		// TODO
 		if (applicant.contentEquals(org.opencps.auth.api.keys.ActionKeys.APPLICANT_BUSINESS)) {
 			MultiMatchQuery query = new MultiMatchQuery(Boolean.toString(true));
 
@@ -434,5 +457,4 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 	public static final String CLASS_NAME = ServiceConfig.class.getName();
 
-	
 }

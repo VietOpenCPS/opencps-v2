@@ -55,4 +55,30 @@ public class DossierTerm {
 	public static final String NOTIFICATION = "notification";
 	public static final String ONLINE = "online";
 	public static final String SERVER_NO = "serverNo";
+	public static final String YEAR_DOSSIER = "yearDossier";
+	public static final String MONTH_DOSSIER = "monthDossier";
+	public static final String LAST_ACTION_DATE = "lastActionDate";
+	public static final String LAST_ACTION_CODE = "lastActionCode";
+	public static final String LAST_ACTION_NAME = "lastActionName";
+	public static final String LAST_ACTION_USER = "lastActionUser";
+	public static final String LAST_ACTION_NOTE = "lastActionNote";
+	public static final String STEP_CODE = "stepCode";
+	public static final String STEP_NAME = "stepName";
+	public static final String STEP_DUE_DATE = "stepDuedate";
+	public static final String STEP_OVER_DUE = "stepOverdue";
+	public static final String DOSSIER_OVER_DUE = "dossierOverdue";
+
+	
+	public static final String STATUS = "status";
+	public static final String SUBSTATUS = "subStatus";
+	public static final String AGENCY = "agency";
+	public static final String SERVICE = "service";
+	public static final String TEMPLATE = "template";
+	public static final String YEAR = "year";
+	public static final String MONTH = "month";
+	public static final String OWNER = "owner";
+	public static final String FOLLOW = "follow";
+	public static final String STEP = "step";
+	public static final String TOP = "top";
+
 }

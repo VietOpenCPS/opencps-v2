@@ -67,7 +67,7 @@
 						<div class="checkbox"> <input type="checkbox" name="forCitizen" id="forCitizen" data-bind="checked : forCitizen"> <label>Công dân nộp hồ sơ</label> </div>
 					</div>
 					<div class="col-sm-6">
-						<div class="checkbox"> <input type="checkbox" name="postService" id="postService" data-bind="checked : postService"> <label>Áp dụng phương thức nộp bưu điện</label> </div>
+						<div class="checkbox"> <input type="checkbox" name="postalService" id="postalService" data-bind="checked : postalService"> <label>Áp dụng phương thức nộp bưu điện</label> </div>
 					</div>
 					<div class="col-sm-6">
 						<div class="checkbox"> <input type="checkbox" name="forBusiness" id="forBusiness" data-bind="checked : forBusiness"> <label>Doanh nghiệp nộp hồ sơ</label> </div>
@@ -133,18 +133,18 @@
 				var viewModel = kendo.observable({
 					serviceInfoId: result.serviceInfoId,
 					govAgencyCode: result.govAgencyCode,
-					serviceInstruction: function(e){
-						$('#serviceInstruction').summernote('code', result.serviceInstruction);
-					},
 					serviceLevel: result.serviceLevel,
 					serviceUrl: result.serviceUrl,
-					forCitizen: result.forCitizen,
-					forBusiness: result.forBusiness,
-					postService: result.postService,
-					registration: result.registration
+					domainCode: result.domainCode
 				});
 
 				kendo.bind($("#frmServiceConfigDetail"), viewModel);
+
+				$("#forCitizen").prop("checked",result.forCitizen);
+				$("#forBusiness").prop("checked",result.forBusiness);
+				$("#postalService").prop("checked",result.postalService);
+				$("#registration").prop("checked",result.registration);
+				$('#serviceInstruction').summernote('code', result.serviceInstruction);
 			},
 			error : function(xhr){
 
@@ -154,10 +154,10 @@
 
 
 	$("#btn-submit-serviceconfig").click(function(){
-		var id =$("#itemServiceConfigId").val();
+		var id = $("#itemServiceConfigId").val();
 		var validator = $("#frmServiceConfigDetail").kendoValidator().data("kendoValidator");
 		if(validator.validate()){
-			if(id && id >0){
+			if(id && id > 0){
 				$.ajax({
 					url : "${api.server}/serviceconfigs/"+id,
 					dataType : "json",
@@ -168,12 +168,12 @@
 						govAgencyCode : $("#govAgency").val(),
 						serviceLevel :$("#serviceLevel").val(),
 						process : $("#process").val(),
-						serviceInstruction :$("#serviceInstruction").val(),
+						serviceInstruction :$("#serviceInstruction").summernote('code'),
 						serviceUrl : $("textarea#serviceUrl").val(),
-						forCitizen : $("#forCitizen").val(),
-						postalService : $("#postService").val(),
-						forBusiness : $("#forBusiness").val(),
-						registration : $("#registration").val()
+						forCitizen : $("#forCitizen").prop( "checked" ),
+						postalService : $("#postalService").prop( "checked" ),
+						forBusiness : $("#forBusiness").prop( "checked" ),
+						registration : $("#registration").prop( "checked" )
 					},
 					success : function(result){
 						updateServieConfigIfSuccess(id,result);
@@ -198,12 +198,12 @@
 						govAgencyCode : $("#govAgency").val(),
 						serviceLevel :$("#serviceLevel").val(),
 						process : $("#process").val(),
-						serviceInstruction :$("#serviceInstruction").val(),
+						serviceInstruction :$("#serviceInstruction").summernote('code'),
 						serviceUrl : $("textarea#serviceUrl").val(),
-						forCitizen : $("#forCitizen").val(),
-						postalService : $("#postService").val(),
-						forBusiness : $("#forBusiness").val(),
-						registration : $("#registration").val()
+						forCitizen : $("#forCitizen").prop( "checked" ),
+						postalService : $("#postalService").prop( "checked" ),
+						forBusiness : $("#forBusiness").prop( "checked" ),
+						registration : $("#registration").prop( "checked" )
 					},
 					success : function(result){
 						addServiceConfigIfSuccess(result);
@@ -214,9 +214,15 @@
 						}, "success");
 					},
 					error : function(xhr){
-						notification.show({
-							message: "Xẩy ra lỗi, vui lòng thử lại"
-						}, "error");
+						if (xhr.responseJSON.description == "ServiceConfigHasExsist"){
+							notification.show({
+								message: "Dịch vụ công đã tồn tại"
+							}, "error");
+						} else {
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
+						}
 					}	
 				});
 			}
@@ -242,7 +248,7 @@
 				item.set("serviceUrl",result.serviceUrl);
 				item.set("forCitizen",result.forCitizen);
 				item.set("forBusiness",result.forBusiness);
-				item.set("postService",result.postService);
+				item.set("postalService",result.postalService);
 				item.set("registration",result.registration);
 			}
 
@@ -263,7 +269,7 @@
 			"serviceUrl" : result.serviceUrl,
 			"forCitizen" : result.forCitizen,
 			"forBusiness" : result.forBusiness,
-			"postService" : result.postService,
+			"postalService" : result.postalService,
 			"registration" : result.registration
 		});	
 	};
