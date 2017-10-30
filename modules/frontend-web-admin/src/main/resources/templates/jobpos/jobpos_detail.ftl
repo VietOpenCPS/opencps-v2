@@ -61,7 +61,7 @@
 				
 			<div class="form-group text-right">
 			
-				<button class="btn btn-sm btn-primary btn-default" id="_jobposDetail_submitBtn" name="_jobposDetail_submitBtn" type="button" data-pk="${(param.jobPos_jobPosId)!}">
+				<button class="btn btn-sm btn-active btn-default" id="_jobposDetail_submitBtn" name="_jobposDetail_submitBtn" type="button" data-pk="${(param.jobPos_jobPosId)!}">
 					<i class="fa fa-check-circle"></i>
 					<span class="lfr-btn-label">Xác nhận</span>
 				</button>

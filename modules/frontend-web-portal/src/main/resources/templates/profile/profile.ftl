@@ -3,7 +3,7 @@
 </#if>
 <div class="row account-info" id="frmDetailAccount">
 	<div class="col-sm-2 col-xs-12">
-		<img src="https://jobseekers.vn/wp-content/themes/sb_theme/assets/images/default_avatar.png" class="img-responsive max-width-100 img-rounded">
+		<img src="/o/frontend.web.portal/images/default_avatar.png" class="img-responsive max-width-100 img-rounded">
 		<div class="text-center"><a href="" class="text-light-gray">Thay đổi avatar</a></div>
 		<p class="name text-bold text-center" data-bind="text:applicantName" id="profileName"></p>
 		<div>Số CMND/Hộ chiếu: <span class="text-bold" data-bind="text:applicantIdNo" id="profileIdNo"></span></div>
@@ -434,8 +434,31 @@
 			headers: {"groupId": ${groupId}}
 		},
 		params: function(params) {
+			var cityName = "";
+			$.ajax({
+				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+				dataType : "json",
+				type : "GET",
+				async: false,
+				headers: {"groupId": ${groupId}},
+				data : {
+					parent : 0
+				},
+				success : function(result){
+					var items = result.data;
+					for (var i = 0; i < items.length; i++) {
+						if (items[i].itemCode == params.value){
+							cityName = items[i].itemName;
+						}
+					}
+				},
+				error : function(xhr){
+
+				}
+			});
 			return {
 				cityCode: params.value,
+				cityName: cityName
 			};
 		},
 		validate: function(value) {
@@ -444,8 +467,7 @@
 			// }
 		},
 		success: function(response, newValue) {
-			console.log(newValue);
-			var arr = new Array();
+			var arrDisplay = new Array();
 			$.ajax({
 				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
 				dataType : "json",
@@ -460,13 +482,33 @@
 					for (var i = 0; i < arrDataRes.length; i++) {
 						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
 					}
-					arr = arrDataRes;
 				},
 				error : function(xhr){
 
 				}
 			});
-			$('#district').editable('option', 'source', arr);
+			$('#district').editable('option', 'source', arrDisplay);
+			$('#district').html("-");
+			$('#wards').html("-");
+			$.ajax({
+				url : "${api.server}/applicants/${(api.applicant.applicantId)!}",
+				dataType : "json",
+				type : "PUT",
+				async: false,
+				headers: {"groupId": ${groupId}},
+				data : {
+					districtCode: "-",
+					districtName: "-",
+					wardCode: "-",
+					wardName: "-",
+				},
+				success : function(result){
+					
+				},
+				error : function(xhr){
+
+				}
+			});
 		},
 		error: function(event, id, obj) {
 
@@ -507,8 +549,31 @@
 			headers: {"groupId": ${groupId}}
 		},
 		params: function(params) {
+			var districtName = "";
+			$.ajax({
+				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+				dataType : "json",
+				type : "GET",
+				async: false,
+				headers: {"groupId": ${groupId}},
+				data : {
+					parent : $('#city').editable('getValue', true)
+				},
+				success : function(result){
+					var items = result.data;
+					for (var i = 0; i < items.length; i++) {
+						if (items[i].itemCode == params.value){
+							districtName = items[i].itemName;
+						}
+					}
+				},
+				error : function(xhr){
+
+				}
+			});
 			return {
-				districtCode: params.value
+				districtCode: params.value,
+				districtName: districtName
 			};
 		},
 		validate: function(value) {
@@ -516,9 +581,8 @@
 			//   return 'Đây là trường bắt buộc';
 			// }
 		},
-		success : function(data){
-			console.log(newValue);
-			var arr = new Array();
+		success : function(response, newValue){
+			var arrDisplay = new Array();
 			$.ajax({
 				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
 				dataType : "json",
@@ -533,18 +597,58 @@
 					for (var i = 0; i < arrDataRes.length; i++) {
 						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
 					}
-					arr = arrDataRes;
 				},
 				error : function(xhr){
 
 				}
 			});
-			$('#wards').editable('option', 'source', arr);
+			$('#wards').editable('option', 'source', arrDisplay);
+			$('#wards').html("-");
+			$.ajax({
+				url : "${api.server}/applicants/${(api.applicant.applicantId)!}",
+				dataType : "json",
+				type : "PUT",
+				async: false,
+				headers: {"groupId": ${groupId}},
+				data : {
+					wardCode: "-",
+					wardName: "-",
+				},
+				success : function(result){
+					
+				},
+				error : function(xhr){
+
+				}
+			});
 		},
 		error : function(xhr){
 
 		},
-		prepend: ""
+		prepend: "",
+		source: function(){
+			var arrDisplay = new Array();
+			$.ajax({
+				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+				dataType : "json",
+				type : "GET",
+				async: false,
+				headers: {"groupId": ${groupId}},
+				data : {
+					parent : "${(api.applicant.cityCode)!}"
+				},
+				success : function(result){
+					var arrDataRes = result.data;
+					for (var i = 0; i < arrDataRes.length; i++) {
+						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+					}
+				},
+				error : function(xhr){
+
+				}
+			});
+			return arrDisplay;
+		}
 	});
 
 	$('#wards').editable({
@@ -556,8 +660,31 @@
 			headers: {"groupId": ${groupId}}
 		},
 		params: function(params) {
+			var wardName = "";
+			$.ajax({
+				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+				dataType : "json",
+				type : "GET",
+				async: false,
+				headers: {"groupId": ${groupId}},
+				data : {
+					parent : $('#district').editable('getValue', true)
+				},
+				success : function(result){
+					var items = result.data;
+					for (var i = 0; i < items.length; i++) {
+						if (items[i].itemCode == params.value){
+							wardName = items[i].itemName;
+						}
+					}
+				},
+				error : function(xhr){
+
+				}
+			});
 			return {
-				wardCode: params.value
+				wardCode: params.value,
+				wardName: wardName
 			};
 		},
 		validate: function(value) {
@@ -571,7 +698,30 @@
 		error : function(xhr){
 
 		},
-		prepend: ""
+		prepend: "",
+		source: function(){
+			var arrDisplay = new Array();
+			$.ajax({
+				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+				dataType : "json",
+				type : "GET",
+				async: false,
+				headers: {"groupId": ${groupId}},
+				data : {
+					parent : "${(api.applicant.districtCode)!}"
+				},
+				success : function(result){
+					var arrDataRes = result.data;
+					for (var i = 0; i < arrDataRes.length; i++) {
+						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+					}
+				},
+				error : function(xhr){
+
+				}
+			});
+			return arrDisplay;
+		}
 	});
 
 	$('#phone').editable({
@@ -700,15 +850,15 @@
 						return result.address;
 					},
 					cityName : function(){
-						$('#city').editable("setValue",result.cityName); 
+						$('#city').editable("setValue",result.cityCode); 
 						return result.cityName;
 					},
 					districtName : function(){
-						$('#district').editable("setValue",result.districtName); 
+						$('#district').editable("setValue",result.districtCode); 
 						return result.districtName
 					},
 					wardName : function(){
-						$('#wards').editable("setValue",result.wardName); 
+						$('#wards').editable("setValue",result.wardCode); 
 						return result.wardName
 					},
 					contactName : function(){

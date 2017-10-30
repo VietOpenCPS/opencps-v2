@@ -16,7 +16,7 @@
 					oninput="_collection_autocompleteSearch()" 
 					placeholder="Tên, mã nhóm danh mục">
 	
-				<div class="input-group-addon btn-primary" id="_collection_btnSearch">
+				<div class="input-group-addon btn-active" id="_collection_btnSearch">
 					
 					<i class="fa fa-search" aria-hidden="true"></i>
 	

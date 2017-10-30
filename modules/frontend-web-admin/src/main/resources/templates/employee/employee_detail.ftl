@@ -4,7 +4,7 @@
 
 <div class="row clear-both">
 	
-	<div class="col-sm-5">
+	<div class="col-sm-7">
 		
 		<div class="box-s3">
 
@@ -38,7 +38,7 @@
 
 	</div>
 
-	<div class="col-sm-7">
+	<div class="col-sm-5">
 		
 		<div id="employee-detail-formtemplate-range">
 			

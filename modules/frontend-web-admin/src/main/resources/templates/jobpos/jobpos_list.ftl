@@ -10,7 +10,7 @@
 		<!--search-->
 		<div class="panel-body">
 	
-			<span id="_jobpos_editLabel" class="btn btn-primary image-preview-input btn-block"> 
+			<span id="_jobpos_editLabel" class="btn btn-active image-preview-input btn-block"> 
 				<i class="fa fa-graduation-cap" aria-hidden="true"></i>
 				<span class="p-xxs" >Tổng số</span> 
 				<span id="_jobpos_CounterList">0</span>
@@ -24,7 +24,7 @@
 					oninput="_jobpos_autocompleteSearch(this.value)" 
 					placeholder="Tìm kiếm theo tên chức vụ">
 	
-				<div class="input-group-addon btn-primary" id="_jobpos_btnSearch">
+				<div class="input-group-addon btn-active" id="_jobpos_btnSearch">
 					
 					<i class="fa fa-search" aria-hidden="true"></i>
 	

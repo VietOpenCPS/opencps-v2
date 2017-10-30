@@ -273,10 +273,10 @@
 
 				<label>Danh sách mục dữ liệu: </label>
 				<select name="_collectionSub_group_dictItem#:groupCode#" 
-				id="_collectionSub_group_dictItem#:groupCode#"
-				data-placeholder="Mục dữ liệu...">
+					id="_collectionSub_group_dictItem#:groupCode#"
+					data-placeholder="Mục dữ liệu...">
 
-			</select>
+				</select>
 
 		</div>
 
@@ -363,6 +363,7 @@
 						type: 'POST',
 						dataType: 'json',
 						contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+						async: false,
 						success: function(data, textStatus, xhr) {
 
 							var dataSource = $("#_collectionSub_group_listView").getKendoListView().dataSource;
