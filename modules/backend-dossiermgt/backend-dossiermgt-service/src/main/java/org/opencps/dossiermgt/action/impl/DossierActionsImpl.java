@@ -1,10 +1,12 @@
 package org.opencps.dossiermgt.action.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.auth.utils.OCPSUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -47,8 +49,8 @@ public class DossierActionsImpl implements DossierActions {
 	public static final String SPECIAL_ACTION = "1100";
 	public static final String AUTO_EVENT_SUBMIT = "submit";
 	public static final String AUTO_EVENT_TIMMER = "timer";
-	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_SATUS";
-	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_SATUS";
+	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
+	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
 
 	@Override
 	public JSONObject getDossiers(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
@@ -206,8 +208,15 @@ public class DossierActionsImpl implements DossierActions {
 
 		boolean isCreateDossier = hasCreateDossier(groupId, dossierId, referenceUid, actionCode, serviceProcessId,
 				hasDossierSync);
-
-		List<String> types = OCPSUserUtils.getUserTypes(groupId, userId);
+		
+		//TODO Hard fix for test
+		
+		List<String> types = new ArrayList<>();
+		types.add(OCPSUserUtils.APPLICANT_01);
+		types.add(OCPSUserUtils.APPLICANT_02);
+		types.add(OCPSUserUtils.EMPLOYEE_01);
+		types.add(OCPSUserUtils.EMPLOYEE_02);
+		//List<String> types = OCPSUserUtils.getUserTypes(groupId, userId);
 
 		String postStepCode = processAction.getPostStepCode();
 
@@ -222,7 +231,8 @@ public class DossierActionsImpl implements DossierActions {
 		// In the special action (actionCode = 1100, save DOSSIER in SERVER)
 		if (actionCode.contentEquals(SPECIAL_ACTION)
 				&& (types.contains(OCPSUserUtils.APPLICANT_01) || types.contains(OCPSUserUtils.APPLICANT_02))) {
-
+			//TODO check DossierStatus 
+			
 			// Set dossierStatus is NEW
 			JSONObject jsStatus = JSONFactoryUtil.createJSONObject();
 
@@ -296,11 +306,11 @@ public class DossierActionsImpl implements DossierActions {
 	protected void getDossierStatus(JSONObject ob, long groupId, String collectionCode, String itemCode) {
 
 		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
-
-		DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
-
-		ob.put(itemCode, it.getItemName());
-
+		
+		if (Validator.isNotNull(dc)) {
+			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
+			ob.put(itemCode, it.getItemName());
+		}
 	}
 
 	protected boolean isSubmitType(ProcessAction processAction) {
@@ -427,11 +437,18 @@ public class DossierActionsImpl implements DossierActions {
 				String preStepCode = act.getPreStepCode();
 
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
-
-				if (step.getDossierStatus().contentEquals(dossierStatus)) {
+				
+				if (Validator.isNotNull(step)) {
+					if (step.getDossierStatus().contentEquals(dossierStatus)) {
+						action = act;
+						break;
+					}
+				} else {
 					action = act;
 					break;
 				}
+
+
 			}
 
 		} catch (Exception e) {

@@ -248,7 +248,7 @@ public class PaymentConfigLocalServiceImpl extends PaymentConfigLocalServiceBase
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}
 
-	public long searchLucene(LinkedHashMap<String, Object> params, SearchContext searchContext)
+	public long countLucene(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);

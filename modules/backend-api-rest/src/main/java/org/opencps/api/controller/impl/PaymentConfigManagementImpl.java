@@ -70,7 +70,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			Hits hits = PaymentConfigLocalServiceUtil.searchLucene(params, sorts, query.getStart(), query.getEnd(),
 					searchContext);
 
-			long total = PaymentConfigLocalServiceUtil.searchLucene(params, searchContext);
+			long total = PaymentConfigLocalServiceUtil.countLucene(params, searchContext);
 
 			PaymentConfigResultsModel results = new PaymentConfigResultsModel();
 

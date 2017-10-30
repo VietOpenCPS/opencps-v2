@@ -12,10 +12,10 @@ import com.liferay.portal.kernel.service.ServiceContext;
 
 public interface ApplicantActions {
 	@Deprecated
-	public Applicant register(ServiceContext context, String applicantName, String applicantIdType, String applicantIdNo,
+	public Applicant register(ServiceContext context, long groupId, String applicantName, String applicantIdType, String applicantIdNo,
 			String applicantIdDate, String contactEmail, String password) throws PortalException, SystemException;
 	
-	public Applicant register(ServiceContext context, String applicantName, String applicantIdType,
+	public Applicant register(ServiceContext context, long groupId, String applicantName, String applicantIdType,
 			String applicantIdNo, String applicantIdDate, String contactEmail, String address, String cityCode,
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String password) throws PortalException, SystemException;

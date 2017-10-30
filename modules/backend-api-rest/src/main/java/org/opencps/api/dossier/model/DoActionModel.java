@@ -42,7 +42,8 @@ import javax.xml.bind.annotation.XmlType;
     "actionCode",
     "actionUser",
     "actionNote",
-    "assignUserId"
+    "assignUserId",
+    "isSynAction"
 })
 @XmlRootElement(name = "DoActionModel")
 public class DoActionModel {
@@ -55,8 +56,18 @@ public class DoActionModel {
     protected String actionNote;
 	@FormParam(value = "assignUserId")
     protected int assignUserId;
+	@FormParam(value = "isSynAction")
+    protected int isSynAction;
 
-    /**
+    public int getIsSynAction() {
+		return isSynAction;
+	}
+
+	public void setIsSynAction(int isSynAction) {
+		this.isSynAction = isSynAction;
+	}
+
+	/**
      * Gets the value of the actionCode property.
      * 
      * @return

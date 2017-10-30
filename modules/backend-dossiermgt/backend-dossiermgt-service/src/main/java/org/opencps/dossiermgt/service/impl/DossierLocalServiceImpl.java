@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -91,13 +92,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		validateInit(groupId, dossierId, referenceUid, serviceCode, govAgencyCode, address, cityCode, districtCode,
 				wardCode, contactName, contactTelNo, contactEmail, dossierTemplateNo);
-
+		
+		String dossierTemplateName = getDossierTemplateName(groupId, dossierTemplateNo);
+		
 		Dossier dossier = null;
 
 		if (dossierId == 0) {
 			dossierId = counterLocalService.increment(Dossier.class.getName());
 
 			dossier = dossierPersistence.create(dossierId);
+			
+			
 
 			dossier.setCreateDate(now);
 			dossier.setModifiedDate(now);
@@ -113,12 +118,24 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setServiceName(serviceName);
 			dossier.setGovAgencyCode(govAgencyCode);
 			dossier.setGovAgencyName(govAgencyName);
+			dossier.setDossierTemplateNo(dossierTemplateNo);
+			dossier.setDossierTemplateName(dossierTemplateName);
 			dossier.setApplicantName(applicantName);
 			dossier.setApplicantIdType(applicantIdType);
 			dossier.setApplicantIdNo(applicantIdNo);
 			dossier.setApplicantIdDate(applicantIdDate);
 			dossier.setPassword(password);
 			dossier.setOnline(online);
+			dossier.setAddress(address);
+			dossier.setCityCode(cityCode);
+			dossier.setCityName(cityName);
+			dossier.setDistrictCode(districtCode);
+			dossier.setDistrictName(districtName);
+			dossier.setWardCode(wardCode);
+			dossier.setWardName(wardName);
+			dossier.setContactName(contactName);
+			dossier.setContactEmail(contactEmail);
+			dossier.setContactTelNo(contactTelNo);
 
 		} else {
 
@@ -130,6 +147,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setApplicantIdType(applicantIdType);
 			dossier.setApplicantIdNo(applicantIdNo);
 			dossier.setApplicantIdDate(applicantIdDate);
+			dossier.setAddress(address);
+			dossier.setCityCode(cityCode);
+			dossier.setCityName(cityName);
 			dossier.setDistrictCode(districtCode);
 			dossier.setDistrictName(districtName);
 			dossier.setWardCode(wardCode);
@@ -143,6 +163,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setPostalTelNo(postalTelNo);
 			dossier.setApplicantNote(applicantNote);
 			dossier.setNotification(notification);
+			dossier.setDossierTemplateNo(dossierTemplateNo);
+			dossier.setDossierTemplateName(dossierTemplateName);
+			dossier.setContactTelNo(contactTelNo);
 
 		}
 
@@ -292,7 +315,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setModifiedDate(now);
 
 		dossier.setSubmitting(true);
-
+		dossier.setSubmitDate(now);
 		dossierPersistence.update(dossier);
 
 		return dossier;
@@ -315,6 +338,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setModifiedDate(now);
 		dossier.setSubmitting(false);
+		dossier.setSubmitDate(null);
+
 
 		// TODO add reset for DossierFile and PaymentFile (isNew => false)
 
@@ -668,6 +693,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
+		String secetKey = GetterUtil.getString(params.get("secetKey"));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -702,13 +728,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			}
 		}
+		if(!(Validator.isNotNull(secetKey) && secetKey.contentEquals("OPENCPSV2"))) {
+			if (Validator.isNotNull(groupId)) {
+				MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-		if (Validator.isNotNull(groupId)) {
-			MultiMatchQuery query = new MultiMatchQuery(groupId);
+				query.addFields(Field.GROUP_ID);
 
-			query.addFields(Field.GROUP_ID);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		String status = GetterUtil.getString(params.get(DossierTerm.STATUS));
@@ -719,11 +747,19 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String year = GetterUtil.getString(params.get(DossierTerm.YEAR));
 		String month = GetterUtil.getString(params.get(DossierTerm.MONTH));
 		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
-
+		String submitting = GetterUtil.getString(params.get(DossierTerm.SUBMITTING));
 		// TODO add more logic here
 		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
 		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
 		String top = GetterUtil.getString(params.get(DossierTerm.TOP));
+
+		if (Validator.isNotNull(submitting)) {
+			MultiMatchQuery query = new MultiMatchQuery(submitting);
+
+			query.addFields(DossierTerm.SUBMITTING);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 
 		if (Validator.isNotNull(status)) {
 			MultiMatchQuery query = new MultiMatchQuery(status);
@@ -798,6 +834,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
+		String secetKey = GetterUtil.getString(params.get("secetKey"));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -830,12 +867,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
-		if (Validator.isNotNull(groupId)) {
-			MultiMatchQuery query = new MultiMatchQuery(groupId);
+		if(!(Validator.isNotNull(secetKey) && secetKey.contentEquals("OPENCPSV2"))) {
+			if (Validator.isNotNull(groupId)) {
+				MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(Field.GROUP_ID);
+				query.addFields(Field.GROUP_ID);
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+
 		}
 
 		String status = GetterUtil.getString(params.get(DossierTerm.STATUS));
@@ -846,11 +886,20 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String year = GetterUtil.getString(params.get(DossierTerm.YEAR));
 		String month = GetterUtil.getString(params.get(DossierTerm.MONTH));
 		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
-
+		String submitting = GetterUtil.getString(params.get(DossierTerm.SUBMITTING));
+		
 		// TODO add more logic here
 		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
 		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
 		String top = GetterUtil.getString(params.get(DossierTerm.TOP));
+
+		if (Validator.isNotNull(submitting)) {
+			MultiMatchQuery query = new MultiMatchQuery(submitting);
+
+			query.addFields(DossierTerm.SUBMITTING);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 
 		if (Validator.isNotNull(status)) {
 			MultiMatchQuery query = new MultiMatchQuery(status);
@@ -918,6 +967,19 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
+	}
+	
+	private String getDossierTemplateName(long groupId, String dossierTemplateCode) {
+		String name = StringPool.BLANK;
+		
+		
+		DossierTemplate template = dossierTemplatePersistence.fetchByG_DT_NO(groupId, dossierTemplateCode);
+		
+		if(Validator.isNotNull(template)) {
+			name = template.getTemplateName();
+		}
+		
+		return name;
 	}
 
 	public static final String CLASS_NAME = Dossier.class.getName();

@@ -53,7 +53,8 @@ public class ApplicantIndexer extends BaseIndexer<Applicant> {
 		document.addKeywordSortable(Field.ENTRY_CLASS_NAME, Applicant.class.getName());
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
 
-		document.addKeywordSortable(ApplicantTerm.APPLICANTNAME, object.getContactName());
+		document.addKeywordSortable(ApplicantTerm.APPLICANTNAME, object.getApplicantName());
+		document.addKeywordSortable(ApplicantTerm.APPLICANTIDNO, object.getApplicantIdNo());
 		document.addTextSortable(ApplicantTerm.APPLICANTIDTYPE, object.getApplicantIdType());
 		document.addDateSortable(ApplicantTerm.APPLICANTIDDATE, object.getApplicantIdDate());
 		document.addTextSortable(ApplicantTerm.ADDRESS, object.getAddress());
