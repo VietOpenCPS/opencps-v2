@@ -19,21 +19,50 @@
 		<div class="row itemCustomerDossierList" dataPk="#:id#">
 			<div class="row">
 				<div class="row-blue align-middle">
-					<div class="order-number">123</div>
+					<div class="order-number">#:counter#</div>
 					<div class="dossier-number" data-toggle="tooltip" title="Mã hồ sơ"><span class="red">\\#</span> #:serviceCode#</div>
-					<div class="receive-number"><span class="text-normal">Mã tiếp nhận:</span> #:referenceUid#</div>
+					<div class="receive-number"><span class="text-normal">Mã tiếp nhận:</span> #:dossierNo#</div>
 					#
 						var label="label-info";
-						if(dossierStatus=="cbs"){
-							label="label-warning";
-						}else if(dossierStatus=="ctt"){
-							label="label-danger";
-						}else if(dossierStatus=="ht"){
-							label="label-success";
-						}else if(dossierStatus=="dh"){
-							label="label-default";
-						}else{
-							label="label-info";
+						switch(dossierStatus) {
+						    case "New":
+						        label="label-info";
+						        break;
+						    case "Collecting":
+						        label="label-info";
+						        break;
+						    case "Waiting":
+						        label="label-info";
+						        break;
+						    case "Paying":
+						        label="label-info";
+						        break;
+						    case "Processing":
+						        label="label-info";
+						        break;
+						    case "Waiting":
+						        label="label-info";
+						        break;
+						    case "Paying":
+						        label="label-info";
+						        break;
+						    case "Handover":
+						       	label="label-info";
+						        break;
+						    case "Releasing":
+						        label="label-info";
+						        break;  
+						    case "Posting":
+						        label="label-info";
+						        break;
+						    case "Done":
+						        label="label-info";
+						        break;	
+						    case "Cancelled":
+						        label="label-info";
+						        break;					        
+						    default:
+						        label="label-info";
 						}
 					#
 					<span class="label #:label# MLA"><#-- #:dosierStatusText# -->Hoàn thành</span> 
@@ -46,25 +75,35 @@
 						<p>
 							<i class="fa fa-university" style="color: \\#84FAFA;" aria-hidden="true"></i> #:govAgencyName#
 						</p>
+						
 						<p>
-							<i class="fa fa-bolt" aria-hidden="true" style="color: red;"></i> 
-							<i>#:dossierSubStatusText#</i>
+							#if(typeof actionNote !== "undefined"){#
+								<i class="fa fa-bolt" aria-hidden="true" style="color: red;"></i> 
+								<i>#:actionNote#</i>
+							#}#
 						</p>
-						# if (dossierOverdue) { #
+
 						<p>
-							<i>Hồ sơ này sẽ được giải quyết trong vòng #:overDue# ngày, khi đó bạn hãy đến cơ quan tiếp nhận hồ sơ để lấy kết quả khi hồ sơ hoàn tất 
-							</i>
+							#if(typeof stepInstruction !== "undefined"){#
+								<i>#:stepInstruction#</i>
+							#}#
 						</p>
-						# } #.
+						
 
-						<a href="${api.server}/dossiers/#:id#/result" style="margin-right: 10px;">
-							<i class="fa fa-download" aria-hidden="true">
-							</i> Tải giấy tờ kết quả
-						</a>
+						#if(dossierStatus === "Done"){#
 
-						<a href="javascript:;" onclick="javascript:copyProfile(#:id#)"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Sao chép hồ sơ
-						</a>
+							<a href="${api.server}/dossiers/#:id#/result" style="margin-right: 10px;">
+								<i class="fa fa-download" aria-hidden="true">
+								</i> Tải giấy tờ kết quả
+							</a>
+						#}#
+						
+						#if(dossierStatus === "Done" ){#
+							<a href="javascript:;" onclick="javascript:copyProfile(#:id#)"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Sao chép hồ sơ
+							</a>
+						#}#
 					</div>
+					
 					<div class="col-sm-4 MT10 text-right">
 						<div class="row">
 							<p data-toggle="tooltip" title="Ngày gửi">
@@ -100,7 +139,8 @@
 						receiptCode:options.data.receiptCode,
 						startDate:options.data.startDate,
 						endDate:options.data.endDate,
-						keyword:options.data.keyword
+						keyword:options.data.keyword,
+						status : options.data.status
 					},	
 					success:function(result){
 						options.success(result);
@@ -159,12 +199,10 @@
 		$("#dossier_detail").show();
 		$("#dossier_list").hide();
 		$("#dossier_detail").load("${ajax.customer_dossier_detail}?id="+id+"",function(result){
-			dataSourceDossiserFileTemplate.read({
-				id:id
-			});
-			dataSourceDossiserLog.read({
-				id:id
-			});
+			$("#dossierItemId").val(id);
+			/*dataSourceDossierTemplate.read({
+				id : id
+			});*/
 		});
 	});
 

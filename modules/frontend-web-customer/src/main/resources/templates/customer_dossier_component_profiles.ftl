@@ -12,103 +12,72 @@
 						<form action="" id="fileArchiveForm">
 							<div class="col-sm-12">
 								<div class="form-group search-icon">
-							  		<input type="text" class="form-control" placeholder="Nhập từ khóa">
+									<input type="text" class="form-control" placeholder="Nhập từ khóa">
 								</div>
 							</div>
 							<div class="col-sm-12">
-								<#assign index=0>
-								<#if componentProfile?has_content>
-								<div class="accordion" id="accordion1">
-									<#list componentProfile as componentItem>
-									<div class="accordion-group">
-										<div class="accordion-heading">
-											<a class="accordion-toggle" data-toggle="collapse" data-parent="${componentItem.componentProfileId}" href="#${componentItem.componentProfileId}" aria-expanded="true">
-												${componentItem.componentProfileName}
-											</a>
-										</div>
-										<div id="${componentItem.componentProfileId}" class="accordion-body collapse in" aria-expanded="true">
-											<#if componentItem?has_content>
-											<div class="accordion-inner">
-												<#list componentItem.item as componentItemChild>
-												<div class="eq-height">
-													
-													<div class="col-xs-12 col-sm-9 align-middle">
-														<a class="view-component-profile" href="#" data-pk="${componentItemChild.id}" data-index="${index}" >
-															${componentItemChild.name}
-														</a>
+								<ul id="listViewDossierFile"></ul>
+								<#assign index = 0>
+								<script type="text/x-kendo-template" id="templateDossierFiles">
+									<div class="accordion" id="accordion1">
+
+										<div class="accordion-group">
+											#if(flag){#
+											<div class="accordion-heading">
+												<a class="accordion-toggle dossier-partno-title" data-toggle="collapse" data-pk="#:dossierPartNo#" data-parent="" href="\\##:dossierPartNo#" aria-expanded="true">
+												Part #:dossierPartNo#
+												</a>
+											</div>
+											#}#
+
+											#
+											var collapseIn = "";
+											if(dossierPartNo === "${dossierPartNo}"){ 
+												collapseIn = "in";
+											}
+											#
+
+											<div id="#:dossierPartNo#" class="accordion-body collapse #:collapseIn#" aria-expanded="true">
+
+												<div class="accordion-inner">
+
+													<div class="eq-height">
+
+														<div class="col-xs-12 col-sm-9 align-middle">
+															<a class="view-component-profile #if('${index}' === '0'){# active #}#" href="javascript:;" data-pk="#:referenceUid#" data-index="${index}" >
+																#:displayName#
+															</a>
+														</div>
+
+														<div class="col-xs-12 col-sm-3 align-center">
+															<button class="btn btn-reset btn-delete-component-profile" data-pk="#:id#"><i class="fa fa-trash"></i> Xóa</button>
+														</div>
 													</div>
-													<#assign index=index+1>
-													<div class="col-xs-12 col-sm-3 align-center">
-														<button class="btn btn-reset btn-delete-component-profile" data-pk="${componentItemChild.id}"><i class="fa fa-trash"></i> Xóa</button>
-													</div>
+
 												</div>
-												</#list>
+
 											</div>
-											</#if>
 										</div>
+										<#assign index = index + 1>
 									</div>
-									</#list>
-								</div>
-								</#if>
+								</script>
 
-								<#-- <ul id="lvDossierComponentProfile" style="height: auto; overflow: auto;" data-spy="scroll">
-
-								</ul>
-								<script type="text/x-kendo-template" id="dossierComponentProfileTemp">
-									<li>
-										<div class="row">
-											<div class="col-sm-9">
-												<label>Ảnh 3x4 nền trắng</label> 
-											</div>
-											<div class="col-sm-3">
-												<button class="btn btn-bigger btn-reset btn-delete-component-profile" data-pk="1"><i class="fa fa-trash"></i> Xóa</button>
-											</div>
-										</div> 
-									</li>
-								</script> -->
 							</div>
-							<#-- <div class="col-sm-12">
-								<button class="btn btn-active" id="btnChoiseFileArchive">Chọn</button>
-							</div> -->
 						</form>
 					</div>
 				</div>
-				<#-- <div class="col-sm-9">
-					<div id="fileCarousel" class="carousel slide" data-ride="carousel" data-interval="false"> 
-						<ul class="carousel-inner" id="fileInner">
-
-						</ul>
-						<a class="left carousel-control control-left" href="#fileCarousel" data-slide="prev">
-							<span class="glyphicon glyphicon-chevron-left"></span>
-							<span class="sr-only">Previous</span>
-						</a>
-						<a class="right carousel-control control-right" href="#fileCarousel" data-slide="next">
-							<span class="glyphicon glyphicon-chevron-right"></span>
-							<span class="sr-only">Next</span>
-						</a>
-					</div>
-				</div>
-				<script type="text/x-kendo-template" id="template">
-					<li class="item" data-pk="1">
-						<iframe class="fred" style="border:1px solid \\#666CCC" title="PDF in an i-Frame" src="http://www.egr.msu.edu/classes/ece480/capstone/spring11/group02/documents/matt_appnote.pdf" frameborder="0" scrolling="auto" height="500" width="100%" >
-						</iframe>
-					</li>
-				</script> -->
 
 				<div class="col-sm-9">
 					<div id="fileCarousel" class="carousel slide" data-ride="carousel" data-interval="false"> 
-						<ul class="carousel-inner" id="fileInner">
-							<#if componentProfile?has_content>
-								<#list componentProfile as componentItem>
-									<#list componentItem.item as item>
-										<li class="item" data-pk="1">
-											<iframe class="fred" style="border:1px solid \\#666CCC" title="PDF in an i-Frame" src="http://www.egr.msu.edu/classes/ece480/capstone/spring11/group02/documents/matt_appnote.pdf" frameborder="0" scrolling="auto" height="500" width="100%" >
-											</iframe>
-										</li>
-									</#list>
-								</#list>
-							</#if>
+						<ul class="carousel-inner" id="listViewCarouselDossierFile">
+							
 						</ul>
+						<script type="text/x-kendo-template" id="templateCarouselDossierFile">
+							<li class="item" data-pk="#:id#">
+								<iframe class="fred" style="border:1px solid \\#666CCC" title="PDF in an i-Frame" src="${api.server}/dossiers/${dossierId}/files/#:id#" frameborder="0" scrolling="auto" height="500" width="100%" >
+								</iframe>
+							</li>
+						</script>
 						<a class="left carousel-control control-left" href="#fileCarousel" data-slide="prev">
 							<span class="glyphicon glyphicon-chevron-left"></span>
 							<span class="sr-only">Previous</span>
@@ -126,53 +95,82 @@
 </div>
 <script type="text/javascript">
 	$(function(){
-		/*var template = kendo.template($("#template").html());
-
-		var dataSourceDossierComponentProfile=new kendo.data.DataSource({
+		/*		var template = kendo.template($("#template").html());*/
+		var flag = 0;
+		var dataSourceDossierFile=new kendo.data.DataSource({
 			transport : {
-				read : {
-					url : "http://localhost:8081/api/dossiers/1/dossierlogs",
-					type : "GET",
-					dataType : "json"
+				read : function(options) {
+					$.ajax({
+						url : "${api.server}/dossiers/${dossierId}/files",
+						type : "GET",
+						dataType : "json",
+						headers : {"groupId": ${groupId}},
+						success : function (result) {
+							options.success(result);
+						},
+						error : function (result) {
+							options.error(result);
+						}
+					});
 				}
 			},
 			schema : {
 				data : "data",
 				total : "total",
 				model : {
-					id:"id"
+					id:"referenceUid"
 				}
 			},
 			change: function() { 
-				console.log(this.view());
+				/*console.log(this.view());
 				$("#fileCarousel .carousel-inner").html(kendo.render(template, this.view())); 
-				$("#fileInner > li").first().addClass("active");
+				$("#fileInner > li").first().addClass("active");*/
 			}
 		});
 
-		dataSourceDossierComponentProfile.read();
+		/*dataSourceDossierComponentProfile.read();*/
 
-		$("#lvDossierComponentProfile").kendoListView({
-			dataSource : dataSourceDossierComponentProfile,
-			template : kendo.template($("#dossierComponentProfileTemp").html()),
+		$("#listViewDossierFile").kendoListView({
+			dataSource : dataSourceDossierFile,
+			template : function(data) {
+				if(flag !== data.dossierPartNo){
+					data.flag = true;
+					flag = data.dossierPartNo;
+				}else {
+					data.flag = false;
+				}
+				return kendo.template($("#templateDossierFiles").html())(data);
+			},
+			selectable : "single",
+			dataBound : function(e) {
+				printDossierPartName();
+			},
+			change: onChange
+		});
+
+		$("#listViewCarouselDossierFile").kendoListView({
+			dataSource : dataSourceDossierFile,
+			template : kendo.template($("#templateCarouselDossierFile").html()),
 			selectable : "single",
 			change: onChange
 		});
 
 		function onChange() {
-			var data = dataSourceDossierComponentProfile.view(),
+			/*var data = dataSourceDossierFile.view(),
 			selected = $.map(this.select(), function(item) {
 				$('#fileCarousel').carousel($(item).index());
-			});
-		}*/
+			});*/
+		}
 
 		$('.control-left').click(function() {
 			var index=getCurrentIndexSlide();
+			console.log(index);
 			/*$("#lvDossierComponentProfile").data("kendoListView").select(index);*/
 		});
 
 		$('.control-right').click(function() {
 			var index=getCurrentIndexSlide();
+			console.log(index);
 			/*$("#lvDossierComponentProfile").dât("kendoListView").select(index);*/
 		});
 
@@ -185,17 +183,28 @@
 			event.preventDefault();
 			var id=$(this).attr("data-pk");
 			$.ajax({
-				url:"${api.server}/dossiers/dossierfiles",
-				type:"DELETE",
-				dataType:"json",
-				data:{
-					id:id
+				url : "${api.server}/dossiers/${dossierId}/files/"+id,
+				type : "DELETE",
+				dataType : "json",
+				headers : {"groupId": ${groupId}},
+				data : {
+					id : id
 				},
 				success:function(result){
+					var item = dataSourceDossierFile.get(id);
+					if(item){
+						dataSourceDossierFile.remove(item);
+					}
+					console.log(item);
+					notification.show({
+						message: "Đổi mật khẩu thành công"
+					}, "success");
 
 				},
 				error:function(result){
-
+					notification.show({
+						message: "Xẩy ra lỗi, vui lòng thử lại"
+					}, "error");
 				}
 				
 			});
@@ -210,5 +219,29 @@
 			console.log(index);
 			$('#fileCarousel').carousel(parseInt(index));
 		});
+
+		var printDossierPartName = function() {
+			$.ajax({
+				url : "${api.server}/dossiertemplates/201/parts",
+				type : "GET",
+				dataType : "json",
+				headers : {"groupId": ${groupId}},
+				data : {
+
+				},
+				async : false,
+				success:function(result){
+					var data =  result.data;
+					for(var i = 0; i<data.length; i++){
+
+						$(".dossier-partno-title [data-pk="+data[i].partNo+"]").html(data[i].partName);
+					}
+				},
+				error:function(result){
+					
+				}
+				
+			});
+		}
 	});
 </script>

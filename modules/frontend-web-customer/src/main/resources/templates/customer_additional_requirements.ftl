@@ -1,11 +1,11 @@
 
 <div class="panel panel-main"> 
-	<div class="panel-heading"> <h3 class="panel-title">Yêu cầu bổ sung</h3>
+	<div class="panel-heading row-header"> <span class="panel-title">Yêu cầu bổ sung</span>
 		<span class="pull-right clickable panel-collapsed">
 			<i class="glyphicon glyphicon-chevron-down"></i>
 		</span>
 	</div>
-	<div class="panel-body">
+	<div class="panel-body PT0" id="additionalRequirement">
 		<ul class='ul-with-border'>
 			<div id='listViewCustomer_Additional_Requirement'></div>
 		</ul>
@@ -46,10 +46,16 @@
 
 					},
 					success:function(result){
-						options.success(result);
+						if(result.data){
+							options.success(result);
+						}else{
+							$("#additionalRequirement").hide();
+						}
+						
 					},
 					error:function(result){
 						options.error(result);
+						$("#additionalRequirement").hide();
 					}
 				});
 			}
@@ -73,13 +79,8 @@
 
 	$("#pagerCustomer_Additional_Requirement").kendoPager({
 		dataSource:dataSourceAdditionalRequirement,
-		input: true,
+		input: false,
 		numeric: false,
-		messages: {
-			empty: "Không có kết quả phù hợp!",
-			display: "Hiển thị {0}-{1} trong {2} bản ghi",
-			page: "",
-			of: "/ {0}"
-		}
+		info : false
 	});
 </script>

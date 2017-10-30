@@ -10,7 +10,7 @@
             <div class="accordion-group">
               <div class="accordion-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#${govAgency.govAgencyCode}">
-                  ${govAgency.govAgencyName}
+                  <i class="fa fa-university" aria-hidden="true"></i> ${govAgency.govAgencyName}
                 </a>
               </div>
               <div id="${govAgency.govAgencyCode}" class="accordion-body collapse in">
@@ -74,10 +74,10 @@
         event.preventDefault();
         var govAgencyCode = $(this).attr("admt-pk");
         var serviceInfoId = $(this).attr("data-pk");
-        $("#left_container").load("${ajax.customer_prepare_file_detail}?${portletNamespace}govAgencyCode=" + govAgencyCode + "&${portletNamespace}serviceInfoId=" + serviceInfoId + "&${portletNamespace}dossierStatus=new", function(result){
-            $("#left_container").show();
+        $("#dossier_detail").load("${ajax.customer_dossier_detail}?${portletNamespace}govAgencyCode=" + govAgencyCode + "&${portletNamespace}serviceInfoId=" + serviceInfoId + "&${portletNamespace}dossierStatus=new", function(result){
+            $("#dossier_detail").show();
             $("#dossier_list").hide();
-            $("#dossier_detail").hide();
+            $("#left_container").hide();
         });
       });
     });

@@ -1,10 +1,10 @@
 <div class="panel panel-main MT15"> 
-	<div class="panel-heading"> <h3 class="panel-title">Yêu cầu thanh toán</h3> 
+	<div class="panel-heading row-header"> <span class="panel-title">Yêu cầu thanh toán</span> 
 		<span class="pull-right clickable panel-collapsed"> 
 			<i class="glyphicon glyphicon-chevron-down"></i> 
 		</span> 
 	</div> 
-	<div class="panel-body">
+	<div class="panel-body PT0" id="paymentRequest">
 		<ul class='ul-with-border'>
 			<div id='listViewCustomer_Payment_Request'></div>
 		</ul>
@@ -22,7 +22,6 @@
 </div>
 
 <script type="text/javascript">
-
 	var dataSourcePaymentRequest=new kendo.data.DataSource({
 		transport:{
 			read:function(options){
@@ -34,10 +33,16 @@
 
 					},
 					success:function(result){
-						options.success(result);
+						if(result.data){
+							options.success(result);
+						}else{
+							$("#paymentRequest").hide();
+						}
+						
 					},
 					error:function(result){
 						options.error(result);
+						$("#paymentRequest").hide();
 					}
 				});
 			}
@@ -61,13 +66,8 @@
 
 	$("#pagerCustomer_Payment_Request").kendoPager({
 		dataSource:dataSourcePaymentRequest,
-		input: true,
+		input: false,
 		numeric: false,
-		messages: {
-			empty: "Không có kết quả phù hợp!",
-			display: "Hiển thị {0}-{1} trong {2} bản ghi",
-			page: "",
-			of: "/ {0}"
-		}
+		info : false
 	});
 </script>
