@@ -134,20 +134,17 @@
 					dataType:"json",
 					type:"GET",
 					data:{
-						statusCode:options.data.statusCode,
 						serviceInfo:options.data.serviceInfo,
-						receiptCode:options.data.receiptCode,
-						startDate:options.data.startDate,
-						endDate:options.data.endDate,
+						govAgencyCode:options.data.govAgencyCode,
+						year:options.data.year,
+						month:options.data.month,
 						keyword:options.data.keyword,
 						status : options.data.status
 					},	
 					success:function(result){
 						options.success(result);
-						console.log(options);
 					},
 					error:function(result){
-						console.log(options);
 						options.error(result);
 					}
 				});

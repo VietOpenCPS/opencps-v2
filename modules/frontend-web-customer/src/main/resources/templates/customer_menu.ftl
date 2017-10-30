@@ -45,12 +45,12 @@
 		<div class="row">
 			<div class="col-sm-6">
 				<div class="form-group">
-					<input class="form-control" id="startDate" name="startDate" placeholder="Năm" title="Từ ngày"/>
+					<input class="form-control" id="year" name="year" placeholder="Năm" title="year"/>
 				</div>
 			</div>
 			<div class="col-sm-6">
 				<div class="form-group">
-					<input class="form-control" id="endDate" name="endDate" placeholder="Tháng" title="Đến ngày" />
+					<input class="form-control" id="month" name="month" placeholder="Tháng" title="Đến ngày" />
 				</div>
 			</div>
 		</div>
@@ -59,60 +59,6 @@
 </div>
 
 <script type="text/javascript">
-	$("#serviceInfo").kendoComboBox({
-		placeholder:"Chọn thủ tục hành chính",
-		dataTextField:"serviceName",
-		dataValueField:"serviceCode",
-		dataSource:{
-			transport:{
-				read:{
-					url:"${api.server}/dossiers",
-					dataType:"json",
-					type:"GET"
-				}
-			},
-			schema:{
-				data:"data",
-				total:"total",
-				model:{
-					id:"serviceinfoid"
-				}
-			}
-		}
-
-	});
-
-	$("#govAgencyCode").kendoComboBox({
-		placeholder:"Chọn cơ quan",
-		dataTextField:"govAgencyName",
-		dataValueField:"govAgencyCode",
-		dataSource:{
-			transport:{
-				read:{
-					url:"${api.server}/dossiers",
-					dataType:"json",
-					type:"GET"
-				}
-			},
-			schema:{
-				data:"data",
-				total:"total",
-				model:{
-					id:"serviceinfoid"
-				}
-			}
-		}
-
-	});
-
-	$("#startDate").kendoDatePicker({
-		format:"dd/MM/yyyy"
-	});
-
-	$("#endDate").kendoDatePicker({
-		format:"dd/MM/yyyy"
-	});
-
 	$(function() {
 		$("[data-role=combobox]").each(function() {
 			var widget = $(this).getKendoComboBox();
@@ -134,20 +80,18 @@
 		for(vả i=0;i<arStatus.length;i++)Ơ
 			$("#profileStatus").append("<li style='padding:5px 0;' dataPk='"+arStatus[i].statusCode+"' class='itemStatus'><i class='fa fa-folder-o' ẩi-hidden='true'></i>  <a href='javascript:;' >"+arStatus[i].statusName+"</a></li>");
 		Ư*/
-
-		$("#profileStatus li").first().addClass("active");
-		$("#profileStatus li > i").first().removeClass("fa fa-folder-o").addClass("fa fa-folder-open-o");
+		// ADD class Active, change icon folder open/close TRANG THAI  DAU TIEN
+		// $("#profileStatus li").first().addClass("active");
+		// $("#profileStatus li > i").first().removeClass("fa fa-folder-o").addClass("fa fa-folder-open-o");
 
 		$("#dossier_detail").hide();
 		$("#dossier_list").show();
 		$("#customer_dossierlist").load("${ajax.customer_dossierlist}",function(event){
 			dataSourceProfile.read({
 				"serviceInfo":$("#serviceInfo").val(),
-
-				"receiptCode":$("#receiptCode").val(),
-				"startDate":$("#startDate").val(),
-				"endDate":$("#endDate").val(),
-				"statusDate" : $("#monthYearFilter").val()
+				"govAgencyCode":$("#govAgencyCode").val(),
+				"year":$("#year").val(),
+				"month":$("#month").val()
 			});
 		});
 
@@ -164,37 +108,114 @@
 		});
 
 	});
-
+	// Lọc theo các module hồ sơ
 	$(document).on("click",".itemStatus",function(event){
 		event.preventDefault();
+		$("#year").val("");
+		$("#month").val("");
+		$("#serviceInfo").data("kendoComboBox").text("");
+		$("#govAgencyCode").data("kendoComboBox").text("");
 		$("#dossier_detail").hide();
 		$("#left_container").hide();
-
 		$("#dossier_list").show();
-
 		$("#profileStatus li").removeClass('active');
 		$("#profileStatus li>i").removeClass('fa-folder-open-o').addClass("fa fa-folder-o");
 		$(this).addClass('active');
 		$(this).children("i").removeClass("fa fa-folder-o").addClass("fa fa-folder-open-o");
-
 		var id=$(this).attr("dataPk");
 		$("#customer_dossierlist").load("${ajax.customer_dossierlist}",function(event){
-			var id=$("#profileStatus li").first().attr("dataPk");
 			dataSourceProfile.read({
 				"serviceInfo":$("#serviceInfo").val(),
-				"receiptCode":$("#receiptCode").val(),
-				"startDate":$("#startDate").val(),
-				"endDate":$("#endDate").val(),
-				"status":id,
-				"statusDate" : $("#monthYearFilter").val()
-
+				"govAgencyCode":$("#govAgencyCode").val(),
+				"year":$("#year").val(),
+				"month":$("#month").val(),
+				"status":id
 			});
-		});
+		})
+	});
+	// Lọc theo tháng, năm, cơ quan, thủ tục hành chính
+	var eventLookup = function(){
+		var statusDossier = $("li.itemStatus.active").attr("dataPk");
+	    if (statusDossier != undefined) {
+	    	dataSourceProfile.read({
+				"serviceInfo":$("#serviceInfo").val(),
+				"govAgencyCode":$("#govAgencyCode").val(),
+				"year":$("#year").val(),
+				"month":$("#month").val(),
+				"status":statusDossier
+			});
+	    } else {
+	    	dataSourceProfile.read({
+				"serviceInfo":$("#serviceInfo").val(),
+				"govAgencyCode":$("#govAgencyCode").val(),
+				"year":$("#year").val(),
+				"month":$("#month").val(),
+				"status":""
+			});
+	    };
+	    console.log(statusDossier);
+	}
+	
+	$("#serviceInfo").kendoComboBox({
+		placeholder:"Chọn thủ tục hành chính",
+		dataTextField:"serviceName",
+		dataValueField:"serviceCode",
+		dataSource:{
+			transport:{
+				read:{
+					url:"${api.server}/serviceconfigs",
+					dataType:"json",
+					type:"GET"
+				}
+			},
+			schema:{
+				data:"data",
+				total:"total",
+				model:{
+					id:"serviceinfoid"
+				}
+			}
+		},
+		select: function(e) {
+		    eventLookup()
+		}
+	});
+
+	$("#govAgencyCode").kendoComboBox({
+		placeholder:"Chọn cơ quan",
+		dataTextField:"govAgencyName",
+		dataValueField:"govAgencyCode",
+		dataSource:{
+			transport:{
+				read:{
+					url:"${api.server}/serviceconfigs",
+					dataType:"json",
+					type:"GET"
+				}
+			},
+			schema:{
+				data:"data",
+				total:"total",
+				model:{
+					id:"serviceinfoid"
+				}
+			}
+		},
+		select: function(e) {
+		    eventLookup()
+		}
+	});
+
+	$("#year").kendoDatePicker({
+		format:"dd/MM/yyyy"
+	});
+
+	$("#month").kendoDatePicker({
+		format:"dd/MM/yyyy"
 	});
 
 	//phan xu ly notification
 	$(document).ready(function(){
-		
 		var dataSourceNotificationNew = new kendo.data.DataSource({
 			transport:{
 				read:{
