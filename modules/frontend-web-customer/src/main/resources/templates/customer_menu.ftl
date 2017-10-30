@@ -7,7 +7,28 @@
 			<strong>Trạng thái hồ sơ</strong>
 		</div>
 		<ul id="profileStatus" class="ul-default ul-with-left-icon" style="margin-left: 10px;">
+			<li style='padding:5px 0;' dataPk='New' class='itemStatus' data-filterdate="submitDate">
+				<i class='fa fa-folder-o' aria-hidden='true'></i>  
+				<a href='javascript:;' >Hồ sơ mới</a>
+			</li>
+			<li style='padding:5px 0;' dataPk='Receiving' class='itemStatus' data-filterdate="receiveDate">
+				<i class='fa fa-folder-o' aria-hidden='true'></i>  
+				<a href='javascript:;' >Hồ sơ đang thực hiện</a>
+			</li>
+			<li style='padding:5px 0;' dataPk='Waiting' class='itemStatus' data-filterdate="correctingDate">
+				<i class='fa fa-folder-o' aria-hidden='true'></i>  
+				<a href='javascript:;' >Hồ sơ chờ bổ sung</a>
+			</li>
+			<li style='padding:5px 0;' dataPk='Paying' class='itemStatus' data-filterdate="correctingDate">
+				<i class='fa fa-folder-o' aria-hidden='true'></i>  
+				<a href='javascript:;' >Hồ sơ chờ thanh toán</a>
+			</li>
+			<li style='padding:5px 0;' dataPk='Done' class='itemStatus' data-filterdate="finishDate">
+				<i class='fa fa-folder-o' aria-hidden='true' ></i>  
+				<a href='javascript:;' >Hồ sơ đã kết thúc</a>
+			</li>
 		</ul>
+		<input type="hidden" name="monthYearFilter" id="monthYearFilter" value="submitDate">
 	</div>
 
 	<div class="col-sm-12">
@@ -102,17 +123,17 @@
 	});
 
 	$(function(){
-		console.log(${customer.status});
-		var arrStatus;
-		if(${customer.status}!=null){
-			arrStatus=${customer.status};
+		/*console.log(${customer.status});
+		vả arStatus;
+		ì(${customer.status}!=null)Ơ
+			arStatus=${customer.status};
 		}else{
-			arrStatus=[];
-		}
+			arStatus=ơ];
+		Ư
 		$("#profileStatus").empty();
-		for(var i=0;i<arrStatus.length;i++){
-			$("#profileStatus").append("<li style='padding:5px 0;' dataPk='"+arrStatus[i].statusCode+"' class='itemStatus'><i class='fa fa-folder-o' aria-hidden='true'></i>  <a href='javascript:;' >"+arrStatus[i].statusName+"</a></li>");
-		}
+		for(vả i=0;i<arStatus.length;i++)Ơ
+			$("#profileStatus").append("<li style='padding:5px 0;' dataPk='"+arStatus[i].statusCode+"' class='itemStatus'><i class='fa fa-folder-o' ẩi-hidden='true'></i>  <a href='javascript:;' >"+arStatus[i].statusName+"</a></li>");
+		Ư*/
 
 		$("#profileStatus li").first().addClass("active");
 		$("#profileStatus li > i").first().removeClass("fa fa-folder-o").addClass("fa fa-folder-open-o");
@@ -126,7 +147,8 @@
 				"receiptCode":$("#receiptCode").val(),
 				"startDate":$("#startDate").val(),
 				"endDate":$("#endDate").val(),
-				"statusCode":id
+				"status":id,
+				"statusDate" : $("#monthYearFilter").val()
 			});
 		});
 
@@ -164,7 +186,9 @@
 				"receiptCode":$("#receiptCode").val(),
 				"startDate":$("#startDate").val(),
 				"endDate":$("#endDate").val(),
-				"statusCode":id
+				"status":id,
+				"statusDate" : $("#monthYearFilter").val()
+
 			});
 		});
 	});
@@ -175,7 +199,7 @@
 		var dataSourceNotificationNew = new kendo.data.DataSource({
 			transport:{
 				read:{
-					url: "http://localhost:8081/api/applicants",
+					url: "${api.server}/applicants",
 					type: "GET",
 					dataType: "json",
 					success: function(res) {
@@ -268,4 +292,8 @@
 			);
 	});
 
+	$("#profileStatus > li").click(function(){
+		var dateStatus = $(this).attr("data-filterdate");
+		$("#monthYearFilter").val(dateStatus);
+	});
 </script>
