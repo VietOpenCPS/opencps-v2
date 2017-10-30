@@ -84,8 +84,8 @@
 
 	$("#govAgencyCode").kendoComboBox({
 		placeholder:"Chọn cơ quan",
-		dataTextField:"serviceName",
-		dataValueField:"serviceCode",
+		dataTextField:"govAgencyName",
+		dataValueField:"govAgencyCode",
 		dataSource:{
 			transport:{
 				read:{
