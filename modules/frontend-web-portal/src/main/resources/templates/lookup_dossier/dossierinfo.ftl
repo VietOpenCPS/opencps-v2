@@ -1,4 +1,4 @@
-<#-- Template thông tin hồ sơ cơ bản -->
+<!-- Template thông tin hồ sơ cơ bản -->
 <div class="panel panel-default MB15" id="DossiersDetailInfo">
 	<div class="panel-heading"> 
 		<span class="text-bold text-light-blue">THÔNG TIN HỒ SƠ | </span> <span data-bind="text:applicantName"> </span>
