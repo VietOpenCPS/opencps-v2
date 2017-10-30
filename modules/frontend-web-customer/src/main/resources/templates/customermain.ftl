@@ -10,7 +10,7 @@
 				<div class="col-sm-9">
 					<div class="row panel">
 						<div class="col-sm-12" id="customer_dossierlist">
-
+;
 						</div>
 					</div>
 				</div>

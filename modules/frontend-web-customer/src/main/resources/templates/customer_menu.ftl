@@ -66,7 +66,7 @@
 		dataSource:{
 			transport:{
 				read:{
-					url:"",
+					url:"${api.server}/dossiers",
 					dataType:"json",
 					type:"GET"
 				}
@@ -89,7 +89,7 @@
 		dataSource:{
 			transport:{
 				read:{
-					url:"",
+					url:"${api.server}/dossiers",
 					dataType:"json",
 					type:"GET"
 				}
@@ -141,13 +141,12 @@
 		$("#dossier_detail").hide();
 		$("#dossier_list").show();
 		$("#customer_dossierlist").load("${ajax.customer_dossierlist}",function(event){
-			var id=$("#profileStatus li").first().attr("dataPk");
 			dataSourceProfile.read({
 				"serviceInfo":$("#serviceInfo").val(),
+
 				"receiptCode":$("#receiptCode").val(),
 				"startDate":$("#startDate").val(),
 				"endDate":$("#endDate").val(),
-				"status":id,
 				"statusDate" : $("#monthYearFilter").val()
 			});
 		});

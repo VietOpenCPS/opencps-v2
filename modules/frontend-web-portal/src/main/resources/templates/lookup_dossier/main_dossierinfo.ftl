@@ -15,7 +15,7 @@
 <div class="row">
 	<div id="detailView"></div>
 </div>
-<#-- Template thông tin hồ sơ chi tiết -->
+<!-- Template thông tin hồ sơ chi tiết -->
 <div id="detailView2">
 	<!--Render thông tin chi tiết DossierFiles-->
     <div class="row">
@@ -87,7 +87,6 @@
 			            success: function (result) {
 			                var NoItem = result.data.length;
 			            	if (NoItem == 1) {
-			            		console.log(result.data[0].dossierId);
 			            		$("#detailView").load("${ajax.dossierinfo}",
 				                 	function(success){
 				                 		dataItem = result.data[0];
@@ -136,7 +135,6 @@
 			if (paraValue == "") {
 				$("#lvDossierResultSearch").html("");
 			} else{
-				// $("#detailView").hide();
 				dataSourceDossierResultSearch.read({keyword : paraValue})
 			}
 		}
