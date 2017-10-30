@@ -272,6 +272,7 @@
 			$("#btnSubmitUploadFile").attr("part-no",partNo);
 		});
 	});*/
+	
 	$(document).on("change",".dossier-file",function(){
 		console.log("change");
 		var partNo = $(this).attr("part-no");
@@ -286,7 +287,7 @@
 
 	$(document).on("click",".dossier-component-profile",function(event){
 		var partNo = $(this).attr("data-partno");
-		$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_component_profiles}?dossierPartNo=partNo",function(result){
+		$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_component_profiles}?dossierPartNo="+partNo,function(result){
 			$(this).modal("show");
 		});
 	});
