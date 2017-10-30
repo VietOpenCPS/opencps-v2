@@ -1,7 +1,8 @@
 <#if (Request)??>
 <#include "init.ftl">
 </#if>
-<div class="row account-info" id="frmDetailAccount">
+<div id="frmDetailAccount">
+<div class="row account-info" >
 	<div class="col-sm-2 col-xs-12">
 		<img src="/o/frontend.web.portal/images/default_avatar.png" class="img-responsive max-width-100 img-rounded">
 		<div class="text-center"><a href="" class="text-light-gray">Thay đổi avatar</a></div>
@@ -14,11 +15,8 @@
 			<li role="presentation" class="active"><a href="#tttk" role="tab" data-toggle="tab">Thông tin tài khoản</a></li>
 			<li role="presentation"><a href="#dmk" role="tab" data-toggle="tab">Đổi mật khẩu</a></li>
 		</ul>
-	<#-- <button class="btn btn-classic form-control">Thông tin tài khoản</button>
-	<button class="btn btn-classic form-control">Đổi mật khẩu</button> -->
-</div>
-
-<div class="col-sm-10 col-xs-12">
+	</div>
+	<div class="col-sm-10 col-xs-12">
 	<div class="tab-content box">
 		<#if applicantIdType == "business">
 		<div role="tabpanel" class="tab-pane active" id="tttk">
@@ -267,6 +265,8 @@
 		</div>
 	</div>
 	<span id="notification"></span>
+</div>
+</div>
 </div>
 
 <script type="text/javascript">
@@ -743,7 +743,7 @@
 			// }
 		},
 		success: function(data) {
-			alert(data);
+			
 		},
 		error:function(xhr) {
 			if(xhr.status == 500) return 'Internal server error';
@@ -872,6 +872,9 @@
 					contactEmail : function(){
 						$('#email').editable("setValue",result.contactEmail); 
 						return result.contactEmail;
+					},
+					applicantIdDate : function(){
+						return moment(result.applicantIdDate).format("DD/MM/YYYY");
 					},
 					applicantIdNo : result.applicantIdNo,
 					userId : result.mappingUser.userId
