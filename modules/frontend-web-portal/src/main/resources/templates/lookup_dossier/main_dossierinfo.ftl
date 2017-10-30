@@ -163,7 +163,7 @@
 							options.success(result);
 						},
 						error : function(result){
-							options.error(error);
+							options.error(result);
 						}
 					});
 				}
