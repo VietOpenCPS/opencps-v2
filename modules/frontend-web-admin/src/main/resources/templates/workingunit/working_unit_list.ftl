@@ -35,17 +35,17 @@
 		
 			<li class="clearfix PT20 PR0 PB20 PL#:15+level*30#">
 	
-				<div class="col-sm-2 clearfix PL0 PR0">
+				<div class="col-sm-1 clearfix PL0 PR0">
 					
 					<a href="javascript:;" >
 						
-						<i style="font-size: 30px;padding: 5px;" class="fa fa-outdent" aria-hidden="true"></i>
+						<i style="padding: 3px 5px;" class="fa fa-outdent" aria-hidden="true"></i>
 							
 					</a>
 						
 				</div>
 					
-				<div class="col-sm-9 PL0">
+				<div class="col-sm-10 PL5">
 				
 					<strong class="btn-block">#= name #</strong>
 					<span class="btn-block">#= govAgencyCode #</span>
@@ -371,7 +371,9 @@
 			
 			$("#_workingUnit_right-page").load(
 				'${url.adminWorkingUnitPortlet.working_unit_detail}'
-				);
+			);
+
+			$("#_workingUnit_listView .k-state-selected").removeClass("k-state-selected");
 			
 		});
 		

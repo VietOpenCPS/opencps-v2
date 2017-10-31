@@ -2,7 +2,7 @@
 <#include "init.ftl">
 </#if>
 
-<div class="row">
+<div class="row serviceinfo">
 	<div class="col-sm-3 panel P0">
 		<div class='panel-body'>
 			<div class="row">
@@ -21,23 +21,29 @@
 					</ul>
 					<div id='pagerTTHC' class='k-pager-wrap k-widget k-floatwrap'></div>
 					<script type="text/x-kendo-template" id="templateTTHC" >
-						<li class="">
+						<li class="" data-pk="#:id#">
 							<div class="row">
 								<div class="col-sm-12 MB5">
-									<span class="showServiceinfoDetail" data-pk="#:id#">#:serviceCode# </span>
-									#if(typeof active !== "undefined" && active) {#
-									<i class="fa fa-check ML5" aria-hidden="true"></i>
-									#} #
+									<span class="showServiceinfoDetail" data-pk="#:id#">
+										<span class="" data-pk="#:id#">#:serviceCode# </span>
+										#if(typeof active !== "undefined" && active) {#
+										<i class="fa fa-check ML5" aria-hidden="true"></i>
+										#}#
+									</span>
 									<i class="fa fa-trash pull-right _itemServiceinfo_btnDelete" data-pk="#:id#"></i>
 								</div>
-								<div class="col-sm-12">
-									<p class="showServiceinfoDetail" data-pk="#:id#">#:serviceName#</p>
-								</div>
-								<div class="col-sm-12">
-									<i class="fa fa-suitcase" aria-hidden="true"></i> <span class="showServiceinfoDetail" data-pk="#:id#">#:domainName#</span>
-								</div>
-								<div class="col-sm-12">
-									<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i class="showServiceinfoDetail" data-pk="#:id#">#:administrationName#</i>
+								<div>
+									<div class="showServiceinfoDetail" data-pk="#:id#">
+										<div class="col-sm-12">
+											<p class="" data-pk="#:id#">#:serviceName#</p>
+										</div>
+										<div class="col-sm-12">
+											<i class="fa fa-suitcase" aria-hidden="true"></i> <span class="" data-pk="#:id#">#:domainName#</span>
+										</div>
+										<div class="col-sm-12">
+											<i class="fa fa-fort-awesome" aria-hidden="true"></i> <i class="" data-pk="#:id#">#:administrationName#</i>
+										</div>
+									</div>
 								</div>
 							</div>
 						</li>
@@ -69,7 +75,8 @@
 						administration: options.data.administration,
 						keyword: options.data.keyword,
 						page: options.data.page,
-						pageSize: options.data.pageSize
+						pageSize: options.data.pageSize,
+						order : true
 					},
 					success: function(result) {
 						console.log(options.data);
@@ -108,9 +115,8 @@
 			}
 		},
 		seperatorColor:"transparent",
+		selectable : "single",
 		dataBound : function(){
-			console.log(dataSourceTTHC.view());
-			console.log($("#listViewTTHC > li"));
 			if(loadFirst){
 				if(dataSourceTTHC.view()[0]){
 					var id = dataSourceTTHC.view()[0].id;

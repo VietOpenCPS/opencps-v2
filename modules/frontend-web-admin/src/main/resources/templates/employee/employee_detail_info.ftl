@@ -7,19 +7,19 @@
 		
 		<div class="col-sm-12">
 
-			<div class="row">
+			<div class="row align-middle-lg">
 
 				<div class="col-sm-7"> 
 				
 					<div class="label-control row fs20 xeditable-left">
 				
-						<div id="employee-back-list-page" class="col-sm-1">
+						<div id="employee-back-list-page" class="col-sm-2">
 			
 							<i class="fa fa-angle-left" aria-hidden="true"></i>
 
 						</div>
 
-						<div class="col-sm-11">
+						<div class="col-sm-10 PL0">
 
 							<a href="javascript:;" id="employee-detail-fullname" data-type="text" 
 
@@ -33,11 +33,11 @@
 
 							</a>
 
-							<span href="javascript:;" id='employee-detail-fullname-icon' data-pk="${(employee.employeeId)!}">
+							<a href="javascript:;" id='employee-detail-fullname-icon' data-pk="${(employee.employeeId)!}">
 				
 								<i class="fa fa-pencil" aria-hidden="true"></i>
 
-							</span>
+							</a>
 							
 						</div>
 						
@@ -48,8 +48,7 @@
 				<div class="col-sm-5"> 
 				
 					<div class="label-control row text-right" >
-				
-						<div class="col-sm-12">
+						<div class="col-xs-12">
 							
 							<a href="javascript:;" id="employee-detail-working-status" 
 								class="text-primary" 
@@ -60,26 +59,16 @@
 									
 									<#if (employee.workingStatus)?? && ( employee.workingStatus?number == 1 ) >
 
-										Đang làm việc
+										Đang làm việc <i class="fa fa-angle-down" aria-hidden="true"></i>
 
 									<#else>
 
-										Đã nghỉ việc
+										Đã nghỉ việc <i class="fa fa-angle-down" aria-hidden="true"></i>
 
 									</#if>
 
 							</a>
-
-							<span href="javascript:;" id='employee-detail-working-status-icon' 
-								class="text-primary" 
-								data-pk="${(employee.employeeId)!}">
-				
-								<i class="fa fa-angle-down" aria-hidden="true"></i>
-
-							</span>
-
 						</div>
-
 					</div>
 					
 				</div>
@@ -98,9 +87,9 @@
 				
 				<input type="file" id="employee-avatar" accept="image/*"  onchange="employeeChangeAvatar(this)" style="display: none;" />
 
-				<img id="employee-avatar-thumbnil" class="img-responsive center-block" style="max-height: 200px;"  src="/o/frontend-web-usermgt/images/user_02.png" alt=""/>
+				<img id="employee-avatar-thumbnil" class="img-responsive center-block" style="max-height: 200px;"  src="/o/org.opencps.frontend.admin/images/default_avatar.png" alt=""/>
 
-				<button id="employee-avatar-btn" data-pk="${(employee.employeeId)!}" class="btn btn-primary  btn-block"> 
+				<button id="employee-avatar-btn" data-pk="${(employee.employeeId)!}" class="btn btn-active  btn-block"> 
 					Tải ảnh đại diện
 				</button>
 
@@ -112,13 +101,13 @@
 
 			<div class="label-control clearfix" >
 
-				<label class="col-sm-1">
+				<label class="col-sm-1 PL0">
 				
 					<i class="fa fa-star" aria-hidden="true"></i>
 
 				</label>
 
-				<div class="col-sm-11">
+				<div class="col-sm-11 PL5 PR0">
 				
 					<a href="javascript:;" id="employee-detail-gender" data-type="select" 
 
@@ -149,13 +138,13 @@
 
 			<div class="label-control clearfix" >
 
-				<label class="col-sm-1">
+				<label class="col-sm-1 PL0">
 
 					<i class="fa fa-calendar-o" aria-hidden="true"></i>
 
 				</label>
 
-				<div class="col-sm-11">
+				<div class="col-sm-11 PR0 PL5">
 				
 					<a href="javascript:;" id="employee-detail-birthdate" data-type="combodate" 
 
@@ -178,13 +167,13 @@
 
 			<div class="label-control clearfix" >
 
-				<label class="col-sm-1">
+				<label class="col-sm-1 PL0">
 
 					<i class="fa fa-phone" aria-hidden="true"></i>
 
 				</label>
 
-				<div class="col-sm-11">
+				<div class="col-sm-11 PR0 PL5">
 				
 					<a href="javascript:;" id="employee-detail-telno" data-type="text" 
 
@@ -207,13 +196,13 @@
 
 			<div class="label-control clearfix" >
 
-				<label class="col-sm-1">
+				<label class="col-sm-1 PL0">
 
 					<i class="fa fa-envelope" aria-hidden="true"></i>
 
 				</label>
 
-				<div class="col-sm-11">
+				<div class="col-sm-11 PR0 PL5">
 				
 					<a href="javascript:;" id="employee-detail-email" data-type="text" 
 
@@ -236,13 +225,13 @@
 
 			<div class="label-control clearfix" >
 
-				<label class="col-sm-1">
+				<label class="col-sm-1 PL0">
 
 					<i class="fa fa-graduation-cap" aria-hidden="true"></i>
 
 				</label>
 
-				<div class="col-sm-11">
+				<div class="col-sm-11 PR0 PL5">
 				
 					<a href="javascript:;" id="employee-detail-title" data-type="text" 
 
@@ -267,9 +256,9 @@
 
 				<div class="label-control clearfix" >
 
-					<label class="col-sm-4">Mã nhân sự:</label>
+					<label class="col-sm-5 P0">Mã nhân sự:</label>
 
-					<div class="col-sm-8">
+					<div class="col-sm-7 PR0">
 					
 						<a href="javascript:;" id="employee-detail-employeeno" data-type="text" 
 
@@ -294,9 +283,9 @@
 
 			<div class="label-control clearfix" >
 
-				<label class="col-sm-5">Tên đăng nhập:</label>
+				<label class="col-sm-5 P0">Tên đăng nhập:</label>
 
-				<div class="col-sm-7">
+				<div class="col-sm-7 PR0">
 				
 					<a href="javascript:;" >
 								
@@ -321,7 +310,7 @@
 					
 						<button id="employee-detail-looking" 
 							data-pk="${(employee.employeeId)!}" data-vl="false" 
-							class="btn btn-primary image-preview-input border-rad-4"> 
+							class="btn btn-active image-preview-input border-rad-4"> 
 							Mở khóa tài khoản
 						</button>
 
@@ -329,7 +318,7 @@
 						
 						<button id="employee-detail-looking" 
 							data-pk="${(employee.employeeId)!}" data-vl="true"
-							class="btn btn-primary image-preview-input border-rad-4"> 
+							class="btn btn-active image-preview-input border-rad-4"> 
 							Khóa tài khoản
 						</button>
 
@@ -340,7 +329,7 @@
 
 					<button id="employee-detail-account" 
 						data-pk="${(employee.employeeId)!}"
-						class="btn btn-primary image-preview-input border-rad-4"> 
+						class="btn btn-active image-preview-input border-rad-4"> 
 							Mở tài khoản
 					</button>
 					
@@ -460,7 +449,10 @@ function employeeChangeAvatar(fileInput) {
 		event.stopPropagation();
 		event.stopImmediatePropagation();
 	
-		$( '#employee-index-page' ).load("${(url.employeePortlet.employee_list)!}");
+		//$( '#employee-index-page' ).load("${(url.employeePortlet.employee_list)!}");
+
+		$("#employee_list").show();
+		$("#employee_detail").hide();
 
 	});
 
@@ -589,7 +581,7 @@ function employeeChangeAvatar(fileInput) {
 		e.stopPropagation();
 		e.stopImmediatePropagation();
 		
-		var pk = $(this).attr('datas-pk');
+		var pk = $(this).attr('data-pk');
 		
 		$('#employee-detail-gender').editable({
 			name: 'gender',

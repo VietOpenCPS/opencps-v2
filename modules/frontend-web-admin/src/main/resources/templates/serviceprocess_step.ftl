@@ -43,7 +43,63 @@
 					#: stepName #
 				</div>
 				<div class="col-sm-2 align-middle-lg text-center">
-					#: dossierStatus #
+					#if (dossierStatus == "releasing"){
+						#Chờ lấy kết quả#
+					} 
+					else if (dossierStatus == "submitting"){
+						#Đã gửi#
+					}
+					else if (dossierStatus == "paid"){
+						#Đã báo nộp phí#
+					}
+					else if (dossierStatus == "collecting"){
+						#Chờ chuyển phát#
+					}
+					else if (dossierStatus == "crosshandover"){
+						#Hồ sơ chờ bàn giao liên thông cơ quan#
+					}
+					else if (dossierStatus == "ended"){
+						#Hồ sơ kết thúc quy trình xử lý#
+					}
+					else if (dossierStatus == "outstanding"){
+						#Hồ sơ thanh toán sau#
+					}
+					else if (dossierStatus == "presubmitting"){
+						#Hồ sơ mới gửi chờ thanh toán#
+					}
+					else if (dossierStatus == "new"){
+						#Tạo mới#
+					}
+					else if (dossierStatus == "receiving"){
+						#Chờ tiếp nhận#
+					}
+					else if (dossierStatus == "waiting"){
+						#Chờ bổ sung#
+					}
+					else if (dossierStatus == "paying"){
+						#Chờ thanh toán#
+					}
+					else if (dossierStatus == "processing"){
+						#Đang giải quyết#
+					}
+					else if (dossierStatus == "done"){
+						#Hoàn thành#
+					}
+					else if (dossierStatus == "done"){
+						#Hệ thống đang xử lý#
+					}
+					else if (dossierStatus == "error"){
+						#Lỗi xử lý#
+					}
+					else if (dossierStatus == "denied"){
+						#Đã từ chối#
+					}
+					else if (dossierStatus == "cancelled"){
+						#Đã hủy hồ sơ#
+					}
+					else if (dossierStatus == "handover"){
+						#Chuyển liên thông#
+					}#
 				</div>
 				<div class="col-sm-2 align-middle-lg text-center">
 					#: durationCount #
@@ -65,6 +121,8 @@
 			var serviceProcessStepDataSource = new kendo.data.DataSource({
 				transport: {
 					read: function(options) {
+						console.log("options");
+						console.log(options);
 						if (options && options.data && options.data.serviceProcessId){
 							$.ajax({
 								url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/steps",
@@ -208,6 +266,7 @@
 							var entry = $('.service-process-form-step-entry:first');
 							entry.find('input[type=radio]').attr('name', "moderator_1");
 							entry.find('select').val(role.roleId);
+							entry.find('input[name=condition]').val(role.condition);
 							entry.find('input[type=radio][value='+role.moderator+']').prop('checked',true);
 
 							for (var i = 1; i < data.length; i++) {
@@ -224,6 +283,7 @@
 								newEntry.find('input[type=radio]').attr('name', name);
 
 								newEntry.find('select').val(role.roleId);
+								newEntry.find('input[name=condition]').val(role.condition);
 								newEntry.find('input[type=radio][value=' + role.moderator + ']').prop('checked',true);
 								currentEntry.find('input[type=radio][value=' + radioValue + ']').prop('checked',true);
 
@@ -236,6 +296,7 @@
 							var viewModel = kendo.observable({
 								roleId: "",
 								moderator: "",
+								condition: ""
 							});
 
 							kendo.bind($(".service-process-form-entry")[0], viewModel);
@@ -308,8 +369,8 @@
 						sequenceNo: $("#sequenceNo").val(),
 						dossierStatus: $("#dossierStatus").val(),
 						dossierSubStatus: $("#dossierSubStatus").val(),
-						editable: $("#editable").val(),
-						durationCount: $("#durationCount").val(),
+						editable: $("#editable").prop("checked"),
+						durationCount: $("#durationCount_").val(),
 						customProcessUrl: $("#customProcessUrl").val(),
 						briefNote: $("#briefNote").val(),
 						stepInstruction: $("#stepInstruction").val(),
@@ -319,18 +380,20 @@
 							message: "Yêu cầu được thực hiện thành công"
 						}, "success");
 
-						var serviceProcessStep = serviceProcessStepDataSource.get(processStepId);
+						// var serviceProcessStep = serviceProcessStepDataSource.get(processStepId);
 
 						// serviceProcessStep.set("stepCode", $("#stepCode").val());
 						// serviceProcessStep.set("stepName", $("#stepName").val());
 						// serviceProcessStep.set("sequenceNo", $("#sequenceNo").val());
 						// serviceProcessStep.set("dossierStatus", $("#dossierStatus").val());
 						// serviceProcessStep.set("dossierSubStatus", $("#dossierSubStatus").val());
-						// serviceProcessStep.set("editable", $("#editable").val());
+						// serviceProcessStep.set("editable", $("#editable").prop("checked"));
 						// serviceProcessStep.set("durationCount", $("#durationCount").val());
 						// serviceProcessStep.set("customProcessUrl", $("#customProcessUrl").val());
 						// serviceProcessStep.set("briefNote", $("#briefNote").val());
 						// serviceProcessStep.set("stepInstruction", $("#stepInstruction").val());
+
+						serviceProcessStepDataSource.read({serviceProcessId: $("#btn_save_service_process").attr("data-pk")});
 
 						$("#serviceprocess_step_container").show();
 						$("#serviceprocess_detail_formstep_container").hide();
@@ -387,11 +450,13 @@
 							async: false,
 							data: {
 								moderator: $(this).find('input[type=radio]:checked').val(),
+								condition: $(this).find('input[name=condition]').val(),
 							},
 							error: function(result) {
 								notification.show({
 									message: "Xẩy ra lỗi, vui lòng thử lại"
 								}, "error");
+								console.log(result.responseJSON.description);
 							}
 						});
 					}
@@ -411,8 +476,8 @@
 						sequenceNo: $("#sequenceNo").val(),
 						dossierStatus: $("#dossierStatus").val(),
 						dossierSubStatus: $("#dossierSubStatus").val(),
-						editable: $("#editable").val(),
-						durationCount: $("#durationCount").val(),
+						editable: $("#editable").prop("checked"),
+						durationCount: $("#durationCount_").val(),
 						customProcessUrl: $("#customProcessUrl").val(),
 						briefNote: $("#briefNote").val(),
 						stepInstruction: $("#stepInstruction").val(),
@@ -423,13 +488,14 @@
 						}, "success");
 
 						serviceProcessStepDataSource.insert(0, {
+							"processStepId": result.processStepId,
 							"stepCode": $("#stepCode").val(),
 							"stepName": $("#stepName").val(),
 							"sequenceNo": $("#sequenceNo").val(),
 							"dossierStatus": $("#dossierStatus").val(),
 							"dossierSubStatus": $("#dossierSubStatus").val(),
-							"editable": $("#editable").val(),
-							"durationCount": $("#durationCount").val(),
+							"editable": $("#editable").prop("checked"),
+							"durationCount": $("#durationCount_").val(),
 							"customProcessUrl": $("#customProcessUrl").val(),
 							"briefNote": $("#briefNote").val(),
 							"stepInstruction": $("#stepInstruction").val(),
@@ -447,11 +513,13 @@
 									data: {
 										roleId: $(this).find('select[name=roleId]').val(),
 										moderator: $(this).find('input[type=radio]:checked').val(),
+										condition: $(this).find('input[name=condition]').val(),
 									},
 									error: function(result) {
 										notification.show({
 											message: "Xẩy ra lỗi, vui lòng thử lại"
 										}, "error");
+										console.log(result.responseJSON.description);
 									}
 								});
 							}
@@ -461,13 +529,19 @@
 						$("#serviceprocess_step_container").show();
 					},
 					error: function(result) {
-						notification.show({
-							message: "Xẩy ra lỗi, vui lòng thử lại"
-						}, "error");
+						if (result.responseJSON.description == "DuplicateStepNoException"){
+							notification.show({
+								message: "Lỗi trùng mã bước"
+							}, "error");
+						} else {
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
+							console.log(result.responseJSON.description);
+						}
 					}
 				});
 			};
-
 		})(jQuery);
 	</script>
 </div>

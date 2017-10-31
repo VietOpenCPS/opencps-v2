@@ -13,17 +13,17 @@
 						<form action="" id="fileArchiveForm">
 							<div class="col-sm-12">
 								<div class="form-group search-icon">
-									<input type="text" class="form-control" placeholder="Nhập từ khóa">
+									<input type="text" class="form-control" placeholder="Nhập từ khóa" id="keywordFileArchive" name="keywordFileArchive">
 								</div>
 							</div>
 							<div class="col-sm-12">
-								<ul id="lvDossierFileArchive" style="height: auto; overflow: auto;" data-spy="scroll">
+								<ul id="lvDossierFileArchive" style="height:auto; overflow:auto;">
 
 								</ul>
 								<script type="text/x-kendo-template" id="dossierFileArchiveTemp">
 									<li>
 										<div>
-											<input class="cbxDossierFile" data-pk="1" type="checkbox"><label>Ảnh 3x4 nền trắng</label> 
+											<input class="cbxDossierFile MR5 " data-pk="#:id#" type="checkbox"><label class="dossierFileItem">#:displayName#</label> 
 										</div> 
 									</li>
 								</script>
@@ -34,6 +34,7 @@
 						</form>
 					</div>
 				</div>
+				
 				<div class="col-sm-9">
 					<div id="fileCarousel" class="carousel slide" data-ride="carousel" data-interval="false"> 
 						<ul class="carousel-inner" id="fileInner">
@@ -52,7 +53,7 @@
 
 				<script type="text/x-kendo-template" id="template">
 					<li class="item" data-pk="1">
-						<iframe class="fred" style="border:1px solid \\#666CCC" title="PDF in an i-Frame" src="http://www.egr.msu.edu/classes/ece480/capstone/spring11/group02/documents/matt_appnote.pdf" frameborder="0" scrolling="auto" height="500" width="100%" >
+						<iframe class="fred" style="border:1px solid \\#666CCC" title="PDF in an i-Frame" src="${api.server}/dossiers/${dossierId}/files/#:id#" frameborder="0" scrolling="auto" height="500" width="100%" >
 						</iframe>
 					</li>
 				</script>
@@ -72,17 +73,31 @@
 
 		var dataSourceDossierFileArchive=new kendo.data.DataSource({
 			transport : {
-				read : {
-					url : "${api.server}/dossiers/dossierfiles",
-					type : "GET",
-					dataType : "json"
+				read : function(options){
+					$.ajax({
+						url : "${api.server}/dossierfiles",
+						type : "GET",
+						dataType : "json",
+						headers: {"groupId": ${groupId}},
+						data : {
+							keyword : options.data.keyword,
+							owner : true,
+							original : true
+						},
+						success : function(result){
+							options.success(result);
+						},
+						error : function(result){
+							options.error(result);
+						}
+					});
 				}
 			},
 			schema : {
 				data : "data",
 				total : "total",
 				model : {
-					id:"id"
+					id : "referenceUid"
 				}
 			},
 			change: function() { 
@@ -97,7 +112,12 @@
 			dataSource : dataSourceDossierFileArchive,
 			template : kendo.template($("#dossierFileArchiveTemp").html()),
 			selectable : "single",
-			change: onChange
+			change: onChange,
+			dataBound : function(e){
+				console.log("first");
+				console.log($(".dossierFileItem").first());
+				$(".dossierFileItem").first().addClass("text-light-blue");
+			}
 		});
 
 		function onChange() {
@@ -106,7 +126,14 @@
 				console.log($(item).index());
 				$('#fileCarousel').carousel($(item).index());
 			});
+
 		}
+
+		$(document).on("click",".dossierFileItem",function(event){
+			$(".dossierFileItem").removeClass("text-light-blue");
+			$(this).addClass("text-light-blue");
+			
+		});
 
 		$("#btnChoiseFileArchive").click(function(){
 			var arrChecked=new Array();
@@ -144,5 +171,14 @@
 			var currentIndex = $('#fileCarousel li.active').index() + 1;
 			return currentIndex;
 		}
+
+		$("#keywordFileArchive").change(function(){
+			var keyword = $(this).val();
+			dataSourceDossierFileArchive.read({
+				keyword : keyword
+			});
+		});
 	});
+
+	
 </script>

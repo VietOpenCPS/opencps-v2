@@ -158,3 +158,4 @@ public class ServiceProcessIndexer extends BaseIndexer<ServiceProcess> {
 
 	Log _log = LogFactoryUtil.getLog(ServiceProcessIndexer.class);
 }
+

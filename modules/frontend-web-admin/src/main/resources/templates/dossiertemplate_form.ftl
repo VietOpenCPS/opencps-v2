@@ -12,7 +12,7 @@
 	<div class="row MT10">
 		<div class="col-xs-12 col-sm-3">Tên mẫu hồ sơ</div>
 		<div class="col-xs-12 col-sm-9">
-			<input id="templateName" name="templateName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:templateName"/>
+			<input id="templateName_" name="templateName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:templateName"/>
 		</div>
 	</div>
 	<div class="row MT10">

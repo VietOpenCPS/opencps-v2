@@ -1,3 +1,6 @@
+<#if (Request)??>
+<#include "init.ftl">
+</#if>
 <div class="dossier-with-result">
 	<div class="col-sm-12">
 		<span class="title">HỒ SƠ ĐÃ CÓ KẾT QUẢ</span>
@@ -51,19 +54,16 @@
 			}
 		}
 	});
-
 	$("#lvDossierResult").kendoListView({
 		dataSource : dataSourceDossierResult,
 		template : kendo.template($("#tempDossierResult").html())
 	});
-
 	$("#pagerDossirResult").kendoPager({
 		dataSource : dataSourceDossierResult,
 		info : false,
 		selectTemplate: '<li class="k-link"><i class="fa fa-circle" aria-hidden="true"></i></li>',
 		linkTemplate: '<li><a href="\\#" class="k-link" data-#=ns#page="#=idx#"><i class="fa fa-circle" aria-hidden="true"></i></a></li>'
 	});
-
 	$("#btn-search-dossier").click(function(){
 		dataSourceDossierResult.read({
 			dossierCode : $("#searchDossierCode").val()

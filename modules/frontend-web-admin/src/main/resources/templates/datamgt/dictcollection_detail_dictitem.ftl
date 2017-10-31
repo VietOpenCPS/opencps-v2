@@ -6,7 +6,7 @@
 	<div class="col-xs-4 col-sm-4">
 	
 		<span data-toggle="modal" class="btn btn-active image-preview-input btn-block"
-			href="${url.adminDataMgtPortlet.dictcollection_create_dictitem}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}collectionCode=${(dictCollection_dictCollection.collectionCode)!}" data-target="#modal-lg"> 
+			href="${url.adminDataMgtPortlet.dictcollection_create_dictitem}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}collectionCode=${(dictCollection_dictCollection.collectionCode)!}" data-target="#modal"> 
 			<i class="fa fa-book" aria-hidden="true"></i>
 			
 			<span class="p-xxs" >Thêm dữ liệu danh mục</span> 
@@ -80,7 +80,7 @@
 
 					<a href="javascript:;">
 					
-						<span>#:sibling#</span>
+						<span>#:itemIndex#</span>
 						
 					</a>
 
@@ -106,7 +106,7 @@
 
 					<span data-toggle="modal" 
 						href="${url.adminDataMgtPortlet.dictcollection_create_dictitem}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}itemCode=#:itemCode#&${portletNamespace}collectionCode=${(dictCollection_dictCollection.collectionCode)!}"
-						 data-target="\\#modal-lg">
+						 data-target="\\#modal">
 						
 						<i class="fa fa-pencil" aria-hidden="true"></i>
 						
@@ -249,6 +249,7 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 			}
 		});
 
+		var localIndex = 0;
 		$("#_collectionSub_dictItem_listView").kendoListView({
 			remove: function(e) {
 			
@@ -260,8 +261,19 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 			
 			dataSource: _collectionSub_dictItem_dataSource_detail,
 			
-			template: kendo.template($("#_collectionSub_dictItem_template").html()),
-			
+			template: function(data){
+				//var _pageSize = _collectionSub_dictItem_dataSource_detail.pageSize();
+				localIndex++;
+				//var currentPage = $("#pager_dossier_template_part").data("kendoPager").page();
+				//var totalPage =  $("#pager_dossier_template_part").data("kendoPager").totalPages();
+				//var index = (currentPage-1)*_pageSize + localIndex;
+				//data.itemIndex = index;
+				data.itemIndex = localIndex;
+				return kendo.template($("#_collectionSub_dictItem_template").html())(data);
+			},
+			dataBound: function() {
+				localIndex = 0;
+			},
 			filterable: {
 			
 				logic: "or",

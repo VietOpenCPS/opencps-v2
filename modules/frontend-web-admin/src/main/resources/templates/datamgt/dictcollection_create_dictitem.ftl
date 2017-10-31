@@ -139,7 +139,7 @@
 
 	<div class="eq-height">
 
-		<button class="btn btn-sm btn-primary btn-default" id="_collectionSub_dictItem_edit_editDictItem" 
+		<button class="btn btn-sm btn-active btn-default" id="_collectionSub_dictItem_edit_editDictItem" 
 		name="_collectionSub_dictItem_edit_editDictItem" type="button"
 		data-pk="${(param.dictCollection_itemCode)!}"
 		data-collectionCode="${(param.dictCollection_collectionCode)!}">

@@ -18,7 +18,7 @@
 	<div class="row MT10">
 		<div class="col-xs-12 col-sm-3">Mô tả</div>
 		<div class="col-xs-12 col-sm-9">
-			<textarea id="description" name="description" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: description"></textarea>
+			<textarea id="description" name="description" class="k-textbox form-control" data-bind="value: description"></textarea>
 		</div>
 	</div>
 	<div class="row MT10 align-middle-lg">
@@ -48,9 +48,18 @@
 				<div class="col-xs-12 col-sm-9">
 					<div class="row">
 						<div class="col-xs-12 col-sm-6">
-							<select class="form-control" name="roleId" data-bind="value: roleId">
-								<option value=""></option>
-							</select>
+							<div class="row">
+								<div class="col-xs-12 col-sm-12">
+									<select class="form-control" name="roleId" data-bind="value: roleId">
+										<option value=""></option>
+									</select>
+								</div>
+							</div>
+							<div class="row MT5">
+								<div class="col-xs-12 col-sm-12">
+									<div class="form-group"> <input name="condition" type="text" class="form-control" placeholder="Điều kiện phân công xử lý" data-bind="value: condition" title="Điều kiện phân công xử lý"> </div>
+								</div>
+							</div>
 						</div>
 						<div class="col-xs-12 col-sm-6">
 							<div class="row">
@@ -93,7 +102,7 @@
 					<input id="dossierNoPattern" name="dossierNoPattern" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: dossierNoPattern"/>
 				</div>
 				<div class="col-xs-12 col-sm-6">
-					<input id="dueDatePattern" name="dueDatePattern" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: dueDatePattern"/>
+					<input id="dueDatePattern" name="dueDatePattern" class="k-textbox form-control" data-bind="value: dueDatePattern"/>
 				</div>
 			</div>
 		</div>
@@ -139,6 +148,7 @@
 		newEntry.find('input[type=radio]').attr('name', name);
 
 		newEntry.find('select').val('');
+		newEntry.find('input[name=condition]').val('');
 		newEntry.find('input[type=radio]:checked').prop('checked',false);
 		currentEntry.find('input[type=radio][value=' + radioValue + ']').prop('checked',true);
 
@@ -164,7 +174,7 @@
 				if (result && result.data && result.data.length > 0){
 					result.data.forEach(function(jobpos){
 						var newOpt = $(".service-process-form-entry select")[0].appendChild(document.createElement('option'));
-						newOpt.value = jobpos.jobPosId;
+						newOpt.value = jobpos.roleId;
 						newOpt.text = jobpos.title;
 					});
 				}

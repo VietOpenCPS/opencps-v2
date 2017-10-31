@@ -10,13 +10,10 @@
 				<h5><strong>Tập đính kèm</strong></h5>
 			
 				<!-- check permission -->
-				<span class="input-group-btn">
-					<div class="btn btn-primary image-preview-input">
-						<span class="fa fa-upload"></span>
-						<span class="image-preview-input-title">Tải lên</span>
-						<input id="employee-detail-fileupload" type="file" name="files" multiple />
+					<div class="image-preview-input">						
+						<label class="btn btn-active btn-sm text-normal M0" for="employee-detail-fileupload"><i class="fa fa-upload"></i> Tải lên</label>
+						<input id="employee-detail-fileupload" type="file" name="files" multiple class="hidden" />
 					</div>
-				</span>
 				
 			</div>
 		</div>
