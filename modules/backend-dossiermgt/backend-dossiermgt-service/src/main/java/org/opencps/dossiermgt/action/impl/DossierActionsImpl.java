@@ -208,15 +208,15 @@ public class DossierActionsImpl implements DossierActions {
 
 		boolean isCreateDossier = hasCreateDossier(groupId, dossierId, referenceUid, actionCode, serviceProcessId,
 				hasDossierSync);
-		
-		//TODO Hard fix for test
-		
+
+		// TODO Hard fix for test
+
 		List<String> types = new ArrayList<>();
 		types.add(OCPSUserUtils.APPLICANT_01);
 		types.add(OCPSUserUtils.APPLICANT_02);
 		types.add(OCPSUserUtils.EMPLOYEE_01);
 		types.add(OCPSUserUtils.EMPLOYEE_02);
-		//List<String> types = OCPSUserUtils.getUserTypes(groupId, userId);
+		// List<String> types = OCPSUserUtils.getUserTypes(groupId, userId);
 
 		String postStepCode = processAction.getPostStepCode();
 
@@ -231,8 +231,8 @@ public class DossierActionsImpl implements DossierActions {
 		// In the special action (actionCode = 1100, save DOSSIER in SERVER)
 		if (actionCode.contentEquals(SPECIAL_ACTION)
 				&& (types.contains(OCPSUserUtils.APPLICANT_01) || types.contains(OCPSUserUtils.APPLICANT_02))) {
-			//TODO check DossierStatus 
-			
+			// TODO check DossierStatus
+
 			// Set dossierStatus is NEW
 			JSONObject jsStatus = JSONFactoryUtil.createJSONObject();
 
@@ -250,6 +250,8 @@ public class DossierActionsImpl implements DossierActions {
 			JSONObject jsStatus = JSONFactoryUtil.createJSONObject();
 			JSONObject jsSubStatus = JSONFactoryUtil.createJSONObject();
 
+			//String syncActionCode = processAction.getSyncActionCode();
+
 			getDossierStatus(jsStatus, groupId, DOSSIER_SATUS_DC_CODE, curStep.getDossierStatus());
 
 			getDossierStatus(jsStatus, groupId, DOSSIER_SUB_SATUS_DC_CODE, curStep.getDossierSubStatus());
@@ -259,19 +261,32 @@ public class DossierActionsImpl implements DossierActions {
 					jsStatus.getString(curStep.getDossierStatus()), curStep.getDossierSubStatus(),
 					jsSubStatus.getString(curStep.getDossierSubStatus()), context);
 
+			DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
+
 			dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId, serviceProcessId,
 					0l, actionCode, actionUser, processAction.getActionName(), actionNote, actionOverdue,
-					processAction.getSyncActionCode(), hasForedDossierSync, processAction.getRollbackable(),
+					processAction.getSyncActionCode(), hasDossierSync, processAction.getRollbackable(),
 					curStep.getStepCode(), curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(),
 					context);
+			
+			//update nextActionId
+			if (Validator.isNotNull(prvAction)) {
+				DossierActionLocalServiceUtil.updateNextActionId(prvAction.getDossierActionId(),
+						dossierAction.getDossierActionId());
+			}
+			
+			if(hasDossierSync) {
+				// SyncAction
+				int method = 1;
 
-			// SyncAction
-			int method = 1;
+				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
+						isCreateDossier, method, dossier.getPrimaryKey(), StringPool.BLANK, serviceProcess.getServerNo());
+				
+				// TODO add SYNC for DossierFile and PaymentFile here
 
-			DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-					isCreateDossier, method, dossier.getPrimaryKey(), StringPool.BLANK, serviceProcess.getServerNo());
+			}
+			
 
-			// TODO add SYNC for DossierFile and PaymentFile here
 		}
 
 		return dossierAction;
@@ -306,10 +321,13 @@ public class DossierActionsImpl implements DossierActions {
 	protected void getDossierStatus(JSONObject ob, long groupId, String collectionCode, String itemCode) {
 
 		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
-		
+
 		if (Validator.isNotNull(dc)) {
 			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
-			ob.put(itemCode, it.getItemName());
+
+			if (Validator.isNotNull(it)) {
+				ob.put(itemCode, it.getItemName());
+			}
 		}
 	}
 
@@ -437,9 +455,9 @@ public class DossierActionsImpl implements DossierActions {
 				String preStepCode = act.getPreStepCode();
 
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
-				
+
 				if (Validator.isNotNull(step)) {
-					if (step.getDossierStatus().contentEquals(dossierStatus)) {
+					if (step.getDossierStatus().equalsIgnoreCase(dossierStatus)) {
 						action = act;
 						break;
 					}
@@ -447,7 +465,6 @@ public class DossierActionsImpl implements DossierActions {
 					action = act;
 					break;
 				}
-
 
 			}
 
@@ -458,7 +475,6 @@ public class DossierActionsImpl implements DossierActions {
 		return action;
 	}
 
-
 	@Override
 	public Dossier initDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
 			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
@@ -467,15 +483,15 @@ public class DossierActionsImpl implements DossierActions {
 			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
 			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
 			boolean online, boolean notification, String applicantNote, ServiceContext context) throws PortalException {
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-		 
+
 		Date appIdDate = null;
-		
+
 		try {
 			appIdDate = sdf.parse(applicantIdDate);
 		} catch (Exception e) {
-			
+
 		}
 		return DossierLocalServiceUtil.initDossier(groupId, dossierId, referenceUid, counter, serviceCode, serviceName,
 				govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate, address,

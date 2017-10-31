@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringPool;
 
 /**
  * The implementation of the dossier action local service.
@@ -67,10 +68,22 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 				stepName, dueDate, nextActionId, payload, stepInstruction);
 
 		DossierAction object = null;
-
+		long userId = 0l;
+		
+		String fullName = StringPool.BLANK;
+		
 		Date now = new Date();
+		
+		
+		if (context.getUserId() > 0) {
+			User userAction = userLocalService.getUser(context.getUserId());
+			
+			userId = userAction.getUserId();
+			fullName = userAction.getFullName();
+			
+		}
 
-		User userAction = userLocalService.getUser(context.getUserId());
+		
 
 		if (dossierActionId == 0) {
 			dossierActionId = counterLocalService.increment(DossierAction.class.getName());
@@ -82,8 +95,8 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			object.setGroupId(groupId);
 			object.setCreateDate(now);
 			object.setModifiedDate(now);
-			object.setUserId(userAction.getUserId());
-			object.setUserName(userAction.getFullName());
+			object.setUserId(userId);
+			object.setUserName(fullName);
 
 			object.setDossierId(dossierId);
 			object.setServiceProcessId(serviceProcessId);
@@ -111,12 +124,29 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		return object;
 	}
+	
+	
 
 	@Indexable(type = IndexableType.DELETE)
 	public DossierAction removeAction(long actionId) throws PortalException {
 		DossierAction action = dossierActionPersistence.fetchByPrimaryKey(actionId);
 
 		return dossierActionPersistence.remove(action);
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierAction updateNextActionId(long actionId, long nextActionId) throws PortalException {
+		DossierAction action = dossierActionPersistence.fetchByPrimaryKey(actionId);
+
+		action.setNextActionId(nextActionId);
+
+		Date now = new Date();
+
+		action.setModifiedDate(now);
+
+		dossierActionPersistence.update(action);
+
+		return action;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -141,5 +171,14 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			throws PortalException {
 
 	}
+	
+	public DossierAction getByPenddingStatus(long dossierId, boolean pending) {
+		return dossierActionPersistence.fetchByDID_DPG(dossierId, pending);
+	}
+	
+	public DossierAction getByNextActionId(long dossierId, long nextActionId) {
+		return dossierActionPersistence.fetchByDID_NACTID(dossierId, nextActionId);
+	}
+
 
 }
