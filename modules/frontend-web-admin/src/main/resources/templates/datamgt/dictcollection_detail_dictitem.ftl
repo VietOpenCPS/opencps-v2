@@ -6,7 +6,7 @@
 	<div class="col-xs-4 col-sm-4">
 	
 		<span data-toggle="modal" class="btn btn-active image-preview-input btn-block"
-			href="${url.adminDataMgtPortlet.dictcollection_create_dictitem}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}collectionCode=${(dictCollection_dictCollection.collectionCode)!}" data-target="#modal"> 
+			href="${url.adminDataMgtPortlet.dictcollection_create_dictitem}&${portletNamespace}type=${constants.type_dictCollection}&${portletNamespace}collectionCode=${(dictCollection_dictCollection.collectionCode)!}" data-target="#modal"> 
 			<i class="fa fa-book" aria-hidden="true"></i>
 			
 			<span class="p-xxs" >Thêm dữ liệu danh mục</span> 
@@ -105,7 +105,7 @@
 				<div class="full-width text-right">
 
 					<span data-toggle="modal" 
-						href="${url.adminDataMgtPortlet.dictcollection_create_dictitem}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}itemCode=#:itemCode#&${portletNamespace}collectionCode=${(dictCollection_dictCollection.collectionCode)!}"
+						href="${url.adminDataMgtPortlet.dictcollection_create_dictitem}&${portletNamespace}type=${constants.type_dictCollection}&${portletNamespace}itemCode=#:itemCode#&${portletNamespace}collectionCode=${(dictCollection_dictCollection.collectionCode)!}"
 						 data-target="\\#modal">
 						
 						<i class="fa fa-pencil" aria-hidden="true"></i>

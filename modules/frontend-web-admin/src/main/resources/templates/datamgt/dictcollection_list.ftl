@@ -267,7 +267,7 @@
 			$("#_collection_hidden_new_id").val(selected[0]);
 	
 			$("#_collection_right-page").load(
-				'${url.adminDataMgtPortlet.dictcollection_detail}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}collectionCode='+selected[0]);
+				'${url.adminDataMgtPortlet.dictcollection_detail}&${portletNamespace}type=${constants.type_dictCollection}&${portletNamespace}collectionCode='+selected[0]);
 			
 		}
 		

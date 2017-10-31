@@ -344,7 +344,7 @@
 			$("#_jobpos_hidden_new_id").val(selected[0]);
 			
 			$("#_jobpos_right-page").load(
-				'${url.adminJobPosPortlet.jobpos_detail}&${portletNamespace}type=${constant.type_jobPos}&${portletNamespace}jobPosId='+selected[0]);
+				'${url.adminJobPosPortlet.jobpos_detail}&${portletNamespace}type=${constants.type_jobPos}&${portletNamespace}jobPosId='+selected[0]);
 			
 		}
 

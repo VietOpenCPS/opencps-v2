@@ -250,7 +250,7 @@
 					</a>
 
 					<span data-toggle="modal" 
-					href="${url.adminDataMgtPortlet.dictcollection_create_dictgroup}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}groupCode=#:groupCode#&${portletNamespace}dictCollectionCode=${(dictCollection_dictCollection.collectionCode)!}"
+					href="${url.adminDataMgtPortlet.dictcollection_create_dictgroup}&${portletNamespace}type=${constants.type_dictCollection}&${portletNamespace}groupCode=#:groupCode#&${portletNamespace}dictCollectionCode=${(dictCollection_dictCollection.collectionCode)!}"
 					data-target="\\#modal">
 
 					<i class="fa fa-pencil" aria-hidden="true"></i>
