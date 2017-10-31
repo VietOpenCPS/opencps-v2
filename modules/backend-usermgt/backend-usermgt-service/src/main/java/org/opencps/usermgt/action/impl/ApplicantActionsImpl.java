@@ -85,11 +85,11 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	}
 
 	@Override
-	public Applicant updateApplicant(ServiceContext context, long applicantId, String address, String cityCode,
+	public Applicant updateApplicant(ServiceContext context, long applicantId, String applicantName, String address, String cityCode,
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail) throws PortalException {
 
-		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, applicantId, StringPool.BLANK,
+		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, applicantId, applicantName,
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, address, cityCode, cityName, districtCode,
 				districtName, wardCode, wardName, contactName, contactTelNo, contactEmail, StringPool.BLANK,
 				StringPool.BLANK);

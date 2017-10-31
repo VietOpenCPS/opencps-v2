@@ -29,7 +29,7 @@ public interface ApplicantActions {
 	public Applicant getApplicantDetail(ServiceContext context, long applicantId)
 			throws PortalException;
 
-	public Applicant updateApplicant(ServiceContext context, long applicantId, String address, String cityCode, String cityName, String districtCode,
+	public Applicant updateApplicant(ServiceContext context, long applicantId, String applicantName, String address, String cityCode, String cityName, String districtCode,
 			String districtName, String wardCode, String wardName, String contactName, String contactTelNo,
 			String contactEmail)
 			throws PortalException;

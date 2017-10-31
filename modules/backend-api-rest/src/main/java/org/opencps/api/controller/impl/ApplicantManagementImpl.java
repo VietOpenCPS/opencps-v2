@@ -269,7 +269,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 			if (isAllowed) {
-				applicant = actions.updateApplicant(serviceContext, id, input.getAddress(), input.getCityCode(),
+				applicant = actions.updateApplicant(serviceContext, id, input.getApplicantName(), input.getAddress(), input.getCityCode(),
 						input.getCityName(), input.getDistrictCode(), input.getDistrictName(), input.getWardCode(),
 						input.getWardName(), input.getContactName(), input.getContactTelNo(), input.getContactEmail());
 

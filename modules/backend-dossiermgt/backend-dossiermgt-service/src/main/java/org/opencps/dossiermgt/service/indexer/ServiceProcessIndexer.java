@@ -32,6 +32,7 @@ public class ServiceProcessIndexer extends BaseIndexer<ServiceProcess> {
 
 	@Override
 	public String getClassName() {
+
 		return CLASS_NAME;
 	}
 
