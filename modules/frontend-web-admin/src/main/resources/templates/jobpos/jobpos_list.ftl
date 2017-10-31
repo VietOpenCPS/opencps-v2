@@ -35,7 +35,7 @@
 		</div>
 				
 			
-		<ul class="ul-with-border ul-with-border-style-2 mh-head-2" id="_jobpos_listView"></ul>
+		<ul class="ul-with-border ul-default mh-head-2" id="_jobpos_listView"></ul>
 		
 		<script type="text/x-kendo-tmpl" id="_jobpos_template">
 		
