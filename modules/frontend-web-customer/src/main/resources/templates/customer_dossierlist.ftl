@@ -1,13 +1,4 @@
-<div class="panel">
-	<div class="panel-heading P0">
-		<div class="row">
-			<div class="row-header"> <div class="background-triangle-big"><i class="fa fa-file-text"></i></div> <span class="text-bold">KÊT QUẢ TÌM KIẾM HỒ SƠ</span> 
-			<div class="form-group search-icon pull-right MT5 MB5 MR10">
-				<input type="text" class="form-control" placeholder="Nhập từ khóa">
-			</div>
-		</div>
-	</div>
-</div>
+
 <div class="panel-body PT0">
 	<input type="hidden" name="idItemCustomerDossier" id="idItemCustomerDossier">
 	<ul class='ul-with-border'>
