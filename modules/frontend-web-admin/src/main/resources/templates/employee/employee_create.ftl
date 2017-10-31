@@ -256,7 +256,12 @@
 
 				// redirect to detail page
 				$("#modal-lg").trigger({ type: "click" });
-				$( "#employee-index-page").load("${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId);
+				// $( "#employee-index-page").load("${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId);
+
+				$("#employee_list").hide();
+				$("#employee_detail").show();
+
+				$( "#employee_detail").load("${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId=" + data.employeeId);
 
 				showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
 				

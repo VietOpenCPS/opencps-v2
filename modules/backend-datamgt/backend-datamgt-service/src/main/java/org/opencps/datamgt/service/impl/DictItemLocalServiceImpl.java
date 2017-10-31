@@ -92,8 +92,8 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.datamgt.service.DictItemLocalServiceUtil} to access
-	 * the dict item local service.
+	 * org.opencps.datamgt.service.DictItemLocalServiceUtil} to access the dict
+	 * item local service.
 	 */
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -167,7 +167,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		dictItem.setExpandoBridgeAttributes(baseModel);
 
 		dictItemPersistence.update(dictItem);
-		
+
 		return dictItem;
 	}
 
@@ -346,11 +346,13 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 			DictItem parentItem = dictItemPersistence.findByPrimaryKey(dictParentItemId);
 
-//			if(Validator.isNull(sibling) || GetterUtil.get(sibling, 0) == 0){
-//				DictItem ett = dictItemPersistence.fetchByF_parentItemId_Last(parentItem.getDictItemId(), null);
-//				sibling 
-//			}
-			
+			// if(Validator.isNull(sibling) || GetterUtil.get(sibling, 0) == 0){
+			// DictItem ett =
+			// dictItemPersistence.fetchByF_parentItemId_Last(parentItem.getDictItemId(),
+			// null);
+			// sibling
+			// }
+
 			String ext = "";
 
 			for (int i = 0; i < 4 - sibling.length(); i++) {
@@ -383,11 +385,16 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String dictCollectionId = (String) params.get(DictItemTerm.DICT_COLLECTION_ID);
-		String dictItemParentId = (String) params.get(DictItemTerm.PARENT_ITEM_ID);
+		String dictItemParentId = String.valueOf(params.get(DictItemTerm.PARENT_ITEM_ID));
 		String parentItemCode = (String) params.get(DictItemTerm.PARENT_ITEM_CODE);
+
+		if (Validator.isNull(parentItemCode)) {
+			parentItemCode = "0";
+		}
+
 		String dictItemCode = (String) params.get(DictItemTerm.ITEM_CODE);
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = String.valueOf((params.get("groupId")));
 		String userId = (String) params.get("userId");
 		String itemLv = (String) params.get("itemLv");
 		String dictCollectionCode = (String) params.get(DictItemTerm.DICT_COLLECTION_CODE);
@@ -455,23 +462,17 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-//		if (Validator.isNotNull(groupId)) {
-//			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
-//					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
-//					: indexer.getFullQuery(searchContext);
-//			TermQuery catQuery1 = new TermQueryImpl(DictItemTerm.GROUP_ID, groupId);
-//			TermQuery catQuery2 = new TermQueryImpl(DictItemTerm.GROUP_ID, String.valueOf(0));
-//
-//			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
-//			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
-//			booleanQuery.add(categoryQuery, BooleanClauseOccur.MUST);
-//		}
 		if (Validator.isNotNull(groupId)) {
-			MultiMatchQuery query = new MultiMatchQuery(groupId);
+			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
+					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
+					: indexer.getFullQuery(searchContext);
 
-			query.addFields(HolidayTerm.GROUP_ID);
+			TermQuery catQuery1 = new TermQueryImpl(DictItemTerm.GROUP_ID, groupId);
+			TermQuery catQuery2 = new TermQueryImpl(DictItemTerm.GROUP_ID, String.valueOf(0));
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
+			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
+			booleanQuery.add(categoryQuery, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(userId)) {
@@ -513,11 +514,16 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String dictCollectionId = (String) params.get(DictItemTerm.DICT_COLLECTION_ID);
-		String dictItemParentId = (String) params.get(DictItemTerm.PARENT_ITEM_ID);
+		String dictItemParentId = String.valueOf(params.get(DictItemTerm.PARENT_ITEM_ID));
 		String parentItemCode = (String) params.get(DictItemTerm.PARENT_ITEM_CODE);
+		
+		if (Validator.isNull(parentItemCode)) {
+			parentItemCode = "0";
+		}
+		
 		String dictItemCode = (String) params.get(DictItemTerm.ITEM_CODE);
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = String.valueOf(params.get("groupId"));
 		String userId = (String) params.get("userId");
 		String itemLv = (String) params.get("itemLv");
 		String dictCollectionCode = (String) params.get(DictItemTerm.DICT_COLLECTION_CODE);
@@ -586,11 +592,16 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(groupId)) {
-			MultiMatchQuery query = new MultiMatchQuery(groupId);
+			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
+					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
+					: indexer.getFullQuery(searchContext);
 
-			query.addFields(HolidayTerm.GROUP_ID);
+			TermQuery catQuery1 = new TermQueryImpl(DictItemTerm.GROUP_ID, groupId);
+			TermQuery catQuery2 = new TermQueryImpl(DictItemTerm.GROUP_ID, String.valueOf(0));
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
+			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
+			booleanQuery.add(categoryQuery, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(userId)) {
@@ -636,8 +647,9 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 	}
 
 	public DictItem fetchByF_dictItemCode(String itemCode, long dictCollectionId, long groupId) {
-
-		return dictItemPersistence.fetchByF_dictItemCode_dictCollectionId(itemCode, dictCollectionId, groupId);
+		
+		return dictItemPersistence.fetchByIC_DCI(itemCode, dictCollectionId);
+		//return dictItemPersistence.fetchByF_dictItemCode_dictCollectionId(itemCode, dictCollectionId, groupId);
 
 	}
 

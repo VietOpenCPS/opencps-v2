@@ -5,6 +5,8 @@
 		"city":"http://hanoi.fds.vn:2281/api/city"
 	},
 	"ajax":{
+		"customer_dossier_detail_2": "customer_dossier_detail_2.ftl",
+	    "customer_dossier_detail_3": "customer_dossier_detail_3.ftl",
 		"customer_dossierlist": "customer_dossierlist.ftl",
 		"customer_dossier_detail": "customer_dossier_detail.ftl",
 		"customer_additional_requirements": "customer_additional_requirements.ftl",
@@ -32,6 +34,10 @@
 	"include":{
 			"dossierdetail_defaultprocess":"dossierdetail_defaultprocess.ftl"
 	},
+	groupId: 20147,
+	dossierId : 101,
+	dossierTemplateNo : 201,
+	dossierPartNo : 401,
 	"customer":{
 		administrative_region: 1,
 		status:'[

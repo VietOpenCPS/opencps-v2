@@ -52,6 +52,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 
@@ -68,7 +69,6 @@ public class DataManagementImpl implements DataManagement {
 		try {
 
 			if (query.getEnd() == 0) {
-
 				query.setStart(-1);
 
 				query.setEnd(-1);
@@ -945,8 +945,11 @@ public class DataManagementImpl implements DataManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-
-			params.put("groupId", String.valueOf(groupId));
+			
+			if (code.equalsIgnoreCase("ADMINISTRATIVE_REGION"))
+				groupId = 0;
+				
+			params.put("groupId", groupId);
 			params.put("keywords", query.getKeywords());
 			params.put("itemLv", query.getLevel());
 			params.put(DictItemTerm.PARENT_ITEM_CODE, query.getParent());

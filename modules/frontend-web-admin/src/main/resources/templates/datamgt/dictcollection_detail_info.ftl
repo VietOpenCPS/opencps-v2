@@ -273,10 +273,10 @@
 
 				<label>Danh sách mục dữ liệu: </label>
 				<select name="_collectionSub_group_dictItem#:groupCode#" 
-				id="_collectionSub_group_dictItem#:groupCode#"
-				data-placeholder="Mục dữ liệu...">
+					id="_collectionSub_group_dictItem#:groupCode#"
+					data-placeholder="Mục dữ liệu...">
 
-			</select>
+				</select>
 
 		</div>
 
@@ -363,6 +363,7 @@
 						type: 'POST',
 						dataType: 'json',
 						contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+						async: false,
 						success: function(data, textStatus, xhr) {
 
 							var dataSource = $("#_collectionSub_group_listView").getKendoListView().dataSource;
@@ -403,6 +404,7 @@
 						success: function(data, textStatus, xhr) {
 
 							showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
+
 							$("#_collectionSub_group_listView").getKendoListView().dataSource.pushDestroy(data);
 							$("#_collectionSub_group_listView").getKendoListView().dataSource.pushUpdate(data);
 							$("#modal").trigger({ type: "click" });
@@ -714,11 +716,14 @@ function removeDictItem(e){
 			success: function(data) {
 				
 				$("#_collection_listView").getKendoListView().dataSource.pushUpdate(data);
+				$("#_collection_listView li[data-pk=" + data.collectionCode + "]").addClass("k-state-selected");
+
 				showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-				
+
 			},
 			error: function(event, id, obj) {
 				showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
+
 			}
 		}); 
 
@@ -761,17 +766,19 @@ function removeDictItem(e){
 				var dataSource = $("#_collection_listView").getKendoListView().dataSource;
 				
 				dataSource.pushUpdate(data);
-				$.map( dataSource.data(), function( obj, i ) {
+				// $.map( dataSource.data(), function( obj, i ) {
 					
-					if(obj.collectionCode == data.collectionCode) {
+				// 	if(obj.collectionCode == data.collectionCode) {
 						
-						var listView = $("#_collection_listView").data("kendoListView");
-						listView.select(listView.element.children()[i]);
+				// 		var listView = $("#_collection_listView").data("kendoListView");
+				// 		listView.select(listView.element.children()[i]);
 
-					}
-				});
+				// 	}
+				// });
 				showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-				
+
+				$("#_collection_listView li[data-pk=" + data.collectionCode + "]").addClass("k-state-selected");
+
 			},
 			error: function(event, id, obj) {
 				showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
@@ -827,6 +834,7 @@ function removeDictItem(e){
 					}
 				});
 				showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
+
 			},
 			error: function(event, id, obj) {
 				showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
@@ -867,24 +875,30 @@ function removeDictItem(e){
 				var dataSource = $("#_collection_listView").getKendoListView().dataSource;
 				
 				dataSource.pushUpdate(data);
-				$.map( dataSource.data(), function( obj, i ) {
+				// $.map( dataSource.data(), function( obj, i ) {
 					
-					if(obj.collectionCode == data.collectionCode) {
+				// 	if(obj.collectionCode == data.collectionCode) {
 						
-						var listView = $("#_collection_listView").data("kendoListView");
-						listView.select(listView.element.children()[i]);
+				// 		var listView = $("#_collection_listView").data("kendoListView");
+				// 		listView.select(listView.element.children()[i]);
 
-					}
-				});
+				// 	}
+				// });
 				showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
+
+				$("#_collection_listView li[data-pk=" + data.collectionCode + "]").addClass("k-state-selected");
+
 			},
 			error: function(event, id, obj) {
-				showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
+				//showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
+
+				notification.show({
+					message: "Xẩy ra lỗi, vui lòng thử lại"
+				}, "error");
 			}
 		}); 
 
 		$('#_collectionSub_desc').editable('toggle');
-		
 		
 	});	
 

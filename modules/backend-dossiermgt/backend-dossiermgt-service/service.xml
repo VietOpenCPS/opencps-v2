@@ -265,6 +265,11 @@
 			<finder-column name="serviceConfigId"/>
 		</finder>
 
+		<finder return-type="ProcessOption" name="SC_ID_OP">
+			<finder-column name="serviceConfigId"/>
+			<finder-column name="optionOrder"/>
+		</finder>
+
 		<finder return-type="ProcessOption" name="SC_DT">
 			<finder-column name="serviceConfigId"/>
 			<finder-column name="dossierTemplateId"/>
@@ -613,6 +618,11 @@
 			<finder-column name="groupId" />
 			<finder-column name="processName" />
 		</finder>
+		
+		<finder return-type="ServiceProcess" name="GID_SN">
+			<finder-column name="groupId" />
+			<finder-column name="serverNo" />
+		</finder>
 
 	</entity>
 
@@ -763,6 +773,7 @@
 		<column name="payload" type="String" />
 		<column name="stepInstruction" type="String" />
 
+		
 	</entity>
 
 	<entity local-service="true" name="DossierActionUser"
@@ -888,5 +899,10 @@
 		
 		<exception>InvalidDossierStatus</exception>
 		<exception>DuplicateDossierFile</exception>
+		
+		<exception>DossierPassword</exception>
+		<exception>DossierAccess</exception>
+		<exception>SeqOrder</exception>
+		
 	</exceptions>
 </service-builder>

@@ -7,6 +7,10 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -88,27 +92,27 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		// DossierAction fields
 
 		if (object.getDossierActionId() != 0) {
-			Date now = new Date();
-			
+			//Date now = new Date();
+
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(object.getDossierActionId());
-			
-			document.addDateSortable(DossierTerm.LAST_ACTION_DATE, now);
+
+			document.addDateSortable(DossierTerm.LAST_ACTION_DATE, dossierAction.getCreateDate());
 			document.addTextSortable(DossierTerm.LAST_ACTION_CODE, dossierAction.getActionCode());
 			document.addTextSortable(DossierTerm.LAST_ACTION_NAME, dossierAction.getActionName());
 			document.addTextSortable(DossierTerm.LAST_ACTION_USER, dossierAction.getActionUser());
 			document.addTextSortable(DossierTerm.LAST_ACTION_NOTE, dossierAction.getActionNote());
-			
+
 			document.addTextSortable(DossierTerm.STEP_CODE, dossierAction.getStepCode());
 			document.addTextSortable(DossierTerm.STEP_NAME, dossierAction.getStepName());
-			
+
 			if (dossierAction.getActionOverdue() != 0) {
 				document.addTextSortable(DossierTerm.STEP_OVER_DUE, StringPool.TRUE);
 			} else {
 				document.addTextSortable(DossierTerm.STEP_OVER_DUE, StringPool.FALSE);
 			}
-			
+
 			Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getActionOverdue(), new Date());
-			
+
 			document.addDateSortable(DossierTerm.STEP_DUE_DATE, stepDuedate);
 		}
 
@@ -150,8 +154,16 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addTextSortable(DossierTerm.NOTIFICATION, Boolean.toString(object.getNotification()));
 		document.addTextSortable(DossierTerm.ONLINE, Boolean.toString(object.getOnline()));
 		document.addTextSortable(DossierTerm.SERVER_NO, object.getServerNo());
+		document.addTextSortable(DossierTerm.DOSSIER_OVER_DUE,
+				Boolean.toString(getDossierOverDue(object.getPrimaryKey())));
 
 		return document;
+	}
+
+	private boolean getDossierOverDue(long dossierId) {
+		// TODO add logic here
+
+		return false;
 	}
 
 	@Override
@@ -211,6 +223,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		indexableActionableDynamicQuery.performActions();
 	}
 
+	
 	Log _log = LogFactoryUtil.getLog(DossierIndexer.class);
 
 }

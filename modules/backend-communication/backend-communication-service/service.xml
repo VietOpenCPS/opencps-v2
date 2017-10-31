@@ -142,6 +142,9 @@
 		<finder return-type="ServerConfig" name="CF_NM">
 			<finder-column name="serverName"/>
 		</finder>
+		<finder return-type="ServerConfig" name="CF_GID">
+			<finder-column name="groupId"/>
+		</finder>
 		
 	</entity>
 	

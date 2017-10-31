@@ -310,11 +310,18 @@
 							message: "Yêu cầu được thực hiện thành công"
 						}, "success");
 						dataSourceServiceOption.read();
+						$("#frmEstablishedProcess").hide();
 					},
 					error : function(xhr){
-						notification.show({
-							message: "Yêu cầu thất bại"
-						}, "error");
+						if (xhr.responseJSON.description == "DuplicateSeqOrderException"){
+							notification.show({
+								message: "Lỗi trùng số thứ tự"
+							}, "error");
+						} else {
+							notification.show({
+								message: "Yêu cầu thất bại"
+							}, "error");
+						}
 					}	
 				});
 			}else {
@@ -337,11 +344,18 @@
 							message: "Yêu cầu được thực hiện thành công"
 						}, "success");
 						dataSourceServiceOption.read();
+						$("#frmEstablishedProcess").hide();
 					},
 					error : function(xhr){
-						notification.show({
-							message: "Yêu cầu thất bại"
-						}, "error");
+						if (xhr.responseJSON.description == "DuplicateSeqOrderException"){
+							notification.show({
+								message: "Lỗi trùng số thứ tự"
+							}, "error");
+						} else {
+							notification.show({
+								message: "Yêu cầu thất bại"
+							}, "error");
+						}
 					}
 				});
 

@@ -7,14 +7,14 @@
 		</div>
 		<div class="col-sm-9" id="dossier_list">
 			<div class="row">
-				<div class="col-sm-8">
+				<div class="col-sm-9">
 					<div class="row panel">
 						<div class="col-sm-12" id="customer_dossierlist">
-
+;
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-4">
+				<div class="col-sm-3">
 					<div class="row">
 						<div class="col-sm-12" id="customer_additional_requirements">
 
