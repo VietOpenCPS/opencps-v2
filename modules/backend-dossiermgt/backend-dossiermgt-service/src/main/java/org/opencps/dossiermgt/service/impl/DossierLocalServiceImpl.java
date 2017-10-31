@@ -74,7 +74,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	 * org.opencps.dossiermgt.service.DossierLocalServiceUtil} to access the
 	 * dossier local service.
 	 */
-	
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier syncDossier(Dossier dossier) throws PortalException {
+		dossierPersistence.update(dossier);
+		
+		return dossier;
+	}
+
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
 			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
@@ -591,7 +597,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	}
 
-	public Dossier getByRef(long groupId, String refId) throws PortalException {
+	public Dossier getByRef(long groupId, String refId) {
 		return dossierPersistence.fetchByG_REF(groupId, refId);
 	}
 
