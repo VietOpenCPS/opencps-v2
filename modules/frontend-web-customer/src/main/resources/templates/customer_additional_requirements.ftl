@@ -5,13 +5,16 @@
 			<i class="glyphicon glyphicon-chevron-down"></i>
 		</span>
 	</div>
-	<div class="panel-body PT0" id="additionalRequirement">
+	<div class="panel-body P0" id="additionalRequirement">
 		<ul class='ul-with-border'>
 			<div id='listViewCustomer_Additional_Requirement'></div>
 		</ul>
-		<div id='pagerCustomer_Additional_Requirement'></div>
+		<div class="clearfix align-middle PL10">
+			<span class="text-light-gray  MR50"><i>Có <span id="total_Additional_Requirement" class="red"> </span> yêu cầu</i></span>
+			<span id="pagerCustomer_Additional_Requirement" class="M0 PR5"></span>
+		</div>
 		<script type="text/x-kendo-template" id="additional_Requirement_Template">
-			<li data-pk="#:id#">
+			<li data-pk="#:id#" class="P10">
 				<p>#:content#</p>
 				<span class="text-greyy">#:govAgencyName#</span> <br>
 				<span class="text-greyy">#:createDate#</span>
@@ -48,10 +51,10 @@
 					success:function(result){
 						if(result.data){
 							options.success(result);
+							$("#total_Additional_Requirement").text(dataSourceAdditionalRequirement.total())
 						}else{
 							$("#additionalRequirement").hide();
 						}
-						
 					},
 					error:function(result){
 						options.error(result);
@@ -74,13 +77,14 @@
 	$("#listViewCustomer_Additional_Requirement").kendoListView({
 		dataSource:dataSourceAdditionalRequirement,
 		template:kendo.template($("#additional_Requirement_Template").html())
-		/*		autoBind:false*/
 	});
-
+	// option kendo-page
 	$("#pagerCustomer_Additional_Requirement").kendoPager({
 		dataSource:dataSourceAdditionalRequirement,
 		input: false,
 		numeric: false,
-		info : false
+		info: false
 	});
+	$(".k-pager-first").css("display","none");
+	$(".k-pager-last").css("display","none");
 </script>
