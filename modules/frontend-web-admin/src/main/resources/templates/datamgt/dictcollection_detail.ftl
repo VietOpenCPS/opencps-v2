@@ -48,7 +48,7 @@ $(document).ready(function() {
 			
 			if($(e.item).index() == 1){
 
-				$("#_collectionDetail_dictItem_link").load('${url.adminDataMgtPortlet.dictcollection_detail_dictitem}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}collectionCode=${(dictCollection_dictCollection.collectionCode)!}');
+				$("#_collectionDetail_dictItem_link").load('${url.adminDataMgtPortlet.dictcollection_detail_dictitem}&${portletNamespace}type=${constants.type_dictCollection}&${portletNamespace}collectionCode=${(dictCollection_dictCollection.collectionCode)!}');
 
 			}
 
