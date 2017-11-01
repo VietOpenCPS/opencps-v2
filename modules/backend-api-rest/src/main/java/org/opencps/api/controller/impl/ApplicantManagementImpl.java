@@ -273,6 +273,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantModel results = new ApplicantModel();
 		BackendAuth auth = new BackendAuthImpl();
 		Applicant applicant = null;
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -297,7 +298,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 			if (isAllowed) {
-				applicant = actions.updateApplicant(serviceContext, id, input.getApplicantName(), input.getAddress(), input.getCityCode(),
+				applicant = actions.updateApplicant(serviceContext,groupId, id, input.getApplicantName(), input.getAddress(), input.getCityCode(),
 						input.getCityName(), input.getDistrictCode(), input.getDistrictName(), input.getWardCode(),
 						input.getWardName(), input.getContactName(), input.getContactTelNo(), input.getContactEmail());
 
@@ -499,6 +500,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		BackendAuth auth = new BackendAuthImpl();
 		Applicant applicant = null;
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -508,6 +510,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			User requestUser = ApplicantUtils.getUser(id);
 
 			boolean isAllowed = false;
+			
+			
 
 			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
 				isAllowed = true;
@@ -523,7 +527,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 			if (isAllowed) {
-				applicant = actions.updateProfile(serviceContext, id, input.getValue());
+				applicant = actions.updateProfile(serviceContext,groupId, id, input.getValue());
 
 				JSONObject result = JSONFactoryUtil.createJSONObject(applicant.getProfile());
 
@@ -577,6 +581,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		// TODO Auto-generated method stub
 		ApplicantActions actions = new ApplicantActionsImpl();
 		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -608,7 +613,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				
 				profile.put(key, input.getValue());
 				
-				actions.updateProfile(serviceContext, id, profile.toString());
+				actions.updateProfile(serviceContext,groupId, id, profile.toString());
 
 				JSONObject result = JSONFactoryUtil.createJSONObject();
 
