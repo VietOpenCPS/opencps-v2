@@ -359,7 +359,7 @@
 			$("#_workingUnit_hidden_new_id").val(selected[0]);
 			
 			$("#_workingUnit_right-page").load(
-				'${url.adminWorkingUnitPortlet.working_unit_detail}&${portletNamespace}type=${constant.type_workingUnit}&${portletNamespace}workingUnitId='+selected[0]);
+				'${url.adminWorkingUnitPortlet.working_unit_detail}&${portletNamespace}type=${constants.type_workingUnit}&${portletNamespace}workingUnitId='+selected[0]);
 			
 		}
 

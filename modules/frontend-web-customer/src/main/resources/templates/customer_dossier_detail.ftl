@@ -19,30 +19,13 @@
 	</div>
 
 	<div class="guide-section">
+
 		<div class="head-part">
 			<div class="background-triangle-small"><i class="fa fa-star"></i></div> <span class="text-uppercase">Hướng dẫn</span> <span class="text-light-gray">((gồm các bước làm thủ tục))</span>
 		</div>
+
 		<div class="content-part">
-			<p class="MB0">
-				<span class="text-bold text-blue MR5">Bước 1:</span>
-				Đăng nhập
-			</p>
-			<p class="MB0">
-				<span class="text-bold text-blue MR5">Bước 2:</span>
-				Lựa chọn loại hồ sơ cần chuẩn bị
-			</p>
-			<p class="MB0">
-				<span class="text-bold text-blue MR5">Bước 3:</span>
-				Soạn thảo, chuẩn bị hồ sơ
-			</p>
-			<p class="MB0">
-				<span class="text-bold text-blue MR5">Bước 4:</span>
-				...
-			</p>
-			<p class="MB0">
-				<span class="text-bold text-blue MR5">Bước 5:</span>
-				...
-			</p>
+			<span data-bind="text:dossierNote"></span>
 		</div>
 		<p class="MB0 text-light-blue"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p>
 	</div>
@@ -144,7 +127,6 @@
 					</span>
 					
 					<div class="actions">
-
 						<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" >
 							<i class="fa fa-archive" aria-hidden="true"></i>
 						</a>
@@ -152,12 +134,13 @@
 						<label class="MB0 ML10 hover-pointer" for="file#:id#" title="Tải file lên" >
 							<i class="fa fa-upload text-light-blue"></i>
 						</label>
+						
 						<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#">
 
 						<#-- <a href="javascript:;" class="text-light-blue dossier-file" data-toggle="tooltip" data-placement="top" title="Tải file lên" multiple-upload="#:multiple#" part-no="#:id#">
 							<i class="fa fa-upload" aria-hidden="true"></i>
 						</a> -->
-
+						
 						<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 							<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
 						</a>
@@ -174,27 +157,23 @@
 				</div>
 				#
 				$.ajax({
-				url : "${api.server}/dossiertemplates/${dossierTemplateNo}/parts/"+id+"/formscript",
-				dataType : "json",
-				type : "GET",
-				headers : {"groupId": ${groupId}},
-				data : {
+					url : "${api.server}/dossiertemplates/${dossierTemplateNo}/parts/"+id+"/formscript",
+					dataType : "json",
+					type : "GET",
+					headers : {"groupId": ${groupId}},
+					success : function(result){
+						$("\\#formPartNo"+id).empty();
+						$("\\#formPartNo"+id).alpaca(result);
+						$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button class="btn btn-active MB10 MT10" onclick="" data-pk="'+id+'">Ghi lại</button></div></div>');
+					},
+					error : function(result){
 
-			},
-			success : function(result){
-			console.log(result);
-			$("\\#formPartNo"+id).html(result);
-			console.log($("\\#formPartNo"+id));
-		},
-		error : function(result){
-
-	}
-});
-#
-#}#
-</script>
-</div>
-</form>
+					}
+				});
+				}#
+			</script>
+		</div>
+	</form>
 
 <div class="row-parts-content">
 	<div class="row">
@@ -204,7 +183,7 @@
 		</div>
 	</div>
 	<div class="checkbox ML15">
-		<input type="checkbox"> <label class="text-normal">Bản photo công chứng Văn bản cần đăng ký Bản quyền tác giả</label>
+		<input type="checkbox" id="viaPostal" name="viaPostal"> <label class="text-normal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
 	</div>
 	<div class="row MB20">
 		<div class="col-xs-12 col-sm-7">
@@ -248,63 +227,50 @@
 
 <script type="text/javascript">
 
-	$(document).on("click",".uploadfile-form-repository",function(event){
-		$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_detail_filetemplate}",function(result){
-			$(this).modal("show");
+	$(function(){
+
+		var fnBindDossierTemplClick = function(){
+		//upload file click
+		$(".dossier-file").unbind().change(function(){
+			console.log("change");
+			var partNo = $(this).attr("part-no");
+			var fileTemplateNo = $(this).attr("file-template-no");
+			console.log(partNo);
+			console.log(fileTemplateNo);
+			console.log($(this)[0].files[0]);
+
+			funUploadFile($(this),partNo,${dossierTemplateNo},fileTemplateNo);
 		});
-	});
 
-/*	$(document).on("click",".dossier-file",function(event){
-
-		
-		
-		$("#uploadFileTemplateDialog").load("${ajax.customer_uploadfile}",function(result){
-			$(this).modal("show");
-
-			if(multiple === "true"){
-				console.log($("#filesToUpload"));
-				$("#filesToUpload").attr("multiple","");
-				
-			}else{
-				$("#filesToUpload").removeAttr("multiple");
-			}
-
-			$("#btnSubmitUploadFile").attr("part-no",partNo);
+		//tai giay to kho luu tru
+		$(".uploadfile-form-repository").unbind().click(function(){
+			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_detail_filetemplate}",function(result){
+				$(this).modal("show");
+			});
 		});
-	});*/
-	$(document).on("change",".dossier-file",function(){
-		console.log("change");
-		var partNo = $(this).attr("part-no");
-		var fileTemplateNo = $(this).attr("file-template-no");
-		console.log(partNo);
-		console.log(fileTemplateNo);
-		console.log($(this)[0].files[0]);
 
-		funUploadFile($(this),partNo,${dossierTemplateNo},fileTemplateNo);
-	});
-
-
-	$(document).on("click",".dossier-component-profile",function(event){
-		var partNo = $(this).attr("data-partno");
-		$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_component_profiles}?dossierPartNo=partNo",function(result){
-			$(this).modal("show");
+		//xem file tai len theo tp ho so
+		$(".dossier-component-profile").unbind().click(function() {
+			var partNo = $(this).attr("data-partno");
+			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_component_profiles}?dossierPartNo="+partNo,function(result){
+				$(this).modal("show");
+			});
 		});
-	});
+	}
 
 	$("#btn-view-extendguide").click(function(){
-
-		if($("#extend-guide").attr("status")=="none"){
+		if($("#extend-guide").attr("status")==="none"){
 			$("#extend-guide").show();
 			$("#extend-guide").attr("status","show");
 		}else{
 			$("#extend-guide").hide();
 			$("#extend-guide").attr("status","none");
 		}
-
 	});
 
 	$(document).on("click",".dossier-online-form",function(event){
 		console.log("abcd");
+		$(this).unbind();
 		$("#showDossierOnlineForm").load("${ajax.customer_dossier_online_form_dialog}",function(result){
 			$(this).modal("show");
 		});
@@ -373,6 +339,7 @@
 		},
 		dataBound : function(){
 			indexDossiserPart = 0;
+			fnBindDossierTemplClick();
 		}
 	});
 
@@ -626,7 +593,8 @@
 						districtCode : result.districtCode,
 						wardCode : result.wardCode,
 						contactTelNo : result.contactTelNo,
-						contactEmail : result.contactEmail
+						contactEmail : result.contactEmail,
+						dossierNote : result.dossierNote
 
 					});
 					kendo.bind($("#detailDossier"), viewModel);
@@ -750,12 +718,11 @@
 				$(".dossier-component-profile").filter("[data-partno="+partNo+"]").html('<span class="number-in-circle" >'+totalFile+'</span>');
 
 				$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",totalFile);
-
 				$("#uploadFileTemplateDialog").modal("hide");
+
 				notification.show({
 					message: "Yêu cầu được thực hiện thành công"
 				}, "success");
-
 
 			},
 			error:function(result){
@@ -766,5 +733,22 @@
 		});
 		console.log("success!");
 	}
-	
+
+	$("#viaPostal").change(function(){
+		if($(this).is(":checked")) {
+			$("#postalAddress").prop('disabled', false);
+			$("#postalCityCode").data("kendoComboBox").enable(true);
+			$("#postalTelNo").prop('disabled', false);
+		}else{
+			$("#postalAddress").prop('disabled', true);
+			$("#postalCityCode").data("kendoComboBox").enable(false);
+			$("#postalTelNo").prop('disabled', true);
+		}
+	});
+
+	$("#postalAddress").prop('disabled', true);
+	$("#postalCityCode").data("kendoComboBox").enable(false);
+	$("#postalTelNo").prop('disabled', true);
+});
+
 </script>

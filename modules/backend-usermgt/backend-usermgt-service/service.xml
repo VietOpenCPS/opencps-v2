@@ -218,6 +218,14 @@
 			<finder-column name="jobPostId"></finder-column>
 		</finder>
 		
+		<finder return-type="EmployeeJobPos" name="F_EmployeeId_jobPostId_workingUnitId">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="employeeId"></finder-column>
+			<finder-column name="jobPostId"></finder-column>
+			<finder-column name="workingUnitId"></finder-column>
+		</finder>
+	
+		
 	</entity>
 	
 	<entity name="ResourceUser" uuid="true" local-service="true"

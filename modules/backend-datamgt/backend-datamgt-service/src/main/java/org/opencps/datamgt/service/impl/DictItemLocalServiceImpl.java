@@ -134,7 +134,9 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		long dictItemId = counterLocalService.increment(DictItem.class.getName());
 
 		DictItem dictItem = dictItemPersistence.create(dictItemId);
-
+		
+		sibling = getSibling(groupId, dictCollectionId, parentItemId, sibling, level);
+		
 		String treeIndex = getTreeIndex(dictItemId, parentItemId, sibling);
 
 		// Group instance
@@ -156,7 +158,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		dictItem.setItemNameEN(itemNameEN);
 		dictItem.setItemDescription(itemDescription);
 		dictItem.setParentItemId(parentItemId);
-		dictItem.setSibling(sibling);
+		dictItem.setSibling(Validator.isNotNull(sibling)?sibling:String.valueOf(1));	
 		dictItem.setTreeIndex(treeIndex);
 		dictItem.setLevel(StringUtil.count(treeIndex, StringPool.PERIOD));
 		dictItem.setMetaData(metaData);
@@ -170,6 +172,137 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		return dictItem;
 	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public DictItem updateDictItemListener(long userId, long dictItemId, long dictCollectionId, String itemCode,
+			String itemName, String itemNameEN, String itemDescription, long parentItemId, String sibling, int level,
+			String metaData, ServiceContext serviceContext)
+			throws DuplicateCategoryException, UnauthenticationException, UnauthorizationException, NoSuchUserException,
+			NotFoundException, PortalException {
+
+		Date now = new Date();
+
+		User user = userPersistence.findByPrimaryKey(userId);
+
+		DictItem dictItem = dictItemPersistence.fetchByPrimaryKey(dictItemId);
+
+		DictItem dictColl = dictItemPersistence.fetchByF_dictItemCode(itemCode, dictItem.getGroupId());
+
+		if (Validator.isNotNull(dictColl) && dictColl.getDictItemId() != dictItemId) {
+
+			throw new DuplicateCategoryException();
+
+		}
+
+		if (Validator.isNull(dictItem)) {
+			throw new NotFoundException();
+		}
+
+		// Audit fields
+		dictItem.setUserId(user.getUserId());
+		dictItem.setUserName(user.getFullName());
+		dictItem.setModifiedDate(serviceContext.getCreateDate(now));
+
+		// Other fields
+		dictItem.setDictCollectionId(dictCollectionId);
+		dictItem.setItemCode(itemCode);
+		dictItem.setItemName(itemName);
+		dictItem.setItemNameEN(itemNameEN);
+		dictItem.setItemDescription(itemDescription);
+		dictItem.setParentItemId(parentItemId);
+		dictItem.setSibling(sibling);
+		dictItem.setMetaData(metaData);
+
+		String treeIndex = getTreeIndex(dictItemId, parentItemId, sibling);
+
+		dictItem.setTreeIndex(treeIndex);
+		dictItem.setLevel(StringUtil.count(treeIndex, StringPool.PERIOD));
+		// referent dictcollection
+		BaseModel<?> baseModel = DictCollectionLocalServiceUtil.fetchDictCollection(dictCollectionId);
+
+		dictItem.setExpandoBridgeAttributes(baseModel);
+		// dictItem.setExpandoBridgeAttributes(serviceContext);
+
+		dictItemPersistence.update(dictItem);
+
+		return dictItem;
+	}
+	
+	/**
+	 * @param parentItemId
+	 * @return
+	 */
+	public List<DictItem> findByF_parentItemId(long parentItemId) {
+
+		return dictItemPersistence.findByF_parentItemId(parentItemId);
+	}
+	
+
+	protected String getSibling(long groupId, long dictCollectionId, long parentItemId, String sibling, int level){
+
+		if(parentItemId == 0){
+			
+		} else {
+			
+			DictItem parentItem = dictItemPersistence.fetchByPrimaryKey(parentItemId);
+			
+			level = Validator.isNotNull(parentItem)?(parentItem.getLevel() + 1): 0;
+		}
+		
+		DictItem dictItem = dictItemPersistence.fetchByF_parentItemId_level_Last(groupId, dictCollectionId, parentItemId, level, null);
+		if((Validator.isNotNull(dictItem) && sibling.equals("0")) || sibling.equals("0")){
+			try {
+				sibling = GetterUtil.getInteger(dictItem.getSibling(), 1) + 1 + StringPool.BLANK;
+			} catch (Exception e) {
+				sibling = String.valueOf(1);
+			}
+		}
+		return sibling;
+
+	}
+
+	protected String getTreeIndex(long dictItemId, long dictParentItemId, String sibling)
+			throws NoSuchDictItemException {
+
+		if(Validator.isNull(sibling)){
+			sibling = String.valueOf(1);
+		}
+		
+		if (dictParentItemId == 0) {
+
+			String ext = "";
+
+			for (int i = 0; i < 4 - sibling.length(); i++) {
+
+				ext += "0";
+
+			}
+
+			return ext + sibling;
+
+		} else if (dictParentItemId > 0) {
+
+			DictItem parentItem = dictItemPersistence.findByPrimaryKey(dictParentItemId);
+
+			// if(Validator.isNull(sibling) || GetterUtil.get(sibling, 0) == 0){
+			// DictItem ett =
+			// dictItemPersistence.fetchByF_parentItemId_Last(parentItem.getDictItemId(),
+			// null);
+			// sibling
+			// }
+
+			String ext = "";
+
+			for (int i = 0; i < 4 - sibling.length(); i++) {
+				ext += "0";
+			}
+			
+			return parentItem.getTreeIndex() + StringPool.PERIOD + ext + Integer.toHexString(Integer.valueOf(sibling));
+		} else {
+			throw new NoSuchDictItemException();
+		}
+	}
+
 
 	@Indexable(type = IndexableType.DELETE)
 	@Override
@@ -327,43 +460,6 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		return dictItem;
 	}
 
-	protected String getTreeIndex(long dictItemId, long dictParentItemId, String sibling)
-			throws NoSuchDictItemException, SystemException {
-
-		if (dictParentItemId == 0) {
-
-			String ext = "";
-
-			for (int i = 0; i < 4 - sibling.length(); i++) {
-
-				ext += "0";
-
-			}
-
-			return ext + sibling;
-
-		} else if (dictParentItemId > 0) {
-
-			DictItem parentItem = dictItemPersistence.findByPrimaryKey(dictParentItemId);
-
-			// if(Validator.isNull(sibling) || GetterUtil.get(sibling, 0) == 0){
-			// DictItem ett =
-			// dictItemPersistence.fetchByF_parentItemId_Last(parentItem.getDictItemId(),
-			// null);
-			// sibling
-			// }
-
-			String ext = "";
-
-			for (int i = 0; i < 4 - sibling.length(); i++) {
-				ext += "0";
-			}
-
-			return parentItem.getTreeIndex() + StringPool.PERIOD + ext + Integer.toHexString(Integer.valueOf(sibling));
-		} else {
-			throw new NoSuchDictItemException();
-		}
-	}
 
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {

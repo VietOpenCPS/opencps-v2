@@ -35,7 +35,7 @@
 		</div>
 				
 			
-		<ul class="ul-with-border ul-with-border-style-2 mh-head-2" id="_jobpos_listView"></ul>
+		<ul class="ul-with-border ul-default mh-head-2" id="_jobpos_listView"></ul>
 		
 		<script type="text/x-kendo-tmpl" id="_jobpos_template">
 		
@@ -344,7 +344,7 @@
 			$("#_jobpos_hidden_new_id").val(selected[0]);
 			
 			$("#_jobpos_right-page").load(
-				'${url.adminJobPosPortlet.jobpos_detail}&${portletNamespace}type=${constant.type_jobPos}&${portletNamespace}jobPosId='+selected[0]);
+				'${url.adminJobPosPortlet.jobpos_detail}&${portletNamespace}type=${constants.type_jobPos}&${portletNamespace}jobPosId='+selected[0]);
 			
 		}
 

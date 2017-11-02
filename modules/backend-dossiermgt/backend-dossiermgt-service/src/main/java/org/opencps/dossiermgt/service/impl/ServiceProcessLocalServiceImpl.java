@@ -735,6 +735,11 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			throw new HasChildrenException("HasChildrenException");
 		}
 	}
+	
+	
+	public List<ServiceProcess> getByServerNo(String serverNo) {
+		return serviceProcessPersistence.findBySVR_NO(serverNo);
+	}
 
 	Log _log = LogFactoryUtil.getLog(ServiceProcessLocalServiceImpl.class);
 }

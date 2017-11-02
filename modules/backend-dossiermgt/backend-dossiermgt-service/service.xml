@@ -623,6 +623,11 @@
 			<finder-column name="groupId" />
 			<finder-column name="serverNo" />
 		</finder>
+		
+		<finder return-type="Collection" name="SVR_NO">
+			<finder-column name="serverNo" />
+		</finder>
+
 
 	</entity>
 
@@ -740,6 +745,12 @@
 			<finder-column name="postStepCode" />
 			<finder-column name="groupId" />
 		</finder>
+		
+		<finder return-type="ProcessAction" name="SPI_PRESC_AEV">
+			<finder-column name="serviceProcessId" />
+			<finder-column name="preStepCode" />
+			<finder-column name="autoEvent" />
+		</finder>
 
 	</entity>
 
@@ -772,7 +783,16 @@
 		<column name="nextActionId" type="long" />
 		<column name="payload" type="String" />
 		<column name="stepInstruction" type="String" />
-
+	
+		<finder return-type="DossierAction" name="DID_DPG">
+			<finder-column name="dossierId"/>
+			<finder-column name="pending"/>
+		</finder>
+		
+		<finder return-type="DossierAction" name="DID_NACTID">
+			<finder-column name="dossierId"/>
+			<finder-column name="nextActionId"/>
+		</finder>
 		
 	</entity>
 
@@ -842,6 +862,10 @@
 		<finder return-type="Collection" name="G_ID_DRF">
 			<finder-column name="groupId"/>
 			<finder-column name="dossierReferenceUid"/>
+		</finder>
+		
+		<finder return-type="Collection" name="SRV_NO">
+			<finder-column name="serverNo"/>
 		</finder>
 		
 	</entity>
