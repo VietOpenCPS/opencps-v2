@@ -377,6 +377,11 @@
 			<finder-column name="dossierTemplateNo"/>
 		</finder>
 		
+		<finder return-type="Collection" name="G_DID">
+			<finder-column name="groupId"/>
+			<finder-column name="dossierId"/>
+		</finder>
+		
 		<!-- References -->
 
 	</entity>

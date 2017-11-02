@@ -217,7 +217,6 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 			} else {
 				
-				
 				if (Validator.isNotNull(dossier.getCancellingDate())) {
 					// Update cancellingDate
 					desDossier.setCancellingDate(dossier.getCancellingDate());

@@ -18,6 +18,7 @@ import aQute.bnd.annotation.ProviderType;
 
 import java.util.Date;
 
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.service.base.DossierActionLocalServiceBaseImpl;
 
@@ -83,8 +84,6 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			
 		}
 
-		
-
 		if (dossierActionId == 0) {
 			dossierActionId = counterLocalService.increment(DossierAction.class.getName());
 
@@ -115,6 +114,13 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			object.setNextActionId(nextActionId);
 			object.setPayload(payload);
 			object.setStepInstruction(stepInstruction);
+			
+			//Add DossierActionId to Dossier
+			
+			//TODO add Indexer for Dossier after update DossierAction
+			Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
+			dossier.setDossierActionId(dossierActionId);
+			dossierPersistence.update(dossier);
 
 		} else {
 
