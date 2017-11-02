@@ -178,7 +178,7 @@
 		error: function(e) {         
 			this.cancelChanges();
 		},
-		pageSize: 2,
+		pageSize: 10,
 		schema:{
 			data:"data",
 			total:"total",

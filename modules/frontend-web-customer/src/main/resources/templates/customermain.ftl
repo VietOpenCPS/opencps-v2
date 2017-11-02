@@ -114,14 +114,16 @@
 				});
 			});
 
-			$("#customer_additional_requirements").load("${ajax.customer_additional_requirements}",function(event){
+			$("#customer_additional_requirements").load("${ajax.customer_additional_requirements}",function(success){
 
 			});
 
-			$("#customer_payment_request").load("${ajax.customer_payment_request}",function(event){
+			$("#customer_payment_request").load("${ajax.customer_payment_request}",function(success){
+
 			});
 
-			$("#customer_result_request").load("${ajax.customer_result_request}",function(event){
+			$("#customer_result_request").load("${ajax.customer_result_request}",function(success){
+
 			});
 
 		});
@@ -151,7 +153,7 @@
 				});
 			})
 		});
-		// Lọc theo tháng, năm, cơ quan, thủ tục hành chính
+		// Lọc theo tháng, năm, cơ quan thực hiện, thủ tục hành chính
 		var eventLookup = function(){
 			var statusDossier = $("li.itemStatus.active").attr("dataPk");
 		    if (statusDossier !== undefined) {
@@ -254,14 +256,6 @@
 		$("#keyInput").keyup(function(){
 			eventLookup()
 		});
-		
-		// $("#year").kendoDatePicker({
-		// 	format:"dd/MM/yyyy"
-		// });
-
-		// $("#month").kendoDatePicker({
-		// 	format:"dd/MM/yyyy"
-		// });
 
 		//phan xu ly notification
 		$(document).ready(function(){
