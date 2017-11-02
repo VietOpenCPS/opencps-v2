@@ -10,7 +10,7 @@
 
     <div class="row">
       <h3 class="text-center">NỘP HỒ SƠ THÀNH CÔNG</h3>
-      <p class="text-center">Mã hồ sơ đã nộp: <span class="text-light-blue" data-bind="text:dossierNo"></span> </p>
+      <p class="text-center">Mã hồ sơ đã nộp: <span class="text-light-blue" data-bind="text:dossierNo"></span> <span class="text-bold" style="color: green;">${customer.profileInfo.referenceUid}</span> </p> 
     </div>
 
     <div class="row">
@@ -18,7 +18,13 @@
         <p><span class="text-bold">Ông/bà vui lòng gửi trực tiếp hoặc qua đường Bưu điện các giấy tờ sau đến <span data-bind="text:govAgencyName"></span> để hoàn tất thủ tục:</span></p>
       </div>
       <div class="col-sm-12">
-
+      	<div style="margin-left: 35px; margin-bottom: 15px;">
+          <ul >
+            <#list customer.domain as domain>
+              <li>- ${domain.name}</li>
+            </#list>
+          <ul>
+        </div>
       </div>
     </div>
 
@@ -40,14 +46,19 @@
       </div>
       <div class="col-sm-12 ML15">
         <span class="text-bold">Trụ sở <span data-bind="text:govAgencyName"></span> tại:</span> <br>
-        <p class="text-bold">Địa chỉ: </span> <span></p>
+        <p class="text-bold">Địa chỉ: </span> <span> ${customer.guide.address}</p>
       </div>
     </div>
 
     <div class="row">
       <div class="col-sm-12">
+      <#if dossier_success.postoffice == 'true'>
         <p class="text-bold">Sau khi hoàn tất thủ tục <span data-bind="text:govAgencyName"></span> sẽ gửi kết quả qua đường bưu điện cho Ông/Bà qua địa chỉ</p>
+         <p style="margin-left: 30px;padding:10px;">${customer.guide.address}</p>
         <span class="ML15" data-bind="text:postalAddress"></span>
+       
+      </#if>
+        
       </div>
     </div>
 
