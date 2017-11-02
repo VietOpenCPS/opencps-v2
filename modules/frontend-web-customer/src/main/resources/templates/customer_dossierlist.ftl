@@ -1,4 +1,6 @@
-
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="panel-body PT0">
 	<input type="hidden" name="idItemCustomerDossier" id="idItemCustomerDossier">
 	<ul class="ul-with-border">

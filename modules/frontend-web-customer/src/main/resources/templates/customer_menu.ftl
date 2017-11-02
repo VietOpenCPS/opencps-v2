@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="row">
 	<div class="col-sm-12">
 		<button class="btn btn-active form-control" id="btn_create_new_dossier">Tạo hồ sơ mới</button>
