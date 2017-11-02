@@ -1,6 +1,6 @@
-<div class="panel panel-main MT15"> 
+<div class="panel panel-main MT15" id="sideItemPayment"> 
 	<div class="panel-heading row-header"> 
-		<span class="panel-title text-bold">Yêu cầu thanh toán</span> 
+		<span class="panel-title">Yêu cầu thanh toán</span> 
 		<span class="pull-right clickable" data-toggle="collapse" data-target="#paymentRequest"> 
 			<i id="icon_collapse1" class="glyphicon glyphicon-chevron-up"></i> 
 		</span>
@@ -52,13 +52,13 @@
 							options.success(result);
 							$("#total_Payment_Request").text(dataSourcePaymentRequest.total())
 						}else{
-							$("#paymentRequest").hide();
+							$("#sideItemPayment").hide();
 						}
 						
 					},
 					error:function(result){
 						options.error(result);
-						$("#paymentRequest").hide();
+						$("#sideItemPayment").hide();
 					}
 				});
 			}
@@ -68,7 +68,7 @@
 			data:"data",
 			total:"total",
 			model:{
-				id:"dossierLogId"
+				id:"dossierId"
 			}
 		},
 		pageSize:5
@@ -85,7 +85,7 @@
 	            dataItem = this.dataSource.view()[index];
 			$("#dossier_detail").show();
 			$("#dossier_list").hide();
-			$("#dossier_detail").load("${ajax.customer_dossier_detail}?id="+dataItem.dossierLogId+"",function(result){
+			$("#dossier_detail").load("${ajax.customer_dossier_detail}?id="+dataItem.dossierId+"",function(result){
 			})
 		},
 		autoBind: false

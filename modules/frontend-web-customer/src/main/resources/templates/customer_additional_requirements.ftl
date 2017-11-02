@@ -1,7 +1,7 @@
 
-<div class="panel panel-main"> 
+<div class="panel panel-main" id="sideItemAdd"> 
 	<div class="panel-heading row-header"> 
-		<span class="panel-title text-bold">Yêu cầu bổ sung</span>
+		<span class="panel-title">Yêu cầu bổ sung</span>
 		<span class="pull-right clickable" data-toggle="collapse" data-target="#additionalRequirement">
 			<i id="icon_collapse" class="glyphicon glyphicon-chevron-up"></i>
 		</span>
@@ -52,16 +52,14 @@
 							options.success(result);
 							$("#total_Additional_Requirement").text(dataSourceAdditionalRequirement.total())
 						}else{
-							$("#additionalRequirement").hide();
+							$("#sideItemAdd").hide();
 						}
 					},
 					error:function(result){
 						options.error(result);
-						$("#additionalRequirement").hide();
+						$("#sideItemAdd").hide()
 					}
 				});
-				console.log(options.data.type);
-				console.log(options.data.sort)
 			}
 
 		},
@@ -70,7 +68,7 @@
 			data:"data",
 			total:"total",
 			model:{
-				id:"dossierLogId"
+				id:"dossierId"
 			}
 		}
 		
@@ -86,7 +84,7 @@
 	            dataItem = this.dataSource.view()[index];
 			$("#dossier_detail").show();
 			$("#dossier_list").hide();
-			$("#dossier_detail").load("${ajax.customer_dossier_detail}?id="+dataItem.dossierLogId+"",function(result){
+			$("#dossier_detail").load("${ajax.customer_dossier_detail}?id="+dataItem.dossierId+"",function(result){
 			})
 		},
 		autoBind: false
@@ -101,9 +99,7 @@
 	//
 	dataSourceAdditionalRequirement.read({type : 123});
 	$("#sort_modified").click(function(){
-		console.log("asdsasdasdasdasdasd");
 		dataSourceAdditionalRequirement.read({type : 123, sort_modified: "modified"});
-		
 	})
 	//
 	$(".k-pager-first").css("display","none");

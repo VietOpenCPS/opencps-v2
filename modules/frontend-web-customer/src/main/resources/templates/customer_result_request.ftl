@@ -1,6 +1,6 @@
-<div class="panel panel-main MT15"> 
+<div class="panel panel-main MT15" id="sideItemResult"> 
 	<div class="panel-heading row-header"> 
-		<span class="panel-title text-bold">Trả kết quả</span> 
+		<span class="panel-title">Trả kết quả</span> 
 		<span class="pull-right clickable" data-toggle="collapse" data-target="#resultRequest"> 
 			<i id="icon_collapse2" class="glyphicon glyphicon-chevron-up"></i>
 		</span> 
@@ -52,13 +52,13 @@
 							options.success(result);
 							$("#total_result").text(dataSourceResult.total())
 						}else{
-							$("#resultRequest").hide();
+							$("#sideItemResult").hide();
 						}
 						
 					},
 					error:function(result){
 						options.error(result);
-						$("#resultRequest").hide();
+						$("#sideItemResult").hide();
 					}
 				});
 			}
@@ -83,7 +83,7 @@
 	            dataItem = this.dataSource.view()[index];
 			$("#dossier_detail").show();
 			$("#dossier_list").hide();
-			$("#dossier_detail").load("${ajax.customer_dossier_detail}?id="+dataItem.dossierLogId+"",function(result){
+			$("#dossier_detail").load("${ajax.customer_dossier_detail}?id="+dataItem.dossierId+"",function(result){
 			})
 		},
 		autoBind: false
