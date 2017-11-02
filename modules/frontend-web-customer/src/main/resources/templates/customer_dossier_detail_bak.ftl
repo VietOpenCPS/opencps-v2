@@ -1,3 +1,7 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
+
 <div class="panel panel-body">
 	<div class="row" style="border-bottom: 1px solid #ccc; padding-bottom: 5px;">
 		<div class="col-sm-9">

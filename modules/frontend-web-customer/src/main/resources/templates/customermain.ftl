@@ -298,31 +298,6 @@
 			});
 		});
 
-		$("#change_password").click(function(){
-			$("#dossier_detail").hide();
-			$("#dossier_list").hide();
-
-			$("#left_container").show();
-
-			$("#left_container").load(
-				"${ajax.change_password}",
-				function(){
-
-				}
-			);
-		});
-
-		$("#account_info").click(function(){
-			$("#dossier_detail").hide();
-			$("#dossier_list").hide();
-			$("#left_container").show();
-			$("#left_container").load(
-				"${ajax.account_info}",
-				function(){
-				}
-			);
-		});
-
 		$("#submited_dossier_info").click(function(){
 			$("#dossier_detail").hide();
 			$("#dossier_list").hide();

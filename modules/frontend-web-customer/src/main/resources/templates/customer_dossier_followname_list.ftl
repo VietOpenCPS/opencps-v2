@@ -1,3 +1,7 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
+
 <div class="row MT20">
 	<div class="col-sm-4">
 		<button class="k-button"><i class="glyphicon glyphicon-edit"></i> Tìm theo cơ quan</button>

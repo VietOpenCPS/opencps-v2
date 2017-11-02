@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="box">
 
 	<div class="row-header align-middle">
