@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="panel panel-main MT15" id="sideItemPayment"> 
 	<div class="panel-heading row-header"> 
 		<span class="panel-title">Yêu cầu thanh toán</span> 

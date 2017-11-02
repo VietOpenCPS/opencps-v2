@@ -1,4 +1,6 @@
-
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="panel panel-main" id="sideItemAdd"> 
 	<div class="panel-heading row-header"> 
 		<span class="panel-title">Yêu cầu bổ sung</span>
