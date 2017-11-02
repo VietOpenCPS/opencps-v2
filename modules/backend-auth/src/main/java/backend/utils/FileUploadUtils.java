@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.liferay.document.library.kernel.model.DLFolder;
-import com.liferay.document.library.kernel.service.DLAppServiceUtil;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -44,7 +44,7 @@ public class FileUploadUtils {
 			PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
 			PermissionThreadLocal.setPermissionChecker(checker);
 
-			fileEntry = DLAppServiceUtil.addFileEntry(groupId, dlFolder.getFolderId(), fileName, fileType,
+			fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), fileName, fileType,
 					System.currentTimeMillis() + StringPool.DASH + fileName, desc, StringPool.BLANK, inputStream,
 					fileSize, serviceContext);
 
@@ -68,11 +68,12 @@ public class FileUploadUtils {
 			PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
 			PermissionThreadLocal.setPermissionChecker(checker);
 
-			DLAppServiceUtil.updateFileEntry(fileEntryId, fileName, fileType,
+			DLAppLocalServiceUtil.updateFileEntry(userId, fileEntryId, fileName, fileType,
 					System.currentTimeMillis() + StringPool.DASH + fileName, desc, StringPool.BLANK, true, inputStream,
 					fileSize, serviceContext);
 		}
 
 		return fileEntry;
 	}
+
 }

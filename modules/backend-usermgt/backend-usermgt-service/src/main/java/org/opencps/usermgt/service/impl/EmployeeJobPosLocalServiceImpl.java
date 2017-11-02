@@ -114,6 +114,12 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
+		EmployeeJobPos employeeJobPosCheck = employeeJobPosPersistence.fetchByF_EmployeeId_jobPostId_workingUnitId(groupId, employeeId, jobPostId, workingUnitId);
+		
+		if(Validator.isNotNull(employeeJobPosCheck)){
+			throw new DuplicateCategoryException();
+		}
+		
 		long employeeJobPosId = counterLocalService.increment(EmployeeJobPos.class.getName());
 
 		EmployeeJobPos employeeJobPos = employeeJobPosPersistence.create(employeeJobPosId);
@@ -144,8 +150,16 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		//
 		List<Role> roleIds = new ArrayList<Role>();
 		
-		roleIds.add(RoleLocalServiceUtil.fetchRole(mJobPos.getMappingRoleId()));
-		roleIds.add(RoleLocalServiceUtil.fetchRole(currentJobPos.getMappingRoleId()));
+		long mainRoleId = Validator.isNotNull(mJobPos) ? mJobPos.getMappingRoleId(): 0;
+		long currentRoleId = Validator.isNotNull(currentJobPos) ? currentJobPos.getMappingRoleId(): 0;
+		
+		if(mainRoleId > 0){
+			roleIds.add(RoleLocalServiceUtil.fetchRole(mainRoleId));
+		}
+		if(currentRoleId > 0){
+			roleIds.add(RoleLocalServiceUtil.fetchRole(currentRoleId));
+		}
+		
 		//
 		List<EmployeeJobPos> listEmJobPos = employeeJobPosPersistence.findByF_EmployeeId(mEmployee.getEmployeeId());
 		//
