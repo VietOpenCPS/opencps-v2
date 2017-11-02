@@ -52,7 +52,7 @@
 
     <div class="row">
       <div class="col-sm-12">
-      <#if file.postoffice == 'true'>
+      <#if dossier_success.postoffice == 'true'>
         <p class="text-bold">Sau khi hoàn tất thủ tục <span data-bind="text:govAgencyName"></span> sẽ gửi kết quả qua đường bưu điện cho Ông/Bà qua địa chỉ</p>
          <p style="margin-left: 30px;padding:10px;">${customer.guide.address}</p>
         <span class="ML15" data-bind="text:postalAddress"></span>
