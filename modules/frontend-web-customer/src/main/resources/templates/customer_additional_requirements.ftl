@@ -1,17 +1,22 @@
 
-<div class="panel panel-main"> 
-	<div class="panel-heading row-header"> <span class="panel-title">Yêu cầu bổ sung</span>
-		<span class="pull-right clickable panel-collapsed">
-			<i class="glyphicon glyphicon-chevron-down"></i>
+<div class="panel panel-main" id="sideItemAdd"> 
+	<div class="panel-heading row-header"> 
+		<span class="panel-title">Yêu cầu bổ sung</span>
+		<span class="pull-right clickable" data-toggle="collapse" data-target="#additionalRequirement">
+			<i id="icon_collapse" class="glyphicon glyphicon-chevron-up"></i>
 		</span>
+		<span class="pull-right MR10 text-light-gray" id="sort_modified"><i class="fa fa-calendar" aria-hidden="true"></i></span>
 	</div>
-	<div class="panel-body PT0" id="additionalRequirement">
-		<ul class='ul-with-border'>
+	<div class="panel-body P0 collapse in" id="additionalRequirement">
+		<ul class="ul-with-border">
 			<div id='listViewCustomer_Additional_Requirement'></div>
 		</ul>
-		<div id='pagerCustomer_Additional_Requirement'></div>
+		<div class="clearfix align-middle PL10">
+			<span class="text-light-gray  MR50"><i>Có <span id="total_Additional_Requirement" class="red"> </span> yêu cầu</i></span>
+			<span id="pagerCustomer_Additional_Requirement" class="M0 PR5"></span>
+		</div>
 		<script type="text/x-kendo-template" id="additional_Requirement_Template">
-			<li data-pk="#:id#">
+			<li data-pk="#:id#" class="P10">
 				<p>#:content#</p>
 				<span class="text-greyy">#:govAgencyName#</span> <br>
 				<span class="text-greyy">#:createDate#</span>
@@ -21,21 +26,17 @@
 </div>
 
 <script type="text/javascript">
-
-	$(document).on('click', '.panel-heading span.clickable', function(e) {
-		var $this = $(this);
-		if (!$this.hasClass('panel-collapsed')) {
-			$this.parents('.panel').find('.panel-body').slideUp();
-			$this.addClass('panel-collapsed');
-			$this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+	var flagClick = 0;
+	$(".clickable").on("click",function() {
+		if (flagClick == 0) {
+			$("#icon_collapse").css("transform","rotate(180deg)");
+			flagClick = 1
 		} else {
-			$this.parents('.panel').find('.panel-body').slideDown();
-			$this.removeClass('panel-collapsed');
-			$this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+			$("#icon_collapse").css("transform","rotate(0deg)");
+			flagClick = 0
 		}
 	});
-
-	var dataSourceAdditionalRequirement=new kendo.data.DataSource({
+	var dataSourceAdditionalRequirement = new kendo.data.DataSource({
 		transport:{
 			read:function(options){
 				$.ajax({
@@ -43,19 +44,20 @@
 					dataType:"json",
 					type:"GET",
 					data:{
-
+						type: options.data.type,
+						sort: options.data.sort_modified
 					},
 					success:function(result){
 						if(result.data){
 							options.success(result);
+							$("#total_Additional_Requirement").text(dataSourceAdditionalRequirement.total())
 						}else{
-							$("#additionalRequirement").hide();
+							$("#sideItemAdd").hide();
 						}
-						
 					},
 					error:function(result){
 						options.error(result);
-						$("#additionalRequirement").hide();
+						$("#sideItemAdd").hide()
 					}
 				});
 			}
@@ -66,21 +68,40 @@
 			data:"data",
 			total:"total",
 			model:{
-				id:"dossierLogId"
+				id:"dossierId"
 			}
 		}
+		
 	});
 
 	$("#listViewCustomer_Additional_Requirement").kendoListView({
-		dataSource:dataSourceAdditionalRequirement,
-		template:kendo.template($("#additional_Requirement_Template").html())
-		/*		autoBind:false*/
+		dataSource: dataSourceAdditionalRequirement,
+		template:kendo.template($("#additional_Requirement_Template").html()),
+		selectable: "single",
+		change: function(){
+			//event load dossier_detail dossier_log
+	    	var index = this.select().index();
+	            dataItem = this.dataSource.view()[index];
+			$("#dossier_detail").show();
+			$("#dossier_list").hide();
+			$("#dossier_detail").load("${ajax.customer_dossier_detail}?id="+dataItem.dossierId+"",function(result){
+			})
+		},
+		autoBind: false
 	});
-
+	// option kendo-page
 	$("#pagerCustomer_Additional_Requirement").kendoPager({
-		dataSource:dataSourceAdditionalRequirement,
+		dataSource: dataSourceAdditionalRequirement,
 		input: false,
 		numeric: false,
-		info : false
+		info: false
 	});
+	//
+	dataSourceAdditionalRequirement.read({type : 123});
+	$("#sort_modified").click(function(){
+		dataSourceAdditionalRequirement.read({type : 123, sort_modified: "modified"});
+	})
+	//
+	$(".k-pager-first").css("display","none");
+	$(".k-pager-last").css("display","none");
 </script>
