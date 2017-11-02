@@ -56,6 +56,6 @@ public interface DossierSyncManagement {
 
 	public Response sendDossierSync(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long serverNo);
+			@Context ServiceContext serviceContext, @PathParam("id") long id);
 
 }

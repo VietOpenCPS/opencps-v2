@@ -864,6 +864,10 @@
 			<finder-column name="dossierReferenceUid"/>
 		</finder>
 		
+		<finder return-type="Collection" name="SRV_NO">
+			<finder-column name="serverNo"/>
+		</finder>
+		
 	</entity>
 
 	<exceptions>
