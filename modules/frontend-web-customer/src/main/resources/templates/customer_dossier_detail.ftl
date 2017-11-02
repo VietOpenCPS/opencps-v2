@@ -157,27 +157,23 @@
 				</div>
 				#
 				$.ajax({
-				url : "${api.server}/dossiertemplates/${dossierTemplateNo}/parts/"+id+"/formscript",
-				dataType : "json",
-				type : "GET",
-				headers : {"groupId": ${groupId}},
-				data : {
+					url : "${api.server}/dossiertemplates/${dossierTemplateNo}/parts/"+id+"/formscript",
+					dataType : "json",
+					type : "GET",
+					headers : {"groupId": ${groupId}},
+					success : function(result){
+						$("\\#formPartNo"+id).empty();
+						$("\\#formPartNo"+id).alpaca(result);
+						$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button class="btn btn-active MB10 MT10" onclick="" data-pk="'+id+'">Ghi lại</button></div></div>');
+					},
+					error : function(result){
 
-			},
-			success : function(result){
-			console.log(result);
-			$("\\#formPartNo"+id).html(result);
-			console.log($("\\#formPartNo"+id));
-		},
-		error : function(result){
-
-	}
-});
-#
-#}#
-</script>
-</div>
-</form>
+					}
+				});
+				}#
+			</script>
+		</div>
+	</form>
 
 <div class="row-parts-content">
 	<div class="row">
