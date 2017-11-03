@@ -13,6 +13,8 @@ import java.util.Map;
 
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.model.DossierSync;
+import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -106,8 +108,13 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 					_log.info("DOSSIER_SYNC_STARTTING" + jsonDossierSync.get("dossierSyncId"));
 
 					try {
+						
+						long dossierSyncId = GetterUtil.getLong(jsonDossierSync.get("dossierSyncId"));
+						
+						//DossierSync dossierSync = DossierSyncLocalServiceUtil.fetchDossierSync(dossierSyncId);
+						
 						// Sending DossierSync
-						String sendingPath = "dossiersyncs/" + GetterUtil.getLong(jsonDossierSync.get("dossierSyncId"))
+						String sendingPath = "dossiersyncs/" + dossierSyncId
 								+ "/sending";
 
 						URL sendingUrl = new URL(baseUrl + sendingPath);
@@ -125,7 +132,12 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 						if (sendingConn.getResponseCode() != 200) {
 							throw new RuntimeException("Failed : HTTP error code : " + sendingConn.getResponseCode());
 						} else {
+							
 							_log.info("DOSSIER_SYNC_DONE" + jsonDossierSync.get("dossierSyncId"));
+							
+							//Remove DossierSync
+							
+							//DossierSyncLocalServiceUtil.deleteDossierSync(dossierSync);
 						}
 
 						sendingConn.disconnect();

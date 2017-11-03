@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 
 import org.opencps.dossiermgt.constants.DossierPartTerm;
+import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierTemplate;
@@ -378,6 +379,18 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setDossierStatusText(statusText);
 		dossier.setDossierSubStatus(subStatus);
 		dossier.setDossierSubStatusText(subStatusText);
+		
+		if(status.equalsIgnoreCase(DossierStatusConstants.RECEIVING)) {
+			dossier.setReceiveDate(now);
+		}
+		
+		if(status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
+			dossier.setReleaseDate(now);
+		}
+		
+		if(status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
+			dossier.setFinishDate(now);
+		}
 
 		dossierPersistence.update(dossier);
 

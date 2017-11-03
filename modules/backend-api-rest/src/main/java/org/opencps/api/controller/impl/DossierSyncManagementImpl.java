@@ -31,11 +31,16 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -137,7 +142,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 					DossierAction action = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 					if (Validator.isNotNull(action)) {
 						doSync(groupId, action.getSyncActionCode(), action.getActionUser(), action.getActionNote(), 0l,
-								dossier.getReferenceUid());
+								dossier.getReferenceUid(), dossierActionId, id);
 
 					} else {
 						throw new NotFoundException("DossierActionNotFound");
@@ -184,7 +189,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 	}
 
 	private void doSync(long groupId, String actionCode, String actionUser, String actionNote, long assignUserId,
-			String refId) {
+			String refId, long clientDossierActionId, long dossierSyncId) throws PortalException {
 		try {
 			String path = "dossiers/" + refId + "/actions";
 			URL url = new URL(baseUrl + path);
@@ -228,7 +233,10 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			if (conn.getResponseCode() != 200) {
 				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			} else {
-				resetDossier(groupId, refId);
+				//remove flag pending
+				DossierActionLocalServiceUtil.updatePending(clientDossierActionId, false);
+				//remove DOSSIER_SYNC
+				DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
 			}
 
 			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
@@ -254,6 +262,56 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			e.printStackTrace();
 
 		}
+	}
+	
+	protected ProcessAction getProcessAction(long groupId, long dossierId, String refId, String actionCode,
+			long serviceProcessId) throws PortalException {
+
+		ProcessAction action = null;
+
+		try {
+			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode);
+
+			Dossier dossier = getDossier(groupId, dossierId, refId);
+
+			String dossierStatus = dossier.getDossierStatus();
+
+			for (ProcessAction act : actions) {
+
+				String preStepCode = act.getPreStepCode();
+
+				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
+
+				if (Validator.isNotNull(step)) {
+					if (step.getDossierStatus().equalsIgnoreCase(dossierStatus)) {
+						action = act;
+						break;
+					}
+				} else {
+					action = act;
+					break;
+				}
+
+			}
+
+		} catch (Exception e) {
+			throw new NotFoundException("NotProcessActionFound");
+		}
+
+		return action;
+	}
+
+	protected Dossier getDossier(long groupId, long dossierId, String refId) throws PortalException {
+
+		Dossier dossier = null;
+
+		if (dossierId != 0) {
+			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		} else {
+			dossier = DossierLocalServiceUtil.getByRef(groupId, refId);
+		}
+
+		return dossier;
 	}
 
 	private void resetDossier(long groupId, String refId) {
