@@ -686,6 +686,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	private void validateSubmitting(long groupId, long id, String refId) throws PortalException {
 		// TODO add validate for submitting
+		
+		//Check dossier status
+		
+		//Check DossierFile, PaymentFile
+		
 	}
 
 	private void validateReset(long groupId, long id, String refId) throws PortalException {

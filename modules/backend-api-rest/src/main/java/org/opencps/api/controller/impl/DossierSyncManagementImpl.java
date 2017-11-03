@@ -189,7 +189,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 	}
 
 	private void doSync(long groupId, String actionCode, String actionUser, String actionNote, long assignUserId,
-			String refId, long clientDossierActionId, long dossierSyncId) throws PortalException {
+			String refId, long clientDossierActionId, long dossierSyncId) {
 		try {
 			String path = "dossiers/" + refId + "/actions";
 			URL url = new URL(baseUrl + path);
@@ -233,10 +233,15 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			if (conn.getResponseCode() != 200) {
 				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			} else {
-				//remove flag pending
-				DossierActionLocalServiceUtil.updatePending(clientDossierActionId, false);
-				//remove DOSSIER_SYNC
-				DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
+				try {
+					//remove flag pending
+					DossierActionLocalServiceUtil.updatePending(clientDossierActionId, false);
+					//remove DOSSIER_SYNC
+					DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
+
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
 			}
 
 			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
