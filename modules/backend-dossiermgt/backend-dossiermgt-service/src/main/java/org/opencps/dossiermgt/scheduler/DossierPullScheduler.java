@@ -222,6 +222,10 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				} catch (Exception e) {
 					_log.info("SyncDossierUnsuccessfuly" + dossier.getDossierId());
 				}
+				
+				// Update DossierFile
+				
+				
 
 			} else {
 

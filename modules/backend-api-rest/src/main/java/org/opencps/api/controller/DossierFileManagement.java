@@ -91,7 +91,7 @@ public interface DossierFileManagement {
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("dossierPartNo") String dossierPartNo,
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("fileTemplateNo") String fileTemplateNo,
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("displayName") String displayName);
-	
+/*	
 	@POST
 	@Path("/{referenceUid}/files")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -112,7 +112,7 @@ public interface DossierFileManagement {
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("dossierPartNo") String dossierPartNo,
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("fileTemplateNo") String fileTemplateNo,
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("displayName") String displayName);
-	
+*/	
 	@POST
 	@Path("/{id}/files/copyfile")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -143,7 +143,7 @@ public interface DossierFileManagement {
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id, 
 			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid,
 			@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
-	
+	/*
 	@GET
 	@Path("/{dossierReferenceUid}/files/{referenceUid}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -159,7 +159,7 @@ public interface DossierFileManagement {
 			@ApiParam(value = "referenceUid of dossier", required = true) @PathParam("dossierReferenceUid") String dossierReferenceUid, 
 			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid,
 			@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
-	
+	*/
 	@POST
 	@Path("/{id}/files/{referenceUid}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
