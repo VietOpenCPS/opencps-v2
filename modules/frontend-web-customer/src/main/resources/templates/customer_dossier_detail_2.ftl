@@ -1,3 +1,7 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
+
 <div id="detailDossier">
 	<div class="box" >
 		<input type="hidden" name="dossierTemplateId" id="dossierTemplateId">
