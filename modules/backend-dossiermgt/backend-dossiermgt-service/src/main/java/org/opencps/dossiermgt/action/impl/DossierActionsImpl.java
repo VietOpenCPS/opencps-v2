@@ -164,6 +164,8 @@ public class DossierActionsImpl implements DossierActions {
 			ServiceContext context) throws PortalException {
 
 		// Add DossierAction
+		
+		// TODO Add DossierActionUser
 
 		// Update DossierStatus
 
@@ -199,6 +201,9 @@ public class DossierActionsImpl implements DossierActions {
 		} else {
 			processAction = getProcessAction(groupId, dossierId, referenceUid, actionCode, serviceProcessId);
 		}
+		
+		if (Validator.isNull(processAction)) 
+			throw new NotFoundException("ProcessActionNotFoundException");
 
 		boolean isSubmitType = isSubmitType(processAction);
 
