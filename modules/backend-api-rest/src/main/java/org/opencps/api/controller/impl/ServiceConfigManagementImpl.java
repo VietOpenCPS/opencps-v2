@@ -83,8 +83,6 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
-			
-			
 
 			JSONObject jsonData = actions.getServiceConfigs(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
@@ -397,9 +395,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			ProcessOption serviceConfig = actions.updateOption(groupId,input.getOptionName(), 0l, id, input.getSeqOrder(),
-					input.getAutoSelect(), input.getInstructionNote(), input.getSubmissionNote(), input.getDossierTemplateId(),
-					input.getServiceProcessId(), serviceContext);
+			ProcessOption serviceConfig = actions.updateOption(groupId, input.getOptionName(), 0l, id,
+					input.getSeqOrder(), input.getAutoSelect(), input.getInstructionNote(), input.getSubmissionNote(),
+					input.getDossierTemplateId(), input.getServiceProcessId(), serviceContext);
 
 			returnModel = ServiceConfigUtils.mappingToProcessOption(serviceConfig);
 
@@ -455,9 +453,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			ProcessOption processOption = actions.updateOption(groupId, input.getOptionName(), optionId, id, input.getSeqOrder(),
-					input.getAutoSelect(), input.getInstructionNote(), input.getSubmissionNote(), input.getDossierTemplateId(),
-					input.getServiceProcessId(), serviceContext);
+			ProcessOption processOption = actions.updateOption(groupId, input.getOptionName(), optionId, id,
+					input.getSeqOrder(), input.getAutoSelect(), input.getInstructionNote(), input.getSubmissionNote(),
+					input.getDossierTemplateId(), input.getServiceProcessId(), serviceContext);
 
 			returnModel = ServiceConfigUtils.mappingToProcessOption(processOption);
 
@@ -497,7 +495,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 	@Override
 	public Response removeProcessOption(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, long optionId) {
-		
+
 		ServiceConfigActions actions = new ServiceConfigActionImpl();
 
 		org.opencps.api.serviceconfig.model.ProcessOption returnModel = new org.opencps.api.serviceconfig.model.ProcessOption();
@@ -547,6 +545,20 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				}
 			}
 		}
+	}
+
+	@Override
+	public Response getServiceConfigsByGovAgency(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response getServiceConfigsByDomain(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

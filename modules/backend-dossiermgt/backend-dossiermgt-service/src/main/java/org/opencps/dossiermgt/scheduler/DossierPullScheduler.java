@@ -216,7 +216,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 					actions.doAction(syncServiceProcess.getGroupId(), desDossierId, desDossier.getReferenceUid(),
 							processAction.getActionCode(), processAction.getProcessActionId(),
-							systemUser.getFullName() + "SYSTEM", "SYNC_ACTION_BY_SYSTEM", 0l, systemUser.getUserId(),
+							systemUser.getFullName() + "_SYSTEM", "SYNC_ACTION_BY_SYSTEM", 0l, systemUser.getUserId(),
 							serviceContext);
 
 				} catch (Exception e) {
