@@ -287,15 +287,16 @@
 								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
 
 								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
-							/*notification.show({
+							notification.show({
 								message: "Đổi mật khẩu thành công"
-							}, "success");*/
+							}, "success");
+
 						}
 					},
 					error : function(result) {
-						/*notification.show({
+						notification.show({
 							message: "Xẩy ra lỗi, vui lòng thử lại"
-						}, "error");*/
+						}, "error");
 					}
 				});
 				}
@@ -446,8 +447,9 @@
 				headers: {"groupId": ${groupId}},
 				data : {
 					actionCode  : 1100,
-					/*actionUser : $("#actionUser").val(),
 					actionNote :  $("#applicantNote").val()
+					/*actionUser : $("#actionUser").val(),
+					
 					*/
 				},
 				success : function(result){
