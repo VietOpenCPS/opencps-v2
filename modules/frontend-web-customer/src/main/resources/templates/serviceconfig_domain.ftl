@@ -4,7 +4,7 @@
 <div class="panel">
 	<div class="panel-body PT0">
 		<div class="row">
-			<#-- <#if serviceconfig?has_content && serviceconfig.domains?has_content>
+			<#if serviceconfig?has_content && serviceconfig.domains?has_content>
 			<div class="accordion" id="accordion1">
 				<#list serviceconfig.domains as domain>
 				<div class="accordion-group">
@@ -62,7 +62,7 @@
 				</div>
 				</#list>
 			</div>
-			</#if> -->
+			</#if>
 		</div>
 	</div>
 </div>

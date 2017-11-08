@@ -74,26 +74,25 @@
 			var serviceProcessActionDataSource = new kendo.data.DataSource({
 				transport: {
 					read: function(options) {
-						$.ajax({
-							url: "${api.server}" + "/serviceprocesses/" + $("#btn_save_service_process").attr("data-pk") + "/actions",
-							type: "GET",
-							dataType: "json",
-							headers: {"groupId": ${groupId}},
-							data: {
-								keywords: options.data.keywords,
-								page: options.data.page,
-								pageSize: options.data.pageSize
-							},
-							success: function(result) {
-								options.success(result);
-							},
-							error: function(result) {
-								options.error(result);
-								notification.show({
-									message: "Xẩy ra lỗi, vui lòng thử lại"
-								}, "error");
-							}
-						});
+						if ($("#btn_save_service_process").attr("data-pk")){
+							$.ajax({
+								url: "${api.server}" + "/serviceprocesses/" + $("#btn_save_service_process").attr("data-pk") + "/actions",
+								type: "GET",
+								dataType: "json",
+								headers: {"groupId": ${groupId}},
+								data: {
+									keywords: options.data.keywords,
+									page: options.data.page,
+									pageSize: options.data.pageSize
+								},
+								success: function(result) {
+									options.success(result);
+								},
+								error: function(result) {
+									options.error(result);
+								}
+							});
+						}
 					},
 					destroy: function(options) {
 						$.ajax({
