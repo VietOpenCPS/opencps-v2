@@ -20,7 +20,8 @@
 
 		<div class="dossier-general-info P15 MB30">
 			<div class="col-sm-12">
-				<span class="text-bold">Cơ quan thực hiện</span>: <span data-bind="text:govAgencyName"></span>
+				<span class="text-bold">Cơ quan thực hiện</span>: 
+				<span data-bind="text:govAgencyName"></span>
 			</div>
 			<div class="col-sm-5">
 				<span class="text-bold">Trạng thái</span>: <i data-bind="text:dossierStatusText">Mới</i>
@@ -337,7 +338,6 @@
 			$(this).modal("show");
 		});
 	});
-
 
 	$("#showFileTemplateDialog").click(function(){
 		$("#fileTemplateDialog").load("employeemain_dossierdetail_filetemplate.ftl",function(result){
@@ -692,7 +692,6 @@
 				error : function(result){
 
 				}
-
 			});
 		}
 		return arrFile;
@@ -706,6 +705,7 @@
 			var found = $.grep(arrCount, function(v) {
 				return v.dossierPartNo === partNo;
 			});
+			
 			console.log(partNo);
 			console.log(found);
 

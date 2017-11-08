@@ -77,19 +77,18 @@
 						</p>
 						
 						<p>
-							#if(typeof actionNote !== "undefined"){#
+							#if(typeof actionNote !== "undefined" && actionNote !== ""){#
 								<i class="fa fa-bolt" aria-hidden="true" style="color: red;"></i> 
 								<i>#:actionNote#</i>
 							#}#
 						</p>
 
 						<p>
-							#if(typeof stepInstruction !== "undefined"){#
+							#if(typeof stepInstruction !== "undefined" && stepInstruction !== ""){#
 								<i>#:stepInstruction#</i>
 							#}#
 						</p>
 						
-
 						#if(dossierStatus === "Done"){#
 
 							<a href="${api.server}/dossiers/#:id#/result" style="margin-right: 10px;">
@@ -130,9 +129,11 @@
 		transport:{
 			read:function(options){
 				$.ajax({
+					
 					url:"${api.server}/dossiers",
 					dataType:"json",
 					type:"GET",
+					headers: {"groupId": ${groupId}},
 					data:{
 						statusCode:options.data.statusCode,
 						serviceInfo:options.data.serviceInfo,
@@ -198,7 +199,7 @@
 		$("#idItemCustomerDossier").val(id);
 		$("#dossier_detail").show();
 		$("#dossier_list").hide();
-		$("#dossier_detail").load("${ajax.customer_dossier_detail}?id="+id+"",function(result){
+		$("#dossier_detail").load("${ajax.customer_dossier_detail_4}?id="+id+"",function(result){
 			$("#dossierItemId").val(id);
 			/*dataSourceDossierTemplate.read({
 				id : id
@@ -215,6 +216,7 @@
 			url:"${api.server}/"+id+"/cloning",
 			dataType:"json",
 			type:"GET",
+			headers: {"groupId": ${groupId}},
 			success:function(result){
 				location.href = "http://www.google.com";
 			},
