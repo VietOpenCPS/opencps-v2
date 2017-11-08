@@ -323,6 +323,8 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			"url", generateURLCommon(renderRequest, renderResponse));
 
 		renderRequest.setAttribute("constants", generalConstantsCommon());
+
+		renderRequest.setAttribute("param", generalParamsCommon(renderRequest));
 	}
 
 	public void renderFrontendWebWorkingUnitPortlet(
@@ -343,8 +345,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		}
 
 		BackendAuthImpl backendAuthImpl = new BackendAuthImpl();
-
-		JSONObject params = JSONFactoryUtil.createJSONObject();
 
 		long groupId = themeDisplay.getScopeGroupId();
 
@@ -373,12 +373,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 				_log.error(e);
 			}
 		}
-
-		params.put("workingUnit_workingUnitId", workingUnitId);
-
-		params.put("workingUnit_className", WorkingUnit.class.getName());
-
-		renderRequest.setAttribute("param", params);
 
 		renderRequest.setAttribute("groupId", groupId);
 
@@ -410,8 +404,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		}
 
 		BackendAuthImpl backendAuthImpl = new BackendAuthImpl();
-
-		JSONObject params = JSONFactoryUtil.createJSONObject();
 
 		String type = ParamUtil.getString(renderRequest, "type");
 
@@ -496,16 +488,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 				}
 
-				params.put("dictCollection_groupCode", groupCode);
-
-				params.put("activityType_itemCode", itemCode);
-
-				params.put("documentType_itemCode", itemCode);
-
-				params.put("dictCollection_collectionCode", collectionCode);
-
-				params.put("dictCollection_itemCode", itemCode);
-
 				renderRequest.setAttribute(
 					"activityType_dictItem", dictItemJSON);
 
@@ -531,8 +513,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			FrontendWebAdminPortletConstants.AdminMenuItemType.NOTIFICATIONTEMPLATE.toString())) {
 			// Include portlet
 		}
-
-		renderRequest.setAttribute("param", params);
 
 		renderRequest.setAttribute("groupId", groupId);
 
@@ -568,13 +548,14 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 			// TODO template commented
 			// @SuppressWarnings("unchecked")
-//			List<Document> listResults = (List<Document>) jsonData.get("data");
-//
-//			for (Document document : listResults) {
-//
-//				result.add(document.get(DictGroupTerm.GROUP_CODE));
-//
-//			}
+			// List<Document> listResults = (List<Document>)
+			// jsonData.get("data");
+			//
+			// for (Document document : listResults) {
+			//
+			// result.add(document.get(DictGroupTerm.GROUP_CODE));
+			//
+			// }
 
 		}
 		catch (Exception e) {
@@ -614,10 +595,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 		long jobPosId = ParamUtil.getLong(renderRequest, "jobPosId");
 
-		JSONObject params = JSONFactoryUtil.createJSONObject();
-
-		params.put("jobPos_jobPosId", jobPosId);
-
 		JobPos jobPos = null;
 
 		if (jobPosId > 0) {
@@ -630,8 +607,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		}
 
 		renderRequest.setAttribute("jobPos", jobPos);
-
-		renderRequest.setAttribute("param", params);
 
 		renderRequest.setAttribute("groupId", groupId);
 
@@ -674,10 +649,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			backendAuthImpl.isAdmin(serviceContext, StringPool.BLANK);
 
 		long employeeId = ParamUtil.getLong(renderRequest, "employeeId");
-
-		JSONObject params = JSONFactoryUtil.createJSONObject();
-
-		params.put("employeeId", employeeId);
 
 		Employee employee = null;
 
@@ -806,8 +777,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 		renderRequest.setAttribute("employee", result);
 
-		renderRequest.setAttribute("params", params);
-
 		renderRequest.setAttribute("groupId", groupId);
 
 		renderRequest.setAttribute("userId", userId);
@@ -818,6 +787,94 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			"portletNamespace",
 			themeDisplay.getPortletDisplay().getNamespace());
 
+	}
+
+	private JSONObject generalParamsCommon(RenderRequest renderRequest) {
+
+		JSONObject params = JSONFactoryUtil.createJSONObject();
+
+		// FrontendWebEmployeePortlet
+		long employeeId = ParamUtil.getLong(renderRequest, "employeeId");
+		params.put("employeeId", employeeId);
+
+		// FrontendWebJobposPortlet
+		long jobPosId = ParamUtil.getLong(renderRequest, "jobPosId");
+		params.put("jobPos_jobPosId", jobPosId);
+
+		// FrontendWebAdminPortlet
+		ServiceContext serviceContext = null;
+
+		try {
+			serviceContext = ServiceContextFactory.getInstance(renderRequest);
+		}
+		catch (Exception e) {
+			_log.error(e);
+			throw new NullPointerException();
+		}
+
+		long groupId = serviceContext.getScopeGroupId();
+
+		DictCollectionActions collectionActions = new DictCollectionActions();
+
+		String collectionCode =
+			ParamUtil.getString(renderRequest, "collectionCode");
+
+		String itemCode = ParamUtil.getString(renderRequest, "itemCode");
+
+		String groupCode = ParamUtil.getString(renderRequest, "groupCode");
+
+		DictItem dictItem = null;
+
+		JSONObject dictItemJSON = null;
+
+		try {
+
+			if (Validator.isNotNull(itemCode) &&
+				Validator.isNotNull(collectionCode)) {
+
+				dictItem = collectionActions.getDictItemByItemCode(
+					collectionCode, itemCode, groupId, serviceContext);
+
+				dictItemJSON = ObjectConverterUtil.objectToJSON(
+					dictItem.getClass(), dictItem);
+
+				if (Validator.isNotNull(dictItem) &&
+					Validator.isNotNull(dictItemJSON)) {
+					dictItemJSON.put(
+						"groupCode",
+						getListDictGroupByDictItem(dictItem, serviceContext));
+					if (dictItem.getParentItemId() > 0) {
+						dictItem = DictItemLocalServiceUtil.fetchDictItem(
+							dictItem.getParentItemId());
+						dictItemJSON.put(
+							"parentItemCode", dictItem.getItemCode());
+					}
+				}
+			}
+
+			if (Validator.isNotNull(dictItem)) {
+				dictItem = collectionActions.getDictItemByItemCode(
+					collectionCode, dictItem.getItemCode(), groupId,
+					serviceContext);
+			}
+		}
+		catch (Exception e) {
+
+		}
+
+		params.put("dictCollection_groupCode", groupCode);
+		params.put("activityType_itemCode", itemCode);
+		params.put("documentType_itemCode", itemCode);
+		params.put("dictCollection_collectionCode", collectionCode);
+		params.put("dictCollection_itemCode", itemCode);
+		
+		// FrontendWebWorkingUnitPortlet
+		long workingUnitId = ParamUtil.getLong(renderRequest, "workingUnitId");
+		
+		params.put("workingUnit_workingUnitId", workingUnitId);
+		params.put("workingUnit_className", WorkingUnit.class.getName());
+
+		return params;
 	}
 
 	private JSONObject generalConstantsCommon() {
