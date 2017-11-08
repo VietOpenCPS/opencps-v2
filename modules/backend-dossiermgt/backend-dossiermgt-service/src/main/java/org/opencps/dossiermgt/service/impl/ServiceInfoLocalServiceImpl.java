@@ -27,6 +27,7 @@ import org.opencps.dossiermgt.exception.DuplicateServiceCodeException;
 import org.opencps.dossiermgt.exception.RequiredAdministrationCodeException;
 import org.opencps.dossiermgt.exception.RequiredServiceCodeException;
 import org.opencps.dossiermgt.exception.RequiredServiceNameException;
+import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.base.ServiceInfoLocalServiceBaseImpl;
@@ -290,6 +291,10 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 	private void valdiateRemove(long serviceInfoId) throws PortalException {
 		// TODO implement
+	}
+	
+	public List<ServiceInfo> fetchByDomain(long groupId, String domainCode) {
+		return serviceInfoPersistence.findByGI_DC(domainCode, groupId);
 	}
 
 	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,

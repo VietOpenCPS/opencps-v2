@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service.impl;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepTerm;
@@ -365,6 +366,14 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 		// TODO add more validate for actionCode, actionName, createDossierFiles
 		// returnDossierFiles, makeBriefNote in here
 
+	}
+
+	public List<ProcessAction> getByActionCode(long groupId, String actionCode) throws PortalException {
+		return processActionPersistence.findByGI_AC(groupId, actionCode);
+	}
+	
+	public ProcessAction fetchBySPI_PRESC_AEV(long serviceProcessId, String preStepCode, String autoEvent)  {
+		return processActionPersistence.fetchBySPI_PRESC_AEV(serviceProcessId, preStepCode, autoEvent);
 	}
 
 }

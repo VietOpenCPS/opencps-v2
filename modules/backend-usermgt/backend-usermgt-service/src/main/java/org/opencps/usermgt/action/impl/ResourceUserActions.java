@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.opencps.usermgt.action.ResourceUserInterface;
 import org.opencps.usermgt.constants.ResourceUserTerm;
+import org.opencps.usermgt.model.ResourceRole;
 import org.opencps.usermgt.model.ResourceUser;
+import org.opencps.usermgt.service.ResourceRoleLocalServiceUtil;
 import org.opencps.usermgt.service.ResourceUserLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -35,9 +37,9 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public class ResourceUserActions implements ResourceUserInterface {
 
@@ -48,11 +50,11 @@ public class ResourceUserActions implements ResourceUserInterface {
 			throws NotFoundException, UnauthenticationException, UnauthorizationException {
 		boolean flag = false;
 
-		//getUserId from email
+		// getUserId from email
 		User user = UserLocalServiceUtil.fetchUserByEmailAddress(companyId, email);
-		
-		long toUserId = Validator.isNotNull(user)?user.getUserId():0;
-		
+
+		long toUserId = Validator.isNotNull(user) ? user.getUserId() : 0;
+
 		ResourceUser resourceUser = ResourceUserLocalServiceUtil.fetchByF_className_classPK_toUserId(groupId, className,
 				classPK, toUserId);
 
@@ -106,7 +108,7 @@ public class ResourceUserActions implements ResourceUserInterface {
 				List<Document> list = hits.toList();
 
 				for (Document document : list) {
-					
+
 					ResourceUser ResourceUser = ResourceUserLocalServiceUtil.fetchByF_className_classPK_toUserId(
 							groupId, className, classPK, Long.valueOf(document.get("entryClassPK")));
 
@@ -151,55 +153,84 @@ public class ResourceUserActions implements ResourceUserInterface {
 	}
 
 	public ResourceUser create(long userId, long groupId, String className, String classPK, Long toUserId,
-			ServiceContext serviceContext)
-			throws NoSuchUserException, UnauthenticationException, UnauthorizationException {
+			String fullname, String email, boolean readonly, ServiceContext serviceContext)
+			throws NoSuchUserException, UnauthenticationException, UnauthorizationException, NotFoundException {
 		ResourceUser ett = null;
 
-		ett = ResourceUserLocalServiceUtil.addResourceUser(userId, groupId, className, classPK, toUserId,
-				serviceContext);
+		ett = ResourceUserLocalServiceUtil.addResourceUser(userId, groupId, className, classPK, toUserId, fullname,
+				email, readonly, serviceContext);
 
 		return ett;
 	}
 
 	@Override
 	public void createResourceUserPatch(String className, String classPK, long userId, long companyId, long groupId,
-			String users, ServiceContext serviceContext) throws NotFoundException, UnauthenticationException, UnauthorizationException, NoSuchUserException {
+			String users, ServiceContext serviceContext)
+			throws NotFoundException, UnauthenticationException, UnauthorizationException, NoSuchUserException {
 		try {
-			
-			List<ResourceUser> resourceUsers = new ArrayList<>(ResourceUserLocalServiceUtil.findByF_className_classPK(groupId, className, classPK));
-			
+
+			List<ResourceUser> resourceUsers = new ArrayList<>(
+					ResourceUserLocalServiceUtil.findByF_className_classPK(groupId, className, classPK));
+
 			JSONArray jUser = JSONFactoryUtil.createJSONArray(users);
-			
-			//jUser to resource user
+
+			// jUser to resource user
 			ResourceUser resourceUser = null;
-			for(int n = 0; n < jUser.length(); n++)
-			{
+			for (int n = 0; n < jUser.length(); n++) {
 				JSONObject user = jUser.getJSONObject(n);
-				
-				resourceUser = ResourceUserLocalServiceUtil.fetchByF_className_classPK_toUserId(groupId, className, classPK, user.getLong("userId"));
-				
-				if(Validator.isNotNull(resourceUser)){
-					
+
+				resourceUser = ResourceUserLocalServiceUtil.fetchByF_className_classPK_toUserId(groupId, className,
+						classPK, user.getLong("userId"));
+
+				if (Validator.isNotNull(resourceUser)) {
+
 					resourceUsers.remove(resourceUser);
-					
+
 				} else {
-					
-					ResourceUserLocalServiceUtil.addResourceUser(userId, groupId, className, classPK, user.getLong("userId"), serviceContext);
-					
+
+					ResourceUserLocalServiceUtil.addResourceUser(userId, groupId, className, classPK,
+							user.getLong("userId"), user.getString("fullname"), user.getString("email"),
+							user.getBoolean("readonly"), serviceContext);
+
 				}
-				
+
 			}
-			
+
 			for (ResourceUser ett : resourceUsers) {
-				
+
 				ResourceUserLocalServiceUtil.deleteResourceUser(ett.getResourceUserId(), serviceContext);
-				
+
 			}
-			
+
 		} catch (JSONException e) {
 			_log.error(e);
 		}
-		
+
+	}
+
+	@Override
+	public void clone(String className, String classPK, long userId, long companyId, long groupId, String sourcePK,
+			ServiceContext serviceContext)
+			throws NotFoundException, UnauthenticationException, UnauthorizationException, NoSuchUserException {
+		List<ResourceUser> resourceUsers = new ArrayList<>(
+				ResourceUserLocalServiceUtil.findByF_className_classPK(groupId, className, classPK));
+
+		if (Validator.isNotNull(resourceUsers) && resourceUsers.size() > 0) {
+			// Nothing to do here
+		} else {
+
+			List<ResourceUser> resourceUsersSourcePK = new ArrayList<>(
+					ResourceUserLocalServiceUtil.findByF_className_classPK(groupId, className, sourcePK));
+
+			for (ResourceUser resourceUser : resourceUsersSourcePK) {
+
+				ResourceUserLocalServiceUtil.addResourceUser(userId, groupId, className, classPK,
+						resourceUser.getToUserId(), resourceUser.getFullname(), resourceUser.getEmail(),
+						resourceUser.getReadonly(), serviceContext);
+			}
+
+		}
+
 	}
 
 }

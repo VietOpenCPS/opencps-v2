@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-sm-3">

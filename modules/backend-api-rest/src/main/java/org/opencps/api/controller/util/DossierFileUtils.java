@@ -1,0 +1,149 @@
+
+package org.opencps.api.controller.util;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.opencps.api.dossierfile.model.DossierFileModel;
+import org.opencps.api.dossierfile.model.DossierFileSearchResultModel;
+import org.opencps.api.dossierfile.model.DossierFileSearchResultsModel;
+import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.model.DossierFile;
+
+import com.liferay.document.library.kernel.model.DLFileVersion;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.util.GetterUtil;
+
+public class DossierFileUtils {
+
+    public static List<DossierFileModel> mappingToDossierFileData(
+        List<DossierFile> dossierFiles) {
+
+        List<DossierFileModel> outputs = new ArrayList<DossierFileModel>();
+
+        for (DossierFile dossierFile : dossierFiles) {
+
+            DossierFileModel model = mappingToDossierFileModel(dossierFile);
+
+            outputs.add(model);
+        }
+
+        return outputs;
+    }
+
+    public static DossierFileModel mappingToDossierFileModel(
+        DossierFile dossierFile) {
+
+        if (dossierFile == null) {
+            return null;
+        }
+
+        DossierFileModel model = new DossierFileModel();
+
+        model.setCreateDate(
+            APIDateTimeUtils.convertDateToString(dossierFile.getCreateDate()));
+        model.setModifiedDate(
+            APIDateTimeUtils.convertDateToString(
+                dossierFile.getModifiedDate()));
+        model.setReferenceUid(dossierFile.getReferenceUid());
+        model.setDossierTemplateNo(dossierFile.getDossierTemplateNo());
+        model.setDossierPartNo(dossierFile.getDossierPartNo());
+        model.setDossierPartType(dossierFile.getDossierPartType());
+        model.setFileTemplateNo(dossierFile.getFileTemplateNo());
+        model.setDisplayName(dossierFile.getDisplayName());
+
+        String fileType = "";
+        long fileSize = 0;
+        String fileVersion = "";
+
+        if (dossierFile.getDossierFileId() > 0) {
+            try {
+                FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
+                    dossierFile.getDossierFileId());
+                DLFileVersion dlFileVersion =
+                    DLFileVersionLocalServiceUtil.getLatestFileVersion(
+                        fileEntry.getFileEntryId(), true);
+
+                fileType = dlFileVersion.getExtension();
+                fileSize = dlFileVersion.getSize();
+                fileVersion = dlFileVersion.getVersion();
+            }
+            catch (Exception e) {
+
+            }
+        }
+
+        model.setFileType(fileType);
+        model.setFileSize(fileSize);
+        model.setFileVersion(fileVersion);
+        model.setIsNew(dossierFile.getIsNew());
+        model.setSignCheck(dossierFile.getSignCheck());
+        model.setSignInfo(dossierFile.getSignInfo());
+        model.setRemoved(dossierFile.getRemoved());
+        model.setEForm(dossierFile.getEForm());
+
+        return model;
+    }
+
+    public static List<DossierFileSearchResultModel> mappingToDossierFileSearchResultsModel(
+        List<Document> documents) {
+
+        List<DossierFileSearchResultModel> outputs =
+            new ArrayList<DossierFileSearchResultModel>();
+
+        for (Document document : documents) {
+
+            DossierFileSearchResultModel model =
+                new DossierFileSearchResultModel();
+            
+            long dossierId = GetterUtil.getLong(document.get(DossierFileTerm.DOSSIER_ID));
+            long dossierFileId = GetterUtil.getLong(document.get(DossierFileTerm.DOSSIER_FILE_ID));
+
+            model.setDossierId(dossierId);
+            model.setReferenceUid(document.get(DossierFileTerm.REFERENCE_UID));
+            model.setDossierTemplateNo(document.get(DossierFileTerm.DOSSIER_TEMPLATE_NO));
+            model.setDossierPartNo(document.get(DossierFileTerm.DOSSIER_PART_NO));
+            model.setDossierPartType(GetterUtil.getInteger(document.get(DossierFileTerm.DOSSIER_PART_TYPE)));
+            model.setFileTemplateNo(document.get(DossierFileTerm.FILE_TEMPLATE_NO));
+            model.setDisplayName(document.get(DossierFileTerm.DISPLAY_NAME));
+            
+            String fileType = "";
+            long fileSize = 0;
+            String fileVersion = "";
+
+            if (dossierFileId > 0) {
+                try {
+                    FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
+                        dossierFileId);
+                    DLFileVersion dlFileVersion =
+                        DLFileVersionLocalServiceUtil.getLatestFileVersion(
+                            fileEntry.getFileEntryId(), true);
+
+                    fileType = dlFileVersion.getExtension();
+                    fileSize = dlFileVersion.getSize();
+                    fileVersion = dlFileVersion.getVersion();
+                }
+                catch (Exception e) {
+
+                }
+            }
+            
+            model.setFileType(fileType);
+            model.setFileSize(fileSize);
+            model.setOriginal(GetterUtil.getBoolean(document.get(DossierFileTerm.ORIGINAL)));
+            model.setIsNew(GetterUtil.getBoolean(document.get(DossierFileTerm.IS_NEW)));
+            model.setSignCheck(GetterUtil.getInteger(document.get(DossierFileTerm.SIGN_CHECK)));
+            model.setSignInfo(document.get(DossierFileTerm.SIGN_INFO));
+
+            outputs.add(model);
+        }
+
+        return outputs;
+
+    }
+}

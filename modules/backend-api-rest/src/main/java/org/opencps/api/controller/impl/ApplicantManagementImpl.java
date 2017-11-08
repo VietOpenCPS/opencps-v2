@@ -23,6 +23,10 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
@@ -41,6 +45,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class ApplicantManagementImpl implements ApplicantManagement {
@@ -52,12 +57,18 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 
 		ApplicantModel result = new ApplicantModel();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
-			Applicant applicant = actions.register(serviceContext, input.getApplicantName(), input.getApplicantIdType(),
+			
+			String cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
+			String districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
+			String wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+			
+			Applicant applicant = actions.register(serviceContext, groupId, input.getApplicantName(), input.getApplicantIdType(),
 					input.getApplicantIdNo(), input.getApplicantIdDate(), input.getContactEmail(), input.getAddress(),
-					input.getCityCode(), input.getCityName(), input.getDistrictCode(), input.getDistrictName(),
-					input.getWardCode(), input.getWardName(), input.getContactName(), input.getContactTelNo(),
+					input.getCityCode(), cityName, input.getDistrictCode(), districtName,
+					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
 					input.getPassword());
 
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
@@ -81,6 +92,23 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		}
 
 	}
+	
+	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
+
+		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
+
+		if (Validator.isNotNull(dc)) {
+			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
+
+			return it.getItemName();
+
+		} else {
+			return StringPool.BLANK;
+		}
+
+	}
+	
+	private static String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
 
 	Log _log = LogFactoryUtil.getLog(ApplicantManagementImpl.class);
 
@@ -118,7 +146,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			params.put("lock", query.getLock());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getApplicants(serviceContext, serviceContext.getUserId(),
 					serviceContext.getCompanyId(), groupId, params, sorts, query.getStart(), query.getEnd(),
@@ -245,6 +273,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantModel results = new ApplicantModel();
 		BackendAuth auth = new BackendAuthImpl();
 		Applicant applicant = null;
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -269,7 +298,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 			if (isAllowed) {
-				applicant = actions.updateApplicant(serviceContext, id, input.getAddress(), input.getCityCode(),
+				applicant = actions.updateApplicant(serviceContext,groupId, id, input.getApplicantName(), input.getAddress(), input.getCityCode(),
 						input.getCityName(), input.getDistrictCode(), input.getDistrictName(), input.getWardCode(),
 						input.getWardName(), input.getContactName(), input.getContactTelNo(), input.getContactEmail());
 
@@ -471,6 +500,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		BackendAuth auth = new BackendAuthImpl();
 		Applicant applicant = null;
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -480,6 +510,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			User requestUser = ApplicantUtils.getUser(id);
 
 			boolean isAllowed = false;
+			
+			
 
 			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
 				isAllowed = true;
@@ -495,7 +527,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 			if (isAllowed) {
-				applicant = actions.updateProfile(serviceContext, id, input.getValue());
+				applicant = actions.updateProfile(serviceContext,groupId, id, input.getValue());
 
 				JSONObject result = JSONFactoryUtil.createJSONObject(applicant.getProfile());
 
@@ -549,6 +581,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		// TODO Auto-generated method stub
 		ApplicantActions actions = new ApplicantActionsImpl();
 		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -580,7 +613,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				
 				profile.put(key, input.getValue());
 				
-				actions.updateProfile(serviceContext, id, profile.toString());
+				actions.updateProfile(serviceContext,groupId, id, profile.toString());
 
 				JSONObject result = JSONFactoryUtil.createJSONObject();
 

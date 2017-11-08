@@ -6,6 +6,8 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.constants.ServiceProcessRoleTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.ServiceProcess;
@@ -26,6 +28,8 @@ import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 public class ServiceProcessIndexer extends BaseIndexer<ServiceProcess> {
 	public static final String CLASS_NAME = ServiceProcess.class.getName();
@@ -68,8 +72,12 @@ public class ServiceProcessIndexer extends BaseIndexer<ServiceProcess> {
 		document.addTextSortable(ServiceProcessTerm.DUEDATE_PATTERN, object.getDueDatePattern());
 		document.addTextSortable(ServiceProcessTerm.SERVER_NO, object.getServerNo());
 		
-		// TODO update get server Name
-		String serverName = "TEST";
+		ServerConfig server = ServerConfigLocalServiceUtil.getByCode(object.getServerNo());
+		
+		String serverName = StringPool.BLANK;
+		
+		if (Validator.isNotNull(server))
+			serverName = server.getServerName();
 		
 		document.addTextSortable(ServiceProcessTerm.SERVER_NAME, serverName);
 
@@ -150,3 +158,4 @@ public class ServiceProcessIndexer extends BaseIndexer<ServiceProcess> {
 
 	Log _log = LogFactoryUtil.getLog(ServiceProcessIndexer.class);
 }
+

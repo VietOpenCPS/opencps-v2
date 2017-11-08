@@ -12,4 +12,8 @@ public class DossierLogTerm {
 	public static final String NOTIFICATION_TYPE = "notificationType";
 	public static final String PAYLOAD = "payload";
 
+	//@khoavd add
+	public static final String DOSSIER_PART_TYPE = "dossierPartType";
+	public static final String ORIGINAL = "original";
+	public static final String FILE_TEMPLATE_NO = "dossierPartType";
 }

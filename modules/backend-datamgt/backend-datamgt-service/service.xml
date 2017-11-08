@@ -103,6 +103,17 @@
 			<finder-column name="parentItemId"></finder-column>
 		</finder>
 		
+		<finder return-type="Collection" name="F_parentItemId_level">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="dictCollectionId"></finder-column>
+			<finder-column name="parentItemId"></finder-column>
+			<finder-column name="level"></finder-column>
+		</finder>
+		
+		<finder return-type="DictItem" name="IC_DCI">
+			<finder-column name="itemCode"/>
+			<finder-column name="dictCollectionId"/>
+		</finder>
 	</entity>
 
 	<entity name="DictGroup" uuid="true" local-service="true"
@@ -338,6 +349,60 @@
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>
+
+	</entity>
+	
+	<entity name="FileAttach" local-service="true" remote-service="false"
+		table="m_fileattach">
+
+		<!-- PK fields -->
+
+		<column name="fileAttachId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="className" type="String" />
+		<column name="classPK" type="String" />
+		<column name="fullName" type="String" />
+		<column name="email" type="String" />
+		<column name="fileEntryId" type="long" />
+		<column name="source" type="String" />
+		<column name="sourceUrl" type="String" />
+		<column name="docFileId" type="long" />
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+
+		<finder return-type="Collection" name="F_docFileId">
+
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="className"></finder-column>
+			<finder-column name="classPK"></finder-column>
+			<finder-column name="docFileId"></finder-column>
+
+		</finder>
+
+		<finder return-type="Collection" name="F_className_classPK">
+
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="className"></finder-column>
+			<finder-column name="classPK"></finder-column>
+
+		</finder>
 
 	</entity>
 

@@ -44,10 +44,10 @@
 					#: actionName #
 				</div>
 				<div class="col-sm-2 align-middle-lg text-center">
-					#: preStepCode #
+					#: preStepName #
 				</div>
 				<div class="col-sm-2 align-middle-lg text-center">
-					#: postStepCode #
+					#: postStepName #
 				</div>
 				<div class="col-sm-2 text-center">
 					<a class="btn-group btn-edit-service-process-action" data-pk="#: id #" href="\\#" title="Sửa">
@@ -74,26 +74,25 @@
 			var serviceProcessActionDataSource = new kendo.data.DataSource({
 				transport: {
 					read: function(options) {
-						$.ajax({
-							url: "${api.server}" + "/serviceprocesses/" + $("#btn_save_service_process").attr("data-pk") + "/actions",
-							type: "GET",
-							dataType: "json",
-							headers: {"groupId": ${groupId}},
-							data: {
-								keywords: options.data.keywords,
-								page: options.data.page,
-								pageSize: options.data.pageSize
-							},
-							success: function(result) {
-								options.success(result);
-							},
-							error: function(result) {
-								options.error(result);
-								notification.show({
-									message: "Xẩy ra lỗi, vui lòng thử lại"
-								}, "error");
-							}
-						});
+						if ($("#btn_save_service_process").attr("data-pk")){
+							$.ajax({
+								url: "${api.server}" + "/serviceprocesses/" + $("#btn_save_service_process").attr("data-pk") + "/actions",
+								type: "GET",
+								dataType: "json",
+								headers: {"groupId": ${groupId}},
+								data: {
+									keywords: options.data.keywords,
+									page: options.data.page,
+									pageSize: options.data.pageSize
+								},
+								success: function(result) {
+									options.success(result);
+								},
+								error: function(result) {
+									options.error(result);
+								}
+							});
+						}
 					},
 					destroy: function(options) {
 						$.ajax({
@@ -178,8 +177,6 @@
 
 				var serviceProcessAction = serviceProcessActionDataSource.get(($(this).attr("data-pk")));
 
-				console.log(serviceProcessAction);
-
 				var viewModel = kendo.observable({
 					actionCode: serviceProcessAction.actionCode,
 					actionName: serviceProcessAction.actionName,
@@ -192,7 +189,8 @@
 					requestPayment: serviceProcessAction.requestPayment,
 					paymentFee: serviceProcessAction.paymentFee,
 					syncActionCode: serviceProcessAction.syncActionCode,
-					rollbackable: serviceProcessAction.rollbackable
+					rollbackable: serviceProcessAction.rollbackable,
+					dossiertemplatesFileFilter: ""
 				});
 
 				kendo.bind($("#serviceprocesses_detail_form_action"), viewModel);
@@ -320,7 +318,8 @@
 					createDossierFiles: "",
 					returnDossierFiles: "",
 					syncActionCode: "",
-					rollbackable: ""
+					rollbackable: "",
+					dossiertemplatesFileFilter: ""
 				});
 
 				initStepCombobox();
@@ -344,115 +343,132 @@
 			});
 
 			var updateServiceProcessAction = function(serviceProcessId, actionId){
+				if (validateProcessAction()){
+					$.ajax({
+						url: "${api.server}" + "/serviceprocesses/" + serviceProcessId + "/actions/" + actionId,
+						type: "PUT",
+						dataType: "json",
+						headers: {"groupId": ${groupId}},
+						data: {
+							actionCode: $("#actionCode").val(),
+							actionName: $("#actionName").val(),
+							preStepCode: $("#preStepCode").val(),
+							postStepCode: $("#postStepCode").val(),
+							autoEvent: $("#autoEvent").val(),
+							preCondition: $("#preCondition").val(),
+							allowAssignUser: $("#allowAssignUser").prop("checked"),
+							assignUserId: $("#assignUserId").val(),
+							requestPayment: $("#requestPayment").prop("checked"),
+							paymentFee: $("#paymentFee").val(),
+							createDossierFiles: getCreateDossierFiles(),
+							returnDossierFiles: getReturnDossierFiles(),
+							syncActionCode: $("#syncActionCode").val(),
+							rollbackable: $("#rollbackable").prop("checked")
+						},
+						success: function(result) {
+							notification.show({
+								message: "Yêu cầu được thực hiện thành công"
+							}, "success");
 
-				$.ajax({
-					url: "${api.server}" + "/serviceprocesses/" + serviceProcessId + "/actions/" + actionId,
-					type: "PUT",
-					dataType: "json",
-					headers: {"groupId": ${groupId}},
-					data: {
-						actionCode: $("#actionCode").val(),
-						actionName: $("#actionName").val(),
-						preStepCode: $("#preStepCode").val(),
-						postStepCode: $("#postStepCode").val(),
-						autoEvent: $("#autoEvent").val(),
-						preCondition: $("#preCondition").val(),
-						allowAssignUser: $("#allowAssignUser").val(),
-						assignUserId: $("#assignUserId").val(),
-						requestPayment: $("#requestPayment").val(),
-						paymentFee: $("#paymentFee").val(),
-						createDossierFiles: getCreateDossierFiles(),
-						returnDossierFiles: getReturnDossierFiles(),
-						syncActionCode: $("#syncActionCode").val(),
-						rollbackable: $("#rollbackable").val()
-					},
-					success: function(result) {
-						notification.show({
-							message: "Yêu cầu được thực hiện thành công"
-						}, "success");
+							// var serviceProcessAction = serviceProcessActionDataSource.get(actionId);
 
-						var serviceProcessAction = serviceProcessActionDataSource.get(actionId);
+							// serviceProcessAction.set("actionCode", $("#actionCode").val());
+							// serviceProcessAction.set("actionName", $("#actionName").val());
+							// serviceProcessAction.set("preStepCode", $("#preStepCode").val());
+							// serviceProcessAction.set("postStepCode", $("#postStepCode").val());
+							// serviceProcessAction.set("autoEvent", $("#autoEvent").val());
+							// serviceProcessAction.set("preCondition", $("#preCondition").val());
+							// serviceProcessAction.set("allowAssignUser", $("#allowAssignUser").prop("checked"));
+							// serviceProcessAction.set("assignUserId", $("#assignUserId").val());
+							// serviceProcessAction.set("requestPayment", $("#requestPayment").prop("checked"));
+							// serviceProcessAction.set("paymentFee", $("#paymentFee").val());
+							// serviceProcessAction.set("createDossierFiles", getCreateDossierFiles());
+							// serviceProcessAction.set("returnDossierFiles", getReturnDossierFiles());
+							// serviceProcessAction.set("syncActionCode", $("#syncActionCode").val());
+							// serviceProcessAction.set("rollbackable", $("#rollbackable").prop("checked"));
 
-						serviceProcessAction.set("actionCode", $("#actionCode").val());
-						serviceProcessAction.set("actionName", $("#actionName").val());
-						serviceProcessAction.set("preStepCode", $("#preStepCode").val());
-						serviceProcessAction.set("postStepCode", $("#postStepCode").val());
-						serviceProcessAction.set("autoEvent", $("#autoEvent").val());
-						serviceProcessAction.set("preCondition", $("#preCondition").val());
-						serviceProcessAction.set("allowAssignUser", $("#allowAssignUser").val());
-						serviceProcessAction.set("assignUserId", $("#assignUserId").val());
-						serviceProcessAction.set("requestPayment", $("#requestPayment").val());
-						serviceProcessAction.set("paymentFee", $("#paymentFee").val());
-						serviceProcessAction.set("createDossierFiles", getCreateDossierFiles());
-						serviceProcessAction.set("returnDossierFiles", getReturnDossierFiles());
-						serviceProcessAction.set("syncActionCode", $("#syncActionCode").val());
-						serviceProcessAction.set("rollbackable", $("#rollbackable").val());
+							serviceProcessActionDataSource.read();
 
-						$("#serviceprocess_action_container").show();
-						$("#serviceprocess_detail_formaction_container").hide();
-					},
-					error: function(result) {
-						notification.show({
-							message: "Xẩy ra lỗi, vui lòng thử lại"
-						}, "error");
-					}
-				});
+							$("#serviceprocess_action_container").show();
+							$("#serviceprocess_detail_formaction_container").hide();
+						},
+						error: function(result) {
+							if (result.responseJSON.description){
+								notification.show({
+									message: result.responseJSON.description
+								}, "error");
+							} else {
+								notification.show({
+									message: "Xẩy ra lỗi, vui lòng thử lại"
+								}, "error");
+							}
+						}
+					});
+				}
 			}
 
 			var addServiceProcessAction = function(serviceProcessId){
-				$.ajax({
-					url: "${api.server}" + "/serviceprocesses/" + serviceProcessId + "/actions",
-					type: "POST",
-					dataType: "json",
-					headers: {"groupId": ${groupId}},
-					data: {
-						actionCode: $("#actionCode").val(),
-						actionName: $("#actionName").val(),
-						preStepCode: $("#preStepCode").val(),
-						postStepCode: $("#postStepCode").val(),
-						autoEvent: $("#autoEvent").val(),
-						preCondition: $("#preCondition").val(),
-						allowAssignUser: $("#allowAssignUser").val(),
-						assignUserId: $("#assignUserId").val(),
-						requestPayment: $("#requestPayment").val(),
-						paymentFee: $("#paymentFee").val(),
-						createDossierFiles: getCreateDossierFiles(),
-						returnDossierFiles: getReturnDossierFiles(),
-						syncActionCode: $("#syncActionCode").val(),
-						rollbackable: $("#rollbackable").val()
-					},
-					success: function(result) {
-						notification.show({
-							message: "Yêu cầu được thực hiện thành công"
-						}, "success");
+				if (validateProcessAction()){
+					$.ajax({
+						url: "${api.server}" + "/serviceprocesses/" + serviceProcessId + "/actions",
+						type: "POST",
+						dataType: "json",
+						headers: {"groupId": ${groupId}},
+						data: {
+							actionCode: $("#actionCode").val(),
+							actionName: $("#actionName").val(),
+							preStepCode: $("#preStepCode").val(),
+							postStepCode: $("#postStepCode").val(),
+							autoEvent: $("#autoEvent").val(),
+							preCondition: $("#preCondition").val(),
+							allowAssignUser: $("#allowAssignUser").prop("checked"),
+							assignUserId: $("#assignUserId").val(),
+							requestPayment: $("#requestPayment").prop("checked"),
+							paymentFee: $("#paymentFee").val(),
+							createDossierFiles: getCreateDossierFiles(),
+							returnDossierFiles: getReturnDossierFiles(),
+							syncActionCode: $("#syncActionCode").val(),
+							rollbackable: $("#rollbackable").prop("checked")
+						},
+						success: function(result) {
+							notification.show({
+								message: "Yêu cầu được thực hiện thành công"
+							}, "success");
 
-						serviceProcessActionDataSource.insert(0, {
-							"processActionId": result.processActionId,
-							"actionCode": $("#actionCode").val(),
-							"actionName": $("#actionName").val(),
-							"preStepCode": $("#preStepCode").val(),
-							"postStepCode": $("#postStepCode").val(),
-							"autoEvent": $("#autoEvent").val(),
-							"preCondition": $("#preCondition").val(),
-							"allowAssignUser": $("#allowAssignUser").val(),
-							"assignUserId": $("#assignUserId").val(),
-							"requestPayment": $("#requestPayment").val(),
-							"paymentFee": $("#paymentFee").val(),
-							"createDossierFiles": getCreateDossierFiles(),
-							"returnDossierFiles": getReturnDossierFiles(),
-							"syncActionCode": $("#syncActionCode").val(),
-							"rollbackable": $("#rollbackable").val(),
-						});
+							serviceProcessActionDataSource.insert(0, {
+								"processActionId": result.processActionId,
+								"actionCode": $("#actionCode").val(),
+								"actionName": $("#actionName").val(),
+								"preStepCode": $("#preStepCode").val(),
+								"postStepCode": $("#postStepCode").val(),
+								"autoEvent": $("#autoEvent").val(),
+								"preCondition": $("#preCondition").val(),
+								"allowAssignUser": $("#allowAssignUser").prop("checked"),
+								"assignUserId": $("#assignUserId").val(),
+								"requestPayment": $("#requestPayment").prop("checked"),
+								"paymentFee": $("#paymentFee").val(),
+								"createDossierFiles": getCreateDossierFiles(),
+								"returnDossierFiles": getReturnDossierFiles(),
+								"syncActionCode": $("#syncActionCode").val(),
+								"rollbackable": $("#rollbackable").prop("checked"),
+							});
 
-						$("#serviceprocess_action_container").show();
-						$("#serviceprocess_detail_formaction_container").hide();
-					},
-					error: function(result) {
-						notification.show({
-							message: "Xẩy ra lỗi, vui lòng thử lại"
-						}, "error");
-					}
-				});
+							$("#serviceprocess_action_container").show();
+							$("#serviceprocess_detail_formaction_container").hide();
+						},
+						error: function(result) {
+							if (result.responseJSON.description){
+								notification.show({
+									message: result.responseJSON.description
+								}, "error");
+							} else {
+								notification.show({
+									message: "Xẩy ra lỗi, vui lòng thử lại"
+								}, "error");
+							}
+						}
+					});
+				}
 			};
 
 			function getCreateDossierFiles(){
@@ -469,6 +485,34 @@
 					returnDossierFiles += $(this).find("select").val() + ",";
 				});
 				return returnDossierFiles;
+			}
+
+			function validateProcessAction(){
+				if (!$("#actionCode").val()){
+					notification.show({
+						message: "Mời nhập mã thao tác"
+					}, "error");
+					return false;
+				}
+				if (!$("#actionName").val()){
+					notification.show({
+						message: "Mời nhập tên thao tác"
+					}, "error");
+					return false;
+				}
+				if ($("#allowAssignUser").prop("checked") && !$("#assignUserId").val()){
+					notification.show({
+						message: "Mời chọn người được phân công"
+					}, "error");
+					return false;
+				}
+				if ($("#requestPayment").prop("checked") && !$("#paymentFee").val()){
+					notification.show({
+						message: "Mời nhập phí"
+					}, "error");
+					return false;
+				}
+				return true;
 			}
 
 			function initStepCombobox(){

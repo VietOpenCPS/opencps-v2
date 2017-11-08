@@ -7,4 +7,5 @@ Export-Package: \
 	org.opencps.usermgt.action,\
 	org.opencps.usermgt.action.impl,\
 	org.opencps.usermgt.constants,\
-	org.opencps.usermgt.service.util
+	org.opencps.usermgt.service.util,\
+	org.opencps.usermgt.utils

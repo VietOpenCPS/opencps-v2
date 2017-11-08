@@ -27,6 +27,7 @@ import org.opencps.usermgt.service.base.ResourceRoleLocalServiceBaseImpl;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -43,17 +44,18 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.auth.api.keys.ModelNameKeys;
+import backend.auth.api.BackendAuthImpl;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
+import backend.auth.api.keys.ActionKeys;
+import backend.auth.api.keys.ModelNameKeys;
 
 /**
  * The implementation of the resource role local service.
@@ -87,11 +89,11 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 	@Override
 	public ResourceRole addResourceRole(long userId, long groupId, String className, String classPK, long roleId,
 			ServiceContext serviceContext)
-			throws UnauthenticationException, UnauthorizationException, NoSuchUserException {
+			throws UnauthenticationException, UnauthorizationException, NoSuchUserException, NotFoundException {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -103,6 +105,13 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 		if (!hasPermission) {
 			throw new UnauthorizationException();
 		}
+		
+		Role role = RoleLocalServiceUtil.fetchRole(roleId);
+		
+		if(Validator.isNull(role)){
+			throw new NotFoundException();
+		}
+		
 		Date now = new Date();
 
 		User user = userPersistence.findByPrimaryKey(userId);
@@ -146,7 +155,7 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -182,7 +191,7 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext);
+		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
 		if (!isAuth) {
 			throw new UnauthenticationException();
@@ -195,6 +204,12 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 			throw new UnauthorizationException();
 		}
 
+		Role role = RoleLocalServiceUtil.fetchRole(roleId);
+		
+		if(Validator.isNull(role)){
+			throw new NotFoundException();
+		}
+		
 		Date now = new Date();
 
 		User user = userPersistence.findByPrimaryKey(userId);

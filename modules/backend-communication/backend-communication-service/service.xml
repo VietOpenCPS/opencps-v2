@@ -32,7 +32,11 @@
 		<column name="textMessage" type="String" />
 		<column name="sendSMS" type="boolean" />
 		<column name="sendEmail" type="boolean" />
-		<column name="expireDuration" type="Date" />
+		<column name="expireDuration" type="int" />
+		<column name="userUrlPattern" type="String" />
+		<column name="guestUrlPattern" type="String" />
+		<column name="interval" type="String" />
+		<column name="grouping" type="boolean" />
 		<!-- Order -->
 
 		<order by="asc">
@@ -56,7 +60,7 @@
 
 	</entity>
 	
-		<entity name="NotificationQueue" local-service="true"
+	<entity name="NotificationQueue" local-service="true"
 		remote-service="false" table="opencps_notificationqueue">
 
 		<!-- PK fields -->
@@ -86,6 +90,7 @@
 		<column name="toUserId" type="long" />
 		<column name="toEmail" type="String" />
 		<column name="toTelNo" type="String" />
+		<column name="publicationDate" type="Date" />
 		<column name="expireDate" type="Date" />
 
 		<!-- Order -->
@@ -93,6 +98,7 @@
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>
+
 
 	</entity>
 	
@@ -135,6 +141,9 @@
 		
 		<finder return-type="ServerConfig" name="CF_NM">
 			<finder-column name="serverName"/>
+		</finder>
+		<finder return-type="ServerConfig" name="CF_GID">
+			<finder-column name="groupId"/>
 		</finder>
 		
 	</entity>

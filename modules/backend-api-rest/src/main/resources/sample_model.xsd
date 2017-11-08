@@ -2,9 +2,6 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
 	<xsd:element name="SampleInputModel">
 		<xsd:complexType>
-			<xsd:annotation>
-			
-			</xsd:annotation>
 			<xsd:sequence>
 				<xsd:element name="id" type="xsd:long" minOccurs="0" >
 				</xsd:element>

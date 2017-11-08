@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.WorkingUnitManagement;
 import org.opencps.api.controller.util.WorkingUnitUtils;
-import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.api.workingunit.model.DataSearchModel;
 import org.opencps.api.workingunit.model.WorkingUnitInputModel;
 import org.opencps.api.workingunit.model.WorkingUnitModel;
@@ -27,6 +27,7 @@ import org.opencps.usermgt.constants.WorkingUnitTerm;
 import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -42,8 +43,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
@@ -135,7 +136,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 			WorkingUnit workingUnit = actions.create(user.getUserId(), company.getCompanyId(), groupId,
 					input.getAddress(), input.getEmail(), input.getEnName(), input.getFaxNo(), input.getGovAgencyCode(),
 					input.getName(), input.getTelNo(), input.getWebsite(), input.getParentWorkingUnitId(),
-					input.getSibling(), serviceContext);
+					input.getSibling(), input.getCeremonyDate(), serviceContext);
 
 			workingUnitModel = WorkingUnitUtils.mapperWorkingUnitModel(workingUnit);
 
@@ -182,6 +183,19 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			}
 
+			if (e instanceof DuplicateCategoryException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+			
 			return Response.status(500).build();
 		}
 	}
@@ -199,7 +213,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 			WorkingUnit workingUnit = actions.update(user.getUserId(), company.getCompanyId(), groupId, id,
 					input.getAddress(), input.getEmail(), input.getEnName(), input.getFaxNo(), input.getGovAgencyCode(),
 					input.getName(), input.getTelNo(), input.getWebsite(), input.getParentWorkingUnitId(),
-					input.getSibling(), serviceContext);
+					input.getSibling(), input.getCeremonyDate(), serviceContext);
 
 			workingUnitModel = WorkingUnitUtils.mapperWorkingUnitModel(workingUnit);
 
@@ -246,6 +260,19 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			}
 
+			if (e instanceof DuplicateCategoryException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+			
 			return Response.status(500).build();
 		}
 	}
@@ -396,7 +423,6 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 			return responseBuilder.build();
 
 		} catch (Exception e) {
-			_log.error(e);
 
 			ErrorMsg error = new ErrorMsg();
 			error.setMessage("file not found!");

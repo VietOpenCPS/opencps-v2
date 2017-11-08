@@ -6,24 +6,29 @@ import java.util.Locale;
 
 import org.opencps.api.jobpos.model.JobposModel;
 import org.opencps.api.jobpos.model.JobposPermissionModel;
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.keys.Constants;
-import org.opencps.auth.api.keys.ModelNameKeys;
-import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.api.jobpos.model.JobposWorkModel;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.usermgt.constants.JobPosTerm;
 import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import backend.auth.api.BackendAuthImpl;
+import backend.auth.api.keys.Constants;
+import backend.auth.api.keys.ModelNameKeys;
+import backend.utils.APIDateTimeUtils;
 
 public class JobposUtils {
 
@@ -44,6 +49,7 @@ public class JobposUtils {
 
 		return result;
 	}
+	
 	
 	public static List<JobposModel> mapperJobposList(List<Document> listDocument) {
 
@@ -109,7 +115,7 @@ public class JobposUtils {
 			//
 			// ett.setWorkingUnitName(workingUnitName);
 			ett.setLeader(jobPos.getLeader());
-			// ett.setMappingRoleId(jobPos.getMappingRoleId());
+			ett.setRoleId(jobPos.getMappingRoleId());
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -120,7 +126,7 @@ public class JobposUtils {
 
 	static Log _log = LogFactoryUtil.getLog(JobposUtils.class);
 
-	public static List<JobposPermissionModel> mapperJobposPermissionsList(String[] listPermissions, long userId,
+	public static List<JobposPermissionModel> mapperJobposPermissionsList(String[] listPermissions, long userId, long jobPposId,
 			ServiceContext serviceContext) {
 		
 		serviceContext.setUserId(userId);
@@ -130,7 +136,9 @@ public class JobposUtils {
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
 		try {
-
+			
+			JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(jobPposId);
+			
 			JobposPermissionModel ett = null;
 
 			for (String actionKey : listPermissions) {
@@ -139,9 +147,17 @@ public class JobposUtils {
 				ett.setActionId(actionKey);
 				ett.setActionName(LanguageUtil.get(locale, actionKey));
 
-				boolean selected = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+				long mappingRoleId = Validator.isNotNull(jobPos)?jobPos.getMappingRoleId():0;
+				
+				boolean selected = ResourcePermissionLocalServiceUtil.hasResourcePermission(
+						serviceContext.getCompanyId(), ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+						ResourceConstants.SCOPE_INDIVIDUAL,
+						String.valueOf(mappingRoleId), mappingRoleId,
 						actionKey);
-
+						
+//						authImpl.userHasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+//						actionKey);
+				
 				ett.setSelected(selected);
 
 				results.add(ett);

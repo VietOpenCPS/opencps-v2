@@ -16,7 +16,6 @@ package org.opencps.dossiermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -24,8 +23,7 @@ import java.util.List;
 
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
-import org.opencps.dossiermgt.constants.DossierFileTerm;
-import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.exception.DuplicateDossierFileException;
 import org.opencps.dossiermgt.exception.InvalidDossierStatusException;
 import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
 //import org.opencps.dossiermgt.jasperreport.util.JRReportUtil;
@@ -54,7 +52,6 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -93,7 +90,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		
 		long userId = serviceContext.getUserId();
 
-		validateDossierFile(groupId, dossierId, referenceUid, 
+		validateAddDossierFile(groupId, dossierId, referenceUid, 
 				dossierTemplateNo, dossierPartNo, fileTemplateNo);
 		
 		DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(
@@ -249,6 +246,63 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		}
 	}
 	
+	/**
+	 * POST /dossiers/{id|referenceUid}/files/{referenceUid}
+	 */
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierFile updateDossierFile(long groupId, long dossierId, String referenceUid, 
+			String displayName,
+			String sourceFileName, InputStream inputStream, ServiceContext serviceContext)
+		throws PortalException, SystemException {
+		
+		long userId = serviceContext.getUserId();
+		
+		DossierFile dossierFile = dossierFileLocalService.getDossierFileByReferenceUid(
+				dossierId, referenceUid);
+
+		long fileEntryId = 0;
+		
+		try {
+			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, 
+					groupId, dossierFile.getFileEntryId(), inputStream, sourceFileName, null, 0,
+					serviceContext);
+			
+			if(fileEntry != null) {
+				fileEntryId = fileEntry.getFileEntryId();
+			}
+		} catch(Exception e) {
+			throw new SystemException(e);
+		}
+
+		Date now = new Date();
+
+		User userAction = userLocalService.getUser(userId);
+
+		// Add audit fields
+		dossierFile.setModifiedDate(now);
+		dossierFile.setUserId(userAction.getUserId());
+		dossierFile.setUserName(userAction.getFullName());
+
+		// Add other fields
+
+		dossierFile.setDossierId(dossierId);
+		if(Validator.isNull(referenceUid)) {
+			referenceUid = PortalUUIDUtil.generate();
+		}
+		
+		dossierFile.setFileEntryId(fileEntryId);
+		if(Validator.isNull(displayName)) {
+			displayName = sourceFileName;
+		}
+		
+		dossierFile.setDisplayName(displayName);
+		dossierFile.setOriginal(true);
+		dossierFile.setIsNew(true);
+
+		return dossierFilePersistence.update(dossierFile);
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile updateFormData(long groupId, long dossierId, String referenceUid, String formData,
 			ServiceContext serviceContext) 
 			throws PortalException, SystemException {
@@ -278,10 +332,11 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		// auto generate pdf
 		long fileEntryId = 0;
 		
-		try {
-			File file = FileUtil.createTempFile("pdf");
+		/*try {
+			File file = FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
 			
-			String sourceFileName = System.currentTimeMillis() + ".pdf";
+			String sourceFileName = System.currentTimeMillis() + StringPool.PERIOD + 
+					JRReportUtil.DocType.PDF.toString();
 			
 			//JRReportUtil.createReportFile(jrxmlTemplate, formData, null, file.getCanonicalPath());
 			
@@ -291,7 +346,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			fileEntryId = fileEntry.getFileEntryId();
 		} catch(Exception e) {
 			throw new SystemException(e);
-		}
+		}*/
 		
 		dossierFile.setFileEntryId(fileEntryId);
 		
@@ -525,6 +580,12 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 	}
 	
+	/**
+	 * Deny if status of dossier not new or waiting
+	 * 
+	 * @param dossierFile
+	 * @throws PortalException
+	 */
 	private void validateDeleteDossierFile(DossierFile dossierFile) 
 		throws PortalException {
 
@@ -539,12 +600,22 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		}
 	}
 
-	private void validateDossierFile(long groupId, long dossierId, 
+	private void validateAddDossierFile(long groupId, long dossierId, 
 			String referenceUid, String dossierTemplateNo,
 			String dossierPartNo, String fileTemplateNo) 
 		throws PortalException {
-
+		
 		// TODO add more logic here
+		
+		dossierPersistence.findByPrimaryKey(dossierId);
+		
+		if(Validator.isNotNull(referenceUid)) {
+			DossierFile dossierFile = dossierFilePersistence.fetchByD_RUID(dossierId, referenceUid, false);
+			
+			if(dossierFile != null) {
+				throw new DuplicateDossierFileException();
+			}
+		}
 	}
 
 	public static final String CLASS_NAME = DossierFile.class.getName();

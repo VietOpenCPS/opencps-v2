@@ -17,6 +17,7 @@ package org.opencps.dossiermgt.service.impl;
 import aQute.bnd.annotation.ProviderType;
 
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.service.base.DossierSyncLocalServiceBaseImpl;
@@ -75,5 +76,21 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 		dossierSyncPersistence.update(dossierSync);
 		
 		return dossierSync;
+	}
+	
+	public List<DossierSync> fetchByServerNo(String serverNo, int start, int end) {
+		return dossierSyncPersistence.findBySRV_NO(serverNo, start, end);
+	}
+	
+	public List<DossierSync> fetchByGroupId(long groupId, int start, int end) {
+		return dossierSyncPersistence.findByG_ID(groupId, start, end);
+	}
+	
+	public List<DossierSync> fetchByGroupDossierId(long groupId, long dossierId, int start, int end) {
+		return dossierSyncPersistence.findByG_ID_DID(groupId, dossierId, start, end);
+	}
+	
+	public List<DossierSync> fetchByGroupDossierRef(long groupId, String dossierRef, int start, int end) {
+		return dossierSyncPersistence.findByG_ID_DRF(groupId, dossierRef, start, end);
 	}
 }

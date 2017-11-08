@@ -9,6 +9,8 @@
 	dossierPartNo : 401,
 	serviceConfigId : 301,
 	"ajax":{
+		"customer_dossier_detail_2": "customer_dossier_detail_2.ftl",
+	    "customer_dossier_detail_3": "customer_dossier_detail_3.ftl",
 		"customer_dossierlist": "customer_dossierlist.ftl",
 		"customer_dossier_detail": "customer_dossier_detail.ftl",
 		"customer_dossier_detail_2": "customer_dossier_detail_2.ftl",
@@ -28,9 +30,6 @@
 		"serviceconfig": "serviceconfig.ftl",
 		"serviceconfig_administration": "serviceconfig_administration.ftl",
 		"serviceconfig_domain": "serviceconfig_domain.ftl",
-		"serviceconfig_administration":"serviceconfig_administration.ftl",
-		"serviceconfig_domain":"serviceconfig_domain.ftl",
-		"customer_dossier_detail_filetemplate":"customer_dossier_detail_filetemplate.ftl",
 		"customer_uploadfile":"customer_uploadfile.ftl",
 		"customer_dossier_online_form_dialog":"customer_dossier_online_form_dialog.ftl",
 		"customer_dossier_info":"customer_dossier_info.ftl",
@@ -41,6 +40,10 @@
 	"include":{
 			"dossierdetail_defaultprocess":"dossierdetail_defaultprocess.ftl"
 	},
+	groupId: 20147,
+	dossierId : 101,
+	dossierTemplateNo : 201,
+	dossierPartNo : 401,
 	"customer":{
 		administrative_region: 1,
 		status:'[
@@ -668,7 +671,11 @@
 					}
 				]
 			}
-	]
+	],
+	"dossier_success": {
+		"name": "Cục bản quyền tác giả",
+		"postoffice": "true"
+	}
 
 
 }

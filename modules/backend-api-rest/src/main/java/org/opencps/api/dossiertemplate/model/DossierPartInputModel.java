@@ -64,7 +64,7 @@ public class DossierPartInputModel {
 	@FormParam(value = "partTip")
     protected String partTip;
 	@FormParam(value = "partType")
-    protected Integer partType;
+    protected int partType;
 	@FormParam(value = "multiple")
     protected String multiple;
 	@FormParam(value = "required")

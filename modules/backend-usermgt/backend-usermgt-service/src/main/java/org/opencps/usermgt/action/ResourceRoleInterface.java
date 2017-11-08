@@ -9,9 +9,9 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.NotFoundException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public interface ResourceRoleInterface {
 
@@ -21,7 +21,7 @@ public interface ResourceRoleInterface {
 
 	public ResourceRole create(long userId, long groupId, String className, String classPK, Long roleId,
 			ServiceContext serviceContext)
-			throws NoSuchUserException, UnauthenticationException, UnauthorizationException;
+			throws NoSuchUserException, UnauthenticationException, UnauthorizationException, NotFoundException;
 
 	public boolean delete(long userId, long groupId, String className, String classPK, long roleId,
 			ServiceContext serviceContext)
@@ -29,5 +29,9 @@ public interface ResourceRoleInterface {
 
 	public void createResourceRolePatch(String className, String classPK, long userId, long companyId, long groupId,
 			String roles, ServiceContext serviceContext)
+			throws NotFoundException, UnauthenticationException, UnauthorizationException, NoSuchUserException;
+
+	public void clone(String className, String classPK, long userId, long companyId, long groupId, String sourcePK,
+			ServiceContext serviceContext)
 			throws NotFoundException, UnauthenticationException, UnauthorizationException, NoSuchUserException;
 }

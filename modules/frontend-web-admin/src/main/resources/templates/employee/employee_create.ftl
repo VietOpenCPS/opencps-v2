@@ -124,7 +124,7 @@
 
 				<div class="col-sm-6" id=""> 
 
-					<button class="btn btn-sm btn-primary pull-right" id="employee-create-submit-btn" name="employee-create-submit-btn" type="button">
+					<button class="btn btn-sm btn-active pull-right" id="employee-create-submit-btn" name="employee-create-submit-btn" type="button">
 						<i class="fa fa-check-circle"></i>
 						<span class="lfr-btn-label">Xác nhận</span>
 					</button>
@@ -256,7 +256,12 @@
 
 				// redirect to detail page
 				$("#modal-lg").trigger({ type: "click" });
-				$( "#employee-index-page").load("${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId);
+				// $( "#employee-index-page").load("${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId);
+
+				$("#employee_list").hide();
+				$("#employee_detail").show();
+
+				$( "#employee_detail").load("${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId=" + data.employeeId);
 
 				showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
 				

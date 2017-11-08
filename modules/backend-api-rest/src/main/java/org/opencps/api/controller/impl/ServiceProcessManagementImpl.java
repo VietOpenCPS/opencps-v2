@@ -85,7 +85,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getServiceProcesses(user.getUserId(), serviceContext.getCompanyId(), groupId,
 					params, sorts, query.getStart(), query.getEnd(), serviceContext);
@@ -529,7 +529,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			params.put(ProcessStepTerm.SERVICE_PROCESS_ID, id);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					GetterUtil.getBoolean(query.getOrder())) };
 
 			ProcessStepResultsModel results = new ProcessStepResultsModel();
 
@@ -982,7 +982,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			params.put(ProcessActionTerm.SERVICE_PROCESS_ID, id);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					GetterUtil.getBoolean(query.getOrder())) };
 
 			ProcessActionResultsModel results = new ProcessActionResultsModel();
 

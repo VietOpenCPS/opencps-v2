@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -12,6 +13,7 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.ServiceConfigManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.ServiceConfigUtils;
+import org.opencps.api.controller.util.ServiceInfoUtils;
 import org.opencps.api.serviceconfig.model.ProcessOptionInputModel;
 import org.opencps.api.serviceconfig.model.ProcessOptionResultsModel;
 import org.opencps.api.serviceconfig.model.ProcessOptionSearchModel;
@@ -19,19 +21,30 @@ import org.opencps.api.serviceconfig.model.ServiceConfigDetailModel;
 import org.opencps.api.serviceconfig.model.ServiceConfigInputModel;
 import org.opencps.api.serviceconfig.model.ServiceConfigResultsModel;
 import org.opencps.api.serviceconfig.model.ServiceConfigSearchModel;
+import org.opencps.api.serviceinfo.model.ServiceInfoModel;
+import org.opencps.api.serviceinfo.model.ServiceInfoServiceConfig;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.ServiceConfigActions;
+import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
+import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -41,6 +54,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
@@ -81,7 +95,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			params.put(ServiceConfigTerm.APPICATION_TYPE, applicant);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getServiceConfigs(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
@@ -351,7 +365,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			params.put(ProcessOptionTerm.APPLICATION_TYPE, applicantType);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getProcessOptions(userId, serviceContext.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
@@ -394,9 +408,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			ProcessOption serviceConfig = actions.updateOption(groupId,input.getOptionName(), 0l, id, input.getSeqOrder(),
-					input.getAutoSelect(), input.getInstructionNote(), input.getSubmissionNote(), input.getDossierTemplateId(),
-					input.getServiceProcessId(), serviceContext);
+			ProcessOption serviceConfig = actions.updateOption(groupId, input.getOptionName(), 0l, id,
+					input.getSeqOrder(), input.getAutoSelect(), input.getInstructionNote(), input.getSubmissionNote(),
+					input.getDossierTemplateId(), input.getServiceProcessId(), serviceContext);
 
 			returnModel = ServiceConfigUtils.mappingToProcessOption(serviceConfig);
 
@@ -452,9 +466,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			ProcessOption processOption = actions.updateOption(groupId, input.getOptionName(), optionId, id, input.getSeqOrder(),
-					input.getAutoSelect(), input.getInstructionNote(), input.getSubmissionNote(), input.getDossierTemplateId(),
-					input.getServiceProcessId(), serviceContext);
+			ProcessOption processOption = actions.updateOption(groupId, input.getOptionName(), optionId, id,
+					input.getSeqOrder(), input.getAutoSelect(), input.getInstructionNote(), input.getSubmissionNote(),
+					input.getDossierTemplateId(), input.getServiceProcessId(), serviceContext);
 
 			returnModel = ServiceConfigUtils.mappingToProcessOption(processOption);
 
@@ -494,7 +508,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 	@Override
 	public Response removeProcessOption(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, long optionId) {
-		
+
 		ServiceConfigActions actions = new ServiceConfigActionImpl();
 
 		org.opencps.api.serviceconfig.model.ProcessOption returnModel = new org.opencps.api.serviceconfig.model.ProcessOption();
@@ -544,6 +558,143 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				}
 			}
 		}
+	}
+
+	@Override
+	public Response getServiceConfigsByGovAgency(
+		HttpServletRequest request, HttpHeaders header, Company company,
+		Locale locale, User user, ServiceContext serviceContext) {
+		
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+
+		results.put("govAgencys", generateGovAgencys(serviceContext));
+
+		return Response.status(200).entity(results).build();
+	}
+
+	@Override
+	public Response getServiceConfigsByDomain(
+		HttpServletRequest request, HttpHeaders header, Company company,
+		Locale locale, User user, ServiceContext serviceContext) {
+
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+
+		results.put("domains", generateDomains(serviceContext));
+
+		return Response.status(200).entity(results).build();
+	}
+
+	private List<JSONObject> generateGovAgencys(ServiceContext serviceContext) {
+
+		List<JSONObject> govAgencys = new ArrayList<>();
+
+		DictCollection govAgencyCollection =
+			DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(
+				"GOVERNMENT_AGENCY", serviceContext.getScopeGroupId());
+
+		List<DictItem> govItems =
+			DictItemLocalServiceUtil.findByF_dictCollectionId(
+				govAgencyCollection.getDictCollectionId());
+
+		for (DictItem govItem : govItems) {
+			JSONObject govJsonObj = JSONFactoryUtil.createJSONObject();
+
+			govJsonObj.put("govAgencyCode", govItem.getItemCode());
+			govJsonObj.put("govAgencyName", govItem.getItemName());
+
+			govJsonObj.put("domains", generateDomains(serviceContext));
+
+			govAgencys.add(govJsonObj);
+		}
+
+		return govAgencys;
+	}
+
+	private List<JSONObject> generateDomains(ServiceContext serviceContext) {
+
+		List<JSONObject> domains = new ArrayList<>();
+
+		DictCollection domainCollection =
+			DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(
+				"SERVICE_DOMAIN", serviceContext.getScopeGroupId());
+
+		List<DictItem> domainItems =
+			DictItemLocalServiceUtil.findByF_dictCollectionId(
+				domainCollection.getDictCollectionId());
+
+		for (DictItem domainItem : domainItems) {
+			JSONObject domainJsonObj = JSONFactoryUtil.createJSONObject();
+
+			domainJsonObj.put("domainCode", domainItem.getItemCode());
+			domainJsonObj.put("domainName", domainItem.getItemName());
+
+			domainJsonObj.put(
+				"serviceInfos",
+				generateServiceInfos(serviceContext, domainItem.getItemCode()));
+
+			domains.add(domainJsonObj);
+		}
+
+		return domains;
+	}
+
+	private List<JSONObject> generateServiceInfos(
+		ServiceContext serviceContext, String domainCode) {
+
+		List<JSONObject> serviceInfos = new ArrayList<>();
+
+		ServiceInfoActions serviceInfoActions = new ServiceInfoActionsImpl();
+
+		LinkedHashMap<String, Object> params = new LinkedHashMap<>();
+		params.put(
+			Field.GROUP_ID, String.valueOf(serviceContext.getScopeGroupId()));
+		params.put(ServiceInfoTerm.DOMAIN_CODE, domainCode);
+
+		JSONObject serviceInfoJson = serviceInfoActions.getServiceInfos(
+			serviceContext.getUserId(), serviceContext.getCompanyId(),
+			serviceContext.getScopeGroupId(), params, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, serviceContext);
+
+		List<ServiceInfoModel> serviceInfoList =
+			ServiceInfoUtils.mappingToServiceInfoResultModel(
+				(List<Document>) serviceInfoJson.get("data"), serviceContext);
+
+		if (Validator.isNotNull(serviceInfoList)) {
+			for (ServiceInfoModel serviceInfo : serviceInfoList) {
+				JSONObject serviceInfoJsonObj =
+					JSONFactoryUtil.createJSONObject();
+
+				serviceInfoJsonObj.put(
+					"serviceCode", serviceInfo.getServiceCode());
+				serviceInfoJsonObj.put(
+					"serviceName", serviceInfo.getServiceName());
+
+				serviceInfoJsonObj.put(
+					"serviceConfigs",
+					generateServiceConfigs(serviceInfo.getServiceConfigs()));
+
+				serviceInfos.add(serviceInfoJsonObj);
+			}
+		}
+
+		return serviceInfos;
+	}
+
+	private List<JSONObject> generateServiceConfigs(
+		List<ServiceInfoServiceConfig> serviceConfigList) {
+
+		List<JSONObject> serviceConfigs = new ArrayList<>();
+
+		for (ServiceInfoServiceConfig cf : serviceConfigList) {
+			JSONObject cfJson = JSONFactoryUtil.createJSONObject();
+
+			cfJson.put("level", cf.getServiceLevel());
+			cfJson.put("govAgencyCode", cf.getGovAgencyCode());
+			cfJson.put("govAgencyName", cf.getGovAgencyName());
+			// cfJson.put("serviceConfigId", cf.) // TODO need serviceConfigId
+		}
+
+		return serviceConfigs;
 	}
 
 }

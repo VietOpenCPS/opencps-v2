@@ -35,9 +35,9 @@
 	},
 	"url":{
 		"adminWorkingUnitPortlet": {
-			"working_unit_list": "working-unit/working_unit_list.ftl?p_p_lifecycle=1",
-			"working_unit_detail": "working-unit/working_unit_detail.ftl?p_p_lifecycle=1",
-			"working_unit_create": "working-unit/working_unit_create.ftl?p_p_lifecycle=1"
+			"working_unit_list": "workingunit/working_unit_list.ftl?p_p_lifecycle=1",
+			"working_unit_detail": "workingunit/working_unit_detail.ftl?p_p_lifecycle=1",
+			"working_unit_create": "workingunit/working_unit_create.ftl?p_p_lifecycle=1"
 		},
 		"adminDataMgtPortlet" : {
 			"dictcollection_list": "datamgt/dictcollection_list.ftl?p_p_lifecycle=1",

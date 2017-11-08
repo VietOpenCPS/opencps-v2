@@ -61,6 +61,12 @@
 			<finder-column name="serviceCode" />
 			<finder-column name="groupId" />
 		</finder>
+		
+		<finder name="GI_DC" return-type="Collection">
+			<finder-column name="domainCode" />
+			<finder-column name="groupId" />
+		</finder>
+		
 
 		<!-- References -->
 
@@ -223,7 +229,12 @@
 		<column name="postService" type="boolean" />
 		<column name="registration" type="boolean" />
 
-
+		<finder return-type="ServiceConfig" name="GID_SI_GAC">
+			<finder-column name="groupId"/>
+			<finder-column name="serviceInfoId"/>
+			<finder-column name="govAgencyCode"/>
+		</finder>
+		
 	</entity>
 
 	<entity name="ProcessOption" table="opencps_processoption"
@@ -258,6 +269,16 @@
 		
 		<finder return-type="Collection" name="SC_ID">
 			<finder-column name="serviceConfigId"/>
+		</finder>
+
+		<finder return-type="ProcessOption" name="SC_ID_OP">
+			<finder-column name="serviceConfigId"/>
+			<finder-column name="optionOrder"/>
+		</finder>
+
+		<finder return-type="ProcessOption" name="SC_DT">
+			<finder-column name="serviceConfigId"/>
+			<finder-column name="dossierTemplateId"/>
 		</finder>
 
 	</entity>
@@ -360,6 +381,11 @@
 		<finder return-type="Collection" name="G_DTN">
 			<finder-column name="groupId"/>
 			<finder-column name="dossierTemplateNo"/>
+		</finder>
+		
+		<finder return-type="Collection" name="G_DID">
+			<finder-column name="groupId"/>
+			<finder-column name="dossierId"/>
 		</finder>
 		
 		<!-- References -->
@@ -603,6 +629,16 @@
 			<finder-column name="groupId" />
 			<finder-column name="processName" />
 		</finder>
+		
+		<finder return-type="ServiceProcess" name="GID_SN">
+			<finder-column name="groupId" />
+			<finder-column name="serverNo" />
+		</finder>
+		
+		<finder return-type="Collection" name="SVR_NO">
+			<finder-column name="serverNo" />
+		</finder>
+
 
 	</entity>
 
@@ -706,6 +742,11 @@
 			<finder-column name="serviceProcessId" />
 		</finder>
 		
+		<finder return-type="Collection" name="GI_AC">
+			<finder-column name="groupId" />
+			<finder-column name="actionCode" />
+		</finder>
+		
 		<finder return-type="Collection" name="PRE_CODE">
 			<finder-column name="preStepCode" />
 			<finder-column name="groupId" />
@@ -714,6 +755,12 @@
 		<finder return-type="Collection" name="POST_CODE">
 			<finder-column name="postStepCode" />
 			<finder-column name="groupId" />
+		</finder>
+		
+		<finder return-type="ProcessAction" name="SPI_PRESC_AEV">
+			<finder-column name="serviceProcessId" />
+			<finder-column name="preStepCode" />
+			<finder-column name="autoEvent" />
 		</finder>
 
 	</entity>
@@ -747,7 +794,17 @@
 		<column name="nextActionId" type="long" />
 		<column name="payload" type="String" />
 		<column name="stepInstruction" type="String" />
-
+	
+		<finder return-type="DossierAction" name="DID_DPG">
+			<finder-column name="dossierId"/>
+			<finder-column name="pending"/>
+		</finder>
+		
+		<finder return-type="DossierAction" name="DID_NACTID">
+			<finder-column name="dossierId"/>
+			<finder-column name="nextActionId"/>
+		</finder>
+		
 	</entity>
 
 	<entity local-service="true" name="DossierActionUser"
@@ -818,6 +875,10 @@
 			<finder-column name="dossierReferenceUid"/>
 		</finder>
 		
+		<finder return-type="Collection" name="SRV_NO">
+			<finder-column name="serverNo"/>
+		</finder>
+		
 	</entity>
 
 	<exceptions>
@@ -872,5 +933,11 @@
 		<exception>HasExsist</exception>
 		
 		<exception>InvalidDossierStatus</exception>
+		<exception>DuplicateDossierFile</exception>
+		
+		<exception>DossierPassword</exception>
+		<exception>DossierAccess</exception>
+		<exception>SeqOrder</exception>
+		
 	</exceptions>
 </service-builder>

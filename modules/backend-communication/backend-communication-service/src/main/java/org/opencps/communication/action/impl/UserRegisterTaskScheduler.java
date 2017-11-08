@@ -1,11 +1,9 @@
 package org.opencps.communication.action.impl;
 
-import java.util.Date;
 import java.util.List;
 
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
-import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;

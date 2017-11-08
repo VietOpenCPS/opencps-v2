@@ -3621,6 +3621,912 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 	}
 
 	private static final String _FINDER_COLUMN_F_PARENTITEMID_PARENTITEMID_2 = "dictItem.parentItemId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_PARENTITEMID_LEVEL =
+		new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
+			DictItemModelImpl.FINDER_CACHE_ENABLED, DictItemImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByF_parentItemId_level",
+			new String[] {
+				Long.class.getName(), Long.class.getName(), Long.class.getName(),
+				Integer.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_PARENTITEMID_LEVEL =
+		new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
+			DictItemModelImpl.FINDER_CACHE_ENABLED, DictItemImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByF_parentItemId_level",
+			new String[] {
+				Long.class.getName(), Long.class.getName(), Long.class.getName(),
+				Integer.class.getName()
+			},
+			DictItemModelImpl.GROUPID_COLUMN_BITMASK |
+			DictItemModelImpl.DICTCOLLECTIONID_COLUMN_BITMASK |
+			DictItemModelImpl.PARENTITEMID_COLUMN_BITMASK |
+			DictItemModelImpl.LEVEL_COLUMN_BITMASK |
+			DictItemModelImpl.TREEINDEX_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_PARENTITEMID_LEVEL = new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
+			DictItemModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByF_parentItemId_level",
+			new String[] {
+				Long.class.getName(), Long.class.getName(), Long.class.getName(),
+				Integer.class.getName()
+			});
+
+	/**
+	 * Returns all the dict items where groupId = &#63; and dictCollectionId = &#63; and parentItemId = &#63; and level = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dictCollectionId the dict collection ID
+	 * @param parentItemId the parent item ID
+	 * @param level the level
+	 * @return the matching dict items
+	 */
+	@Override
+	public List<DictItem> findByF_parentItemId_level(long groupId,
+		long dictCollectionId, long parentItemId, int level) {
+		return findByF_parentItemId_level(groupId, dictCollectionId,
+			parentItemId, level, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dict items where groupId = &#63; and dictCollectionId = &#63; and parentItemId = &#63; and level = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param dictCollectionId the dict collection ID
+	 * @param parentItemId the parent item ID
+	 * @param level the level
+	 * @param start the lower bound of the range of dict items
+	 * @param end the upper bound of the range of dict items (not inclusive)
+	 * @return the range of matching dict items
+	 */
+	@Override
+	public List<DictItem> findByF_parentItemId_level(long groupId,
+		long dictCollectionId, long parentItemId, int level, int start, int end) {
+		return findByF_parentItemId_level(groupId, dictCollectionId,
+			parentItemId, level, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dict items where groupId = &#63; and dictCollectionId = &#63; and parentItemId = &#63; and level = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param dictCollectionId the dict collection ID
+	 * @param parentItemId the parent item ID
+	 * @param level the level
+	 * @param start the lower bound of the range of dict items
+	 * @param end the upper bound of the range of dict items (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dict items
+	 */
+	@Override
+	public List<DictItem> findByF_parentItemId_level(long groupId,
+		long dictCollectionId, long parentItemId, int level, int start,
+		int end, OrderByComparator<DictItem> orderByComparator) {
+		return findByF_parentItemId_level(groupId, dictCollectionId,
+			parentItemId, level, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dict items where groupId = &#63; and dictCollectionId = &#63; and parentItemId = &#63; and level = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param dictCollectionId the dict collection ID
+	 * @param parentItemId the parent item ID
+	 * @param level the level
+	 * @param start the lower bound of the range of dict items
+	 * @param end the upper bound of the range of dict items (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dict items
+	 */
+	@Override
+	public List<DictItem> findByF_parentItemId_level(long groupId,
+		long dictCollectionId, long parentItemId, int level, int start,
+		int end, OrderByComparator<DictItem> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_PARENTITEMID_LEVEL;
+			finderArgs = new Object[] {
+					groupId, dictCollectionId, parentItemId, level
+				};
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_PARENTITEMID_LEVEL;
+			finderArgs = new Object[] {
+					groupId, dictCollectionId, parentItemId, level,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<DictItem> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<DictItem>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (DictItem dictItem : list) {
+					if ((groupId != dictItem.getGroupId()) ||
+							(dictCollectionId != dictItem.getDictCollectionId()) ||
+							(parentItemId != dictItem.getParentItemId()) ||
+							(level != dictItem.getLevel())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(6 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(6);
+			}
+
+			query.append(_SQL_SELECT_DICTITEM_WHERE);
+
+			query.append(_FINDER_COLUMN_F_PARENTITEMID_LEVEL_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_PARENTITEMID_LEVEL_DICTCOLLECTIONID_2);
+
+			query.append(_FINDER_COLUMN_F_PARENTITEMID_LEVEL_PARENTITEMID_2);
+
+			query.append(_FINDER_COLUMN_F_PARENTITEMID_LEVEL_LEVEL_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DictItemModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(dictCollectionId);
+
+				qPos.add(parentItemId);
+
+				qPos.add(level);
+
+				if (!pagination) {
+					list = (List<DictItem>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<DictItem>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first dict item in the ordered set where groupId = &#63; and dictCollectionId = &#63; and parentItemId = &#63; and level = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dictCollectionId the dict collection ID
+	 * @param parentItemId the parent item ID
+	 * @param level the level
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dict item
+	 * @throws NoSuchDictItemException if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem findByF_parentItemId_level_First(long groupId,
+		long dictCollectionId, long parentItemId, int level,
+		OrderByComparator<DictItem> orderByComparator)
+		throws NoSuchDictItemException {
+		DictItem dictItem = fetchByF_parentItemId_level_First(groupId,
+				dictCollectionId, parentItemId, level, orderByComparator);
+
+		if (dictItem != null) {
+			return dictItem;
+		}
+
+		StringBundler msg = new StringBundler(10);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", dictCollectionId=");
+		msg.append(dictCollectionId);
+
+		msg.append(", parentItemId=");
+		msg.append(parentItemId);
+
+		msg.append(", level=");
+		msg.append(level);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchDictItemException(msg.toString());
+	}
+
+	/**
+	 * Returns the first dict item in the ordered set where groupId = &#63; and dictCollectionId = &#63; and parentItemId = &#63; and level = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dictCollectionId the dict collection ID
+	 * @param parentItemId the parent item ID
+	 * @param level the level
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dict item, or <code>null</code> if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem fetchByF_parentItemId_level_First(long groupId,
+		long dictCollectionId, long parentItemId, int level,
+		OrderByComparator<DictItem> orderByComparator) {
+		List<DictItem> list = findByF_parentItemId_level(groupId,
+				dictCollectionId, parentItemId, level, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last dict item in the ordered set where groupId = &#63; and dictCollectionId = &#63; and parentItemId = &#63; and level = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dictCollectionId the dict collection ID
+	 * @param parentItemId the parent item ID
+	 * @param level the level
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dict item
+	 * @throws NoSuchDictItemException if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem findByF_parentItemId_level_Last(long groupId,
+		long dictCollectionId, long parentItemId, int level,
+		OrderByComparator<DictItem> orderByComparator)
+		throws NoSuchDictItemException {
+		DictItem dictItem = fetchByF_parentItemId_level_Last(groupId,
+				dictCollectionId, parentItemId, level, orderByComparator);
+
+		if (dictItem != null) {
+			return dictItem;
+		}
+
+		StringBundler msg = new StringBundler(10);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", dictCollectionId=");
+		msg.append(dictCollectionId);
+
+		msg.append(", parentItemId=");
+		msg.append(parentItemId);
+
+		msg.append(", level=");
+		msg.append(level);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchDictItemException(msg.toString());
+	}
+
+	/**
+	 * Returns the last dict item in the ordered set where groupId = &#63; and dictCollectionId = &#63; and parentItemId = &#63; and level = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dictCollectionId the dict collection ID
+	 * @param parentItemId the parent item ID
+	 * @param level the level
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dict item, or <code>null</code> if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem fetchByF_parentItemId_level_Last(long groupId,
+		long dictCollectionId, long parentItemId, int level,
+		OrderByComparator<DictItem> orderByComparator) {
+		int count = countByF_parentItemId_level(groupId, dictCollectionId,
+				parentItemId, level);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<DictItem> list = findByF_parentItemId_level(groupId,
+				dictCollectionId, parentItemId, level, count - 1, count,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the dict items before and after the current dict item in the ordered set where groupId = &#63; and dictCollectionId = &#63; and parentItemId = &#63; and level = &#63;.
+	 *
+	 * @param dictItemId the primary key of the current dict item
+	 * @param groupId the group ID
+	 * @param dictCollectionId the dict collection ID
+	 * @param parentItemId the parent item ID
+	 * @param level the level
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next dict item
+	 * @throws NoSuchDictItemException if a dict item with the primary key could not be found
+	 */
+	@Override
+	public DictItem[] findByF_parentItemId_level_PrevAndNext(long dictItemId,
+		long groupId, long dictCollectionId, long parentItemId, int level,
+		OrderByComparator<DictItem> orderByComparator)
+		throws NoSuchDictItemException {
+		DictItem dictItem = findByPrimaryKey(dictItemId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			DictItem[] array = new DictItemImpl[3];
+
+			array[0] = getByF_parentItemId_level_PrevAndNext(session, dictItem,
+					groupId, dictCollectionId, parentItemId, level,
+					orderByComparator, true);
+
+			array[1] = dictItem;
+
+			array[2] = getByF_parentItemId_level_PrevAndNext(session, dictItem,
+					groupId, dictCollectionId, parentItemId, level,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected DictItem getByF_parentItemId_level_PrevAndNext(Session session,
+		DictItem dictItem, long groupId, long dictCollectionId,
+		long parentItemId, int level,
+		OrderByComparator<DictItem> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(7 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(6);
+		}
+
+		query.append(_SQL_SELECT_DICTITEM_WHERE);
+
+		query.append(_FINDER_COLUMN_F_PARENTITEMID_LEVEL_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_F_PARENTITEMID_LEVEL_DICTCOLLECTIONID_2);
+
+		query.append(_FINDER_COLUMN_F_PARENTITEMID_LEVEL_PARENTITEMID_2);
+
+		query.append(_FINDER_COLUMN_F_PARENTITEMID_LEVEL_LEVEL_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(DictItemModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(dictCollectionId);
+
+		qPos.add(parentItemId);
+
+		qPos.add(level);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(dictItem);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<DictItem> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the dict items where groupId = &#63; and dictCollectionId = &#63; and parentItemId = &#63; and level = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param dictCollectionId the dict collection ID
+	 * @param parentItemId the parent item ID
+	 * @param level the level
+	 */
+	@Override
+	public void removeByF_parentItemId_level(long groupId,
+		long dictCollectionId, long parentItemId, int level) {
+		for (DictItem dictItem : findByF_parentItemId_level(groupId,
+				dictCollectionId, parentItemId, level, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(dictItem);
+		}
+	}
+
+	/**
+	 * Returns the number of dict items where groupId = &#63; and dictCollectionId = &#63; and parentItemId = &#63; and level = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dictCollectionId the dict collection ID
+	 * @param parentItemId the parent item ID
+	 * @param level the level
+	 * @return the number of matching dict items
+	 */
+	@Override
+	public int countByF_parentItemId_level(long groupId, long dictCollectionId,
+		long parentItemId, int level) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_PARENTITEMID_LEVEL;
+
+		Object[] finderArgs = new Object[] {
+				groupId, dictCollectionId, parentItemId, level
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_COUNT_DICTITEM_WHERE);
+
+			query.append(_FINDER_COLUMN_F_PARENTITEMID_LEVEL_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_PARENTITEMID_LEVEL_DICTCOLLECTIONID_2);
+
+			query.append(_FINDER_COLUMN_F_PARENTITEMID_LEVEL_PARENTITEMID_2);
+
+			query.append(_FINDER_COLUMN_F_PARENTITEMID_LEVEL_LEVEL_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(dictCollectionId);
+
+				qPos.add(parentItemId);
+
+				qPos.add(level);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_PARENTITEMID_LEVEL_GROUPID_2 = "dictItem.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_PARENTITEMID_LEVEL_DICTCOLLECTIONID_2 =
+		"dictItem.dictCollectionId = ? AND ";
+	private static final String _FINDER_COLUMN_F_PARENTITEMID_LEVEL_PARENTITEMID_2 =
+		"dictItem.parentItemId = ? AND ";
+	private static final String _FINDER_COLUMN_F_PARENTITEMID_LEVEL_LEVEL_2 = "dictItem.level = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_IC_DCI = new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
+			DictItemModelImpl.FINDER_CACHE_ENABLED, DictItemImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByIC_DCI",
+			new String[] { String.class.getName(), Long.class.getName() },
+			DictItemModelImpl.ITEMCODE_COLUMN_BITMASK |
+			DictItemModelImpl.DICTCOLLECTIONID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_IC_DCI = new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
+			DictItemModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByIC_DCI",
+			new String[] { String.class.getName(), Long.class.getName() });
+
+	/**
+	 * Returns the dict item where itemCode = &#63; and dictCollectionId = &#63; or throws a {@link NoSuchDictItemException} if it could not be found.
+	 *
+	 * @param itemCode the item code
+	 * @param dictCollectionId the dict collection ID
+	 * @return the matching dict item
+	 * @throws NoSuchDictItemException if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem findByIC_DCI(String itemCode, long dictCollectionId)
+		throws NoSuchDictItemException {
+		DictItem dictItem = fetchByIC_DCI(itemCode, dictCollectionId);
+
+		if (dictItem == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("itemCode=");
+			msg.append(itemCode);
+
+			msg.append(", dictCollectionId=");
+			msg.append(dictCollectionId);
+
+			msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDictItemException(msg.toString());
+		}
+
+		return dictItem;
+	}
+
+	/**
+	 * Returns the dict item where itemCode = &#63; and dictCollectionId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param itemCode the item code
+	 * @param dictCollectionId the dict collection ID
+	 * @return the matching dict item, or <code>null</code> if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem fetchByIC_DCI(String itemCode, long dictCollectionId) {
+		return fetchByIC_DCI(itemCode, dictCollectionId, true);
+	}
+
+	/**
+	 * Returns the dict item where itemCode = &#63; and dictCollectionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param itemCode the item code
+	 * @param dictCollectionId the dict collection ID
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching dict item, or <code>null</code> if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem fetchByIC_DCI(String itemCode, long dictCollectionId,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { itemCode, dictCollectionId };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_IC_DCI,
+					finderArgs, this);
+		}
+
+		if (result instanceof DictItem) {
+			DictItem dictItem = (DictItem)result;
+
+			if (!Objects.equals(itemCode, dictItem.getItemCode()) ||
+					(dictCollectionId != dictItem.getDictCollectionId())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_DICTITEM_WHERE);
+
+			boolean bindItemCode = false;
+
+			if (itemCode == null) {
+				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_1);
+			}
+			else if (itemCode.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_3);
+			}
+			else {
+				bindItemCode = true;
+
+				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_2);
+			}
+
+			query.append(_FINDER_COLUMN_IC_DCI_DICTCOLLECTIONID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindItemCode) {
+					qPos.add(itemCode);
+				}
+
+				qPos.add(dictCollectionId);
+
+				List<DictItem> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_IC_DCI,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DictItemPersistenceImpl.fetchByIC_DCI(String, long, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					DictItem dictItem = list.get(0);
+
+					result = dictItem;
+
+					cacheResult(dictItem);
+
+					if ((dictItem.getItemCode() == null) ||
+							!dictItem.getItemCode().equals(itemCode) ||
+							(dictItem.getDictCollectionId() != dictCollectionId)) {
+						finderCache.putResult(FINDER_PATH_FETCH_BY_IC_DCI,
+							finderArgs, dictItem);
+					}
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_IC_DCI, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (DictItem)result;
+		}
+	}
+
+	/**
+	 * Removes the dict item where itemCode = &#63; and dictCollectionId = &#63; from the database.
+	 *
+	 * @param itemCode the item code
+	 * @param dictCollectionId the dict collection ID
+	 * @return the dict item that was removed
+	 */
+	@Override
+	public DictItem removeByIC_DCI(String itemCode, long dictCollectionId)
+		throws NoSuchDictItemException {
+		DictItem dictItem = findByIC_DCI(itemCode, dictCollectionId);
+
+		return remove(dictItem);
+	}
+
+	/**
+	 * Returns the number of dict items where itemCode = &#63; and dictCollectionId = &#63;.
+	 *
+	 * @param itemCode the item code
+	 * @param dictCollectionId the dict collection ID
+	 * @return the number of matching dict items
+	 */
+	@Override
+	public int countByIC_DCI(String itemCode, long dictCollectionId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_IC_DCI;
+
+		Object[] finderArgs = new Object[] { itemCode, dictCollectionId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_DICTITEM_WHERE);
+
+			boolean bindItemCode = false;
+
+			if (itemCode == null) {
+				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_1);
+			}
+			else if (itemCode.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_3);
+			}
+			else {
+				bindItemCode = true;
+
+				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_2);
+			}
+
+			query.append(_FINDER_COLUMN_IC_DCI_DICTCOLLECTIONID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindItemCode) {
+					qPos.add(itemCode);
+				}
+
+				qPos.add(dictCollectionId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_IC_DCI_ITEMCODE_1 = "dictItem.itemCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_IC_DCI_ITEMCODE_2 = "dictItem.itemCode = ? AND ";
+	private static final String _FINDER_COLUMN_IC_DCI_ITEMCODE_3 = "(dictItem.itemCode IS NULL OR dictItem.itemCode = '') AND ";
+	private static final String _FINDER_COLUMN_IC_DCI_DICTCOLLECTIONID_2 = "dictItem.dictCollectionId = ?";
 
 	public DictItemPersistenceImpl() {
 		setModelClass(DictItem.class);
@@ -3648,6 +4554,10 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 				dictItem.getItemCode(), dictItem.getDictCollectionId(),
 				dictItem.getGroupId()
 			}, dictItem);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_IC_DCI,
+			new Object[] { dictItem.getItemCode(), dictItem.getDictCollectionId() },
+			dictItem);
 
 		dictItem.resetOriginalValues();
 	}
@@ -3746,6 +4656,16 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			args, Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_DICTITEMCODE_DICTCOLLECTIONID,
 			args, dictItemModelImpl, false);
+
+		args = new Object[] {
+				dictItemModelImpl.getItemCode(),
+				dictItemModelImpl.getDictCollectionId()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_IC_DCI, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_IC_DCI, args,
+			dictItemModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -3816,6 +4736,27 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 				args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_DICTITEMCODE_DICTCOLLECTIONID,
 				args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					dictItemModelImpl.getItemCode(),
+					dictItemModelImpl.getDictCollectionId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_IC_DCI, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_IC_DCI, args);
+		}
+
+		if ((dictItemModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_IC_DCI.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					dictItemModelImpl.getOriginalItemCode(),
+					dictItemModelImpl.getOriginalDictCollectionId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_IC_DCI, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_IC_DCI, args);
 		}
 	}
 
@@ -4083,6 +5024,33 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_PARENTITEMID,
 					args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_PARENTITEMID,
+					args);
+			}
+
+			if ((dictItemModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_PARENTITEMID_LEVEL.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						dictItemModelImpl.getOriginalGroupId(),
+						dictItemModelImpl.getOriginalDictCollectionId(),
+						dictItemModelImpl.getOriginalParentItemId(),
+						dictItemModelImpl.getOriginalLevel()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_PARENTITEMID_LEVEL,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_PARENTITEMID_LEVEL,
+					args);
+
+				args = new Object[] {
+						dictItemModelImpl.getGroupId(),
+						dictItemModelImpl.getDictCollectionId(),
+						dictItemModelImpl.getParentItemId(),
+						dictItemModelImpl.getLevel()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_PARENTITEMID_LEVEL,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_PARENTITEMID_LEVEL,
 					args);
 			}
 		}

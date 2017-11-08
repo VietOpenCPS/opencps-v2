@@ -8,6 +8,7 @@
 
 package org.opencps.api.serverconfig.model;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -54,7 +55,7 @@ public class ServerConfigSearchModel {
     protected int start;
 	@QueryParam("end")
     protected int end;
-	@QueryParam("sort")
+	@DefaultValue("createDate") @QueryParam("sort")
     protected String sort;
 	@QueryParam("order")
     protected String order;

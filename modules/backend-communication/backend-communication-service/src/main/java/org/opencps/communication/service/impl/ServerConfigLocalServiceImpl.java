@@ -174,4 +174,13 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 		// TODO add more business logic in here
 
 	}
+	
+	public ServerConfig getByCode(String serverNo) {
+		return serverConfigPersistence.fetchByCF_CD(serverNo);
+	}
+	
+	public ServerConfig getGroupId(long groupId) {
+		return serverConfigPersistence.fetchByCF_GID(groupId);
+	}
+
 }

@@ -10,7 +10,7 @@ import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.NotificationTemplateManagement;
 import org.opencps.api.controller.util.NotificationTemplateUtils;
-import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.api.notificationtemplate.model.DataSearchModel;
 import org.opencps.api.notificationtemplate.model.NotificationtemplateInputModel;
 import org.opencps.api.notificationtemplate.model.NotificationtemplateModel;
@@ -32,8 +32,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public class NotificationTemplateImpl implements NotificationTemplateManagement {
 
@@ -128,7 +128,8 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 
 			Notificationtemplate notificationtemplate = actions.update(user.getUserId(), groupId, type,
 					input.getEmailBody(), input.getEmailSubject(), input.getSendEmail(), input.getTextMessage(),
-					input.getTextSMS(), input.getExpireDuration(), serviceContext);
+					input.getTextSMS(), input.getExpireDuration(), input.getUserUrlPattern(),
+					input.getGuestUrlPattern(), input.getInterval(), input.getGrouping(), serviceContext);
 
 			notificationtemplateModel = NotificationTemplateUtils.mapperNotificationtemplateModel(notificationtemplate);
 

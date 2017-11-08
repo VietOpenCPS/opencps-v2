@@ -30,6 +30,16 @@ public class ResourceUserTerm {
 	public static final String TO_USERID = "toUserId";
 
 	public static final String TO_USERNAME = "toUserName";
+
+	public static final String FULLNAME = "fullName";
+
+	public static final String EMAIL = "email";
+
+	public static final String TELNO = "telNo";
+
+	public static final String READONLY = "readonly";
+	
+	public static final String USERCLASS = "userClass";
 	
 	public static final String RESOURCEUSER_ID_SORTABLE = "resourceUserId_sortable";
 
@@ -68,7 +78,11 @@ public class ResourceUserTerm {
 	private String className;
 	private String classPK;
 	private long toUserId;
-
+	private String fullName;
+	private String email;
+	private String telNo;
+	private boolean readonly;
+	
 	public ResourceUserTerm() {
 
 	}
@@ -151,5 +165,37 @@ public class ResourceUserTerm {
 
 	public void setToUserId(long toUserId) {
 		this.toUserId = toUserId;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getTelNo() {
+		return telNo;
+	}
+
+	public void setTelNo(String telNo) {
+		this.telNo = telNo;
+	}
+
+	public boolean isReadonly() {
+		return readonly;
+	}
+
+	public void setReadonly(boolean readonly) {
+		this.readonly = readonly;
 	}
 }
