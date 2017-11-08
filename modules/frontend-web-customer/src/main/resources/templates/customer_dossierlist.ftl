@@ -24,46 +24,37 @@
 						        label="label-info";
 						        break;
 						    case "Receiving":
-						        label="label-info";
+						        label="label-status-processing";
 						        break;
 						    case "Waiting":
-						        label="label-info";
-						        break;
-						    case "Paying":
-						        label="label-info";
+						        label="label-status-additional";
 						        break;
 						    case "Processing":
 						        label="label-info";
 						        break;
-						    case "Waiting":
-						        label="label-info";
-						        break;
 						    case "Paying":
-						       	label="label-info";
+						       	label="label-status-pending-payment";
 						        break;
 						    case "Handover":
 						        label="label-info";
 						        break;  
 						    case "Releasing":
 						        label="label-info";
-						        break;
-						    case "Paying":
-						        label="label-info";
 						        break;	
 						    case "Posting":
 						        label="label-info";
 						        break;
 					        case "Done":
-						        label="label-info";
+						        label="label-status-complete";
 						        break;
 					        case "Cancelled":
-						        label="label-info";
+						        label="label-status-cancel";
 						        break;					        
 						    default:
 						        label="label-info";
 						}
 					#
-					<span class="label #:label# MLA"><#-- #:dossierSubStatusText# -->Hoàn thành</span> 
+					<span class="label #:label# MLA">#:dossierSubStatusText#</span> 
 				</div>
 			</div>
 			<div class="col-sm-12 PL0 PT5 PB10">
@@ -130,11 +121,11 @@
 			</span>
 		</span>
 		<span id="pagerProfile" class="M0 P0 PR5"></span>
-	</div>
-	
+	</div>	
 </div>
 
-<script type="text/javascript">	
+<script type="text/javascript">
+	var router_pagination = new kendo.Router();
 	var dataSourceProfile=new kendo.data.DataSource({
 		transport:{
 			read:function(options){
@@ -200,9 +191,17 @@
 	$("#pagerProfile").kendoPager({
 		dataSource:dataSourceProfile,
 		buttonCount: 3,
-		info: false
+		info: false,
+		change : function(){
+			// var number_page = $("#pagerProfile .k-pager-numbers .k-state-selected").text()
+			// console.log(number_page);
+			// router_pagination.navigate("/"+number_page);
+			// return true;
+		}
 	});
-
+	$(function(){
+		router_pagination.start();
+	})
 	$(document).on("click",".itemCustomerDossierList",function(event){
 		var id = $(this).attr("dataPk");	
 		$("#idItemCustomerDossier").val(id);

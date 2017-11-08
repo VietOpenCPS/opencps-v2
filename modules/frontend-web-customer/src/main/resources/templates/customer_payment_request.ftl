@@ -7,7 +7,7 @@
 		<span class="pull-right clickable" data-toggle="collapse" data-target="#paymentRequest"> 
 			<i id="icon_collapse1" class="glyphicon glyphicon-chevron-up"></i> 
 		</span>
-		<span class="pull-right MR10 text-light-gray" id="sort_modified1"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+		<span class="pull-right MR10 text-light-gray hover-pointer" id="sort_modified1" title="Sắp xếp theo ngày"><i class="fa fa-calendar" aria-hidden="true"></i></span>
 	</div> 
 	<div class="panel-body P0 collapse in" id="paymentRequest">
 		<ul class='ul-with-border'>
@@ -41,7 +41,7 @@
 	});
 	var dataSourcePaymentRequest=new kendo.data.DataSource({
 		transport:{
-			read:function(options){
+			read:function(options, itemRequest){
 				$.ajax({
 					url:"${api.server}/dossiers/dossierlogs",
 					dataType:"json",
