@@ -7,7 +7,7 @@
 		<span class="pull-right clickable" data-toggle="collapse" data-target="#resultRequest"> 
 			<i id="icon_collapse2" class="glyphicon glyphicon-chevron-up"></i>
 		</span> 
-		<span class="pull-right MR10 text-light-gray" id="sort_modified2"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+		<span class="pull-right MR10 text-light-gray hover-pointer" id="sort_modified2" title="Sắp xếp theo ngày"><i class="fa fa-calendar" aria-hidden="true"></i></span>
 	</div> 
 	<div class="panel-body P0 collapse in" id="resultRequest">	
 		<ul class='ul-with-border'>
