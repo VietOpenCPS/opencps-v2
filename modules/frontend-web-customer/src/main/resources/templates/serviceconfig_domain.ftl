@@ -34,19 +34,15 @@
 														${serviceConfig.govAgencyName}
 													</a>
 												</div>
+
 												<div class="col-xs-12 col-sm-1 border-left center-all lh32 text-light-gray">
-													<#if serviceConfig.level == 1>
-													Mức 1
-													<#elseif serviceConfig.level == 2>
-													Mức 2
-													<#elseif serviceConfig.level == 3>
-													Mức 3
-													<#elseif serviceConfig.level == 4>
-													Mức 4
-													</#if>
+													
+													Mức ${serviceConfig.level}
+													
 												</div>
+
 												<div class="col-xs-12 col-sm-1 border-left align-center">
-													<button class="btn btn-reset btn-select-serviceInfo" data-pk="${serviceConfig.serviceConfigId}" admt-pk="${serviceInfo.serviceCode}">Chọn</button>
+													<button class="btn btn-reset btn-select-serviceConfig" data-pk="${serviceConfig.serviceConfigId}" admt-pk="${serviceInfo.serviceCode}">Chọn</button>
 												</div>
 											</div>
 											</#list>
@@ -67,6 +63,59 @@
 	</div>
 </div>
 
+<#-- 
+<script type="text/x-kendo-template">
+	<div class="accordion-group">
+		<div class="accordion-heading">
+			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="\\##:domain.domainId#">
+				<i class="fa fa-briefcase" aria-hidden="true"></i> #:domain.domainName#
+			</a>
+		</div>
+		<div id="#:domain.domainId#" class="accordion-body collapse in">
+			<div class="accordion-inner">
+				<div class="accordion" id="accordion2">
+					
+					# for(var i=0 ;i < domain.serviceInfos.length ; i++) {
+					var serviceInfo = domain.serviceInfos[i];
+					#
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="\\##:domain.domainId#" href="\\##:serviceInfo.serviceCode#">
+								#:serviceInfo.serviceName#
+							</a>
+						</div>
+						<div id="#:serviceInfo.serviceCode#" class="accordion-body collapse in">
+							<div class="accordion-inner">
+								# for (var j = 0; j < serviceInfo.serviceConfigs.length; j++){
+								var serviceConfig = serviceInfo.serviceConfigs[i];
+								#
+								<div class="eq-height">
+									<div class="col-xs-12 col-sm-10 align-middle">
+										<a class="link-serviceInfo" data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#:serviceInfo.serviceCode#" href="\\#">
+											#:serviceConfig.govAgencyName#
+										</a>
+									</div>
+
+									<div class="col-xs-12 col-sm-1 border-left center-all lh32 text-light-gray">
+
+										Mức #:serviceConfig.level#
+
+									</div>
+
+									<div class="col-xs-12 col-sm-1 border-left align-center">
+										<button class="btn btn-reset btn-select-serviceConfig" data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#serviceInfo.serviceCode#">Chọn</button>
+									</div>
+								</div>
+								#}#
+							</div>
+						</div>
+					</div>
+					#}#
+				</div>
+			</div>
+		</div>
+	</div>
+</script> -->
 <script type="text/javascript">
 	$(document).ready(function(){
 		$('.administration-combobox').each(function(item){
@@ -82,7 +131,7 @@
 			});
 		});
 
-		$('.btn-select-serviceInfo, .link-serviceInfo').unbind().click(function(){
+		$('.btn-select-serviceConfig, .link-serviceInfo').unbind().click(function(){
 			event.preventDefault();
 			var serviceConfigId = $(this).attr("data-pk");
 
@@ -91,7 +140,7 @@
 			dataSourceProcessServiceConfig.read({
 				serviceConfigId : serviceConfigId
 			});
-			
+
 			/*$("#dossier_detail").load("${ajax.customer_dossier_detail}", function(result){
 				$("#dossier_list").hide();
 				$("#dossier_detail").show();
@@ -103,7 +152,9 @@
 					$("#left_container").show();
 					$("#dossier_list").hide();
 					$("#dossier_detail").hide();
-				});*/
-			});
-	});
+				});
+			});*/
+		});
+	}
+	
 </script>
