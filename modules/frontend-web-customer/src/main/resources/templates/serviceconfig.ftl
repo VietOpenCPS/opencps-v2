@@ -164,12 +164,12 @@
 
     var fnGetParamAndCreateDossier =  function(processOptionId){
       var item = dataSourceProcessServiceConfig.get(processOptionId);
-
-      if(item){
+      var serviceConfigId = $("#serviceConfigId").val();
+      if(item && serviceConfigId){
         var dossierTemplateId = item.dossierTemplateId;
 
         $.ajax({
-          url : "${api.server}/serviceconfigs/${serviceConfigId}",
+          url : "${api.server}/serviceconfigs/"+serviceConfigId,
           dataType : "json",
           type : "GET",
           headers : {"groupId": ${groupId}},
