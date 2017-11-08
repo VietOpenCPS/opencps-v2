@@ -1,5 +1,5 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <div id="detailDossier">
@@ -130,14 +130,29 @@
 						<span class="text-bold MR5">#:itemIndex#.</span>
 						<span>&nbsp;&nbsp;#:partName# 
 							#if(required){#
-							<span class="red">*</span>
+							<s></s>pan class="red">*</span>
 							#}#
 						</span>
 
 						<div class="actions">
 
+							<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" >
+								<i class="fa fa-archive" aria-hidden="true"></i>
+							</a>
+
+							<label class="MB0 ML10 hover-pointer" for="file#:id#" title="Tải file lên" >
+								<i class="fa fa-upload text-light-blue"></i>
+							</label>
+
+							<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#">
+
+
 							<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 								<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
+							</a>
+
+							<a href="javascript:;" class="text-light-gray delete-dossier-file" data-toggle="tooltip" data-placement="top" title="Xóa" data-partno="#:id#">
+								<i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
 							</a>
 						</div>
 					</div>
@@ -147,27 +162,21 @@
 
 					</div>
 					#
-					var dossierTemplateId = $("\\#dossierTemplateId").val();
-					console.log(dossierTemplateId);
 					$.ajax({
-					url : "${api.server}/dossiers/${dossierId}/files/#:id#/formdata",
+					url : "${api.server}/dossiertemplates/${dossierTemplateNo}/parts/"+id+"/formscript",
 					dataType : "json",
 					type : "GET",
 					headers : {"groupId": ${groupId}},
-					data : {
-
+					success : function(result){
+					$("\\#formPartNo"+id).empty();
+					$("\\#formPartNo"+id).alpaca(result);
+					$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button class="btn btn-active MB10 MT10" onclick="" data-pk="'+id+'">Ghi lại</button></div></div>');
 				},
-				success : function(result){
-				console.log(result);
-				$("\\#formPartNo"+id).html(result);
-				console.log($("\\#formPartNo"+id));
-			},
-			error : function(result){
+				error : function(result){
 
-		}
-	});
-	#
-	#}#
+			}
+		});
+	}#
 </script>
 </div>
 </form>
@@ -175,7 +184,7 @@
 <div class="row-parts-content">
 
 	<div class="checkbox ML15">
-		<input type="checkbox"> <label class="text-normal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
+		<input type="checkbox" name="viaPostal" id="viaPostal"> <label class="text-normal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
 	</div>
 
 	<div class="row MB5">
@@ -239,23 +248,75 @@
 
 <script type="text/javascript">
 
-	/*$(document).on("click",".uploadfile-form-repository",function(event){
-		$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_detail_filetemplate}",function(result){
-			$(this).modal("show");
-		});
-	});
+	var fnBindDossierTemplClick = function(){
+		//upload file click
+		$(".dossier-file").unbind().change(function(){
+			console.log("change");
+			var partNo = $(this).attr("part-no");
+			var fileTemplateNo = $(this).attr("file-template-no");
+			console.log(partNo);
+			console.log(fileTemplateNo);
+			console.log($(this)[0].files[0]);
 
-	$(document).on("click",".dossier-file",function(event){
-		$("#uploadFileTemplateDialog").load("${ajax.customer_uploadfile}",function(result){
-			$(this).modal("show");
+			funUploadFile($(this),partNo,${dossierTemplateNo},fileTemplateNo);
 		});
-	});*/
 
-	$(document).on("click",".dossier-component-profile",function(event){
-		$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_component_profiles}",function(result){
-			$(this).modal("show");
+		//tai giay to kho luu tru
+		$(".uploadfile-form-repository").unbind().click(function(){
+			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_detail_filetemplate}",function(result){
+				$(this).modal("show");
+			});
 		});
-	});
+
+		//xem file tai len theo tp ho so
+		$(".dossier-component-profile").unbind().click(function() {
+			var partNo = $(this).attr("data-partno");
+			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_component_profiles}?dossierPartNo="+partNo,function(result){
+				$(this).modal("show");
+			});
+		});
+
+		$(".delete-dossier-file").unbind().click(function(event){
+			var dossierId  = ${dossierId};
+			var dataPartNo = $(this).attr("data-partno");
+
+			console.log(dossierId);
+			console.log(dataPartNo);
+			var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
+			if(cf){
+				if(dossierId && dataPartNo){
+					$.ajax({
+						url : "${api.server}/dossiers/"+dossierId+"/files",
+						dataType : "json",
+						type : "GET",
+						headers : {"groupId": ${groupId}},
+						success : function(result) {
+							var data = result.data;
+							if(data){
+								for (var i = 0; i < data.length; i++) {
+									if(dataPartNo === data[i].dossierPartNo){
+										removeDossierFile(dossierId, data[i].referenceUid);
+
+									}
+								}
+								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
+
+								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
+							/*notification.show({
+								message: "Đổi mật khẩu thành công"
+							}, "success");*/
+						}
+					},
+					error : function(result) {
+						/*notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");*/
+					}
+				});
+				}
+			}
+		});
+	}
 
 	$("#btn-view-extendguide").click(function(){
 		if($("#extend-guide").attr("status")=="none"){
@@ -315,6 +376,8 @@
 		},
 		dataBound : function(){
 			indexDossiserPart = 0;
+			fnBindDossierTemplClick();
+
 			var arrFile = funDossierFile(${dossierId});
 			console.log(arrFile);
 			funGenNumberFile(arrFile);
@@ -661,7 +724,9 @@
 						dossierNo : result.dossierNo,
 						dossierStatusText : result.dossierStatusText,
 						stepInstruction : result.stepInstruction,
-
+						viaPostal : function(e){
+							/*$("#viaPostal").ckecked()*/
+						},
 						dossierTemplateNo : function(e){
 							dataSourceDossierTemplate.read({
 								dossierPart : 201 //result.dossierTemplateNo
