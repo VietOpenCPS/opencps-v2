@@ -7,14 +7,14 @@
 		<span class="pull-right clickable" data-toggle="collapse" data-target="#additionalRequirement">
 			<i id="icon_collapse" class="glyphicon glyphicon-chevron-up"></i>
 		</span>
-		<span class="pull-right MR10 text-light-gray" id="sort_modified"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+		<span class="pull-right MR10 text-light-gray hover-pointer" id="sort_modified" title="Sắp xếp theo ngày"><i class="fa fa-calendar" aria-hidden="true"></i></span>
 	</div>
 	<div class="panel-body P0 collapse in" id="additionalRequirement">
 		<ul class="ul-with-border">
-			<div id='listViewCustomer_Additional_Requirement'></div>
+			<div id="listViewCustomer_Additional_Requirement"></div>
 		</ul>
 		<div class="clearfix align-middle PL10">
-			<span class="text-light-gray  MR50"><i>Có <span id="total_Additional_Requirement" class="red"> </span> yêu cầu</i></span>
+			<span class="text-light-gray MR50"><i>Có <span id="total_Additional_Requirement" class="red"> </span> yêu cầu</i></span>
 			<span id="pagerCustomer_Additional_Requirement" class="M0 PR5"></span>
 		</div>
 		<script type="text/x-kendo-template" id="additional_Requirement_Template">
