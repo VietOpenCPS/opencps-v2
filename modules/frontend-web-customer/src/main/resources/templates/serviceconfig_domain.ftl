@@ -4,71 +4,108 @@
 <div class="panel">
 	<div class="panel-body PT0">
 		<div class="row">
-			<#-- <#if serviceconfig?has_content && serviceconfig.domains?has_content>
-			<div class="accordion" id="accordion1">
-			<#list serviceconfig.domains as domain>
-				<div class="accordion-group">
-					<div class="accordion-heading">
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#${domain.domainId}1">
-							<i class="fa fa-briefcase" aria-hidden="true"></i> ${domain.domainName}
-						</a>
-					</div>
-					<div id="${domain.domainId}1" class="accordion-body collapse in">
-						<div class="accordion-inner">
-							<#if domain?has_content && domain.serviceInfos?has_content>
-							<div class="accordion" id="accordion2">
-								<#list domain.serviceInfos as serviceInfo>
-								<div class="accordion-group">
-									<div class="accordion-heading">
-										<a class="accordion-toggle" data-toggle="collapse" data-parent="#${domain.domainId}" href="#${serviceInfo.serviceInfoId}">
-											${serviceInfo.serviceInfoName}
-										</a>
-									</div>
-									<div id="${serviceInfo.serviceInfoId}" class="accordion-body collapse in">
-										<div class="accordion-inner">
-											<#if serviceInfo?has_content>
-											<#list serviceInfo.govAgencys as govAgency>
-											<div class="eq-height">
-												<div class="col-xs-12 col-sm-10 align-middle">
-													<a class="link-serviceInfo" data-pk="${govAgency.govAgencyCode}" admt-pk="${serviceInfo.serviceInfoId}" href="#">
-														${govAgency.govAgencyName}
-													</a>
-												</div>
-												<div class="col-xs-12 col-sm-1 border-left center-all lh32 text-light-gray">
-													<#if govAgency.level == 1>
-													Mức 1
-													<#elseif govAgency.level == 2>
-													Mức 2
-													<#elseif govAgency.level == 3>
-													Mức 3
-													<#elseif govAgency.level == 4>
-													Mức 4
-													</#if>
-												</div>
-												<div class="col-xs-12 col-sm-1 border-left align-center">
-													<button class="btn btn-reset btn-select-serviceInfo" data-pk="${govAgency.govAgencyCode}" admt-pk="${serviceInfo.serviceInfoId}">Chọn</button>
-												</div>
-											</div>
-											</#list>
-											</#if>
-										</div>
-									</div>
-								</div>
-								</#list>
-							</div>
-							</#if>
-						</div>
-					</div>
-				</div>
-				</#list>
-			</div>
-			</#if> -->
+			<div id="listViewdomain">
+            </div>
 		</div>
 	</div>
 </div>
+	<script type="text/x-kendo-tmpl" id="templateDomain">
+			#if(domains.length > 0) {#
+			<div class="accordion" id=#:'acc'+govAgencyCode#>
+				<div class="accordion-group">
+					<div class="accordion-heading">
+						<a class="accordion-toggle" data-toggle="collapse" data-parent=#:'\\#acc'+govAgencyCode# href=#:'\\#a'+govAgencyCode#>
+							<i class="fa fa-briefcase" aria-hidden="true"></i> #:govAgencyName #
+						</a>
+					</div>
+					<div id=#:'a'+govAgencyCode# class="accordion-body collapse in">
+						<div class="accordion-inner">
+							
+							<div class="accordion" id="accordion2">
+								#for (var i = 0; i < domains.length; i ++) { #
+								#if(domains[i].serviceInfos.length > 0) { #
+								<div class="accordion-group">
+									<div class="accordion-heading">
+										<a class="accordion-toggle" data-toggle="collapse" data-parent=#:'\\#a'+govAgencyCode# href=#:'\\#' +domains[i].domainCode#> 
+											#:domains[i].domainName#
+										</a>
+									</div>
+									<div id=#:domains[i].domainCode# class="accordion-body collapse in">
+										<div class="accordion-inner">
+											# if(domains[i].serviceInfos.length > 0) {#
+											# for (var j = 0; j < domains[i].serviceInfos.length; j ++) {#
+											<div class="eq-height">
+												<div class="col-xs-12 col-sm-10 align-middle">
+													<a class="link-serviceInfo" data-pk="" admt-pk="" href="">
+														#:domains[i].serviceInfos[j].serviceInfoName#
+													</a>
+												</div>
+												<div class="col-xs-12 col-sm-1 border-left center-all lh32 text-light-gray">
+													Mức #:domains[i].serviceInfos[j].level#
+												</div>
+												<div class="col-xs-12 col-sm-1 border-left align-center">
+													<button class="btn btn-reset btn-select-serviceInfo" data-pk="" admt-pk="">Chọn</button>
+												</div>
+											</div>
+											#}#
+											#}#
+										</div>
+									</div>
+								</div>
 
+								#}#
+								#}#
+							</div>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			#}#
+	</script>
+
+	
 <script type="text/javascript">
 	$(document).ready(function(){
+		var dataSource = new kendo.data.DataSource({
+			transport: {
+				read: function(options) {
+					$.ajax({
+						url: "http://127.0.0.1:8887/modules/frontend-web-customer/src/main/resources/templates/datasource/domain.json",
+						type: "get",
+						dataType: "json",
+						data: {
+							keyword: options.data.keyword,
+						},
+						success: function(result) {
+							options.success(result);
+						},
+						
+					});
+				}
+			},
+			schema: {
+				total: "total",
+				data: "data.serviceconfig.govAgencys",
+			}
+		});
+
+
+          $("#listViewdomain").kendoListView({
+              dataSource : dataSource,
+              template: kendo.template($("#templateDomain").html()),
+            
+          });
+
+           $('#btn_search').click(function() {
+           	var input_Search = $('#input_search').val();
+            if($('#btn_fillter_by_domain').hasClass('btn-active')) {
+              dataSource.read({
+              	keyword: input_search,
+              });
+            }
+          });
+
 		$('.administration-combobox').each(function(item){
 			$(this).kendoComboBox({
 				filter: "contains",
