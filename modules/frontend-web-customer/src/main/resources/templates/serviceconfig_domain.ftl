@@ -1,6 +1,7 @@
 <#if (Request)??>
 <#include "init.ftl">
 </#if>
+<input type="hidden" name="serviceConfigId" id="serviceConfigId">
 <div class="panel">
 	<div class="panel-body PT0">
 		<div class="row">
@@ -134,6 +135,7 @@
 		$('.btn-select-serviceConfig, .link-serviceInfo').unbind().click(function(){
 			event.preventDefault();
 			var serviceConfigId = $(this).attr("data-pk");
+			$("#serviceConfigId").val(serviceConfigId);
 
 			$("#choiseProcessForDossier").modal("show");
 
@@ -155,6 +157,6 @@
 				});
 			});*/
 		});
-	}
-	
+	});
+
 </script>
