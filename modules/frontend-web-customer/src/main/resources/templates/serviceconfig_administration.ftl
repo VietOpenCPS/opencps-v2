@@ -83,63 +83,13 @@
               },
               schema: {
                 total: "total",
-                data: "data.serviceconfig.domains",
+                data: "data.serviceconfig",
               }
             });
 
             $("#listView").kendoListView({
-              dataSource : [
-              {
-                "govAgencyCode": "SVHTTDLSL",
-                "govAgencyName": "Sở Văn hóa Thể thao và Du lịch",
-                "domains": [
-                {
-                  "domainCode": "LVVH",
-                  "serviceConfigs": [
-                  {
-                    "serviceInfoId": "3001",
-                    "serviceConfigId": "1602",
-                    "level": "3",
-                    "serviceInfoName": "Cấp Giấy phép nhập khẩu văn hóa phẩm không nhằm mục đích kinh doanh"
-                  },
-                  {
-                    "serviceInfoId": "3001",
-                    "serviceConfigId": "1602",
-                    "level": "3",
-                    "serviceInfoName": "Cấp Giấy phép nhập khẩu văn hóa phẩm không nhằm mục đích kinh doanh"
-                  }
-                  ],
-                  "domainName": "Văn Hóa"
-                },
-                {
-                  "domainCode": "LVVHa",
-                  "serviceConfigs": [
-                  {
-                    "serviceInfoId": "3001",
-                    "serviceConfigId": "1602",
-                    "level": "3",
-                    "serviceInfoName": "Cấp Giấy phép nhập khẩu văn hóa phẩm không nhằm mục đích kinh doanh"
-                  },
-                  {
-                    "serviceInfoId": "3001",
-                    "serviceConfigId": "1602",
-                    "level": "3",
-                    "serviceInfoName": "Cấp Giấy phép nhập khẩu văn hóa phẩm không nhằm mục đích kinh doanh"
-                  },
-                  {
-                    "serviceInfoId": "3001",
-                    "serviceConfigId": "1602",
-                    "level": "3",
-                    "serviceInfoName": "Cấp Giấy phép nhập khẩu văn hóa phẩm không nhằm mục đích kinh doanh"
-                  }
-                  ],
-                  "domainName": "Văn Hóa"
-                }
-                ]
-              }
-              ],
+              dataSource : dataSourceAdmin,
               template: kendo.template($("#templateAdmin").html()),
-
             });
 
 
