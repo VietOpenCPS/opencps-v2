@@ -40,10 +40,10 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @Path("/dossiers")
-@Api(value = "/dossiers", tags = "dossiers")
+@Api(value = "", tags = "dossiers")
 public interface DossierFileManagement {
 	@GET
-	@Path("/dossiers/{id}/files")
+	@Path("/{id}/files")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "getDossierFilesByDossierId", response = DossierFileResultsModel.class)
@@ -58,7 +58,7 @@ public interface DossierFileManagement {
 			@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
 	
 	@GET
-	@Path("/dossiers/{referenceUid}/files")
+	@Path("/{referenceUid}/files")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@ApiOperation(value = "getDossierFilesByDossierReferenceUid", response = DossierFileResultsModel.class)
@@ -72,7 +72,7 @@ public interface DossierFileManagement {
 			@ApiParam(value = "reference of dossierfile", required = true) @PathParam("referenceUid") String referenceUid);
 	
 	@POST
-	@Path("/dossiers/{id}/files")
+	@Path("/{id}/files")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "addDossierFileByDossierId)", response = DossierFileModel.class)
@@ -91,9 +91,9 @@ public interface DossierFileManagement {
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("dossierPartNo") String dossierPartNo,
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("fileTemplateNo") String fileTemplateNo,
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("displayName") String displayName);
-	
+/*	
 	@POST
-	@Path("/dossiers/{referenceUid}/files")
+	@Path("/{referenceUid}/files")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "addDossierFileByDossierReferenceUid)", response = DossierFileModel.class)
@@ -112,9 +112,9 @@ public interface DossierFileManagement {
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("dossierPartNo") String dossierPartNo,
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("fileTemplateNo") String fileTemplateNo,
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("displayName") String displayName);
-	
+*/	
 	@POST
-	@Path("/dossiers/{id}/files/copyfile")
+	@Path("/{id}/files/copyfile")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "clone a DossierFile", response = String.class)
@@ -129,7 +129,7 @@ public interface DossierFileManagement {
 			@ApiParam(value = "body params for post") @BeanParam DossierFileCopyInputModel input);
 
 	@GET
-	@Path("/dossiers/{id}/files/{referenceUid}")
+	@Path("/{id}/files/{referenceUid}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@ApiOperation(value = "getDossierFilesByDossierReferenceUid", response = DossierFileResultsModel.class)
@@ -143,9 +143,9 @@ public interface DossierFileManagement {
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id, 
 			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid,
 			@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
-	
+	/*
 	@GET
-	@Path("/dossiers/{dossierReferenceUid}/files/{referenceUid}")
+	@Path("/{dossierReferenceUid}/files/{referenceUid}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@ApiOperation(value = "getDossierFilesByDossierReferenceUid", response = DossierFileResultsModel.class)
@@ -159,9 +159,9 @@ public interface DossierFileManagement {
 			@ApiParam(value = "referenceUid of dossier", required = true) @PathParam("dossierReferenceUid") String dossierReferenceUid, 
 			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid,
 			@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
-	
+	*/
 	@POST
-	@Path("/dossiers/{id}/files/{referenceUid}")
+	@Path("/{id}/files/{referenceUid}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "update DossierFile", response = String.class)
@@ -178,7 +178,7 @@ public interface DossierFileManagement {
 			@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file);
 	
 	@GET
-	@Path("/dossiers/{id}/files/{referenceUid}/formdata")
+	@Path("/{id}/files/{referenceUid}/formdata")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@ApiOperation(value = "getDossierFilesByDossierReferenceUid", response = JSONObject.class)
@@ -194,7 +194,7 @@ public interface DossierFileManagement {
 			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid);
 	
 	@GET
-	@Path("/dossiers/{id}/files/{referenceUid}/formscript")
+	@Path("/{id}/files/{referenceUid}/formscript")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@ApiOperation(value = "getDossierFilesByDossierReferenceUid", response = JSONObject.class)
@@ -210,7 +210,7 @@ public interface DossierFileManagement {
 			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid);
 
 	@PUT
-	@Path("/dossiers/{id}/files/{referenceUid}/formdata")
+	@Path("/{id}/files/{referenceUid}/formdata")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "update DossierFile")
@@ -227,7 +227,7 @@ public interface DossierFileManagement {
 			@ApiParam(value = "formdata of dossierfile", required = true) @FormParam("formdata") String formdata);
 	
 	@DELETE
-	@Path("/dossiers/{id}/files/{referenceUid}")
+	@Path("/{id}/files/{referenceUid}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Delete ServiceInfo by Id)")
@@ -257,7 +257,7 @@ public interface DossierFileManagement {
 			@Context ServiceContext serviceContext, @BeanParam DossierFileSearchModel query);
 	
 	@GET
-	@Path("/dossiers/{id}/download")
+	@Path("/{id}/download")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "downloadByDossierId")
 	@ApiResponses(value = {

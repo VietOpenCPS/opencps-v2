@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="panel-heading">
 	<h3 class="panel-title"> Hồ sơ chờ bổ sung</h3>
 </div>

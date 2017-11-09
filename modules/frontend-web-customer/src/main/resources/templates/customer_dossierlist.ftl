@@ -1,23 +1,15 @@
-<div class="panel">
-	<div class="panel-heading P0">
-		<div class="row">
-			<div class="row-header"> <div class="background-triangle-big">Tên thủ tục</div> <span>KÊT QUẢ TÌM KIÊM HÔ SƠ</span> 
-			<div class="form-group search-icon pull-right MR10">
-				<input type="text" class="form-control" placeholder="Nhập từ khóa">
-			</div>
-		</div>
-	</div>
-</div>
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <div class="panel-body PT0">
 	<input type="hidden" name="idItemCustomerDossier" id="idItemCustomerDossier">
-	<ul class='ul-with-border'>
-		<div id='listViewProfile'></div>
+	<ul class="ul-with-border">
+		<div id="listViewProfile"></div>
 	</ul>
-	<div id='pagerProfile'></div>
-
+	
 	<script type="text/x-kendo-template" id="proFileTemplate">
 		<div class="row itemCustomerDossierList" dataPk="#:id#">
-			<div class="row">
+			<div class="row M0">
 				<div class="row-blue align-middle">
 					<div class="order-number">#:counter#</div>
 					<div class="dossier-number" data-toggle="tooltip" title="Mã hồ sơ"><span class="red">\\#</span> #:serviceCode#</div>
@@ -31,45 +23,42 @@
 						    case "Collecting":
 						        label="label-info";
 						        break;
-						    case "Waiting":
-						        label="label-info";
+						    case "Receiving":
+						        label="label-status-processing";
 						        break;
-						    case "Paying":
-						        label="label-info";
+						    case "Waiting":
+						        label="label-status-additional";
 						        break;
 						    case "Processing":
 						        label="label-info";
 						        break;
-						    case "Waiting":
-						        label="label-info";
-						        break;
 						    case "Paying":
-						        label="label-info";
+						       	label="label-status-pending-payment";
 						        break;
 						    case "Handover":
-						       	label="label-info";
-						        break;
-						    case "Releasing":
 						        label="label-info";
 						        break;  
+						    case "Releasing":
+						        label="label-info";
+						        break;	
 						    case "Posting":
 						        label="label-info";
 						        break;
-						    case "Done":
-						        label="label-info";
-						        break;	
-						    case "Cancelled":
-						        label="label-info";
+					        case "Done":
+						        label="label-status-complete";
+						        break;
+					        case "Cancelled":
+						        label="label-status-cancel";
 						        break;					        
 						    default:
 						        label="label-info";
 						}
 					#
-					<span class="label #:label# MLA"><#-- #:dosierStatusText# -->Hoàn thành</span> 
+					<span class="label #:label# MLA">#:dossierSubStatusText#</span> 
 				</div>
 			</div>
-			<div class="col-sm-12 PT5 PB10">
-				<div class="row">
+			<div class="col-sm-12 PL0 PT5 PB10">
+				<div class="row M0">
 					<div class="col-sm-8">
 						<p>#:serviceName#</p>
 						<p>
@@ -77,31 +66,18 @@
 						</p>
 						
 						<p>
-							#if(typeof actionNote !== "undefined"){#
+							#if(typeof actionNote !== "undefined" && actionNote !== ""){#
 								<i class="fa fa-bolt" aria-hidden="true" style="color: red;"></i> 
 								<i>#:actionNote#</i>
 							#}#
 						</p>
 
 						<p>
-							#if(typeof stepInstruction !== "undefined"){#
+							#if(typeof stepInstruction !== "undefined" && stepInstruction !== ""){#
 								<i>#:stepInstruction#</i>
 							#}#
 						</p>
-						
 
-						#if(dossierStatus === "Done"){#
-
-							<a href="${api.server}/dossiers/#:id#/result" style="margin-right: 10px;">
-								<i class="fa fa-download" aria-hidden="true">
-								</i> Tải giấy tờ kết quả
-							</a>
-						#}#
-						
-						#if(dossierStatus === "Done" ){#
-							<a href="javascript:;" onclick="javascript:copyProfile(#:id#)"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Sao chép hồ sơ
-							</a>
-						#}#
 					</div>
 					
 					<div class="col-sm-4 MT10 text-right">
@@ -123,31 +99,61 @@
 
 	</script>
 </div>
+<div class="footerListProfile row-header PT20" style="background: #f6f6f6">
+	<div class="clearfix align-middle" style="float: right">
+		<span class="text-light-gray MR15"><i>Tổng số <span id="totalItem_dossierList" class="red"></span> kết quả được tìm thấy</i></span>
+		<span class="show-per-page MT0">Hiển thị
+			<span class="select-wrapper">
+				<select class="ML5" id="itemPpage">
+					
+				</select>
+			</span>
+		</span>
+		<span id="pagerProfile" class="M0 P0 PR5"></span>
+	</div>	
 </div>
 
-<script type="text/javascript">	
+<script type="text/javascript">
+	var router_pagination = new kendo.Router();
 	var dataSourceProfile=new kendo.data.DataSource({
 		transport:{
 			read:function(options){
 				$.ajax({
+					
 					url:"${api.server}/dossiers",
 					dataType:"json",
 					type:"GET",
+					headers: {"groupId": ${groupId}},
 					data:{
-						statusCode:options.data.statusCode,
-						serviceInfo:options.data.serviceInfo,
-						receiptCode:options.data.receiptCode,
-						startDate:options.data.startDate,
-						endDate:options.data.endDate,
-						keyword:options.data.keyword,
+						serviceInfo: options.data.serviceInfo,
+						govAgencyCode: options.data.govAgencyCode,
+						year: options.data.year,
+						month: options.data.month,
+						keyword: options.data.keyword,
 						status : options.data.status
 					},	
 					success:function(result){
 						options.success(result);
-						console.log(options);
+						var totalItem = parseInt(dataSourceProfile.total());
+						var pSize = dataSourceProfile.pageSize();
+						var arrPsize = [];
+						var selectHtml = "<option value='"+totalItem+"'>Tất cả</option>";
+						$("#totalItem_dossierList").text(dataSourceProfile.total());
+						if (totalItem <= dataSourceProfile.pageSize()) {
+							$("#itemPpage").html("<option value='"+totalItem+"' selected>"+totalItem+"</option>")
+						} else {
+							for (var i = pSize; i < totalItem; i+=pSize) {
+								arrPsize.push(i)
+							};
+							var sub = "";
+							$.each(arrPsize,function(index,value){
+								sub+="<option value='"+value+"'>"+value+"</option>"
+							});
+							$("#itemPpage").html(sub);
+							$("#itemPpage").append(selectHtml)
+						}
 					},
 					error:function(result){
-						console.log(options);
 						options.error(result);
 					}
 				});
@@ -156,12 +162,12 @@
 		error: function(e) {         
 			this.cancelChanges();
 		},
-		pageSize:7,
+		pageSize: 10,
 		schema:{
 			data:"data",
 			total:"total",
 			model:{
-				id:"dossierId"
+				id: "dossierId"
 			}
 		}
 	});
@@ -170,40 +176,35 @@
 		dataSource:dataSourceProfile,
 		template:kendo.template($("#proFileTemplate").html()),
 		selectable: "single",
-		/*remove:function(e){
-			if(!confirm('Bạn có muốn xóa ?')){
-				e.preventDefault();
-			}
-		},*/
-		autoBind: false,
-		change:function(){
-
-		}
+		autoBind: false
 	});
 
 	$("#pagerProfile").kendoPager({
 		dataSource:dataSourceProfile,
-		input: true,
-		numeric: false,
-		messages: {
-			empty: "Không có kết quả phù hợp!",
-			display: "Hiển thị {0}-{1} trong {2} bản ghi",
-			page: "",
-			of: "/ {0}"
+		buttonCount: 3,
+		info: false,
+		change : function(){
+			// var number_page = $("#pagerProfile .k-pager-numbers .k-state-selected").text()
+			// console.log(number_page);
+			// router_pagination.navigate("/"+number_page);
+			// return true;
 		}
 	});
-
+	$(function(){
+		router_pagination.start();
+	})
 	$(document).on("click",".itemCustomerDossierList",function(event){
-		var id=$(this).attr("dataPk");	
+		var id = $(this).attr("dataPk");	
 		$("#idItemCustomerDossier").val(id);
 		$("#dossier_detail").show();
 		$("#dossier_list").hide();
 		$("#dossier_detail").load("${ajax.customer_dossier_detail}?id="+id+"",function(result){
-			$("#dossierItemId").val(id);
-			/*dataSourceDossierTemplate.read({
-				id : id
-			});*/
+
 		});
+	});
+	// load content/select item per page
+	$("#itemPpage").change(function(){
+		$("#listViewProfile").getKendoListView().dataSource.pageSize(parseInt($("#itemPpage").val()))
 	});
 
 	$(document).ready(function(){
@@ -215,12 +216,16 @@
 			url:"${api.server}/"+id+"/cloning",
 			dataType:"json",
 			type:"GET",
+			headers: {"groupId": ${groupId}},
 			success:function(result){
-				location.href = "http://www.google.com";
+				
 			},
 			error:function(result){
 
 			}
-		});
-	}
+		})
+	};
+	// option kendo-page
+	$(".k-pager-first").css("display","none");
+	$(".k-pager-last").css("display","none")
 </script>

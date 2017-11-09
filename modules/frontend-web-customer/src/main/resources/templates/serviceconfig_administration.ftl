@@ -66,7 +66,7 @@
               transport: {
                 read: function(options) {
                   $.ajax({
-                    url: "http://127.0.0.1:8887/modules/frontend-web-customer/src/main/resources/templates/datasource/domain.json",
+                    url: "${api.server}/serviceconfigs/govagencies",
                     type: "get",
                     dataType: "json",
                     data: {
@@ -82,8 +82,7 @@
                 }
               },
               schema: {
-                total: "total",
-                data: "data.serviceconfig",
+                data: "govagencies",
               }
             });
 

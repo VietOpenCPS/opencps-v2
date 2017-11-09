@@ -4,11 +4,19 @@
 		"server": "http://hanoi.fds.vn:2281/api",
 		"city":"http://hanoi.fds.vn:2281/api/city"
 	},
+	dossierId : 101,
+	dossierTemplateNo : 201,
+	dossierPartNo : 401,
+	serviceConfigId : 301,
 	"ajax":{
 		"customer_dossier_detail_2": "customer_dossier_detail_2.ftl",
 	    "customer_dossier_detail_3": "customer_dossier_detail_3.ftl",
 		"customer_dossierlist": "customer_dossierlist.ftl",
 		"customer_dossier_detail": "customer_dossier_detail.ftl",
+		"customer_dossier_detail_2": "customer_dossier_detail_2.ftl",
+		"customer_dossier_detail_3": "customer_dossier_detail_3.ftl",
+		"customer_dossier_detail_4": "customer_dossier_detail_4.ftl",
+		"customer_dossier_detail_5": "customer_dossier_detail_5.ftl",
 		"customer_additional_requirements": "customer_additional_requirements.ftl",
 		"customer_payment_request": "customer_payment_request.ftl",
 		"customer_result_request": "customer_result_request.ftl",
@@ -22,15 +30,13 @@
 		"serviceconfig": "serviceconfig.ftl",
 		"serviceconfig_administration": "serviceconfig_administration.ftl",
 		"serviceconfig_domain": "serviceconfig_domain.ftl",
-		"serviceconfig_administration":"serviceconfig_administration.ftl",
-		"serviceconfig_domain":"serviceconfig_domain.ftl",
-		"customer_dossier_detail_filetemplate":"customer_dossier_detail_filetemplate.ftl",
 		"customer_uploadfile":"customer_uploadfile.ftl",
 		"customer_dossier_online_form_dialog":"customer_dossier_online_form_dialog.ftl",
 		"customer_dossier_info":"customer_dossier_info.ftl",
 		"customer_dossier_component_profiles":"customer_dossier_component_profiles.ftl",
 		"notification":"notification.ftl"
 	},
+	"groupId" : 20147,
 	"include":{
 			"dossierdetail_defaultprocess":"dossierdetail_defaultprocess.ftl"
 	},
@@ -328,78 +334,98 @@
 				"domainName": "Cấp giấy chứng nhận đăng ký quyền tác giả cho cá nhân, tổ chức Việt Nam",
 				"serviceInfos":[
 					{
-						"serviceInfoId": 1,
-						"serviceInfoName":"Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
-						"level": 1,
-						"govAgencys": [
+						"serviceCode": 1,
+						"serviceName":"Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
+						"serviceConfigs": [
 							{
+								"level": 1,
 								"govAgencyCode": "22222222",
-								"govAgencyName": "Cục di sản văn hóa"
+								"govAgencyName": "Cục di sản văn hóa",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "11111111",
-								"govAgencyName": "Cục quản lý môi trường"
+								"govAgencyName": "Cục quản lý môi trường",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "3333333333",
-								"govAgencyName": "Cục quản lý bờ biển"
+								"govAgencyName": "Cục quản lý bờ biển",
+								"serviceConfigId" : 301
 							}
 						]
 					},
 					{
-						"serviceInfoId": 2,
-						"serviceInfoName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
-						"level": 2,
-						"govAgencys": [
+						"serviceCode": 2,
+						"serviceName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
+						"serviceConfigs": [
 							{
+								"level": 1,
 								"govAgencyCode": "22222222",
-								"govAgencyName": "Cục di sản văn hóa"
+								"govAgencyName": "Cục di sản văn hóa",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "11111111",
-								"govAgencyName": "Cục quản lý môi trường"
+								"govAgencyName": "Cục quản lý môi trường",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "3333333333",
-								"govAgencyName": "Cục quản lý bờ biển"
+								"govAgencyName": "Cục quản lý bờ biển",
+								"serviceConfigId" : 301
 							}
 						]
 					},
 					{
-						"serviceInfoId": 3,
-						"serviceInfoName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
-						"level": 3,
-						"govAgencys": [
+						"serviceCode": 3,
+						"serviceName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
+						"serviceConfigs": [
 							{
+								"level": 1,
 								"govAgencyCode": "22222222",
-								"govAgencyName": "Cục di sản văn hóa"
+								"govAgencyName": "Cục di sản văn hóa",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "11111111",
-								"govAgencyName": "Cục quản lý môi trường"
+								"govAgencyName": "Cục quản lý môi trường",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "3333333333",
-								"govAgencyName": "Cục quản lý bờ biển"
+								"govAgencyName": "Cục quản lý bờ biển",
+								"serviceConfigId" : 301
 							}
 						]
 					},
 					{
-						"serviceInfoId": 4,
-						"serviceInfoName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
-						"level": 4,
-						"govAgencys": [
+						"serviceCode": 4,
+						"serviceName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
+						"serviceConfigs": [
 							{
+								"level": 1,
 								"govAgencyCode": "22222222",
-								"govAgencyName": "Cục di sản văn hóa"
+								"govAgencyName": "Cục di sản văn hóa",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "11111111",
-								"govAgencyName": "Cục quản lý môi trường"
+								"govAgencyName": "Cục quản lý môi trường",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "3333333333",
-								"govAgencyName": "Cục quản lý bờ biển"
+								"govAgencyName": "Cục quản lý bờ biển",
+								"serviceConfigId" : 301
 							}
 						]
 					}
@@ -410,21 +436,26 @@
 				"domainName": "Cấp thẻ giám định viên quyền tác gỉa, quyền liên quan",
 				"serviceInfos": [
 					{
-						"serviceInfoId": 5,
-						"serviceInfoName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
-						"level": 4,
-						"govAgencys": [
+						"serviceCode": 5,
+						"serviceName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
+						"serviceConfigs": [
 							{
+								"level": 1,
 								"govAgencyCode": "22222222",
-								"govAgencyName": "Cục di sản văn hóa"
+								"govAgencyName": "Cục di sản văn hóa",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "11111111",
-								"govAgencyName": "Cục quản lý môi trường"
+								"govAgencyName": "Cục quản lý môi trường",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "3333333333",
-								"govAgencyName": "Cục quản lý bờ biển"
+								"govAgencyName": "Cục quản lý bờ biển",
+								"serviceConfigId" : 301
 							}
 						]
 					}
@@ -435,40 +466,50 @@
 				"domainName": "Cấp lại thẻ giám định viên quyền tác gỉa, quyền liên quan",
 				"serviceInfos": [
 					{
-						"serviceInfoId": 6,
-						"serviceInfoName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
-						"level": 4,
-						"govAgencys": [
+						"serviceCode": 6,
+						"serviceName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
+						"serviceConfigs": [
 							{
+								"level": 1,
 								"govAgencyCode": "22222222",
-								"govAgencyName": "Cục di sản văn hóa"
+								"govAgencyName": "Cục di sản văn hóa",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "11111111",
-								"govAgencyName": "Cục quản lý môi trường"
+								"govAgencyName": "Cục quản lý môi trường",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "3333333333",
-								"govAgencyName": "Cục quản lý bờ biển"
+								"govAgencyName": "Cục quản lý bờ biển",
+								"serviceConfigId" : 301
 							}
 						]
 					},
 					{
-						"serviceInfoId": 7,
-						"serviceInfoName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
-						"level": 4,
-						"govAgencys": [
+						"serviceCode": 7,
+						"serviceName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
+						"serviceConfigs": [
 							{
+								"level": 1,
 								"govAgencyCode": "22222222",
-								"govAgencyName": "Cục di sản văn hóa"
+								"govAgencyName": "Cục di sản văn hóa",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "11111111",
-								"govAgencyName": "Cục quản lý môi trường"
+								"govAgencyName": "Cục quản lý môi trường",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "3333333333",
-								"govAgencyName": "Cục quản lý bờ biển"
+								"govAgencyName": "Cục quản lý bờ biển",
+								"serviceConfigId" : 301
 							}
 						]
 					}
@@ -479,40 +520,50 @@
 				"domainName": "Cấp lại giấy chứng nhận tổ chức giám định quyền tác gỉa, quyền liên quan",
 				"serviceInfos": [
 					{
-						"serviceInfoId": 8,
-						"serviceInfoName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
-						"level": 4,
-						"govAgencys": [
+						"serviceCode": 8,
+						"serviceName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
+						"serviceConfigs": [
 							{
+								"level": 1,
 								"govAgencyCode": "22222222",
-								"govAgencyName": "Cục di sản văn hóa"
+								"govAgencyName": "Cục di sản văn hóa",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "11111111",
-								"govAgencyName": "Cục quản lý môi trường"
+								"govAgencyName": "Cục quản lý môi trường",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "3333333333",
-								"govAgencyName": "Cục quản lý bờ biển"
+								"govAgencyName": "Cục quản lý bờ biển",
+								"serviceConfigId" : 301
 							}
 						]
 					},
 					{
-						"serviceInfoId":9,
-						"serviceInfoName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
-						"level": 4,
-						"govAgencys": [
+						"serviceCode":9,
+						"serviceName": "Cấp giấy chứng nhận đăng ký bản quyền tác giả cho tác phẩm mới",
+						"serviceConfigs": [
 							{
+								"level": 1,
 								"govAgencyCode": "22222222",
-								"govAgencyName": "Cục di sản văn hóa"
+								"govAgencyName": "Cục di sản văn hóa",
+								"serviceConfigId" : 301
 							},
 							{
+								"level": 1,
 								"govAgencyCode": "11111111",
-								"govAgencyName": "Cục quản lý môi trường"
+								"govAgencyName": "Cục quản lý môi trường",
+								"serviceConfigId" : 301
 							},
-							{
+							{	
+								"level": 1,
 								"govAgencyCode": "3333333333",
-								"govAgencyName": "Cục quản lý bờ biển"
+								"govAgencyName": "Cục quản lý bờ biển",
+								"serviceConfigId" : 301
 							}
 						]
 					}

@@ -66,8 +66,7 @@ import backend.auth.api.keys.ModelNameKeys;
  * <p>
  * All custom service methods should be put in this class. Whenever methods are
  * added, rerun ServiceBuilder to copy their definitions into the
- * {@link org.opencps.usermgt.service.EmployeeJobPosLocalService}
- * interface.
+ * {@link org.opencps.usermgt.service.EmployeeJobPosLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security
@@ -85,8 +84,8 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil} to
-	 * access the employee job pos local service.
+	 * org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil} to access the
+	 * employee job pos local service.
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
@@ -114,6 +113,13 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
+		EmployeeJobPos employeeJobPosCheck = employeeJobPosPersistence
+				.fetchByF_EmployeeId_jobPostId_workingUnitId(groupId, employeeId, jobPostId, workingUnitId);
+
+		if (Validator.isNotNull(employeeJobPosCheck)) {
+			throw new DuplicateCategoryException();
+		}
+
 		long employeeJobPosId = counterLocalService.increment(EmployeeJobPos.class.getName());
 
 		EmployeeJobPos employeeJobPos = employeeJobPosPersistence.create(employeeJobPosId);
@@ -139,13 +145,16 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 
 		User newUser = UserLocalServiceUtil.fetchUser(mEmployee.getMappingUserId());
 		//
-		JobPos mJobPos = JobPosLocalServiceUtil.fetchJobPos(mEmployee.getMainJobPostId());
 		JobPos currentJobPos = JobPosLocalServiceUtil.fetchJobPos(jobPostId);
 		//
 		List<Role> roleIds = new ArrayList<Role>();
-		
-		roleIds.add(RoleLocalServiceUtil.fetchRole(mJobPos.getMappingRoleId()));
-		roleIds.add(RoleLocalServiceUtil.fetchRole(currentJobPos.getMappingRoleId()));
+
+		long currentRoleId = Validator.isNotNull(currentJobPos) ? currentJobPos.getMappingRoleId() : 0;
+
+		if (currentRoleId > 0) {
+			roleIds.add(RoleLocalServiceUtil.fetchRole(currentRoleId));
+		}
+
 		//
 		List<EmployeeJobPos> listEmJobPos = employeeJobPosPersistence.findByF_EmployeeId(mEmployee.getEmployeeId());
 		//
@@ -156,15 +165,15 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		//
 		RoleLocalServiceUtil.deleteUserRoles(newUser.getUserId(), roleIds);
 		RoleLocalServiceUtil.clearUserRoles(newUser.getUserId());
-		
+
 		for (Role role : roleIds) {
 			try {
 				RoleLocalServiceUtil.addUserRole(newUser.getUserId(), role.getRoleId());
 			} catch (Exception e) {
 			}
 		}
-		
-//		RoleLocalServiceUtil.addUserRoles(newUser.getUserId(), roleIds);
+
+		// RoleLocalServiceUtil.addUserRoles(newUser.getUserId(), roleIds);
 		//
 		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
 		//
@@ -198,15 +207,15 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 			throw new UnauthorizationException();
 		}
 
-		EmployeeJobPos EmployeeJobPos;
+		EmployeeJobPos employeeJobPos;
 
 		try {
 
-			EmployeeJobPos = employeeJobPosPersistence.remove(employeeJobPosId);
+			employeeJobPos = employeeJobPosPersistence.remove(employeeJobPosId);
 
 			Indexer<EmployeeJobPos> indexer = IndexerRegistryUtil.nullSafeGetIndexer(EmployeeJobPos.class);
 
-			indexer.delete(EmployeeJobPos);
+			indexer.delete(employeeJobPos);
 
 		} catch (Exception e) {
 			throw new NotFoundException();
@@ -214,11 +223,11 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 
 		try {
 			// role
-			Employee mEmployee = employeePersistence.fetchByPrimaryKey(EmployeeJobPos.getEmployeeId());
+			Employee mEmployee = employeePersistence.fetchByPrimaryKey(employeeJobPos.getEmployeeId());
 
 			User newUser = UserLocalServiceUtil.fetchUser(mEmployee.getMappingUserId());
 
-			JobPos mJobPos = JobPosLocalServiceUtil.fetchJobPos(mEmployee.getMainJobPostId());
+			JobPos mJobPos = JobPosLocalServiceUtil.fetchJobPos(employeeJobPos.getJobPostId());
 
 			List<Role> roleIds = new ArrayList<Role>();
 			roleIds.add(RoleLocalServiceUtil.fetchRole(mJobPos.getMappingRoleId()));
@@ -238,15 +247,15 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 				} catch (Exception e) {
 				}
 			}
-			
+
 			Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
 			//
 			indexer.reindex(newUser);
-			
+
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		return EmployeeJobPos;
+		return employeeJobPos;
 
 	}
 

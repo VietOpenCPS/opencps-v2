@@ -27,12 +27,8 @@ import org.opencps.datamgt.constants.DictItemGroupTerm;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictGroup;
 import org.opencps.datamgt.model.DictItem;
-import org.opencps.datamgt.model.Label;
-import org.opencps.datamgt.model.Location;
 import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.datamgt.service.LabelLocalServiceUtil;
-import org.opencps.datamgt.service.LocationLocalServiceUtil;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.frontend.web.admin.constants.AdminPortletKeys;
@@ -73,7 +69,6 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -531,41 +526,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			catch (Exception e) {
 				_log.error(e);
 			}
-		}
-		else if (type.equals(
-			FrontendWebAdminPortletConstants.AdminMenuItemType.LABEL.toString())) {
-			long labelId = ParamUtil.getLong(renderRequest, "labelId");
-
-			Label label = LabelLocalServiceUtil.fetchLabel(labelId);
-
-			renderRequest.setAttribute("label", label);
-
-			params.put("label_labelId", labelId);
-		}
-		else if (type.equals(
-			FrontendWebAdminPortletConstants.AdminMenuItemType.LOCATION.toString())) {
-			long locationId = ParamUtil.getLong(renderRequest, "locationId");
-
-			Location location =
-				LocationLocalServiceUtil.fetchLocation(locationId);
-
-			renderRequest.setAttribute("location", location);
-
-			double[] geolocation = new double[] {
-				0, 0
-			};
-
-			if (location != null &&
-				Validator.isNotNull(location.getGeolocation())) {
-				geolocation = StringUtil.split(location.getGeolocation(), 0.0);
-
-			}
-
-			params.put("location_locationId", locationId);
-
-			params.put("locationLat", geolocation[0]);
-			params.put("locationLng", geolocation[1]);
-
 		}
 		else if (type.equals(
 			FrontendWebAdminPortletConstants.AdminMenuItemType.NOTIFICATIONTEMPLATE.toString())) {

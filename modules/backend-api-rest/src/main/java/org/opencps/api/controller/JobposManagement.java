@@ -98,5 +98,4 @@ public interface JobposManagement {
 	public Response deletePermissionByKey(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@DefaultValue("0") @PathParam("id") long id, @PathParam("actionId") String actionId);
-
 }

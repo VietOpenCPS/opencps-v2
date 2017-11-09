@@ -1,107 +1,161 @@
 <#if (Request)??>
 <#include "init.ftl">
 </#if>
-<div class="panel">
+<input type="hidden" name="serviceConfigId" id="serviceConfigId">
+<#-- <div class="panel">
 	<div class="panel-body PT0">
 		<div class="row">
-			<div id="listViewdomain">
-            </div>
+			<#if serviceconfig?has_content && serviceconfig.domains?has_content>
+			<div class="accordion" id="accordion1">
+				<#list serviceconfig.domains as domain>
+				<div class="accordion-group">
+					<div class="accordion-heading">
+						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#${domain.domainId}1">
+							<i class="fa fa-briefcase" aria-hidden="true"></i> ${domain.domainName}
+						</a>
+					</div>
+					<div id="${domain.domainId}1" class="accordion-body collapse in">
+						<div class="accordion-inner">
+							<#if domain?has_content && domain.serviceInfos?has_content>
+							<div class="accordion" id="accordion2">
+								<#list domain.serviceInfos as serviceInfo>
+								<div class="accordion-group">
+									<div class="accordion-heading">
+										<a class="accordion-toggle" data-toggle="collapse" data-parent="#${domain.domainId}" href="#${serviceInfo.serviceCode}">
+											${serviceInfo.serviceName}
+										</a>
+									</div>
+									<div id="${serviceInfo.serviceCode}" class="accordion-body collapse in">
+										<div class="accordion-inner">
+											<#if serviceInfo?has_content>
+											<#list serviceInfo.serviceConfigs as serviceConfig>
+											<div class="eq-height">
+												<div class="col-xs-12 col-sm-10 align-middle">
+													<a class="link-serviceInfo" data-pk="${serviceConfig.serviceConfigId}" admt-pk="${serviceInfo.serviceCode}" href="#">
+														${serviceConfig.govAgencyName}
+													</a>
+												</div>
+
+												<div class="col-xs-12 col-sm-1 border-left center-all lh32 text-light-gray">
+													
+													Mức ${serviceConfig.level}
+													
+												</div>
+
+												<div class="col-xs-12 col-sm-1 border-left align-center">
+													<button class="btn btn-reset btn-select-serviceConfig" data-pk="${serviceConfig.serviceConfigId}" admt-pk="${serviceInfo.serviceCode}">Chọn</button>
+												</div>
+											</div>
+											</#list>
+											</#if>
+										</div>
+									</div>
+								</div>
+								</#list>
+							</div>
+							</#if>
+						</div>
+					</div>
+				</div>
+				</#list>
+			</div>
+			</#if>
 		</div>
 	</div>
-</div>
-	<script type="text/x-kendo-tmpl" id="templateDomain">
-          #if(domains.length > 0) {#
-          <div class="accordion" id=#:'acc1'+govAgencyCode#>
-            <div class="accordion-group">
-              <div class="accordion-heading">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent=#:'\\#acc1'+govAgencyCode# href=#:'\\#a'+govAgencyCode#>
-                  <i class="fa fa-briefcase" aria-hidden="true"></i> #:govAgencyName #
-                </a>
-              </div>
-              <div id=#:'a'+govAgencyCode# class="accordion-body collapse in">
-                <div class="accordion-inner">
-                  <div class="accordion" id=#:'acc2'+govAgencyCode#>
-                    #for (var i = 0; i < domains.length; i ++) { #
-                    #if(domains[i].serviceConfigs.length > 0) { #
-                    <div class="accordion-group">
-                      <div class="accordion-heading">
-                        <a class="accordion-toggle" data-toggle="collapse" data-parent=#:'\\#a'+govAgencyCode# href=#:'\\#' +domains[i].domainCode#> 
-                          #:domains[i].domainName#
-                        </a>
-                      </div>
-                      <div id=#:domains[i].domainCode# class="accordion-body collapse in">
-                        <div class="accordion-inner">
-                          # if(domains[i].serviceConfigs.length > 0) {#
-                          # for (var j = 0; j < domains[i].serviceConfigs.length; j ++) {#
-                          <div class="eq-height">
-                            <div class="col-xs-12 col-sm-10 align-middle">
-                              <a class="link-serviceInfo" data-pk="" admt-pk="" href="">
-                                #:domains[i].serviceConfigs[j].serviceInfoName#
-                              </a>
-                            </div>
-                            <div class="col-xs-12 col-sm-1 border-left center-all lh32 text-light-gray">
-                              Mức #:domains[i].serviceConfigs[j].level#
-                            </div>
-                            <div class="col-xs-12 col-sm-1 border-left align-center">
-                              <button class="btn btn-reset btn-select-serviceInfo" data-pk="" admt-pk="">Chọn</button>
-                            </div>
-                          </div>
-                          #}#
-                          #}#
-                        </div>
-                      </div>
-                    </div>
-                    #}#
-                    #}#
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          #}#
-        </script>
+</div> -->
 
-	
+<div class="row">
+	<div class="accordion" id="serviceConfigs">
+	</div>
+</div>
+<script type="text/x-kendo-template" id="templateServiceConfigDomain">
+	<div class="accordion-group">
+		#if(typeof domainId !== "undefined"){#
+		<div class="accordion-heading">
+			<a class="accordion-toggle" data-toggle="collapse" data-parent="\\#serviceConfigs" href="\\##:domainId#">
+				<i class="fa fa-briefcase" aria-hidden="true"></i> #:domainName#
+			</a>
+		</div>
+		<div id="#:domainId#" class="accordion-body collapse in">
+			<div class="accordion-inner">
+				<div class="accordion" id="accordion2">
+					
+					# for(var i=0 ;i < serviceInfos.length ; i++) {
+					var serviceInfo = serviceInfos[i];
+					#
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="\\##:domainId#" href="\\##:serviceInfo.serviceCode#">
+								#:serviceInfo.serviceName#
+							</a>
+						</div>
+						<div id="#:serviceInfo.serviceCode#" class="accordion-body collapse in">
+							<div class="accordion-inner">
+								# for (var j = 0; j < serviceInfo.serviceConfigs.length; j++){
+								var serviceConfig = serviceInfo.serviceConfigs[i];
+								#
+								<div class="eq-height">
+									<div class="col-xs-12 col-sm-10 align-middle">
+										<a class="link-serviceInfo" data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#:serviceInfo.serviceCode#" href="\\#">
+											#:serviceConfig.govAgencyName#
+										</a>
+									</div>
+
+									<div class="col-xs-12 col-sm-1 border-left center-all lh32 text-light-gray">
+
+										Mức #:serviceConfig.level#
+
+									</div>
+
+									<div class="col-xs-12 col-sm-1 border-left align-center">
+										<button class="btn btn-reset btn-select-serviceConfig" data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#serviceInfo.serviceCode#">Chọn</button>
+									</div>
+								</div>
+								#}#
+							</div>
+						</div>
+					</div>
+					#}#
+				</div>
+			</div>
+		</div>
+
+		#}#
+	</div>
+</script> 
+
 <script type="text/javascript">
 	$(document).ready(function(){
-		var dataSource = new kendo.data.DataSource({
-			transport: {
-				read: function(options) {
+		var dataSourceServiceConfigDomain = new kendo.data.DataSource({
+			transport : {
+				read : function(options){
 					$.ajax({
-						url: "http://127.0.0.1:8887/modules/frontend-web-customer/src/main/resources/templates/datasource/domain.json",
-						type: "get",
-						dataType: "json",
-						data: {
-							keyword: options.data.keyword,
-						},
-						success: function(result) {
+						url : "${api.server}/serviceconfigs/domains",
+						dataType : "json",
+						type : "GET",
+						headers : {"groupId": ${groupId}},
+						success : function(result){
 							options.success(result);
 						},
-						
+						error : function(result){
+							options.error(result);
+						}
 					});
 				}
 			},
-			schema: {
-				total: "total",
-				data: "data.serviceconfig",
+			schema : {
+				data : "domains",
 			}
 		});
 
-
-          $("#listViewdomain").kendoListView({
-              dataSource : dataSource,
-              template: kendo.template($("#templateDomain").html()),
-            
-          });
-
-           $('#btn_search').click(function() {
-           	var input_Search = $('#input_search').val();
-            if($('#btn_fillter_by_domain').hasClass('btn-active')) {
-              dataSource.read({
-              	keyword: input_search,
-              });
-            }
-          });
+		$("#serviceConfigs").kendoListView({
+			dataSource : dataSourceServiceConfigDomain,
+			template : kendo.template($("#templateServiceConfigDomain").html()),
+			autoBind : true,
+			dataBound : function(){
+				fnGenEventChoiseServiceConfig();
+			}
+		});
 
 		$('.administration-combobox').each(function(item){
 			$(this).kendoComboBox({
@@ -111,22 +165,24 @@
 
 		$("[data-role=combobox]").each(function() {
 			var widget = $(this).getKendoComboBox();
+
 			widget.input.on("focus", function() {
 				widget.open();
 			});
 		});
 
-		$('.btn-select-serviceInfo, .link-serviceInfo').each(function(item){
-			$(this).click(function(){
+		var fnGenEventChoiseServiceConfig = function(){
+			$('.btn-select-serviceConfig, .link-serviceInfo').unbind().click(function(){
 				event.preventDefault();
-				var serviceInfoId = $(this).attr("data-pk");
-				var administrationCode = $('#govAgencyCode' + serviceInfoId).val();
-				$("#left_container").load("${ajax.customer_dossier_detail}?${portletNamespace}administrationCode=" + administrationCode + "&${portletNamespace}serviceInfoId=" + serviceInfoId + "&${portletNamespace}dossierStatus=new", function(result){
-					$("#left_container").show();
-					$("#dossier_list").hide();
-					$("#dossier_detail").hide();
+				var serviceConfigId = $(this).attr("data-pk");
+				$("#serviceConfigId").val(serviceConfigId);
+
+				dataSourceProcessServiceConfig.read({
+					serviceConfigId : serviceConfigId
 				});
 			});
-		});
+		}
+		
 	});
+
 </script>

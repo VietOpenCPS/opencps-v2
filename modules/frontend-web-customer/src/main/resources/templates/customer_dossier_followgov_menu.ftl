@@ -1,3 +1,7 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
+
 <div class="demo-section k-content MT20">
 	<ul id="customer_menu">
 		<li class="k-state-active">
