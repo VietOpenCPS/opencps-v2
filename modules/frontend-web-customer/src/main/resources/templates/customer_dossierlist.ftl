@@ -66,29 +66,18 @@
 						</p>
 						
 						<p>
-							#if(typeof actionNote !== "undefined"){#
+							#if(typeof actionNote !== "undefined" && actionNote !== ""){#
 								<i class="fa fa-bolt" aria-hidden="true" style="color: red;"></i> 
 								<i>#:actionNote#</i>
 							#}#
 						</p>
 
 						<p>
-							#if(typeof stepInstruction !== "undefined"){#
+							#if(typeof stepInstruction !== "undefined" && stepInstruction !== ""){#
 								<i>#:stepInstruction#</i>
 							#}#
 						</p>
 
-						#if(dossierStatus === "Done"){#
-							<a href="${api.server}/dossiers/#:id#/result" style="margin-right: 10px;">
-								<i class="fa fa-download" aria-hidden="true">
-								</i> Tải giấy tờ kết quả
-							</a>
-						#}#
-						
-						#if(dossierStatus === "Done" ){#
-							<a href="javascript:;" onclick="javascript:copyProfile(#:id#)"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Sao chép hồ sơ
-							</a>
-						#}#
 					</div>
 					
 					<div class="col-sm-4 MT10 text-right">
@@ -130,9 +119,11 @@
 		transport:{
 			read:function(options){
 				$.ajax({
+					
 					url:"${api.server}/dossiers",
 					dataType:"json",
 					type:"GET",
+					headers: {"groupId": ${groupId}},
 					data:{
 						serviceInfo: options.data.serviceInfo,
 						govAgencyCode: options.data.govAgencyCode,
@@ -208,6 +199,7 @@
 		$("#dossier_detail").show();
 		$("#dossier_list").hide();
 		$("#dossier_detail").load("${ajax.customer_dossier_detail}?id="+id+"",function(result){
+
 		});
 	});
 	// load content/select item per page
@@ -224,6 +216,7 @@
 			url:"${api.server}/"+id+"/cloning",
 			dataType:"json",
 			type:"GET",
+			headers: {"groupId": ${groupId}},
 			success:function(result){
 				
 			},

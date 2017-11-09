@@ -131,7 +131,7 @@ public class DossierFileManagementImpl implements DossierFileManagement{
 			return processException(e);
 		}
 	}
-
+/*
 	@Override
 	public Response addDossierFileByDossierReferenceUid(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, Attachment file, String dosserReferenceUid,
@@ -166,7 +166,7 @@ public class DossierFileManagementImpl implements DossierFileManagement{
 			return processException(e);
 		}
 	}
-
+*/
 	@Override
 	public Response cloneDossierFile(HttpServletRequest request, HttpHeaders header, 
 			Company company, Locale locale,
@@ -230,7 +230,7 @@ public class DossierFileManagementImpl implements DossierFileManagement{
 			return processException(e);
 		}
 	}
-
+/*
 	@Override
 	public Response downloadByDossierReferenceUid_ReferenceUid(HttpServletRequest request, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String dossierReferenceUid,
@@ -270,7 +270,7 @@ public class DossierFileManagementImpl implements DossierFileManagement{
 			return processException(e);
 		}
 	}
-
+*/
 	@Override
 	public Response updateDossierFile(HttpServletRequest request, HttpHeaders header, 
 			Company company, Locale locale,

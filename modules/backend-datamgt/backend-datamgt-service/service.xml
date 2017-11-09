@@ -44,7 +44,7 @@
 	</entity>
 
 	<entity name="DictItem" uuid="true" local-service="true"
-		remote-service="false" table="m_dictitem">
+		remote-service="false" table="opencps_dictitem">
 
 		<!-- PK fields -->
 

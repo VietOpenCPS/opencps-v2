@@ -1,4 +1,9 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
+
 <div class="box" id="detailDossier">
+
 	<input type="hidden" name="dossierTemplateId" id="dossierTemplateId">
 	<input type="hidden" name="dossierItemId" id="dossierItemId">
 	<div class="row-header align-middle">
@@ -19,7 +24,6 @@
 	</div>
 
 	<div class="guide-section">
-
 		<div class="head-part">
 			<div class="background-triangle-small"><i class="fa fa-star"></i></div> <span class="text-uppercase">Hướng dẫn</span> <span class="text-light-gray">((gồm các bước làm thủ tục))</span>
 		</div>
@@ -39,6 +43,7 @@
 				<div class="content-part">
 					<div class="row-parts-head MT5">
 						<div class="row MT5">
+							
 							<div class="col-sm-2">
 								Họ và tên
 							</div>
@@ -222,7 +227,6 @@
 </div>
 
 <div id="fileTemplateDialog" class="modal fade" role="dialog">
-
 </div>
 
 <script type="text/javascript">
@@ -255,6 +259,48 @@
 			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_component_profiles}?dossierPartNo="+partNo,function(result){
 				$(this).modal("show");
 			});
+		});
+
+		$(".delete-dossier-file").unbind().click(function(event){
+			var dossierId  = ${dossierId};
+			var dataPartNo = $(this).attr("data-partno");
+
+			console.log(dossierId);
+			console.log(dataPartNo);
+			var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
+			if(cf){
+				if(dossierId && dataPartNo){
+					$.ajax({
+						url : "${api.server}/dossiers/"+dossierId+"/files",
+						dataType : "json",
+						type : "GET",
+						headers : {"groupId": ${groupId}},
+						success : function(result) {
+							var data = result.data;
+							if(data){
+								for (var i = 0; i < data.length; i++) {
+									if(dataPartNo === data[i].dossierPartNo){
+										removeDossierFile(dossierId, data[i].referenceUid);
+
+									}
+								}
+								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
+
+								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
+							notification.show({
+								message: "Đổi mật khẩu thành công"
+							}, "success");
+
+						}
+					},
+					error : function(result) {
+						notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");
+					}
+				});
+				}
+			}
 		});
 	}
 
@@ -290,7 +336,6 @@
 			$(this).modal("show");
 		});
 	});
-
 
 	var dataSourceDossierTemplate = new kendo.data.DataSource({
 		transport :{
@@ -402,9 +447,10 @@
 				headers: {"groupId": ${groupId}},
 				data : {
 					actionCode  : 1100,
+					actionNote :  $("#applicantNote").val()
 					/*actionUser : $("#actionUser").val(),
-					actionNote : $("#actionNote").val(),
-					assignUserId : $("#assignUserId").val()*/
+					
+					*/
 				},
 				success : function(result){
 					console.log("create acion dossier success!");
@@ -608,50 +654,6 @@
 	}
 
 	printDetailDossier(${dossierId});
-
-	$(document).on("click",".delete-dossier-file",function(event){
-		//lay danh sach cac file dinh kem
-
-		var dossierId  = ${dossierId};
-		var dataPartNo = $(this).attr("data-partno");
-
-		console.log(dossierId);
-		console.log(dataPartNo);
-		var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
-		if(cf){
-			if(dossierId && dataPartNo){
-				$.ajax({
-					url : "${api.server}/dossiers/"+dossierId+"/files",
-					dataType : "json",
-					type : "GET",
-					headers : {"groupId": ${groupId}},
-					success : function(result) {
-						var data = result.data;
-						if(data){
-							for (var i = 0; i < data.length; i++) {
-								if(dataPartNo === data[i].dossierPartNo){
-									removeDossierFile(dossierId, data[i].referenceUid);
-									
-								}
-							}
-							$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
-
-							$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
-							/*notification.show({
-								message: "Đổi mật khẩu thành công"
-							}, "success");*/
-						}
-					},
-					error : function(result) {
-						/*notification.show({
-							message: "Xẩy ra lỗi, vui lòng thử lại"
-						}, "error");*/
-					}
-				});
-			}
-		}
-		
-	});
 
 	var removeDossierFile = function(dossierId, fileId){
 		$.ajax({

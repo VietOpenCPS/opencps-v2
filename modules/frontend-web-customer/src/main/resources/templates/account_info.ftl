@@ -1,3 +1,7 @@
+<#if (Request)??>
+  <#include "init.ftl">
+</#if>
+
 <div class="panel">
   <div class="panel-heading P0">
     <div class="row-header">

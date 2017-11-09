@@ -158,7 +158,7 @@
 							<#assign birthdate_ = employee.birthdate?datetime("iso") >
 							${birthdate_?string["dd/MM/yyyy"]}
 						<#else>
-							Chưa có
+							-
 						</#if>
 					
 					</a>
@@ -310,7 +310,7 @@
 						
 								${(employee_accountInfo.screenName)!}
 							<#else>
-								Chưa có
+								-
 							</#if>
 
 						</a>
@@ -334,7 +334,7 @@
 				
 					<a href="javascript:;" >
 								
-						${(employee_accountInfo.email)!"Chưa có"}
+						${(employee_accountInfo.email)!"-"}
 
 					</a>
 
@@ -357,7 +357,7 @@
 
 						<button name="employee-detail-looking" style="display: none" 
 							data-pk="${(employee.employeeId)!}" data-vl="true"
-							class="btn btn-primary image-preview-input border-rad-4"> 
+							class="btn btn-active image-preview-input border-rad-4"> 
 							Khóa tài khoản
 						</button>
 
@@ -365,7 +365,7 @@
 						
 						<button name="employee-detail-looking" style="display: none" 
 							data-pk="${(employee.employeeId)!}" data-vl="false" 
-							class="btn btn-primary image-preview-input border-rad-4"> 
+							class="btn btn-active image-preview-input border-rad-4"> 
 							Mở khóa tài khoản
 						</button>
 

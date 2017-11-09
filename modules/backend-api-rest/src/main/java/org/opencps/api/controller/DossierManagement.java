@@ -151,7 +151,7 @@ public interface DossierManagement {
 			@Context ServiceContext serviceContext, @PathParam("id") String id);
 
 	@GET
-	@Path("/{id}")
+	@Path("/{id}/reset")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Reset Dossier", response = DossierDetailModel.class)
 	@ApiResponses(value = {
