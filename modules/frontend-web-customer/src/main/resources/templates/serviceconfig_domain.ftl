@@ -130,7 +130,7 @@
 			transport : {
 				read : function(options){
 					$.ajax({
-						url : "${spi.server}/serviceconfigs/domains",
+						url : "${api.server}/serviceconfigs/domains",
 						dataType : "json",
 						type : "GET",
 						headers : {"groupId": ${groupId}},
@@ -151,7 +151,10 @@
 		$("#serviceConfigs").kendoListView({
 			dataSource : dataSourceServiceConfigDomain,
 			template : kendo.template($("#templateServiceConfigDomain").html()),
-			autoBind : true
+			autoBind : true,
+			dataBound : function(){
+				fnGenEventChoiseServiceConfig();
+			}
 		});
 
 		$('.administration-combobox').each(function(item){
@@ -162,20 +165,24 @@
 
 		$("[data-role=combobox]").each(function() {
 			var widget = $(this).getKendoComboBox();
+
 			widget.input.on("focus", function() {
 				widget.open();
 			});
 		});
 
-		$('.btn-select-serviceConfig, .link-serviceInfo').unbind().click(function(){
-			event.preventDefault();
-			var serviceConfigId = $(this).attr("data-pk");
-			$("#serviceConfigId").val(serviceConfigId);
+		var fnGenEventChoiseServiceConfig = function(){
+			$('.btn-select-serviceConfig, .link-serviceInfo').unbind().click(function(){
+				event.preventDefault();
+				var serviceConfigId = $(this).attr("data-pk");
+				$("#serviceConfigId").val(serviceConfigId);
 
-			dataSourceProcessServiceConfig.read({
-				serviceConfigId : serviceConfigId
+				dataSourceProcessServiceConfig.read({
+					serviceConfigId : serviceConfigId
+				});
 			});
-		});
+		}
+		
 	});
 
 </script>
