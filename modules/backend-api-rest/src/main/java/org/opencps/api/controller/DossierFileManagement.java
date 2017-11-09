@@ -56,7 +56,7 @@ public interface DossierFileManagement {
 			@Context ServiceContext serviceContext, 
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
 			@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
-	
+	/*
 	@GET
 	@Path("/{referenceUid}/files")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -70,7 +70,7 @@ public interface DossierFileManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, 
 			@ApiParam(value = "reference of dossierfile", required = true) @PathParam("referenceUid") String referenceUid);
-	
+	*/
 	@POST
 	@Path("/{id}/files")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
