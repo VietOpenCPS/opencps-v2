@@ -106,7 +106,7 @@
               if(result.data){
                 if (result.data.length === 1) {
                   fnGetParamAndCreateDossier(result.data[0].processOptionId);
-                }else {
+                }else if (result.data.length > 1){
                   options.success(result);
                   $("#choiseProcessForDossier").modal("show");
                 }
