@@ -104,10 +104,11 @@
             headers : {"groupId": ${groupId}},
             success :  function(result){
               if(result.data){
-                if (result.data.length <= 1) {
+                if (result.data.length === 1) {
                   fnGetParamAndCreateDossier(result.data[0].processOptionId);
                 }else {
                   options.success(result);
+                  $("#choiseProcessForDossier").modal("show");
                 }
               }
             },
@@ -209,17 +210,12 @@
           $("#dossier_detail").show();
           $("#left_container").html("");
         });
-          /*notification.show({
-                message: "Đổi mật khẩu thành công"
-              }, "success");*/
-            },
-            error : function(result){
-          /*notification.show({
-              message: "Xẩy ra lỗi, vui lòng thử lại"
-            }, "error");*/
-          }
 
-        });
+       },
+       error : function(result){
+       }
+
+     });
     }
 
   });
