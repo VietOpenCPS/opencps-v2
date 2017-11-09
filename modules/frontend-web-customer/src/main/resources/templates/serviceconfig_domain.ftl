@@ -2,7 +2,7 @@
 <#include "init.ftl">
 </#if>
 <input type="hidden" name="serviceConfigId" id="serviceConfigId">
-<div class="panel">
+<#-- <div class="panel">
 	<div class="panel-body PT0">
 		<div class="row">
 			<#if serviceconfig?has_content && serviceconfig.domains?has_content>
@@ -62,26 +62,30 @@
 			</#if>
 		</div>
 	</div>
-</div>
+</div> -->
 
-<#-- 
-<script type="text/x-kendo-template">
+<div class="row">
+	<div class="accordion" id="serviceConfigs">
+	</div>
+</div>
+<script type="text/x-kendo-template" id="templateServiceConfigDomain">
 	<div class="accordion-group">
+		#if(typeof domainId !== "undefined"){#
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="\\##:domain.domainId#">
-				<i class="fa fa-briefcase" aria-hidden="true"></i> #:domain.domainName#
+			<a class="accordion-toggle" data-toggle="collapse" data-parent="\\#serviceConfigs" href="\\##:domainId#">
+				<i class="fa fa-briefcase" aria-hidden="true"></i> #:domainName#
 			</a>
 		</div>
-		<div id="#:domain.domainId#" class="accordion-body collapse in">
+		<div id="#:domainId#" class="accordion-body collapse in">
 			<div class="accordion-inner">
 				<div class="accordion" id="accordion2">
 					
-					# for(var i=0 ;i < domain.serviceInfos.length ; i++) {
-					var serviceInfo = domain.serviceInfos[i];
+					# for(var i=0 ;i < serviceInfos.length ; i++) {
+					var serviceInfo = serviceInfos[i];
 					#
 					<div class="accordion-group">
 						<div class="accordion-heading">
-							<a class="accordion-toggle" data-toggle="collapse" data-parent="\\##:domain.domainId#" href="\\##:serviceInfo.serviceCode#">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="\\##:domainId#" href="\\##:serviceInfo.serviceCode#">
 								#:serviceInfo.serviceName#
 							</a>
 						</div>
@@ -115,10 +119,41 @@
 				</div>
 			</div>
 		</div>
+
+		#}#
 	</div>
-</script> -->
+</script> 
+
 <script type="text/javascript">
 	$(document).ready(function(){
+		var dataSourceServiceConfigDomain = new kendo.data.DataSource({
+			transport : {
+				read : function(options){
+					$.ajax({
+						url : "${spi.server}/serviceconfigs/domains",
+						dataType : "json",
+						type : "GET",
+						headers : {"groupId": ${groupId}},
+						success : function(result){
+							options.success(result);
+						},
+						error : function(result){
+							options.error(result);
+						}
+					});
+				}
+			},
+			schema : {
+				data : "domains",
+			}
+		});
+
+		$("#serviceConfigs").kendoListView({
+			dataSource : dataSourceServiceConfigDomain,
+			template : kendo.template($("#templateServiceConfigDomain").html()),
+			autoBind : true
+		});
+
 		$('.administration-combobox').each(function(item){
 			$(this).kendoComboBox({
 				filter: "contains",
@@ -137,25 +172,9 @@
 			var serviceConfigId = $(this).attr("data-pk");
 			$("#serviceConfigId").val(serviceConfigId);
 
-			$("#choiseProcessForDossier").modal("show");
-
 			dataSourceProcessServiceConfig.read({
 				serviceConfigId : serviceConfigId
 			});
-
-			/*$("#dossier_detail").load("${ajax.customer_dossier_detail}", function(result){
-				$("#dossier_list").hide();
-				$("#dossier_detail").show();
-				$("#left_container").html("");
-			});*/
-				/*var serviceConfigId = $(this).attr("data-pk");
-				var administrationCode = $('#govAgencyCode' + serviceInfoId).val();
-				$("#left_container").load("${ajax.customer_dossier_detail}?${portletNamespace}administrationCode=" + administrationCode + "&${portletNamespace}serviceInfoId=" + serviceInfoId + "&${portletNamespace}dossierStatus=new", function(result){
-					$("#left_container").show();
-					$("#dossier_list").hide();
-					$("#dossier_detail").hide();
-				});
-			});*/
 		});
 	});
 
