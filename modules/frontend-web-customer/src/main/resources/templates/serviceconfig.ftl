@@ -81,7 +81,7 @@
       searchServiceInfo();
     });
 
-    $('#btn_search').change(function(){
+    /*$('#btn_search').change(function(){
       searchServiceInfo();
     });
 
@@ -92,7 +92,7 @@
       if ($('#btn_fillter_by_domain').hasClass('btn-active')){
         $('#serviceconfig_container').load("${ajax.serviceconfig_administration}&" + $('#input_search').val());
       }
-    }
+    }*/
 
     dataSourceProcessServiceConfig = new kendo.data.DataSource({
       transport : {
@@ -104,12 +104,16 @@
             headers : {"groupId": ${groupId}},
             success :  function(result){
               if(result.data){
+                options.success(result);
                 if (result.data.length === 1) {
+                  console.log(result.data[0].processOptionId);
                   fnGetParamAndCreateDossier(result.data[0].processOptionId);
+                  
                 }else if (result.data.length > 1){
-                  options.success(result);
+                  
                   $("#choiseProcessForDossier").modal("show");
                 }
+                
               }
             },
             error : function(result){
@@ -197,7 +201,20 @@
           referenceUid : "",
           serviceCode : serviceCode,
           govAgencyCode : govAgencyCode,
-          dossierTemplateNo : dossierTemplateId
+          dossierTemplateNo : dossierTemplateId,
+          applicantName : ${applicant.applicantName},
+          applicantIdType : ${applicant.applicantIdType},
+          applicantIdNo : ${applicant.applicantIdNo},
+          applicantIdDate : ${applicant.applicantIdDate},
+          address : ${applicant.address},
+          cityCode : ${applicant.cityCode},
+          districtCode : ${applicant.districtCode},
+          wardCode : ${applicant.wardCode},
+          contactName : ${applicant.contactName},
+          contactTelNo : ${applicant.contactTelNo},
+          contactEmail : ${applicant.contactEmail},
+          password : ${applicant.password},
+          online : ${applicant.online}
         },
         headers : {"groupId": ${groupId}},
         success : function(result){
