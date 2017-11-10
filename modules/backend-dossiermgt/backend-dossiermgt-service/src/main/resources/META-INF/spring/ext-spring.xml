@@ -31,6 +31,9 @@
 		id="org.opencps.dossiermgt.service.indexer.PaymentConfigIndexer" />
 
 	<bean class="org.opencps.dossiermgt.service.indexer.DossierIndexer"
-		id="org.opencps.dossiermgt.service.indexer.DossierIndexer" />
+		id="org.opencps.dossiermgt.service.indexer.DossierIndexer" />	
+		
+	<bean class="org.opencps.dossiermgt.service.indexer.DossierLogIndexer"
+		id="org.opencps.dossiermgt.service.indexer.DossierLogIndexer" />
 
 </beans>

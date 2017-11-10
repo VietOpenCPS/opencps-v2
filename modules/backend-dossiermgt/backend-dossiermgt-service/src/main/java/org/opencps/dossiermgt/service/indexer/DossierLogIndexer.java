@@ -6,8 +6,12 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.dossiermgt.constants.DossierLogTerm;
+import org.opencps.dossiermgt.constants.ServiceConfigTerm;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierLog;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -21,6 +25,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class DossierLogIndexer extends BaseIndexer<DossierLog> {
 	public static final String CLASS_NAME = DossierLog.class.getName();
@@ -59,7 +64,18 @@ public class DossierLogIndexer extends BaseIndexer<DossierLog> {
 		document.addTextSortable(DossierLogTerm.CONTENT, object.getContent());
 		document.addTextSortable(DossierLogTerm.NOTIFICATION_TYPE, object.getNotificationType());
 		document.addTextSortable(DossierLogTerm.PAYLOAD, object.getPayload());
-
+		
+		try {
+			Dossier dossier = DossierLocalServiceUtil.getDossier(object.getDossierId());
+			document.addTextSortable(DossierLogTerm.SERVICE_CODE, dossier.getServiceCode());
+			document.addTextSortable(DossierLogTerm.SERVICE_NAME, dossier.getServiceName());
+			document.addTextSortable(DossierLogTerm.GOVAGENCYCODE, dossier.getGovAgencyCode());
+			document.addTextSortable(DossierLogTerm.GOVAGENCYNAME, dossier.getGovAgencyName());
+			document.addNumberSortable(DossierLogTerm.COUNTER, dossier.getCounter());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return document;
 	}
 
