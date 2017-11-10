@@ -169,7 +169,7 @@
 				</div>
 				#
 				$.ajax({
-				url : "${api.server}/dossiertemplates/${dossierTemplateNo}/parts/"+id+"/formscript",
+				url : "${api.server}/dossiertemplates/${dossierTemplateId}/parts/"+id+"/formscript",
 				dataType : "json",
 				type : "GET",
 				headers : {"groupId": ${groupId}},
@@ -250,7 +250,7 @@
 			console.log(fileTemplateNo);
 			console.log($(this)[0].files[0]);
 
-			funUploadFile($(this),partNo,${dossierTemplateNo},fileTemplateNo);
+			funUploadFile($(this),partNo,${dossierTemplateId},fileTemplateNo);
 		});
 
 		//tai giay to kho luu tru
@@ -347,23 +347,21 @@
 	var dataSourceDossierTemplate = new kendo.data.DataSource({
 		transport :{
 			read : function(options){
-				if(options.data.dossierTemplateId){
-					$.ajax({
-						url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateId+"/parts",
-						dataType : "json",
-						type : "GET",
-						headers : {"groupId": ${groupId}},
-						data : {
+				$.ajax({
+					url : "${api.server}/dossiertemplates/${dossierTemplateId}/parts",
+					dataType : "json",
+					type : "GET",
+					headers : {"groupId": ${groupId}},
+					data : {
 
-						},
-						success : function(result){
-							options.success(result);
-						},
-						error : function(result){
-							options.error(result);
-						}
-					});
-				}
+					},
+					success : function(result){
+						options.success(result);
+					},
+					error : function(result){
+						options.error(result);
+					}
+				});
 			}
 		},
 		schema : {
