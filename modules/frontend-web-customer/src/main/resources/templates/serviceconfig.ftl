@@ -110,8 +110,12 @@
                   fnGetParamAndCreateDossier(result.data[0].processOptionId);
                   
                 }else if (result.data.length > 1){
-                  
+
                   $("#choiseProcessForDossier").modal("show");
+                }else {
+                  notification.show({
+                    message: "Hiện tại chưa có cấu hình, yêu cầu bổ sung cấu hình để thực hiện"
+                  }, "error");
                 }
                 
               }
@@ -164,6 +168,7 @@
         if(processOptionId){
           fnGetParamAndCreateDossier(processOptionId);
         }
+
       }); 
     }
 
@@ -171,7 +176,7 @@
       var item = dataSourceProcessServiceConfig.get(processOptionId);
       var serviceConfigId = $("#serviceConfigId").val();
       if(item && serviceConfigId){
-        var dossierTemplateId = item.dossierTemplateId;
+        var dossierTemplateNo = item.templateNo;
 
         $.ajax({
           url : "${api.server}/serviceconfigs/"+serviceConfigId,
@@ -180,7 +185,7 @@
           headers : {"groupId": ${groupId}},
           success : function(result){
             if(result){
-              fnCreateDossier(dossierTemplateId, result.serviceCode, result.govAgencyCode);
+              fnCreateDossier(dossierTemplateNo, result.serviceCode, result.govAgencyCode);
             }
           },
           error : function(result){
@@ -192,7 +197,7 @@
       } 
     }
 
-    var fnCreateDossier = function(dossierTemplateId,serviceCode,govAgencyCode){
+    var fnCreateDossier = function(dossierTemplateNo,serviceCode,govAgencyCode){
       $.ajax({
         url : "${api.server}/dossiers",
         dataType : "json",
@@ -201,7 +206,7 @@
           referenceUid : "",
           serviceCode : serviceCode,
           govAgencyCode : govAgencyCode,
-          dossierTemplateNo : dossierTemplateId,
+          dossierTemplateNo : dossierTemplateNo,
           applicantName : "${(applicant.applicantName)!}",
           applicantIdType : "${(applicant.applicantIdType)!}",
           applicantIdNo : "${(applicant.applicantIdNo)!}",
@@ -212,9 +217,7 @@
           wardCode : "${(applicant.wardCode)!}",
           contactName : "${(applicant.contactName)!}",
           contactTelNo : "${(applicant.contactTelNo)!}",
-          contactEmail : "${(applicant.contactEmail)!}",
-          password : "${(applicant.password)!}",
-          online : "${(applicant.online)!}"
+          contactEmail : "${(applicant.contactEmail)!}"
         },
         headers : {"groupId": ${groupId}},
         success : function(result){
