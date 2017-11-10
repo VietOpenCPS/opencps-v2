@@ -1,5 +1,5 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 
 <div class="box" id="detailDossier">
@@ -49,8 +49,10 @@
 							</div>
 							<div class="col-sm-10">
 								<div class="form-group"> 
-									<input type="text" class="form-control" data-bind="value : applicantName" id="applicantName" name="applicantName"> 
+									<input type="text" class="form-control" data-bind="value : applicantName" id="applicantName" name="applicantName" required="required" validationMessage="Bạn phải điền họ tên"> 
+									<span data-for="applicantName" class="k-invalid-msg"></span>
 								</div>
+								
 							</div>
 
 							<div class="col-sm-2">
@@ -67,7 +69,8 @@
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="cityCode" name="cityCode" data-bind="value : cityCode"> 
+									<input type="text" class="form-control" id="cityCode" name="cityCode" data-bind="value : cityCode" required="required" validationMessage="Bạn phải chọn Tỉnh/ Thành phố">
+									<span data-for="cityCode" class="k-invalid-msg"></span>
 								</div>
 							</div>
 
@@ -76,7 +79,8 @@
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="districtCode" name="districtCode" data-bind="value : districtCode"> 
+									<input type="text" class="form-control" id="districtCode" name="districtCode" data-bind="value : districtCode" required="required" validationMessage="Bạn phải chọn Quận/ Huyện"> 
+									<span data-for="districtCode" class="k-invalid-msg"></span>
 								</div>
 							</div>
 							
@@ -85,7 +89,8 @@
 							</div>
 							<div class="col-sm-2 PL0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="wardCode" name="wardCode" data-bind="value : wardCode"> 
+									<input type="text" class="form-control" id="wardCode" name="wardCode" data-bind="value : wardCode" required="required" validationMessage="Bạn phải chọn Xã/ Phường"> 
+									<span data-for="wardCode" class="k-invalid-msg"></span>
 								</div>
 							</div>
 
@@ -94,7 +99,8 @@
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="contactTelNo" name="contactTelNo" data-bind="value : contactTelNo"> 
+									<input type="text" class="form-control" id="contactTelNo" name="contactTelNo" data-bind="value : contactTelNo" required="required" validationMessage="Bạn phải điền số điện thoại">
+									<span data-for="contactTelNo" class="k-invalid-msg"></span> 
 								</div>
 							</div>
 							
@@ -103,7 +109,8 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="contactEmail" name="contactEmail" data-bind="value : contactEmail"> 
+									<input type="text" class="form-control" id="contactEmail" name="contactEmail" data-bind="value : contactEmail" required="required" validationMessage="Bạn phải điền email">
+									<span data-for="contactEmail" class="k-invalid-msg"></span> 
 								</div>
 							</div>
 						</div>
@@ -158,27 +165,27 @@
 
 				#if(hasForm){#
 				<div class="col-sm-12" id="formPartNo#:id#">
-
+					
 				</div>
 				#
 				$.ajax({
-					url : "${api.server}/dossiertemplates/${dossierTemplateNo}/parts/"+id+"/formscript",
-					dataType : "json",
-					type : "GET",
-					headers : {"groupId": ${groupId}},
-					success : function(result){
-						$("\\#formPartNo"+id).empty();
-						$("\\#formPartNo"+id).alpaca(result);
-						$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button class="btn btn-active MB10 MT10" onclick="" data-pk="'+id+'">Ghi lại</button></div></div>');
-					},
-					error : function(result){
+				url : "${api.server}/dossiertemplates/${dossierTemplateNo}/parts/"+id+"/formscript",
+				dataType : "json",
+				type : "GET",
+				headers : {"groupId": ${groupId}},
+				success : function(result){
+				$("\\#formPartNo"+id).empty();
+				$("\\#formPartNo"+id).alpaca(result);
+				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button class="btn btn-active MB10 MT10" onclick="" data-pk="'+id+'">Ghi lại</button></div></div>');
+			},
+			error : function(result){
 
-					}
-				});
-				}#
-			</script>
-		</div>
-	</form>
+		}
+	});
+}#
+</script>
+</div>
+</form>
 
 <div class="row-parts-content">
 	<div class="row">
@@ -287,18 +294,18 @@
 								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
 
 								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
-							notification.show({
-								message: "Đổi mật khẩu thành công"
-							}, "success");
+								notification.show({
+									message: "Đổi mật khẩu thành công"
+								}, "success");
 
+							}
+						},
+						error : function(result) {
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
 						}
-					},
-					error : function(result) {
-						notification.show({
-							message: "Xẩy ra lỗi, vui lòng thử lại"
-						}, "error");
-					}
-				});
+					});
 				}
 			}
 		});
@@ -340,21 +347,23 @@
 	var dataSourceDossierTemplate = new kendo.data.DataSource({
 		transport :{
 			read : function(options){
-				$.ajax({
-					url : "${api.server}/dossiertemplates/${dossierTemplateNo}/parts",
-					dataType : "json",
-					type : "GET",
-					headers : {"groupId": ${groupId}},
-					data : {
+				if(options.data.dossierTemplateId){
+					$.ajax({
+						url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateId+"/parts",
+						dataType : "json",
+						type : "GET",
+						headers : {"groupId": ${groupId}},
+						data : {
 
-					},
-					success : function(result){
-						options.success(result);
-					},
-					error : function(result){
-						options.error(result);
-					}
-				});
+						},
+						success : function(result){
+							options.success(result);
+						},
+						error : function(result){
+							options.error(result);
+						}
+					});
+				}
 			}
 		},
 		schema : {
@@ -369,7 +378,7 @@
 	var indexDossiserPart =0 ;
 	$("#lsDossierTemplPart").kendoListView({
 		dataSource : dataSourceDossierTemplate,
-		autoBind : true,
+		autoBind : false,
 		change : function(){
 
 		},
@@ -400,27 +409,30 @@
 
 	var funSaveDossier = function(){
 		//PUT dossier
-		$.ajax({
-			url  : '${api.server}/dossiers/${dossierId}', 
-			dataType : "json",
-			type : 'PUT', 
-			headers: {"groupId": ${groupId}},
-			data : {
-				applicantName : $("#applicantName").val(),
-				address : $("#address").val(),
-				cityCode : $("#cityCode").val(),
-				districtCode : $("#districtCode").val(),
-				wardCode : $("#wardCode").val(),
-				contactTelNo : $("#contactTelNo").val(),
-				contactEmail : $("#contactEmail").val(),
+		var validator = $("#detailDossier").kendoValidator().data("kendoValidator");
 
-				applicantNote : $("#applicantNote").val(),
-				postalTelNo: $("#postalTelNo").val(),
-				postalCityCode: $("#postalCityCode").val(),
-				postalAddress: $("#postalAddress").val()
-			},
-			success :  function(result){                       
-				console.log("PUT Dossier success!");
+		if(validator.validate()){
+			$.ajax({
+				url  : '${api.server}/dossiers/${dossierId}', 
+				dataType : "json",
+				type : 'PUT', 
+				headers: {"groupId": ${groupId}},
+				data : {
+					applicantName : $("#applicantName").val(),
+					address : $("#address").val(),
+					cityCode : $("#cityCode").val(),
+					districtCode : $("#districtCode").val(),
+					wardCode : $("#wardCode").val(),
+					contactTelNo : $("#contactTelNo").val(),
+					contactEmail : $("#contactEmail").val(),
+
+					applicantNote : $("#applicantNote").val(),
+					postalTelNo: $("#postalTelNo").val(),
+					postalCityCode: $("#postalCityCode").val(),
+					postalAddress: $("#postalAddress").val()
+				},
+				success :  function(result){                       
+					console.log("PUT Dossier success!");
 
 				//finish PUT dossier create action for dossier
 				createActionDossier(${dossierId});
@@ -436,6 +448,8 @@
 				console.error(result);
 			}	
 		});
+		}
+		
 	}
 
 	var createActionDossier = function(dossierId){
