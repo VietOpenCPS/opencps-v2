@@ -89,6 +89,9 @@
 						url : "${api.server}/serviceconfigs/domains",
 						dataType : "json",
 						type : "GET",
+						data: {
+							keyword: options.data.keyword
+						},
 						headers : {"groupId": ${groupId}},
 						success : function(result){
 							options.success(result);
@@ -112,6 +115,15 @@
 				fnGenEventChoiseServiceConfig();
 			}
 		});
+
+		$('#btn_search').click(function(){
+	      var input_Search = $('#input_search').val();
+	      if ($('#btn_fillter_by_domain').hasClass('btn-active')){
+	        dataSourceServiceConfigDomain.read({
+	          keyword: input_search,
+	        });
+	      }
+	    });
 
 		$('.administration-combobox').each(function(item){
 			$(this).kendoComboBox({
