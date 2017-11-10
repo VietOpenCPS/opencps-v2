@@ -85,9 +85,6 @@
       $('#input_search').val('');
     });
 
-    $('#input_search').change(function(){
-      searchServiceInfo();
-    });
 
     /*$('#btn_search').change(function(){
       searchServiceInfo();
