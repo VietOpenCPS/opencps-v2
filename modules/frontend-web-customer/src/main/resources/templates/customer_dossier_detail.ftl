@@ -113,6 +113,11 @@
 									<span data-for="contactEmail" class="k-invalid-msg"></span> 
 								</div>
 							</div>
+
+							<input type="hidden" name="serviceCode" id="serviceCode" data-bind="value:serviceCode">
+							<input type="hidden" name="govAgencyCode" id="govAgencyCode" data-bind="value:govAgencyCode">
+							<input type="hidden" name="dossierTemplateNo" id="dossierTemplateNo" data-bind="value:dossierTemplateNo">
+
 						</div>
 					</div>
 				</div>
@@ -416,7 +421,17 @@
 				type : 'PUT', 
 				headers: {"groupId": ${groupId}},
 				data : {
-					applicantName : $("#applicantName").val(),
+					referenceUid : "",
+					serviceCode : $("#serviceCode").val(),
+					govAgencyCode : $("#govAgencyCode").val(),
+					dossierTemplateNo : $("#dossierTemplateNo").val(),
+					
+					applicantName : "${(applicant.applicantName)!}",
+					applicantIdType : "${(applicant.applicantIdType)!}",
+					applicantIdNo : "${(applicant.applicantIdNo)!}",
+					applicantIdDate : "${(applicant.applicantIdDate)!}",
+
+					contactName : $("#applicantName").val(),
 					address : $("#address").val(),
 					cityCode : $("#cityCode").val(),
 					districtCode : $("#districtCode").val(),
@@ -427,7 +442,8 @@
 					applicantNote : $("#applicantNote").val(),
 					postalTelNo: $("#postalTelNo").val(),
 					postalCityCode: $("#postalCityCode").val(),
-					postalAddress: $("#postalAddress").val()
+					postalAddress: $("#postalAddress").val(),
+
 				},
 				success :  function(result){                       
 					console.log("PUT Dossier success!");
@@ -645,6 +661,9 @@
 					console.log("load detail dossier!");
 					console.log(result);
 					var viewModel = kendo.observable({
+						serviceCode : result.serviceCode,
+						govAgencyCode : result.govAgencyCode,
+						dossierTemplateNo : result.dossierTemplateNo,
 						serviceName : result.serviceName,
 						govAgencyName : result.govAgencyName,
 
