@@ -164,6 +164,8 @@ public class DossierActionsImpl implements DossierActions {
 			ServiceContext context) throws PortalException {
 
 		// Add DossierAction
+		
+		// TODO Add DossierActionUser
 
 		// Update DossierStatus
 
@@ -199,8 +201,18 @@ public class DossierActionsImpl implements DossierActions {
 		} else {
 			processAction = getProcessAction(groupId, dossierId, referenceUid, actionCode, serviceProcessId);
 		}
+		
+		if (Validator.isNull(processAction)) 
+			throw new NotFoundException("ProcessActionNotFoundException");
 
 		boolean isSubmitType = isSubmitType(processAction);
+		
+		_log.info("processActionId="+processAction.getPrimaryKey());
+		_log.info("isSubmit="+isSubmitType);
+		_log.info("groupId="+groupId);
+		_log.info("referenceUid="+referenceUid);
+		_log.info("dossierId="+dossierId);
+
 
 		boolean hasDossierSync = hasDossierSync(groupId, dossierId, referenceUid, processAction, isSubmitType);
 
@@ -232,6 +244,7 @@ public class DossierActionsImpl implements DossierActions {
 		if (actionCode.contentEquals(SPECIAL_ACTION)
 				&& (types.contains(OCPSUserUtils.APPLICANT_01) || types.contains(OCPSUserUtils.APPLICANT_02))) {
 			// TODO check DossierStatus
+			_log.info("DO_SPECIAL_ACTION");
 
 			// Set dossierStatus is NEW
 			JSONObject jsStatus = JSONFactoryUtil.createJSONObject();
@@ -247,6 +260,9 @@ public class DossierActionsImpl implements DossierActions {
 					curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(), context);
 
 		} else {
+			
+			_log.info("NEXT_ACTION");
+			
 			JSONObject jsStatus = JSONFactoryUtil.createJSONObject();
 			JSONObject jsSubStatus = JSONFactoryUtil.createJSONObject();
 
@@ -274,7 +290,8 @@ public class DossierActionsImpl implements DossierActions {
 				DossierActionLocalServiceUtil.updateNextActionId(prvAction.getDossierActionId(),
 						dossierAction.getDossierActionId());
 			}
-			
+			_log.info("SYN_ACTION:"+hasDossierSync);
+
 			if(hasDossierSync) {
 				// SyncAction
 				int method = 1;
@@ -413,7 +430,7 @@ public class DossierActionsImpl implements DossierActions {
 		// TODO add more logic here
 		boolean isSync = false;
 
-		if (!isSubmit && dossier.getOnline() && action.getSyncActionCode().length() != 0) {
+		if (dossier.getOnline() && action.getSyncActionCode().length() != 0) {
 			isSync = true;
 		}
 

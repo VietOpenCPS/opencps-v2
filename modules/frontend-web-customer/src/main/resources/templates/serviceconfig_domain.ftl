@@ -1,74 +1,127 @@
 <#if (Request)??>
 <#include "init.ftl">
 </#if>
-<div class="panel">
-	<div class="panel-body PT0">
-		<div class="row">
-			<#-- <#if serviceconfig?has_content && serviceconfig.domains?has_content>
-			<div class="accordion" id="accordion1">
-			<#list serviceconfig.domains as domain>
-				<div class="accordion-group">
-					<div class="accordion-heading">
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#${domain.domainId}1">
-							<i class="fa fa-briefcase" aria-hidden="true"></i> ${domain.domainName}
-						</a>
-					</div>
-					<div id="${domain.domainId}1" class="accordion-body collapse in">
-						<div class="accordion-inner">
-							<#if domain?has_content && domain.serviceInfos?has_content>
-							<div class="accordion" id="accordion2">
-								<#list domain.serviceInfos as serviceInfo>
-								<div class="accordion-group">
-									<div class="accordion-heading">
-										<a class="accordion-toggle" data-toggle="collapse" data-parent="#${domain.domainId}" href="#${serviceInfo.serviceInfoId}">
-											${serviceInfo.serviceInfoName}
-										</a>
-									</div>
-									<div id="${serviceInfo.serviceInfoId}" class="accordion-body collapse in">
-										<div class="accordion-inner">
-											<#if serviceInfo?has_content>
-											<#list serviceInfo.govAgencys as govAgency>
-											<div class="eq-height">
-												<div class="col-xs-12 col-sm-10 align-middle">
-													<a class="link-serviceInfo" data-pk="${govAgency.govAgencyCode}" admt-pk="${serviceInfo.serviceInfoId}" href="#">
-														${govAgency.govAgencyName}
-													</a>
-												</div>
-												<div class="col-xs-12 col-sm-1 border-left center-all lh32 text-light-gray">
-													<#if govAgency.level == 1>
-													Mức 1
-													<#elseif govAgency.level == 2>
-													Mức 2
-													<#elseif govAgency.level == 3>
-													Mức 3
-													<#elseif govAgency.level == 4>
-													Mức 4
-													</#if>
-												</div>
-												<div class="col-xs-12 col-sm-1 border-left align-center">
-													<button class="btn btn-reset btn-select-serviceInfo" data-pk="${govAgency.govAgencyCode}" admt-pk="${serviceInfo.serviceInfoId}">Chọn</button>
-												</div>
-											</div>
-											</#list>
-											</#if>
-										</div>
-									</div>
-								</div>
-								</#list>
-							</div>
-							</#if>
-						</div>
-					</div>
-				</div>
-				</#list>
-			</div>
-			</#if> -->
+<input type="hidden" name="serviceConfigId" id="serviceConfigId">
+<div class="row">
+	<div class="col-xs-12">
+		<div class="accordion" id="serviceConfigs">
 		</div>
 	</div>
 </div>
+<script type="text/x-kendo-template" id="templateServiceConfigDomain">
+	<div class="accordion-group">
+		#if(typeof domainId !== "undefined"){#
+		<div class="accordion-heading">
+			<a class="accordion-toggle" data-toggle="collapse" data-parent="\\#serviceConfigs" href="\\##:domainId#">
+				<i class="fa fa-briefcase" aria-hidden="true"></i> #:domainName#
+			</a>
+		</div>
+		<div id="#:domainId#" class="accordion-body collapse in">
+			<div class="accordion-inner">
+				<div class="accordion" id="accordion2">
+					
+					# for(var i=0 ;i < serviceInfos.length ; i++) {
+					var serviceInfo = serviceInfos[i];
+					#
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="\\##:domainId#" href="\\##:serviceInfo.serviceCode#">
+								#:serviceInfo.serviceName#
+							</a>
+						</div>
+						<div id="#:serviceInfo.serviceCode#" class="accordion-body collapse in">
+							<div class="accordion-inner">
+								# for (var j = 0; j < serviceInfo.serviceConfigs.length; j++){
+								var serviceConfig = serviceInfo.serviceConfigs[j];
+								#
+								<div class="eq-height">
+									<div class="col-xs-12 col-sm-10 align-middle">
+										<a class="link-serviceInfo" data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#:serviceInfo.serviceCode#" href="\\#">
+											#:serviceConfig.govAgencyName#
+										</a>
+									</div>
+
+									<div class="col-xs-12 col-sm-1 border-left center-all lh32 text-light-gray">
+
+										Mức #:serviceConfig.level#
+
+									</div>
+
+									<div class="col-xs-12 col-sm-1 border-left align-center">
+										<button class="btn btn-reset btn-select-serviceConfig" data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#serviceInfo.serviceCode#">Chọn</button>
+									</div>
+								</div>
+								#}#
+							</div>
+						</div>
+					</div>
+					#}#
+				</div>
+			</div>
+		</div>
+
+		#}#
+	</div>
+</script> 
 
 <script type="text/javascript">
 	$(document).ready(function(){
+
+		var fnGenEventChoiseServiceConfig = function(){
+			$('.btn-select-serviceConfig, .link-serviceInfo').unbind().click(function(){
+				event.preventDefault();
+				var serviceConfigId = $(this).attr("data-pk");
+				$("#serviceConfigId").val(serviceConfigId);
+
+				dataSourceProcessServiceConfig.read({
+					serviceConfigId : serviceConfigId
+				});
+			});
+		}
+
+		var dataSourceServiceConfigDomain = new kendo.data.DataSource({
+			transport : {
+				read : function(options){
+					$.ajax({
+						url : "${api.server}/serviceconfigs/domains",
+						dataType : "json",
+						type : "GET",
+						data: {
+							keyword: options.data.keyword
+						},
+						headers : {"groupId": ${groupId}},
+						success : function(result){
+							options.success(result);
+						},
+						error : function(result){
+							options.error(result);
+						}
+					});
+				}
+			},
+			schema : {
+				data : "domains",
+			}
+		});
+
+		$("#serviceConfigs").kendoListView({
+			dataSource : dataSourceServiceConfigDomain,
+			template : kendo.template($("#templateServiceConfigDomain").html()),
+			autoBind : true,
+			dataBound : function(){
+				fnGenEventChoiseServiceConfig();
+			}
+		});
+
+		$('#btn_search').click(function(){
+	      var input_Search = $('#input_search').val();
+	      if ($('#btn_fillter_by_domain').hasClass('btn-active')){
+	        dataSourceServiceConfigDomain.read({
+	          keyword: input_Search,
+	        });
+	      }
+	    });
+
 		$('.administration-combobox').each(function(item){
 			$(this).kendoComboBox({
 				filter: "contains",
@@ -77,22 +130,12 @@
 
 		$("[data-role=combobox]").each(function() {
 			var widget = $(this).getKendoComboBox();
+
 			widget.input.on("focus", function() {
 				widget.open();
 			});
 		});
-
-		$('.btn-select-serviceInfo, .link-serviceInfo').each(function(item){
-			$(this).click(function(){
-				event.preventDefault();
-				var serviceInfoId = $(this).attr("data-pk");
-				var administrationCode = $('#govAgencyCode' + serviceInfoId).val();
-				$("#left_container").load("${ajax.customer_dossier_detail}?${portletNamespace}administrationCode=" + administrationCode + "&${portletNamespace}serviceInfoId=" + serviceInfoId + "&${portletNamespace}dossierStatus=new", function(result){
-					$("#left_container").show();
-					$("#dossier_list").hide();
-					$("#dossier_detail").hide();
-				});
-			});
-		});
+		
 	});
+
 </script>

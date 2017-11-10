@@ -61,6 +61,12 @@
 			<finder-column name="serviceCode" />
 			<finder-column name="groupId" />
 		</finder>
+		
+		<finder name="GI_DC" return-type="Collection">
+			<finder-column name="domainCode" />
+			<finder-column name="groupId" />
+		</finder>
+		
 
 		<!-- References -->
 
@@ -375,6 +381,11 @@
 		<finder return-type="Collection" name="G_DTN">
 			<finder-column name="groupId"/>
 			<finder-column name="dossierTemplateNo"/>
+		</finder>
+		
+		<finder return-type="Collection" name="G_DID">
+			<finder-column name="groupId"/>
+			<finder-column name="dossierId"/>
 		</finder>
 		
 		<!-- References -->
@@ -866,6 +877,10 @@
 		<finder return-type="Collection" name="G_ID_DRF">
 			<finder-column name="groupId"/>
 			<finder-column name="dossierReferenceUid"/>
+		</finder>
+		
+		<finder return-type="Collection" name="SRV_NO">
+			<finder-column name="serverNo"/>
 		</finder>
 		
 	</entity>

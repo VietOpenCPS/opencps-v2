@@ -48,7 +48,7 @@ public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 
 	@Override
 	protected Document doGetDocument(ProcessStep object) throws Exception {
-		
+
 		Document document = getBaseModelDocument(CLASS_NAME, object);
 
 		// Indexer of audit fields
@@ -64,30 +64,30 @@ public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 		// add number fields
 		document.addNumberSortable(ProcessStepTerm.DURATION_COUNT, object.getDurationCount());
 		document.addNumberSortable(ProcessStepTerm.SERVICE_PROCESS_ID, object.getServiceProcessId());
-		
+
 		// add text fields
 		document.addTextSortable(ProcessStepTerm.STEP_CODE, object.getStepCode());
 		document.addTextSortable(ProcessStepTerm.STEP_NAME, object.getStepName());
 		document.addTextSortable(ProcessStepTerm.SEQUENCE_NO, object.getSequenceNo());
 		document.addTextSortable(ProcessStepTerm.DOSSIER_STATUS, object.getDossierStatus());
-		
-		document.addTextSortable(ProcessStepTerm.DOSSIER_STATUS_TEXT, getDictItemName(object.getGroupId(), DOSSIER_STATUS, object.getDossierStatus()) );
+
+		document.addTextSortable(ProcessStepTerm.DOSSIER_STATUS_TEXT,
+				getDictItemName(object.getGroupId(), DOSSIER_STATUS, object.getDossierStatus()));
 		document.addTextSortable(ProcessStepTerm.DOSSIER_SUB_STATUS, object.getDossierSubStatus());
-		document.addTextSortable(ProcessStepTerm.DOSSIER_SUB_STATUS_TEXT, getDictItemName(object.getGroupId(), DOSSIER_STATUS, object.getDossierSubStatus()) );
+		document.addTextSortable(ProcessStepTerm.DOSSIER_SUB_STATUS_TEXT,
+				getDictItemName(object.getGroupId(), DOSSIER_STATUS, object.getDossierSubStatus()));
 		document.addTextSortable(ProcessStepTerm.CUSTOM_PROCESS_URL, object.getCustomProcessUrl());
 		document.addTextSortable(ProcessStepTerm.STEP_INSTRUCTION, object.getStepInstruction());
 		document.addTextSortable(ProcessStepTerm.BRIEF_NOTE, object.getBriefNote());
 		document.addTextSortable(ProcessStepTerm.EDITABLE, Boolean.toString(object.getEditable()));
-		
-	
-		
+
 		// add extra fields (ProcessStepRole)
 		List<ProcessStepRole> roles = ProcessStepRoleLocalServiceUtil.findByP_S_ID(object.getPrimaryKey());
-		
-		long [] roleArray = ListUtil.toLongArray(roles, ProcessStepRole.ROLE_ID_ACCESSOR);
-		
+
+		long[] roleArray = ListUtil.toLongArray(roles, ProcessStepRole.ROLE_ID_ACCESSOR);
+
 		document.addNumber(ProcessStepRoleTerm.ROLE_ID, roleArray);
-		
+
 		return document;
 	}
 
@@ -121,7 +121,7 @@ public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 		IndexWriterHelperUtil.updateDocument(getSearchEngineId(), object.getCompanyId(), document,
 				isCommitImmediately());
 	}
-	
+
 	protected void reindex(long companyId) throws PortalException {
 		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = ProcessStepLocalServiceUtil
 				.getIndexableActionableDynamicQuery();
@@ -148,25 +148,27 @@ public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 
 		indexableActionableDynamicQuery.performActions();
 	}
-	
+
 	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
 
 		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
 
+		String itemName = StringPool.BLANK;
+
 		if (Validator.isNotNull(dc)) {
 			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
-
-			return it.getItemName();
-
-		} else {
-			return StringPool.BLANK;
+			if (Validator.isNotNull(it)) {
+				itemName = it.getItemName();
+			} else {
+				itemName = StringPool.BLANK;
+			}
 		}
 
+		return itemName;
 	}
-	
+
 	private static String DOSSIER_STATUS = "DOSSIER_STATUS";
 
-	
 	Log _log = LogFactoryUtil.getLog(ProcessStepIndexer.class);
 
 }

@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
@@ -48,6 +49,8 @@ import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -65,10 +68,13 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 	protected void doReceive(Message message) throws Exception {
 
 		_log.info("OpenCPS get DOSSIERS.....");
+		
 
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(company.getCompanyId());
+
+		User systemUser = UserLocalServiceUtil.getUserByEmailAddress(company.getCompanyId(), username);
 
 		try {
 			String path = "dossiers?submitting=true&secetKey=" + serectKey;
@@ -105,8 +111,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject object = array.getJSONObject(i);
-				
-				pullDossier(company, object);
+
+				pullDossier(company, object, systemUser);
 			}
 
 			System.out.println(sb.toString());
@@ -124,7 +130,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 	}
 
-	private void pullDossier(Company company, JSONObject object) {
+	private void pullDossier(Company company, JSONObject object, User systemUser) {
 		long dossierId = GetterUtil.getLong(object.get(DossierTerm.DOSSIER_ID));
 
 		ServiceContext serviceContext = new ServiceContext();
@@ -184,22 +190,22 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			// Get AutoEvent
 			// Call nextAction
 
-			Dossier desDossier = DossierLocalServiceUtil.getByRef(syncServiceProcess.getGroupId(), dossier.getReferenceUid());
-			
-			
+			Dossier desDossier = DossierLocalServiceUtil.getByRef(syncServiceProcess.getGroupId(),
+					dossier.getReferenceUid());
+
 			if (Validator.isNull(desDossier)) {
-				//Create DOSSIER
+				// Create DOSSIER
 				desDossier = dossier;
-				
+
 				long desDossierId = CounterLocalServiceUtil.increment(Dossier.class.getName());
 
 				desDossier.setDossierId(desDossierId);
 				desDossier.setGroupId(syncServiceProcess.getGroupId());
 				desDossier.setSubmitting(false);
-				
-				//TODO add sync DOSSIERFILE and PAYMENTFILE
-				
-				//Process doAction (with autoEvent = SUBMIT)
+
+				// TODO add sync DOSSIERFILE and PAYMENTFILE
+
+				// Process doAction (with autoEvent = SUBMIT)
 				try {
 					DossierLocalServiceUtil.syncDossier(desDossier);
 
@@ -209,30 +215,91 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					DossierActions actions = new DossierActionsImpl();
 
 					actions.doAction(syncServiceProcess.getGroupId(), desDossierId, desDossier.getReferenceUid(),
-							processAction.getActionCode(), processAction.getProcessActionId(), "SYSTEM", "SYNC_ACTION_BY_SYSTEM", 0l, 0l, serviceContext);
+							processAction.getActionCode(), processAction.getProcessActionId(),
+							systemUser.getFullName() + "_SYSTEM", "SYNC_ACTION_BY_SYSTEM", 0l, systemUser.getUserId(),
+							serviceContext);
 
 				} catch (Exception e) {
 					_log.info("SyncDossierUnsuccessfuly" + dossier.getDossierId());
 				}
+				
+				// Update DossierFile
+				
+				
 
 			} else {
-				
-				
+
 				if (Validator.isNotNull(dossier.getCancellingDate())) {
 					// Update cancellingDate
 					desDossier.setCancellingDate(dossier.getCancellingDate());
-					
-				} 
-				
+
+				}
+
 				if (Validator.isNotNull(dossier.getCorrecttingDate())) {
 					// Update correctingDate
 					desDossier.setCorrecttingDate(dossier.getCorrecttingDate());
 				}
+
+				// TODO add sync DOSSIERFILE and PAYMENTFILE
+
 			}
-			
+
 		}
+		
+		//ResetDossier
+		
+		resetDossier(dossier.getGroupId(), dossier.getReferenceUid());
 
 	}
+	
+	private void resetDossier(long groupId, String refId) {
+		try {
+			String path = "dossiers/" + refId + "/reset";
+			URL url = new URL(baseUrl + path);
+
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+			String authString = username + ":" + password;
+
+			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
+			conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+
+			conn.setRequestMethod(HttpMethods.GET);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setRequestProperty("Accept", "application/json");
+			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			conn.setRequestProperty("groupId", String.valueOf(groupId));
+
+			if (conn.getResponseCode() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+			}
+
+			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+			String output;
+
+			StringBuffer sb = new StringBuffer();
+
+			while ((output = br.readLine()) != null) {
+				sb.append(output);
+
+			}
+
+			System.out.println(sb.toString());
+
+			conn.disconnect();
+
+		} catch (MalformedURLException e) {
+
+			e.printStackTrace();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+
+		}
+	}
+
 
 	@Activate
 	@Modified

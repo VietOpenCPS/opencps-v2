@@ -124,7 +124,7 @@
 
 				<div class="col-sm-6" id=""> 
 
-					<button class="btn btn-sm btn-primary pull-right" id="employee-create-submit-btn" name="employee-create-submit-btn" type="button">
+					<button class="btn btn-sm btn-active pull-right" id="employee-create-submit-btn" name="employee-create-submit-btn" type="button">
 						<i class="fa fa-check-circle"></i>
 						<span class="lfr-btn-label">Xác nhận</span>
 					</button>

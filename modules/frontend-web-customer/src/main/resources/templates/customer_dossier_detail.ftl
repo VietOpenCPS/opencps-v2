@@ -1,4 +1,9 @@
+<#if (Request)??>
+<#include "init.ftl">
+</#if>
+
 <div class="box" id="detailDossier">
+
 	<input type="hidden" name="dossierTemplateId" id="dossierTemplateId">
 	<input type="hidden" name="dossierItemId" id="dossierItemId">
 	<div class="row-header align-middle">
@@ -19,7 +24,6 @@
 	</div>
 
 	<div class="guide-section">
-
 		<div class="head-part">
 			<div class="background-triangle-small"><i class="fa fa-star"></i></div> <span class="text-uppercase">Hướng dẫn</span> <span class="text-light-gray">((gồm các bước làm thủ tục))</span>
 		</div>
@@ -39,13 +43,16 @@
 				<div class="content-part">
 					<div class="row-parts-head MT5">
 						<div class="row MT5">
+							
 							<div class="col-sm-2">
 								Họ và tên
 							</div>
 							<div class="col-sm-10">
 								<div class="form-group"> 
-									<input type="text" class="form-control" data-bind="value : applicantName" id="applicantName" name="applicantName"> 
+									<input type="text" class="form-control" data-bind="value : applicantName" id="applicantName" name="applicantName" required="required" validationMessage="Bạn phải điền họ tên"> 
+									<span data-for="applicantName" class="k-invalid-msg"></span>
 								</div>
+								
 							</div>
 
 							<div class="col-sm-2">
@@ -62,7 +69,8 @@
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="cityCode" name="cityCode" data-bind="value : cityCode"> 
+									<input type="text" class="form-control" id="cityCode" name="cityCode" data-bind="value : cityName" required="required" validationMessage="Bạn phải chọn Tỉnh/ Thành phố">
+									<span data-for="cityCode" class="k-invalid-msg"></span>
 								</div>
 							</div>
 
@@ -71,7 +79,8 @@
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="districtCode" name="districtCode" data-bind="value : districtCode"> 
+									<input type="text" class="form-control" id="districtCode" name="districtCode" data-bind="value : districtName" required="required" validationMessage="Bạn phải chọn Quận/ Huyện"> 
+									<span data-for="districtCode" class="k-invalid-msg"></span>
 								</div>
 							</div>
 							
@@ -80,7 +89,8 @@
 							</div>
 							<div class="col-sm-2 PL0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="wardCode" name="wardCode" data-bind="value : wardCode"> 
+									<input type="text" class="form-control" id="wardCode" name="wardCode" data-bind="value : wardName" required="required" validationMessage="Bạn phải chọn Xã/ Phường"> 
+									<span data-for="wardCode" class="k-invalid-msg"></span>
 								</div>
 							</div>
 
@@ -89,7 +99,8 @@
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="contactTelNo" name="contactTelNo" data-bind="value : contactTelNo"> 
+									<input type="text" class="form-control" id="contactTelNo" name="contactTelNo" data-bind="value : contactTelNo" required="required" validationMessage="Bạn phải điền số điện thoại">
+									<span data-for="contactTelNo" class="k-invalid-msg"></span> 
 								</div>
 							</div>
 							
@@ -98,9 +109,15 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="contactEmail" name="contactEmail" data-bind="value : contactEmail"> 
+									<input type="text" class="form-control" id="contactEmail" name="contactEmail" data-bind="value : contactEmail" required="required" validationMessage="Bạn phải điền email">
+									<span data-for="contactEmail" class="k-invalid-msg"></span> 
 								</div>
 							</div>
+
+							<input type="hidden" name="serviceCode" id="serviceCode" data-bind="value:serviceCode">
+							<input type="hidden" name="govAgencyCode" id="govAgencyCode" data-bind="value:govAgencyCode">
+							<input type="hidden" name="dossierTemplateNo" id="dossierTemplateNo" data-bind="value:dossierTemplateNo">
+
 						</div>
 					</div>
 				</div>
@@ -153,28 +170,24 @@
 
 				#if(hasForm){#
 				<div class="col-sm-12" id="formPartNo#:id#">
-
+					
 				</div>
 				#
 				$.ajax({
-				url : "${api.server}/dossiertemplates/${dossierTemplateNo}/parts/"+id+"/formscript",
+				url : "${api.server}/dossiertemplates/${dossierTemplateId}/parts/"+id+"/formscript",
 				dataType : "json",
 				type : "GET",
 				headers : {"groupId": ${groupId}},
-				data : {
-
+				success : function(result){
+				$("\\#formPartNo"+id).empty();
+				$("\\#formPartNo"+id).alpaca(result);
+				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button class="btn btn-active MB10 MT10" onclick="" data-pk="'+id+'">Ghi lại</button></div></div>');
 			},
-			success : function(result){
-			console.log(result);
-			$("\\#formPartNo"+id).html(result);
-			console.log($("\\#formPartNo"+id));
-		},
-		error : function(result){
+			error : function(result){
 
-	}
-});
-#
-#}#
+		}
+	});
+}#
 </script>
 </div>
 </form>
@@ -226,7 +239,6 @@
 </div>
 
 <div id="fileTemplateDialog" class="modal fade" role="dialog">
-
 </div>
 
 <script type="text/javascript">
@@ -243,7 +255,7 @@
 			console.log(fileTemplateNo);
 			console.log($(this)[0].files[0]);
 
-			funUploadFile($(this),partNo,${dossierTemplateNo},fileTemplateNo);
+			funUploadFile($(this),partNo,${dossierTemplateId},fileTemplateNo);
 		});
 
 		//tai giay to kho luu tru
@@ -259,6 +271,48 @@
 			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_component_profiles}?dossierPartNo="+partNo,function(result){
 				$(this).modal("show");
 			});
+		});
+
+		$(".delete-dossier-file").unbind().click(function(event){
+			var dossierId  = ${dossierId};
+			var dataPartNo = $(this).attr("data-partno");
+
+			console.log(dossierId);
+			console.log(dataPartNo);
+			var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
+			if(cf){
+				if(dossierId && dataPartNo){
+					$.ajax({
+						url : "${api.server}/dossiers/"+dossierId+"/files",
+						dataType : "json",
+						type : "GET",
+						headers : {"groupId": ${groupId}},
+						success : function(result) {
+							var data = result.data;
+							if(data){
+								for (var i = 0; i < data.length; i++) {
+									if(dataPartNo === data[i].dossierPartNo){
+										removeDossierFile(dossierId, data[i].referenceUid);
+
+									}
+								}
+								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
+
+								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
+								notification.show({
+									message: "Đổi mật khẩu thành công"
+								}, "success");
+
+							}
+						},
+						error : function(result) {
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
+						}
+					});
+				}
+			}
 		});
 	}
 
@@ -295,12 +349,11 @@
 		});
 	});
 
-
 	var dataSourceDossierTemplate = new kendo.data.DataSource({
 		transport :{
 			read : function(options){
 				$.ajax({
-					url : "${api.server}/dossiertemplates/${dossierTemplateNo}/parts",
+					url : "${api.server}/dossiertemplates/${dossierTemplateId}/parts",
 					dataType : "json",
 					type : "GET",
 					headers : {"groupId": ${groupId}},
@@ -359,27 +412,41 @@
 
 	var funSaveDossier = function(){
 		//PUT dossier
-		$.ajax({
-			url  : '${api.server}/dossiers/${dossierId}', 
-			dataType : "json",
-			type : 'PUT', 
-			headers: {"groupId": ${groupId}},
-			data : {
-				applicantName : $("#applicantName").val(),
-				address : $("#address").val(),
-				cityCode : $("#cityCode").val(),
-				districtCode : $("#districtCode").val(),
-				wardCode : $("#wardCode").val(),
-				contactTelNo : $("#contactTelNo").val(),
-				contactEmail : $("#contactEmail").val(),
+		var validator = $("#detailDossier").kendoValidator().data("kendoValidator");
 
-				applicantNote : $("#applicantNote").val(),
-				postalTelNo: $("#postalTelNo").val(),
-				postalCityCode: $("#postalCityCode").val(),
-				postalAddress: $("#postalAddress").val()
-			},
-			success :  function(result){                       
-				console.log("PUT Dossier success!");
+		if(validator.validate()){
+			$.ajax({
+				url  : '${api.server}/dossiers/${dossierId}', 
+				dataType : "json",
+				type : 'PUT', 
+				headers: {"groupId": ${groupId}},
+				data : {
+					referenceUid : "",
+					serviceCode : $("#serviceCode").val(),
+					govAgencyCode : $("#govAgencyCode").val(),
+					dossierTemplateNo : $("#dossierTemplateNo").val(),
+					
+					applicantName : "${(applicant.applicantName)!}",
+					applicantIdType : "${(applicant.applicantIdType)!}",
+					applicantIdNo : "${(applicant.applicantIdNo)!}",
+					applicantIdDate : "${(applicant.applicantIdDate)!}",
+
+					contactName : $("#applicantName").val(),
+					address : $("#address").val(),
+					cityCode : $("#cityCode").val(),
+					districtCode : $("#districtCode").val(),
+					wardCode : $("#wardCode").val(),
+					contactTelNo : $("#contactTelNo").val(),
+					contactEmail : $("#contactEmail").val(),
+
+					applicantNote : $("#applicantNote").val(),
+					postalTelNo: $("#postalTelNo").val(),
+					postalCityCode: $("#postalCityCode").val(),
+					postalAddress: $("#postalAddress").val(),
+
+				},
+				success :  function(result){                       
+					console.log("PUT Dossier success!");
 
 				//finish PUT dossier create action for dossier
 				createActionDossier(${dossierId});
@@ -395,6 +462,8 @@
 				console.error(result);
 			}	
 		});
+		}
+		
 	}
 
 	var createActionDossier = function(dossierId){
@@ -406,9 +475,10 @@
 				headers: {"groupId": ${groupId}},
 				data : {
 					actionCode  : 1100,
+					actionNote :  $("#applicantNote").val()
 					/*actionUser : $("#actionUser").val(),
-					actionNote : $("#actionNote").val(),
-					assignUserId : $("#assignUserId").val()*/
+					
+					*/
 				},
 				success : function(result){
 					console.log("create acion dossier success!");
@@ -429,8 +499,7 @@
 		dataSource : {
 			transport : {
 				read : {
-					// url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-					url : "${api.server}/dictcollections/101/dictitems",
+					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
 					dataType : "json",
 					type : "GET",
 					headers: {"groupId": ${groupId}},
@@ -452,9 +521,12 @@
 		},
 		change : function(e){
 			var value = this.value();
-			$("#districtCode").data("kendoComboBox").dataSource.read({
-				parent : value
-			});
+			if(value){
+				$("#districtCode").data("kendoComboBox").dataSource.read({
+					parent : value
+				});
+			}
+			
 		}
 	});
 
@@ -468,8 +540,7 @@
 			transport : {
 				read : function(options){
 					$.ajax({
-						// url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-						url : "${api.server}/dictcollections/101/dictitems",
+						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
 						dataType : "json",
 						type : "GET",
 						headers: {"groupId": ${groupId}},
@@ -492,9 +563,12 @@
 		},
 		change : function(e){
 			var value = this.value();
-			$("#wardCode").data("kendoComboBox").dataSource.read({
-				parent : value
-			});
+			if(value){
+				$("#wardCode").data("kendoComboBox").dataSource.read({
+					parent : value
+				});
+			}
+			
 		}
 	});
 
@@ -508,8 +582,7 @@
 			transport : {
 				read : function(options){
 					$.ajax({
-						// url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-						url : "${api.server}/dictcollections/101/dictitems",
+						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
 						dataType : "json",
 						type : "GET",
 						headers: {"groupId": ${groupId}},
@@ -588,14 +661,17 @@
 					console.log("load detail dossier!");
 					console.log(result);
 					var viewModel = kendo.observable({
+						serviceCode : result.serviceCode,
+						govAgencyCode : result.govAgencyCode,
+						dossierTemplateNo : result.dossierTemplateNo,
 						serviceName : result.serviceName,
 						govAgencyName : result.govAgencyName,
 
 						applicantName : result.applicantName,
 						address : result.address,
-						cityCode : result.cityCode,
-						districtCode : result.districtCode,
-						wardCode : result.wardCode,
+						cityName : result.cityName,
+						districtName : result.districtName,
+						wardName : result.wardName,
 						contactTelNo : result.contactTelNo,
 						contactEmail : result.contactEmail,
 						dossierNote : result.dossierNote
@@ -612,50 +688,6 @@
 	}
 
 	printDetailDossier(${dossierId});
-
-	$(document).on("click",".delete-dossier-file",function(event){
-		//lay danh sach cac file dinh kem
-
-		var dossierId  = ${dossierId};
-		var dataPartNo = $(this).attr("data-partno");
-
-		console.log(dossierId);
-		console.log(dataPartNo);
-		var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
-		if(cf){
-			if(dossierId && dataPartNo){
-				$.ajax({
-					url : "${api.server}/dossiers/"+dossierId+"/files",
-					dataType : "json",
-					type : "GET",
-					headers : {"groupId": ${groupId}},
-					success : function(result) {
-						var data = result.data;
-						if(data){
-							for (var i = 0; i < data.length; i++) {
-								if(dataPartNo === data[i].dossierPartNo){
-									removeDossierFile(dossierId, data[i].referenceUid);
-									
-								}
-							}
-							$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
-
-							$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
-							/*notification.show({
-								message: "Đổi mật khẩu thành công"
-							}, "success");*/
-						}
-					},
-					error : function(result) {
-						/*notification.show({
-							message: "Xẩy ra lỗi, vui lòng thử lại"
-						}, "error");*/
-					}
-				});
-			}
-		}
-		
-	});
 
 	var removeDossierFile = function(dossierId, fileId){
 		$.ajax({
