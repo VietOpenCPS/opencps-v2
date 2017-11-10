@@ -185,7 +185,7 @@
           headers : {"groupId": ${groupId}},
           success : function(result){
             if(result){
-              fnCreateDossier(dossierTemplateNo, result.serviceCode, result.govAgencyCode);
+              fnCreateDossier(dossierTemplateNo, result.serviceCode, result.govAgencyCode, item.dossierTemplateId);
             }
           },
           error : function(result){
@@ -197,7 +197,7 @@
       } 
     }
 
-    var fnCreateDossier = function(dossierTemplateNo,serviceCode,govAgencyCode){
+    var fnCreateDossier = function(dossierTemplateNo,serviceCode,govAgencyCode, dossierTemplateId){
       $.ajax({
         url : "${api.server}/dossiers",
         dataType : "json",
@@ -229,6 +229,9 @@
           $("#dossier_list").hide();
           $("#dossier_detail").show();
           $("#left_container").html("");
+          dataSourceDossierTemplate.read({
+            dossierTemplateId : dossierTemplateId
+          });
         });
 
        },

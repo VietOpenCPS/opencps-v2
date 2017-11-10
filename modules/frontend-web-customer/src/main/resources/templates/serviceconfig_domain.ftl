@@ -36,7 +36,7 @@
 								# for (var j = 0; j < serviceInfo.serviceConfigs.length; j++){
 								var serviceConfig = serviceInfo.serviceConfigs[j];
 								console.log(serviceConfig);
-								#
+								<#></>
 								<div class="eq-height">
 									<div class="col-xs-12 col-sm-10 align-middle">
 										<a class="link-serviceInfo" data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#:serviceInfo.serviceCode#" href="\\#">
