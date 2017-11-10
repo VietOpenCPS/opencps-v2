@@ -22,6 +22,8 @@
 					
 					# for(var i=0 ;i < serviceInfos.length ; i++) {
 					var serviceInfo = serviceInfos[i];
+
+					console.log(serviceInfo);
 					#
 					<div class="accordion-group">
 						<div class="accordion-heading">
@@ -32,7 +34,8 @@
 						<div id="#:serviceInfo.serviceCode#" class="accordion-body collapse in">
 							<div class="accordion-inner">
 								# for (var j = 0; j < serviceInfo.serviceConfigs.length; j++){
-								var serviceConfig = serviceInfo.serviceConfigs[i];
+								var serviceConfig = serviceInfo.serviceConfigs[j];
+								console.log(serviceConfig);
 								#
 								<div class="eq-height">
 									<div class="col-xs-12 col-sm-10 align-middle">
@@ -66,6 +69,19 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
+
+		var fnGenEventChoiseServiceConfig = function(){
+			$('.btn-select-serviceConfig, .link-serviceInfo').unbind().click(function(){
+				event.preventDefault();
+				var serviceConfigId = $(this).attr("data-pk");
+				$("#serviceConfigId").val(serviceConfigId);
+
+				dataSourceProcessServiceConfig.read({
+					serviceConfigId : serviceConfigId
+				});
+			});
+		}
+
 		var dataSourceServiceConfigDomain = new kendo.data.DataSource({
 			transport : {
 				read : function(options){
@@ -110,18 +126,6 @@
 				widget.open();
 			});
 		});
-
-		var fnGenEventChoiseServiceConfig = function(){
-			$('.btn-select-serviceConfig, .link-serviceInfo').unbind().click(function(){
-				event.preventDefault();
-				var serviceConfigId = $(this).attr("data-pk");
-				$("#serviceConfigId").val(serviceConfigId);
-
-				dataSourceProcessServiceConfig.read({
-					serviceConfigId : serviceConfigId
-				});
-			});
-		}
 		
 	});
 
