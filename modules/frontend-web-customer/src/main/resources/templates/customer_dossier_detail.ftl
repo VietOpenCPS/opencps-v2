@@ -431,7 +431,7 @@
 					applicantIdNo : "${(applicant.applicantIdNo)!}",
 					applicantIdDate : "${(applicant.applicantIdDate)!}",
 
-					applicantName : $("#applicantName").val(),
+					contactName : $("#applicantName").val(),
 					address : $("#address").val(),
 					cityCode : $("#cityCode").val(),
 					districtCode : $("#districtCode").val(),
