@@ -69,7 +69,7 @@
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="cityCode" name="cityCode" data-bind="value : cityCode" required="required" validationMessage="Bạn phải chọn Tỉnh/ Thành phố">
+									<input type="text" class="form-control" id="cityCode" name="cityCode" data-bind="value : cityName" required="required" validationMessage="Bạn phải chọn Tỉnh/ Thành phố">
 									<span data-for="cityCode" class="k-invalid-msg"></span>
 								</div>
 							</div>
@@ -79,7 +79,7 @@
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="districtCode" name="districtCode" data-bind="value : districtCode" required="required" validationMessage="Bạn phải chọn Quận/ Huyện"> 
+									<input type="text" class="form-control" id="districtCode" name="districtCode" data-bind="value : districtName" required="required" validationMessage="Bạn phải chọn Quận/ Huyện"> 
 									<span data-for="districtCode" class="k-invalid-msg"></span>
 								</div>
 							</div>
@@ -89,7 +89,7 @@
 							</div>
 							<div class="col-sm-2 PL0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="wardCode" name="wardCode" data-bind="value : wardCode" required="required" validationMessage="Bạn phải chọn Xã/ Phường"> 
+									<input type="text" class="form-control" id="wardCode" name="wardCode" data-bind="value : wardName" required="required" validationMessage="Bạn phải chọn Xã/ Phường"> 
 									<span data-for="wardCode" class="k-invalid-msg"></span>
 								</div>
 							</div>
@@ -376,7 +376,7 @@
 	var indexDossiserPart =0 ;
 	$("#lsDossierTemplPart").kendoListView({
 		dataSource : dataSourceDossierTemplate,
-		autoBind : false,
+		autoBind : true,
 		change : function(){
 
 		},
@@ -483,8 +483,7 @@
 		dataSource : {
 			transport : {
 				read : {
-					// url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-					url : "${api.server}/dictcollections/101/dictitems",
+					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
 					dataType : "json",
 					type : "GET",
 					headers: {"groupId": ${groupId}},
@@ -506,9 +505,12 @@
 		},
 		change : function(e){
 			var value = this.value();
-			$("#districtCode").data("kendoComboBox").dataSource.read({
-				parent : value
-			});
+			if(value){
+				$("#districtCode").data("kendoComboBox").dataSource.read({
+					parent : value
+				});
+			}
+			
 		}
 	});
 
@@ -522,8 +524,7 @@
 			transport : {
 				read : function(options){
 					$.ajax({
-						// url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-						url : "${api.server}/dictcollections/101/dictitems",
+						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
 						dataType : "json",
 						type : "GET",
 						headers: {"groupId": ${groupId}},
@@ -546,9 +547,12 @@
 		},
 		change : function(e){
 			var value = this.value();
-			$("#wardCode").data("kendoComboBox").dataSource.read({
-				parent : value
-			});
+			if(value){
+				$("#wardCode").data("kendoComboBox").dataSource.read({
+					parent : value
+				});
+			}
+			
 		}
 	});
 
@@ -562,8 +566,7 @@
 			transport : {
 				read : function(options){
 					$.ajax({
-						// url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-						url : "${api.server}/dictcollections/101/dictitems",
+						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
 						dataType : "json",
 						type : "GET",
 						headers: {"groupId": ${groupId}},
@@ -647,9 +650,9 @@
 
 						applicantName : result.applicantName,
 						address : result.address,
-						cityCode : result.cityCode,
-						districtCode : result.districtCode,
-						wardCode : result.wardCode,
+						cityName : result.cityName,
+						districtName : result.districtName,
+						wardName : result.wardName,
 						contactTelNo : result.contactTelNo,
 						contactEmail : result.contactEmail,
 						dossierNote : result.dossierNote
