@@ -505,9 +505,12 @@
 		},
 		change : function(e){
 			var value = this.value();
-			$("#districtCode").data("kendoComboBox").dataSource.read({
-				parent : value
-			});
+			if(value){
+				$("#districtCode").data("kendoComboBox").dataSource.read({
+					parent : value
+				});
+			}
+			
 		}
 	});
 
@@ -544,9 +547,12 @@
 		},
 		change : function(e){
 			var value = this.value();
-			$("#wardCode").data("kendoComboBox").dataSource.read({
-				parent : value
-			});
+			if(value){
+				$("#wardCode").data("kendoComboBox").dataSource.read({
+					parent : value
+				});
+			}
+			
 		}
 	});
 
