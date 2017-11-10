@@ -25,6 +25,7 @@ import org.opencps.api.serviceconfig.model.ServiceConfigDetailModel;
 import org.opencps.api.serviceconfig.model.ServiceConfigInputModel;
 import org.opencps.api.serviceconfig.model.ServiceConfigResultsModel;
 import org.opencps.api.serviceconfig.model.ServiceConfigSearchModel;
+import org.opencps.api.serviceinfo.model.ServiceInfoSearchModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.model.Company;
@@ -80,7 +81,7 @@ public interface ServiceConfigManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getServiceConfig(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, 
+			@Context ServiceContext serviceContext,
 			@ApiParam(value = "serviceconfigId for get detail") @PathParam("id") long input);
 
 	@PUT
@@ -191,10 +192,10 @@ public interface ServiceConfigManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getServiceConfigsByGovAgency(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext);
-	
+			@Context ServiceContext serviceContext, @BeanParam ServiceInfoSearchModel query);
+
 	@GET
-	@Path("/domain")
+	@Path("/domains")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@ApiOperation(value = "Get all ServiceConfigs", response = ServiceConfigResultsModel.class)
@@ -205,6 +206,6 @@ public interface ServiceConfigManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getServiceConfigsByDomain(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext);
+			@Context ServiceContext serviceContext, @BeanParam ServiceInfoSearchModel query);
 
 }
