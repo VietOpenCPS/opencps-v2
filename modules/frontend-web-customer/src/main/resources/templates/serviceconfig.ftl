@@ -77,6 +77,14 @@
       $('#serviceconfig_container').load("${ajax.serviceconfig_administration}");
     });
 
+    $('#btn_fillter_by_admintration').click(function() {
+      $('#input_search').val('');
+    });
+
+    $('#btn_fillter_by_domain').click(function() {
+      $('#input_search').val('');
+    });
+
     $('#input_search').change(function(){
       searchServiceInfo();
     });
@@ -86,11 +94,21 @@
     });
 
     function searchServiceInfo(){
+      var input_Search = $('#input_search').val();
+        
       if ($('#btn_fillter_by_admintration').hasClass('btn-active')){
-        $('#serviceconfig_container').load("${ajax.serviceconfig_domain}&" + $('#input_search').val());
+
+        dataSourceAdmin.read({
+          keyword: input_search,
+        });
+        alert(typeof dataSourceAdmin);
+        //$('#serviceconfig_container').load("${ajax.serviceconfig_domain}&" + $('#input_search').val());
       }
       if ($('#btn_fillter_by_domain').hasClass('btn-active')){
-        $('#serviceconfig_container').load("${ajax.serviceconfig_administration}&" + $('#input_search').val());
+        dataSourceServiceConfigDomain.read({
+          keyword: input_search,
+        });
+        //$('#serviceconfig_container').load("${ajax.serviceconfig_administration}&" + $('#input_search').val());
       }
     }
 
