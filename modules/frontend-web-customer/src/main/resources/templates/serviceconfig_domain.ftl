@@ -120,7 +120,7 @@
 	      var input_Search = $('#input_search').val();
 	      if ($('#btn_fillter_by_domain').hasClass('btn-active')){
 	        dataSourceServiceConfigDomain.read({
-	          keyword: input_search,
+	          keyword: input_Search,
 	        });
 	      }
 	    });

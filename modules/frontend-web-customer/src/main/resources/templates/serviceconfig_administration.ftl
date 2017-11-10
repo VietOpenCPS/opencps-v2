@@ -94,7 +94,7 @@
 	      var input_Search = $('#input_search').val();
 	      if ($('#btn_fillter_by_admintration').hasClass('btn-active')){
 	        dataSourceAdmin.read({
-	          keyword: input_search,
+	          keyword: input_Search,
 	        });
       	  }
 	    });

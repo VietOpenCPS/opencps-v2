@@ -91,13 +91,13 @@
       if ($('#btn_fillter_by_admintration').hasClass('btn-active')){
         alert('a');
         dataSourceAdmin.read({
-          keyword: input_search,
+          keyword: input_Search,
         });
         //$('#serviceconfig_container').load("${ajax.serviceconfig_domain}&" + $('#input_search').val());
       }
       if ($('#btn_fillter_by_domain').hasClass('btn-active')){
         dataSourceServiceConfigDomain.read({
-          keyword: input_search,
+          keyword: input_Search,
         });
         //$('#serviceconfig_container').load("${ajax.serviceconfig_administration}&" + $('#input_search').val());
       }
