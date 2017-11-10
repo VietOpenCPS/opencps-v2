@@ -69,28 +69,37 @@
       $('#btn_fillter_by_admintration').removeClass('btn-active');
       $('#btn_fillter_by_domain').addClass('btn-active');
       $('#serviceconfig_container').load("${ajax.serviceconfig_domain}");
+      $('#input_search').val('');
     });
 
     $('#btn_fillter_by_admintration').click(function(){
       $('#btn_fillter_by_admintration').addClass('btn-active');
       $('#btn_fillter_by_domain').removeClass('btn-active');
       $('#serviceconfig_container').load("${ajax.serviceconfig_administration}");
+      $('#input_search').val('');
     });
 
-    $('#input_search').change(function(){
-      searchServiceInfo();
-    });
 
-    /*$('#btn_search').change(function(){
+
+    /*$('#btn_search').click(function(){
       searchServiceInfo();
     });
 
     function searchServiceInfo(){
+      var input_Search = $('#input_search').val();
+        
       if ($('#btn_fillter_by_admintration').hasClass('btn-active')){
-        $('#serviceconfig_container').load("${ajax.serviceconfig_domain}&" + $('#input_search').val());
+        alert('a');
+        dataSourceAdmin.read({
+          keyword: input_Search,
+        });
+        //$('#serviceconfig_container').load("${ajax.serviceconfig_domain}&" + $('#input_search').val());
       }
       if ($('#btn_fillter_by_domain').hasClass('btn-active')){
-        $('#serviceconfig_container').load("${ajax.serviceconfig_administration}&" + $('#input_search').val());
+        dataSourceServiceConfigDomain.read({
+          keyword: input_Search,
+        });
+        //$('#serviceconfig_container').load("${ajax.serviceconfig_administration}&" + $('#input_search').val());
       }
     }*/
 

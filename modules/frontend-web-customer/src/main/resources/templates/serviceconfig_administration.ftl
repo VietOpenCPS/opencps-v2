@@ -34,7 +34,7 @@
 										# for (var j = 0; j < domains[i].serviceConfigs.length; j ++) {#
 										<div class="eq-height">
 											<div class="col-xs-12 col-sm-10 align-middle">
-												<a class="link-serviceInfo" data-pk="" admt-pk="" href="">
+												<a class="link-serviceInfo" data-pk="#domains[i].serviceConfigs.serviceInfoId#" admt-pk="#domains[i].serviceConfigs.serviceConfigId#" href="\\#">
 													#:domains[i].serviceConfigs[j].serviceInfoName#
 												</a>
 											</div>
@@ -42,7 +42,7 @@
 												Mức #:domains[i].serviceConfigs[j].level#
 											</div>
 											<div class="col-xs-12 col-sm-1 border-left align-center">
-												<button class="btn btn-reset btn-select-serviceInfo" data-pk="" admt-pk="">Chọn</button>
+												<button class="btn btn-reset btn-select-serviceInfo" data-pk="#domains[i].serviceConfigs.serviceInfoId#" admt-pk="#domains[i].serviceConfigs.serviceConfigId#">Chọn</button>
 											</div>
 										</div>
 										#}#
@@ -88,22 +88,19 @@
 			}
 		});
 
+		$('#btn_search').click(function(){
+	      var input_Search = $('#input_search').val();
+	      if ($('#btn_fillter_by_admintration').hasClass('btn-active')){
+	        dataSourceAdmin.read({
+	          keyword: input_Search,
+	        });
+      	  }
+	    });
+
 		$("#listView").kendoListView({
 			dataSource : dataSourceAdmin,
 			template: kendo.template($("#templateAdmin").html()),
 		});
-
-
-		$('#btn_search').click(function() {
-
-			if($('#btn_fillter_by_admintration').hasClass('btn-active')) {
-				var input_Search = $('#input_search').val();
-				dataSourceAdmin.read({
-					keyword: input_search,
-				});
-			}
-		});
-
 
 
 		$('.btn-select-serviceInfo, .link-serviceInfo').each(function(item){
