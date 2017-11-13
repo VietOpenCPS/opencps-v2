@@ -1,6 +1,8 @@
 <#if (Request)??>
 <#include "init.ftl">
 </#if>
+
+
 <div class="panel">
   <div class="">
     <div class="row row MT10 PL10 PR10">
@@ -65,18 +67,21 @@
 
   $(document).ready(function(){
 
+
     $('#btn_fillter_by_domain').click(function(){
-      $('#btn_fillter_by_admintration').removeClass('btn-active');
-      $('#btn_fillter_by_domain').addClass('btn-active');
-      $('#serviceconfig_container').load("${ajax.serviceconfig_domain}");
-      $('#input_search').val('');
+      // $('#btn_fillter_by_admintration').removeClass('btn-active');
+      // $('#btn_fillter_by_domain').addClass('btn-active');
+      // $('#serviceconfig_container').load("${ajax.serviceconfig_domain}");
+      // $('#input_search').val('');
+      router.navigate("/newdossier/doman");
     });
 
     $('#btn_fillter_by_admintration').click(function(){
-      $('#btn_fillter_by_admintration').addClass('btn-active');
-      $('#btn_fillter_by_domain').removeClass('btn-active');
-      $('#serviceconfig_container').load("${ajax.serviceconfig_administration}");
-      $('#input_search').val('');
+      // $('#btn_fillter_by_admintration').addClass('btn-active');
+      // $('#btn_fillter_by_domain').removeClass('btn-active');
+      // $('#serviceconfig_container').load("${ajax.serviceconfig_administration}");
+      // $('#input_search').val('');
+      router.navigate("/newdossier/admin");
     });
 
 
@@ -249,3 +254,4 @@
 
   });
 </script>
+
