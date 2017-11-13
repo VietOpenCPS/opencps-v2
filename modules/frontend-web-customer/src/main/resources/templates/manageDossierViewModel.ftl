@@ -43,11 +43,10 @@
 							month: options.data.month,
 							keyword: options.data.keyword,
 							status : options.data.status
-						},	
+						},
 						success:function(result){
 							options.success(result);
-							kendo.fx($("#main_section")).expand("vertical").duration(300).play();
-							dataSourceProfile.page(1);
+							kendo.fx($("#main_section")).expand("vertical").duration(500).play();
 							var totalItem = parseInt(dataSourceProfile.total());
 							var pSize = dataSourceProfile.pageSize();
 							var arrPsize = [];
@@ -76,7 +75,7 @@
 			error: function(e) {         
 				this.cancelChanges();
 			},
-			pageSize: 2,
+			pageSize: 10,
 			schema:{
 				data:"data",
 				total:"total",
@@ -85,44 +84,7 @@
 				}
 			}
 		});
-		// var dataDossierDetail = new kendo.data.DataSource({
-		// 	transport:{
-		// 		read:function(options){
-		// 			$.ajax({
-		// 				url:"${ajax.customer_dossier_detail}",
-		// 				data:{
-		// 					id : options.data.id
-		// 				},	
-		// 				success:function(result){
-		// 					options.success(result);
-		// 					$("#detail").html(result)
-		// 				},
-		// 				error:function(result){
-		// 					options.error(result);
-		// 				}
-		// 			});
-		// 		}
-		// 	},
-		// });
-		var dataLoadServiceConfig = new kendo.data.DataSource({
-			transport:{
-				read:function(options){
-					$.ajax({
-						url:"${ajax.serviceconfig}",
-						data:{
-							
-						},	
-						success:function(result){
-							options.success(result);
-							$("#serviceconfig").html(result)
-						},
-						error:function(result){
-							options.error(result);
-						}
-					});
-				}
-			}
-		})
+		
 	// Source for sidebar list
 		var dataAddRequest = new kendo.data.DataSource({
 			transport:{
