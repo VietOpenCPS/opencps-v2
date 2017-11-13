@@ -29,6 +29,7 @@ public class DossierUtils {
 			DossierDataModel model = new DossierDataModel();
 
 			model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+			model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
 			model.setCreateDate(doc.get(Field.CREATE_DATE));
 			model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
 			model.setReferenceUid(doc.get(DossierTerm.REFERENCE_UID));
@@ -41,8 +42,20 @@ public class DossierUtils {
 			model.setApplicantIdType(doc.get(DossierTerm.APPLICANT_ID_TYPE));
 			model.setApplicantIdNo(doc.get(DossierTerm.APPLICANT_ID_NO));
 			model.setApplicantIdDate(doc.get(DossierTerm.APPLICANT_ID_DATE));
+			model.setAddress(doc.get(DossierTerm.ADDRESS));
+			model.setCityCode(doc.get(DossierTerm.CITY_CODE));
+			model.setCityName(doc.get(DossierTerm.CITY_NAME));
+			model.setDistrictCode(doc.get(DossierTerm.DISTRICT_CODE));
+			model.setDistrictName(doc.get(DossierTerm.DISTRICT_NAME));
+			model.setWardCode(doc.get(DossierTerm.WARD_CODE));
+			model.setWardName(doc.get(DossierTerm.WARD_NAME));
+			model.setContactName(doc.get(DossierTerm.CONTACT_NAME));
+			model.setContactTelNo(doc.get(DossierTerm.CONTACT_TEL_NO));
+			model.setContactEmail(doc.get(DossierTerm.CONTACT_EMAIL));
+			model.setDossierNote(doc.get(DossierTerm.DOSSIER_NOTE));
+			model.setSubmissionNote(doc.get(DossierTerm.SUBMISSION_NOTE));
+			model.setBriefNote(doc.get(DossierTerm.BRIEF_NOTE));
 			model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
-			model.setApplicantNote(doc.get(DossierTerm.APPLICANT_NOTE));
 			model.setBriefNote(doc.get(DossierTerm.BRIEF_NOTE));
 			model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
 			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));

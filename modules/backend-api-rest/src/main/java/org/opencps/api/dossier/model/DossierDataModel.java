@@ -10,20 +10,23 @@ package org.opencps.api.dossier.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for DossierDataModel complex type.
+ * <p>Java class for anonymous complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DossierDataModel">
+ * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="dossierId" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="userId" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="userName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="createDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="modifiedDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="referenceUid" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
@@ -32,24 +35,42 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="serviceName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="govAgencyCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="govAgencyName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="dossierTemplateNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="applicantName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="applicantIdType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="applicantIdNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="applicantIdDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="dossierNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="applicantNote" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="address" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="cityCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="cityName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="districtCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="districtName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="wardCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="wardName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="contactName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="contactTelNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="contactEmail" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="dossierNote" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="submissionNote" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="briefNote" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="dossierNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="submitting" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="submitDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="receiveDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="dueDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="releaseDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="finishDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="cancellingDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="correctingDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="dossierStatus" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="dossierStatusText" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="dossierSubStatus" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="dossierSubStatusText" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="dossierOverdue" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="submitting" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="viaPostal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="postalAddress" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="postalCityCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="postalCityName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="postalTelNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="permission" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="lastActionDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="lastActionCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
@@ -58,12 +79,14 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="lastActionNote" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="stepCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="stepName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="stepInstruction" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="stepDuedate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="stepOverdue" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="visited" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="pending" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="applicantNote" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="notification" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="online" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="hasPassword" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -73,8 +96,11 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DossierDataModel", propOrder = {
+@XmlType(name = "", propOrder = {
     "dossierId",
+    "dossierId",
+    "userId",
+    "userName",
     "createDate",
     "modifiedDate",
     "referenceUid",
@@ -83,24 +109,42 @@ import javax.xml.bind.annotation.XmlType;
     "serviceName",
     "govAgencyCode",
     "govAgencyName",
+    "dossierTemplateNo",
     "applicantName",
     "applicantIdType",
     "applicantIdNo",
     "applicantIdDate",
-    "dossierNo",
-    "applicantNote",
+    "address",
+    "cityCode",
+    "cityName",
+    "districtCode",
+    "districtName",
+    "wardCode",
+    "wardName",
+    "contactName",
+    "contactTelNo",
+    "contactEmail",
+    "dossierNote",
+    "submissionNote",
     "briefNote",
+    "dossierNo",
+    "submitting",
     "submitDate",
     "receiveDate",
     "dueDate",
     "releaseDate",
     "finishDate",
+    "cancellingDate",
+    "correctingDate",
     "dossierStatus",
     "dossierStatusText",
     "dossierSubStatus",
     "dossierSubStatusText",
-    "dossierOverdue",
-    "submitting",
+    "viaPostal",
+    "postalAddress",
+    "postalCityCode",
+    "postalCityName",
+    "postalTelNo",
     "permission",
     "lastActionDate",
     "lastActionCode",
@@ -109,42 +153,65 @@ import javax.xml.bind.annotation.XmlType;
     "lastActionNote",
     "stepCode",
     "stepName",
+    "stepInstruction",
     "stepDuedate",
     "stepOverdue",
     "visited",
     "pending",
-    "online",
-    "hasPassword"
+    "applicantNote",
+    "notification",
+    "online"
 })
 public class DossierDataModel {
 
-    protected int dossierId;
+    protected Integer dossierId;
+    protected Integer groupId;
+    protected Integer userId;
+    protected String userName;
     protected String createDate;
     protected String modifiedDate;
     protected String referenceUid;
-    protected int counter;
+    protected Integer counter;
     protected String serviceCode;
     protected String serviceName;
     protected String govAgencyCode;
     protected String govAgencyName;
+    protected String dossierTemplateNo;
     protected String applicantName;
     protected String applicantIdType;
     protected String applicantIdNo;
     protected String applicantIdDate;
-    protected String dossierNo;
-    protected String applicantNote;
+    protected String address;
+    protected String cityCode;
+    protected String cityName;
+    protected String districtCode;
+    protected String districtName;
+    protected String wardCode;
+    protected String wardName;
+    protected String contactName;
+    protected String contactTelNo;
+    protected String contactEmail;
+    protected String dossierNote;
+    protected String submissionNote;
     protected String briefNote;
+    protected String dossierNo;
+    protected String submitting;
     protected String submitDate;
     protected String receiveDate;
     protected String dueDate;
     protected String releaseDate;
     protected String finishDate;
+    protected String cancellingDate;
+    protected String correctingDate;
     protected String dossierStatus;
     protected String dossierStatusText;
     protected String dossierSubStatus;
     protected String dossierSubStatusText;
-    protected String dossierOverdue;
-    protected String submitting;
+    protected String viaPostal;
+    protected String postalAddress;
+    protected String postalCityCode;
+    protected String postalCityName;
+    protected String postalTelNo;
     protected String permission;
     protected String lastActionDate;
     protected String lastActionCode;
@@ -153,14 +220,42 @@ public class DossierDataModel {
     protected String lastActionNote;
     protected String stepCode;
     protected String stepName;
+    protected String stepInstruction;
     protected String stepDuedate;
     protected String stepOverdue;
     protected String visited;
     protected String pending;
+    protected String applicantNote;
+    protected String notification;
     protected String online;
-    protected String hasPassword;
+    public String getDossierOverdue() {
+		return dossierOverdue;
+	}
 
-    /**
+	public void setDossierOverdue(String dossierOverdue) {
+		this.dossierOverdue = dossierOverdue;
+	}
+
+	public String getHasPassword() {
+		return hasPassword;
+	}
+
+	public void setHasPassword(String hasPassword) {
+		this.hasPassword = hasPassword;
+	}
+
+	protected String dossierOverdue;
+	protected String hasPassword;
+    
+    public Integer getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Integer groupId) {
+		this.groupId = groupId;
+	}
+
+	/**
      * Gets the value of the dossierId property.
      * 
      * @return
@@ -182,6 +277,54 @@ public class DossierDataModel {
      */
     public void setDossierId(Integer value) {
         this.dossierId = value;
+    }
+
+    /**
+     * Gets the value of the userId property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+    public Integer getUserId() {
+        return userId;
+    }
+
+    /**
+     * Sets the value of the userId property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+    public void setUserId(Integer value) {
+        this.userId = value;
+    }
+
+    /**
+     * Gets the value of the userName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getUserName() {
+        return userName;
+    }
+
+    /**
+     * Sets the value of the userName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setUserName(String value) {
+        this.userName = value;
     }
 
     /**
@@ -377,6 +520,30 @@ public class DossierDataModel {
     }
 
     /**
+     * Gets the value of the dossierTemplateNo property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDossierTemplateNo() {
+        return dossierTemplateNo;
+    }
+
+    /**
+     * Sets the value of the dossierTemplateNo property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDossierTemplateNo(String value) {
+        this.dossierTemplateNo = value;
+    }
+
+    /**
      * Gets the value of the applicantName property.
      * 
      * @return
@@ -473,51 +640,291 @@ public class DossierDataModel {
     }
 
     /**
-     * Gets the value of the dossierNo property.
+     * Gets the value of the address property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getDossierNo() {
-        return dossierNo;
+    public String getAddress() {
+        return address;
     }
 
     /**
-     * Sets the value of the dossierNo property.
+     * Sets the value of the address property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setDossierNo(String value) {
-        this.dossierNo = value;
+    public void setAddress(String value) {
+        this.address = value;
     }
 
     /**
-     * Gets the value of the applicantNote property.
+     * Gets the value of the cityCode property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getApplicantNote() {
-        return applicantNote;
+    public String getCityCode() {
+        return cityCode;
     }
 
     /**
-     * Sets the value of the applicantNote property.
+     * Sets the value of the cityCode property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setApplicantNote(String value) {
-        this.applicantNote = value;
+    public void setCityCode(String value) {
+        this.cityCode = value;
+    }
+
+    /**
+     * Gets the value of the cityName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCityName() {
+        return cityName;
+    }
+
+    /**
+     * Sets the value of the cityName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCityName(String value) {
+        this.cityName = value;
+    }
+
+    /**
+     * Gets the value of the districtCode property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDistrictCode() {
+        return districtCode;
+    }
+
+    /**
+     * Sets the value of the districtCode property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDistrictCode(String value) {
+        this.districtCode = value;
+    }
+
+    /**
+     * Gets the value of the districtName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDistrictName() {
+        return districtName;
+    }
+
+    /**
+     * Sets the value of the districtName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDistrictName(String value) {
+        this.districtName = value;
+    }
+
+    /**
+     * Gets the value of the wardCode property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getWardCode() {
+        return wardCode;
+    }
+
+    /**
+     * Sets the value of the wardCode property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setWardCode(String value) {
+        this.wardCode = value;
+    }
+
+    /**
+     * Gets the value of the wardName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getWardName() {
+        return wardName;
+    }
+
+    /**
+     * Sets the value of the wardName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setWardName(String value) {
+        this.wardName = value;
+    }
+
+    /**
+     * Gets the value of the contactName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getContactName() {
+        return contactName;
+    }
+
+    /**
+     * Sets the value of the contactName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setContactName(String value) {
+        this.contactName = value;
+    }
+
+    /**
+     * Gets the value of the contactTelNo property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getContactTelNo() {
+        return contactTelNo;
+    }
+
+    /**
+     * Sets the value of the contactTelNo property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setContactTelNo(String value) {
+        this.contactTelNo = value;
+    }
+
+    /**
+     * Gets the value of the contactEmail property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    /**
+     * Sets the value of the contactEmail property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setContactEmail(String value) {
+        this.contactEmail = value;
+    }
+
+    /**
+     * Gets the value of the dossierNote property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDossierNote() {
+        return dossierNote;
+    }
+
+    /**
+     * Sets the value of the dossierNote property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDossierNote(String value) {
+        this.dossierNote = value;
+    }
+
+    /**
+     * Gets the value of the submissionNote property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSubmissionNote() {
+        return submissionNote;
+    }
+
+    /**
+     * Sets the value of the submissionNote property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSubmissionNote(String value) {
+        this.submissionNote = value;
     }
 
     /**
@@ -542,6 +949,54 @@ public class DossierDataModel {
      */
     public void setBriefNote(String value) {
         this.briefNote = value;
+    }
+
+    /**
+     * Gets the value of the dossierNo property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDossierNo() {
+        return dossierNo;
+    }
+
+    /**
+     * Sets the value of the dossierNo property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDossierNo(String value) {
+        this.dossierNo = value;
+    }
+
+    /**
+     * Gets the value of the submitting property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSubmitting() {
+        return submitting;
+    }
+
+    /**
+     * Sets the value of the submitting property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSubmitting(String value) {
+        this.submitting = value;
     }
 
     /**
@@ -665,6 +1120,54 @@ public class DossierDataModel {
     }
 
     /**
+     * Gets the value of the cancellingDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCancellingDate() {
+        return cancellingDate;
+    }
+
+    /**
+     * Sets the value of the cancellingDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCancellingDate(String value) {
+        this.cancellingDate = value;
+    }
+
+    /**
+     * Gets the value of the correctingDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCorrectingDate() {
+        return correctingDate;
+    }
+
+    /**
+     * Sets the value of the correctingDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCorrectingDate(String value) {
+        this.correctingDate = value;
+    }
+
+    /**
      * Gets the value of the dossierStatus property.
      * 
      * @return
@@ -761,51 +1264,123 @@ public class DossierDataModel {
     }
 
     /**
-     * Gets the value of the dossierOverdue property.
+     * Gets the value of the viaPostal property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getDossierOverdue() {
-        return dossierOverdue;
+    public String getViaPostal() {
+        return viaPostal;
     }
 
     /**
-     * Sets the value of the dossierOverdue property.
+     * Sets the value of the viaPostal property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setDossierOverdue(String value) {
-        this.dossierOverdue = value;
+    public void setViaPostal(String value) {
+        this.viaPostal = value;
     }
 
     /**
-     * Gets the value of the submitting property.
+     * Gets the value of the postalAddress property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getSubmitting() {
-        return submitting;
+    public String getPostalAddress() {
+        return postalAddress;
     }
 
     /**
-     * Sets the value of the submitting property.
+     * Sets the value of the postalAddress property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setSubmitting(String value) {
-        this.submitting = value;
+    public void setPostalAddress(String value) {
+        this.postalAddress = value;
+    }
+
+    /**
+     * Gets the value of the postalCityCode property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPostalCityCode() {
+        return postalCityCode;
+    }
+
+    /**
+     * Sets the value of the postalCityCode property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPostalCityCode(String value) {
+        this.postalCityCode = value;
+    }
+
+    /**
+     * Gets the value of the postalCityName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPostalCityName() {
+        return postalCityName;
+    }
+
+    /**
+     * Sets the value of the postalCityName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPostalCityName(String value) {
+        this.postalCityName = value;
+    }
+
+    /**
+     * Gets the value of the postalTelNo property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPostalTelNo() {
+        return postalTelNo;
+    }
+
+    /**
+     * Sets the value of the postalTelNo property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPostalTelNo(String value) {
+        this.postalTelNo = value;
     }
 
     /**
@@ -1001,6 +1576,30 @@ public class DossierDataModel {
     }
 
     /**
+     * Gets the value of the stepInstruction property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getStepInstruction() {
+        return stepInstruction;
+    }
+
+    /**
+     * Sets the value of the stepInstruction property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setStepInstruction(String value) {
+        this.stepInstruction = value;
+    }
+
+    /**
      * Gets the value of the stepDuedate property.
      * 
      * @return
@@ -1097,6 +1696,54 @@ public class DossierDataModel {
     }
 
     /**
+     * Gets the value of the applicantNote property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getApplicantNote() {
+        return applicantNote;
+    }
+
+    /**
+     * Sets the value of the applicantNote property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setApplicantNote(String value) {
+        this.applicantNote = value;
+    }
+
+    /**
+     * Gets the value of the notification property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getNotification() {
+        return notification;
+    }
+
+    /**
+     * Sets the value of the notification property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setNotification(String value) {
+        this.notification = value;
+    }
+
+    /**
      * Gets the value of the online property.
      * 
      * @return
@@ -1118,30 +1765,6 @@ public class DossierDataModel {
      */
     public void setOnline(String value) {
         this.online = value;
-    }
-
-    /**
-     * Gets the value of the hasPassword property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getHasPassword() {
-        return hasPassword;
-    }
-
-    /**
-     * Sets the value of the hasPassword property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setHasPassword(String value) {
-        this.hasPassword = value;
     }
 
 }

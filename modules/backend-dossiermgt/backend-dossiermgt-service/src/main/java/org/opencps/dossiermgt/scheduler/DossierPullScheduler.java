@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -14,8 +13,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-import org.opencps.communication.model.ServerConfig;
-import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.MultipartUtility;
@@ -36,7 +34,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -53,6 +51,7 @@ import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -70,6 +69,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 	private final String username = "test@liferay.com";
 	private final String password = "test";
 	private final String serectKey = "OPENCPSV2";
+	private static final int BUFFER_SIZE = 4096;
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
@@ -136,30 +136,32 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 	}
 
-	private void pullDossier(Company company, JSONObject object, User systemUser) {
+	private void pullDossier(Company company, JSONObject object, User systemUser) throws PortalException {
 		long dossierId = GetterUtil.getLong(object.get(DossierTerm.DOSSIER_ID));
 
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(company.getCompanyId());
 
-		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		// Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
-		long sourceGroupId = dossier.getGroupId();
+		long sourceGroupId = object.getLong(Field.GROUP_ID);
+		String referenceUid = object.getString(DossierTerm.REFERENCE_UID);
 
-		ServerConfig server = ServerConfigLocalServiceUtil.getGroupId(sourceGroupId);
+		// ServerConfig server =
+		// ServerConfigLocalServiceUtil.getGroupId(sourceGroupId);
 
-		String serverno = StringPool.BLANK;
+		String serverno = object.getString(DossierTerm.SERVER_NO);
 
-		if (Validator.isNotNull(server))
-			serverno = server.getServerNo();
+		// if (Validator.isNotNull(server))
+		// serverno = server.getServerNo();
 
 		List<ServiceProcess> processes = ServiceProcessLocalServiceUtil.getByServerNo(serverno);
 
 		List<ServiceProcess> syncProcesses = new ArrayList<ServiceProcess>();
 
-		String serviceInfoCode = dossier.getServiceCode();
-		String govAgencyCode = dossier.getGovAgencyCode();
-		String dossierTemplateCode = dossier.getDossierTemplateNo();
+		String serviceInfoCode = object.getString(DossierTerm.SERVICE_CODE);
+		String govAgencyCode = object.getString(DossierTerm.GOV_AGENCY_CODE);
+		String dossierTemplateCode = object.getString(DossierTerm.DOSSIER_TEMPLATE_NO);
 
 		for (ServiceProcess process : processes) {
 
@@ -197,21 +199,44 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			// Call nextAction
 
 			Dossier desDossier = DossierLocalServiceUtil.getByRef(syncServiceProcess.getGroupId(),
-					dossier.getReferenceUid());
+					object.getString(DossierTerm.REFERENCE_UID));
 
 			if (Validator.isNull(desDossier)) {
 				// Create DOSSIER
-				desDossier = dossier;
 
-				long desDossierId = CounterLocalServiceUtil.increment(Dossier.class.getName());
+				long desGroupId = syncServiceProcess.getGroupId();
 
-				desDossier.setDossierId(desDossierId);
-				desDossier.setGroupId(syncServiceProcess.getGroupId());
-				desDossier.setSubmitting(false);
+				desDossier = DossierLocalServiceUtil.updateDossier(desGroupId, 0l, referenceUid,
+						object.getInt(DossierTerm.COUNTER), object.getString(DossierTerm.SERVICE_CODE),
+						object.getString(DossierTerm.SERVICE_NAME), govAgencyCode,
+						object.getString(DossierTerm.GOV_AGENCY_NAME), object.getString(DossierTerm.APPLICANT_NAME),
+						object.getString(DossierTerm.APPLICANT_ID_TYPE), object.getString(DossierTerm.APPLICANT_ID_NO),
+						APIDateTimeUtils.convertStringToDate(object.getString(DossierTerm.APPLICANT_ID_DATE),
+								APIDateTimeUtils._NORMAL_PARTTERN),
+						object.getString(DossierTerm.ADDRESS), object.getString(DossierTerm.CITY_CODE),
+						object.getString(DossierTerm.CITY_NAME), object.getString(DossierTerm.DISTRICT_CODE),
+						object.getString(DossierTerm.DISTRICT_NAME), object.getString(DossierTerm.WARD_CODE),
+						object.getString(DossierTerm.WARD_NAME), object.getString(DossierTerm.CONTACT_NAME),
+						object.getString(DossierTerm.CONTACT_TEL_NO), object.getString(DossierTerm.CONTACT_EMAIL),
+						object.getString(DossierTerm.DOSSIER_TEMPLATE_NO), object.getString(DossierTerm.DOSSIER_NOTE),
+						object.getString(DossierTerm.SUBMISSION_NOTE), object.getString(DossierTerm.APPLICANT_NOTE),
+						object.getString(DossierTerm.BRIEF_NOTE), object.getString(DossierTerm.DOSSIER_NO), false,
+						APIDateTimeUtils.convertStringToDate(object.getString(DossierTerm.CORRECTING_DATE),
+								APIDateTimeUtils._NORMAL_PARTTERN),
+						object.getString(DossierTerm.DOSSIER_STATUS), object.getString(DossierTerm.DOSSIER_STATUS_TEXT),
+						object.getString(DossierTerm.DOSSIER_SUB_STATUS),
+						object.getString(DossierTerm.DOSSIER_SUB_STATUS_TEXT), 0l, 0l,
+						object.getInt(DossierTerm.VIA_POSTAL), object.getString(DossierTerm.POSTAL_ADDRESS),
+						object.getString(DossierTerm.POSTAL_CITY_CODE), object.getString(DossierTerm.POSTAL_CITY_NAME),
+						object.getString(DossierTerm.POSTAL_TEL_NO), dossierTemplateCode,
+						object.getBoolean(DossierTerm.NOTIFICATION), object.getBoolean(DossierTerm.ONLINE),
+						object.getString(DossierTerm.SERVER_NO), serviceContext);
+
+				long desDossierId = desDossier.getPrimaryKey();
 
 				// Process doAction (with autoEvent = SUBMIT)
 				try {
-					DossierLocalServiceUtil.syncDossier(desDossier);
+					// DossierLocalServiceUtil.syncDossier(desDossier);
 
 					ProcessAction processAction = ProcessActionLocalServiceUtil
 							.fetchBySPI_PRESC_AEV(syncServiceProcess.getServiceProcessId(), StringPool.BLANK, "SUBMIT");
@@ -224,22 +249,23 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 							serviceContext);
 
 				} catch (Exception e) {
-					_log.info("SyncDossierUnsuccessfuly" + dossier.getDossierId());
+					_log.info("SyncDossierUnsuccessfuly" + desDossier.getReferenceUid());
 				}
 
 				// Update DossierFile
 
 			} else {
 
-				if (Validator.isNotNull(dossier.getCancellingDate())) {
+				if (Validator.isNotNull(object.getString(DossierTerm.CANCELLING_DATE))) {
 					// Update cancellingDate
-					desDossier.setCancellingDate(dossier.getCancellingDate());
-
+					desDossier.setCancellingDate(APIDateTimeUtils.convertStringToDate(
+							object.getString(DossierTerm.CANCELLING_DATE), APIDateTimeUtils._NORMAL_PARTTERN));
 				}
 
-				if (Validator.isNotNull(dossier.getCorrecttingDate())) {
+				if (Validator.isNotNull(object.getString(DossierTerm.CORRECTING_DATE))) {
 					// Update correctingDate
-					desDossier.setCorrecttingDate(dossier.getCorrecttingDate());
+					desDossier.setCorrecttingDate(APIDateTimeUtils.convertStringToDate(
+							object.getString(DossierTerm.CORRECTING_DATE), APIDateTimeUtils._NORMAL_PARTTERN));
 				}
 
 			}
@@ -257,12 +283,15 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 		// ResetDossier
 
-		resetDossier(dossier.getGroupId(), dossier.getReferenceUid());
+		resetDossier(sourceGroupId, referenceUid);
 
 	}
 
 	private void resetDossier(long groupId, String refId) {
 		try {
+
+			_log.info("GROUPID_ID" + groupId);
+
 			String path = "dossiers/" + refId + "/reset";
 			URL url = new URL(baseUrl + path);
 
@@ -403,26 +432,52 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				// "multipart/form-data");
 				conn.setRequestProperty("groupId", String.valueOf(srcGroupId));
 
-				if (conn.getResponseCode() != 200) {
+				int responseCode = conn.getResponseCode();
+
+				if (responseCode != 200) {
 					throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+				} else {
+					String fileName = "";
+					String disposition = conn.getHeaderField("Content-Disposition");
+					String contentType = conn.getContentType();
+					int contentLength = conn.getContentLength();
+
+					if (disposition != null) {
+						// extracts file name from header field
+						int index = disposition.indexOf("filename=");
+						if (index > 0) {
+							fileName = disposition.substring(index + 10, disposition.length() - 1);
+						}
+					}
+
+					System.out.println("Content-Type = " + contentType);
+					System.out.println("Content-Disposition = " + disposition);
+					System.out.println("Content-Length = " + contentLength);
+					System.out.println("fileName = " + fileName);
+
+					InputStream is = conn.getInputStream();
+
+					File tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()),
+							StringPool.PERIOD + ref.getString("fileType"));
+
+					FileOutputStream outStream = new FileOutputStream(tempFile);
+
+					int bytesRead = -1;
+					byte[] buffer = new byte[BUFFER_SIZE];
+					while ((bytesRead = is.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
+					}
+
+					outStream.close();
+					is.close();
+
+					System.out.println("File downloaded");
+
+					pullDossierFile(requestURL, "UTF-8", desGroupId, dossierId, authStringEnc, tempFile,
+							ref.getString("dossierTemplateNo"), ref.getString("dossierPartNo"),
+							ref.getString("fileTemplateNo"), ref.getString("displayName"));
+
 				}
-
-				InputStream is = conn.getInputStream();
-
-				byte[] buffer = new byte[is.available()];
-				is.read(buffer);
-				
-				
-				
-				File tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()), ".tmp");
-
-				OutputStream outStream = new FileOutputStream(tempFile);
-
-				outStream.write(buffer);
-
-				pullDossierFile(requestURL, "UTF-8", desGroupId, dossierId, authStringEnc, tempFile,
-						ref.getString("dossierTemplateNo"), ref.getString("dossierPartNo"),
-						ref.getString("fileTemplateNo"), ref.getString("displayName"));
 
 				conn.disconnect();
 
