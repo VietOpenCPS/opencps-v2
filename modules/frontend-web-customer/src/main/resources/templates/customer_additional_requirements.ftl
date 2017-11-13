@@ -38,6 +38,9 @@
 			flagClick = 0
 		}
 	});
+	var dataSideBarList = function(){
+		
+	}
 	var dataSourceAdditionalRequirement = new kendo.data.DataSource({
 		transport:{
 			read:function(options){
