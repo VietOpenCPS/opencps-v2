@@ -199,7 +199,7 @@
           headers : {"groupId": ${groupId}},
           success : function(result){
             if(result){
-              fnCreateDossier(dossierTemplateNo, result.serviceCode, result.govAgencyCode);
+              fnCreateDossier(dossierTemplateNo, result.serviceCode, result.govAgencyCode, item.dossierTemplateId);
             }
           },
           error : function(result){
@@ -211,7 +211,7 @@
       } 
     }
 
-    var fnCreateDossier = function(dossierTemplateNo,serviceCode,govAgencyCode){
+    var fnCreateDossier = function(dossierTemplateNo,serviceCode,govAgencyCode, dossierTemplateId){
       $.ajax({
         url : "${api.server}/dossiers",
         dataType : "json",
@@ -239,7 +239,7 @@
           $("#choiseProcessForDossier").modal("hide");
 
          // chuyen den man hinh chuan bi ho so
-         $("#dossier_detail").load("${ajax.customer_dossier_detail}", function(result){
+         $("#dossier_detail").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierTemplateId="dossierTemplateId+"&${portletNamespace}dossierId="+result.dossierId, function(result){
           $("#dossier_list").hide();
           $("#dossier_detail").show();
           $("#left_container").html("");

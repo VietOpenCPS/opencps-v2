@@ -23,9 +23,11 @@ import java.util.List;
 
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.constants.DossierLogTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.exception.InvalidDossierStatusException;
 import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierLog;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.service.base.DossierLogLocalServiceBaseImpl;
@@ -76,7 +78,44 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.DossierLogLocalServiceUtil} to access the dossier log local service.
 	 */
-    
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierLog addDossierLog(long groupId, long dossierId,  String author,
+            String content, String notificationType, String payload, ServiceContext serviceContext) 
+        throws PortalException, SystemException {
+		
+		long userId = serviceContext.getUserId();
+
+//		validateAddDossierFile(groupId, dossierId, referenceUid, 
+//				dossierTemplateNo, dossierPartNo, fileTemplateNo);
+		
+//		DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(
+//				groupId, dossierTemplateNo, dossierPartNo);
+		
+
+		Date now = new Date();
+
+		User userAction = userLocalService.getUser(userId);
+
+		long dossierFileId = counterLocalService.increment(DossierLog.class.getName());
+
+		DossierLog object = dossierLogPersistence.create(dossierFileId);
+
+		/// Add audit fields
+        object.setCompanyId(serviceContext.getCompanyId());
+        object.setGroupId(groupId);
+        object.setModifiedDate(now);
+        object.setUserId(userAction.getUserId());
+        object.setUserName(userAction.getFullName());
+
+        // Add other fields
+        object.setDossierId(dossierId);
+        object.setContent(content);
+        object.setNotificationType(notificationType);
+        object.setPayload(payload);
+
+        return dossierLogPersistence.update(object);
+	}
+	
     @Indexable(type = IndexableType.REINDEX)
     public DossierLog updateDossierLog(long groupId, long dossierId, long dossierLogId, String author,
             String content, String notificationType, String payload, ServiceContext serviceContext) 
@@ -133,9 +172,15 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
     public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
             SearchContext searchContext) throws ParseException, SearchException {
 
-        String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+        String notiType = String.valueOf(params.get(DossierLogTerm.NOTIFICATION_TYPE));
         String groupId = (String) params.get(Field.GROUP_ID);
-
+    	String dosssierId = String.valueOf(params.get(DossierLogTerm.DOSSIER_ID));
+    	String keywords = "";
+    	if(notiType != "null"){
+    		keywords = notiType;
+    	}else{
+    		keywords = dosssierId;
+    	}
         Indexer<DossierLog> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierLog.class);
 
         searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -162,9 +207,11 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
             for (String string : keyword) {
 
                 MultiMatchQuery query = new MultiMatchQuery(string);
-
-                query.addFields(DossierLogTerm.FILE_TEMPLATE_NO);
-
+                if(notiType != "null"){
+                	query.addFields(DossierLogTerm.NOTIFICATION_TYPE);
+                }else{
+                	query.addFields(DossierLogTerm.DOSSIER_ID);
+                }
                 booleanQuery.add(query, BooleanClauseOccur.MUST);
 
             }
@@ -177,24 +224,47 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 
             booleanQuery.add(query, BooleanClauseOccur.MUST);
         }
+        String content = GetterUtil.getString(params.get(DossierLogTerm.CONTENT));
+        String payload = GetterUtil.getString(params.get(DossierLogTerm.PAYLOAD));
+        String user_id = String.valueOf(params.get(DossierLogTerm.USER_ID));
+        String dossierLogId = GetterUtil.getString(params.get(DossierLogTerm.DOSSIER_LOG_ID));
         
-        String fileTemplateNo = GetterUtil.getString(params.get(DossierLogTerm.FILE_TEMPLATE_NO));
-        String dossierPartType = GetterUtil.getString(params.get(DossierLogTerm.DOSSIER_PART_TYPE));
-        String user_id = GetterUtil.getString(params.get(DossierLogTerm.USER_ID));
-        String original = GetterUtil.getString(params.get(DossierLogTerm.ORIGINAL));
-        
-        if (Validator.isNotNull(fileTemplateNo)) {
-            MultiMatchQuery query = new MultiMatchQuery(fileTemplateNo);
+        if (Validator.isNotNull(notiType)) {
+            MultiMatchQuery query = new MultiMatchQuery(notiType);
 
-            query.addFields(DossierLogTerm.FILE_TEMPLATE_NO);
+            query.addFields(DossierLogTerm.NOTIFICATION_TYPE);
 
             booleanQuery.add(query, BooleanClauseOccur.MUST);
         }
         
-        if (Validator.isNotNull(dossierPartType)) {
-            MultiMatchQuery query = new MultiMatchQuery(dossierPartType);
+        if (Validator.isNotNull(dosssierId)) {
+            MultiMatchQuery query = new MultiMatchQuery(dosssierId);
 
-            query.addFields(DossierLogTerm.DOSSIER_PART_TYPE);
+            query.addFields(DossierLogTerm.DOSSIER_ID);
+
+            booleanQuery.add(query, BooleanClauseOccur.MUST);
+        }
+        
+        if (Validator.isNotNull(dossierLogId)) {
+            MultiMatchQuery query = new MultiMatchQuery(content);
+
+            query.addFields(DossierLogTerm.DOSSIER_LOG_ID);
+
+            booleanQuery.add(query, BooleanClauseOccur.MUST);
+        }
+        
+        if (Validator.isNotNull(content)) {
+            MultiMatchQuery query = new MultiMatchQuery(content);
+
+            query.addFields(DossierLogTerm.CONTENT);
+
+            booleanQuery.add(query, BooleanClauseOccur.MUST);
+        }
+        
+        if (Validator.isNotNull(payload)) {
+            MultiMatchQuery query = new MultiMatchQuery(payload);
+
+            query.addFields(DossierLogTerm.PAYLOAD);
 
             booleanQuery.add(query, BooleanClauseOccur.MUST);
         }
@@ -203,14 +273,6 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
             MultiMatchQuery query = new MultiMatchQuery(user_id);
 
             query.addFields(DossierLogTerm.USER_ID);
-
-            booleanQuery.add(query, BooleanClauseOccur.MUST);
-        }
-        
-        if (Validator.isNotNull(original)) {
-            MultiMatchQuery query = new MultiMatchQuery(original);
-
-            query.addFields(DossierLogTerm.ORIGINAL);
 
             booleanQuery.add(query, BooleanClauseOccur.MUST);
         }
@@ -223,9 +285,16 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
     public long countLucene(LinkedHashMap<String, Object> params, SearchContext searchContext)
             throws ParseException, SearchException {
 
-        String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+        String notiType = String.valueOf(params.get(DossierLogTerm.NOTIFICATION_TYPE));
         String groupId = (String) params.get(Field.GROUP_ID);
-
+    	String dosssierId = String.valueOf(params.get(DossierLogTerm.DOSSIER_ID));
+    	String keywords = "";
+    	if(notiType != "null"){
+    		keywords = notiType;
+    	}else{
+    		keywords = dosssierId;
+    	}
+    	
         Indexer<DossierLog> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierLog.class);
 
         searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -249,9 +318,11 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
             for (String string : keyword) {
 
                 MultiMatchQuery query = new MultiMatchQuery(string);
-
-                query.addFields(DossierLogTerm.FILE_TEMPLATE_NO);
-
+                if(notiType != "null"){
+                	query.addFields(DossierLogTerm.NOTIFICATION_TYPE);
+                }else{
+                	query.addFields(DossierLogTerm.DOSSIER_ID);
+                }
                 booleanQuery.add(query, BooleanClauseOccur.MUST);
 
             }
@@ -265,23 +336,47 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
             booleanQuery.add(query, BooleanClauseOccur.MUST);
         }
         
-        String fileTemplateNo = GetterUtil.getString(params.get(DossierLogTerm.FILE_TEMPLATE_NO));
-        String dossierPartType = GetterUtil.getString(params.get(DossierLogTerm.DOSSIER_PART_TYPE));
-        String user_id = GetterUtil.getString(params.get(DossierLogTerm.USER_ID));
-        String original = GetterUtil.getString(params.get(DossierLogTerm.ORIGINAL));
+        String content = GetterUtil.getString(params.get(DossierLogTerm.CONTENT));
+        String payload = GetterUtil.getString(params.get(DossierLogTerm.PAYLOAD));
+        String user_id = String.valueOf(params.get(DossierLogTerm.USER_ID));
+        String dossierLogId = GetterUtil.getString(params.get(DossierLogTerm.DOSSIER_LOG_ID));
         
-        if (Validator.isNotNull(fileTemplateNo)) {
-            MultiMatchQuery query = new MultiMatchQuery(fileTemplateNo);
+        if (Validator.isNotNull(content)) {
+            MultiMatchQuery query = new MultiMatchQuery(content);
 
-            query.addFields(DossierLogTerm.FILE_TEMPLATE_NO);
+            query.addFields(DossierLogTerm.CONTENT);
 
             booleanQuery.add(query, BooleanClauseOccur.MUST);
         }
         
-        if (Validator.isNotNull(dossierPartType)) {
-            MultiMatchQuery query = new MultiMatchQuery(dossierPartType);
+        if (Validator.isNotNull(notiType)) {
+            MultiMatchQuery query = new MultiMatchQuery(notiType);
 
-            query.addFields(DossierLogTerm.DOSSIER_PART_TYPE);
+            query.addFields(DossierLogTerm.NOTIFICATION_TYPE);
+
+            booleanQuery.add(query, BooleanClauseOccur.MUST);
+        }
+        
+        if (Validator.isNotNull(dosssierId)) {
+            MultiMatchQuery query = new MultiMatchQuery(dosssierId);
+
+            query.addFields(DossierLogTerm.DOSSIER_ID);
+
+            booleanQuery.add(query, BooleanClauseOccur.MUST);
+        }
+        
+        if (Validator.isNotNull(dossierLogId)) {
+            MultiMatchQuery query = new MultiMatchQuery(dossierLogId);
+
+            query.addFields(DossierLogTerm.DOSSIER_LOG_ID);
+
+            booleanQuery.add(query, BooleanClauseOccur.MUST);
+        }
+        
+        if (Validator.isNotNull(payload)) {
+            MultiMatchQuery query = new MultiMatchQuery(payload);
+
+            query.addFields(DossierLogTerm.PAYLOAD);
 
             booleanQuery.add(query, BooleanClauseOccur.MUST);
         }
@@ -290,14 +385,6 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
             MultiMatchQuery query = new MultiMatchQuery(user_id);
 
             query.addFields(DossierLogTerm.USER_ID);
-
-            booleanQuery.add(query, BooleanClauseOccur.MUST);
-        }
-        
-        if (Validator.isNotNull(original)) {
-            MultiMatchQuery query = new MultiMatchQuery(original);
-
-            query.addFields(DossierLogTerm.ORIGINAL);
 
             booleanQuery.add(query, BooleanClauseOccur.MUST);
         }
