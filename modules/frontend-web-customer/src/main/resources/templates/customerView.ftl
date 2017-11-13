@@ -7,7 +7,9 @@
 		<div id="panel_list" class="col-sm-3 PL0"></div>
 		
 		<div id="mainType1" class="col-sm-9 P0">
-			<div id="main_section" class="col-sm-9 P0"></div>
+			<div id="main_section" class="col-sm-9 P0">
+				<i class="fa fa-spinner" aria-hidden="true"></i>
+			</div>
 			<div id="sidebar_list" class="col-sm-3 PR0"></div>
 		</div>
 
