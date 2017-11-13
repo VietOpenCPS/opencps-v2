@@ -425,10 +425,10 @@
 			},
 			headers: {"groupId": ${groupId}},
 			success :  function(result){                       
-				$("#dossier_detail").show();
-				$("#dossier_list").hide();
-				$("#dossier_detail").load("${ajax.submited_dossier_info}",function(result){
-					
+				$("#mainType1").hide();
+				$("#mainType2").show();
+				$("#mainType2").load("${ajax.submited_dossier_info.ftl}",function(result){
+
 				});
 			},
 			error:function(result){

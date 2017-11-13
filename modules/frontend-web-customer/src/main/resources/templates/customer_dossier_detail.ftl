@@ -134,7 +134,7 @@
 				<#-- <#include "customer_dossier_online_form.ftl"> -->
 			</div>
 			<script type="text/x-kendo-template" id="templateDossierPart">
-
+				#if(partType == 1){#
 				<div class="row-parts-head align-middle">
 					<span class="text-bold MR5">#:itemIndex#.</span>
 					<span>&nbsp;&nbsp;#:partName# 
@@ -188,6 +188,8 @@
 		}
 	});
 }#
+
+#}#
 </script>
 </div>
 </form>
@@ -244,6 +246,8 @@
 <script type="text/javascript">
 
 	$(function(){
+
+
 
 		var fnBindDossierTemplClick = function(){
 		//upload file click
@@ -412,6 +416,7 @@
 
 	var funSaveDossier = function(){
 		//PUT dossier
+		
 		var validator = $("#detailDossier").kendoValidator().data("kendoValidator");
 
 		if(validator.validate()){
@@ -425,7 +430,7 @@
 					serviceCode : $("#serviceCode").val(),
 					govAgencyCode : $("#govAgencyCode").val(),
 					dossierTemplateNo : $("#dossierTemplateNo").val(),
-					
+
 					applicantName : "${(applicant.applicantName)!}",
 					applicantIdType : "${(applicant.applicantIdType)!}",
 					applicantIdNo : "${(applicant.applicantIdNo)!}",
@@ -451,10 +456,12 @@
 				//finish PUT dossier create action for dossier
 				createActionDossier(${dossierId});
 
-				$("#dossier_detail").show();
-				$("#dossier_list").hide();
-				$("#dossier_detail").load("${ajax.customer_dossier_detail_2}",function(result){
-					
+				manageDossier.navigate("/taohosomoi/nophoso");
+
+				$("#mainType1").hide();
+				$("#mainType2").show();
+				$("#mainType2").load("${ajax.customer_dossier_detail_2}",function(result){
+
 				});
 
 			},
@@ -660,6 +667,7 @@
 				success : function(result){
 					console.log("load detail dossier!");
 					console.log(result);
+					
 					var viewModel = kendo.observable({
 						serviceCode : result.serviceCode,
 						govAgencyCode : result.govAgencyCode,
@@ -785,6 +793,16 @@
 	$("#postalAddress").prop('disabled', true);
 	$("#postalCityCode").data("kendoComboBox").enable(false);
 	$("#postalTelNo").prop('disabled', true);
+});
+
+$(function(){
+	manageDossier.route("/taohosomoi/nophoso", function(id){
+		$("#mainType1").hide();
+		$("#mainType2").show();
+		$("#mainType2").load("${ajax.customer_dossier_detail_2}",function(result){
+
+		});
+	});
 });
 
 </script>
