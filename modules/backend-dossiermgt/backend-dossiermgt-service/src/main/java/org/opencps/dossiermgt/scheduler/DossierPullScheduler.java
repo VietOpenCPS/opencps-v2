@@ -1,8 +1,12 @@
 package org.opencps.dossiermgt.scheduler;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -14,6 +18,7 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.util.MultipartUtility;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -33,6 +38,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -56,6 +62,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 @Component(immediate = true, service = DossierPullScheduler.class)
 public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
@@ -68,7 +75,6 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 	protected void doReceive(Message message) throws Exception {
 
 		_log.info("OpenCPS get DOSSIERS.....");
-		
 
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 		ServiceContext serviceContext = new ServiceContext();
@@ -203,8 +209,6 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				desDossier.setGroupId(syncServiceProcess.getGroupId());
 				desDossier.setSubmitting(false);
 
-				// TODO add sync DOSSIERFILE and PAYMENTFILE
-
 				// Process doAction (with autoEvent = SUBMIT)
 				try {
 					DossierLocalServiceUtil.syncDossier(desDossier);
@@ -222,10 +226,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				} catch (Exception e) {
 					_log.info("SyncDossierUnsuccessfuly" + dossier.getDossierId());
 				}
-				
+
 				// Update DossierFile
-				
-				
 
 			} else {
 
@@ -240,18 +242,25 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					desDossier.setCorrecttingDate(dossier.getCorrecttingDate());
 				}
 
-				// TODO add sync DOSSIERFILE and PAYMENTFILE
-
 			}
 
+			// TODO add sync DOSSIERFILE and PAYMENTFILE
+
+			List<JSONObject> lsFileSync = new ArrayList<>();
+
+			// get the list of file of source dossier need to sync
+			getDossierFiles(sourceGroupId, dossierId, lsFileSync);
+
+			pullDossierFiles(desDossier.getGroupId(), desDossier.getDossierId(), lsFileSync, sourceGroupId, dossierId);
+
 		}
-		
-		//ResetDossier
-		
+
+		// ResetDossier
+
 		resetDossier(dossier.getGroupId(), dossier.getReferenceUid());
 
 	}
-	
+
 	private void resetDossier(long groupId, String refId) {
 		try {
 			String path = "dossiers/" + refId + "/reset";
@@ -300,6 +309,163 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 		}
 	}
 
+	private void getDossierFiles(long groupId, long dossierId, List<JSONObject> lsFileSync) {
+
+		try {
+			String path = "dossiers/" + dossierId + "/files";
+
+			URL url = new URL(baseUrl + path);
+
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+			String authString = username + ":" + password;
+
+			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
+			conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+
+			conn.setRequestMethod(HttpMethods.GET);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setRequestProperty("Accept", "application/json");
+			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			conn.setRequestProperty("groupId", String.valueOf(groupId));
+
+			if (conn.getResponseCode() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+			}
+
+			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+			String output;
+
+			StringBuffer sb = new StringBuffer();
+
+			while ((output = br.readLine()) != null) {
+				sb.append(output);
+
+			}
+
+			JSONObject jsData = JSONFactoryUtil.createJSONObject(sb.toString());
+
+			JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+
+			for (int i = 0; i < array.length(); i++) {
+				JSONObject object = array.getJSONObject(i);
+
+				if (GetterUtil.getBoolean(object.get("isNew"))) {
+					lsFileSync.add(object);
+				}
+
+			}
+
+			System.out.println(sb.toString());
+
+			conn.disconnect();
+
+		} catch (MalformedURLException e) {
+
+			e.printStackTrace();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void pullDossierFiles(long desGroupId, long dossierId, List<JSONObject> lsFileSync, long srcGroupId,
+			long srcDossierId) {
+
+		for (JSONObject ref : lsFileSync) {
+
+			try {
+
+				String path = "dossiers/" + srcDossierId + "/files/" + ref.getString("referenceUid");
+
+				String requestURL = baseUrl + "dossiers/" + dossierId + "/files/";
+
+				URL url = new URL(baseUrl + path);
+
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+				String authString = username + ":" + password;
+
+				String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
+				conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+
+				conn.setRequestMethod(HttpMethods.GET);
+				conn.setDoInput(true);
+				conn.setDoOutput(true);
+				conn.setRequestProperty("Accept", "application/json");
+				// conn.setRequestProperty("Content-Type",
+				// "multipart/form-data");
+				conn.setRequestProperty("groupId", String.valueOf(srcGroupId));
+
+				if (conn.getResponseCode() != 200) {
+					throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+				}
+
+				InputStream is = conn.getInputStream();
+
+				byte[] buffer = new byte[is.available()];
+				is.read(buffer);
+				
+				
+				
+				File tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()), ".tmp");
+
+				OutputStream outStream = new FileOutputStream(tempFile);
+
+				outStream.write(buffer);
+
+				pullDossierFile(requestURL, "UTF-8", desGroupId, dossierId, authStringEnc, tempFile,
+						ref.getString("dossierTemplateNo"), ref.getString("dossierPartNo"),
+						ref.getString("fileTemplateNo"), ref.getString("displayName"));
+
+				conn.disconnect();
+
+			} catch (MalformedURLException e) {
+
+				e.printStackTrace();
+			} catch (IOException e) {
+
+				e.printStackTrace();
+
+			}
+
+		}
+
+	}
+
+	private void pullDossierFile(String requestURL, String charset, long desGroupId, long dossierId,
+			String authStringEnc, File file, String dossierTemplateNo, String dossierPartNo, String fileTemplateNo,
+			String displayName) {
+
+		try {
+			MultipartUtility multipart = new MultipartUtility(requestURL, charset, desGroupId, authStringEnc);
+
+			multipart.addFilePart("file", file);
+			multipart.addFormField("referenceUid", PortalUUIDUtil.generate());
+			multipart.addFormField("dossierTemplateNo", dossierTemplateNo);
+			multipart.addFormField("dossierPartNo", dossierPartNo);
+			multipart.addFormField("fileTemplateNo", fileTemplateNo);
+			multipart.addFormField("displayName", displayName);
+
+			List<String> response = multipart.finish();
+
+			System.out.println("SERVER REPLIED:");
+
+			for (String line : response) {
+				System.out.println(line);
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+	}
 
 	@Activate
 	@Modified

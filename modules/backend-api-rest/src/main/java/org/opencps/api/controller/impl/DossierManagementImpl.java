@@ -133,12 +133,12 @@ public class DossierManagementImpl implements DossierManagement {
 
 			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					query.getStart(), query.getEnd(), serviceContext);
-			
+
 			DossierResultsModel results = new DossierResultsModel();
-			
+
 			results.setTotal(jsonData.getInt("total"));
-			
-			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")) );
+
+			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
 
 			return Response.status(200).entity(results).build();
 
@@ -189,9 +189,10 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException();
-			}
+			// if (!auth.hasResource(serviceContext,
+			// DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
+			// throw new UnauthorizationException();
+			// }
 
 			dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
 					input.getGovAgencyCode(), input.getDossierTemplateNo());
@@ -216,7 +217,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 
 			boolean online = true;
-			
+
 			// DOSSIER that was created in CLIENT is set ONLINE = false
 			if (process.getServerNo().trim().length() != 0) {
 				online = false;
@@ -357,9 +358,10 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException();
-			}
+			// if (!auth.hasResource(serviceContext,
+			// DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
+			// throw new UnauthorizationException();
+			// }
 
 			dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
 					input.getGovAgencyCode(), input.getDossierTemplateNo());
@@ -382,7 +384,11 @@ public class DossierManagementImpl implements DossierManagement {
 			String cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
 			String districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
 			String wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
-			String postalCityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getPostalCityCode());
+
+			String postalCityName = StringPool.BLANK;
+			if (Validator.isNotNull(input.getPostalCityCode())) {
+				postalCityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getPostalCityCode());
+			}
 
 			boolean online = true;
 			// DOSSIER that was created in CLIENT is set ONLINE = false
@@ -463,24 +469,25 @@ public class DossierManagementImpl implements DossierManagement {
 	@Override
 	public Response submittingDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id) {
-		
+
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
 
 		DossierActions actions = new DossierActionsImpl();
-		
+
 		DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			
+
 			Dossier dossier = getDossier(id, groupId);
 
 			dossierPermission.allowSubmitting(user.getUserId(), dossier.getDossierId());
 
-			Dossier submittedDossier = actions.submitDossier(groupId, dossier.getDossierId(), dossier.getReferenceUid(), serviceContext);
+			Dossier submittedDossier = actions.submitDossier(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
+					serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(submittedDossier);
 
@@ -520,8 +527,8 @@ public class DossierManagementImpl implements DossierManagement {
 	@Override
 	public Response resetDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id) {
-		
-		// RESET submitting 
+
+		// RESET submitting
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		DossierPermission dossierPermission = new DossierPermission();
 		BackendAuth auth = new BackendAuthImpl();
@@ -531,7 +538,8 @@ public class DossierManagementImpl implements DossierManagement {
 			// DossierPushScheduler
 			Dossier dossier = getDossier(id, groupId);
 
-			Dossier dossierResetted = actions.resetDossier(groupId, dossier.getDossierId(), dossier.getReferenceUid(), serviceContext);
+			Dossier dossierResetted = actions.resetDossier(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
+					serviceContext);
 
 			return Response.status(200).entity(DossierUtils.mappingForGetDetail(dossierResetted)).build();
 
@@ -691,7 +699,7 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	protected Dossier getDossier(String id, long groupId) throws PortalException {
-		//TODO update logic here
+		// TODO update logic here
 		long dossierId = GetterUtil.getLong(id);
 
 		Dossier dossier = null;
@@ -735,8 +743,8 @@ public class DossierManagementImpl implements DossierManagement {
 				String preStepCode = act.getPreStepCode();
 
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
-				
-				if(Validator.isNull(step)) {
+
+				if (Validator.isNull(step)) {
 					action = act;
 					break;
 				} else {

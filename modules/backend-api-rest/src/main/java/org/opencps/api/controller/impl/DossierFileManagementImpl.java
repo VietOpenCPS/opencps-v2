@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.UUIDGenerator;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -40,6 +42,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class DossierFileManagementImpl implements DossierFileManagement{
 
@@ -113,6 +116,10 @@ public class DossierFileManagementImpl implements DossierFileManagement{
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
+			}
+			
+			if(Validator.isNull(referenceUid)) {
+				referenceUid = UUID.randomUUID().toString();
 			}
 			
 			DataHandler dataHandler = file.getDataHandler();
