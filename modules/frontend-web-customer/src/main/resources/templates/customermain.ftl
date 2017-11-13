@@ -4,5 +4,3 @@
 <#include "customerView.ftl">
 <#include "customerViewModel.ftl">
 <#include "customerRouting.ftl">
-
-	
