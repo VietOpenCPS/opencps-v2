@@ -10,12 +10,17 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.WindowStateException;
 
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.util.UserMgtUtils;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
@@ -46,25 +51,30 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-		// Applicant applicant =
-		// UserMgtUtils.getApplicant(themeDisplay.getUser().getEmailAddress());
+		Applicant applicant =
+			UserMgtUtils.getApplicant(themeDisplay.getUser().getEmailAddress());
 
-		// JSONObject applicantObj = JSONFactoryUtil.createJSONObject();
-		// String jsonObj = JSONFactoryUtil.looseSerialize(applicant);
-		// try {
-		// applicantObj = JSONFactoryUtil.createJSONObject(jsonObj);
-		// }
-		// catch (Exception e) {
-		// }
+		JSONObject applicantObj = JSONFactoryUtil.createJSONObject();
+		String jsonObj = JSONFactoryUtil.looseSerialize(applicant);
+		try {
+			applicantObj = JSONFactoryUtil.createJSONObject(jsonObj);
+		}
+		catch (Exception e) {
+		}
 
-		// api
-
+		String dossierTemplateId =
+			ParamUtil.getString(renderRequest, "dossierTemplateId");
+		String dossierId = ParamUtil.getString(renderRequest, "dossierId");
+		
 		// apiObject.put("applicant", applicantObj);
 
 		// set varible
 		renderRequest.setAttribute(
 			"ajax", generateURLJsonObject(renderResponse));
 		renderRequest.setAttribute("api", generateApiJsonObject(themeDisplay));
+		renderRequest.setAttribute("applicant", applicantObj);
+		renderRequest.setAttribute("dossierTemplateId", dossierTemplateId);
+		renderRequest.setAttribute("dossierId", dossierId);
 
 		super.render(renderRequest, renderResponse);
 
@@ -257,5 +267,8 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 
 		return apiObject;
 	}
+
+	private static final Log _log =
+		LogFactoryUtil.getLog(FrontendWebCustomerPortlet.class);
 
 }
