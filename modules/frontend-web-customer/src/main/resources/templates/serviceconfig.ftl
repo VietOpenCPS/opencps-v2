@@ -69,30 +69,39 @@
       $('#btn_fillter_by_admintration').removeClass('btn-active');
       $('#btn_fillter_by_domain').addClass('btn-active');
       $('#serviceconfig_container').load("${ajax.serviceconfig_domain}");
+      $('#input_search').val('');
     });
 
     $('#btn_fillter_by_admintration').click(function(){
       $('#btn_fillter_by_admintration').addClass('btn-active');
       $('#btn_fillter_by_domain').removeClass('btn-active');
       $('#serviceconfig_container').load("${ajax.serviceconfig_administration}");
+      $('#input_search').val('');
     });
 
-    $('#input_search').change(function(){
-      searchServiceInfo();
-    });
 
-    $('#btn_search').change(function(){
+
+    /*$('#btn_search').click(function(){
       searchServiceInfo();
     });
 
     function searchServiceInfo(){
+      var input_Search = $('#input_search').val();
+        
       if ($('#btn_fillter_by_admintration').hasClass('btn-active')){
-        $('#serviceconfig_container').load("${ajax.serviceconfig_domain}&" + $('#input_search').val());
+        alert('a');
+        dataSourceAdmin.read({
+          keyword: input_Search,
+        });
+        //$('#serviceconfig_container').load("${ajax.serviceconfig_domain}&" + $('#input_search').val());
       }
       if ($('#btn_fillter_by_domain').hasClass('btn-active')){
-        $('#serviceconfig_container').load("${ajax.serviceconfig_administration}&" + $('#input_search').val());
+        dataSourceServiceConfigDomain.read({
+          keyword: input_Search,
+        });
+        //$('#serviceconfig_container').load("${ajax.serviceconfig_administration}&" + $('#input_search').val());
       }
-    }
+    }*/
 
     dataSourceProcessServiceConfig = new kendo.data.DataSource({
       transport : {
@@ -104,12 +113,20 @@
             headers : {"groupId": ${groupId}},
             success :  function(result){
               if(result.data){
+                options.success(result);
                 if (result.data.length === 1) {
+                  console.log(result.data[0].processOptionId);
                   fnGetParamAndCreateDossier(result.data[0].processOptionId);
+                  
                 }else if (result.data.length > 1){
-                  options.success(result);
+
                   $("#choiseProcessForDossier").modal("show");
+                }else {
+                  notification.show({
+                    message: "Hiện tại chưa có cấu hình, yêu cầu bổ sung cấu hình để thực hiện"
+                  }, "error");
                 }
+                
               }
             },
             error : function(result){
@@ -160,6 +177,7 @@
         if(processOptionId){
           fnGetParamAndCreateDossier(processOptionId);
         }
+
       }); 
     }
 
@@ -167,7 +185,7 @@
       var item = dataSourceProcessServiceConfig.get(processOptionId);
       var serviceConfigId = $("#serviceConfigId").val();
       if(item && serviceConfigId){
-        var dossierTemplateId = item.dossierTemplateId;
+        var dossierTemplateNo = item.templateNo;
 
         $.ajax({
           url : "${api.server}/serviceconfigs/"+serviceConfigId,
@@ -176,7 +194,7 @@
           headers : {"groupId": ${groupId}},
           success : function(result){
             if(result){
-              fnCreateDossier(dossierTemplateId, result.serviceCode, result.govAgencyCode);
+              fnCreateDossier(dossierTemplateNo, result.serviceCode, result.govAgencyCode, item.dossierTemplateId);
             }
           },
           error : function(result){
@@ -188,7 +206,7 @@
       } 
     }
 
-    var fnCreateDossier = function(dossierTemplateId,serviceCode,govAgencyCode){
+    var fnCreateDossier = function(dossierTemplateNo,serviceCode,govAgencyCode, dossierTemplateId){
       $.ajax({
         url : "${api.server}/dossiers",
         dataType : "json",
@@ -197,7 +215,18 @@
           referenceUid : "",
           serviceCode : serviceCode,
           govAgencyCode : govAgencyCode,
-          dossierTemplateNo : dossierTemplateId
+          dossierTemplateNo : dossierTemplateNo,
+          applicantName : "${(applicant.applicantName)!}",
+          applicantIdType : "${(applicant.applicantIdType)!}",
+          applicantIdNo : "${(applicant.applicantIdNo)!}",
+          applicantIdDate : "${(applicant.applicantIdDate)!}",
+          address : "${(applicant.address)!}",
+          cityCode : "${(applicant.cityCode)!}",
+          districtCode : "${(applicant.districtCode)!}",
+          wardCode : "${(applicant.wardCode)!}",
+          contactName : "${(applicant.contactName)!}",
+          contactTelNo : "${(applicant.contactTelNo)!}",
+          contactEmail : "${(applicant.contactEmail)!}"
         },
         headers : {"groupId": ${groupId}},
         success : function(result){
@@ -205,7 +234,7 @@
           $("#choiseProcessForDossier").modal("hide");
 
          // chuyen den man hinh chuan bi ho so
-         $("#dossier_detail").load("${ajax.customer_dossier_detail}", function(result){
+         $("#dossier_detail").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierTemplateId="dossierTemplateId+"&${portletNamespace}dossierId="+result.dossierId, function(result){
           $("#dossier_list").hide();
           $("#dossier_detail").show();
           $("#left_container").html("");

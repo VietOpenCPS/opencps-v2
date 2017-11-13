@@ -44,6 +44,21 @@
 	dossierId : 101,
 	dossierTemplateNo : 201,
 	dossierPartNo : 401,
+	applicant : {
+		applicantName : "dsdksdsdkjs",
+		applicantIdType : "dsdksdsdkjs",
+		applicantIdNo : "dsdksdsdkjs",
+		applicantIdDate : "dsdksdsdkjs",
+		address : "dsdksdsdkjs",
+		cityCode : "dsdksdsdkjs",
+		districtCode : "dsdksdsdkjs",
+		wardCode : "dsdksdsdkjs",
+		contactName : "dsdksdsdkjs",
+		contactTelNo : "dsdksdsdkjs",
+		contactEmail : "dsdksdsdkjs",
+		password : "ssdasd",
+		online : "true"
+	},
 	"customer":{
 		administrative_region: 1,
 		status:'[

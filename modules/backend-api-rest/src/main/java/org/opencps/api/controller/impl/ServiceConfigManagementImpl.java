@@ -22,6 +22,7 @@ import org.opencps.api.serviceconfig.model.ServiceConfigInputModel;
 import org.opencps.api.serviceconfig.model.ServiceConfigResultsModel;
 import org.opencps.api.serviceconfig.model.ServiceConfigSearchModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoModel;
+import org.opencps.api.serviceinfo.model.ServiceInfoSearchModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoServiceConfig;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
@@ -42,14 +43,17 @@ import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -561,40 +565,301 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 	}
 
 	@Override
-	public Response getServiceConfigsByGovAgency(
-		HttpServletRequest request, HttpHeaders header, Company company,
-		Locale locale, User user, ServiceContext serviceContext) {
+	public Response getServiceConfigsByGovAgency(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, ServiceInfoSearchModel query) {
 		
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		DictCollection govAgencyCollection = DictCollectionLocalServiceUtil
+				.fetchByF_dictCollectionCode("GOVERNMENT_AGENCY", groupId);
+
+		List<DictItem> govItems = DictItemLocalServiceUtil
+				.findByF_dictCollectionId(govAgencyCollection.getDictCollectionId());
+
+		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("SERVICE_DOMAIN",
+				groupId);
+
+		List<DictItem> domainItems = DictItemLocalServiceUtil
+				.findByF_dictCollectionId(domainCollection.getDictCollectionId());
+
+
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(company.getCompanyId());
+
+		if (query.getEnd() == 0) {
+
+			query.setStart(-1);
+
+			query.setEnd(-1);
+
+		}
+
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 
-		results.put("govAgencys", generateGovAgencys(serviceContext));
+		JSONArray arrGovAgency = JSONFactoryUtil.createJSONArray();
 
-		return Response.status(200).entity(results).build();
+		try {
+
+			for (DictItem govItem : govItems) {
+
+				LinkedHashMap<String, Object> paramsGovAgent = new LinkedHashMap<String, Object>();
+
+				paramsGovAgent.put(Field.GROUP_ID, String.valueOf(groupId));
+				paramsGovAgent.put(Field.KEYWORD_SEARCH, query.getKeyword());
+				paramsGovAgent.put(ServiceConfigTerm.GOVAGENCY_CODE, govItem.getItemCode());
+
+				JSONObject govElm = JSONFactoryUtil.createJSONObject();
+
+				long countGov = ServiceConfigLocalServiceUtil.countLucene(paramsGovAgent, searchContext);
+
+				if (countGov != 0) {
+
+					govElm.put("govAgencyCode", govItem.getItemCode());
+					govElm.put("govAgencyName", govItem.getItemName());
+
+					JSONArray arrDomain = JSONFactoryUtil.createJSONArray();
+
+					for (DictItem domainItem : domainItems) {
+
+						JSONObject domElm = JSONFactoryUtil.createJSONObject();
+
+						LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+						params.put(Field.GROUP_ID, String.valueOf(groupId));
+						params.put(Field.KEYWORD_SEARCH, query.getKeyword());
+						params.put(ServiceConfigTerm.GOVAGENCY_CODE, govItem.getItemCode());
+						params.put(ServiceConfigTerm.DOMAIN_CODE, domainItem.getItemCode());
+
+						Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable",
+								Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
+
+						long countGovDomain = ServiceConfigLocalServiceUtil.countLucene(params, searchContext);
+
+						if (countGovDomain != 0) {
+
+							domElm.put("domainCode", domainItem.getItemCode());
+							domElm.put("domainName", domainItem.getItemName());
+
+							List<Document> docs = ServiceConfigLocalServiceUtil
+									.searchLucene(params, sorts, query.getStart(), query.getEnd(), searchContext)
+									.toList();
+
+							JSONArray arrService = JSONFactoryUtil.createJSONArray();
+
+							for (Document doc : docs) {
+
+								JSONObject srvElm = JSONFactoryUtil.createJSONObject();
+
+								srvElm.put("serviceInfoId", doc.get(ServiceConfigTerm.SERVICEINFO_ID));
+								srvElm.put("serviceConfigId", doc.get(Field.ENTRY_CLASS_PK));
+								srvElm.put("serviceInfoName", doc.get(ServiceConfigTerm.SERVICE_NAME));
+								srvElm.put("level", doc.get(ServiceConfigTerm.SERVICE_LEVEL));
+
+								arrService.put(srvElm);
+							}
+
+							domElm.put("serviceConfigs", arrService);
+
+							arrDomain.put(domElm);
+						}
+
+					}
+
+					govElm.put("domains", arrDomain);
+					
+					arrGovAgency.put(govElm);
+
+				}
+
+			}
+
+			results.put("govAgencies", arrGovAgency);
+			
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					error.setMessage("Internal Server Error");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+
+				}
+			}
+		}
+
 	}
 
 	@Override
-	public Response getServiceConfigsByDomain(
-		HttpServletRequest request, HttpHeaders header, Company company,
-		Locale locale, User user, ServiceContext serviceContext) {
+	public Response getServiceConfigsByDomain(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, ServiceInfoSearchModel query) {
+		
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		DictCollection govAgencyCollection = DictCollectionLocalServiceUtil
+				.fetchByF_dictCollectionCode("GOVERNMENT_AGENCY", groupId);
+
+		List<DictItem> govItems = DictItemLocalServiceUtil
+				.findByF_dictCollectionId(govAgencyCollection.getDictCollectionId());
+
+		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("SERVICE_DOMAIN",
+				groupId);
+
+		List<DictItem> domainItems = DictItemLocalServiceUtil
+				.findByF_dictCollectionId(domainCollection.getDictCollectionId());
+
+
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(company.getCompanyId());
+
+		if (query.getEnd() == 0) {
+
+			query.setStart(-1);
+
+			query.setEnd(-1);
+
+		}
 
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 
-		results.put("domains", generateDomains(serviceContext));
+		JSONArray arrDomain = JSONFactoryUtil.createJSONArray();
 
-		return Response.status(200).entity(results).build();
+		try {
+
+			for (DictItem domainItem : domainItems) {
+
+				LinkedHashMap<String, Object> paramsDomain = new LinkedHashMap<String, Object>();
+
+				paramsDomain.put(Field.GROUP_ID, String.valueOf(groupId));
+				paramsDomain.put(Field.KEYWORD_SEARCH, query.getKeyword());
+				paramsDomain.put(ServiceConfigTerm.DOMAIN_CODE, domainItem.getItemCode());
+				paramsDomain.put(Field.KEYWORD_SEARCH, query.getKeyword());
+
+
+				JSONObject domnElm = JSONFactoryUtil.createJSONObject();
+
+				long countDomain = ServiceConfigLocalServiceUtil.countLucene(paramsDomain, searchContext);
+
+				if (countDomain != 0) {
+
+					domnElm.put("domainId", domainItem.getPrimaryKey());
+					domnElm.put("domainName", domainItem.getItemName());
+				
+					Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable",
+							Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
+
+					List<Document> docs = ServiceConfigLocalServiceUtil
+							.searchLucene(paramsDomain, sorts, query.getStart(), query.getEnd(), searchContext)
+							.toList();
+					
+					JSONArray arrService = JSONFactoryUtil.createJSONArray();
+					
+
+					for (Document doc : docs) {
+						
+						JSONObject serviceElm = JSONFactoryUtil.createJSONObject();
+						
+						serviceElm.put("serviceCode", doc.get(ServiceConfigTerm.SERVICE_CODE));
+						serviceElm.put("serviceName", doc.get(ServiceConfigTerm.SERVICE_NAME));
+						
+						JSONArray arrConfigs = JSONFactoryUtil.createJSONArray();
+
+						
+						paramsDomain.put(ServiceConfigTerm.SERVICE_CODE, doc.get(ServiceConfigTerm.SERVICE_CODE));
+						
+						List<Document> serviceConfigByInfo = ServiceConfigLocalServiceUtil
+								.searchLucene(paramsDomain, sorts, query.getStart(), query.getEnd(), searchContext)
+								.toList();
+						
+						for (Document serDoc : serviceConfigByInfo) {
+							JSONObject configElm = JSONFactoryUtil.createJSONObject();
+							
+							configElm.put("level", serDoc.get(ServiceConfigTerm.SERVICE_LEVEL));
+							configElm.put("govAgencyCode", serDoc.get(ServiceConfigTerm.GOVAGENCY_CODE));
+							configElm.put("govAgencyName", serDoc.get(ServiceConfigTerm.GOVAGENCY_NAME));
+							configElm.put("serviceConfigId", serDoc.get(Field.ENTRY_CLASS_PK));
+							
+							arrConfigs.put(configElm);
+						}
+						
+						serviceElm.put("serviceConfigs", arrConfigs);
+						
+						arrService.put(serviceElm);
+					}
+					
+					
+					domnElm.put("serviceInfos",arrService);
+					
+					arrDomain.put(domnElm);
+
+				}
+				
+
+				
+			}
+
+			results.put("domains", arrDomain);
+			
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					error.setMessage("Internal Server Error");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+
+				}
+			}
+		}
+
 	}
 
 	private List<JSONObject> generateGovAgencys(ServiceContext serviceContext) {
 
 		List<JSONObject> govAgencys = new ArrayList<>();
 
-		DictCollection govAgencyCollection =
-			DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(
-				"GOVERNMENT_AGENCY", serviceContext.getScopeGroupId());
+		DictCollection govAgencyCollection = DictCollectionLocalServiceUtil
+				.fetchByF_dictCollectionCode("GOVERNMENT_AGENCY", serviceContext.getScopeGroupId());
 
-		List<DictItem> govItems =
-			DictItemLocalServiceUtil.findByF_dictCollectionId(
-				govAgencyCollection.getDictCollectionId());
+		List<DictItem> govItems = DictItemLocalServiceUtil
+				.findByF_dictCollectionId(govAgencyCollection.getDictCollectionId());
 
 		for (DictItem govItem : govItems) {
 			JSONObject govJsonObj = JSONFactoryUtil.createJSONObject();
@@ -614,13 +879,11 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 		List<JSONObject> domains = new ArrayList<>();
 
-		DictCollection domainCollection =
-			DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(
-				"SERVICE_DOMAIN", serviceContext.getScopeGroupId());
+		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("SERVICE_DOMAIN",
+				serviceContext.getScopeGroupId());
 
-		List<DictItem> domainItems =
-			DictItemLocalServiceUtil.findByF_dictCollectionId(
-				domainCollection.getDictCollectionId());
+		List<DictItem> domainItems = DictItemLocalServiceUtil
+				.findByF_dictCollectionId(domainCollection.getDictCollectionId());
 
 		for (DictItem domainItem : domainItems) {
 			JSONObject domainJsonObj = JSONFactoryUtil.createJSONObject();
@@ -628,9 +891,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			domainJsonObj.put("domainCode", domainItem.getItemCode());
 			domainJsonObj.put("domainName", domainItem.getItemName());
 
-			domainJsonObj.put(
-				"serviceInfos",
-				generateServiceInfos(serviceContext, domainItem.getItemCode()));
+			domainJsonObj.put("serviceInfos", generateServiceInfos(serviceContext, domainItem.getItemCode()));
 
 			domains.add(domainJsonObj);
 		}
@@ -638,40 +899,31 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		return domains;
 	}
 
-	private List<JSONObject> generateServiceInfos(
-		ServiceContext serviceContext, String domainCode) {
+	private List<JSONObject> generateServiceInfos(ServiceContext serviceContext, String domainCode) {
 
 		List<JSONObject> serviceInfos = new ArrayList<>();
 
 		ServiceInfoActions serviceInfoActions = new ServiceInfoActionsImpl();
 
 		LinkedHashMap<String, Object> params = new LinkedHashMap<>();
-		params.put(
-			Field.GROUP_ID, String.valueOf(serviceContext.getScopeGroupId()));
+		params.put(Field.GROUP_ID, String.valueOf(serviceContext.getScopeGroupId()));
 		params.put(ServiceInfoTerm.DOMAIN_CODE, domainCode);
 
-		JSONObject serviceInfoJson = serviceInfoActions.getServiceInfos(
-			serviceContext.getUserId(), serviceContext.getCompanyId(),
-			serviceContext.getScopeGroupId(), params, null, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, serviceContext);
+		JSONObject serviceInfoJson = serviceInfoActions.getServiceInfos(serviceContext.getUserId(),
+				serviceContext.getCompanyId(), serviceContext.getScopeGroupId(), params, null, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, serviceContext);
 
-		List<ServiceInfoModel> serviceInfoList =
-			ServiceInfoUtils.mappingToServiceInfoResultModel(
-				(List<Document>) serviceInfoJson.get("data"), serviceContext);
+		List<ServiceInfoModel> serviceInfoList = ServiceInfoUtils
+				.mappingToServiceInfoResultModel((List<Document>) serviceInfoJson.get("data"), serviceContext);
 
 		if (Validator.isNotNull(serviceInfoList)) {
 			for (ServiceInfoModel serviceInfo : serviceInfoList) {
-				JSONObject serviceInfoJsonObj =
-					JSONFactoryUtil.createJSONObject();
+				JSONObject serviceInfoJsonObj = JSONFactoryUtil.createJSONObject();
 
-				serviceInfoJsonObj.put(
-					"serviceCode", serviceInfo.getServiceCode());
-				serviceInfoJsonObj.put(
-					"serviceName", serviceInfo.getServiceName());
+				serviceInfoJsonObj.put("serviceCode", serviceInfo.getServiceCode());
+				serviceInfoJsonObj.put("serviceName", serviceInfo.getServiceName());
 
-				serviceInfoJsonObj.put(
-					"serviceConfigs",
-					generateServiceConfigs(serviceInfo.getServiceConfigs()));
+				serviceInfoJsonObj.put("serviceConfigs", generateServiceConfigs(serviceInfo.getServiceConfigs()));
 
 				serviceInfos.add(serviceInfoJsonObj);
 			}
@@ -680,8 +932,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		return serviceInfos;
 	}
 
-	private List<JSONObject> generateServiceConfigs(
-		List<ServiceInfoServiceConfig> serviceConfigList) {
+	private List<JSONObject> generateServiceConfigs(List<ServiceInfoServiceConfig> serviceConfigList) {
 
 		List<JSONObject> serviceConfigs = new ArrayList<>();
 
