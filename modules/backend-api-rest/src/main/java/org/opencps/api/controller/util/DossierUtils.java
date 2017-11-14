@@ -81,6 +81,8 @@ public class DossierUtils {
 			model.setPending(getPendding(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setOnline(doc.get(DossierTerm.ONLINE));
 			model.setHasPassword(doc.get(DossierTerm.PASSWORD));
+			model.setDossierTemplateNo(doc.get(DossierTerm.DOSSIER_TEMPLATE_NO));
+			model.setServerNo(doc.get(DossierTerm.SERVER_NO));
 
 			ouputs.add(model);
 		}

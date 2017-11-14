@@ -127,12 +127,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setGovAgencyName(govAgencyName);
 			dossier.setDossierTemplateNo(dossierTemplateNo);
 			dossier.setDossierTemplateName(dossierTemplateName);
+
 			dossier.setApplicantName(applicantName);
 			dossier.setApplicantIdType(applicantIdType);
 			dossier.setApplicantIdNo(applicantIdNo);
 			dossier.setApplicantIdDate(applicantIdDate);
 			dossier.setPassword(password);
 			dossier.setOnline(online);
+
 			dossier.setAddress(address);
 			dossier.setCityCode(cityCode);
 			dossier.setCityName(cityName);
@@ -143,6 +145,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setContactName(contactName);
 			dossier.setContactEmail(contactEmail);
 			dossier.setContactTelNo(contactTelNo);
+
+			dossier.setViaPostal(viaPostal);
+			dossier.setPostalAddress(postalAddress);
+			dossier.setPostalCityCode(postalCityCode);
+			dossier.setPostalTelNo(postalTelNo);
+			dossier.setApplicantNote(applicantNote);
+			dossier.setServerNo(getServerNo(groupId));
 
 		} else {
 
@@ -170,23 +179,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setPostalTelNo(postalTelNo);
 			dossier.setApplicantNote(applicantNote);
 			dossier.setNotification(notification);
-			dossier.setDossierTemplateNo(dossierTemplateNo);
-			dossier.setDossierTemplateName(dossierTemplateName);
 			dossier.setContactTelNo(contactTelNo);
 
-		}
-		
-		
-
-		// TODO need to review here
-		try {
-			
-			ServerConfig sc = ServerConfigLocalServiceUtil.getGroupId(groupId);
-			if (Validator.isNotNull(sc)) {
-				dossier.setServerNo(sc.getServerNo());
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
 		}
 
 		dossierPersistence.update(dossier);
@@ -248,7 +242,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setCompanyId(context.getCompanyId());
 			dossier.setGroupId(groupId);
 			dossier.setUserId(userId);
-			dossier.setUserName(auditUser.getFullName());
+			if (Validator.isNotNull(auditUser))
+				dossier.setUserName(auditUser.getFullName());
 
 			// Add extent fields
 			dossier.setReferenceUid(referenceUid);
@@ -257,6 +252,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setServiceName(serviceName);
 			dossier.setGovAgencyCode(govAgencyCode);
 			dossier.setGovAgencyName(govAgencyName);
+			dossier.setDossierTemplateNo(dossierTemplateNo);
+
+			DossierTemplate dt = dossierTemplatePersistence.findByG_DT_NO(groupId, dossierTemplateNo);
+
+			if (Validator.isNotNull(dt)) {
+				dossier.setDossierTemplateName(dt.getTemplateName());
+			}
 
 			dossier.setApplicantName(applicantName);
 			dossier.setApplicantIdType(applicantIdType);
@@ -271,9 +273,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setDossierSubStatus(dossierSubStatus);
 			dossier.setDossierSubStatusText(dossierSubStatusText);
 
-			dossier.setAddress(postalAddress);
-			dossier.setCityCode(postalCityCode);
-			dossier.setCityName(postalCityName);
+			dossier.setAddress(address);
+			dossier.setCityCode(cityCode);
+			dossier.setCityName(cityName);
 			dossier.setDistrictCode(districtCode);
 			dossier.setDistrictName(districtName);
 			dossier.setWardCode(wardCode);
@@ -302,9 +304,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setApplicantIdType(applicantIdType);
 			dossier.setApplicantIdNo(applicantIdNo);
 			dossier.setApplicantIdDate(applicantIdDate);
-			dossier.setAddress(postalAddress);
-			dossier.setCityCode(postalCityCode);
-			dossier.setCityName(postalCityName);
+			dossier.setAddress(address);
+			dossier.setCityCode(cityCode);
+			dossier.setCityName(cityName);
 			dossier.setDistrictCode(districtCode);
 			dossier.setDistrictName(districtName);
 			dossier.setWardCode(wardCode);
@@ -1024,6 +1026,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		return name;
+	}
+
+	private String getServerNo(long groupId) {
+		
+		try {
+			ServerConfig sc = ServerConfigLocalServiceUtil.getGroupId(groupId);
+			return sc.getServerNo();
+		} catch (Exception e) {
+			return StringPool.BLANK;
+		}
+
 	}
 
 	public static final String CLASS_NAME = Dossier.class.getName();

@@ -141,6 +141,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(company.getCompanyId());
+		serviceContext.setUserId(object.getLong(DossierTerm.USER_ID));
 
 		// Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 

@@ -98,7 +98,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "dossierId",
-    "dossierId",
+    "groupId",
     "userId",
     "userName",
     "createDate",
@@ -110,6 +110,7 @@ import javax.xml.bind.annotation.XmlType;
     "govAgencyCode",
     "govAgencyName",
     "dossierTemplateNo",
+    "dossierTemplateName",
     "applicantName",
     "applicantIdType",
     "applicantIdNo",
@@ -160,7 +161,10 @@ import javax.xml.bind.annotation.XmlType;
     "pending",
     "applicantNote",
     "notification",
-    "online"
+    "online",
+    "dossierOverdue",
+    "hasPassword",
+    "serverNo"
 })
 public class DossierDataModel {
 
@@ -177,6 +181,7 @@ public class DossierDataModel {
     protected String govAgencyCode;
     protected String govAgencyName;
     protected String dossierTemplateNo;
+    protected String dossierTemplateName;
     protected String applicantName;
     protected String applicantIdType;
     protected String applicantIdNo;
@@ -228,7 +233,27 @@ public class DossierDataModel {
     protected String applicantNote;
     protected String notification;
     protected String online;
-    public String getDossierOverdue() {
+	protected String dossierOverdue;
+	protected String hasPassword;
+	protected String serverNo;
+
+    public String getDossierTemplateName() {
+		return dossierTemplateName;
+	}
+
+	public void setDossierTemplateName(String dossierTemplateName) {
+		this.dossierTemplateName = dossierTemplateName;
+	}
+
+	public String getServerNo() {
+		return serverNo;
+	}
+
+	public void setServerNo(String serverNo) {
+		this.serverNo = serverNo;
+	}
+
+	public String getDossierOverdue() {
 		return dossierOverdue;
 	}
 
@@ -244,8 +269,6 @@ public class DossierDataModel {
 		this.hasPassword = hasPassword;
 	}
 
-	protected String dossierOverdue;
-	protected String hasPassword;
     
     public Integer getGroupId() {
 		return groupId;
