@@ -163,7 +163,7 @@
 					</div>
 					#
 					$.ajax({
-					url : "${api.server}/dossiertemplates/${dossierTemplateNo}/parts/"+id+"/formscript",
+					url : "${api.server}/dossiertemplates/${dossierTemplateId}/parts/"+id+"/formscript",
 					dataType : "json",
 					type : "GET",
 					headers : {"groupId": ${groupId}},
@@ -258,7 +258,7 @@
 			console.log(fileTemplateNo);
 			console.log($(this)[0].files[0]);
 
-			funUploadFile($(this),partNo,${dossierTemplateNo},fileTemplateNo);
+			funUploadFile($(this),partNo,"${dossierTemplateId}",fileTemplateNo);
 		});
 
 		//tai giay to kho luu tru
@@ -320,11 +320,15 @@
 
 	$("#btn-view-extendguide").click(function(){
 		if($("#extend-guide").attr("status")=="none"){
+
 			$("#extend-guide").show();
 			$("#extend-guide").attr("status","show");
+
 		}else{
+
 			$("#extend-guide").hide();
 			$("#extend-guide").attr("status","none");
+			
 		}
 
 	});
@@ -333,7 +337,7 @@
 		transport :{
 			read : function(options){
 				$.ajax({
-					url : "${api.server}/dossiertemplates/"+options.data.dossierPart+"/parts",
+					url : "${api.server}/dossiertemplates/"+options.data.dossierPart,
 					dataType : "json",
 					type : "GET",
 					headers : {"groupId": ${groupId}},
@@ -350,8 +354,6 @@
 			}
 		},
 		schema : {
-			data : "data",
-			total : "total",
 			model : {
 				id : "partNo"
 			}
@@ -363,7 +365,7 @@
 		dataSource : dataSourceDossierTemplate,
 		autoBind : false,
 		change : function(){
-
+			
 		},
 		template : function(data){
 
@@ -424,17 +426,22 @@
 
 			},
 			headers: {"groupId": ${groupId}},
-			success :  function(result){                       
-				$("#dossier_detail").show();
-				$("#dossier_list").hide();
-				$("#dossier_detail").load("${ajax.submited_dossier_info}",function(result){
-					
+			success :  function(result){    
+
+				manageDossier.navigate("/taohosomoi/nopthanhcong");        
+
+				$("#mainType1").hide();
+				$("#mainType2").show();
+				$("#mainType2").load("${ajax.submited_dossier_info}&${portletNamespace}dossierTemplateId='${(dossierTemplateId)!}'&${portletNamespace}dossierId="+'${(dossierId)!}',function(result){
+
 				});
+
 			},
 			error:function(result){
 
 			}
 		});
+		
 		console.log("submit dossier success!");
 	}
 
@@ -729,7 +736,7 @@
 						},
 						dossierTemplateNo : function(e){
 							dataSourceDossierTemplate.read({
-								dossierPart : 201 //result.dossierTemplateNo
+								dossierPart : result.dossierTemplateNo
 							});	
 						}
 
@@ -784,4 +791,15 @@
 	}
 
 	printDetailDossier(${dossierId});
+
+	$(function(){
+		manageDossier.route("/taohosomoi/nopthanhcong", function(id){
+			$("#mainType1").hide();
+			$("#mainType2").show();
+			$("#mainType2").load("${ajax.submited_dossier_info}",function(result){
+
+			});
+		});
+	});
+
 </script>

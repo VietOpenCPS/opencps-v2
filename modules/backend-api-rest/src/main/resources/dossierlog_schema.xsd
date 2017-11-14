@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:complexType name="DossierLogModel">
+		<xsd:sequence>
+			<xsd:element name="dossierLogId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="author" type="xsd:string" minOccurs="0" />
+			<xsd:element name="content" type="xsd:string" minOccurs="0" />
+			<xsd:element name="notificationType" type="xsd:int" minOccurs="0" />
+			<xsd:element name="payload" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="serviceCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="serviceName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="counter" type="xsd:int" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="DossierLogResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="DossierLogModel"  minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="DossierLogSearchIdModel">
+		<xsd:sequence>
+			<xsd:element name="dossierLogId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="author" type="xsd:string" minOccurs="0" />
+			<xsd:element name="content" type="xsd:string" minOccurs="0" />
+			<xsd:element name="notificationType" type="xsd:int" minOccurs="0" />
+			<xsd:element name="payload" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="DossierLogSearchIdResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="DossierLogSearchIdModel"  minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="DossierLogSearchModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="notificationType" type="xsd:int" minOccurs="0" />
+				<xsd:element name="owner" type="xsd:boolean" minOccurs="0" />
+				<xsd:element name="start" type="xsd:int" minOccurs="0" />
+				<xsd:element name="end" type="xsd:int" minOccurs="0" />
+				<xsd:element name="sort" type="xsd:string" minOccurs="0" />
+				<xsd:element name="order" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

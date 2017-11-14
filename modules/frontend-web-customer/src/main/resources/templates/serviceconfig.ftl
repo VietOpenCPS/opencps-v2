@@ -234,18 +234,27 @@
           $("#choiseProcessForDossier").modal("hide");
 
          // chuyen den man hinh chuan bi ho so
-         $("#dossier_detail").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierTemplateId="dossierTemplateId+"&${portletNamespace}dossierId="+result.dossierId, function(result){
-          $("#dossier_list").hide();
-          $("#dossier_detail").show();
-          $("#left_container").html("");
+        manageDossier.navigate("/taohosomoi/chuanbihoso");
+        $("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierTemplateId="+dossierTemplateId+"&${portletNamespace}dossierId="+result.dossierId, function(result){
+
         });
 
-       },
-       error : function(result){
-       }
+      },
+      error : function(result){
+      }
 
-     });
+    });
     }
 
   });
+
+$(function(){
+  manageDossier.route("/taohosomoi/chuanbihoso", function(id){
+    $("#mainType1").hide();
+    $("#mainType2").show();
+    $("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierTemplateId='${(dossierTemplateId)!}'&${portletNamespace}dossierId="+"${(dossierId)!}",function(result){
+
+    });
+  });
+});
 </script>

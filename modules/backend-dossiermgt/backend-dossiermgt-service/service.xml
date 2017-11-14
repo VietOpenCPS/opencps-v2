@@ -490,7 +490,11 @@
 		<!-- Order -->
 
 		<!-- Finder methods -->
-
+		
+		<finder return-type="Collection" name="NotiType">
+			<finder-column name="notificationType"/>
+		</finder>
+				
 		<!-- References -->
 
 	</entity>

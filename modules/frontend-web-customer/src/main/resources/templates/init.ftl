@@ -15,11 +15,15 @@
 	<#assign api = (Request.api)!>
 	<#assign serviceInfoStatuses = (Request.serviceInfoStatuses)!>
 	<#assign serviceInfo = (Request.SERVICE_INFO)!>
-	<#assign portletNamespace = (Request.portletNamespace)!>
+	<#assign portletNamespace = themeDisplay.getPortletDisplay().getNamespace() />
 
 	<#assign groupId = themeDisplay.getScopeGroupId() />
 	<#assign userId = themeDisplay.getUserId() />
 	<#assign currentURL = themeDisplay.getURLCurrent() />
 	<#assign request = themeDisplay.getRequest() />
 	<#assign portalURL = (themeDisplay.getPortalURL())!>
+
+	<#assign applicant = (Request.applicant)!>
+	<#assign dossierTemplateId = (Request.dossierTemplateId)!>
+	<#assign dossierId = (Request.dossierId)!>
 </#if>

@@ -115,7 +115,7 @@
 							</div>
 
 							<input type="hidden" name="serviceCode" id="serviceCode" data-bind="value:serviceCode">
-							<input type="hidden" name="govAgencyCode" id="govAgencyCode" data-bind="value:govAgencyCode">
+							<input type="hidden" name="govAgencyCode_" id="govAgencyCode_" data-bind="value:govAgencyCode">
 							<input type="hidden" name="dossierTemplateNo" id="dossierTemplateNo" data-bind="value:dossierTemplateNo">
 
 						</div>
@@ -134,7 +134,7 @@
 				<#-- <#include "customer_dossier_online_form.ftl"> -->
 			</div>
 			<script type="text/x-kendo-template" id="templateDossierPart">
-
+				#if(partType == 1){#
 				<div class="row-parts-head align-middle">
 					<span class="text-bold MR5">#:itemIndex#.</span>
 					<span>&nbsp;&nbsp;#:partName# 
@@ -173,6 +173,7 @@
 					
 				</div>
 				#
+				var referentUid = getReferentUidFile(${dossierId});
 				$.ajax({
 				url : "${api.server}/dossiertemplates/${dossierTemplateId}/parts/"+id+"/formscript",
 				dataType : "json",
@@ -188,6 +189,8 @@
 		}
 	});
 }#
+
+#}#
 </script>
 </div>
 </form>
@@ -245,6 +248,8 @@
 
 	$(function(){
 
+
+
 		var fnBindDossierTemplClick = function(){
 		//upload file click
 		$(".dossier-file").unbind().change(function(){
@@ -255,7 +260,7 @@
 			console.log(fileTemplateNo);
 			console.log($(this)[0].files[0]);
 
-			funUploadFile($(this),partNo,${dossierTemplateId},fileTemplateNo);
+			funUploadFile($(this),partNo,"${dossierTemplateId}",fileTemplateNo);
 		});
 
 		//tai giay to kho luu tru
@@ -353,7 +358,7 @@
 		transport :{
 			read : function(options){
 				$.ajax({
-					url : "${api.server}/dossiertemplates/${dossierTemplateId}/parts",
+					url : "${api.server}/dossiertemplates/${dossierTemplateId}",
 					dataType : "json",
 					type : "GET",
 					headers : {"groupId": ${groupId}},
@@ -361,7 +366,7 @@
 
 					},
 					success : function(result){
-						options.success(result);
+						options.success(result.dossierParts);
 					},
 					error : function(result){
 						options.error(result);
@@ -370,8 +375,6 @@
 			}
 		},
 		schema : {
-			data : "data",
-			total : "total",
 			model : {
 				id : "partNo"
 			}
@@ -412,6 +415,7 @@
 
 	var funSaveDossier = function(){
 		//PUT dossier
+		
 		var validator = $("#detailDossier").kendoValidator().data("kendoValidator");
 
 		if(validator.validate()){
@@ -423,9 +427,9 @@
 				data : {
 					referenceUid : "",
 					serviceCode : $("#serviceCode").val(),
-					govAgencyCode : $("#govAgencyCode").val(),
+					govAgencyCode : $("#govAgencyCode_").val(),
 					dossierTemplateNo : $("#dossierTemplateNo").val(),
-					
+
 					applicantName : "${(applicant.applicantName)!}",
 					applicantIdType : "${(applicant.applicantIdType)!}",
 					applicantIdNo : "${(applicant.applicantIdNo)!}",
@@ -451,10 +455,12 @@
 				//finish PUT dossier create action for dossier
 				createActionDossier(${dossierId});
 
-				$("#dossier_detail").show();
-				$("#dossier_list").hide();
-				$("#dossier_detail").load("${ajax.customer_dossier_detail_2}",function(result){
-					
+				manageDossier.navigate("/taohosomoi/nophoso");
+
+				$("#mainType1").hide();
+				$("#mainType2").show();
+				$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierTemplateId='${(dossierTemplateId)!}'&${portletNamespace}dossierId="+"${(dossierId)!}",function(result){
+
 				});
 
 			},
@@ -616,8 +622,7 @@
 			transport : {
 				read : function(options){
 					$.ajax({
-						// url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-						url : "${api.server}/dictcollections/101/dictitems",
+						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
 						dataType : "json",
 						type : "GET",
 						headers: {"groupId": ${groupId}},
@@ -660,6 +665,7 @@
 				success : function(result){
 					console.log("load detail dossier!");
 					console.log(result);
+					
 					var viewModel = kendo.observable({
 						serviceCode : result.serviceCode,
 						govAgencyCode : result.govAgencyCode,
@@ -669,9 +675,29 @@
 
 						applicantName : result.applicantName,
 						address : result.address,
-						cityName : result.cityName,
-						districtName : result.districtName,
-						wardName : result.wardName,
+						cityName : function(e){
+							var cityCode = result.cityCode;
+							if(cityCode){
+								$("#cityCode").data("kendoComboBox").value(cityCode);
+							}
+							
+						},
+						districtName : function(e){
+							var cityCode = result.cityCode;
+							if(cityCode){
+								$("#districtCode").data("kendoComboBox").dataSource.read({
+									parent : cityCode
+								});
+							}
+						},
+						wardName : function(e){
+							var districtCode = result.districtCode;
+							if(districtCode){
+								$("#wardCode").data("kendoComboBox").dataSource.read({
+									parent : districtCode
+								});
+							}
+						},
 						contactTelNo : result.contactTelNo,
 						contactEmail : result.contactEmail,
 						dossierNote : result.dossierNote
@@ -785,6 +811,45 @@
 	$("#postalAddress").prop('disabled', true);
 	$("#postalCityCode").data("kendoComboBox").enable(false);
 	$("#postalTelNo").prop('disabled', true);
+
+
+	var getReferentUidFile = function(dossierId){
+		var referenceUid = 0;
+		if(dossierId){
+			$.ajax({
+				type : 'GET', 
+				url  : '${api.server}/dossiers/${dossierId}/files', 
+				headers: {"groupId": ${groupId}},
+				async : false,
+				success :  function(result){ 
+					if(result.data){
+						for (var i = 0; i < result.data.length; i++) {
+							if(result.data[i].eForm){
+								referenceUid = result.data[i].referenceUid;
+								return ;
+							}
+						}
+					}
+
+				},
+				error:function(result){
+					
+				}
+			});
+		}
+
+		return referenceUid;
+	}
+});
+
+$(function(){
+	manageDossier.route("/taohosomoi/nophoso", function(id){
+		$("#mainType1").hide();
+		$("#mainType2").show();
+		$("#mainType2").load("${ajax.customer_dossier_detail_2}",function(result){
+
+		});
+	});
 });
 
 </script>
