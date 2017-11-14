@@ -607,8 +607,8 @@ public class DossierManagementImpl implements DossierManagement {
 				ProcessAction action = getProcessAction(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
 						input.getActionCode(), option.getServiceProcessId());
 
-				dossierPermission.hasPermitDoAction(groupId, user.getUserId(), dossier, option.getServiceProcessId(),
-						action);
+//				dossierPermission.hasPermitDoAction(groupId, user.getUserId(), dossier, option.getServiceProcessId(),
+//						action);
 
 				DossierAction dossierAction = actions.doAction(groupId, dossier.getDossierId(),
 						dossier.getReferenceUid(), input.getActionCode(), action.getProcessActionId(),

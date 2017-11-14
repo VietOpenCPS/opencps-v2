@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service.impl;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
@@ -23,6 +24,7 @@ import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
@@ -374,6 +376,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		// TODO add reset for DossierFile and PaymentFile (isNew => false)
 
 		// TODO add remove DossierFile out system
+
+		List<DossierFile> lsDF = dossierFileLocalService.getDossierFilesByDossierId(id);
+
+		for (DossierFile df : lsDF) {
+			if (df.getIsNew()) {
+				dossierFileLocalService.resetDossierFile(df.getDossierFileId());
+			}
+		}
 
 		dossierPersistence.update(dossier);
 
@@ -1029,7 +1039,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	private String getServerNo(long groupId) {
-		
+
 		try {
 			ServerConfig sc = ServerConfigLocalServiceUtil.getGroupId(groupId);
 			return sc.getServerNo();
