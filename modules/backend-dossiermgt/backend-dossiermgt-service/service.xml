@@ -543,6 +543,9 @@
 		<!-- Order -->
 
 		<!-- Finder methods -->
+		<finder return-type="Collection" name="F_DID">
+			<finder-column name="dossierId"/>
+		</finder>
 
 		<!-- References -->
 

@@ -16,16 +16,25 @@ package org.opencps.dossiermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import java.util.List;
+
+import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.model.PaymentFileModel;
+import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.service.base.PaymentFileLocalServiceBaseImpl;
 
 /**
  * The implementation of the payment file local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.PaymentFileLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are
+ * added, rerun ServiceBuilder to copy their definitions into the
+ * {@link org.opencps.dossiermgt.service.PaymentFileLocalService} interface.
  *
  * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
+ * This is a local service. Methods of this service will not have security
+ * checks based on the propagated JAAS credentials because this service can only
+ * be accessed from within the same VM.
  * </p>
  *
  * @author huymq
@@ -37,6 +46,13 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil} to access the payment file local service.
+	 * Never reference this class directly. Always use {@link
+	 * org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil} to access the
+	 * payment file local service.
 	 */
+
+	//1
+	public List<PaymentFile> getByDossierId(long dossierId) {
+		return paymentFilePersistence.findByF_DID(dossierId);
+	}
 }
