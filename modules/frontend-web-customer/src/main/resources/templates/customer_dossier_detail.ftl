@@ -173,6 +173,7 @@
 					
 				</div>
 				#
+				var referentUid = getReferentUidFile(${dossierId});
 				$.ajax({
 				url : "${api.server}/dossiertemplates/${dossierTemplateId}/parts/"+id+"/formscript",
 				dataType : "json",
@@ -259,7 +260,7 @@
 			console.log(fileTemplateNo);
 			console.log($(this)[0].files[0]);
 
-			funUploadFile($(this),partNo,${dossierTemplateId},fileTemplateNo);
+			funUploadFile($(this),partNo,"${dossierTemplateId}",fileTemplateNo);
 		});
 
 		//tai giay to kho luu tru
@@ -357,7 +358,7 @@
 		transport :{
 			read : function(options){
 				$.ajax({
-					url : "${api.server}/dossiertemplates/${dossierTemplateId}/parts",
+					url : "${api.server}/dossiertemplates/${dossierTemplateId}",
 					dataType : "json",
 					type : "GET",
 					headers : {"groupId": ${groupId}},
@@ -365,7 +366,7 @@
 
 					},
 					success : function(result){
-						options.success(result);
+						options.success(result.dossierParts);
 					},
 					error : function(result){
 						options.error(result);
@@ -374,8 +375,6 @@
 			}
 		},
 		schema : {
-			data : "data",
-			total : "total",
 			model : {
 				id : "partNo"
 			}
@@ -460,7 +459,7 @@
 
 				$("#mainType1").hide();
 				$("#mainType2").show();
-				$("#mainType2").load("${ajax.customer_dossier_detail_2}",function(result){
+				$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierTemplateId='${(dossierTemplateId)!}'&${portletNamespace}dossierId="+"${(dossierId)!}",function(result){
 
 				});
 
@@ -623,8 +622,7 @@
 			transport : {
 				read : function(options){
 					$.ajax({
-						// url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-						url : "${api.server}/dictcollections/101/dictitems",
+						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
 						dataType : "json",
 						type : "GET",
 						headers: {"groupId": ${groupId}},
@@ -677,9 +675,29 @@
 
 						applicantName : result.applicantName,
 						address : result.address,
-						cityName : result.cityName,
-						districtName : result.districtName,
-						wardName : result.wardName,
+						cityName : function(e){
+							var cityCode = result.cityCode;
+							if(cityCode){
+								$("#cityCode").data("kendoComboBox").value(cityCode);
+							}
+							
+						},
+						districtName : function(e){
+							var cityCode = result.cityCode;
+							if(cityCode){
+								$("#districtCode").data("kendoComboBox").dataSource.read({
+									parent : cityCode
+								});
+							}
+						},
+						wardName : function(e){
+							var districtCode = result.districtCode;
+							if(districtCode){
+								$("#wardCode").data("kendoComboBox").dataSource.read({
+									parent : districtCode
+								});
+							}
+						},
 						contactTelNo : result.contactTelNo,
 						contactEmail : result.contactEmail,
 						dossierNote : result.dossierNote
@@ -793,6 +811,35 @@
 	$("#postalAddress").prop('disabled', true);
 	$("#postalCityCode").data("kendoComboBox").enable(false);
 	$("#postalTelNo").prop('disabled', true);
+
+
+	var getReferentUidFile = function(dossierId){
+		var referenceUid = 0;
+		if(dossierId){
+			$.ajax({
+				type : 'GET', 
+				url  : '${api.server}/dossiers/${dossierId}/files', 
+				headers: {"groupId": ${groupId}},
+				async : false,
+				success :  function(result){ 
+					if(result.data){
+						for (var i = 0; i < result.data.length; i++) {
+							if(result.data[i].eForm){
+								referenceUid = result.data[i].referenceUid;
+								return ;
+							}
+						}
+					}
+
+				},
+				error:function(result){
+					
+				}
+			});
+		}
+
+		return referenceUid;
+	}
 });
 
 $(function(){

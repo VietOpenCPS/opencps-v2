@@ -252,7 +252,7 @@ $(function(){
   manageDossier.route("/taohosomoi/chuanbihoso", function(id){
     $("#mainType1").hide();
     $("#mainType2").show();
-    $("#mainType2").load("${ajax.customer_dossier_detail}",function(result){
+    $("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierTemplateId='${(dossierTemplateId)!}'&${portletNamespace}dossierId="+"${(dossierId)!}",function(result){
 
     });
   });
