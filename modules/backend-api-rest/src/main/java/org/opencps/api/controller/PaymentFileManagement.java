@@ -19,11 +19,11 @@ import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import org.opencps.api.paymentFile.model.EpaymentProfileJsonModel;
-import org.opencps.api.paymentFile.model.PaymentFileInputModel;
-import org.opencps.api.paymentFile.model.PaymentFileResultModel;
-import org.opencps.api.paymentFile.model.PaymentFileSearchModel;
-import org.opencps.api.paymentFile.model.PaymentFileSearchResultModel;
+import org.opencps.api.paymentfile.model.EpaymentProfileJsonModel;
+import org.opencps.api.paymentfile.model.PaymentFileInputModel;
+import org.opencps.api.paymentfile.model.PaymentFileResultModel;
+import org.opencps.api.paymentfile.model.PaymentFileSearchModel;
+import org.opencps.api.paymentfile.model.PaymentFileSearchResultModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.model.Company;

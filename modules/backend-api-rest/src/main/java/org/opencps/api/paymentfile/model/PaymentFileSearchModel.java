@@ -6,7 +6,7 @@
 //
 
 
-package org.opencps.api.paymentFile.model;
+package org.opencps.api.paymentfile.model;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;

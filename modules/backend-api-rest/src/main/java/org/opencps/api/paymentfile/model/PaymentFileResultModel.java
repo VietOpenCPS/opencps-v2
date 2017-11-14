@@ -5,7 +5,7 @@
 	// Generated on: 2017.10.13 at 04:36:50 PM ICT 
 	//
 
-	package org.opencps.api.paymentFile.model;
+	package org.opencps.api.paymentfile.model;
 
 	import java.util.ArrayList;
 	import java.util.List;
