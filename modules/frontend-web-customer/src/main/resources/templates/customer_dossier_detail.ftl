@@ -116,7 +116,7 @@
 							</div>
 
 							<input type="hidden" name="serviceCode" id="serviceCode" data-bind="value:serviceCode">
-							<input type="hidden" name="govAgencyCode" id="govAgencyCode" data-bind="value:govAgencyCode">
+							<input type="hidden" name="govAgencyCode_" id="govAgencyCode_" data-bind="value:govAgencyCode">
 							<input type="hidden" name="dossierTemplateNo" id="dossierTemplateNo" data-bind="value:dossierTemplateNo">
 
 						</div>
@@ -429,7 +429,7 @@
 				data : {
 					referenceUid : "",
 					serviceCode : $("#serviceCode").val(),
-					govAgencyCode : $("#govAgencyCode").val(),
+					govAgencyCode : $("#govAgencyCode_").val(),
 					dossierTemplateNo : $("#dossierTemplateNo").val(),
 
 					applicantName : "${(applicant.applicantName)!}",

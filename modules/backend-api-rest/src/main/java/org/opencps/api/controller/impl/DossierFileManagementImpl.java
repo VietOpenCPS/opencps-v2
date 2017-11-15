@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -26,10 +27,8 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
-import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -40,6 +39,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class DossierFileManagementImpl implements DossierFileManagement{
 
@@ -113,6 +113,10 @@ public class DossierFileManagementImpl implements DossierFileManagement{
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
+			}
+			
+			if(Validator.isNull(referenceUid)) {
+				referenceUid = UUID.randomUUID().toString();
 			}
 			
 			DataHandler dataHandler = file.getDataHandler();
@@ -480,7 +484,7 @@ public class DossierFileManagementImpl implements DossierFileManagement{
 
 				error.setMessage("No Content.");
 				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription("No Content.");
+				error.setDescription(e.getMessage());
 
 				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
 

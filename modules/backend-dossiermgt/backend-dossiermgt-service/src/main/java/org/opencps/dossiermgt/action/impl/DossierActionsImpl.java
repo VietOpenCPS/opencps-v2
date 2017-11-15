@@ -164,7 +164,7 @@ public class DossierActionsImpl implements DossierActions {
 			ServiceContext context) throws PortalException {
 
 		// Add DossierAction
-		
+
 		// TODO Add DossierActionUser
 
 		// Update DossierStatus
@@ -201,18 +201,17 @@ public class DossierActionsImpl implements DossierActions {
 		} else {
 			processAction = getProcessAction(groupId, dossierId, referenceUid, actionCode, serviceProcessId);
 		}
-		
-		if (Validator.isNull(processAction)) 
+
+		if (Validator.isNull(processAction))
 			throw new NotFoundException("ProcessActionNotFoundException");
 
 		boolean isSubmitType = isSubmitType(processAction);
-		
-		_log.info("processActionId="+processAction.getPrimaryKey());
-		_log.info("isSubmit="+isSubmitType);
-		_log.info("groupId="+groupId);
-		_log.info("referenceUid="+referenceUid);
-		_log.info("dossierId="+dossierId);
 
+		_log.info("processActionId=" + processAction.getPrimaryKey());
+		_log.info("isSubmit=" + isSubmitType);
+		_log.info("groupId=" + groupId);
+		_log.info("referenceUid=" + referenceUid);
+		_log.info("dossierId=" + dossierId);
 
 		boolean hasDossierSync = hasDossierSync(groupId, dossierId, referenceUid, processAction, isSubmitType);
 
@@ -260,13 +259,13 @@ public class DossierActionsImpl implements DossierActions {
 					curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(), context);
 
 		} else {
-			
+
 			_log.info("NEXT_ACTION");
-			
+
 			JSONObject jsStatus = JSONFactoryUtil.createJSONObject();
 			JSONObject jsSubStatus = JSONFactoryUtil.createJSONObject();
 
-			//String syncActionCode = processAction.getSyncActionCode();
+			// String syncActionCode = processAction.getSyncActionCode();
 
 			getDossierStatus(jsStatus, groupId, DOSSIER_SATUS_DC_CODE, curStep.getDossierStatus());
 
@@ -284,25 +283,25 @@ public class DossierActionsImpl implements DossierActions {
 					processAction.getSyncActionCode(), hasDossierSync, processAction.getRollbackable(),
 					curStep.getStepCode(), curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(),
 					context);
-			
-			//update nextActionId
+
+			// update nextActionId
 			if (Validator.isNotNull(prvAction)) {
 				DossierActionLocalServiceUtil.updateNextActionId(prvAction.getDossierActionId(),
 						dossierAction.getDossierActionId());
 			}
-			_log.info("SYN_ACTION:"+hasDossierSync);
+			_log.info("SYN_ACTION:" + hasDossierSync);
 
-			if(hasDossierSync) {
+			if (hasDossierSync) {
 				// SyncAction
 				int method = 1;
 
 				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-						isCreateDossier, method, dossier.getPrimaryKey(), StringPool.BLANK, serviceProcess.getServerNo());
-				
+						isCreateDossier, method, dossier.getPrimaryKey(), StringPool.BLANK,
+						serviceProcess.getServerNo());
+
 				// TODO add SYNC for DossierFile and PaymentFile here
 
 			}
-			
 
 		}
 
