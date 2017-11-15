@@ -7,10 +7,7 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
-import org.opencps.datamgt.model.DictCollection;
-import org.opencps.datamgt.model.DictItem;
-import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
-import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -61,14 +58,22 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
 
 		// add number fields
-		document.addDateSortable(DossierTerm.APPLICANT_ID_DATE, object.getApplicantIdDate());
-		document.addDateSortable(DossierTerm.SUBMIT_DATE, object.getSubmitDate());
-		document.addDateSortable(DossierTerm.RECEIVE_DATE, object.getReceiveDate());
-		document.addDateSortable(DossierTerm.DUE_DATE, object.getDueDate());
-		document.addDateSortable(DossierTerm.RELEASE_DATE, object.getReleaseDate());
-		document.addDateSortable(DossierTerm.FINISH_DATE, object.getFinishDate());
-		document.addDateSortable(DossierTerm.CANCELLING_DATE, object.getCancellingDate());
-		document.addDateSortable(DossierTerm.CORRECTING_DATE, object.getCorrecttingDate());
+		document.addTextSortable(DossierTerm.APPLICANT_ID_DATE,
+				APIDateTimeUtils.convertDateToString(object.getApplicantIdDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		document.addTextSortable(DossierTerm.SUBMIT_DATE,
+				APIDateTimeUtils.convertDateToString(object.getSubmitDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		document.addTextSortable(DossierTerm.RECEIVE_DATE,
+				APIDateTimeUtils.convertDateToString(object.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		document.addTextSortable(DossierTerm.DUE_DATE,
+				APIDateTimeUtils.convertDateToString(object.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		document.addTextSortable(DossierTerm.RELEASE_DATE,
+				APIDateTimeUtils.convertDateToString(object.getReleaseDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		document.addTextSortable(DossierTerm.FINISH_DATE,
+				APIDateTimeUtils.convertDateToString(object.getFinishDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		document.addTextSortable(DossierTerm.CANCELLING_DATE,
+				APIDateTimeUtils.convertDateToString(object.getCancellingDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		document.addTextSortable(DossierTerm.CORRECTING_DATE,
+				APIDateTimeUtils.convertDateToString(object.getCorrecttingDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 
 		// add number fields
 		document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());
@@ -92,11 +97,12 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		// DossierAction fields
 
 		if (object.getDossierActionId() != 0) {
-			//Date now = new Date();
+			// Date now = new Date();
 
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(object.getDossierActionId());
 
-			document.addDateSortable(DossierTerm.LAST_ACTION_DATE, dossierAction.getCreateDate());
+			document.addTextSortable(DossierTerm.LAST_ACTION_DATE, APIDateTimeUtils
+					.convertDateToString(dossierAction.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 			document.addTextSortable(DossierTerm.LAST_ACTION_CODE, dossierAction.getActionCode());
 			document.addTextSortable(DossierTerm.LAST_ACTION_NAME, dossierAction.getActionName());
 			document.addTextSortable(DossierTerm.LAST_ACTION_USER, dossierAction.getActionUser());
@@ -113,7 +119,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 			Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getActionOverdue(), new Date());
 
-			document.addDateSortable(DossierTerm.STEP_DUE_DATE, stepDuedate);
+			document.addTextSortable(DossierTerm.STEP_DUE_DATE,
+					APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
 		}
 
 		// add text fields
@@ -223,7 +230,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		indexableActionableDynamicQuery.performActions();
 	}
 
-	
 	Log _log = LogFactoryUtil.getLog(DossierIndexer.class);
 
 }

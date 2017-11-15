@@ -37,6 +37,8 @@
 				"month":$("#month").val(),
 				"status":id
 			});
+			dataSourceProfile.page(1);
+			dataSourceProfile.pageSize(10);
 			$(".itemStatus").css("pointer-events","auto");
 			$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
