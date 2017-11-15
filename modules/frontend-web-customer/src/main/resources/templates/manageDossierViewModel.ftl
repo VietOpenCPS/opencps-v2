@@ -43,11 +43,14 @@
 							month: options.data.month,
 							keyword: options.data.keyword,
 							status : options.data.status
-						},	
-						success:function(result){
-							options.success(result);
-							kendo.fx($("#main_section")).expand("vertical").duration(300).play();
-							dataSourceProfile.page(1);
+						},
+						success:function(result){	
+							if (result.data) {
+								options.success(result);
+							} else{
+								$(".loading").hide();
+							}
+							//Box lựa chọn hiển thị số bản ghi/page
 							var totalItem = parseInt(dataSourceProfile.total());
 							var pSize = dataSourceProfile.pageSize();
 							var arrPsize = [];
@@ -66,6 +69,7 @@
 								$("#itemPpage").html(sub);
 								$("#itemPpage").append(selectHtml)
 							}
+							// 
 						},
 						error:function(result){
 							options.error(result);
@@ -76,7 +80,7 @@
 			error: function(e) {         
 				this.cancelChanges();
 			},
-			pageSize: 2,
+			pageSize: 10,
 			schema:{
 				data:"data",
 				total:"total",
@@ -85,44 +89,7 @@
 				}
 			}
 		});
-		// var dataDossierDetail = new kendo.data.DataSource({
-		// 	transport:{
-		// 		read:function(options){
-		// 			$.ajax({
-		// 				url:"${ajax.customer_dossier_detail}",
-		// 				data:{
-		// 					id : options.data.id
-		// 				},	
-		// 				success:function(result){
-		// 					options.success(result);
-		// 					$("#detail").html(result)
-		// 				},
-		// 				error:function(result){
-		// 					options.error(result);
-		// 				}
-		// 			});
-		// 		}
-		// 	},
-		// });
-		var dataLoadServiceConfig = new kendo.data.DataSource({
-			transport:{
-				read:function(options){
-					$.ajax({
-						url:"${ajax.serviceconfig}",
-						data:{
-							
-						},	
-						success:function(result){
-							options.success(result);
-							$("#serviceconfig").html(result)
-						},
-						error:function(result){
-							options.error(result);
-						}
-					});
-				}
-			}
-		})
+		
 	// Source for sidebar list
 		var dataAddRequest = new kendo.data.DataSource({
 			transport:{
@@ -138,7 +105,6 @@
 						success:function(result){
 							if(result.data){
 								options.success(result);
-								kendo.fx($("#wrapAddRes")).expand("vertical").duration(200).play();
 								$("#total_Additional_Requirement").text(dataAddRequest.total())
 							}else{
 								$("#sideItemAdd").hide();
@@ -174,7 +140,6 @@
 						success:function(result){
 							if(result.data){
 								options.success(result);
-								kendo.fx($("#wrapPayRes")).expand("vertical").duration(200).play();
 								$("#total_Payment_Request").text(dataPayRequest.total())
 							}else{
 								$("#sideItemPayment").hide();
@@ -210,7 +175,6 @@
 						success:function(result){
 							if(result.data){
 								options.success(result);
-								kendo.fx($("#wrapResult")).expand("vertical").duration(200).play();
 								$("#total_result").text(dataResult.total())
 							}else{
 								$("#sideItemResult").hide();
@@ -237,12 +201,15 @@
 	    yyyy = today.getFullYear();
 	    var arrYear = [];
 		for (var i = 0; i < 10; i++, yyyy--) {
-		    arrYear.push(yyyy)
+		    arrYear.push({year: "Năm "+yyyy, valYear: yyyy})
 		};
 		var dataYear = new kendo.data.DataSource({
 			data: arrYear
 		});
-		var arrMonth = ["1","2","3","4","5","6","7","8","9","10","11","12"];
+		var arrMonth = [];
+		for (var i = 1; i <= 12; i++) {
+		    arrMonth.push({month: "Tháng "+i, valMonth: i})
+		};
 		var dataMonth = new kendo.data.DataSource({
 			data: arrMonth
 		});
@@ -257,6 +224,8 @@
 			// Lọc theo tháng, năm, cơ quan thực hiện, thủ tục hành chính
 			eventLookup : function(e){
 				e.preventDefault();
+				$("#wrapMain").hide();
+				setTimeout(function(){$("#wrapMain").show()},300);
 				var statusDossier = $("li.itemStatus.active").attr("dataPk");
 			    if (statusDossier !== undefined) {
 					dataSourceProfile.read({
@@ -280,6 +249,8 @@
 			},
 			filterStatus: function(e){
 				e.preventDefault();
+				$("#wrapMain").hide();
+				setTimeout(function(){$("#wrapMain").show()},300);
 				$("#profileStatus li").removeClass("active");
 				$(e.currentTarget).addClass("active");
 				$(".itemStatus").css("pointer-events","auto");
@@ -299,8 +270,11 @@
 	// Model MainSection
 		var modelMain = kendo.observable({
 			dataSourceProfile : dataSourceProfile,
-			modelPanel: modelPanel,
+			// modelPanel: modelPanel,
 			filterKey: modelPanel.eventLookup,
+			changePageSize: function(){
+				dataSourceProfile.pageSize(parseInt($("#itemPpage").val()))
+			},
 			loadDossierDetail:function(e){
 				e.preventDefault();
 				var dossierItemStatus = e.data.dossierStatus;
@@ -308,13 +282,11 @@
 				manageDossier.navigate("/dossierStatus"+dossierItemStatus+"/detailDossier"+id);	
 			},
 		});
-		// var modelDossierDetail = kendo.observable({
-		// 	dataDossierDetail: dataDossierDetail
-		// });
-		// var modelServiceConfig = kendo.observable({
-		// 	dataLoadServiceConfig: dataLoadServiceConfig
-		// });
+		
 	// Model Sidebar Menu
+		var flagSortAdd = true;
+		var flagSortPay = true;
+		var flagSortResult = true;
 		var modelSidebar = kendo.observable({
 			dataAddRequest: dataAddRequest,
 			dataPayRequest: dataPayRequest,
@@ -322,13 +294,12 @@
 			loadDossierDetail:function(e){
 				e.preventDefault();
 				var id = e.data.dossierId;
-
-				// Gọi thêm api lấy trạng thái hồ sơ
+				// Gọi api lấy trạng thái hồ sơ
 				var dataDossierId = new kendo.data.DataSource({
 					transport:{
 						read:function(options){
 							$.ajax({
-								url:"${api.server}/dossiers/"+id, //insert: "${api.server}/dossiers/"+id
+								url:"${api.server}/dossiers/"+id, 
 								dataType:"json",
 								type:"GET",
 								success:function(result){
@@ -350,14 +321,33 @@
 			sortDate: function(e){
 				var TypeItem = e.currentTarget.id;
 				if (TypeItem == "sort_modified") {
-					e.data.dataAddRequest.read({sort_modified: "modified"})
+					if (flagSortAdd) {
+						e.data.dataAddRequest.read({sort_modified: "modified"});
+						flagSortAdd = false;
+					} else {
+						e.data.dataAddRequest.read();
+						flagSortAdd = true;
+					}	
 				} 
 				else if (TypeItem == "sort_modified1") {
-					e.data.dataPayRequest.read({sort_modified: "modified"})
+					if (flagSortPay) {
+						e.data.dataPayRequest.read({sort_modified: "modified"});
+						flagSortPay = false;
+					} else {
+						e.data.dataPayRequest.read();
+						flagSortPay = true;
+					}
 				}
 				else if (TypeItem == "sort_modified2") {
-					e.data.dataResult.read({sort_modified: "modified"})
-				}
+					if (flagSortResult) {
+						e.data.dataResult.read({sort_modified: "modified"});
+						flagSortResult = false;
+					} else {
+						e.data.dataResult.read();
+						flagSortResult = true;
+					}
+				};
+
 			}
 		})
 	</script>

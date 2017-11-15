@@ -1,6 +1,6 @@
 	<#-- main section template -->
 	<script type="text/x-kendo-template" id="mainTemplate">
-		<div class="row panel M0" style="border: none;box-shadow: none">
+		<div id="contentMain" class="row panel M0" style="border: none;box-shadow: none">
 			<div class="panel-heading P0">
 				<div class="row PL15 PR15">
 					<div class="row-header"> 
@@ -14,24 +14,27 @@
 					</div>	
 				</div>
 			</div>
-			<div class="col-sm-12 P0" id="customer_dossierlist">
-				<ul class="ul-with-border" data-role="listview" data-bind="source: dataSourceProfile" data-auto-bind="false" data-template="proFileTemplate" id="listViewDossier">
-					
-				</ul>
-			</div>
-			<div class="footerListProfile row-header col-sm-12 PT20" style="background: #f6f6f6">
-				<div class="clearfix align-middle" style="float: right">
-					<span class="text-light-gray MR15"><i>Tổng số <span id="totalItem_dossierList" class="red"></span> kết quả được tìm thấy</i></span>
-					<span class="show-per-page MT0">Hiển thị
-						<span class="select-wrapper">
-							<select class="ML5" id="itemPpage" data-bind="events:{change: changePageSize}">
-								
-							</select>
+			<div id="wrapMain">
+				<div class="col-sm-12 P0" id="customer_dossierlist">
+					<ul class="ul-with-border" data-role="listview" data-bind="source: dataSourceProfile" data-auto-bind="false" data-template="proFileTemplate" id="listViewDossier">
+						
+					</ul>
+				</div>
+				<div class="footerListProfile row-header col-sm-12 PT20" style="background: #f6f6f6">
+					<div class="clearfix align-middle" style="float: right">
+						<span class="text-light-gray MR15"><i>Tổng số <span id="totalItem_dossierList" class="red"></span> kết quả được tìm thấy</i></span>
+						<span class="show-per-page MT0">Hiển thị
+							<span class="select-wrapper">
+								<select class="ML5" id="itemPpage" data-bind="events:{change: changePageSize}">
+									
+								</select>
+							</span>
 						</span>
-					</span>
-					<span id="pagerProfile" class="M0 P0 PR5" data-role="pager" data-info="false" data-bind="source: dataSourceProfile"></span>
-				</div>	
+						<span id="pagerProfile" class="M0 P0 PR5" data-role="pager" data-info="false" data-bind="source: dataSourceProfile"></span>
+					</div>	
+				</div>
 			</div>
+			
 		</div>
 	</script>
 		<#-- for listview dossier-->
@@ -136,14 +139,7 @@
 				</div>
 			</div>
 		</script>
-		<#-- for Dossier Detail -->
-		<script type="text/x-kendo-template" id="dossier_detailTemp">
-			<div id="detail"></div>
-		</script>
-		<#-- for ServiceConfig -->
-		<script type="text/x-kendo-template" id="serviceconfigTemp">
-			<div id="serviceconfig"></div>
-		</script>
+
 	<#-- sidebar list template-->
 	<script type="text/x-kendo-template" id="sidebarTemplate">
 		<div class="row">
@@ -152,7 +148,8 @@
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Yêu cầu bổ sung</span>
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#additionalRequirement">
-							<i class="icon_collapse glyphicon glyphicon-chevron-up"></i>
+							<i class="glyphicon glyphicon-chevron-up" ></i>
+							<i class="glyphicon glyphicon-chevron-down" style="display: none"></i>
 						</span>
 						<span class="pull-right MR10 text-light-gray hover-pointer" id="sort_modified" title="Sắp xếp theo ngày" data-bind="events:{click: sortDate}"><i class="fa fa-calendar" aria-hidden="true"></i></span>
 					</div>
@@ -161,7 +158,7 @@
 							
 						</ul>
 						<div class="clearfix align-middle PL10">
-							<span class="text-light-gray"><i>Có <span id="total_Additional_Requirement" class="red"> </span> yêu cầu</i></span>
+							<span class="text-light-gray MR20"><i>Có <span id="total_Additional_Requirement" class="red"> </span> yêu cầu</i></span>
 							<span id="pagerCustomer_Additional_Requirement" class="M0 PR5" data-bind="source:dataAddRequest" data-role="pager" data-info="false"></span>
 						</div>	
 					</div>
@@ -173,6 +170,7 @@
 						<span class="panel-title">Yêu cầu thanh toán</span> 
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#paymentRequest"> 
 							<i class="icon_collapse glyphicon glyphicon-chevron-up"></i>
+							<i class="glyphicon glyphicon-chevron-down" style="display: none"></i>
 						</span>
 						<span class="pull-right MR10 text-light-gray hover-pointer" id="sort_modified1" title="Sắp xếp theo ngày" data-bind="events:{click: sortDate}"><i class="fa fa-calendar" aria-hidden="true"></i></span>
 					</div> 
@@ -181,7 +179,7 @@
 							
 						</ul>
 						<div class="clearfix align-middle PL10">
-							<span class="text-light-gray"><i>Có <span id="total_Payment_Request" class="red"> </span> yêu cầu</i></span>
+							<span class="text-light-gray MR20"><i>Có <span id="total_Payment_Request" class="red"> </span> yêu cầu</i></span>
 							<span id="pagerCustomer_Payment_Request" class="M0 PR5" data-bind="source:dataPayRequest" data-role="pager" data-info="false"></span>
 						</div>
 
@@ -194,6 +192,7 @@
 						<span class="panel-title">Trả kết quả</span> 
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#resultRequest"> 
 							<i class="icon_collapse glyphicon glyphicon-chevron-up"></i>
+							<i class="glyphicon glyphicon-chevron-down" style="display: none"></i>
 						</span> 
 						<span class="pull-right MR10 text-light-gray hover-pointer" id="sort_modified2" title="Sắp xếp theo ngày" data-bind="events:{click: sortDate}"><i class="fa fa-calendar" aria-hidden="true"></i></span>
 					</div> 
@@ -202,7 +201,7 @@
 							
 						</ul>
 						<div class="clearfix align-middle PL10">
-							<span class="text-light-gray"><i>Có <span id="total_result" class="red"> </span> kết quả</i></span>
+							<span class="text-light-gray MR20"><i>Có <span id="total_result" class="red"> </span> kết quả</i></span>
 							<span id='pagerCustomer_Result_Request' class="M0 PR5" data-bind="source:dataResult" data-role="pager" data-info="false"></span>
 						</div>
 					</div> 

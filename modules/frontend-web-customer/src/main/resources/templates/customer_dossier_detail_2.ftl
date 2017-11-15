@@ -6,7 +6,7 @@
 	<div class="box" >
 		<input type="hidden" name="dossierTemplateId" id="dossierTemplateId">
 		<input type="hidden" name="dossierItemId" id="dossierItemId">
-
+		<input type="hidden" name="dossierTemplateNo" id="dossierTemplateNo">
 		<div class="row-header align-middle">
 			<div class="background-triangle-big">Tên thủ tục</div> 
 			<span class="text-bold" data-bind="text:serviceName"></span>
@@ -116,7 +116,7 @@
 			</div>
 		</div>
 
-		<form id="dossierFormSubmiting" data-bind="value:dossierTemplateNo">
+		<form id="dossierFormSubmiting">
 			<div class="dossier-parts">
 				<div class="head-part align-middle">
 					<div class="background-triangle-small">I</div> <span class="text-uppercase">Thành phần hồ sơ</span> <span class="text-light-gray"><i>Những thành phần hồ sơ có dấu (<span class="red">*</span>) là thành phần bắt buộc</i></span>
@@ -163,7 +163,7 @@
 					</div>
 					#
 					$.ajax({
-					url : "${api.server}/dossiertemplates/${dossierTemplateNo}/parts/"+id+"/formscript",
+					url : "${api.server}/dossiertemplates/${dossierTemplateId}/parts/"+id+"/formscript",
 					dataType : "json",
 					type : "GET",
 					headers : {"groupId": ${groupId}},
@@ -254,11 +254,12 @@
 			console.log("change");
 			var partNo = $(this).attr("part-no");
 			var fileTemplateNo = $(this).attr("file-template-no");
+			var dossierTemplateNo = $("#dossierTemplateNo").val();
 			console.log(partNo);
 			console.log(fileTemplateNo);
 			console.log($(this)[0].files[0]);
 
-			funUploadFile($(this),partNo,${dossierTemplateNo},fileTemplateNo);
+			funUploadFile($(this),partNo,dossierTemplateNo,fileTemplateNo);
 		});
 
 		//tai giay to kho luu tru
@@ -320,11 +321,15 @@
 
 	$("#btn-view-extendguide").click(function(){
 		if($("#extend-guide").attr("status")=="none"){
+
 			$("#extend-guide").show();
 			$("#extend-guide").attr("status","show");
+
 		}else{
+
 			$("#extend-guide").hide();
 			$("#extend-guide").attr("status","none");
+			
 		}
 
 	});
@@ -333,7 +338,7 @@
 		transport :{
 			read : function(options){
 				$.ajax({
-					url : "${api.server}/dossiertemplates/"+options.data.dossierPart+"/parts",
+					url : "${api.server}/dossiertemplates/${dossierTemplateId}",
 					dataType : "json",
 					type : "GET",
 					headers : {"groupId": ${groupId}},
@@ -341,7 +346,8 @@
 
 					},
 					success : function(result){
-						options.success(result);
+						options.success(result.dossierParts);
+						$("#dossierTemplateNo").val(result.templateNo);
 					},
 					error : function(result){
 						options.error(result);
@@ -350,8 +356,6 @@
 			}
 		},
 		schema : {
-			data : "data",
-			total : "total",
 			model : {
 				id : "partNo"
 			}
@@ -361,9 +365,9 @@
 	var indexDossiserPart =0 ;
 	$("#lsDossierTemplPart").kendoListView({
 		dataSource : dataSourceDossierTemplate,
-		autoBind : false,
+		autoBind : true,
 		change : function(){
-
+			
 		},
 		template : function(data){
 
@@ -424,17 +428,22 @@
 
 			},
 			headers: {"groupId": ${groupId}},
-			success :  function(result){                       
-				$("#dossier_detail").show();
-				$("#dossier_list").hide();
-				$("#dossier_detail").load("${ajax.submited_dossier_info}",function(result){
-					
+			success :  function(result){    
+
+				manageDossier.navigate("/taohosomoi/nopthanhcong");        
+
+				$("#mainType1").hide();
+				$("#mainType2").show();
+				$("#mainType2").load("${ajax.submited_dossier_info}&${portletNamespace}dossierTemplateId='${(dossierTemplateId)!}'&${portletNamespace}dossierId="+'${(dossierId)!}',function(result){
+
 				});
+
 			},
 			error:function(result){
 
 			}
 		});
+		
 		console.log("submit dossier success!");
 	}
 
@@ -726,11 +735,6 @@
 						stepInstruction : result.stepInstruction,
 						viaPostal : function(e){
 							/*$("#viaPostal").ckecked()*/
-						},
-						dossierTemplateNo : function(e){
-							dataSourceDossierTemplate.read({
-								dossierPart : 201 //result.dossierTemplateNo
-							});	
 						}
 
 					});
@@ -784,4 +788,15 @@
 	}
 
 	printDetailDossier(${dossierId});
+
+	$(function(){
+		manageDossier.route("/taohosomoi/nopthanhcong", function(id){
+			$("#mainType1").hide();
+			$("#mainType2").show();
+			$("#mainType2").load("${ajax.submited_dossier_info}",function(result){
+
+			});
+		});
+	});
+
 </script>
