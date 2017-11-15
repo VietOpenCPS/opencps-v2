@@ -16,11 +16,15 @@ package org.opencps.dossiermgt.service.impl;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
@@ -78,7 +82,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier syncDossier(Dossier dossier) throws PortalException {
 		dossierPersistence.update(dossier);
-		
+
 		return dossier;
 	}
 
@@ -99,17 +103,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		validateInit(groupId, dossierId, referenceUid, serviceCode, govAgencyCode, address, cityCode, districtCode,
 				wardCode, contactName, contactTelNo, contactEmail, dossierTemplateNo);
-		
+
 		String dossierTemplateName = getDossierTemplateName(groupId, dossierTemplateNo);
-		
+
 		Dossier dossier = null;
 
 		if (dossierId == 0) {
 			dossierId = counterLocalService.increment(Dossier.class.getName());
 
 			dossier = dossierPersistence.create(dossierId);
-			
-			
 
 			dossier.setCreateDate(now);
 			dossier.setModifiedDate(now);
@@ -127,12 +129,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setGovAgencyName(govAgencyName);
 			dossier.setDossierTemplateNo(dossierTemplateNo);
 			dossier.setDossierTemplateName(dossierTemplateName);
+
 			dossier.setApplicantName(applicantName);
 			dossier.setApplicantIdType(applicantIdType);
 			dossier.setApplicantIdNo(applicantIdNo);
 			dossier.setApplicantIdDate(applicantIdDate);
 			dossier.setPassword(password);
 			dossier.setOnline(online);
+
 			dossier.setAddress(address);
 			dossier.setCityCode(cityCode);
 			dossier.setCityName(cityName);
@@ -143,6 +147,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setContactName(contactName);
 			dossier.setContactEmail(contactEmail);
 			dossier.setContactTelNo(contactTelNo);
+
+			dossier.setViaPostal(viaPostal);
+			dossier.setPostalAddress(postalAddress);
+			dossier.setPostalCityCode(postalCityCode);
+			dossier.setPostalTelNo(postalTelNo);
+			dossier.setApplicantNote(applicantNote);
+			dossier.setServerNo(getServerNo(groupId));
 
 		} else {
 
@@ -170,8 +181,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setPostalTelNo(postalTelNo);
 			dossier.setApplicantNote(applicantNote);
 			dossier.setNotification(notification);
-			dossier.setDossierTemplateNo(dossierTemplateNo);
-			dossier.setDossierTemplateName(dossierTemplateName);
 			dossier.setContactTelNo(contactTelNo);
 
 		}
@@ -180,12 +189,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		return dossier;
 	}
-	
+
 	@Indexable(type = IndexableType.REINDEX)
-	public Dossier assignToProcess(long dossierId, String dossierNote, String submissionNote,
-			String briefNote, String dossierNo, long folderId, long dossierActionId, String serverNo,
-			ServiceContext context) {
-		
+	public Dossier assignToProcess(long dossierId, String dossierNote, String submissionNote, String briefNote,
+			String dossierNo, long folderId, long dossierActionId, String serverNo, ServiceContext context) {
 
 		Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
 
@@ -196,12 +203,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setFolderId(folderId);
 		dossier.setDossierActionId(dossierActionId);
 		dossier.setServerNo(serverNo);
-		
+
 		dossierPersistence.update(dossier);
-		
+
 		return dossier;
 	}
-	
+
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
 			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
@@ -237,7 +244,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setCompanyId(context.getCompanyId());
 			dossier.setGroupId(groupId);
 			dossier.setUserId(userId);
-			dossier.setUserName(auditUser.getFullName());
+			if (Validator.isNotNull(auditUser))
+				dossier.setUserName(auditUser.getFullName());
 
 			// Add extent fields
 			dossier.setReferenceUid(referenceUid);
@@ -246,6 +254,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setServiceName(serviceName);
 			dossier.setGovAgencyCode(govAgencyCode);
 			dossier.setGovAgencyName(govAgencyName);
+			dossier.setDossierTemplateNo(dossierTemplateNo);
+
+			DossierTemplate dt = dossierTemplatePersistence.findByG_DT_NO(groupId, dossierTemplateNo);
+
+			if (Validator.isNotNull(dt)) {
+				dossier.setDossierTemplateName(dt.getTemplateName());
+			}
+
 			dossier.setApplicantName(applicantName);
 			dossier.setApplicantIdType(applicantIdType);
 			dossier.setApplicantIdNo(applicantIdNo);
@@ -258,6 +274,16 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setDossierStatusText(dossierStatusText);
 			dossier.setDossierSubStatus(dossierSubStatus);
 			dossier.setDossierSubStatusText(dossierSubStatusText);
+
+			dossier.setAddress(address);
+			dossier.setCityCode(cityCode);
+			dossier.setCityName(cityName);
+			dossier.setDistrictCode(districtCode);
+			dossier.setDistrictName(districtName);
+			dossier.setWardCode(wardCode);
+			dossier.setWardName(wardName);
+			dossier.setContactName(contactName);
+			dossier.setContactEmail(contactEmail);
 
 			dossier.setFolderId(folderId);
 			dossier.setDossierActionId(dossierActionId);
@@ -280,9 +306,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setApplicantIdType(applicantIdType);
 			dossier.setApplicantIdNo(applicantIdNo);
 			dossier.setApplicantIdDate(applicantIdDate);
-			dossier.setAddress(postalAddress);
-			dossier.setCityCode(postalCityCode);
-			dossier.setCityName(postalCityName);
+			dossier.setAddress(address);
+			dossier.setCityCode(cityCode);
+			dossier.setCityName(cityName);
 			dossier.setDistrictCode(districtCode);
 			dossier.setDistrictName(districtName);
 			dossier.setWardCode(wardCode);
@@ -347,10 +373,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setSubmitting(false);
 		dossier.setSubmitDate(null);
 
-
 		// TODO add reset for DossierFile and PaymentFile (isNew => false)
 
 		// TODO add remove DossierFile out system
+
+		List<DossierFile> lsDF = dossierFileLocalService.getDossierFilesByDossierId(id);
+
+		for (DossierFile df : lsDF) {
+			if (df.getIsNew()) {
+				dossierFileLocalService.resetDossierFile(df.getDossierFileId());
+			}
+		}
 
 		dossierPersistence.update(dossier);
 
@@ -379,16 +412,16 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setDossierStatusText(statusText);
 		dossier.setDossierSubStatus(subStatus);
 		dossier.setDossierSubStatusText(subStatusText);
-		
-		if(status.equalsIgnoreCase(DossierStatusConstants.RECEIVING)) {
+
+		if (status.equalsIgnoreCase(DossierStatusConstants.RECEIVING)) {
 			dossier.setReceiveDate(now);
 		}
-		
-		if(status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
+
+		if (status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
 			dossier.setReleaseDate(now);
 		}
-		
-		if(status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
+
+		if (status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
 			dossier.setFinishDate(now);
 		}
 
@@ -686,11 +719,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	private void validateSubmitting(long groupId, long id, String refId) throws PortalException {
 		// TODO add validate for submitting
-		
-		//Check dossier status
-		
-		//Check DossierFile, PaymentFile
-		
+
+		// Check dossier status
+
+		// Check DossierFile, PaymentFile
+
 	}
 
 	private void validateReset(long groupId, long id, String refId) throws PortalException {
@@ -752,7 +785,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			}
 		}
-		if(!(Validator.isNotNull(secetKey) && secetKey.contentEquals("OPENCPSV2"))) {
+		if (!(Validator.isNotNull(secetKey) && secetKey.contentEquals("OPENCPSV2"))) {
 			if (Validator.isNotNull(groupId)) {
 				MultiMatchQuery query = new MultiMatchQuery(groupId);
 
@@ -891,7 +924,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
-		if(!(Validator.isNotNull(secetKey) && secetKey.contentEquals("OPENCPSV2"))) {
+		if (!(Validator.isNotNull(secetKey) && secetKey.contentEquals("OPENCPSV2"))) {
 			if (Validator.isNotNull(groupId)) {
 				MultiMatchQuery query = new MultiMatchQuery(groupId);
 
@@ -911,7 +944,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String month = GetterUtil.getString(params.get(DossierTerm.MONTH));
 		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
 		String submitting = GetterUtil.getString(params.get(DossierTerm.SUBMITTING));
-		
+
 		// TODO add more logic here
 		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
 		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
@@ -992,18 +1025,28 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 	}
-	
+
 	private String getDossierTemplateName(long groupId, String dossierTemplateCode) {
 		String name = StringPool.BLANK;
-		
-		
+
 		DossierTemplate template = dossierTemplatePersistence.fetchByG_DT_NO(groupId, dossierTemplateCode);
-		
-		if(Validator.isNotNull(template)) {
+
+		if (Validator.isNotNull(template)) {
 			name = template.getTemplateName();
 		}
-		
+
 		return name;
+	}
+
+	private String getServerNo(long groupId) {
+
+		try {
+			ServerConfig sc = ServerConfigLocalServiceUtil.getGroupId(groupId);
+			return sc.getServerNo();
+		} catch (Exception e) {
+			return StringPool.BLANK;
+		}
+
 	}
 
 	public static final String CLASS_NAME = Dossier.class.getName();

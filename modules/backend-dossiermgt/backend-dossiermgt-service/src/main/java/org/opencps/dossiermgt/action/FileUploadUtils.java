@@ -156,8 +156,9 @@ public class FileUploadUtils {
 			}
 			
 			if(fileSize == 0) {
-				byte[] bytes = FileUtil.getBytes(inputStream, -1, false);
-				fileSize = bytes.length;
+				fileSize = inputStream.available();
+				//byte[] bytes = FileUtil.getBytes(inputStream, -1, false);
+				//fileSize = bytes.length;
 			}
 			
 			String title = getFileName(sourceFileName);

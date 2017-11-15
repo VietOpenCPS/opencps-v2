@@ -1,6 +1,7 @@
 package org.opencps.auth.utils;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -40,6 +41,22 @@ public class APIDateTimeUtils {
 		calendar.setTime(date);
 
 		return dateFormat.format(calendar.getTime());
+	}
+	
+	public static Date convertStringToDate(String source, String pattern) {
+		
+		if (Validator.isNull(source) || Validator.isNull(pattern)) {
+			return null;
+		}
+		
+		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+		
+		try {
+			return sdf.parse(source);
+		} catch (Exception e) {
+			return null;
+		}
+		
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(APIDateTimeUtils.class);
