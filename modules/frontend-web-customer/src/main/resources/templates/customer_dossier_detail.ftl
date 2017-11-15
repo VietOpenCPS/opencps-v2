@@ -180,8 +180,10 @@
 				type : "GET",
 				headers : {"groupId": ${groupId}},
 				success : function(result){
+				var formScript = result.value;
+				var formScriptObj = JSON.parse(formScript);
 				$("\\#formPartNo"+id).empty();
-				$("\\#formPartNo"+id).alpaca(result);
+				$("\\#formPartNo"+id).alpaca(formScriptObj);
 				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button class="btn btn-active MB10 MT10" onclick="" data-pk="'+id+'">Ghi lại</button></div></div>');
 			},
 			error : function(result){
