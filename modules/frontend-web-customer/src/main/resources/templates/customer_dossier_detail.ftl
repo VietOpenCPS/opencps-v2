@@ -261,7 +261,7 @@
 			console.log(fileTemplateNo);
 			console.log($(this)[0].files[0]);
 
-			funUploadFile($(this),partNo,dossierTemplateNo,fileTemplateNo);
+			funUploadFile($(this),partNo,dossierTemplateNo+"",fileTemplateNo);
 		});
 
 		//tai giay to kho luu tru
@@ -461,7 +461,7 @@
 
 				$("#mainType1").hide();
 				$("#mainType2").show();
-				$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierTemplateId='${(dossierTemplateId)!}'&${portletNamespace}dossierId="+"${(dossierId)!}",function(result){
+				$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierTemplateId=${(dossierTemplateId)!}&${portletNamespace}dossierId="+"${(dossierId)!}",function(result){
 
 				});
 
@@ -504,10 +504,11 @@
 		dataTextField : "itemName",
 		dataValueField : "itemCode",
 		noDataTemplate : "Không có dữ liệu",
+		autoBind : false,
 		dataSource : {
 			transport : {
 				read : {
-					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+					/*url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",*/
 					dataType : "json",
 					type : "GET",
 					headers: {"groupId": ${groupId}},
@@ -548,7 +549,7 @@
 			transport : {
 				read : function(options){
 					$.ajax({
-						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+						/*url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",*/
 						dataType : "json",
 						type : "GET",
 						headers: {"groupId": ${groupId}},
@@ -590,7 +591,7 @@
 			transport : {
 				read : function(options){
 					$.ajax({
-						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+						/*url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",*/
 						dataType : "json",
 						type : "GET",
 						headers: {"groupId": ${groupId}},
@@ -624,7 +625,7 @@
 			transport : {
 				read : function(options){
 					$.ajax({
-						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+						/*url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",*/
 						dataType : "json",
 						type : "GET",
 						headers: {"groupId": ${groupId}},
@@ -678,7 +679,10 @@
 						applicantName : result.applicantName,
 						address : result.address,
 						cityCode : function(e){
-							$("#cityCode").data("kendoComboBox").text(result.cityName);
+							$("#cityCode").data("kendoComboBox").dataSource.read({
+								parent : 0
+							});
+							$("#cityCode").data("kendoComboBox").value(result.cityCode);
 						},
 						districtCode : function(e){
 							var cityCode = result.cityCode;
@@ -696,7 +700,7 @@
 								$("#wardCode").data("kendoComboBox").dataSource.read({
 									parent : districtCode
 								});
-								$("#wardCode").data("kendoComboBox").value(wardCode);
+								$("#wardCode").data("kendoComboBox").value(result.wardCode);
 							}
 						},
 						contactTelNo : result.contactTelNo,
@@ -844,7 +848,7 @@
 });
 
 $(function(){
-	manageDossier.route("/taohosomoi/nophoso", function(id){
+	manageDossier.route("/taohosomoi/nophoso/", function(id){
 		$("#mainType1").hide();
 		$("#mainType2").show();
 		$("#mainType2").load("${ajax.customer_dossier_detail_2}",function(result){
