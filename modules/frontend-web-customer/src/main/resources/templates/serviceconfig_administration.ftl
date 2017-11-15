@@ -97,12 +97,13 @@
 				}
 			},
 			schema: {
-				data: "data.serviceconfig"
+				data: "data.govAgencies"
 				//data: "govAgencies",
 			}
 		});
 
 		$('#btn_search').click(function(){
+			
 	      var input_Search = $('#input_search').val();
 	      if ($('#btn_fillter_by_admintration').hasClass('btn-active')){
 	        dataSourceAdmin.read({

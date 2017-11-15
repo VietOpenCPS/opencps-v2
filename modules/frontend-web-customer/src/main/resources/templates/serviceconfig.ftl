@@ -17,7 +17,7 @@
             <div class="input-group">
              <input type="text" class="form-control" id="input_search" placeholder="Nhập từ khóa" title="Nhập từ khóa">
              <div class="input-group-addon" id="btn_search" title="Tìm kiếm">
-               <a href="#"><i class="fa fa-search"></i></a>
+               <a href="javascript:;"><i class="fa fa-search"></i></a>
              </div>
            </div>
          </div>
@@ -67,13 +67,14 @@
 
   $(document).ready(function(){
 
+    
 
     $('#btn_fillter_by_domain').click(function(){
       // $('#btn_fillter_by_admintration').removeClass('btn-active');
       // $('#btn_fillter_by_domain').addClass('btn-active');
       // $('#serviceconfig_container').load("${ajax.serviceconfig_domain}");
       // $('#input_search').val('');
-      router.navigate("/newdossier/doman");
+      manageDossier.navigate("/taohosomoi/doman");
     });
 
     $('#btn_fillter_by_admintration').click(function(){
@@ -81,7 +82,7 @@
       // $('#btn_fillter_by_domain').removeClass('btn-active');
       // $('#serviceconfig_container').load("${ajax.serviceconfig_administration}");
       // $('#input_search').val('');
-      router.navigate("/newdossier/admin");
+      manageDossier.navigate("/taohosomoi/admin");
     });
 
 
@@ -239,7 +240,7 @@
           $("#choiseProcessForDossier").modal("hide");
 
          // chuyen den man hinh chuan bi ho so
-         $("#dossier_detail").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierTemplateId="dossierTemplateId+"&${portletNamespace}dossierId="+result.dossierId, function(result){
+         $("#dossier_detail").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierTemplateId="+dossierTemplateId+"&${portletNamespace}dossierId="+result.dossierId, function(result){
           $("#dossier_list").hide();
           $("#dossier_detail").show();
           $("#left_container").html("");
