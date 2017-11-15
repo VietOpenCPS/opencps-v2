@@ -148,6 +148,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		object.setDisplayName(displayName);
 		object.setOriginal(true);
 		object.setIsNew(true);
+		
+		System.out.println("DOSSIER FILE CREATE" + new Date());
 
 		return dossierFilePersistence.update(object);
 	}
@@ -298,9 +300,12 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 	public DossierFile updateFormData(long groupId, long dossierId, String referenceUid, String formData,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 
-		User user = userPersistence.findByPrimaryKey(serviceContext.getUserId());
-
-		DossierFile dossierFile = dossierFileLocalService.getDossierFileByReferenceUid(dossierId, referenceUid);
+		//User user = userPersistence.findByPrimaryKey(serviceContext.getUserId());
+		System.out.println("GET DOSSIER FILE" + new Date());
+		DossierFile dossierFile = dossierFilePersistence.findByDID_REF(dossierId, referenceUid);
+		
+		
+		//dossierFileLocalService.getDossierFileByReferenceUid(dossierId, referenceUid);
 
 		String jrxmlTemplate = dossierFile.getFormReport();
 
@@ -340,7 +345,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		 * throw new SystemException(e); }
 		 */
 
-		dossierFile.setFileEntryId(fileEntryId);
+		//dossierFile.setFileEntryId(fileEntryId);
 
 		return dossierFilePersistence.update(dossierFile);
 	}

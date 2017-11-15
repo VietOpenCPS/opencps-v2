@@ -207,12 +207,12 @@ public class DossierActionsImpl implements DossierActions {
 
 		boolean isSubmitType = isSubmitType(processAction);
 
-		_log.info("processActionId=" + processAction.getPrimaryKey());
-		_log.info("isSubmit=" + isSubmitType);
-		_log.info("groupId=" + groupId);
-		_log.info("referenceUid=" + referenceUid);
-		_log.info("dossierId=" + dossierId);
-
+//		_log.info("processActionId=" + processAction.getPrimaryKey());
+//		_log.info("isSubmit=" + isSubmitType);
+//		_log.info("groupId=" + groupId);
+//		_log.info("referenceUid=" + referenceUid);
+//		_log.info("dossierId=" + dossierId);
+//
 		boolean hasDossierSync = hasDossierSync(groupId, dossierId, referenceUid, processAction, isSubmitType);
 
 		boolean hasForedDossierSync = forcedDossierSync(groupId, dossierId, referenceUid, processAction, isSubmitType);

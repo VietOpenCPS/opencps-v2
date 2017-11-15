@@ -456,7 +456,11 @@
 			<finder-column name="referenceUid"/>
 			<finder-column name="removed"/>
 		</finder>
-
+		
+		<finder return-type="DossierFile" name="DID_REF">
+			<finder-column name="dossierId"/>
+			<finder-column name="referenceUid"/>
+		</finder>
 		<!-- References -->
 	</entity>
 

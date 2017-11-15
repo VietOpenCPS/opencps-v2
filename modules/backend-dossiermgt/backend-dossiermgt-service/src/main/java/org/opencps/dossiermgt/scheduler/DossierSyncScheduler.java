@@ -7,14 +7,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
-import java.util.LinkedHashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
-import org.opencps.dossiermgt.model.DossierSync;
-import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -52,7 +50,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		_log.info("OpenCPS Sync DOSSIERS.....");
+		_log.info("OpenCPS SYNC DOSSIERS IS STARTING : " + APIDateTimeUtils.convertDateToString(new Date()));
 
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 		ServiceContext serviceContext = new ServiceContext();
@@ -105,7 +103,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject jsonDossierSync = array.getJSONObject(i);
 
-					_log.info("DOSSIER_SYNC_STARTTING" + jsonDossierSync.get("dossierSyncId"));
+					//_log.info("DOSSIER_SYNC_STARTTING" + jsonDossierSync.get("dossierSyncId"));
 
 					try {
 						
@@ -133,7 +131,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 							throw new RuntimeException("Failed : HTTP error code : " + sendingConn.getResponseCode());
 						} else {
 							
-							_log.info("DOSSIER_SYNC_DONE" + jsonDossierSync.get("dossierSyncId"));
+							//_log.info("DOSSIER_SYNC_DONE" + jsonDossierSync.get("dossierSyncId"));
 							
 							//Remove DossierSync
 							
@@ -160,6 +158,8 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 			}
 
 		}
+		
+		_log.info("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 
 	}
 
