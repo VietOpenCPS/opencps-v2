@@ -59,6 +59,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierSyncManagementImpl implements DossierSyncManagement {
@@ -266,17 +267,30 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			properties.put("dossierPartNo", dossierFile.getDossierPartNo());
 			properties.put("fileTemplateNo", dossierFile.getFileTemplateNo());
 			properties.put("displayName", dossierFile.getDisplayName());
+			properties.put("isSync", StringPool.TRUE);
 
-			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(classPK);
+			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
 
 			DLFileVersion dlFileVersion = DLFileVersionLocalServiceUtil.getLatestFileVersion(fileEntry.getFileEntryId(),
 					true);
 
-			File file = DLFileEntryLocalServiceUtil.getFile(classPK, dlFileVersion.getVersion(), false);
+			File file = DLFileEntryLocalServiceUtil.getFile(dossierFile.getFileEntryId(), dlFileVersion.getVersion(), false);
 
-			rest.callPostFileAPI(groupId, HttpMethods.POST, "application/json", RESTFulConfiguration.SERVER_PATH_BASE,
+			JSONObject resSynFile = rest.callPostFileAPI(groupId, HttpMethods.POST, "application/json", RESTFulConfiguration.SERVER_PATH_BASE,
 					endPointSyncDossierFile, RESTFulConfiguration.SERVER_USER, RESTFulConfiguration.SERVER_PASS,
 					properties, file, serviceContext);
+			
+			if (resSynFile.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
+				// remove DossierSync
+				DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
+				
+				//Reset isNew
+				
+				dossierFile.setIsNew(false);
+				DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+
+			}
+
 
 			// TODO add reset Dossier
 

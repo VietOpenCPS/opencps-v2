@@ -149,7 +149,6 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		object.setOriginal(true);
 		object.setIsNew(true);
 		
-		System.out.println("DOSSIER FILE CREATE" + new Date());
 
 		return dossierFilePersistence.update(object);
 	}

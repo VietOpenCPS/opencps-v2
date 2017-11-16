@@ -38,6 +38,9 @@ public class InvokeREST {
 
 			conn.setRequestMethod(httpMethod);
 			conn.setRequestProperty("Accept", accept);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setRequestProperty("groupId", String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {
@@ -45,12 +48,6 @@ public class InvokeREST {
 				}
 			}
 
-			if (conn.getResponseCode() != 200) {
-				// throw new RuntimeException("Failed : HTTP error code : " +
-				// conn.getResponseCode());
-			} else {
-
-			}
 
 			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
 
@@ -96,7 +93,11 @@ public class InvokeREST {
 			conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
 
 			conn.setRequestMethod(httpMethod);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+
 			conn.setRequestProperty("Accept", accept);
+			conn.setRequestProperty("groupId", String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {
