@@ -115,7 +115,7 @@ public class PaymentFileSearchTemplateModel {
 	protected String applicantIdNo;
 	protected Boolean isNew;
 	protected String paymentFee;
-	protected Integer paymentAmount;
+	protected Long paymentAmount;
 	protected String paymentNote;
 	protected String bankInfo;
 	protected String epaymentProfile;
@@ -476,10 +476,10 @@ public class PaymentFileSearchTemplateModel {
      * 
      * @return
      *     possible object is
-     *     {@link int }
+     *     {@link Long }
      *     
      */
-	public Integer getPaymentAmount() {
+	public Long getPaymentAmount() {
 		return paymentAmount;
 	}
 
@@ -488,10 +488,10 @@ public class PaymentFileSearchTemplateModel {
      * 
      * @param paymentAmount
      *     allowed object is
-     *     {@link int }
+     *     {@link Long }
      *     
      */
-	public void setPaymentAmount(Integer paymentAmount) {
+	public void setPaymentAmount(Long paymentAmount) {
 		this.paymentAmount = paymentAmount;
 	}
 
