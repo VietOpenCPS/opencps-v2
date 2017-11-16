@@ -6,6 +6,7 @@
 
 	<input type="hidden" name="dossierTemplateId" id="dossierTemplateId">
 	<input type="hidden" name="dossierItemId" id="dossierItemId">
+	<input type="hidden" name="dossierTemplateNo" id="dossierTemplateNo">
 	<div class="row-header align-middle">
 		<div class="background-triangle-big">Tên thủ tục</div> 
 		<span class="text-bold" data-bind="text:serviceName"></span>
@@ -69,7 +70,7 @@
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="cityCode" name="cityCode" data-bind="value : cityName" required="required" validationMessage="Bạn phải chọn Tỉnh/ Thành phố">
+									<input type="text" class="form-control" id="cityCode" name="cityCode" data-bind="value : cityCode" required="required" validationMessage="Bạn phải chọn Tỉnh/ Thành phố">
 									<span data-for="cityCode" class="k-invalid-msg"></span>
 								</div>
 							</div>
@@ -79,7 +80,7 @@
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="districtCode" name="districtCode" data-bind="value : districtName" required="required" validationMessage="Bạn phải chọn Quận/ Huyện"> 
+									<input type="text" class="form-control" id="districtCode" name="districtCode" data-bind="value : districtCode" required="required" validationMessage="Bạn phải chọn Quận/ Huyện"> 
 									<span data-for="districtCode" class="k-invalid-msg"></span>
 								</div>
 							</div>
@@ -89,7 +90,7 @@
 							</div>
 							<div class="col-sm-2 PL0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="wardCode" name="wardCode" data-bind="value : wardName" required="required" validationMessage="Bạn phải chọn Xã/ Phường"> 
+									<input type="text" class="form-control" id="wardCode" name="wardCode" data-bind="value : wardCode" required="required" validationMessage="Bạn phải chọn Xã/ Phường"> 
 									<span data-for="wardCode" class="k-invalid-msg"></span>
 								</div>
 							</div>
@@ -173,15 +174,16 @@
 					
 				</div>
 				#
-				var referentUid = getReferentUidFile(${dossierId});
 				$.ajax({
 				url : "${api.server}/dossiertemplates/${dossierTemplateId}/parts/"+id+"/formscript",
 				dataType : "json",
 				type : "GET",
 				headers : {"groupId": ${groupId}},
 				success : function(result){
+				var formScript = result.value;
+				var formScriptObj = JSON.parse(formScript);
 				$("\\#formPartNo"+id).empty();
-				$("\\#formPartNo"+id).alpaca(result);
+				$("\\#formPartNo"+id).alpaca(formScriptObj);
 				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button class="btn btn-active MB10 MT10" onclick="" data-pk="'+id+'">Ghi lại</button></div></div>');
 			},
 			error : function(result){
@@ -256,11 +258,12 @@
 			console.log("change");
 			var partNo = $(this).attr("part-no");
 			var fileTemplateNo = $(this).attr("file-template-no");
+			var dossierTemplateNo = $("#dossierTemplateNo").val();
 			console.log(partNo);
 			console.log(fileTemplateNo);
 			console.log($(this)[0].files[0]);
 
-			funUploadFile($(this),partNo,"${dossierTemplateId}",fileTemplateNo);
+			funUploadFile($(this),partNo,dossierTemplateNo,fileTemplateNo);
 		});
 
 		//tai giay to kho luu tru
@@ -279,7 +282,7 @@
 		});
 
 		$(".delete-dossier-file").unbind().click(function(event){
-			var dossierId  = ${dossierId};
+			var dossierId  = "${dossierId}";
 			var dataPartNo = $(this).attr("data-partno");
 
 			console.log(dossierId);
@@ -367,6 +370,7 @@
 					},
 					success : function(result){
 						options.success(result.dossierParts);
+						$("#dossierTemplateNo").val(result.templateNo);
 					},
 					error : function(result){
 						options.error(result);
@@ -675,27 +679,26 @@
 
 						applicantName : result.applicantName,
 						address : result.address,
-						cityName : function(e){
-							var cityCode = result.cityCode;
-							if(cityCode){
-								$("#cityCode").data("kendoComboBox").value(cityCode);
-							}
-							
+						cityCode : function(e){
+							$("#cityCode").data("kendoComboBox").text(result.cityName);
 						},
-						districtName : function(e){
+						districtCode : function(e){
 							var cityCode = result.cityCode;
 							if(cityCode){
 								$("#districtCode").data("kendoComboBox").dataSource.read({
 									parent : cityCode
 								});
+								$("#districtCode").data("kendoComboBox").value(result.districtCode);
+
 							}
 						},
-						wardName : function(e){
+						wardCode : function(e){
 							var districtCode = result.districtCode;
 							if(districtCode){
 								$("#wardCode").data("kendoComboBox").dataSource.read({
 									parent : districtCode
 								});
+								$("#wardCode").data("kendoComboBox").value(wardCode);
 							}
 						},
 						contactTelNo : result.contactTelNo,
@@ -754,7 +757,7 @@
 		var data = new FormData();
 		console.log(file);
 
-		data.append( 'displayName', "");
+		data.append( 'displayName', $(file)[0].files[0].name);
 		data.append( 'file', $(file)[0].files[0]);
 		data.append('dossierPartNo', partNo);
 		data.append('referenceUid', "");

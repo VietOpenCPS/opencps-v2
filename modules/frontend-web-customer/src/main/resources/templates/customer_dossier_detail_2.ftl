@@ -6,7 +6,7 @@
 	<div class="box" >
 		<input type="hidden" name="dossierTemplateId" id="dossierTemplateId">
 		<input type="hidden" name="dossierItemId" id="dossierItemId">
-
+		<input type="hidden" name="dossierTemplateNo" id="dossierTemplateNo">
 		<div class="row-header align-middle">
 			<div class="background-triangle-big">Tên thủ tục</div> 
 			<span class="text-bold" data-bind="text:serviceName"></span>
@@ -116,7 +116,7 @@
 			</div>
 		</div>
 
-		<form id="dossierFormSubmiting" data-bind="value:dossierTemplateNo">
+		<form id="dossierFormSubmiting">
 			<div class="dossier-parts">
 				<div class="head-part align-middle">
 					<div class="background-triangle-small">I</div> <span class="text-uppercase">Thành phần hồ sơ</span> <span class="text-light-gray"><i>Những thành phần hồ sơ có dấu (<span class="red">*</span>) là thành phần bắt buộc</i></span>
@@ -254,11 +254,12 @@
 			console.log("change");
 			var partNo = $(this).attr("part-no");
 			var fileTemplateNo = $(this).attr("file-template-no");
+			var dossierTemplateNo = $("#dossierTemplateNo").val();
 			console.log(partNo);
 			console.log(fileTemplateNo);
 			console.log($(this)[0].files[0]);
 
-			funUploadFile($(this),partNo,"${dossierTemplateId}",fileTemplateNo);
+			funUploadFile($(this),partNo,dossierTemplateNo,fileTemplateNo);
 		});
 
 		//tai giay to kho luu tru
@@ -337,7 +338,7 @@
 		transport :{
 			read : function(options){
 				$.ajax({
-					url : "${api.server}/dossiertemplates/"+options.data.dossierPart,
+					url : "${api.server}/dossiertemplates/${dossierTemplateId}",
 					dataType : "json",
 					type : "GET",
 					headers : {"groupId": ${groupId}},
@@ -345,7 +346,8 @@
 
 					},
 					success : function(result){
-						options.success(result);
+						options.success(result.dossierParts);
+						$("#dossierTemplateNo").val(result.templateNo);
 					},
 					error : function(result){
 						options.error(result);
@@ -363,7 +365,7 @@
 	var indexDossiserPart =0 ;
 	$("#lsDossierTemplPart").kendoListView({
 		dataSource : dataSourceDossierTemplate,
-		autoBind : false,
+		autoBind : true,
 		change : function(){
 			
 		},
@@ -733,11 +735,6 @@
 						stepInstruction : result.stepInstruction,
 						viaPostal : function(e){
 							/*$("#viaPostal").ckecked()*/
-						},
-						dossierTemplateNo : function(e){
-							dataSourceDossierTemplate.read({
-								dossierPart : result.dossierTemplateNo
-							});	
 						}
 
 					});

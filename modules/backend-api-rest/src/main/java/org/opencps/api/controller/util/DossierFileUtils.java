@@ -64,7 +64,7 @@ public class DossierFileUtils {
         if (dossierFile.getDossierFileId() > 0) {
             try {
                 FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
-                    dossierFile.getDossierFileId());
+                    dossierFile.getFileEntryId());
                 DLFileVersion dlFileVersion =
                     DLFileVersionLocalServiceUtil.getLatestFileVersion(
                         fileEntry.getFileEntryId(), true);
