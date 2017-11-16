@@ -79,8 +79,7 @@
 			transport: {
 				read: function(options) {
 					$.ajax({
-						//url: "${api.server}/serviceconfigs/govagencies",
-						url: "http://127.0.0.1:8887/modules/frontend-web-customer/src/main/resources/templates/datasource/domain.json",
+						url: "${api.server}/serviceconfigs/govagencies",
 						type: "GET",
 						dataType: "json",
 						headers : {"groupId": ${groupId}},
@@ -97,8 +96,7 @@
 				}
 			},
 			schema: {
-				data: "data.govAgencies"
-				//data: "govAgencies",
+				data: "govAgencies",
 			}
 		});
 

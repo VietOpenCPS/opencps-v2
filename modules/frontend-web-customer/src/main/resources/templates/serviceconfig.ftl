@@ -233,8 +233,8 @@
 
          // chuyen den man hinh chuan bi ho so
         manageDossier.navigate("/taohosomoi/chuanbihoso");
-        $("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierTemplateId="+dossierTemplateId+"&${portletNamespace}dossierId="+result.dossierId, function(result){
-        });
+        // $("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierTemplateId="+dossierTemplateId+"&${portletNamespace}dossierId="+result.dossierId, function(result){
+        // });
 
       },
       error : function(result){
@@ -250,8 +250,11 @@ $(function(){
     $("#mainType1").hide();
     $("#mainType2").show();
     $("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierTemplateId='${(dossierTemplateId)!}'&${portletNamespace}dossierId="+"${(dossierId)!}",function(result){
-
-    });
+      $('#choiseProcessForDossier').modal('hide');
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').remove();
+     });
+    
   });
 });
 </script>
