@@ -461,6 +461,11 @@
 			<finder-column name="dossierId"/>
 			<finder-column name="referenceUid"/>
 		</finder>
+
+		<finder return-type="Collection" name="DID_ISN">
+			<finder-column name="dossierId"/>
+			<finder-column name="isNew"/>
+		</finder>
 		<!-- References -->
 	</entity>
 

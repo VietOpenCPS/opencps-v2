@@ -584,7 +584,11 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 	}
-
+	
+	public List<DossierFile> getByDossierIdAndIsNew(long dossierId, boolean isNew) {
+		return dossierFilePersistence.findByDID_ISN(dossierId, isNew);
+	}
+	
 	/**
 	 * Deny if status of dossier not new or waiting
 	 * 
