@@ -53,7 +53,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 
 		HashMap<String, String> properties = new HashMap<String, String>();
 
-		String serverConfigEndpoint = "/serverconfigs";
+		String serverConfigEndpoint = "serverconfigs";
 
 		JSONObject resServerConfig = rest.callAPI(0l, HttpMethods.GET, "application/json",
 				RESTFulConfiguration.SERVER_PATH_BASE, serverConfigEndpoint, RESTFulConfiguration.SERVER_USER,
@@ -93,7 +93,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 
 						long dossierSyncId = GetterUtil.getLong(jsonDossierSync.get("dossierSyncId"));
 
-						String serverConfigDetail = "/serverconfigs/" + serverNo;
+						String serverConfigDetail = "serverconfigs/" + serverNo;
 
 						JSONObject resServerDetail = rest.callAPI(0l, HttpMethods.GET, "application/json",
 								RESTFulConfiguration.SERVER_PATH_BASE, serverConfigDetail,
@@ -102,7 +102,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 
 						long serverGroupId = getGroupId(resServerDetail);
 
-						String doDossierSyncEnpoint = "/dossiersyncs/" + dossierSyncId + "/sending";
+						String doDossierSyncEnpoint = "dossiersyncs/" + dossierSyncId + "/sending";
 
 						JSONObject resDoDossierSync = rest.callAPI(serverGroupId, HttpMethods.GET, "application/json",
 								RESTFulConfiguration.CLIENT_PATH_BASE, doDossierSyncEnpoint,

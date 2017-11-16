@@ -214,7 +214,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 			String httpMethod = HttpMethods.POST;
 
-			String endPoint = "/dossiers";
+			String endPoint = "dossiers";
 
 			Map<String, Object> params = getParamsPostDossier(dossierSyncId);
 
