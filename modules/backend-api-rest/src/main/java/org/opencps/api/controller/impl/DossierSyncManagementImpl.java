@@ -122,10 +122,6 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException();
-			}
-
 			DossierSync dossierSync = DossierSyncLocalServiceUtil.fetchDossierSync(id);
 
 			DossierSyncSendingModel result = new DossierSyncSendingModel();

@@ -1,26 +1,19 @@
 package org.opencps.dossiermgt.scheduler;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Base64;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.communication.model.ServerConfig;
-import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -40,105 +33,72 @@ import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 @Component(immediate = true, service = DossierSyncScheduler.class)
 public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
-	private final String baseUrl = "http://localhost:8080/o/rest/v2/";
-	private final String username = "test@liferay.com";
-	private final String password = "test";
-	private final String serectKey = "OPENCPSV2";
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		
 		_log.info("OpenCPS SYNC DOSSIERS IS STARTING : " + APIDateTimeUtils.convertDateToString(new Date()));
 
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(company.getCompanyId());
 
-		List<ServerConfig> servers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
+		InvokeREST rest = new InvokeREST();
 
-		for (ServerConfig server : servers) {
-			// Call API GET the list of DOSSIER need to synchronize
+		// Get all SERVER NO need to DOSSIER sync to
 
-			try {
-				String path = "dossiersyncs/server/" + server.getServerNo();
+		HashMap<String, String> properties = new HashMap<String, String>();
 
-				URL url = new URL(baseUrl + path);
+		String serverConfigEndpoint = "/serverconfigs";
 
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		JSONObject resServerConfig = rest.callAPI(0l, HttpMethods.GET, "application/json",
+				RESTFulConfiguration.SERVER_PATH_BASE, serverConfigEndpoint, RESTFulConfiguration.SERVER_USER,
+				RESTFulConfiguration.SERVER_PASS, properties, serviceContext);
 
-				String authString = username + ":" + password;
+		List<String> lsServerNo = getListServerNo(resServerConfig);
 
-				String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
-				conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+		for (String serverNo : lsServerNo) {
 
-				conn.setRequestMethod(HttpMethods.GET);
-				conn.setDoInput(true);
-				conn.setDoOutput(true);
-				conn.setRequestProperty("Accept", "application/json");
-				// conn.setRequestProperty("Content-Type",
-				// "application/x-www-form-urlencoded");
-				// conn.setRequestProperty("groupId", String.valueOf(groupId));
+			String dossierSyncEndpoint = "dossiersyncs/server/" + serverNo;
 
-				if (conn.getResponseCode() != 200) {
-					throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
-				}
+			JSONObject resDossierSync = rest.callAPI(0l, HttpMethods.GET, "application/json",
+					RESTFulConfiguration.CLIENT_PATH_BASE, dossierSyncEndpoint, RESTFulConfiguration.CLIENT_USER,
+					RESTFulConfiguration.CLIENT_PASS, properties, serviceContext);
 
-				BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+			if (resDossierSync.getInt(RESTFulConfiguration.STATUS) == 200) {
 
-				String output;
+				JSONObject jsData = JSONFactoryUtil
+						.createJSONObject(resDossierSync.getString(RESTFulConfiguration.MESSAGE));
 
-				StringBuilder sb = new StringBuilder();
+				JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
 
-				while ((output = br.readLine()) != null) {
-					sb.append(output);
-				}
+				for (int i = 0; i < jsArrayData.length(); i++) {
 
-				JSONObject jsData = JSONFactoryUtil.createJSONObject(sb.toString());
-
-				JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
-
-				for (int i = 0; i < array.length(); i++) {
-					JSONObject jsonDossierSync = array.getJSONObject(i);
-
-					//_log.info("DOSSIER_SYNC_STARTTING" + jsonDossierSync.get("dossierSyncId"));
+					JSONObject jsonDossierSync = jsArrayData.getJSONObject(i);
 
 					try {
-						
+
 						long dossierSyncId = GetterUtil.getLong(jsonDossierSync.get("dossierSyncId"));
-						
-						//DossierSync dossierSync = DossierSyncLocalServiceUtil.fetchDossierSync(dossierSyncId);
-						
-						// Sending DossierSync
-						String sendingPath = "dossiersyncs/" + dossierSyncId
-								+ "/sending";
 
-						URL sendingUrl = new URL(baseUrl + sendingPath);
+						String serverConfigDetail = "/serverconfigs/" + serverNo;
 
-						HttpURLConnection sendingConn = (HttpURLConnection) sendingUrl.openConnection();
+						JSONObject resServerDetail = rest.callAPI(0l, HttpMethods.GET, "application/json",
+								RESTFulConfiguration.SERVER_PATH_BASE, serverConfigDetail,
+								RESTFulConfiguration.SERVER_USER, RESTFulConfiguration.SERVER_PASS, properties,
+								serviceContext);
 
-						sendingConn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+						long serverGroupId = getGroupId(resServerDetail);
 
-						sendingConn.setRequestMethod(HttpMethods.GET);
-						sendingConn.setDoInput(true);
-						sendingConn.setDoOutput(true);
-						sendingConn.setRequestProperty("Accept", "application/json");
-						sendingConn.setRequestProperty("groupId", String.valueOf(server.getGroupId()));
-						
-						if (sendingConn.getResponseCode() != 200) {
-							throw new RuntimeException("Failed : HTTP error code : " + sendingConn.getResponseCode());
-						} else {
-							
-							//_log.info("DOSSIER_SYNC_DONE" + jsonDossierSync.get("dossierSyncId"));
-							
-							//Remove DossierSync
-							
-							//DossierSyncLocalServiceUtil.deleteDossierSync(dossierSync);
-						}
+						String doDossierSyncEnpoint = "/dossiersyncs/" + dossierSyncId + "/sending";
 
-						sendingConn.disconnect();
+						JSONObject resDoDossierSync = rest.callAPI(serverGroupId, HttpMethods.GET, "application/json",
+								RESTFulConfiguration.CLIENT_PATH_BASE, doDossierSyncEnpoint,
+								RESTFulConfiguration.CLIENT_USER, RESTFulConfiguration.CLIENT_PASS, properties,
+								serviceContext);
 
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -146,21 +106,56 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 
 				}
 
-				conn.disconnect();
+			}
+		}
+		_log.info("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 
-			} catch (MalformedURLException e) {
+	}
 
-				e.printStackTrace();
-			} catch (IOException e) {
+	private List<String> getListServerNo(JSONObject response) {
+		List<String> lsServer = new ArrayList<>();
 
-				e.printStackTrace();
+		try {
+
+			if (response.getInt(RESTFulConfiguration.STATUS) == 200) {
+
+				JSONObject jsData = JSONFactoryUtil.createJSONObject(response.getString(RESTFulConfiguration.MESSAGE));
+
+				JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+
+				for (int i = 0; i < jsArrayData.length(); i++) {
+					JSONObject elm = jsArrayData.getJSONObject(i);
+
+					if (Validator.isNotNull(elm.getString("serverNo"))) {
+						lsServer.add(elm.getString("serverNo"));
+					}
+				}
 
 			}
 
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		
-		_log.info("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 
+		return lsServer;
+	}
+
+	private long getGroupId(JSONObject response) {
+		long groupId = 0l;
+
+		try {
+
+			if (response.getInt(RESTFulConfiguration.STATUS) == 200) {
+
+				JSONObject jsData = JSONFactoryUtil.createJSONObject(response.getString(RESTFulConfiguration.MESSAGE));
+				groupId = jsData.getLong("groupId");
+			}
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		return groupId;
 	}
 
 	@Activate

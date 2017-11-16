@@ -865,6 +865,11 @@
 		<column name="fileReferenceUid" type="String"/>
 		<column name="serverNo" type="String"/>
 		
+		<order>
+			<order-column name="dossierId" order-by="asc"/>
+			<order-column name="method" order-by="asc"/>
+		</order>
+		
 		<finder return-type="Collection" name="G_ID">
 			<finder-column name="groupId"/>
 		</finder>
@@ -879,9 +884,10 @@
 			<finder-column name="dossierReferenceUid"/>
 		</finder>
 		
-		<finder return-type="Collection" name="SRV_NO">
+		<finder return-type="Collection" name="SRV_NO" >
 			<finder-column name="serverNo"/>
 		</finder>
+		
 		
 	</entity>
 

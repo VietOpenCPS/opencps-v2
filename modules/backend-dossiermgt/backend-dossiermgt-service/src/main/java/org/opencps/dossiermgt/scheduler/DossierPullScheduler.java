@@ -73,11 +73,14 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 	private final String password = "test";
 	private final String serectKey = "OPENCPSV2";
 	private static final int BUFFER_SIZE = 4096;
+	public static final String SERVER_USER = PropsUtil.get("jdbc.default.driverClassName");
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
 
 		_log.info("OpenCPS PULL DOSSIERS IS STARTING : " + APIDateTimeUtils.convertDateToString(new Date()));
+		
+		_log.info(SERVER_USER);
 
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 
