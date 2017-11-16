@@ -70,7 +70,8 @@
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="cityCode" name="cityCode" data-bind="value : cityCode" required="required" validationMessage="Bạn phải chọn Tỉnh/ Thành phố">
+									<select class="form-control" id="cityCode" name="cityCode" data-bind="value : cityCode" required="required" validationMessage="Bạn phải chọn Tỉnh/ Thành phố"> 
+									</select>
 									<span data-for="cityCode" class="k-invalid-msg"></span>
 								</div>
 							</div>
@@ -80,7 +81,8 @@
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="districtCode" name="districtCode" data-bind="value : districtCode" required="required" validationMessage="Bạn phải chọn Quận/ Huyện"> 
+									<select class="form-control" id="districtCode" name="districtCode" data-bind="value : districtCode" required="required" validationMessage="Bạn phải chọn Quận/ Huyện"> 
+									</select>
 									<span data-for="districtCode" class="k-invalid-msg"></span>
 								</div>
 							</div>
@@ -90,7 +92,8 @@
 							</div>
 							<div class="col-sm-2 PL0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="wardCode" name="wardCode" data-bind="value : wardCode" required="required" validationMessage="Bạn phải chọn Xã/ Phường"> 
+									<select class="form-control" id="wardCode" name="wardCode" data-bind="value : wardCode" required="required" validationMessage="Bạn phải chọn Xã/ Phường"> 
+									</select>
 									<span data-for="wardCode" class="k-invalid-msg"></span>
 								</div>
 							</div>
@@ -247,8 +250,6 @@
 <script type="text/javascript">
 
 	$(function(){
-
-
 
 		var fnBindDossierTemplClick = function(){
 		//upload file click
@@ -457,13 +458,7 @@
 				//finish PUT dossier create action for dossier
 				createActionDossier(${dossierId});
 
-				manageDossier.navigate("/taohosomoi/nophoso");
-
-				$("#mainType1").hide();
-				$("#mainType2").show();
-				$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierTemplateId=${(dossierTemplateId)!}&${portletNamespace}dossierId="+"${(dossierId)!}",function(result){
-
-				});
+				manageDossier.navigate("/taohosomoi/nophoso/"+"${dossierTemplateId}"+ "&${dossierId}");
 
 			},
 			error:function(result){
@@ -507,20 +502,22 @@
 		autoBind : false,
 		dataSource : {
 			transport : {
-				read : {
-					/*url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",*/
-					dataType : "json",
-					type : "GET",
-					headers: {"groupId": ${groupId}},
-					data : {
-						parent : 0
-					},
-					success : function(result){
-
-					},
-					error : function(result){
-
-					}
+				read : function(options){
+					$.ajax({
+						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+						dataType : "json",
+						type : "GET",
+						headers: {"groupId": ${groupId}},
+						data : {
+							parent : 0
+						},
+						success : function(result){
+							options.success(result);
+						},
+						error : function(result){
+							options.error(result);
+						}
+					});
 				}
 			},
 			schema : {
@@ -549,7 +546,7 @@
 			transport : {
 				read : function(options){
 					$.ajax({
-						/*url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",*/
+						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
 						dataType : "json",
 						type : "GET",
 						headers: {"groupId": ${groupId}},
@@ -591,7 +588,7 @@
 			transport : {
 				read : function(options){
 					$.ajax({
-						/*url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",*/
+						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
 						dataType : "json",
 						type : "GET",
 						headers: {"groupId": ${groupId}},
@@ -625,7 +622,7 @@
 			transport : {
 				read : function(options){
 					$.ajax({
-						/*url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",*/
+						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
 						dataType : "json",
 						type : "GET",
 						headers: {"groupId": ${groupId}},
@@ -683,6 +680,9 @@
 								parent : 0
 							});
 							$("#cityCode").data("kendoComboBox").value(result.cityCode);
+							$("#cityCode").data("kendoComboBox")._isSelect = false;
+							return; 
+
 						},
 						districtCode : function(e){
 							var cityCode = result.cityCode;
@@ -691,8 +691,10 @@
 									parent : cityCode
 								});
 								$("#districtCode").data("kendoComboBox").value(result.districtCode);
+								$("#districtCode").data("kendoComboBox")._isSelect = false;
 
 							}
+							return; 
 						},
 						wardCode : function(e){
 							var districtCode = result.districtCode;
@@ -701,7 +703,9 @@
 									parent : districtCode
 								});
 								$("#wardCode").data("kendoComboBox").value(result.wardCode);
+								$("#wardCode").data("kendoComboBox")._isSelect = false;
 							}
+							return;
 						},
 						contactTelNo : result.contactTelNo,
 						contactEmail : result.contactEmail,
@@ -848,10 +852,10 @@
 });
 
 $(function(){
-	manageDossier.route("/taohosomoi/nophoso/", function(id){
+	manageDossier.route("/taohosomoi/nophoso/(:dossierTemplateId)&(:dossierId)", function(dossierTemplateId, dossierId){
 		$("#mainType1").hide();
 		$("#mainType2").show();
-		$("#mainType2").load("${ajax.customer_dossier_detail_2}",function(result){
+		$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierTemplateId="+dossierTemplateId+"&${portletNamespace}dossierId="+dossierId,function(result){
 
 		});
 	});
