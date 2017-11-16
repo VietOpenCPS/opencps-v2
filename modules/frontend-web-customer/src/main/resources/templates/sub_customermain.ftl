@@ -145,7 +145,9 @@
 					"status":id
 				});
 			});
+	
         });
+        
         router.bind("change", function(e) {
 			var statusDossier = e.url.slice(12);
 			$(".itemStatus").css("pointer-events","auto");
@@ -364,16 +366,41 @@
 				);
 		});
 
-		$("#btn_create_new_dossier").click(function(){
-			$("#dossier_detail").hide();
+		router.route("/newdossier(/:category)", function(category) {
+            $("#dossier_detail").hide();
 			$("#dossier_list").hide();
 			$("#left_container").show();
 			$("#left_container").load(
 				"${ajax.serviceconfig}",
 				function(){
-
+					if (category == 'doman') {
+						$('#btn_fillter_by_admintration').removeClass('btn-active');
+				        $('#btn_fillter_by_domain').addClass('btn-active');
+				        $('#serviceconfig_container').load("${ajax.serviceconfig_domain}");
+				        $('#input_search').val('');
+					} else {
+						$('#btn_fillter_by_admintration').addClass('btn-active');
+				        $('#btn_fillter_by_domain').removeClass('btn-active');
+				        $('#serviceconfig_container').load("${ajax.serviceconfig_administration}");
+				        $('#input_search').val('');
+					}
 				}
 			);
+			
+		
+        });
+
+		$("#btn_create_new_dossier").click(function(){
+			router.navigate("/newdossier");
+			// $("#dossier_detail").hide();
+			// $("#dossier_list").hide();
+			// $("#left_container").show();
+			// $("#left_container").load(
+			// 	"${ajax.serviceconfig}",
+			// 	function(){
+
+			// 	}
+			// );
 		});
 
 		$("#profileStatus > li").click(function(){
