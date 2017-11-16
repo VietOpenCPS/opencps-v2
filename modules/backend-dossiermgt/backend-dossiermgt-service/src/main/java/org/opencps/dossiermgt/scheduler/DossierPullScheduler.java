@@ -434,7 +434,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 				// check file was existed in CLIENT, if existed then call
 				// updated method
-
+				
 				try {
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId,
 							fileRef);

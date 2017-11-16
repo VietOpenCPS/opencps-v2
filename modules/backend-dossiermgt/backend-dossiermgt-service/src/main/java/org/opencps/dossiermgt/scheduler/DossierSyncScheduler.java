@@ -40,7 +40,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		
+
 		_log.info("OpenCPS SYNC DOSSIERS IS STARTING : " + APIDateTimeUtils.convertDateToString(new Date()));
 
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
@@ -75,6 +75,15 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 						.createJSONObject(resDossierSync.getString(RESTFulConfiguration.MESSAGE));
 
 				JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+
+				// Grouping DossierSync by DossierId and order by SyncMethod
+				HashMap<Long, JSONArray> dossierSyncs = new HashMap<Long, JSONArray>();
+
+				for (int i = 0; i < jsArrayData.length(); i++) {
+
+					// TODO add logic for grouping and ordering here
+
+				}
 
 				for (int i = 0; i < jsArrayData.length(); i++) {
 
