@@ -36,6 +36,7 @@
 						url:"${api.server}/dossiers",
 						dataType:"json",
 						type:"GET",
+						headers : {"groupId": ${groupId}},
 						data:{
 							service: options.data.serviceInfo,
 							agency: options.data.govAgencyCode,
@@ -98,6 +99,7 @@
 						url:"${api.server}/dossierlogs",
 						dataType:"json",
 						type:"GET",
+						headers : {"groupId": ${groupId}},
 						data:{
 							type:123,
 							sort: options.data.sort_modified
@@ -131,6 +133,7 @@
 						url:"${api.server}/dossierlogs",
 						dataType:"json",
 						type:"GET",
+						headers : {"groupId": ${groupId}},
 						data:{
 							type: 234,
 							sort: options.data.sort_modified
@@ -164,6 +167,7 @@
 						url:"${api.server}/dossierlogs",
 						dataType:"json",
 						type:"GET",
+						headers : {"groupId": ${groupId}},
 						data:{
 							type: 345,
 							sort: options.data.sort_modified
