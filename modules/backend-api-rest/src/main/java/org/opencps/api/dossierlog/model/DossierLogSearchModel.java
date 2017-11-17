@@ -51,7 +51,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "DossierLogSearchModel")
 public class DossierLogSearchModel {
-	@FormParam(value = "notificationType")
+	@FormParam(value = "type")
 	protected Integer notificationType;
 	@DefaultValue("true") @FormParam(value = "owner")
     protected Boolean owner;
