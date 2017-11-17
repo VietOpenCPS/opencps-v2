@@ -47,6 +47,7 @@
                     url:"http://localhost:3000/notification",
                     dataType:"json",
                     type:"GET",
+                    headers : {"groupId": ${groupId}},
                     success:function(result){   
                         options.success(result);   
                     },
