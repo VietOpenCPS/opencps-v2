@@ -65,7 +65,9 @@ import javax.xml.bind.annotation.XmlType;
     "signCheck",
     "signInfo",
     "removed",
-    "eForm"
+    "eForm",
+    "formData",
+    "formReport"
 })
 @XmlRootElement(name = "DossierFileModel")
 public class DossierFileModel {
@@ -86,6 +88,24 @@ public class DossierFileModel {
     protected String signInfo;
     protected Boolean removed;
     protected Boolean eForm;
+	protected String formData;
+    protected String formReport;
+
+    public String getFormData() {
+		return formData;
+	}
+
+	public void setFormData(String formData) {
+		this.formData = formData;
+	}
+
+	public String getFormReport() {
+		return formReport;
+	}
+
+	public void setFormReport(String formReport) {
+		this.formReport = formReport;
+	}
 
     /**
      * Gets the value of the createDate property.
