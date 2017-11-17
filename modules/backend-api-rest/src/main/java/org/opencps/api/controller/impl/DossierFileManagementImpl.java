@@ -107,7 +107,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	@Override
 	public Response addDossierFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String referenceUid,
-			String dossierTemplateNo, String dossierPartNo, String fileTemplateNo, String displayName) {
+			String dossierTemplateNo, String dossierPartNo, String fileTemplateNo, String displayName, String fileType, String isSync) {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -142,7 +142,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			DossierFile dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid,
 					dossierTemplateNo, dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
-					dataHandler.getInputStream(), serviceContext);
+					dataHandler.getInputStream(), fileType, isSync, serviceContext);
 
 			DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
 

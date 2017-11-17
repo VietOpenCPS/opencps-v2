@@ -91,7 +91,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile addDossierFile(long groupId, long dossierId, String referenceUid, String dossierTemplateNo,
 			String dossierPartNo, String fileTemplateNo, String displayName, String sourceFileName, long fileSize,
-			InputStream inputStream, ServiceContext serviceContext) throws PortalException, SystemException {
+			InputStream inputStream, String fileType, String isSync, ServiceContext serviceContext) throws PortalException, SystemException {
 
 		long userId = serviceContext.getUserId();
 
@@ -102,7 +102,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		long fileEntryId = 0;
 
 		try {
-			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, inputStream, sourceFileName, null,
+			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, inputStream, sourceFileName, fileType,
 					fileSize, serviceContext);
 
 			if (fileEntry != null) {
@@ -147,7 +147,12 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		object.setDisplayName(displayName);
 		object.setOriginal(true);
-		object.setIsNew(true);
+		
+		if (Validator.isNotNull(isSync) && GetterUtil.getBoolean(isSync)) {
+			object.setIsNew(true);
+		} else {
+			object.setIsNew(false);
+		}
 		
 
 		return dossierFilePersistence.update(object);

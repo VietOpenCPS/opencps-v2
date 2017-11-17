@@ -110,7 +110,9 @@ public interface DossierFileManagement {
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("dossierTemplateNo") String dossierTemplateNo,
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("dossierPartNo") String dossierPartNo,
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("fileTemplateNo") String fileTemplateNo,
-			@ApiParam(value = "Metadata of DossierFile") @Multipart("displayName") String displayName);
+			@ApiParam(value = "Metadata of DossierFile") @Multipart("displayName") String displayName,
+			@ApiParam(value = "Metadata of DossierFile") @Multipart("fileType") String fileType,
+			@ApiParam(value = "Metadata of DossierFile") @Multipart("isSync") String isSync);
 
 	/*
 	 * @POST

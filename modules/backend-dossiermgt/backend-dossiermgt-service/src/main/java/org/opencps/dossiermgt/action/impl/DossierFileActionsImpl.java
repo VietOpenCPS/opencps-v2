@@ -30,11 +30,11 @@ public class DossierFileActionsImpl implements DossierFileActions {
 	@Override
 	public DossierFile addDossierFile(long groupId, long dossierId, String referenceUid, String dossierTemplateNo,
 			String dossierPartNo, String fileTemplateNo, String displayName, String sourceFileName, long fileSize,
-			InputStream inputStream, ServiceContext serviceContext) 
+			InputStream inputStream, String fileType, String isSync, ServiceContext serviceContext) 
 		throws SystemException, PortalException {
 		
 		return DossierFileLocalServiceUtil.addDossierFile(groupId, dossierId, referenceUid, dossierTemplateNo,
-				dossierPartNo, fileTemplateNo, displayName, sourceFileName, fileSize, inputStream, serviceContext);
+				dossierPartNo, fileTemplateNo, displayName, sourceFileName, fileSize, inputStream, fileType, isSync, serviceContext);
 	}
 
 	@Override

@@ -271,6 +271,8 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
 
+			properties.put("fileType", fileEntry.getExtension());
+
 			DLFileVersion dlFileVersion = DLFileVersionLocalServiceUtil.getLatestFileVersion(fileEntry.getFileEntryId(),
 					true);
 
