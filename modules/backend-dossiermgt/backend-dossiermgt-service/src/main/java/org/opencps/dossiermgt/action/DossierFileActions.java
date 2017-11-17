@@ -13,7 +13,7 @@ public interface DossierFileActions {
 
 	public DossierFile addDossierFile(long groupId, long dossierId, String referenceUid, String dossierTemplateNo,
 			String dossierPartNo, String fileTemplateNo, String displayName, String sourceFileName, long fileSize,
-			InputStream inputStream, ServiceContext serviceContext)
+			InputStream inputStream, String fileType, String isSync, ServiceContext serviceContext)
 		throws SystemException, PortalException ;
 
 	public DossierFile cloneDossierFile(long groupId, long dossierId, long dossierFileId, String dossierTemplateNo,

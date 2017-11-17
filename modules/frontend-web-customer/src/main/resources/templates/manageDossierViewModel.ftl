@@ -95,7 +95,7 @@
 			transport:{
 				read:function(options){
 					$.ajax({
-						url:"${api.server}/dossiers/dossierlogs",
+						url:"${api.server}/dossierlogs",
 						dataType:"json",
 						type:"GET",
 						data:{
@@ -105,14 +105,12 @@
 						success:function(result){
 							if(result.data){
 								options.success(result);
-								$("#total_Additional_Requirement").text(dataAddRequest.total())
-							}else{
-								$("#sideItemAdd").hide();
+								$("#sideItemAdd").show();
+								$("#total_Additional_Requirement").text(dataAddRequest.total());
 							}
 						},
 						error:function(result){
 							options.error(result);
-							$("#sideItemAdd").hide()
 						}
 					});
 				}
@@ -130,7 +128,7 @@
 			transport:{
 				read:function(options){
 					$.ajax({
-						url:"${api.server}/dossiers/dossierlogs",
+						url:"${api.server}/dossierlogs",
 						dataType:"json",
 						type:"GET",
 						data:{
@@ -140,14 +138,12 @@
 						success:function(result){
 							if(result.data){
 								options.success(result);
-								$("#total_Payment_Request").text(dataPayRequest.total())
-							}else{
-								$("#sideItemPayment").hide();
+								$("#sideItemPayment").show();
+								$("#total_Payment_Request").text(dataPayRequest.total());
 							}
 						},
 						error:function(result){
 							options.error(result);
-							$("#sideItemPayment").hide()
 						}
 					});
 				}
@@ -165,7 +161,7 @@
 			transport:{
 				read:function(options){
 					$.ajax({
-						url:"${api.server}/dossiers/dossierlogs",
+						url:"${api.server}/dossierlogs",
 						dataType:"json",
 						type:"GET",
 						data:{
@@ -175,14 +171,12 @@
 						success:function(result){
 							if(result.data){
 								options.success(result);
-								$("#total_result").text(dataResult.total())
-							}else{
-								$("#sideItemResult").hide();
+								$("#sideItemResult").show();
+								$("#total_result").text(dataResult.total());
 							}
 						},
 						error:function(result){
 							options.error(result);
-							$("#sideItemResult").hide()
 						}
 					});
 				}
@@ -279,7 +273,7 @@
 				e.preventDefault();
 				var dossierItemStatus = e.data.dossierStatus;
 				var id = $(e.currentTarget).attr("dataPk");
-				manageDossier.navigate("/dossierStatus"+dossierItemStatus+"/detailDossier"+id);	
+				manageDossier.navigate("/"+dossierItemStatus+"/dossiers/"+id);	
 			},
 		});
 		
@@ -304,7 +298,7 @@
 								type:"GET",
 								success:function(result){
 									var dossierItemStatus = result.dossierStatus;
-									manageDossier.navigate("/dossierStatus"+dossierItemStatus+"/detailDossier"+id)
+									manageDossier.navigate("/"+dossierItemStatus+"/dossiers/"+id)
 								},
 								error:function(result){
 									options.error(result);

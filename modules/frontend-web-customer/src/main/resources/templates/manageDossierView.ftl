@@ -8,7 +8,7 @@
 							<i class="fa fa-file-text"></i>
 						</div> 
 						<span class="text-bold">KÊT QUẢ TÌM KIẾM HỒ SƠ</span> 
-						<div class="form-group search-icon pull-right MT5 MB5 MR10">
+						<div class="form-group search-icon pull-right MB0 MR10" style="margin-top:3px">
 							<input type="text" class="form-control" id="keyInput" placeholder="Nhập từ khóa" data-bind="events: { keyup: filterKey}">
 						</div>
 					</div>	
@@ -144,7 +144,7 @@
 	<script type="text/x-kendo-template" id="sidebarTemplate">
 		<div class="row">
 			<div class="col-sm-12" id="customer_additional_requirements">
-				<div class="panel panel-main" id="sideItemAdd"> 
+				<div class="panel panel-main" id="sideItemAdd" style="display: none"> 
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Yêu cầu bổ sung</span>
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#additionalRequirement">
@@ -164,7 +164,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-12" id="customer_payment_request">
+			<div class="col-sm-12" id="customer_payment_request" style="display: none">
 				<div class="panel panel-main MT15" id="sideItemPayment"> 
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Yêu cầu thanh toán</span> 
@@ -186,7 +186,7 @@
 					</div> 
 				</div>
 			</div>
-			<div class="col-sm-12" id="customer_result_request">
+			<div class="col-sm-12" id="customer_result_request" style="display: none">
 				<div class="panel panel-main MT15" id="sideItemResult"> 
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Trả kết quả</span> 

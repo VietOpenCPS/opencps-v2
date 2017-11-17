@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -19,10 +20,12 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.MultipartUtility;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
@@ -70,17 +73,22 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 	private final String password = "test";
 	private final String serectKey = "OPENCPSV2";
 	private static final int BUFFER_SIZE = 4096;
+	public static final String SERVER_USER = PropsUtil.get("jdbc.default.driverClassName");
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
 
-		_log.info("OpenCPS get DOSSIERS.....");
+		_log.info("OpenCPS PULL DOSSIERS IS STARTING : " + APIDateTimeUtils.convertDateToString(new Date()));
+		
+		_log.info(SERVER_USER);
 
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
-		ServiceContext serviceContext = new ServiceContext();
-		serviceContext.setCompanyId(company.getCompanyId());
 
 		User systemUser = UserLocalServiceUtil.getUserByEmailAddress(company.getCompanyId(), username);
+
+		ServiceContext serviceContext = new ServiceContext();
+		serviceContext.setCompanyId(company.getCompanyId());
+		serviceContext.setUserId(systemUser.getUserId());
 
 		try {
 			String path = "dossiers?submitting=true&secetKey=" + serectKey;
@@ -121,7 +129,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				pullDossier(company, object, systemUser);
 			}
 
-			System.out.println(sb.toString());
+			// System.out.println(sb.toString());
 
 			conn.disconnect();
 
@@ -133,6 +141,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			e.printStackTrace();
 
 		}
+
+		_log.info("OpenCPS PULL DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 
 	}
 
@@ -278,12 +288,12 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			// get the list of file of source dossier need to sync
 			getDossierFiles(sourceGroupId, dossierId, lsFileSync);
 
-			pullDossierFiles(desDossier.getGroupId(), desDossier.getDossierId(), lsFileSync, sourceGroupId, dossierId);
+			pullDossierFiles(desDossier.getGroupId(), desDossier.getDossierId(), lsFileSync, sourceGroupId, dossierId,
+					referenceUid, serviceContext);
 
 		}
 
 		// ResetDossier
-
 		resetDossier(sourceGroupId, referenceUid);
 
 	}
@@ -291,7 +301,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 	private void resetDossier(long groupId, String refId) {
 		try {
 
-			_log.info("GROUPID_ID" + groupId);
+			// _log.info("GROUPID_ID" + groupId);
 
 			String path = "dossiers/" + refId + "/reset";
 			URL url = new URL(baseUrl + path);
@@ -325,7 +335,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 			}
 
-			System.out.println(sb.toString());
+			// System.out.println(sb.toString());
 
 			conn.disconnect();
 
@@ -337,6 +347,9 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			e.printStackTrace();
 
 		}
+
+		_log.info("OpenCPS RESET DOSSIERS HAS BEEN DONE : groupID=" + groupId + ", dossierRef=" + refId);
+
 	}
 
 	private void getDossierFiles(long groupId, long dossierId, List<JSONObject> lsFileSync) {
@@ -400,21 +413,37 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			e.printStackTrace();
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	private void pullDossierFiles(long desGroupId, long dossierId, List<JSONObject> lsFileSync, long srcGroupId,
-			long srcDossierId) {
+			long srcDossierId, String dossierRef, ServiceContext serviceContext) {
 
 		for (JSONObject ref : lsFileSync) {
 
 			try {
 
-				String path = "dossiers/" + srcDossierId + "/files/" + ref.getString("referenceUid");
+				// Sync DossierFile
 
-				String requestURL = baseUrl + "dossiers/" + dossierId + "/files/";
+				String fileRef = ref.getString("referenceUid");
+
+				String path = "dossiers/" + srcDossierId + "/files/" + fileRef;
+
+				String requestURL = baseUrl + "dossiers/" + dossierId + "/files";
+
+				// check file was existed in CLIENT, if existed then call
+				// updated method
+				
+				try {
+					DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId,
+							fileRef);
+					if (Validator.isNotNull(dossierFile)) {
+						requestURL = requestURL + StringPool.FORWARD_SLASH + fileRef;
+					}
+				} catch (Exception e) {
+					// TODO: Don't doing anything
+				}
 
 				URL url = new URL(baseUrl + path);
 
@@ -438,23 +467,26 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				if (responseCode != 200) {
 					throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 				} else {
-					String fileName = "";
-					String disposition = conn.getHeaderField("Content-Disposition");
-					String contentType = conn.getContentType();
-					int contentLength = conn.getContentLength();
-
-					if (disposition != null) {
-						// extracts file name from header field
-						int index = disposition.indexOf("filename=");
-						if (index > 0) {
-							fileName = disposition.substring(index + 10, disposition.length() - 1);
-						}
-					}
-
-					System.out.println("Content-Type = " + contentType);
-					System.out.println("Content-Disposition = " + disposition);
-					System.out.println("Content-Length = " + contentLength);
-					System.out.println("fileName = " + fileName);
+					// String fileName = "";
+					// String disposition =
+					// conn.getHeaderField("Content-Disposition");
+					// String contentType = conn.getContentType();
+					// int contentLength = conn.getContentLength();
+					//
+					// if (disposition != null) {
+					// // extracts file name from header field
+					// int index = disposition.indexOf("filename=");
+					// if (index > 0) {
+					// fileName = disposition.substring(index + 10,
+					// disposition.length() - 1);
+					// }
+					// }
+					//
+					// System.out.println("Content-Type = " + contentType);
+					// System.out.println("Content-Disposition = " +
+					// disposition);
+					// System.out.println("Content-Length = " + contentLength);
+					// System.out.println("fileName = " + fileName);
 
 					InputStream is = conn.getInputStream();
 
@@ -476,11 +508,14 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 					pullDossierFile(requestURL, "UTF-8", desGroupId, dossierId, authStringEnc, tempFile,
 							ref.getString("dossierTemplateNo"), ref.getString("dossierPartNo"),
-							ref.getString("fileTemplateNo"), ref.getString("displayName"));
+							ref.getString("fileTemplateNo"), ref.getString("displayName"), ref.getString("formData"),
+							dossierRef, fileRef, serviceContext);
 
 				}
 
 				conn.disconnect();
+
+				// Sync DossierForm
 
 			} catch (MalformedURLException e) {
 
@@ -497,13 +532,15 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 	private void pullDossierFile(String requestURL, String charset, long desGroupId, long dossierId,
 			String authStringEnc, File file, String dossierTemplateNo, String dossierPartNo, String fileTemplateNo,
-			String displayName) {
+			String displayName, String formData, String dossierRef, String fileRef, ServiceContext serviceContext) {
 
 		try {
 			MultipartUtility multipart = new MultipartUtility(requestURL, charset, desGroupId, authStringEnc);
+			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
+			String referenceUid = PortalUUIDUtil.generate();
 
 			multipart.addFilePart("file", file);
-			multipart.addFormField("referenceUid", PortalUUIDUtil.generate());
+			multipart.addFormField("referenceUid", fileRef);
 			multipart.addFormField("dossierTemplateNo", dossierTemplateNo);
 			multipart.addFormField("dossierPartNo", dossierPartNo);
 			multipart.addFormField("fileTemplateNo", fileTemplateNo);
@@ -511,12 +548,63 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 			List<String> response = multipart.finish();
 
-			System.out.println("SERVER REPLIED:");
+			updateFormData(desGroupId, response, dossierId, formData, serviceContext);
+			
+			resetDossier(desGroupId, dossierRef);
 
-			for (String line : response) {
-				System.out.println(line);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+	}
+
+	private void updateFormData(long desGroupId, List<String> response, long dossierId, String formData,
+			ServiceContext serviceContext) throws PortalException {
+
+		StringBuilder sb = new StringBuilder();
+
+		for (String line : response) {
+			sb.append(line);
+		}
+
+		JSONObject jsDossierFile = JSONFactoryUtil.createJSONObject(sb.toString());
+
+		String fileRef = jsDossierFile.getString("referenceUid");
+
+		DossierFileLocalServiceUtil.updateFormData(desGroupId, dossierId, fileRef, formData, serviceContext);
+
+	}
+
+	private void updateFormData(long desGroupId, long dossierId, String fileRef, String formData,
+			ServiceContext serviceContext) throws PortalException {
+		String path = "dossiers/" + dossierId + "/files/" + fileRef;
+		// "/formdata";
+		// DossierFileLocalServiceUtil.updateFormData(desGroupId, dossierId,
+		// fileRef, formData, serviceContext);
+		try {
+			URL url = new URL(baseUrl + path);
+
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+			String authString = username + ":" + password;
+
+			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
+			conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+
+			conn.setRequestMethod(HttpMethods.PUT);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setRequestProperty("Accept", "application/json");
+
+			conn.setRequestProperty("groupId", String.valueOf(desGroupId));
+			conn.setRequestProperty("formdata", formData);
+			int responseCode = conn.getResponseCode();
+
+			if (responseCode != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			}
 
+			conn.disconnect();
 		} catch (Exception e) {
 			_log.error(e);
 		}
