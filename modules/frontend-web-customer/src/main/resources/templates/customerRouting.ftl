@@ -27,6 +27,16 @@
 		$("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
 		$(".itemStatus").css("pointer-events","auto"); 
 	});
+	manageDossier.route("/thongbao", function(){
+            console.log("RUNNNNNNNNN");
+            $("#mainType1").hide();
+            $("#mainType2").show();
+            $("#mainType2").load("${ajax.notification}",function(result){
+            });
+            $("#profileStatus li").removeClass('active');
+            $("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
+            $(".itemStatus").css("pointer-events","auto");
+        });
 </script>
 <#-- Include Router Component -->
 <#include "manageDossierRouter.ftl">
