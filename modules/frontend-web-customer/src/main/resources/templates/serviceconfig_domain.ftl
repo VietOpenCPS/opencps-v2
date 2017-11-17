@@ -69,6 +69,7 @@
 
 		var fnGenEventChoiseServiceConfig = function(){
 			$('.btn-select-serviceConfig, .link-serviceInfo').unbind().click(function(){
+				
 				event.preventDefault();
 				var serviceConfigId = $(this).attr("data-pk");
 				$("#serviceConfigId").val(serviceConfigId);
@@ -114,13 +115,13 @@
 		});
 
 		$('#btn_search').click(function(){
-	      var input_Search = $('#input_search').val();
-	      if ($('#btn_fillter_by_domain').hasClass('btn-active')){
-	        dataSourceServiceConfigDomain.read({
-	          keyword: input_Search,
-	        });
-	      }
-	    });
+			var input_Search = $('#input_search').val();
+			if ($('#btn_fillter_by_domain').hasClass('btn-active')){
+				dataSourceServiceConfigDomain.read({
+					keyword: input_Search,
+				});
+			}
+		});
 
 		$('.administration-combobox').each(function(item){
 			$(this).kendoComboBox({

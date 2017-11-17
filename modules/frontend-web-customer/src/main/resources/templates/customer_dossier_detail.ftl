@@ -157,10 +157,6 @@
 						</label>
 						
 						<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#">
-
-						<#-- <a href="javascript:;" class="text-light-blue dossier-file" data-toggle="tooltip" data-placement="top" title="Tải file lên" multiple-upload="#:multiple#" part-no="#:id#">
-							<i class="fa fa-upload" aria-hidden="true"></i>
-						</a> -->
 						
 						<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 							<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
@@ -173,7 +169,7 @@
 				</div>
 
 				#if(hasForm){#
-				<div class="col-sm-12" id="formPartNo#:id#">
+				<div class="col-sm-12" id="formPartNo#:id#" style="height:450px;width:100%;overflow:auto;">
 					
 				</div>
 				#
@@ -236,21 +232,13 @@
 <div id="uploadFileTemplateDialog" class="modal fade" role="dialog">
 </div>
 
-<div id="showDossierOnlineForm" class="modal fade" role="dialog">
-</div>
-
-<div id="dossierSubmitInfo" class="modal fade" role="dialog">
-</div>
 
 <div id="profileDetail" class="modal fade" role="dialog">
 	
 </div>
 
-<div id="fileTemplateDialog" class="modal fade" role="dialog">
-</div>
-
 <script type="text/javascript">
-
+	var funSaveDossier;
 	$(function(){
 
 		var fnBindDossierTemplClick = function(){
@@ -277,7 +265,9 @@
 		//xem file tai len theo tp ho so
 		$(".dossier-component-profile").unbind().click(function() {
 			var partNo = $(this).attr("data-partno");
-			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_component_profiles}?dossierPartNo="+partNo,function(result){
+			var dossierId = "${(dossierId)!}";
+			var dossierTemplateId = "${(dossierTemplateId)!}";
+			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateId="+dossierTemplateId,function(result){
 				$(this).modal("show");
 			});
 		});
@@ -309,7 +299,7 @@
 
 								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
 								notification.show({
-									message: "Đổi mật khẩu thành công"
+									message: "Yêu cầu được thực hiện thành công"
 								}, "success");
 
 							}
@@ -418,7 +408,7 @@
 		funSaveDossier();
 	});
 
-	var funSaveDossier = function(){
+	funSaveDossier = function(){
 		//PUT dossier
 		
 		var validator = $("#detailDossier").kendoValidator().data("kendoValidator");
@@ -449,6 +439,7 @@
 					contactEmail : $("#contactEmail").val(),
 
 					applicantNote : $("#applicantNote").val(),
+					viaPostal : $("#viaPostal").is(":checked"),
 					postalTelNo: $("#postalTelNo").val(),
 					postalCityCode: $("#postalCityCode").val(),
 					postalAddress: $("#postalAddress").val(),
@@ -465,6 +456,9 @@
 			},
 			error:function(result){
 				console.error(result);
+				notification.show({
+					message: "Xảy ra lỗi, xin vui lòng thử lại"
+				}, "error");
 			}	
 		});
 		}
@@ -487,10 +481,14 @@
 				},
 				success : function(result){
 					console.log("create acion dossier success!");
-
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công"
+					}, "success");
 				},
 				error : function(result){
-
+					notification.show({
+						message: "Xảy ra lỗi, xin vui lòng thử lại"
+					}, "error");
 				}
 			});
 		}
@@ -501,7 +499,7 @@
 		dataTextField : "itemName",
 		dataValueField : "itemCode",
 		noDataTemplate : "Không có dữ liệu",
-		autoBind : false,
+		autoBind : true,
 		dataSource : {
 			transport : {
 				read : function(options){
@@ -529,13 +527,18 @@
 		},
 		change : function(e){
 			var value = this.value();
+			console.log("change");
+			console.log(value);
 			if(value){
 				$("#districtCode").data("kendoComboBox").dataSource.read({
 					parent : value
 				});
+				$("#districtCode").data("kendoComboBox").select(-1);
+				$("#wardCode").data("kendoComboBox").select(-1);
 			}
 			
 		}
+
 	});
 
 	$("#districtCode").kendoComboBox({
@@ -575,6 +578,7 @@
 				$("#wardCode").data("kendoComboBox").dataSource.read({
 					parent : value
 				});
+				$("#wardCode").data("kendoComboBox").select(-1);
 			}
 			
 		}
@@ -677,37 +681,22 @@
 
 						applicantName : result.applicantName,
 						address : result.address,
-						cityCode : function(e){
-							$("#cityCode").data("kendoComboBox").dataSource.read({
-								parent : 0
-							});
-							$("#cityCode").data("kendoComboBox").value(result.cityCode);
-							$("#cityCode").data("kendoComboBox")._isSelect = false;
-							return; 
-
-						},
+						cityCode : result.cityCode,
 						districtCode : function(e){
-							var cityCode = result.cityCode;
-							if(cityCode){
-								$("#districtCode").data("kendoComboBox").dataSource.read({
-									parent : cityCode
-								});
-								$("#districtCode").data("kendoComboBox").value(result.districtCode);
-								$("#districtCode").data("kendoComboBox")._isSelect = false;
+							var districtComboBox = $("#districtCode").data("kendoComboBox");
+							districtComboBox.dataSource.read({
+								parent : result.cityCode
+							});
 
-							}
-							return; 
+							return result.districtCode;
 						},
 						wardCode : function(e){
-							var districtCode = result.districtCode;
-							if(districtCode){
-								$("#wardCode").data("kendoComboBox").dataSource.read({
-									parent : districtCode
-								});
-								$("#wardCode").data("kendoComboBox").value(result.wardCode);
-								$("#wardCode").data("kendoComboBox")._isSelect = false;
-							}
-							return;
+							var wardComboBox = $("#wardCode").data("kendoComboBox");
+							wardComboBox.dataSource.read({
+								parent : result.districtCode
+							});
+
+							return result.wardCode;
 						},
 						contactTelNo : result.contactTelNo,
 						contactEmail : result.contactEmail,
@@ -800,7 +789,7 @@
 			},
 			error:function(result){
 				notification.show({
-					message: "Thêm không thành công do số biểu mẫu bị trùng."
+					message: "Thực hiện không thành công, xin vui lòng thử lại"
 				}, "error");
 			}
 		});
