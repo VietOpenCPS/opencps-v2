@@ -61,7 +61,7 @@ public class DossierTemplateDetailModel {
     protected String templateName;
     protected String description;
     protected String templateNo;
-    @XmlElement(name = "dossierParts ")
+    @XmlElement(name = "dossierParts")
     protected List<DossierTemplatePartDataModel> dossierParts0020;
 
     /**

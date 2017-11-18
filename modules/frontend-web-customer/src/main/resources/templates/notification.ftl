@@ -10,7 +10,7 @@
 			<div class="row">
 				<ul class='ul-with-border'>
 					<div class="col-sm-12">
-						<div id='listViewNotification'>
+						<div id="listViewNotification">
 							
 						</div>
 					</div>
@@ -20,17 +20,16 @@
 						<div class="col-sm-10">
 							<div class="row">
 								<div style="float: left; width: 25px;">
-									<i class="fa fa-circle blue"></i> <br>
-									<i class="fa fa-cog" data-toggle="tooltip" title="Ân thông báo này"></i>
+									<i class="fa fa-circle text-light-gray"></i>
 								</div>
-								<div style="">
-									<span>Yeu cau bo sung</span> <br>
-									<span>Bo thoong tin ve giay phep kinh doanh</span>
+								<div>
+									<span>#:notificationType# </span><span class="text-bold">#:notificationSubject#</span> <br>
+									<span class="text-light-gray PL25">#:notificationContent#</span>
 								</div>
 							</div>
 						</div>
 						<div class="col-sm-2">
-							<span>15:00 pm | 02-08-2017</span>
+							<span class="text-light-gray">#:createDate#</span>
 						</div>
 					</li>
 				</script>
@@ -38,38 +37,35 @@
 		</div>
 	</div>
 </div>
+
 <script type="text/javascript">
-	var dataSourceNotification;
-	$(function(){
-		dataSourceNotification = new kendo.data.DataSource({
-			transport:{
-				read:{
-					url: "${api.server}/applicants",
-					type: "GET",
-					dataType: "json",
-					success: function(res) {
+    var dataSourceNotification1 = new kendo.data.DataSource({
+        transport:{
+	        read:function(options){
+                $.ajax({
+                    // url: "${api.server}/users/notification",
+                    url:"http://localhost:3000/notification",
+                    dataType:"json",
+                    type:"GET",
+                    headers : {"groupId": ${groupId}},
+                    success:function(result){   
+                        options.success(result);   
+                    },
+                    error:function(result){
+                        options.error(result);
+                    }
+                });
+            }
+        },
+        schema:{
+            total: "total",
+            data: "data",
+        }
+    });
 
-					},
-					error: function(res){
-
-					}
-				}
-			},
-			schema:{
-				data: "data",
-				total: "total",
-				model:{
-					id: "id"
-				}
-			}
-		});
-
-		$("#listViewNotification").kendoListView({
-			dataSource: dataSourceNotification,
-			template: kendo.template($("#notificationTemplate").html()),
-			selectable: "single",
-			autoBind: false
-		});
-
-	});
+    $("#listViewNotification").kendoListView({
+        dataSource: dataSourceNotification1,
+        template: kendo.template($("#notificationTemplate").html()),
+        selectable: "single",
+    });
 </script>

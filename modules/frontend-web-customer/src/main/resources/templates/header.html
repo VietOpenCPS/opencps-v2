@@ -20,19 +20,8 @@
 
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.js"></script>
-<<<<<<< HEAD
-=======
     <script src="http://v2.opencps.vn/o/backend-theme/js/handlebars.min.js"></script>
 	<script src="http://v2.opencps.vn/o/backend-theme/js/alpaca.min.js"></script>
->>>>>>> openCps/develop
-
-	<style type="text/css">
-		.dropdown-menu {
-			width: 250px !important;
-			height: 400px !important;
-		}
-	</style>
-
 </head>
 <body>
 	<header id="banner">
@@ -46,40 +35,16 @@
 					</div> 
 				</a>
 			</div>
-                <!--
-                <div class="sub-info">
-                        <a href="#" class="signin">Đăng nhập</a>
-                        <a href="#" class="register">Đăng ký</a>
-                </div>
-            -->
+
             <div class="account-section align-middle">
-            	<div class="dropdown">
-            		<a href="javascript:;" class="notification-alert dropdown-toggle" id="btn-show-notification" data-toggle="dropdown">
-            			<i class="fa fa-bell-o" aria-hidden="true"></i>
-            			<span>3</span>
-            		</a>
-            		<ul class="dropdown-menu" role="menu" aria-labelledby="btn-show-notification" id="dropdown-menu-notification">
-            			<span class="text-bold PL10 PT10 PB10">Thông báo</span> <span class="pull-right MR5">Đánh dấu đã đọc</span>
-            			<li role="presentation" class="divider"></li>
-            			<div data-spy="scroll" data-target="#listViewNotificationNew" data-offset="0">
-            				<ul class="ul-with-border" id="listViewNotificationNew" style="height:305px;width:100%;overflow:auto;">
-            					
-            				</ul>
-            			</div>
-            			<li role="presentation" class="divider"></li>
-            			<div class="row text-center">
-            				<a  href="#" id="btn-showall-notification">Xem tất cả</a>
-            			</div>
-            		</ul>
-            		<script type="text/x-kendo-template" id="dropdownNotificationNewTemp">
-            			<li class="ML10">
-            				<i class="fa fa-circle blue"></i> <span class="ML5">Yêu cầu bổ sung hồ sơ</span> <br>
-            				<i class="fa fa-cog"></i> <span class="text-bold ML5">024609322/17/TCCLU</span><br>
-            				<span class="ML20">Bổ sung thông tin</span><br>
-            				<span class="ML20">15:09 pm | 02-08-2017</span>
-            			</li>
-            		</script>
-            	</div>
+                <div class="dropdown">
+                    <a href="javascript:;" class="notification-alert dropdown-toggle" id="btn-show-notification" data-toggle="dropdown" title="Thông báo của bạn">
+                        <i class="fa fa-bell-o" aria-hidden="true"></i>
+                        <span id="totalNotify" class="ML5">0</span>
+                    </a>
+                    <#include "notificationTheme.ftl">
+                </div>
+            	
             	<div class="account align-middle">
             		<img src="http://via.placeholder.com/350x150" class="img-rounded">
             		<div class="dropdown">
