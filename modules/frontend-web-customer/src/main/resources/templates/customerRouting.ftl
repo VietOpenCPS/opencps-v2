@@ -14,13 +14,7 @@
 		$("#mainType2").hide();
 		resetValueFilter();
 		layout.showIn("#main_section", viewMainList);
-		dataSourceProfile.read({
-			"serviceInfo":$("#serviceInfo").val(),
-			"govAgencyCode":$("#govAgency").val(),
-			"year":$("#year").val(),
-			"month":$("#month").val(),
-			"status":$("#keyInput").val()
-		});
+		dataSourceProfile.read();
 		dataSourceProfile.page(1);
 		dataSourceProfile.pageSize(10);
 		$("#profileStatus li").removeClass("active");
@@ -28,7 +22,6 @@
 		$(".itemStatus").css("pointer-events","auto"); 
 	});
 	manageDossier.route("/thongbao", function(){
-            console.log("RUNNNNNNNNN");
             $("#mainType1").hide();
             $("#mainType2").show();
             $("#mainType2").load("${ajax.notification}",function(result){

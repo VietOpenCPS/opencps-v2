@@ -9,7 +9,7 @@
     </div>
     <li role="presentation" class="divider MT0"></li>
     <div class="row text-center">
-        <a  href="#/thongbao" id="btn-showall-notification">Xem tất cả</a>
+        <a  href="#/thongbao" class="text-link" id="btn-showall-notification">Xem tất cả</a>
     </div>
 </ul>
 
@@ -45,8 +45,8 @@
         transport:{
             read:function(options){
                 $.ajax({
-                    url: "${api.server}/users/notifications/"+id+"/mark",
                     // url:"http://localhost:3000/notification",
+                    url: "${api.server}/users/notifications",
                     dataType:"json",
                     type:"GET",
                     headers : {"groupId": ${groupId}},
@@ -91,9 +91,6 @@
                     }
                 })                       
             }
-        },
-        error: function(e) {         
-            this.cancelChanges();
         },
         schema:{
             total: "total",

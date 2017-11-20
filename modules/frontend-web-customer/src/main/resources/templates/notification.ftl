@@ -16,11 +16,19 @@
 					</div>
 				</ul>
 				<script type="text/x-kendo-template" id="notificationTemplate">
-					<li class="col-sm-12">
+					#
+				        var title = "Đánh dấu đã đọc";    
+				        var bgBlue = "";
+				        if(read === true) {
+				            bgBlue = "row-blue";
+				            title = "Đánh dấu chưa đọc"
+				        }
+				    #
+					<li class="col-sm-12 #:bgBlue# text-normal" >
 						<div class="col-sm-10">
 							<div class="row">
 								<div style="float: left; width: 25px;">
-									<i class="fa fa-circle text-light-gray"></i>
+									<i class="fa fa-circle text-light-gray checkRead text-light-gray hover-pointer" title="#:title#""></i>
 								</div>
 								<div>
 									<span>#:notificationType# </span><span class="text-bold">#:notificationSubject#</span> <br>
@@ -39,17 +47,29 @@
 </div>
 
 <script type="text/javascript">
+	var count1 = 0;
     var dataSourceNotification1 = new kendo.data.DataSource({
         transport:{
 	        read:function(options){
                 $.ajax({
-                    // url: "${api.server}/users/notification",
-                    url:"http://localhost:3000/notification",
+                    // url:"http://localhost:3000/notification",
+                    url: "${api.server}/users/notification",
                     dataType:"json",
                     type:"GET",
                     headers : {"groupId": ${groupId}},
                     success:function(result){   
-                        options.success(result);   
+                        if(result.data){
+                            options.success(result);
+                            $(result.data).each(function(index, value){
+                                if(value.read === true){
+                                    count1+=1
+                                }
+                            });
+                            if (count1>0) {
+                                $("#btn-show-notification").css("background-color","#84FAFA")
+                            };
+                            $("#totalNotify").html(count1);
+                        };   
                     },
                     error:function(result){
                         options.error(result);
@@ -60,6 +80,9 @@
         schema:{
             total: "total",
             data: "data",
+            model: {
+                id: "notificationSubject"
+            }
         }
     });
 
