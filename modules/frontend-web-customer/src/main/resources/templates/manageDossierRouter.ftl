@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <#-- Routing trang Quanlyhoso -->
 	<script type="text/javascript">
 		var viewPanel = new kendo.View("panelTemplate", {model: modelPanel});

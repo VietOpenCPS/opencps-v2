@@ -1,4 +1,6 @@
-
+<#if (Request)??>
+    <#include "init.ftl">
+</#if>
 <ul class="dropdown-menu" role="menu" aria-labelledby="btn-show-notification" id="dropdown-menu-notification">
     <span class="text-bold PL10 PT10 PB10">Thông báo</span> <span class="pull-right hover-pointer MR5">Đánh dấu tất cả đã đọc</span>
     <li role="presentation" class="divider MB0"></li>
@@ -22,25 +24,21 @@
 
 <script type="text/x-kendo-template" id="dropdownNotificationTemp">
     #
-        var title = "Đánh dấu đã đọc";    
+        var title = "Đánh dấu chưa đọc";    
         var bgBlue = "";
-        if(read === true) {
+        if(read === false) {
             bgBlue = "row-blue";
-            title = "Đánh dấu chưa đọc"
+            title = "Đánh dấu đã đọc"
         }
     #
-	<li class="PL10 #:bgBlue# text-normal">
-		<i dataPk="#:notificationSubject#" class="fa fa-circle checkRead text-light-gray hover-pointer" title="#:title#"></i> <span class="ML5">#:notificationType#</span> <br>
+	<li class="PL10 #:bgBlue# text-normal itemNotify" dataPk="#:dossierId#">
+		<i dataPk="#:notificationId#" class="fa fa-circle checkRead text-light-gray hover-pointer" title="#:title#"></i> <span class="ML5">#:notificationType#</span> <br>
 		<p class="PL20 M0 text-bold">#:notificationSubject#</p>
 		<p class="PL20 M0 text-light-gray">#:notificationContent#</p>
 		<p class="PL20 M0 text-light-gray">#:createDate#</p>
 	</li>
 </script>
 <script type="text/javascript">
-    var count = 0; 
-    var displayNotification = function(){
-
-    };
     var dataSourceNotification = new kendo.data.DataSource({
         transport:{
             read:function(options){
@@ -51,10 +49,11 @@
                     type:"GET",
                     headers : {"groupId": ${groupId}},
                     success:function(result){
+                        var count = 0;
                         if(result.data){
                             options.success(result);
                             $(result.data).each(function(index, value){
-                                if(value.read === true){
+                                if(value.read === false){
                                     count+=1
                                 }
                             });
@@ -65,9 +64,37 @@
                         };
                         $(".checkRead").click(function(e){
                             e.stopPropagation();
-                            var idItem = $(this).attr("dataPk");
-                            dataSourceNotification.transport.update(idItem)
-                        })
+                            var noId = $(this).attr("dataPk");
+                            dataSourceNotification.transport.update(noId)
+                        });
+                        $(".itemNotify").click(function(e){
+                            var noId = $(this).children(".checkRead").attr("dataPk");
+                            var dossierid = $(this).attr("dataPk");
+                            var dataDossierId = new kendo.data.DataSource({
+                                transport:{
+                                    read:function(options){
+                                        $.ajax({
+                                            url:"${api.server}/dossiers/"+dossierid, 
+                                            dataType:"json",
+                                            headers : {"groupId": ${groupId}},
+                                            type:"GET",
+                                            success:function(result){
+                                                var dossierItemStatus = result.dossierStatus;
+                                                manageDossier.navigate("/"+dossierItemStatus+"/dossiers/"+dossierid);
+                                                dataSourceNotification.transport.update(noId)
+                                            },
+                                            error:function(result){
+                                                options.error(result);
+                                            }
+                                        });
+                                    }
+                                },
+                                error: function(e) {         
+                                    
+                                },
+                            });
+                            dataDossierId.read();
+                        });
                     },
                     error:function(result){
                         options.error(result);
@@ -75,19 +102,19 @@
                 });
             },
             update: function(id){
+                console.log("Run update");
                 $.ajax({
                     url: "${api.server}/users/notifications/"+id+"/mark",
                     // url:"http://localhost:3000/notification",
                     dataType:"json",
                     type: "PUT",
                     success:function(result){
-                        console.log(result);
                         dataSourceNotification.pushUpdate([
-                            {notificationSubject: id, read: result.read }
+                            {notificationId: id, read: result.read }
                         ]);
                     },
                     error: function(result) {
-                        this.cancelChanges();
+                        
                     }
                 })                       
             }
@@ -96,7 +123,7 @@
             total: "total",
             data: "data",
             model: {
-                id: "notificationSubject"
+                id: "notificationId"
             }
         }
     });
@@ -106,9 +133,4 @@
         template: kendo.template($("#dropdownNotificationTemp").html()),
         selectable: "single",
     });
-
-    var changeRead = function(){
-
-    }
-
 </script>

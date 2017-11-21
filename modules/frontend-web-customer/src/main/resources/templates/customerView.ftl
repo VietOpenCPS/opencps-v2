@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <#------------- Phần VIEW --------------->
 	<#-- WRAPPER ELEMENT -->
 	<div id="appManagerDossier"></div>

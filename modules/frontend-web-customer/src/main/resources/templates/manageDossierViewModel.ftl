@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>	
 	<script type="text/javascript">
 	// Source for panel list
 		var dataGovAgency = new kendo.data.DataSource({
@@ -266,42 +269,37 @@
 			},
 		});
 	// Model MainSection
+		$(".downloadProfile").click(function(){
+			
+			// var id = this.attr("data-Pk");
+			// $.ajax({
+			// 	url:"${api.server}/dossiers/"+id,
+			// 	headers: {"groupId": ${groupId}},
+			// 	dataType:"json",
+			// 	type:"GET",
+			// 	success:function(res){
+					
+			// 	},
+			// 	error:function(res){
+					
+			// 	}
+			// });
+		})
 		var copyProfile = function(id){
-			// Call api get dossierTemplateId
-			var dataDossierId = new kendo.data.DataSource({
-				transport:{
-					read:function(options){
-						$.ajax({
-							url:"${api.server}/dossiers/"+id, 
-							dataType:"json",
-							type:"GET",
-							success:function(result){
-								var dossierTemplateId = result.dossierTemplateNo;
-								$.ajax({
-									url:"${api.server}/dossiers/"+id+"/cloning",
-									dataType:"json",
-									type:"POST",
-									headers: {"groupId": ${groupId}},
-									success:function(res){
-										var referenceUid = res.referenceUid;
-										manageDossier.navigate("/taohosomoi/nophoso/"+dossierTemplateId+ "&" +referenceUid);
-									},
-									error:function(res){
-										
-									}
-								});
-							},
-							error:function(result){
-								options.error(result);
-							}
-						});
-					}
+			$.ajax({
+				url:"${api.server}/dossiers/"+id+"/cloning",
+				dataType:"json",
+				type:"POST",
+				headers: {"groupId": ${groupId}},
+				success:function(res){
+					var referenceUid = res.referenceUid;
+					manageDossier.navigate("/taohosomoi/nophoso/"+referenceUid);
 				},
-				error: function(e) {         
-					this.cancelChanges();
-				},
+				error:function(res){
+					
+				}
 			});
-			dataDossierId.read();
+			
 		}
 		var modelMain = kendo.observable({
 			dataSourceProfile : dataSourceProfile,
@@ -336,6 +334,7 @@
 							$.ajax({
 								url:"${api.server}/dossiers/"+id, 
 								dataType:"json",
+								headers : {"groupId": ${groupId}},
 								type:"GET",
 								success:function(result){
 									var dossierItemStatus = result.dossierStatus;

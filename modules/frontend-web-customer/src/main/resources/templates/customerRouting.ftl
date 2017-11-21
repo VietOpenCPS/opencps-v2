@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <#-- Routing SPA-->
 <script type="text/javascript">
 	var layout = new kendo.Layout("layoutTemplate");
@@ -25,6 +28,7 @@
             $("#mainType1").hide();
             $("#mainType2").show();
             $("#mainType2").load("${ajax.notification}",function(result){
+            	dataSourceNotification.read();
             });
             $("#profileStatus li").removeClass('active');
             $("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");

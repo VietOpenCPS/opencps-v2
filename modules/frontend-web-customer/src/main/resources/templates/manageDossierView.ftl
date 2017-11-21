@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>	
 	<#-- main section template -->
 	<script type="text/x-kendo-template" id="mainTemplate">
 		<div id="contentMain" class="row panel M0" style="border: none;box-shadow: none">
@@ -40,7 +43,7 @@
 		<#-- for listview dossier-->
 		<script type="text/x-kendo-template" id="proFileTemplate">
 			<div class="row PL15 PR15 itemCustomerDossierList">
-				<div class="row M0 hover-pointer" title="Xem chi tiết" dataPk="#:id#" data-bind="events:{click: loadDossierDetail}">
+				<div class="row M0 hover-pointer" dataPk="#:id#" data-bind="events:{click: loadDossierDetail}" title="Xem chi tiết">
 					<div class="row-blue align-middle">
 						<div class="order-number">#:counter#</div>
 						<div class="dossier-number" data-toggle="tooltip" title="Mã hồ sơ"><span class="red">\\#</span> #:serviceCode#</div>
@@ -117,12 +120,12 @@
 							#}#
 
 							#if(dossierStatus === "done"){#
-								<a href="${api.server}/dossiers/#:id#/result" style="margin-right: 10px;">
+								<a href="javascript:;" class="downloadProfile" style="margin-right: 10px;">
 									<i class="fa fa-download" aria-hidden="true">
 									</i> Tải giấy tờ kết quả
 								</a>
 							#}#
-							
+							<#-- ${api.server}/dossiers/#:id#/result -->
 							#if(dossierStatus === "done" ){#
 								<a href="javascript:;" onclick="copyProfile(#:id#)"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Sao chép hồ sơ
 								</a>
