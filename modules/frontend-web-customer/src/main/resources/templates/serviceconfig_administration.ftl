@@ -73,7 +73,7 @@
 	          serviceConfigId : serviceConfigId
 	        });
 	      });
-	     }
+	     };
 
 		var dataSourceAdmin = new kendo.data.DataSource({
 			transport: {
@@ -119,19 +119,6 @@
 			}
 		});
 
-
-		$('.btn-select-serviceInfo, .link-serviceInfo').each(function(item){
-			$(this).click(function(){
-				event.preventDefault();
-				var govAgencyCode = $(this).attr("admt-pk");
-				var serviceInfoId = $(this).attr("data-pk");
-				$("#dossier_detail").load("${ajax.customer_dossier_detail}?${portletNamespace}govAgencyCode=" + govAgencyCode + "&${portletNamespace}serviceInfoId=" + serviceInfoId + "&${portletNamespace}dossierStatus=new", function(result){
-					$("#dossier_detail").show();
-					$("#dossier_list").hide();
-					$("#left_container").hide();
-				});
-			});
-		});
 	});
 </script>
 

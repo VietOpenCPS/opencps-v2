@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <#-- Routing trang Quanlyhoso -->
 	<script type="text/javascript">
 		var viewPanel = new kendo.View("panelTemplate", {model: modelPanel});
@@ -29,8 +32,8 @@
 		manageDossier.route("/(:id)", function(id) {
 			$("#mainType1").show();
 			$("#mainType2").hide();
-			$("#wrapMain").hide();
-			setTimeout(function(){$("#wrapMain").show()},300);
+			// $("#wrapMain").hide();
+			// setTimeout(function(){$("#wrapMain").show()},300);
 			layout.showIn("#main_section", viewMainList);          
 			dataSourceProfile.read({
 				"serviceInfo":$("#serviceInfo").val(),

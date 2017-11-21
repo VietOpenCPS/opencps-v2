@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>	
 	<script type="text/javascript">
 	// Source for panel list
 		var dataGovAgency = new kendo.data.DataSource({
@@ -29,10 +32,11 @@
 			}
 		});
 	//Source for main listview
-		var dataSourceProfile=new kendo.data.DataSource({
+		var dataSourceProfile = new kendo.data.DataSource({
 			transport:{
 				read:function(options){
 					$.ajax({
+						// url: "http://localhost:3000/dossiers",
 						url:"${api.server}/dossiers",
 						dataType:"json",
 						type:"GET",
@@ -45,9 +49,11 @@
 							keyword: options.data.keyword,
 							status : options.data.status
 						},
-						success:function(result){	
+						success:function(result){
 							if (result.data) {
 								options.success(result);
+								$("#wrapMain").hide();
+								setTimeout(function(){$("#wrapMain").show()},300);
 							} else{
 								$(".loading").hide();
 							}
@@ -70,16 +76,13 @@
 								$("#itemPpage").html(sub);
 								$("#itemPpage").append(selectHtml)
 							}
-							// 
 						},
 						error:function(result){
 							options.error(result);
+							$(".loading").hide();
 						}
 					});
 				}
-			},
-			error: function(e) {         
-				this.cancelChanges();
 			},
 			pageSize: 10,
 			schema:{
@@ -96,6 +99,7 @@
 			transport:{
 				read:function(options){
 					$.ajax({
+						// url: "http://localhost:3000/dossierlogs",
 						url:"${api.server}/dossierlogs",
 						dataType:"json",
 						type:"GET",
@@ -164,6 +168,7 @@
 			transport:{
 				read:function(options){
 					$.ajax({
+						// url: "http://localhost:3000/dossierlogs",
 						url:"${api.server}/dossierlogs",
 						dataType:"json",
 						type:"GET",
@@ -222,8 +227,6 @@
 			// Lọc theo tháng, năm, cơ quan thực hiện, thủ tục hành chính
 			eventLookup : function(e){
 				e.preventDefault();
-				$("#wrapMain").hide();
-				setTimeout(function(){$("#wrapMain").show()},300);
 				var statusDossier = $("li.itemStatus.active").attr("dataPk");
 			    if (statusDossier !== undefined) {
 					dataSourceProfile.read({
@@ -247,8 +250,8 @@
 			},
 			filterStatus: function(e){
 				e.preventDefault();
-				$("#wrapMain").hide();
-				setTimeout(function(){$("#wrapMain").show()},300);
+				// $("#wrapMain").hide();
+				// setTimeout(function(){$("#wrapMain").show()},300);
 				$("#profileStatus li").removeClass("active");
 				$(e.currentTarget).addClass("active");
 				$(".itemStatus").css("pointer-events","auto");
@@ -266,6 +269,38 @@
 			},
 		});
 	// Model MainSection
+		$(".downloadProfile").click(function(){
+			
+			// var id = this.attr("data-Pk");
+			// $.ajax({
+			// 	url:"${api.server}/dossiers/"+id,
+			// 	headers: {"groupId": ${groupId}},
+			// 	dataType:"json",
+			// 	type:"GET",
+			// 	success:function(res){
+					
+			// 	},
+			// 	error:function(res){
+					
+			// 	}
+			// });
+		})
+		var copyProfile = function(id){
+			$.ajax({
+				url:"${api.server}/dossiers/"+id+"/cloning",
+				dataType:"json",
+				type:"POST",
+				headers: {"groupId": ${groupId}},
+				success:function(res){
+					var referenceUid = res.referenceUid;
+					manageDossier.navigate("/taohosomoi/nophoso/"+referenceUid);
+				},
+				error:function(res){
+					
+				}
+			});
+			
+		}
 		var modelMain = kendo.observable({
 			dataSourceProfile : dataSourceProfile,
 			// modelPanel: modelPanel,
@@ -299,6 +334,7 @@
 							$.ajax({
 								url:"${api.server}/dossiers/"+id, 
 								dataType:"json",
+								headers : {"groupId": ${groupId}},
 								type:"GET",
 								success:function(result){
 									var dossierItemStatus = result.dossierStatus;
@@ -345,7 +381,6 @@
 						flagSortResult = true;
 					}
 				};
-
 			}
 		})
 	</script>

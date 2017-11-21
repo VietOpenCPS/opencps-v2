@@ -53,6 +53,8 @@ import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -142,9 +144,10 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			DossierSyncSendingModel result = new DossierSyncSendingModel();
 
 			if (Validator.isNotNull(dossierSync)) {
-
+				// Get DOSSIER in CLIENT
 				Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierSync.getDossierId());
-
+				
+				// Get the latest ACTION of DOSSIER has been done
 				long dossierActionId = Validator.isNotNull(dossier) ? dossierActionId = dossier.getDossierActionId()
 						: 0l;
 
@@ -294,8 +297,6 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			}
 
 
-			// TODO add reset Dossier
-
 		}
 
 		// SyncPaymentFile and paymentfile status
@@ -305,7 +306,9 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 		// remove pending in DossierAction
 		int countDossierSync = DossierSyncLocalServiceUtil.countByGroupDossierId(groupId, dossierId);
-
+		
+		_log.info("COUNT_DOSSIER_SYNC = " + countDossierSync);
+		
 		if (countDossierSync == 0) {
 			DossierActionLocalServiceUtil.updatePending(clientDossierActionId, false);
 		}
@@ -531,5 +534,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 		}
 	}
+	
+	Log _log = LogFactoryUtil.getLog(DossierSyncManagementImpl.class.getName());
 
 }
