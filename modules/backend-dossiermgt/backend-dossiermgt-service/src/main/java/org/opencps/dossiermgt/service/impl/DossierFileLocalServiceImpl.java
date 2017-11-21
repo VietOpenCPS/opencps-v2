@@ -604,8 +604,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierFile.getDossierId());
 
 		if (dossier != null) {
-			if (!dossier.getDossierStatus().equalsIgnoreCase("new")
-					&& !dossier.getDossierStatus().equalsIgnoreCase("waiting")) {
+			if ( Validator.isNotNull(dossier.getDossierStatus()) && (!dossier.getDossierStatus().equalsIgnoreCase("new")
+					|| !dossier.getDossierStatus().equalsIgnoreCase("waiting"))) {
 
 				throw new InvalidDossierStatusException();
 			}
