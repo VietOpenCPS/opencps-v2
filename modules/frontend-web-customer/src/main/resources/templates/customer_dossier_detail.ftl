@@ -129,9 +129,9 @@
 		</div>
 	</div>
 
-	<form id="dossierFormSubmiting">
+	<div id="dossierFormSubmiting">
 		<div class="dossier-parts">
-			<div class="head-part align-middle">
+			<div class="head-part align-middle PB5">
 				<div class="background-triangle-small">I</div> <span class="text-uppercase">Thành phần hồ sơ</span> <span class="text-light-gray"><i>Những thành phần hồ sơ có dấu (<span class="red">*</span>) là thành phần bắt buộc</i></span>
 			</div>
 			<div class="content-part" id="lsDossierTemplPart">
@@ -169,8 +169,10 @@
 				</div>
 
 				#if(hasForm){#
-				<div class="col-sm-12" id="formPartNo#:id#" style="height:450px;width:100%;overflow:auto;">
-					
+				<div class="col-sm-12" style="height:450px;width:100%;overflow:auto;">
+					<form id="formPartNo#:id#">
+						
+					</form>
 				</div>
 				#
 				$.ajax({
@@ -183,7 +185,41 @@
 				var formScriptObj = JSON.parse(formScript);
 				$("\\#formPartNo"+id).empty();
 				$("\\#formPartNo"+id).alpaca(formScriptObj);
-				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button class="btn btn-active MB10 MT10" onclick="" data-pk="'+id+'">Ghi lại</button></div></div>');
+				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca" class="btn btn-active MB10 MT10" type="button" data-pk="'+id+'">Ghi lại</button></div></div>');
+				$("\\#btn-save-formalpaca").click(function(){
+
+					var id = $(this).attr("data-pk");
+					console.log("ccc");
+					var value = $("\\#formPartNo"+id).alpaca('get').getValue();
+					var validate = $("\\#formPartNo"+id).alpaca('get').isValid(true);
+					if(validate){
+						$.ajax({
+							url : "${api.server}/${dossierId}/files/"+id+"/formdata",
+							dataType : "json",
+							type : "PUT",
+							headers: {"groupId": ${groupId}},
+							data : JSON.stringify(value),
+							contentType: "application/json",
+							success : function(result){
+								notification.show({
+									message: "Yêu cầu được thực hiện thành công"
+								}, "success");
+							},
+							error : function(result){
+								notification.show({
+									message: "Thực hiện không thành công, xin vui lòng thử lại"
+								}, "error");
+							}
+						});
+					}else {
+						notification.show({
+							message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi gửi"
+						}, "error");
+					}
+
+					console.log(value);
+
+				});
 			},
 			error : function(result){
 
@@ -194,7 +230,7 @@
 #}#
 </script>
 </div>
-</form>
+</div>
 
 <div class="row-parts-content">
 	<div class="row">
@@ -439,14 +475,13 @@
 					contactEmail : $("#contactEmail").val(),
 
 					applicantNote : $("#applicantNote").val(),
-					viaPostal : $("#viaPostal").is(":checked"),
 					postalTelNo: $("#postalTelNo").val(),
 					postalCityCode: $("#postalCityCode").val(),
 					postalAddress: $("#postalAddress").val(),
 
 				},
 				success :  function(result){                       
-					console.log("PUT Dossier success!");
+				console.log("PUT Dossier success!");
 
 				//finish PUT dossier create action for dossier
 				createActionDossier(${dossierId});
@@ -455,281 +490,281 @@
 
 			},
 			error:function(result){
-				console.error(result);
-				notification.show({
-					message: "Xảy ra lỗi, xin vui lòng thử lại"
-				}, "error");
-			}	
-		});
-		}
-		
-	}
+	console.error(result);
+	notification.show({
+		message: "Xảy ra lỗi, xin vui lòng thử lại"
+	}, "error");
+}	
+});
+}
 
-	var createActionDossier = function(dossierId){
-		if(dossierId){
-			$.ajax({
-				url : "${api.server}/dossiers/"+dossierId+"/actions",
-				dataType : "json",
-				type : "POST",
-				headers: {"groupId": ${groupId}},
-				data : {
-					actionCode  : 1100,
-					actionNote :  $("#applicantNote").val()
+}
+
+var createActionDossier = function(dossierId){
+	if(dossierId){
+		$.ajax({
+			url : "${api.server}/dossiers/"+dossierId+"/actions",
+			dataType : "json",
+			type : "POST",
+			headers: {"groupId": ${groupId}},
+			data : {
+				actionCode  : 1100,
+				actionNote :  $("#applicantNote").val()
 					/*actionUser : $("#actionUser").val(),
 					
 					*/
 				},
 				success : function(result){
-					console.log("create acion dossier success!");
-					notification.show({
-						message: "Yêu cầu được thực hiện thành công"
-					}, "success");
-				},
-				error : function(result){
-					notification.show({
-						message: "Xảy ra lỗi, xin vui lòng thử lại"
-					}, "error");
-				}
+			console.log("create acion dossier success!");
+			notification.show({
+				message: "Yêu cầu được thực hiện thành công"
+			}, "success");
+		},
+		error : function(result){
+	notification.show({
+		message: "Xảy ra lỗi, xin vui lòng thử lại"
+	}, "error");
+}
+});
+}
+}
+
+$("#cityCode").kendoComboBox({
+	placeholder : "Chọn tên thành phố",
+	dataTextField : "itemName",
+	dataValueField : "itemCode",
+	noDataTemplate : "Không có dữ liệu",
+	autoBind : true,
+	dataSource : {
+		transport : {
+			read : function(options){
+				$.ajax({
+					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					data : {
+						parent : 0
+					},
+					success : function(result){
+						options.success(result);
+					},
+					error : function(result){
+						options.error(result);
+					}
+				});
+			}
+		},
+		schema : {
+			data : "data",
+			total : "total"
+		}
+	},
+	change : function(e){
+		var value = this.value();
+		console.log("change");
+		console.log(value);
+		if(value){
+			$("#districtCode").data("kendoComboBox").dataSource.read({
+				parent : value
 			});
+			$("#districtCode").data("kendoComboBox").select(-1);
+			$("#wardCode").data("kendoComboBox").select(-1);
+		}
+
+	}
+
+});
+
+$("#districtCode").kendoComboBox({
+	placeholder : "Chọn Quận/ Huyện",
+	dataTextField : "itemName",
+	dataValueField : "itemCode",
+	noDataTemplate : "Không có dữ liệu",
+	autoBind : false,
+	dataSource : {
+		transport : {
+			read : function(options){
+				$.ajax({
+					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					data : {
+						parent : options.data.parent
+					},
+					success : function(result){
+						options.success(result);
+					},
+					error : function(result){
+						options.error(result);
+					}
+				});
+			}
+		},
+		schema : {
+			data : "data",
+			total : "total"
+		}
+	},
+	change : function(e){
+		var value = this.value();
+		if(value){
+			$("#wardCode").data("kendoComboBox").dataSource.read({
+				parent : value
+			});
+			$("#wardCode").data("kendoComboBox").select(-1);
+		}
+
+	}
+});
+
+$("#wardCode").kendoComboBox({
+	placeholder : "Chọn Xã/ Phường",
+	dataTextField : "itemName",
+	dataValueField : "itemCode",
+	noDataTemplate : "Không có dữ liệu",
+	autoBind : false,
+	dataSource : {
+		transport : {
+			read : function(options){
+				$.ajax({
+					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					data : {
+						parent : options.data.parent
+					},
+					success : function(result){
+						options.success(result);
+					},
+					error : function(result){
+						options.error(result);
+					}
+				});
+			}
+		},
+		schema : {
+			data : "data",
+			total : "total"
 		}
 	}
 
-	$("#cityCode").kendoComboBox({
-		placeholder : "Chọn tên thành phố",
-		dataTextField : "itemName",
-		dataValueField : "itemCode",
-		noDataTemplate : "Không có dữ liệu",
-		autoBind : true,
-		dataSource : {
-			transport : {
-				read : function(options){
-					$.ajax({
-						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-						dataType : "json",
-						type : "GET",
-						headers: {"groupId": ${groupId}},
-						data : {
-							parent : 0
-						},
-						success : function(result){
-							options.success(result);
-						},
-						error : function(result){
-							options.error(result);
-						}
-					});
-				}
-			},
-			schema : {
-				data : "data",
-				total : "total"
+});
+
+$("#postalCityCode").kendoComboBox({
+	placeholder : "Chọn Tỉnh/ Thành phố",
+	dataTextField : "itemName",
+	dataValueField : "itemCode",
+	noDataTemplate : "Không có dữ liệu",
+	autoBind : false,
+	dataSource : {
+		transport : {
+			read : function(options){
+				$.ajax({
+					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					data : {
+						parent : 0
+					},
+					success : function(result){
+						options.success(result);
+					},
+					error : function(result){
+						options.error(result);
+					}
+				});
 			}
 		},
-		change : function(e){
-			var value = this.value();
-			console.log("change");
-			console.log(value);
-			if(value){
-				$("#districtCode").data("kendoComboBox").dataSource.read({
-					parent : value
-				});
-				$("#districtCode").data("kendoComboBox").select(-1);
-				$("#wardCode").data("kendoComboBox").select(-1);
-			}
-			
+		schema : {
+			data : "data",
+			total : "total"
 		}
+	}
 
-	});
+});
 
-	$("#districtCode").kendoComboBox({
-		placeholder : "Chọn Quận/ Huyện",
-		dataTextField : "itemName",
-		dataValueField : "itemCode",
-		noDataTemplate : "Không có dữ liệu",
-		autoBind : false,
-		dataSource : {
-			transport : {
-				read : function(options){
-					$.ajax({
-						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-						dataType : "json",
-						type : "GET",
-						headers: {"groupId": ${groupId}},
-						data : {
-							parent : options.data.parent
-						},
-						success : function(result){
-							options.success(result);
-						},
-						error : function(result){
-							options.error(result);
-						}
-					});
-				}
-			},
-			schema : {
-				data : "data",
-				total : "total"
-			}
-		},
-		change : function(e){
-			var value = this.value();
-			if(value){
-				$("#wardCode").data("kendoComboBox").dataSource.read({
-					parent : value
-				});
-				$("#wardCode").data("kendoComboBox").select(-1);
-			}
-			
-		}
-	});
-
-	$("#wardCode").kendoComboBox({
-		placeholder : "Chọn Xã/ Phường",
-		dataTextField : "itemName",
-		dataValueField : "itemCode",
-		noDataTemplate : "Không có dữ liệu",
-		autoBind : false,
-		dataSource : {
-			transport : {
-				read : function(options){
-					$.ajax({
-						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-						dataType : "json",
-						type : "GET",
-						headers: {"groupId": ${groupId}},
-						data : {
-							parent : options.data.parent
-						},
-						success : function(result){
-							options.success(result);
-						},
-						error : function(result){
-							options.error(result);
-						}
-					});
-				}
-			},
-			schema : {
-				data : "data",
-				total : "total"
-			}
-		}
-
-	});
-
-	$("#postalCityCode").kendoComboBox({
-		placeholder : "Chọn Tỉnh/ Thành phố",
-		dataTextField : "itemName",
-		dataValueField : "itemCode",
-		noDataTemplate : "Không có dữ liệu",
-		autoBind : false,
-		dataSource : {
-			transport : {
-				read : function(options){
-					$.ajax({
-						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-						dataType : "json",
-						type : "GET",
-						headers: {"groupId": ${groupId}},
-						data : {
-							parent : 0
-						},
-						success : function(result){
-							options.success(result);
-						},
-						error : function(result){
-							options.error(result);
-						}
-					});
-				}
-			},
-			schema : {
-				data : "data",
-				total : "total"
-			}
-		}
-
-	});
-
-	$(function() {
-		$("[data-role=combobox]").each(function() {
-			var widget = $(this).getKendoComboBox();
-			widget.input.on("focus", function() {
-				widget.open();
-			});
+$(function() {
+	$("[data-role=combobox]").each(function() {
+		var widget = $(this).getKendoComboBox();
+		widget.input.on("focus", function() {
+			widget.open();
 		});
 	});
+});
 
-	var printDetailDossier = function(dossierId){
-		if(dossierId){
-			$.ajax({
-				url : "${api.server}/dossiers/"+dossierId,
-				dataType : "json",
-				type : "GET",
-				headers : {"groupId": ${groupId}},
-				success : function(result){
-					console.log("load detail dossier!");
-					console.log(result);
-					
-					var viewModel = kendo.observable({
-						serviceCode : result.serviceCode,
-						govAgencyCode : result.govAgencyCode,
-						dossierTemplateNo : result.dossierTemplateNo,
-						serviceName : result.serviceName,
-						govAgencyName : result.govAgencyName,
-
-						applicantName : result.applicantName,
-						address : result.address,
-						cityCode : result.cityCode,
-						districtCode : function(e){
-							var districtComboBox = $("#districtCode").data("kendoComboBox");
-							districtComboBox.dataSource.read({
-								parent : result.cityCode
-							});
-
-							return result.districtCode;
-						},
-						wardCode : function(e){
-							var wardComboBox = $("#wardCode").data("kendoComboBox");
-							wardComboBox.dataSource.read({
-								parent : result.districtCode
-							});
-
-							return result.wardCode;
-						},
-						contactTelNo : result.contactTelNo,
-						contactEmail : result.contactEmail,
-						dossierNote : result.dossierNote
-
-					});
-					kendo.bind($("#detailDossier"), viewModel);
-				},
-				error : function(result){
-
-				}
-
-			});
-		}
-	}
-
-	printDetailDossier(${dossierId});
-
-	var removeDossierFile = function(dossierId, fileId){
+var printDetailDossier = function(dossierId){
+	if(dossierId){
 		$.ajax({
-			url : "${api.server}/dossiers/"+dossierId+"/files/"+fileId,
+			url : "${api.server}/dossiers/"+dossierId,
 			dataType : "json",
-			type : "DELETE",
+			type : "GET",
 			headers : {"groupId": ${groupId}},
-			success : function(result) {
+			success : function(result){
+			console.log("load detail dossier!");
+			console.log(result);
+
+			var viewModel = kendo.observable({
+				serviceCode : result.serviceCode,
+				govAgencyCode : result.govAgencyCode,
+				dossierTemplateNo : result.dossierTemplateNo,
+				serviceName : result.serviceName,
+				govAgencyName : result.govAgencyName,
+
+				applicantName : result.applicantName,
+				address : result.address,
+				cityCode : result.cityCode,
+				districtCode : function(e){
+					var districtComboBox = $("#districtCode").data("kendoComboBox");
+					districtComboBox.dataSource.read({
+						parent : result.cityCode
+					});
+
+					return result.districtCode;
+				},
+				wardCode : function(e){
+					var wardComboBox = $("#wardCode").data("kendoComboBox");
+					wardComboBox.dataSource.read({
+						parent : result.districtCode
+					});
+
+					return result.wardCode;
+				},
+				contactTelNo : result.contactTelNo,
+				contactEmail : result.contactEmail,
+				dossierNote : result.dossierNote
+
+			});
+			kendo.bind($("#detailDossier"), viewModel);
+		},
+		error : function(result){
+
+}
+
+});
+}
+}
+
+printDetailDossier(${dossierId});
+
+var removeDossierFile = function(dossierId, fileId){
+	$.ajax({
+		url : "${api.server}/dossiers/"+dossierId+"/files/"+fileId,
+		dataType : "json",
+		type : "DELETE",
+		headers : {"groupId": ${groupId}},
+		success : function(result) {
 
 
-			},
-			error : function(result) {
-				
-			}
-		});
-	}
+		},
+		error : function(result) {
+
+		}
+	});
+}
 
 	/*function makeFileList() {
 		var input = document.getElementById("file");
@@ -822,24 +857,24 @@
 				headers: {"groupId": ${groupId}},
 				async : false,
 				success :  function(result){ 
-					if(result.data){
-						for (var i = 0; i < result.data.length; i++) {
-							if(result.data[i].eForm){
-								referenceUid = result.data[i].referenceUid;
-								return ;
-							}
+				if(result.data){
+					for (var i = 0; i < result.data.length; i++) {
+						if(result.data[i].eForm){
+							referenceUid = result.data[i].referenceUid;
+							return ;
 						}
 					}
-
-				},
-				error:function(result){
-					
 				}
-			});
-		}
 
-		return referenceUid;
-	}
+			},
+			error:function(result){
+
+}
+});
+}
+
+return referenceUid;
+}
 });
 
 $(function(){

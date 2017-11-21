@@ -26,4 +26,5 @@
 	<#assign applicant = (Request.applicant)!>
 	<#assign dossierTemplateId = (Request.dossierTemplateId)!>
 	<#assign dossierId = (Request.dossierId)!>
+	<#assign dossierPartNo = (Request.dossierPartNo)!>
 </#if>
