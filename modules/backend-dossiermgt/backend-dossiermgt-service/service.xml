@@ -556,6 +556,10 @@
 		<!-- Order -->
 
 		<!-- Finder methods -->
+		<finder return-type="Collection" name="F_DUID">
+			<finder-column name="dossierId"/>
+			<finder-column name="referenceUid"/>
+		</finder>
 
 		<!-- References -->
 

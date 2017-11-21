@@ -29,5 +29,15 @@ public class PaymentFileTerm {
 	public static final String INVOICE_ISSUE_NO	= "invoiceIssueNo";
 	public static final String INVOICE_NO	= "invoiceNo";
 	public static final String INVOICE_FILE_ENTRY_ID	= "invoiceFileEntryId";
+	//Search payment file
+	public static final String SERVICE = "sevice";
+	public static final String AGENCY = "agency";
+	public static final String STATUS = "status";
+	public static final String APPLICANT_NAME = "applicantName";
+	public static final String APPLICANT_ID_NO = "applicantIdNo";
+	public static final String DOSSIER_NO = "dossierNo";
+	public static final String COUNTER = "counter";
+	public static final String SERVICE_CODE = "serviceCode";
+	public static final String SERVICE_NAME = "serviceName";
 
 }
