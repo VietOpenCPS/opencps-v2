@@ -1,5 +1,7 @@
 package org.opencps.dossiermgt.action;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.opencps.dossiermgt.model.DossierFile;
@@ -32,4 +34,8 @@ public interface DossierFileActions {
 
 	public DossierFile updateDossierFileFormData(long groupId, long dossierId, String referenceUid, String formData,
 			ServiceContext serviceContext) throws SystemException, PortalException;
+	
+	public void copyFile(String orgFileName, String targetFileName) throws IOException;
+	public void zipDirectory(File dir, String zipDirName) throws IOException;
+	
 }

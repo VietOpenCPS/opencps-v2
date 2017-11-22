@@ -35,6 +35,8 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -44,6 +46,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierFileManagementImpl implements DossierFileManagement {
+
+	private static final Log _log = LogFactoryUtil.getLog(DossierFileManagementImpl.class);
 
 	@Override
 	public Response getDossierFilesByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
@@ -107,7 +111,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	@Override
 	public Response addDossierFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String referenceUid,
-			String dossierTemplateNo, String dossierPartNo, String fileTemplateNo, String displayName, String fileType, String isSync) {
+			String dossierTemplateNo, String dossierPartNo, String fileTemplateNo, String displayName, String fileType,
+			String isSync) {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -460,9 +465,12 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	@Override
 	public Response downloadByDossierId(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String password) {
-
+		_log.info("------Start downloadByDossierId------");
+		String pathName = "";
+		String realPath = "";
 		// TODO: check user is loged or password for access dossier file
 		BackendAuth auth = new BackendAuthImpl();
+		DossierFileActions action = new DossierFileActionsImpl();
 
 		try {
 
@@ -471,13 +479,58 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 
 			List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(id);
+			if (dossierFiles.size() > 0) {
+				if (dossierFiles.get(0).getFileEntryId() > 0) {
+					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFiles.get(0).getFileEntryId());
 
+					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+							true);
+					realPath = file.getPath();
+					pathName = file.getPath() + "_" + String.valueOf(id);
+				}
+			}
+			int index = realPath.lastIndexOf("\\");
+			File d = new File(pathName.substring(0, index));
+			for (File f : d.listFiles()) {
+				if (f.getName().substring(f.getName().lastIndexOf(".") + 1).equals("zip")) {
+					f.delete();
+				}
+				if (f.isDirectory()) {
+					f.delete();
+				}
+
+			}
+			for (DossierFile dossierFile : dossierFiles) {
+				if (dossierFile.getFileEntryId() > 0) {
+					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
+
+					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+							true);
+					String fileName = pathName + "\\" + fileEntry.getFileName();
+					File dir = new File(pathName);
+					if (!dir.exists()) {
+						dir.mkdirs();
+					}
+					action.copyFile(file.getPath(), fileName);
+
+				}
+			}
+
+			File dirName = new File(pathName);
+			action.zipDirectory(dirName,
+					pathName.substring(0, index) + "\\" + pathName.substring(index + 1, pathName.length()) + ".zip");
 			// TODO:
 			// Nen danh sach dossierFiles thanh file zip sau day gui lai client
 
-			return Response.ok().build();
-
+			File fi = new File(
+					pathName.substring(0, index) + "\\" + pathName.substring(index + 1, pathName.length()) + ".zip");
+			ResponseBuilder responseBuilder = Response.ok((Object) fi);
+			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fi.getName() + "\"");
+			responseBuilder.header("Content-Type", "application/zip");
+			_log.info("------downloadByDossierId Success------");
+			return responseBuilder.build();
 		} catch (Exception e) {
+			_log.info("------Error downloadByDossierId ------");
 			return processException(e);
 		}
 	}
