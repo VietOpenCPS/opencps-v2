@@ -527,7 +527,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			ResponseBuilder responseBuilder = Response.ok((Object) fi);
 			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fi.getName() + "\"");
 			responseBuilder.header("Content-Type", "application/zip");
-			_log.info("------downloadByDossierId Success------");
+			_log.info("------download File " + fi.getName() +  "Success------");
 			return responseBuilder.build();
 		} catch (Exception e) {
 			_log.info("------Error downloadByDossierId ------");
