@@ -360,4 +360,8 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 			throw new HasChildrenException("HasChildrenException");
 		}
 	}
+	
+	public List<ProcessStep> getProcessStepbyServiceProcessId (long serviceProcessId){
+		return processStepPersistence.findByS_P_ID(serviceProcessId);
+	}
 }
