@@ -48,6 +48,7 @@ public class ServerConfigUtils {
 		model.setProtocol(cf.getProtocol());
 		model.setLastSync(APIDateTimeUtils.convertDateToString(cf.getLastSync(), APIDateTimeUtils._NORMAL_PARTTERN));
 		model.setConfigs(cf.getConfigs());
+		model.setGroupId(cf.getGroupId());
 
 		return model;
 	}

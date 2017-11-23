@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.Validator;
 public class FileUploadUtils {
 
 	public static final String FOLDER_NAME_DOSSIER_FILE = "DOSSIER_FILE";
+	public static final String FOLDER_NAME_PAYMENT_FILE = "PAYMENT_FILE";
 	
 	public static FileEntry uploadFile(long userId, long companyId, long groupId, InputStream inputStream,
 			String fileName, String fileType, long fileSize, String destination, String desc,
@@ -276,4 +277,15 @@ public class FileUploadUtils {
 		
 		return System.currentTimeMillis() + "." + ext;
 	}
+
+	// Upload Payment File
+	public static FileEntry uploadPaymentFile(long userId, long groupId, 
+			InputStream inputStream, String sourceFileName,
+			String fileType, long fileSize, ServiceContext serviceContext) 
+		throws Exception {
+		
+		return uploadFile(userId, groupId, 0, inputStream, sourceFileName, 
+				fileType, fileSize, FOLDER_NAME_PAYMENT_FILE, serviceContext);
+	}
+	
 }

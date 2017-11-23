@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -33,6 +34,7 @@ import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -64,11 +66,6 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierManagementImpl implements DossierManagement {
-
-	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
-	public static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
-	public static final int LENGHT_DOSSIER_PASSWORD = 15;
-	public static final String DEFAULT_PATTERN_PASSWORD = "0123456789oahk";
 
 	@Override
 	public Response getDossiers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -365,50 +362,53 @@ public class DossierManagementImpl implements DossierManagement {
 			dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
 					input.getGovAgencyCode(), input.getDossierTemplateNo());
 
-			int counter = DossierNumberGenerator.counterDossier(user.getUserId(), groupId);
-			String referenceUid = input.getReferenceUid();
-
-			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
-					input.getDossierTemplateNo(), groupId);
-
-			ServiceProcess process = ServiceProcessLocalServiceUtil.getServiceProcess(option.getServiceProcessId());
+			int counter = 0;
+			String referenceUid = StringPool.BLANK;
+			//
+			// ProcessOption option = getProcessOption(input.getServiceCode(),
+			// input.getGovAgencyCode(),
+			// input.getDossierTemplateNo(), groupId);
+			//
+			// ServiceProcess process =
+			// ServiceProcessLocalServiceUtil.getServiceProcess(option.getServiceProcessId());
 
 			if (referenceUid.trim().length() == 0)
 				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
 
-			String serviceName = getServiceName(input.getServiceCode(), groupId);
+			// String serviceName = getServiceName(input.getServiceCode(),
+			// groupId);
 
-			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, input.getGovAgencyCode());
+			// String govAgencyName = getDictItemName(groupId,
+			// GOVERNMENT_AGENCY, input.getGovAgencyCode());
 
-			String cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
-			String districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
-			String wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
-
+			String cityName = StringPool.BLANK;
+			String districtName = StringPool.BLANK;
+			String wardName = StringPool.BLANK;
 			String postalCityName = StringPool.BLANK;
+
+			if (Validator.isNotNull(input.getCityCode()))
+				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
+			if (Validator.isNotNull(input.getDistrictCode()))
+				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
+			if (Validator.isNotNull(input.getWardCode()))
+				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+
 			if (Validator.isNotNull(input.getPostalCityCode())) {
 				postalCityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getPostalCityCode());
 			}
 
 			boolean online = true;
-			// DOSSIER that was created in CLIENT is set ONLINE = false
-			if (process.getServerNo().trim().length() != 0) {
-				online = false;
-			}
 
 			String password = StringPool.BLANK;
 
-			if (process.getGeneratePassword()) {
-				password = DossierNumberGenerator.generatePassword(DEFAULT_PATTERN_PASSWORD, LENGHT_DOSSIER_PASSWORD);
-			}
-
 			Dossier dossier = actions.initDossier(groupId, id, referenceUid, counter, input.getServiceCode(),
-					serviceName, input.getGovAgencyCode(), govAgencyName, input.getApplicantName(),
+					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, input.getApplicantName(),
 					input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
 					input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
 					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
 					input.getContactEmail(), input.getDossierTemplateNo(), password, input.getViaPostal(),
 					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalTelNo(), online,
-					process.getDirectNotification(), input.getApplicantNote(), serviceContext);
+					true, input.getApplicantNote(), serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier);
 
@@ -607,8 +607,9 @@ public class DossierManagementImpl implements DossierManagement {
 				ProcessAction action = getProcessAction(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
 						input.getActionCode(), option.getServiceProcessId());
 
-//				dossierPermission.hasPermitDoAction(groupId, user.getUserId(), dossier, option.getServiceProcessId(),
-//						action);
+				// dossierPermission.hasPermitDoAction(groupId,
+				// user.getUserId(), dossier, option.getServiceProcessId(),
+				// action);
 
 				DossierAction dossierAction = actions.doAction(groupId, dossier.getDossierId(),
 						dossier.getReferenceUid(), input.getActionCode(), action.getProcessActionId(),
@@ -759,6 +760,55 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 
 		return action;
+	}
+
+	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
+	public static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
+	public static final int LENGHT_DOSSIER_PASSWORD = 15;
+	public static final String DEFAULT_PATTERN_PASSWORD = "0123456789khoa";
+
+	@Override
+	public Response getContactsDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			ServiceContext serviceContext, User user, Long dossierId, String referenceUid) {
+		DossierActions action = new DossierActionsImpl();
+		BackendAuth auth = new BackendAuthImpl();
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			JSONObject result = action.getContacts(groupId, dossierId, referenceUid);
+			return Response.status(200).entity(result).build();
+		} catch (PortalException e) {
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					error.setMessage("Internal Server Error");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+
+				}
+			}
+		}
 	}
 
 }

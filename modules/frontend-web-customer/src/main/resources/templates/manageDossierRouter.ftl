@@ -4,7 +4,7 @@
 		var viewMainList = new kendo.View("mainTemplate", {model: modelMain});
 		var viewSidebar = new kendo.View("sidebarTemplate", {model: modelSidebar});
 	
-		manageDossier.route("/dossierStatus(:dossierItemStatus)/detailDossier(:id)", function(dossierItemStatus, id){
+		manageDossier.route("/(:dossierItemStatus)/dossiers/(:id)", function(dossierItemStatus, id){
 			$("#mainType1").hide();
 			$("#mainType2").show();
 			$("#mainType2").load("${ajax.customer_dossier_detail}?id="+id+"",function(result){
@@ -26,9 +26,11 @@
 			$(".itemStatus").css("pointer-events","auto");
 		});
 
-		manageDossier.route("/:id", function(id) {
+		manageDossier.route("/(:id)", function(id) {
 			$("#mainType1").show();
 			$("#mainType2").hide();
+			$("#wrapMain").hide();
+			setTimeout(function(){$("#wrapMain").show()},300);
 			layout.showIn("#main_section", viewMainList);          
 			dataSourceProfile.read({
 				"serviceInfo":$("#serviceInfo").val(),

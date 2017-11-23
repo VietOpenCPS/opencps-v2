@@ -104,6 +104,7 @@
             read: function (options) {
                 $.ajax({
                     url: "${api.server}/dossiers/"+dataItem.dossierId+"/logs",
+                    // url:"http://localhost:3000/dossierlogs",
                     dataType: "json",
                     type: 'GET',
                     data: {

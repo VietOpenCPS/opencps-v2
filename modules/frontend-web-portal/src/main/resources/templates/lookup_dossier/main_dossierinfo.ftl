@@ -44,17 +44,17 @@
                     <li class="clearfix eq-height-lg P0">
                     	<div class="orderNo col-sm-1 text-center center-all row-blue"></div>
                         <div class="col-sm-11 M0 P10">
-                            <span class="text-bold">#:author#</span><span>( #:payload.jobposTitle# ) </span><span class="text-light-blue">#:payload.briefNote#</span><br>
-                            <span>#:createDate#</span><br>
+                            <span class="text-bold">#:author# </span><span class="text-light-gray">( #:payload.jobposTitle# ) </span><span class="text-light-blue">#:payload.briefNote#</span><br>
+                            <span class="text-light-gray">#:createDate#</span><br>
                             <span>#:content#</span><br>
                             #
 					        	dossierId = dataItem.dossierId;
 					        	$.each(payload.dossierFiles, function(index, file) {
 					        		if (file.fileType == "docx") {#
-					        			<span><img src="images/word.png" alt=""> <a href="${api.server}/dossiers/#:dossierId#/files/#:file.referenceUid#" class="text-greyy"></a></span><br>
+					        			<span><img src="images/word.png" alt=""> <a href="${api.server}/dossiers/#:dossierId#/files/#:file.referenceUid#">#:file.displayName#</a></span><br>
 					        		#}
 						        	else if (file.fileType == "pdf") {#
-						        		<span><img src="images/pdf.png" alt=""> <a href="${api.server}/dossiers/#:dossierId#/files/#:file.referenceUid#" class="text-greyy"></a></span><br>
+						        		<span><img src="images/pdf.png" alt=""> <a href="${api.server}/dossiers/#:dossierId#/files/#:file.referenceUid#">#:file.displayName#</a></span><br>
 						        	#}
 						        })
 				        	# 
