@@ -16,7 +16,7 @@
 					Nộp hồ sơ
 				</a>
 				<a href="#">
-					<i class="fa fa-paper-plane" aria-hidden="true"></i> 
+					<i class="fa fa-trash"></i>
 					Xóa
 				</a>
 			</div>
@@ -138,10 +138,10 @@
 			</div>
 		</div>
 
-		<form id="dossierFormSubmiting">
+		<div id="dossierFormSubmiting">
 			<div class="dossier-parts">
 				<div class="head-part align-middle PB5">
-					<div class="background-triangle-small">I</div> <span class="text-uppercase">Thành phần hồ sơ</span> <span class="text-light-gray"><i>Những thành phần hồ sơ có dấu (<span class="red">*</span>) là thành phần bắt buộc</i></span>
+					<div class="background-triangle-small">II</div> <span class="text-uppercase">Thành phần hồ sơ</span> <span class="text-light-gray"><i>Những thành phần hồ sơ có dấu (<span class="red">*</span>) là thành phần bắt buộc</i></span>
 				</div>
 				<div class="content-part" id="lsDossierTemplPart">
 					<#-- <#include "customer_dossier_online_form.ftl"> -->
@@ -180,41 +180,95 @@
 					</div>
 
 					#if(hasForm){#
-					<div class="col-sm-12" id="formPartNo#:id#">
+					<div class="col-sm-12" style="height:450px;width:100%;overflow:auto;">
+						<form id="formPartNo#:id#">
 
+						</form>
 					</div>
 					#
-					var referenceUid = 0;
-					var arrfile = funDossierFile(${(dossierId)!});
-					var referenceUid = fnGetReferenceUidForm(arrfile);
+					var referentUidFile =  getReferentUidFile(${dossierId});
 
-					if(referenceUid !== 0){
 					$.ajax({
-					url : "${api.server}/dossiers/${dossierId}/files/"+referenceUid+"/formdata",
+					url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formscript",
 					dataType : "json",
 					type : "GET",
 					headers : {"groupId": ${groupId}},
 					success : function(result){
+					console.log(result);
 					$("\\#formPartNo"+id).empty();
-					$("\\#formPartNo"+id).alpaca(result);
-					$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button class="btn btn-active MB10 MT10" onclick="" data-pk="'+id+'">Ghi lại</button></div></div>');
-				},
-				error : function(result){
 
-			}
-		});
-	}
+					var formdata = fnGetFormData(${dossierId},referentUidFile);
+					
+					$("\\#formPartNo"+id).alpaca({
+					"data" : formdata,
+					"schema" : result.schema,
+					"options" : result.options,
+					"view" : result.view
+				});
+
+
+				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca" class="btn btn-active MB10 MT10" type="button" data-pk="'+id+'">Ghi lại</button></div></div>');
+				$("\\#btn-save-formalpaca").click(function(){
+				console.log("ccc");
+				var value = $("\\#formPartNo"+id).alpaca('get').getValue();
+				var validate = $("\\#formPartNo"+id).alpaca('get').isValid(true);
+				if(validate){
+				$.ajax({
+				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
+				dataType : "json",
+				type : "PUT",
+				headers: {"groupId": ${groupId}},
+				data : {
+				formdata: JSON.stringify(value)
+			},
+			success : function(result){
+			notification.show({
+			message: "Yêu cầu được thực hiện thành công"
+		}, "success");
+	},
+	error : function(result){
+	notification.show({
+	message: "Thực hiện không thành công, xin vui lòng thử lại"
+}, "error");
+}
+});
+}else {
+notification.show({
+message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi gửi"
+}, "error");
+}
+
+console.log(value);
+
+});
+},
+error : function(result){
+
+}
+});
 }#
 
 #}#
 </script>
 </div>
-</form>
+</div>
 
 <div class="row-parts-content">
+	<div class="row MB5">
+
+		<div class="col-sm-1">
+			<label>Ghi chú</label>
+		</div>
+		<div class="col-sm-11">
+			<span id="applicantNote" data-pk="1" data-type="textarea" data-toggle="#editApplicantNote" data-original-title="Ghi chú" tabindex="-1" class="" data-bind="text:applicantNote"></span>
+			<span class="pull-right">
+				<a href="javascript:;" id="editApplicantNote" style="float: right"><i class="fa fa-pencil"></i></a>
+			</span>
+		</div>
+	</div>
 
 	<div class="checkbox ML15">
-		<input type="checkbox" name="viaPostal" id="viaPostal"> <label class="text-normal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
+		<input type="checkbox" data-bind="attr : {viaPostal: viaPostal}" name="viaPostal" id="viaPostal"> <label class="text-normal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
 	</div>
 
 	<div class="row" id="viaPostalContent">
@@ -239,7 +293,7 @@
 					<label>Tỉnh/Thành phố</label>
 				</div>
 				<div class="col-sm-10">
-					<span id="postalCityCode" data-pk="1" data-type="select" data-toggle="#editPostalCityCode" data-original-title="Chọn Tỉnh/Thành phố" tabindex="-1" class="" data-bind="text:postalCityCode"></span>
+					<span id="postalCityCode" data-pk="1" data-type="select" data-toggle="#editPostalCityCode" data-original-title="Chọn Tỉnh/Thành phố" tabindex="-1" class="" data-bind="text:postalCityName"></span>
 					<span class="pull-right">
 						<a href="javascript:;" id="editPostalCityCode" style="float: right"><i class="fa fa-pencil"></i></a>
 					</span>
@@ -267,7 +321,7 @@
 </div>
 
 <div class="button-row MT20">
-	<button class="btn btn-active" id="btn-submit-dossier"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 	<button class="btn btn-active" id="btn-delete-dossier" data-bind="attr : {data-pk : dossierId}"><i class="fa fa-trash"></i> Xóa</button>
 </div>
 </div>
@@ -579,31 +633,8 @@
 			headers: {"groupId": ${groupId}}
 		},
 		params: function(params) {
-			var cityName = "";
-			$.ajax({
-				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-				dataType : "json",
-				type : "GET",
-				async: false,
-				headers: {"groupId": ${groupId}},
-				data : {
-					parent : 0
-				},
-				success : function(result){
-					var items = result.data;
-					for (var i = 0; i < items.length; i++) {
-						if (items[i].itemCode == params.value){
-							cityName = items[i].itemName;
-						}
-					}
-				},
-				error : function(xhr){
-
-				}
-			});
 			return {
-				cityCode: params.value,
-				cityName: cityName
+				cityCode: params.value
 			};
 		},
 		validate: function(value) {
@@ -694,31 +725,8 @@
 			headers: {"groupId": ${groupId}}
 		},
 		params: function(params) {
-			var districtName = "";
-			$.ajax({
-				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-				dataType : "json",
-				type : "GET",
-				async: false,
-				headers: {"groupId": ${groupId}},
-				data : {
-					parent : $('#city').editable('getValue', true)
-				},
-				success : function(result){
-					var items = result.data;
-					for (var i = 0; i < items.length; i++) {
-						if (items[i].itemCode == params.value){
-							districtName = items[i].itemName;
-						}
-					}
-				},
-				error : function(xhr){
-
-				}
-			});
 			return {
-				districtCode: params.value,
-				districtName: districtName
+				districtCode: params.value
 			};
 		},
 		validate: function(value) {
@@ -805,31 +813,8 @@
 			headers: {"groupId": ${groupId}}
 		},
 		params: function(params) {
-			var wardName = "";
-			$.ajax({
-				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-				dataType : "json",
-				type : "GET",
-				async: false,
-				headers: {"groupId": ${groupId}},
-				data : {
-					parent : $('#district').editable('getValue', true)
-				},
-				success : function(result){
-					var items = result.data;
-					for (var i = 0; i < items.length; i++) {
-						if (items[i].itemCode == params.value){
-							wardName = items[i].itemName;
-						}
-					}
-				},
-				error : function(xhr){
-
-				}
-			});
 			return {
-				wardCode: params.value,
-				wardName: wardName
+				wardCode: params.value
 			};
 		},
 		validate: function(value) {
@@ -943,26 +928,54 @@
 
 	$('#postalCityCode').editable({
 		url: updateDossierURL,
+		emptytext : "",
 		ajaxOptions:{
 			type:'PUT',
 			dataType: "json",
 			headers: {"groupId": ${groupId}}
 		},
-		emptytext : "",
 		params: function(params) {
 			return {
 				postalCityCode: params.value
 			};
 		},
 		validate: function(value) {
+			if (value.length < 1){
+				return 'Đây là trường bắt buộc';
+			}
 		},
 		success: function(response, newValue) {
 			
 		},
 		error: function(event, id, obj) {
 
+		},
+		prepend: "",
+		source: function(){
+			var arrDisplay = new Array();
+			$.ajax({
+				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+				dataType : "json",
+				type : "GET",
+				async: false,
+				headers: {"groupId": ${groupId}},
+				data : {
+					parent : 0
+				},
+				success : function(result){
+					var arrDataRes = result.data;
+					for (var i = 0; i < arrDataRes.length; i++) {
+						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+					}
+				},
+				error : function(xhr){
+
+				}
+			});
+			return arrDisplay;
 		}
 	});
+
 	$('#editPostalCityCode').click(function(e) {
 		e.stopPropagation();
 		$('#postalCityCode').editable('toggle');
@@ -995,6 +1008,34 @@
 		e.stopPropagation();
 
 		$('#postalTelNo').editable('toggle');
+	});
+
+	$('#applicantNote').editable({
+		url: updateDossierURL,
+		ajaxOptions:{
+			type:'PUT',
+			dataType: "json",
+			headers: {"groupId": ${groupId}}
+		},
+		emptytext : "",
+		params: function(params) {
+			return {
+				applicantNote: params.value
+			};
+		},
+		validate: function(value) {
+
+		},
+		success: function(response, newValue) {
+
+		},
+		error: function(event, id, obj) {
+
+		}
+	});
+	$('#editApplicantNote').click(function(e) {
+		e.stopPropagation();
+		$('#applicantNote').editable('toggle');
 	});
 
 	var printDetailDossier = function(dossierId){
@@ -1042,14 +1083,50 @@
 						dossierNo : result.dossierNo,
 						dossierStatusText : result.dossierStatusText,
 						stepInstruction : result.stepInstruction,
+						applicantNote : function(){
+							$('#applicantNote').editable("setValue",result.applicantNote);
+							if(!result.applicantNote){
+								return "Ghi chú người dùng";
+							}
+							return result.applicantNote;
+						},
 						viaPostal : function(e){
-							console.log(viaPostal);
+							console.log(result.viaPostal);
 
-							$("#viaPostal").ckecked(result.viaPostal);
-							if(!viaPostal){
+							if(result.viaPostal < 2){
 								$("#viaPostalContent").hide();
 							}else {
 								$("#viaPostalContent").show();
+							}
+
+							return result.viaPostal;
+						},
+						postalAddress : function(){
+							$('#postalAddress').editable("setValue",result.postalAddress);
+							if(!result.postalAddress){
+								return "Địa chỉ nhận kết quả";
+							}
+							return result.postalAddress;
+						},
+						postalCityName : function(){
+							console.log(result.postalCityCode);
+							console.log(result.postalCityName);
+							$('#postalCityCode').editable("setValue",result.postalCityCode);
+							if(!result.postalCityName){
+								return "Tỉnh/ Thành phố";
+							}
+							return result.postalCityName;
+						},
+						postalTelNo : function(){
+							$('#postalTelNo').editable("setValue",result.postalTelNo);
+							if(!result.postalTelNo){
+								return "Số điện thoại";
+							}
+							return result.postalTelNo;
+						},
+						submitting : function(){
+							if(result.submitting){
+								$("#btn-submit-dossier").hide();
 							}
 						}
 
@@ -1146,6 +1223,8 @@
 		data.append('referenceUid', "");
 		data.append('dossierTemplateNo', dossierTemplateNo);
 		data.append('fileTemplateNo', fileTemplateNo);
+		data.append('fileType', "");
+		data.append('isSync', "");
 
 		$.ajax({
 			type : 'POST', 
@@ -1191,6 +1270,56 @@
 			$("#viaPostalContent").hide();	
 		}
 	});
+
+	var getReferentUidFile = function(dossierId){
+		var referenceUid = 0;
+		if(dossierId){
+			$.ajax({
+				type : 'GET', 
+				dataType : "json",
+				url  : '${api.server}/dossiers/${dossierId}/files', 
+				headers: {"groupId": ${groupId}},
+				async : false,
+				success :  function(result){ 
+					if(result.data){
+						for (var i = 0; i < result.data.length; i++) {
+							if(result.data[i].eForm){
+								referenceUid = result.data[i].referenceUid;
+								return ;
+							}
+						}
+					}
+
+				},
+				error:function(result){
+
+				}
+			});
+		}
+
+		return referenceUid;
+	}
+
+	var fnGetFormData = function(dossierId,referentUid){
+		var value = null;
+		if(dossierId && referentUid){
+			$.ajax({
+				url : "${api.server}/dossiers/"+dossierId+"/files/"+referentUid+"/formdata",
+				type : "GET",
+				dataType : "json",
+				async : false,
+				success : function(result){
+					value = result;
+				},
+				error : function(result){
+
+				}
+
+			});
+		}
+
+		return value;
+	}
 
 	$(function(){
 		manageDossier.route("/taohosomoi/nopthanhcong/(:dossierTemplateId)&(:dossierId)", function(dossierTemplateId,dossierId){
