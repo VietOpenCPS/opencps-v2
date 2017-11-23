@@ -13,4 +13,6 @@ public interface DossierActionUser {
 
 	public org.opencps.dossiermgt.model.DossierActionUser deleteDossierActionUser(
 			DossierActionUserPK dossierActionUserPK) throws PortalException;
+
+	public void initDossierActionUser(long dossierActionId, long userId, long groupId);
 }

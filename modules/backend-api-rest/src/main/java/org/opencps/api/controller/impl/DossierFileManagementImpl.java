@@ -465,7 +465,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	@Override
 	public Response downloadByDossierId(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String password) {
-		_log.info("------Start downloadByDossierId------");
 		String pathName = "";
 		String realPath = "";
 		// TODO: check user is loged or password for access dossier file
@@ -527,10 +526,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			ResponseBuilder responseBuilder = Response.ok((Object) fi);
 			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fi.getName() + "\"");
 			responseBuilder.header("Content-Type", "application/zip");
-			_log.info("------download File " + fi.getName() +  "Success------");
 			return responseBuilder.build();
 		} catch (Exception e) {
-			_log.info("------Error downloadByDossierId ------");
 			return processException(e);
 		}
 	}
