@@ -39,7 +39,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 	}
 
 	@Override
-	public void initDossierActionUser(long dossierActionId, long userId, long groupId) {\
+	public void initDossierActionUser(long dossierActionId, long userId, long groupId) {
 		// Get DossierAction
 		DossierAction dossierAction = DossierActionLocalServiceUtil.getDossierActionById(dossierActionId, userId);
 		String actionCode = dossierAction.getActionCode();
