@@ -39,14 +39,21 @@ public class DossierActionUserImpl implements DossierActionUser {
 	}
 
 	@Override
-	public void initDossierActionUser(long dossierActionId, long userId, long groupId) {
+	public void initDossierActionUser(long dossierActionId, long userId, long groupId) {\
+		// Get DossierAction
 		DossierAction dossierAction = DossierActionLocalServiceUtil.getDossierActionById(dossierActionId, userId);
 		String actionCode = dossierAction.getActionCode();
 		long serviceProcessId = dossierAction.getServiceProcessId();
+		
+		// Get ProcessAction
 		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(serviceProcessId, actionCode);
 		String stepCode = processAction.getPostStepCode();
+		
+		// Get ProcessStep
 		ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
 		long processStepId = processStep.getProcessStepId();
+		
+		// Get List ProcessStepRole
 		List<ProcessStepRole> listProcessStepRole = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStepId);
 		for (ProcessStepRole processStepRole : listProcessStepRole) {
 			long roleId = processStepRole.getRoleId();
@@ -55,6 +62,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 			if (moderator) {
 				mod = 1;
 			}
+			// Get list user
 			List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
 			for (User user : users) {
 				boolean assigned = user.getUserId() == userId ? true : false;
@@ -64,6 +72,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 				model.setModerator(mod);
 				model.setAssigned(assigned);
 				model.setVisited(false);
+				// Add User
 				DossierActionUserLocalServiceUtil.addDossierActionUser(model);
 			}
 		}
