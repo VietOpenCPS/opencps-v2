@@ -141,9 +141,24 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		object.setDossierPartNo(dossierPartNo);
 		object.setFileTemplateNo(fileTemplateNo);
 		object.setDossierPartType(dossierPart.getPartType());
+		
 		if (Validator.isNull(displayName)) {
 			displayName = sourceFileName;
 		}
+		
+		if (Validator.isNotNull(dossierPart.getFormScript())) {
+			object.setEForm(true);
+			object.setFormScript(dossierPart.getFormScript());
+		}
+		
+		if (Validator.isNotNull(dossierPart.getFormReport())) {
+			object.setFormReport(dossierPart.getFormReport());
+		}
+		
+		if (Validator.isNotNull(dossierPart.getSampleData())) {
+			object.setFormData(dossierPart.getSampleData());
+		}
+
 
 		object.setDisplayName(displayName);
 		object.setOriginal(true);
@@ -157,6 +172,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		return dossierFilePersistence.update(object);
 	}
+	
+	
 
 	/**
 	 * POST /dossiers/{id}/files/copyfile

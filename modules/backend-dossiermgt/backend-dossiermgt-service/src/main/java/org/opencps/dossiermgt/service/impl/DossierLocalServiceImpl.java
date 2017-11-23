@@ -158,6 +158,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setServerNo(getServerNo(groupId));
 
 			// create  DossierFile if it is eForm
+			dossierPersistence.update(dossier);
+
 
 			List<DossierPart> dossierParts = new ArrayList<DossierPart>();
 
@@ -169,6 +171,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossierFileLocalService.addDossierFile(groupId, dossierId, referenceUid, dossierTemplateNo,
 							part.getPartNo(), part.getFileTemplateNo(), part.getPartName(), StringPool.BLANK, 0l, null,
 							StringPool.BLANK, StringPool.FALSE, context);
+					
 					
 				}
 			}
@@ -209,10 +212,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalTelNo(postalTelNo);
 			if (Validator.isNotNull(applicantNote))
 				dossier.setApplicantNote(applicantNote);
+			dossierPersistence.update(dossier);
 
 		}
 
-		dossierPersistence.update(dossier);
 
 		return dossier;
 	}
