@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -33,6 +34,7 @@ import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -362,24 +364,28 @@ public class DossierManagementImpl implements DossierManagement {
 
 			int counter = 0;
 			String referenceUid = StringPool.BLANK;
-//
-//			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
-//					input.getDossierTemplateNo(), groupId);
-//
-//			ServiceProcess process = ServiceProcessLocalServiceUtil.getServiceProcess(option.getServiceProcessId());
+			//
+			// ProcessOption option = getProcessOption(input.getServiceCode(),
+			// input.getGovAgencyCode(),
+			// input.getDossierTemplateNo(), groupId);
+			//
+			// ServiceProcess process =
+			// ServiceProcessLocalServiceUtil.getServiceProcess(option.getServiceProcessId());
 
 			if (referenceUid.trim().length() == 0)
 				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
 
-			//String serviceName = getServiceName(input.getServiceCode(), groupId);
+			// String serviceName = getServiceName(input.getServiceCode(),
+			// groupId);
 
-			//String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, input.getGovAgencyCode());
+			// String govAgencyName = getDictItemName(groupId,
+			// GOVERNMENT_AGENCY, input.getGovAgencyCode());
 
 			String cityName = StringPool.BLANK;
 			String districtName = StringPool.BLANK;
 			String wardName = StringPool.BLANK;
 			String postalCityName = StringPool.BLANK;
-			
+
 			if (Validator.isNotNull(input.getCityCode()))
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
 			if (Validator.isNotNull(input.getDistrictCode()))
@@ -392,7 +398,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			boolean online = true;
-			
+
 			String password = StringPool.BLANK;
 
 			Dossier dossier = actions.initDossier(groupId, id, referenceUid, counter, input.getServiceCode(),
@@ -755,10 +761,54 @@ public class DossierManagementImpl implements DossierManagement {
 
 		return action;
 	}
+
 	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
 	public static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
 	public static final int LENGHT_DOSSIER_PASSWORD = 15;
 	public static final String DEFAULT_PATTERN_PASSWORD = "0123456789khoa";
 
+	@Override
+	public Response getContactsDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			ServiceContext serviceContext, User user, Long dossierId, String referenceUid) {
+		DossierActions action = new DossierActionsImpl();
+		BackendAuth auth = new BackendAuthImpl();
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			JSONObject result = action.getContacts(groupId, dossierId, referenceUid);
+			return Response.status(200).entity(result).build();
+		} catch (PortalException e) {
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					error.setMessage("Internal Server Error");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+
+				}
+			}
+		}
+	}
 
 }

@@ -841,6 +841,9 @@
 		<column name="moderator" type="int" />
 		<column name="assigned" type="boolean" />
 		<column name="visited" type="boolean" />
+		<finder return-type="Collection" name="DID">
+			<finder-column name="dossierActionId" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DossierActionSync"
