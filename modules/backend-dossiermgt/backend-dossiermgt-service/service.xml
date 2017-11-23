@@ -131,10 +131,16 @@
 			<finder-column name="templateName"/>
 		</finder>
 		
-		<finder return-type="DossierTemplate" name="G_DT_NO">
+		<finder return-type="DossierTemplate" name="G_DT_TPLNO" unique="true" db-index="true">
+			<finder-column name="groupId"/>
+			<finder-column name="templateNo" comparator="="/>
+		</finder>
+		
+		<finder return-type="DossierTemplate" name="GID_DTPLNO">
 			<finder-column name="groupId"/>
 			<finder-column name="templateNo"/>
 		</finder>
+		
 		<!-- References -->
 
 	</entity>

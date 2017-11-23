@@ -286,7 +286,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setGovAgencyName(govAgencyName);
 			dossier.setDossierTemplateNo(dossierTemplateNo);
 
-			DossierTemplate dt = dossierTemplatePersistence.findByG_DT_NO(groupId, dossierTemplateNo);
+			DossierTemplate dt = dossierTemplatePersistence.findByG_DT_TPLNO(groupId, dossierTemplateNo);
 
 			if (Validator.isNotNull(dt)) {
 				dossier.setDossierTemplateName(dt.getTemplateName());
@@ -1059,7 +1059,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	private String getDossierTemplateName(long groupId, String dossierTemplateCode) {
 		String name = StringPool.BLANK;
 
-		DossierTemplate template = dossierTemplatePersistence.fetchByG_DT_NO(groupId, dossierTemplateCode);
+		DossierTemplate template = dossierTemplatePersistence.fetchByG_DT_TPLNO(groupId, dossierTemplateCode);
 
 		if (Validator.isNotNull(template)) {
 			name = template.getTemplateName();
