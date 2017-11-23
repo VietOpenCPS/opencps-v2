@@ -15,6 +15,7 @@ import org.opencps.api.context.provider.ServiceContextProvider;
 import org.opencps.api.context.provider.UserContextProvider;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
+import org.opencps.api.controller.impl.DossierActionManagementImpl;
 import org.opencps.api.controller.impl.DossierFileManagementImpl;
 import org.opencps.api.controller.impl.DossierLogManagementImpl;
 import org.opencps.api.controller.impl.DossierManagementImpl;
@@ -56,6 +57,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new PaymentFileManagementImpl());
 		singletons.add(new DossierManagementImpl());
 		singletons.add(new DossierFileManagementImpl());
+		singletons.add(new DossierActionManagementImpl());
 		singletons.add(new DossierLogManagementImpl());
 		singletons.add(new ServerConfigManagementImpl());
 		singletons.add(new DossierSyncManagementImpl());

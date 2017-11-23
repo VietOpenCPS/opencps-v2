@@ -376,4 +376,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 		return processActionPersistence.fetchBySPI_PRESC_AEV(serviceProcessId, preStepCode, autoEvent);
 	}
 
+	public List<ProcessAction> getProcessActionbyServiceProcessId(long serviceProcessId) throws PortalException {
+		return processActionPersistence.findByS_P_ID(serviceProcessId);
+	}
 }
