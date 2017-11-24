@@ -1,3 +1,6 @@
+<#if (Request)??>
+    <#include "init.ftl">
+</#if>
 <div class="row">
 	<div class="MB10">
 		<span class="title text-light-blue text-bold">TRA CỨU HỒ SƠ</span>
@@ -78,6 +81,7 @@
 			            url: "${api.server}/dossiers",
 			            dataType: "json",
 			            type: 'GET',
+			            headers : {"groupId": ${groupId}},
 			            data: {
 			            	keyword: options.data.keyword,
 			            },
@@ -85,6 +89,7 @@
 							req.setRequestHeader('groupId', ${groupId});
 						},
 			            success: function (result) {
+			            	options.success(result)
 			                if (result.data) {
 			                	var NoItem = result.data.length;
 				            	if (NoItem == 1) {
@@ -96,9 +101,6 @@
 					              	);
 					            	$("#detailView2").hide()
 				            	};
-				            	if (NoItem > 1) {
-				            		options.success(result)
-				            	}
 			                }
 			            },
 			            error : function(xhr){
@@ -158,6 +160,7 @@
 						url : "${api.server}/dossiers",
 						dataType : "json",
 						type : "GET",
+						headers : {"groupId": ${groupId}},
 						beforeSend: function(req) {
 							req.setRequestHeader('groupId', ${groupId});
 						},

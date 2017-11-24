@@ -1,3 +1,6 @@
+<#if (Request)??>
+    <#include "init.ftl">
+</#if>
 <!-- List-view hồ sơ đã có kết quả -->
 <div class="dossier-with-result box clearfix">
 	<div class="col-sm-12 box-title">
