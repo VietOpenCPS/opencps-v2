@@ -80,7 +80,7 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 	 */
 
 	public DossierTemplate getByTemplateNo(long groupId, String templateNo) throws PortalException {
-		return dossierTemplatePersistence.fetchByG_DT_NO(groupId, templateNo);
+		return dossierTemplatePersistence.fetchByG_DT_TPLNO(groupId, templateNo);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -293,7 +293,7 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 				throw new DuplicateTemplateNameException("DuplicateTemplateNameException");
 			}
 			
-			dossierTemplate = dossierTemplatePersistence.fetchByG_DT_NO(groupId, templateNo);
+			dossierTemplate = dossierTemplatePersistence.fetchByG_DT_TPLNO(groupId, templateNo);
 			
 			if (Validator.isNotNull(dossierTemplate) && dossierTemplate.getPrimaryKey() != dossierTemplateId) {
 				throw new DuplicateTemplateNoException("DuplicateTemplateNoException");
@@ -306,7 +306,7 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 				throw new DuplicateTemplateNameException("DuplicateTemplateNameException");
 			}
 
-			dossierTemplate = dossierTemplatePersistence.fetchByG_DT_NO(groupId, templateNo);
+			dossierTemplate = dossierTemplatePersistence.fetchByG_DT_TPLNO(groupId, templateNo);
 
 			if (Validator.isNotNull(dossierTemplate)) {
 				throw new DuplicateTemplateNoException("DuplicateTemplateNoException");

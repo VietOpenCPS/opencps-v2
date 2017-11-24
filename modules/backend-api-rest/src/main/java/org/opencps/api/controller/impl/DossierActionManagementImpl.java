@@ -117,14 +117,6 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 		}
 	}
 
-	@Override
-	public Response addExecuteOneAction(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id, ExecuteOneAction input) {
-		// TODO Auto-generated method stub
-
-		return null;
-
-	}
 
 	@Override
 	public Response getListContacts(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,

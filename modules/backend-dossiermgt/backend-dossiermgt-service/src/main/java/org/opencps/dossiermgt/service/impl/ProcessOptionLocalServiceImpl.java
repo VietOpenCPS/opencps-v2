@@ -304,7 +304,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 	public ProcessOption getByDTPLNoAndServiceCF(long groupId, String dossierTemplateNo, long serviceConfigId)
 			throws PortalException {
 		
-		DossierTemplate dossierTemplate = dossierTemplatePersistence.fetchByG_DT_NO(groupId, dossierTemplateNo);
+		DossierTemplate dossierTemplate = dossierTemplatePersistence.findByGID_DTPLNO(groupId, dossierTemplateNo);
 		
 		return processOptionPersistence.fetchBySC_DT(serviceConfigId, dossierTemplate.getDossierTemplateId());
 		
