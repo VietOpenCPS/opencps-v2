@@ -14,6 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
@@ -104,7 +106,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		validateInit(groupId, dossierId, referenceUid, serviceCode, govAgencyCode, address, cityCode, districtCode,
 				wardCode, contactName, contactTelNo, contactEmail, dossierTemplateNo);
 
-
 		Dossier dossier = null;
 
 		if (dossierId == 0) {
@@ -156,6 +157,25 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setApplicantNote(applicantNote);
 			dossier.setServerNo(getServerNo(groupId));
 
+			// create  DossierFile if it is eForm
+			dossierPersistence.update(dossier);
+
+
+			List<DossierPart> dossierParts = new ArrayList<DossierPart>();
+
+			dossierParts = dossierPartPersistence.findByTP_NO(groupId, dossierTemplateNo);
+
+			for (DossierPart part : dossierParts) {
+				if (Validator.isNotNull(part.getFormScript())) {
+
+					dossierFileLocalService.addDossierFile(groupId, dossierId, referenceUid, dossierTemplateNo,
+							part.getPartNo(), part.getFileTemplateNo(), part.getPartName(), StringPool.BLANK, 0l, null,
+							StringPool.BLANK, StringPool.FALSE, context);
+					
+					
+				}
+			}
+
 		} else {
 
 			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
@@ -192,10 +212,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalTelNo(postalTelNo);
 			if (Validator.isNotNull(applicantNote))
 				dossier.setApplicantNote(applicantNote);
+			dossierPersistence.update(dossier);
 
 		}
 
-		dossierPersistence.update(dossier);
 
 		return dossier;
 	}
@@ -266,7 +286,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setGovAgencyName(govAgencyName);
 			dossier.setDossierTemplateNo(dossierTemplateNo);
 
-			DossierTemplate dt = dossierTemplatePersistence.findByG_DT_NO(groupId, dossierTemplateNo);
+			DossierTemplate dt = dossierTemplatePersistence.findByG_DT_TPLNO(groupId, dossierTemplateNo);
 
 			if (Validator.isNotNull(dt)) {
 				dossier.setDossierTemplateName(dt.getTemplateName());
@@ -1039,7 +1059,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	private String getDossierTemplateName(long groupId, String dossierTemplateCode) {
 		String name = StringPool.BLANK;
 
-		DossierTemplate template = dossierTemplatePersistence.fetchByG_DT_NO(groupId, dossierTemplateCode);
+		DossierTemplate template = dossierTemplatePersistence.fetchByG_DT_TPLNO(groupId, dossierTemplateCode);
 
 		if (Validator.isNotNull(template)) {
 			name = template.getTemplateName();

@@ -131,10 +131,16 @@
 			<finder-column name="templateName"/>
 		</finder>
 		
-		<finder return-type="DossierTemplate" name="G_DT_NO">
+		<finder return-type="DossierTemplate" name="G_DT_TPLNO" unique="true" db-index="true">
+			<finder-column name="groupId"/>
+			<finder-column name="templateNo" comparator="="/>
+		</finder>
+		
+		<finder return-type="DossierTemplate" name="GID_DTPLNO">
 			<finder-column name="groupId"/>
 			<finder-column name="templateNo"/>
 		</finder>
+		
 		<!-- References -->
 
 	</entity>
@@ -822,6 +828,10 @@
 			<finder-column name="nextActionId"/>
 		</finder>
 		
+		<finder return-type="DossierAction" name="DID_ACTC">
+			<finder-column name="dossierId"/>
+			<finder-column name="actionCode"/>
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DossierActionUser"
@@ -900,6 +910,45 @@
 		<finder return-type="Collection" name="SRV_NO" >
 			<finder-column name="serverNo"/>
 		</finder>
+		
+		
+	</entity>
+
+	<entity local-service="true" name="DossierStatistic"
+		remote-service="false" table="opencps_dossierstatistic" uuid="true">
+		
+		<column name="dossierStatisticId" type="long" primary="true" />
+		
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		
+		<column name="month" type="int"/>
+		<column name="year" type="int"/>
+		<column name="remainingCount" type="int"/>
+		<column name="receivedCount" type="int"/>
+		<column name="onlineCount" type="int"/>
+		<column name="undueCount" type="int"/>
+		<column name="overdueCount" type="int"/>
+		<column name="ontimeCount" type="int"/>
+		<column name="overtimeCount" type="int"/>
+		
+		<column name="govAgencyCode" type="String"/>
+		<column name="govAgencyName" type="String"/>
+		<column name="domainCode" type="String"/>
+		<column name="domainName" type="String"/>
+
+		<column name="administrationLevel" type="int"/>
+
+		<column name="reporting" type="boolean"/>
+		
+		<!-- 	Order -->
+			
+		<!-- 	Filter -->
 		
 		
 	</entity>
