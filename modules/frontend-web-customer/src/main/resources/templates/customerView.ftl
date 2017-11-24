@@ -76,6 +76,5 @@
 			</div>
 		</div>
 	</script>
-
 	<#-- TEMPLATE TRANG QUẢN LÝ HỒ SƠ/ C-04 -->
 	<#include "manageDossierView.ftl">

@@ -14,9 +14,12 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
+import java.util.List;
 
+import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.service.base.DossierActionUserLocalServiceBaseImpl;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the dossier action user local service.
@@ -40,4 +43,7 @@ public class DossierActionUserLocalServiceImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil} to access the dossier action user local service.
 	 */
+	public List<DossierActionUser> getListUser(long dossierActionId) {
+		return dossierActionUserPersistence.findByDID(dossierActionId);
+	}
 }

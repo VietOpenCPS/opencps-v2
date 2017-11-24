@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 public class ServerConfigManagementImpl implements ServerConfigManagement {
 
@@ -130,15 +131,27 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 	@Override
 	public Response getServerConfigDetail(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long id) {
+			Locale locale, User user, ServiceContext serviceContext, String id) {
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			ServerConfig config = null;
+			long serverId = GetterUtil.getLong(id);
 
-			ServerConfig config = ServerConfigLocalServiceUtil.getServerConfig(id);
+			if (serverId != 0) {
+				config = ServerConfigLocalServiceUtil.fetchServerConfig(serverId);
+
+				if (Validator.isNull(config)) {
+					config = ServerConfigLocalServiceUtil.getByCode(id);
+				}
+
+			} else {
+				config = ServerConfigLocalServiceUtil.getByCode(id);
+
+			}
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
 

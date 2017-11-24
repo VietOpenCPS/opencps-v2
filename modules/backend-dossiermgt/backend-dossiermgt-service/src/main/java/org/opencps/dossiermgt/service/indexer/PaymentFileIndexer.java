@@ -5,8 +5,11 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.dossiermgt.constants.DossierLogTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -78,6 +81,19 @@ public class PaymentFileIndexer extends BaseIndexer<PaymentFile> {
 		document.addTextSortable(PaymentFileTerm.INVOICE_TEMPLATE_NO, object.getInvoiceTemplateNo());
 		document.addTextSortable(PaymentFileTerm.INVOICE_ISSUE_NO, object.getInvoiceIssueNo());
 		document.addTextSortable(PaymentFileTerm.INVOICE_NO, object.getInvoiceNo());
+
+		// Add text fields of dossierId
+		try {
+			Dossier dossier = DossierLocalServiceUtil.getDossier(object.getDossierId());
+			document.addTextSortable(PaymentFileTerm.APPLICANT_NAME, dossier.getApplicantName());
+			document.addTextSortable(PaymentFileTerm.APPLICANT_ID_NO, dossier.getApplicantIdNo());
+			document.addTextSortable(PaymentFileTerm.SERVICE_CODE, dossier.getServiceCode());
+			document.addTextSortable(PaymentFileTerm.SERVICE_NAME, dossier.getServiceName());
+			document.addTextSortable(PaymentFileTerm.DOSSIER_NO, dossier.getDossierNo());
+			document.addNumberSortable(PaymentFileTerm.COUNTER, dossier.getCounter());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		return document;
 	}

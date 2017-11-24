@@ -14,8 +14,6 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
 import java.util.Date;
 
 import org.opencps.dossiermgt.model.Dossier;
@@ -28,6 +26,8 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the dossier action local service.
@@ -185,6 +185,10 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	public DossierAction getByNextActionId(long dossierId, long nextActionId) {
 		return dossierActionPersistence.fetchByDID_NACTID(dossierId, nextActionId);
 	}
-
+	
+	public DossierAction getDossierActionById(long dossierId, long userId) {
+		return dossierActionPersistence.fetchByDID_UID(dossierId, userId);
+	}
+	
 
 }

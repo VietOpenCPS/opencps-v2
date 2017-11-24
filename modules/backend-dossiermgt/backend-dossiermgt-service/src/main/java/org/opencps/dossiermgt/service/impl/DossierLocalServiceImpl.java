@@ -104,11 +104,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		validateInit(groupId, dossierId, referenceUid, serviceCode, govAgencyCode, address, cityCode, districtCode,
 				wardCode, contactName, contactTelNo, contactEmail, dossierTemplateNo);
 
-		String dossierTemplateName = getDossierTemplateName(groupId, dossierTemplateNo);
 
 		Dossier dossier = null;
 
 		if (dossierId == 0) {
+			String dossierTemplateName = getDossierTemplateName(groupId, dossierTemplateNo);
+
 			dossierId = counterLocalService.increment(Dossier.class.getName());
 
 			dossier = dossierPersistence.create(dossierId);
@@ -161,27 +162,36 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			dossier.setModifiedDate(now);
 
-			dossier.setApplicantName(applicantName);
-			dossier.setApplicantIdType(applicantIdType);
-			dossier.setApplicantIdNo(applicantIdNo);
-			dossier.setApplicantIdDate(applicantIdDate);
-			dossier.setAddress(address);
-			dossier.setCityCode(cityCode);
-			dossier.setCityName(cityName);
-			dossier.setDistrictCode(districtCode);
-			dossier.setDistrictName(districtName);
-			dossier.setWardCode(wardCode);
-			dossier.setWardName(wardName);
-			dossier.setContactName(contactName);
-			dossier.setContactEmail(contactEmail);
-			dossier.setNotification(notification);
-			dossier.setViaPostal(viaPostal);
-			dossier.setPostalAddress(postalAddress);
-			dossier.setPostalCityCode(postalCityCode);
-			dossier.setPostalTelNo(postalTelNo);
-			dossier.setApplicantNote(applicantNote);
-			dossier.setNotification(notification);
-			dossier.setContactTelNo(contactTelNo);
+			if (Validator.isNotNull(address))
+				dossier.setAddress(address);
+			if (Validator.isNotNull(cityCode))
+				dossier.setCityCode(cityCode);
+			if (Validator.isNotNull(cityName))
+				dossier.setCityName(cityName);
+			if (Validator.isNotNull(districtCode))
+				dossier.setDistrictCode(districtCode);
+			if (Validator.isNotNull(districtName))
+				dossier.setDistrictName(districtName);
+			if (Validator.isNotNull(wardCode))
+				dossier.setWardCode(wardCode);
+			if (Validator.isNotNull(wardName))
+				dossier.setWardName(wardName);
+			if (Validator.isNotNull(contactName))
+				dossier.setContactName(contactName);
+			if (Validator.isNotNull(contactEmail))
+				dossier.setContactEmail(contactEmail);
+			if (Validator.isNotNull(contactTelNo))
+				dossier.setContactTelNo(contactTelNo);
+			if (viaPostal != 0)
+				dossier.setViaPostal(viaPostal);
+			if (Validator.isNotNull(postalAddress))
+				dossier.setPostalAddress(postalAddress);
+			if (Validator.isNotNull(postalCityCode))
+				dossier.setPostalCityCode(postalCityCode);
+			if (Validator.isNotNull(postalTelNo))
+				dossier.setPostalTelNo(postalTelNo);
+			if (Validator.isNotNull(applicantNote))
+				dossier.setApplicantNote(applicantNote);
 
 		}
 
