@@ -189,6 +189,6 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	public DossierAction getDossierActionById(long dossierId, long userId) {
 		return dossierActionPersistence.fetchByDID_UID(dossierId, userId);
 	}
-
+	
 
 }

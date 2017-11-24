@@ -189,8 +189,7 @@ public interface DossierManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 
-	public Response getContactsDossier(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context ServiceContext serviceContext, @Context User user, @PathParam("id") Long dossierId,
-			@Context String referenceUid);
+	public Response getContactsDossier(@Context HttpHeaders header, @Context ServiceContext serviceContext,
+			@PathParam("id") Long dossierId, @Context String referenceUid);
 
 }

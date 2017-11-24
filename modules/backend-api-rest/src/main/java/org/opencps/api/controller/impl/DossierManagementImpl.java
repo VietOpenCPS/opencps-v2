@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -34,7 +33,6 @@ import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -768,8 +766,8 @@ public class DossierManagementImpl implements DossierManagement {
 	public static final String DEFAULT_PATTERN_PASSWORD = "0123456789khoa";
 
 	@Override
-	public Response getContactsDossier(HttpServletRequest request, HttpHeaders header, Company company,
-			ServiceContext serviceContext, User user, Long dossierId, String referenceUid) {
+	public Response getContactsDossier(HttpHeaders header, ServiceContext serviceContext, Long dossierId,
+			String referenceUid) {
 		DossierActions action = new DossierActionsImpl();
 		BackendAuth auth = new BackendAuthImpl();
 		try {
