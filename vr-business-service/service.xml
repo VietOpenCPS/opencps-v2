@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.2.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_6_2_0.dtd">
+<service-builder package-path="com.fds.vr.business" auto-namespace-tables="false">
+	<author>khoavd</author>
+	<namespace>vrts</namespace>
+
+	<entity name="VRConfigTechSpec" local-service="true" table="vr_cfg_technicalspec"
+		remote-service="true">
+		
+		<!-- Audit Field -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+
+		<!-- Information -->
+		<column name="vehicleClass" type="String" db-name="vehicleclass"/>
+		<column name="vehicleType" type="String" db-name="vehicletype"/>
+		<column name="vehicletypeName" type="String" db-name="vehicletypename"/>
+		<column name="sequenceNo" type="int" db-name="sequenceno"/>
+		<column name="specificationName" type="String" db-name="specificationname"/>
+		<column name="specificationCode" type="String" db-name="specificationcode"/>
+		<column name="specificationDisplayName" type="String" db-name="specificationdisplayname"/>
+		<column name="specCategory" type="String" db-name="spec_category"/>
+		<column name="specificationGroup" type="int" db-name="specificationgroup"/>
+		<column name="specificationDataCollectionId" type="String" db-name="SpecificationDataCollectionID"/>
+		<column name="specificationBasicUnit" type="String" db-name="SpecificationBasicUnit"/>
+		<column name="specificationStandard" type="String" db-name="SpecificationStandard"/>
+		<column name="specificationEntryType" type="String" db-name="SpecificationEntryType"/>
+		<column name="specificationEntryPlaceholder" type="String" db-name="SpecificationEntryPlaceholder"/>
+		<column name="specificationMandatory" type="int" db-name="SpecificationMandatory"/>
+		<column name="module" type="String" db-name="Module"/>
+		<column name="synchDate" type="Date" db-name="synchdate"/>
+
+		<!-- Finder methods -->
+		
+		<finder return-type="Collection" name="VC_VT_SC">
+			<finder-column name="vehicleClass" comparator="LIKE"/>
+			<finder-column name="vehicleType" arrayable-operator="OR"/>
+			<finder-column name="specCategory" comparator="LIKE"/>
+		</finder>
+		
+		<finder return-type="Collection" name="VC_SC">
+			<finder-column name="vehicleClass"/>
+			<finder-column name="specCategory"/>
+		</finder>
+
+	</entity>
+	
+	<entity name="VRLimitConfigTechSpec" local-service="true" table="vr_cfg_limit_technicalspec"
+		remote-service="true">
+
+		<column name="id" type="long" primary="true" db-name="id"/>
+		<column name="vehicleType" type="String" db-name="vehicletype"/>
+		<column name="vehicleTypeName" type="String" db-name="vehicletypename"/>
+		<column name="markupSMRM" type="String" db-name="markup_SMRM"/>
+		<column name="searchingDriveConfig" type="long" db-name="searching_drive_config"/>
+		<column name="searchingDriveConfigDesc" type="String" db-name="searching_drive_config_desc"/>
+		<column name="sequenceNo" type="int" db-name="sequenceno"/>
+		<column name="specificationCode" type="String" db-name="specificationcode"/>
+		<column name="specificationName" type="String" db-name="specificationname"/>
+		<column name="synchDate" type="Date" db-name="synchdate"/>
+		
+		<!-- Finder -->
+		<finder return-type="Collection" name="VT_MU_DC">
+			<finder-column name="vehicleType"/>
+			<finder-column name="markupSMRM"/>
+			<finder-column name="searchingDriveConfig"/>
+		</finder>
+		
+	</entity>
+	
+
+	<exceptions>
+		<exception>InvalidInputParam</exception>
+		<exception>OutOfScopeData</exception>
+		<exception>NotAuth</exception>
+	</exceptions>
+</service-builder>
