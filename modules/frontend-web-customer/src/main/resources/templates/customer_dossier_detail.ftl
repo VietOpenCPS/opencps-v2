@@ -129,9 +129,9 @@
 		</div>
 	</div>
 
-	<form id="dossierFormSubmiting">
+	<div id="dossierFormSubmiting">
 		<div class="dossier-parts">
-			<div class="head-part align-middle">
+			<div class="head-part align-middle PB5">
 				<div class="background-triangle-small">I</div> <span class="text-uppercase">Thành phần hồ sơ</span> <span class="text-light-gray"><i>Những thành phần hồ sơ có dấu (<span class="red">*</span>) là thành phần bắt buộc</i></span>
 			</div>
 			<div class="content-part" id="lsDossierTemplPart">
@@ -169,32 +169,68 @@
 				</div>
 
 				#if(hasForm){#
-				<div class="col-sm-12" id="formPartNo#:id#" style="height:450px;width:100%;overflow:auto;">
-					
+				<div class="col-sm-12" style="height:450px;width:100%;overflow:auto;">
+					<form id="formPartNo#:id#">
+						
+					</form>
 				</div>
 				#
+				var referentUidFile =  getReferentUidFile(${dossierId});
+
 				$.ajax({
-				url : "${api.server}/dossiertemplates/${dossierTemplateId}/parts/"+id+"/formscript",
+				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formscript",
 				dataType : "json",
 				type : "GET",
 				headers : {"groupId": ${groupId}},
 				success : function(result){
-				var formScript = result.value;
-				var formScriptObj = JSON.parse(formScript);
+				console.log(result);
 				$("\\#formPartNo"+id).empty();
-				$("\\#formPartNo"+id).alpaca(formScriptObj);
-				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button class="btn btn-active MB10 MT10" onclick="" data-pk="'+id+'">Ghi lại</button></div></div>');
+				$("\\#formPartNo"+id).alpaca(result);
+				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca" class="btn btn-active MB10 MT10" type="button" data-pk="'+id+'">Ghi lại</button></div></div>');
+				$("\\#btn-save-formalpaca").click(function(){
+				console.log("ccc");
+				var value = $("\\#formPartNo"+id).alpaca('get').getValue();
+				var validate = $("\\#formPartNo"+id).alpaca('get').isValid(true);
+				if(validate){
+				$.ajax({
+				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
+				dataType : "json",
+				type : "PUT",
+				headers: {"groupId": ${groupId}},
+				data : {
+				formdata: JSON.stringify(value)
 			},
-			error : function(result){
+			success : function(result){
+			notification.show({
+			message: "Yêu cầu được thực hiện thành công"
+		}, "success");
+	},
+	error : function(result){
+	notification.show({
+	message: "Thực hiện không thành công, xin vui lòng thử lại"
+}, "error");
+}
+});
+}else {
+notification.show({
+message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi gửi"
+}, "error");
+}
 
-		}
-	});
+console.log(value);
+
+});
+},
+error : function(result){
+
+}
+});
 }#
 
 #}#
 </script>
 </div>
-</form>
+</div>
 
 <div class="row-parts-content">
 	<div class="row">
@@ -439,7 +475,6 @@
 					contactEmail : $("#contactEmail").val(),
 
 					applicantNote : $("#applicantNote").val(),
-					viaPostal : $("#viaPostal").is(":checked"),
 					postalTelNo: $("#postalTelNo").val(),
 					postalCityCode: $("#postalCityCode").val(),
 					postalAddress: $("#postalAddress").val(),
@@ -462,7 +497,7 @@
 			}	
 		});
 		}
-		
+
 	}
 
 	var createActionDossier = function(dossierId){
@@ -536,7 +571,7 @@
 				$("#districtCode").data("kendoComboBox").select(-1);
 				$("#wardCode").data("kendoComboBox").select(-1);
 			}
-			
+
 		}
 
 	});
@@ -580,7 +615,7 @@
 				});
 				$("#wardCode").data("kendoComboBox").select(-1);
 			}
-			
+
 		}
 	});
 
@@ -671,7 +706,7 @@
 				success : function(result){
 					console.log("load detail dossier!");
 					console.log(result);
-					
+
 					var viewModel = kendo.observable({
 						serviceCode : result.serviceCode,
 						govAgencyCode : result.govAgencyCode,
@@ -683,24 +718,43 @@
 						address : result.address,
 						cityCode : result.cityCode,
 						districtCode : function(e){
+							var cityCode = $("#cityCode").val();
+
 							var districtComboBox = $("#districtCode").data("kendoComboBox");
 							districtComboBox.dataSource.read({
-								parent : result.cityCode
+								parent : (cityCode) ? cityCode : result.cityCode
 							});
+
+							if(cityCode != result.cityCode){
+								return "";
+							}
 
 							return result.districtCode;
 						},
 						wardCode : function(e){
+							var districtCode = $("#districtCode").val();
+
 							var wardComboBox = $("#wardCode").data("kendoComboBox");
 							wardComboBox.dataSource.read({
-								parent : result.districtCode
+								parent : (districtCode) ? districtCode : result.districtCode
 							});
+
+							if(districtCode != result.districtCode){
+								return "";
+							}
+							
 
 							return result.wardCode;
 						},
 						contactTelNo : result.contactTelNo,
 						contactEmail : result.contactEmail,
-						dossierNote : result.dossierNote
+						dossierNote : result.dossierNote,
+						viaPostal : function(){
+							$("#viaPostal").ckecked(result.viaPostal);
+						},
+						postalAddress : result.postalAddress,
+						postalCityCode : result.postalCityCode,
+						postalTelNo : result.postalTelNo
 
 					});
 					kendo.bind($("#detailDossier"), viewModel);
@@ -726,7 +780,7 @@
 
 			},
 			error : function(result) {
-				
+
 			}
 		});
 	}
@@ -760,6 +814,8 @@
 		data.append('referenceUid', "");
 		data.append('dossierTemplateNo', dossierTemplateNo);
 		data.append('fileTemplateNo', fileTemplateNo);
+		data.append('fileType', "");
+		data.append('isSync', "");
 
 		$.ajax({
 			type : 'POST', 
@@ -813,35 +869,36 @@
 	$("#postalTelNo").prop('disabled', true);
 
 
-	var getReferentUidFile = function(dossierId){
-		var referenceUid = 0;
-		if(dossierId){
-			$.ajax({
-				type : 'GET', 
-				url  : '${api.server}/dossiers/${dossierId}/files', 
-				headers: {"groupId": ${groupId}},
-				async : false,
-				success :  function(result){ 
-					if(result.data){
-						for (var i = 0; i < result.data.length; i++) {
-							if(result.data[i].eForm){
-								referenceUid = result.data[i].referenceUid;
-								return ;
-							}
+
+});
+var getReferentUidFile = function(dossierId){
+	var referenceUid = 0;
+	if(dossierId){
+		$.ajax({
+			type : 'GET', 
+			dataType : "json",
+			url  : '${api.server}/dossiers/${dossierId}/files', 
+			headers: {"groupId": ${groupId}},
+			async : false,
+			success :  function(result){ 
+				if(result.data){
+					for (var i = 0; i < result.data.length; i++) {
+						if(result.data[i].eForm){
+							referenceUid = result.data[i].referenceUid;
+							return ;
 						}
 					}
-
-				},
-				error:function(result){
-					
 				}
-			});
-		}
 
-		return referenceUid;
+			},
+			error:function(result){
+
+			}
+		});
 	}
-});
 
+	return referenceUid;
+}
 $(function(){
 	manageDossier.route("/taohosomoi/nophoso/(:dossierTemplateId)&(:dossierId)", function(dossierTemplateId, dossierId){
 		$("#mainType1").hide();
