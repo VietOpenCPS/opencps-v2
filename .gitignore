@@ -66,4 +66,4 @@ gradle-local.properties
 **/vr-business/**
 **/vr-rest/**
 mt-dklr/**
-
+modules/vr-business

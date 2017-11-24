@@ -914,6 +914,45 @@
 		
 	</entity>
 
+	<entity local-service="true" name="DossierStatistic"
+		remote-service="false" table="opencps_dossierstatistic" uuid="true">
+		
+		<column name="dossierStatisticId" type="long" primary="true" />
+		
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		
+		<column name="month" type="int"/>
+		<column name="year" type="int"/>
+		<column name="remainingCount" type="int"/>
+		<column name="receivedCount" type="int"/>
+		<column name="onlineCount" type="int"/>
+		<column name="undueCount" type="int"/>
+		<column name="overdueCount" type="int"/>
+		<column name="ontimeCount" type="int"/>
+		<column name="overtimeCount" type="int"/>
+		
+		<column name="govAgencyCode" type="String"/>
+		<column name="govAgencyName" type="String"/>
+		<column name="domainCode" type="String"/>
+		<column name="domainName" type="String"/>
+
+		<column name="administrationLevel" type="int"/>
+
+		<column name="reporting" type="boolean"/>
+		
+		<!-- 	Order -->
+			
+		<!-- 	Filter -->
+		
+		
+	</entity>
+
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>DuplicateServiceCode</exception>
