@@ -42,6 +42,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "serverConfigId",
+    "groupId",
     "createDate",
     "modifiedDate",
     "serverNo",
@@ -53,7 +54,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "ServerConfigDetailModel")
 public class ServerConfigDetailModel {
 
-    protected Long serverConfigId;
+    protected long serverConfigId;
+    protected long groupId;
     protected String createDate;
     protected String modifiedDate;
     protected String serverNo;
@@ -62,7 +64,15 @@ public class ServerConfigDetailModel {
     protected String lastSync;
     protected String configs;
 
-    public String getConfigs() {
+    public long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(long groupId) {
+		this.groupId = groupId;
+	}
+
+	public String getConfigs() {
 		return configs;
 	}
 

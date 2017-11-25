@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 <#------------- Phần VIEW --------------->
 	<#-- WRAPPER ELEMENT -->
 	<div id="appManagerDossier"></div>
@@ -27,23 +30,23 @@
 			</div>
 			<div class="col-sm-12">
 				<ul id="profileStatus" class="ul-default ul-with-left-icon" style="margin-left: 10px;">
-					<li dataPk='New' class='itemStatus PT10' data-bind="click: filterStatus">
+					<li dataPk='new' class='itemStatus PT10' data-bind="click: filterStatus">
 						<i class='fa fa-folder-o' aria-hidden='true'></i>  
 						<a href='javascript:;' > Hồ sơ mới</a>
 					</li>
-					<li dataPk='Receiving' class='itemStatus' data-bind="click: filterStatus">
+					<li dataPk='receiving' class='itemStatus' data-bind="click: filterStatus">
 						<i class='fa fa-folder-o' aria-hidden='true'></i>  
 						<a href='javascript:;' > Hồ sơ đang thực hiện</a>
 					</li> 
-					<li dataPk='Waiting' class='itemStatus' data-bind="click: filterStatus">
+					<li dataPk='waiting' class='itemStatus' data-bind="click: filterStatus">
 						<i class='fa fa-folder-o' aria-hidden='true'></i>  
 						<a href='javascript:;' > Hồ sơ chờ bổ sung</a>
 					</li>
-					<li dataPk='Paying' class='itemStatus' data-bind="click: filterStatus">
+					<li dataPk='paying' class='itemStatus' data-bind="click: filterStatus">
 						<i class='fa fa-folder-o' aria-hidden='true'></i>  
 						<a href='javascript:;' > Hồ sơ chờ thanh toán</a>
 					</li>
-					<li dataPk='Done' class='itemStatus' data-bind="click: filterStatus">
+					<li dataPk='done' class='itemStatus' data-bind="click: filterStatus">
 						<i class='fa fa-folder-o' aria-hidden='true' ></i>  
 						<a href='javascript:;' > Hồ sơ đã kết thúc</a>
 					</li>
@@ -76,6 +79,5 @@
 			</div>
 		</div>
 	</script>
-
 	<#-- TEMPLATE TRANG QUẢN LÝ HỒ SƠ/ C-04 -->
 	<#include "manageDossierView.ftl">

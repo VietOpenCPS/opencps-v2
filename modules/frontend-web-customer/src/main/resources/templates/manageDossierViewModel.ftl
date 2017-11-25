@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>	
 	<script type="text/javascript">
 	// Source for panel list
 		var dataGovAgency = new kendo.data.DataSource({
@@ -29,13 +32,15 @@
 			}
 		});
 	//Source for main listview
-		var dataSourceProfile=new kendo.data.DataSource({
+		var dataSourceProfile = new kendo.data.DataSource({
 			transport:{
 				read:function(options){
 					$.ajax({
+						// url: "http://localhost:3000/dossiers",
 						url:"${api.server}/dossiers",
 						dataType:"json",
 						type:"GET",
+						headers : {"groupId": ${groupId}},
 						data:{
 							service: options.data.serviceInfo,
 							agency: options.data.govAgencyCode,
@@ -44,9 +49,11 @@
 							keyword: options.data.keyword,
 							status : options.data.status
 						},
-						success:function(result){	
+						success:function(result){
 							if (result.data) {
 								options.success(result);
+								$("#wrapMain").hide();
+								setTimeout(function(){$("#wrapMain").show()},300);
 							} else{
 								$(".loading").hide();
 							}
@@ -69,16 +76,13 @@
 								$("#itemPpage").html(sub);
 								$("#itemPpage").append(selectHtml)
 							}
-							// 
 						},
 						error:function(result){
 							options.error(result);
+							$(".loading").hide();
 						}
 					});
 				}
-			},
-			error: function(e) {         
-				this.cancelChanges();
 			},
 			pageSize: 10,
 			schema:{
@@ -95,9 +99,11 @@
 			transport:{
 				read:function(options){
 					$.ajax({
-						url:"${api.server}/dossiers/dossierlogs",
+						// url: "http://localhost:3000/dossierlogs",
+						url:"${api.server}/dossierlogs",
 						dataType:"json",
 						type:"GET",
+						headers : {"groupId": ${groupId}},
 						data:{
 							type:123,
 							sort: options.data.sort_modified
@@ -105,14 +111,12 @@
 						success:function(result){
 							if(result.data){
 								options.success(result);
-								$("#total_Additional_Requirement").text(dataAddRequest.total())
-							}else{
-								$("#sideItemAdd").hide();
+								$("#sideItemAdd").show();
+								$("#total_Additional_Requirement").text(dataAddRequest.total());
 							}
 						},
 						error:function(result){
 							options.error(result);
-							$("#sideItemAdd").hide()
 						}
 					});
 				}
@@ -130,9 +134,10 @@
 			transport:{
 				read:function(options){
 					$.ajax({
-						url:"${api.server}/dossiers/dossierlogs",
+						url:"${api.server}/dossierlogs",
 						dataType:"json",
 						type:"GET",
+						headers : {"groupId": ${groupId}},
 						data:{
 							type: 234,
 							sort: options.data.sort_modified
@@ -140,14 +145,12 @@
 						success:function(result){
 							if(result.data){
 								options.success(result);
-								$("#total_Payment_Request").text(dataPayRequest.total())
-							}else{
-								$("#sideItemPayment").hide();
+								$("#sideItemPayment").show();
+								$("#total_Payment_Request").text(dataPayRequest.total());
 							}
 						},
 						error:function(result){
 							options.error(result);
-							$("#sideItemPayment").hide()
 						}
 					});
 				}
@@ -165,9 +168,11 @@
 			transport:{
 				read:function(options){
 					$.ajax({
-						url:"${api.server}/dossiers/dossierlogs",
+						// url: "http://localhost:3000/dossierlogs",
+						url:"${api.server}/dossierlogs",
 						dataType:"json",
 						type:"GET",
+						headers : {"groupId": ${groupId}},
 						data:{
 							type: 345,
 							sort: options.data.sort_modified
@@ -175,14 +180,12 @@
 						success:function(result){
 							if(result.data){
 								options.success(result);
-								$("#total_result").text(dataResult.total())
-							}else{
-								$("#sideItemResult").hide();
+								$("#sideItemResult").show();
+								$("#total_result").text(dataResult.total());
 							}
 						},
 						error:function(result){
 							options.error(result);
-							$("#sideItemResult").hide()
 						}
 					});
 				}
@@ -224,8 +227,6 @@
 			// Lọc theo tháng, năm, cơ quan thực hiện, thủ tục hành chính
 			eventLookup : function(e){
 				e.preventDefault();
-				$("#wrapMain").hide();
-				setTimeout(function(){$("#wrapMain").show()},300);
 				var statusDossier = $("li.itemStatus.active").attr("dataPk");
 			    if (statusDossier !== undefined) {
 					dataSourceProfile.read({
@@ -249,8 +250,8 @@
 			},
 			filterStatus: function(e){
 				e.preventDefault();
-				$("#wrapMain").hide();
-				setTimeout(function(){$("#wrapMain").show()},300);
+				// $("#wrapMain").hide();
+				// setTimeout(function(){$("#wrapMain").show()},300);
 				$("#profileStatus li").removeClass("active");
 				$(e.currentTarget).addClass("active");
 				$(".itemStatus").css("pointer-events","auto");
@@ -268,6 +269,38 @@
 			},
 		});
 	// Model MainSection
+		$(".downloadProfile").click(function(){
+			
+			// var id = this.attr("data-Pk");
+			// $.ajax({
+			// 	url:"${api.server}/dossiers/"+id,
+			// 	headers: {"groupId": ${groupId}},
+			// 	dataType:"json",
+			// 	type:"GET",
+			// 	success:function(res){
+					
+			// 	},
+			// 	error:function(res){
+					
+			// 	}
+			// });
+		})
+		var copyProfile = function(id){
+			$.ajax({
+				url:"${api.server}/dossiers/"+id+"/cloning",
+				dataType:"json",
+				type:"POST",
+				headers: {"groupId": ${groupId}},
+				success:function(res){
+					var referenceUid = res.referenceUid;
+					manageDossier.navigate("/taohosomoi/nophoso/"+referenceUid);
+				},
+				error:function(res){
+					
+				}
+			});
+			
+		}
 		var modelMain = kendo.observable({
 			dataSourceProfile : dataSourceProfile,
 			// modelPanel: modelPanel,
@@ -279,7 +312,7 @@
 				e.preventDefault();
 				var dossierItemStatus = e.data.dossierStatus;
 				var id = $(e.currentTarget).attr("dataPk");
-				manageDossier.navigate("/dossierStatus"+dossierItemStatus+"/detailDossier"+id);	
+				manageDossier.navigate("/"+dossierItemStatus+"/dossiers/"+id);	
 			},
 		});
 		
@@ -301,10 +334,11 @@
 							$.ajax({
 								url:"${api.server}/dossiers/"+id, 
 								dataType:"json",
+								headers : {"groupId": ${groupId}},
 								type:"GET",
 								success:function(result){
 									var dossierItemStatus = result.dossierStatus;
-									manageDossier.navigate("/dossierStatus"+dossierItemStatus+"/detailDossier"+id)
+									manageDossier.navigate("/"+dossierItemStatus+"/dossiers/"+id)
 								},
 								error:function(result){
 									options.error(result);
@@ -347,7 +381,6 @@
 						flagSortResult = true;
 					}
 				};
-
 			}
 		})
 	</script>

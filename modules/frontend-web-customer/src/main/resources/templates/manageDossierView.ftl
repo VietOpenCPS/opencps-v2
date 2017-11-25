@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>	
 	<#-- main section template -->
 	<script type="text/x-kendo-template" id="mainTemplate">
 		<div id="contentMain" class="row panel M0" style="border: none;box-shadow: none">
@@ -7,8 +10,8 @@
 						<div class="background-triangle-big">
 							<i class="fa fa-file-text"></i>
 						</div> 
-						<span class="text-bold">KÊT QUẢ TÌM KIẾM HỒ SƠ</span> 
-						<div class="form-group search-icon pull-right MT5 MB5 MR10">
+						<span class="text-bold">KẾT QUẢ TÌM KIẾM HỒ SƠ</span> 
+						<div class="form-group search-icon pull-right MB0 MR10" style="margin-top:3px">
 							<input type="text" class="form-control" id="keyInput" placeholder="Nhập từ khóa" data-bind="events: { keyup: filterKey}">
 						</div>
 					</div>	
@@ -16,7 +19,7 @@
 			</div>
 			<div id="wrapMain">
 				<div class="col-sm-12 P0" id="customer_dossierlist">
-					<ul class="ul-with-border" data-role="listview" data-bind="source: dataSourceProfile" data-auto-bind="false" data-template="proFileTemplate" id="listViewDossier">
+					<ul class="ul-with-border" data-role="listview" data-bind="source: dataSourceProfile" data-template="proFileTemplate" id="listViewDossier">
 						
 					</ul>
 				</div>
@@ -30,7 +33,7 @@
 								</select>
 							</span>
 						</span>
-						<span id="pagerProfile" class="M0 P0 PR5" data-role="pager" data-info="false" data-bind="source: dataSourceProfile"></span>
+						<span id="pagerProfile" class="M0 P0 PR5" data-role="pager" data-info="false" data-bind="source: dataSourceProfile" data-button-count="3"></span>
 					</div>	
 				</div>
 			</div>
@@ -39,8 +42,8 @@
 	</script>
 		<#-- for listview dossier-->
 		<script type="text/x-kendo-template" id="proFileTemplate">
-			<div class="row PL15 PR15 itemCustomerDossierList" dataPk="#:id#" data-bind="events:{click: loadDossierDetail}">
-				<div class="row M0 hover-pointer" title="Xem chi tiết">
+			<div class="row PL15 PR15 itemCustomerDossierList">
+				<div class="row M0 hover-pointer" dataPk="#:id#" data-bind="events:{click: loadDossierDetail}" title="Xem chi tiết">
 					<div class="row-blue align-middle">
 						<div class="order-number">#:counter#</div>
 						<div class="dossier-number" data-toggle="tooltip" title="Mã hồ sơ"><span class="red">\\#</span> #:serviceCode#</div>
@@ -48,37 +51,37 @@
 						#
 							var label="label-info";
 							switch(dossierStatus) {
-							    case "New":
+							    case "new":
 							        label="label-info";
 							        break;
-							    case "Collecting":
+							    case "collecting":
 							        label="label-info";
 							        break;
-							    case "Receiving":
+							    case "receiving":
 							        label="label-status-processing";
 							        break;
-							    case "Waiting":
+							    case "waiting":
 							        label="label-status-additional";
 							        break;
-							    case "Processing":
+							    case "processing":
 							        label="label-info";
 							        break;
-							    case "Paying":
+							    case "paying":
 							       	label="label-status-pending-payment";
 							        break;
-							    case "Handover":
+							    case "handover":
 							        label="label-info";
 							        break;  
-							    case "Releasing":
+							    case "releasing":
 							        label="label-info";
 							        break;	
-							    case "Posting":
+							    case "posting":
 							        label="label-info";
 							        break;
-						        case "Done":
+						        case "done":
 							        label="label-status-complete";
 							        break;
-						        case "Cancelled":
+						        case "cancelled":
 							        label="label-status-cancel";
 							        break;					        
 							    default:
@@ -105,19 +108,26 @@
 
 							<p>
 								#if(typeof stepInstruction !== "undefined"){#
-									<i>#:stepInstruction#</i>
+									<i class="text-light-gray">#:stepInstruction#</i>
 								#}#
 							</p>
-
-							#if(dossierStatus === "Done"){#
+							
+							#if(dossierStatus === "waiting"){#
 								<a href="${api.server}/dossiers/#:id#/result" style="margin-right: 10px;">
+									<i class="fa fa-download" aria-hidden="true">
+									</i> Tải yêu cầu bổ sung
+								</a>
+							#}#
+
+							#if(dossierStatus === "done"){#
+								<a href="javascript:;" class="downloadProfile" style="margin-right: 10px;">
 									<i class="fa fa-download" aria-hidden="true">
 									</i> Tải giấy tờ kết quả
 								</a>
 							#}#
-							
-							#if(dossierStatus === "Done" ){#
-								<a href="javascript:;" onclick="javascript:copyProfile(#:id#)"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Sao chép hồ sơ
+							<#-- ${api.server}/dossiers/#:id#/result -->
+							#if(dossierStatus === "done" ){#
+								<a href="javascript:;" onclick="copyProfile(#:id#)"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Sao chép hồ sơ
 								</a>
 							#}#
 						</div>
@@ -144,14 +154,14 @@
 	<script type="text/x-kendo-template" id="sidebarTemplate">
 		<div class="row">
 			<div class="col-sm-12" id="customer_additional_requirements">
-				<div class="panel panel-main" id="sideItemAdd"> 
+				<div class="panel panel-main" id="sideItemAdd" style="display: none"> 
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Yêu cầu bổ sung</span>
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#additionalRequirement">
 							<i class="glyphicon glyphicon-chevron-up" ></i>
 							<i class="glyphicon glyphicon-chevron-down" style="display: none"></i>
 						</span>
-						<span class="pull-right MR10 text-light-gray hover-pointer" id="sort_modified" title="Sắp xếp theo ngày" data-bind="events:{click: sortDate}"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+						<span class="pull-right MR10 text-light-gray hover-pointer" id="sort_modified" title="Sắp xếp theo ngày" data-button-count="1" data-bind="events:{click: sortDate}"><i class="fa fa-calendar" aria-hidden="true"></i></span>
 					</div>
 					<div class="panel-body P0 collapse in" id="additionalRequirement">
 						<ul class="ul-with-border" data-role="listview" data-bind="source:dataAddRequest" data-auto-bind="false" data-template="additional_Requirement_Template" id="wrapAddRes">
@@ -159,13 +169,13 @@
 						</ul>
 						<div class="clearfix align-middle PL10">
 							<span class="text-light-gray MR20"><i>Có <span id="total_Additional_Requirement" class="red"> </span> yêu cầu</i></span>
-							<span id="pagerCustomer_Additional_Requirement" class="M0 PR5" data-bind="source:dataAddRequest" data-role="pager" data-info="false"></span>
+							<span id="pagerCustomer_Additional_Requirement" class="M0 PR5" data-bind="source:dataAddRequest" data-role="pager" data-button-count="1" data-info="false"></span>
 						</div>	
 					</div>
 				</div>
 			</div>
 			<div class="col-sm-12" id="customer_payment_request">
-				<div class="panel panel-main MT15" id="sideItemPayment"> 
+				<div class="panel panel-main MT15" id="sideItemPayment" style="display: none"> 
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Yêu cầu thanh toán</span> 
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#paymentRequest"> 
@@ -180,14 +190,14 @@
 						</ul>
 						<div class="clearfix align-middle PL10">
 							<span class="text-light-gray MR20"><i>Có <span id="total_Payment_Request" class="red"> </span> yêu cầu</i></span>
-							<span id="pagerCustomer_Payment_Request" class="M0 PR5" data-bind="source:dataPayRequest" data-role="pager" data-info="false"></span>
+							<span id="pagerCustomer_Payment_Request" class="M0 PR5" data-bind="source:dataPayRequest" data-button-count="1" data-role="pager" data-info="false"></span>
 						</div>
 
 					</div> 
 				</div>
 			</div>
 			<div class="col-sm-12" id="customer_result_request">
-				<div class="panel panel-main MT15" id="sideItemResult"> 
+				<div class="panel panel-main MT15" id="sideItemResult" style="display: none"> 
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Trả kết quả</span> 
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#resultRequest"> 
@@ -213,23 +223,23 @@
 	<script type="text/x-kendo-template" id="additional_Requirement_Template">
 		<li data-pk="#:id#" class="P10 hover-pointer" title="Xem chi tiết" data-bind="events:{click: loadDossierDetail}">
 			<p>#:content#</p>
-			<span class="text-greyy">#:govAgencyName#</span> <br>
-			<span class="text-greyy">#:createDate#</span>
+			<span class="text-light-gray">#:govAgencyName#</span> <br>
+			<span class="text-light-gray">#:createDate#</span>
 		</li>
 	</script>
 		<#-- For menu payment -->
 	<script type="text/x-kendo-template" id="payment_Request_Template">
 		<li data-pk="#:id#" class="P10 hover-pointer" title="Xem chi tiết" data-bind="events:{click: loadDossierDetail}">
 			<p>#:content#</p>
-			<span class="text-greyy">#:govAgencyName#</span> <br>
-			<span class="text-greyy">#:createDate#</span>
+			<span class="text-light-gray">#:govAgencyName#</span> <br>
+			<span class="text-light-gray">#:createDate#</span>
 		</li>
 	</script>
 		<#-- For menu result -->
 	<script type="text/x-kendo-template" id="result_Request_Template">
 		<li data-pk="#:id#" class="P10 hover-pointer" title="Xem chi tiết" data-bind="events:{click: loadDossierDetail}">
 			<p>#:content#</p>
-			<span class="text-greyy">#:govAgencyName#</span> <br>
-			<span class="text-greyy">#:createDate#</span>
+			<span class="text-light-gray">#:govAgencyName#</span> <br>
+			<span class="text-light-gray">#:createDate#</span>
 		</li>
 	</script>

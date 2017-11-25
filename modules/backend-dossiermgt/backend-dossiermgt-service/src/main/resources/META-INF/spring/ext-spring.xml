@@ -39,5 +39,7 @@
 	<bean class="org.opencps.dossiermgt.service.indexer.PaymentFileIndexer"
 		id="org.opencps.dossiermgt.service.indexer.PaymentFileIndexer" />
 
+	<bean class="org.opencps.dossiermgt.service.indexer.DossierActionIndexer"
+		id="org.opencps.dossiermgt.service.indexer.DossierActionIndexer" />
 
 </beans>

@@ -57,11 +57,6 @@ public interface DossierActions {
 	public Dossier resetDossier(long groupId, long dossierId, String referenceUid, ServiceContext context)
 			throws PortalException;
 
-	public List<ProcessAction> getNextActions(long groupId, long dossierId, String referenceUid) throws PortalException;
-
-	public List<DossierAction> getDossierActions(long groupId, long dossierId, String referenceUid)
-			throws PortalException;
-
 	public DossierAction doAction(long groupId, long dossierId, String referenceUid, String actionCode,
 			long processActionId, String actionUser, String actionNote, long assignUserId, long userId,
 			ServiceContext context) throws PortalException;
@@ -72,5 +67,11 @@ public interface DossierActions {
 			throws PortalException;
 
 	public JSONObject getContacts(long groupId, long dossierId, String referenceUid) throws PortalException;
+
+	public JSONObject getDossierActions(long dossierId, long groupId, Boolean owner, int start, int end, String sort,
+			String order, ServiceContext serviceContext) throws PortalException;
+
+	public JSONObject getNextActions(String code, long dossierId, long groupId, Boolean owner, int start, int end,
+			String sort, String order, ServiceContext serviceContext) throws PortalException;
 
 }
