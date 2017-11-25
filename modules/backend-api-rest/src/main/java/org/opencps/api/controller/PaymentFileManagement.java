@@ -87,8 +87,8 @@ public interface PaymentFileManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Accsess denied", response = ExceptionModel.class) })
 	public Response getPaymentFileByReferenceUid (@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@ApiParam(value = "", required = true) @PathParam("id") Long id,
-			@ApiParam(value = "", required = true) @PathParam("referenceUid") String referenceUid);
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") Long id,
+			@ApiParam(value = "referenceUid of Payment", required = true) @PathParam("referenceUid") String referenceUid);
 	/* Get detail payment File follow ReferenceUid - END */
 
 	//4
@@ -130,8 +130,7 @@ public interface PaymentFileManagement {
 
 	//6
 	/* Confirm payment - START */
-	//@PUT
-	@POST
+	@PUT
 	@Path("/{id}/payments/{referenceUid}/confirm")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

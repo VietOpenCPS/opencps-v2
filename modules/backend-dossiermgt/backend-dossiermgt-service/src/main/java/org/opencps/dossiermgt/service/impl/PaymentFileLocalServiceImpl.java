@@ -28,7 +28,6 @@ import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.PaymentFileLocalServiceBaseImpl;
@@ -318,6 +317,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		paymentFile.setCreateDate(now);
 		paymentFile.setModifiedDate(now);
 
+		paymentFile.setDossierId(dossierId);
 		paymentFile.setReferenceUid(referenceUid);
 		paymentFile.setGovAgencyCode(govAgencyCode);
 		paymentFile.setGovAgencyName(govAgencyName);
@@ -327,12 +327,14 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		paymentFile.setEpaymentProfile(epaymentProfile);
 		paymentFile.setBankInfo(bankInfo);
 
-		Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
-		if (dossier != null) {
+		try {
+			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 			dossier.setApplicantName(applicantName);
 			dossier.setApplicantIdNo(applicantIdNo);
 
 			dossierPersistence.update(dossier);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		paymentFilePersistence.update(paymentFile);
