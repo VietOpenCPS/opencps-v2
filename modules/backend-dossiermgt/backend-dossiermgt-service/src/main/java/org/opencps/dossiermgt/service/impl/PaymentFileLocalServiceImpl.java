@@ -28,6 +28,7 @@ import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.PaymentFileLocalServiceBaseImpl;
@@ -508,6 +509,12 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		return paymentFilePersistence.update(object);
 	}
 
+	//8
+	
+	public PaymentFile getPaymentFileByReferenceUid(long dossierId, String referenceUid) throws PortalException {
+
+		return paymentFilePersistence.findByD_RUID(dossierId, referenceUid);
+	}
 	@Override
 	public List<PaymentFile> getByDossierId(long dossierId) {
 		// TODO Auto-generated method stub
