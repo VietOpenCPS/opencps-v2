@@ -91,7 +91,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile addDossierFile(long groupId, long dossierId, String referenceUid, String dossierTemplateNo,
 			String dossierPartNo, String fileTemplateNo, String displayName, String sourceFileName, long fileSize,
-			InputStream inputStream, ServiceContext serviceContext) throws PortalException, SystemException {
+			InputStream inputStream, String fileType, String isSync, ServiceContext serviceContext) throws PortalException, SystemException {
 
 		long userId = serviceContext.getUserId();
 
@@ -102,7 +102,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		long fileEntryId = 0;
 
 		try {
-			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, inputStream, sourceFileName, null,
+			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, inputStream, sourceFileName, fileType,
 					fileSize, serviceContext);
 
 			if (fileEntry != null) {
@@ -141,16 +141,39 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		object.setDossierPartNo(dossierPartNo);
 		object.setFileTemplateNo(fileTemplateNo);
 		object.setDossierPartType(dossierPart.getPartType());
+		
 		if (Validator.isNull(displayName)) {
 			displayName = sourceFileName;
 		}
+		
+		if (Validator.isNotNull(dossierPart.getFormScript())) {
+			object.setEForm(true);
+			object.setFormScript(dossierPart.getFormScript());
+		}
+		
+		if (Validator.isNotNull(dossierPart.getFormReport())) {
+			object.setFormReport(dossierPart.getFormReport());
+		}
+		
+		if (Validator.isNotNull(dossierPart.getSampleData())) {
+			object.setFormData(dossierPart.getSampleData());
+		}
+
 
 		object.setDisplayName(displayName);
 		object.setOriginal(true);
-		object.setIsNew(true);
+		
+		if (Validator.isNotNull(isSync) && GetterUtil.getBoolean(isSync)) {
+			object.setIsNew(false);
+		} else {
+			object.setIsNew(true);
+		}
+		
 
 		return dossierFilePersistence.update(object);
 	}
+	
+	
 
 	/**
 	 * POST /dossiers/{id}/files/copyfile
@@ -298,9 +321,12 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 	public DossierFile updateFormData(long groupId, long dossierId, String referenceUid, String formData,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 
-		User user = userPersistence.findByPrimaryKey(serviceContext.getUserId());
-
-		DossierFile dossierFile = dossierFileLocalService.getDossierFileByReferenceUid(dossierId, referenceUid);
+		//User user = userPersistence.findByPrimaryKey(serviceContext.getUserId());
+		System.out.println("GET DOSSIER FILE" + new Date());
+		DossierFile dossierFile = dossierFilePersistence.findByDID_REF(dossierId, referenceUid);
+		
+		
+		//dossierFileLocalService.getDossierFileByReferenceUid(dossierId, referenceUid);
 
 		String jrxmlTemplate = dossierFile.getFormReport();
 
@@ -340,7 +366,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		 * throw new SystemException(e); }
 		 */
 
-		dossierFile.setFileEntryId(fileEntryId);
+		//dossierFile.setFileEntryId(fileEntryId);
 
 		return dossierFilePersistence.update(dossierFile);
 	}
@@ -579,7 +605,11 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 	}
-
+	
+	public List<DossierFile> getByDossierIdAndIsNew(long dossierId, boolean isNew) {
+		return dossierFilePersistence.findByDID_ISN(dossierId, isNew);
+	}
+	
 	/**
 	 * Deny if status of dossier not new or waiting
 	 * 
@@ -591,8 +621,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierFile.getDossierId());
 
 		if (dossier != null) {
-			if (!dossier.getDossierStatus().equalsIgnoreCase("new")
-					&& !dossier.getDossierStatus().equalsIgnoreCase("waiting")) {
+			if ( Validator.isNotNull(dossier.getDossierStatus()) && (!dossier.getDossierStatus().equalsIgnoreCase("new")
+					|| !dossier.getDossierStatus().equalsIgnoreCase("waiting"))) {
 
 				throw new InvalidDossierStatusException();
 			}

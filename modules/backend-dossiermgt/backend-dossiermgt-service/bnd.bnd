@@ -9,6 +9,7 @@ Export-Package: \
 	org.opencps.backend.dossiermgt.service.util,\
 	org.opencps.dossiermgt.action.util,\
 	org.opencps.dossiermgt.action,\
-	org.opencps.dossiermgt.model.impl
+	org.opencps.dossiermgt.model.impl,\
+	org.opencps.dossiermgt.scheduler
 
 	

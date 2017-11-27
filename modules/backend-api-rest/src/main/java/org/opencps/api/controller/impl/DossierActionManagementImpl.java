@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -14,10 +15,14 @@ import org.opencps.api.controller.util.DossierActionUtils;
 import org.opencps.api.dossier.model.*;
 import org.opencps.api.dossier.model.ActionSearchModel;
 import org.opencps.api.dossier.model.ExecuteOneAction;
+import org.opencps.api.dossieraction.model.DossierActionNextActionResultsModel;
+import org.opencps.api.dossieraction.model.DossierActionResultsModel;
+import org.opencps.api.dossieraction.model.DossierActionSearchModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -28,6 +33,10 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -37,11 +46,11 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 	@Override
 	public Response getListActions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id, ActionSearchModel query) {
+			User user, ServiceContext serviceContext,  DossierActionSearchModel query, String id) {
 		// TODO Auto-generated method stub
 
 		DossierActions actions = new DossierActionsImpl();
-		ActionResultModel result = new ActionResultModel();
+		DossierActionNextActionResultsModel result = new DossierActionNextActionResultsModel();
 
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -51,10 +60,13 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				referenceUid = id;
 			}
 
-			JSONObject jsonData = (JSONObject) actions.getNextActions(groupId, dossierId, referenceUid);
+			JSONObject jsonData = (JSONObject) actions.getNextActions(query.getActionCode(), dossierId, groupId, query.isOwner(),  query.getStart(),
+					query.getEnd(), query.getSort(), query.getOrder(), serviceContext);
 			result.setTotal(jsonData.getInt("total"));
-			result.getData()
-					.addAll(DossierActionUtils.mappingToDoListActions((List<ProcessAction>) jsonData.get("data")));
+			result.getData().addAll(DossierActionUtils.mappingToDoListReadNextActions((List<ProcessAction>)jsonData.get("lstProcessAction"),
+					(List<User>)jsonData.get("lstUser")));
+//			result.getData()
+//					.addAll(DossierActionUtils.mappingToDoListActions((List<ProcessAction>) jsonData.get("data")));
 
 			return Response.status(200).entity(result).build();
 
@@ -72,24 +84,24 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 	@Override
 	public Response getListActionsExecuted(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String id) {
-		// TODO Auto-generated method stub
+			Locale locale, User user, ServiceContext serviceContext, DossierActionSearchModel query, String id) {
 
 		DossierActions actions = new DossierActionsImpl();
-		ReadActionExecuted result = new ReadActionExecuted();
+		DossierActionResultsModel result = new DossierActionResultsModel();
 
 		try {
+
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			long dossierId = GetterUtil.getLong(id);
-			String referenceUid = null;
-			if (dossierId == 0) {
-				referenceUid = id;
-			}
-
-			JSONObject jsonData = (JSONObject) actions.getDossierActions(groupId, dossierId, referenceUid);
+			
+			JSONObject jsonData = null;
+			
+			jsonData = (JSONObject) actions.getDossierActions(dossierId, groupId, query.isOwner(),  query.getStart(),
+					query.getEnd(), query.getSort(), query.getOrder(), serviceContext);
+			List<Document> documents = (List<Document>) jsonData.get("data");
 			result.setTotal(jsonData.getInt("total"));
 			result.getData().addAll(
-					DossierActionUtils.mappingToDoListReadActionExecuted((List<DossierAction>) jsonData.get("data")));
+					DossierActionUtils.mappingToDoListReadActionExecuted(documents));
 
 			return Response.status(200).entity(result).build();
 
@@ -105,14 +117,6 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 		}
 	}
 
-	@Override
-	public Response addExecuteOneAction(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id, ExecuteOneAction input) {
-		// TODO Auto-generated method stub
-
-		return null;
-
-	}
 
 	@Override
 	public Response getListContacts(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,

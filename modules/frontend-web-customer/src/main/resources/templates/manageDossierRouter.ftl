@@ -52,4 +52,32 @@
 			$('#profileStatus li[dataPk='+id+']').css("pointer-events","none");
 			$('#profileStatus li[dataPk='+id+']').addClass('active');
         }); 
+
+      manageDossier.route("/taohosomoi/admin", function(){
+        $("#mainType1").hide();
+        $("#mainType2").show();
+        $("#mainType2").load("${ajax.serviceconfig}",function(result){
+            $('#btn_fillter_by_admintration').addClass('btn-active');
+            $('#btn_fillter_by_domain').removeClass('btn-active');
+            $('#serviceconfig_container').load("${ajax.serviceconfig_administration}");
+            $('#input_search').val('');
+        });
+        $("#profileStatus li").removeClass('active');
+        $("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
+        $(".itemStatus").css("pointer-events","auto");
+      });
+      manageDossier.route("/taohosomoi/doman", function(){
+        $("#mainType1").hide();
+        $("#mainType2").show();
+        $("#mainType2").load("${ajax.serviceconfig}",function(result){
+            $('#btn_fillter_by_admintration').removeClass('btn-active');
+            $('#btn_fillter_by_domain').addClass('btn-active');
+            $('#serviceconfig_container').load("${ajax.serviceconfig_domain}");
+            $('#input_search').val('');
+        });
+        $("#profileStatus li").removeClass('active');
+        $("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
+        $(".itemStatus").css("pointer-events","auto");
+      });
 	</script>
+

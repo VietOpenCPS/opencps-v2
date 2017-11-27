@@ -78,7 +78,7 @@ public interface ServerConfigManagement {
 
 	public Response getServerConfigDetail(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id);
+			@Context ServiceContext serviceContext, @PathParam("id") String id);
 
 	@PUT
 	@Path("/{id}")
