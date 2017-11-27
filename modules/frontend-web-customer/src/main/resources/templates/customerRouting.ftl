@@ -17,46 +17,32 @@
 		$("#mainType2").hide();
 		resetValueFilter();
 		layout.showIn("#main_section", viewMainList);
-		dataSourceProfile.read();
-		dataSourceProfile.page(1);
-		dataSourceProfile.pageSize(10);
-		$("#profileStatus li").removeClass("active");
+		dataSourceProfile.read({"status": "new"});
+		$(".itemStatus").css("pointer-events","auto");
+		$("#profileStatus li").removeClass('active');
 		$("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
-		$(".itemStatus").css("pointer-events","auto"); 
+		$('#profileStatus li[dataPk=new]').children("i").removeClass("fa fa-folder-o").addClass("fa fa-folder-open-o");
+		$('#profileStatus li[dataPk=new]').css("pointer-events","none");
+		$('#profileStatus li[dataPk=new]').addClass('active');
 	});
 	manageDossier.route("/thongbao", function(){
-            $("#mainType1").hide();
-            $("#mainType2").show();
-            $("#mainType2").load("${ajax.notification}",function(result){
-            	dataSourceNotification.read();
-            });
-            $("#profileStatus li").removeClass('active');
-            $("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
-            $(".itemStatus").css("pointer-events","auto");
+        $("#mainType1").hide();
+        $("#mainType2").show();
+        $("#mainType2").load("${ajax.notification}",function(result){
+        	dataSourceNotification.read();
         });
+        $("#profileStatus li").removeClass('active');
+        $("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
+        $(".itemStatus").css("pointer-events","auto");
+    });
 </script>
 <#-- Include Router Component -->
 <#include "manageDossierRouter.ftl">
-
 
 <#--  -->
 <script type="text/javascript">
 	$(function(){
     	// Run Routing
     	manageDossier.start();
-    	// Option kendo-page
-		$(".k-pager-first").css("display","none");
-		$(".k-pager-last").css("display","none");
-		// js collapse
-		$(".clickable").on("click",function() {
-			$(this).children().toggle();
-		});
     });
-    var resetValueFilter = function(){
-		$("#month").data("kendoComboBox").text("");
-		$("#year").data("kendoComboBox").text("");
-		$("#keyInput").val("");
-		$("#serviceInfo").data("kendoComboBox").text("");
-		$("#govAgency").data("kendoComboBox").text("");
-	}
 </script>

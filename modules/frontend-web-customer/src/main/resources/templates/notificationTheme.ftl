@@ -49,9 +49,9 @@
                     type:"GET",
                     headers : {"groupId": ${groupId}},
                     success:function(result){
+                        options.success(result);
                         var count = 0;
                         if(result.data){
-                            options.success(result);
                             $(result.data).each(function(index, value){
                                 if(value.read === false){
                                     count+=1

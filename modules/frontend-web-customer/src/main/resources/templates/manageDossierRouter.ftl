@@ -10,8 +10,13 @@
 		manageDossier.route("/(:dossierItemStatus)/dossiers/(:id)", function(dossierItemStatus, id){
 			$("#mainType1").hide();
 			$("#mainType2").show();
-			$("#mainType2").load("${ajax.customer_dossier_detail}?id="+id+"",function(result){
-				});
+			if (dossierItemStatus == "new") {
+				$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+id+"",function(result){
+				})
+			} else {
+				$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"",function(result){
+				})
+			};
 		    $(".itemStatus").css("pointer-events","auto");
 			$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
@@ -32,9 +37,7 @@
 		manageDossier.route("/(:id)", function(id) {
 			$("#mainType1").show();
 			$("#mainType2").hide();
-			// $("#wrapMain").hide();
-			// setTimeout(function(){$("#wrapMain").show()},300);
-			layout.showIn("#main_section", viewMainList);          
+			layout.showIn("#main_section", viewMainList);       
 			dataSourceProfile.read({
 				"serviceInfo":$("#serviceInfo").val(),
 				"govAgencyCode":$("#govAgency").val(),
@@ -42,8 +45,6 @@
 				"month":$("#month").val(),
 				"status":id
 			});
-			dataSourceProfile.page(1);
-			dataSourceProfile.pageSize(10);
 			$(".itemStatus").css("pointer-events","auto");
 			$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
@@ -79,3 +80,4 @@
         $(".itemStatus").css("pointer-events","auto");
       });
 	</script>
+
