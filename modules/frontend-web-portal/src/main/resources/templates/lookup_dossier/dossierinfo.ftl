@@ -1,3 +1,6 @@
+<#if (Request)??>
+    <#include "init.ftl">
+</#if>
 <!-- Template thông tin hồ sơ cơ bản -->
 <div class="panel panel-default MB15" id="DossiersDetailInfo">
 	<div class="panel-heading"> 
@@ -49,6 +52,7 @@
             url : "${api.server}/dossiers/"+id,
             dataType : "json",
             type : "GET",
+            headers : {"groupId": ${groupId}},
             beforeSend: function(req) {
                         req.setRequestHeader('groupId', ${groupId});
                     },
@@ -78,6 +82,7 @@
                     url: "${api.server}/dossiers/"+dataItem.dossierId+"/files",
                     dataType: "json",
                     type: 'GET',
+                    headers : {"groupId": ${groupId}},
                     data: {
                         password: options.data.password
                     },
@@ -107,6 +112,7 @@
                     // url:"http://localhost:3000/dossierlogs",
                     dataType: "json",
                     type: 'GET',
+                    headers : {"groupId": ${groupId}},
                     data: {
                         password: options.data.password
                     },

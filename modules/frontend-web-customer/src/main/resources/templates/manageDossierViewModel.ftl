@@ -32,9 +32,35 @@
 			}
 		});
 	//Source for main listview
+		var optBoxPageSize = function(){
+			var totalItem = parseInt(dataSourceProfile.total());
+			var pSize = 10;
+			var arrPsize = [];
+			var selectHtml = "<option class='optPage' value='"+totalItem+"'>Tất cả</option>";
+			$("#totalItem_dossierList").text(dataSourceProfile.total());
+			if (totalItem <= pSize) {
+				$("#itemPpage").html("<option value='"+totalItem+"'>"+totalItem+"</option>")
+			} else {
+				for (var i = pSize; i < totalItem; i+=pSize) {
+					arrPsize.push(i)
+				};
+				var sub = "";
+				$.each(arrPsize,function(index,value){
+					sub+="<option class='optPage' value='"+value+"'>"+value+"</option>"
+				});
+				$("#itemPpage").html(sub);
+				$("#itemPpage").append(selectHtml)
+			};
+		}
 		var dataSourceProfile = new kendo.data.DataSource({
 			transport:{
 				read:function(options){
+					if (options.data.year=="") {
+						options.data.year = 0;
+					};
+					if (options.data.month=="") {
+						options.data.month = 0;
+					};
 					$.ajax({
 						// url: "http://localhost:3000/dossiers",
 						url:"${api.server}/dossiers",
@@ -44,38 +70,35 @@
 						data:{
 							service: options.data.serviceInfo,
 							agency: options.data.govAgencyCode,
-							year: options.data.year,
-							month: options.data.month,
 							keyword: options.data.keyword,
-							status : options.data.status
+							status : options.data.status,
+							year: options.data.year,
+							month: options.data.month
 						},
 						success:function(result){
-							if (result.data) {
-								options.success(result);
-								$("#wrapMain").hide();
-								setTimeout(function(){$("#wrapMain").show()},300);
-							} else{
-								$(".loading").hide();
+							options.success(result);
+							// $("#wrapMain").hide();
+							// if (result.data) {
+							// 	setTimeout(function(){$("#wrapMain").show()},50);
+							// } else{
+							// 	$(".loading").hide();
+							// 	$("#wrapMain").show();
+							// };
+							// 
+							if (result.total!=0) {
+								dataSourceProfile.page(1)
 							}
-							//Box lựa chọn hiển thị số bản ghi/page
-							var totalItem = parseInt(dataSourceProfile.total());
-							var pSize = dataSourceProfile.pageSize();
-							var arrPsize = [];
-							var selectHtml = "<option value='"+totalItem+"'>Tất cả</option>";
-							$("#totalItem_dossierList").text(dataSourceProfile.total());
-							if (totalItem <= dataSourceProfile.pageSize()) {
-								$("#itemPpage").html("<option value='"+totalItem+"' selected>"+totalItem+"</option>")
-							} else {
-								for (var i = pSize; i < totalItem; i+=pSize) {
-									arrPsize.push(i)
-								};
-								var sub = "";
-								$.each(arrPsize,function(index,value){
-									sub+="<option value='"+value+"'>"+value+"</option>"
-								});
-								$("#itemPpage").html(sub);
-								$("#itemPpage").append(selectHtml)
-							}
+							loadProfile();
+							loadAddRes();
+							copyProfile();
+							optBoxPageSize();
+							//
+							$("#statusName").html($(".itemStatus.active > a").text());
+							// 
+							$('.optPage[value="'+dataSourceProfile.pageSize()+'"]').attr("selected","selected");
+							// Option kendo-page
+							$(".k-pager-first").css("display","none");
+							$(".k-pager-last").css("display","none");
 						},
 						error:function(result){
 							options.error(result);
@@ -95,6 +118,12 @@
 		});
 		
 	// Source for sidebar list
+		var jsCollaps = function(){
+			// js collapse
+			$(".clickable").on("click",function() {
+				$(this).children().toggle();
+			});
+		};
 		var dataAddRequest = new kendo.data.DataSource({
 			transport:{
 				read:function(options){
@@ -105,15 +134,19 @@
 						type:"GET",
 						headers : {"groupId": ${groupId}},
 						data:{
-							type:123,
+							type:"DOSSIER-01",
 							sort: options.data.sort_modified
 						},
 						success:function(result){
+							options.success(result);
 							if(result.data){
-								options.success(result);
 								$("#sideItemAdd").show();
 								$("#total_Additional_Requirement").text(dataAddRequest.total());
-							}
+							};
+							jsCollaps();
+							// Option kendo-page
+							$(".k-pager-first").css("display","none");
+							$(".k-pager-last").css("display","none");
 						},
 						error:function(result){
 							options.error(result);
@@ -139,15 +172,19 @@
 						type:"GET",
 						headers : {"groupId": ${groupId}},
 						data:{
-							type: 234,
+							type: "DOSSIER-02",
 							sort: options.data.sort_modified
 						},
 						success:function(result){
+							options.success(result);
 							if(result.data){
-								options.success(result);
 								$("#sideItemPayment").show();
 								$("#total_Payment_Request").text(dataPayRequest.total());
-							}
+							};
+							jsCollaps();
+							// Option kendo-page
+							$(".k-pager-first").css("display","none");
+							$(".k-pager-last").css("display","none");
 						},
 						error:function(result){
 							options.error(result);
@@ -174,15 +211,19 @@
 						type:"GET",
 						headers : {"groupId": ${groupId}},
 						data:{
-							type: 345,
+							type: "DOSSIER-10",
 							sort: options.data.sort_modified
 						},
 						success:function(result){
+							options.success(result);
 							if(result.data){
-								options.success(result);
 								$("#sideItemResult").show();
 								$("#total_result").text(dataResult.total());
-							}
+							};
+							jsCollaps();
+							// Option kendo-page
+							$(".k-pager-first").css("display","none");
+							$(".k-pager-last").css("display","none");
 						},
 						error:function(result){
 							options.error(result);
@@ -219,6 +260,13 @@
 
 	// -=-=-=-=-=-=-=Model=-=-=-=-=-=-=-=-=-
 	// Model Panel
+		var resetValueFilter = function(){
+			$("#month").data("kendoComboBox").text("");
+			$("#year").data("kendoComboBox").text("");
+			$("#keyInput").val("");
+			$("#serviceInfo").data("kendoComboBox").text("");
+			$("#govAgency").data("kendoComboBox").text("");
+		}
 		var modelPanel = kendo.observable({
 			dataGovAgency: dataGovAgency,
 			dataServiceInfo: dataServiceInfo,
@@ -250,8 +298,6 @@
 			},
 			filterStatus: function(e){
 				e.preventDefault();
-				// $("#wrapMain").hide();
-				// setTimeout(function(){$("#wrapMain").show()},300);
 				$("#profileStatus li").removeClass("active");
 				$(e.currentTarget).addClass("active");
 				$(".itemStatus").css("pointer-events","auto");
@@ -260,8 +306,7 @@
 				$(e.currentTarget).children("i").removeClass("fa fa-folder-o").addClass("fa fa-folder-open-o");
 				$("#keyInput").val("");
 				var id = $(e.currentTarget).attr("dataPk");
-				manageDossier.navigate("/"+id);
-				return true;
+				manageDossier.navigate("/"+id)
 			},
 			load_serviceConfig:function(e){
 				e.preventDefault();
@@ -269,44 +314,67 @@
 			},
 		});
 	// Model MainSection
-		$(".downloadProfile").click(function(){
-			
-			// var id = this.attr("data-Pk");
-			// $.ajax({
-			// 	url:"${api.server}/dossiers/"+id,
-			// 	headers: {"groupId": ${groupId}},
-			// 	dataType:"json",
-			// 	type:"GET",
-			// 	success:function(res){
-					
-			// 	},
-			// 	error:function(res){
-					
-			// 	}
-			// });
-		})
-		var copyProfile = function(id){
-			$.ajax({
-				url:"${api.server}/dossiers/"+id+"/cloning",
-				dataType:"json",
-				type:"POST",
-				headers: {"groupId": ${groupId}},
-				success:function(res){
-					var referenceUid = res.referenceUid;
-					manageDossier.navigate("/taohosomoi/nophoso/"+referenceUid);
-				},
-				error:function(res){
-					
-				}
+		var loadProfile = function(){
+			$(".downloadProfile").click(function(e){
+				e.stopPropagation();
+				var id = $(this).attr("data-Pk");
+				$.ajax({
+					url:"${api.server}/dossiers/"+id,
+					headers: {"groupId": ${groupId}},
+					dataType:"json",
+					type:"GET",
+					success:function(res){
+						
+					},
+					error:function(res){
+						
+					}
+				});
 			});
-			
-		}
+		};
+		var loadAddRes = function(){
+			$(".downloadAddRes").click(function(e){
+				e.stopPropagation();
+				var id = $(this).attr("data-Pk");
+				$.ajax({
+					url:"${api.server}/dossiers/"+id,
+					headers: {"groupId": ${groupId}},
+					dataType:"json",
+					type:"GET",
+					success:function(res){
+						
+					},
+					error:function(res){
+						
+					}
+				});
+			});
+		};
+		var copyProfile = function(){
+			$(".copyProfile").click(function(e){
+				e.stopPropagation();
+				var id = $(this).attr("data-Pk");
+				$.ajax({
+					url:"${api.server}/dossiers/"+id+"/cloning",
+					dataType:"json",
+					type:"POST",
+					headers: {"groupId": ${groupId}},
+					success:function(res){
+						var referenceUid = res.referenceUid;
+						manageDossier.navigate("/taohosomoi/nophoso/"+referenceUid);
+					},
+					error:function(res){
+						
+					}
+				})
+			})
+		};
 		var modelMain = kendo.observable({
 			dataSourceProfile : dataSourceProfile,
 			// modelPanel: modelPanel,
 			filterKey: modelPanel.eventLookup,
 			changePageSize: function(){
-				dataSourceProfile.pageSize(parseInt($("#itemPpage").val()))
+				dataSourceProfile.pageSize(parseInt($("#itemPpage").val()));
 			},
 			loadDossierDetail:function(e){
 				e.preventDefault();
@@ -327,7 +395,7 @@
 			loadDossierDetail:function(e){
 				e.preventDefault();
 				var id = e.data.dossierId;
-				// Gọi api lấy trạng thái hồ sơ
+				// Call API get dossierStatus
 				var dataDossierId = new kendo.data.DataSource({
 					transport:{
 						read:function(options){
@@ -347,7 +415,7 @@
 						}
 					},
 					error: function(e) {         
-						this.cancelChanges();
+						
 					},
 				});
 				dataDossierId.read();
@@ -384,3 +452,5 @@
 			}
 		})
 	</script>
+
+	

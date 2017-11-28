@@ -140,8 +140,41 @@
 		<div class="row MT10 text-center">
 			<button id="btn_save_dossier_template_part" class="k-button btn-primary" title="Ghi lại">Ghi lại</button>
 			<button id="btn_cancle_dossier_template_part" class="k-button btn-default" title="Hủy bỏ">Hủy bỏ</button>
+			<button class="btn btn-active" id="btn-view-dossiertemplate-form" type="button">
+				View Form
+			</button>
 		</div>
 	</form>
+</div>
+
+<div id="dossierTemplateFormPreView" class="modal fade" role="dialog">
+	
+	<div class="modal-dialog modal-lg">
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Preview</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row MB15">
+					<div class="col-xs-12" style="height:450px;width:100%;overflow:auto;">
+						<div id="dossiertemplate-form-alpaca">
+
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-12">
+						<button class="btn btn-default" data-dismiss="modal">
+							Đóng
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script type="text/javascript">
@@ -157,6 +190,34 @@
 		var dossierTemplatePartDataPk = $(this).attr("data-pk");
 		updateDossierTemplatePart(dossierTemplateDataPk, dossierTemplatePartDataPk);
 	});
+
+	$(document).on("click","#btn-view-dossiertemplate-form",function(){
+		var formScript = $("textarea#formScript").val();
+		var sampleData = $("textarea#sampleData").val();
+
+		console.log(formScript);
+
+		if(formScript){
+			var formJson = JSON.parse(formScript);
+			var dataJson = JSON.parse(sampleData);
+
+			console.log(formJson);
+			console.log(dataJson);
+			$("#dossiertemplate-form-alpaca").alpaca({
+				"data" : dataJson,
+				"schema" : formJson.schema,
+				"options" : formJson.options,
+				"view" : formJson.view
+			});
+
+			$("#dossierTemplateFormPreView").modal("show");
+		}else { 
+			notification.show({
+				message: "Vui lòng nhập Form Script"
+			}, "error");
+		}
+		
+	});	
 
 	var updateDossierTemplatePart = function(dossierTemplateDataPk, dossierTemplatePartDataPk){
 		if (!validateTemplatePart()){
