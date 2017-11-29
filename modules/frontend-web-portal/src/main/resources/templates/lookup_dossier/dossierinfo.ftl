@@ -75,7 +75,6 @@
     };
     //dataSource chi tiết thông tin hồ sơ
     var dataSourceDossierFileDetail = new kendo.data.DataSource({
-        type: "json",
         transport: {
             read: function (options) {
                 $.ajax({
@@ -104,12 +103,11 @@
         }
     });
     var dataSourceDossierLogDetail = new kendo.data.DataSource({
-        type: "json",
         transport: {
             read: function (options) {
                 $.ajax({
-                    url: "${api.server}/dossiers/"+dataItem.dossierId+"/logs",
-                    // url:"http://localhost:3000/dossierlogs",
+                    // url: "${api.server}/dossiers/"+dataItem.dossierId+"/logs",
+                    url:"http://localhost:3000/dossierlogs",
                     dataType: "json",
                     type: 'GET',
                     headers : {"groupId": ${groupId}},
@@ -158,9 +156,9 @@
         dataSourceDossierLogDetail.read({password: paraValue2})
     };
     $("#btn_dossierinfo_detail").click(
-                            function(){
-                                $("#detailView2").show();
-                                evenDataDossierDetail()
-                            }
-                        )   
+        function(){
+            $("#detailView2").show();
+            evenDataDossierDetail()
+        }
+    )   
 </script>

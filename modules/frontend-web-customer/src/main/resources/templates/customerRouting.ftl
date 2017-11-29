@@ -14,6 +14,7 @@
 	});
 	manageDossier.route("/", function() {
 		$("#mainType1").show();
+		$(".filterField").show();
 		$("#mainType2").hide();
 		resetValueFilter();
 		layout.showIn("#main_section", viewMainList);
@@ -27,9 +28,11 @@
 	});
 	manageDossier.route("/thongbao", function(){
         $("#mainType1").hide();
+        $(".filterField").hide();
         $("#mainType2").show();
         $("#mainType2").load("${ajax.notification}",function(result){
-        	dataSourceNotification.read();
+        	dataSourceNotify2.read();
+        	dataSource2 = true
         });
         $("#profileStatus li").removeClass('active');
         $("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
