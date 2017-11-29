@@ -36,12 +36,12 @@ public class DossierLogUtils {
         if (dossierLog == null) {
             return null;
         }
-        int notificationType = GetterUtil.getInteger(dossierLog.getNotificationType());
+        //int notificationType = GetterUtil.getInteger(dossierLog.getNotificationType());
         DossierLogModel model = new DossierLogModel();
         
         model.setCreateDate(
             APIDateTimeUtils.convertDateToString(dossierLog.getCreateDate()));
-        model.setNotificationType(notificationType);
+        model.setNotificationType(dossierLog.getNotificationType());
         model.setAuthor(dossierLog.getAuthor());
         model.setContent(dossierLog.getContent());
         model.setPayload(dossierLog.getPayload());
@@ -63,14 +63,14 @@ public class DossierLogUtils {
             
             long dossierLogId = GetterUtil.getLong(document.get("entryClassPK"));
             long dossierId = GetterUtil.getLong(document.get(DossierLogTerm.DOSSIER_ID));
-            int notificationType = GetterUtil.getInteger(document.get(DossierLogTerm.NOTIFICATION_TYPE));
+            //String notificationType = GetterUtil.getInteger(document.get(DossierLogTerm.NOTIFICATION_TYPE));
             int counter = GetterUtil.getInteger(document.get(DossierLogTerm.COUNTER));
             
             model.setDossierLogId(dossierLogId);
             model.setCreateDate(document.get(DossierLogTerm.CREATE_DATE));
             model.setAuthor(document.get(DossierLogTerm.AUTHOR));
             model.setContent(document.get(DossierLogTerm.CONTENT));
-            model.setNotificationType(notificationType);
+            model.setNotificationType(document.get(DossierLogTerm.NOTIFICATION_TYPE));
             model.setPayload(document.get(DossierLogTerm.PAYLOAD));
             model.setDossierId(dossierId);
             model.setServiceCode(document.get(DossierLogTerm.SERVICE_CODE));
@@ -95,13 +95,13 @@ public class DossierLogUtils {
                     new DossierLogSearchIdModel();
                 
                 long dossierLogId = GetterUtil.getLong(document.get("entryClassPK"));
-                int notificationType = GetterUtil.getInteger(document.get(DossierLogTerm.NOTIFICATION_TYPE));
+                //int notificationType = GetterUtil.getInteger(document.get(DossierLogTerm.NOTIFICATION_TYPE));
 
                 model.setDossierLogId(dossierLogId);
                 model.setAuthor(document.get(DossierLogTerm.AUTHOR));
                 model.setContent(document.get(DossierLogTerm.CONTENT));
                 model.setCreateDate(document.get(DossierLogTerm.CREATE_DATE));
-                model.setNotificationType(notificationType);
+                model.setNotificationType(document.get(DossierLogTerm.NOTIFICATION_TYPE));
                 model.setPayload(document.get(DossierLogTerm.PAYLOAD));
 
                 outputs.add(model);

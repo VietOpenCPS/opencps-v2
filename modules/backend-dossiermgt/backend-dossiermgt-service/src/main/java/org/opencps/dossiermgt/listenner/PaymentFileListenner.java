@@ -2,10 +2,10 @@ package org.opencps.dossiermgt.listenner;
 
 import org.opencps.dossiermgt.action.util.DossierLogUtils;
 import org.opencps.dossiermgt.model.DossierFile;
-
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
-import org.osgi.service.component.annotations.Component;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -13,23 +13,21 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-@Component(immediate = true, service = ModelListener.class)
-public class DossierFileListenner extends BaseModelListener<DossierFile> {
+public class PaymentFileListenner extends BaseModelListener<PaymentFile> {
 
 	@Override
-	public void onBeforeCreate(DossierFile model) throws ModelListenerException {
+	public void onBeforeCreate(PaymentFile model) throws ModelListenerException {
 		System.out.println("Before Created........... ==> " + model.getDossierId());
 	}
 	
 	@Override
-	public void onAfterCreate(DossierFile model) throws ModelListenerException {
+	public void onAfterCreate(PaymentFile model) throws ModelListenerException {
 		// TODO Auto-generated method stub
-		String content = "On DossiserFile Created";
-		String notificationType = "File-01";
-		String payload = DossierLogUtils.createPayload(model, null, null);
+		String content = "On PaymentFile Created";
+		String notificationType = "";
+		String payload = DossierLogUtils.createPayload(null, model, null);
 		
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
@@ -40,13 +38,14 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		} catch (SystemException | PortalException e) {
 			e.printStackTrace();
 		}
+		super.onAfterCreate(model);
 	}
 
 	@Override
-	public void onAfterRemove(DossierFile model) throws ModelListenerException {
-		String content = "On DossiserFile Delete";
+	public void onAfterRemove(PaymentFile model) throws ModelListenerException {
+		String content = "On PaymentFile Delete";
 		String notificationType = "";
-		String payload = DossierLogUtils.createPayload(model, null, null);
+		String payload = DossierLogUtils.createPayload(null, model, null);
 		
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
@@ -61,19 +60,19 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 	}
 	
 	@Override
-	public void onBeforeUpdate(DossierFile model) throws ModelListenerException {
+	public void onBeforeUpdate(PaymentFile model) throws ModelListenerException {
 		try {
-			modelBeforeUpdate = DossierFileLocalServiceUtil.getDossierFile(model.getPrimaryKey());
+			modelBeforeUpdate = PaymentFileLocalServiceUtil.getPaymentFile(model.getPrimaryKey());
 		} catch (Exception e) {
 			_log.error(e);
 		}
 	}
 	
 	@Override
-	public void onAfterUpdate(DossierFile model) throws ModelListenerException {
-		String content = "On DossiserFile Update";
+	public void onAfterUpdate(PaymentFile model) throws ModelListenerException {
+		String content = "On PaymentFile Update";
 		String notificationType = "";
-		String payload = DossierLogUtils.createPayload(model, null, null);
+		String payload = DossierLogUtils.createPayload(null, model, null);
 		
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
@@ -89,7 +88,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 
 
-	public static DossierFile modelBeforeUpdate;
+	public static PaymentFile modelBeforeUpdate;
 
-	private Log _log = LogFactoryUtil.getLog(DossierFileListenner.class.getName());
+	private Log _log = LogFactoryUtil.getLog(PaymentFileListenner.class.getName());
 }
