@@ -436,6 +436,7 @@
 		<column name="signInfo" type="String" />
 		<column name="formScript" type="String" />
 		<column name="formReport" type="String" />
+		<column name="formSchema" type="String" />
 
 
 		<!-- Order -->

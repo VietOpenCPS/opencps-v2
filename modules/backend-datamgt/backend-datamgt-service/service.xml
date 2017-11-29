@@ -151,6 +151,18 @@
 			<finder-column name="groupId"></finder-column>
 		</finder>
 		
+		<!-- Finder -->
+		<finder return-type="DictGroup" name="GC_GI_DCI">
+			<finder-column name="groupCode"/>
+			<finder-column name="groupId"/>
+			<finder-column name="dictCollectionId"/>
+		</finder>
+		
+		<finder return-type="Collection" name="GID_DC">
+			<finder-column name="dictCollectionId"/>
+			<finder-column name="groupId"/>
+		</finder>
+		
 	</entity>
 	
 	<entity name="DictItemGroup" uuid="true" local-service="true"
