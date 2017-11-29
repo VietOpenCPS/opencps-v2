@@ -567,7 +567,11 @@
 			<finder-column name="dossierId"/>
 			<finder-column name="referenceUid"/>
 		</finder>
-
+				
+		<finder return-type="PaymentFile" name="D_RUID">
+			<finder-column name="dossierId"/>
+			<finder-column name="referenceUid"/>
+		</finder>
 		<!-- References -->
 
 	</entity>

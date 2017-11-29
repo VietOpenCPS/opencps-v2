@@ -9,31 +9,31 @@
 					<div class="row-header"> 
 						<div class="background-triangle-big">
 							<i class="fa fa-file-text"></i>
-						</div> 
-						<span class="text-bold">KẾT QUẢ TÌM KIẾM HỒ SƠ</span> 
+						</div>
+						<span class="text-bold" id="statusName" style="text-transform:uppercase;"></span> 
 						<div class="form-group search-icon pull-right MB0 MR10" style="margin-top:3px">
 							<input type="text" class="form-control" id="keyInput" placeholder="Nhập từ khóa" data-bind="events: { keyup: filterKey}">
 						</div>
-					</div>	
+					</div>
 				</div>
 			</div>
 			<div id="wrapMain">
 				<div class="col-sm-12 P0" id="customer_dossierlist">
-					<ul class="ul-with-border" data-role="listview" data-bind="source: dataSourceProfile" data-template="proFileTemplate" id="listViewDossier">
+					<ul class="ul-with-border" data-role="listview" data-auto-bind="false" data-bind="source: dataSourceProfile" data-template="proFileTemplate" id="listViewDossier">
 						
 					</ul>
 				</div>
-				<div class="footerListProfile row-header col-sm-12 PT20" style="background: #f6f6f6">
+				<div class="footerListProfile row-header col-sm-12 PT20 PR0" style="background: #f6f6f6">
 					<div class="clearfix align-middle" style="float: right">
 						<span class="text-light-gray MR15"><i>Tổng số <span id="totalItem_dossierList" class="red"></span> kết quả được tìm thấy</i></span>
 						<span class="show-per-page MT0">Hiển thị
 							<span class="select-wrapper">
-								<select class="ML5" id="itemPpage" data-bind="events:{change: changePageSize}">
+								<select class="ML5" id="itemPpage" data-bind="events:{change: changePageSize}" style="background-color: #ffffff">
 									
 								</select>
 							</span>
 						</span>
-						<span id="pagerProfile" class="M0 P0 PR5" data-role="pager" data-info="false" data-bind="source: dataSourceProfile" data-button-count="3"></span>
+						<span id="pagerProfile" class="M0 P0" data-role="pager" data-info="false" data-bind="source: dataSourceProfile, events:{change: stylePager}" data-button-count="3" style="background: #ffffff"></span>
 					</div>	
 				</div>
 			</div>
@@ -42,11 +42,11 @@
 	</script>
 		<#-- for listview dossier-->
 		<script type="text/x-kendo-template" id="proFileTemplate">
-			<div class="row PL15 PR15 itemCustomerDossierList">
-				<div class="row M0 hover-pointer" dataPk="#:id#" data-bind="events:{click: loadDossierDetail}" title="Xem chi tiết">
+			<div class="row hover-pointer PL15 PR15 itemCustomerDossierList" dataPk="#:id#" data-bind="events:{click: loadDossierDetail}">
+				<div class="row M0">
 					<div class="row-blue align-middle">
 						<div class="order-number">#:counter#</div>
-						<div class="dossier-number" data-toggle="tooltip" title="Mã hồ sơ"><span class="red">\\#</span> #:serviceCode#</div>
+						<div class="dossier-number" data-toggle="tooltip" title="Mã hồ sơ"><span class="red">\\#</span> #:dossierId#</div>
 						<div class="receive-number"><span class="text-normal">Mã tiếp nhận:</span> #:dossierNo#</div>
 						#
 							var label="label-info";
@@ -88,7 +88,15 @@
 							        label="label-info";
 							}
 						#
-						<span class="label #:label# MLA">#:dossierSubStatusText#</span> 
+						#
+							var status;
+							if(dossierSubStatusText == ""){
+								status = dossierStatusText
+							} else {
+								status = dossierSubStatusText
+							}
+						#
+						<span class="label #:label# MLA">#:status#</span> 
 					</div>
 				</div>
 				<div class="col-sm-12 PL0 PT5 PB10">
@@ -113,21 +121,21 @@
 							</p>
 							
 							#if(dossierStatus === "waiting"){#
-								<a href="${api.server}/dossiers/#:id#/result" style="margin-right: 10px;">
+								<a href="javascript:;" data-Pk="#:id#" class="downloadAddRes" style="margin-right: 10px;">
 									<i class="fa fa-download" aria-hidden="true">
 									</i> Tải yêu cầu bổ sung
 								</a>
 							#}#
 
 							#if(dossierStatus === "done"){#
-								<a href="javascript:;" class="downloadProfile" style="margin-right: 10px;">
+								<a href="javascript:;" data-Pk="#:id#" class="downloadProfile" style="margin-right: 10px;">
 									<i class="fa fa-download" aria-hidden="true">
 									</i> Tải giấy tờ kết quả
 								</a>
 							#}#
 							<#-- ${api.server}/dossiers/#:id#/result -->
 							#if(dossierStatus === "done" ){#
-								<a href="javascript:;" onclick="copyProfile(#:id#)"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Sao chép hồ sơ
+								<a href="javascript:;" data-Pk="#:id#" class="copyProfile"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Sao chép hồ sơ
 								</a>
 							#}#
 						</div>
@@ -154,7 +162,7 @@
 	<script type="text/x-kendo-template" id="sidebarTemplate">
 		<div class="row">
 			<div class="col-sm-12" id="customer_additional_requirements">
-				<div class="panel panel-main" id="sideItemAdd" style="display: none"> 
+				<div class="panel panel-main MB15" id="sideItemAdd" style="display: none">
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Yêu cầu bổ sung</span>
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#additionalRequirement">
@@ -175,7 +183,7 @@
 				</div>
 			</div>
 			<div class="col-sm-12" id="customer_payment_request">
-				<div class="panel panel-main MT15" id="sideItemPayment" style="display: none"> 
+				<div class="panel panel-main MB15" id="sideItemPayment" style="display: none"> 
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Yêu cầu thanh toán</span> 
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#paymentRequest"> 
@@ -197,7 +205,7 @@
 				</div>
 			</div>
 			<div class="col-sm-12" id="customer_result_request">
-				<div class="panel panel-main MT15" id="sideItemResult" style="display: none"> 
+				<div class="panel panel-main" id="sideItemResult" style="display: none"> 
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Trả kết quả</span> 
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#resultRequest"> 

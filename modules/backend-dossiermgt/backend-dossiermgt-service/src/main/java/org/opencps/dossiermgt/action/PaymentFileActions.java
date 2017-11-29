@@ -84,6 +84,14 @@ public interface PaymentFileActions {
 			String invoiceNo, String sourceFileName, long fileSize, InputStream inputStream,
 			ServiceContext serviceContext) throws SystemException, PortalException, java.text.ParseException;
 
+	//8,9
+	/**
+	 * Download file confirm
+	 * @param id
+	 * @param referenceUid
+	 * @return PaymentFile
+	 */
+	public PaymentFile getPaymentFileByReferenceUid(Long id, String referenceUid) throws PortalException;
 	/**
 	 * Get all Payment File
 	 * @param

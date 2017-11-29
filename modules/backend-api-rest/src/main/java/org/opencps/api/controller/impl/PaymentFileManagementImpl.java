@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -8,6 +9,7 @@ import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
@@ -30,9 +32,12 @@ import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
@@ -342,8 +347,36 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	@Override
 	public Response downloadConfirmFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, Long id, String referenceUid) {
-		// TODO Auto-generated method stub
-		return null;
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			PaymentFileActions action = new PaymentFileActionsImpl();
+			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(id, referenceUid);
+
+			if(paymentFile.getConfirmFileEntryId() > 0) {
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getConfirmFileEntryId());
+	
+				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
+	
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+	
+				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileEntry.getFileName() + "\"");
+				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+	
+				return responseBuilder.build();
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		} catch (Exception e) {
+			return processException(e);
+		}
 	}
 
 	/**
@@ -354,8 +387,35 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	@Override
 	public Response downloadInvoiceFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, Long id, String referenceUid) {
-		// TODO Auto-generated method stub
-		return null;
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			PaymentFileActions action = new PaymentFileActionsImpl();
+			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(id, referenceUid);
+
+			if(paymentFile.getInvoiceFileEntryId() > 0) {
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
+	
+				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
+	
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+	
+				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileEntry.getFileName() + "\"");
+				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+	
+				return responseBuilder.build();
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		} catch (Exception e) {
+			return processException(e);
+		}
 	}
 
 	/**

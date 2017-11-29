@@ -176,6 +176,15 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 				invoiceNo, sourceFileName, fileSize, inputStream, serviceContext);
 	}
 
+	//8,9
+	/**
+	 * Download file Confirm by referenceUid
+	 * @throws PortalException 
+	 */
+	@Override
+	public PaymentFile getPaymentFileByReferenceUid(Long id, String referenceUid) throws PortalException {
+		return PaymentFileLocalServiceUtil.getPaymentFileByReferenceUid(id, referenceUid);
+	}
 	/**
 	 * Get all Payment File
 	 * @param

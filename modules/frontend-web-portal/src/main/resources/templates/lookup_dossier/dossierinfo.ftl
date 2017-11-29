@@ -1,3 +1,6 @@
+<#if (Request)??>
+    <#include "init.ftl">
+</#if>
 <!-- Template thông tin hồ sơ cơ bản -->
 <div class="panel panel-default MB15" id="DossiersDetailInfo">
 	<div class="panel-heading"> 
@@ -49,6 +52,7 @@
             url : "${api.server}/dossiers/"+id,
             dataType : "json",
             type : "GET",
+            headers : {"groupId": ${groupId}},
             beforeSend: function(req) {
                         req.setRequestHeader('groupId', ${groupId});
                     },
@@ -71,13 +75,13 @@
     };
     //dataSource chi tiết thông tin hồ sơ
     var dataSourceDossierFileDetail = new kendo.data.DataSource({
-        type: "json",
         transport: {
             read: function (options) {
                 $.ajax({
                     url: "${api.server}/dossiers/"+dataItem.dossierId+"/files",
                     dataType: "json",
                     type: 'GET',
+                    headers : {"groupId": ${groupId}},
                     data: {
                         password: options.data.password
                     },
@@ -99,14 +103,14 @@
         }
     });
     var dataSourceDossierLogDetail = new kendo.data.DataSource({
-        type: "json",
         transport: {
             read: function (options) {
                 $.ajax({
-                    url: "${api.server}/dossiers/"+dataItem.dossierId+"/logs",
-                    // url:"http://localhost:3000/dossierlogs",
+                    // url: "${api.server}/dossiers/"+dataItem.dossierId+"/logs",
+                    url:"http://localhost:3000/dossierlogs",
                     dataType: "json",
                     type: 'GET',
+                    headers : {"groupId": ${groupId}},
                     data: {
                         password: options.data.password
                     },
@@ -152,9 +156,9 @@
         dataSourceDossierLogDetail.read({password: paraValue2})
     };
     $("#btn_dossierinfo_detail").click(
-                            function(){
-                                $("#detailView2").show();
-                                evenDataDossierDetail()
-                            }
-                        )   
+        function(){
+            $("#detailView2").show();
+            evenDataDossierDetail()
+        }
+    )   
 </script>

@@ -95,6 +95,7 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 		Date now = new Date();
 
 		User userAction = userLocalService.getUser(userId);
+		
 
 		long dossierFileId = counterLocalService.increment(DossierLog.class.getName());
 
@@ -106,6 +107,7 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
         object.setModifiedDate(now);
         object.setUserId(userAction.getUserId());
         object.setUserName(userAction.getFullName());
+        object.setAuthor(userAction.getFullName());
 
         // Add other fields
         object.setDossierId(dossierId);
@@ -225,8 +227,6 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
             booleanQuery.add(query, BooleanClauseOccur.MUST);
         }
         String content = GetterUtil.getString(params.get(DossierLogTerm.CONTENT));
-        String payload = GetterUtil.getString(params.get(DossierLogTerm.PAYLOAD));
-        String user_id = String.valueOf(params.get(DossierLogTerm.USER_ID));
         String dossierLogId = GetterUtil.getString(params.get(DossierLogTerm.DOSSIER_LOG_ID));
         
         if (Validator.isNotNull(notiType)) {
@@ -253,30 +253,6 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
             booleanQuery.add(query, BooleanClauseOccur.MUST);
         }
         
-        if (Validator.isNotNull(content)) {
-            MultiMatchQuery query = new MultiMatchQuery(content);
-
-            query.addFields(DossierLogTerm.CONTENT);
-
-            booleanQuery.add(query, BooleanClauseOccur.MUST);
-        }
-        
-        if (Validator.isNotNull(payload)) {
-            MultiMatchQuery query = new MultiMatchQuery(payload);
-
-            query.addFields(DossierLogTerm.PAYLOAD);
-
-            booleanQuery.add(query, BooleanClauseOccur.MUST);
-        }
-        
-        if (Validator.isNotNull(user_id)) {
-            MultiMatchQuery query = new MultiMatchQuery(user_id);
-
-            query.addFields(DossierLogTerm.USER_ID);
-
-            booleanQuery.add(query, BooleanClauseOccur.MUST);
-        }
-
         booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
         return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -336,18 +312,7 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
             booleanQuery.add(query, BooleanClauseOccur.MUST);
         }
         
-        String content = GetterUtil.getString(params.get(DossierLogTerm.CONTENT));
-        String payload = GetterUtil.getString(params.get(DossierLogTerm.PAYLOAD));
-        String user_id = String.valueOf(params.get(DossierLogTerm.USER_ID));
         String dossierLogId = GetterUtil.getString(params.get(DossierLogTerm.DOSSIER_LOG_ID));
-        
-        if (Validator.isNotNull(content)) {
-            MultiMatchQuery query = new MultiMatchQuery(content);
-
-            query.addFields(DossierLogTerm.CONTENT);
-
-            booleanQuery.add(query, BooleanClauseOccur.MUST);
-        }
         
         if (Validator.isNotNull(notiType)) {
             MultiMatchQuery query = new MultiMatchQuery(notiType);
@@ -369,22 +334,6 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
             MultiMatchQuery query = new MultiMatchQuery(dossierLogId);
 
             query.addFields(DossierLogTerm.DOSSIER_LOG_ID);
-
-            booleanQuery.add(query, BooleanClauseOccur.MUST);
-        }
-        
-        if (Validator.isNotNull(payload)) {
-            MultiMatchQuery query = new MultiMatchQuery(payload);
-
-            query.addFields(DossierLogTerm.PAYLOAD);
-
-            booleanQuery.add(query, BooleanClauseOccur.MUST);
-        }
-        
-        if (Validator.isNotNull(user_id)) {
-            MultiMatchQuery query = new MultiMatchQuery(user_id);
-
-            query.addFields(DossierLogTerm.USER_ID);
 
             booleanQuery.add(query, BooleanClauseOccur.MUST);
         }
