@@ -57,7 +57,11 @@
 		<column name="specificationCode" type="String" db-name="specificationcode"/>
 		<column name="specificationName" type="String" db-name="specificationname"/>
 		<column name="synchDate" type="Date" db-name="synchdate"/>
-		
+	
+		<order by="asc">
+			<order-column name="sequenceNo"/>
+		</order>
+	
 		<!-- Finder -->
 		<finder return-type="Collection" name="VT_MU_DC">
 			<finder-column name="vehicleType"/>

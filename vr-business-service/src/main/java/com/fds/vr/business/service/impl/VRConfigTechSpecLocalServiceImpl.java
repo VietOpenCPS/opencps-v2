@@ -16,7 +16,12 @@ package com.fds.vr.business.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import java.util.List;
+
+import com.fds.vr.business.model.VRConfigTechSpec;
 import com.fds.vr.business.service.base.VRConfigTechSpecLocalServiceBaseImpl;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 
 /**
  * The implementation of the vr config tech spec local service.
@@ -40,4 +45,24 @@ public class VRConfigTechSpecLocalServiceImpl
 	 *
 	 * Never reference this class directly. Always use {@link com.fds.vr.business.service.VRConfigTechSpecLocalServiceUtil} to access the vr config tech spec local service.
 	 */
+	
+	public List<VRConfigTechSpec> getByVCCTSC(String vehicleClass,
+			String vehicleType, String specCategory) throws PortalException,
+			SystemException {
+		return vrConfigTechSpecPersistence.findByVC_VT_SC(vehicleClass,
+				vehicleType, specCategory);
+	}
+	
+	public List<VRConfigTechSpec> getByVCCTSC(String vehicleClass,
+			String[] vehicleTypes, String specCategory) throws PortalException,
+			SystemException {
+		return vrConfigTechSpecPersistence.findByVC_VT_SC(vehicleClass,
+				vehicleTypes, specCategory);
+	}
+
+	public List<VRConfigTechSpec> getByVCSC(String vehicleClass,
+			String specCategory) throws PortalException, SystemException {
+		return vrConfigTechSpecPersistence.findByVC_SC(vehicleClass,
+				specCategory);
+	}
 }

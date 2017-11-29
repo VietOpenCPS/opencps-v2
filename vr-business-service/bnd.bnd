@@ -3,4 +3,12 @@ Bundle-SymbolicName: com.fds.vr.service
 Bundle-Version: 1.0.0
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
-Export-Package: com.fds.vr.business.exception
+Export-Package: \
+	com.fds.vr.business.exception,\
+	com.fds.vr.business.model,\
+	com.fds.vr.business.model.impl,\
+	com.fds.vr.business.service,\
+	com.fds.vr.business.service.persistence,\
+	com.fds.vr.business.action,\
+	com.fds.vr.business.action.impl,\
+	com.fds.vr.business.constant
