@@ -54,10 +54,10 @@
 					        	dossierId = dataItem.dossierId;
 					        	$.each(payload.dossierFiles, function(index, file) {
 					        		if (file.fileType == "docx") {#
-					        			<span><img src="images/word.png" alt=""> <a href="${api.server}/dossiers/#:dossierId#/files/#:file.referenceUid#">#:file.displayName#</a></span><br>
+					        			<span><img src="images/word.png" alt=""> <a href="${api.server}#:file.fileUrl#">#:file.displayName#</a></span><br>
 					        		#}
 						        	else if (file.fileType == "pdf") {#
-						        		<span><img src="images/pdf.png" alt=""> <a href="${api.server}/dossiers/#:dossierId#/files/#:file.referenceUid#">#:file.displayName#</a></span><br>
+						        		<span><img src="images/pdf.png" alt=""> <a href="${api.server}#:file.fileUrl#">#:file.displayName#</a></span><br>
 						        	#}
 						        })
 				        	# 
@@ -74,7 +74,6 @@
 		$("#detailView2").hide();
 		// dataSource thông tin hồ sơ cơ bản
 		var dataSourceDossierResultSearch = new kendo.data.DataSource({
-			type: "json",
 			transport: {
 			    read: function (options) {
 			        $.ajax({
