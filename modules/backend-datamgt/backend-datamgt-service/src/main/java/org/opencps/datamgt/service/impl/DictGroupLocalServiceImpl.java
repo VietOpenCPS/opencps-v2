@@ -16,6 +16,7 @@ package org.opencps.datamgt.service.impl;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.exception.NoSuchDictGroupException;
@@ -499,4 +500,13 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
 	}
+	
+	public List<DictGroup> getDictGroupByDictCollection(long groupId, long dictCollectionId, int start, int end) {
+		return dictGroupPersistence.findByGID_DC(dictCollectionId, groupId, start, end);
+	}
+	
+	public DictGroup getByGC_GI_DCI(String groupCode, long groupId, long dictCollectionId) {
+		return dictGroupPersistence.fetchByGC_GI_DCI(groupCode, groupId, dictCollectionId);
+	}
+	
 }

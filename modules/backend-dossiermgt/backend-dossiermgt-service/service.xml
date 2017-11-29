@@ -436,6 +436,7 @@
 		<column name="signInfo" type="String" />
 		<column name="formScript" type="String" />
 		<column name="formReport" type="String" />
+		<column name="formSchema" type="String" />
 
 
 		<!-- Order -->
@@ -566,7 +567,7 @@
 			<finder-column name="dossierId"/>
 			<finder-column name="referenceUid"/>
 		</finder>
-
+				
 		<finder return-type="PaymentFile" name="D_RUID">
 			<finder-column name="dossierId"/>
 			<finder-column name="referenceUid"/>
@@ -1016,4 +1017,4 @@
 		<exception>SeqOrder</exception>
 		
 	</exceptions>
-	</service-builder>
+</service-builder>

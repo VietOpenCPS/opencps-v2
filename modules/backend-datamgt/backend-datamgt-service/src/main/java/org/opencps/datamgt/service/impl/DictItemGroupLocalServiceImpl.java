@@ -311,6 +311,12 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 	}
 
+	public List<DictItemGroup> findByDictGroupId(long groupId, long dictGroupId) {
+
+		return dictItemGroupPersistence.findByF_dictGroupId(groupId, dictGroupId);
+
+	}
+
 	@SuppressWarnings("deprecation")
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
