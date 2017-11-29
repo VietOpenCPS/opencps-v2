@@ -52,7 +52,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "DossierLogSearchModel")
 public class DossierLogSearchModel {
 	@FormParam(value = "type")
-	protected Integer notificationType;
+	protected String notificationType;
 	@DefaultValue("true") @FormParam(value = "owner")
     protected Boolean owner;
     @DefaultValue("0") @FormParam(value = "start")
@@ -69,10 +69,10 @@ public class DossierLogSearchModel {
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
-    public Integer getNotificationType() {
+    public String getNotificationType() {
         return notificationType;
     }
 
@@ -81,10 +81,10 @@ public class DossierLogSearchModel {
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
-    public void setNotificationType(Integer value) {
+    public void setNotificationType(String value) {
         this.notificationType = value;
     }
 

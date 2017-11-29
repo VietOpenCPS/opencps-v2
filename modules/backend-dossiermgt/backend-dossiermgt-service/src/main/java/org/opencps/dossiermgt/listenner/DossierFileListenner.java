@@ -28,7 +28,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 	public void onAfterCreate(DossierFile model) throws ModelListenerException {
 		// TODO Auto-generated method stub
 		String content = "On DossiserFile Created";
-		String notificationType = "";
+		String notificationType = "File-01";
 		String payload = DossierLogUtils.createPayload(model, null, null);
 		
 		ServiceContext serviceContext = new ServiceContext();

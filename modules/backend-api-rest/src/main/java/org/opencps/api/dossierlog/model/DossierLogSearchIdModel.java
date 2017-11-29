@@ -52,7 +52,7 @@ public class DossierLogSearchIdModel {
     protected String createDate;
     protected String author;
     protected String content;
-    protected Integer notificationType;
+    protected String notificationType;
     protected String payload;
 
     /**
@@ -156,10 +156,10 @@ public class DossierLogSearchIdModel {
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
-    public Integer getNotificationType() {
+    public String getNotificationType() {
         return notificationType;
     }
 
@@ -168,10 +168,10 @@ public class DossierLogSearchIdModel {
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
-    public void setNotificationType(Integer value) {
+    public void setNotificationType(String value) {
         this.notificationType = value;
     }
 

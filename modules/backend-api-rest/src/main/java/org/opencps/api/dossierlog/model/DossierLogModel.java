@@ -64,7 +64,7 @@ public class DossierLogModel {
     protected String createDate;
     protected String author;
     protected String content;
-    protected Integer notificationType;
+    protected String notificationType;
     protected String payload;
     protected Long dossierId;
     protected String serviceCode;
@@ -174,10 +174,10 @@ public class DossierLogModel {
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
-    public Integer getNotificationType() {
+    public String getNotificationType() {
         return notificationType;
     }
 
@@ -186,10 +186,10 @@ public class DossierLogModel {
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
-    public void setNotificationType(Integer value) {
+    public void setNotificationType(String value) {
         this.notificationType = value;
     }
 

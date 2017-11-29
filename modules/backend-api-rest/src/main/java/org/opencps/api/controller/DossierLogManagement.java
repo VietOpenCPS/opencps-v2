@@ -38,10 +38,11 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+@Path("/dossierlogs")
 @Api(value = "/dossierlogs", tags = "dossiers")
 public interface DossierLogManagement {
+	
 	@GET
-	@Path("/dossierlogs")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Get all DossierLogs", response = DossierLogResultsModel.class)
 	@ApiResponses(value = {
@@ -53,9 +54,9 @@ public interface DossierLogManagement {
 	public Response getDossierLogs(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @BeanParam DossierLogSearchModel query);
-
+	
 	@GET
-	@Path("/dossiers/{id}/logs")
+	@Path("/{id}/logs")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Get DossierLog by Id", response = DossierLogSearchIdResultsModel.class)
 	@ApiResponses(value = {
@@ -68,6 +69,7 @@ public interface DossierLogManagement {
 			@Context ServiceContext serviceContext, @BeanParam DossierLogSearchModel query,
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long dossierId,
 			@ApiParam(value = "password for access dossier log", required = false) @PathParam("password") String password);
+	
 	
 	@POST
 	@Path("log/{id}")
