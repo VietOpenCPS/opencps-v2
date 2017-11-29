@@ -77,14 +77,6 @@
 						},
 						success:function(result){
 							options.success(result);
-							// $("#wrapMain").hide();
-							// if (result.data) {
-							// 	setTimeout(function(){$("#wrapMain").show()},50);
-							// } else{
-							// 	$(".loading").hide();
-							// 	$("#wrapMain").show();
-							// };
-							// 
 							if (result.total!=0) {
 								dataSourceProfile.page(1)
 							}
@@ -99,6 +91,7 @@
 							// Option kendo-page
 							$(".k-pager-first").css("display","none");
 							$(".k-pager-last").css("display","none");
+							$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"})
 						},
 						error:function(result){
 							options.error(result);
@@ -312,6 +305,9 @@
 				e.preventDefault();
 				manageDossier.navigate("/taohosomoi");
 			},
+			dataBound: function() {
+				$(".k-clear-value").addClass("k-hidden")
+			}
 		});
 	// Model MainSection
 		var loadProfile = function(){
@@ -382,6 +378,10 @@
 				var id = $(e.currentTarget).attr("dataPk");
 				manageDossier.navigate("/"+dossierItemStatus+"/dossiers/"+id);	
 			},
+			stylePager: function(e){
+				e.preventDefault();
+				$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"})
+			}
 		});
 		
 	// Model Sidebar Menu
@@ -452,5 +452,6 @@
 			}
 		})
 	</script>
+
 
 	

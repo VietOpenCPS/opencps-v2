@@ -10,6 +10,7 @@
 		manageDossier.route("/(:dossierItemStatus)/dossiers/(:id)", function(dossierItemStatus, id){
 			$("#mainType1").hide();
 			$("#mainType2").show();
+			$(".filterField").hide();
 			if (dossierItemStatus == "new") {
 				$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+id+"",function(result){
 				})
@@ -26,6 +27,7 @@
 		});
 		manageDossier.route("/taohosomoi", function(id){
 			$("#mainType1").hide();
+			$(".filterField").hide();
 			$("#mainType2").show();
 			$("#mainType2").load("${ajax.serviceconfig}",function(result){
 				});
@@ -55,6 +57,7 @@
 
       manageDossier.route("/taohosomoi/admin", function(){
         $("#mainType1").hide();
+        $(".filterField").hide();
         $("#mainType2").show();
         $("#mainType2").load("${ajax.serviceconfig}",function(result){
             $('#btn_fillter_by_admintration').addClass('btn-active');
@@ -68,6 +71,7 @@
       });
       manageDossier.route("/taohosomoi/doman", function(){
         $("#mainType1").hide();
+        $(".filterField").hide();
         $("#mainType2").show();
         $("#mainType2").load("${ajax.serviceconfig}",function(result){
             $('#btn_fillter_by_admintration').removeClass('btn-active');

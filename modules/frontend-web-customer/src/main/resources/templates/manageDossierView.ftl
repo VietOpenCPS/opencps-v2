@@ -23,17 +23,17 @@
 						
 					</ul>
 				</div>
-				<div class="footerListProfile row-header col-sm-12 PT20" style="background: #f6f6f6">
+				<div class="footerListProfile row-header col-sm-12 PT20 PR0" style="background: #f6f6f6">
 					<div class="clearfix align-middle" style="float: right">
 						<span class="text-light-gray MR15"><i>Tổng số <span id="totalItem_dossierList" class="red"></span> kết quả được tìm thấy</i></span>
 						<span class="show-per-page MT0">Hiển thị
 							<span class="select-wrapper">
-								<select class="ML5" id="itemPpage" data-bind="events:{change: changePageSize}">
+								<select class="ML5" id="itemPpage" data-bind="events:{change: changePageSize}" style="background-color: #ffffff">
 									
 								</select>
 							</span>
 						</span>
-						<span id="pagerProfile" class="M0 P0 PR5" data-role="pager" data-info="false" data-bind="source: dataSourceProfile" data-button-count="3"></span>
+						<span id="pagerProfile" class="M0 P0" data-role="pager" data-info="false" data-bind="source: dataSourceProfile, events:{change: stylePager}" data-button-count="3" style="background: #ffffff"></span>
 					</div>	
 				</div>
 			</div>
