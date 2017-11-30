@@ -790,6 +790,12 @@
 			<finder-column name="preStepCode" />
 			<finder-column name="autoEvent" />
 		</finder>
+		
+		<finder return-type="ProcessAction" name="SPID_AC">
+			<finder-column name="serviceProcessId" />
+			<finder-column name="actionCode" />
+		</finder>
+		
 
 	</entity>
 
