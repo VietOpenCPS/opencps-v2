@@ -13,49 +13,48 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 
 public class DossierLogUtils {
-	public static String createPayload(DossierFile dossierFile, PaymentFile paymentFile, Dossier dossier){
+	public static String createPayload(DossierFile dossierFile, PaymentFile paymentFile, Dossier dossier) {
 		String fileType = "";
-        String fileUrl = "";
+		String fileUrl = "";
+		if (dossierFile != null){
+			if (dossierFile.getDossierFileId() > 0) {
+				try {
+					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
+					DLFileVersion dlFileVersion = DLFileVersionLocalServiceUtil
+							.getLatestFileVersion(fileEntry.getFileEntryId(), true);
 
-        if (dossierFile.getDossierFileId() > 0) {
-            try {
-                FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
-                    dossierFile.getFileEntryId());
-                DLFileVersion dlFileVersion =
-                    DLFileVersionLocalServiceUtil.getLatestFileVersion(
-                        fileEntry.getFileEntryId(), true);
+					fileType = dlFileVersion.getExtension();
+					fileUrl = dlFileVersion.getTreePath();
 
-                fileType = dlFileVersion.getExtension();
-                fileUrl = dlFileVersion.getTreePath();
-                 
-            }
-            catch (Exception e) {	
-            	e.printStackTrace();
-            }
-        }
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
 		JSONObject obj = JSONFactoryUtil.createJSONObject();
 		JSONArray arr = JSONFactoryUtil.createJSONArray();
-		
-		if(dossierFile != null){
+
+		if (dossierFile != null) {
 			JSONObject item = JSONFactoryUtil.createJSONObject();
 			obj.put("jobposTitle", "");
 			obj.put("briefNote", "");
-			
+
 			item.put("referenceUid", dossierFile.getReferenceUid());
 			item.put("fileType", fileType);
 			item.put("fileUrl", fileUrl);
 			item.put("displayName", dossierFile.getDisplayName());
 			item.put("status", "");
 			arr.put(item);
-			
+
 			obj.put("dossierFiles", arr);
 		}
-		
-		if(paymentFile != null){
+
+		if (paymentFile != null) {
 			JSONObject item = JSONFactoryUtil.createJSONObject();
 			obj.put("jobposTitle", "");
 			obj.put("briefNote", "");
-			
+
 			item.put("referenceUid", paymentFile.getReferenceUid());
 			item.put("fileType", fileType);
 			item.put("fileUrl", fileUrl);
@@ -63,25 +62,24 @@ public class DossierLogUtils {
 			item.put("paymentRequestDate", paymentFile.getCreateDate());
 			item.put("paymentStatus", paymentFile.getPaymentStatus());
 			arr.put(item);
-			
+
 			obj.put("dossierFiles", arr);
 		}
-		
-		if(dossier != null){
+
+		if (dossier != null) {
 			JSONObject item = JSONFactoryUtil.createJSONObject();
 			obj.put("jobposTitle", "");
 			obj.put("briefNote", "");
-			
+
 			item.put("referenceUid", dossier.getReferenceUid());
 			item.put("fileType", fileType);
 			item.put("fileUrl", fileUrl);
 			item.put("displayName", "");
 			arr.put(item);
-			
+
 			obj.put("dossierFiles", arr);
 		}
 		return obj.toString();
 	}
-	
-	
+
 }
