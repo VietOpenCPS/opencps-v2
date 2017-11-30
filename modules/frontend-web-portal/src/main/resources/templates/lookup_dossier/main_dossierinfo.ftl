@@ -10,7 +10,7 @@
     <div class="col-sm-12 MB10 PL0">
 		<ul class="ul-default" id="lvDossierResultSearch"></ul>
 		<script type="text/x-kendo-template" id="tempDossierResultSearch">
-			<li class="hover-pointer text-hover-blue">> </i> #:applicantName# - #:dossierId#</li>
+			<li class="itemResult" data-pk="#:dossierId#"><a href="javascript:;" class="hover-pointer text-hover-blue">> </i> #:applicantName# - #:dossierId#</a></li>
 		</script>
 	</div>	
 </div>
@@ -29,7 +29,7 @@
             <div class="panel-body P5 PL15">
                 <ul class="ul-default" id="DossierDetailFile"></ul>
                 <script type="text/x-kendo-template" id="tempDossierDetailFile">
-					# dossierId = dataItem.dossierId #
+					# dossierId = idDossierDetail#
                     <li><a href="${api.server}/dossiers/#:dossierId#/files/#:referenceUid#"> <span><i class="fa fa-download"></i></span> <span class="ML10">#:displayName#</span> </a></li>
                 </script>
             </div>
@@ -45,13 +45,13 @@
                 <ul class="ul-default mimic-table" id="DossierDetailLog"></ul>
                 <script type="text/x-kendo-template" id="tempDossierDetailLog">
                     <li class="clearfix eq-height-lg P0">
-                    	<div class="orderNo col-sm-1 text-center center-all row-blue"></div>
-                        <div class="col-sm-11 M0 P10">
+                    	<div class="orderNo col-sm-0 text-center center-all row-blue P15"></div>
+                        <div class="col-sm-12 M0 P10">
                             <span class="text-bold">#:author# </span><span class="text-light-gray">( #:payload.jobposTitle# ) </span><span class="text-light-blue">#:payload.briefNote#</span><br>
                             <span class="text-light-gray">#:createDate#</span><br>
                             <span>#:content#</span><br>
                             #
-					        	dossierId = dataItem.dossierId;
+					        	dossierId = idDossierDetail;
 					        	$.each(payload.dossierFiles, function(index, file) {
 					        		if (file.fileType == "docx") {#
 					        			<span><img src="images/word.png" alt=""> <a href="${api.server}#:file.fileUrl#">#:file.displayName#</a></span><br>
@@ -70,13 +70,14 @@
 </div>
 <script type="text/javascript">
 	$(function(){
-		$("#input_search_dossierinfo").val(${keyword});
+		$("#input_search_dossierinfo").val("${(keyword)!}");
 		$("#detailView2").hide();
 		// dataSource thông tin hồ sơ cơ bản
 		var dataSourceDossierResultSearch = new kendo.data.DataSource({
 			transport: {
 			    read: function (options) {
 			        $.ajax({
+			        	// url: "http://localhost:3000/dossiers",
 			            url: "${api.server}/dossiers",
 			            dataType: "json",
 			            type: 'GET',
@@ -88,7 +89,8 @@
 							req.setRequestHeader('groupId', ${groupId});
 						},
 			            success: function (result) {
-			            	options.success(result)
+			            	options.success(result);
+			            	loadDetail();
 			                if (result.data) {
 			                	var NoItem = result.data.length;
 				            	if (NoItem == 1) {
@@ -119,17 +121,6 @@
 			template : kendo.template($("#tempDossierResultSearch").html()),
 			navigatable: true,
 			selectable: true,
-			change: function() {
-	        	var index = this.select().index();
-	               dataItem = this.dataSource.view()[index];
-	            $("#detailView").show();
-	           	$("#detailView").load("${ajax.dossierinfo}",
-	               	function(success){
-	               		pullDataDetail(dataItem.dossierId);
-	               	}
-	           	);
-	           	$("#detailView2").hide()
-	        },
 	        autoBind: false
 		});
 
@@ -140,8 +131,8 @@
 			} else{
 				dataSourceDossierResultSearch.read({keyword : paraValue})
 			}
-		}
-		refreshData()
+		};
+		refreshData();
 		$("#input_search_dossierinfo").keyup(
 			function(){
 				$("#lvDossierResultSearch").show();
@@ -156,7 +147,7 @@
 			transport : {
 				read : function(options){
 					$.ajax({
-						url : "${api.server}/dossiers",
+						url : "${api.server}/dossiers?status=done",
 						dataType : "json",
 						type : "GET",
 						headers : {"groupId": ${groupId}},
@@ -172,16 +163,16 @@
 					});
 				}
 			},
-			pageSize : 8,
+			pageSize : 10,
 			schema : {
 				total : "total",
 				data : "data",
 				model : {
-					id : "id"
+					id : "dossierId"
 				}
 			}
 		});
-		$("#lvDossierResult").kendoListView({
+		$("#listDossierResult").kendoListView({
 			dataSource : dataSourceDossierResult,
 			template : kendo.template($("#tempDossierResult").html()),
 			navigatable: true,
@@ -201,19 +192,36 @@
 	                	)
 	                },
 	        dataBound: function(e) {
-	        	if(dataSourceDossierResult.total() == 1){
-	        		var listView = e.sender;
-	            	var firstItem = listView.element.children().first();
-	            	listView.select(firstItem);
-	            	$("#detailView").show();
-	        	}
+	        	// if(dataSourceDossierResult.total() == 1){
+	        	// 	var listView = e.sender;
+	         //    	var firstItem = listView.element.children().first();
+	         //    	listView.select(firstItem);
+	         //    	$("#detailView").show();
+	        	// }
 	        }
 		});
 		$("#pagerDossirResult").kendoPager({
 			dataSource : dataSourceDossierResult,
 			info : false,
 			buttonCount: 5
-		})
+		});
+		var loadDetail = function(){
+			$(".itemResult").click(function(){
+				var dosId = $(this).attr("data-pk");
+				$(".itemResult").css("pointer-events","auto");
+				$(".itemResult").removeClass("text-light-blue");
+				$(this).css("pointer-events","none");
+				$(this).addClass("text-light-blue");
+				$("#detailView").show();
+	           	$("#detailView").load("${ajax.dossierinfo}",
+	               	function(success){
+	               		console.log(dosId);
+	               		pullDataDetail(dosId);
+	               	}
+	           	);
+	           	$("#detailView2").hide()
+			})
+		}
 	});
 </script>
 

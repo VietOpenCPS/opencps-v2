@@ -7,7 +7,7 @@
 		<span>HỒ SƠ ĐÃ CÓ KẾT QUẢ</span>
 	</div>
 	<div class="col-sm-12 P0">
-		<ul class="ul-default" id="lvDossierResult"></ul>
+		<ul class="ul-default" id="listDossierResult"></ul>
 		<!-- Template listview -->
 		<script type="text/x-kendo-template" id="tempDossierResult">
 			<li class="PL15 item-listview hover-pointer text-hover-blue align-middle-lg">#:applicantName# - #:dossierId#</li>

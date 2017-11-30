@@ -38,6 +38,7 @@
 
 		manageDossier.route("/(:id)", function(id) {
 			$("#mainType1").show();
+			$(".filterField").show();
 			$("#mainType2").hide();
 			layout.showIn("#main_section", viewMainList);       
 			dataSourceProfile.read({

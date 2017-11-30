@@ -46,8 +46,8 @@
 	</div>
 </div>
 <script>
+    var idDossierDetail;
 	var pullDataDetail= function(id){
-        console.log(id);
         $.ajax({
             url : "${api.server}/dossiers/"+id,
             dataType : "json",
@@ -57,6 +57,7 @@
                         req.setRequestHeader('groupId', ${groupId});
                     },
             success : function(result){
+                idDossierDetail = id;
                 var viewModel = kendo.observable({
 	                applicantName: result.applicantName,
                     serviceName: result.serviceName,
@@ -67,8 +68,9 @@
                     dossierStatusText: result.dossierStatusText
                 });
                 kendo.bind($("#DossiersDetailInfo"), viewModel);
+                $(".panel").css("border-radius","0");
             },
-            error : function(xhr){
+            error : function(result){
 
             }
         });
@@ -78,7 +80,7 @@
         transport: {
             read: function (options) {
                 $.ajax({
-                    url: "${api.server}/dossiers/"+dataItem.dossierId+"/files",
+                    url: "${api.server}/dossiers/"+idDossierDetail+"/files",
                     dataType: "json",
                     type: 'GET',
                     headers : {"groupId": ${groupId}},
@@ -90,8 +92,10 @@
                     },
                     success: function (result) {
                         options.success(result);
+                        $(".panel").css("border-radius","0")
                     },
-                    error : function(xhr){
+                    error : function(result){
+                        options.error(result);
                         $("#DossierDetailFile").html("<span>Không có dữ liệu</span>")
                     }
                 });
@@ -106,8 +110,8 @@
         transport: {
             read: function (options) {
                 $.ajax({
-                    // url: "${api.server}/dossiers/"+dataItem.dossierId+"/logs",
-                    url:"http://localhost:3000/dossierlogs",
+                    // url: "${api.server}/dossiers/"+idDossierDetail+"/logs",
+                    url:"http://localhost:3000/logs",
                     dataType: "json",
                     type: 'GET',
                     headers : {"groupId": ${groupId}},
@@ -119,14 +123,17 @@
                     },
                     success: function (result) {
                         options.success(result);
+                        $(".panel").css("border-radius","0");
+                        $(".panel-heading").css("border","0");
                         var index = 0;
                         $("#DossierDetailLog .orderNo").each(function(){
                             index+=1;
                             $(this).html(index) 
                         })
                     },
-                    error : function(xhr){
-                        $("#DossierDetailLog").html("<span>Không có dữ liệu</span>")
+                    error : function(result){
+                        options.error(result);
+                        $("#DossierDetailLog").html("<span class='ML10'>Không có dữ liệu</span>")
                     }
                 })
             }
