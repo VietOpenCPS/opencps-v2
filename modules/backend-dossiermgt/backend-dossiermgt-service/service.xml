@@ -790,6 +790,12 @@
 			<finder-column name="preStepCode" />
 			<finder-column name="autoEvent" />
 		</finder>
+		
+		<finder return-type="ProcessAction" name="SPID_AC">
+			<finder-column name="serviceProcessId" />
+			<finder-column name="actionCode" />
+		</finder>
+		
 
 	</entity>
 
@@ -837,6 +843,10 @@
 			<finder-column name="dossierId"/>
 			<finder-column name="actionCode"/>
 		</finder>
+		<finder return-type="DossierAction" name="DID_UID">
+			<finder-column name="dossierId" />
+			<finder-column name="userId" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DossierActionUser"
@@ -847,6 +857,11 @@
 		<column name="moderator" type="int" />
 		<column name="assigned" type="boolean" />
 		<column name="visited" type="boolean" />
+		
+		<finder return-type="Collection" name="DID">
+			<finder-column name="dossierActionId" />
+		</finder>
+		
 	</entity>
 
 	<entity local-service="true" name="DossierActionSync"
@@ -869,6 +884,9 @@
 		<column name="actionCode" type="String"/>
 		<column name="actionUser" type="String"/>
 		<column name="actionNote" type="String"/>
+		<finder return-type="Collection" name="DID">
+			<finder-column name="dossierActionId" />
+		</finder>
 
 	</entity>
 	

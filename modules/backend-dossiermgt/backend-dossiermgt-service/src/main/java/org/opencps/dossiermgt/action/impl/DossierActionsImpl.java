@@ -15,6 +15,7 @@ import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -23,6 +24,7 @@ import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
@@ -403,7 +405,13 @@ public class DossierActionsImpl implements DossierActions {
 	@Override
 	public JSONObject getContacts(long groupId, long dossierId, String referenceUid) throws PortalException {
 		// TODO Auto-generated method stub
-		return null;
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		// get DossierAction
+		DossierAction dossierAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0);
+		long dossierActionId = dossierAction.getDossierActionId();
+		List<DossierActionUser> listUser = DossierActionUserLocalServiceUtil.getListUser(dossierActionId);
+		result.put("listUser", listUser);
+		return result;
 	}
 
 	protected long getNextActionId(long groupId, long dossierId, String refId, ProcessAction currentAction) {
