@@ -371,6 +371,7 @@
 			filterKey: modelPanel.eventLookup,
 			changePageSize: function(){
 				dataSourceProfile.pageSize(parseInt($("#itemPpage").val()));
+				$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"})
 			},
 			loadDossierDetail:function(e){
 				e.preventDefault();
