@@ -63,7 +63,7 @@ public class DossierLogUtils {
 			item.put("paymentStatus", paymentFile.getPaymentStatus());
 			arr.put(item);
 
-			obj.put("dossierFiles", arr);
+			obj.put("paymentFile", arr);
 		}
 
 		if (dossier != null) {
@@ -72,12 +72,10 @@ public class DossierLogUtils {
 			obj.put("briefNote", "");
 
 			item.put("referenceUid", dossier.getReferenceUid());
-			item.put("fileType", fileType);
-			item.put("fileUrl", fileUrl);
 			item.put("displayName", "");
 			arr.put(item);
 
-			obj.put("dossierFiles", arr);
+			obj.put("dossier", arr);
 		}
 		return obj.toString();
 	}
