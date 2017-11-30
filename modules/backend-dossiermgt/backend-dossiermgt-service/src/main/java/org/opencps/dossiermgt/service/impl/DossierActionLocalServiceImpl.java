@@ -14,8 +14,6 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -48,6 +46,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the dossier action local service.
@@ -205,6 +205,11 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	public DossierAction getByNextActionId(long dossierId, long nextActionId) {
 		return dossierActionPersistence.fetchByDID_NACTID(dossierId, nextActionId);
 	}
+		
+	public DossierAction getDossierActionById(long dossierId, long userId) {
+		return dossierActionPersistence.fetchByDID_UID(dossierId, userId);
+	}
+	
 	
 	public DossierAction getDossierActionbyDossierIdandActionCode(long dossierId, String actionCode){
 		return dossierActionPersistence.fetchByDID_ACTC(dossierId, actionCode);
@@ -282,7 +287,6 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String secetKey = GetterUtil.getString(params.get("secetKey"));
-
 		Indexer<DossierAction> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierAction.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
