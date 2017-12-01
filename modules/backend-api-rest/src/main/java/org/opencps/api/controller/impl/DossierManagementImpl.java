@@ -231,6 +231,10 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getContactEmail(), input.getDossierTemplateNo(), password, 0, StringPool.BLANK,
 					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, online, process.getDirectNotification(),
 					input.getApplicantNote(), serviceContext);
+			
+			if (Validator.isNull(dossier)) {
+				throw new NotFoundException("Cant add DOSSIER");
+			}
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier);
 
