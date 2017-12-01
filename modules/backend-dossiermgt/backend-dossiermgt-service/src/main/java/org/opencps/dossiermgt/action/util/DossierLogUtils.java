@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.action.util;
 
+import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.PaymentFile;
@@ -70,12 +71,21 @@ public class DossierLogUtils {
 		}
 
 		if (Validator.isNotNull(dossier)) {
+			if (dossier.getDossierStatus().contentEquals(DossierStatusConstants.WAITING)) {
+				obj.put("jobposTitle", dossier.getUserId() + ": Request Addition Dossier");
+			} else if (dossier.getCancellingDate() != null && dossier.getSubmitting() == true) {
+				obj.put("jobposTitle", dossier.getUserId() + ": Request Delete Dossier");
+			} else if (dossier.getCorrecttingDate() != null && dossier.getSubmitting() == true) {
+				obj.put("jobposTitle", dossier.getUserId() + ": Request Correctting Dossier");
+			} else {
+				obj.put("jobposTitle", dossier.getUserId() + ":Create Dossier");
+			}
+			
+			obj.put("briefNote", dossier.getBriefNote());
+
 			JSONObject item = JSONFactoryUtil.createJSONObject();
-			obj.put("jobposTitle", "");
-			obj.put("briefNote", "");
 
 			item.put("referenceUid", dossier.getReferenceUid());
-			item.put("displayName", "");
 			arr.put(item);
 
 			obj.put("dossier", arr);
