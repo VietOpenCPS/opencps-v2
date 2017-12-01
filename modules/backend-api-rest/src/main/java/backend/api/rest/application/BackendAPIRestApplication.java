@@ -40,12 +40,15 @@ import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.liferay.portal.kernel.service.LayoutLocalService;
+
 @ApplicationPath("/v2")
 @Component(immediate = true, service = Application.class)
 public class BackendAPIRestApplication extends Application {
 
 	public Set<Object> getSingletons() {
 		Set<Object> singletons = new HashSet<Object>();
+		
 		
 		// add REST endpoints (resources)
 		singletons.add(new ApplicantManagementImpl());
