@@ -16,16 +16,11 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import org.opencps.api.dossierfile.model.DossierFileModel;
-import org.opencps.api.dossierfile.model.DossierFileResultsModel;
 import org.opencps.api.dossierlog.model.DossierLogModel;
 import org.opencps.api.dossierlog.model.DossierLogResultsModel;
-import org.opencps.api.dossierlog.model.DossierLogSearchIdModel;
 import org.opencps.api.dossierlog.model.DossierLogSearchIdResultsModel;
 import org.opencps.api.dossierlog.model.DossierLogSearchModel;
-import org.opencps.api.serviceinfo.model.StatisticsLevelResultsModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.model.Company;

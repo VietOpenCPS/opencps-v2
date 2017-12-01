@@ -78,7 +78,7 @@ public class DossierLogUtils {
 			} else if (dossier.getCorrecttingDate() != null && dossier.getSubmitting() == true) {
 				obj.put("jobposTitle", dossier.getUserId() + ": Request Correctting Dossier");
 			} else {
-				obj.put("jobposTitle", dossier.getUserId() + ":Create Dossier");
+				obj.put("jobposTitle", dossier.getUserId() + ": Create Dossier");
 			}
 			
 			obj.put("briefNote", dossier.getBriefNote());
