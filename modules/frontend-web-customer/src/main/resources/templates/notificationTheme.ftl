@@ -26,7 +26,7 @@
     #
         var title = "Đánh dấu chưa đọc";    
         var bgBlue = "";
-        var iconCheck = "fa fa-circle-o"
+        var iconCheck = "fa fa-circle-o";
         if(read === false) {
             bgBlue = "row-blue";
             title = "Đánh dấu đã đọc";
@@ -72,11 +72,11 @@
             update: function(id){
                 console.log("Run update");
                 $.ajax({
-                    // url: "${api.server}/users/notifications/"+id+"/mark",
-                    url:"http://localhost:3000/notification",
+                    url: "${api.server}/users/notifications/"+id+"/mark",
+                    // url:"http://localhost:3000/notification",
                     dataType:"json",
                     headers : {"groupId": ${groupId}},
-                    type: "GET",
+                    type: "PUT",
                     success:function(result){
                         if (dataSource2 == true) {
                             dataSourceNotify2.read();
@@ -102,7 +102,7 @@
         dataBound: function(e){
             if(e.items){
                 $(e.items).each(function(index, value){
-                    if(value.read === false){
+                    if(value.read == false){
                         count+=1
                     }
                 });

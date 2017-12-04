@@ -3,7 +3,7 @@
 </#if>
 <#------------- Phần VIEW --------------->
 	<#-- WRAPPER ELEMENT -->
-	<div id="appManagerDossier"></div>
+	<div id="appManagerDossier" style="font-size:13px"></div>
 
 	<#-- layout template -->
 	<script type="text/x-kendo-template" id="layoutTemplate">
@@ -25,25 +25,25 @@
 				<button class="btn btn-active form-control" id="btn_create_new_dossier" data-bind = "click: load_serviceConfig">Tạo hồ sơ mới</button>
 			</div>
 			<div class="col-sm-12">
-				<ul id="profileStatus" class="ul-default ul-with-left-icon" style="margin-left: 10px;">
-					<li dataPk='new' class='itemStatus PT10' data-bind="click: filterStatus">
-						<i class='fa fa-folder-o' aria-hidden='true'></i>  
+				<ul id="profileStatus" class="ul-default ul-with-left-icon icon-folder">
+					<li dataPk='new' class='itemStatus MT10' data-bind="click: filterStatus">
+						<i class='fa fa-folder icon-left' aria-hidden='true'></i>  
 						<a href='javascript:;' > Hồ sơ mới</a>
 					</li>
 					<li dataPk='receiving' class='itemStatus' data-bind="click: filterStatus">
-						<i class='fa fa-folder-o' aria-hidden='true'></i>  
+						<i class='fa fa-folder icon-left' aria-hidden='true'></i>  
 						<a href='javascript:;' > Hồ sơ đang thực hiện</a>
 					</li> 
 					<li dataPk='waiting' class='itemStatus' data-bind="click: filterStatus">
-						<i class='fa fa-folder-o' aria-hidden='true'></i>  
+						<i class='fa fa-folder icon-left' aria-hidden='true'></i>  
 						<a href='javascript:;' > Hồ sơ chờ bổ sung</a>
 					</li>
 					<li dataPk='paying' class='itemStatus' data-bind="click: filterStatus">
-						<i class='fa fa-folder-o' aria-hidden='true'></i>  
+						<i class='fa fa-folder icon-left' aria-hidden='true'></i>  
 						<a href='javascript:;' > Hồ sơ chờ thanh toán</a>
 					</li>
 					<li dataPk='done' class='itemStatus' data-bind="click: filterStatus">
-						<i class='fa fa-folder-o' aria-hidden='true' ></i>  
+						<i class='fa fa-folder icon-left' aria-hidden='true' ></i>  
 						<a href='javascript:;' > Hồ sơ đã kết thúc</a>
 					</li>
 				</ul>

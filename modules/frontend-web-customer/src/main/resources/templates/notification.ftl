@@ -49,6 +49,9 @@
 </div>
 
 <script type="text/javascript">
+    $(function(){
+        dataSource2 = true;
+    })
     var dataSourceNotify2 = new kendo.data.DataSource({
         transport:{
             read:function(options){
@@ -70,11 +73,11 @@
             update: function(id){
                 console.log("Run update");
                 $.ajax({
-                    // url: "${api.server}/users/notifications/"+id+"/mark",
-                    url:"http://localhost:3000/notification",
+                    url: "${api.server}/users/notifications/"+id+"/mark",
+                    // url:"http://localhost:3000/notification",
                     dataType:"json",
                     headers : {"groupId": ${groupId}},
-                    type: "GET",
+                    type: "PUT",
                     success:function(result){
                         
                     },

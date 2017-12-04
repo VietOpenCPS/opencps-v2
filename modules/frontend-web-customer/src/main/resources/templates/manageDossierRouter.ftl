@@ -20,8 +20,8 @@
 			};
 		    $(".itemStatus").css("pointer-events","auto");
 			$("#profileStatus li").removeClass('active');
-			$("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
-			$('#profileStatus li[dataPk='+dossierItemStatus+']').children("i").removeClass("fa fa-folder-o").addClass("fa fa-folder-open-o");
+			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
+			$('#profileStatus li[dataPk='+dossierItemStatus+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').css("pointer-events","none");
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').addClass('active');
 		});
@@ -32,7 +32,7 @@
 			$("#mainType2").load("${ajax.serviceconfig}",function(result){
 				});
 			$("#profileStatus li").removeClass('active');
-			$("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
+			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 			$(".itemStatus").css("pointer-events","auto");
 		});
 
@@ -50,8 +50,8 @@
 			});
 			$(".itemStatus").css("pointer-events","auto");
 			$("#profileStatus li").removeClass('active');
-			$("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
-			$('#profileStatus li[dataPk='+id+']').children("i").removeClass("fa fa-folder-o").addClass("fa fa-folder-open-o");
+			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
+			$('#profileStatus li[dataPk='+id+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
 			$('#profileStatus li[dataPk='+id+']').css("pointer-events","none");
 			$('#profileStatus li[dataPk='+id+']').addClass('active');
         }); 
@@ -67,7 +67,7 @@
             $('#input_search').val('');
         });
         $("#profileStatus li").removeClass('active');
-        $("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
+        $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
         $(".itemStatus").css("pointer-events","auto");
       });
       manageDossier.route("/taohosomoi/doman", function(){
@@ -81,7 +81,7 @@
             $('#input_search').val('');
         });
         $("#profileStatus li").removeClass('active');
-        $("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
+        $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
         $(".itemStatus").css("pointer-events","auto");
       });
 	</script>

@@ -1,6 +1,6 @@
 <#if (Request)??>
 	<#include "init.ftl">
-</#if>	
+</#if>
 	<#-- main section template -->
 	<script type="text/x-kendo-template" id="mainTemplate">
 		<div id="contentMain" class="row panel M0" style="border: none;box-shadow: none">
@@ -11,8 +11,8 @@
 							<i class="fa fa-file-text"></i>
 						</div>
 						<span class="text-bold" id="statusName" style="text-transform:uppercase;"></span> 
-						<div class="form-group search-icon pull-right MB0 MR10" style="margin-top:3px">
-							<input type="text" class="form-control" id="keyInput" placeholder="Nhập từ khóa" data-bind="events: { keyup: filterKey}">
+						<div class="form-group search-icon pull-right MB0 MR10" style="margin-top:4px">
+							<input type="text" class="form-control" id="keyInput" placeholder="Nhập số hồ sơ, Mã tiếp nhận, Tên hồ sơ" data-bind="events: { keyup: filterKey}" style="width: 290px; height:30px">
 						</div>
 					</div>
 				</div>
@@ -101,7 +101,7 @@
 				</div>
 				<div class="col-sm-12 PL0 PT5 PB10">
 					<div class="row M0">
-						<div class="col-sm-8">
+						<div class="col-sm-9">
 							<p>#:serviceName#</p>
 							<p>
 								<i class="fa fa-university" style="color: \\#84FAFA;" aria-hidden="true"></i> #:govAgencyName#
@@ -140,17 +140,24 @@
 							#}#
 						</div>
 						
-						<div class="col-sm-4 MT10 text-right">
+						<div class="col-sm-3 text-right">
 							<div class="row">
-								<p data-toggle="tooltip" title="Ngày gửi">
-									<i class="fa fa-paper-plane-o" aria-hidden="true"></i> #:submitDate#
-								</p>
-								<p data-toggle="tooltip" title="Ngày tiếp nhận">
-									<i class="fa fa-file-o" aria-hidden="true"></i> #:receiveDate#
-								</p>
-								<p data-toggle="tooltip" title="Ngày hẹn trả">
-									<i class="fa fa-clock-o" aria-hidden="true"></i> #:dueDate#
-								</p>
+								#if(submitDate != ""){#
+									<p data-toggle="tooltip" title="Ngày gửi">
+										<i class="fa fa-paper-plane-o" aria-hidden="true"></i> #:submitDate#
+									</p>
+								#}#
+								#if(receiveDate != ""){#
+									<p data-toggle="tooltip" title="Ngày tiếp nhận">
+										<i class="fa fa-file-o" aria-hidden="true"></i> #:receiveDate#
+									</p>
+								#}#
+								#if(dueDate != ""){#
+									<p data-toggle="tooltip" title="Ngày hẹn trả">
+										<i class="fa fa-clock-o" aria-hidden="true"></i> #:dueDate#
+									</p>
+								#}#
+								
 							</div>
 						</div>
 					</div>
@@ -177,7 +184,7 @@
 						</ul>
 						<div class="clearfix align-middle PL10">
 							<span class="text-light-gray MR20"><i>Có <span id="total_Additional_Requirement" class="red"> </span> yêu cầu</i></span>
-							<span id="pagerCustomer_Additional_Requirement" class="M0 PR5" data-bind="source:dataAddRequest" data-role="pager" data-button-count="1" data-info="false"></span>
+							<span id="pagerCustomer_Additional_Requirement" class="M0 PR5" data-bind="source:dataAddRequest" data-role="pager" data-numeric="false" data-info="false"></span>
 						</div>	
 					</div>
 				</div>
@@ -198,7 +205,7 @@
 						</ul>
 						<div class="clearfix align-middle PL10">
 							<span class="text-light-gray MR20"><i>Có <span id="total_Payment_Request" class="red"> </span> yêu cầu</i></span>
-							<span id="pagerCustomer_Payment_Request" class="M0 PR5" data-bind="source:dataPayRequest" data-button-count="1" data-role="pager" data-info="false"></span>
+							<span id="pagerCustomer_Payment_Request" class="M0 PR5" data-bind="source:dataPayRequest" data-role="pager" data-numeric="false" data-info="false"></span>
 						</div>
 
 					</div> 
@@ -220,7 +227,7 @@
 						</ul>
 						<div class="clearfix align-middle PL10">
 							<span class="text-light-gray MR20"><i>Có <span id="total_result" class="red"> </span> kết quả</i></span>
-							<span id='pagerCustomer_Result_Request' class="M0 PR5" data-bind="source:dataResult" data-role="pager" data-info="false"></span>
+							<span id='pagerCustomer_Result_Request' class="M0 PR5" data-bind="source:dataResult" data-numeric="false" data-role="pager" data-info="false"></span>
 						</div>
 					</div> 
 				</div>
