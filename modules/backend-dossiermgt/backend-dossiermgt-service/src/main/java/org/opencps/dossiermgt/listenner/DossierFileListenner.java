@@ -21,12 +21,12 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 	@Override
 	public void onBeforeCreate(DossierFile model) throws ModelListenerException {
-		System.out.println("Before Created........... ==> " + model.getDossierId());
+		_log.info("Before Created........... ==> " + model.getDossierId());
 	}
 	
 	@Override
 	public void onAfterCreate(DossierFile model) throws ModelListenerException {
-		// TODO Auto-generated method stub
+		_log.info("After Created........... ");
 		String content = "On DossiserFile Created";
 		String notificationType = "File-01";
 		String payload = DossierLogUtils.createPayload(model, null, null);
