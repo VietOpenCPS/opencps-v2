@@ -58,16 +58,16 @@
 							        label="label-info";
 							        break;
 							    case "receiving":
-							        label="label-status-processing";
+							        label="status-processing";
 							        break;
 							    case "waiting":
-							        label="label-status-additional";
+							        label="status-additional";
 							        break;
 							    case "processing":
 							        label="label-info";
 							        break;
 							    case "paying":
-							       	label="label-status-pending-payment";
+							       	label="status-pending-payment";
 							        break;
 							    case "handover":
 							        label="label-info";
@@ -79,10 +79,10 @@
 							        label="label-info";
 							        break;
 						        case "done":
-							        label="label-status-complete";
+							        label="status-complete";
 							        break;
 						        case "cancelled":
-							        label="label-status-cancel";
+							        label="status-cancel";
 							        break;					        
 							    default:
 							        label="label-info";
