@@ -66,8 +66,6 @@
 	});
 	$("#btn-search-dossier").click(function(){
 		var keyword = $("#searchDossierCode").val();
-		dataSourceDossierResult.read({
-			window.location.href="${api.server}/tra-cuu-ho-so?keyword="+keyword+"";
-		});
+		window.location.href="http://v2.opencps.vn/tra-cuu-ho-so?keyword="+keyword+"";
 	});
 </script>

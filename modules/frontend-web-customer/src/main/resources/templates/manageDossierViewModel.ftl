@@ -1,6 +1,6 @@
 <#if (Request)??>
 	<#include "init.ftl">
-</#if>	
+</#if>
 	<script type="text/javascript">
 	// Source for panel list
 		var dataGovAgency = new kendo.data.DataSource({
@@ -295,8 +295,8 @@
 				$(e.currentTarget).addClass("active");
 				$(".itemStatus").css("pointer-events","auto");
 				$(e.currentTarget).css("pointer-events","none");
-				$("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
-				$(e.currentTarget).children("i").removeClass("fa fa-folder-o").addClass("fa fa-folder-open-o");
+				$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
+				$(e.currentTarget).children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
 				$("#keyInput").val("");
 				var id = $(e.currentTarget).attr("dataPk");
 				manageDossier.navigate("/"+id)

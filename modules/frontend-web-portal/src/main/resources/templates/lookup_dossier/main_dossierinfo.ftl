@@ -5,7 +5,7 @@
 	<div class="MB10">
 		<span class="title text-light-blue text-bold">TRA CỨU HỒ SƠ</span>
 	</div>
-	<div class="form-group search-icon col-sm-6 P0 MB10"> <input type="text" class="form-control" id="input_search_dossierinfo" placeholder="Nhập mã hồ sơ / Họ và tên"> </div>
+	<div class="form-group search-icon col-sm-6 P0 MB10"> <input type="text" class="form-control" id="input_search_dossierinfo" oninput="" placeholder="Nhập mã hồ sơ / Họ và tên"> </div>
 	<!--Render listview tìm kiếm theo mã hồ sơ / họ tên-->
     <div class="col-sm-12 MB10 PL0">
 		<ul class="ul-default" id="lvDossierResultSearch"></ul>
@@ -29,7 +29,6 @@
             <div class="panel-body P5 PL15">
                 <ul class="ul-default" id="DossierDetailFile"></ul>
                 <script type="text/x-kendo-template" id="tempDossierDetailFile">
-					# dossierId = idDossierDetail#
                     <li><a href="${api.server}/dossiers/#:dossierId#/files/#:referenceUid#"> <span><i class="fa fa-download"></i></span> <span class="ML10">#:displayName#</span> </a></li>
                 </script>
             </div>
@@ -51,8 +50,8 @@
                             <span class="text-light-gray">#:createDate#</span><br>
                             <span>#:content#</span><br>
                             #
-					        	dossierId = idDossierDetail;
-					        	$.each(payload.dossierFiles, function(index, file) {
+                            if(payload.length > 0){
+								$.each(payload.dossierFiles, function(index, file) {
 					        		if (file.fileType == "docx") {#
 					        			<span><img src="images/word.png" alt=""> <a href="${api.server}#:file.fileUrl#">#:file.displayName#</a></span><br>
 					        		#}
@@ -60,6 +59,7 @@
 						        		<span><img src="images/pdf.png" alt=""> <a href="${api.server}#:file.fileUrl#">#:file.displayName#</a></span><br>
 						        	#}
 						        })
+                            }
 				        	# 
                         </div>
                     </li>
@@ -69,6 +69,7 @@
     </div>
 </div>
 <script type="text/javascript">
+	var dossierId;
 	$(function(){
 		$("#input_search_dossierinfo").val("${(keyword)!}");
 		$("#detailView2").hide();
@@ -85,13 +86,10 @@
 			            data: {
 			            	keyword: options.data.keyword,
 			            },
-			            beforeSend: function(req) {
-							req.setRequestHeader('groupId', ${groupId});
-						},
 			            success: function (result) {
-			            	options.success(result);
-			            	loadDetail();
 			                if (result.data) {
+			                	options.success(result);
+			                	loadDetail();
 			                	var NoItem = result.data.length;
 				            	if (NoItem == 1) {
 				            		$("#detailView").load("${ajax.dossierinfo}",
@@ -112,9 +110,35 @@
 			},
 			schema : {
 				total : "total",
-				data : "data"
+				data : "data",
+				model : {
+					id : "dossierId"
+				}
 			}
 		});
+		
+		var refreshData = function(){
+			var paraValue = $("#input_search_dossierinfo").val();
+			if (paraValue == "") {
+				$("#lvDossierResultSearch").hide();
+			} else{
+				dataSourceDossierResultSearch.read({keyword : paraValue});
+			}
+		};
+		refreshData();
+		$("#input_search_dossierinfo").on("input",	
+			function(){
+				var paraValue = $("#input_search_dossierinfo").val();
+				$("#detailView").hide();
+				$("#detailView2").hide();
+				if (paraValue == "") {
+					$("#lvDossierResultSearch").hide();
+				} else{
+					$("#lvDossierResultSearch").show();
+					dataSourceDossierResultSearch.read({keyword : paraValue});
+				}
+			}
+		);
 		// Listview kết quả tìm kiếm phải
 		$("#lvDossierResultSearch").kendoListView({
 			dataSource : dataSourceDossierResultSearch,
@@ -123,25 +147,6 @@
 			selectable: true,
 	        autoBind: false
 		});
-
-		var refreshData = function(){
-			var paraValue = $("#input_search_dossierinfo").val();
-			if (paraValue == "") {
-				$("#lvDossierResultSearch").html("");
-			} else{
-				dataSourceDossierResultSearch.read({keyword : paraValue})
-			}
-		};
-		refreshData();
-		$("#input_search_dossierinfo").keyup(
-			function(){
-				$("#lvDossierResultSearch").show();
-				$("#detailView").hide();
-				$("#detailView2").hide();
-				refreshData()
-			}
-		);
-
 		// dataSource listview trái
 		var dataSourceDossierResult = new kendo.data.DataSource({
 			transport : {
@@ -151,11 +156,10 @@
 						dataType : "json",
 						type : "GET",
 						headers : {"groupId": ${groupId}},
-						beforeSend: function(req) {
-							req.setRequestHeader('groupId', ${groupId});
-						},
 						success : function(result){
-							options.success(result);
+							if (result.data) {
+								options.success(result);
+							}
 						},
 						error : function(result){
 							options.error(result);
@@ -189,7 +193,8 @@
 		                   	function(success){
 		                   		pullDataDetail(dataItem.dossierId);
 		                   	}
-	                	)
+	                	);
+	                	dossierId = dataItem.dossierId;
 	                },
 	        dataBound: function(e) {
 	        	// if(dataSourceDossierResult.total() == 1){
@@ -203,11 +208,13 @@
 		$("#pagerDossirResult").kendoPager({
 			dataSource : dataSourceDossierResult,
 			info : false,
-			buttonCount: 5
+			selectTemplate: '<li class="k-link"><i class="fa fa-circle" aria-hidden="true"></i></li>',
+			linkTemplate: '<li><a href="\\#" class="k-link" data-#=ns#page="#=idx#"><i class="fa fa-circle" aria-hidden="true"></i></a></li>'
 		});
 		var loadDetail = function(){
 			$(".itemResult").click(function(){
-				var dosId = $(this).attr("data-pk");
+				dossierId = $(this).attr("data-pk");
+				console.log(dossierId);
 				$(".itemResult").css("pointer-events","auto");
 				$(".itemResult").removeClass("text-light-blue");
 				$(this).css("pointer-events","none");
@@ -215,8 +222,7 @@
 				$("#detailView").show();
 	           	$("#detailView").load("${ajax.dossierinfo}",
 	               	function(success){
-	               		console.log(dosId);
-	               		pullDataDetail(dosId);
+	               		pullDataDetail(dossierId)
 	               	}
 	           	);
 	           	$("#detailView2").hide()
