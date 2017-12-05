@@ -10,7 +10,7 @@
 						<div class="background-triangle-big">
 							<i class="fa fa-file-text"></i>
 						</div>
-						<span class="text-bold" id="statusName" style="text-transform:uppercase;"></span> 
+						<span class="text-bold" id="statusName" style="text-transform:uppercase;"></span>
 						<div class="form-group search-icon pull-right MB0 MR10" style="margin-top:4px">
 							<input type="text" class="form-control" id="keyInput" placeholder="Nhập số hồ sơ, Mã tiếp nhận, Tên hồ sơ" data-bind="events: { keyup: filterKey}" style="width: 290px; height:30px">
 						</div>
@@ -45,7 +45,7 @@
 			<div class="row hover-pointer PL15 PR15 itemCustomerDossierList" dataPk="#:id#" data-bind="events:{click: loadDossierDetail}">
 				<div class="row M0">
 					<div class="row-blue align-middle">
-						<div class="order-number">#:counter#</div>
+						<div class="order-number">#:count#</div>
 						<div class="dossier-number" data-toggle="tooltip" title="Mã hồ sơ"><span class="red">\\#</span> #:dossierId#</div>
 						<div class="receive-number"><span class="text-normal">Mã tiếp nhận:</span> #:dossierNo#</div>
 						#
@@ -99,7 +99,7 @@
 						<span class="label #:label# MLA">#:status#</span> 
 					</div>
 				</div>
-				<div class="col-sm-12 PL0 PT5 PB10">
+				<div class="col-sm-12 PL0 PT5">
 					<div class="row M0">
 						<div class="col-sm-9">
 							<p>#:serviceName#</p>
@@ -173,7 +173,7 @@
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Yêu cầu bổ sung</span>
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#additionalRequirement">
-							<i class="glyphicon glyphicon-chevron-up" ></i>
+							<i class="glyphicon glyphicon-chevron-up"></i>
 							<i class="glyphicon glyphicon-chevron-down" style="display: none"></i>
 						</span>
 						<span class="pull-right MR10 text-light-gray hover-pointer" id="sort_modified" title="Sắp xếp theo ngày" data-button-count="1" data-bind="events:{click: sortDate}"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -183,7 +183,7 @@
 							
 						</ul>
 						<div class="clearfix align-middle PL10">
-							<span class="text-light-gray MR20"><i>Có <span id="total_Additional_Requirement" class="red"> </span> yêu cầu</i></span>
+							<span class="text-light-gray MR80"><i>Có <span id="total_Additional_Requirement" class="red"> </span> yêu cầu</i></span>
 							<span id="pagerCustomer_Additional_Requirement" class="M0 PR5" data-bind="source:dataAddRequest" data-role="pager" data-numeric="false" data-info="false"></span>
 						</div>	
 					</div>
@@ -204,7 +204,7 @@
 							
 						</ul>
 						<div class="clearfix align-middle PL10">
-							<span class="text-light-gray MR20"><i>Có <span id="total_Payment_Request" class="red"> </span> yêu cầu</i></span>
+							<span class="text-light-gray MR80"><i>Có <span id="total_Payment_Request" class="red"> </span> yêu cầu</i></span>
 							<span id="pagerCustomer_Payment_Request" class="M0 PR5" data-bind="source:dataPayRequest" data-role="pager" data-numeric="false" data-info="false"></span>
 						</div>
 
@@ -213,20 +213,20 @@
 			</div>
 			<div class="col-sm-12" id="customer_result_request">
 				<div class="panel panel-main" id="sideItemResult" style="display: none"> 
-					<div class="panel-heading row-header"> 
+					<div class="panel-heading row-header">
 						<span class="panel-title">Trả kết quả</span> 
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#resultRequest"> 
 							<i class="icon_collapse glyphicon glyphicon-chevron-up"></i>
 							<i class="glyphicon glyphicon-chevron-down" style="display: none"></i>
 						</span> 
 						<span class="pull-right MR10 text-light-gray hover-pointer" id="sort_modified2" title="Sắp xếp theo ngày" data-bind="events:{click: sortDate}"><i class="fa fa-calendar" aria-hidden="true"></i></span>
-					</div> 
+					</div>
 					<div class="panel-body P0 collapse in" id="resultRequest">	
 						<ul class="ul-with-border" data-role="listview" data-bind="source: dataResult" data-auto-bind="false" data-template="result_Request_Template" id="wrapResult">
 							
 						</ul>
 						<div class="clearfix align-middle PL10">
-							<span class="text-light-gray MR20"><i>Có <span id="total_result" class="red"> </span> kết quả</i></span>
+							<span class="text-light-gray MR80"><i>Có <span id="total_result" class="red"> </span> kết quả</i></span>
 							<span id='pagerCustomer_Result_Request' class="M0 PR5" data-bind="source:dataResult" data-numeric="false" data-role="pager" data-info="false"></span>
 						</div>
 					</div> 

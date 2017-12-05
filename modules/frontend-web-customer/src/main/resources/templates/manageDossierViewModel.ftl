@@ -76,10 +76,14 @@
 							month: options.data.month
 						},
 						success:function(result){
-							options.success(result);
 							if (result.total!=0) {
-								dataSourceProfile.page(1)
-							}
+								// dataSourceProfile.page(1);
+								//
+								$(result.data).each(function(index, value){
+									value.count = index + 1;
+								});
+							};
+							options.success(result);
 							loadProfile();
 							loadAddRes();
 							copyProfile();
@@ -243,6 +247,7 @@
 		var dataYear = new kendo.data.DataSource({
 			data: arrYear
 		});
+		//
 		var arrMonth = [];
 		for (var i = 1; i <= 12; i++) {
 		    arrMonth.push({month: "Tháng "+i, valMonth: i})

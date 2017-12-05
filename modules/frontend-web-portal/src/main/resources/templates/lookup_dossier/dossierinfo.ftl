@@ -126,7 +126,6 @@
                         },
                         error : function(result){
                             options.error(result);
-                            $("#DossierDetailLog").html("<span class='ML10'>Không có dữ liệu</span>")
                         }
                     })
                 }
