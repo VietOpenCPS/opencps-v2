@@ -590,17 +590,23 @@ public class DossierActionsImpl implements DossierActions {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
 		Date appIdDate = null;
+		
+		Dossier dossier = null;
 
 		try {
 			appIdDate = sdf.parse(applicantIdDate);
-		} catch (Exception e) {
+			
+			dossier = DossierLocalServiceUtil.initDossier(groupId, dossierId, referenceUid, counter, serviceCode, serviceName,
+					govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate, address,
+					cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
+					contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode, postalCityName,
+					postalTelNo, online, notification, applicantNote, context);
 
+		} catch (Exception e) {
+			_log.error(e);
 		}
-		return DossierLocalServiceUtil.initDossier(groupId, dossierId, referenceUid, counter, serviceCode, serviceName,
-				govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate, address,
-				cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
-				contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode, postalCityName,
-				postalTelNo, online, notification, applicantNote, context);
+		
+		return dossier;
 	}
 
 	@Override

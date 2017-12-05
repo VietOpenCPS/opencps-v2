@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
 
 @Component(immediate = true, service = ModelListener.class)
 public class DossierListenner extends BaseModelListener<Dossier> {
@@ -39,10 +38,10 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
 	public void onAfterUpdate(Dossier model) throws ModelListenerException {
-
+		_log.info("Dossiser UpDate.....");
 		// The case submitting
 		// If submitting = true then update DossierSync
 		int method = 0;
@@ -60,9 +59,24 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
 		serviceContext.setUserId(model.getUserId());
+		
+		// The case waiting
+		if(model.getDossierStatus().contentEquals(DossierStatusConstants.WAITING)){
+			_log.info("Request Dossiser Additional.....");
+			String content = "On Dossiser Additional";
+			String notificationType = "DOSSIER-01";
+			String payload = DossierLogUtils.createPayload(null, null, model);
+			try {
+				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(), content,
+						notificationType, payload, serviceContext);
+			} catch (PortalException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		// The case canceling
-		if(model.getCancellingDate() != null){
-			_log.info("Dossiser Canceling......");
+		if(model.getCancellingDate() != null && model.getSubmitting() == true){
+			_log.info("Request Dossiser Canceling......");
 			String content = "On Dossiser Canceling";
 			String notificationType = "DOSSIER-05";
 			String payload = DossierLogUtils.createPayload(null, null, model);
@@ -76,9 +90,9 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 		
 		// The case correcting
 		if(model.getCorrecttingDate() != null){
-			_log.info("Dossiser Correcting......");
+			_log.info("Request Dossiser Correcting......");
 			String content = "On Dossiser Correcting";
-			String notificationType = "";
+			String notificationType = "DOSSIER-06";
 			String payload = DossierLogUtils.createPayload(null, null, model);
 			try {
 				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(), content,
@@ -89,7 +103,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 		}
 		
 		//The case Additional
-		if(model.getDossierStatus().contentEquals(DossierStatusConstants.WAITING)){
+		if(modelBeforeUpdate.getDossierStatus().contentEquals(DossierStatusConstants.WAITING)){
 			_log.info("Dossiser Additional.....");
 			String content = "On Dossiser Additional";
 			String notificationType = "DOSSIER-04";

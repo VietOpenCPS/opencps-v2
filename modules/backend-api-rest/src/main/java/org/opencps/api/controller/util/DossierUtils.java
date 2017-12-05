@@ -183,7 +183,7 @@ public class DossierUtils {
 
 		model.setVisited(getVisisted(input.getPrimaryKey()));
 		model.setPending(getPendding(input.getPrimaryKey()));
-		model.setApplicantNote(getApplicationNote(input.getPrimaryKey()));
+		model.setApplicantNote(input.getApplicantNote());
 		model.setNotification(Boolean.toString(input.getNotification()));
 		model.setOnline(Boolean.toString(input.getOnline()));
 

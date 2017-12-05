@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.action.util;
 
+import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.PaymentFile;
@@ -11,13 +12,18 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 public class DossierLogUtils {
 	public static String createPayload(DossierFile dossierFile, PaymentFile paymentFile, Dossier dossier) {
-		String fileType = "";
-		String fileUrl = "";
-		if (dossierFile != null){
-			if (dossierFile.getDossierFileId() > 0) {
+		String fileType = StringPool.BLANK;
+		String fileUrl = StringPool.BLANK;
+		JSONObject obj = JSONFactoryUtil.createJSONObject();
+		JSONArray arr = JSONFactoryUtil.createJSONArray();
+
+		if (Validator.isNotNull(dossierFile)) {
+			if (dossierFile.getDossierFileId() > 0 && dossierFile.getFileEntryId() > 0) {
 				try {
 					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
 					DLFileVersion dlFileVersion = DLFileVersionLocalServiceUtil
@@ -30,14 +36,9 @@ public class DossierLogUtils {
 					e.printStackTrace();
 				}
 			}
-		}
-		
-		JSONObject obj = JSONFactoryUtil.createJSONObject();
-		JSONArray arr = JSONFactoryUtil.createJSONArray();
-
-		if (dossierFile != null) {
+			
 			JSONObject item = JSONFactoryUtil.createJSONObject();
-			obj.put("jobposTitle", "");
+			obj.put("jobposTitle", dossierFile.getUserId() + ": DossierFile Create");
 			obj.put("briefNote", "");
 
 			item.put("referenceUid", dossierFile.getReferenceUid());
@@ -50,9 +51,9 @@ public class DossierLogUtils {
 			obj.put("dossierFiles", arr);
 		}
 
-		if (paymentFile != null) {
+		if (Validator.isNotNull(paymentFile)) {
 			JSONObject item = JSONFactoryUtil.createJSONObject();
-			obj.put("jobposTitle", "");
+			obj.put("jobposTitle", paymentFile.getUserId()+ ": PaymentFile Create" );
 			obj.put("briefNote", "");
 
 			item.put("referenceUid", paymentFile.getReferenceUid());
@@ -66,13 +67,22 @@ public class DossierLogUtils {
 			obj.put("paymentFile", arr);
 		}
 
-		if (dossier != null) {
+		if (Validator.isNotNull(dossier)) {
+			if (dossier.getDossierStatus().contentEquals(DossierStatusConstants.WAITING)) {
+				obj.put("jobposTitle", dossier.getUserId() + ": Request Addition Dossier");
+			} else if (dossier.getCancellingDate() != null && dossier.getSubmitting() == true) {
+				obj.put("jobposTitle", dossier.getUserId() + ": Request Delete Dossier");
+			} else if (dossier.getCorrecttingDate() != null && dossier.getSubmitting() == true) {
+				obj.put("jobposTitle", dossier.getUserId() + ": Request Correctting Dossier");
+			} else {
+				obj.put("jobposTitle", dossier.getUserId() + ": Create Dossier");
+			}
+			
+			obj.put("briefNote", dossier.getBriefNote());
+
 			JSONObject item = JSONFactoryUtil.createJSONObject();
-			obj.put("jobposTitle", "");
-			obj.put("briefNote", "");
 
 			item.put("referenceUid", dossier.getReferenceUid());
-			item.put("displayName", "");
 			arr.put(item);
 
 			obj.put("dossier", arr);
