@@ -102,8 +102,9 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 			String itemNameEN, String itemDescription, long parentItemId, String sibling, int level, String metaData,
 			ServiceContext serviceContext) throws DuplicateCategoryException, UnauthenticationException,
 			UnauthorizationException, NoSuchUserException, NoSuchDictItemException, SystemException {
-
-		DictItem dictColl = dictItemPersistence.fetchByF_dictItemCode(itemCode, groupId);
+		//KhoaVD sua tam cho nay
+		//DictItem dictColl = dictItemPersistence.fetchByF_dictItemCode(itemCode, groupId);
+		DictItem dictColl = dictItemPersistence.fetchByF_dictItemCode_dictCollectionId(itemCode, dictCollectionId, groupId);
 
 		if (Validator.isNotNull(dictColl)) {
 
@@ -417,8 +418,9 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		User user = userPersistence.findByPrimaryKey(userId);
 
 		DictItem dictItem = dictItemPersistence.fetchByPrimaryKey(dictItemId);
-
-		DictItem dictColl = dictItemPersistence.fetchByF_dictItemCode(itemCode, dictItem.getGroupId());
+		//Khoavd tam sua
+		//DictItem dictColl = dictItemPersistence.fetchByF_dictItemCode(itemCode, dictItem.getGroupId());
+		DictItem dictColl = dictItemPersistence.fetchByF_dictItemCode_dictCollectionId(itemCode, dictCollectionId,  dictItem.getGroupId());
 
 		if (Validator.isNotNull(dictColl) && dictColl.getDictItemId() != dictItemId) {
 
