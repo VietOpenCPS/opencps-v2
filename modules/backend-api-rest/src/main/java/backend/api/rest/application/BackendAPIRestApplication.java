@@ -36,6 +36,7 @@ import org.opencps.api.controller.impl.ServiceProcessManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
+import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -71,7 +72,9 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new JobposManagementImpl());
 		singletons.add(new UserManagementImpl());
 		singletons.add(new EmployeeManagementImpl());
-
+		singletons.add(new DossierStatisticImpl());
+		
+		
 		// add service provider
 		singletons.add(_serviceContextProvider);
 		singletons.add(_companyContextProvider);

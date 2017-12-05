@@ -11,14 +11,11 @@ import javax.ws.rs.core.Response;
 import org.opencps.api.controller.DossierStatisticManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DossierStatisticUtils;
-import org.opencps.api.controller.util.ServiceInfoUtils;
 import org.opencps.api.dossierstatistic.model.DossierStatisticResultsModel;
 import org.opencps.api.dossierstatistic.model.DossierStatisticSearchModel;
-import org.opencps.api.serviceinfo.model.ServiceInfoResultsModel;
-import org.opencps.dossiermgt.action.ServiceInfoActions;
-import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierStatisticActionImpl;
 import org.opencps.dossiermgt.constants.DossierStatisticTerm;
-import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -28,7 +25,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -43,15 +39,9 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 	}
 
 	@Override
-	public Response postAgency(long agencyCd) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Response getDossierStatistic(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierStatisticSearchModel search) {
-		ServiceInfoActions actions = new ServiceInfoActionsImpl();
+		DossierStatisticActionImpl actions = new DossierStatisticActionImpl();
 
 		DossierStatisticResultsModel results = new DossierStatisticResultsModel();
 
@@ -70,7 +60,7 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 
 			Sort[] sorts = new Sort[] {};
 
-			JSONObject jsonData = actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
+			JSONObject jsonData = actions.getDossierStatistic(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, -1, 1, serviceContext);
 
 			results.setTotal(jsonData.getInt("total"));
@@ -87,6 +77,32 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 			error.setDescription("not found!");
 
 			return Response.status(404).entity(error).build();
+		}
+	}
+
+	@Override
+	public Response postAgency(long agencyCd, int year, int month, List<DossierStatisticSearchModel> data) {
+		DossierStatisticActionImpl actions = new DossierStatisticActionImpl();
+		try {
+			DossierStatisticImpl model = new DossierStatisticImpl();
+			for (DossierStatisticSearchModel input : data) {
+				model.setYear(year);
+				model.setMonth(month);
+				model.setReporting(true);
+				model.setRemainingCount(input.getRemainingCount());
+				model.setReceivedCount(input.getReceivedCount());
+				model.setOnlineCount(input.getOnlineCount());
+				model.setUndueCount(input.getUndueCount());
+				model.setOverdueCount(input.getOverdueCount());
+				model.setOntimeCount(input.getOntimeCount());
+				model.setOvertimeCount(input.getOvertimeCount());
+				model.setDomainCode(input.getDomainCode());
+				actions.insertDossierStatistic(model);
+			}
+
+			return Response.status(200).entity("Success").build();
+		} catch (Exception e) {
+			return Response.status(404).entity(e).build();
 		}
 	}
 
