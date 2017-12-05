@@ -499,12 +499,19 @@ public class DictCollectionActions implements DictcollectionInterface {
 		try {
 
 			if (full) {
-
-				DictGroup dictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
+				//Khoavd tam thoi update
+				//DictGroup dictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
+				
+				long dictCollectionId = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId).getPrimaryKey();
+				
+				DictGroup dictGroup = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, dictCollectionId);
 
 				hits = DictItemLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
 				List<Document> list = hits.toList();
+				
+				_log.info(params);
+
 
 				for (Document document : list) {
 
@@ -518,6 +525,8 @@ public class DictCollectionActions implements DictcollectionInterface {
 						selected = Boolean.TRUE.toString();
 
 					}
+					
+					_log.info(document);
 
 					document.addTextSortable(DictItemGroupTerm.SELECTED, selected);
 
@@ -532,7 +541,11 @@ public class DictCollectionActions implements DictcollectionInterface {
 			} else {
 
 				hits = DictItemGroupLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
-
+				
+				for (Document doc : hits.toList()) {
+					_log.info(doc);
+				}
+				
 				result.put("data", hits.toList());
 
 				long total = DictItemGroupLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
