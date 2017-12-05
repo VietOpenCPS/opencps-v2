@@ -195,22 +195,23 @@
 		var formScript = $("textarea#formScript").val();
 		var sampleData = $("textarea#sampleData").val();
 
-		console.log(formScript);
-
 		if(formScript){
-			var formJson = JSON.parse(formScript);
-			var dataJson = JSON.parse(sampleData);
+			
+			try {
 
-			console.log(formJson);
-			console.log(dataJson);
-			$("#dossiertemplate-form-alpaca").alpaca({
-				"data" : dataJson,
-				"schema" : formJson.schema,
-				"options" : formJson.options,
-				"view" : formJson.view
-			});
+				var formJson = eval("(" + formScript + ")");
+				console.log(formJson);
+				$("#dossiertemplate-form-alpaca").empty();
+				$("#dossiertemplate-form-alpaca").alpaca(formJson);
 
-			$("#dossierTemplateFormPreView").modal("show");
+				$("#dossierTemplateFormPreView").modal("show");
+
+			} catch (e) {
+				notification.show({
+					message: "Form lỗi, Vui lòng kiểm tra lạo cú pháp"
+				}, "error");
+
+			}
 		}else { 
 			notification.show({
 				message: "Vui lòng nhập Form Script"
@@ -299,10 +300,16 @@
 				});
 
 				if (upFormscriptSuccess && upFormReportSuccess && upSampleDataSuccess){
+					console.log("PASS!");
+					console.log(dossierTemplateDataPk);
+					
+					$("#dossier_template_part_listview").getKendoListView().dataSource.read({
+						dossierTemplateId: dossierTemplateDataPk
+					});
+					
 					$("#dossiertemplate_part_container").show();
 					$("#dossiertemplate_part_form_container").hide();
-
-					$("#dossier_template_part_listview").data("kendoListView").dataSource.read({dossierTemplateId: dossierTemplateDataPk});
+					
 				} else {
 					notification.show({
 						message: "Xẩy ra lỗi, vui lòng thử lại"
