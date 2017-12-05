@@ -21,8 +21,8 @@
 		dataSourceProfile.read({"status": "new"});
 		$(".itemStatus").css("pointer-events","auto");
 		$("#profileStatus li").removeClass('active');
-		$("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
-		$('#profileStatus li[dataPk=new]').children("i").removeClass("fa fa-folder-o").addClass("fa fa-folder-open-o");
+		$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
+		$('#profileStatus li[dataPk=new]').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
 		$('#profileStatus li[dataPk=new]').css("pointer-events","none");
 		$('#profileStatus li[dataPk=new]').addClass('active');
 	});
@@ -31,11 +31,10 @@
         $(".filterField").hide();
         $("#mainType2").show();
         $("#mainType2").load("${ajax.notification}",function(result){
-        	dataSourceNotify2.read();
-        	dataSource2 = true
+        	// dataSourceNotify2.read();
         });
         $("#profileStatus li").removeClass('active');
-        $("#profileStatus li>i").removeClass("fa fa-folder-open-o").addClass("fa fa-folder-o");
+        $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
         $(".itemStatus").css("pointer-events","auto");
     });
 </script>

@@ -10,7 +10,7 @@
 		<ul class="ul-default" id="listDossierResult"></ul>
 		<!-- Template listview -->
 		<script type="text/x-kendo-template" id="tempDossierResult">
-			<li class="PL15 item-listview hover-pointer text-hover-blue align-middle-lg">#:applicantName# - #:dossierId#</li>
+			<li class="PL15 item-listview hover-pointer text-hover-blue align-middle-lg" dataPk="#:id#">#:applicantName# - #:dossierId#</li>
 		</script>
 	</div>
 	<hr class="col-sm-12 P0 M0 MP15">
