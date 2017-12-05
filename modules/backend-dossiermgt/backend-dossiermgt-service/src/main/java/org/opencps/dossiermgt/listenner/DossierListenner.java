@@ -41,7 +41,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 	
 	@Override
 	public void onAfterUpdate(Dossier model) throws ModelListenerException {
-
+		_log.info("Dossiser UpDate.....");
 		// The case submitting
 		// If submitting = true then update DossierSync
 		int method = 0;

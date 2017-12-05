@@ -19,9 +19,11 @@ public class DossierLogUtils {
 	public static String createPayload(DossierFile dossierFile, PaymentFile paymentFile, Dossier dossier) {
 		String fileType = StringPool.BLANK;
 		String fileUrl = StringPool.BLANK;
+		JSONObject obj = JSONFactoryUtil.createJSONObject();
+		JSONArray arr = JSONFactoryUtil.createJSONArray();
 
 		if (Validator.isNotNull(dossierFile)) {
-			if (dossierFile.getDossierFileId() > 0) {
+			if (dossierFile.getDossierFileId() > 0 && dossierFile.getFileEntryId() > 0) {
 				try {
 					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
 					DLFileVersion dlFileVersion = DLFileVersionLocalServiceUtil
@@ -34,14 +36,9 @@ public class DossierLogUtils {
 					e.printStackTrace();
 				}
 			}
-		}
-
-		JSONObject obj = JSONFactoryUtil.createJSONObject();
-		JSONArray arr = JSONFactoryUtil.createJSONArray();
-
-		if (Validator.isNotNull(dossierFile)) {
+			
 			JSONObject item = JSONFactoryUtil.createJSONObject();
-			obj.put("jobposTitle", "");
+			obj.put("jobposTitle", dossierFile.getUserId() + ": DossierFile Create");
 			obj.put("briefNote", "");
 
 			item.put("referenceUid", dossierFile.getReferenceUid());
@@ -56,7 +53,7 @@ public class DossierLogUtils {
 
 		if (Validator.isNotNull(paymentFile)) {
 			JSONObject item = JSONFactoryUtil.createJSONObject();
-			obj.put("jobposTitle", "");
+			obj.put("jobposTitle", paymentFile.getUserId()+ ": PaymentFile Create" );
 			obj.put("briefNote", "");
 
 			item.put("referenceUid", paymentFile.getReferenceUid());
