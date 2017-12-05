@@ -400,6 +400,19 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		}
 		
+
+		if (Validator.isNotNull(groupCode)) {
+
+			MultiMatchQuery query = new MultiMatchQuery(groupCode);
+
+			query.addFields(DictGroupTerm.GROUP_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+		}
+
+
+		
 /*
 		if (Validator.isNotNull(groupCode)) {
 
