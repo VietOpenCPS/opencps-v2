@@ -1,5 +1,6 @@
 package org.opencps.datamgt.action.impl;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import org.opencps.auth.api.exception.NotFoundException;
@@ -497,12 +499,19 @@ public class DictCollectionActions implements DictcollectionInterface {
 		try {
 
 			if (full) {
-
-				DictGroup dictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
+				//Khoavd tam thoi update
+				//DictGroup dictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
+				
+				long dictCollectionId = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId).getPrimaryKey();
+				
+				DictGroup dictGroup = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, dictCollectionId);
 
 				hits = DictItemLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
 				List<Document> list = hits.toList();
+				
+				_log.info(params);
+
 
 				for (Document document : list) {
 
@@ -516,6 +525,8 @@ public class DictCollectionActions implements DictcollectionInterface {
 						selected = Boolean.TRUE.toString();
 
 					}
+					
+					_log.info(document);
 
 					document.addTextSortable(DictItemGroupTerm.SELECTED, selected);
 
@@ -530,7 +541,11 @@ public class DictCollectionActions implements DictcollectionInterface {
 			} else {
 
 				hits = DictItemGroupLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
-
+				
+				for (Document doc : hits.toList()) {
+					_log.info(doc);
+				}
+				
 				result.put("data", hits.toList());
 
 				long total = DictItemGroupLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
@@ -694,5 +709,57 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 		return dictItem;
 	}
+	
+	public String updateDictItemGroup(
+			long userId, long groupId, long dictItemId, String groupCodes,
+			ServiceContext serviceContext)
+			throws NoSuchUserException, UnauthenticationException,
+			UnauthorizationException, DuplicateCategoryException {
+
+			// Remove all dictItemGroup
+
+			List<String> groupCodeList = new ArrayList<String>();
+
+			List<DictItemGroup> dictItemGroups = new ArrayList<>();
+			try {
+				dictItemGroups = DictItemGroupLocalServiceUtil.findByF_dictItemId(
+					groupId, dictItemId);
+				for (DictItemGroup dictItemGroup : dictItemGroups) {
+					DictItemGroupLocalServiceUtil.deleteDictItemGroup(
+						dictItemGroup.getDictItemGroupId());
+				}
+			}
+			catch (Exception e) {
+				_log.warn(
+					"Can't not get DictItemGroups by groupId, dictItemId " +
+						groupId + "|" + dictItemId);
+			}
+			if (Validator.isNotNull(groupCodes)) {
+				String[] arrGroupCode = StringUtil.split(groupCodes);
+				if (arrGroupCode != null && arrGroupCode.length > 0) {
+					for (int i = 0; i < arrGroupCode.length; i++) {
+						if (Validator.isNotNull(arrGroupCode[i])) {
+							try {
+								DictGroup dictGroup =
+									DictGroupLocalServiceUtil.fetchByF_DictGroupCode(
+										arrGroupCode[i], groupId);
+
+								DictItemGroupLocalServiceUtil.addDictItemGroup(
+									userId, groupId, dictGroup.getDictGroupId(),
+									dictItemId, serviceContext);
+								groupCodeList.add(arrGroupCode[i]);
+							}
+							catch (Exception e) {
+								continue;
+							}
+						}
+
+					}
+				}
+			}
+
+			return StringUtil.merge(groupCodeList);
+		}
+
 
 }

@@ -39,7 +39,7 @@ public class DossierLogActionsImpl implements DossierLogActions {
 	}
 	
 	@Override
-	public JSONObject getDossierLogs(long groupId, int notificationType, Boolean owner,
+	public JSONObject getDossierLogs(long groupId, String notificationType, Boolean owner,
 		 int start, int end, String sort, String order, ServiceContext serviceContext) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();

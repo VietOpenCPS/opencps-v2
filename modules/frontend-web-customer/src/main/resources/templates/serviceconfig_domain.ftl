@@ -30,25 +30,25 @@
 							</a>
 						</div>
 						<div id="#:serviceInfo.serviceCode#" class="accordion-body collapse in">
-							<div class="accordion-inner">
+							<div class="accordion-inner P0">
 								# for (var j = 0; j < serviceInfo.serviceConfigs.length; j++){
 								var serviceConfig = serviceInfo.serviceConfigs[j];
 								#
 								<div class="eq-height">
-									<div class="col-xs-12 col-sm-10 align-middle">
+									<div class="col-xs-12 col-sm-11 align-middle MR100">
 										<a class="link-serviceInfo" data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#:serviceInfo.serviceCode#" href="\\#">
 											#:serviceConfig.govAgencyName#
 										</a>
 									</div>
 
-									<div class="col-xs-12 col-sm-1 border-left center-all lh32 text-light-gray">
+									<div class="col-xs-12 col-sm-1 border-left center-all lh32 text-light-gray ML100">
 
 										Mức #:serviceConfig.level#
 
 									</div>
 
-									<div class="col-xs-12 col-sm-1 border-left align-center">
-										<button class="btn btn-reset btn-select-serviceConfig" data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#serviceInfo.serviceCode#">Chọn</button>
+									<div class="col-xs-12 col-sm-1 border-left align-center P0">
+										<button class="btn btn-reset btn-select-serviceConfig text-light-gray" data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#serviceInfo.serviceCode#">Chọn</button>
 									</div>
 								</div>
 								#}#
@@ -65,6 +65,7 @@
 </script> 
 
 <script type="text/javascript">
+	var dataSourceServiceConfigDomain;
 	$(document).ready(function(){
 
 		var fnGenEventChoiseServiceConfig = function(){
@@ -80,7 +81,7 @@
 			});
 		}
 
-		var dataSourceServiceConfigDomain = new kendo.data.DataSource({
+		dataSourceServiceConfigDomain = new kendo.data.DataSource({
 			transport : {
 				read : function(options){
 					$.ajax({

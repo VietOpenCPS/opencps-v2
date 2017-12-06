@@ -6,14 +6,14 @@
 
 	<input type="hidden" name="dossierTemplateId" id="dossierTemplateId">
 	<input type="hidden" name="dossierItemId" id="dossierItemId">
-	<input type="hidden" name="dossierTemplateNo" id="dossierTemplateNo">
+	<input type="hidden" name="dossierTemplateNo" id="dossierTemplateNo" data-bind="value : dossierTemplateNo">
 	<div class="row-header align-middle">
 		<div class="background-triangle-big">Tên thủ tục</div> 
 		<span class="text-bold" data-bind="text:serviceName"></span>
 		<div class="pull-right group-icons">
 			<a href="javascript:;" onclick="funSaveDossier();">
-				<i class="fa fa-paper-plane" aria-hidden="true"></i> 
 				Lưu
+				<i class="fa fa-save"></i>
 			</a>
 		</div>
 	</div>
@@ -26,7 +26,7 @@
 
 	<div class="guide-section">
 		<div class="head-part">
-			<div class="background-triangle-small"><i class="fa fa-star"></i></div> <span class="text-uppercase">Hướng dẫn</span> <span class="text-light-gray">((gồm các bước làm thủ tục))</span>
+			<div class="background-triangle-small"><i class="fa fa-star"></i></div> <span class="text-uppercase">Hướng dẫn</span> <span class="text-light-gray"></span>
 		</div>
 
 		<div class="content-part">
@@ -45,7 +45,7 @@
 					<div class="row-parts-head MT5">
 						<div class="row MT5">
 							
-							<div class="col-sm-2">
+							<div class="col-sm-2 PT5 text-right">
 								Họ và tên
 							</div>
 							<div class="col-sm-10">
@@ -56,7 +56,7 @@
 								
 							</div>
 
-							<div class="col-sm-2">
+							<div class="col-sm-2 PT5 text-right">
 								Địa chỉ
 							</div>
 							<div class="col-sm-10">
@@ -65,7 +65,7 @@
 								</div>
 							</div>
 
-							<div class="col-sm-2">
+							<div class="col-sm-2 PT5 text-right">
 								Tỉnh/ Thành phố
 							</div>
 							<div class="col-sm-2 PR0">
@@ -76,7 +76,7 @@
 								</div>
 							</div>
 
-							<div class="col-sm-2 text-right">
+							<div class="col-sm-2 PT5 text-right">
 								Quận/ Huyện
 							</div>
 							<div class="col-sm-2 PR0">
@@ -87,7 +87,7 @@
 								</div>
 							</div>
 							
-							<div class="col-sm-2 text-center">
+							<div class="col-sm-2 PT5 text-right">
 								Xã/ Phường
 							</div>
 							<div class="col-sm-2 PL0">
@@ -98,7 +98,7 @@
 								</div>
 							</div>
 
-							<div class="col-sm-2">
+							<div class="col-sm-2 PT5 text-right">
 								Điện thoại
 							</div>
 							<div class="col-sm-2 PR0">
@@ -108,7 +108,7 @@
 								</div>
 							</div>
 							
-							<div class="col-sm-2 text-right">
+							<div class="col-sm-2 PT5 text-right">
 								Địa chỉ email
 							</div>
 							<div class="col-sm-6">
@@ -129,10 +129,10 @@
 		</div>
 	</div>
 
-	<form id="dossierFormSubmiting">
+	<div id="dossierFormSubmiting">
 		<div class="dossier-parts">
-			<div class="head-part align-middle">
-				<div class="background-triangle-small">I</div> <span class="text-uppercase">Thành phần hồ sơ</span> <span class="text-light-gray"><i>Những thành phần hồ sơ có dấu (<span class="red">*</span>) là thành phần bắt buộc</i></span>
+			<div class="head-part align-middle PB5">
+				<div class="background-triangle-small">II</div> <span class="text-uppercase">Thành phần hồ sơ</span> <span class="text-light-gray"><i>Những thành phần hồ sơ có dấu (<span class="red">*</span>) là thành phần bắt buộc</i></span>
 			</div>
 			<div class="content-part" id="lsDossierTemplPart">
 				<#-- <#include "customer_dossier_online_form.ftl"> -->
@@ -141,9 +141,12 @@
 				#if(partType == 1){#
 				<div class="row-parts-head align-middle">
 					<span class="text-bold MR5">#:itemIndex#.</span>
-					<span>&nbsp;&nbsp;#:partName# 
-						#if(required){#
+					<span>#:partName# 
+						#
+						if(required){
+						#
 						<span class="red">*</span>
+						<input type="hidden" id="validPart#:id#" name="validPart#:id#" class="validPart" value="0">
 						#}#
 					</span>
 					
@@ -156,7 +159,7 @@
 							<i class="fa fa-upload text-light-blue"></i>
 						</label>
 						
-						<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#">
+						<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#" hasform="#if(hasForm){# true #}#">
 						
 						<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 							<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
@@ -169,32 +172,69 @@
 				</div>
 
 				#if(hasForm){#
-				<div class="col-sm-12" id="formPartNo#:id#" style="height:450px;width:100%;overflow:auto;">
-					
+				<div class="col-sm-12" style="height:450px;width:100%;overflow:auto;">
+					<form id="formPartNo#:id#">
+						
+					</form>
 				</div>
 				#
+				var referentUidFile =  getReferentUidFile(${dossierId});
+
 				$.ajax({
-				url : "${api.server}/dossiertemplates/${dossierTemplateId}/parts/"+id+"/formscript",
+				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formscript",
 				dataType : "json",
 				type : "GET",
 				headers : {"groupId": ${groupId}},
 				success : function(result){
-				var formScript = result.value;
-				var formScriptObj = JSON.parse(formScript);
+				console.log(result);
 				$("\\#formPartNo"+id).empty();
-				$("\\#formPartNo"+id).alpaca(formScriptObj);
-				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button class="btn btn-active MB10 MT10" onclick="" data-pk="'+id+'">Ghi lại</button></div></div>');
+				$("\\#formPartNo"+id).alpaca(result);
+				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca" class="btn btn-active MB10 MT10" type="button" data-pk="'+id+'">Ghi lại</button></div></div>');
+				$("\\#btn-save-formalpaca").click(function(){
+				console.log("ccc");
+				var value = $("\\#formPartNo"+id).alpaca('get').getValue();
+				var validate = $("\\#formPartNo"+id).alpaca('get').isValid(true);
+				if(validate){
+				$.ajax({
+				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
+				dataType : "json",
+				type : "PUT",
+				headers: {"groupId": ${groupId}},
+				data : {
+				formdata: JSON.stringify(value)
 			},
-			error : function(result){
+			success : function(result){
+			notification.show({
+			message: "Yêu cầu được thực hiện thành công!"
+		}, "success");
+		$("\\#validPart"+id).val("1");
+	},
+	error : function(result){
+	notification.show({
+	message: "Thực hiện không thành công, xin vui lòng thử lại!"
+}, "error");
+}
+});
+}else {
+notification.show({
+message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi ghi lại!"
+}, "error");
+}
 
-		}
-	});
+console.log(value);
+
+});
+},
+error : function(result){
+
+}
+});
 }#
 
 #}#
 </script>
 </div>
-</form>
+</div>
 
 <div class="row-parts-content">
 	<div class="row">
@@ -209,22 +249,25 @@
 	<div class="row MB20">
 		<div class="col-xs-12 col-sm-7">
 			<label>Địa chỉ nhận kết quả</label>
-			<input type="text" class="form-control input-small" placeholder="Ghi rõ thôn, số nhà, tên đường - phố" id="postalAddress" name="postalAddress">
+			<input type="text" class="form-control input-small" placeholder="Ghi rõ thôn, số nhà, tên đường - phố" id="postalAddress" name="postalAddress" required="required" validationMessage="Bạn phải nhập địa chỉ nhận kết quả">
+			<span data-for="postalAddress" class="k-invalid-msg"></span> 
 		</div>
 		<div class="col-xs-12 col-sm-2">
 			<label>Tỉnh/Thành phố</label>
-			<input class="form-control MB0" name="postalCityCode" id="postalCityCode">
+			<input class="form-control MB0" name="postalCityCode" id="postalCityCode" required="required" validationMessage="Bạn phải nhập Tỉnh/ Thành phố">
+			<span data-for="postalCityCode" class="k-invalid-msg"></span> 
 		</div>
 		<div class="col-xs-12 col-sm-3">
 			<label>Số điện thoại</label>
-			<input type="text" class="form-control input-small" placeholder="" id="postalTelNo" name="postalTelNo">
+			<input type="text" class="form-control input-small" placeholder="" id="postalTelNo" name="postalTelNo" required="required" validationMessage="Bạn phải nhập số điện thoại">
+			<span data-for="postalTelNo" class="k-invalid-msg"></span> 
 		</div>
 	</div>
 </div>
 </div>
 
 <div class="button-row MT20">
-	<button class="btn btn-active" id="btn-submit-dossier"><i class="fa fa-save"></i> Lưu</button>
+	<button class="btn btn-active" id="btn-submit-dossier">Lưu <i class="fa fa-save"></i></button>
 	<#-- <button class="btn btn-active" id="btn-submit-dossier"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 	<button class="btn btn-active"><i class="fa fa-trash"></i> Xóa</button> -->
 </div>
@@ -245,14 +288,18 @@
 		//upload file click
 		$(".dossier-file").unbind().change(function(){
 			console.log("change");
+
 			var partNo = $(this).attr("part-no");
 			var fileTemplateNo = $(this).attr("file-template-no");
 			var dossierTemplateNo = $("#dossierTemplateNo").val();
+			var hasform = $(this).attr("hasform");
+
 			console.log(partNo);
 			console.log(fileTemplateNo);
 			console.log($(this)[0].files[0]);
 
-			funUploadFile($(this),partNo,dossierTemplateNo+"",fileTemplateNo);
+			funUploadFile($(this),partNo,dossierTemplateNo+"",fileTemplateNo,hasform);
+			$(this).val("");
 		});
 
 		//tai giay to kho luu tru
@@ -268,14 +315,20 @@
 			var dossierId = "${(dossierId)!}";
 			var dossierTemplateId = "${(dossierTemplateId)!}";
 			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateId="+dossierTemplateId,function(result){
-				$(this).modal("show");
+
 			});
 		});
 
 		$(".delete-dossier-file").unbind().click(function(event){
+
 			var dossierId  = "${dossierId}";
 			var dataPartNo = $(this).attr("data-partno");
-
+			try{
+				$("#formPartNo"+dataPartNo).alpaca('get').setValue({});
+			}catch (e){
+				
+			}
+			
 			console.log(dossierId);
 			console.log(dataPartNo);
 			var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
@@ -303,6 +356,7 @@
 								}, "success");
 
 							}
+							$("#validPart"+dataPartNo).val("0");
 						},
 						error : function(result) {
 							notification.show({
@@ -351,22 +405,24 @@
 	var dataSourceDossierTemplate = new kendo.data.DataSource({
 		transport :{
 			read : function(options){
-				$.ajax({
-					url : "${api.server}/dossiertemplates/${dossierTemplateId}",
-					dataType : "json",
-					type : "GET",
-					headers : {"groupId": ${groupId}},
-					data : {
+				if(options.data.dossierTemplateNo){
+					$.ajax({
+						url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateNo,
+						dataType : "json",
+						type : "GET",
+						headers : {"groupId": ${groupId}},
+						data : {
 
-					},
-					success : function(result){
-						options.success(result.dossierParts);
-						$("#dossierTemplateNo").val(result.templateNo);
-					},
-					error : function(result){
-						options.error(result);
-					}
-				});
+						},
+						success : function(result){
+							options.success(result.dossierParts);
+							$("#dossierTemplateNo").val(result.templateNo);
+						},
+						error : function(result){
+							options.error(result);
+						}
+					});
+				}
 			}
 		},
 		schema : {
@@ -379,7 +435,7 @@
 	var indexDossiserPart =0 ;
 	$("#lsDossierTemplPart").kendoListView({
 		dataSource : dataSourceDossierTemplate,
-		autoBind : true,
+		autoBind : false,
 		change : function(){
 
 		},
@@ -412,8 +468,11 @@
 		//PUT dossier
 		
 		var validator = $("#detailDossier").kendoValidator().data("kendoValidator");
+		var validateDossierTemplate = fnCheckValidTemplate();
 
-		if(validator.validate()){
+		console.log("validPart-----------------------");
+		console.log(validateDossierTemplate);
+		if(validator.validate() && validateDossierTemplate ){
 			$.ajax({
 				url  : '${api.server}/dossiers/${dossierId}', 
 				dataType : "json",
@@ -428,7 +487,7 @@
 					applicantName : "${(applicant.applicantName)!}",
 					applicantIdType : "${(applicant.applicantIdType)!}",
 					applicantIdNo : "${(applicant.applicantIdNo)!}",
-					applicantIdDate : "${(applicant.applicantIdDate)!}",
+					applicantIdDate : "01/01/2017 00:00:00",
 
 					contactName : $("#applicantName").val(),
 					address : $("#address").val(),
@@ -439,7 +498,6 @@
 					contactEmail : $("#contactEmail").val(),
 
 					applicantNote : $("#applicantNote").val(),
-					viaPostal : $("#viaPostal").is(":checked"),
 					postalTelNo: $("#postalTelNo").val(),
 					postalCityCode: $("#postalCityCode").val(),
 					postalAddress: $("#postalAddress").val(),
@@ -451,7 +509,7 @@
 				//finish PUT dossier create action for dossier
 				createActionDossier(${dossierId});
 
-				manageDossier.navigate("/taohosomoi/nophoso/"+"${dossierTemplateId}"+ "&${dossierId}");
+				manageDossier.navigate("/taohosomoi/nophoso/${dossierId}");
 
 			},
 			error:function(result){
@@ -461,8 +519,12 @@
 				}, "error");
 			}	
 		});
+		}else {
+			notification.show({
+				message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi lưu!"
+			}, "error");
 		}
-		
+
 	}
 
 	var createActionDossier = function(dossierId){
@@ -536,7 +598,7 @@
 				$("#districtCode").data("kendoComboBox").select(-1);
 				$("#wardCode").data("kendoComboBox").select(-1);
 			}
-			
+
 		}
 
 	});
@@ -546,17 +608,21 @@
 		dataTextField : "itemName",
 		dataValueField : "itemCode",
 		noDataTemplate : "Không có dữ liệu",
-		autoBind : false,
 		dataSource : {
 			transport : {
 				read : function(options){
+					var parent = "${(applicant.cityCode)!}";
+					if(options.data.parent){
+						parent = options.data.parent;
+					}
+
 					$.ajax({
 						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
 						dataType : "json",
 						type : "GET",
 						headers: {"groupId": ${groupId}},
 						data : {
-							parent : options.data.parent
+							parent : parent
 						},
 						success : function(result){
 							options.success(result);
@@ -580,7 +646,7 @@
 				});
 				$("#wardCode").data("kendoComboBox").select(-1);
 			}
-			
+
 		}
 	});
 
@@ -589,17 +655,20 @@
 		dataTextField : "itemName",
 		dataValueField : "itemCode",
 		noDataTemplate : "Không có dữ liệu",
-		autoBind : false,
 		dataSource : {
 			transport : {
 				read : function(options){
+					var parent = "${(applicant.districtCode)!}";
+					if(options.data.parent){
+						parent = options.data.parent;
+					}
 					$.ajax({
 						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
 						dataType : "json",
 						type : "GET",
 						headers: {"groupId": ${groupId}},
 						data : {
-							parent : options.data.parent
+							parent : parent
 						},
 						success : function(result){
 							options.success(result);
@@ -671,8 +740,14 @@
 				success : function(result){
 					console.log("load detail dossier!");
 					console.log(result);
-					
+					dataSourceDossierTemplate.read({
+						dossierTemplateNo : result.dossierTemplateNo
+					});
 					var viewModel = kendo.observable({
+						dossierTemplateNo : function(){
+							result.dossierTemplateNo;
+						},
+
 						serviceCode : result.serviceCode,
 						govAgencyCode : result.govAgencyCode,
 						dossierTemplateNo : result.dossierTemplateNo,
@@ -682,25 +757,17 @@
 						applicantName : result.applicantName,
 						address : result.address,
 						cityCode : result.cityCode,
-						districtCode : function(e){
-							var districtComboBox = $("#districtCode").data("kendoComboBox");
-							districtComboBox.dataSource.read({
-								parent : result.cityCode
-							});
-
-							return result.districtCode;
-						},
-						wardCode : function(e){
-							var wardComboBox = $("#wardCode").data("kendoComboBox");
-							wardComboBox.dataSource.read({
-								parent : result.districtCode
-							});
-
-							return result.wardCode;
-						},
+						districtCode : result.districtCode,
+						wardCode : result.wardCode,
 						contactTelNo : result.contactTelNo,
 						contactEmail : result.contactEmail,
-						dossierNote : result.dossierNote
+						dossierNote : result.dossierNote,
+						viaPostal : function(){
+							$("#viaPostal").ckecked(result.viaPostal);
+						},
+						postalAddress : result.postalAddress,
+						postalCityCode : result.postalCityCode,
+						postalTelNo : result.postalTelNo
 
 					});
 					kendo.bind($("#detailDossier"), viewModel);
@@ -726,7 +793,7 @@
 
 			},
 			error : function(result) {
-				
+
 			}
 		});
 	}
@@ -750,7 +817,7 @@
 	}
 	*/
 
-	var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
+	var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo, hasForm){
 		var data = new FormData();
 		console.log(file);
 
@@ -760,6 +827,8 @@
 		data.append('referenceUid', "");
 		data.append('dossierTemplateNo', dossierTemplateNo);
 		data.append('fileTemplateNo', fileTemplateNo);
+		data.append('fileType', "");
+		data.append('isSync', "");
 
 		$.ajax({
 			type : 'POST', 
@@ -785,6 +854,10 @@
 				notification.show({
 					message: "Yêu cầu được thực hiện thành công"
 				}, "success");
+
+				if(!hasForm){
+					$("#validPart"+partNo).val("1");
+				}
 
 			},
 			error:function(result){
@@ -813,43 +886,65 @@
 	$("#postalTelNo").prop('disabled', true);
 
 
-	var getReferentUidFile = function(dossierId){
-		var referenceUid = 0;
-		if(dossierId){
-			$.ajax({
-				type : 'GET', 
-				url  : '${api.server}/dossiers/${dossierId}/files', 
-				headers: {"groupId": ${groupId}},
-				async : false,
-				success :  function(result){ 
-					if(result.data){
-						for (var i = 0; i < result.data.length; i++) {
-							if(result.data[i].eForm){
-								referenceUid = result.data[i].referenceUid;
-								return ;
-							}
-						}
-					}
 
-				},
-				error:function(result){
-					
-				}
-			});
-		}
-
-		return referenceUid;
-	}
 });
 
+var getReferentUidFile = function(dossierId){
+	var referenceUid = 0;
+	if(dossierId){
+		$.ajax({
+			type : 'GET', 
+			dataType : "json",
+			url  : '${api.server}/dossiers/${dossierId}/files', 
+			headers: {"groupId": ${groupId}},
+			async : false,
+			success :  function(result){ 
+				if(result.data){
+					for (var i = 0; i < result.data.length; i++) {
+						if(result.data[i].eForm){
+							referenceUid = result.data[i].referenceUid;
+							return ;
+						}
+					}
+				}
+
+			},
+			error:function(result){
+
+			}
+		});
+	}
+
+	return referenceUid;
+}
+
 $(function(){
-	manageDossier.route("/taohosomoi/nophoso/(:dossierTemplateId)&(:dossierId)", function(dossierTemplateId, dossierId){
+	manageDossier.route("/taohosomoi/nophoso/(:dossierId)", function(dossierId){
 		$("#mainType1").hide();
 		$("#mainType2").show();
-		$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierTemplateId="+dossierTemplateId+"&${portletNamespace}dossierId="+dossierId,function(result){
+		$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+dossierId,function(result){
 
 		});
 	});
 });
+
+var fnCheckValidTemplate = function(){
+	console.log($(".validPart"));
+	var valid = true;
+	try {
+
+		$(".validPart").each(function(index){
+			console.log($(this).val());
+			if($(this).val() === "0"){
+				valid = false;
+			}
+		});
+
+	}catch(e){
+		valid = false;
+	}
+
+	return valid;
+}
 
 </script>

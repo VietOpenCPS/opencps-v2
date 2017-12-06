@@ -1,3 +1,6 @@
+<#if (Request)??>
+    <#include "init.ftl">
+</#if>
 <!-- Template thông tin hồ sơ cơ bản -->
 <div class="panel panel-default MB15" id="DossiersDetailInfo">
 	<div class="panel-heading"> 
@@ -8,7 +11,7 @@
             <span class="text-bold">Tên hồ sơ: </span> <span data-bind="text:serviceName"> </span>
         </div>
 		<div class="col-sm-12 MB10">
-            <span class="text-bold">Mã hồ sơ: </span> <span data-bind="text:serviceCode"> </span>
+            <span class="text-bold">Mã hồ sơ: </span> <span data-bind="text:dossierId"> </span>
         </div>
         <div class="col-sm-12 MB10">
             <span class="text-bold">Mã tiếp nhận: </span> <span data-bind="text:dossierNo"> </span>
@@ -44,16 +47,16 @@
 </div>
 <script>
 	var pullDataDetail= function(id){
-        console.log(id);
+        dossiersId = id;
         $.ajax({
             url : "${api.server}/dossiers/"+id,
             dataType : "json",
             type : "GET",
-            beforeSend: function(req) {
-                        req.setRequestHeader('groupId', ${groupId});
-                    },
+            headers : {"groupId": ${groupId}},
             success : function(result){
+                console.log(dossierId);
                 var viewModel = kendo.observable({
+                    dossierId: result.dossierId,
 	                applicantName: result.applicantName,
                     serviceName: result.serviceName,
                     dossierNo: result.dossierNo,
@@ -63,98 +66,101 @@
                     dossierStatusText: result.dossierStatusText
                 });
                 kendo.bind($("#DossiersDetailInfo"), viewModel);
+                $(".panel").css("border-radius","0");
             },
-            error : function(xhr){
-
+            error : function(result){
+                
             }
         });
-    };
-    //dataSource chi tiết thông tin hồ sơ
-    var dataSourceDossierFileDetail = new kendo.data.DataSource({
-        type: "json",
-        transport: {
-            read: function (options) {
-                $.ajax({
-                    url: "${api.server}/dossiers/"+dataItem.dossierId+"/files",
-                    dataType: "json",
-                    type: 'GET',
-                    data: {
-                        password: options.data.password
-                    },
-                    beforeSend: function(req) {
-                        req.setRequestHeader('groupId', ${groupId});
-                    },
-                    success: function (result) {
-                        options.success(result);
-                    },
-                    error : function(xhr){
-                        $("#DossierDetailFile").html("<span>Không có dữ liệu</span>")
-                    }
-                });
-             }
-        },
-        schema : {
-            total : "total",
-            data : "data"
-        }
-    });
-    var dataSourceDossierLogDetail = new kendo.data.DataSource({
-        type: "json",
-        transport: {
-            read: function (options) {
-                $.ajax({
-                    url: "${api.server}/dossiers/"+dataItem.dossierId+"/logs",
-                    // url:"http://localhost:3000/dossierlogs",
-                    dataType: "json",
-                    type: 'GET',
-                    data: {
-                        password: options.data.password
-                    },
-                    beforeSend: function(req) {
-                        req.setRequestHeader('groupId', ${groupId});
-                    },
-                    success: function (result) {
-                        options.success(result);
-                        var index = 0;
-                        $("#DossierDetailLog .orderNo").each(function(){
-                            index+=1;
-                            $(this).html(index) 
-                        })
-                    },
-                    error : function(xhr){
-                        $("#DossierDetailLog").html("<span>Không có dữ liệu</span>")
-                    }
-                })
+        //dataSource chi tiết thông tin hồ sơ
+        var dataSourceDossierFileDetail = new kendo.data.DataSource({
+            transport: {
+                read: function (options) {
+                    $.ajax({
+                        url: "${api.server}/dossiers/"+id+"/files",
+                        dataType: "json",
+                        type: 'GET',
+                        headers : {"groupId": ${groupId}},
+                        data: {
+                            password: options.data.password
+                        },
+                        success: function (result) {
+                            options.success(result);
+                            console.log(dossierId);
+                            $(".panel").css("border-radius","0")
+                        },
+                        error : function(result){
+                            options.error(result);
+                            $("#DossierDetailFile").html("<span>Không có dữ liệu</span>")
+                        }
+                    });
+                 }
+            },
+            schema : {
+                total : "total",
+                data : "data"
             }
-        },
-        schema : {
-            total : "total",
-            data : "data"
-        }
-    });
-    $("#DossierDetailFile").kendoListView({
-        dataSource : dataSourceDossierFileDetail,
-        template : kendo.template($("#tempDossierDetailFile").html()),
-        navigatable: false,
-        selectable: false,
-        autoBind:false
-    });
-    $("#DossierDetailLog").kendoListView({
-        dataSource : dataSourceDossierLogDetail,
-        template : kendo.template($("#tempDossierDetailLog").html()),
-        navigatable: false,
-        selectable: false,
-        autoBind:false
-    });
-    var evenDataDossierDetail = function(){
-        var paraValue2 = $("#input_dossier_detail").val(); 
-        dataSourceDossierFileDetail.read({password: paraValue2});
-        dataSourceDossierLogDetail.read({password: paraValue2})
-    };
-    $("#btn_dossierinfo_detail").click(
-                            function(){
-                                $("#detailView2").show();
-                                evenDataDossierDetail()
-                            }
-                        )   
+        });
+        var dataSourceDossierLogDetail = new kendo.data.DataSource({
+            transport: {
+                read: function (options) {
+                    $.ajax({
+                        url: "${api.server}/dossiers/"+id+"/logs",
+                        // url:"http://localhost:3000/logs",
+                        dataType: "json",
+                        type: 'GET',
+                        headers : {"groupId": ${groupId}},
+                        data: {
+                            password: options.data.password
+                        },
+                        success: function (result) {
+                            options.success(result);
+                            console.log(dossierId);
+                            $(".panel").css("border-radius","0");
+                            $(".panel-heading").css("border","0");
+                            var index = 0;
+                            $("#DossierDetailLog .orderNo").each(function(){
+                                index+=1;
+                                $(this).html(index) 
+                            })
+                        },
+                        error : function(result){
+                            options.error(result);
+                            $("#DossierDetailLog").html("<span class='ML10'>Không có dữ liệu</span>")
+                        }
+                    })
+                }
+            },
+            schema : {
+                total : "total",
+                data : "data"
+            }
+        });
+        $("#DossierDetailFile").kendoListView({
+            dataSource : dataSourceDossierFileDetail,
+            template : kendo.template($("#tempDossierDetailFile").html()),
+            navigatable: false,
+            selectable: false,
+            autoBind:false
+        });
+        $("#DossierDetailLog").kendoListView({
+            dataSource : dataSourceDossierLogDetail,
+            template : kendo.template($("#tempDossierDetailLog").html()),
+            navigatable: false,
+            selectable: false,
+            autoBind:false
+        });
+        var evenDataDossierDetail = function(){
+            var paraValue2 = $("#input_dossier_detail").val(); 
+            dataSourceDossierFileDetail.read({password: paraValue2});
+            dataSourceDossierLogDetail.read({password: paraValue2})
+        };
+        $("#btn_dossierinfo_detail").click(
+            function(){
+                console.log(dossierId);
+                $("#detailView2").show();
+                evenDataDossierDetail()
+            }
+        )
+    };   
 </script>

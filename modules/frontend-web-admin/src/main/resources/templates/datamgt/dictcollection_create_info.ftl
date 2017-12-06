@@ -1,6 +1,5 @@
-<#if (Request)??>
 <#include "init.ftl">
-</#if>
+
 <div class="modal-header form-group">
 
 	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -54,7 +53,9 @@
 		
 			<div class="col-xs-12 col-sm-6">
 				
-				<button class="btn btn-sm btn-active btn-default" id="_collectionSub_dictItem_edit_editDictGroup" name="_collectionSub_dictItem_edit_editDictGroup" type="button" >
+				<button class="btn btn-sm btn-primary btn-default" 
+					id="_collectionSub_dictItem_edit_editDictGroup" name="_collectionSub_dictItem_edit_editDictGroup" type="button" 
+					data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 					<i class="fa fa-check-circle"></i>
 					<span class="lfr-btn-label">Cập nhật thay đổi</span>
 				</button>

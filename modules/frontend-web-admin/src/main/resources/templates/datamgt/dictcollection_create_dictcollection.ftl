@@ -1,6 +1,4 @@
-<#if (Request)??>
 <#include "init.ftl">
-</#if>
 
 <div class="modal-header">
 
@@ -60,7 +58,9 @@
 				
 				<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 				
-					<button class="btn btn-sm btn-active btn-sm pull-right" id="_collectionAdd_submitBtn" name="_collectionAdd_submitBtn" type="button">
+					<button class="btn btn-sm btn-primary btn-sm pull-right" 
+						id="_collectionAdd_submitBtn" name="_collectionAdd_submitBtn" type="button"
+						data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 						<i class="fa fa-check-circle"></i>
 						<span class="lfr-btn-label">Xác nhận</span>
 					</button>
@@ -103,7 +103,7 @@
 			return;
 		} else {
 
-			var _collectionAdd_BaseUrl = "${api.server}/dictcollections";
+			var _collectionAdd_BaseUrl = "${api.endpoint}/dictcollections";
 
 			$.ajax({
 				url: _collectionAdd_BaseUrl,

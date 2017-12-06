@@ -111,8 +111,8 @@
 <#assign param = Request.param?eval>
 </#if>
 
-<#if Request.constant??>
-<#assign constant = Request.constant?eval>
+<#if Request.constants??>
+<#assign constant = Request.constants?eval>
 </#if>
 
 <#if Request.workspace_jobposes??>

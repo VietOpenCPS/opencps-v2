@@ -290,7 +290,7 @@ public interface DossierFileManagement {
 
 	@PUT
 	@Path("/{id}/files/{referenceUid}/formdata")
-	@Consumes({ MediaType.MULTIPART_FORM_DATA })
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "update DossierFile")
 	@ApiResponses(value = { @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns"),

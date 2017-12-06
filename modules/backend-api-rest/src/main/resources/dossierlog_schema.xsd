@@ -6,7 +6,7 @@
 			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
 			<xsd:element name="author" type="xsd:string" minOccurs="0" />
 			<xsd:element name="content" type="xsd:string" minOccurs="0" />
-			<xsd:element name="notificationType" type="xsd:int" minOccurs="0" />
+			<xsd:element name="notificationType" type="xsd:string" minOccurs="0" />
 			<xsd:element name="payload" type="xsd:string" minOccurs="0" />
 			<xsd:element name="dossierId" type="xsd:long" minOccurs="0" />
 			<xsd:element name="serviceCode" type="xsd:string" minOccurs="0" />
@@ -32,7 +32,7 @@
 			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
 			<xsd:element name="author" type="xsd:string" minOccurs="0" />
 			<xsd:element name="content" type="xsd:string" minOccurs="0" />
-			<xsd:element name="notificationType" type="xsd:int" minOccurs="0" />
+			<xsd:element name="notificationType" type="xsd:string" minOccurs="0" />
 			<xsd:element name="payload" type="xsd:string" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
@@ -49,7 +49,7 @@
 	<xsd:element name="DossierLogSearchModel">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="notificationType" type="xsd:int" minOccurs="0" />
+				<xsd:element name="notificationType" type="xsd:string" minOccurs="0" />
 				<xsd:element name="owner" type="xsd:boolean" minOccurs="0" />
 				<xsd:element name="start" type="xsd:int" minOccurs="0" />
 				<xsd:element name="end" type="xsd:int" minOccurs="0" />

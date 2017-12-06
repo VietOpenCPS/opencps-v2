@@ -9,9 +9,11 @@ import javax.portlet.PortletResponse;
 import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.constants.DictItemGroupTerm;
 import org.opencps.datamgt.constants.DictItemTerm;
+import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictGroup;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.model.DictItemGroup;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
@@ -31,6 +33,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DictItemGroupIndexer extends BaseIndexer<DictItemGroup> {
@@ -78,11 +81,22 @@ public class DictItemGroupIndexer extends BaseIndexer<DictItemGroup> {
 		
 		DictGroup dictGroup = DictGroupLocalServiceUtil.fetchDictGroup(dictItemGroup.getDictGroupId());
 		
+		
 		if(Validator.isNotNull(dictGroup)){
+			DictCollection collection = DictCollectionLocalServiceUtil.fetchDictCollection(dictGroup.getDictCollectionId());
+			
+			String collectionCode = StringPool.BLANK;
+			
+			if (Validator.isNotNull(collection)) {
+				collectionCode = collection.getCollectionCode();
+			}
 			
 			document.addNumberSortable(DictGroupTerm.DICT_GROUPID, dictGroup.getDictGroupId());
 			document.addNumberSortable(DictGroupTerm.DICT_COLLECTIONID, dictGroup.getDictCollectionId());
+			document.addTextSortable(DictGroupTerm.DICT_COLLECTION_CODE, collectionCode);
 			document.addTextSortable(DictGroupTerm.GROUP_CODE, dictGroup.getGroupCode());
+			
+			_log.info(dictGroup.getGroupCode());
 			document.addTextSortable(DictGroupTerm.GROUP_NAME, dictGroup.getGroupName());
 			document.addTextSortable(DictGroupTerm.GROUP_NAME_EN, dictGroup.getGroupNameEN());
 			document.addTextSortable(DictGroupTerm.GROUP_DESCRIPTION, dictGroup.getGroupDescription());

@@ -116,12 +116,9 @@ public class DossierLogManagementImpl implements DossierLogManagement{
 			JSONObject dossierLogJsonObject = action.getDossierLogById(groupId, dossierId, password, query.isOwner(),  query.getStart(),
 					query.getEnd(), query.getSort(), query.getOrder(), serviceContext);
 			List<Document> documents = (List<Document>) dossierLogJsonObject.get("data");
-//			
+			
 			results.setTotal(dossierLogJsonObject.getInt("total"));
 			results.getData().addAll(DossierLogUtils.mappingToDossierLogSearchByIdResultsModel(documents));
-			
-//			results.setTotal(dossierLogs.size());
-//			results.getData().addAll(DossierLogUtils.mappingToDossierLogData(dossierLogs));
 
 			return Response.status(200).entity(results).build();
 
@@ -129,6 +126,7 @@ public class DossierLogManagementImpl implements DossierLogManagement{
 			return processException(e);
 		}
 	}
+	
 	private Response processException(Exception e) {
 		ErrorMsg error = new ErrorMsg();
 

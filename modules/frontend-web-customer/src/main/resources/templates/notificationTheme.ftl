@@ -1,4 +1,6 @@
-
+<#if (Request)??>
+    <#include "init.ftl">
+</#if>
 <ul class="dropdown-menu" role="menu" aria-labelledby="btn-show-notification" id="dropdown-menu-notification">
     <span class="text-bold PL10 PT10 PB10">Thông báo</span> <span class="pull-right hover-pointer MR5">Đánh dấu tất cả đã đọc</span>
     <li role="presentation" class="divider MB0"></li>
@@ -9,7 +11,7 @@
     </div>
     <li role="presentation" class="divider MT0"></li>
     <div class="row text-center">
-        <a  href="#/thongbao" id="btn-showall-notification">Xem tất cả</a>
+        <a  href="#/thongbao" class="text-link" id="btn-showall-notification">Xem tất cả</a>
     </div>
 </ul>
 
@@ -22,96 +24,157 @@
 
 <script type="text/x-kendo-template" id="dropdownNotificationTemp">
     #
-        var title = "Đánh dấu đã đọc";    
+        var title = "Đánh dấu chưa đọc";    
         var bgBlue = "";
-        if(read === true) {
+        var iconCheck = "fa fa-circle-o";
+        if(read === false) {
             bgBlue = "row-blue";
-            title = "Đánh dấu chưa đọc"
+            title = "Đánh dấu đã đọc";
+            iconCheck = "fa fa-circle"
         }
     #
-	<li class="PL10 #:bgBlue# text-normal">
-		<i dataPk="#:notificationSubject#" class="fa fa-circle checkRead text-light-gray hover-pointer" title="#:title#"></i> <span class="ML5">#:notificationType#</span> <br>
+	<li class="PL10 #:bgBlue# text-normal itemNotify hover-pointer" dataPk="#:dossierId#" statusRead="#:read#" onclick="event.stopPropagation(); itemEvent(this)">
+		<i dataPk="#:notificationId#" class="#:iconCheck# checkRead text-light-gray" title="#:title#" onclick="event.stopPropagation();checkRead(this)"></i> <span class="ML5">#:notificationType#</span> <br>
 		<p class="PL20 M0 text-bold">#:notificationSubject#</p>
 		<p class="PL20 M0 text-light-gray">#:notificationContent#</p>
 		<p class="PL20 M0 text-light-gray">#:createDate#</p>
 	</li>
 </script>
 <script type="text/javascript">
-    var count = 0; 
-    var displayNotification = function(){
-
-    };
+    var count = 0;
+    var dataSource2 = false;
+    var countNotify = function(){
+        $("#totalNotify").html(count);
+        if (count>0) {
+            $("#btn-show-notification").css("background-color","#84FAFA")
+        } else {
+            $("#btn-show-notification").css("background-color","#e1e2e1")
+        };
+    }
     var dataSourceNotification = new kendo.data.DataSource({
         transport:{
             read:function(options){
                 $.ajax({
-                    url: "${api.server}/users/notifications/"+id+"/mark",
-                    // url:"http://localhost:3000/notification",
+                    url:"http://localhost:3000/notification",
+                    // url: "${api.server}/users/notifications",
                     dataType:"json",
                     type:"GET",
                     headers : {"groupId": ${groupId}},
                     success:function(result){
-                        if(result.data){
-                            options.success(result);
-                            $(result.data).each(function(index, value){
-                                if(value.read === true){
-                                    count+=1
-                                }
-                            });
-                            if (count>0) {
-                                $("#btn-show-notification").css("background-color","#84FAFA")
-                            };
-                            $("#totalNotify").html(count);
-                        };
-                        $(".checkRead").click(function(e){
-                            e.stopPropagation();
-                            var idItem = $(this).attr("dataPk");
-                            dataSourceNotification.transport.update(idItem)
-                        })
+                        options.success(result);
                     },
+                    
                     error:function(result){
                         options.error(result);
                     }
                 });
             },
             update: function(id){
+                console.log("Run update");
                 $.ajax({
                     url: "${api.server}/users/notifications/"+id+"/mark",
                     // url:"http://localhost:3000/notification",
                     dataType:"json",
+                    headers : {"groupId": ${groupId}},
                     type: "PUT",
                     success:function(result){
-                        console.log(result);
-                        dataSourceNotification.pushUpdate([
-                            {notificationSubject: id, read: result.read }
-                        ]);
+                        if (dataSource2 == true) {
+                            dataSourceNotify2.read();
+                        }
                     },
                     error: function(result) {
-                        this.cancelChanges();
+                        
                     }
                 })                       
             }
-        },
-        error: function(e) {         
-            this.cancelChanges();
         },
         schema:{
             total: "total",
             data: "data",
             model: {
-                id: "notificationSubject"
+                id: "notificationId"
             }
         }
     });
 
     $("#listViewNotificationDrop").kendoListView({
         dataSource: dataSourceNotification,
+        dataBound: function(e){
+            if(e.items){
+                $(e.items).each(function(index, value){
+                    if(value.read == false){
+                        count+=1
+                    }
+                });
+                countNotify();
+            } 
+        },
         template: kendo.template($("#dropdownNotificationTemp").html()),
         selectable: "single",
     });
-
-    var changeRead = function(){
+    var checkRead = function(selector){
+            var status1 = $(selector).parent().attr("statusRead");
+            var noId = $(selector).attr("dataPk");
+            if (status1 == "false"){
+                dataSourceNotification.pushUpdate([
+                    {notificationId: noId, read: true }                    
+                ]);
+                count -= 1;
+                countNotify();
+                $(selector).parent().attr("statusRead","true");
+                $(selector).parent().removeClass("row-blue")
+            } else {
+                dataSourceNotification.pushUpdate([
+                    {notificationId: noId, read: false }
+                ]);
+                count += 1;
+                countNotify();
+                $(selector).parent().attr("statusRead","false");
+                $(selector).parent().addClass("row-blue")
+            }
+            dataSourceNotification.transport.update(noId)
+    }
+    var itemEvent = function(selector){
+        var noId = $(selector).children(".checkRead").attr("dataPk");
+        var dossierid = $(selector).attr("dataPk");
+        var readStatus = $(selector).attr("statusRead");
+        if (readStatus == "false"){
+            dataSourceNotification.pushUpdate([
+                {notificationId: noId, read: true }
+            ]);
+            count -= 1;
+            countNotify();
+            $(selector).attr("statusRead","true");
+            $(selector).removeClass("row-blue")
+        }
+        var dataDossierId = new kendo.data.DataSource({
+            transport:{
+                read:function(options){
+                    $.ajax({
+                        url:"${api.server}/dossiers/"+dossierid, 
+                        dataType:"json",
+                        headers : {"groupId": ${groupId}},
+                        type:"GET",
+                        success:function(result){
+                            var dossierItemStatus = result.dossierStatus;
+                            manageDossier.navigate("/"+dossierItemStatus+"/dossiers/"+dossierid);
+                            if (readStatus=="false") {
+                                dataSourceNotification.transport.update(noId)
+                            } 
+                        },
+                        error:function(result){
+                            options.error(result);
+                        }
+                    });
+                }
+            },
+            error: function(e) {         
+                
+            },
+        });
+        dataDossierId.read();
+    }
+    var styleNotify = function(){
 
     }
-
 </script>

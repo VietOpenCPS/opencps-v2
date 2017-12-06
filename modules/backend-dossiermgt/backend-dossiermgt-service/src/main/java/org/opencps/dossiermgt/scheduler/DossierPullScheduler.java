@@ -65,9 +65,6 @@ import com.liferay.portal.kernel.util.Validator;
 
 @Component(immediate = true, service = DossierPullScheduler.class)
 public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
-	private final String baseUrl = "http://localhost:8080/o/rest/v2/";
-	private final String username = "test@liferay.com";
-	private final String password = "test";
 	private final String serectKey = "OPENCPSV2";
 	private static final int BUFFER_SIZE = 4096;
 
@@ -467,7 +464,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 1, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 2, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

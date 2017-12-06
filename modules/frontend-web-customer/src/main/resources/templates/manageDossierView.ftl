@@ -1,3 +1,6 @@
+<#if (Request)??>
+	<#include "init.ftl">
+</#if>
 	<#-- main section template -->
 	<script type="text/x-kendo-template" id="mainTemplate">
 		<div id="contentMain" class="row panel M0" style="border: none;box-shadow: none">
@@ -6,31 +9,31 @@
 					<div class="row-header"> 
 						<div class="background-triangle-big">
 							<i class="fa fa-file-text"></i>
-						</div> 
-						<span class="text-bold">KÊT QUẢ TÌM KIẾM HỒ SƠ</span> 
-						<div class="form-group search-icon pull-right MB0 MR10" style="margin-top:3px">
-							<input type="text" class="form-control" id="keyInput" placeholder="Nhập từ khóa" data-bind="events: { keyup: filterKey}">
 						</div>
-					</div>	
+						<span class="text-bold" id="statusName" style="text-transform:uppercase;"></span> 
+						<div class="form-group search-icon pull-right MB0 MR10" style="margin-top:4px">
+							<input type="text" class="form-control" id="keyInput" placeholder="Nhập số hồ sơ, Mã tiếp nhận, Tên hồ sơ" data-bind="events: { keyup: filterKey}" style="width: 290px; height:30px">
+						</div>
+					</div>
 				</div>
 			</div>
 			<div id="wrapMain">
 				<div class="col-sm-12 P0" id="customer_dossierlist">
-					<ul class="ul-with-border" data-role="listview" data-bind="source: dataSourceProfile" data-auto-bind="false" data-template="proFileTemplate" id="listViewDossier">
+					<ul class="ul-with-border" data-role="listview" data-auto-bind="false" data-bind="source: dataSourceProfile" data-template="proFileTemplate" id="listViewDossier">
 						
 					</ul>
 				</div>
-				<div class="footerListProfile row-header col-sm-12 PT20" style="background: #f6f6f6">
+				<div class="footerListProfile row-header col-sm-12 PT20 PR0" style="background: #f6f6f6">
 					<div class="clearfix align-middle" style="float: right">
 						<span class="text-light-gray MR15"><i>Tổng số <span id="totalItem_dossierList" class="red"></span> kết quả được tìm thấy</i></span>
 						<span class="show-per-page MT0">Hiển thị
 							<span class="select-wrapper">
-								<select class="ML5" id="itemPpage" data-bind="events:{change: changePageSize}">
+								<select class="ML5" id="itemPpage" data-bind="events:{change: changePageSize}" style="background-color: #ffffff">
 									
 								</select>
 							</span>
 						</span>
-						<span id="pagerProfile" class="M0 P0 PR5" data-role="pager" data-info="false" data-bind="source: dataSourceProfile"></span>
+						<span id="pagerProfile" class="M0 P0" data-role="pager" data-info="false" data-bind="source: dataSourceProfile, events:{change: stylePager}" data-button-count="3" style="background: #ffffff"></span>
 					</div>	
 				</div>
 			</div>
@@ -39,58 +42,66 @@
 	</script>
 		<#-- for listview dossier-->
 		<script type="text/x-kendo-template" id="proFileTemplate">
-			<div class="row PL15 PR15 itemCustomerDossierList" dataPk="#:id#" data-bind="events:{click: loadDossierDetail}">
-				<div class="row M0 hover-pointer" title="Xem chi tiết">
+			<div class="row hover-pointer PL15 PR15 itemCustomerDossierList" dataPk="#:id#" data-bind="events:{click: loadDossierDetail}">
+				<div class="row M0">
 					<div class="row-blue align-middle">
 						<div class="order-number">#:counter#</div>
-						<div class="dossier-number" data-toggle="tooltip" title="Mã hồ sơ"><span class="red">\\#</span> #:serviceCode#</div>
+						<div class="dossier-number" data-toggle="tooltip" title="Mã hồ sơ"><span class="red">\\#</span> #:dossierId#</div>
 						<div class="receive-number"><span class="text-normal">Mã tiếp nhận:</span> #:dossierNo#</div>
 						#
 							var label="label-info";
 							switch(dossierStatus) {
-							    case "New":
+							    case "new":
 							        label="label-info";
 							        break;
-							    case "Collecting":
+							    case "collecting":
 							        label="label-info";
 							        break;
-							    case "Receiving":
-							        label="label-status-processing";
+							    case "receiving":
+							        label="status-processing";
 							        break;
-							    case "Waiting":
-							        label="label-status-additional";
+							    case "waiting":
+							        label="status-additional";
 							        break;
-							    case "Processing":
+							    case "processing":
 							        label="label-info";
 							        break;
-							    case "Paying":
-							       	label="label-status-pending-payment";
+							    case "paying":
+							       	label="status-pending-payment";
 							        break;
-							    case "Handover":
+							    case "handover":
 							        label="label-info";
 							        break;  
-							    case "Releasing":
+							    case "releasing":
 							        label="label-info";
 							        break;	
-							    case "Posting":
+							    case "posting":
 							        label="label-info";
 							        break;
-						        case "Done":
-							        label="label-status-complete";
+						        case "done":
+							        label="status-complete";
 							        break;
-						        case "Cancelled":
-							        label="label-status-cancel";
+						        case "cancelled":
+							        label="status-cancel";
 							        break;					        
 							    default:
 							        label="label-info";
 							}
 						#
-						<span class="label #:label# MLA">#:dossierSubStatusText#</span> 
+						#
+							var status;
+							if(dossierSubStatusText == ""){
+								status = dossierStatusText
+							} else {
+								status = dossierSubStatusText
+							}
+						#
+						<span class="label #:label# MLA">#:status#</span> 
 					</div>
 				</div>
 				<div class="col-sm-12 PL0 PT5 PB10">
 					<div class="row M0">
-						<div class="col-sm-8">
+						<div class="col-sm-9">
 							<p>#:serviceName#</p>
 							<p>
 								<i class="fa fa-university" style="color: \\#84FAFA;" aria-hidden="true"></i> #:govAgencyName#
@@ -105,34 +116,48 @@
 
 							<p>
 								#if(typeof stepInstruction !== "undefined"){#
-									<i>#:stepInstruction#</i>
+									<i class="text-light-gray">#:stepInstruction#</i>
 								#}#
 							</p>
+							
+							#if(dossierStatus === "waiting"){#
+								<a href="javascript:;" data-Pk="#:id#" class="downloadAddRes" style="margin-right: 10px;">
+									<i class="fa fa-download" aria-hidden="true">
+									</i> Tải yêu cầu bổ sung
+								</a>
+							#}#
 
-							#if(dossierStatus === "Done"){#
-								<a href="${api.server}/dossiers/#:id#/result" style="margin-right: 10px;">
+							#if(dossierStatus === "done"){#
+								<a href="javascript:;" data-Pk="#:id#" class="downloadProfile" style="margin-right: 10px;">
 									<i class="fa fa-download" aria-hidden="true">
 									</i> Tải giấy tờ kết quả
 								</a>
 							#}#
-							
-							#if(dossierStatus === "Done" ){#
-								<a href="javascript:;" onclick="javascript:copyProfile(#:id#)"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Sao chép hồ sơ
+							<#-- ${api.server}/dossiers/#:id#/result -->
+							#if(dossierStatus === "done" ){#
+								<a href="javascript:;" data-Pk="#:id#" class="copyProfile"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Sao chép hồ sơ
 								</a>
 							#}#
 						</div>
 						
-						<div class="col-sm-4 MT10 text-right">
+						<div class="col-sm-3 text-right">
 							<div class="row">
-								<p data-toggle="tooltip" title="Ngày gửi">
-									<i class="fa fa-paper-plane-o" aria-hidden="true"></i> #:submitDate#
-								</p>
-								<p data-toggle="tooltip" title="Ngày tiếp nhận">
-									<i class="fa fa-file-o" aria-hidden="true"></i> #:receiveDate#
-								</p>
-								<p data-toggle="tooltip" title="Ngày hẹn trả">
-									<i class="fa fa-clock-o" aria-hidden="true"></i> #:dueDate#
-								</p>
+								#if(submitDate != ""){#
+									<p data-toggle="tooltip" title="Ngày gửi">
+										<i class="fa fa-paper-plane-o" aria-hidden="true"></i> #:submitDate#
+									</p>
+								#}#
+								#if(receiveDate != ""){#
+									<p data-toggle="tooltip" title="Ngày tiếp nhận">
+										<i class="fa fa-file-o" aria-hidden="true"></i> #:receiveDate#
+									</p>
+								#}#
+								#if(dueDate != ""){#
+									<p data-toggle="tooltip" title="Ngày hẹn trả">
+										<i class="fa fa-clock-o" aria-hidden="true"></i> #:dueDate#
+									</p>
+								#}#
+								
 							</div>
 						</div>
 					</div>
@@ -144,14 +169,14 @@
 	<script type="text/x-kendo-template" id="sidebarTemplate">
 		<div class="row">
 			<div class="col-sm-12" id="customer_additional_requirements">
-				<div class="panel panel-main" id="sideItemAdd" style="display: none"> 
+				<div class="panel panel-main MB15" id="sideItemAdd" style="display: none">
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Yêu cầu bổ sung</span>
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#additionalRequirement">
 							<i class="glyphicon glyphicon-chevron-up" ></i>
 							<i class="glyphicon glyphicon-chevron-down" style="display: none"></i>
 						</span>
-						<span class="pull-right MR10 text-light-gray hover-pointer" id="sort_modified" title="Sắp xếp theo ngày" data-bind="events:{click: sortDate}"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+						<span class="pull-right MR10 text-light-gray hover-pointer" id="sort_modified" title="Sắp xếp theo ngày" data-button-count="1" data-bind="events:{click: sortDate}"><i class="fa fa-calendar" aria-hidden="true"></i></span>
 					</div>
 					<div class="panel-body P0 collapse in" id="additionalRequirement">
 						<ul class="ul-with-border" data-role="listview" data-bind="source:dataAddRequest" data-auto-bind="false" data-template="additional_Requirement_Template" id="wrapAddRes">
@@ -159,13 +184,13 @@
 						</ul>
 						<div class="clearfix align-middle PL10">
 							<span class="text-light-gray MR20"><i>Có <span id="total_Additional_Requirement" class="red"> </span> yêu cầu</i></span>
-							<span id="pagerCustomer_Additional_Requirement" class="M0 PR5" data-bind="source:dataAddRequest" data-role="pager" data-info="false"></span>
+							<span id="pagerCustomer_Additional_Requirement" class="M0 PR5" data-bind="source:dataAddRequest" data-role="pager" data-numeric="false" data-info="false"></span>
 						</div>	
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-12" id="customer_payment_request" style="display: none">
-				<div class="panel panel-main MT15" id="sideItemPayment"> 
+			<div class="col-sm-12" id="customer_payment_request">
+				<div class="panel panel-main MB15" id="sideItemPayment" style="display: none"> 
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Yêu cầu thanh toán</span> 
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#paymentRequest"> 
@@ -180,14 +205,14 @@
 						</ul>
 						<div class="clearfix align-middle PL10">
 							<span class="text-light-gray MR20"><i>Có <span id="total_Payment_Request" class="red"> </span> yêu cầu</i></span>
-							<span id="pagerCustomer_Payment_Request" class="M0 PR5" data-bind="source:dataPayRequest" data-role="pager" data-info="false"></span>
+							<span id="pagerCustomer_Payment_Request" class="M0 PR5" data-bind="source:dataPayRequest" data-role="pager" data-numeric="false" data-info="false"></span>
 						</div>
 
 					</div> 
 				</div>
 			</div>
-			<div class="col-sm-12" id="customer_result_request" style="display: none">
-				<div class="panel panel-main MT15" id="sideItemResult"> 
+			<div class="col-sm-12" id="customer_result_request">
+				<div class="panel panel-main" id="sideItemResult" style="display: none"> 
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Trả kết quả</span> 
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#resultRequest"> 
@@ -202,7 +227,7 @@
 						</ul>
 						<div class="clearfix align-middle PL10">
 							<span class="text-light-gray MR20"><i>Có <span id="total_result" class="red"> </span> kết quả</i></span>
-							<span id='pagerCustomer_Result_Request' class="M0 PR5" data-bind="source:dataResult" data-role="pager" data-info="false"></span>
+							<span id='pagerCustomer_Result_Request' class="M0 PR5" data-bind="source:dataResult" data-numeric="false" data-role="pager" data-info="false"></span>
 						</div>
 					</div> 
 				</div>
@@ -213,23 +238,23 @@
 	<script type="text/x-kendo-template" id="additional_Requirement_Template">
 		<li data-pk="#:id#" class="P10 hover-pointer" title="Xem chi tiết" data-bind="events:{click: loadDossierDetail}">
 			<p>#:content#</p>
-			<span class="text-greyy">#:govAgencyName#</span> <br>
-			<span class="text-greyy">#:createDate#</span>
+			<span class="text-light-gray">#:govAgencyName#</span> <br>
+			<span class="text-light-gray">#:createDate#</span>
 		</li>
 	</script>
 		<#-- For menu payment -->
 	<script type="text/x-kendo-template" id="payment_Request_Template">
 		<li data-pk="#:id#" class="P10 hover-pointer" title="Xem chi tiết" data-bind="events:{click: loadDossierDetail}">
 			<p>#:content#</p>
-			<span class="text-greyy">#:govAgencyName#</span> <br>
-			<span class="text-greyy">#:createDate#</span>
+			<span class="text-light-gray">#:govAgencyName#</span> <br>
+			<span class="text-light-gray">#:createDate#</span>
 		</li>
 	</script>
 		<#-- For menu result -->
 	<script type="text/x-kendo-template" id="result_Request_Template">
 		<li data-pk="#:id#" class="P10 hover-pointer" title="Xem chi tiết" data-bind="events:{click: loadDossierDetail}">
 			<p>#:content#</p>
-			<span class="text-greyy">#:govAgencyName#</span> <br>
-			<span class="text-greyy">#:createDate#</span>
+			<span class="text-light-gray">#:govAgencyName#</span> <br>
+			<span class="text-light-gray">#:createDate#</span>
 		</li>
 	</script>

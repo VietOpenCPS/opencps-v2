@@ -62,3 +62,9 @@ gradle-local.properties
 **/backend-dossiermgt-api/**/exception/
 **/backend-dossiermgt-api/**/service/
 **/backend-dossiermgt-api/**/service/persistence/
+
+**/vr-business/**
+**/vr-rest/**
+mt-dklr/**
+theme_nz/*
+modules/vr-business

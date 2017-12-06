@@ -141,9 +141,24 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		object.setDossierPartNo(dossierPartNo);
 		object.setFileTemplateNo(fileTemplateNo);
 		object.setDossierPartType(dossierPart.getPartType());
+		
 		if (Validator.isNull(displayName)) {
 			displayName = sourceFileName;
 		}
+		
+		if (Validator.isNotNull(dossierPart.getFormScript())) {
+			object.setEForm(true);
+			object.setFormScript(dossierPart.getFormScript());
+		}
+		
+		if (Validator.isNotNull(dossierPart.getFormReport())) {
+			object.setFormReport(dossierPart.getFormReport());
+		}
+		
+		if (Validator.isNotNull(dossierPart.getSampleData())) {
+			object.setFormData(dossierPart.getSampleData());
+		}
+
 
 		object.setDisplayName(displayName);
 		object.setOriginal(true);
@@ -157,6 +172,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		return dossierFilePersistence.update(object);
 	}
+	
+	
 
 	/**
 	 * POST /dossiers/{id}/files/copyfile
@@ -332,24 +349,24 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		// auto generate pdf
 		long fileEntryId = 0;
 
-		/*
-		 * try { File file =
-		 * FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
-		 * 
-		 * String sourceFileName = System.currentTimeMillis() +
-		 * StringPool.PERIOD + JRReportUtil.DocType.PDF.toString();
-		 * 
-		 * //JRReportUtil.createReportFile(jrxmlTemplate, formData, null,
-		 * file.getCanonicalPath());
-		 * 
-		 * FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
-		 * user.getPrimaryKey(), groupId, file, sourceFileName, serviceContext);
-		 * 
-		 * fileEntryId = fileEntry.getFileEntryId(); } catch(Exception e) {
-		 * throw new SystemException(e); }
-		 */
+		
+	/*	 try { File file =
+		 FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
+		  
+		 String sourceFileName = System.currentTimeMillis() +
+		 StringPool.PERIOD + JRReportUtil.DocType.PDF.toString();
+		 
+		  JRReportUtil.createReportFile(jrxmlTemplate, formData, null,
+		  file.getCanonicalPath());
+		  
+		  FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
+		  user.getPrimaryKey(), groupId, file, sourceFileName, serviceContext);
+		  
+		  fileEntryId = fileEntry.getFileEntryId(); } catch(Exception e) {
+		  throw new SystemException(e); }*/
+		 
 
-		//dossierFile.setFileEntryId(fileEntryId);
+		dossierFile.setFileEntryId(fileEntryId);
 
 		return dossierFilePersistence.update(dossierFile);
 	}
@@ -604,8 +621,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierFile.getDossierId());
 
 		if (dossier != null) {
-			if (!dossier.getDossierStatus().equalsIgnoreCase("new")
-					&& !dossier.getDossierStatus().equalsIgnoreCase("waiting")) {
+			if ( Validator.isNotNull(dossier.getDossierStatus()) && (!dossier.getDossierStatus().equalsIgnoreCase("new")
+					|| !dossier.getDossierStatus().equalsIgnoreCase("waiting"))) {
 
 				throw new InvalidDossierStatusException();
 			}

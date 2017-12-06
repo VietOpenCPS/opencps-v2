@@ -15,6 +15,7 @@ import org.opencps.api.context.provider.ServiceContextProvider;
 import org.opencps.api.context.provider.UserContextProvider;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
+import org.opencps.api.controller.impl.DossierActionManagementImpl;
 import org.opencps.api.controller.impl.DossierFileManagementImpl;
 import org.opencps.api.controller.impl.DossierLogManagementImpl;
 import org.opencps.api.controller.impl.DossierManagementImpl;
@@ -40,12 +41,15 @@ import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.liferay.portal.kernel.service.LayoutLocalService;
+
 @ApplicationPath("/v2")
 @Component(immediate = true, service = Application.class)
 public class BackendAPIRestApplication extends Application {
 
 	public Set<Object> getSingletons() {
 		Set<Object> singletons = new HashSet<Object>();
+		
 		
 		// add REST endpoints (resources)
 		singletons.add(new ApplicantManagementImpl());
@@ -57,6 +61,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new PaymentFileManagementImpl());
 		singletons.add(new DossierManagementImpl());
 		singletons.add(new DossierFileManagementImpl());
+		singletons.add(new DossierActionManagementImpl());
 		singletons.add(new DossierLogManagementImpl());
 		singletons.add(new ServerConfigManagementImpl());
 		singletons.add(new DossierSyncManagementImpl());

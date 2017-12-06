@@ -87,8 +87,8 @@ public interface PaymentFileManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Accsess denied", response = ExceptionModel.class) })
 	public Response getPaymentFileByReferenceUid (@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@ApiParam(value = "", required = true) @PathParam("id") Long id,
-			@ApiParam(value = "", required = true) @PathParam("referenceUid") String referenceUid);
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") Long id,
+			@ApiParam(value = "referenceUid of Payment", required = true) @PathParam("referenceUid") String referenceUid);
 	/* Get detail payment File follow ReferenceUid - END */
 
 	//4
@@ -144,7 +144,7 @@ public interface PaymentFileManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, 
 			@ApiParam(value = "id of payments", required = true) @PathParam("id") long id,
-			@ApiParam(value = "reference of paymentFile", required = true) @Multipart("referenceUid") String referenceUid,
+			@ApiParam(value = "reference of paymentFile", required = true) @PathParam("referenceUid") String referenceUid,
 			@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file,
 			@ApiParam(value = "Metadata of PaymentFile") @Multipart("confirmNote") String confirmNote,
 			@ApiParam(value = "Metadata of PaymentFile") @Multipart("paymentMethod") String paymentMethod,

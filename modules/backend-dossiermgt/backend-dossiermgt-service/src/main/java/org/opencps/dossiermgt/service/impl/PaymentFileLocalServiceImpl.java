@@ -317,6 +317,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		paymentFile.setCreateDate(now);
 		paymentFile.setModifiedDate(now);
 
+		paymentFile.setDossierId(dossierId);
 		paymentFile.setReferenceUid(referenceUid);
 		paymentFile.setGovAgencyCode(govAgencyCode);
 		paymentFile.setGovAgencyName(govAgencyName);
@@ -326,12 +327,14 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		paymentFile.setEpaymentProfile(epaymentProfile);
 		paymentFile.setBankInfo(bankInfo);
 
-		Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
-		if (dossier != null) {
+		try {
+			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 			dossier.setApplicantName(applicantName);
 			dossier.setApplicantIdNo(applicantIdNo);
 
 			dossierPersistence.update(dossier);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		paymentFilePersistence.update(paymentFile);
@@ -508,6 +511,12 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		return paymentFilePersistence.update(object);
 	}
 
+	//8
+	
+	public PaymentFile getPaymentFileByReferenceUid(long dossierId, String referenceUid) throws PortalException {
+
+		return paymentFilePersistence.findByD_RUID(dossierId, referenceUid);
+	}
 	@Override
 	public List<PaymentFile> getByDossierId(long dossierId) {
 		// TODO Auto-generated method stub

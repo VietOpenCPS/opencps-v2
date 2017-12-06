@@ -20,13 +20,17 @@ import java.util.List;
 
 import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.constants.DictItemGroupTerm;
+import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.exception.NoSuchDictItemGroupException;
 import org.opencps.datamgt.model.DictItemGroup;
 import org.opencps.datamgt.model.DictItemGroup;
+import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.base.DictItemGroupLocalServiceBaseImpl;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -42,7 +46,9 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.TermQuery;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.search.generic.TermQueryImpl;
 import com.liferay.portal.kernel.search.generic.MatchQuery.Operator;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
@@ -62,8 +68,7 @@ import org.opencps.auth.api.keys.ModelNameKeys;
  * <p>
  * All custom service methods should be put in this class. Whenever methods are
  * added, rerun ServiceBuilder to copy their definitions into the
- * {@link org.opencps.datamgt.service.DictItemGroupLocalService}
- * interface.
+ * {@link org.opencps.datamgt.service.DictItemGroupLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security
@@ -81,8 +86,8 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.datamgt.service.DictItemGroupLocalServiceUtil} to
-	 * access the dict item group local service.
+	 * org.opencps.datamgt.service.DictItemGroupLocalServiceUtil} to access the
+	 * dict item group local service.
 	 */
 	/**
 	 * @author binhth
@@ -311,6 +316,12 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 	}
 
+	public List<DictItemGroup> findByDictGroupId(long groupId, long dictGroupId) {
+
+		return dictItemGroupPersistence.findByF_dictGroupId(groupId, dictGroupId);
+
+	}
+
 	@SuppressWarnings("deprecation")
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
@@ -320,7 +331,12 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 		String userId = (String) params.get(DictItemGroupTerm.USER_ID);
 		String dictItemId = (String) params.get(DictItemGroupTerm.DICT_ITEM_ID);
 		String groupCode = (String) params.get(DictGroupTerm.GROUP_CODE);
+		String collectionCode = (String) params.get(DictGroupTerm.DICT_COLLECTION_CODE);
 		
+		_log.info(collectionCode);
+		
+		_log.info(groupCode);
+
 		Indexer<DictItemGroup> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DictItemGroup.class);
 
 		searchContext.addFullQueryEntryClassName(DictItemGroup.class.getName());
@@ -374,6 +390,17 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		}
 		
+		if (Validator.isNotNull(collectionCode)) {
+
+			MultiMatchQuery query = new MultiMatchQuery(collectionCode);
+
+			query.addFields(DictGroupTerm.DICT_COLLECTION_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+		}
+		
+
 		if (Validator.isNotNull(groupCode)) {
 
 			MultiMatchQuery query = new MultiMatchQuery(groupCode);
@@ -383,7 +410,34 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 		}
+
+
 		
+/*
+		if (Validator.isNotNull(groupCode)) {
+
+			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
+					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
+					: indexer.getFullQuery(searchContext);
+			TermQuery catQuery1 = new TermQueryImpl(DictGroupTerm.GROUP_CODE, groupCode);
+			TermQuery catQuery2 = new TermQueryImpl(DictGroupTerm.DICT_COLLECTION_CODE, collectionCode);
+
+			categoryQuery.add(catQuery1, BooleanClauseOccur.MUST);
+			categoryQuery.add(catQuery2, BooleanClauseOccur.MUST);
+			booleanQuery.add(categoryQuery, BooleanClauseOccur.MUST);
+
+		}*/
+/*		
+		if (Validator.isNotNull(collectionCode)) {
+
+			MultiMatchQuery query = new MultiMatchQuery(collectionCode);
+
+			query.addFields(DictGroupTerm.DICT_COLLECTION_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+		}
+*/
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, DictItemGroup.class.getName());
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -399,7 +453,9 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 		String userId = (String) params.get(DictItemGroupTerm.USER_ID);
 		String dictItemId = (String) params.get(DictItemGroupTerm.DICT_ITEM_ID);
 		String groupCode = (String) params.get(DictGroupTerm.GROUP_CODE);
-		
+
+		String collectionCode = (String) params.get(DictGroupTerm.DICT_COLLECTION_CODE);
+
 		Indexer<DictItemGroup> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DictItemGroup.class);
 
 		searchContext.addFullQueryEntryClassName(DictItemGroup.class.getName());
@@ -449,7 +505,42 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 		}
-		
+
+/*		if (Validator.isNotNull(groupCode)) {
+
+			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
+					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
+					: indexer.getFullQuery(searchContext);
+			TermQuery catQuery1 = new TermQueryImpl(DictGroupTerm.GROUP_CODE, groupCode);
+			TermQuery catQuery2 = new TermQueryImpl(DictGroupTerm.DICT_COLLECTION_CODE, collectionCode);
+
+			categoryQuery.add(catQuery1, BooleanClauseOccur.MUST);
+			categoryQuery.add(catQuery2, BooleanClauseOccur.MUST);
+			booleanQuery.add(categoryQuery, BooleanClauseOccur.MUST);
+
+		}
+*/
+/*		if (Validator.isNotNull(collectionCode)) {
+
+			MultiMatchQuery query = new MultiMatchQuery(collectionCode);
+
+			query.addFields(DictGroupTerm.DICT_COLLECTION_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+		}
+*/
+				
+		if (Validator.isNotNull(collectionCode)) {
+
+			MultiMatchQuery query = new MultiMatchQuery(collectionCode);
+
+			query.addFields(DictGroupTerm.DICT_COLLECTION_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+		}
+
 		if (Validator.isNotNull(groupCode)) {
 
 			MultiMatchQuery query = new MultiMatchQuery(groupCode);
@@ -459,10 +550,12 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 		}
-		
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, DictItemGroup.class.getName());
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
 	}
+	
+	Log _log = LogFactoryUtil.getLog(DictItemGroupLocalServiceUtil.class);
 }

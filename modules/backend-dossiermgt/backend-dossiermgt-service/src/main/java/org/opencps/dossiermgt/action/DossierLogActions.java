@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 
 public interface DossierLogActions {
 
-	public JSONObject getDossierLogs(long groupId, int notificationType, Boolean owner, int start, int end, String sort, String order,
+	public JSONObject getDossierLogs(long groupId, String notificationType, Boolean owner, int start, int end, String sort, String order,
 			ServiceContext serviceContext);
 
 	public DossierLog addDossierLog(long groupId, long dossierId, String author, String content,
@@ -24,5 +24,5 @@ public interface DossierLogActions {
 
 	public JSONObject getDossiers(long groupId, long dossierId, Sort[] sorts, int start, int end,
 			ServiceContext serviceContext);
-	
+
 }

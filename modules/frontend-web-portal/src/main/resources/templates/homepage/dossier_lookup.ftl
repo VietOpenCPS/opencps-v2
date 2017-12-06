@@ -8,7 +8,7 @@
 	<div class="col-sm-12">
 		<ul class="PT10 PB5" id="lvDossierResult"></ul>
 		<script type="text/x-kendo-template" id="tempDossierResult">
-			<li class="">NGUYỄN VĂN KHOA - <span>7666648658</span> <#-- #:name# - #:dossierId# --></li>
+			<li class="">#:applicantName# - #:dossierId#</li>
 		</script>
 		<div class="pager pull-left" id="pagerDossirResult"></div>
 	</div>
@@ -27,14 +27,14 @@
 		transport : {
 			read : function(options){
 				$.ajax({
-					url : "http://hanoi.fds.vn:2281/api/serviceinfos",
+					url : "${api.server}/dossiers?status=done",
 					dataType : "json",
 					type : "GET",
 					data : {
 						dossierCode : options.data.dossierCode
 					},
 					beforeSend: function(req) {
-						req.setRequestHeader('groupId', '20147');
+						req.setRequestHeader('groupId', ${groupId});
 					},
 					success : function(result){
 						options.success(result);
@@ -45,7 +45,7 @@
 				});
 			}
 		},
-		pageSize : 7,
+		pageSize : 10,
 		schema : {
 			total : "total",
 			data : "data",
@@ -65,8 +65,7 @@
 		linkTemplate: '<li><a href="\\#" class="k-link" data-#=ns#page="#=idx#"><i class="fa fa-circle" aria-hidden="true"></i></a></li>'
 	});
 	$("#btn-search-dossier").click(function(){
-		dataSourceDossierResult.read({
-			dossierCode : $("#searchDossierCode").val()
-		});
+		var keyword = $("#searchDossierCode").val();
+		window.location.href="http://v2.opencps.vn/tra-cuu-ho-so?keyword="+keyword+"";
 	});
 </script>

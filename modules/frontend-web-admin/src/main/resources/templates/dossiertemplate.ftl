@@ -122,7 +122,7 @@
 			schema: {
 				total: "total",
 				data: "data",
-				model : { id: "dossierTemplateId" },
+				model : { id: "dossierTemplateId" }
 			},
 			pageSize: 10,
 			serverPaging: false,
@@ -174,7 +174,8 @@
 
 				$("#dossiertemplate_part_container").show();
 				$("#dossiertemplate_part_form_container").hide();
-
+				console.log("dossierTemplateId---------------");
+				console.log(dataItem.id);
 				onSelectDossiertemplate(dataItem.id);
 			}
 		});
@@ -184,9 +185,13 @@
 		// });
 
 		var onSelectDossiertemplate = function(id){
-			$("#dossier_template_part_listview").getKendoListView().dataSource.read({
-				dossierTemplateId: id
-			});
+			if(id){
+				console.log("load parts 2");
+				$("#dossier_template_part_listview").getKendoListView().dataSource.read({
+					dossierTemplateId: id
+				});
+				console.log("load parts 3");
+			}
 		}
 
 		$("#dossier_template_pager").kendoPager({
@@ -277,6 +282,7 @@
 
 			$("#btn_save_dossier_template").attr("data-pk", dataItem.id);
 
+
 			onSelectDossiertemplate(dataItem.id);
 		});
 
@@ -303,6 +309,8 @@
 					dossierTemplate.set("templateName", $("#templateName_").val());
 					dossierTemplate.set("description", $("#description").val());
 
+					dossierTemplateDataSource.pushUpdate(result);
+
 					$("#dossier_template_list_view li[data-pk=" + dataPk + "]").addClass("k-state-selected");
 				},
 				error: function(result) {
@@ -314,7 +322,6 @@
 		}
 
 		var addDossierTemplete = function(){
-			console.log($("#templateName").val());
 			$.ajax({
 				url: "${api.server}" + "/dossiertemplates",
 				type: "POST",
@@ -330,17 +337,17 @@
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
 
-					dossierTemplateDataSource.insert(0, {
-						"dossierTemplateId": result.dossierTemplateId,
-						"templateNo": result.templateNo,
-						"templateName": result.templateName,
-						"description": result.description
-					});
+					dossierTemplateDataSource.insert(0, result);
 
 					$("#dossier_template_list_view div[data-pk=" + result.dossierTemplateId + "]").closest("li").addClass("k-state-selected");
 					$("#btn_save_dossier_template").attr("data-pk", result.dossierTemplateId);
 
-					$("#dossier_template_part_listview").data("kendoListView").dataSource.read({dossierTemplateId: result.dossierTemplateId});
+					console.log("add success----------------");
+					console.log(result.dossierTemplateId);
+
+
+					console.log(dossierTemplateDataSource.view());
+					onSelectDossiertemplate(result.dossierTemplateId);
 				},
 				error: function(result) {
 					if (result.responseJSON.description == "DuplicateTemplateNameException"){

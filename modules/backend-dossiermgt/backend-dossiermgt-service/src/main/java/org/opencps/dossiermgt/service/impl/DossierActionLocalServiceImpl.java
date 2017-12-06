@@ -15,17 +15,37 @@
 package org.opencps.dossiermgt.service.impl;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
 
+import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.service.base.DossierActionLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.BooleanQuery;
+import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -185,10 +205,144 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	public DossierAction getByNextActionId(long dossierId, long nextActionId) {
 		return dossierActionPersistence.fetchByDID_NACTID(dossierId, nextActionId);
 	}
-	
+		
 	public DossierAction getDossierActionById(long dossierId, long userId) {
 		return dossierActionPersistence.fetchByDID_UID(dossierId, userId);
 	}
 	
+	
+	public DossierAction getDossierActionbyDossierIdandActionCode(long dossierId, String actionCode){
+		return dossierActionPersistence.fetchByDID_ACTC(dossierId, actionCode);
+	}
+	
+	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
+			SearchContext searchContext) throws ParseException, SearchException {
 
+		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+		String groupId = (String) params.get(Field.GROUP_ID);
+//		String secetKey = GetterUtil.getString(params.get("secetKey"));
+
+		Indexer<DossierAction> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierAction.class);
+
+        searchContext.addFullQueryEntryClassName(CLASS_NAME);
+        searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+        searchContext.setAttribute("paginationType", "regular");
+        searchContext.setLike(true);
+        searchContext.setStart(start);
+        searchContext.setEnd(end);
+        searchContext.setAndSearch(true);
+        searchContext.setSorts(sorts);
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		if (Validator.isNotNull(keywords)) {
+
+			String[] keyword = keywords.split(StringPool.SPACE);
+
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(DossierActionTerm.DOSSIER_ID);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
+		}
+//		if (!(Validator.isNotNull(secetKey) && secetKey.contentEquals("OPENCPSV2"))) {
+			if (Validator.isNotNull(groupId)) {
+				MultiMatchQuery query = new MultiMatchQuery(groupId);
+
+				query.addFields(Field.GROUP_ID);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+
+//		}
+
+		String dossierId = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
+
+		if (Validator.isNotNull(dossierId)) {
+			MultiMatchQuery query = new MultiMatchQuery(dossierId);
+
+			query.addFields(DossierActionTerm.DOSSIER_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
+
+		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+	}
+	
+	public long countLucene(LinkedHashMap<String, Object> params, SearchContext searchContext)
+			throws ParseException, SearchException {
+
+		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+		String groupId = (String) params.get(Field.GROUP_ID);
+		String secetKey = GetterUtil.getString(params.get("secetKey"));
+		Indexer<DossierAction> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierAction.class);
+
+		searchContext.addFullQueryEntryClassName(CLASS_NAME);
+		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setLike(true);
+		searchContext.setAndSearch(true);
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		if (Validator.isNotNull(keywords)) {
+
+			String[] keyword = keywords.split(StringPool.SPACE);
+
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(DossierActionTerm.DOSSIER_ID);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
+		}
+
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
+
+			query.addFields(Field.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+
+		String dossierId = String.valueOf(params.get(DossierActionTerm.DOSSIER_ID));
+
+
+		if (Validator.isNotNull(dossierId)) {
+			MultiMatchQuery query = new MultiMatchQuery(dossierId);
+
+			query.addFields(DossierActionTerm.DOSSIER_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
+
+		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
+	}
+	
+	public static final String CLASS_NAME = DossierAction.class.getName();
 }
