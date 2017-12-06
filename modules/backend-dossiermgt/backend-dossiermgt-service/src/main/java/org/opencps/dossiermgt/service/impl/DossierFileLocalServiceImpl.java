@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -26,7 +27,7 @@ import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.exception.DuplicateDossierFileException;
 import org.opencps.dossiermgt.exception.InvalidDossierStatusException;
 import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
-//import org.opencps.dossiermgt.jasperreport.util.JRReportUtil;
+import org.opencps.dossiermgt.jasperreport.util.JRReportUtil;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
@@ -52,6 +53,7 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -349,24 +351,23 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		// auto generate pdf
 		long fileEntryId = 0;
 
-		/*
-		 * try { File file =
-		 * FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
-		 * 
-		 * String sourceFileName = System.currentTimeMillis() +
-		 * StringPool.PERIOD + JRReportUtil.DocType.PDF.toString();
-		 * 
-		 * //JRReportUtil.createReportFile(jrxmlTemplate, formData, null,
-		 * file.getCanonicalPath());
-		 * 
-		 * FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
-		 * user.getPrimaryKey(), groupId, file, sourceFileName, serviceContext);
-		 * 
-		 * fileEntryId = fileEntry.getFileEntryId(); } catch(Exception e) {
-		 * throw new SystemException(e); }
-		 */
+		
+		  try { 
+			  File file = FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
+		  
+			  String sourceFileName = System.currentTimeMillis() + StringPool.PERIOD + JRReportUtil.DocType.PDF.toString();
+		  
+			  JRReportUtil.createReportFile(jrxmlTemplate, formData, null, file.getCanonicalPath());
+		  
+			  FileEntry fileEntry = FileUploadUtils.uploadDossierFile( serviceContext.getUserId(), groupId, file, sourceFileName, serviceContext);
+		  
+			  fileEntryId = fileEntry.getFileEntryId(); 
+		  } catch(Exception e) {
+			  throw new SystemException(e); 
+		  }
+		 
 
-		//dossierFile.setFileEntryId(fileEntryId);
+		dossierFile.setFileEntryId(fileEntryId);
 
 		return dossierFilePersistence.update(dossierFile);
 	}
