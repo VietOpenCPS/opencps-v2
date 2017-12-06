@@ -41,5 +41,8 @@
 
 	<bean class="org.opencps.dossiermgt.service.indexer.DossierActionIndexer"
 		id="org.opencps.dossiermgt.service.indexer.DossierActionIndexer" />
+		
+	<bean class="org.opencps.dossiermgt.service.indexer.DossierFileIndexer"
+		id="org.opencps.dossiermgt.service.indexer.DossierFileIndexer" />
 
 </beans>
