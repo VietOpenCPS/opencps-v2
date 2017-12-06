@@ -44,47 +44,6 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 			SearchContext searchContext)
 		throws Exception {
 
-			addSearchTerm(
-				searchQuery, searchContext, DictItemTerm.DICT_COLLECTION_ID, false);
-			addSearchTerm(searchQuery, searchContext, DictItemTerm.GROUP_ID, false);
-			addSearchTerm(
-				searchQuery, searchContext, DictItemTerm.COMPANY_ID, false);
-			addSearchTerm(searchQuery, searchContext, DictItemTerm.USER_ID, false);
-			addSearchTerm(
-				searchQuery, searchContext, DictItemTerm.USER_NAME, false);
-			addSearchTerm(
-				searchQuery, searchContext, DictItemTerm.CREATE_DATE, false);
-			addSearchTerm(
-				searchQuery, searchContext, DictItemTerm.MODIFIED_DATE, false);
-			addSearchTerm(searchQuery, searchContext, DictItemTerm.DICT_COLLECTION_ID, false);
-			addSearchTerm(
-				searchQuery, searchContext, DictItemTerm.ITEM_CODE, true);
-			addSearchTerm(
-					searchQuery, searchContext, DictItemTerm.ITEM_NAME, true);
-			addSearchTerm(
-					searchQuery, searchContext, DictItemTerm.ITEM_NAME_EN, true);
-			addSearchTerm(
-					searchQuery, searchContext, DictItemTerm.ITEM_DESCRIPTION, true);
-			addSearchTerm(
-					searchQuery, searchContext, DictItemTerm.PARENT_ITEM_ID, false);
-			addSearchTerm(
-					searchQuery, searchContext, DictItemTerm.SIBLING, false);
-			addSearchTerm(
-					searchQuery, searchContext, DictItemTerm.TREE_INDEX, true);
-			addSearchTerm(
-					searchQuery, searchContext, DictItemTerm.LEVEL, false);
-			addSearchTerm(
-					searchQuery, searchContext, DictItemTerm.META_DATA, false);
-		LinkedHashMap<String, Object> params =
-			(LinkedHashMap<String, Object>)searchContext.getAttribute("params");
-
-		if (params != null) {
-			String expandoAttributes = (String)params.get("expandoAttributes");
-
-			if (Validator.isNotNull(expandoAttributes)) {
-				addSearchExpando(searchQuery, searchContext, expandoAttributes);
-			}
-		}
 	}
 
 	@Override
@@ -143,25 +102,6 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 		document.setSortableTextFields(new String[]{DictItemTerm.TREE_INDEX});
 		
 		return document;
-	}
-
-	@Override
-	protected String doGetSortField(String orderByCol) {
-		if (orderByCol.equals("email-address")) {
-			return "emailAddress";
-		}
-		else if (orderByCol.equals("first-name")) {
-			return "firstName";
-		}
-		else if (orderByCol.equals("job-title")) {
-			return "jobTitle";
-		}
-		else if (orderByCol.equals("last-name")) {
-			return "lastName";
-		}
-		else {
-			return orderByCol;
-		}
 	}
 
 	@Override

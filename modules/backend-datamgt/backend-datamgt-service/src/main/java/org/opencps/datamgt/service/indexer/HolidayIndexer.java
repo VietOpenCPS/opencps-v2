@@ -43,23 +43,6 @@ public class HolidayIndexer extends BaseIndexer<Holiday> {
 	public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
 			SearchContext searchContext) throws Exception {
 
-		addSearchTerm(searchQuery, searchContext, HolidayTerm.HOLIDAY_ID, false);
-		addSearchTerm(searchQuery, searchContext, HolidayTerm.GROUP_ID, false);
-		addSearchTerm(searchQuery, searchContext, HolidayTerm.COMPANY_ID, false);
-		addSearchTerm(searchQuery, searchContext, HolidayTerm.USER_ID, false);
-		addSearchTerm(searchQuery, searchContext, HolidayTerm.USER_NAME, false);
-		addSearchTerm(searchQuery, searchContext, HolidayTerm.CREATE_DATE, false);
-		addSearchTerm(searchQuery, searchContext, HolidayTerm.MODIFIED_DATE, false);
-
-		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
-
-		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
-
-			if (Validator.isNotNull(expandoAttributes)) {
-				addSearchExpando(searchQuery, searchContext, expandoAttributes);
-			}
-		}
 	}
 
 	@Override
