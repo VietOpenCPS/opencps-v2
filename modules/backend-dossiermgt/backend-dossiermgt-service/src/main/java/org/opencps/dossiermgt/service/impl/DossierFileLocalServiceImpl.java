@@ -445,7 +445,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
-
+		
 		BooleanQuery booleanQuery = null;
 
 		if (Validator.isNotNull(keywords)) {
