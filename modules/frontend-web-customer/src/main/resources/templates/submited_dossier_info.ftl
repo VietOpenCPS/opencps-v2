@@ -13,14 +13,14 @@
 
     <div class="row">
       <h3 class="text-center">NỘP HỒ SƠ THÀNH CÔNG</h3>
-      <p class="text-center">Mã hồ sơ đã nộp: <span class="text-light-blue" data-bind="text:dossierNo"></span> <span class="text-bold" style="color: green;"></span> </p> 
+      <p class="text-center">Mã hồ sơ đã nộp: <span class="text-light-blue" data-bind="text:dossierId"></span> ${(dossierId)!}<span class="text-bold" style="color: green;"></span> </p> 
     </div>
 
     <div class="row">
       <div class="col-xs-12 col-sm-12">
         <p><span class="text-bold">Ông/bà vui lòng gửi trực tiếp hoặc qua đường Bưu điện các giấy tờ sau đến <span data-bind="text:govAgencyName"></span> để hoàn tất thủ tục:</span></p>
       </div>
-      <div class="col-sm-12">
+      <div class="col-sm-12 MB10">
       	<div style="margin-left: 35px; margin-bottom: 15px;">
           <ul >
             <#-- <#list customer.domain as domain>
@@ -87,7 +87,7 @@
             headers : {"groupId": ${groupId}},
             success : function(result){
               console.log("success");
-              var dossierTemplateParts = funGetDossierTemplate(${dossierTemplateId});
+              var dossierTemplateParts = funGetDossierTemplate(result.dossierTemplateNo);
 
               var viewModel = kendo.observable({
                 serviceName : result.serviceName,
@@ -96,7 +96,7 @@
                 viaPostal : function(e){
                   console.log("viaPostal");
                   console.log(result.viaPostal);
-                  if(result.viaPostal){
+                  if(result.viaPostal < 2){
                     $("#viaPostal").remove();
                   }
                 },
@@ -129,7 +129,7 @@
         var dossierTemplates =  new Array();
         if(dossierTemplateId){
           $.ajax({
-            url : "${api.server}/dossiertemplates/${dossierTemplateId}",
+            url : "${api.server}/dossiertemplates/"+dossierTemplateId,
             dataType : "json",
             type : "GET",
             headers: {"groupId": ${groupId}},
