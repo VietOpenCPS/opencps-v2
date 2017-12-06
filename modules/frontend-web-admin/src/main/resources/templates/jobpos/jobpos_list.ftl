@@ -1,16 +1,14 @@
-<#if (Request)??>
 <#include "init.ftl">
-</#if>
 
 <div class="row">
 
-	<!-- left -->
+	<!— left —>
 	<div class="col-md-3 panel P0">
 
 		<!--search-->
 		<div class="panel-body">
 	
-			<span id="_jobpos_editLabel" class="btn btn-active image-preview-input btn-block"> 
+			<span id="_jobpos_editLabel" class="btn btn-primary image-preview-input btn-block"> 
 				<i class="fa fa-graduation-cap" aria-hidden="true"></i>
 				<span class="p-xxs" >Tổng số</span> 
 				<span id="_jobpos_CounterList">0</span>
@@ -24,7 +22,7 @@
 					oninput="_jobpos_autocompleteSearch(this.value)" 
 					placeholder="Tìm kiếm theo tên chức vụ">
 	
-				<div class="input-group-addon btn-active" id="_jobpos_btnSearch">
+				<div class="input-group-addon btn-primary" id="_jobpos_btnSearch">
 					
 					<i class="fa fa-search" aria-hidden="true"></i>
 	
@@ -35,23 +33,23 @@
 		</div>
 				
 			
-		<ul class="ul-with-border ul-default mh-head-2" id="_jobpos_listView"></ul>
+		<ul class="ul-with-border ul-with-border-style-2 mh-head-2" id="_jobpos_listView"></ul>
 		
 		<script type="text/x-kendo-tmpl" id="_jobpos_template">
 		
 			<li class="clearfix PT20 PR0 PB20 PL15">
 	
-				<div class="col-sm-1 clearfix PL0 PR0">
+				<div class="col-sm-2 clearfix PL0 PR0">
 					
 					<a href="javascript:;" >
 						
-						<i style="padding: 3px 5px;" class="fa fa-graduation-cap" aria-hidden="true"></i>
+						<i style="font-size: 30px;padding: 5px;" class="fa fa-graduation-cap" aria-hidden="true"></i>
 							
 					</a>
 						
 				</div>
 					
-				<div class="col-sm-10 PL5">
+				<div class="col-sm-9 PL0">
 				
 					<strong class="btn-block">#= title #</strong>
 					<span class="btn-block">
@@ -87,7 +85,7 @@
 		</script>
 
 	</div>
-	<!-- end left -->
+	<!— end left —>
 
 	<!--load right-->
 	<div class="col-md-9 " id="_jobpos_right-page"> </div>
@@ -160,6 +158,9 @@
 						type: 'POST',
 						dataType: 'json',
 						contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+						beforeSend: function( xhr ) {
+							$("#_jobPos_submitAddJobpos").button('loading');
+						},
 						success: function(data, textStatus, xhr) {
 							
 							var dataSource = $("#_jobpos_listView").getKendoListView().dataSource;
@@ -169,13 +170,13 @@
 							dataSource.pushUpdate(data);
 							$('#_jobpos_CounterList').html(dataSource.total());
 							showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-							
+							$("#_jobPos_submitAddJobpos").button('reset');
 						},
 						error: function(xhr, textStatus, errorThrown) {
 							
 							$("#_jobpos_listView").getKendoListView().dataSource.error();
 							showMessageByAPICode(xhr.status);
-						
+							$("#_jobPos_submitAddJobpos").button('reset');
 						}
 					});
 				},
@@ -225,28 +226,41 @@
 				},
 				destroy: function(options) {
 					
-					$.ajax({
-						url: _jobpos_BaseUrl + "/" + options.data.jobPosId,
-						headers: {
-							"groupId": ${groupId}
-						},
-						type: 'DELETE',
-						success: function(result) {
+					var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa bản ghi này?', $("#_jobpos_listView") );
+					
+					confirmWindown.then(function(confirmed){
+					
+						if(confirmed){
+	
+							$.ajax({
+								url: _jobpos_BaseUrl + "/" + options.data.jobPosId,
+								headers: {
+									"groupId": ${groupId}
+								},
+								type: 'DELETE',
+								success: function(result) {
+									
+									$("#_jobpos_hidden_new_id").val("0");
+									options.success();
+									$('#_jobpos_CounterList').html($("#_jobpos_listView").getKendoListView().dataSource.total());
+									showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
+									
+								},
+								error: function(xhr, textStatus, errorThrown) {
+								
+									$("#_jobpos_listView").getKendoListView().dataSource.error();
+									showMessageByAPICode(xhr.status);
+								
+								}
+				
+							});
+	
+						} else{
 							
-							$("#_jobpos_hidden_new_id").val("0");
-							options.success();
-							$('#_jobpos_CounterList').html($("#_jobpos_listView").getKendoListView().dataSource.total());
-							showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-							
-						},
-						error: function(xhr, textStatus, errorThrown) {
-						
-							$("#_jobpos_listView").getKendoListView().dataSource.error();
-							showMessageByAPICode(xhr.status);
-						
+							options.error();
 						}
-		
 					});
+					
 				},
 				parameterMap: function(options, operation) {
 					
@@ -282,12 +296,6 @@
 		$("#_jobpos_listView").kendoListView({
 		
 			remove: function(e) {
-				
-				if (!confirm("Xác nhận xoá " + e.model.get("title") + "?")) {
-			
-					e.preventDefault();
-				
-				}
 			
 			},
 			
@@ -344,7 +352,7 @@
 			$("#_jobpos_hidden_new_id").val(selected[0]);
 			
 			$("#_jobpos_right-page").load(
-				'${url.adminJobPosPortlet.jobpos_detail}&${portletNamespace}type=${constants.type_jobPos}&${portletNamespace}jobPosId='+selected[0]);
+				'${url.adminJobPosPortlet.jobpos_detail}&${portletNamespace}type=${constant.type_jobPos}&${portletNamespace}jobPosId='+selected[0]);
 			
 		}
 
@@ -358,6 +366,7 @@
 				'${url.adminJobPosPortlet.jobpos_detail}'
 				);
 			
+			$("#_jobpos_listView").getKendoListView().clearSelection();
 		});
 		
 	})(jQuery);
