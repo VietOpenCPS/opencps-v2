@@ -19,7 +19,7 @@
 			</div>
 			<div id="wrapMain">
 				<div class="col-sm-12 P0" id="customer_dossierlist">
-					<ul class="ul-with-border" data-role="listview" data-auto-bind="false" data-bind="source: dataSourceProfile" data-template="proFileTemplate" id="listViewDossier">
+					<ul class="ul-with-border" data-role="listview" data-auto-bind="false" data-bind="source: dataSourceProfile, events:{dataBound : changeList}" data-template="proFileTemplate" id="listViewDossier">
 						
 					</ul>
 				</div>
@@ -99,47 +99,48 @@
 						<span class="label #:label# MLA">#:status#</span> 
 					</div>
 				</div>
-				<div class="col-sm-12 PL0 PT5">
+				<div class="col-sm-12 PL0 PT5 PB5">
 					<div class="row M0">
-						<div class="col-sm-9">
-							<p>#:serviceName#</p>
-							<p>
+						<div class="col-sm-9" style="border-right: 1px solid \\#ddd">
+							<p class="MB5">#:serviceName#</p>
+							<p class="MB5">
 								<i class="fa fa-university" style="color: \\#84FAFA;" aria-hidden="true"></i> #:govAgencyName#
 							</p>
 							
-							<p>
+							<p class="MB5">
 								#if(typeof actionNote !== "undefined"){#
 									<i class="fa fa-bolt" aria-hidden="true" style="color: red;"></i> 
 									<i>#:actionNote#</i>
 								#}#
 							</p>
 
-							<p>
+							<p class="MB5">
 								#if(typeof stepInstruction !== "undefined"){#
 									<i class="text-light-gray">#:stepInstruction#</i>
 								#}#
 							</p>
-							
-							#if(dossierStatus === "waiting"){#
-								<a href="javascript:;" data-Pk="#:id#" class="downloadAddRes" style="margin-right: 10px;">
+							<p class="actionDossier MB0">
+								#if(dossierStatus === "waiting"){#
+								<a href="javascript:;" data-Pk="#:id#" class="downloadAddRes PR15">
 									<i class="fa fa-download" aria-hidden="true">
 									</i> Tải yêu cầu bổ sung
 								</a>
-							#}#
+								#}#
 
-							#if(dossierStatus === "done"){#
-								<a href="javascript:;" data-Pk="#:id#" class="downloadProfile" style="margin-right: 10px;">
-									<i class="fa fa-download" aria-hidden="true">
-									</i> Tải giấy tờ kết quả
-								</a>
-							#}#
-							<#-- ${api.server}/dossiers/#:id#/result -->
-							#if(dossierStatus === "done" ){#
-								<a href="javascript:;" data-Pk="#:id#" class="copyProfile"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Sao chép hồ sơ
-								</a>
-							#}#
+								#if(dossierStatus === "done"){#
+									<a href="javascript:;" data-Pk="#:id#" class="downloadProfile PR15">
+										<i class="fa fa-download" aria-hidden="true">
+										</i> Tải giấy tờ kết quả
+									</a>
+								#}#
+								<#-- ${api.server}/dossiers/#:id#/result -->
+								#if(dossierStatus === "done" ){#
+									<a href="javascript:;" data-Pk="#:id#" class="copyProfile PR15"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Sao chép hồ sơ
+									</a>
+								#}#
+							</p>	
 						</div>
-						
+						<#-- Content DATE -->
 						<div class="col-sm-3 text-right">
 							<div class="row">
 								#if(submitDate != ""){#
@@ -172,14 +173,14 @@
 				<div class="panel panel-main MB15" id="sideItemAdd" style="display: none">
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Yêu cầu bổ sung</span>
-						<span class="pull-right clickable" data-toggle="collapse" data-target="#additionalRequirement">
+						<span class="pull-right clickable" data-toggle="collapse" data-target="#additionalRequirement" data-bind="events:{click: jsCollaps}">
 							<i class="glyphicon glyphicon-chevron-up"></i>
 							<i class="glyphicon glyphicon-chevron-down" style="display: none"></i>
 						</span>
 						<span class="pull-right MR10 text-light-gray hover-pointer" id="sort_modified" title="Sắp xếp theo ngày" data-button-count="1" data-bind="events:{click: sortDate}"><i class="fa fa-calendar" aria-hidden="true"></i></span>
 					</div>
 					<div class="panel-body P0 collapse in" id="additionalRequirement">
-						<ul class="ul-with-border" data-role="listview" data-bind="source:dataAddRequest" data-auto-bind="false" data-template="additional_Requirement_Template" id="wrapAddRes">
+						<ul class="ul-with-border" data-role="listview" data-bind="source:dataAddRequest" data-auto-bind="false" data-template="additional_Requirement_Template" id="wrapAddRes" style="border-bottom: 1px dashed #ddd">
 							
 						</ul>
 						<div class="clearfix align-middle PL10">
@@ -193,14 +194,14 @@
 				<div class="panel panel-main MB15" id="sideItemPayment" style="display: none"> 
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Yêu cầu thanh toán</span> 
-						<span class="pull-right clickable" data-toggle="collapse" data-target="#paymentRequest"> 
+						<span class="pull-right clickable" data-toggle="collapse" data-target="#paymentRequest" data-bind="events:{click: jsCollaps}"> 
 							<i class="icon_collapse glyphicon glyphicon-chevron-up"></i>
 							<i class="glyphicon glyphicon-chevron-down" style="display: none"></i>
 						</span>
 						<span class="pull-right MR10 text-light-gray hover-pointer" id="sort_modified1" title="Sắp xếp theo ngày" data-bind="events:{click: sortDate}"><i class="fa fa-calendar" aria-hidden="true"></i></span>
 					</div> 
 					<div class="panel-body P0 collapse in" id="paymentRequest">
-						<ul class="ul-with-border" data-role="listview" data-bind="source: dataPayRequest" data-auto-bind="false" data-template="payment_Request_Template" id="wrapPayRes">
+						<ul class="ul-with-border" data-role="listview" data-bind="source: dataPayRequest" data-auto-bind="false" data-template="payment_Request_Template" id="wrapPayRes" style="border-bottom: 1px dashed #ddd">
 							
 						</ul>
 						<div class="clearfix align-middle PL10">
@@ -215,14 +216,14 @@
 				<div class="panel panel-main" id="sideItemResult" style="display: none"> 
 					<div class="panel-heading row-header">
 						<span class="panel-title">Trả kết quả</span> 
-						<span class="pull-right clickable" data-toggle="collapse" data-target="#resultRequest"> 
+						<span class="pull-right clickable" data-toggle="collapse" data-target="#resultRequest" data-bind="events:{click: jsCollaps}"> 
 							<i class="icon_collapse glyphicon glyphicon-chevron-up"></i>
 							<i class="glyphicon glyphicon-chevron-down" style="display: none"></i>
 						</span> 
 						<span class="pull-right MR10 text-light-gray hover-pointer" id="sort_modified2" title="Sắp xếp theo ngày" data-bind="events:{click: sortDate}"><i class="fa fa-calendar" aria-hidden="true"></i></span>
 					</div>
 					<div class="panel-body P0 collapse in" id="resultRequest">	
-						<ul class="ul-with-border" data-role="listview" data-bind="source: dataResult" data-auto-bind="false" data-template="result_Request_Template" id="wrapResult">
+						<ul class="ul-with-border" data-role="listview" data-bind="source: dataResult" data-auto-bind="false" data-template="result_Request_Template" id="wrapResult" style="border-bottom: 1px dashed #ddd">
 							
 						</ul>
 						<div class="clearfix align-middle PL10">
@@ -237,7 +238,7 @@
 		<#-- For menu additionnal -->
 	<script type="text/x-kendo-template" id="additional_Requirement_Template">
 		<li data-pk="#:id#" class="P10 hover-pointer" title="Xem chi tiết" data-bind="events:{click: loadDossierDetail}">
-			<p>#:content#</p>
+			<p class="MB5">#:content#</p>
 			<span class="text-light-gray">#:govAgencyName#</span> <br>
 			<span class="text-light-gray">#:createDate#</span>
 		</li>
@@ -245,7 +246,7 @@
 		<#-- For menu payment -->
 	<script type="text/x-kendo-template" id="payment_Request_Template">
 		<li data-pk="#:id#" class="P10 hover-pointer" title="Xem chi tiết" data-bind="events:{click: loadDossierDetail}">
-			<p>#:content#</p>
+			<p class="MB5">#:content#</p>
 			<span class="text-light-gray">#:govAgencyName#</span> <br>
 			<span class="text-light-gray">#:createDate#</span>
 		</li>
@@ -253,7 +254,7 @@
 		<#-- For menu result -->
 	<script type="text/x-kendo-template" id="result_Request_Template">
 		<li data-pk="#:id#" class="P10 hover-pointer" title="Xem chi tiết" data-bind="events:{click: loadDossierDetail}">
-			<p>#:content#</p>
+			<p class="MB5">#:content#</p>
 			<span class="text-light-gray">#:govAgencyName#</span> <br>
 			<span class="text-light-gray">#:createDate#</span>
 		</li>

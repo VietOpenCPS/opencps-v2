@@ -77,20 +77,18 @@
 						},
 						success:function(result){
 							if (result.total!=0) {
-								// dataSourceProfile.page(1);
-								//
 								$(result.data).each(function(index, value){
 									value.count = index + 1;
 								});
 							};
 							options.success(result);
-							loadProfile();
-							loadAddRes();
-							copyProfile();
 							optBoxPageSize();
-							//
+							if (result.total!=0) {
+								dataSourceProfile.page(1);
+							};
+							
 							$("#statusName").html($(".itemStatus.active > a").text());
-							// 
+							//
 							$('.optPage[value="'+dataSourceProfile.pageSize()+'"]').attr("selected","selected");
 							// Option kendo-page
 							$(".k-pager-first").css("display","none");
@@ -99,7 +97,6 @@
 						},
 						error:function(result){
 							options.error(result);
-							$(".loading").hide();
 						}
 					});
 				}
@@ -115,12 +112,6 @@
 		});
 		
 	// Source for sidebar list
-		var jsCollaps = function(){
-			// js collapse
-			$(".clickable").on("click",function() {
-				$(this).children().toggle();
-			});
-		};
 		var dataAddRequest = new kendo.data.DataSource({
 			transport:{
 				read:function(options){
@@ -140,7 +131,6 @@
 								$("#sideItemAdd").show();
 								$("#total_Additional_Requirement").text(dataAddRequest.total());
 							};
-							jsCollaps();
 							// Option kendo-page
 							$(".k-pager-first").css("display","none");
 							$(".k-pager-last").css("display","none");
@@ -164,6 +154,7 @@
 			transport:{
 				read:function(options){
 					$.ajax({
+						// url: "http://localhost:3000/dossierlogs",
 						url:"${api.server}/dossierlogs",
 						dataType:"json",
 						type:"GET",
@@ -178,7 +169,6 @@
 								$("#sideItemPayment").show();
 								$("#total_Payment_Request").text(dataPayRequest.total());
 							};
-							jsCollaps();
 							// Option kendo-page
 							$(".k-pager-first").css("display","none");
 							$(".k-pager-last").css("display","none");
@@ -217,7 +207,6 @@
 								$("#sideItemResult").show();
 								$("#total_result").text(dataResult.total());
 							};
-							jsCollaps();
 							// Option kendo-page
 							$(".k-pager-first").css("display","none");
 							$(".k-pager-last").css("display","none");
@@ -320,7 +309,7 @@
 				e.stopPropagation();
 				var id = $(this).attr("data-Pk");
 				$.ajax({
-					url:"${api.server}/dossiers/"+id,
+					url:"${api.server}/dossiers/"+id+"/download",
 					headers: {"groupId": ${groupId}},
 					dataType:"json",
 					type:"GET",
@@ -387,6 +376,14 @@
 			stylePager: function(e){
 				e.preventDefault();
 				$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"})
+			},
+			changeList: function(e){
+				e.preventDefault();
+				loadProfile();
+				loadAddRes();
+				copyProfile();
+				$(".actionDossier a").hover(function(){ $(this).css("color","#14bef0")}, function(){ $(this).css("color","#2a2a2a") }
+				);
 			}
 		});
 		
@@ -455,9 +452,13 @@
 						flagSortResult = true;
 					}
 				};
+			},
+			jsCollaps: function(e){
+				$(e.currentTarget).children().toggle();
 			}
-		})
+		});
 	</script>
+		
 
 
 	
