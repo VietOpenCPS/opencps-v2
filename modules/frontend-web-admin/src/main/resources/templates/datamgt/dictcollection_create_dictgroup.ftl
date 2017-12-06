@@ -1,6 +1,4 @@
-<#if (Request)??>
 <#include "init.ftl">
-</#if>
 
 <div class="modal-header form-group">
 
@@ -71,11 +69,11 @@
 				
 				<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 				
-					<button class="btn btn-sm btn-active btn-sm pull-right" 
+					<button class="btn btn-sm btn-primary btn-sm pull-right" 
 						id="_collectionSub_dictGroup_edit_editDictGroup" 
 						name="_collectionSub_dictGroup_edit_editDictGroup" 
 						data-pk="${(param.dictCollection_groupCode)!}" 
-						type="button" >
+						type="button" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 
 						<i class="fa fa-check-circle"></i>
 						<span class="lfr-btn-label">Xác nhận</span>

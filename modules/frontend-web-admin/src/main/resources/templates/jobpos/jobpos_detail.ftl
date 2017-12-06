@@ -1,7 +1,4 @@
-<#if (Request)??>
 <#include "init.ftl">
-</#if>
-
 <div class="row panel">
 	
 	<div class="form-group">
@@ -61,7 +58,9 @@
 				
 			<div class="form-group text-right">
 			
-				<button class="btn btn-sm btn-active btn-default" id="_jobposDetail_submitBtn" name="_jobposDetail_submitBtn" type="button" data-pk="${(param.jobPos_jobPosId)!}">
+				<button class="btn btn-sm btn-primary btn-default" 
+					id="_jobposDetail_submitBtn" name="_jobposDetail_submitBtn" type="button" data-pk="${(param.jobPos_jobPosId)!}"
+					data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 					<i class="fa fa-check-circle"></i>
 					<span class="lfr-btn-label">Xác nhận</span>
 				</button>
@@ -118,7 +117,9 @@
 
 				},
 				dataType: 'json',
-				
+				beforeSend: function( xhr ) {
+					$(event.currentTarget).button('loading');
+				},
 				success: function(data) {
 
 					if (data.hasOwnProperty('msg') && data.msg == "error") {
@@ -143,10 +144,10 @@
 						showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
 
 					}
-
+					$(event.currentTarget).button('reset');
 				},
 				error: function(xhr, textStatus, errorThrown) {
-					
+					$(event.currentTarget).button('reset');
 					showMessageToastr("error", 'Yêu cầu của bạn xử lý thất bại!');
 
 				}
@@ -207,9 +208,6 @@
 		transport: {
 
 			read: function(options) {
-
-				console.log("_jobposDetail_permission_dataSource");
-				console.log(options);
 				
 				$.ajax({
 				
@@ -351,10 +349,10 @@
 	
 	var _jobposDetail_leader = $("#_jobposDetail_leader").kendoDropDownList({
 		dataSource: [
-				{ value:0, text: "Thông thường"},
-				{ value:1, text: "Cấp trưởng"},
-				{ value:2, text: "Cấp phó"}
-			],
+					{ value:0, text: "Thông thường"},
+					{ value:1, text: "Cấp trưởng"},
+					{ value:2, text: "Cấp phó"}
+					],
 		dataTextField: "text",
 		dataValueField: "value"
 		
