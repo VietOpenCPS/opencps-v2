@@ -349,24 +349,24 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		// auto generate pdf
 		long fileEntryId = 0;
 
-		/*
-		 * try { File file =
-		 * FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
-		 * 
-		 * String sourceFileName = System.currentTimeMillis() +
-		 * StringPool.PERIOD + JRReportUtil.DocType.PDF.toString();
-		 * 
-		 * //JRReportUtil.createReportFile(jrxmlTemplate, formData, null,
-		 * file.getCanonicalPath());
-		 * 
-		 * FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
-		 * user.getPrimaryKey(), groupId, file, sourceFileName, serviceContext);
-		 * 
-		 * fileEntryId = fileEntry.getFileEntryId(); } catch(Exception e) {
-		 * throw new SystemException(e); }
-		 */
+		
+	/*	 try { File file =
+		 FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
+		  
+		 String sourceFileName = System.currentTimeMillis() +
+		 StringPool.PERIOD + JRReportUtil.DocType.PDF.toString();
+		 
+		  JRReportUtil.createReportFile(jrxmlTemplate, formData, null,
+		  file.getCanonicalPath());
+		  
+		  FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
+		  user.getPrimaryKey(), groupId, file, sourceFileName, serviceContext);
+		  
+		  fileEntryId = fileEntry.getFileEntryId(); } catch(Exception e) {
+		  throw new SystemException(e); }*/
+		 
 
-		//dossierFile.setFileEntryId(fileEntryId);
+		dossierFile.setFileEntryId(fileEntryId);
 
 		return dossierFilePersistence.update(dossierFile);
 	}

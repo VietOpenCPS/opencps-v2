@@ -1,28 +1,22 @@
 <#if (Request)??>
 <#include "init.ftl">
 </#if>
-
-<div class="modal-dialog modal-lg">
+<div class="modal-dialog modal-full">
 	<!-- Modal content-->
 	<div class="modal-content">
 
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal">&times;</button>
-			<h4 class="modal-title">Thành Phần Hồ Sơ</h4>
-		</div>
+		<div class="modal-body eq-height">
+			<div class="row eq-height M0 full-width">
 
-		<div class="modal-body">
-			<div class="row">
-
-				<div class="col-sm-3 PR0">
+				<div class="col-sm-3 box no-border-radius">
+					<div class="row" style="margin-bottom : 3px;">
+						<div class="col-sm-12 PT15 PB15" style="background-color: #ccc;">
+							<span class="text-bold">Thành phần hồ sơ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span>#${(dossierId)!}</span> <i class="fa fa-times pull-right hover-pointer" aria-hidden="true" data-dismiss="modal" style="font-size: 150%;"></i>
+						</div>
+					</div>
 					<div class="row">
 						<form action="" id="fileArchiveForm">
-							<div class="col-sm-12">
-								<div class="form-group search-icon">
-									<input type="text" class="form-control" placeholder="Nhập từ khóa">
-								</div>
-							</div>
-							<div class="col-sm-12">
+							<div class="col-sm-12 P0">
 								<ul id="listViewDossierFile"></ul>
 								<#assign index = 0>
 								<script type="text/x-kendo-template" id="templateDossierFiles">
@@ -79,104 +73,71 @@
 			</div>
 
 			<div class="col-sm-9">
-				<div id="fileCarousel" class="carousel slide" data-ride="carousel" data-interval="false"> 
+				<div id="fileCarousel" class="carousel slide row" data-ride="carousel" data-interval="false"> 
 					<ul class="carousel-inner" id="listViewCarouselDossierFile">
 
 					</ul>
 					<script type="text/x-kendo-template" id="templateCarouselDossierFile">
 						<li class="item" data-pk="#:id#">
-							<#-- <iframe class="fred" style="border:1px solid \\#666CCC" title="PDF in an i-Frame" src="${api.server}/dossiers/${dossierId}/files/#:id#" frameborder="0" scrolling="auto" height="500" width="100%" >
-						</iframe> -->
-						<#-- #
-							$.ajax({
-								url : "${api.server}/dossiers/${dossierId}/files/"+id,
-								type : "GET",
-								headers : {"groupId": ${groupId}},
-								success : function (result) {
-									if(result){
-						#
-							<iframe class="fred" style="border:1px solid \\#666CCC" title="PDF in an i-Frame" src="data:application/pdf;base64,escape(#:result#)" scrolling="auto" height="500" width="100%" frameborder="0"></iframe>
-						#
-									}
-								},
-								error : function (result) {
-									
-								}
-							});
-							# -->
-							#
-							var data;
-							$.ajax({
-								url : "${api.server}/dossiers/${dossierId}/files/"+id,
-								type : "GET",
-								headers : {"groupId": ${groupId}},
-								async : false,
-								success : function (result) {
-									if(result){
-										data = result;
-									}
-								},
-								error : function (result) {
-									
-								}
-							});
-							#
-							<object data="${api.server}/dossiers/${dossierId}/files/#:id#" type="application/pdf" width="100%" height="100%">
-								<embed width="100%" height="100%" name="plugin" src="data:application/pdf;base64,#:data#">
-							</object>
-						</li>
-					</script>
-					<a class="left carousel-control control-left" href="#fileCarousel" data-slide="prev">
-						<span class="glyphicon glyphicon-chevron-left"></span>
-						<span class="sr-only">Previous</span>
-					</a>
-					<a class="right carousel-control control-right" href="#fileCarousel" data-slide="next">
-						<span class="glyphicon glyphicon-chevron-right"></span>
-						<span class="sr-only">Next</span>
-					</a>
+							
+							<object data="${api.server}/dossiers/${dossierId}/files/#:id#/preview" type="application/pdf" width="100%" height="100%">
+								<embed width="100%" height="100%" name="plugin" src="${api.server}/dossiers/${dossierId}/files/#:id#/preview">
+								</object>
+							</li>
+						</script>
+						<a class="left carousel-control control-left" href="#fileCarousel" data-slide="prev">
+							<span class="glyphicon glyphicon-chevron-left"></span>
+							<span class="sr-only">Previous</span>
+						</a>
+						<a class="right carousel-control control-right" href="#fileCarousel" data-slide="next">
+							<span class="glyphicon glyphicon-chevron-right"></span>
+							<span class="sr-only">Next</span>
+						</a>
+					</div>
 				</div>
+
 			</div>
-
 		</div>
-	</div>
 
-</div>
+	</div>
 
 </div>
 
 <script type="text/javascript">
 	$(function(){
 		/*		var template = kendo.template($("#template").html());*/
-		var fnBindClickDeleteFile = function(){
+		var fnBindClickDeleteFile = function(dataSource){
 			$(".btn-delete-component-profile").unbind().click(function(event){
 				event.preventDefault();
 				var id=$(this).attr("data-pk");
-				$.ajax({
-					url : "${api.server}/dossiers/${dossierId}/files/"+id,
-					type : "DELETE",
-					dataType : "json",
-					headers : {"groupId": ${groupId}},
-					data : {
-						id : id
-					},
-					success:function(result){
-						var item = dataSourceDossierFile.get(id);
-						if(item){
-							dataSourceDossierFile.remove(item);
+				var cf = confirm("Bạn có muốn xóa tệp tin này!");
+				if(cf){
+					$.ajax({
+						url : "${api.server}/dossiers/${dossierId}/files/"+id,
+						type : "DELETE",
+						dataType : "json",
+						headers : {"groupId": ${groupId}},
+						data : {
+
+						},
+						success:function(result){
+
+							dataSource.pushDestroy(result);
+
+							notification.show({
+								message: "Xóa thành công!"
+							}, "success");
+
+						},
+						error:function(result){
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
 						}
-						console.log(item);
-						notification.show({
-							message: "Đổi mật khẩu thành công"
-						}, "success");
 
-					},
-					error:function(result){
-						notification.show({
-							message: "Xẩy ra lỗi, vui lòng thử lại"
-						}, "error");
-					}
-
-				});
+					});
+				}
+				
 				console.log(id);
 			});
 		}
@@ -192,6 +153,15 @@
 						headers : {"groupId": ${groupId}},
 						success : function (result) {
 							options.success(result);
+							if(!result.data){
+								$("#profileDetail").modal("hide");
+
+								notification.show({
+									message: "Bạn chưa tải file lên, Vui lòng tải lên để xem"
+								}, "error");
+							}else {
+								$("#profileDetail").modal("show");
+							}
 						},
 						error : function (result) {
 							options.error(result);
@@ -203,7 +173,7 @@
 				data : "data",
 				total : "total",
 				model : {
-					id:"referenceUid"
+					id : "referenceUid"
 				}
 			},
 			change: function() { 
@@ -257,8 +227,9 @@
 			},
 			selectable : "single",
 			dataBound : function(e) {
+				console.log(e);
 				printDossierPartName();
-				fnBindClickDeleteFile();
+				fnBindClickDeleteFile($("#listViewDossierFile").getKendoListView().dataSource);
 			},
 			change: onChange
 		});
@@ -309,7 +280,7 @@
 
 		var printDossierPartName = function() {
 			$.ajax({
-				url : "${api.server}/dossiertemplates/${dossierTemplateId}",
+				url : "${api.server}/dossiertemplates/"+$("#dossierTemplateNo").val(),
 				type : "GET",
 				dataType : "json",
 				headers : {"groupId": ${groupId}},

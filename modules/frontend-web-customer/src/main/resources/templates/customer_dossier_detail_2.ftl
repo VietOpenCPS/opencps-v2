@@ -11,11 +11,11 @@
 			<div class="background-triangle-big">Tên thủ tục</div> 
 			<span class="text-bold" data-bind="text:serviceName"></span>
 			<div class="pull-right group-icons">
-				<a href="javascript:;" onclick="funSubmitDossier()" >
+				<a href="javascript:;" id="btn-submit-dossier-header" onclick="funSubmitDossier()" >
 					<i class="fa fa-paper-plane" aria-hidden="true"></i> 
 					Nộp hồ sơ
 				</a>
-				<a href="#">
+				<a href="javascript:;" onclick="funDeleteDossier(${(dossierId)!})">
 					<i class="fa fa-trash"></i>
 					Xóa
 				</a>
@@ -31,13 +31,13 @@
 				<span class="text-bold">Trạng thái</span>: <i data-bind="text:dossierStatusText"></i>
 			</div>
 			<div class="col-sm-7">
-				<span class="text-bold">Mã số hồ sơ</span>: <span data-bind="text : dossierNo"></span>
+				<span class="text-bold">Mã số hồ sơ</span>: <span data-bind="text : dossierId"></span>
 			</div>
 		</div>
 
 		<div class="guide-section">
 			<div class="head-part">
-				<div class="background-triangle-small"><i class="fa fa-star"></i></div> <span class="text-uppercase">Hướng dẫn</span> <span class="text-light-gray">((gồm các bước làm thủ tục))</span>
+				<div class="background-triangle-small"><i class="fa fa-star"></i></div> <span class="text-uppercase">Hướng dẫn</span> <span class="text-light-gray">(gồm các bước làm thủ tục)</span>
 			</div>
 			<div class="content-part">
 				<span data-bind="text:stepInstruction"></span>
@@ -59,7 +59,7 @@
 									<label>Họ và tên</label>
 								</div>
 								<div class="col-sm-10">
-									<span id="contactName" data-pk="1" data-type="text" data-toggle="#editContactName" data-original-title="Nhập họ và tên" tabindex="-1" class="" data-bind="text:contactName"></span>
+									<span id="contactName" data-pk="1" data-type="text" data-toggle="#editContactName" data-original-title="Nhập họ và tên" tabindex="-1" class="" data-bind="text:contactName" required></span>
 									<span class="pull-right">
 										<a href="javascript:;" id="editContactName" style="float: right"><i class="fa fa-pencil"></i></a>
 									</span>
@@ -71,7 +71,7 @@
 									<label>Địa chỉ</label>
 								</div>
 								<div class="col-sm-10">
-									<span id="address" data-pk="1" data-type="text" data-toggle="#editAddress" data-original-title="Nhập địa chỉ" tabindex="-1" class="" data-bind="text:address"></span>
+									<span id="address" data-pk="1" data-type="text" data-toggle="#editAddress" data-original-title="Nhập địa chỉ" tabindex="-1" class="" data-bind="text:address" required></span>
 									<span class="pull-right">
 										<a href="javascript:;" id="editAddress" style="float: right"><i class="fa fa-pencil"></i></a>
 									</span>
@@ -83,7 +83,7 @@
 									<label>Tỉnh/ Thành phố</label>
 								</div>
 								<div class="col-sm-10">
-									<span id="city" data-pk="1" data-type="select" data-toggle="#editCity" data-original-title="Chọn tỉnh/ thành phố" tabindex="-1" class="" data-bind="text:cityName"><#-- ${api.applicant.cityName} --></span>
+									<span id="city" data-pk="1" data-type="select" data-toggle="#editCity" data-original-title="Chọn tỉnh/ thành phố" tabindex="-1" class="" data-bind="text:cityName" required><#-- ${api.applicant.cityName} --></span>
 									<span class="pull-right">
 										<a href="javascript:;" id="editCity" style="float: right"><i class="fa fa-pencil"></i></a>
 									</span>
@@ -94,7 +94,7 @@
 									<label>Quận/ Huyện</label>
 								</div>
 								<div class="col-sm-10">
-									<span id="district" data-pk="1" data-type="select" data-toggle="#editDistrict" data-original-title="Chọn quận/ huyện" tabindex="-1" class="" data-bind="text:districtName"><#-- ${api.applicant.districtName} --></span>
+									<span id="district" data-pk="1" data-type="select" data-toggle="#editDistrict" data-original-title="Chọn quận/ huyện" tabindex="-1" class="" data-bind="text:districtName" required><#-- ${api.applicant.districtName} --></span>
 									<span class="pull-right">
 										<a href="javascript:;" id="editDistrict" style="float: right"><i class="fa fa-pencil"></i></a>
 									</span>
@@ -105,7 +105,7 @@
 									<label>Xã/ Phường</label>
 								</div>
 								<div class="col-sm-10">
-									<span id="wards" data-pk="1" data-type="select" data-toggle="#editWards" data-original-title="Chọn xã/ phường" tabindex="-1" class="" data-bind="text:wardName"><#-- ${api.applicant.wardName} --></span>
+									<span id="wards" data-pk="1" data-type="select" data-toggle="#editWards" data-original-title="Chọn xã/ phường" tabindex="-1" class="" data-bind="text:wardName" required><#-- ${api.applicant.wardName} --></span>
 									<span class="pull-right">
 										<a href="javascript:;" id="editWards" style="float: right"><i class="fa fa-pencil"></i></a>
 									</span>
@@ -117,7 +117,7 @@
 									<label>Điện thoại</label>
 								</div>
 								<div class="col-sm-10">
-									<span id="contactTelNo" data-pk="1" data-type="text" data-toggle="#editContactTelNo" data-original-title="Nhập số điện thoại" tabindex="-1" class="" data-bind="text:contactTelNo"></span>
+									<span id="contactTelNo" data-pk="1" data-type="text" data-toggle="#editContactTelNo" data-original-title="Nhập số điện thoại" tabindex="-1" class="" data-bind="text:contactTelNo" required></span>
 									<span class="pull-right">
 										<a href="javascript:;" id="editContactTelNo" style="float: right"><i class="fa fa-pencil"></i></a>
 									</span>
@@ -150,7 +150,7 @@
 					#if(partType == 1){#
 					<div class="row-parts-head align-middle">
 						<span class="text-bold MR5">#:itemIndex#.</span>
-						<span>&nbsp;&nbsp;#:partName# 
+						<span>#:partName# 
 							#if(required){#
 							<span class="red">*</span>
 							#}#
@@ -205,8 +205,7 @@
 					"options" : result.options,
 					"view" : result.view
 				});
-
-
+				
 				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca" class="btn btn-active MB10 MT10" type="button" data-pk="'+id+'">Ghi lại</button></div></div>');
 				$("\\#btn-save-formalpaca").click(function(){
 				console.log("ccc");
@@ -223,18 +222,18 @@
 			},
 			success : function(result){
 			notification.show({
-			message: "Yêu cầu được thực hiện thành công"
+			message: "Yêu cầu được thực hiện thành công!"
 		}, "success");
 	},
 	error : function(result){
 	notification.show({
-	message: "Thực hiện không thành công, xin vui lòng thử lại"
+	message: "Thực hiện không thành công, xin vui lòng thử lại!"
 }, "error");
 }
 });
 }else {
 notification.show({
-message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi gửi"
+message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi ghi lại!"
 }, "error");
 }
 
@@ -279,7 +278,7 @@ error : function(result){
 					<label>Địa chỉ nhận kết quả</label>
 				</div>
 				<div class="col-sm-10">
-					<span id="postalAddress" data-pk="1" data-type="text" data-toggle="#editPostalAddress" data-original-title="Nhập địa chỉ nhận kết quả" tabindex="-1" class="" data-bind="text:postalAddress"></span>
+					<span id="postalAddress" data-pk="1" data-type="text" data-toggle="#editPostalAddress" data-original-title="Nhập địa chỉ nhận kết quả" tabindex="-1" class="" data-bind="text:postalAddress" required></span>
 					<span class="pull-right">
 						<a href="javascript:;" id="editPostalAddress" style="float: right"><i class="fa fa-pencil"></i></a>
 					</span>
@@ -293,7 +292,7 @@ error : function(result){
 					<label>Tỉnh/Thành phố</label>
 				</div>
 				<div class="col-sm-10">
-					<span id="postalCityCode" data-pk="1" data-type="select" data-toggle="#editPostalCityCode" data-original-title="Chọn Tỉnh/Thành phố" tabindex="-1" class="" data-bind="text:postalCityName"></span>
+					<span id="postalCityCode" data-pk="1" data-type="select" data-toggle="#editPostalCityCode" data-original-title="Chọn Tỉnh/Thành phố" tabindex="-1" class="" data-bind="text:postalCityName" required></span>
 					<span class="pull-right">
 						<a href="javascript:;" id="editPostalCityCode" style="float: right"><i class="fa fa-pencil"></i></a>
 					</span>
@@ -308,7 +307,7 @@ error : function(result){
 					<label>Số điện thoại</label>
 				</div>
 				<div class="col-sm-10">
-					<span id="postalTelNo" data-pk="1" data-type="text" data-toggle="#editPostalTelNo" data-original-title="Nhập số điện thoại" tabindex="-1" class="" data-bind="text:postalTelNo"></span>
+					<span id="postalTelNo" data-pk="1" data-type="text" data-toggle="#editPostalTelNo" data-original-title="Nhập số điện thoại" tabindex="-1" class="" data-bind="text:postalTelNo" required></span>
 					<span class="pull-right">
 						<a href="javascript:;" id="editPostalTelNo" style="float: right"><i class="fa fa-pencil"></i></a>
 					</span>
@@ -349,6 +348,7 @@ error : function(result){
 			console.log($(this)[0].files[0]);
 
 			funUploadFile($(this),partNo,dossierTemplateNo,fileTemplateNo);
+			$(this).val("");
 		});
 
 		//tai giay to kho luu tru
@@ -364,14 +364,18 @@ error : function(result){
 			var dossierId = "${(dossierId)!}";
 			var dossierTemplateId = "${(dossierTemplateId)!}";
 			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateId="+dossierTemplateId,function(result){
-				$(this).modal("show");
+
 			});
 		});
 
 		$(".delete-dossier-file").unbind().click(function(event){
 			var dossierId  = ${dossierId};
 			var dataPartNo = $(this).attr("data-partno");
-
+			try{
+				$("#formPartNo"+dataPartNo).alpaca('get').setValue({});
+			}catch (e){
+				
+			}
 			console.log(dossierId);
 			console.log(dataPartNo);
 			var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
@@ -428,23 +432,26 @@ error : function(result){
 	var dataSourceDossierTemplate = new kendo.data.DataSource({
 		transport :{
 			read : function(options){
-				$.ajax({
-					url : "${api.server}/dossiertemplates/${dossierTemplateId}",
-					dataType : "json",
-					type : "GET",
-					headers : {"groupId": ${groupId}},
-					data : {
+				if(options.data.dossierTemplateNo){
+					$.ajax({
+						url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateNo,
+						dataType : "json",
+						type : "GET",
+						headers : {"groupId": ${groupId}},
+						data : {
 
-					},
-					success : function(result){
-						options.success(result.dossierParts);
+						},
+						success : function(result){
+							options.success(result.dossierParts);
 
-						$("#dossierTemplateNo").val(result.templateNo);
-					},
-					error : function(result){
-						options.error(result);
-					}
-				});
+							$("#dossierTemplateNo").val(result.templateNo);
+						},
+						error : function(result){
+							options.error(result);
+						}
+					});
+				}
+				
 			}
 		},
 		schema : {
@@ -457,7 +464,7 @@ error : function(result){
 	var indexDossiserPart =0 ;
 	$("#lsDossierTemplPart").kendoListView({
 		dataSource : dataSourceDossierTemplate,
-		autoBind : true,
+		autoBind : false,
 		change : function(){
 			
 		},
@@ -513,23 +520,46 @@ error : function(result){
 	});
 
 	var funSubmitDossier = function(){
-		$.ajax({
-			type : 'GET', 
-			url  : '${api.server}/dossiers/${dossierId}/submitting', 
-			data : {
+		var validateAplicantInfo = $('#contactName, #city , #district , #wards , #contactTelNo' ).editable('validate');
+		var validatePostal = true;
 
-			},
-			headers: {"groupId": ${groupId}},
-			success :  function(result){    
+		if($("#viaPostal").is(":checked")){
+			validatePostal = $('#address, #postalCityCode , #postalTelNo' ).editable('validate');
+		}
 
-				manageDossier.navigate("/taohosomoi/nopthanhcong/"+"${dossierTemplateId}"+ "&${dossierId}");        
-			},
-			error:function(result){
+		console.log(validatePostal);
+		console.log(validateAplicantInfo);
 
-			}
-		});
+		if( jQuery.isEmptyObject(validateAplicantInfo) && jQuery.isEmptyObject(validatePostal) ){
+			$.ajax({
+				type : 'GET', 
+				url  : '${api.server}/dossiers/${dossierId}/submitting', 
+				data : {
+
+				},
+				headers: {"groupId": ${groupId}},
+				success :  function(result){    
+
+					/*manageDossier.navigate("/taohosomoi/nopthanhcong/${dossierId}");*/  
+					notification.show({
+						message: "Vui lòng kiểm tra lại các thông tin bắt buộc!"
+					}, "error");      
+				},
+				error:function(result){
+					manageDossier.navigate("/taohosomoi/nopthanhcong/${dossierId}");
+					notification.show({
+						message: "Có lỗi sảy ra!"
+					}, "error");
+				}
+			});
+
+			console.log("submit dossier success!");
+		}else {
+			notification.show({
+				message: "Vui lòng kiểm tra lại các thông tin bắt buộc!"
+			}, "error");
+		}
 		
-		console.log("submit dossier success!");
 	}
 
 	var funDeleteDossier = function(dossierId){
@@ -788,7 +818,7 @@ error : function(result){
 				async: false,
 				headers: {"groupId": ${groupId}},
 				data : {
-					parent : "${(api.applicant.cityCode)!}"
+					parent : "${(dossier.cityCode)!}"
 				},
 				success : function(result){
 					var arrDataRes = result.data;
@@ -838,7 +868,7 @@ error : function(result){
 				async: false,
 				headers: {"groupId": ${groupId}},
 				data : {
-					parent : "${(api.applicant.districtCode)!}"
+					parent : "${(dossier.districtCode)!}"
 				},
 				success : function(result){
 					var arrDataRes = result.data;
@@ -883,7 +913,9 @@ error : function(result){
 			};
 		},
 		validate: function(value) {
-
+			if(value === ""){
+				return "Bạn phải nhập số điện thoại";
+			}
 		},
 		success: function(response, newValue) {
 
@@ -911,7 +943,9 @@ error : function(result){
 			};
 		},
 		validate: function(value) {
-
+			if(value === ""){
+				return "Bạn phải nhập địa chỉ";
+			}
 		},
 		success: function(response, newValue) {
 
@@ -995,6 +1029,9 @@ error : function(result){
 			};
 		},
 		validate: function(value) {
+			if(value === ""){
+				return "Bạn phải nhập số điện thoại";
+			}
 		},
 		success: function(response, newValue) {
 			
@@ -1048,6 +1085,10 @@ error : function(result){
 				success : function(result){
 					console.log("load detail dossier!");
 					console.log(result.dossierId);
+
+					dataSourceDossierTemplate.read({
+						dossierTemplateNo : result.dossierTemplateNo
+					});
 
 					var viewModel = kendo.observable({
 
@@ -1103,30 +1144,22 @@ error : function(result){
 						},
 						postalAddress : function(){
 							$('#postalAddress').editable("setValue",result.postalAddress);
-							if(!result.postalAddress){
-								return "Địa chỉ nhận kết quả";
-							}
 							return result.postalAddress;
 						},
 						postalCityName : function(){
 							console.log(result.postalCityCode);
 							console.log(result.postalCityName);
 							$('#postalCityCode').editable("setValue",result.postalCityCode);
-							if(!result.postalCityName){
-								return "Tỉnh/ Thành phố";
-							}
 							return result.postalCityName;
 						},
 						postalTelNo : function(){
 							$('#postalTelNo').editable("setValue",result.postalTelNo);
-							if(!result.postalTelNo){
-								return "Số điện thoại";
-							}
 							return result.postalTelNo;
 						},
 						submitting : function(){
 							if(result.submitting){
 								$("#btn-submit-dossier").hide();
+								$("#btn-submit-dossier-header").hide();
 							}
 						}
 
@@ -1322,10 +1355,10 @@ error : function(result){
 	}
 
 	$(function(){
-		manageDossier.route("/taohosomoi/nopthanhcong/(:dossierTemplateId)&(:dossierId)", function(dossierTemplateId,dossierId){
+		manageDossier.route("/taohosomoi/nopthanhcong/(:dossierId)", function(dossierId){
 			$("#mainType1").hide();
 			$("#mainType2").show();
-			$("#mainType2").load("${ajax.submited_dossier_info}&${portletNamespace}dossierTemplateId="+dossierTemplateId+"&${portletNamespace}dossierId="+dossierId,function(result){
+			$("#mainType2").load("${ajax.submited_dossier_info}&${portletNamespace}dossierId="+dossierId,function(result){
 
 			});
 		});

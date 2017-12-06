@@ -14,7 +14,7 @@
 		<div class="accordion" id=#:'acc1'+govAgencyCode#>
 			<div class="accordion-group">
 				<div class="accordion-heading">
-					<a class="accordion-toggle" data-toggle="collapse" data-parent=#:'\\#acc1'+govAgencyCode# href=#:'\\#a'+govAgencyCode#>
+					<a data-toggle="collapse" href=#:'\\#a'+govAgencyCode#>
 						<i class="fa fa-university" aria-hidden="true"></i> #:govAgencyName #
 					</a>
 				</div>
@@ -25,25 +25,25 @@
 							#if(domains[i].serviceConfigs.length > 0) { #
 							<div class="accordion-group">
 								<div class="accordion-heading">
-									<a class="accordion-toggle" data-toggle="collapse" data-parent=#:'\\#a'+govAgencyCode# href=#:'\\#' +domains[i].domainCode#> 
+									<a data-toggle="collapse" href=#:'\\#' +domains[i].domainCode#> 
 										#:domains[i].domainName#
 									</a>
 								</div>
 								<div id=#:domains[i].domainCode# class="accordion-body collapse in">
-									<div class="accordion-inner">
+									<div class="accordion-inner P0">
 										# if(domains[i].serviceConfigs.length > 0) {#
 										# for (var j = 0; j < domains[i].serviceConfigs.length; j ++) {#
 										<div class="eq-height">
-											<div class="col-xs-12 col-sm-10 align-middle">
+											<div class="col-xs-12 col-sm-11 align-middle MR100">
 												<a class="link-serviceInfo" data-pk="#:domains[i].serviceConfigs[j].serviceConfigId#" admt-pk="#domains[i].serviceConfigs.serviceConfigId#" href="\\#">
 													#:domains[i].serviceConfigs[j].serviceInfoName#
 												</a>
 											</div>
-											<div class="col-xs-12 col-sm-1 border-left center-all lh32 text-light-gray">
+											<div class="col-xs-12 col-sm-1 border-left ML100 center-all lh32 text-light-gray">
 												Mức #:domains[i].serviceConfigs[j].level#
 											</div>
-											<div class="col-xs-12 col-sm-1 border-left align-center">
-												<button class="btn btn-reset btn-select-serviceConfig" data-pk="#:domains[i].serviceConfigs[j].serviceConfigId#" admt-pk="#:domains[i].serviceConfigs[j].serviceConfigId#">Chọn</button>
+											<div class="col-xs-12 col-sm-1 border-left align-center P0">
+												<button class="btn btn-reset btn-select-serviceConfig text-light-gray" data-pk="#:domains[i].serviceConfigs[j].serviceConfigId#" admt-pk="#:domains[i].serviceConfigs[j].serviceConfigId#">Chọn</button>
 											</div>
 										</div>
 										#}#
@@ -62,20 +62,20 @@
 	</script>
 </div>
 <script type = "text/javascript">
-
+	var dataSourceAdmin;
 	$(document).ready(function(){
 		var fnGenEventChoiseServiceConfig = function(){
-	      $('.btn-select-serviceConfig, .link-serviceInfo').unbind().click(function(){
-	        event.preventDefault();
-	        var serviceConfigId = $(this).attr("data-pk");
-	        $("#serviceConfigId").val(serviceConfigId);
-	        dataSourceProcessServiceConfig.read({
-	          serviceConfigId : serviceConfigId
-	        });
-	      });
-	     };
+			$('.btn-select-serviceConfig, .link-serviceInfo').unbind().click(function(){
+				event.preventDefault();
+				var serviceConfigId = $(this).attr("data-pk");
+				$("#serviceConfigId").val(serviceConfigId);
+				dataSourceProcessServiceConfig.read({
+					serviceConfigId : serviceConfigId
+				});
+			});
+		};
 
-		var dataSourceAdmin = new kendo.data.DataSource({
+		dataSourceAdmin = new kendo.data.DataSource({
 			transport: {
 				read: function(options) {
 					$.ajax({
@@ -102,13 +102,13 @@
 
 		$('#btn_search').click(function(){
 			
-	      var input_Search = $('#input_search').val();
-	      if ($('#btn_fillter_by_admintration').hasClass('btn-active')){
-	        dataSourceAdmin.read({
-	          keyword: input_Search,
-	        });
-      	  }
-	    });
+			var input_Search = $('#input_search').val();
+			if ($('#btn_fillter_by_admintration').hasClass('btn-active')){
+				dataSourceAdmin.read({
+					keyword: input_Search,
+				});
+			}
+		});
 
 		$("#listView").kendoListView({
 			dataSource : dataSourceAdmin,
