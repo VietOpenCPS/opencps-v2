@@ -82,6 +82,9 @@ import backend.utils.ObjectConverterUtil;
  */
 @Component(immediate = true, property = { "com.liferay.portlet.display-category=category.opencps.admin",
 		"com.liferay.portlet.instanceable=true", "javax.portlet.display-name=frontend-web-admin Portlet",
+		"com.liferay.portlet.header-portlet-javascript=/js/location.js",
+		"com.liferay.portlet.header-portlet-javascript=/js/main.js",
+		"com.liferay.portlet.footer-portlet-javascript=/js/dictcollection.js",
 		"javax.portlet.name=" + AdminPortletKeys.ADMIN_PORTLET, "javax.portlet.init-param.template-path=/",
 		"javax.portlet.init-param.view-template=/templates/admin.ftl", "javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)

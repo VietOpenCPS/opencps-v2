@@ -1,16 +1,14 @@
-<#if (Request)??>
 <#include "init.ftl">
-</#if>
 
 <div class="row">
 
-	<!-- left -->
+	<!— left —>
 	<div class="col-md-3 panel P0">
 
 		<!--search-->
 		<div class="panel-body">
 	
-			<span id="_workingUnit_editWorkingUnit" class="btn btn-active image-preview-input btn-block"> 
+			<span id="_workingUnit_editWorkingUnit" class="btn btn-primary image-preview-input btn-block"> 
 				<i class="fa fa-outdent" aria-hidden="true"></i>
 				<span class="p-xxs" >Tổng số</span> 
 				<span id="_workingUnit_CounterList">0</span>
@@ -29,23 +27,23 @@
 		</div>
 				
 			
-		<ul class="ul-with-border ul-default mh-head-2" id="_workingUnit_listView"></ul>
+		<ul class="ul-with-border ul-with-border-style-2 mh-head-2" id="_workingUnit_listView"></ul>
 		
 		<script type="text/x-kendo-tmpl" id="_workingUnit_template">
 		
 			<li class="clearfix PT20 PR0 PB20 PL#:15+level*30#">
 	
-				<div class="col-sm-1 clearfix PL0 PR0">
+				<div class="col-sm-2 clearfix PL0 PR0">
 					
 					<a href="javascript:;" >
 						
-						<i style="padding: 3px 5px;" class="fa fa-outdent" aria-hidden="true"></i>
+						<i style="font-size: 30px;padding: 5px;" class="fa fa-outdent" aria-hidden="true"></i>
 							
 					</a>
 						
 				</div>
 					
-				<div class="col-sm-10 PL5">
+				<div class="col-sm-9 PL0">
 				
 					<strong class="btn-block">#= name #</strong>
 					<span class="btn-block">#= govAgencyCode #</span>
@@ -71,7 +69,7 @@
 		</script>
 
 	</div>
-	<!-- end left-->
+	<!— end left —>
 
 	<!--load right-->
 	<div class="col-md-9 " id="_workingUnit_right-page"> </div>
@@ -101,7 +99,7 @@
 	
 	(function($) {
 	
-		var _workingUnit_BaseUrl = "${api.server}/workingunits";
+		var _workingUnit_BaseUrl = "${api.endpoint}/workingunits";
 		
 		var _workingUnit_dataSource = new kendo.data.DataSource({
 			
@@ -117,10 +115,7 @@
 						headers: {
 							"groupId": ${groupId}
 						},
-						data: {
-							sort: 'treeIndex',
-							order: false
-						},
+						data: {},
 						success: function(result) {
 						
 							$('#_workingUnit_CounterList').html(result.total);
@@ -158,6 +153,9 @@
 						type: 'POST',
 						dataType: 'json',
 						contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+						beforeSend: function( xhr ) {
+							$("#_workingUnitDetail_submitBtn").button('loading');
+						},
 						success: function(data, textStatus, xhr) {
 							
 							_workingUnitDetail_uploadLogoFileEntry(document.getElementById("_workingUnitDetail_logoFileEntryId"), data.workingUnitId);
@@ -169,13 +167,13 @@
 							dataSource.pushUpdate(data);
 							$('#_workingUnit_CounterList').html(dataSource.total());
 							showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-							
+							$("#_workingUnitDetail_submitBtn").button('reset');
 						},
 						error: function(xhr, textStatus, errorThrown) {
 							
 							$("#_workingUnit_listView").getKendoListView().dataSource.error();
 							showMessageByAPICode(xhr.status);
-						
+							$("#_workingUnitDetail_submitBtn").button('reset');
 						}
 					});
 					
@@ -201,6 +199,9 @@
 						type: 'PUT',
 						dataType: 'json',
 						contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+						beforeSend: function( xhr ) {
+							$("#_workingUnitDetail_submitBtn").button('loading');
+						},
 						success: function(data, textStatus, xhr) {
 							
 							_workingUnitDetail_uploadLogoFileEntry(document.getElementById("_workingUnitDetail_logoFileEntryId"), data.workingUnitId);
@@ -218,38 +219,51 @@
 								}
 							});
 							showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-							
+							$("#_workingUnitDetail_submitBtn").button('reset');
 						},
 						error: function(xhr, textStatus, errorThrown) {
 							
 							$("#_workingUnit_listView").getKendoListView().dataSource.error();
 							showMessageByAPICode(xhr.status);
-						
+							$("#_workingUnitDetail_submitBtn").button('reset');
 						}
 					});
 				
 				},
 				destroy: function(options) {
 					
-					$.ajax({
-						url: _workingUnit_BaseUrl + "/" + options.data.workingUnitId,
-						type: 'DELETE',
-						success: function(result) {
+					var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa bản ghi này?', $("#_workingUnit_listView") );
+					
+					confirmWindown.then(function(confirmed){
+					
+						if(confirmed){
+	
+							$.ajax({
+								url: _workingUnit_BaseUrl + "/" + options.data.workingUnitId,
+								type: 'DELETE',
+								success: function(result) {
+									
+									$("#_workingUnit_hidden_new_id").val("0");
+									options.success();
+									$('#_workingUnit_CounterList').html($("#_workingUnit_listView").getKendoListView().dataSource.total());
+									showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
+									
+								},
+								error: function(xhr, textStatus, errorThrown) {
+								
+									$("#_workingUnit_listView").getKendoListView().dataSource.error();
+									showMessageByAPICode(xhr.status);
+								
+								}
+				
+							});
+	
+						} else{
 							
-							$("#_workingUnit_hidden_new_id").val("0");
-							options.success();
-							$('#_workingUnit_CounterList').html($("#_workingUnit_listView").getKendoListView().dataSource.total());
-							showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-							
-						},
-						error: function(xhr, textStatus, errorThrown) {
-						
-							$("#_workingUnit_listView").getKendoListView().dataSource.error();
-							showMessageByAPICode(xhr.status);
-						
+							options.error();
 						}
-		
 					});
+					
 				},
 				parameterMap: function(options, operation) {
 					
@@ -288,12 +302,6 @@
 		$("#_workingUnit_listView").kendoListView({
 		
 			remove: function(e) {
-				
-				if (!confirm("Xác nhận xoá " + e.model.get("name") + "?")) {
-			
-					e.preventDefault();
-				
-				}
 			
 			},
 			
@@ -359,7 +367,7 @@
 			$("#_workingUnit_hidden_new_id").val(selected[0]);
 			
 			$("#_workingUnit_right-page").load(
-				'${url.adminWorkingUnitPortlet.working_unit_detail}&${portletNamespace}type=${constants.type_workingUnit}&${portletNamespace}workingUnitId='+selected[0]);
+				'${url.adminWorkingUnitPortlet.working_unit_detail}&${portletNamespace}type=${constant.type_workingUnit}&${portletNamespace}workingUnitId='+selected[0]);
 			
 		}
 
@@ -371,9 +379,9 @@
 			
 			$("#_workingUnit_right-page").load(
 				'${url.adminWorkingUnitPortlet.working_unit_detail}'
-			);
-
-			$("#_workingUnit_listView .k-state-selected").removeClass("k-state-selected");
+				);
+				
+			$("#_workingUnit_listView").getKendoListView().clearSelection();
 			
 		});
 		
