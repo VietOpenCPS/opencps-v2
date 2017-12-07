@@ -194,6 +194,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	 * 
 	 * } catch (Exception e) { return processException(e); } }
 	 */
+	
+	
+	
 	@Override
 	public Response cloneDossierFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, DossierFileCopyInputModel input) {

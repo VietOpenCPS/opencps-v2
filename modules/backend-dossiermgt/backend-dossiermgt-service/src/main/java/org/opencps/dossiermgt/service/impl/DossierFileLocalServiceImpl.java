@@ -517,7 +517,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		}
 		
 		if(Validator.isNotNull(removed)){
-			MultiMatchQuery query = new MultiMatchQuery(original);
+			MultiMatchQuery query = new MultiMatchQuery(removed);
 
 			query.addFields(DossierFileTerm.REMOVED);
 
@@ -613,7 +613,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		}
 		
 		if(Validator.isNotNull(removed)){
-			MultiMatchQuery query = new MultiMatchQuery(original);
+			MultiMatchQuery query = new MultiMatchQuery(removed);
 
 			query.addFields(DossierFileTerm.REMOVED);
 
