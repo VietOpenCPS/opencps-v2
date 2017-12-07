@@ -49,18 +49,18 @@
 			<div class="col-sm-12 service-config-item" data-pk="#:id#">
 				#var lbl = "text-link";
 				if(serviceLevel == 1){
-					lbl = "text-link";
-				} else if(serviceLevel == 2){
-					lbl = "text-link";
-				} else if(serviceLevel == 3){
-					lbl = "text-orange";
-				} else {
-					lbl = "text-danger";
-				}#
-				<span class="#:lbl#" data-pk="#:id#">Mức độ <span>#:serviceLevel#</span></span>
-			</div>
-		</div>
-	</li>
+				lbl = "text-link";
+			} else if(serviceLevel == 2){
+			lbl = "text-link";
+		} else if(serviceLevel == 3){
+		lbl = "text-orange";
+	} else {
+	lbl = "text-danger";
+}#
+<span class="#:lbl#" data-pk="#:id#">Mức độ <span>#:serviceLevel#</span></span>
+</div>
+</div>
+</li>
 </script>
 
 <input type="hidden" name="itemServiceConfigId" id="itemServiceConfigId">
@@ -290,20 +290,28 @@
 						type : "DELETE",
 						headers: {"groupId": ${groupId}},
 						success : function(result){
-							var currentItemId = $("#itemServiceConfigId").val();
-							if(item){
-								var index = dataSourceServiceConfig.remove(item);
+							var isDelete = fnCheckIsDeleteServiceConfig(id);
+							if(isDelete){
+								var currentItemId = $("#itemServiceConfigId").val();
+								if(item){
+									var index = dataSourceServiceConfig.remove(item);
+								}
+
+								if(currentItemId === id){
+									$("#itemServiceConfigId").val("");
+									formControl();
+								}
+
+								notification.show({
+									message: "Yêu cầu được thực hiện thành công"
+								}, "success");
+								
+							}else {
+								notification.show({
+									message: "Dịch vụ công đã được thêm quy trình xác lập nên không thể xóa!"
+								}, "error");
 							}
-
-							if(currentItemId === id){
-								$("#itemServiceConfigId").val("");
-								formControl();
-							}
-
-							notification.show({
-								message: "Yêu cầu được thực hiện thành công"
-							}, "success");
-
+							
 						},
 						error : function(xhr){
 							notification.show({
@@ -316,6 +324,28 @@
 				}
 			}
 		});
+
+		var fnCheckIsDeleteServiceConfig = function(serviceConfigId){
+			var isDelete = true ;
+			if(serviceConfigId){
+				$.ajax({
+					url : "${api.server}/serviceconfigs/"+serviceConfigId+"/processes",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					async : false;
+					success : function(result){
+						if(result.data){
+							isDelete = false;
+						}
+					},
+					error : function(result){
+						isDelete = false;
+					}
+				});
+			}
+			return isDelete;
+		}
 
 		$(document).on("click", "#btnAddServiceConfig", function(event){
 
