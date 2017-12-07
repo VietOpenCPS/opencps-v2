@@ -4,75 +4,108 @@ import java.util.Date;
 
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DeliverablesManagement;
+import org.opencps.dossiermgt.action.DeliverableActions;
+import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
+import org.opencps.dossiermgt.model.impl.DeliverableImpl;
+
+import com.liferay.portal.kernel.json.JSONObject;
 
 public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 	@Override
-	public Response getDeliverables(String state, String agency, String keyword, String type, String applicant,
-			String sort) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response getDeliverables(String state, String agency, String type, String applicant) {
+		try {
+			DeliverableActions action = new DeliverableActionsImpl();
+			JSONObject result = action.getListDeliverable(state, agency, type, applicant);
+			return Response.status(200).entity(result).build();
+		} catch (Exception e) {
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
+		}
+
 	}
 
 	@Override
 	public Response insertDeliverables(String deliverableType, String deliverableCode, String govAgencyCode,
 			String applicantIdNo, String applicantName, String subject, Date issueDate, Date expireDate,
 			Date revalidate, Integer deliverableState) {
+		try {
+			DeliverableActions action = new DeliverableActionsImpl();
+			DeliverableImpl model = new DeliverableImpl();
+			model.setDeliverableType(deliverableType);
+			model.setDeliverableCode(deliverableCode);
+			model.setGovAgencyCode(govAgencyCode);
+			model.setApplicantIdNo(applicantIdNo);
+			model.setApplicantName(applicantName);
+			model.setSubject(subject);
+			model.setIssueDate(issueDate);
+			model.setExpireDate(expireDate);
+			model.setRevalidate(revalidate);
+			model.setDeliverableState(String.valueOf(deliverableState));
+			action.addDeliverable(model);
+			return Response.status(200).entity("Success").build();
+		} catch (Exception e) {
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
+		}
+
+	}
+
+	@Override
+	public Response getDeliverablesDetail(Long id) {
+		try {
+			DeliverableActions action = new DeliverableActionsImpl();
+			action.getListDeliverableDetail(id);
+			return Response.status(200).entity("Success").build();
+		} catch (Exception e) {
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
+		}
+	}
+
+	@Override
+	public Response updateDeliverables(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Response getDeliverablesDetail(String id) {
+	public Response deleteDeliverables(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Response updateDeliverables(String id) {
+	public Response getFormData(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Response deleteDeliverables(String id) {
+	public Response updateFormData(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Response getFormData(String id) {
+	public Response getFormScript(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Response updateFormData(String id) {
+	public Response getPreview(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Response getFormScript(String id) {
+	public Response getDeliverableAction(Long id, String deliverableAction) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Response getPreview(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Response getDeliverableAction(String id, String deliverableAction) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Response getDeliverableLog(String id) {
+	public Response getDeliverableLog(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
