@@ -114,7 +114,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 			"mvcPath", "/templates/customer_dossier_detail_2.ftl");
 
 		urlObject.put("customer_dossier_detail_2", customerDossierDetail2URL);
-
+		
 		PortletURL customerDossierDetail_3 = renderResponse.createRenderURL();
 		customerDossierDetail_3.setWindowState(LiferayWindowState.EXCLUSIVE);
 		customerDossierDetail_3.setParameter(
