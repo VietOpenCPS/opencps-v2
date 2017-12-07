@@ -1,0 +1,9 @@
+Bundle-Name: backend-jasper-process-api
+Bundle-SymbolicName: backend.jasper.process.api
+Bundle-Version: 1.0.0
+Export-Package: \
+	org.opencps.jasper.exception,\
+	org.opencps.jasper.model,\
+	org.opencps.jasper.service,\
+	org.opencps.jasper.service.persistence
+-includeresource: META-INF/service.xml=../backend-jasper-process-service/service.xml

@@ -12,50 +12,9 @@ dependencies {
 	compileOnly project(":modules:backend-usermgt:backend-usermgt-service")
 	compileOnly project(":modules:backend-auth")
 	
-	compile name : "aopalliance"
-	compile name : "bcmail-jdk14"
-	compile name : "bcprov-jdk14"
-	compile name : "bctsp-jdk14"
-	compile name : "castor-core"
-	compile name : "castor-xml"
-	compile name : "commons-beanutils"
-	compile name : "commons-collections"
-	compile name : "commons-digester"
-	compile name : "commons-lang"
-	compile name : "commons-logging"
-	compile name : "core"
-	compile name : "ecj"
-	compile name : "icu4j"
-	compile name : "itext"
-	compile name : "jackson-annotations"
-	compile name : "jackson-core"
-	compile name : "jackson-databind"
-	compile name : "jakarta-regexp"
-	compile name : "jasperreports"
-	compile name : "javax.inject"
-	compile name : "jcommon"
-	compile name : "jfreechart"
-	compile name : "lucene-analyzers-common"
-	compile name : "lucene-core"
-	compile name : "lucene-queries"
-	compile name : "lucene-queryparser"
-	compile name : "lucene-sandbox"
-	compile name : "olap4j"
-	compile name : "spring-aop"
-	compile name : "spring-asm"
-	compile name : "spring-beans"
-	compile name : "spring-context"
-	compile name : "spring-core"
-	compile name : "spring-expression"
-	compile name : "stax-api"
-	compile name : "stax"
+	
 }	
 
-repositories {
-    flatDir {
-        dirs 'lib'
-    }
-}
 
 buildService {
 	apiDir = "../backend-dossiermgt-api/src/main/java"
