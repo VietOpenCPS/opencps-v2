@@ -91,6 +91,12 @@
 			<finder-column name="parentWorkingUnitId"></finder-column>
 			<finder-column name="level"></finder-column>
 		</finder>
+		
+		<finder return-type="Collection" name="F_childs_unit">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="treeIndex" comparator="LIKE"></finder-column>
+		</finder>
+		
 	</entity>
 
 	<entity name="Employee" uuid="true" local-service="true"
