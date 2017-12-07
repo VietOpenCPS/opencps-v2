@@ -35,7 +35,7 @@
 									
 								</div>
 							</div>
-							<div class="btn-group PR15 mobilink-document-upload">
+							<div class="btn-group mobilink-document-upload">
 								
 								<button type="button" class="remove-uploaded-file red" action-event="fa-times" title="Xóa tệp đã tải lên" data-pk="${(oAttach.fileAttachId)!}">
 									<i aria-hidden="true" class="fa fa-times"></i>
@@ -103,7 +103,7 @@ $(function () {
 									'</div>' +
 								'</div>' +
 							'</div>' +
-							'<div class="btn-group PR15 mobilink-document-upload">' +
+							'<div class="btn-group mobilink-document-upload">' +
 							'</div>' +
 						'</li>';
 

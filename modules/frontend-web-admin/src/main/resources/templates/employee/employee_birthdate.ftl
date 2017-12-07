@@ -37,7 +37,7 @@
 										
 								</div>
 									
-								<div class="col-sm-11">
+								<div class="col-sm-10">
 								
 									<strong class="full-width">#= fullName #</strong><br>
 									<div class="full-width">#= jobPosTitle #</div>
