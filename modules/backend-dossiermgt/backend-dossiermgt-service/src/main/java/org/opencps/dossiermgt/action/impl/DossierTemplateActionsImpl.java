@@ -1,8 +1,10 @@
 package org.opencps.dossiermgt.action.impl;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.dossiermgt.action.DossierTemplateActions;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
@@ -15,6 +17,7 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 public class DossierTemplateActionsImpl implements DossierTemplateActions {
 
@@ -82,6 +85,25 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 		hits = DossierPartLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
 		result.put("data", hits.toList());
+
+		long total = DossierPartLocalServiceUtil.countLucene(params, searchContext);
+
+		result.put("total", total);
+
+		return result;
+	}
+
+	@Override
+	public JSONObject getDBDossierParts(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext) throws PortalException {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(companyId);
+
+		List<DossierPart> dossierParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId, GetterUtil.getString(params.get(DossierPartTerm.TEMPLATE_NO)));
+
+		result.put("data", dossierParts);
 
 		long total = DossierPartLocalServiceUtil.countLucene(params, searchContext);
 

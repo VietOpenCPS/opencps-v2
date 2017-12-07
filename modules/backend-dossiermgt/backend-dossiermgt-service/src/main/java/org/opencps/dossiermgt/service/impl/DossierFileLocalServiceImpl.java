@@ -365,23 +365,6 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		
 		message.put("msgToEngine", msgData);
 		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
-		
-//		  try { 
-//			  File file = FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
-//		  
-//			  String sourceFileName = System.currentTimeMillis() + StringPool.PERIOD + JRReportUtil.DocType.PDF.toString();
-//		  
-//			  JRReportUtil.createReportFile(jrxmlTemplates, formDataS.toJSONString(), null, file.getCanonicalPath());
-//		  
-//			  FileEntry fileEntry = FileUploadUtils.uploadDossierFile( serviceContext.getUserId(), groupId, file, sourceFileName, serviceContext);
-//		  
-//			  fileEntryId = fileEntry.getFileEntryId(); 
-//		  } catch(Exception e) {
-//			  throw new SystemException(e); 
-//		  }
-		 
-
-//		dossierFile.setFileEntryId(fileEntryId);
 
 		return dossierFilePersistence.update(dossierFile);
 	}
@@ -396,7 +379,6 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 	@Indexable(type = IndexableType.DELETE)
 	public DossierFile deleteDossierFile(long dossierId, String referenceUid) throws PortalException {
 		DossierFile dossierFile = dossierFileLocalService.getDossierFileByReferenceUid(dossierId, referenceUid);
-
 		return deleteDossierFile(dossierFile);
 	}
 
@@ -460,7 +442,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
-
+		
 		BooleanQuery booleanQuery = null;
 
 		if (Validator.isNotNull(keywords)) {
@@ -496,6 +478,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		String dossierPartType = GetterUtil.getString(params.get(DossierFileTerm.DOSSIER_PART_TYPE));
 		String user_id = GetterUtil.getString(params.get(DossierFileTerm.USER_ID));
 		String original = GetterUtil.getString(params.get(DossierFileTerm.ORIGINAL));
+		String removed = GetterUtil.getString(params.get(DossierFileTerm.REMOVED));
 
 		if (Validator.isNotNull(fileTemplateNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(fileTemplateNo);
@@ -525,6 +508,14 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			MultiMatchQuery query = new MultiMatchQuery(original);
 
 			query.addFields(DossierFileTerm.ORIGINAL);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if(Validator.isNotNull(removed)){
+			MultiMatchQuery query = new MultiMatchQuery(original);
+
+			query.addFields(DossierFileTerm.REMOVED);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -583,6 +574,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		String dossierPartType = GetterUtil.getString(params.get(DossierFileTerm.DOSSIER_PART_TYPE));
 		String user_id = GetterUtil.getString(params.get(DossierFileTerm.USER_ID));
 		String original = GetterUtil.getString(params.get(DossierFileTerm.ORIGINAL));
+		String removed = GetterUtil.getString(params.get(DossierFileTerm.REMOVED));
 
 		if (Validator.isNotNull(fileTemplateNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(fileTemplateNo);
@@ -612,6 +604,14 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			MultiMatchQuery query = new MultiMatchQuery(original);
 
 			query.addFields(DossierFileTerm.ORIGINAL);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if(Validator.isNotNull(removed)){
+			MultiMatchQuery query = new MultiMatchQuery(original);
+
+			query.addFields(DossierFileTerm.REMOVED);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

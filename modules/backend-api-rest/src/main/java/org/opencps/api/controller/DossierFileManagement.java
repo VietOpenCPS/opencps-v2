@@ -322,6 +322,7 @@ public interface DossierFileManagement {
 
 	@GET
 	@Path("/dossierfiles")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Get all DossierFiles", response = DossierFileSearchResultsModel.class)
 	@ApiResponses(value = {

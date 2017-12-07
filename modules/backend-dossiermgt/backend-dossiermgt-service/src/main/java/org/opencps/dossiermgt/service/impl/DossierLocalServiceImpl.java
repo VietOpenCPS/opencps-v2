@@ -56,6 +56,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -176,8 +177,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			for (DossierPart part : dossierParts) {
 				if (Validator.isNotNull(part.getFormScript())) {
-
-					dossierFileLocalService.addDossierFile(groupId, dossierId, referenceUid, dossierTemplateNo,
+					String dossierFileUUID = PortalUUIDUtil.generate();
+					dossierFileLocalService.addDossierFile(groupId, dossierId, dossierFileUUID, dossierTemplateNo,
 							part.getPartNo(), part.getFileTemplateNo(), part.getPartName(), StringPool.BLANK, 0l, null,
 							StringPool.BLANK, StringPool.FALSE, context);
 

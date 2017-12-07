@@ -976,6 +976,82 @@
 		
 	</entity>
 
+	<entity local-service="true" name="DeliverableType"
+		remote-service="false" table="opencps_deliverabletype" uuid="true">
+		
+		<column name="deliverableTypeId" type="long" primary="true" />
+		
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		
+		<column name="deliverableType" type="String"/>
+		<column name="deliverableName" type="String"/>
+		<column name="formScript" type="String"/>
+		<column name="formReport" type="String"/>
+		<column name="codePattern" type="String"/>
+		<column name="counter" type="String"/>
+		<column name="mappingData" type="String"/>
+		
+	</entity>
+
+	<entity local-service="true" name="Deliverable"
+		remote-service="false" table="opencps_deliverable" uuid="true">
+		
+		<column name="deliverableId" type="long" primary="true" />
+		
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		
+		<column name="deliverableCode" type="String"/>
+		<column name="deliverableName" type="String"/>
+		<column name="deliverableType" type="String"/>
+		<column name="govAgencyCode" type="String"/>
+		<column name="govAgencyName" type="String"/>
+		<column name="applicantIdNo" type="String"/>
+		<column name="applicantName" type="String"/>
+		<column name="subject" type="String"/>
+		<column name="formData" type="String"/>
+		<column name="formScript" type="String"/>
+		<column name="formReport" type="String"/>
+		<column name="expireDate" type="Date"/>
+		<column name="issueDate" type="Date"/>
+		<column name="revalidate" type="Date"/>
+		<column name="deliverableState" type="String"/>
+		
+	</entity>
+
+	<entity local-service="true" name="DeliverableLog"
+		remote-service="false" table="opencps_deliverablelog" uuid="true">
+		
+		<column name="deliverableLogId" type="long" primary="true" />
+		
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		
+		<column name="deliverableId" type="String"/>
+		<column name="dossierUid" type="String"/>
+		<column name="author" type="String"/>
+		<column name="content" type="String"/>
+		<column name="deliverableAction" type="int"/>
+		<column name="actionDate" type="Date"/>
+		<column name="payload" type="String"/>
+	</entity>
+
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>DuplicateServiceCode</exception>

@@ -322,15 +322,22 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			if (id != 0) {
 				DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.fetchDossierTemplate(id);
 
-				if (Validator.isNotNull(dossierTemplate))
+				if (Validator.isNotNull(dossierTemplate)) {
 					templateNo = dossierTemplate.getTemplateNo();
+				} else {
+					throw new Exception("No DossierTemplate was found");
+				}
 			}
-
+			
 			String partType = query.getPartType();
 			String multiple = query.getMultiple();
 			String required = query.getRequired();
 			String eSign = query.getESign();
 
+			
+			params.put(DossierPartTerm.TEMPLATE_ID, id);
+			
+			
 			if (Validator.isNotNull(templateNo)) {
 				params.put(DossierPartTerm.TEMPLATE_NO, templateNo);
 			}
@@ -340,11 +347,11 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			}
 
 			if (Validator.isNotNull(eSign)) {
-				params.put(DossierPartTerm.TEMPLATE_NO, templateNo);
+				params.put(DossierPartTerm.ESIGN, eSign);
 			}
 
 			if (Validator.isNotNull(multiple)) {
-				params.put(DossierPartTerm.ESIGN, eSign);
+				params.put(DossierPartTerm.ESIGN, multiple);
 			}
 
 			if (Validator.isNotNull(required)) {
