@@ -171,64 +171,42 @@
 					</div>
 				</div>
 
-				#if(hasForm){#
-				<div class="col-sm-12" style="height:450px;width:100%;overflow:auto;">
+				#
+				if(hasForm){
+				var referentUidFile =  getReferentUidFile(${dossierId},id);
+				#
+				<div class="col-sm-12" #if(referentUidFile){# style="height:450px;width:100%;overflow:auto;" #}#>
 					<form id="formPartNo#:id#">
 						
 					</form>
 				</div>
 				#
-				var referentUidFile =  getReferentUidFile(${dossierId});
+				
 
 				$.ajax({
 				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formscript",
-				dataType : "json",
+				dataType : "text",
 				type : "GET",
 				headers : {"groupId": ${groupId}},
 				success : function(result){
-				console.log(result);
 				$("\\#formPartNo"+id).empty();
-				$("\\#formPartNo"+id).alpaca(result);
-				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca" class="btn btn-active MB10 MT10" type="button" data-pk="'+id+'">Ghi lại</button></div></div>');
-				$("\\#btn-save-formalpaca").click(function(){
-				console.log("ccc");
-				var value = $("\\#formPartNo"+id).alpaca('get').getValue();
-				var validate = $("\\#formPartNo"+id).alpaca('get').isValid(true);
-				if(validate){
-				$.ajax({
-				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
-				dataType : "json",
-				type : "PUT",
-				headers: {"groupId": ${groupId}},
-				data : {
-				formdata: JSON.stringify(value)
+
+				var alpaca = eval("(" + result + ")");
+				var formdata = fnGetFormData(${dossierId},referentUidFile);
+				if(formdata){
+					$("\\#validPart"+id).val("1");
+				}
+				alpaca.data = formdata; 
+
+				$("\\#formPartNo"+id).alpaca(alpaca);
+				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca'+id+'" class="btn btn-active MB10 MT10 saveForm" 
+				type="button" data-pk="'+id+'" referentUid="'+referentUidFile+'">Ghi lại</button></div></div>');
+				
 			},
-			success : function(result){
-			notification.show({
-			message: "Yêu cầu được thực hiện thành công!"
-		}, "success");
-		$("\\#validPart"+id).val("1");
-	},
-	error : function(result){
-	notification.show({
-	message: "Thực hiện không thành công, xin vui lòng thử lại!"
-}, "error");
-}
-});
-}else {
-notification.show({
-message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi ghi lại!"
-}, "error");
-}
+			error : function(result){
 
-console.log(value);
-
-});
-},
-error : function(result){
-
-}
-});
+		}
+	});
 }#
 
 #}#
@@ -243,9 +221,11 @@ error : function(result){
 			<input class="form-control" name="applicantNote" id="applicantNote" placeholder="Ghi chú">
 		</div>
 	</div>
+
 	<div class="checkbox ML15">
-		<input type="checkbox" id="viaPostal" name="viaPostal"> <label class="text-normal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
+		<input type="checkbox" id="viaPostal" name="viaPostal" data-bind="attr : {viaPostal : viaPostal}"> <label class="text-normal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
 	</div>
+
 	<div class="row MB20">
 		<div class="col-xs-12 col-sm-7">
 			<label>Địa chỉ nhận kết quả</label>
@@ -496,7 +476,7 @@ error : function(result){
 					wardCode : $("#wardCode").val(),
 					contactTelNo : $("#contactTelNo").val(),
 					contactEmail : $("#contactEmail").val(),
-
+					viaPostal : $("#viaPostal").is(":checked") ? 2 : 1,
 					applicantNote : $("#applicantNote").val(),
 					postalTelNo: $("#postalTelNo").val(),
 					postalCityCode: $("#postalCityCode").val(),
@@ -763,7 +743,12 @@ error : function(result){
 						contactEmail : result.contactEmail,
 						dossierNote : result.dossierNote,
 						viaPostal : function(){
-							$("#viaPostal").ckecked(result.viaPostal);
+							if(result.viaPostal === 2){
+								$("#viaPostal").prop('checked', true);
+							}else {
+								$("#viaPostal").prop('checked', false);
+							}
+							
 						},
 						postalAddress : result.postalAddress,
 						postalCityCode : result.postalCityCode,
@@ -889,7 +874,7 @@ error : function(result){
 
 });
 
-var getReferentUidFile = function(dossierId){
+var getReferentUidFile = function(dossierId,dossierPartNo){
 	var referenceUid = 0;
 	if(dossierId){
 		$.ajax({
@@ -902,8 +887,11 @@ var getReferentUidFile = function(dossierId){
 				if(result.data){
 					for (var i = 0; i < result.data.length; i++) {
 						if(result.data[i].eForm){
-							referenceUid = result.data[i].referenceUid;
-							return ;
+							if(dossierPartNo == result.data[i].dossierPartNo){
+								referenceUid = result.data[i].referenceUid;
+								return ;
+							}
+
 						}
 					}
 				}
@@ -928,6 +916,28 @@ $(function(){
 	});
 });
 
+var fnGetFormData = function(dossierId,referentUid){
+	var value = null;
+	if(dossierId && referentUid){
+		$.ajax({
+			url : "${api.server}/dossiers/"+dossierId+"/files/"+referentUid+"/formdata",
+			type : "GET",
+			dataType : "json",
+			async : false,
+			success : function(result){
+				value = result;
+
+			},
+			error : function(result){
+
+			}
+
+		});
+	}
+
+	return value;
+}
+
 var fnCheckValidTemplate = function(){
 	console.log($(".validPart"));
 	var valid = true;
@@ -946,5 +956,44 @@ var fnCheckValidTemplate = function(){
 
 	return valid;
 }
+
+
+
+$(document).on("click",".saveForm",function(event){
+	var id = $(this).attr("data-pk");
+	var referentUidFile = $(this).attr("referentUid");
+	console.log(id);
+	console.log("ccc");
+	var value = $("#formPartNo"+id).alpaca('get').getValue();
+	var validate = $("#formPartNo"+id).alpaca('get').isValid(true);
+	if(validate && referentUidFile){
+		$.ajax({
+			url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
+			dataType : "json",
+			type : "PUT",
+			headers: {"groupId": ${groupId}},
+			data : {
+				formdata: JSON.stringify(value)
+			},
+			success : function(result){
+				notification.show({
+					message: "Yêu cầu được thực hiện thành công!"
+				}, "success");
+				console.log($("#validPart"+id));
+				$("#validPart"+id).val("1");
+			},
+			error : function(result){
+				notification.show({
+					message: "Thực hiện không thành công, xin vui lòng thử lại!"
+				}, "error");
+			}
+		});
+	}else {
+		notification.show({
+			message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi ghi lại!"
+		}, "error");
+	}
+
+});
 
 </script>
