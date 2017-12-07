@@ -27,20 +27,20 @@
 					</div>
 					<div class="col-sm-12">
 						<div class="form-group">
-							<label>Tên thủ tục</label>
+							<label>Tên thủ tục (<span class="red">*</span>)</label>
 							<input name="service" id="service" class="form-control" placeholder="Tên thủ tục" data-bind="value:serviceInfoId" validationMessage="Bạn phải chọn thủ tục hành chính" required="required"> 
 						</div>
 						<span data-for="service" class="k-invalid-msg"></span>
 					</div>
 					<div class="col-sm-6 MB15">
-						<label>Cơ quan thực hiện</label>
+						<label>Cơ quan thực hiện (<span class="red">*</span>)</label>
 						<select class="form-control" id="govAgency" name="govAgency" data-bind="value: govAgencyCode" required="required" validationMessage="Bạn phải chọn cơ quan thực hiện">
-
+							
 						</select>
 						<span data-for="govAgency" class="k-invalid-msg"></span>
 					</div>
 					<div class="col-sm-6 MB15">
-						<label>Mức độ</label>
+						<label>Mức độ (<span class="red">*</span>)</label>
 						<select class="form-control" id="serviceLevel" name="serviceLevel" data-bind="value: serviceLevel" required="required" validationMessage="Bạn phải chọn mức độ">
 							<option value="2">Mức độ 2</option>
 							<option value="3">Mức độ 3</option>
@@ -60,7 +60,7 @@
 						<div class="form-group">
 							<label class="control-label">Địa chỉ nộp hồ sơ trực tuyến: 
 							</label> 
-							<textarea class="form-control" rows="3" id="serviceUrl" name="serviceUrl" data-bind="text:serviceUrl" ></textarea>
+							<textarea class="form-control" rows="3" id="serviceUrl" name="serviceUrl" data-bind="text:serviceUrl" placeholder="Đường dẫn dạng : https://www.abc.com"></textarea>
 						</div>
 					</div>
 					<div class="col-sm-6">

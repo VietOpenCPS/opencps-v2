@@ -1,6 +1,4 @@
-<#if (Request)??>
 <#include "init.ftl">
-</#if>
 
 <div class="modal-header form-group">
 
@@ -59,7 +57,8 @@
 		</div>
 
 		<div class="form-group">
-			<button class="btn btn-sm btn-active btn-default" id="addJobpos" name="addJobpos" type="button" >
+			<button class="btn btn-sm btn-primary btn-default" id="_jobPos_submitAddJobpos" name="_jobPos_submitAddJobpos" type="button" 
+				data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 				<i class="fa fa-check-circle"></i>
 				<span class="lfr-btn-label">Xác nhận</span>
 				
@@ -82,7 +81,7 @@
 
 (function($) {
 	
-	$(document).on('click', '#addJobpos', function(event){
+	$(document).on('click', '#_jobPos_submitAddJobpos', function(event){
 		
 		event.preventDefault();
 		event.stopPropagation();
