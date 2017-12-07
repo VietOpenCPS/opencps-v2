@@ -21,8 +21,20 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 public class DossierTemplateIndexer extends BaseIndexer<DossierTemplate> {
+	
+	public static void main(String[] args){
+		String test1 = "TT30/2011/BGTVT-KTSPM - ROMOOC";
+		String test2 = "TT30/2011/BGTVT-KTSPM - OTOTAI";
+		String test = test1.replaceAll("/", "\\\\/");
+		test = test.replaceAll("-", "\\\\-");
+		System.out.println(test);
+		
+		
+	}
 
 	public static final String CLASS_NAME = DossierTemplate.class.getName();
 
@@ -49,10 +61,17 @@ public class DossierTemplateIndexer extends BaseIndexer<DossierTemplate> {
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(object.getUserName()));
 		document.addKeywordSortable(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
-
+		
 		// add text fields
 		document.addTextSortable(DossierTemplateTerm.TEMPLATE_NAME, object.getTemplateName());
-		document.addTextSortable(DossierTemplateTerm.TEMPLATE_NO, object.getTemplateNo());
+		
+		String templateNo = Validator.isNotNull(object.getTemplateNo()) ? object.getTemplateNo() : StringPool.BLANK;
+		//templateNo = templateNo.replaceAll(StringPool.DASH, "\\\\-");
+		//templateNo = templateNo.replaceAll(StringPool.FORWARD_SLASH, "\\\\/");
+		
+		System.out.println(templateNo);
+		
+		document.addTextSortable(DossierTemplateTerm.TEMPLATE_NO, templateNo);
 		document.addTextSortable(DossierTemplateTerm.DESCRIPTION, object.getDescription());
 
 		return document;

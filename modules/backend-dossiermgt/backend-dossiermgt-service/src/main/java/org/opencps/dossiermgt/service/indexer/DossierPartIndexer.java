@@ -6,6 +6,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.dossiermgt.constants.DossierPartTerm;
+import org.opencps.dossiermgt.constants.DossierTemplateTerm;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 
@@ -21,6 +22,8 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 	public static final String CLASS_NAME = DossierPart.class.getName();
@@ -55,7 +58,9 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 		document.addNumberSortable(DossierPartTerm.PART_TYPE, object.getPartType());
 
 		// add text fields
-		document.addTextSortable(DossierPartTerm.TEMPLATE_NO, object.getTemplateNo());
+		String templateNo = Validator.isNotNull(object.getTemplateNo()) ? object.getTemplateNo() : StringPool.BLANK;
+		
+		document.addTextSortable(DossierPartTerm.TEMPLATE_NO, templateNo);
 		document.addTextSortable(DossierPartTerm.PART_NAME, object.getPartName());
 		document.addTextSortable(DossierPartTerm.PART_NO, object.getPartNo());
 		document.addTextSortable(DossierPartTerm.PART_TIP, object.getPartTip());
