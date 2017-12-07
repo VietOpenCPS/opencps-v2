@@ -57,7 +57,8 @@ import javax.xml.bind.annotation.XmlType;
     "status",
     "active",
     "permission",
-    "metadata"
+    "metadata",
+    "month"
 })
 @XmlRootElement(name = "DataSearchModel")
 public class DataSearchModel {
@@ -86,7 +87,8 @@ public class DataSearchModel {
     protected String permission;
 	@QueryParam(value = "metadata")
     protected String metadata;
-
+	@QueryParam(value = "month")
+    protected String month;
     /**
      * Gets the value of the keywords property.
      * 
@@ -334,5 +336,13 @@ public class DataSearchModel {
     public void setMetadata(String value) {
         this.metadata = value;
     }
+
+	public String getMonth() {
+		return month;
+	}
+
+	public void setMonth(String month) {
+		this.month = month;
+	}
 
 }

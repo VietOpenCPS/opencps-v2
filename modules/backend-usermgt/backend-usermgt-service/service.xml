@@ -91,6 +91,12 @@
 			<finder-column name="parentWorkingUnitId"></finder-column>
 			<finder-column name="level"></finder-column>
 		</finder>
+		
+		<finder return-type="Collection" name="F_childs_unit">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="treeIndex" comparator="LIKE"></finder-column>
+		</finder>
+		
 	</entity>
 
 	<entity name="Employee" uuid="true" local-service="true"
@@ -120,7 +126,9 @@
 		<column name="mappingUserId" type="long" />
 		<column name="mainJobPostId" type="long" />
 		<column name="photoFileEntryId" type="long" />
-
+		<column name="recruitDate" type="Date" />
+		<column name="leaveDate" type="Date" />
+		
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="employeeNo" />
@@ -177,6 +185,41 @@
 		<finder return-type="JobPos" name="F_mappingRoleId">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="mappingRoleId"></finder-column>
+		</finder>
+		
+	</entity>
+	
+	<entity name="JobPosWork" uuid="true" local-service="true"
+		remote-service="false" table="m_jobposwork">
+
+		<!-- PK fields -->
+		<column name="jobPosWorkId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="jobPostId" type="long" />
+		<column name="checklistCat" type="String" />
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+		
+		<finder return-type="JobPosWork" name="F_ChecklistCat">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="jobPostId"></finder-column>
+			<finder-column name="checklistCat"></finder-column>
+		</finder>
+		
+		<finder return-type="Collection" name="F_JobPostId">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="jobPostId"></finder-column>
 		</finder>
 		
 	</entity>
