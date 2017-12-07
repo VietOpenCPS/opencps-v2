@@ -14,8 +14,6 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
 import java.io.InputStream;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -26,14 +24,18 @@ import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.exception.DuplicateDossierFileException;
 import org.opencps.dossiermgt.exception.InvalidDossierStatusException;
 import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
-//import org.opencps.dossiermgt.jasperreport.util.JRReportUtil;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.impl.DossierFileImpl;
 import org.opencps.dossiermgt.service.base.DossierFileLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -52,10 +54,14 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.File;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the dossier file local service.
@@ -323,8 +329,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		//User user = userPersistence.findByPrimaryKey(serviceContext.getUserId());
 		System.out.println("GET DOSSIER FILE" + new Date());
+				
 		DossierFile dossierFile = dossierFilePersistence.findByDID_REF(dossierId, referenceUid);
-		
 		
 		//dossierFileLocalService.getDossierFileByReferenceUid(dossierId, referenceUid);
 
@@ -349,24 +355,20 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		// auto generate pdf
 		long fileEntryId = 0;
 
+		// Binhth add message bus to processing jasper file
+		Message message = new Message();
 		
-	/*	 try { File file =
-		 FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
-		  
-		 String sourceFileName = System.currentTimeMillis() +
-		 StringPool.PERIOD + JRReportUtil.DocType.PDF.toString();
-		 
-		  JRReportUtil.createReportFile(jrxmlTemplate, formData, null,
-		  file.getCanonicalPath());
-		  
-		  FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
-		  user.getPrimaryKey(), groupId, file, sourceFileName, serviceContext);
-		  
-		  fileEntryId = fileEntry.getFileEntryId(); } catch(Exception e) {
-		  throw new SystemException(e); }*/
-		 
 
-		dossierFile.setFileEntryId(fileEntryId);
+
+		JSONObject msgData = JSONFactoryUtil.createJSONObject();
+		msgData.put("className", DossierFile.class.getName());
+		msgData.put("classPK", dossierFile.getDossierFileId());
+		msgData.put("jrxmlTemplate", jrxmlTemplate );
+		msgData.put("formData", formData);
+		msgData.put("userId", serviceContext.getUserId());
+		
+		message.put("msgToEngine", msgData);
+		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
 
 		return dossierFilePersistence.update(dossierFile);
 	}

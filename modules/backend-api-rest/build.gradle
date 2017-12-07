@@ -34,7 +34,8 @@ dependencies {
 	compileOnly project(":modules:backend-communication:backend-communication-service")
 	
 	compileOnly project(":modules:backend-auth")
-}
+	
+}	
 
 sourceSets {
 	generated {

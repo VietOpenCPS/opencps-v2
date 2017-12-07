@@ -1,0 +1,38 @@
+Bundle-Name: backend-jasper-process-service
+Bundle-SymbolicName: backend.jasper.process.service
+Bundle-Version: 1.0.0
+Liferay-Require-SchemaVersion: 1.0.0
+Liferay-Service: true
+-includeresource: \
+@bcmail-jdk14.jar;lib:=true,\
+@bcprov-jdk14.jar;lib:=true,\
+@bctsp-jdk14.jar;lib:=true,\
+@castor-core.jar;lib:=true,\
+@castor-xml.jar;lib:=true,\
+@commons-beanutils.jar;lib:=true,\
+@commons-collections.jar;lib:=true,\
+@commons-digester.jar;lib:=true,\
+@commons-lang.jar;lib:=true,\
+@commons-logging.jar;lib:=true,\
+@core.jar;lib:=true,\
+@ecj.jar;lib:=true,\
+@icu4j.jar;lib:=true,\
+@itext.jar;lib:=true,\
+@jackson-annotations.jar;lib:=true,\
+@jackson-core.jar;lib:=true,\
+@jackson-databind.jar;lib:=true,\
+@jakarta-regexp.jar;lib:=true,\
+@jasperreports.jar;lib:=true,\
+@javax.inject.jar;lib:=true,\
+@jcommon.jar;lib:=true,\
+@jfreechart.jar;lib:=true,\
+@olap4j.jar;lib:=true,\
+@stax-api.jar;lib:=true,\
+@stax.jar;lib:=true
+Import-Package: *;resolution:=optional
+Export-Package: \
+	net.sf.jasperreports.engine.data,\
+	net.sf.jasperreports.engine,\
+	net.sf.jasperreports.engine.export,\
+	net.sf.jasperreports.engine.*,\
+	net.sf.jasperreports.engine.base
