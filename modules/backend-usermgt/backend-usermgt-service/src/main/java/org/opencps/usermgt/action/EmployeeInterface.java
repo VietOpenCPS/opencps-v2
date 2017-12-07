@@ -29,13 +29,15 @@ public interface EmployeeInterface {
 
 	Employee create(long userId, long companyId, long groupId, String employeeNo, String fullName, String email,
 			String gender, Date birthDate, String telNo, String mobile, String title, String workingStatus,
-			ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
-			UnauthorizationException, DuplicateEmployeeNoException, DuplicateEmployeeEmailException, PortalException;
+			Date recruitDate, Date leaveDate, ServiceContext serviceContext)
+			throws NoSuchUserException, UnauthenticationException, UnauthorizationException,
+			DuplicateEmployeeNoException, DuplicateEmployeeEmailException, PortalException;
 
 	Employee update(long userId, long companyId, long groupId, long id, String employeeNo, String fullName,
 			String email, String gender, Date birthDate, String telNo, String mobile, String title,
-			String workingStatus, ServiceContext serviceContext) throws NoSuchUserException, NotFoundException,
-			UnauthenticationException, UnauthorizationException, DuplicateEmployeeNoException, DuplicateEmployeeEmailException, PortalException;
+			String workingStatus, Date recruitDate, Date leaveDate, ServiceContext serviceContext)
+			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException,
+			DuplicateEmployeeNoException, DuplicateEmployeeEmailException, PortalException;
 
 	File getEmployeePhoto(long id, ServiceContext serviceContext);
 
@@ -63,8 +65,14 @@ public interface EmployeeInterface {
 
 	JSONObject lockEmployeeAccount(long userId, long companyId, long groupId, long id, boolean locked,
 			ServiceContext serviceContext) throws PortalException;
+	
+	JSONObject lockEmployeeAccount(Employee employee, boolean locked,
+		ServiceContext serviceContext) throws PortalException;
 
 	void validateExits(long userId, long companyId, long groupId, String employeeNo, String email,
 			ServiceContext serviceContext) throws DuplicateEmployeeEmailException, DuplicateEmployeeNoException;
+
+	void deleteEmployeeJobPos(long id, long employeeJobPosId, ServiceContext serviceContext)
+			throws NoSuchUserException, DuplicateEmployeeEmailException, DuplicateEmployeeNoException, PortalException;
 
 }
