@@ -1,6 +1,6 @@
 <#include "init.ftl">
 
-<div class="row MT20">
+<div class="row MB5">
 
 	<!--_collectionSub_name-->
 
@@ -29,7 +29,9 @@
 		
 	</div>
 
-	<div class="hr-line-dashed"></div>  
+</div>
+
+<div class="row MB5">
 
 	<label class="col-sm-3">Tên tiếng anh:</label>
 
@@ -55,7 +57,9 @@
 
 	</div>
 
-	<div class="hr-line-dashed"></div>  
+</div>
+
+<div class="row MB5">
 	
 	<!--_collectionSub_name-->
 
@@ -85,7 +89,9 @@
 		
 	</div>
 	
-	<div class="hr-line-dashed"></div> 
+</div>
+
+<div class="row MB5">
 
 	<label class="col-sm-3">Mô tả chi tiết:</label>
 
@@ -119,7 +125,7 @@
 
 	<div class="col-xs-3 col-sm-3">
 	
-		<span data-toggle="modal" class="btn btn-primary image-preview-input btn-block"
+		<span data-toggle="modal" class="btn btn-active btn-block"
 			href="${url.adminDataMgtPortlet.dictcollection_create_dictgroup}" data-target="#modal"> 
 			<i class="fa fa-book" aria-hidden="true"></i>
 			
@@ -190,9 +196,9 @@
 
 <script type="text/x-kendo-tmpl" id="_collectionSub_group_template">
 	
-	<li class="PT10 PB10 line-dashed">
+	<li class="PT5 PB5 line-dashed">
 	
-		<div class="row M0 eq-height" >
+		<div class="row M0 eq-height flex-break" >
 		
 			<div class="col-xs-1 col-sm-1 PL0 align-middle" >
 				
@@ -262,7 +268,7 @@
 
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 " style="display: none" id = "_collectionSub_group_toggle_#:groupCode#">
 						
-				<div class="box-panel MT10 _collectionSub_group_dictItem" data-pk="#:groupCode#" >
+				<div class="box box-s3 MT10 _collectionSub_group_dictItem" data-pk="#:groupCode#" >
 						
 					<label>Danh sách mục dữ liệu: </label>
 					<select name="_collectionSub_group_dictItem#:groupCode#" 
@@ -327,7 +333,9 @@ function _collectionSub_group_autocompleteSearch(val) {
 					},
 					success: function(result) {
 					
-						$('#_collectionSub_group_CounterListDetail').html(result.total);	
+						$('#_collectionSub_group_CounterListDetail').html(result.total);
+						
+						result["data"] = result.total==0 ? []: result["data"];
 						options.success(result);
 						
 					},
@@ -517,8 +525,9 @@ function _collectionSub_group_autocompleteSearch(val) {
 			for (var x = 0; x < children.length; x++) {
 				
 				var getObj = _collectionSub_group_listView.dataSource.view()[x];
+				var isCreate = $("#_collectionSub_group_dictItem"+getObj.groupCode)[0]["isKMulti"];
 				
-				if (getObj.groupCode != null && getObj.groupCode !="") {
+				if (getObj.groupCode != null && getObj.groupCode !="" && isCreate != true) {
 
 					$.ajax({
 				
@@ -563,6 +572,7 @@ function _collectionSub_group_autocompleteSearch(val) {
 							}).data("kendoMultiSelect");
 
 							_collectionSub_group_dictItem.value(dictGroupItems);
+							$("#_collectionSub_group_dictItem"+getObj.groupCode)[0]["isKMulti"] = true;
 							
 						},
 						error: function(xhr, textStatus, errorThrown) {
@@ -594,8 +604,8 @@ function _collectionSub_group_autocompleteSearch(val) {
 			logic: "or",
 			filters: [
 				
-				{ field: "groupCode", operator: "contains", 	value: $("#_collectionSub_group_keySearch").val() },
-				{ field: "groupName", operator: "contains", 	value: $("#_collectionSub_group_keySearch").val() }
+				{ field: "groupCode", operator: "contains", 	value: $("#_collectionSub_group_keySearch").val().trim() },
+				{ field: "groupName", operator: "contains", 	value: $("#_collectionSub_group_keySearch").val().trim() }
 			]
 		
 		}

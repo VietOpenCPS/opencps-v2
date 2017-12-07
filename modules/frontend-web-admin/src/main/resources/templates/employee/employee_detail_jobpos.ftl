@@ -1,6 +1,4 @@
-<#if (Request)??>
 <#include "init.ftl">
-</#if>
 <div  class="row">
 
 	<div class="col-sm-12">
@@ -17,7 +15,7 @@
 				
 			</div>
 			
-			<span data-toggle="modal" class="btn btn-active image-preview-input MLA"
+			<span data-toggle="modal" class="btn btn-active MLA"
 				href="${(url.employeePortlet.employee_detail_update_jobpos)!}&${portletNamespace}employeeId=${(employee.employeeId)!}" data-target="#modal">
 				
 				<i class="fa fa-plus-circle"></i> 
@@ -27,7 +25,7 @@
 
 		</div>
 
-		<div>
+		<div id="employee-jobpos-tooltip">
 
 			<ul class="mh-head-1" id="employee-detail-jobpos">
 
@@ -35,14 +33,14 @@
 
 					<#list employee_jobPos as oJobPos>
 
-						<li class="PT10 PB10 jobpos-item">
+						<li class="PT5 PB5 jobpos-item">
 								
 							<div class="row M0 ">
 								
 								<div class="col-sm-10 text-ellipsis">
 									
 									<#if (oJobPos.mainJobPos??) && (oJobPos.mainJobPos == true) >
-										<i class="fa fa-suitcase" aria-hidden="true"></i>
+										<i class="fa fa-suitcase employee-main-jobpos" title="Chức vụ chính" aria-hidden="true"></i>
 									<#else>
 										<i class="fa fa-angle-right" aria-hidden="true"></i>
 									</#if>
@@ -87,7 +85,7 @@
 	var birthdate = $('#employee-detail-birthdate');
 	//birthdate.text(kendo.toString(kendo.parseDate(birthdate.text().trim(), 'yyyy-MM-dd'), 'dd/MM/yyyy'));
 
-	var employeeDeleteJobPosBaseUrl = "${api.server}/employees/${(employee.employeeId)!}/jobpos";
+	var employeeDeleteJobPosBaseUrl = "${api.endpoint}/employees/${(employee.employeeId)!}/jobpos";
 
 	$(document).on('click', '.employee-detail-delete-jobpos', function(event){
 		
@@ -127,6 +125,12 @@
 			return;
 		}
 
+	});
+	
+	$("#employee-jobpos-tooltip").kendoTooltip({
+		filter: ".employee-main-jobpos",
+		content: kendo.template("<p>#=target.data('title')#</p>"),
+		position: "top"
 	});
 
 })(jQuery);
