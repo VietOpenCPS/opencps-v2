@@ -60,20 +60,20 @@
 		</div>
 
 		<div class="col-sm-12 MB15">
-			<label>Tên quy trình xác lập dịch vụ</label>
+			<label>Tên quy trình xác lập dịch vụ (<span class="red">*</span>)</label>
 			<input name="optionName" id="optionName" class="form-control" placeholder="Tên quy trình xác lập dịch vụ" data-bind="value:optionName" validationMessage="Bạn phải điền tên quy trình xác lập" required="required">
 			<span data-for="optionName" class="k-invalid-msg"></span>
 		</div>
 
 		<div class="col-sm-12 MB15">
-			<label>Tên mẫu hồ sơ</label>
+			<label>Tên mẫu hồ sơ (<span class="red">*</span>)</label>
 			<select class="form-control" id="dossierTemplate" name="dossierTemplate" data-bind="value: dossierTemplate" required="required" validationMessage="Bạn phải chọn mẫu hồ sơ">
 			</select>
 			<span data-for="dossierTemplate" class="k-invalid-msg"></span>
 		</div>
 
 		<div class="col-sm-12 MB15">
-			<label>Tên quy trình xử lý thủ tục</label>
+			<label>Tên quy trình xử lý thủ tục (<span class="red">*</span>)</label>
 			<select class="form-control" id="serviceProcess" name="serviceProcess" data-bind="value: serviceProcess" required="required" validationMessage="Bạn phải chọn quy trình xử lý">
 			</select>
 			<span data-for="serviceProcess" class="k-invalid-msg"></span>

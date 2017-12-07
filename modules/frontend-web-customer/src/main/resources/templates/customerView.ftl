@@ -7,15 +7,15 @@
 
 	<#-- layout template -->
 	<script type="text/x-kendo-template" id="layoutTemplate">
-		<div id="panel_list" class="col-sm-3 PL0"></div>
+		<div id="panel_list" class="col-sm-2 PL0"></div>
 		
-		<div id="mainType1" class="col-sm-9 P0" >
+		<div id="mainType1" class="col-sm-10 P0" >
 			<div id="main_section" class="col-sm-9 P0" style="background: #ffffff;">
 			</div>
 			<div id="sidebar_list" class="col-sm-3 PR0"></div>
 		</div>
 
-		<div id="mainType2" class="col-sm-9 P0"></div>
+		<div id="mainType2" class="col-sm-10 P0"></div>
 	</script>
 
 	<#-- panel list template -->
@@ -49,25 +49,25 @@
 				</ul>
 			</div>
 			<div class="col-sm-12 MT15 filterField">
-				<div class="form-group">
-					<input class="form-control" name="govAgency" id="govAgency" data-role="combobox" data-placeholder="Chọn cơ quan" data-text-field="itemName" data-value-field="itemCode" data-source="dataGovAgency" data-bind="events: { change: eventLookup, dataBound: dataBound}">
+				<div class="MB10">
+					<input name="govAgency" id="govAgency" data-role="combobox" data-placeholder="Chọn cơ quan" data-text-field="itemName" data-value-field="itemCode" data-source="dataGovAgency" data-bind="events: { change: eventLookup, dataBound: dataBound}">
 				</div>
 			</div>
 			<div class="col-sm-12 filterField">
-				<div class="form-group">
-					<input class="form-control" name="serviceInfo" id="serviceInfo" data-role="combobox" data-placeholder="Chọn thủ tục hành chính" data-text-field="serviceName" data-value-field="serviceCode" data-bind="source:dataServiceInfo, events: { change: eventLookup,dataBound: dataBound}">
+				<div class="MB10">
+					<input name="serviceInfo" id="serviceInfo" data-role="combobox" data-placeholder="Chọn thủ tục hành chính" data-text-field="serviceName" data-value-field="serviceCode" data-bind="source:dataServiceInfo, events: { change: eventLookup,dataBound: dataBound}">
 				</div>
 			</div>
 			<div class="col-sm-12 filterField">
 				<div class="row">
-					<div class="col-sm-6">
-						<div class="form-group">
-							<input class="form-control" name="year" id="year" data-role="combobox" data-placeholder="Năm" data-text-field="year" data-value-field="valYear" data-bind="source:dataYear, events: { change: eventLookup, dataBound: dataBound}">
+					<div class="col-sm-6 PR5">
+						<div class="MB10">
+							<input name="year" id="year" data-role="combobox" data-placeholder="Năm" data-text-field="year" data-value-field="valYear" data-bind="source:dataYear, events: { change: eventLookup, dataBound: dataBound}">
 						</div>
 					</div>
-					<div class="col-sm-6">
-						<div class="form-group">
-							<input class="form-control" name="month" id="month" data-role="combobox" data-placeholder="Tháng" data-text-field="month" data-value-field="valMonth" data-bind="source:dataMonth, events: { change: eventLookup, dataBound: dataBound}">
+					<div class="col-sm-6 PL5">
+						<div class="MB10">
+							<input name="month" id="month" data-role="combobox" data-placeholder="Tháng" data-text-field="month" data-value-field="valMonth" data-bind="source:dataMonth, events: { change: eventLookup, dataBound: dataBound}">
 						</div>
 					</div>
 				</div>
