@@ -44,12 +44,13 @@
     var count = 0;
     var dataSource2 = false;
     var countNotify = function(){
-        $("#totalNotify").html(count);
-        if (count>0) {
-            $("#btn-show-notification").css("background-color","#84FAFA")
-        } else {
+        if (count == 0) {
+            $("#totalNotify").html("");
             $("#btn-show-notification").css("background-color","#e1e2e1")
-        };
+        } else {
+            $("#totalNotify").html(count);
+            $("#btn-show-notification").css("background-color","#84FAFA")
+        }
     }
     var dataSourceNotification = new kendo.data.DataSource({
         transport:{

@@ -23,7 +23,7 @@
 		</div>
 
 		<div class="col-sm-12 MB15">
-			<label>Tên quy trình xử lý thủ tục</label>
+			<label>Tên quy trình xử lý thủ tục </label>
 			<select class="form-control" id="serviceProcess" name="serviceProcess" data-bind="value: serviceProcess" required="required" validationMessage="Bạn phải chọn quy trình xử lý">
 			</select>
 			<span data-for="serviceProcess" class="k-invalid-msg"></span>

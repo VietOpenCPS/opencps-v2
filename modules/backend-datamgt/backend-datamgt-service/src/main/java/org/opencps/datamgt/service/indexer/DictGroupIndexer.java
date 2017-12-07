@@ -44,17 +44,6 @@ public class DictGroupIndexer extends BaseIndexer<DictGroup> {
 	public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
 			SearchContext searchContext) throws Exception {
 
-		addSearchTerm(searchQuery, searchContext, DictGroupTerm.DICT_GROUPID, false);
-
-		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
-
-		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
-
-			if (Validator.isNotNull(expandoAttributes)) {
-				addSearchExpando(searchQuery, searchContext, expandoAttributes);
-			}
-		}
 	}
 
 	@Override
