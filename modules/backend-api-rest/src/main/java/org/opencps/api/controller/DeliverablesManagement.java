@@ -44,7 +44,10 @@ public interface DeliverablesManagement {
 	@Path("/deliverables/{id}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	public Response updateDeliverables(@PathParam("id") Long id);
+	public Response updateDeliverables(@PathParam("id") Long id, @Context String deliverableType,
+			@Context String deliverableCode, @Context String govAgencyCode, @Context String applicantIdNo,
+			@Context String applicantName, @Context String subject, @Context Date issueDate, @Context Date expireDate,
+			@Context Date revalidate, @Context Integer deliverableState);
 
 	@DELETE
 	@Path("/deliverables/{id}")

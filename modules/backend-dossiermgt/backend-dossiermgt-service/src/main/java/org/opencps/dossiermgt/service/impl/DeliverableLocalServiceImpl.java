@@ -22,6 +22,8 @@ import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.impl.DeliverableImpl;
 import org.opencps.dossiermgt.service.base.DeliverableLocalServiceBaseImpl;
 
+import com.liferay.portal.kernel.exception.PortalException;
+
 import aQute.bnd.annotation.ProviderType;
 
 /**
@@ -67,9 +69,5 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		Deliverable deliverable = deliverablePersistence.findByDID(id);
 		return deliverable;
 	}
-
-	public void update(Deliverable model) {
-		updateDeliverable(model);
-	}
-
+	
 }
