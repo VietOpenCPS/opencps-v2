@@ -73,7 +73,9 @@ import javax.xml.bind.annotation.XmlType;
     "jobPosTitle",
     "workingUnitName",
     "jobPosts",
-    "mappingUser"
+    "mappingUser",
+    "recruitDate",
+    "leaveDate"
 })
 @XmlRootElement(name = "EmployeeModel")
 public class EmployeeModel {
@@ -95,6 +97,9 @@ public class EmployeeModel {
     protected String permission;
     protected String jobPosTitle;
     protected String workingUnitName;
+    protected String recruitDate;
+    protected String leaveDate;
+    
     protected List<JobPosts> jobPosts;
     protected List<MappingUser> mappingUser;
 
@@ -563,5 +568,21 @@ public class EmployeeModel {
         }
         return this.mappingUser;
     }
+
+	public String getRecruitDate() {
+		return recruitDate;
+	}
+
+	public void setRecruitDate(String recruitDate) {
+		this.recruitDate = recruitDate;
+	}
+
+	public String getLeaveDate() {
+		return leaveDate;
+	}
+
+	public void setLeaveDate(String leaveDate) {
+		this.leaveDate = leaveDate;
+	}
 
 }

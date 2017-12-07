@@ -1,14 +1,6 @@
 <#include "init.ftl">
 
 <div class="row">
-	
-	<h3 class="detail-header MT5"> 
-		<span> Quản lý dữ liệu danh mục </span> 
-	</h3>
-
-</div>
-
-<div class="row">
 
 	<!— left —>
 	<div class="col-md-3 panel P0">
@@ -22,15 +14,15 @@
 					oninput="_collection_autocompleteSearch()" 
 					placeholder="Tên, mã nhóm danh mục">
 	
-				<div class="input-group-addon btn-primary" id="_collection_btnSearch">
+				<div class="input-group-addon btn-active" id="_collection_btnSearch">
 					
 					<i class="fa fa-search" aria-hidden="true"></i>
 	
 				</div>
-	
+
 			</div>
 	
-			<span data-toggle="modal" class="btn btn-primary image-preview-input btn-block MT15"
+			<span data-toggle="modal" class="btn btn-active btn-block MT15"
 				href="${url.adminDataMgtPortlet.dictcollection_create_dictcollection}" data-target="#modal"> 
 				<i class="fa fa-book" aria-hidden="true"></i>
 				<span class="p-xxs" >Tổng số</span> 
@@ -42,17 +34,17 @@
 		</div>
 				
 			
-		<ul class="ul-with-border ul-with-border-style-2 mh-head-2" id="_collection_listView"></ul>
+		<ul class="ul-with-border ul-default mh-head-2" id="_collection_listView"></ul>
 		
 		<script type="text/x-kendo-tmpl" id="_collection_template">
 		
-			<li class="clearfix PT20 PR0 PB20 PL15">
+			<li class="clearfix PT10 PR0 PB10 PL10">
 	
 				<div class="col-sm-2 clearfix PL0 PR0">
 					
 					<a href="javascript:;" >
 								
-						<i style="font-size: 30px;padding: 5px;" class="fa fa-book" aria-hidden="true"></i>
+						<i class="fa fa-book fs26 P5" aria-hidden="true"></i>
 							
 					</a>
 						
@@ -104,8 +96,8 @@
 			logic: "or",
 			filters: [
 				
-				{ field: "collectionName", operator: "contains", 	value: $("#_collection_keySearch").val() },
-				{ field: "collectionCode", operator: "contains", 	value: $("#_collection_keySearch").val() }
+				{ field: "collectionName", operator: "contains", 	value: $("#_collection_keySearch").val().trim() },
+				{ field: "collectionCode", operator: "contains", 	value: $("#_collection_keySearch").val().trim() }
 			]
 		});
 		
@@ -137,6 +129,8 @@
 						success: function(result) {
 						
 							$('#dictCollectionCounterList').html(result.total);
+							
+							result["data"] = result.total==0 ? []: result["data"];
 							options.success(result);
 							
 						},
@@ -245,8 +239,8 @@
 				logic: "or",
 				filters: [
 					
-					{ field: "collectionName", operator: "contains", 	value: $("#_collection_keySearch").val() },
-					{ field: "collectionCode", operator: "contains", 	value: $("#_collection_keySearch").val() }
+					{ field: "collectionName", operator: "contains", 	value: $("#_collection_keySearch").val().trim() },
+					{ field: "collectionCode", operator: "contains", 	value: $("#_collection_keySearch").val().trim() }
 				]
 			
 			}
@@ -259,7 +253,7 @@
 			
 			var children = _collection_listView.element.children();
 			
-			var index = $("#_collection_hidden_new_id").val();
+			var index = $("#_collection_hidden_new_id").val().trim();
 			
 			for (var x = 0; x < children.length; x++) {
 				
