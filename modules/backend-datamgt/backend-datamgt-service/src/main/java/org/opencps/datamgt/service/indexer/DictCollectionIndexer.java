@@ -41,17 +41,6 @@ public class DictCollectionIndexer extends BaseIndexer<DictCollection> {
 	public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
 			SearchContext searchContext) throws Exception {
 
-		addSearchTerm(searchQuery, searchContext, DictCollectionTerm.DICT_COLLECTION_ID, false);
-
-		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
-
-		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
-
-			if (Validator.isNotNull(expandoAttributes)) {
-				addSearchExpando(searchQuery, searchContext, expandoAttributes);
-			}
-		}
 	}
 
 	@Override
