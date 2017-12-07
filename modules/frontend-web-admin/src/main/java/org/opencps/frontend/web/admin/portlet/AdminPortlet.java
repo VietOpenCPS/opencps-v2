@@ -773,11 +773,11 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			///////////////////// FrontendWebEmployeePortlet
 			JSONObject employeePortlet = JSONFactoryUtil.createJSONObject();
 
-			PortletURL employeeListURL = renderResponse.createRenderURL();
-			employeeListURL.setParameter("mvcPath", "/templates/employee/employee_list.ftl");
-			employeeListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+			PortletURL employeeIndexURL = renderResponse.createRenderURL();
+			employeeIndexURL.setParameter("mvcPath", "/templates/employee/employee_index.ftl");
+			employeeIndexURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
-			employeePortlet.put("employee_list", employeeListURL);
+			employeePortlet.put("employee_index", employeeIndexURL);
 
 			PortletURL employeeCreateURL = renderResponse.createRenderURL();
 			employeeCreateURL.setParameter("mvcPath", "/templates/employee/employee_create.ftl");

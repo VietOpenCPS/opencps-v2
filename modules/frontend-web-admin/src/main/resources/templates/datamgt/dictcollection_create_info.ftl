@@ -53,7 +53,7 @@
 		
 			<div class="col-xs-12 col-sm-6">
 				
-				<button class="btn btn-sm btn-primary btn-default" 
+				<button class="btn btn-sm btn-active" 
 					id="_collectionSub_dictItem_edit_editDictGroup" name="_collectionSub_dictItem_edit_editDictGroup" type="button" 
 					data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 					<i class="fa fa-check-circle"></i>
@@ -103,10 +103,10 @@
 			$("#_collectionSub_group_listView").getKendoListView().dataSource.transport.update({
 				
 				groupCodeOld: dictCollection_groupCode,
-				groupCode: $( "#_collectionSub_dictItem_edit_groupCode" ).val(),
-				groupName: $( "#_collectionSub_dictItem_edit_groupName" ).val(),
-				groupNameEN: $( "#_collectionSub_dictItem_edit_groupNameEN" ).val(),
-				groupDescription: $( "#_collectionSub_dictItem_edit_groupDescription" ).val()
+				groupCode: $( "#_collectionSub_dictItem_edit_groupCode" ).val().trim(),
+				groupName: $( "#_collectionSub_dictItem_edit_groupName" ).val().trim(),
+				groupNameEN: $( "#_collectionSub_dictItem_edit_groupNameEN" ).val().trim(),
+				groupDescription: $( "#_collectionSub_dictItem_edit_groupDescription" ).val().trim()
 				
 			});
 
@@ -116,10 +116,10 @@
 		
 			$("#_collectionSub_group_listView").getKendoListView().dataSource.add({
 				
-				groupCode: $( "#_collectionSub_dictItem_edit_groupCode" ).val(),
-				groupName: $( "#_collectionSub_dictItem_edit_groupName" ).val(),
-				groupNameEN: $( "#_collectionSub_dictItem_edit_groupNameEN" ).val(),
-				groupDescription: $( "#_collectionSub_dictItem_edit_groupDescription" ).val()
+				groupCode: $( "#_collectionSub_dictItem_edit_groupCode" ).val().trim(),
+				groupName: $( "#_collectionSub_dictItem_edit_groupName" ).val().trim(),
+				groupNameEN: $( "#_collectionSub_dictItem_edit_groupNameEN" ).val().trim(),
+				groupDescription: $( "#_collectionSub_dictItem_edit_groupDescription" ).val().trim()
 				
 			});
 
