@@ -45,21 +45,19 @@
                 <script type="text/x-kendo-template" id="tempDossierDetailLog">
                     <li class="clearfix eq-height-lg P0">
                     	<div class="orderNo col-sm-0 text-center center-all row-blue P15"></div>
-                        <div class="col-sm-12 M0 P10">
+                        <div class="col-sm-12 M0 P5 PL10">
                             <span class="text-bold">#:author# </span><span class="text-light-gray">( #:payload.jobposTitle# ) </span><span class="text-light-blue">#:payload.briefNote#</span><br>
                             <span class="text-light-gray">#:createDate#</span><br>
-                            <span>#:content#</span><br>
+                            <p class="MB5">#:content#</p>
                             #
-                            if(payload.length > 0){
-								$.each(payload.dossierFiles, function(index, file) {
+								$(payload.dossierFiles).each(function(index, file) {
 					        		if (file.fileType == "docx") {#
-					        			<span><img src="images/word.png" alt=""> <a href="${api.server}#:file.fileUrl#">#:file.displayName#</a></span><br>
+					        			<p class="MB5"><img src="images/word.png" alt=""> <a class="text-hover-blue" href="${api.server}#:file.fileUrl#">#:file.displayName#</a></p>
 					        		#}
 						        	else if (file.fileType == "pdf") {#
-						        		<span><img src="images/pdf.png" alt=""> <a href="${api.server}#:file.fileUrl#">#:file.displayName#</a></span><br>
+						        		<p class="MB5"><img src="images/pdf.png" alt=""> <a class="text-hover-blue" href="${api.server}#:file.fileUrl#">#:file.displayName#</a></p>
 						        	#}
 						        })
-                            }
 				        	# 
                         </div>
                     </li>
