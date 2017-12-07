@@ -196,7 +196,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	 */
 	
 	
-	
 	@Override
 	public Response cloneDossierFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, DossierFileCopyInputModel input) {
@@ -212,7 +211,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 
 			DossierFileActions action = new DossierFileActionsImpl();
-
+		
 			DossierFile dossierFile = action.cloneDossierFile(groupId, id, input.getDossierFileId(),
 					input.getDossierTemplateNo(), input.getDossierPartNo(), serviceContext);
 

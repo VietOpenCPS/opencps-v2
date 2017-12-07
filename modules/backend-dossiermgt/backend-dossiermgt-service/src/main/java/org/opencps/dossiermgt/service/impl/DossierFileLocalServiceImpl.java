@@ -27,7 +27,6 @@ import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.impl.DossierFileImpl;
 import org.opencps.dossiermgt.service.base.DossierFileLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -54,8 +53,6 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.File;
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -198,7 +195,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 	public DossierFile cloneDossierFile(long groupId, long dossierId, long dossierFileId, String dossierTemplateNo,
 			String dossierPartNo, ServiceContext serviceContext) throws PortalException, SystemException {
 
-		DossierFile dossierFile = dossierFilePersistence.findByPrimaryKey(dossierFileId);
+		DossierFile sourceDossierFile = dossierFilePersistence.findByPrimaryKey(dossierFileId);
 
 		User user = userPersistence.findByPrimaryKey(serviceContext.getUserId());
 
@@ -206,10 +203,10 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		long fileEntryId = 0;
 
-		if (dossierFile.getFileEntryId() > 0) {
+		if (sourceDossierFile.getFileEntryId() > 0) {
 			try {
 				FileEntry fileEntry = FileUploadUtils.cloneDossierFile(user.getPrimaryKey(), groupId,
-						dossierFile.getFileEntryId(), serviceContext);
+						sourceDossierFile.getFileEntryId(), serviceContext);
 
 				fileEntryId = fileEntry.getFileEntryId();
 			} catch (Exception e) {
@@ -217,9 +214,12 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			}
 		}
 
+		
+		long newDossierFileId = counterLocalService.increment(DossierFile.class.getName());
+		
+		DossierFile object = dossierFilePersistence.create(newDossierFileId);
+		
 		Date now = new Date();
-
-		DossierFile object = dossierFilePersistence.create(dossierFileId);
 
 		// Add audit fields
 		object.setCompanyId(serviceContext.getCompanyId());
@@ -236,14 +236,14 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		object.setDossierTemplateNo(dossierTemplateNo);
 		object.setFileEntryId(fileEntryId);
 		object.setDossierPartNo(dossierPartNo);
-		object.setFileTemplateNo(dossierFile.getFileTemplateNo());
+		object.setFileTemplateNo(sourceDossierFile.getFileTemplateNo());
 		object.setDossierPartType(dossierPart.getPartType());
-		object.setDisplayName(dossierFile.getDisplayName());
-		object.setFormData(dossierFile.getFormData());
+		object.setDisplayName(sourceDossierFile.getDisplayName());
+		object.setFormData(sourceDossierFile.getFormData());
 		object.setOriginal(false);
 		object.setIsNew(true);
-		object.setFormScript(dossierFile.getFormScript());
-		object.setFormReport(dossierFile.getFormReport());
+		object.setFormScript(sourceDossierFile.getFormScript());
+		object.setFormReport(sourceDossierFile.getFormReport());
 
 		return dossierFilePersistence.update(object);
 	}

@@ -93,8 +93,6 @@ public class DossierFileActionsImpl implements DossierFileActions {
 			params.put(DossierFileTerm.DOSSIER_TEMPLATE_NO, template);
 			params.put(DossierFileTerm.DOSSIER_PART_TYPE, type);
 			params.put(DossierFileTerm.REMOVED, String.valueOf(false));
-			
-			_log.info("/////////////////////////////////// REMOVED " + false);
 
 			if (owner != null && owner.booleanValue()) {
 				params.put(Field.USER_ID, serviceContext.getUserId());
