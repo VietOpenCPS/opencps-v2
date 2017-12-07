@@ -47,6 +47,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DossierFileSearchResultModel", propOrder = {
     "dossierId",
+    "dossierFileId",
     "referenceUid",
     "dossierTemplateNo",
     "dossierPartNo",
@@ -61,8 +62,8 @@ import javax.xml.bind.annotation.XmlType;
     "signInfo"
 })
 public class DossierFileSearchResultModel {
-
     protected Long dossierId;
+    protected Long dossierFileId;
     protected String referenceUid;
     protected String dossierTemplateNo;
     protected String dossierPartNo;
@@ -98,6 +99,30 @@ public class DossierFileSearchResultModel {
      */
     public void setDossierId(Long value) {
         this.dossierId = value;
+    }
+    
+    /**
+     * Gets the value of the dossierFileId property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getDossierFileId() {
+        return dossierFileId;
+    }
+
+    /**
+     * Sets the value of the dossierFileId property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setDossierFileId(Long value) {
+        this.dossierFileId = value;
     }
 
     /**
