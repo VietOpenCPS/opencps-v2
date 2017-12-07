@@ -278,13 +278,15 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		}
 
 		// Extra fields
-		String templateNo = GetterUtil.getString(params.get(DossierPartTerm.TEMPLATE_NO));
+		//String templateNo = GetterUtil.getString(params.get(DossierPartTerm.TEMPLATE_NO));
 		String partType = GetterUtil.getString(params.get(DossierPartTerm.PART_TYPE));
 		String multiple = GetterUtil.getString(params.get(DossierPartTerm.MULTIPLE));
 		String required = GetterUtil.getString(params.get(DossierPartTerm.REQUIRED));
 		String eSign = GetterUtil.getString(params.get(DossierPartTerm.ESIGN));
+		long templateId =  GetterUtil.getLong(params.get(DossierPartTerm.TEMPLATE_ID));
 
-		if (Validator.isNotNull(templateNo)) {
+
+/*		if (Validator.isNotNull(templateNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(templateNo);
 
 			query.addFields(DossierPartTerm.TEMPLATE_NO);
@@ -292,6 +294,15 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+*/
+		if (Validator.isNotNull(templateId)) {
+			MultiMatchQuery query = new MultiMatchQuery(Long.toString(templateId));
+
+			query.addFields(DossierPartTerm.TEMPLATE_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
 		if (Validator.isNotNull(partType)) {
 			MultiMatchQuery query = new MultiMatchQuery(partType);
 
@@ -375,13 +386,16 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		}
 
 		// Extra fields
-		String templateNo = GetterUtil.getString(params.get(DossierPartTerm.TEMPLATE_NO));
+		//String templateNo = GetterUtil.getString(params.get(DossierPartTerm.TEMPLATE_NO));
 		String partType = GetterUtil.getString(params.get(DossierPartTerm.PART_TYPE));
 		String multiple = GetterUtil.getString(params.get(DossierPartTerm.MULTIPLE));
 		String required = GetterUtil.getString(params.get(DossierPartTerm.REQUIRED));
 		String eSign = GetterUtil.getString(params.get(DossierPartTerm.ESIGN));
 
-		if (Validator.isNotNull(templateNo)) {
+		long templateId = GetterUtil.getLong(params.get(DossierPartTerm.TEMPLATE_ID));
+
+
+/*		if (Validator.isNotNull(templateNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(templateNo);
 
 			query.addFields(DossierPartTerm.TEMPLATE_NO);
@@ -389,6 +403,15 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+*/
+		if (Validator.isNotNull(templateId)) {
+			MultiMatchQuery query = new MultiMatchQuery(Long.toString(templateId));
+
+			query.addFields(DossierPartTerm.TEMPLATE_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
 		if (Validator.isNotNull(partType)) {
 			MultiMatchQuery query = new MultiMatchQuery(partType);
 

@@ -18,5 +18,6 @@ public static final String SAMPLE_DATA = "sampleData";
 public static final String REQUIRED = "required";
 public static final String FILE_TEMPLATE_NO = "fileTemplateNo";
 public static final String ESIGN = "eSign";
+public static final String TEMPLATE_ID = "templateId";
 
 }

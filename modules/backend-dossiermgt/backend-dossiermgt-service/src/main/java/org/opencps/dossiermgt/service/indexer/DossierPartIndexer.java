@@ -6,8 +6,11 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.dossiermgt.constants.DossierPartTerm;
+import org.opencps.dossiermgt.exception.DossierInvalidDossierTemplateException;
 import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -51,8 +54,13 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
 
 		// add number fields
-
+		
 		document.addNumberSortable(DossierPartTerm.PART_TYPE, object.getPartType());
+		
+		DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(object.getGroupId(), object.getTemplateNo());
+		
+		document.addNumberSortable(DossierPartTerm.TEMPLATE_ID, dossierTemplate.getPrimaryKey());
+
 
 		// add text fields
 		document.addTextSortable(DossierPartTerm.TEMPLATE_NO, object.getTemplateNo());
