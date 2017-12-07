@@ -36,14 +36,10 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.search.QueryTerm;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.TermQuery;
-import com.liferay.portal.kernel.search.TermQueryFactoryUtil;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
-import com.liferay.portal.kernel.search.generic.TermQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -289,17 +285,10 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		String eSign = GetterUtil.getString(params.get(DossierPartTerm.ESIGN));
 
 		if (Validator.isNotNull(templateNo)) {
-			//templateNo = templateNo.replaceAll(StringPool.DASH, "\\\\-");
-			//templateNo = templateNo.replaceAll(StringPool.FORWARD_SLASH, "\\\\/");
-						
-			//TermQuery termQuery = new TermQueryImpl(DossierPartTerm.TEMPLATE_NO, templateNo);
-
-			//booleanQuery.addExactTerm(DossierPartTerm.TEMPLATE_NO, templateNo);
-			
 			MultiMatchQuery query = new MultiMatchQuery(templateNo);
 
-			query.addField(DossierPartTerm.TEMPLATE_NO);
-			
+			query.addFields(DossierPartTerm.TEMPLATE_NO);
+
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
