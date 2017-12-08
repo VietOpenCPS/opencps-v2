@@ -6,7 +6,7 @@
 	xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<!-- Listeners -->
-	<bean id="jasper.listener.engine" class="org.opencps.jasper.messagebus.Engine" />
+	<bean id="jasper.listener.engine" class="org.opencps.jasper.message.Engine" />
 
 	<!-- Destinations -->
 	<bean id="jasper.engine.out.destination" class="com.liferay.portal.kernel.messaging.SerialDestination">

@@ -20,6 +20,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.StringPool;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -27,18 +30,14 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringPool;
-
 /**
  * @author trungnt
  */
 public class JRReportUtil {
 
 	public static enum DocType {
-		DOC(".doc"), DOCX(".docx"), HTML(".html"), ODT(".odt"), PDF(".pdf"), PNG(
-				".png"), PPTX(".pptx"), RTF(".rtf"), XLS(".xls"), XLSX(".xlsx");
+		DOC(".doc"), DOCX(".docx"), HTML(".html"), ODT(".odt"), PDF(".pdf"), PNG(".png"), PPTX(".pptx"), RTF(
+				".rtf"), XLS(".xls"), XLSX(".xlsx");
 		private String value;
 
 		DocType(String value) {
@@ -73,20 +72,16 @@ public class JRReportUtil {
 	 * @param destFileName
 	 * @return
 	 */
-	public static String createReportFile(String jrxmlTemplate,
-			String jsonData, Map<String, Object> parameters,
+	public static String createReportFile(String jrxmlTemplate, String jsonData, Map<String, Object> parameters,
 			String destFileName) {
 
 		try {
 			// fix json enter char
 			jsonData = quoteHTML(jsonData);
-			JasperReport reportTemplate = JRReportTemplate
-					.getJasperReport(jrxmlTemplate);
-			JRJSONDataSource dataSource = JRJSONDataSource
-					.getInstance(jsonData);
+			JasperReport reportTemplate = JRReportTemplate.getJasperReport(jrxmlTemplate);
+			JRJSONDataSource dataSource = JRJSONDataSource.getInstance(jsonData);
 
-			JasperPrint jasperPrint = getJasperPrint(reportTemplate,
-					parameters, dataSource);
+			JasperPrint jasperPrint = getJasperPrint(reportTemplate, parameters, dataSource);
 
 			return exportReport(jasperPrint, destFileName, DocType.PDF);
 		} catch (Exception e) {
@@ -105,21 +100,17 @@ public class JRReportUtil {
 	 * @param exportName
 	 * @return
 	 */
-	public static String createReportPDFFile(String jrxmlTemplate,
-			String jsonData, Map<String, Object> parameters,
+	public static String createReportPDFFile(String jrxmlTemplate, String jsonData, Map<String, Object> parameters,
 			String outputDestination, String exportName) {
 
 		String sourceFileName = outputDestination + exportName;
 		try {
 			// fix json enter char
 			jsonData = quoteHTML(jsonData);
-			JasperReport reportTemplate = JRReportTemplate
-					.getJasperReport(jrxmlTemplate);
-			JRJSONDataSource dataSource = JRJSONDataSource
-					.getInstance(jsonData);
+			JasperReport reportTemplate = JRReportTemplate.getJasperReport(jrxmlTemplate);
+			JRJSONDataSource dataSource = JRJSONDataSource.getInstance(jsonData);
 
-			JasperPrint jasperPrint = getJasperPrint(reportTemplate,
-					parameters, dataSource);
+			JasperPrint jasperPrint = getJasperPrint(reportTemplate, parameters, dataSource);
 
 			return exportPdfFile(jasperPrint, sourceFileName);
 		} catch (Exception e) {
@@ -130,13 +121,12 @@ public class JRReportUtil {
 		}
 	}
 
-	public static String exportReportFile(String jrxmlTemplate, String formData,
-			Map<String, Object> map, String destFileName) {
+	public static String exportReportFile(String jrxmlTemplate, String formData, Map<String, Object> map,
+			String destFileName) {
 
-		return JRReportUtil.createReportFile(jrxmlTemplate, formData, map,
-				destFileName);
+		return JRReportUtil.createReportFile(jrxmlTemplate, formData, map, destFileName);
 	}
-	
+
 	public static String quoteHTML(String string) {
 
 		if (string == null || string.length() == 0) {
@@ -167,15 +157,14 @@ public class JRReportUtil {
 		String result = sb.toString().replaceAll("REPLACEKEYn", "<br />");
 		return result;
 	}
-	
+
 	/**
 	 * @param jasperPrint
 	 * @param destFileName
 	 * @return
 	 * @throws JRException
 	 */
-	protected static String exportPdfFile(JasperPrint jasperPrint,
-			String destFileName) throws JRException {
+	protected static String exportPdfFile(JasperPrint jasperPrint, String destFileName) throws JRException {
 
 		JasperExportManager.exportReportToPdfFile(jasperPrint, destFileName);
 
@@ -192,9 +181,8 @@ public class JRReportUtil {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	protected static String exportReport(JasperPrint jasperPrint,
-			String sourceFileName, DocType docType) throws JRException,
-			FileNotFoundException, IOException {
+	protected static String exportReport(JasperPrint jasperPrint, String sourceFileName, DocType docType)
+			throws JRException, FileNotFoundException, IOException {
 
 		switch (docType) {
 		case PDF:
@@ -203,7 +191,7 @@ public class JRReportUtil {
 		default:
 			break;
 		}
-		
+
 		return sourceFileName;
 	}
 
@@ -214,12 +202,10 @@ public class JRReportUtil {
 	 * @return
 	 * @throws JRException
 	 */
-	protected static JasperPrint getJasperPrint(JasperReport jrReportTemplate,
-			Map<String, Object> parameters, JRJSONDataSource dataSource)
-			throws JRException {
+	protected static JasperPrint getJasperPrint(JasperReport jrReportTemplate, Map<String, Object> parameters,
+			JRJSONDataSource dataSource) throws JRException {
 
-		return JasperFillManager.fillReport(
-				jrReportTemplate, null, dataSource);
+		return JasperFillManager.fillReport(jrReportTemplate, null, dataSource);
 	}
 
 	/**
@@ -229,14 +215,11 @@ public class JRReportUtil {
 	 * @return
 	 * @throws JRException
 	 */
-	protected static JasperPrint getJasperPrint(
-			JRReportTemplate jrReportTemplate, Map<String, Object> parameters,
+	protected static JasperPrint getJasperPrint(JRReportTemplate jrReportTemplate, Map<String, Object> parameters,
 			JRJSONDataSource dataSource) throws JRException {
 
-		return JasperFillManager.fillReport(
-				jrReportTemplate, null, dataSource);
+		return JasperFillManager.fillReport(jrReportTemplate, null, dataSource);
 	}
-	
-	private static Log _log = LogFactoryUtil.getLog(JRReportUtil.class
-			.getName());
+
+	private static Log _log = LogFactoryUtil.getLog(JRReportUtil.class.getName());
 }
