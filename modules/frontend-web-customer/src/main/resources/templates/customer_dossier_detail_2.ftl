@@ -180,9 +180,17 @@
 					</div>
 
 					#if(hasForm){
-					var referentUidFile =  getReferentUidFile(${dossierId},id);
+					var dossierFile =  getReferentUidFile(${dossierId},id);
 					#
-					<div class="col-sm-12" #if(referentUidFile){# style="height:450px; width:100%;overflow:auto;" #}#>
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 text-right">
+							<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
+							type="button" data-pk="#:id#">Ghi lại</button>
+							<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
+						</div>
+					</div>
+
+					<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}#>
 						<form id="formPartNo#:id#">
 
 						</form>
@@ -191,29 +199,31 @@
 					
 
 					$.ajax({
-					url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formscript",
+					url : "${api.server}/dossiers/${dossierId}/files/"+dossierFile.referenceUid+"/formscript",
 					dataType : "text",
 					type : "GET",
 					headers : {"groupId": ${groupId}},
 					success : function(result){
-					console.log("sddsdd: "+referentUidFile);
 					$("\\#formPartNo"+id).empty();
 					var alpaca = eval("(" + result + ")");
-					var formdata = fnGetFormData(${dossierId},referentUidFile);
-					alpaca.data = formdata;
+					var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
+					if(formdata){
+					$("\\#validPart"+id).val("1");
+				}
+				alpaca.data = formdata;
 
-					$("\\#formPartNo"+id).alpaca(alpaca);
+				$("\\#formPartNo"+id).alpaca(alpaca);
 
-					$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12 "><button id="btn-save-formalpaca'+id+'" class="btn btn-active MB10 MT10 saveForm" type="button" data-pk="'+id+'" referentUid="'+referentUidFile+'">Ghi lại</button></div></div>');
-					
-				},
-				error : function(result){
+				<#-- $("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12 "><button id="btn-save-formalpaca'+id+'" class="btn btn-active MB10 MT10 saveForm" type="button" data-pk="'+id+'" referentUid="'+referentUidFile+'">Ghi lại</button></div></div>'); -->
 
-			}
-		});
-	}#
+			},
+			error : function(result){
 
-	#}#
+		}
+	});
+}#
+
+#}#
 </script>
 </div>
 </div>
@@ -1302,7 +1312,7 @@
 	});
 
 	var getReferentUidFile = function(dossierId,dossierPartNo){
-		var referenceUid = 0;
+		var dossierFile;
 		if(dossierId){
 			$.ajax({
 				type : 'GET', 
@@ -1315,10 +1325,10 @@
 						for (var i = 0; i < result.data.length; i++) {
 							if(result.data[i].eForm){
 								if(dossierPartNo == result.data[i].dossierPartNo){
-									referenceUid = result.data[i].referenceUid;
+									dossierFile = result.data[i];
 									return ;
 								}
-								
+
 							}
 						}
 					}
@@ -1329,9 +1339,11 @@
 				}
 			});
 		}
+		console.log(dossierFile);
 
-		return referenceUid;
+		return dossierFile;
 	}
+
 
 	var fnGetFormData = function(dossierId,referentUid){
 		var value = null;
@@ -1366,31 +1378,28 @@
 	});
 
 
-	$(document).on("click",".saveForm",function(event){
-		var id = $(this).attr("data-pk");
-		console.log(id);
-		var referentUidFile = $(this).attr("referentUid");
-		console.log("ccc");
-		var value = $("#formPartNo"+id).alpaca('get').getValue();
-		var validate = $("#formPartNo"+id).alpaca('get').isValid(true);
-		if(validate && referentUidFile){
+
+	var fnSaveForm = function(id, value){
+		var current = $("#btn-save-formalpaca"+id);
+		var referentUid = current.attr("referenceUid");
+		if(referentUid){
 			$.ajax({
-				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
+				url : "${api.server}/dossiers/${dossierId}/files/"+referentUid+"/formdata",
 				dataType : "json",
 				type : "PUT",
-				headers: {"groupId": ${groupId}},
+				headers: {
+					"groupId": ${groupId},
+					Accept : "application/json"
+				},
 				data : {
 					formdata: JSON.stringify(value)
 				},
 				success : function(result){
-					console.log(id);
-					console.log($("#validPart"+id));
-					$("#validPart"+id).val("1");
-
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công!"
 					}, "success");
-					
+					console.log($("#validPart"+id));
+					$("#validPart"+id).val("1");
 				},
 				error : function(result){
 					notification.show({
@@ -1398,13 +1407,58 @@
 					}, "error");
 				}
 			});
+		}
+	}
+
+	$(document).on("click",".saveFormAlpaca",function(event){
+		var id = $(this).attr("data-pk");
+		var referentUidFile = $(this).attr("referenceUid");
+		console.log(id);
+		console.log("ccc");
+		console.log($("#formPartNo"+id+ " .formDataAlternative").val());
+		var formType = $("#formPartNo"+id+" .formType").val();
+		var value ;
+		if(formType !== "dklr"){
+			value = $("#formPartNo"+id).alpaca('get').getValue();
+			var validate = $("#formPartNo"+id).alpaca('get').isValid(true);
+			console.log(validate);
+
+			if(validate && referentUidFile && value){
+				$.ajax({
+					url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
+					dataType : "json",
+					type : "PUT",
+					headers: {
+						"groupId": ${groupId},
+						Accept : "application/json"
+					},
+					data : {
+						formdata: JSON.stringify(value)
+					},
+					success : function(result){
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công!"
+						}, "success");
+						console.log($("#validPart"+id));
+						$("#validPart"+id).val("1");
+					},
+					error : function(result){
+						notification.show({
+							message: "Thực hiện không thành công, xin vui lòng thử lại!"
+						}, "error");
+					}
+				});
+			}else {
+				notification.show({
+					message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi ghi lại!"
+				}, "error");
+			}
 		}else {
-			notification.show({
-				message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi ghi lại!"
-			}, "error");
+			value = $("#formPartNo"+id+ " .formDataAlternative").val();
 		}
 
-		console.log(value);
+
+
 
 	});
 
