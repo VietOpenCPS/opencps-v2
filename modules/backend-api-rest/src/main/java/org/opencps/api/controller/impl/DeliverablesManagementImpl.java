@@ -7,8 +7,11 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DeliverablesManagement;
 import org.opencps.dossiermgt.action.DeliverableActions;
+import org.opencps.dossiermgt.action.DeliverableLogActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
+import org.opencps.dossiermgt.action.impl.DeliverableLogActionsImpl;
 import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DeliverableLog;
 import org.opencps.dossiermgt.model.impl.DeliverableImpl;
 
 import com.liferay.portal.kernel.json.JSONObject;
@@ -116,8 +119,13 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 	@Override
 	public Response getDeliverableLog(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			DeliverableLogActions action = new DeliverableLogActionsImpl();
+			DeliverableLog log = action.getDeliverableLog(id);
+			return Response.status(200).entity(log).build();
+		} catch (Exception e) {
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
+		}
 	}
 
 	@Override
