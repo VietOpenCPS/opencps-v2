@@ -22,7 +22,7 @@ import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 	"com.liferay.portlet.instanceable=false",
 	"javax.portlet.display-name=Login Portlet",
 	"javax.portlet.init-param.template-path=/",
-	"javax.portlet.init-param.view-template=/templates/applicant/login.ftl",
+	"javax.portlet.init-param.view-template=/templates/createPorlet/applicant/login.ftl",
 	"javax.portlet.name=" + FrontendWebPortalPortletKeys.LOGIN_PORTLET_NAME,
 	"javax.portlet.resource-bundle=content.Language",
 	"javax.portlet.security-role-ref=power-user,user"
