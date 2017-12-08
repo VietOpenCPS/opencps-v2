@@ -1111,7 +1111,11 @@
 						contactEmail : result.contactEmail,
 						dossierNo : result.dossierNo,
 						dossierStatusText : result.dossierStatusText,
-						stepInstruction : result.stepInstruction,
+						stepInstruction : function(){
+							if(result.stepInstruction){
+								return result.stepInstruction;
+							}
+						},
 						applicantNote : function(){
 							$('#applicantNote').editable("setValue",result.applicantNote);
 							if(!result.applicantNote){
