@@ -40,7 +40,7 @@
 				<div class="background-triangle-small"><i class="fa fa-star"></i></div> <span class="text-uppercase">Hướng dẫn</span> <span class="text-light-gray">(gồm các bước làm thủ tục)</span>
 			</div>
 			<div class="content-part">
-				<span data-bind="text:stepInstruction"></span>
+				<span data-bind="html:stepInstruction"></span>
 			</div>
 			<p class="MB0 text-light-blue"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p>
 		</div>
@@ -1420,10 +1420,17 @@
 		var value ;
 		if(formType !== "dklr"){
 			value = $("#formPartNo"+id).alpaca('get').getValue();
-			var validate = $("#formPartNo"+id).alpaca('get').isValid(true);
-			console.log(validate);
 
-			if(validate && referentUidFile && value){
+
+			var errorMessage = '';
+			$("#formPartNo"+id+' div[class*="has-error"] > label').each(function( index ) {
+
+				errorMessage = "notValid";
+
+			});
+			console.log(errorMessage);
+
+			if(errorMessage === '' && referentUidFile && value){
 				$.ajax({
 					url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
 					dataType : "json",
