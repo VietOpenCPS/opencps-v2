@@ -1,0 +1,154 @@
+package org.opencps.api.controller.impl;
+
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.opencps.api.controller.DeliverableTypesManagement;
+import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.DeliverableTypesUtils;
+import org.opencps.api.deliverabletype.model.DeliverableTypeInputModel;
+import org.opencps.api.deliverabletype.model.DeliverableTypesModel;
+import org.opencps.api.deliverabletype.model.DeliverableTypesResultsModel;
+import org.opencps.auth.api.BackendAuth;
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.dossiermgt.action.DeliverableTypesActions;
+import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
+import org.opencps.dossiermgt.model.DeliverableType;
+
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+
+public class DeliverableTypesManagementImpl implements DeliverableTypesManagement {
+
+	@Override
+	public Response getDeliverableTypes(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+
+		BackendAuth auth = new BackendAuthImpl();
+		int start = 0, end = 0;
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DeliverableTypesResultsModel results = new DeliverableTypesResultsModel();
+
+			DeliverableTypesActions action = new DeliverableTypesActionsImpl();
+
+			JSONObject deliverableTypeJsonObject = action.getDeliverableTypes(groupId, start, end);
+
+			List<Document> documents = (List<Document>) deliverableTypeJsonObject.get("data");
+			
+			results.setTotal(deliverableTypeJsonObject.getInt("total"));
+			results.getData().addAll(DeliverableTypesUtils.mappingToDeliverableTypesResultsModel(documents));
+
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response addDeliverableType(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, DeliverableTypeInputModel model) {
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		String counter = String.valueOf(model.getCounter());
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			DeliverableTypesActions action = new DeliverableTypesActionsImpl();
+
+			DeliverableType deliverableType = action.addDeliverableType(groupId, model.getDeliverableName(),
+					model.getDeliverableType(), model.getCodePattern(), counter, model.getFormScript(),
+					model.getFormReport(), model.getMappingData(), serviceContext);
+
+			DeliverableTypesModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response updateDeliverableType(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, DeliverableTypeInputModel model,
+			long deliverableTypeId) {
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		String counter = String.valueOf(model.getCounter());
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DeliverableTypesActions action = new DeliverableTypesActionsImpl();
+
+			DeliverableType deliverableType = action.updateDeliverableType(groupId, deliverableTypeId,
+					model.getDeliverableName(), model.getDeliverableType(), model.getCodePattern(), counter,
+					model.getFormScript(), model.getFormReport(), model.getMappingData(), serviceContext);
+
+			DeliverableTypesModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+
+	private Response processException(Exception e) {
+		ErrorMsg error = new ErrorMsg();
+
+		if (e instanceof UnauthenticationException) {
+			error.setMessage("Non-Authoritative Information.");
+			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+			error.setDescription("Non-Authoritative Information.");
+
+			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+		} else {
+			if (e instanceof UnauthorizationException) {
+				error.setMessage("Unauthorized.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Unauthorized.");
+
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+			} else {
+
+				error.setMessage("No Content.");
+				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+				error.setDescription("No Content.");
+
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
+
+			}
+		}
+	}
+}
