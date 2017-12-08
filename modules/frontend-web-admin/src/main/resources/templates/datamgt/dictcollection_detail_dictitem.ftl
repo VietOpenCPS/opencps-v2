@@ -1,10 +1,10 @@
 <#include "init.ftl">
 
-<div class="row MT20">
+<div class="row">
 		
 	<div class="col-xs-4 col-sm-4">
 	
-		<span data-toggle="modal" class="btn btn-primary image-preview-input btn-block"
+		<span data-toggle="modal" class="btn btn-active btn-block"
 			href="${url.adminDataMgtPortlet.dictcollection_create_dictitem}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}collectionCode=${(dictCollection_dictCollection.collectionCode)!}" data-target="#modal-lg"> 
 			<i class="fa fa-book" aria-hidden="true"></i>
 			
@@ -69,7 +69,7 @@
 
 <script type="text/x-kendo-tmpl" id="_collectionSub_dictItem_template">
 	
-	<li class="PT10 PB10 line-dashed">
+	<li class="PT5 PB5 line-dashed">
 	
 		<div class="row M0 eq-height" >
 		
@@ -174,6 +174,8 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 						success: function(result) {
 						
 							$('#_collectionSub_dictItem_CounterListDetail').html(result.total);	
+							
+							result["data"] = result.total==0 ? []: result["data"];
 							options.success(result);
 							
 						},
@@ -275,8 +277,8 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 				logic: "or",
 				filters: [
 					
-					{ field: "itemCode", operator: "contains", 	value: $("#_collectionSub_dictItem_keySearch").val() },
-					{ field: "itemName", operator: "contains", 	value: $("#_collectionSub_dictItem_keySearch").val() }
+					{ field: "itemCode", operator: "contains", 	value: $("#_collectionSub_dictItem_keySearch").val().trim() },
+					{ field: "itemName", operator: "contains", 	value: $("#_collectionSub_dictItem_keySearch").val().trim() }
 				]
 			
 			}
