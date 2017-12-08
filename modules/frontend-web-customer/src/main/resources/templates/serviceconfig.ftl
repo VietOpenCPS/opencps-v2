@@ -40,7 +40,7 @@
       </div>
 
       <div class="modal-body">
-        <ul id="lvProcessServiceConfig" class="ul-with-border"></ul>
+        <ul id="lvProcessServiceConfig" class="ul-with-border" style="height:450px; overflow:auto;"></ul>
         <script type="text/x-kendo-template" id="templateProcessServiceConfig">
           <li class="">
            <div class="row">
@@ -161,7 +161,7 @@
       },
       dataBound : function(){
         indexProcess = 0;
-        fnGenEventChoiseProcess();
+        /*fnGenEventChoiseProcess();*/
       }
 
     });
@@ -180,7 +180,7 @@
       }
     });
 
-    var fnGenEventChoiseProcess = function(){
+    /*var fnGenEventChoiseProcess = function(){
       $(".btn-choise-process").unbind().click(function(){
         var processOptionId = $(this).attr("data-pk");
         console.log("process id");
@@ -191,69 +191,7 @@
         }
 
       }); 
-    }
-
-    var fnGetParamAndCreateDossier =  function(processOptionId){
-      var item = dataSourceProcessServiceConfig.get(processOptionId);
-      var serviceConfigId = $("#serviceConfigId").val();
-      if(item && serviceConfigId){
-        var dossierTemplateNo = item.templateNo;
-
-        $.ajax({
-          url : "${api.server}/serviceconfigs/"+serviceConfigId,
-          dataType : "json",
-          type : "GET",
-          headers : {"groupId": ${groupId}},
-          success : function(result){
-            if(result){
-              fnCreateDossier(dossierTemplateNo, result.serviceCode, result.govAgencyCode, item.dossierTemplateId);
-            }
-          },
-          error : function(result){
-
-          }
-
-        });
-
-      } 
-    }
-
-    var fnCreateDossier = function(dossierTemplateNo,serviceCode,govAgencyCode, dossierTemplateId){
-      $.ajax({
-        url : "${api.server}/dossiers",
-        dataType : "json",
-        type : "POST",
-        data : {
-          referenceUid : "",
-          serviceCode : serviceCode,
-          govAgencyCode : govAgencyCode,
-          dossierTemplateNo : dossierTemplateNo,
-          applicantName : "${(applicant.applicantName)!}",
-          applicantIdType : "${(applicant.applicantIdType)!}",
-          applicantIdNo : "${(applicant.applicantIdNo)!}",
-          applicantIdDate : "01/01/2017 00:00:00",
-          address : "${(applicant.address)!}",
-          cityCode : "${(applicant.cityCode)!}",
-          districtCode : "${(applicant.districtCode)!}",
-          wardCode : "${(applicant.wardCode)!}",
-          contactName : "${(applicant.contactName)!}",
-          contactTelNo : "${(applicant.contactTelNo)!}",
-          contactEmail : "${(applicant.contactEmail)!}"
-        },
-        headers : {"groupId": ${groupId}},
-        success : function(result){
-          // neu thanh cong dong dialog
-          $("#choiseProcessForDossier").modal("hide");
-
-         // chuyen den man hinh chuan bi ho so
-         manageDossier.navigate("/taohosomoi/chuanbihoso/"+result.dossierId);
-
-       },
-       error : function(result){
-       }
-
-     });
-    }
+    }*/
 
   });
 
