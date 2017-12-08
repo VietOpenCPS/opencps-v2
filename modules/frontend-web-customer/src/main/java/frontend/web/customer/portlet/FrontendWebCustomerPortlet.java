@@ -87,6 +87,9 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		String dossierPartNo =
 			ParamUtil.getString(renderRequest, "dossierPartNo");
 		System.out.println("dossierPartNo:" + dossierPartNo);
+		
+		String dossierTemplateNo =
+						ParamUtil.getString(renderRequest, "dossierTemplateNo");
 
 		// apiObject.put("applicant", applicantObj);
 
@@ -98,6 +101,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute("dossierTemplateId", dossierTemplateId);
 		renderRequest.setAttribute("dossierId", dossierId);
 		renderRequest.setAttribute("dossierPartNo", dossierPartNo);
+		renderRequest.setAttribute("dossierTemplateNo", dossierTemplateNo);
 
 		super.render(renderRequest, renderResponse);
 
