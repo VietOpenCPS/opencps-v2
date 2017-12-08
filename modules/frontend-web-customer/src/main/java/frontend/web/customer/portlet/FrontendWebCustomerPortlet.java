@@ -10,6 +10,8 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.WindowStateException;
 
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.util.UserMgtUtils;
 import org.osgi.service.component.annotations.Component;
@@ -64,8 +66,28 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 
 		String dossierTemplateId =
 			ParamUtil.getString(renderRequest, "dossierTemplateId");
-		String dossierId = ParamUtil.getString(renderRequest, "dossierId");
 		
+		//get variable dossier
+		String dossierId = ParamUtil.getString(renderRequest, "dossierId");
+		try {
+			Dossier dossier =
+				DossierLocalServiceUtil.getDossier(Long.parseLong(dossierId));
+			String dossierStr = JSONFactoryUtil.looseSerialize(dossier);
+			JSONObject dossierObj = JSONFactoryUtil.createJSONObject(dossierStr);
+			if (dossierObj != null) {
+				renderRequest.setAttribute("dossier", dossierObj);
+			}
+
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			_log.info(e.getMessage());
+		}
+
+		String dossierPartNo =
+			ParamUtil.getString(renderRequest, "dossierPartNo");
+		System.out.println("dossierPartNo:" + dossierPartNo);
+
 		// apiObject.put("applicant", applicantObj);
 
 		// set varible
@@ -75,6 +97,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute("applicant", applicantObj);
 		renderRequest.setAttribute("dossierTemplateId", dossierTemplateId);
 		renderRequest.setAttribute("dossierId", dossierId);
+		renderRequest.setAttribute("dossierPartNo", dossierPartNo);
 
 		super.render(renderRequest, renderResponse);
 
@@ -99,9 +122,13 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 
 		urlObject.put("customer_dossier_detail_3", customerDossierDetail_3);
 
-		//TODO TEMP
-		urlObject.put("customer_dossier_detail_4", customerDossierDetail_3);
-		
+		PortletURL customerDossierDetail_4 = renderResponse.createRenderURL();
+		customerDossierDetail_4.setWindowState(LiferayWindowState.EXCLUSIVE);
+		customerDossierDetail_4.setParameter(
+			"mvcPath", "/templates/customer_dossier_detail_4.ftl");
+
+		urlObject.put("customer_dossier_detail_4", customerDossierDetail_4);
+
 		PortletURL customerDossierListURL = renderResponse.createRenderURL();
 		customerDossierListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 		customerDossierListURL.setParameter(

@@ -71,7 +71,6 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "DossierFileModel")
 public class DossierFileModel {
-
     protected String createDate;
     protected String modifiedDate;
     protected String referenceUid;
@@ -90,6 +89,7 @@ public class DossierFileModel {
     protected Boolean eForm;
 	protected String formData;
     protected String formReport;
+ 
 
     public String getFormData() {
 		return formData;

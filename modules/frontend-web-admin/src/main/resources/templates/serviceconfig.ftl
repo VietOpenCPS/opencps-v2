@@ -333,7 +333,7 @@
 					dataType : "json",
 					type : "GET",
 					headers: {"groupId": ${groupId}},
-					async : false;
+					async : false,
 					success : function(result){
 						if(result.data){
 							isDelete = false;

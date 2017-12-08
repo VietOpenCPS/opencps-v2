@@ -27,7 +27,6 @@ import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.impl.DossierFileImpl;
 import org.opencps.dossiermgt.service.base.DossierFileLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -360,6 +359,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		// Binhth add message bus to processing jasper file
 		Message message = new Message();
 
+
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
 		msgData.put("className", DossierFile.class.getName());
 		msgData.put("classPK", dossierFile.getDossierFileId());
@@ -378,6 +378,22 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		DossierFile dossierFile = dossierFilePersistence.findByPrimaryKey(dossierFileId);
 
 		return deleteDossierFile(dossierFile);
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierFile removeDossierFile(long dossierId, String referenceUid, ServiceContext serviceContext) throws PortalException {
+		User user = userPersistence.findByPrimaryKey(serviceContext.getUserId());
+
+		DossierFile dossierFile = dossierFileLocalService.getDossierFileByReferenceUid(dossierId, referenceUid);
+	
+		Date now = new Date();
+		
+		dossierFile.setUserId(user.getUserId());
+		dossierFile.setModifiedDate(now);
+		dossierFile.setRemoved(true);
+		dossierFile.setUserName(user.getFullName());
+		
+		return dossierFileLocalService.updateDossierFile(dossierFile);
 	}
 
 	@Indexable(type = IndexableType.DELETE)

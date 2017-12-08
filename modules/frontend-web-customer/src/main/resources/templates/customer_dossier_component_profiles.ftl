@@ -49,9 +49,9 @@
 												<div class="eq-height">
 
 													<div class="col-xs-12 col-sm-9 align-middle">
-														<a class="view-component-profile #if('${index}' === '0'){# active #}#" href="javascript:;" data-pk="#:referenceUid#" data-index="${index}" >
+														<span class="#if('${index}' === '0'){# active #}# hover-pointer item-file-component" data-pk="#:referenceUid#" data-index="${index}" >
 															#:displayName#
-														</a>
+														</span>
 													</div>
 
 													<div class="col-xs-12 col-sm-3 align-center">
@@ -73,7 +73,7 @@
 			</div>
 
 			<div class="col-sm-9">
-				<div id="fileCarousel" class="carousel slide row" data-ride="carousel" data-interval="false"> 
+				<#-- <div id="fileCarousel" class="carousel slide row" data-ride="carousel" data-interval="false"> 
 					<ul class="carousel-inner" id="listViewCarouselDossierFile">
 
 					</ul>
@@ -81,25 +81,29 @@
 						<li class="item" data-pk="#:id#">
 							
 							<object data="${api.server}/dossiers/${dossierId}/files/#:id#/preview" type="application/pdf" width="100%" height="100%">
-								<embed width="100%" height="100%" name="plugin" src="${api.server}/dossiers/${dossierId}/files/#:id#/preview">
-								</object>
-							</li>
-						</script>
-						<a class="left carousel-control control-left" href="#fileCarousel" data-slide="prev">
-							<span class="glyphicon glyphicon-chevron-left"></span>
-							<span class="sr-only">Previous</span>
-						</a>
-						<a class="right carousel-control control-right" href="#fileCarousel" data-slide="next">
-							<span class="glyphicon glyphicon-chevron-right"></span>
-							<span class="sr-only">Next</span>
-						</a>
-					</div>
-				</div>
+								<embed width="100%" height="100%" name="plugin" src="${api.server}/dossiers/${dossierId}/files/#:id#/preview" />
+							</object>
+						</li>
+					</script>
+					<a class="left carousel-control control-left" href="#fileCarousel" data-slide="prev">
+						<span class="glyphicon glyphicon-chevron-left"></span>
+						<span class="sr-only">Previous</span>
+					</a>
+					<a class="right carousel-control control-right" href="#fileCarousel" data-slide="next">
+						<span class="glyphicon glyphicon-chevron-right"></span>
+						<span class="sr-only">Next</span>
+					</a>
+				</div> -->
 
+				<object id="objectView2" data="" width="100%" height="100%">
+
+				</object>
 			</div>
-		</div>
 
+		</div>
 	</div>
+
+</div>
 
 </div>
 
@@ -181,39 +185,6 @@
 			}
 		});
 
-		var dataSourceDossierFileCarousel=new kendo.data.DataSource({
-			transport : {
-				read : function(options) {
-					$.ajax({
-						url : "${api.server}/dossiers/${dossierId}/files",
-						type : "GET",
-						dataType : "json",
-						headers : {"groupId": ${groupId}},
-						success : function (result) {
-							options.success(result);
-						},
-						error : function (result) {
-							options.error(result);
-						}
-					});
-				}
-			},
-			schema : {
-				data : "data",
-				total : "total",
-				model : {
-					id:"referenceUid"
-				}
-			},
-			change: function() { 
-				/*console.log(this.view());
-				$("#fileCarousel .carousel-inner").html(kendo.render(template, this.view())); 
-				$("#fileInner > li").first().addClass("active");*/
-			}
-		});
-
-		/*dataSourceDossierComponentProfile.read();*/
-
 		$("#listViewDossierFile").kendoListView({
 			dataSource : dataSourceDossierFile,
 			template : function(data) {
@@ -230,52 +201,45 @@
 				console.log(e);
 				printDossierPartName();
 				fnBindClickDeleteFile($("#listViewDossierFile").getKendoListView().dataSource);
+				$("#listViewDossierFile")
 			},
-			change: onChange
-		});
+			change: function(){
+				var data = dataSourceDossierFile.view(),
+				selected = $.map(this.select(), function(item) {
 
-		$("#listViewCarouselDossierFile").kendoListView({
-			dataSource : dataSourceDossierFileCarousel,
-			template : kendo.template($("#templateCarouselDossierFile").html()),
-			selectable : "single",
-			change: onChange,
-			dataBound : function(e){
-				$("#listViewCarouselDossierFile > li").first().addClass("active");
+					return data[$(item).index()].id;
+				});
+				console.log(selected);
+				if(selected){
+					var url = "${api.server}/dossiers/${dossierId}/files/"+selected;
+					var urlOut = "cvb";
+					var urlReadFile = fileAttachmentUrl({
+						method : "GET",
+						url : url,
+						async : false,
+						success: function(options){
+							urlOut = options.url;
+							$("#objectView2").html("");
+							$("#objectView2").append('<iframe src="'+urlOut+'" width="100%" height="100%">    </iframe>');
+
+						},
+						error: function(){}
+					});
+
+
+				}
 			}
 		});
 
-		function onChange() {
-			/*var data = dataSourceDossierFile.view(),
-			selected = $.map(this.select(), function(item) {
-				$('#fileCarousel').carousel($(item).index());
-			});*/
-		}
+		var listView = $("#listViewDossierFile").data("kendoListView");
 
-		$('.control-left').click(function() {
-			var index=getCurrentIndexSlide();
-			console.log(index);
-			/*$("#lvDossierComponentProfile").data("kendoListView").select(index);*/
-		});
-
-		$('.control-right').click(function() {
-			var index=getCurrentIndexSlide();
-			console.log(index);
-			/*$("#lvDossierComponentProfile").dât("kendoListView").select(index);*/
-		});
-
-		var getCurrentIndexSlide=function(){
-			var currentIndex = $('#fileCarousel li.active').index() + 1;
-			return currentIndex;
-		}
+		listView.select(listView.element.children().first());
 
 
-		$("#fileInner > li").first().addClass("active");
-
-		$(document).on("click",".view-component-profile",function(event){
-			event.preventDefault();
-			var index=$(this).attr("data-index");
-			console.log(index);
-			$('#fileCarousel').carousel(parseInt(index));
+		$(document).on("click",".item-file-component",function(event){
+			$(".item-file-component").removeClass("text-light-blue");
+			$(this).addClass("text-light-blue");
+			
 		});
 
 		var printDossierPartName = function() {
@@ -299,12 +263,75 @@
 					}
 				},
 				error:function(result){
-					
+
 				}
-				
+
 			});
 		}
 
-		
+
 	});
+
+	function fileAttachmentUrl ( options) {
+
+  // Use XMLHttpRequest instead of Jquery $ajax
+  var xhttp = new XMLHttpRequest();
+  var a,filename;
+  var data = {};
+  
+  xhttp.onreadystatechange = function() {
+  	
+  	if (xhttp.readyState === 4 && xhttp.status === 200) {
+  		
+      // check for a filename
+      var disposition = xhttp.getResponseHeader('Content-Disposition');
+      if (disposition && disposition.indexOf('attachment') !== -1) {
+      	var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      	var matches = filenameRegex.exec(disposition);
+      	if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+      }
+      
+      // Trick for making downloadable link
+      a = document.createElement('a');
+      a.href = window.URL.createObjectURL(xhttp.response);
+
+      var url = window.URL.createObjectURL(xhttp.response);
+      
+      //callback success
+      options.success({url : url, status : xhttp.status});
+  } else if (xhttp.readyState === 4 && xhttp.status !== 200) {
+  	options.error(xhttp.status);
+  }
+  
+};
+
+  // Post data to URL which handles post request
+  xhttp.open(options.method, options.url);
+  xhttp.setRequestHeader("Content-Type", "application/json");
+  
+  // others data header
+  if (options.hasOwnProperty("headers")){
+  	Object.keys( options.headers ).map(function(objectKey, index) {
+  		var value = options.headers[objectKey];
+  		xhttp.setRequestHeader(objectKey, value);
+  	});
+  }
+
+  // You should set responseType as blob for binary responses
+  if (options.hasOwnProperty("responseType")){
+  	xhttp.responseType = options.responseType;
+  } else {
+  	xhttp.responseType = 'blob';
+  }
+  
+  // Data to post
+  if (options.hasOwnProperty("data")){
+  	data = options.data;
+  }
+  
+  // excecute request
+  xhttp.send(data);
+  
+};
+
 </script>
