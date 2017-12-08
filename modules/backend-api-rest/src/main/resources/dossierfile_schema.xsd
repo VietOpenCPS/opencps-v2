@@ -59,6 +59,7 @@
 	<xsd:complexType name="DossierFileSearchResultModel">
 		<xsd:sequence>
 			<xsd:element name="dossierId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="dossierFileId" type="xsd:long" minOccurs="0" />
 			<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
 			<xsd:element name="dossierTemplateNo" type="xsd:string" minOccurs="0" />
 			<xsd:element name="dossierPartNo" type="xsd:string" minOccurs="0" />
