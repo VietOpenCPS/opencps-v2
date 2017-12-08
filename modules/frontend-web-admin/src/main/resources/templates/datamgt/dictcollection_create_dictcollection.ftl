@@ -58,7 +58,7 @@
 				
 				<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 				
-					<button class="btn btn-sm btn-primary btn-sm pull-right" 
+					<button class="btn btn-sm btn-active pull-right" 
 						id="_collectionAdd_submitBtn" name="_collectionAdd_submitBtn" type="button"
 						data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 						<i class="fa fa-check-circle"></i>
@@ -111,10 +111,10 @@
 					"groupId": ${groupId},
 				},
 				data: {
-					collectionName: $( "#_collectionAdd_collectionName" ).val(),
-					collectionCode: $( "#_collectionAdd_collectionCode" ).val(),
-					description: $( "#_collectionAdd_description" ).val(),
-					collectionNameEN: $( "#_collectionAdd_collectionNameEN" ).val(),
+					collectionName: $( "#_collectionAdd_collectionName" ).val().trim(),
+					collectionCode: $( "#_collectionAdd_collectionCode" ).val().trim(),
+					description: $( "#_collectionAdd_description" ).val().trim(),
+					collectionNameEN: $( "#_collectionAdd_collectionNameEN" ).val().trim(),
 				},
 				type: 'POST',
 				dataType: 'json',

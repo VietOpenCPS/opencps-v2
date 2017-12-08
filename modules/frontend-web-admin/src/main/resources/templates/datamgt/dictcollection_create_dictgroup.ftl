@@ -69,7 +69,7 @@
 				
 				<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 				
-					<button class="btn btn-sm btn-primary btn-sm pull-right" 
+					<button class="btn btn-sm btn-active pull-right" 
 						id="_collectionSub_dictGroup_edit_editDictGroup" 
 						name="_collectionSub_dictGroup_edit_editDictGroup" 
 						data-pk="${(param.dictCollection_groupCode)!}" 
@@ -124,10 +124,10 @@
 			$("#_collectionSub_group_listView").getKendoListView().dataSource.transport.update({
 				
 				groupCodeOld: dictCollection_groupCode,
-				groupCode: $( "#_collectionSub_dictGroup_edit_groupCode" ).val(),
-				groupName: $( "#_collectionSub_dictGroup_edit_groupName" ).val(),
-				groupNameEN: $( "#_collectionSub_dictGroup_edit_groupNameEN" ).val(),
-				groupDescription: $( "#_collectionSub_dictGroup_edit_groupDescription" ).val()
+				groupCode: $( "#_collectionSub_dictGroup_edit_groupCode" ).val().trim(),
+				groupName: $( "#_collectionSub_dictGroup_edit_groupName" ).val().trim(),
+				groupNameEN: $( "#_collectionSub_dictGroup_edit_groupNameEN" ).val().trim(),
+				groupDescription: $( "#_collectionSub_dictGroup_edit_groupDescription" ).val().trim()
 				
 			});
 
@@ -137,10 +137,10 @@
 
 			$("#_collectionSub_group_listView").getKendoListView().dataSource.add({
 				
-				groupCode: $( "#_collectionSub_dictGroup_edit_groupCode" ).val(),
-				groupName: $( "#_collectionSub_dictGroup_edit_groupName" ).val(),
-				groupNameEN: $( "#_collectionSub_dictGroup_edit_groupNameEN" ).val(),
-				groupDescription: $( "#_collectionSub_dictGroup_edit_groupDescription" ).val()
+				groupCode: $( "#_collectionSub_dictGroup_edit_groupCode" ).val().trim(),
+				groupName: $( "#_collectionSub_dictGroup_edit_groupName" ).val().trim(),
+				groupNameEN: $( "#_collectionSub_dictGroup_edit_groupNameEN" ).val().trim(),
+				groupDescription: $( "#_collectionSub_dictGroup_edit_groupDescription" ).val().trim()
 				
 			});
 
