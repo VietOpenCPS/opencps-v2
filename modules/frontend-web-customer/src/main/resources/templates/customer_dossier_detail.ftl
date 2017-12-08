@@ -1012,10 +1012,16 @@ $(document).on("click",".saveFormAlpaca",function(event){
 	var value ;
 	if(formType !== "dklr"){
 		value = $("#formPartNo"+id).alpaca('get').getValue();
-		var validate = $("#formPartNo"+id).alpaca('get').isValid(true);
-		console.log(validate);
 
-		if(validate && referentUidFile && value){
+		var errorMessage = '';
+		$("#formPartNo"+id+' div[class*="has-error"] > label').each(function( index ) {
+
+			errorMessage = "notValid";
+
+		});
+		console.log(errorMessage);
+
+		if(errorMessage.length === '' && referentUidFile && value){
 			$.ajax({
 				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
 				dataType : "json",
