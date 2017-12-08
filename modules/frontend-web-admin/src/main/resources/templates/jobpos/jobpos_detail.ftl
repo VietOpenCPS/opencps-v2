@@ -21,7 +21,12 @@
 			
 			<div class="form-group">
 			
-				<label for="_jobposDetail_title">Tên chức vụ:</label>
+				<label for="_jobposDetail_title">Tên chức vụ
+				
+					<span class="icon-asterisk text-warning"></span>
+				
+				</label>
+				
 				<input type="text" id="_jobposDetail_title" name="_jobposDetail_title" class="form-control"
 					placeholder="Tên chức vụ" required validationMessage="Nhập tên chức vụ" value="${(jobPos.title)!}"  />
 				
@@ -58,7 +63,7 @@
 				
 			<div class="form-group text-right">
 			
-				<button class="btn btn-sm btn-primary btn-default" 
+				<button class="btn btn-sm btn-active" 
 					id="_jobposDetail_submitBtn" name="_jobposDetail_submitBtn" type="button" data-pk="${(param.jobPos_jobPosId)!}"
 					data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 					<i class="fa fa-check-circle"></i>
@@ -109,9 +114,9 @@
 				url: _jobposDetail_BaseUrl +"&${portletNamespace}jobPosId="+ _jobposDetail_jobPosId,
 				data: {
 
-					${portletNamespace}title: $( "#_jobposDetail_title" ).val(),
-					${portletNamespace}leader: $( "#_jobposDetail_leader" ).val(),
-					${portletNamespace}description: $( "#_jobposDetail_description" ).val(),
+					${portletNamespace}title: $( "#_jobposDetail_title" ).val().trim(),
+					${portletNamespace}leader: $( "#_jobposDetail_leader" ).val().trim(),
+					${portletNamespace}description: $( "#_jobposDetail_description" ).val().trim(),
 					${portletNamespace}permissions: permissions,
 					${portletNamespace}works: works
 
@@ -160,9 +165,9 @@
 				url: _jobposDetail_BaseUrl,
 				data: {
 
-					${portletNamespace}title: $( "#_jobposDetail_title" ).val(),
-					${portletNamespace}leader: $( "#_jobposDetail_leader" ).val(),
-					${portletNamespace}description: $( "#_jobposDetail_description" ).val(),
+					${portletNamespace}title: $( "#_jobposDetail_title" ).val().trim(),
+					${portletNamespace}leader: $( "#_jobposDetail_leader" ).val().trim(),
+					${portletNamespace}description: $( "#_jobposDetail_description" ).val().trim(),
 					${portletNamespace}permissions: permissions,
 					${portletNamespace}works: works
 
@@ -221,7 +226,8 @@
 						sort: 'actionName'
 					},
 					success: function(result) {
-					
+						
+						result["data"] = result.total==0 ? []: result["data"];
 						options.success(result);
 
 						var dataSelected=[];
@@ -293,7 +299,8 @@
 						full: true
 					},
 					success: function(result) {
-					
+						
+						result["data"] = result.total==0 ? []: result["data"];
 						options.success(result);
 
 						var dataSelected=[];

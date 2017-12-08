@@ -66,7 +66,7 @@ import backend.auth.api.keys.ModelNameKeys;
  * <p>
  * All custom service methods should be put in this class. Whenever methods are
  * added, rerun ServiceBuilder to copy their definitions into the
- * {@link org.opencps.usermgt.service.JobPosLocalService} interface.
+ * {@link org.mobilink.backend.usermgt.service.JobPosLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security
@@ -76,7 +76,7 @@ import backend.auth.api.keys.ModelNameKeys;
  *
  * @author Binhth
  * @see JobPosLocalServiceBaseImpl
- * @see org.opencps.usermgt.service.JobPosLocalServiceUtil
+ * @see org.mobilink.backend.usermgt.service.JobPosLocalServiceUtil
  */
 @ProviderType
 public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
@@ -84,7 +84,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.usermgt.service.JobPosLocalServiceUtil} to access
+	 * org.mobilink.backend.usermgt.service.JobPosLocalServiceUtil} to access
 	 * the job pos local service.
 	 */
 	public void assignPermission(long jobPosId, String[] actionIds, ServiceContext serviceContext) {
@@ -198,10 +198,12 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		jobPos.setDescription(description);
 		jobPos.setLeader(leader);
 
-		RoleLocalServiceUtil.addGroupRole(groupId, role.getRoleId());
+		if(Validator.isNotNull(role)){
+			RoleLocalServiceUtil.addGroupRole(groupId, role.getRoleId());
 
-		jobPos.setMappingRoleId(role.getRoleId());
-
+			jobPos.setMappingRoleId(role.getRoleId());
+		}
+		
 		jobPos.setExpandoBridgeAttributes(serviceContext);
 
 		jobPosPersistence.update(jobPos);
