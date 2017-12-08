@@ -53,6 +53,13 @@ public class VRConfigTechSpecLocalServiceImpl
 				vehicleType, specCategory);
 	}
 	
+	public List<VRConfigTechSpec> getByVCCTSCMD(String vehicleClass,
+			String vehicleType, String specCategory, String module) throws PortalException,
+			SystemException {
+		return vrConfigTechSpecPersistence.findByVC_VT_SC_MD(vehicleClass,
+				vehicleType, specCategory, module);
+	}
+	
 	public List<VRConfigTechSpec> getByVCCTSC(String vehicleClass,
 			String[] vehicleTypes, String specCategory) throws PortalException,
 			SystemException {
@@ -64,5 +71,11 @@ public class VRConfigTechSpecLocalServiceImpl
 			String specCategory) throws PortalException, SystemException {
 		return vrConfigTechSpecPersistence.findByVC_SC(vehicleClass,
 				specCategory);
+	}
+	
+	public List<VRConfigTechSpec> getByVCSC(String vehicleClass,
+			String specCategory, String module) throws PortalException, SystemException {
+		return vrConfigTechSpecPersistence.findByVC_SC_MD(vehicleClass,
+				specCategory, module);
 	}
 }

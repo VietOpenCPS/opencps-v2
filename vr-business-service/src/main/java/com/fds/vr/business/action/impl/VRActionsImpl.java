@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -48,13 +49,18 @@ public class VRActionsImpl implements VRActions {
 
 			List<DictItemGroup> danhSachNhomThongSoKTChiTiet = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId,
 					phanLoaiNhomTTSKT.getPrimaryKey());
+			
+			
+			if (Validator.isNull(module)) {
+				module = "1";
+			}
 
 			for (DictItemGroup dg : danhSachNhomThongSoKTChiTiet) {
 
 				DictItem dictItem = DictItemLocalServiceUtil.getDictItem(dg.getDictItemId());
 
 				List<VRConfigTechSpec> configTechSpecs = VRConfigTechSpecLocalServiceUtil.getByVCSC(vehicleClass,
-						dictItem.getItemCode());
+						dictItem.getItemCode(), module);
 
 				JSONObject jsonTechSpec = JSONFactoryUtil.createJSONObject();
 
@@ -85,9 +91,7 @@ public class VRActionsImpl implements VRActions {
 					techspec.put("value", StringPool.BLANK);
 
 					techspec.put("standard", vrConfig.getSpecificationStandard());
-
 					techspec.put("basicunit", vrConfig.getSpecificationBasicUnit());
-
 					techspec.put("placeholder", vrConfig.getSpecificationEntryPlaceholder());
 					if (Validator.isNotNull(vrConfig.getSpecificationDataCollectionId())) {
 						techspec.put("datasource", getDataSource(vrConfig.getSpecificationDataCollectionId(), groupId));
@@ -106,7 +110,8 @@ public class VRActionsImpl implements VRActions {
 			returnObj.put("content", techSpecArr);
 
 		} catch (Exception e) {
-			returnObj.put("status", HttpsURLConnection.HTTP_FORBIDDEN);
+			returnObj.put("status", HttpsURLConnection.HTTP_OK);
+			returnObj.put("content", techSpecArr);
 		}
 
 		return returnObj;
@@ -162,7 +167,11 @@ public class VRActionsImpl implements VRActions {
 			String vehicleClass, String vehicleType) {
 		JSONObject returnObj = JSONFactoryUtil.createJSONObject();
 		JSONArray techSpecArr = JSONFactoryUtil.createJSONArray();
-
+		
+		if(Validator.isNull(module)) {
+			module = "1";
+		}
+		
 		try {
 			// get id THONG_SO_KY_THUAT
 			DictCollection nhomThongSoKyThuat = DictCollectionLocalServiceUtil
@@ -179,11 +188,11 @@ public class VRActionsImpl implements VRActions {
 
 				DictItem dictItem = DictItemLocalServiceUtil.getDictItem(dg.getDictItemId());
 
-				List<VRConfigTechSpec> configTechSpecs = VRConfigTechSpecLocalServiceUtil.getByVCCTSC(vehicleClass,
-						vehicleClass, dictItem.getItemCode());
+				List<VRConfigTechSpec> configTechSpecs = VRConfigTechSpecLocalServiceUtil.getByVCCTSCMD(vehicleClass,
+						vehicleClass, dictItem.getItemCode(), module);
 
-				List<VRConfigTechSpec> configTechSpecsType = VRConfigTechSpecLocalServiceUtil.getByVCCTSC(vehicleClass,
-						vehicleType, dictItem.getItemCode());
+				List<VRConfigTechSpec> configTechSpecsType = VRConfigTechSpecLocalServiceUtil.getByVCCTSCMD(vehicleClass,
+						vehicleType, dictItem.getItemCode(), module);
 
 				List<VRConfigTechSpec> configTechSpecsAll = new ArrayList<VRConfigTechSpec>();
 

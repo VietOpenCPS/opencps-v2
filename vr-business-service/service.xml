@@ -36,10 +36,22 @@
 			<finder-column name="vehicleType" arrayable-operator="OR"/>
 			<finder-column name="specCategory" comparator="LIKE"/>
 		</finder>
+		<finder return-type="Collection" name="VC_VT_SC_MD">
+			<finder-column name="vehicleClass" comparator="LIKE"/>
+			<finder-column name="vehicleType" arrayable-operator="OR"/>
+			<finder-column name="specCategory" comparator="LIKE"/>
+			<finder-column name="module"/>
+		</finder>
 		
 		<finder return-type="Collection" name="VC_SC">
 			<finder-column name="vehicleClass"/>
 			<finder-column name="specCategory"/>
+		</finder>
+		
+		<finder return-type="Collection" name="VC_SC_MD">
+			<finder-column name="vehicleClass"/>
+			<finder-column name="specCategory"/>
+			<finder-column name="module"/>
 		</finder>
 
 	</entity>
