@@ -174,7 +174,7 @@
 					<label for="_workingUnitDetail_sibling">Số thứ tự cùng cấp
 					</label>
 					
-					<input type="text" id="_workingUnitDetail_sibling" name="_workingUnitDetail_sibling" class="form-control"
+					<input type="number" id="_workingUnitDetail_sibling" name="_workingUnitDetail_sibling" class="form-control"
 						placeholder="Số thứ tự cùng cấp" value="${(workingUnit.sibling)!}" />
 				
 				</div>

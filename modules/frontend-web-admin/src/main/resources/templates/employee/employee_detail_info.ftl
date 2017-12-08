@@ -1017,6 +1017,8 @@ function employeeChangeAvatar(fileInput) {
 	$(document).delegate('.employee-deatil-info-back','click', function(e) {
 		
 		e.preventDefault();
+		e.stopPropagation();
+		e.stopImmediatePropagation();
 		
 		var url = $(e.currentTarget).attr('data-href');
 		$("#employee-index-page").load(url);
