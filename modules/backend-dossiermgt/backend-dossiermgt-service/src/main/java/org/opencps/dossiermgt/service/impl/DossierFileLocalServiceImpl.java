@@ -379,6 +379,22 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		return deleteDossierFile(dossierFile);
 	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierFile removeDossierFile(long dossierId, String referenceUid, ServiceContext serviceContext) throws PortalException {
+		User user = userPersistence.findByPrimaryKey(serviceContext.getUserId());
+
+		DossierFile dossierFile = dossierFileLocalService.getDossierFileByReferenceUid(dossierId, referenceUid);
+	
+		Date now = new Date();
+		
+		dossierFile.setUserId(user.getUserId());
+		dossierFile.setModifiedDate(now);
+		dossierFile.setRemoved(true);
+		dossierFile.setUserName(user.getFullName());
+		
+		return dossierFileLocalService.updateDossierFile(dossierFile);
+	}
 
 	@Indexable(type = IndexableType.DELETE)
 	public DossierFile deleteDossierFile(long dossierId, String referenceUid) throws PortalException {
