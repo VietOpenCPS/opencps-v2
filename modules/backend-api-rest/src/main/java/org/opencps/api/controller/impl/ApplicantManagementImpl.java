@@ -60,10 +60,22 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
+			String cityName = StringPool.BLANK;
+			String districtName = StringPool.BLANK;
+			String wardName = StringPool.BLANK;
 			
-			String cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
-			String districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
-			String wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+			if (Validator.isNotNull(input.getCityCode())) {
+				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
+				
+			}
+			if (Validator.isNotNull(input.getDistrictCode())) {
+				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
+				
+			}
+			if (Validator.isNotNull(input.getWardCode())) {
+				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+				
+			}
 			
 			Applicant applicant = actions.register(serviceContext, groupId, input.getApplicantName(), input.getApplicantIdType(),
 					input.getApplicantIdNo(), input.getApplicantIdDate(), input.getContactEmail(), input.getAddress(),

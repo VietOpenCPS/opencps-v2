@@ -5,6 +5,8 @@ import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -13,18 +15,26 @@ public class ApplicantListenerUtils {
 	public static JSONObject getPayload(String notiType, JSONObject object, long groupId) {
 		JSONObject payload = JSONFactoryUtil.createJSONObject();
 
-		Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil
-				.fetchByF_NotificationtemplateByType(groupId, notiType);
-
-		String body = getEmailBody(notiType, object, groupId);
+		try {
+			
+			_log.info("notiType"+notiType);
+			_log.info("groupId"+groupId);
+			
+			Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil
+					.fetchByF_NotificationtemplateByType(groupId, notiType);
+			
+			String body = getEmailBody(notiType, object, groupId);
+			
+			String subject = notificationtemplate.getEmailSubject();
+			
+			payload.put("toName", object.get("toName"));
+			payload.put("toAddress", object.get("toAddress"));
+			payload.put("subject", subject);
+			payload.put("body", body);
+		} catch (Exception e) {
+			_log.error(e);
+		}
 		
-		String subject = notificationtemplate.getEmailSubject();
-		
-		payload.put("toName", object.get("toName"));
-		payload.put("toAddress", object.get("toAddress"));
-		payload.put("subject", subject);
-		payload.put("body", body);
-
 		return payload;
 	}
 
@@ -122,5 +132,7 @@ public class ApplicantListenerUtils {
 		return StringUtil.split(sb.toString(), StringPool.COMMA);
 
 	}
+	
+	static Log _log = LogFactoryUtil.getLog(ApplicantListenerUtils.class);
 
 }
