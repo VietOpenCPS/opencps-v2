@@ -170,7 +170,7 @@
 	<script type="text/x-kendo-template" id="sidebarTemplate">
 		<div class="row">
 			<div class="col-sm-12" id="customer_additional_requirements">
-				<div class="panel panel-main MB15" id="sideItemAdd" style="display: none">
+				<div class="panel panel-main MB15" id="sideItemAdd" >
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Yêu cầu bổ sung</span>
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#additionalRequirement" data-bind="events:{click: jsCollaps}">
@@ -191,7 +191,7 @@
 				</div>
 			</div>
 			<div class="col-sm-12" id="customer_payment_request">
-				<div class="panel panel-main MB15" id="sideItemPayment" style="display: none"> 
+				<div class="panel panel-main MB15" id="sideItemPayment" > 
 					<div class="panel-heading row-header"> 
 						<span class="panel-title">Yêu cầu thanh toán</span> 
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#paymentRequest" data-bind="events:{click: jsCollaps}"> 
@@ -213,7 +213,7 @@
 				</div>
 			</div>
 			<div class="col-sm-12" id="customer_result_request">
-				<div class="panel panel-main" id="sideItemResult" style="display: none"> 
+				<div class="panel panel-main" id="sideItemResult" > 
 					<div class="panel-heading row-header">
 						<span class="panel-title">Trả kết quả</span> 
 						<span class="pull-right clickable" data-toggle="collapse" data-target="#resultRequest" data-bind="events:{click: jsCollaps}"> 

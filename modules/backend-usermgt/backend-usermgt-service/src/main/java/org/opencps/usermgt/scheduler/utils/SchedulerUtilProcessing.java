@@ -51,17 +51,18 @@ public class SchedulerUtilProcessing {
 
 						JSONObject payLoad = JSONFactoryUtil.createJSONObject();
 
-						payLoad.put("toName", notificationQueue.getToUsername());
-						payLoad.put("toAddress", notificationQueue.getToEmail());
-						payLoad.put("subject", notificationtemplate.getEmailSubject());
-						payLoad.put("body",
-								StringUtil.replace(notificationtemplate.getEmailBody(),
-										new String[] { "[$USERNAME$]", "[$USEREMAIL$]", "[$PASSWORD$]", "[$PASSWORD_CODE$]", "[$USERSTATUS$]" },
-										new String[] { payLoadData.getString("USERNAME"),
-												payLoadData.getString("toName"),
-												payLoadData.getString("PASSWORD"),
-												payLoadData.getString("PASSWORD_CODE"),
-												payLoadData.getString("USERSTATUS") }));
+						payLoad.put("toName", payLoadData.get("toName") );
+						payLoad.put("toAddress", payLoadData.get("toAddress"));
+						payLoad.put("subject", payLoadData.get("subject"));
+						payLoad.put("body", payLoadData.get("body") );
+						
+//								StringUtil.replace(notificationtemplate.getEmailBody(),
+//										new String[] { "[$USERNAME$]", "[$USEREMAIL$]", "[$PASSWORD$]", "[$PASSWORD_CODE$]", "[$USERSTATUS$]" },
+//										new String[] { payLoadData.getString("USERNAME"),
+//												payLoadData.getString("toName"),
+//												payLoadData.getString("PASSWORD"),
+//												payLoadData.getString("PASSWORD_CODE"),
+//												payLoadData.getString("USERSTATUS") }));
 
 						SendMailUtils.sendEmailNotification(payLoad, serviceContext);
 
