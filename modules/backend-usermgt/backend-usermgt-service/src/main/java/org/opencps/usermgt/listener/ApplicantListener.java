@@ -7,7 +7,11 @@ import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.OfficeSite;
+import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.model.impl.OfficeSiteImpl;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
@@ -18,6 +22,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 @Component(immediate = true, service = ModelListener.class)
@@ -124,6 +129,13 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 			queue.setExpireDate(cal.getTime());
 			
 			NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+			
+			//binhth add user applicant to siteGroup
+			
+			long userId = model.getMappingUserId();
+			
+			GroupLocalServiceUtil.addUserGroup(userId, model.getGroupId());
+			
 		} catch (Exception e) {
 			_log.error(e);
 		}

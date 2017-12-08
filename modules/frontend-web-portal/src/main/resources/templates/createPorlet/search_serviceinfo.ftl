@@ -13,30 +13,6 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-sm-11">
-		<div class="eq-height-lg">
-			<div class="row" id="imgDomains">
-				<div class="img-domains col-sm-4">
-					<div class="pic-1"></div>
-					<div class="center-all">
-						<a href="http://v2.opencps.vn/thu-tuc-hanh-chinh?domain=LVMT">Lĩnh vực <span>VĂN HÓA</span></a>
-					</div>
-				</div>
-				<div class="img-domains col-sm-4">
-					<div class="pic-2"></div>
-					<div class="center-all">
-						<a href="http://v2.opencps.vn/thu-tuc-hanh-chinh?domain=LVATBX">Lĩnh vực <span>THỂ DỤC - THỂ THAO</span></a>
-					</div>
-				</div>
-				<div class="img-domains col-sm-4">
-					<div class="pic-3"></div>
-					<div class="center-all">
-						<a href="http://v2.opencps.vn/thu-tuc-hanh-chinh?domain=LVDL">Lĩnh vực <span>DU LỊCH</span></a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
 </div>
 <script type="text/javascript">
 	$("#input_search_serviceinfo").kendoAutoComplete({
@@ -58,7 +34,7 @@
 			schema : {
 				data : "data",
 				total : "total",
-				model: {
+			    model: {
 			      fields: {
 			        serviceName: {
 			          type: "string"
