@@ -21,7 +21,7 @@
 					
 					<input type="file" id="_workingUnitDetail_logoFileEntryId" accept="image/*"  onchange="_workingUnitDetail_changeLogoFileEntry(this)" style="display: none;" />
  					
-					<img id="_workingUnitDetail_logo_thumbnil" class="img-responsive center-block" style="max-width: 368px; max-height: 120px;"  src="/o/org.mobilink.frontend.portlet/images/default-thumbnail.jpg" alt=""/>
+					<img id="_workingUnitDetail_logo_thumbnil" class="img-responsive center-block" style="max-width: 368px; max-height: 120px;"  src="/o/orgopencpsfrontendadmin/images/default-thumbnail.jpg" alt=""/>
 
 					<button id="_workingUnitDetail_change_logo_btn" class="btn btn-active btn-block MB15">Thay đổi logo</button>
 

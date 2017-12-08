@@ -104,8 +104,13 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 			throws DuplicateCategoryException, UnauthenticationException, UnauthorizationException,
 			NoSuchUserException {
 
-		DictGroup dictColl = dictGroupPersistence.fetchByF_groupCode(groupCode.toUpperCase(), groupId);
-
+		/*
+		 * DictGroup dictColl = dictGroupPersistence.fetchByF_groupCode(groupCode.toUpperCase(), groupId);
+		 * ThanhNV: hotFix check duplicate
+		 * 
+		 */
+		DictGroup dictColl = dictGroupPersistence.fetchByGC_GI_DCI(groupCode, groupId, dictCollectionId);
+		
 		if (Validator.isNotNull(dictColl)) {
 
 			throw new DuplicateCategoryException();
@@ -258,7 +263,12 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		DictGroup dictGroup = dictGroupPersistence.fetchByPrimaryKey(dictGroupId);
 
-		DictGroup dictColl = dictGroupPersistence.fetchByF_groupCode(groupCode.toUpperCase(), dictGroup.getGroupId());
+		/*
+		 * DictGroup dictColl = dictGroupPersistence.fetchByF_groupCode(groupCode.toUpperCase(), dictGroup.getGroupId());
+		 * ThanhNV: hotFix check duplicate
+		 * 
+		 */
+		DictGroup dictColl = dictGroupPersistence.fetchByGC_GI_DCI(groupCode.toUpperCase(), dictGroup.getGroupId(), dictCollectionId);
 
 		if (Validator.isNotNull(dictColl) && dictColl.getDictGroupId() != dictGroupId) {
 
