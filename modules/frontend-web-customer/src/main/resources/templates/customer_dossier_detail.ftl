@@ -974,6 +974,7 @@ var fnCheckValidTemplate = function(){
 var fnSaveForm = function(id, value){
 	var current = $("#btn-save-formalpaca"+id);
 	var referentUid = current.attr("referenceUid");
+	console.log(referentUid);
 	if(referentUid){
 		$.ajax({
 			url : "${api.server}/dossiers/${dossierId}/files/"+referentUid+"/formdata",
