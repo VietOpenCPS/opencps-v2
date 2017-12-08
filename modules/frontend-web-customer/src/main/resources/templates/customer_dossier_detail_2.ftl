@@ -185,7 +185,7 @@
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 text-right">
 							<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
-							type="button" data-pk="#:id#">Ghi lại</button>
+							type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
 							<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
 						</div>
 					</div>
