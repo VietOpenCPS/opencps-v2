@@ -53,6 +53,7 @@ public class DossierFileIndexer extends BaseIndexer<DossierFile> {
 		// add number fields
 		
 		document.addNumberSortable(DossierFileTerm.DOSSIER_ID, object.getDossierId());
+		document.addNumberSortable(DossierFileTerm.DOSSIER_FILE_ID, object.getDossierFileId());
 		document.addNumberSortable(DossierFileTerm.FILE_ENTRY_ID, object.getFileEntryId());
 		document.addNumberSortable(DossierFileTerm.DOSSIER_PART_TYPE, object.getDossierPartType());
 		document.addNumberSortable(DossierFileTerm.SIGN_CHECK, object.getSignCheck());
