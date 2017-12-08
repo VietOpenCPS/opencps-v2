@@ -18,7 +18,7 @@
 		</div>
 	</div>
 
-	<div class="dossier-general-info P15 MB15">
+	<div class="dossier-general-info P15 MB15" style="display: none;">
 		<div class="col-sm-12">
 			Cơ quan thực hiện <span class="text-bold" data-bind="text:govAgencyName"></span>
 		</div>
