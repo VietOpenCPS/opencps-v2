@@ -189,22 +189,22 @@
 					var referentUidFile =  getReferentUidFile(${dossierId});
 
 					$.ajax({
-						url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formscript",
-						dataType : "json",
-						type : "GET",
-						headers : {"groupId": ${groupId}},
-						success : function(result){
-						console.log(result);
-						$("\\#formPartNo"+id).empty();
-	
-						var formdata = fnGetFormData(${dossierId},referentUidFile);
-						
-						$("\\#formPartNo"+id).alpaca({
-							"data" : formdata,
-							"schema" : result.schema,
-							"options" : result.options,
-							"view" : result.view
-						});
+					url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formscript",
+					dataType : "json",
+					type : "GET",
+					headers : {"groupId": ${groupId}},
+					success : function(result){
+					console.log(result);
+					$("\\#formPartNo"+id).empty();
+
+					var formdata = fnGetFormData(${dossierId},referentUidFile);
+					
+					$("\\#formPartNo"+id).alpaca({
+					"data" : formdata,
+					"schema" : result.schema,
+					"options" : result.options,
+					"view" : result.view
+				});
 				
 				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca" class="btn btn-active MB10 MT10" type="button" data-pk="'+id+'">Ghi lại</button></div></div>');
 				$("\\#btn-save-formalpaca").click(function(){

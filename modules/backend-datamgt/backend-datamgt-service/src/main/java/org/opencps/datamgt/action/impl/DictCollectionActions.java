@@ -390,7 +390,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 		if (Validator.isNotNull(groupName)) {
 
-			dictGroup.setGroupName(groupNameEN);
+			dictGroup.setGroupName(groupName);
 
 		}
 

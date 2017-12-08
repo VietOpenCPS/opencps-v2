@@ -139,9 +139,9 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		workingUnit.setGovAgencyCode(govAgencyCode);
 		workingUnit.setParentWorkingUnitId(parentWorkingUnitId);
 		workingUnit.setSibling(sibling);
-System.out.println("WorkingUnitLocalServiceImpl.addWorkingUnit()"+parentWorkingUnitId);
+
 		String treeIndex = getTreeIndex(workingUnitId, parentWorkingUnitId, sibling);
-		System.out.println("WorkingUnitLocalServiceImpl.addWorkingUnit()"+treeIndex);
+
 		workingUnit.setTreeIndex(treeIndex);
 		workingUnit.setLevel(StringUtil.count(treeIndex, StringPool.PERIOD));
 		workingUnit.setAddress(address);
@@ -181,6 +181,13 @@ System.out.println("WorkingUnitLocalServiceImpl.addWorkingUnit()"+parentWorkingU
 		List<EmployeeJobPos> listEmp = employeeJobPosPersistence.findByF_workingUnitId(workingUnitId);
 
 		if (!hasPermission || (Validator.isNotNull(listEmp) && listEmp.size() > 0)) {
+			throw new UnauthorizationException();
+		}
+		
+		
+		List<WorkingUnit> listWor = workingUnitPersistence.findByF_childs_unit(workingUnit.getGroupId(), workingUnit.getTreeIndex());
+		
+		if (Validator.isNotNull(listWor) && listWor.size() > 0) {
 			throw new UnauthorizationException();
 		}
 		

@@ -4,9 +4,6 @@ dependencies {
 	compileOnly group: "com.liferay", name: "com.liferay.portal.spring.extender", version: "2.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.6.0"
 	compileOnly project(":modules:backend-jasper-process:backend-jasper-process-api")
-
-	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-service")
-	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-api")
 	
 	compile name : "bcmail-jdk14"
 	compile name : "bcprov-jdk14"
@@ -26,13 +23,28 @@ dependencies {
 	compile name : "jackson-core"
 	compile name : "jackson-databind"
 	compile name : "jakarta-regexp"
-	compile name : "jasperreports"
 	compile name : "javax.inject"
 	compile name : "jcommon"
 	compile name : "jfreechart"
 	compile name : "olap4j"
 	compile name : "stax-api"
 	compile name : "stax"
+	compile name : "lucene-analyzers-common"
+	compile name : "lucene-core"
+	compile name : "lucene-queries"
+	compile name : "lucene-queryparser"
+	compile name : "lucene-sandbox"
+	compile name : "spring-asm"
+	compile name : "spring-beans"
+	compile name : "spring-context"
+	compile name : "spring-core"
+	compile name : "spring-expression"
+	compile name : "jasperreports"
+	compile name : "jasperreports-functions"
+	compile name : "jasperreports-javaflow"
+	compile name : "commons-javaflow"
+	compile name : "jasperreports-fonts-6.2.2"
+	compile name : "joda-time-2.4"
 }	
 
 repositories {

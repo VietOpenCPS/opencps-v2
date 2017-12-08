@@ -1,6 +1,4 @@
-<#if (Request)??>
 <#include "init.ftl">
-</#if>
 <div class="row">
 
 	<div class="col-sm-12">
@@ -33,29 +31,34 @@
 							
 							<li class="clearfix PL0">
 		
-								<div class="col-sm-3 PL0 PR5">
+								<div class="col-sm-2 PL0 PR5">
 									
 									<img class="img-responsive center-block img-circle" src="/o/frontend-web-usermgt/images/user_01.png" title="" id="employee-birthdate-#=id#-thumbnil"/>
 										
 								</div>
 									
-								<div class="col-sm-9">
+								<div class="col-sm-10">
 								
 									<strong class="full-width">#= fullName #</strong><br>
-									<span class="full-width">#= jobPosTitle #</span><br>
-									<span class="full-width">SN: 
+									<div class="full-width">#= jobPosTitle #</div>
+									<div class="full-width">SN: 
 										#if(birthdate != null && birthdate != "") { #
 														
-											#= kendo.toString(kendo.parseDate(birthdate, 'yyyy-MM-dd'), 'MM/dd/yyyy')#
+											#= kendo.toString(kendo.parseDate(birthdate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#
 
+										#} else {#
+											__/__/__
 										#}#
-									</span>
+									</div>
 								
 								</div>
 									
 							</li>
 
 						</script>
+
+						<div id="employee-birthdate-pager" class="col-sm-offset-6 k-pager-style3">
+						</div>
 
 					</div>
 
@@ -90,14 +93,17 @@
 
 	$('#this-month').html(thisMonth);
 	
-	var getEmployeeBaseUrl = "${api.server}/employees";
+	var getEmployeeBaseUrl = "${api.endpoint}/employees";
 	
 	var getEmployeeDataSource = new kendo.data.DataSource({
 		
 		transport: {
 			
 			read: function(options) {
-				
+
+				var page = options.data.page;
+				var pageSize = options.data.pageSize;
+
 				$.ajax({
 				
 					url: getEmployeeBaseUrl,
@@ -107,11 +113,14 @@
 						"groupId": ${groupId}
 					},
 					data: {
+						start: (page - 1)*pageSize,
+						end: (page - 1)*pageSize + pageSize,
 						sort: 'birthdate',
 						month: thisMonth
 					},
 					success: function(result) {
 						
+						result["data"] = result.total==0 ? []: result["data"];
 						options.success(result);
 						
 					},
@@ -149,7 +158,11 @@
 
 				}
 			}
-		}
+		},
+		pageSize: 5,
+		serverPaging: true,
+		serverSorting: true,
+		serverFiltering: true
 		
 	});
 
@@ -158,20 +171,26 @@
 		dataSource: getEmployeeDataSource,
 
 		dataBound: function (e) {
-
-			var employeeListview = e.sender;
 			
-			var children = employeeListview.element.children();
-
-			var employeeBirthdateAvataBaseUrl = '${api.server}/employees';
+			if(this.dataSource.data().length == 0){
+					$("#employee-birthdate-listview").append("<i class='text-center text-gray'>Không có sinh nhật trong tháng!</i>");
+			} else {
 			
-			for (var x = 0; x < children.length; x++) {
+				var employeeListview = e.sender;
 				
-				var getObj = employeeListview.dataSource.view()[x];
-
-				getImageBlob(employeeBirthdateAvataBaseUrl +"/"+ getObj.employeeId +"/photo", $("#employee-birthdate-" +getObj.employeeId+ "-thumbnil"));
+				var children = employeeListview.element.children();
+	
+				var employeeBirthdateAvataBaseUrl = '${api.endpoint}/employees';
 				
-			};
+				for (var x = 0; x < children.length; x++) {
+					
+					var getObj = employeeListview.dataSource.view()[x];
+	
+					getImageBlob(employeeBirthdateAvataBaseUrl +"/"+ getObj.employeeId +"/photo", $("#employee-birthdate-" +getObj.employeeId+ "-thumbnil"), "${groupId}");
+					
+				};
+			
+			}
 
 		},
 		
@@ -179,6 +198,18 @@
 
 	});
 
+	$("#employee-birthdate-pager").kendoPager({
+        dataSource: getEmployeeDataSource,
+        input: true,
+        numeric: false,
+        messages: {
+            empty: "Không có kết quả phù hợp!",
+            display: "",
+            page: "",
+            of: "",
+            itemsPerPage: ""
+        }
+    });
 
 })(jQuery);
 </script>
