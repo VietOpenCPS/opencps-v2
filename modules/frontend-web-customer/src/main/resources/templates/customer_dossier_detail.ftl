@@ -151,7 +151,7 @@
 					</span>
 					
 					<div class="actions">
-						<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" >
+						<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#">
 							<i class="fa fa-archive" aria-hidden="true"></i>
 						</a>
 
@@ -194,19 +194,19 @@
 				var alpaca = eval("(" + result + ")");
 				var formdata = fnGetFormData(${dossierId},referentUidFile);
 				if(formdata){
-					$("\\#validPart"+id).val("1");
-				}
-				alpaca.data = formdata; 
+				$("\\#validPart"+id).val("1");
+			}
+			alpaca.data = formdata; 
 
-				$("\\#formPartNo"+id).alpaca(alpaca);
-				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca'+id+'" class="btn btn-active MB10 MT10 saveForm" 
-				type="button" data-pk="'+id+'" referentUid="'+referentUidFile+'">Ghi lại</button></div></div>');
-				
-			},
-			error : function(result){
+			$("\\#formPartNo"+id).alpaca(alpaca);
+			$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca'+id+'" class="btn btn-active MB10 MT10 saveForm" 
+			type="button" data-pk="'+id+'" referentUid="'+referentUidFile+'">Ghi lại</button></div></div>');
+			
+		},
+		error : function(result){
 
-		}
-	});
+	}
+});
 }#
 
 #}#
@@ -229,17 +229,17 @@
 	<div class="row MB20">
 		<div class="col-xs-12 col-sm-7">
 			<label>Địa chỉ nhận kết quả</label>
-			<input type="text" class="form-control input-small" placeholder="Ghi rõ thôn, số nhà, tên đường - phố" id="postalAddress" name="postalAddress" required="required" validationMessage="Bạn phải nhập địa chỉ nhận kết quả">
+			<input type="text" class="form-control input-small" placeholder="Ghi rõ thôn, số nhà, tên đường - phố" id="postalAddress" name="postalAddress" required="required" validationMessage="Bạn phải nhập địa chỉ nhận kết quả" data-bind="value : postalAddress">
 			<span data-for="postalAddress" class="k-invalid-msg"></span> 
 		</div>
 		<div class="col-xs-12 col-sm-2">
 			<label>Tỉnh/Thành phố</label>
-			<input class="form-control MB0" name="postalCityCode" id="postalCityCode" required="required" validationMessage="Bạn phải nhập Tỉnh/ Thành phố">
+			<input class="form-control MB0" name="postalCityCode" id="postalCityCode" required="required" validationMessage="Bạn phải nhập Tỉnh/ Thành phố" data-bind="value : postalCityCode">
 			<span data-for="postalCityCode" class="k-invalid-msg"></span> 
 		</div>
 		<div class="col-xs-12 col-sm-3">
 			<label>Số điện thoại</label>
-			<input type="text" class="form-control input-small" placeholder="" id="postalTelNo" name="postalTelNo" required="required" validationMessage="Bạn phải nhập số điện thoại">
+			<input type="text" class="form-control input-small" placeholder="" id="postalTelNo" name="postalTelNo" required="required" validationMessage="Bạn phải nhập số điện thoại" data-bind="value: postalTelNo">
 			<span data-for="postalTelNo" class="k-invalid-msg"></span> 
 		</div>
 	</div>
@@ -284,7 +284,10 @@
 
 		//tai giay to kho luu tru
 		$(".uploadfile-form-repository").unbind().click(function(){
-			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_detail_filetemplate}",function(result){
+			var dossierId = "${(dossierId)!}";
+			var dossierTemplateNo = $("#dossierTemplateNo").val();
+			var partNo = $(this).attr("part-no");
+			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_detail_filetemplate}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo"+dossierTemplateNo,function(result){
 				$(this).modal("show");
 			});
 		});
@@ -745,6 +748,9 @@
 						viaPostal : function(){
 							if(result.viaPostal === 2){
 								$("#viaPostal").prop('checked', true);
+								$("#postalAddress").prop('disabled', false);
+								$("#postalCityCode").data("kendoComboBox").enable(true);
+								$("#postalTelNo").prop('disabled', false);
 							}else {
 								$("#viaPostal").prop('checked', false);
 							}

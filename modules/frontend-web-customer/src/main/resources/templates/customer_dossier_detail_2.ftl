@@ -513,7 +513,10 @@
 				data : {
 
 				},
-				headers: {"groupId": ${groupId}},
+				headers: {
+					"groupId": ${groupId},
+					Accept : "application/json"
+				},
 				success :  function(result){    
 
 					manageDossier.navigate("/taohosomoi/nopthanhcong/${dossierId}"); 

@@ -1,5 +1,6 @@
 package org.opencps.usermgt.service.indexer;
 
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 
@@ -22,6 +23,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BaseIndexer;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
@@ -30,9 +32,11 @@ import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 public class EmployeeIndexer extends BaseIndexer<Employee> {
 
@@ -87,9 +91,11 @@ public class EmployeeIndexer extends BaseIndexer<Employee> {
 		document.addNumberSortable(EmployeeTerm.WORKING_STATUS, employee.getWorkingStatus());
 		document.addNumberSortable(EmployeeTerm.MAPPING_USER_ID, employee.getMappingUserId());
 		document.addNumberSortable(EmployeeTerm.MAIN_JOBPOST_ID, employee.getMainJobPostId());
-
-		EmployeeJobPos employeeJobPos = EmployeeJobPosLocalServiceUtil.fetchByF_EmployeeId_jobPostId(
-				employee.getGroupId(), employee.getEmployeeId(), employee.getMainJobPostId());
+		document.addDateSortable(EmployeeTerm.RECRUIT_DATE, employee.getRecruitDate());
+		document.addDateSortable(EmployeeTerm.LEAVE_DATE, employee.getLeaveDate());
+		
+		EmployeeJobPos employeeJobPos = EmployeeJobPosLocalServiceUtil.fetchEmployeeJobPos(employee.getMainJobPostId());
+//				employee.getGroupId(), employee.getEmployeeId(), employee.getMainJobPostId());
 		
 		long workingUnitId = Validator.isNotNull(employeeJobPos)?employeeJobPos.getWorkingUnitId():0;
 		
@@ -103,12 +109,43 @@ public class EmployeeIndexer extends BaseIndexer<Employee> {
 			
 		}
 		
-		JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(employee.getMainJobPostId());
+		long emJobposId = Validator.isNotNull(employeeJobPos)?employeeJobPos.getJobPostId():0;
+		
+		
+		JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(emJobposId);
 		
 		String jobPosTitle = Validator.isNotNull(jobPos)?jobPos.getTitle():StringPool.BLANK;
 		
 		document.addTextSortable(EmployeeTerm.WORKING_UNIT_NAME, workingUnitName);
+		document.addNumberSortable(EmployeeTerm.WORKING_UNIT_ID, workingUnitId);
+		
 		document.addTextSortable(EmployeeTerm.JOB_POS_TITLE, jobPosTitle);
+		document.addNumberSortable(EmployeeTerm.JOB_POS_ID, emJobposId);
+		
+		Calendar cal = Calendar.getInstance();
+
+		if (Validator.isNotNull(employee.getBirthdate())) {
+			cal.setTime(employee.getBirthdate());
+			document.addNumberSortable(EmployeeTerm.MONTH, cal.get(Calendar.MONTH) + 1);
+		} else {
+
+			document.addNumberSortable(EmployeeTerm.MONTH, -1);
+
+		}
+		
+		long userId = employee.getMappingUserId();
+		
+		int status = WorkflowConstants.STATUS_DENIED;
+		
+		if(userId > 0){
+			
+			User user = UserLocalServiceUtil.fetchUser(userId);
+			
+			status = Validator.isNotNull(user)?user.getStatus():WorkflowConstants.STATUS_DENIED;
+			
+		}
+		
+		document.addNumberSortable(EmployeeTerm.ACTIVE, status);
 		
 		return document;
 	}

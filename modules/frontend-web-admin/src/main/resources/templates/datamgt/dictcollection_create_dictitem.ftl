@@ -154,7 +154,7 @@
 
 		<div class="eq-height">
 						
-			<button class="btn btn-sm btn-primary btn-default" id="_collectionSub_dictItem_edit_editDictItem" 
+			<button class="btn btn-sm btn-active" id="_collectionSub_dictItem_edit_editDictItem" 
 				name="_collectionSub_dictItem_edit_editDictItem" type="button"
 				data-pk="${(param.dictCollection_itemCode)!}"
 				data-collectionCode="${(param.dictCollection_collectionCode)!}"
@@ -179,12 +179,12 @@
 
 (function($) {
 
-	var dataForm = $("#_collectionSub_dictCollection_dataForm").val();
+	var dataForm = $("#_collectionSub_dictCollection_dataForm").val().trim();
 
 	if (dataForm!=null && dataForm!="") {
 		
 		dataForm = eval("(" + dataForm + ")");
-		var dataValue = $("#_collectionSub_dictItem_edit_metaData_inp").val();
+		var dataValue = $("#_collectionSub_dictItem_edit_metaData_inp").val().trim();
 
 		if (dataValue!=null && dataValue!="") {
 		
@@ -238,12 +238,12 @@
 				data: {
 
 					${portletNamespace}itemCodeOld: dictCollection_itemCode,
-					${portletNamespace}itemCode: $( "#_collectionSub_dictItem_edit_itemCode" ).val(),
-					${portletNamespace}itemName: $( "#_collectionSub_dictItem_edit_itemName" ).val(),
-					${portletNamespace}itemNameEN: $( "#_collectionSub_dictItem_edit_itemNameEN" ).val(),
-					${portletNamespace}itemDescription: $( "#_collectionSub_dictItem_edit_itemDescription" ).val(),
-					${portletNamespace}sibling: $( "#_collectionSub_dictItem_edit_sibling" ).val(),
-					${portletNamespace}parentItemCode: $( "#_collectionSub_dictItem_edit_parentItemCode" ).val(),
+					${portletNamespace}itemCode: $( "#_collectionSub_dictItem_edit_itemCode" ).val().trim(),
+					${portletNamespace}itemName: $( "#_collectionSub_dictItem_edit_itemName" ).val().trim(),
+					${portletNamespace}itemNameEN: $( "#_collectionSub_dictItem_edit_itemNameEN" ).val().trim(),
+					${portletNamespace}itemDescription: $( "#_collectionSub_dictItem_edit_itemDescription" ).val().trim(),
+					${portletNamespace}sibling: $( "#_collectionSub_dictItem_edit_sibling" ).val().trim(),
+					${portletNamespace}parentItemCode: $( "#_collectionSub_dictItem_edit_parentItemCode" ).val().trim(),
 					${portletNamespace}metaData: metaData,
 					${portletNamespace}groupCode: groupCode
 
@@ -284,12 +284,12 @@
 				url: _dictCollection_edit_dictItem_BaseUrl,
 				data: {
 
-					${portletNamespace}itemCode: $( "#_collectionSub_dictItem_edit_itemCode" ).val(),
-					${portletNamespace}itemName: $( "#_collectionSub_dictItem_edit_itemName" ).val(),
-					${portletNamespace}itemNameEN: $( "#_collectionSub_dictItem_edit_itemNameEN" ).val(),
-					${portletNamespace}itemDescription: $( "#_collectionSub_dictItem_edit_itemDescription" ).val(),
-					${portletNamespace}sibling: $( "#_collectionSub_dictItem_edit_sibling" ).val(),
-					${portletNamespace}parentItemCode: $( "#_collectionSub_dictItem_edit_parentItemCode" ).val(),
+					${portletNamespace}itemCode: $( "#_collectionSub_dictItem_edit_itemCode" ).val().trim(),
+					${portletNamespace}itemName: $( "#_collectionSub_dictItem_edit_itemName" ).val().trim(),
+					${portletNamespace}itemNameEN: $( "#_collectionSub_dictItem_edit_itemNameEN" ).val().trim(),
+					${portletNamespace}itemDescription: $( "#_collectionSub_dictItem_edit_itemDescription" ).val().trim(),
+					${portletNamespace}sibling: $( "#_collectionSub_dictItem_edit_sibling" ).val().trim(),
+					${portletNamespace}parentItemCode: $( "#_collectionSub_dictItem_edit_parentItemCode" ).val().trim(),
 					${portletNamespace}metaData: metaData,
 					${portletNamespace}groupCode: groupCode
 				},
@@ -360,7 +360,8 @@
 							
 						},
 						success: function(result) {
-						
+							
+							result["data"] = result.total==0 ? []: result["data"];
 							options.success(result);
 							
 						},
@@ -409,7 +410,8 @@
 							
 						},
 						success: function(result) {
-						
+							
+							result["data"] = result.total==0 ? []: result["data"];
 							options.success(result);
 							
 						}

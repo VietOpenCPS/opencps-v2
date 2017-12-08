@@ -8,6 +8,7 @@
 
 package org.opencps.api.employee.model;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -52,7 +53,9 @@ import javax.xml.bind.annotation.XmlType;
     "mobile",
     "email",
     "title",
-    "workingStatus"
+    "workingStatus",
+    "recruitDate",
+    "leaveDate"
 })
 @XmlRootElement(name = "EmployeeInputModel")
 public class EmployeeInputModel {
@@ -73,9 +76,13 @@ public class EmployeeInputModel {
     protected String email;
     @FormParam(value = "title")
     protected String title;
-    @FormParam(value = "workingStatus")
+    @DefaultValue("1") @FormParam(value = "workingStatus")
     protected String workingStatus;
-
+    @FormParam(value = "recruitDate")
+    protected String recruitDate;
+    @FormParam(value = "leaveDate")
+    protected String leaveDate;
+    
     /**
      * Gets the value of the employeeNo property.
      * 
@@ -291,5 +298,21 @@ public class EmployeeInputModel {
     public void setWorkingStatus(String value) {
         this.workingStatus = value;
     }
+
+	public String getRecruitDate() {
+		return recruitDate;
+	}
+
+	public void setRecruitDate(String recruitDate) {
+		this.recruitDate = recruitDate;
+	}
+
+	public String getLeaveDate() {
+		return leaveDate;
+	}
+
+	public void setLeaveDate(String leaveDate) {
+		this.leaveDate = leaveDate;
+	}
 
 }
