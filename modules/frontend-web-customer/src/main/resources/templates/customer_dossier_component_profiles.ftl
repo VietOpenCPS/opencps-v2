@@ -231,10 +231,6 @@
 			}
 		});
 
-		var listView = $("#listViewDossierFile").data("kendoListView");
-
-		listView.select(listView.element.children().first());
-
 
 		$(document).on("click",".item-file-component",function(event){
 			$(".item-file-component").removeClass("text-light-blue");
@@ -271,6 +267,8 @@
 
 
 	});
+
+
 
 	function fileAttachmentUrl ( options) {
 
@@ -334,4 +332,15 @@
   
 };
 
+var fnConvertArrFile = function(arrFile){
+	var arrConvert = new Object();
+	if(arrFile){
+		var flag = 0;
+		for (var i = 0; i < arrFile.length; i++) {
+			if(flag !== arrFile[i]){
+				var obj = new Object()
+			}
+		}
+	}
+}
 </script>

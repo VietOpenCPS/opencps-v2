@@ -170,15 +170,11 @@
 					error: function(){}
 				});
 
-				
 			}
 			
 
 		}
 
-		var lvDossierFileArchive = $("#lvDossierFileArchive").data("kendoListView");
-
-		lvDossierFileArchive.select(lvDossierFileArchive.element.children().first());
 
 		$(document).on("click",".dossierFileItem",function(event){
 			$(".dossierFileItem").removeClass("text-light-blue");
@@ -193,19 +189,42 @@
 					arrChecked.push($(this).attr("data-pk"));
 				}
 			});
-			$("#fileArchiveForm").submit(function(event){
-				event.preventDefault();
-				console.log(arrChecked.join());
-				if(arrChecked.join()!=""){
-					$("#uploadFileTemplateDialog").modal("hide");
-				}else{
-					console.log("Please choise file!");
-					return false;
+
+			if(arrChecked){
+				var dossierPartNo = "${(dossierPartNo)!}";
+				var dossierTemplateNo = "${(dossierTemplateNo)!}";
+				var dossierId = "${(dossierId)!}";
+				for (var i = 0; i < arrChecked.length; i++) {
+					var fileId = arrChecked[i];
+					fnCopyFile(fileId, dossierPartNo, dossierTemplateNo, dossierId);
+
 				}
-			});
-			
+			}
 			
 		});
+
+		var fnCopyFile = function(fileId, dossierPartNo, dossierTemplateNo, dossierId){
+			var isCopy = false;
+			$.ajax({
+				url : "${api.server}/dossiers/${dossierId}/files/copyfile",
+				dataType : "json",
+				type : "POST",
+				headers: {"groupId": ${groupId}},
+				data : {
+					dossierTemplateNo : dossierTemplateNo,
+					dossierPartNo : dossierPartNo,
+					dossierFileId : fileId
+				},
+				success : function(result){
+					isCopy = true;
+				},
+				error : function(xhr){
+					isCopy = false;
+				}
+
+			});
+			return isCopy;
+		}
 
 		$('.control-left').click(function() {
 			var index=getCurrentIndexSlide();
