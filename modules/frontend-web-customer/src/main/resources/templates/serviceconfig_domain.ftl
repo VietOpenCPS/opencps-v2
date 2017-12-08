@@ -82,7 +82,7 @@
 	$(document).ready(function(){
 
 		var fnGenEventChoiseServiceConfig = function(){
-			$('.btn-select-serviceConfig, .link-govAgency').unbind().click(function(){
+			$('.btn-select-serviceConfig, .link-govAgency').unbind().click(function(event){
 				
 				event.preventDefault();
 				var serviceConfigId = $(this).attr("data-pk");

@@ -66,8 +66,11 @@
   var dataSourceProcessServiceConfig;
 
   $(document).ready(function(){
-
-
+	
+	$('#choiseProcessForDossier').on('hidden.bs.modal', function(e) {
+		$(this).removeData();
+	}) ;
+	
     $('#btn_fillter_by_domain').click(function(){
       manageDossier.navigate("/taohosomoi/doman");
     });

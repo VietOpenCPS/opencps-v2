@@ -36,7 +36,7 @@ public class SendMailUtils {
 
 		if(Validator.isNotNull(payLoad)){
 //			String fromName = PrefsPropsUtil.getString(payLoad.getLong("companyId"), PropsKeys.ADMIN_EMAIL_FROM_NAME);
-			String fromName = "MOBILINK Mail System";
+			String fromName = "Mail System";
 			
 			String fromAddress = PrefsPropsUtil.getString(payLoad.getLong("companyId"), PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
 

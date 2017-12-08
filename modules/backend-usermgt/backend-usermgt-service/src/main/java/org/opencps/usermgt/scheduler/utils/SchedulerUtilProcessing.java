@@ -58,7 +58,7 @@ public class SchedulerUtilProcessing {
 								StringUtil.replace(notificationtemplate.getEmailBody(),
 										new String[] { "[$USERNAME$]", "[$USEREMAIL$]", "[$PASSWORD$]", "[$PASSWORD_CODE$]", "[$USERSTATUS$]" },
 										new String[] { payLoadData.getString("USERNAME"),
-												payLoadData.getString("USEREMAIL"),
+												payLoadData.getString("toName"),
 												payLoadData.getString("PASSWORD"),
 												payLoadData.getString("PASSWORD_CODE"),
 												payLoadData.getString("USERSTATUS") }));
