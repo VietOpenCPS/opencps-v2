@@ -43,7 +43,7 @@ import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 	"javax.portlet.resource-bundle=content.Language",
 	"javax.portlet.security-role-ref=power-user,user"
 }, service = Portlet.class)
-public class DossierSearchPortlet extends FreeMarkerPortlet {
+public class DossierLookupPortlet extends FreeMarkerPortlet {
 
 	/*
 	 * (non-Javadoc)
