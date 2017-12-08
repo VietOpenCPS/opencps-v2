@@ -21,9 +21,9 @@
 					
 					<input type="file" id="_workingUnitDetail_logoFileEntryId" accept="image/*"  onchange="_workingUnitDetail_changeLogoFileEntry(this)" style="display: none;" />
  					
-					<img id="_workingUnitDetail_logo_thumbnil" class="img-responsive center-block" style="max-width: 368px; max-height: 120px;"  src="/o/org.mobilink.frontend.portlet/images/default-thumbnail.jpg" alt=""/>
+					<img id="_workingUnitDetail_logo_thumbnil" class="img-responsive center-block" style="max-width: 368px; max-height: 120px;"  src="/o/orgopencpsfrontendadmin/images/default-thumbnail.jpg" alt=""/>
 
-					<button id="_workingUnitDetail_change_logo_btn" class="btn btn-primary image-preview-input btn-block MB15">Thay đổi logo</button>
+					<button id="_workingUnitDetail_change_logo_btn" class="btn btn-active btn-block MB15">Thay đổi logo</button>
 
 				</div>
 
@@ -90,6 +90,10 @@
 
 				<!-- _workingUnitDetail_enName -->
 				
+			</div>
+
+			<div class="row">
+				
 				<div class="form-group col-sm-6" >
 				
 					<label for="_workingUnitDetail_ceremonyDate">Ngày  thành lập :
@@ -110,6 +114,10 @@
 					
 				</div>
 				
+			</div>
+
+			<div class="row">
+			
 				<!-- _workingUnitDetail_telNo -->
 				
 				<div class="form-group col-sm-6" >
@@ -131,6 +139,9 @@
 				
 				</div>
 				
+			</div>
+
+			<div class="row">
 				<!-- _workingUnitDetail_email -->
 				
 				<div class="form-group col-sm-6" >
@@ -152,6 +163,10 @@
 				
 				</div>
 				
+			</div>
+
+			<div class="row">
+				
 				<!-- _workingUnitDetail_sibling -->
 				
 				<div class="form-group col-sm-6" >
@@ -159,14 +174,14 @@
 					<label for="_workingUnitDetail_sibling">Số thứ tự cùng cấp
 					</label>
 					
-					<input type="text" id="_workingUnitDetail_sibling" name="_workingUnitDetail_sibling" class="form-control"
+					<input type="number" id="_workingUnitDetail_sibling" name="_workingUnitDetail_sibling" class="form-control"
 						placeholder="Số thứ tự cùng cấp" value="${(workingUnit.sibling)!}" />
 				
 				</div>
 					
 				<div class="col-xs-6 col-sm-6 text-right PT20">
 
-					<button class="btn btn-primary btn-default" id="_workingUnitDetail_submitBtn" 
+					<button class="btn btn-active btn-default" id="_workingUnitDetail_submitBtn" 
 						name="_workingUnitDetail_submitBtn" type="button" data-pk="${(param.workingUnit_workingUnitId)!}"
 						data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 						<i class="fa fa-check-circle"></i>
@@ -208,7 +223,8 @@
 						sort: 'name'
 					},
 					success: function(result) {
-					
+						
+						result["data"] = result.total==0 ? []: result["data"];
 						options.success(result);
 						
 					},
@@ -250,7 +266,7 @@
 		
 	}).data("kendoDropDownList");
 	
-	_workingUnitDetail_parentWorkingUnitId.value($( "#_workingUnitDetail_parentWorkingUnitId" ).val());
+	_workingUnitDetail_parentWorkingUnitId.value($( "#_workingUnitDetail_parentWorkingUnitId" ).val().trim());
 	
 	$(document).on('click', '#_workingUnitDetail_submitBtn', function(event){
 		
@@ -264,8 +280,8 @@
 			return;
 		}
 		
-		var _parentWorkingUnitId_val = $("#_workingUnitDetail_parentWorkingUnitId").val();
-		var _workingUnitDetail_sibling_val = $( "#_workingUnitDetail_sibling" ).val();
+		var _parentWorkingUnitId_val = $("#_workingUnitDetail_parentWorkingUnitId").val().trim();
+		var _workingUnitDetail_sibling_val = $( "#_workingUnitDetail_sibling" ).val().trim();
 		
 		_parentWorkingUnitId_val = (_parentWorkingUnitId_val==null || _parentWorkingUnitId_val=="")?0:_parentWorkingUnitId_val;
 		_workingUnitDetail_sibling_val = (_workingUnitDetail_sibling_val==null || _workingUnitDetail_sibling_val=="")?0:_workingUnitDetail_sibling_val;	
@@ -282,14 +298,14 @@
 				
 				workingUnitId: workingUnitId,
 				parentWorkingUnitId: _parentWorkingUnitId_val,
-				govAgencyCode: $( "#_workingUnitDetail_govAgencyCode" ).val(),
-				name: $( "#_workingUnitDetail_name" ).val(),
-				enName: $( "#_workingUnitDetail_enName" ).val(),
-				address: $( "#_workingUnitDetail_address" ).val(),
-				telNo: $( "#_workingUnitDetail_telNo" ).val(),
-				faxNo: $( "#_workingUnitDetail_faxNo" ).val(),
-				email: $( "#_workingUnitDetail_email" ).val(),
-				website: $( "#_workingUnitDetail_website" ).val(),
+				govAgencyCode: $( "#_workingUnitDetail_govAgencyCode" ).val().trim(),
+				name: $( "#_workingUnitDetail_name" ).val().trim(),
+				enName: $( "#_workingUnitDetail_enName" ).val().trim(),
+				address: $( "#_workingUnitDetail_address" ).val().trim(),
+				telNo: $( "#_workingUnitDetail_telNo" ).val().trim(),
+				faxNo: $( "#_workingUnitDetail_faxNo" ).val().trim(),
+				email: $( "#_workingUnitDetail_email" ).val().trim(),
+				website: $( "#_workingUnitDetail_website" ).val().trim(),
 				sibling: _workingUnitDetail_sibling_val,
 				ceremonyDate: ceremonyDate
 				
@@ -300,14 +316,14 @@
 			$("#_workingUnit_listView").getKendoListView().dataSource.add({
 				
 				parentWorkingUnitId: _parentWorkingUnitId_val,
-				govAgencyCode: $( "#_workingUnitDetail_govAgencyCode" ).val(),
-				name: $( "#_workingUnitDetail_name" ).val(),
-				enName: $( "#_workingUnitDetail_enName" ).val(),
-				address: $( "#_workingUnitDetail_address" ).val(),
-				telNo: $( "#_workingUnitDetail_telNo" ).val(),
-				faxNo: $( "#_workingUnitDetail_faxNo" ).val(),
-				email: $( "#_workingUnitDetail_email" ).val(),
-				website: $( "#_workingUnitDetail_website" ).val(),
+				govAgencyCode: $( "#_workingUnitDetail_govAgencyCode" ).val().trim(),
+				name: $( "#_workingUnitDetail_name" ).val().trim(),
+				enName: $( "#_workingUnitDetail_enName" ).val().trim(),
+				address: $( "#_workingUnitDetail_address" ).val().trim(),
+				telNo: $( "#_workingUnitDetail_telNo" ).val().trim(),
+				faxNo: $( "#_workingUnitDetail_faxNo" ).val().trim(),
+				email: $( "#_workingUnitDetail_email" ).val().trim(),
+				website: $( "#_workingUnitDetail_website" ).val().trim(),
 				sibling: _workingUnitDetail_sibling_val,
 				ceremonyDate: ceremonyDate,
 				level: 0

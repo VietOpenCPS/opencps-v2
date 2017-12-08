@@ -1,0 +1,60 @@
+dependencies {
+	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
+	compileOnly group: "com.liferay", name: "com.liferay.osgi.util", version: "3.0.0"
+	compileOnly group: "com.liferay", name: "com.liferay.portal.spring.extender", version: "2.0.0"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.6.0"
+	compileOnly project(":modules:backend-jasper-process:backend-jasper-process-api")
+	
+	compile name : "bcmail-jdk14"
+	compile name : "bcprov-jdk14"
+	compile name : "bctsp-jdk14"
+	compile name : "castor-core"
+	compile name : "castor-xml"
+	compile name : "commons-beanutils"
+	compile name : "commons-collections"
+	compile name : "commons-digester"
+	compile name : "commons-lang"
+	compile name : "commons-logging"
+	compile name : "core"
+	compile name : "ecj"
+	compile name : "icu4j"
+	compile name : "itext"
+	compile name : "jackson-annotations"
+	compile name : "jackson-core"
+	compile name : "jackson-databind"
+	compile name : "jakarta-regexp"
+	compile name : "javax.inject"
+	compile name : "jcommon"
+	compile name : "jfreechart"
+	compile name : "olap4j"
+	compile name : "stax-api"
+	compile name : "stax"
+	compile name : "lucene-analyzers-common"
+	compile name : "lucene-core"
+	compile name : "lucene-queries"
+	compile name : "lucene-queryparser"
+	compile name : "lucene-sandbox"
+	compile name : "spring-asm"
+	compile name : "spring-beans"
+	compile name : "spring-context"
+	compile name : "spring-core"
+	compile name : "spring-expression"
+	compile name : "jasperreports"
+	compile name : "jasperreports-functions"
+	compile name : "jasperreports-javaflow"
+	compile name : "commons-javaflow"
+	compile name : "jasperreports-fonts-6.2.2"
+	compile name : "joda-time-2.4"
+}	
+
+repositories {
+    flatDir {
+        dirs 'lib'
+    }
+}
+
+buildService {
+	apiDir = "../backend-jasper-process-api/src/main/java"
+}
+
+group = "backend.jasper.process"

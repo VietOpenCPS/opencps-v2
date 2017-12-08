@@ -114,7 +114,7 @@
 			'${ajax.serviceinfo_list}',
 			'${url.adminWorkingUnitPortlet.working_unit_list}',
 			'${url.adminJobPosPortlet.jobpos_list}',
-			'${url.employeePortlet.employee_list}',
+			'${url.employeePortlet.employee_index}',
 			'${ajax.dossiertemplate}',
 			'${ajax.serviceprocess}',
 			'${ajax.serviceconfig}',

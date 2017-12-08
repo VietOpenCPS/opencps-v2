@@ -8,7 +8,7 @@
 		<!--search-->
 		<div class="panel-body">
 	
-			<span id="_workingUnit_editWorkingUnit" class="btn btn-primary image-preview-input btn-block"> 
+			<span id="_workingUnit_editWorkingUnit" class="btn btn-active btn-block"> 
 				<i class="fa fa-outdent" aria-hidden="true"></i>
 				<span class="p-xxs" >Tổng số</span> 
 				<span id="_workingUnit_CounterList">0</span>
@@ -27,17 +27,17 @@
 		</div>
 				
 			
-		<ul class="ul-with-border ul-with-border-style-2 mh-head-2" id="_workingUnit_listView"></ul>
+		<ul class="ul-with-border ul-default mh-head-2" id="_workingUnit_listView"></ul>
 		
 		<script type="text/x-kendo-tmpl" id="_workingUnit_template">
 		
-			<li class="clearfix PT20 PR0 PB20 PL#:15+level*30#">
+			<li class="clearfix PT10 PR0 PB10 PL#:10+level*20#">
 	
 				<div class="col-sm-2 clearfix PL0 PR0">
 					
 					<a href="javascript:;" >
 						
-						<i style="font-size: 30px;padding: 5px;" class="fa fa-outdent" aria-hidden="true"></i>
+						<i class="fa fa-outdent fs26 P5" aria-hidden="true"></i>
 							
 					</a>
 						
@@ -88,10 +88,10 @@
 			logic: "or",
 			filters: [
 				
-				{ field: "name", operator: "contains", value: $("#_workingUnit_keySearch").val() },
-				{ field: "govAgencyCode", operator: "contains", value: $("#_workingUnit_keySearch").val() },
-				{ field: "telNo", operator: "contains", value: $("#_workingUnit_keySearch").val() },
-				{ field: "email", operator: "contains", value: $("#_workingUnit_keySearch").val() }
+				{ field: "name", operator: "contains", value: $("#_workingUnit_keySearch").val().trim() },
+				{ field: "govAgencyCode", operator: "contains", value: $("#_workingUnit_keySearch").val().trim() },
+				{ field: "telNo", operator: "contains", value: $("#_workingUnit_keySearch").val().trim() },
+				{ field: "email", operator: "contains", value: $("#_workingUnit_keySearch").val().trim() }
 			]
 		});
 		
@@ -117,8 +117,9 @@
 						},
 						data: {},
 						success: function(result) {
-						
+							
 							$('#_workingUnit_CounterList').html(result.total);
+							result["data"] = result.total==0 ? []: result["data"];
 							options.success(result);
 							
 						},
@@ -160,14 +161,17 @@
 							
 							_workingUnitDetail_uploadLogoFileEntry(document.getElementById("_workingUnitDetail_logoFileEntryId"), data.workingUnitId);
 
-							var dataSource = $("#_workingUnit_listView").getKendoListView().dataSource;
+							//var dataSource = $("#_workingUnit_listView").getKendoListView().dataSource;
 							
 							$("#_workingUnit_hidden_new_id").val(data.workingUnitId);
-							dataSource.error();
-							dataSource.pushUpdate(data);
-							$('#_workingUnit_CounterList').html(dataSource.total());
+							
+							$("#_workingUnit_listView").getKendoListView().dataSource.read();
+							
+							//dataSource.error();
+							//dataSource.pushUpdate(data);
+							//$('#_workingUnit_CounterList').html(dataSource.total());
 							showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-							$("#_workingUnitDetail_submitBtn").button('reset');
+							//$("#_workingUnitDetail_submitBtn").button('reset');
 						},
 						error: function(xhr, textStatus, errorThrown) {
 							
@@ -206,18 +210,7 @@
 							
 							_workingUnitDetail_uploadLogoFileEntry(document.getElementById("_workingUnitDetail_logoFileEntryId"), data.workingUnitId);
 							
-							var dataSource = $("#_workingUnit_listView").getKendoListView().dataSource;
-							dataSource.pushUpdate(data);
-
-							$.map( dataSource.data(), function( obj, i ) {
-								
-								if(obj.workingUnitId == data.workingUnitId) {
-									
-									var listView = $("#_workingUnit_listView").data("kendoListView");
-									listView.select(listView.element.children()[i]);
-
-								}
-							});
+							$("#_workingUnit_listView").getKendoListView().dataSource.read();
 							showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
 							$("#_workingUnitDetail_submitBtn").button('reset');
 						},
@@ -320,10 +313,10 @@
 				logic: "or",
 				filters: [
 					
-					{ field: "name", operator: "contains", value: $("#_workingUnit_keySearch").val() },
-					{ field: "govAgencyCode", operator: "contains", value: $("#_workingUnit_keySearch").val() },
-					{ field: "telNo", operator: "contains", value: $("#_workingUnit_keySearch").val() },
-					{ field: "email", operator: "contains", value: $("#_workingUnit_keySearch").val() }
+					{ field: "name", operator: "contains", value: $("#_workingUnit_keySearch").val().trim() },
+					{ field: "govAgencyCode", operator: "contains", value: $("#_workingUnit_keySearch").val().trim() },
+					{ field: "telNo", operator: "contains", value: $("#_workingUnit_keySearch").val().trim() },
+					{ field: "email", operator: "contains", value: $("#_workingUnit_keySearch").val().trim() }
 				]
 			
 			}

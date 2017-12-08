@@ -1,0 +1,53 @@
+Bundle-Name: backend-jasper-process-service
+Bundle-SymbolicName: backend.jasper.process.service
+Bundle-Version: 1.0.0
+Liferay-Require-SchemaVersion: 1.0.0
+Liferay-Service: true
+-includeresource: \
+@jasperreports-fonts-6.2.2.jar;lib:=true,\
+@joda-time-2.4.jar;lib:=true,\
+@bcmail-jdk14.jar;lib:=true,\
+@bcprov-jdk14.jar;lib:=true,\
+@bctsp-jdk14.jar;lib:=true,\
+@castor-core.jar;lib:=true,\
+@castor-xml.jar;lib:=true,\
+@commons-beanutils.jar;lib:=true,\
+@commons-collections.jar;lib:=true,\
+@commons-digester.jar;lib:=true,\
+@commons-lang.jar;lib:=true,\
+@commons-logging.jar;lib:=true,\
+@core.jar;lib:=true,\
+@ecj.jar;lib:=true,\
+@icu4j.jar;lib:=true,\
+@itext.jar;lib:=true,\
+@jackson-annotations.jar;lib:=true,\
+@jackson-core.jar;lib:=true,\
+@jackson-databind.jar;lib:=true,\
+@jakarta-regexp.jar;lib:=true,\
+@jasperreports.jar;lib:=true,\
+@javax.inject.jar;lib:=true,\
+@jcommon.jar;lib:=true,\
+@jfreechart.jar;lib:=true,\
+@olap4j.jar;lib:=true,\
+@stax-api.jar;lib:=true,\
+@stax.jar;lib:=true,\
+@lucene-analyzers-common.jar;lib:=true,\
+@lucene-core.jar;lib:=true,\
+@lucene-queries.jar;lib:=true,\
+@lucene-queryparser.jar;lib:=true,\
+@lucene-sandbox.jar;lib:=true,\
+@spring-asm.jar;lib:=true,\
+@spring-beans.jar;lib:=true,\
+@spring-context.jar;lib:=true,\
+@spring-core.jar;lib:=true,\
+@spring-expression.jar;lib:=true,\
+@jasperreports-functions.jar;lib:=true,\
+@jasperreports-javaflow.jar;lib:=true,\
+@commons-javaflow.jar;lib:=true
+Import-Package: *;resolution:=optional
+Export-Package: \
+	net.sf.jasperreports.engine.data,\
+	net.sf.jasperreports.engine,\
+	net.sf.jasperreports.engine.export,\
+	net.sf.jasperreports.engine.*,\
+	net.sf.jasperreports.engine.base

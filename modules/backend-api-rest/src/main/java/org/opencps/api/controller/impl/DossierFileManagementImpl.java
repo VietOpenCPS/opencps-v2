@@ -194,6 +194,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	 * 
 	 * } catch (Exception e) { return processException(e); } }
 	 */
+	
+	
 	@Override
 	public Response cloneDossierFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, DossierFileCopyInputModel input) {
@@ -209,7 +211,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 
 			DossierFileActions action = new DossierFileActionsImpl();
-
+		
 			DossierFile dossierFile = action.cloneDossierFile(groupId, id, input.getDossierFileId(),
 					input.getDossierTemplateNo(), input.getDossierPartNo(), serviceContext);
 
@@ -397,6 +399,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			return processException(e);
 		}
 	}
@@ -449,13 +452,14 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			JSONObject dossierFileJsonObject = action.getDossierFiles(groupId, query.getKeyword(), query.getTemplate(),
 					query.getType(), query.isOwner(), query.isOriginal(), query.getStart(), query.getEnd(),
 					query.getSort(), query.getOrder(), serviceContext);
-
+			
 			List<Document> documents = (List<Document>) dossierFileJsonObject.get("data");
 
 			results.setTotal(dossierFileJsonObject.getInt("total"));
+			
 			results.getData().addAll(DossierFileUtils.mappingToDossierFileSearchResultsModel(documents));
 
-			return Response.status(200).entity(dossierFileJsonObject).build();
+			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
 			return processException(e);

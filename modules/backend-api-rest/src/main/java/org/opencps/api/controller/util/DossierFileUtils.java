@@ -2,12 +2,10 @@
 package org.opencps.api.controller.util;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileSearchResultModel;
-import org.opencps.api.dossierfile.model.DossierFileSearchResultsModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -18,6 +16,7 @@ import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 
 public class DossierFileUtils {
 
@@ -57,9 +56,9 @@ public class DossierFileUtils {
         model.setFileTemplateNo(dossierFile.getFileTemplateNo());
         model.setDisplayName(dossierFile.getDisplayName());
 
-        String fileType = "";
+        String fileType = StringPool.BLANK;
         long fileSize = 0;
-        String fileVersion = "";
+        String fileVersion = StringPool.BLANK;
 
         if (dossierFile.getDossierFileId() > 0) {
             try {
@@ -88,7 +87,6 @@ public class DossierFileUtils {
         model.setEForm(dossierFile.getEForm());
         model.setFormReport(dossierFile.getFormScript());
         model.setFormData(dossierFile.getFormData());
-
         return model;
     }
 
@@ -99,7 +97,7 @@ public class DossierFileUtils {
             new ArrayList<DossierFileSearchResultModel>();
 
         for (Document document : documents) {
-
+        
             DossierFileSearchResultModel model =
                 new DossierFileSearchResultModel();
             
@@ -114,9 +112,11 @@ public class DossierFileUtils {
             model.setFileTemplateNo(document.get(DossierFileTerm.FILE_TEMPLATE_NO));
             model.setDisplayName(document.get(DossierFileTerm.DISPLAY_NAME));
             
-            String fileType = "";
+            String fileType = StringPool.BLANK;
+            
             long fileSize = 0;
-            String fileVersion = "";
+            
+            //String fileVersion = StringPool.BLANK;
 
             if (dossierFileId > 0) {
                 try {
@@ -128,7 +128,7 @@ public class DossierFileUtils {
 
                     fileType = dlFileVersion.getExtension();
                     fileSize = dlFileVersion.getSize();
-                    fileVersion = dlFileVersion.getVersion();
+                   // fileVersion = dlFileVersion.getVersion();
                 }
                 catch (Exception e) {
 
@@ -141,6 +141,8 @@ public class DossierFileUtils {
             model.setIsNew(GetterUtil.getBoolean(document.get(DossierFileTerm.IS_NEW)));
             model.setSignCheck(GetterUtil.getInteger(document.get(DossierFileTerm.SIGN_CHECK)));
             model.setSignInfo(document.get(DossierFileTerm.SIGN_INFO));
+            model.setDossierFileId(dossierFileId);
+            model.setDossierId(dossierId);
 
             outputs.add(model);
         }

@@ -43,7 +43,7 @@
                                 <label>Cơ quan quản lý</label>
                             </div>
                             <div class="col-sm-10">
-                                <p data-bind="text:administrationName" id="administrationName"></p>
+                                <p data-bind="html:administrationName" id="administrationName"></p>
                             </div>
                         </div>
                         <div class="row" >
@@ -51,7 +51,7 @@
                                 <label class="MB10">Lĩnh vực</label>
                             </div>
                             <div class="col-sm-10">
-                                <p data-bind="text:domainName" id="domainName"></p>
+                                <p data-bind="html:domainName" id="domainName"></p>
                             </div>
                         </div>
                         <div class="row">
@@ -59,7 +59,7 @@
                                 <label class="MB10">Cách thực hiện</label>
                             </div>
                             <div class="col-sm-10">
-                                <p data-bind="text:methodText" id="methodText"></p>
+                                <p data-bind="html:methodText" id="methodText"></p>
                             </div>
                         </div>
                         <div class="row">
@@ -67,7 +67,7 @@
                                 <label class="MB10">Thời gian giải quyết</label>
                             </div>
                             <div class="col-sm-10">
-                                <p data-bind="text:durationText" id="durationText"></p>
+                                <p data-bind="html:durationText" id="durationText"></p>
                             </div>
                         </div>
                         <div class="row">
@@ -75,7 +75,7 @@
                                 <label class="MB10">Đối tượng</label>
                             </div>
                             <div class="col-sm-10">
-                                <p data-bind="text:applicantText" id="applicantText"></p>
+                                <p data-bind="html:applicantText" id="applicantText"></p>
                             </div>
                         </div>
                         <div class="row">
@@ -83,7 +83,7 @@
                                 <label class="MB10">Kết quả giải quyết</label>
                             </div>
                             <div class="col-sm-10">
-                                <p data-bind="text:resultText" id="resultText"></p>
+                                <p data-bind="html:resultText" id="resultText"></p>
                             </div>
                         </div>
                         <div class="row">
@@ -91,7 +91,7 @@
                                 <label class="MB10">Lệ phí</label>
                             </div>
                             <div class="col-sm-10">
-                                <p data-bind="text:feeText" id="feeText"></p>
+                                <p data-bind="html:feeText" id="feeText"></p>
                             </div>
                         </div>
                         <div class="row">
@@ -99,7 +99,7 @@
                                 <label class="MB10">Căn cứ pháp lý</label>
                             </div>
                             <div class="col-sm-10">
-                                <p data-bind="text:regularText" id="regularText"></p>
+                                <p data-bind="html:regularText" id="regularText"></p>
                             </div>
                         </div>
                         <input type="hidden" name="serviceinfoId" id="serviceinfoId" data-bind="value : serviceinfoId">
@@ -109,14 +109,14 @@
                     </div>
                 </div>
                 <div id="ttth" class="tab-pane fade">
-                   <p class="" data-bind="text:processText" id="processText"></p>
+                   <p class="" data-bind="html:processText" id="processText"></p>
 
                    <div class="col-sm-12 PL0 MT10 submitDossier">
 
                    </div>
                </div>
                <div id="tphs" class="tab-pane fade">
-                   <p class="MB15 MT10" data-bind="text:dossierText" id="dossierText"></p>
+                   <p class="MB15 MT10" data-bind="html:dossierText" id="dossierText"></p>
 
                    <label>File biểu mẫu</label>
                    <ul class="ML10" id ="service_info_filetemplate" data-template="service_info_filetemplate_template" data-bind="source: fileTemplates">
@@ -124,7 +124,7 @@
                    </ul>
                    <script type="text/x-kendo-template" id="service_info_filetemplate_template">
                        <li class="clearfix item-serviceinfo-filetemplate eq-height-lg" data-bind="attr: {data-pk : fileTemplateNo}" role="option" aria-selected="true">
-                        <a data-bind="attr : { href: fileTemplateDownLoad}"><i class="fa fa-download" aria-hidden="true"></i> <span data-bind="text: templateName"></span></a>
+                        <a data-bind="attr : { href: fileTemplateDownLoad}"><i class="fa fa-download" aria-hidden="true"></i> <span data-bind="html: templateName"></span></a>
                     </li>
                 </script>
 
@@ -133,7 +133,7 @@
                 </div>
             </div>
             <div id="ycdk" class="tab-pane fade">
-                <p class="MT10 MB10" data-bind="text:conditionText" id="conditionText"></p>
+                <p class="MT10 MB10" data-bind="html:conditionText" id="conditionText"></p>
                 <div class="col-sm-12 PL0 MT10 submitDossier">
 
                 </div>

@@ -27,6 +27,9 @@ public interface DossierTemplateActions {
 	public JSONObject getDossierParts(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext) throws PortalException;
 	
+	public JSONObject getDBDossierParts(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext) throws PortalException;
+
 	public DossierPart updateDossierPart(long groupId, long dossierPartId, String templateNo, String partNo,
 			String partName, String partTip, int partType, boolean multiple, String formScript, String formReport,
 			String sampleData, boolean required, String fileTemplateNo, boolean eSign, ServiceContext context) throws PortalException;

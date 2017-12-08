@@ -1,16 +1,16 @@
 <#include "init.ftl">
 
-<div class="row panel panel-body">
+<div class="box-s2">
 		
-	<div id="_collectionDetail_tabstrip" class="col-xs-12 col-sm-12">
+	<div id="_collectionDetail_tabstrip" class="col-xs-12 col-sm-12 tabstrip-hoz">
 
 		<ul>
 
 			<li class="k-state-active">
-				Thông tin
+				Thông tin chi tiết
 			</li>
 			<li>
-				Dữ liệu
+				Danh sách dữ liệu danh mục
 			</li>
 			<li>
 				Mẫu form

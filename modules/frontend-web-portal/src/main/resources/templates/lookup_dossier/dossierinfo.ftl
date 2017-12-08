@@ -34,10 +34,10 @@
 	</div>
     <hr class="P0 M0 MB15">
 	<div class="clearfix">
-		<div class="form-group col-sm-6">
+		<div class="form-group col-sm-5 PT5">
 			<p>Bạn muốn xem chi tiết thông tin hồ sơ >></p>
 		</div>
-		<div class="form-group col-sm-6">
+		<div class="form-group col-sm-7">
             <div class="col-sm-10">
                 <input id="input_dossier_detail" type="text" class="form-control" placeholder="Nhập mã bí mật">
             </div>
@@ -126,7 +126,6 @@
                         },
                         error : function(result){
                             options.error(result);
-                            $("#DossierDetailLog").html("<span class='ML10'>Không có dữ liệu</span>")
                         }
                     })
                 }
