@@ -1430,8 +1430,10 @@
 
 			});
 			console.log(errorMessage);
+			console.log(referentUidFile);
+			console.log(value);
 
-			if(errorMessage === '' && referentUidFile && value){
+			if(errorMessage === '' && referentUidFile){
 				$.ajax({
 					url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
 					dataType : "json",
