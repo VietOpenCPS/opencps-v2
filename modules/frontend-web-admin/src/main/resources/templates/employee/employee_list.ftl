@@ -46,7 +46,7 @@
 						
 			<div class="form-group row M0 border-bottom PB5 border-color-lightblue">
 
-				<div class="col-sm-1">
+				<div class="col-sm-2">
 					
 					<strong>Mã</strong>
 				
@@ -64,7 +64,7 @@
 				
 				</div>
 				
-				<div class="col-sm-4">
+				<div class="col-sm-3">
 					
 					<strong>Liên lạc</strong>
 				
@@ -75,7 +75,7 @@
 			<ul id="employee-listview">
 			</ul>
 
-			<div class="col-sm-offset-6 col-sm-6 k-pager-style2 eq-height-lg">
+			<div class="col-sm-12 k-pager-style2 eq-height-lg">
 
 				<div class="align-middle-lg">
 					<span class="text-nowrap MR10">Hiển thị </span>
@@ -101,7 +101,7 @@
 	
 		<div class="row M0 ">
 
-			<div class="col-sm-1">
+			<div class="col-sm-2">
 				
 				<a href="javascript:;"
 						data-href="${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId=#=employeeId#" 
@@ -153,7 +153,7 @@
 				#}#
 			</div>
 
-			<div class="col-sm-3 text-ellipsis">
+			<div class="col-sm-2 text-ellipsis">
 				# if(telNo != null && telNo != ""){#
 		
 					#=telNo#
@@ -412,6 +412,8 @@
 		$(document).delegate('.link-detail-employee','click', function(e) {
 			
 			e.preventDefault();
+			e.stopPropagation();
+			e.stopImmediatePropagation();
 			
 			var url = $(e.currentTarget).attr('data-href');
 			$("#employee-index-page").load(url);
