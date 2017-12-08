@@ -309,8 +309,8 @@
 				$("#modal-lg").trigger({ type: "click" });
 				//$( "#employee-index-page").load("${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId);
 				
-				location.href = "${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId
-
+				var url = "${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId
+				$("#employee-index-page").load(url);
 				showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
 				
 			},

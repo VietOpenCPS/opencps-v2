@@ -45,4 +45,31 @@
 	<bean class="org.opencps.dossiermgt.service.indexer.DossierFileIndexer"
 		id="org.opencps.dossiermgt.service.indexer.DossierFileIndexer" />
 
+	<!-- Listeners -->
+	<bean id="dossier.listener.jasper" class="org.opencps.jasper.message.Engine" />
+
+	<!-- Destinations -->
+	<bean id="jasper.dossier.in.destination" class="com.liferay.portal.kernel.messaging.SerialDestination">
+		<property name="name" value="jasper/dossier/in/destination" />
+	</bean>
+
+	<!-- Configurator -->
+	<bean id="messagingConfigurator"
+		class="com.liferay.portal.kernel.messaging.config.DefaultMessagingConfigurator">
+		<property name="messageListeners">
+			<map key-type="java.lang.String" value-type="java.util.List">
+				<entry key="jasper/dossier/in/destination">
+					<list value-type="com.liferay.portal.kernel.messaging.MessageListener">
+						<ref bean="dossier.listener.jasper" />
+					</list>
+				</entry>
+			</map>
+		</property>
+		<property name="destinations">
+			<list>
+				<ref bean="jasper.dossier.in.destination" />
+			</list>
+		</property>
+	</bean>
+	
 </beans>

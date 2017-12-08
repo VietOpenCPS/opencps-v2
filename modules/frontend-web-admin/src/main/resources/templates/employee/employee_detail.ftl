@@ -25,13 +25,13 @@
 	
 							<div class="label-control clearfix" >
 	
-								<label class="col-sm-4">
+								<label class="col-sm-5">
 	
 									Ngày bắt đầu làm việc:
 	
 								</label>
 	
-								<div class="col-sm-8">
+								<div class="col-sm-7">
 									
 									<a href="javascript:;" id="employee-detail-recruitDate" data-type="combodate" 
 	
@@ -58,13 +58,13 @@
 	
 							<div class="label-control clearfix" >
 	
-								<label class="col-sm-4">
+								<label class="col-sm-5">
 	
 									Ngày kết thúc làm việc:
 	
 								</label>
 	
-								<div class="col-sm-8">
+								<div class="col-sm-7">
 									
 									<a href="javascript:;" id="employee-detail-leaveDate" data-type="combodate" 
 	
@@ -106,8 +106,8 @@
 				</div>
 	
 			</div>
-	
-			<div class="box box-s3">
+
+			<div class="hidden box box-s3">
 				
 				<div id="employee-detail-attach-range" >
 						
