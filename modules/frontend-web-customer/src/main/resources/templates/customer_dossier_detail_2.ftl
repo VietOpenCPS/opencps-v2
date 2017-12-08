@@ -1111,7 +1111,11 @@
 						contactEmail : result.contactEmail,
 						dossierNo : result.dossierNo,
 						dossierStatusText : result.dossierStatusText,
-						stepInstruction : result.stepInstruction,
+						stepInstruction : function(){
+							if(result.stepInstruction){
+								return result.stepInstruction;
+							}
+						},
 						applicantNote : function(){
 							$('#applicantNote').editable("setValue",result.applicantNote);
 							if(!result.applicantNote){
@@ -1430,8 +1434,10 @@
 
 			});
 			console.log(errorMessage);
+			console.log(referentUidFile);
+			console.log(value);
 
-			if(errorMessage === '' && referentUidFile && value){
+			if(errorMessage === '' && referentUidFile){
 				$.ajax({
 					url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
 					dataType : "json",

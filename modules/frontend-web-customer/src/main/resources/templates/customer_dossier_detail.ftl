@@ -752,7 +752,11 @@
 						wardCode : result.wardCode,
 						contactTelNo : result.contactTelNo,
 						contactEmail : result.contactEmail,
-						dossierNote : result.dossierNote,
+						dossierNote : function(){
+							if(result.dossierNote){
+								return result.dossierNote;
+							}
+						},
 						viaPostal : function(){
 							if(result.viaPostal === 2){
 								$("#viaPostal").prop('checked', true);
@@ -1021,8 +1025,10 @@ $(document).on("click",".saveFormAlpaca",function(event){
 
 		});
 		console.log(errorMessage);
+		console.log(referentUidFile);
+		console.log(value);
 
-		if(errorMessage.length === '' && referentUidFile && value){
+		if(errorMessage.length === '' && referentUidFile){
 			$.ajax({
 				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
 				dataType : "json",
