@@ -178,11 +178,11 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
         String groupId = (String) params.get(Field.GROUP_ID);
     	String dosssierId = String.valueOf(params.get(DossierLogTerm.DOSSIER_ID));
     	String keywords = "";
-    	if(notiType != "null"){
+    	/*if(notiType != "null"){
     		keywords = notiType;
     	}else{
     		keywords = dosssierId;
-    	}
+    	}*/
         Indexer<DossierLog> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierLog.class);
 
         searchContext.addFullQueryEntryClassName(CLASS_NAME);

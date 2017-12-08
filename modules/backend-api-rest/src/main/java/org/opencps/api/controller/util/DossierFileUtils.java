@@ -87,6 +87,7 @@ public class DossierFileUtils {
         model.setEForm(dossierFile.getEForm());
         model.setFormReport(dossierFile.getFormScript());
         model.setFormData(dossierFile.getFormData());
+        model.setDossierFileId(dossierFile.getDossierFileId());
         return model;
     }
 

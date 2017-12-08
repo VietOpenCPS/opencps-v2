@@ -33,7 +33,7 @@
 		
 								<div class="col-sm-2 PL0 PR5">
 									
-									<img class="img-responsive center-block img-circle" src="/o/frontend-web-usermgt/images/user_01.png" title="" id="employee-birthdate-#=id#-thumbnil"/>
+									<img class="img-responsive center-block img-circle" src="/o/orgopencpsfrontendadmin/images/default_avatar.png" title="" id="employee-birthdate-#=id#-thumbnil"/>
 										
 								</div>
 									
