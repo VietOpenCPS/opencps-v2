@@ -33,4 +33,10 @@ public class FrontendWebPortalPortletKeys {
 
 	public static final String LOOKUP_DOSSIER_RESULT =
 		"FrontendWebPortal_LookupDossierResultPortlet";
+	
+	public static final String DOSSIER_LOOKUP_PORTLET_NAME_2 =
+			"FrontendWebPortal_DossierLookupPortlet_2";
+	
+	public static final String SERVICE_SEARCH_PORTLET_NAME =
+			"FrontendWebPortal_ServiceSearchPortlet";
 }

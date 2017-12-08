@@ -161,14 +161,17 @@
 							
 							_workingUnitDetail_uploadLogoFileEntry(document.getElementById("_workingUnitDetail_logoFileEntryId"), data.workingUnitId);
 
-							var dataSource = $("#_workingUnit_listView").getKendoListView().dataSource;
+							//var dataSource = $("#_workingUnit_listView").getKendoListView().dataSource;
 							
 							$("#_workingUnit_hidden_new_id").val(data.workingUnitId);
-							dataSource.error();
-							dataSource.pushUpdate(data);
-							$('#_workingUnit_CounterList').html(dataSource.total());
+							
+							$("#_workingUnit_listView").getKendoListView().dataSource.read();
+							
+							//dataSource.error();
+							//dataSource.pushUpdate(data);
+							//$('#_workingUnit_CounterList').html(dataSource.total());
 							showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-							$("#_workingUnitDetail_submitBtn").button('reset');
+							//$("#_workingUnitDetail_submitBtn").button('reset');
 						},
 						error: function(xhr, textStatus, errorThrown) {
 							
@@ -207,18 +210,7 @@
 							
 							_workingUnitDetail_uploadLogoFileEntry(document.getElementById("_workingUnitDetail_logoFileEntryId"), data.workingUnitId);
 							
-							var dataSource = $("#_workingUnit_listView").getKendoListView().dataSource;
-							dataSource.pushUpdate(data);
-
-							$.map( dataSource.data(), function( obj, i ) {
-								
-								if(obj.workingUnitId == data.workingUnitId) {
-									
-									var listView = $("#_workingUnit_listView").data("kendoListView");
-									listView.select(listView.element.children()[i]);
-
-								}
-							});
+							$("#_workingUnit_listView").getKendoListView().dataSource.read();
 							showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
 							$("#_workingUnitDetail_submitBtn").button('reset');
 						},

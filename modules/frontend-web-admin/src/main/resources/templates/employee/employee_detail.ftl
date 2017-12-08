@@ -97,6 +97,10 @@
 	
 			</div>
 	
+		</div>
+	
+		<div class="col-sm-7">
+			
 			<div class="box box-s3 MBN1">
 	
 				<div id="employee-detail-jobpos-range" >
@@ -107,23 +111,13 @@
 	
 			</div>
 
-			<div class="hidden box box-s3">
+			<div class="box box-s3">
 				
 				<div id="employee-detail-attach-range" >
 						
 					<#include "employee_detail_attachment.ftl">
 					
 				</div>
-	
-			</div>
-	
-		</div>
-	
-		<div class="col-sm-7">
-			
-			<div id="employee-detail-formtemplate-range">
-				
-				<#include "employee_detail_formtemplate.ftl">
 	
 			</div>
 	

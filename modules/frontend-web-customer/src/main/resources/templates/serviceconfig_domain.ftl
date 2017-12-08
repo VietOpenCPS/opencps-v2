@@ -30,6 +30,7 @@
 							</a>
 						</div>
 						<div id="govAgencyCode_#:govAgency.govAgencyCode#" class="accordion-body collapse in">
+
 							<div class="accordion-inner P0">
 								# for (var j = 0; j < govAgency.serviceConfigs.length; j++){
 								var serviceConfig = govAgency.serviceConfigs[j];
@@ -81,7 +82,7 @@
 	$(document).ready(function(){
 
 		var fnGenEventChoiseServiceConfig = function(){
-			$('.btn-select-serviceConfig, .link-govAgency').unbind().click(function(event){
+			$('.btn-select-serviceConfig, .link-govAgency').unbind().click(function(){
 				
 				event.preventDefault();
 				var serviceConfigId = $(this).attr("data-pk");
