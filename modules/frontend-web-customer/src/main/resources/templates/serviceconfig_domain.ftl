@@ -20,24 +20,24 @@
 			<div class="accordion-inner">
 				<div class="accordion" id="accordion2">
 					
-					# for(var i=0 ;i < serviceInfos.length ; i++) {
-					var serviceInfo = serviceInfos[i];
+					# for(var i=0 ;i < govAgencys.length ; i++) {
+					var govAgency = govAgencys[i];
 					#
 					<div class="accordion-group">
 						<div class="accordion-heading">
-							<a class="accordion-toggle" data-toggle="collapse" data-parent="\\##:domainId#" href="\\##:serviceInfo.serviceCode#">
-								#:serviceInfo.serviceName#
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="\\##:domainId#" href="\\#govAgencyCode_#:govAgency.govAgencyCode#">
+								#:govAgency.govAgencyName#
 							</a>
 						</div>
-						<div id="#:serviceInfo.serviceCode#" class="accordion-body collapse in">
+						<div id="govAgencyCode_#:govAgency.serviceCode#" class="accordion-body collapse in">
 							<div class="accordion-inner P0">
-								# for (var j = 0; j < serviceInfo.serviceConfigs.length; j++){
-								var serviceConfig = serviceInfo.serviceConfigs[j];
+								# for (var j = 0; j < govAgency.serviceConfigs.length; j++){
+								var serviceConfig = govAgency.serviceConfigs[j];
 								#
 								<div class="eq-height">
 									<div class="col-xs-12 col-sm-11 align-middle MR100">
-										<a class="link-serviceInfo" data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#:serviceInfo.serviceCode#" href="\\#">
-											#:serviceConfig.govAgencyName#
+										<a class="link-govAgency" data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#:govAgency.govAgencyCode#" href="\\#">
+											#:serviceConfig.serviceName#
 										</a>
 									</div>
 
@@ -69,7 +69,7 @@
 	$(document).ready(function(){
 
 		var fnGenEventChoiseServiceConfig = function(){
-			$('.btn-select-serviceConfig, .link-serviceInfo').unbind().click(function(){
+			$('.btn-select-serviceConfig, .link-govAgency').unbind().click(function(){
 				
 				event.preventDefault();
 				var serviceConfigId = $(this).attr("data-pk");
