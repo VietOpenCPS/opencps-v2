@@ -130,6 +130,8 @@
 							if(result.data){
 								$("#sideItemAdd").show();
 								$("#total_Additional_Requirement").text(dataAddRequest.total());
+							}else {
+								$("#total_Additional_Requirement").text(0);
 							};
 							// Option kendo-page
 							$(".k-pager-first").css("display","none");
@@ -168,6 +170,8 @@
 							if(result.data){
 								$("#sideItemPayment").show();
 								$("#total_Payment_Request").text(dataPayRequest.total());
+							}else {
+								$("#total_Payment_Request").text(0);
 							};
 							// Option kendo-page
 							$(".k-pager-first").css("display","none");
@@ -206,6 +210,8 @@
 							if(result.data){
 								$("#sideItemResult").show();
 								$("#total_result").text(dataResult.total());
+							}else {
+								$("#total_result").text(0);
 							};
 							// Option kendo-page
 							$(".k-pager-first").css("display","none");

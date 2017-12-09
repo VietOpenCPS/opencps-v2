@@ -30,6 +30,7 @@
 							</a>
 						</div>
 						<div id="govAgencyCode_#:govAgency.govAgencyCode#" class="accordion-body collapse in">
+
 							<div class="accordion-inner P0">
 								# for (var j = 0; j < govAgency.serviceConfigs.length; j++){
 								var serviceConfig = govAgency.serviceConfigs[j];
@@ -87,9 +88,9 @@
 				var serviceConfigId = $(this).attr("data-pk");
 				$("#serviceConfigId").val(serviceConfigId);
 
-				dataSourceProcessServiceConfig.read({
+				/*dataSourceProcessServiceConfig.read({
 					serviceConfigId : serviceConfigId
-				});
+				});*/
 			});
 		}
 

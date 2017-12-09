@@ -25,16 +25,21 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
+/**
+ * @author phucnv
+ * @date Sep 14, 2017
+ *
+ */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-freemarker",
 		"com.liferay.portlet.display-category=category.opencps_v2.portal",
 		"com.liferay.portlet.header-portlet-css=/css/main.css", "com.liferay.portlet.instanceable=false",
-		"javax.portlet.display-name=Dossier Lookup Portlet", "javax.portlet.init-param.template-path=/",
-		"javax.portlet.init-param.view-template=/templates/homepage/dossier_lookup.ftl",
-		"javax.portlet.name=" + FrontendWebPortalPortletKeys.DOSSIER_LOOKUP_PORTLET_NAME_2,
+		"javax.portlet.display-name=Service Search Portlet", "javax.portlet.init-param.template-path=/",
+		"javax.portlet.init-param.view-template=/templates/homepage/search_serviceinfo.ftl",
+		"javax.portlet.name=" + FrontendWebPortalPortletKeys.SERVICE_SEARCH_PORTLET_NAME,
 		"javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
-public class DossierLookupPortlet extends FreeMarkerPortlet {
-	@Override
+public class ServiceSearchPortlet extends FreeMarkerPortlet {
+
 	public void render(RenderRequest renderRequest, RenderResponse renderResponse)
 			throws IOException, PortletException {
 
@@ -51,7 +56,7 @@ public class DossierLookupPortlet extends FreeMarkerPortlet {
 
 		dossierLookupURL.setPortletMode(PortletMode.VIEW);
 		dossierLookupURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-		dossierLookupURL.setParameter("mvcPath", "/templates/homepage/dossier_lookup.ftl");
+		dossierLookupURL.setParameter("mvcPath", "/templates/homepage/search_serviceinfo.ftl");
 
 		urlObject.put("dossier_lookup", dossierLookupURL.toString());
 
