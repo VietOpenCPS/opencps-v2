@@ -1,25 +1,25 @@
-<#if (Request)??>
 <#include "init.ftl">
-</#if>
+
 <div class="employee-deatil-info-wraper">
 	
 	<div class="row">
 		
 		<div class="col-sm-12">
 
-			<div class="row align-middle-lg">
+			<div class="row">
 
 				<div class="col-sm-7"> 
 				
-					<div class="label-control row fs20 xeditable-left">
+					<div class="label-control clearfix fs20 xeditable-left">
 				
-						<div id="employee-back-list-page" class="col-sm-2">
+						<div class="col-sm-1 employee-deatil-info-back"
+							data-href="${(url.employeePortlet.employee_index)!}">
 			
 							<i class="fa fa-angle-left" aria-hidden="true"></i>
 
 						</div>
 
-						<div class="col-sm-10 PL0">
+						<div class="col-sm-11">
 
 							<a href="javascript:;" id="employee-detail-fullname" data-type="text" 
 
@@ -28,16 +28,16 @@
 								data-value="${(employee.fullName)!}">
 										
 									<label>
-										${(employee.fullName)!"-"}
+										${(employee.fullName)!"Chưa có"}
 									</label>
 
 							</a>
 
-							<a href="javascript:;" id='employee-detail-fullname-icon' data-pk="${(employee.employeeId)!}">
+							<span href="javascript:;" id='employee-detail-fullname-icon' data-pk="${(employee.employeeId)!}">
 				
 								<i class="fa fa-pencil" aria-hidden="true"></i>
 
-							</a>
+							</span>
 							
 						</div>
 						
@@ -98,7 +98,7 @@
 				
 				<input type="file" id="employee-avatar" accept="image/*"  onchange="employeeChangeAvatar(this)" style="display: none;" />
 
-				<img id="employee-avatar-thumbnil" class="img-responsive center-block" style="max-height: 200px;"  src="/o/org.opencps.frontend.admin/images/default_avatar.png" alt=""/>
+				<img id="employee-avatar-thumbnil" class="img-responsive center-block" style="max-height: 200px;"  src="/o/orgopencpsfrontendadmin/images/default_avatar.png" alt=""/>
 
 				<button id="employee-avatar-btn" data-pk="${(employee.employeeId)!}" class="btn btn-active  btn-block"> 
 					Tải ảnh đại diện
@@ -112,14 +112,14 @@
 
 			<div class="label-control clearfix" >
 
-				<label class="col-sm-1 PL0">
-				
+				<label class="col-sm-1">
+
 					<i class="fa fa-hashtag" aria-hidden="true"></i>
 
 				</label>
 
-				<div class="col-sm-11 PL5 PR0">
-				
+				<div class="col-sm-11">
+					
 					<a href="javascript:;" id="employee-detail-employeeno" data-type="text" 
 
 						data-pk="${(employee.employeeId)!}" 
@@ -141,13 +141,13 @@
 
 			<div class="label-control clearfix" >
 
-				<label class="col-sm-1 PL0">
+				<label class="col-sm-1">
 
 					<i class="fa fa-calendar-o" aria-hidden="true"></i>
 
 				</label>
 
-				<div class="col-sm-11 PR0 PL5">
+				<div class="col-sm-11">
 				
 					<a href="javascript:;" id="employee-detail-birthdate" data-type="combodate" 
 
@@ -158,7 +158,7 @@
 							<#assign birthdate_ = employee.birthdate?datetime("iso") >
 							${birthdate_?string["dd/MM/yyyy"]}
 						<#else>
-							-
+							<i class="text-gray">Chưa có</i>
 						</#if>
 					
 					</a>
@@ -174,13 +174,13 @@
 
 			<div class="label-control clearfix" >
 
-				<label class="col-sm-1 PL0">
+				<label class="col-sm-1">
 				
 					<i class="fa fa-star" aria-hidden="true"></i>
 
 				</label>
 
-				<div class="col-sm-11 PR0 PL5">
+				<div class="col-sm-11">
 				
 					<a href="javascript:;" id="employee-detail-gender" data-type="select" 
 
@@ -211,21 +211,29 @@
 
 			<div class="label-control clearfix" >
 
-				<label class="col-sm-1 PL0">
+				<label class="col-sm-1">
 
 					<i class="fa fa-phone" aria-hidden="true"></i>
 
 				</label>
 
-				<div class="col-sm-11 PR0 PL5">
+				<div class="col-sm-11">
 				
 					<a href="javascript:;" id="employee-detail-telno" data-type="text" 
 
 						data-pk="${(employee.employeeId)!}" 
 						data-title="Số điện thoại:" 
 						data-value="${(employee.telNo)!}">
+							
+							<#if (employee.telNo)?? && ( employee.telNo != "" ) >
+
+								${(employee.telNo)!"Chưa có"}
+
+							<#else>
+
+								<i class="text-gray">Chưa có</i>
 								
-							${(employee.telNo)!"-"}
+							</#if>
 
 					</a>
 				</div>
@@ -240,13 +248,13 @@
 
 			<div class="label-control clearfix" >
 
-				<label class="col-sm-1 PL0">
+				<label class="col-sm-1">
 
 					<i class="fa fa-envelope" aria-hidden="true"></i>
 
 				</label>
 
-				<div class="col-sm-11 PR0 PL5">
+				<div class="col-sm-11">
 				
 					<a href="javascript:;" id="employee-detail-email" data-type="text" 
 
@@ -254,7 +262,15 @@
 						data-title="Email:" 
 						data-value="${(employee.email)!}">
 								
-							${(employee.email)!"-"}
+							<#if (employee.email)?? && ( employee.email != "" ) >
+
+								${(employee.email)!"Chưa có"}
+
+							<#else>
+
+								<i class="text-gray">Chưa có</i>
+								
+							</#if>
 
 					</a>
 				</div>
@@ -269,13 +285,13 @@
 
 			<div class="label-control clearfix" >
 
-				<label class="col-sm-1 PL0">
+				<label class="col-sm-1">
 
 					<i class="fa fa-graduation-cap" aria-hidden="true"></i>
 
 				</label>
 
-				<div class="col-sm-11 PR0 PL5">
+				<div class="col-sm-11">
 				
 					<a href="javascript:;" id="employee-detail-title" data-type="text" 
 
@@ -283,7 +299,15 @@
 						data-title="Học hàm:" 
 						data-value="${(employee.title)!}">
 								
-							${(employee.title)!"-"}
+							<#if (employee.title)?? && ( employee.title != "" ) >
+
+								${(employee.title)!"Chưa có"}
+
+							<#else>
+
+								<i class="text-gray">Chưa có</i>
+								
+							</#if>
 
 					</a>
 				</div>
@@ -300,9 +324,9 @@
 
 				<div class="label-control clearfix" >
 
-					<label class="col-sm-5 PL0">Tên đăng nhập:</label>
+					<label class="col-sm-5">Tên đăng nhập:</label>
 
-					<div class="col-sm-7 PL0">
+					<div class="col-sm-7">
 					
 						<a href="javascript:;" >
 									
@@ -310,17 +334,12 @@
 						
 								${(employee_accountInfo.screenName)!}
 							<#else>
-								-
+								<i class="text-gray">Chưa có</i>
 							</#if>
 
 						</a>
-					</div>
-						
-					<a href="javascript:;" id='employee-detail-employeeno-icon' data-pk="${(employee.employeeId)!}">
-			
-						<i class="fa fa-pencil" aria-hidden="true"></i>
 
-					</a>
+					</div>
 					
 				</div>
 
@@ -328,16 +347,23 @@
 
 			<div class="label-control clearfix" >
 
-				<label class="col-sm-5 PL0">Tài khoản email:</label>
+				<label class="col-sm-5">Tài khoản email:</label>
 
-				<div class="col-sm-7 PR0 PL0">
+				<div class="col-sm-7">
 				
 					<a href="javascript:;" >
-								
-						${(employee_accountInfo.email)!"-"}
+						
+						<#if (employee_accountInfo.email)?? && ( employee_accountInfo.email != "" ) >
+
+							${(employee_accountInfo.email)!"Chưa có"}
+
+						<#else>
+
+							<i class="text-gray">Chưa có</i>
+							
+						</#if>
 
 					</a>
-
 				</div>
 				
 			</div>
@@ -351,13 +377,13 @@
 					
 						<button name="employee-detail-looking" 
 							data-pk="${(employee.employeeId)!}" data-vl="false" 
-							class="btn btn-active image-preview-input border-rad-4"> 
+							class="btn btn-active border-rad-4"> 
 							Mở khóa tài khoản
 						</button>
 
 						<button name="employee-detail-looking" style="display: none" 
 							data-pk="${(employee.employeeId)!}" data-vl="true"
-							class="btn btn-active image-preview-input border-rad-4"> 
+							class="btn btn-active border-rad-4"> 
 							Khóa tài khoản
 						</button>
 
@@ -365,13 +391,13 @@
 						
 						<button name="employee-detail-looking" style="display: none" 
 							data-pk="${(employee.employeeId)!}" data-vl="false" 
-							class="btn btn-active image-preview-input border-rad-4"> 
+							class="btn btn-active border-rad-4"> 
 							Mở khóa tài khoản
 						</button>
 
 						<button name="employee-detail-looking" 
 							data-pk="${(employee.employeeId)!}" data-vl="true"
-							class="btn btn-active image-preview-input border-rad-4"> 
+							class="btn btn-active border-rad-4"> 
 							Khóa tài khoản
 						</button>
 
@@ -382,7 +408,7 @@
 
 					<button id="employee-detail-account" 
 						data-pk="${(employee.employeeId)!}"
-						class="btn btn-active image-preview-input border-rad-4"> 
+						class="btn btn-active border-rad-4"> 
 							Mở tài khoản
 					</button>
 					
@@ -398,7 +424,7 @@
 
 <script type="text/javascript" charset="utf-8" >
 
-var employeeUpdateBaseUrl = '${api.server}/employees';
+var employeeUpdateBaseUrl = '${api.endpoint}/employees';
 
 function employeeChangeAvatar(fileInput) {
 	
@@ -483,32 +509,6 @@ function employeeChangeAvatar(fileInput) {
 
 (function($) {
 
-	// var birthdate = $('#employee-detail-birthdate');
-	
-	// if ( birthdate !== null && birthdate != "") {
-		
-	// 	birthdate.text(kendo.toString(kendo.parseDate(birthdate.text().trim(), 'yyyy-MM-dd'), 'dd/MM/yyyy'));
-		
-	// } else {
-		
-	// 	birthdate.text("");
-		
-	// }
-	
-
-	$(document).on('click', '#employee-back-list-page', function(event){
-		
-		event.preventDefault();
-		event.stopPropagation();
-		event.stopImmediatePropagation();
-	
-		//$( '#employee-index-page' ).load("${(url.employeePortlet.employee_list)!}");
-
-		$("#employee_list").show();
-		$("#employee_detail").hide();
-
-	});
-
 	$(document).on('click', '#employee-avatar-btn', function(event){
 			
 		event.preventDefault();
@@ -523,7 +523,7 @@ function employeeChangeAvatar(fileInput) {
 
 	if (employeeId!=null && employeeId!="" && employeeId > 0 ) {
 
-        getImageBlob(employeeUpdateBaseUrl+"/"+employeeId+"/photo", $("#employee-avatar-thumbnil"));
+        getImageBlob(employeeUpdateBaseUrl+"/"+employeeId+"/photo", $("#employee-avatar-thumbnil"), "${groupId}");
 
 	}
 
@@ -538,7 +538,7 @@ function employeeChangeAvatar(fileInput) {
 	$.fn.editable.defaults.mode = 'inline';
 	$.fn.editable.defaults.send = "always";
 	
-	var employeeUpdatBaseUrl = '${api.server}/employees';
+	var employeeUpdatBaseUrl = '${api.endpoint}/employees';
 	
 	$(document).on('click', '#employee-detail-employeeno-icon', function(e){
 		
@@ -577,7 +577,7 @@ function employeeChangeAvatar(fileInput) {
 			error: function(event, id, obj) {
 				showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
 			},
-			emptytext :"-"
+			emptytext :"Chưa có"
 		}); 
 				 
 		$('#employee-detail-employeeno').editable('toggle');
@@ -621,7 +621,7 @@ function employeeChangeAvatar(fileInput) {
 			error: function(event, id, obj) {
 				showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
 			},
-			emptytext :"-"
+			emptytext :"Chưa có"
 		}); 
 				 
 		$('#employee-detail-fullname').editable('toggle');
@@ -718,7 +718,7 @@ function employeeChangeAvatar(fileInput) {
 				error: function(event, id, obj) {
 					showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
 				},
-				emptytext :"-"
+				emptytext :"Chưa có"
 			}); 
 
 		} catch (e) {
@@ -769,7 +769,7 @@ function employeeChangeAvatar(fileInput) {
 			error: function(event, id, obj) {
 				showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
 			},
-			emptytext :"-"
+			emptytext :"Chưa có"
 		}); 
 				 
 		$('#employee-detail-telno').editable('toggle');
@@ -812,12 +812,12 @@ function employeeChangeAvatar(fileInput) {
 			success: function(data) {
 				
 				showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-				
+				$('#employee-detail-email').attr("data-value", data.email);
 			},
 			error: function(event, id, obj) {
 				showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
 			},
-			emptytext :"-"
+			emptytext :"Chưa có"
 		}); 
 				 
 		$('#employee-detail-email').editable('toggle');
@@ -856,7 +856,7 @@ function employeeChangeAvatar(fileInput) {
 			error: function(event, id, obj) {
 				showMessageToastr("error", 'Yêu cầu của bạn được xử lý thất bại!');
 			},
-			emptytext :"-"
+			emptytext :"Chưa có"
 		}); 
 				 
 		$('#employee-detail-title').editable('toggle');
@@ -935,7 +935,7 @@ function employeeChangeAvatar(fileInput) {
 			error: function(xhr, textStatus, errorThrown) {
 				
 				showMessageByAPICode(xhr.status);
-			
+				
 			}
 		});
 			
@@ -948,7 +948,7 @@ function employeeChangeAvatar(fileInput) {
 		e.stopImmediatePropagation();
 		
 		var pk = $(this).attr('data-pk');
-		var email = $('#employee-detail-email').text().trim();
+		var email = $('#employee-detail-email').attr("data-value").trim();
 		var baseUrl = employeeUpdatBaseUrl + '/' + pk + "/account";
 		
 		if ( email != null && email != "" ) {
@@ -956,7 +956,7 @@ function employeeChangeAvatar(fileInput) {
 		} else {
 			showMessageToastr("error", 'Chưa tồn tại email nhân sự!');
 		}
-			
+		
 	});
 
 	function employeeCreateAccount (pk, baseUrl, email, exist) {
@@ -1012,7 +1012,17 @@ function employeeChangeAvatar(fileInput) {
 			}
 		});
 
-	}
+	};
+	
+	$(document).delegate('.employee-deatil-info-back','click', function(e) {
+		
+		e.preventDefault();
+		e.stopPropagation();
+		e.stopImmediatePropagation();
+		
+		var url = $(e.currentTarget).attr('data-href');
+		$("#employee-index-page").load(url);
+	});
 	
 })(jQuery);
 

@@ -107,6 +107,16 @@ public class DossierManagementImpl implements DossierManagement {
 			String step = query.getStep();
 			String submitting = query.getSubmitting();
 			String top = query.getTop();
+			
+			System.out.println("status " + status);
+			System.out.println("agency " + agency);
+			System.out.println("service " + service);
+			System.out.println("template " + template);
+			System.out.println("month " + month);
+			System.out.println("step " + step);
+			System.out.println("submitting " + submitting);
+			
+			System.out.println("/////////////////////////////////////////Done");
 
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);

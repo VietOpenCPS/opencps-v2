@@ -40,7 +40,7 @@
 				<div class="background-triangle-small"><i class="fa fa-star"></i></div> <span class="text-uppercase">Hướng dẫn</span> <span class="text-light-gray">(gồm các bước làm thủ tục)</span>
 			</div>
 			<div class="content-part">
-				<span data-bind="text:stepInstruction"></span>
+				<span data-bind="html:stepInstruction"></span>
 			</div>
 			<p class="MB0 text-light-blue"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p>
 		</div>
@@ -179,72 +179,48 @@
 						</div>
 					</div>
 
-					#if(hasForm){#
-					<div class="col-sm-12" style="height:450px;width:100%;overflow:auto;">
+					#if(hasForm){
+					var dossierFile =  getReferentUidFile(${dossierId},id);
+					#
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 text-right">
+							<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
+							type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
+							<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
+						</div>
+					</div>
+
+					<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}#>
 						<form id="formPartNo#:id#">
 
 						</form>
 					</div>
 					#
-					var referentUidFile =  getReferentUidFile(${dossierId});
+					
 
 					$.ajax({
-					url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formscript",
-					dataType : "json",
+					url : "${api.server}/dossiers/${dossierId}/files/"+dossierFile.referenceUid+"/formscript",
+					dataType : "text",
 					type : "GET",
 					headers : {"groupId": ${groupId}},
 					success : function(result){
-					console.log(result);
 					$("\\#formPartNo"+id).empty();
+					var alpaca = eval("(" + result + ")");
+					var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
+					if(formdata){
+					$("\\#validPart"+id).val("1");
+				}
+				alpaca.data = formdata;
 
-					var formdata = fnGetFormData(${dossierId},referentUidFile);
-					
-					$("\\#formPartNo"+id).alpaca({
-					"data" : formdata,
-					"schema" : result.schema,
-					"options" : result.options,
-					"view" : result.view
-				});
-				
-				$("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca" class="btn btn-active MB10 MT10" type="button" data-pk="'+id+'">Ghi lại</button></div></div>');
-				$("\\#btn-save-formalpaca").click(function(){
-				console.log("ccc");
-				var value = $("\\#formPartNo"+id).alpaca('get').getValue();
-				var validate = $("\\#formPartNo"+id).alpaca('get').isValid(true);
-				if(validate){
-				$.ajax({
-				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
-				dataType : "json",
-				type : "PUT",
-				headers: {"groupId": ${groupId}},
-				data : {
-				formdata: JSON.stringify(value)
+				$("\\#formPartNo"+id).alpaca(alpaca);
+
+				<#-- $("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12 "><button id="btn-save-formalpaca'+id+'" class="btn btn-active MB10 MT10 saveForm" type="button" data-pk="'+id+'" referentUid="'+referentUidFile+'">Ghi lại</button></div></div>'); -->
+
 			},
-			success : function(result){
-			notification.show({
-			message: "Yêu cầu được thực hiện thành công!"
-		}, "success");
-	},
-	error : function(result){
-	notification.show({
-	message: "Thực hiện không thành công, xin vui lòng thử lại!"
-}, "error");
-}
-});
-}else {
-notification.show({
-message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi ghi lại!"
-}, "error");
-}
+			error : function(result){
 
-console.log(value);
-
-});
-},
-error : function(result){
-
-}
-});
+		}
+	});
 }#
 
 #}#
@@ -353,7 +329,8 @@ error : function(result){
 
 		//tai giay to kho luu tru
 		$(".uploadfile-form-repository").unbind().click(function(){
-			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_detail_filetemplate}",function(result){
+			var dossierId = "${(dossierId)!}";
+			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_detail_filetemplate}&${portletNamespace}dossierId="+dossierId,function(result){
 				$(this).modal("show");
 			});
 		});
@@ -389,18 +366,28 @@ error : function(result){
 						success : function(result) {
 							var data = result.data;
 							if(data){
+								var arrIsSuccess = new Array();
 								for (var i = 0; i < data.length; i++) {
 									if(dataPartNo === data[i].dossierPartNo){
-										removeDossierFile(dossierId, data[i].referenceUid);
+										var isSuccess = removeDossierFile(dossierId, data[i].referenceUid);
+										arrIsSuccess.push(isSuccess);
 
 									}
 								}
-								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
 
-								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
-								notification.show({
-									message: "Yêu cầu được thực hiện thành công"
-								}, "success");
+								if(jQuery.inArray( false, arrIsSuccess ) == -1){
+									$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
+
+									$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
+									notification.show({
+										message: "Yêu cầu được thực hiện thành công"
+									}, "success");
+								}else {
+									notification.show({
+										message: "Xẩy ra lỗi, vui lòng thử lại"
+									}, "error");
+								}
+								
 							}
 						},
 						error : function(result) {
@@ -482,7 +469,6 @@ error : function(result){
 			fnBindDossierTemplClick();
 
 			var arrFile = funDossierFile(${dossierId});
-			console.log(arrFile);
 			funGenNumberFile(arrFile);
 		}
 	});
@@ -537,16 +523,18 @@ error : function(result){
 				data : {
 
 				},
-				headers: {"groupId": ${groupId}},
+				headers: {
+					"groupId": ${groupId},
+					Accept : "application/json"
+				},
 				success :  function(result){    
 
-					/*manageDossier.navigate("/taohosomoi/nopthanhcong/${dossierId}");*/  
+					manageDossier.navigate("/taohosomoi/nopthanhcong/${dossierId}"); 
 					notification.show({
-						message: "Vui lòng kiểm tra lại các thông tin bắt buộc!"
-					}, "error");      
+						message: "Yêu cầu được thực hiện thành công!"
+					}, "success");      
 				},
 				error:function(result){
-					manageDossier.navigate("/taohosomoi/nopthanhcong/${dossierId}");
 					notification.show({
 						message: "Có lỗi sảy ra!"
 					}, "error");
@@ -1123,7 +1111,11 @@ error : function(result){
 						contactEmail : result.contactEmail,
 						dossierNo : result.dossierNo,
 						dossierStatusText : result.dossierStatusText,
-						stepInstruction : result.stepInstruction,
+						stepInstruction : function(){
+							if(result.stepInstruction){
+								return result.stepInstruction;
+							}
+						},
 						applicantNote : function(){
 							$('#applicantNote').editable("setValue",result.applicantNote);
 							if(!result.applicantNote){
@@ -1136,8 +1128,10 @@ error : function(result){
 
 							if(result.viaPostal < 2){
 								$("#viaPostalContent").hide();
+								$("#viaPostal").prop('checked', false);
 							}else {
 								$("#viaPostalContent").show();
+								$("#viaPostal").prop('checked', true);
 							}
 
 							return result.viaPostal;
@@ -1215,15 +1209,11 @@ error : function(result){
 	
 
 	var funGenNumberFile = function(arrCount){
-		console.log($(".dossier-component-profile"));
 		$(".dossier-component-profile").each(function(index){
 			var partNo = $(this).attr("data-partno");
 			var found = $.grep(arrCount, function(v) {
 				return v.dossierPartNo === partNo;
 			});
-			
-			console.log(partNo);
-			console.log(found);
 
 			$(this).attr("data-number",found.length);
 			$(this).html('<span class="number-in-circle" >'+found.length+'</span>');
@@ -1231,19 +1221,22 @@ error : function(result){
 	}
 
 	var removeDossierFile = function(dossierId, fileId){
+		var isSuccess = false;
 		$.ajax({
 			url : "${api.server}/dossiers/"+dossierId+"/files/"+fileId,
 			dataType : "json",
 			type : "DELETE",
 			headers : {"groupId": ${groupId}},
+			async : false,
 			success : function(result) {
-
+				isSuccess = true;
 
 			},
 			error : function(result) {
-				
-			}
+				isSuccess = false;
+			}	
 		});
+		return isSuccess;
 	}
 
 	var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
@@ -1297,15 +1290,33 @@ error : function(result){
 	printDetailDossier(${dossierId});
 
 	$("#viaPostal").change(function(){
+		var viaPostal = 1;
 		if($(this).is(":checked")) {
 			$("#viaPostalContent").show();
+			viaPostal = 2;
 		}else{
 			$("#viaPostalContent").hide();	
+			viaPostal = 1;
 		}
+		$.ajax({
+			url : "${api.server}/dossiers/${dossierId}",
+			dataType : "json",
+			type : "PUT",
+			headers: {"groupId": ${groupId}},
+			data : {
+				viaPostal : viaPostal
+			},
+			success : function(result){
+
+			},
+			error : function(xhr){
+
+			}
+		});
 	});
 
-	var getReferentUidFile = function(dossierId){
-		var referenceUid = 0;
+	var getReferentUidFile = function(dossierId,dossierPartNo){
+		var dossierFile;
 		if(dossierId){
 			$.ajax({
 				type : 'GET', 
@@ -1317,8 +1328,11 @@ error : function(result){
 					if(result.data){
 						for (var i = 0; i < result.data.length; i++) {
 							if(result.data[i].eForm){
-								referenceUid = result.data[i].referenceUid;
-								return ;
+								if(dossierPartNo == result.data[i].dossierPartNo){
+									dossierFile = result.data[i];
+									return ;
+								}
+
 							}
 						}
 					}
@@ -1329,9 +1343,11 @@ error : function(result){
 				}
 			});
 		}
+		console.log(dossierFile);
 
-		return referenceUid;
+		return dossierFile;
 	}
+
 
 	var fnGetFormData = function(dossierId,referentUid){
 		var value = null;
@@ -1343,6 +1359,7 @@ error : function(result){
 				async : false,
 				success : function(result){
 					value = result;
+
 				},
 				error : function(result){
 
@@ -1362,6 +1379,101 @@ error : function(result){
 
 			});
 		});
+	});
+
+
+
+	var fnSaveForm = function(id, value){
+		var current = $("#btn-save-formalpaca"+id);
+		var referentUid = current.attr("referenceUid");
+		console.log(referentUid);
+		if(referentUid){
+			$.ajax({
+				url : "${api.server}/dossiers/${dossierId}/files/"+referentUid+"/formdata",
+				dataType : "json",
+				type : "PUT",
+				headers: {
+					"groupId": ${groupId},
+					Accept : "application/json"
+				},
+				data : {
+					formdata: JSON.stringify(value)
+				},
+				success : function(result){
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công!"
+					}, "success");
+					console.log($("#validPart"+id));
+					$("#validPart"+id).val("1");
+				},
+				error : function(result){
+					notification.show({
+						message: "Thực hiện không thành công, xin vui lòng thử lại!"
+					}, "error");
+				}
+			});
+		}
+	}
+
+	$(document).on("click",".saveFormAlpaca",function(event){
+		var id = $(this).attr("data-pk");
+		var referentUidFile = $(this).attr("referenceUid");
+		console.log(id);
+		console.log("ccc");
+		console.log($("#formPartNo"+id+ " .formDataAlternative").val());
+		var formType = $("#formPartNo"+id+" .formType").val();
+		var value ;
+		if(formType !== "dklr"){
+			value = $("#formPartNo"+id).alpaca('get').getValue();
+
+
+			var errorMessage = '';
+			$("#formPartNo"+id+' div[class*="has-error"] > label').each(function( index ) {
+
+				errorMessage = "notValid";
+
+			});
+			console.log(errorMessage);
+			console.log(referentUidFile);
+			console.log(value);
+
+			if(errorMessage === '' && referentUidFile){
+				$.ajax({
+					url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
+					dataType : "json",
+					type : "PUT",
+					headers: {
+						"groupId": ${groupId},
+						Accept : "application/json"
+					},
+					data : {
+						formdata: JSON.stringify(value)
+					},
+					success : function(result){
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công!"
+						}, "success");
+						console.log($("#validPart"+id));
+						$("#validPart"+id).val("1");
+					},
+					error : function(result){
+						notification.show({
+							message: "Thực hiện không thành công, xin vui lòng thử lại!"
+						}, "error");
+					}
+				});
+			}else {
+				notification.show({
+					message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi ghi lại!"
+				}, "error");
+			}
+		}else {
+			value = $("#formPartNo"+id+ " .formDataAlternative").val();
+		}
+
+
+
+
 	});
 
 </script>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+
+<service-builder auto-namespace-tables="false" package-path="org.opencps.jasper">
+	<author>Binhth</author>
+	<namespace>temp_jasper</namespace>
+
+	<entity name="jasper" uuid="true" local-service="true"
+		remote-service="false" table="temp_jasper">
+
+		<!-- PK fields -->
+
+		<column name="jasperId" primary="true" type="long" />
+		
+	</entity>
+	
+</service-builder>

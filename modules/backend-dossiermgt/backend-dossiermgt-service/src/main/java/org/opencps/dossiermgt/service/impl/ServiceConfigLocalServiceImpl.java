@@ -271,7 +271,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(ServiceConfigTerm.SERVICE_NAME);
+				query.addFields(new String[]{ServiceConfigTerm.SERVICE_NAME, ServiceConfigTerm.GOVAGENCY_NAME, ServiceConfigTerm.DOMAIN_NAME});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -378,7 +378,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(ServiceInfoTerm.SERVICE_NAME);
+				query.addFields(new String[]{ServiceConfigTerm.SERVICE_NAME, ServiceConfigTerm.GOVAGENCY_NAME, ServiceConfigTerm.DOMAIN_NAME});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 

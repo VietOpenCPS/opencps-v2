@@ -11,5 +11,3 @@ Export-Package: \
 	org.opencps.dossiermgt.action,\
 	org.opencps.dossiermgt.model.impl,\
 	org.opencps.dossiermgt.scheduler
-
-	

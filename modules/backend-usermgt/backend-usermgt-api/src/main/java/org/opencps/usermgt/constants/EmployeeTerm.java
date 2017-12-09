@@ -49,7 +49,19 @@ public class EmployeeTerm {
 	
 	public static final String WORKING_UNIT_NAME = "workingUnitName";
 	
+	public static final String WORKING_UNIT_ID = "workingUnitId";
+	
 	public static final String JOB_POS_TITLE = "jobPosTitle";
+	
+	public static final String JOB_POS_ID = "jobPosId";
+	
+	public static final String MONTH = "month";
+	
+	public static final String ACTIVE = "active";
+	
+	public static final String RECRUIT_DATE = "recruitDate";
+	
+	public static final String LEAVE_DATE = "leaveDate";
 	
 	// sortable
 	public static final String EMPLOYEE_ID_SORTABLE = "employeeId_sortable";
@@ -125,6 +137,10 @@ public class EmployeeTerm {
 	private boolean isEmployer;
 	
 	private String title;
+	
+	private Date recruitDate;
+	
+	private Date leaveDate;
 	
 	public EmployeeTerm() {
 		
@@ -280,6 +296,22 @@ public class EmployeeTerm {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public Date getRecruitDate() {
+		return recruitDate;
+	}
+
+	public void setRecruitDate(Date recruitDate) {
+		this.recruitDate = recruitDate;
+	}
+
+	public Date getLeaveDate() {
+		return leaveDate;
+	}
+
+	public void setLeaveDate(Date leaveDate) {
+		this.leaveDate = leaveDate;
 	}
 
 }

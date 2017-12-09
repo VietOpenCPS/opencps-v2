@@ -40,23 +40,6 @@ public class WorkTimeIndexer extends BaseIndexer<WorkTime> {
 	public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
 			SearchContext searchContext) throws Exception {
 
-		addSearchTerm(searchQuery, searchContext, WorkTimeTerm.WORKTIME_ID, false);
-		addSearchTerm(searchQuery, searchContext, WorkTimeTerm.GROUP_ID, false);
-		addSearchTerm(searchQuery, searchContext, WorkTimeTerm.COMPANY_ID, false);
-		addSearchTerm(searchQuery, searchContext, WorkTimeTerm.USER_ID, false);
-		addSearchTerm(searchQuery, searchContext, WorkTimeTerm.USER_NAME, false);
-		addSearchTerm(searchQuery, searchContext, WorkTimeTerm.CREATE_DATE, false);
-		addSearchTerm(searchQuery, searchContext, WorkTimeTerm.MODIFIED_DATE, false);
-
-		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
-
-		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
-
-			if (Validator.isNotNull(expandoAttributes)) {
-				addSearchExpando(searchQuery, searchContext, expandoAttributes);
-			}
-		}
 	}
 
 	@Override

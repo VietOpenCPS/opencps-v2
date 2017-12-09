@@ -1,6 +1,4 @@
-<#if (Request)??>
 <#include "init.ftl">
-</#if>
 <div class="row">
 
 	<div class="col-sm-12">
@@ -25,28 +23,7 @@
 
 				<div id="employee_formTemplate-collapse" class="panel-collapse collapse in">
 					
-					<div class="panel-body">
-					
-						<div class="form-group">
-							
-							<textarea id="employee-formtemplate-inp" style="display: none;">
-								${(employee_formtTemplate.formData)!}
-							</textarea>
-
-							<div id="employee-formtemplate-html"></div>
-
-						</div>
-
-						<button id="employee-formtemplate-submit-btn" 
-							data-pk="${(employee.employeeId)!}" 
-							class="btn btn-active image-preview-input border-rad-4"> 
-							
-							<i class="fa fa-check-circle"></i>
-							<span class="lfr-btn-label">Cập nhật thông tin</span>
-
-						</button>
-
-					</div>
+					<div id="employee_form_online_container" data-pk="${(employee.employeeId)!}"></div>
 
 				</div>
 
@@ -58,71 +35,53 @@
 
 </div>
 
-
-<script type="text/javascript">
+<script>
 
 (function($) {
 
-	var formTemplate = $("#employee-formtemplate-inp").val().trim();
+	var className = "${(constants.className)!}";
+	var classPk = $("#employee_form_online_container").attr('data-pk');
+	var getFormOnlineBaseUrl = "${api.endpoint}/onlineforms/"+className+"/" + classPk;
+
+	function getFormTemplate () {
 		
-	try {
-
-		if (formTemplate!=null && formTemplate!="") {
-
-			var dataForm = JSON.parse(formTemplate);
-			$("#employee-formtemplate-html").alpaca(dataForm);
-
-		}
-
-	} catch (e) {
-		console.log(e);
-		showMessageToastr("error","Mẫu Alpaca không hợp lệ!!!");
-
-	}
-
-	$(document).on('click', '#employee-formtemplate-submit-btn', function(event){
-		
-		event.preventDefault();
-		event.stopPropagation();
-		event.stopImmediatePropagation();
-
-		var employeeFormtemplateUpdateBaseUrl = "";
-
-		var metaData = "";
-
-		if ($("#employee-formtemplate-html").alpaca("get")!=null) {
-
-			metaData = $("#employee-formtemplate-html").alpaca("get").getValue();
-
-		}
-
-		metaData = (metaData==null || metaData=="")?"":JSON.stringify(metaData);
-
 		$.ajax({
-			url: employeeFormtemplateUpdateBaseUrl,
+			
+			url: getFormOnlineBaseUrl + "/buildform/${(constants.alpaca_templateNo)!}" ,
+			type: 'GET',
 			headers: {
 				"groupId": ${groupId}
 			},
 			data: {
-				
-				metaData: metaData
 			},
-			type: 'PUT',
-			dataType: 'json',
-			contentType: 'application/x-www-form-urlencoded; charset=utf-8',
-			success: function(data, textStatus, xhr) {
-			
-				showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
+			dataType: 'text',
+			success: function(result) {
+				
+				if (result!=null && result!="") {
+					
+					var formOnline = new MobilinkFormOnline({
+						container: "#employee_form_online_container",
+						groupId: "${groupId}",
+						className: className,
+						dataPK: classPk,
+						alpacaAPI: "${api.endpoint}/onlineforms",
+						alpacaDataAPI: "${api.endpoint}/onlineforms"
+					});
+					
+					formOnline.show();
+				
+				}
 				
 			},
-			error: function(xhr, textStatus, errorThrown) {
+			error: function(xhr){
 				
-				showMessageByAPICode(xhr.status);
-			
 			}
-		});
 		
-	});
+		});
 
+	};
+	
+	getFormTemplate ();
+		
 })(jQuery);
 </script>

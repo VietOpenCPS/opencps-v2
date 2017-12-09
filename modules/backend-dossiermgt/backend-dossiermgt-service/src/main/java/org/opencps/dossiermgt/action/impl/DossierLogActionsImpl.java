@@ -1,6 +1,5 @@
 package org.opencps.dossiermgt.action.impl;
 
-import java.io.InputStream;
 import java.util.LinkedHashMap;
 
 import org.opencps.dossiermgt.action.DossierLogActions;
@@ -23,7 +22,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 
 public class DossierLogActionsImpl implements DossierLogActions {
 	
@@ -46,7 +44,7 @@ public class DossierLogActionsImpl implements DossierLogActions {
 
 		SearchContext searchContext = new SearchContext();
 		searchContext.setCompanyId(serviceContext.getCompanyId());
-
+		System.out.println("/////////////////////////////////////// notificationType " + notificationType);
 		try {
 			
 			if (start == 0) {

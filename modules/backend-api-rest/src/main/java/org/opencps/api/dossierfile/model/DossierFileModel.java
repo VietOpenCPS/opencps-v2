@@ -50,6 +50,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DossierFileModel", propOrder = {
+	"dossierFileId",
     "createDate",
     "modifiedDate",
     "referenceUid",
@@ -71,7 +72,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "DossierFileModel")
 public class DossierFileModel {
-
+	protected Long dossierFileId;
     protected String createDate;
     protected String modifiedDate;
     protected String referenceUid;
@@ -90,6 +91,30 @@ public class DossierFileModel {
     protected Boolean eForm;
 	protected String formData;
     protected String formReport;
+ 
+    /**
+     * Gets the value of the fileSize property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getDossierFileId() {
+        return dossierFileId;
+    }
+
+    /**
+     * Sets the value of the fileSize property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setDossierFileId(Long value) {
+        this.dossierFileId = value;
+    }
 
     public String getFormData() {
 		return formData;

@@ -124,6 +124,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		}
 
 		// add text fields
+		
+		document.addNumberSortable(DossierTerm.DOSSIER_ID, object.getDossierId());
 		document.addTextSortable(DossierTerm.REFERENCE_UID, object.getReferenceUid());
 		document.addTextSortable(DossierTerm.SERVICE_CODE, object.getServiceCode());
 		document.addTextSortable(DossierTerm.SERVICE_NAME, object.getServiceName());
