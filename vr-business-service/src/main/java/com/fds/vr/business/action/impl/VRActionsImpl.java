@@ -39,75 +39,75 @@ public class VRActionsImpl implements VRActions {
 		JSONArray techSpecArr = JSONFactoryUtil.createJSONArray();
 
 		try {
-			if (dossierFileId != 0) {
-				techSpecArr = getFormData(dossierFileId);
-			} else {
-				// get id THONG_SO_KY_THUAT
-				DictCollection nhomThongSoKyThuat = DictCollectionLocalServiceUtil
-						.fetchByF_dictCollectionCode(VRKeys.NHOM_THONG_SO_KY_THUAT, groupId);
+			
+			// get id THONG_SO_KY_THUAT
+			DictCollection nhomThongSoKyThuat = DictCollectionLocalServiceUtil
+					.fetchByF_dictCollectionCode(VRKeys.NHOM_THONG_SO_KY_THUAT, groupId);
 
-				long ttktId = nhomThongSoKyThuat.getPrimaryKey();
+			long ttktId = nhomThongSoKyThuat.getPrimaryKey();
 
-				DictGroup phanLoaiNhomTTSKT = DictGroupLocalServiceUtil.getByGC_GI_DCI(vehicleClass, groupId, ttktId);
+			DictGroup phanLoaiNhomTTSKT = DictGroupLocalServiceUtil.getByGC_GI_DCI(vehicleClass, groupId, ttktId);
 
-				List<DictItemGroup> danhSachNhomThongSoKTChiTiet = DictItemGroupLocalServiceUtil
-						.findByDictGroupId(groupId, phanLoaiNhomTTSKT.getPrimaryKey());
+			List<DictItemGroup> danhSachNhomThongSoKTChiTiet = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId,
+					phanLoaiNhomTTSKT.getPrimaryKey());
 
-				if (Validator.isNull(module)) {
-					module = "1";
-				}
+			if (Validator.isNull(module)) {
+				module = "1";
+			}
 
-				for (DictItemGroup dg : danhSachNhomThongSoKTChiTiet) {
+			for (DictItemGroup dg : danhSachNhomThongSoKTChiTiet) {
 
-					DictItem dictItem = DictItemLocalServiceUtil.getDictItem(dg.getDictItemId());
+				DictItem dictItem = DictItemLocalServiceUtil.getDictItem(dg.getDictItemId());
 
-					List<VRConfigTechSpec> configTechSpecs = VRConfigTechSpecLocalServiceUtil.getByVCSC(vehicleClass,
-							dictItem.getItemCode(), module);
+				List<VRConfigTechSpec> configTechSpecs = VRConfigTechSpecLocalServiceUtil.getByVCSC(vehicleClass,
+						dictItem.getItemCode(), module);
 
-					JSONObject jsonTechSpec = JSONFactoryUtil.createJSONObject();
+				JSONObject jsonTechSpec = JSONFactoryUtil.createJSONObject();
 
-					jsonTechSpec.put("key", dictItem.getItemCode());
-					jsonTechSpec.put("type", "label");
-					jsonTechSpec.put("title", dictItem.getItemName());
-					jsonTechSpec.put("required", false);
-					jsonTechSpec.put("Reference", false);
-					jsonTechSpec.put("placeholder", dictItem.getItemDescription());
-					jsonTechSpec.put("datasource", StringPool.BLANK);
-					jsonTechSpec.put("value", StringPool.BLANK);
+				jsonTechSpec.put("key", dictItem.getItemCode());
+				jsonTechSpec.put("type", "label");
+				jsonTechSpec.put("title", dictItem.getItemName());
+				jsonTechSpec.put("required", false);
+				jsonTechSpec.put("Reference", false);
+				jsonTechSpec.put("placeholder", dictItem.getItemDescription());
+				jsonTechSpec.put("datasource", StringPool.BLANK);
+				jsonTechSpec.put("value", StringPool.BLANK);
 
-					JSONArray items = JSONFactoryUtil.createJSONArray();
+				JSONArray items = JSONFactoryUtil.createJSONArray();
 
-					for (VRConfigTechSpec vrConfig : configTechSpecs) {
-						JSONObject techspec = JSONFactoryUtil.createJSONObject();
+				for (VRConfigTechSpec vrConfig : configTechSpecs) {
+					JSONObject techspec = JSONFactoryUtil.createJSONObject();
 
-						techspec.put("key", vrConfig.getSpecificationCode());
+					techspec.put("key", vrConfig.getSpecificationCode());
 
-						techspec.put("type", vrConfig.getSpecificationEntryType());
+					techspec.put("type", vrConfig.getSpecificationEntryType());
 
-						techspec.put("title", vrConfig.getSpecificationDisplayName());
+					techspec.put("title", vrConfig.getSpecificationDisplayName());
 
-						techspec.put("required", vrConfig.getSpecificationMandatory());
+					techspec.put("required", vrConfig.getSpecificationMandatory());
 
-						techspec.put("Reference", false);
+					techspec.put("Reference", false);
 
-						techspec.put("value", StringPool.BLANK);
+					techspec.put("value", StringPool.BLANK);
 
-						techspec.put("standard", vrConfig.getSpecificationStandard());
-						techspec.put("basicunit", vrConfig.getSpecificationBasicUnit());
-						techspec.put("placeholder", vrConfig.getSpecificationEntryPlaceholder());
-						if (Validator.isNotNull(vrConfig.getSpecificationDataCollectionId())) {
-							techspec.put("datasource",
-									getDataSource(vrConfig.getSpecificationDataCollectionId(), groupId));
-						}
-
-						items.put(techspec);
+					techspec.put("standard", vrConfig.getSpecificationStandard());
+					techspec.put("basicunit", vrConfig.getSpecificationBasicUnit());
+					techspec.put("placeholder", vrConfig.getSpecificationEntryPlaceholder());
+					if (Validator.isNotNull(vrConfig.getSpecificationDataCollectionId())) {
+						techspec.put("datasource", getDataSource(vrConfig.getSpecificationDataCollectionId(), groupId));
 					}
 
-					jsonTechSpec.put("items", items);
-
-					techSpecArr.put(jsonTechSpec);
+					items.put(techspec);
 				}
 
+				jsonTechSpec.put("items", items);
+
+				techSpecArr.put(jsonTechSpec);
+			}
+			
+			if (dossierFileId != 0) {
+				//DB chua luu formSchema, nen do data vao techSpecArr
+				techSpecArr = getFormData(dossierFileId, techSpecArr);
 			}
 
 			returnObj.put("status", HttpsURLConnection.HTTP_OK);
@@ -121,7 +121,7 @@ public class VRActionsImpl implements VRActions {
 		return returnObj;
 	}
 
-	private JSONArray getFormData(long dossierFileId) {
+	private JSONArray getFormData(long dossierFileId, JSONArray formSchema) {
 
 		JSONArray output = JSONFactoryUtil.createJSONArray();
 
@@ -129,23 +129,30 @@ public class VRActionsImpl implements VRActions {
 
 		JSONObject formData = null;
 
-		JSONArray formSchema = null;
+		//JSONArray formSchema = null;
 
 		if (Validator.isNotNull(dossierFile)) {
 
 			try {
 				formData = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
+				
+				//DB chua luu FormSchema
 
-				formSchema = JSONFactoryUtil.createJSONArray(dossierFile.getFormSchema());
+				//formSchema = JSONFactoryUtil.createJSONArray(dossierFile.getFormSchema());
 
 				int length = formSchema.length();
 
 				for (int i = 0; i < length; i++) {
+					
 					JSONObject parent = formSchema.getJSONObject(i);
 
 					String keyObject = parent.getString("key");
+					
+					_log.info("keyObject " + keyObject);
 
 					String keyValue = formData.getString(keyObject);
+					
+					_log.info("keyValue " + keyValue);
 
 					parent.put("value", keyValue);
 
@@ -172,9 +179,13 @@ public class VRActionsImpl implements VRActions {
 					output.put(parent);
 				}
 			} catch (Exception e) {
-
+				_log.error(e);
 			}
 
+		}
+		
+		if(output.length() == 0){
+			output = formSchema;
 		}
 
 		return output;
@@ -359,7 +370,7 @@ public class VRActionsImpl implements VRActions {
 		JSONArray datasource = JSONFactoryUtil.createJSONArray();
 
 		long dictCollectionId = getDictCollectionId(collectionCode, groupId);
-
+		
 		try {
 			if (dictCollectionId != 0) {
 				List<DictItem> lsDictItems = DictItemLocalServiceUtil.findByF_dictCollectionId(dictCollectionId);
