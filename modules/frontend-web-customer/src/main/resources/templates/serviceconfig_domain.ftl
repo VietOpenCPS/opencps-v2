@@ -29,7 +29,8 @@
 								#:govAgency.govAgencyName#
 							</a>
 						</div>
-						<div id="govAgencyCode_#:govAgency.serviceCode#" class="accordion-body collapse in">
+						<div id="govAgencyCode_#:govAgency.govAgencyCode#" class="accordion-body collapse in">
+
 							<div class="accordion-inner P0">
 								# for (var j = 0; j < govAgency.serviceConfigs.length; j++){
 								var serviceConfig = govAgency.serviceConfigs[j];
@@ -48,7 +49,19 @@
 									</div>
 
 									<div class="col-xs-12 col-sm-1 border-left align-center P0">
-										<button class="btn btn-reset btn-select-serviceConfig text-light-gray" data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#serviceInfo.serviceCode#">Chọn</button>
+										
+										<div class="dropdown">
+											<button class="btn dropdown-toggle btn-select-serviceConfig" type="button" data-toggle="dropdown" 
+												data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#serviceInfo.serviceCode#">
+												
+												Chọn
+												<span class="caret"></span>
+												
+											</button>
+											<ul id="dropdown-menu#:serviceConfig.serviceConfigId#" class="dropdown-menu" data-pk="#:serviceConfig.serviceConfigId#">
+												
+											</ul>
+										</div>
 									</div>
 								</div>
 								#}#
@@ -69,15 +82,15 @@
 	$(document).ready(function(){
 
 		var fnGenEventChoiseServiceConfig = function(){
-			$('.btn-select-serviceConfig, .link-govAgency').unbind().click(function(){
+			$('.btn-select-serviceConfig, .link-govAgency').unbind().click(function(event){
 				
 				event.preventDefault();
 				var serviceConfigId = $(this).attr("data-pk");
 				$("#serviceConfigId").val(serviceConfigId);
 
-				dataSourceProcessServiceConfig.read({
+				/*dataSourceProcessServiceConfig.read({
 					serviceConfigId : serviceConfigId
-				});
+				});*/
 			});
 		}
 
@@ -112,8 +125,42 @@
 			autoBind : true,
 			dataBound : function(){
 				fnGenEventChoiseServiceConfig();
+				$(".dropdown-menu").each(function(){
+					var id = $(this).attr("data-pk");
+					fnGenServiceProcess(id, $(this));
+				});
 			}
 		});
+		
+		var fnGenServiceProcess = function(id,element){
+			console.log("testtt");
+			console.log($(element));
+			$.ajax({
+				url : "${api.server}/serviceconfigs/"+id+"/processes",
+				dataType : "json",
+				type : "GET",
+				headers : {"groupId": ${groupId}},
+				success : function(result){
+					$(element).html("");
+					if(result.data){
+						var data = result.data;
+						for (var i = 0; i < data.length; i++) {
+							$(element).append('<li><span class="btn-choise-process hover-pointer" data-pk="'+data[i].processOptionId+'" data-template="'+data[i].templateNo+'">'+data[i].optionName+'</span></li>');
+						}
+					}
+					$(".btn-choise-process").unbind().click(function(){
+						console.log("choise process");
+						var id = $(this).attr("data-pk");
+						var templateNo = $(this).attr("data-template");
+						fnGetParamAndCreateDossier(id,templateNo);
+	
+					});
+				},
+				error : function(result){
+	
+				}
+			});
+		};
 
 		$('#btn_search').click(function(){
 			var input_Search = $('#input_search').val();
