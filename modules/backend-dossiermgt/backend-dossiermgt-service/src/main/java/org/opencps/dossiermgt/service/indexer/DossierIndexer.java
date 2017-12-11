@@ -82,17 +82,22 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addNumberSortable(DossierTerm.VIA_POSTAL, object.getViaPostal());
 		document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());
 
+		int yearDossier = 0;
+
+		int monthDossier = 0;
+
 		if (Validator.isNotNull(object.getReceiveDate())) {
 			Calendar cal = Calendar.getInstance();
 
 			cal.setTime(object.getReceiveDate());
 
-			int yearDossier = cal.get(Calendar.YEAR);
-			int monthDossier = cal.get(Calendar.MONTH) + 1;
+			yearDossier = cal.get(Calendar.YEAR);
+			monthDossier = cal.get(Calendar.MONTH) + 1;
 
-			document.addNumber(DossierTerm.YEAR_DOSSIER, yearDossier);
-			document.addNumber(DossierTerm.MONTH_DOSSIER, monthDossier);
 		}
+
+		document.addNumberSortable(DossierTerm.YEAR_DOSSIER, yearDossier);
+		document.addNumberSortable(DossierTerm.MONTH_DOSSIER, monthDossier);
 
 		// DossierAction fields
 
@@ -124,8 +129,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		}
 
 		// add text fields
-		
-		document.addNumberSortable(DossierTerm.DOSSIER_ID, object.getDossierId());
+
+		long dossierId = object.getDossierId();
+
+		document.addNumberSortable(DossierTerm.DOSSIER_ID, dossierId);
 		document.addTextSortable(DossierTerm.REFERENCE_UID, object.getReferenceUid());
 		document.addTextSortable(DossierTerm.SERVICE_CODE, object.getServiceCode());
 		document.addTextSortable(DossierTerm.SERVICE_NAME, object.getServiceName());
@@ -151,6 +158,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addTextSortable(DossierTerm.BRIEF_NOTE, object.getBriefNote());
 		document.addTextSortable(DossierTerm.DOSSIER_NO, object.getDossierNo());
 		document.addTextSortable(DossierTerm.SUBMITTING, Boolean.toString(object.getSubmitting()));
+
 		document.addTextSortable(DossierTerm.DOSSIER_STATUS, object.getDossierStatus());
 		document.addTextSortable(DossierTerm.DOSSIER_STATUS_TEXT, object.getDossierStatusText());
 		document.addTextSortable(DossierTerm.DOSSIER_SUB_STATUS, object.getDossierSubStatus());
@@ -165,6 +173,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addTextSortable(DossierTerm.SERVER_NO, object.getServerNo());
 		document.addTextSortable(DossierTerm.DOSSIER_OVER_DUE,
 				Boolean.toString(getDossierOverDue(object.getPrimaryKey())));
+
+		// Indexing DossierActionUsers
 
 		return document;
 	}
