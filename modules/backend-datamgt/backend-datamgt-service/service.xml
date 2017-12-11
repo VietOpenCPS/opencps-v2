@@ -394,6 +394,7 @@
 		<column name="sourceUrl" type="String" />
 		<column name="docFileId" type="long" />
 		<!-- Order -->
+        <column name="fileName" type="String"></column>
 
 		<order by="asc">
 			<order-column name="createDate" />
@@ -417,5 +418,5 @@
 		</finder>
 
 	</entity>
-
+	
 </service-builder>

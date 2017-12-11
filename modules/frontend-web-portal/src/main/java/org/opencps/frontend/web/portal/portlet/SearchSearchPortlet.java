@@ -12,21 +12,23 @@ import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
 /**
  * @author phucnv
- * @date Sep 11, 2017
+ * @date Sep 14, 2017
  *
  */
 @Component(immediate = true, property = {
 	"com.liferay.portlet.css-class-wrapper=portlet-freemarker",
 	"com.liferay.portlet.display-category=category.opencps_v2.portal",
 	"com.liferay.portlet.header-portlet-css=/css/main.css",
-	"com.liferay.portlet.instanceable=false",
-	"javax.portlet.display-name=Login Portlet",
+	"com.liferay.portlet.instanceable=true",
+	"javax.portlet.display-name=Service Search Portlet",
 	"javax.portlet.init-param.template-path=/",
-	"javax.portlet.init-param.view-template=/templates/createPorlet/applicant/login.ftl",
-	"javax.portlet.name=" + FrontendWebPortalPortletKeys.LOGIN_PORTLET_NAME,
+	"javax.portlet.init-param.view-template=/templates/createPorlet/search_serviceinfo.ftl",
+	"javax.portlet.name=" +
+		FrontendWebPortalPortletKeys.SERVICE_SEARCH_PORTLET_NAME,
 	"javax.portlet.resource-bundle=content.Language",
 	"javax.portlet.security-role-ref=power-user,user"
 }, service = Portlet.class)
-public class LoginPortlet extends FreeMarkerPortlet {
+public class SearchSearchPortlet extends FreeMarkerPortlet {
 
+	
 }

@@ -24,8 +24,6 @@ import org.opencps.dossiermgt.service.base.DeliverableTypeLocalServiceBaseImpl;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Indexable;
-import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 /**
@@ -49,10 +47,10 @@ import com.liferay.portal.kernel.service.ServiceContext;
 @ProviderType
 public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalServiceBaseImpl {
 
-	public DeliverableType addDeliverableType(long groupId, String deliverableName, String deliverableType,
+	public DeliverableType addDeliverableType(long groupId, String deliverableName, String deliverableType_,
 			String codePattern, String counter, String formScript, String formReport, String mappingData,
 			ServiceContext serviceContext) throws PortalException, SystemException {
-
+		// TODO Add DeliverableType
 		long userId = serviceContext.getUserId();
 
 		Date now = new Date();
@@ -73,7 +71,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 		// Add other fields
 		object.setDeliverableTypeId(deliverableTypeId);
-		object.setDeliverableType(deliverableType);
+		object.setDeliverableType_(deliverableType_);
 		object.setDeliverableName(deliverableName);
 		object.setFormScript(formScript);
 		object.setFormReport(formReport);
@@ -84,10 +82,10 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 		return deliverableTypePersistence.update(object);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DeliverableType updateDeliverableType(long groupId, long deliverableTypeId, String deliverableName,
-			String deliverableType, String codePattern, String counter, String formScript, String formReport,
+			String deliverableType_, String codePattern, String counter, String formScript, String formReport,
 			String mappingData, ServiceContext serviceContext) throws PortalException {
+		// TODO Update DeliverableType
 		Date now = new Date();
 
 		long userId = serviceContext.getUserId();
@@ -111,7 +109,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 			// Add other fields
 			deliverableTypeObj.setDeliverableTypeId(deliverableTypeId);
-			deliverableTypeObj.setDeliverableType(deliverableType);
+			deliverableTypeObj.setDeliverableType_(deliverableType_);
 			deliverableTypeObj.setDeliverableName(deliverableName);
 			deliverableTypeObj.setFormScript(formScript);
 			deliverableTypeObj.setFormReport(formReport);
@@ -125,7 +123,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 			deliverableTypeObj.setModifiedDate(now);
 
 			deliverableTypeObj.setDeliverableTypeId(deliverableTypeId);
-			deliverableTypeObj.setDeliverableType(deliverableType);
+			deliverableTypeObj.setDeliverableType_(deliverableType_);
 			deliverableTypeObj.setDeliverableName(deliverableName);
 			deliverableTypeObj.setFormScript(formScript);
 			deliverableTypeObj.setFormReport(formReport);
@@ -138,6 +136,74 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 		deliverableTypePersistence.update(deliverableTypeObj);
 
 		return deliverableTypeObj;
+
+	}
+
+	public DeliverableType removeDeliverableType(long groupId, long deliverableTypeId, String deliverableType_)
+			throws PortalException {
+		// TODO remove DeliverableType
+
+		validateRemoveDeliverableType(groupId, deliverableTypeId, deliverableType_);
+
+		DeliverableType deliverableTypeObj = null;
+
+		if (deliverableTypeId != 0) {
+			deliverableTypeObj = deliverableTypePersistence.fetchByPrimaryKey(deliverableTypeId);
+		} else {
+			deliverableTypeObj = deliverableTypePersistence.fetchByG_DLT(groupId, deliverableType_);
+		}
+
+		return deliverableTypePersistence.remove(deliverableTypeObj);
+
+	}
+
+	public DeliverableType updateFormScript(long groupId, long deliverableTypeId, String formScript,
+			ServiceContext serviceContext) throws PortalException, SystemException {
+		// TODO Update FormScript of DeliverableType
+		System.out.println("GET DeliverableType " + new Date());
+
+		Date now = new Date();
+
+		DeliverableType deliverableType = deliverableTypePersistence.findByPrimaryKey(deliverableTypeId);
+
+		deliverableType.setFormScript(formScript);
+		deliverableType.setModifiedDate(now);
+
+		return deliverableTypePersistence.update(deliverableType);
+	}
+	
+	public DeliverableType updateFormReport(long groupId, long deliverableTypeId, String formReport,
+			ServiceContext serviceContext) throws PortalException, SystemException {
+		// TODO Update FormReport of DeliverableType
+		System.out.println("GET DeliverableType " + new Date());
+
+		Date now = new Date();
+
+		DeliverableType deliverableType = deliverableTypePersistence.findByPrimaryKey(deliverableTypeId);
+
+		deliverableType.setFormReport(formReport);
+		deliverableType.setModifiedDate(now);
+
+		return deliverableTypePersistence.update(deliverableType);
+	}
+	
+	public DeliverableType updateMappingData(long groupId, long deliverableTypeId, String mappingData,
+			ServiceContext serviceContext) throws PortalException, SystemException {
+		// TODO Update FormReport of DeliverableType
+		System.out.println("GET DeliverableType " + new Date());
+
+		Date now = new Date();
+
+		DeliverableType deliverableType = deliverableTypePersistence.findByPrimaryKey(deliverableTypeId);
+
+		deliverableType.setMappingData(mappingData);
+		deliverableType.setModifiedDate(now);
+
+		return deliverableTypePersistence.update(deliverableType);
+	}
+
+	private void validateRemoveDeliverableType(long groupId, long deliverableTypeId, String deliverableType_) {
+		// TODO Auto-generated method stub
 
 	}
 

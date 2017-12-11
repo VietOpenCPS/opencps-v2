@@ -57,7 +57,14 @@
 			},
 			schema : {
 				data : "data",
-				total : "total"
+				total : "total",
+				model: {
+			      fields: {
+			        serviceName: {
+			          type: "string"
+			        }
+			      }
+			    }
 			}
 		},
 		dataTextField: "serviceName",

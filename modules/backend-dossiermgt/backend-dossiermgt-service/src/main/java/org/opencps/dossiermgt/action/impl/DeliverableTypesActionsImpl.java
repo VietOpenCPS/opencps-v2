@@ -44,21 +44,47 @@ public class DeliverableTypesActionsImpl implements DeliverableTypesActions {
 	}
 
 	@Override
-	public DeliverableType addDeliverableType(long groupId, String deliverableName, String deliverableType,
+	public DeliverableType addDeliverableType(long groupId, String deliverableName, String deliverableType_,
 			String codePattern, String counter, String formScript, String formReport, String mappingData,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 
-		return DeliverableTypeLocalServiceUtil.addDeliverableType(groupId, deliverableName, deliverableType,
+		return DeliverableTypeLocalServiceUtil.addDeliverableType(groupId, deliverableName, deliverableType_,
 				codePattern, counter, formScript, formReport, mappingData, serviceContext);
 	}
 
 	@Override
 	public DeliverableType updateDeliverableType(long groupId, long deliverableTypeId, String deliverableName,
-			String deliverableType, String codePattern, String counter, String formScript, String formReport,
+			String deliverableType_, String codePattern, String counter, String formScript, String formReport,
 			String mappingData, ServiceContext serviceContext) throws SystemException, PortalException {
 
 		return DeliverableTypeLocalServiceUtil.updateDeliverableType(groupId, deliverableTypeId, deliverableName,
-				deliverableType, codePattern, counter, formScript, formReport, mappingData, serviceContext);
+				deliverableType_, codePattern, counter, formScript, formReport, mappingData, serviceContext);
 	}
+	
+	@Override
+	public DeliverableType removeDeliverableType(long groupId, long deliverableTypeId, String deliverableType_) throws PortalException {
 
+		return DeliverableTypeLocalServiceUtil.removeDeliverableType(groupId, deliverableTypeId, deliverableType_);
+	}
+	
+	@Override
+	public DeliverableType updateDeliverableTypeFormScript(long groupId, long deliverableTypeId, String formScript,
+			ServiceContext serviceContext) throws SystemException, PortalException {
+
+		return DeliverableTypeLocalServiceUtil.updateFormScript(groupId, deliverableTypeId, formScript, serviceContext);
+	}
+	
+	@Override
+	public DeliverableType updateDeliverableTypeFormReport(long groupId, long deliverableTypeId, String formReport,
+			ServiceContext serviceContext) throws SystemException, PortalException {
+
+		return DeliverableTypeLocalServiceUtil.updateFormScript(groupId, deliverableTypeId, formReport, serviceContext);
+	}
+	
+	@Override
+	public DeliverableType updateDeliverableTypeMappingData(long groupId, long deliverableTypeId, String mappingData,
+			ServiceContext serviceContext) throws SystemException, PortalException {
+
+		return DeliverableTypeLocalServiceUtil.updateFormScript(groupId, deliverableTypeId, mappingData, serviceContext);
+	}
 }

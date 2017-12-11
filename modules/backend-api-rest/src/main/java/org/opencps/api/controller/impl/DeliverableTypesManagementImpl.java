@@ -21,6 +21,7 @@ import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
@@ -34,7 +35,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 	@Override
 	public Response getDeliverableTypes(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext) {
-
+		// TODO Get All Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 		int start = 0, end = 0;
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -66,7 +67,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 	@Override
 	public Response addDeliverableType(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DeliverableTypeInputModel model) {
-
+		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -96,7 +97,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 	public Response updateDeliverableType(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, DeliverableTypeInputModel model,
 			long deliverableTypeId) {
-
+		// TODO Update Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -122,7 +123,155 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return processException(e);
 		}
 	}
+	
+	@Override
+	public Response removeDeliverabletypes(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		// TODO Remove Deliverable Type
+		return Response.status(200).entity("OK").build();
+	}
 
+	@Override
+	public Response getFormScriptByDeliverableTypeId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId) {
+		// TODO Get FormScript of Deliverable Type
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getDeliverableType(deliverableTypeId);
+
+			return Response.status(200).entity(deliverableType.getFormScript()).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+	
+	public Response updateDeliverableTypeFormScript(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId, String formScript){
+		// TODO Update FormScript of Deliverable Type
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DeliverableTypesActions action = new DeliverableTypesActionsImpl();
+			
+			DeliverableType deliverableType = action.updateDeliverableTypeFormScript(groupId, deliverableTypeId, formScript, serviceContext);
+			
+			DeliverableTypesModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
+			
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+	
+	@Override
+	public Response getFormReportByDeliverableTypeId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId) {
+		// TODO Get FormReport of Deliverable Type
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getDeliverableType(deliverableTypeId);
+
+			return Response.status(200).entity(deliverableType.getFormReport()).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+	
+	public Response updateDeliverableTypeFormReport(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId, String formReport){
+		// TODO Update FormReport of Deliverable Type
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DeliverableTypesActions action = new DeliverableTypesActionsImpl();
+			
+			DeliverableType deliverableType = action.updateDeliverableTypeFormReport(groupId, deliverableTypeId, formReport, serviceContext);
+			
+			DeliverableTypesModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
+			
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+	
+	@Override
+	public Response getMappingDataByDeliverableTypeId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId) {
+		// TODO Get MappingData of Deliverable Type
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getDeliverableType(deliverableTypeId);
+
+			return Response.status(200).entity(deliverableType.getMappingData()).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+	
+	public Response updateDeliverableTypeMappingData(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId, String mappingData){
+		// TODO Update FormReport of Deliverable Type
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DeliverableTypesActions action = new DeliverableTypesActionsImpl();
+			
+			DeliverableType deliverableType = action.updateDeliverableTypeMappingData(groupId, deliverableTypeId, mappingData, serviceContext);
+			
+			DeliverableTypesModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
+			
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+	
 	private Response processException(Exception e) {
 		ErrorMsg error = new ErrorMsg();
 

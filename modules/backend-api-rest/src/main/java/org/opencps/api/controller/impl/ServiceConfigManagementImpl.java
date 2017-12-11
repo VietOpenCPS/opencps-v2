@@ -58,6 +58,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class ServiceConfigManagementImpl implements ServiceConfigManagement {
@@ -714,11 +715,11 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-		DictCollection govAgencyCollection = DictCollectionLocalServiceUtil
-				.fetchByF_dictCollectionCode("GOVERNMENT_AGENCY", groupId);
+		//DictCollection govAgencyCollection = DictCollectionLocalServiceUtil
+		//		.fetchByF_dictCollectionCode("GOVERNMENT_AGENCY", groupId);
 
-		List<DictItem> govItems = DictItemLocalServiceUtil
-				.findByF_dictCollectionId(govAgencyCollection.getDictCollectionId());
+		//List<DictItem> govItems = DictItemLocalServiceUtil
+		//		.findByF_dictCollectionId(govAgencyCollection.getDictCollectionId());
 
 		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("SERVICE_DOMAIN",
 				groupId);
@@ -740,7 +741,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 
-		JSONArray arrDomain = JSONFactoryUtil.createJSONArray();
+		JSONArray domains = JSONFactoryUtil.createJSONArray();
+		
+		List<String> keys = new ArrayList<String>();
 
 		try {
 
@@ -749,41 +752,46 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				LinkedHashMap<String, Object> paramsDomain = new LinkedHashMap<String, Object>();
 
 				paramsDomain.put(Field.GROUP_ID, String.valueOf(groupId));
-				paramsDomain.put(Field.KEYWORD_SEARCH, query.getKeyword());
 				paramsDomain.put(ServiceConfigTerm.DOMAIN_CODE, domainItem.getItemCode());
 				paramsDomain.put(Field.KEYWORD_SEARCH, query.getKeyword());
 
-
-				JSONObject domnElm = JSONFactoryUtil.createJSONObject();
+				JSONObject domain = JSONFactoryUtil.createJSONObject();
 
 				long countDomain = ServiceConfigLocalServiceUtil.countLucene(paramsDomain, searchContext);
 
 				if (countDomain != 0) {
 
-					domnElm.put("domainId", domainItem.getPrimaryKey());
-					domnElm.put("domainName", domainItem.getItemName());
+					domain.put("domainId", domainItem.getPrimaryKey());
+					domain.put("domainName", domainItem.getItemName());
 				
 					Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable",
 							Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
-
+					
+					//Get list service config by Domain code
 					List<Document> docs = ServiceConfigLocalServiceUtil
 							.searchLucene(paramsDomain, sorts, query.getStart(), query.getEnd(), searchContext)
 							.toList();
 					
-					JSONArray arrService = JSONFactoryUtil.createJSONArray();
+					JSONArray govAgencys = JSONFactoryUtil.createJSONArray();
 					
-
 					for (Document doc : docs) {
-						
-						JSONObject serviceElm = JSONFactoryUtil.createJSONObject();
-						
-						serviceElm.put("serviceCode", doc.get(ServiceConfigTerm.SERVICE_CODE));
-						serviceElm.put("serviceName", doc.get(ServiceConfigTerm.SERVICE_NAME));
-						
-						JSONArray arrConfigs = JSONFactoryUtil.createJSONArray();
 
+						String govAgencyCode = GetterUtil.getString(doc.get(ServiceConfigTerm.GOVAGENCY_CODE));
+						String govAgencyName = GetterUtil.getString(doc.get(ServiceConfigTerm.GOVAGENCY_NAME));
+						
+						if(keys.contains(domainItem.getItemCode() + StringPool.DASH + govAgencyCode)){
+							continue;
+						}
+						
+						keys.add(domainItem.getItemCode() + StringPool.DASH + govAgencyCode);
+						
+						JSONObject govAgency = JSONFactoryUtil.createJSONObject();
+						
+						JSONArray serviceConfigGroupByGov = JSONFactoryUtil.createJSONArray();
 						
 						paramsDomain.put(ServiceConfigTerm.SERVICE_CODE, doc.get(ServiceConfigTerm.SERVICE_CODE));
+						
+						paramsDomain.put(ServiceConfigTerm.GOVAGENCY_CODE, govAgencyCode);
 						
 						List<Document> serviceConfigByInfo = ServiceConfigLocalServiceUtil
 								.searchLucene(paramsDomain, sorts, query.getStart(), query.getEnd(), searchContext)
@@ -792,31 +800,25 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 						for (Document serDoc : serviceConfigByInfo) {
 							JSONObject configElm = JSONFactoryUtil.createJSONObject();
 							
+							configElm.put("serviceCode", doc.get(ServiceConfigTerm.SERVICE_CODE));
+							configElm.put("serviceName", doc.get(ServiceConfigTerm.SERVICE_NAME));
 							configElm.put("level", serDoc.get(ServiceConfigTerm.SERVICE_LEVEL));
-							configElm.put("govAgencyCode", serDoc.get(ServiceConfigTerm.GOVAGENCY_CODE));
-							configElm.put("govAgencyName", serDoc.get(ServiceConfigTerm.GOVAGENCY_NAME));
 							configElm.put("serviceConfigId", serDoc.get(Field.ENTRY_CLASS_PK));
-							
-							arrConfigs.put(configElm);
+							serviceConfigGroupByGov.put(configElm);
 						}
 						
-						serviceElm.put("serviceConfigs", arrConfigs);
-						
-						arrService.put(serviceElm);
+						govAgency.put("govAgencyCode", govAgencyCode);
+						govAgency.put("govAgencyName", govAgencyName);
+						govAgency.put("serviceConfigs", serviceConfigGroupByGov);
+						govAgencys.put(govAgency);
 					}
+					domain.put("govAgencys", govAgencys);
 					
-					
-					domnElm.put("serviceInfos",arrService);
-					
-					arrDomain.put(domnElm);
-
+					domains.put(domain);
 				}
 				
-
-				
 			}
-
-			results.put("domains", arrDomain);
+			results.put("domains", domains);
 			
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 

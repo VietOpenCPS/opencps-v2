@@ -989,13 +989,18 @@
 		<column name="createDate" type="Date" />
 		<column name="modifiedDate" type="Date" />
 		
-		<column name="deliverableType" type="String"/>
+		<column name="deliverableType_" type="String"/>
 		<column name="deliverableName" type="String"/>
 		<column name="formScript" type="String"/>
 		<column name="formReport" type="String"/>
 		<column name="codePattern" type="String"/>
 		<column name="counter" type="String"/>
 		<column name="mappingData" type="String"/>
+		
+		<finder return-type="DeliverableType" name="G_DLT">
+			<finder-column name="groupId"/>
+			<finder-column name="deliverableType_"/>
+		</finder>
 		
 	</entity>
 
@@ -1014,7 +1019,7 @@
 		
 		<column name="deliverableCode" type="String"/>
 		<column name="deliverableName" type="String"/>
-		<column name="deliverableType" type="String"/>
+		<column name="deliverableType_" type="String"/>
 		<column name="govAgencyCode" type="String"/>
 		<column name="govAgencyName" type="String"/>
 		<column name="applicantIdNo" type="String"/>
