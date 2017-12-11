@@ -837,7 +837,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(DossierPartTerm.PART_NAME);
+				query.addFields(new String[]{DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -863,6 +863,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String month = GetterUtil.getString(params.get(DossierTerm.MONTH));
 		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
 		String submitting = GetterUtil.getString(params.get(DossierTerm.SUBMITTING));
+		
+		System.out.println("status " + status);
+		System.out.println("subStatus " + subStatus);
+		System.out.println("agency " + agency);
+		System.out.println("service " + service);
+		System.out.println("template " + template);
+		System.out.println("month " + month);
+		System.out.println("step " + step);
+		System.out.println("submitting " + submitting);
 		// TODO add more logic here
 		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
 		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
@@ -975,7 +984,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(DossierPartTerm.PART_NAME);
+				query.addFields(new String[]{DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 

@@ -98,7 +98,7 @@
 				
 				<input type="file" id="employee-avatar" accept="image/*"  onchange="employeeChangeAvatar(this)" style="display: none;" />
 
-				<img id="employee-avatar-thumbnil" class="img-responsive center-block" style="max-height: 200px;"  src="/o/frontend-web-usermgt/images/user_02.png" alt=""/>
+				<img id="employee-avatar-thumbnil" class="img-responsive center-block" style="max-height: 200px;"  src="/o/orgopencpsfrontendadmin/images/default_avatar.png" alt=""/>
 
 				<button id="employee-avatar-btn" data-pk="${(employee.employeeId)!}" class="btn btn-active  btn-block"> 
 					Tải ảnh đại diện
