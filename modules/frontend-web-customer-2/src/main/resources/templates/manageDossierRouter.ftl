@@ -36,6 +36,7 @@
 		});
 
 		manageDossier.route("/(:id)", function(id) {
+			console.log(id);
 			$("#mainType1").show();
 			$(".filterField").show();
 			$("#mainType2").hide();

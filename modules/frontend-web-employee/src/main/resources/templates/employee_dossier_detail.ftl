@@ -381,5 +381,4 @@
 
 	printDetailDossier(${dossierId});
 
-
 </script>

@@ -17,13 +17,12 @@
 		$("#mainType2").hide();
 		resetValueFilter();
 		layout.showIn("#main_section", viewMainList);
-		dataSourceProfile.read({"status": "new"});
 		$(".itemStatus").css("pointer-events","auto");
 		$("#profileStatus li").removeClass('active');
 		$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
-		$('#profileStatus li[dataPk=new]').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
-		$('#profileStatus li[dataPk=new]').css("pointer-events","none");
-		$('#profileStatus li[dataPk=new]').addClass('active');
+		$('#profileStatus li[dataPk=""]').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
+		$('#profileStatus li[dataPk=""]').css("pointer-events","none");
+		$('#profileStatus li[dataPk=""]').addClass('active')
 	});
 	manageDossier.route("/thongbao", function(){
         $("#mainType1").hide();
