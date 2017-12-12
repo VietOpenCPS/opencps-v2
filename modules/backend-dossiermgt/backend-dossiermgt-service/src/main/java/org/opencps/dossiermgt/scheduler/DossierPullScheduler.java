@@ -203,7 +203,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 						object.getString(DossierTerm.DOSSIER_SUB_STATUS_TEXT), 0l, 0l,
 						object.getInt(DossierTerm.VIA_POSTAL), object.getString(DossierTerm.POSTAL_ADDRESS),
 						object.getString(DossierTerm.POSTAL_CITY_CODE), object.getString(DossierTerm.POSTAL_CITY_NAME),
-						object.getString(DossierTerm.POSTAL_TEL_NO), dossierTemplateCode,
+						object.getString(DossierTerm.POSTAL_TEL_NO), object.getString(DossierTerm.PASSWORD),
 						object.getBoolean(DossierTerm.NOTIFICATION), object.getBoolean(DossierTerm.ONLINE),
 						object.getString(DossierTerm.SERVER_NO), serviceContext);
 
