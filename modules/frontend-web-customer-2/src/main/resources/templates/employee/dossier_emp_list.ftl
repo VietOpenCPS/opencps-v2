@@ -38,7 +38,7 @@
 		
 		<div class="row PT15 PB15">
 						
-			<div class="form-group row M0 border-bottom PB5 border-color-lightblue">
+			<div class="form-group row M0 border-bottom PB5 border-color-lightblue align-middle">
 
 				<div class="col-sm-1">
 					

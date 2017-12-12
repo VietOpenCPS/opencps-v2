@@ -30,9 +30,10 @@
       </div>
   
     </div>
+    <!-- TODO: get referenceUid -->
     <div class="panel">
       <object id="objectView2" data="" width="100%" height="100%">
-        <iframe src="http://localhost:8080/documents/20147/0/20171208081357103ILHVICIQ..pdf/5b8fc3ea-a9c7-6b9c-1a45-9b737190aaa5"
+        <iframe src="${(api.endpoint)!}/dossiers/{id|referenceUid}/payments/{referenceUid}/confirmfile"
           width="100%" height="100%"> </iframe>
       </object>
     </div>
