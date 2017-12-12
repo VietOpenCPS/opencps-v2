@@ -23,4 +23,5 @@ public class DossierActionTerm {
 	public static final String NEXT_ACTION_ID = "nextActionId";
 	public static final String PAYLOAD = "payload";
 	public static final String STEP_INSTRUCTION = "stepInstruction";
+	public static final String AUTO = "auto";
 }

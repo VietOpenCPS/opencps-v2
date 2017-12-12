@@ -1,13 +1,9 @@
 package org.opencps.api.controller.util;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.opencps.api.dossier.model.ActionExecutedModel;
-import org.opencps.api.dossier.model.ActionModel;
 import org.opencps.api.dossier.model.ListContacts;
 import org.opencps.api.dossier.model.UserModel;
 import org.opencps.api.dossieraction.model.DossierActionNextActionModel;
@@ -20,22 +16,15 @@ import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
-import org.opencps.dossiermgt.model.ServiceProcessRole;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.comparator.RoleRoleIdComparator;
-
-import io.swagger.models.properties.StringProperty.Format;
 
 public class DossierActionUtils {
 
@@ -106,38 +95,50 @@ public class DossierActionUtils {
 
 	}
 
-	public static List<DossierActionNextActionModel> mappingToDoListReadNextActions(
-			List<ProcessAction> lstProcessAction, List<User> lstUser) {
+	public static List<DossierActionNextActionModel> mappingToDoListReadNextActions(JSONArray jsonData) {
 		List<DossierActionNextActionModel> outputs = new ArrayList<DossierActionNextActionModel>();
-		List<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
-		for (User user : lstUser) {
-			DossierActionNextActiontoUser model = new DossierActionNextActiontoUser();
-			
-			long userId = GetterUtil.getLong(user.getUserId());
 
-			model.setUserId(userId);
-			model.setUserName(user.getFullName());
+		if (jsonData != null) {
+			for (int i = 0; i < jsonData.length(); i++) {
+				JSONObject jsonObject = jsonData.getJSONObject(i);
+				ProcessAction processAction = (ProcessAction) jsonObject.get("processAction");
 
-			outputUsers.add(model);
+				List<User> lstUser = (List<User>) jsonObject.get("lstUser");
+
+				DossierActionNextActionModel model = new DossierActionNextActionModel();
+
+				long processActionId = GetterUtil.getLong(processAction.getProcessActionId());
+				long assignUserId = GetterUtil.getLong(processAction.getAssignUserUuid());
+
+				model.setProcessActionId(processActionId);
+				model.setActionCode(processAction.getActionCode());
+				model.setActionName(processAction.getActionName());
+				model.setPreStepCode(processAction.getPreStepCode());
+				model.setPostStepCode(processAction.getPostStepCode());
+				model.setAutoEvent(processAction.getAutoEvent());
+				model.setPreCondition(processAction.getPreCondition());
+				model.setAllowAssignUser(assignUserId);
+
+				List<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
+
+				for (User user : lstUser) {
+					DossierActionNextActiontoUser modelUser = new DossierActionNextActiontoUser();
+
+					long userId = GetterUtil.getLong(user.getUserId());
+
+					modelUser.setUserId(userId);
+					
+					modelUser.setUserName(user.getFullName());
+
+					outputUsers.add(modelUser);
+				}
+
+				model.getToUsers().addAll(outputUsers);
+
+				outputs.add(model);
+			}
 		}
-		for (ProcessAction processAction : lstProcessAction) {
-			DossierActionNextActionModel model = new DossierActionNextActionModel();
 
-			long processActionId = GetterUtil.getLong(processAction.getProcessActionId());
-			long assignUserId = GetterUtil.getLong(processAction.getAssignUserUuid());
-
-			model.setProcessActionId(processActionId);
-			model.setActionCode(processAction.getActionCode());
-			model.setActionName(processAction.getActionName());
-			model.setPreStepCode(processAction.getPreStepCode());
-			model.setPostStepCode(processAction.getPostStepCode());
-			model.setAutoEvent(processAction.getAutoEvent());
-			model.setPreCondition(processAction.getPreCondition());
-			model.setAllowAssignUser(assignUserId);
-			model.getToUsers().addAll(outputUsers);
-
-			outputs.add(model);
-		}
 		return outputs;
 	}
 
