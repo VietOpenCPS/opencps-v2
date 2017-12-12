@@ -17,6 +17,7 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -28,6 +29,7 @@ import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
@@ -241,8 +243,6 @@ public class DossierActionsImpl implements DossierActions {
 
 		// Add DossierAction
 
-		// TODO Add DossierActionUser
-
 		// Update DossierStatus
 
 		// Update DossierLog
@@ -285,7 +285,7 @@ public class DossierActionsImpl implements DossierActions {
 
 		boolean hasDossierSync = hasDossierSync(groupId, dossierId, referenceUid, processAction, isSubmitType);
 		
-		// TODO look up later
+		// TODO take a look later
 		boolean hasForedDossierSync = forcedDossierSync(groupId, dossierId, referenceUid, processAction, isSubmitType);
 
 		boolean isCreateDossier = hasCreateDossier(groupId, dossierId, referenceUid, actionCode, serviceProcessId,
@@ -372,6 +372,7 @@ public class DossierActionsImpl implements DossierActions {
 
 				// SyncDossierFile
 				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getByDossierIdAndIsNew(dossierId, true);
+				
 
 				for (DossierFile dosserFile : lsDossierFile) {
 					
@@ -500,12 +501,12 @@ public class DossierActionsImpl implements DossierActions {
 
 		String postStepCode = action.getPostStepCode();
 
-		ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
+		//ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 
 		// DOSSIER has nextAction form NEW to PROCESSING that it was created on
 		// client and it wasn't created ONLINE
 		if (hasDossierSync && dossier.getDossierStatus().contentEquals(DossierStatusConstants.NEW)
-				&& step.getDossierStatus().contentEquals(DossierStatusConstants.PROCESSING) && !dossier.isOnline()) {
+				 && !dossier.isOnline()) {
 			isCreate = true;
 		}
 
@@ -643,6 +644,9 @@ public class DossierActionsImpl implements DossierActions {
 		return lstprocessStep;
 		
 	}
+	
+
+	
 	protected Log _log = LogFactoryUtil.getLog(DossierActionsImpl.class);
 
 }
