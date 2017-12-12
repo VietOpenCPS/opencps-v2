@@ -62,9 +62,9 @@ public class DeliverableTypesActionsImpl implements DeliverableTypesActions {
 	}
 	
 	@Override
-	public DeliverableType removeDeliverableType(long groupId, long deliverableTypeId, String deliverableType_) throws PortalException {
+	public DeliverableType removeDeliverableType(long groupId, String deliverableTypeId) throws PortalException {
 
-		return DeliverableTypeLocalServiceUtil.removeDeliverableType(groupId, deliverableTypeId, deliverableType_);
+		return DeliverableTypeLocalServiceUtil.removeDeliverableType(groupId, deliverableTypeId);
 	}
 	
 	@Override

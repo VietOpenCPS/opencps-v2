@@ -19,7 +19,7 @@ public interface DeliverableTypesActions {
 			String deliverableType_, String codePattern, String counter, String formScript, String formReport,
 			String mappingData, ServiceContext serviceContext) throws SystemException, PortalException;
 
-	public DeliverableType removeDeliverableType(long groupId, long deliverableTypeId, String deliverableType_)
+	public DeliverableType removeDeliverableType(long groupId, String deliverableTypeId)
 			throws PortalException;
 
 	public DeliverableType updateDeliverableTypeFormScript(long groupId, long deliverableTypeId, String formScript,

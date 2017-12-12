@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * The implementation of the deliverable type local service.
@@ -71,8 +72,8 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 		// Add other fields
 		object.setDeliverableTypeId(deliverableTypeId);
-		object.setDeliverableType_(deliverableType_);
-		object.setDeliverableName(deliverableName);
+		object.setTypeCode(deliverableType_);
+		object.setTypeName(deliverableName);
 		object.setFormScript(formScript);
 		object.setFormReport(formReport);
 		object.setMappingData(mappingData);
@@ -109,8 +110,8 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 			// Add other fields
 			deliverableTypeObj.setDeliverableTypeId(deliverableTypeId);
-			deliverableTypeObj.setDeliverableType_(deliverableType_);
-			deliverableTypeObj.setDeliverableName(deliverableName);
+			deliverableTypeObj.setTypeCode(deliverableType_);
+			deliverableTypeObj.setTypeName(deliverableName);
 			deliverableTypeObj.setFormScript(formScript);
 			deliverableTypeObj.setFormReport(formReport);
 			deliverableTypeObj.setMappingData(mappingData);
@@ -123,8 +124,8 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 			deliverableTypeObj.setModifiedDate(now);
 
 			deliverableTypeObj.setDeliverableTypeId(deliverableTypeId);
-			deliverableTypeObj.setDeliverableType_(deliverableType_);
-			deliverableTypeObj.setDeliverableName(deliverableName);
+			deliverableTypeObj.setTypeCode(deliverableType_);
+			deliverableTypeObj.setTypeName(deliverableName);
 			deliverableTypeObj.setFormScript(formScript);
 			deliverableTypeObj.setFormReport(formReport);
 			deliverableTypeObj.setMappingData(mappingData);
@@ -139,22 +140,19 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 	}
 
-	public DeliverableType removeDeliverableType(long groupId, long deliverableTypeId, String deliverableType_)
+	public DeliverableType removeDeliverableType(long groupId, String deliverableTypeId)
 			throws PortalException {
 		// TODO remove DeliverableType
 
-		validateRemoveDeliverableType(groupId, deliverableTypeId, deliverableType_);
+		validateRemoveDeliverableType(groupId, deliverableTypeId);
 
 		DeliverableType deliverableTypeObj = null;
-
-		if (deliverableTypeId != 0) {
-			deliverableTypeObj = deliverableTypePersistence.fetchByPrimaryKey(deliverableTypeId);
-		} else {
-			deliverableTypeObj = deliverableTypePersistence.fetchByG_DLT(groupId, deliverableType_);
+		long id = Long.valueOf(deliverableTypeId);
+		deliverableTypeObj = deliverableTypePersistence.fetchByPrimaryKey(id);
+		if (Validator.isNull(deliverableTypeObj)) {
+			deliverableTypeObj = deliverableTypePersistence.fetchByG_DLT(groupId, deliverableTypeId);
 		}
-
 		return deliverableTypePersistence.remove(deliverableTypeObj);
-
 	}
 
 	public DeliverableType updateFormScript(long groupId, long deliverableTypeId, String formScript,
@@ -190,7 +188,6 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	public DeliverableType updateMappingData(long groupId, long deliverableTypeId, String mappingData,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 		// TODO Update FormReport of DeliverableType
-		System.out.println("GET DeliverableType " + new Date());
 
 		Date now = new Date();
 
@@ -201,10 +198,28 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 		return deliverableTypePersistence.update(deliverableType);
 	}
+	
+	public DeliverableType getDeliverableTypebyId(long groupId, String deliverableTypeId)
+			throws PortalException {
+		// TODO remove DeliverableType
 
-	private void validateRemoveDeliverableType(long groupId, long deliverableTypeId, String deliverableType_) {
-		// TODO Auto-generated method stub
+		//validateRemoveDeliverableType(groupId, deliverableTypeId, deliverableType_);
+
+		DeliverableType deliverableTypeObj = null;
+
+		long id = Long.valueOf(deliverableTypeId);
+		deliverableTypeObj = deliverableTypePersistence.fetchByPrimaryKey(id);
+		
+		if (Validator.isNull(deliverableTypeObj)) {
+			deliverableTypeObj = deliverableTypePersistence.fetchByG_DLT(groupId, deliverableTypeId);
+		}
+
+		return deliverableTypeObj;
 
 	}
 
+	private void validateRemoveDeliverableType(long groupId, String deliverableTypeId) {
+		// TODO Auto-generated method stub
+
+	}
 }

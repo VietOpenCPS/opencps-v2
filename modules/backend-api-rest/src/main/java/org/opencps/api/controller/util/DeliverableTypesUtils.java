@@ -37,8 +37,8 @@ public class DeliverableTypesUtils {
 		}
 		DeliverableTypesModel model = new DeliverableTypesModel();
 
-		model.setDeliverableType(deliverableType.getDeliverableType_());
-		model.setDeliverableName(deliverableType.getDeliverableName());
+		model.setDeliverableType(deliverableType.getTypeCode());
+		model.setDeliverableName(deliverableType.getTypeName());
 		model.setCodePattern(deliverableType.getCodePattern());
 		model.setCounter(Long.valueOf(deliverableType.getCounter()));
 

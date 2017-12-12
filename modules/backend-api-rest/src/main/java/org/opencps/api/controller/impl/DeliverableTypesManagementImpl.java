@@ -128,7 +128,29 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 	public Response removeDeliverabletypes(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id) {
 		// TODO Remove Deliverable Type
-		return Response.status(200).entity("OK").build();
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DeliverableTypesActions action = new DeliverableTypesActionsImpl();
+
+			DeliverableType deliverableType = action.removeDeliverableType(groupId, id);
+
+			DeliverableTypesModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
 	}
 
 	@Override
@@ -266,6 +288,27 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			DeliverableTypesModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 			
 			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+	
+	@Override
+	public Response getDeliverabletypebyId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id) {
+		// TODO Get Deliverable Type by Id or typeCode
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getDeliverableTypebyId(groupId, id);
+
+			return Response.status(200).entity(deliverableType.getFormScript()).build();
 
 		} catch (Exception e) {
 			return processException(e);

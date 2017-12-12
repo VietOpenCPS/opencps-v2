@@ -989,8 +989,8 @@
 		<column name="createDate" type="Date" />
 		<column name="modifiedDate" type="Date" />
 		
-		<column name="deliverableType_" type="String"/>
-		<column name="deliverableName" type="String"/>
+		<column name="typeCode" type="String"/>
+		<column name="typeName" type="String"/>
 		<column name="formScript" type="String"/>
 		<column name="formReport" type="String"/>
 		<column name="codePattern" type="String"/>
@@ -999,7 +999,7 @@
 		
 		<finder return-type="DeliverableType" name="G_DLT">
 			<finder-column name="groupId"/>
-			<finder-column name="deliverableType_"/>
+			<finder-column name="typeCode"/>
 		</finder>
 		
 	</entity>
