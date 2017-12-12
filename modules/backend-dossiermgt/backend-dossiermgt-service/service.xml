@@ -847,6 +847,9 @@
 			<finder-column name="dossierId" />
 			<finder-column name="userId" />
 		</finder>
+        <finder name="DID" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+        </finder>
 	</entity>
 
 	<entity local-service="true" name="DossierActionUser"
