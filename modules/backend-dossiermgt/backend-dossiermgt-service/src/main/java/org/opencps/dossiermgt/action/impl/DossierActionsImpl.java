@@ -283,7 +283,11 @@ public class DossierActionsImpl implements DossierActions {
 
 		boolean isSubmitType = isSubmitType(processAction);
 
-		boolean hasDossierSync = hasDossierSync(groupId, dossierId, referenceUid, processAction, isSubmitType);
+		boolean hasDossierSync = false;
+		
+		if (processActionId != 0) {
+			hasDossierSync = hasDossierSync(groupId, dossierId, referenceUid, processAction);
+		}
 		
 		// TODO take a look later
 		boolean hasForedDossierSync = forcedDossierSync(groupId, dossierId, referenceUid, processAction, isSubmitType);
@@ -513,7 +517,7 @@ public class DossierActionsImpl implements DossierActions {
 		return isCreate;
 	}
 
-	protected boolean hasDossierSync(long groupId, long dossierId, String refId, ProcessAction action, boolean isSubmit)
+	protected boolean hasDossierSync(long groupId, long dossierId, String refId, ProcessAction action)
 			throws PortalException {
 
 		Dossier dossier = getDossier(groupId, dossierId, refId);
