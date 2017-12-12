@@ -157,7 +157,7 @@
 						// "year": $("#year").val(),
 						// "month": $("#month").val(),
 						"keyword": $("#keyInput").val(),
-						"status": statusDossier 
+						"status": ""
 					})
 			    } else {
 					dataSourceProfile.read({
@@ -203,18 +203,19 @@
 		});
 	// Model MainSection
 		var loadProfile = function(){
-			$(".downloadProfile").click(function(e){
-				e.stopPropagation();
+			$(".downloadProfile").click(function(event){
 				var id = $(this).attr("data-Pk");
-				$.ajax({
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+				fileAttachmentDownload({
+					method: "GET",
 					url:"${api.server}/dossiers/"+id+"/download",
 					headers: {"groupId": ${groupId}},
-					dataType:"json",
-					type:"GET",
-					success:function(res){
+					success: function(sttCode){
 						
 					},
-					error:function(res){
+					error: function(sttCode){
 						
 					}
 				});

@@ -564,7 +564,7 @@
 		});
 		// 
 		$("label").css("font-family","Roboto-Regular");
-		$("input.form-control").css({"width":"260px", "height": "25px", "border-radius":"0"});
+		$(".form-inline input").css({"width":"260px", "height": "25px", "border-radius":"0"});
 		$(".clear").css("clear","both");
 		//
 	})
