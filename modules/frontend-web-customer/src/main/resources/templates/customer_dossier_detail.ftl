@@ -18,7 +18,7 @@
 		</div>
 	</div>
 
-	<div class="dossier-general-info P15 MB15">
+	<div class="dossier-general-info P15 MB15" style="display: none;">
 		<div class="col-sm-12">
 			Cơ quan thực hiện <span class="text-bold" data-bind="text:govAgencyName"></span>
 		</div>
@@ -752,7 +752,11 @@
 						wardCode : result.wardCode,
 						contactTelNo : result.contactTelNo,
 						contactEmail : result.contactEmail,
-						dossierNote : result.dossierNote,
+						dossierNote : function(){
+							if(result.dossierNote){
+								return result.dossierNote;
+							}
+						},
 						viaPostal : function(){
 							if(result.viaPostal === 2){
 								$("#viaPostal").prop('checked', true);
@@ -974,6 +978,7 @@ var fnCheckValidTemplate = function(){
 var fnSaveForm = function(id, value){
 	var current = $("#btn-save-formalpaca"+id);
 	var referentUid = current.attr("referenceUid");
+	console.log(referentUid);
 	if(referentUid){
 		$.ajax({
 			url : "${api.server}/dossiers/${dossierId}/files/"+referentUid+"/formdata",
@@ -1012,10 +1017,18 @@ $(document).on("click",".saveFormAlpaca",function(event){
 	var value ;
 	if(formType !== "dklr"){
 		value = $("#formPartNo"+id).alpaca('get').getValue();
-		var validate = $("#formPartNo"+id).alpaca('get').isValid(true);
-		console.log(validate);
 
-		if(validate && referentUidFile && value){
+		var errorMessage = '';
+		$("#formPartNo"+id+' div[class*="has-error"] > label').each(function( index ) {
+
+			errorMessage = "notValid";
+
+		});
+		console.log(errorMessage);
+		console.log(referentUidFile);
+		console.log(value);
+
+		if(errorMessage.length === '' && referentUidFile){
 			$.ajax({
 				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
 				dataType : "json",

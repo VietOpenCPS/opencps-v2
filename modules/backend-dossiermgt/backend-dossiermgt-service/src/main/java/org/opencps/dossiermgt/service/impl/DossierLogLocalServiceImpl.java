@@ -54,6 +54,7 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
@@ -175,14 +176,15 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
             SearchContext searchContext) throws ParseException, SearchException {
 
         String notiType = String.valueOf(params.get(DossierLogTerm.NOTIFICATION_TYPE));
+        notiType = StringUtil.replace(notiType, StringPool.DASH, StringPool.BLANK);
         String groupId = (String) params.get(Field.GROUP_ID);
     	String dosssierId = String.valueOf(params.get(DossierLogTerm.DOSSIER_ID));
     	String keywords = "";
-    	/*if(notiType != "null"){
+    	if(notiType != "null"){
     		keywords = notiType;
     	}else{
     		keywords = dosssierId;
-    	}*/
+    	}
         Indexer<DossierLog> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierLog.class);
 
         searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -262,6 +264,7 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
             throws ParseException, SearchException {
 
         String notiType = String.valueOf(params.get(DossierLogTerm.NOTIFICATION_TYPE));
+        notiType = StringUtil.replace(notiType, StringPool.DASH, StringPool.BLANK);
         String groupId = (String) params.get(Field.GROUP_ID);
     	String dosssierId = String.valueOf(params.get(DossierLogTerm.DOSSIER_ID));
     	String keywords = "";

@@ -31,6 +31,7 @@ import frontend.web.customer.constants.FrontendWebCustomerPortletKeys;
 /**
  * @author huymq
  */
+
 @Component(immediate = true, property = {
 	"com.liferay.portlet.css-class-wrapper=portlet-freemarker",
 	"com.liferay.portlet.display-category=category.opencps.customer",

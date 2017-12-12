@@ -40,7 +40,7 @@
 				<div class="background-triangle-small"><i class="fa fa-star"></i></div> <span class="text-uppercase">Hướng dẫn</span> <span class="text-light-gray">(gồm các bước làm thủ tục)</span>
 			</div>
 			<div class="content-part">
-				<span data-bind="text:stepInstruction"></span>
+				<span data-bind="html:stepInstruction"></span>
 			</div>
 			<p class="MB0 text-light-blue"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p>
 		</div>
@@ -185,7 +185,7 @@
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 text-right">
 							<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
-							type="button" data-pk="#:id#">Ghi lại</button>
+							type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
 							<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
 						</div>
 					</div>
@@ -1111,7 +1111,11 @@
 						contactEmail : result.contactEmail,
 						dossierNo : result.dossierNo,
 						dossierStatusText : result.dossierStatusText,
-						stepInstruction : result.stepInstruction,
+						stepInstruction : function(){
+							if(result.stepInstruction){
+								return result.stepInstruction;
+							}
+						},
 						applicantNote : function(){
 							$('#applicantNote').editable("setValue",result.applicantNote);
 							if(!result.applicantNote){
@@ -1382,6 +1386,7 @@
 	var fnSaveForm = function(id, value){
 		var current = $("#btn-save-formalpaca"+id);
 		var referentUid = current.attr("referenceUid");
+		console.log(referentUid);
 		if(referentUid){
 			$.ajax({
 				url : "${api.server}/dossiers/${dossierId}/files/"+referentUid+"/formdata",
@@ -1420,10 +1425,19 @@
 		var value ;
 		if(formType !== "dklr"){
 			value = $("#formPartNo"+id).alpaca('get').getValue();
-			var validate = $("#formPartNo"+id).alpaca('get').isValid(true);
-			console.log(validate);
 
-			if(validate && referentUidFile && value){
+
+			var errorMessage = '';
+			$("#formPartNo"+id+' div[class*="has-error"] > label').each(function( index ) {
+
+				errorMessage = "notValid";
+
+			});
+			console.log(errorMessage);
+			console.log(referentUidFile);
+			console.log(value);
+
+			if(errorMessage === '' && referentUidFile){
 				$.ajax({
 					url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
 					dataType : "json",
