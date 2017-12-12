@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
-import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -810,6 +809,28 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String secetKey = GetterUtil.getString(params.get("secetKey"));
 
+		String status = GetterUtil.getString(params.get(DossierTerm.STATUS));
+		String subStatus = GetterUtil.getString(params.get(DossierTerm.SUBSTATUS));
+		String agency = GetterUtil.getString(params.get(DossierTerm.AGENCY));
+		String service = GetterUtil.getString(params.get(DossierTerm.SERVICE));
+		String template = GetterUtil.getString(params.get(DossierTerm.TEMPLATE));
+
+		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
+
+		// TODO add more logic here
+
+		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
+		String top = GetterUtil.getString(params.get(DossierTerm.TOP));
+
+		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
+		String submitting = GetterUtil.getString(params.get(DossierTerm.SUBMITTING));
+
+		int year = GetterUtil.getInteger(params.get(DossierTerm.YEAR));
+		int month = GetterUtil.getInteger(params.get(DossierTerm.MONTH));
+		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
+
+		System.out.println("======================== " + follow + "|" + submitting);
+
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -837,7 +858,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(new String[]{DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO});
+				query.addFields(
+						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO });
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -854,33 +876,18 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		}
 
-		String status = GetterUtil.getString(params.get(DossierTerm.STATUS));
-		String subStatus = GetterUtil.getString(params.get(DossierTerm.SUBSTATUS));
-		String agency = GetterUtil.getString(params.get(DossierTerm.AGENCY));
-		String service = GetterUtil.getString(params.get(DossierTerm.SERVICE));
-		String template = GetterUtil.getString(params.get(DossierTerm.TEMPLATE));
-		String year = GetterUtil.getString(params.get(DossierTerm.YEAR));
-		String month = GetterUtil.getString(params.get(DossierTerm.MONTH));
-		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
-		String submitting = GetterUtil.getString(params.get(DossierTerm.SUBMITTING));
-		
-		System.out.println("status " + status);
-		System.out.println("subStatus " + subStatus);
-		System.out.println("agency " + agency);
-		System.out.println("service " + service);
-		System.out.println("template " + template);
-		System.out.println("month " + month);
-		System.out.println("step " + step);
-		System.out.println("submitting " + submitting);
-		// TODO add more logic here
-		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
-		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
-		String top = GetterUtil.getString(params.get(DossierTerm.TOP));
+		if (Validator.isNotNull(owner) && Boolean.parseBoolean(owner) && userId > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
 
-		if (Validator.isNotNull(submitting)) {
-			MultiMatchQuery query = new MultiMatchQuery(submitting);
+			query.addField(DossierTerm.USER_ID);
 
-			query.addFields(DossierTerm.SUBMITTING);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(submitting));
+
+			query.addField(DossierTerm.SUBMITTING);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -925,18 +932,18 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(year)) {
-			MultiMatchQuery query = new MultiMatchQuery(year);
+		if (year > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(year));
 
-			query.addFields(DossierTerm.YEAR);
+			query.addFields(DossierTerm.YEAR_DOSSIER);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(month)) {
-			MultiMatchQuery query = new MultiMatchQuery(month);
+		if (month > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(month));
 
-			query.addFields(DossierTerm.MONTH);
+			query.addFields(DossierTerm.MONTH_DOSSIER);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -959,6 +966,25 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String secetKey = GetterUtil.getString(params.get("secetKey"));
+		String status = GetterUtil.getString(params.get(DossierTerm.STATUS));
+		String subStatus = GetterUtil.getString(params.get(DossierTerm.SUBSTATUS));
+		String agency = GetterUtil.getString(params.get(DossierTerm.AGENCY));
+		String service = GetterUtil.getString(params.get(DossierTerm.SERVICE));
+		String template = GetterUtil.getString(params.get(DossierTerm.TEMPLATE));
+
+		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
+
+		// TODO add more logic here
+		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
+		String top = GetterUtil.getString(params.get(DossierTerm.TOP));
+
+		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
+		String submitting = GetterUtil.getString(params.get(DossierTerm.SUBMITTING));
+
+		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
+
+		int year = GetterUtil.getInteger(params.get(DossierTerm.YEAR));
+		int month = GetterUtil.getInteger(params.get(DossierTerm.MONTH));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -984,7 +1010,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(new String[]{DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO});
+				query.addFields(
+						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO });
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -1002,25 +1029,18 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		}
 
-		String status = GetterUtil.getString(params.get(DossierTerm.STATUS));
-		String subStatus = GetterUtil.getString(params.get(DossierTerm.SUBSTATUS));
-		String agency = GetterUtil.getString(params.get(DossierTerm.AGENCY));
-		String service = GetterUtil.getString(params.get(DossierTerm.SERVICE));
-		String template = GetterUtil.getString(params.get(DossierTerm.TEMPLATE));
-		String year = GetterUtil.getString(params.get(DossierTerm.YEAR));
-		String month = GetterUtil.getString(params.get(DossierTerm.MONTH));
-		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
-		String submitting = GetterUtil.getString(params.get(DossierTerm.SUBMITTING));
+		if (Validator.isNotNull(owner) && Boolean.parseBoolean(owner) && userId > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
 
-		// TODO add more logic here
-		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
-		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
-		String top = GetterUtil.getString(params.get(DossierTerm.TOP));
+			query.addField(DossierTerm.USER_ID);
 
-		if (Validator.isNotNull(submitting)) {
-			MultiMatchQuery query = new MultiMatchQuery(submitting);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 
-			query.addFields(DossierTerm.SUBMITTING);
+		if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(submitting));
+
+			query.addField(DossierTerm.SUBMITTING);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -1065,18 +1085,18 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(year)) {
-			MultiMatchQuery query = new MultiMatchQuery(year);
+		if (year > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(year));
 
-			query.addFields(DossierTerm.YEAR);
+			query.addFields(DossierTerm.YEAR_DOSSIER);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(month)) {
-			MultiMatchQuery query = new MultiMatchQuery(month);
+		if (month > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(month));
 
-			query.addFields(DossierTerm.MONTH);
+			query.addFields(DossierTerm.MONTH_DOSSIER);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

@@ -94,7 +94,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
-
+			
 			String status = query.getStatus();
 			String substatus = query.getSubstatus();
 			String agency = query.getAgency();
@@ -107,16 +107,6 @@ public class DossierManagementImpl implements DossierManagement {
 			String step = query.getStep();
 			String submitting = query.getSubmitting();
 			String top = query.getTop();
-			
-			System.out.println("status " + status);
-			System.out.println("agency " + agency);
-			System.out.println("service " + service);
-			System.out.println("template " + template);
-			System.out.println("month " + month);
-			System.out.println("step " + step);
-			System.out.println("submitting " + submitting);
-			
-			System.out.println("/////////////////////////////////////////Done");
 
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -130,6 +120,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.SUBMITTING, submitting);
 			params.put(DossierTerm.FOLLOW, follow);
 			params.put(DossierTerm.TOP, top);
+			params.put(DossierTerm.USER_ID, user.getUserId());
 			params.put("secetKey", query.getSecetKey());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
@@ -206,6 +197,9 @@ public class DossierManagementImpl implements DossierManagement {
 
 			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
 					input.getDossierTemplateNo(), groupId);
+			
+			//Create dossierNote
+			
 
 			ServiceProcess process = ServiceProcessLocalServiceUtil.getServiceProcess(option.getServiceProcessId());
 
