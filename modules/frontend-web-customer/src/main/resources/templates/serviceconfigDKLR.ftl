@@ -464,9 +464,7 @@
 				manageDossier.navigate("/taohosomoi/chuanbihoso/"+id);
 			},
 			error : function(result){
-				notification.show({
-          message: "Số hồ sơ không tồn tại trên nhệ thống !"
-        }, "error");
+				alert("Số hồ sơ không tồn tại!")
 			}
 		});
 	};
@@ -481,9 +479,7 @@
 				cloningProfile(id)
 			},
 			error : function(result){
-				notification.show({
-          message: "Số hồ sơ không tồn tại trên nhệ thống !"
-        }, "error");
+				alert("Số hồ sơ không tồn tại!")
 			}
 		});
 	};
@@ -564,8 +560,24 @@
 		});
 		// 
 		$("label").css("font-family","Roboto-Regular");
-		$(".form-inline input").css({"width":"260px", "height": "25px", "border-radius":"0"});
+		$("input").css({"width":"260px", "height": "25px", "border-radius":"0"});
 		$(".clear").css("clear","both");
-		//
+		// 
+		$(function(){
+		  manageDossier.route("/taohosomoi/chuanbihoso/(:dossierId)", function(dossierId){
+		    $("#mainType1").hide();
+		    $("#mainType2").show();
+		    $("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+dossierId,function(result){
+
+		    });
+		  });
+		  manageDossier.route("/taohosomoi/nophoso/(:dossierId)", function(dossierId){
+				$("#mainType1").hide();
+				$("#mainType2").show();
+				$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+dossierId,function(result){
+
+				});
+			});
+		})
 	})
 </script>

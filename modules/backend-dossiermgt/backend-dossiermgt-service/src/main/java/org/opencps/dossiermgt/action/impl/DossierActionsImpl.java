@@ -13,6 +13,7 @@ import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
@@ -24,6 +25,7 @@ import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
@@ -36,9 +38,11 @@ import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -53,6 +57,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.exception.NotFoundException;
@@ -158,50 +163,138 @@ public class DossierActionsImpl implements DossierActions {
 	}
 
 	@Override
-	public JSONObject getNextActions(String actionCode, long dossierId, long groupId, Boolean owner,
-			 int start, int end, String sort, String order, ServiceContext serviceContext)
-			throws PortalException {
-		
-		JSONObject result = JSONFactoryUtil.createJSONObject();
-		
-		List<User> lstUser = new ArrayList<User>();
-		
-		DossierAction dossierAction = getDossierAction(dossierId, actionCode);
-		
-		long serviceProcessId = dossierAction.getServiceProcessId();
-		
-		List<ProcessAction> lstProcessAction = getListProcessAtion(serviceProcessId);
-		
-		List<ProcessStep> lstProcessStep = getListProcessStep(serviceProcessId);
-		
-		for(ProcessStep processStep : lstProcessStep){
-			
-			List<ProcessStepRole> lstProcessStepRole = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStep.getProcessStepId());
-			
-			for(ProcessStepRole processStepRole : lstProcessStepRole){
-				
-				List<User> users = UserLocalServiceUtil.getRoleUsers(processStepRole.getRoleId());
-				lstUser.addAll(users);
-				
+	public JSONArray getNextActions(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext) throws PortalException {
+
+		JSONArray results = JSONFactoryUtil.createJSONArray();
+
+		// List<User> lstUser = new ArrayList<User>();
+
+		List<ProcessAction> lstProcessAction = new ArrayList<ProcessAction>();
+
+		// List<ProcessStep> lstProcessStep = new ArrayList<ProcessStep>();
+
+		Dossier dossier = null;
+
+		DossierAction dossierAction = null;
+
+		long serviceProcessId = 0;
+
+		String stepCode = StringPool.BLANK;
+
+		String actionCode = GetterUtil.getString(params.get(DossierActionTerm.ACTION_CODE));
+		// TODO filter by Auto
+		// String auto =
+		// GetterUtil.getString(params.get(DossierActionTerm.AUTO));
+		String referenceUid = GetterUtil.getString(params.get(DossierTerm.REFERENCE_UID));
+
+		long dossierId = GetterUtil.getLong(params.get(DossierTerm.DOSSIER_ID));
+
+		if (Validator.isNotNull(referenceUid)) {
+			dossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
+		} else {
+			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		}
+
+		if (dossier != null) {
+
+			long dossierActionId = dossier.getDossierActionId();
+
+			if (Validator.isNotNull(actionCode)) {
+				dossierAction = getDossierAction(dossier.getDossierId(), actionCode);
+			} else {
+				dossierAction = DossierActionLocalServiceUtil.getDossierAction(dossierActionId);
+			}
+
+			serviceProcessId = dossierAction != null ? dossierAction.getServiceProcessId() : 0;
+
+			stepCode = dossierAction != null ? dossierAction.getStepCode() : StringPool.BLANK;
+
+			if (Validator.isNotNull(stepCode)) {
+
+				try {
+					lstProcessAction = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
+							serviceProcessId, stepCode);
+					for (ProcessAction processAction : lstProcessAction) {
+
+						String[] preConditions = StringUtil.split(processAction.getPreCondition());
+						if (preConditions != null && preConditions.length > 0) {
+							for (String preCondition : preConditions) {
+								if (preCondition.equalsIgnoreCase("payok")) {
+									// TODO check palyment
+									// continue;
+								} else if (preCondition.equalsIgnoreCase("cancelling")) {
+									if (dossier.getCancellingDate() == null) {
+										continue;
+									}
+
+								} else if (preCondition.equalsIgnoreCase("correcting")) {
+									if (dossier.getCorrecttingDate() == null) {
+										continue;
+									}
+
+								}
+							}
+						}
+
+						JSONObject result = JSONFactoryUtil.createJSONObject();
+
+						String postStepCode = processAction.getPostStepCode();
+
+						ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId,
+								processAction.getServiceProcessId());
+
+						List<ProcessStepRole> lstProcessStepRole = ProcessStepRoleLocalServiceUtil
+								.findByP_S_ID(processStep.getProcessStepId());
+
+						List<User> lstUser = new ArrayList<User>();
+
+						if (lstProcessStepRole == null || lstProcessStepRole.isEmpty()) {
+							// Search in ServiceProcessRole
+							List<ServiceProcessRole> serviceProcessRoles = ServiceProcessRoleLocalServiceUtil
+									.findByS_P_ID(serviceProcessId);
+
+							for (ServiceProcessRole serviceProcessRole : serviceProcessRoles) {
+
+								List<User> users = UserLocalServiceUtil.getRoleUsers(serviceProcessRole.getRoleId());
+
+								lstUser.addAll(users);
+
+							}
+						} else {
+							for (ProcessStepRole processStepRole : lstProcessStepRole) {
+
+								List<User> users = UserLocalServiceUtil.getRoleUsers(processStepRole.getRoleId());
+
+								lstUser.addAll(users);
+							}
+						}
+
+						result.put("processAction", processAction);
+						result.put("lstUser", lstUser);
+
+						results.put(result);
+					}
+				} catch (Exception e) {
+					_log.error("Can not get ProcessStep", e);
+				}
 			}
 		}
-		result.put("lstProcessAction", lstProcessAction);
-		result.put("lstUser", lstUser);
-		return result;
+
+		return results;
 	}
 
 	@Override
-	public JSONObject getDossierActions(long dossierId, long groupId, Boolean owner,
-			 int start, int end, String sort, String order, ServiceContext serviceContext)
-			throws PortalException {
-		
+	public JSONObject getDossierActions(long dossierId, long groupId, Boolean owner, int start, int end, String sort,
+			String order, ServiceContext serviceContext) throws PortalException {
+
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		Hits hits = null;
 
 		SearchContext searchContext = new SearchContext();
 		searchContext.setCompanyId(serviceContext.getCompanyId());
-		
+
 		try {
 			String referenceUid = null;
 			if (dossierId == 0) {
@@ -210,17 +303,17 @@ public class DossierActionsImpl implements DossierActions {
 			if (start == 0) {
 				start = -1;
 				end = -1;
-			} 
+			}
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(DossierActionTerm.DOSSIER_ID, dossierId);
-			if(owner != null && owner.booleanValue()) {
+			if (owner != null && owner.booleanValue()) {
 				params.put(Field.USER_ID, serviceContext.getUserId());
 			}
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(sort + "_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean(order)) };
-			
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(sort + "_sortable", Sort.STRING_TYPE, GetterUtil.getBoolean(order)) };
+
 			hits = DossierActionLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
 			result.put("data", hits.toList());
@@ -290,6 +383,7 @@ public class DossierActionsImpl implements DossierActions {
 		}
 		
 		// TODO take a look later
+
 		boolean hasForedDossierSync = forcedDossierSync(groupId, dossierId, referenceUid, processAction, isSubmitType);
 
 		boolean isCreateDossier = hasCreateDossier(groupId, dossierId, referenceUid, actionCode, serviceProcessId,
@@ -363,7 +457,7 @@ public class DossierActionsImpl implements DossierActions {
 				DossierActionLocalServiceUtil.updateNextActionId(prvAction.getDossierActionId(),
 						dossierAction.getDossierActionId());
 			}
-			
+
 			if (hasDossierSync) {
 				// SyncAction
 				int method = 0;
@@ -379,7 +473,7 @@ public class DossierActionsImpl implements DossierActions {
 				
 
 				for (DossierFile dosserFile : lsDossierFile) {
-					
+
 					DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
 							false, 1, dosserFile.getDossierFileId(), dosserFile.getReferenceUid(),
 							serviceProcess.getServerNo());
@@ -599,22 +693,22 @@ public class DossierActionsImpl implements DossierActions {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
 		Date appIdDate = null;
-		
+
 		Dossier dossier = null;
 
 		try {
 			appIdDate = sdf.parse(applicantIdDate);
-			
-			dossier = DossierLocalServiceUtil.initDossier(groupId, dossierId, referenceUid, counter, serviceCode, serviceName,
-					govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate, address,
-					cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
-					contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode, postalCityName,
-					postalTelNo, online, notification, applicantNote, context);
+
+			dossier = DossierLocalServiceUtil.initDossier(groupId, dossierId, referenceUid, counter, serviceCode,
+					serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,
+					address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
+					contactTelNo, contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode,
+					postalCityName, postalTelNo, online, notification, applicantNote, context);
 
 		} catch (Exception e) {
 			_log.error(e);
 		}
-		
+
 		return dossier;
 	}
 
@@ -627,30 +721,31 @@ public class DossierActionsImpl implements DossierActions {
 				folderId, dossierActionId, serverNo, context);
 	}
 
-	protected  DossierAction getDossierAction(long dossierId, String actionCode){
+	protected DossierAction getDossierAction(long dossierId, String actionCode) {
 
-		DossierAction dossierAction = DossierActionLocalServiceUtil.getDossierActionbyDossierIdandActionCode(dossierId,actionCode);
-		
+		DossierAction dossierAction = DossierActionLocalServiceUtil.getDossierActionbyDossierIdandActionCode(dossierId,
+				actionCode);
+
 		return dossierAction;
 	}
-	
-	protected  List<ProcessAction> getListProcessAtion(long serviceProcessId) throws PortalException{
-		
-		List<ProcessAction> lstprocessAction = ProcessActionLocalServiceUtil.getProcessActionbyServiceProcessId(serviceProcessId);
-		
-		return lstprocessAction;
-		
-	}
-	protected  List<ProcessStep> getListProcessStep(long serviceProcessId) throws PortalException{
-		
-		List<ProcessStep> lstprocessStep = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcessId);
-		
-		return lstprocessStep;
-		
-	}
-	
 
-	
+	protected List<ProcessAction> getListProcessAtion(long serviceProcessId) throws PortalException {
+
+		List<ProcessAction> lstprocessAction = ProcessActionLocalServiceUtil
+				.getProcessActionbyServiceProcessId(serviceProcessId);
+
+		return lstprocessAction;
+
+	}
+
+	protected List<ProcessStep> getListProcessStep(long serviceProcessId) throws PortalException {
+
+		List<ProcessStep> lstprocessStep = ProcessStepLocalServiceUtil
+				.getProcessStepbyServiceProcessId(serviceProcessId);
+
+		return lstprocessStep;
+
+	}
 	protected Log _log = LogFactoryUtil.getLog(DossierActionsImpl.class);
 
 }

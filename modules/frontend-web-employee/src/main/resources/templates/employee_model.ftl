@@ -1,7 +1,9 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
-	<script type="text/javascript">
+
+<#------- Phần ViewModel/DataSource -------->
+<script type="text/javascript">
 	// Source for panel list
 		var dataGovAgency = new kendo.data.DataSource({
 			transport:{
@@ -34,7 +36,7 @@
 	//Source for main listview
 		var optBoxPageSize = function(){
 			var totalItem = parseInt(dataSourceProfile.total());
-			var pSize = 10;
+			var pSize = 2;
 			var arrPsize = [];
 			var selectHtml = "<option class='optPage' value='"+totalItem+"'>Tất cả</option>";
 			$("#totalItem_dossierList").text(dataSourceProfile.total());
@@ -55,25 +57,25 @@
 		var dataSourceProfile = new kendo.data.DataSource({
 			transport:{
 				read:function(options){
-					// if (options.data.year=="") {
-					// 	options.data.year = 0;
-					// };
-					// if (options.data.month=="") {
-					// 	options.data.month = 0;
-					// };
+					if (options.data.year=="") {
+						options.data.year = 0;
+					};
+					if (options.data.month=="") {
+						options.data.month = 0;
+					};
 					$.ajax({
-						// url: "http://localhost:3000/dossiers",
-						url:"${api.server}/dossiers",
+						url: "http://localhost:3000/dossiers",
+						// url:"${api.server}/dossiers",
 						dataType:"json",
 						type:"GET",
 						headers : {"groupId": ${groupId}},
 						data:{
 							service: options.data.serviceInfo,
-							dossierNo: options.data.dossierNo,
+							agency: options.data.govAgencyCode,
 							keyword: options.data.keyword,
 							status : options.data.status,
-							// year: options.data.year,
-							// month: options.data.month
+							year: options.data.year,
+							month: options.data.month
 						},
 						success:function(result){
 							if (result.total!=0) {
@@ -86,8 +88,8 @@
 							if (result.total!=0) {
 								dataSourceProfile.page(1);
 							};
-							
 							$("#statusName").html($(".itemStatus.active > a").text());
+							$("#statusNameSub").html($(".itemStatus.active > a").text());
 							//
 							$('.optPage[value="'+dataSourceProfile.pageSize()+'"]').attr("selected","selected");
 							// Option kendo-page
@@ -101,7 +103,7 @@
 					});
 				}
 			},
-			pageSize: 10,
+			pageSize: 2,
 			schema:{
 				data:"data",
 				total:"total",
@@ -133,53 +135,40 @@
 	// -=-=-=-=-=-=-=Model=-=-=-=-=-=-=-=-=-
 	// Model Panel
 		var resetValueFilter = function(){
-			// $("#month").data("kendoComboBox").text("");
-			// $("#year").data("kendoComboBox").text("");
-			$("#dossier-emp-nav-selectbox-by-dossierNo").val("");
+			$("#month").data("kendoComboBox").text("");
+			$("#year").data("kendoComboBox").text("");
 			$("#keyInput").val("");
 			$("#serviceInfo").data("kendoComboBox").text("");
-			// $("#govAgency").data("kendoComboBox").text("");
+			$("#govAgency").data("kendoComboBox").text("");
 		}
 		var modelPanel = kendo.observable({
-			// dataGovAgency: dataGovAgency,
+			dataGovAgency: dataGovAgency,
 			dataServiceInfo: dataServiceInfo,
-			// dataYear: dataYear,
-			// dataMonth: dataMonth,
+			dataYear: dataYear,
+			dataMonth: dataMonth,
 			// Lọc theo tháng, năm, cơ quan thực hiện, thủ tục hành chính
 			eventLookup : function(e){
 				e.preventDefault();
 				var statusDossier = $("li.itemStatus.active").attr("dataPk");
 			    if (statusDossier !== undefined) {
 					dataSourceProfile.read({
-						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
 						"serviceInfo": $("#serviceInfo").val(),
-						// "govAgencyCode": $("#govAgency").val(),
-						// "year": $("#year").val(),
-						// "month": $("#month").val(),
+						"govAgencyCode": $("#govAgency").val(),
+						"year": $("#year").val(),
+						"month": $("#month").val(),
 						"keyword": $("#keyInput").val(),
-						"status": ""
+						"status": statusDossier
 					})
 			    } else {
 					dataSourceProfile.read({
 						"serviceInfo": $("#serviceInfo").val(),
-						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-						// "govAgencyCode": $("#govAgency").val(),
-						// "year": $("#year").val(),
-						// "month": $("#month").val(),
+						"govAgencyCode": $("#govAgency").val(),
+						"year": $("#year").val(),
+						"month": $("#month").val(),
 						"keyword": $("#keyInput").val(),
-						"status": statusDossier 
+						"status":""
 					})
 			    }
-			},
-			filterDossierNo: function(e){
-				e.preventDefault();
-				$("#keyInput").val("");
-				var statusDossier = $("li.itemStatus.active").attr("dataPk");
-				dataSourceProfile.read({
-					"serviceInfo": $("#serviceInfo").val(),
-					"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-					"status":statusDossier
-				})
 			},
 			filterStatus: function(e){
 				e.preventDefault();
@@ -202,62 +191,6 @@
 			}
 		});
 	// Model MainSection
-		var loadProfile = function(){
-			$(".downloadProfile").click(function(event){
-				var id = $(this).attr("data-Pk");
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-				fileAttachmentDownload({
-					method: "GET",
-					url:"${api.server}/dossiers/"+id+"/download",
-					headers: {"groupId": ${groupId}},
-					success: function(sttCode){
-						
-					},
-					error: function(sttCode){
-						
-					}
-				});
-			});
-		};
-		var loadAddRes = function(){
-			$(".downloadAddRes").click(function(e){
-				e.stopPropagation();
-				var id = $(this).attr("data-Pk");
-				$.ajax({
-					url:"${api.server}/dossiers/"+id,
-					headers: {"groupId": ${groupId}},
-					dataType:"json",
-					type:"GET",
-					success:function(res){
-						
-					},
-					error:function(res){
-						
-					}
-				});
-			});
-		};
-		var copyProfile = function(){
-			$(".copyProfile").click(function(e){
-				e.stopPropagation();
-				var id = $(this).attr("data-Pk");
-				$.ajax({
-					url:"${api.server}/dossiers/"+id+"/cloning",
-					dataType:"json",
-					type:"POST",
-					headers: {"groupId": ${groupId}},
-					success:function(res){
-						var referenceUid = res.referenceUid;
-						manageDossier.navigate("/taohosomoi/nophoso/"+referenceUid);
-					},
-					error:function(res){
-						
-					}
-				})
-			})
-		};
 		var modelMain = kendo.observable({
 			dataSourceProfile : dataSourceProfile,
 			// modelPanel: modelPanel,
@@ -278,17 +211,8 @@
 			},
 			changeList: function(e){
 				e.preventDefault();
-				loadProfile();
-				loadAddRes();
-				copyProfile();
-				$(".actionDossier a").hover(function(){ $(this).css("color","#14bef0")}, function(){ $(this).css("color","#2a2a2a") }
-				);
+
 			}
 		});
-		
 
 	</script>
-		
-
-
-	
