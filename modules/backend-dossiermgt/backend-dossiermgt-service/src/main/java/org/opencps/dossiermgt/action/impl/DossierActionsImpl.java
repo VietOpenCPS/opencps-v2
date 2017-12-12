@@ -18,6 +18,7 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -30,6 +31,7 @@ import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
@@ -334,8 +336,6 @@ public class DossierActionsImpl implements DossierActions {
 
 		// Add DossierAction
 
-		// TODO Add DossierActionUser
-
 		// Update DossierStatus
 
 		// Update DossierLog
@@ -376,9 +376,14 @@ public class DossierActionsImpl implements DossierActions {
 
 		boolean isSubmitType = isSubmitType(processAction);
 
-		boolean hasDossierSync = hasDossierSync(groupId, dossierId, referenceUid, processAction, isSubmitType);
+		boolean hasDossierSync = false;
+		
+		if (processActionId != 0) {
+			hasDossierSync = hasDossierSync(groupId, dossierId, referenceUid, processAction);
+		}
+		
+		// TODO take a look later
 
-		// TODO look up later
 		boolean hasForedDossierSync = forcedDossierSync(groupId, dossierId, referenceUid, processAction, isSubmitType);
 
 		boolean isCreateDossier = hasCreateDossier(groupId, dossierId, referenceUid, actionCode, serviceProcessId,
@@ -419,6 +424,7 @@ public class DossierActionsImpl implements DossierActions {
 					0l, actionCode, actionUser, processAction.getActionName(), actionNote, actionOverdue,
 					processAction.getSyncActionCode(), false, processAction.getRollbackable(), curStep.getStepCode(),
 					curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(), context);
+			
 
 		} else {
 
@@ -464,6 +470,7 @@ public class DossierActionsImpl implements DossierActions {
 
 				// SyncDossierFile
 				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getByDossierIdAndIsNew(dossierId, true);
+				
 
 				for (DossierFile dosserFile : lsDossierFile) {
 
@@ -473,8 +480,14 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 			}
-
+			
 		}
+		
+		//Add DossierActionUser
+		
+		DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
+		
+		dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
 
 		return dossierAction;
 	}
@@ -586,19 +599,19 @@ public class DossierActionsImpl implements DossierActions {
 
 		String postStepCode = action.getPostStepCode();
 
-		ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
+		//ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 
 		// DOSSIER has nextAction form NEW to PROCESSING that it was created on
 		// client and it wasn't created ONLINE
 		if (hasDossierSync && dossier.getDossierStatus().contentEquals(DossierStatusConstants.NEW)
-				&& step.getDossierStatus().contentEquals(DossierStatusConstants.PROCESSING) && !dossier.isOnline()) {
+				 && !dossier.isOnline()) {
 			isCreate = true;
 		}
 
 		return isCreate;
 	}
 
-	protected boolean hasDossierSync(long groupId, long dossierId, String refId, ProcessAction action, boolean isSubmit)
+	protected boolean hasDossierSync(long groupId, long dossierId, String refId, ProcessAction action)
 			throws PortalException {
 
 		Dossier dossier = getDossier(groupId, dossierId, refId);
@@ -733,7 +746,6 @@ public class DossierActionsImpl implements DossierActions {
 		return lstprocessStep;
 
 	}
-
 	protected Log _log = LogFactoryUtil.getLog(DossierActionsImpl.class);
 
 }
