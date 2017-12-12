@@ -75,7 +75,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 
-		User systemUser = UserLocalServiceUtil.getUserByEmailAddress(company.getCompanyId(), RESTFulConfiguration.SERVER_USER);
+		User systemUser = UserLocalServiceUtil.getUserByEmailAddress(company.getCompanyId(),
+				RESTFulConfiguration.SERVER_USER);
 
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(company.getCompanyId());
@@ -134,6 +135,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 		String serviceInfoCode = object.getString(DossierTerm.SERVICE_CODE);
 		String govAgencyCode = object.getString(DossierTerm.GOV_AGENCY_CODE);
 		String dossierTemplateCode = object.getString(DossierTerm.DOSSIER_TEMPLATE_NO);
+		
+		DossierActions actions = new DossierActionsImpl();
 
 		for (ServiceProcess process : processes) {
 
@@ -206,6 +209,10 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 				long desDossierId = desDossier.getPrimaryKey();
 
+				// doAction in this case is an Applicant object
+				String applicantNote = object.getString(DossierTerm.APPLICANT_NOTE);
+				String applicantName = object.getString(DossierTerm.APPLICANT_NAME);
+
 				// Process doAction (with autoEvent = SUBMIT)
 				try {
 					// DossierLocalServiceUtil.syncDossier(desDossier);
@@ -213,12 +220,11 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					ProcessAction processAction = ProcessActionLocalServiceUtil
 							.fetchBySPI_PRESC_AEV(syncServiceProcess.getServiceProcessId(), StringPool.BLANK, "SUBMIT");
 
-					DossierActions actions = new DossierActionsImpl();
+					long assignedUserId = processAction.getAssignUserId();
 
 					actions.doAction(syncServiceProcess.getGroupId(), desDossierId, desDossier.getReferenceUid(),
-							processAction.getActionCode(), processAction.getProcessActionId(),
-							systemUser.getFullName() + "_SYSTEM", "SYNC_ACTION_BY_SYSTEM", 0l, systemUser.getUserId(),
-							serviceContext);
+							processAction.getActionCode(), processAction.getProcessActionId(), applicantName,
+							applicantNote, assignedUserId, systemUser.getUserId(), serviceContext);
 
 				} catch (Exception e) {
 					_log.info("SyncDossierUnsuccessfuly" + desDossier.getReferenceUid());
@@ -238,6 +244,31 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					// Update correctingDate
 					desDossier.setCorrecttingDate(APIDateTimeUtils.convertStringToDate(
 							object.getString(DossierTerm.CORRECTING_DATE), APIDateTimeUtils._NORMAL_PARTTERN));
+				}
+
+				// the case resubmit
+				if (object.getBoolean(DossierTerm.SUBMITTING, false)) {
+					// Check autoEvent
+					ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPI_PRESC_AEV(
+							syncServiceProcess.getServiceProcessId(), object.getString(DossierTerm.DOSSIER_STATUS),
+							"SUBMIT");
+					
+					if (Validator.isNotNull(processAction)) {
+						//doAction
+						// doAction in this case is an Applicant object
+						String applicantNote = object.getString(DossierTerm.APPLICANT_NOTE);
+						String applicantName = object.getString(DossierTerm.APPLICANT_NAME);
+
+						actions.doAction(syncServiceProcess.getGroupId(), desDossier.getDossierId(), desDossier.getReferenceUid(),
+								processAction.getActionCode(), processAction.getProcessActionId(), applicantName,
+								applicantNote, processAction.getAssignUserId(), systemUser.getUserId(), serviceContext);
+
+					} else {
+						desDossier.setSubmitting(true);
+						desDossier.setSubmitDate(APIDateTimeUtils.convertStringToDate(
+								object.getString(DossierTerm.SUBMIT_DATE), APIDateTimeUtils._NORMAL_PARTTERN));
+					}
+
 				}
 
 			}
@@ -344,7 +375,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				String authString = RESTFulConfiguration.SERVER_USER + ":" + RESTFulConfiguration.SERVER_PASS;
 
 				String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
-				
+
 				conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
 
 				conn.setRequestMethod(HttpMethods.GET);
