@@ -221,6 +221,9 @@ public class DossierManagementImpl implements DossierManagement {
 
 			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
 					input.getDossierTemplateNo(), groupId);
+			
+			//Create dossierNote
+			
 
 			ServiceProcess process = ServiceProcessLocalServiceUtil.getServiceProcess(option.getServiceProcessId());
 
