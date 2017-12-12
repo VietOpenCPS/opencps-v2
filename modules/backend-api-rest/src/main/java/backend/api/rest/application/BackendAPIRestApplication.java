@@ -78,14 +78,8 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new JobposManagementImpl());
 		singletons.add(new UserManagementImpl());
 		singletons.add(new EmployeeManagementImpl());
-<<<<<<< HEAD
 		singletons.add(new DossierStatisticImpl());
-		
-		
-=======
-
 		singletons.add(new FileAttachManagementImpl());
->>>>>>> 0fb98b13c2452e977694c944aaaf2baa60066924
 		// add service provider
 		singletons.add(_serviceContextProvider);
 		singletons.add(_companyContextProvider);
