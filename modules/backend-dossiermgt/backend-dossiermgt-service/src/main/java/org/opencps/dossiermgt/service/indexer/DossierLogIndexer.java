@@ -25,6 +25,8 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierLogIndexer extends BaseIndexer<DossierLog> {
@@ -60,9 +62,12 @@ public class DossierLogIndexer extends BaseIndexer<DossierLog> {
 		document.addNumberSortable(DossierLogTerm.DOSSIER_ID, object.getDossierId());
 
 		// add text fields
+		
+		String notifyType = object.getNotificationType();
+		notifyType = StringUtil.replace(notifyType, StringPool.DASH, StringPool.BLANK);
 		document.addTextSortable(DossierLogTerm.AUTHOR, object.getAuthor());
 		document.addTextSortable(DossierLogTerm.CONTENT, object.getContent());
-		document.addTextSortable(DossierLogTerm.NOTIFICATION_TYPE, object.getNotificationType());
+		document.addTextSortable(DossierLogTerm.NOTIFICATION_TYPE, notifyType);
 		document.addTextSortable(DossierLogTerm.PAYLOAD, object.getPayload());
 		
 		try {
