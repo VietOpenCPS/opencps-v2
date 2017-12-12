@@ -326,6 +326,7 @@ public class DossierActionsImpl implements DossierActions {
 					0l, actionCode, actionUser, processAction.getActionName(), actionNote, actionOverdue,
 					processAction.getSyncActionCode(), false, processAction.getRollbackable(), curStep.getStepCode(),
 					curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(), context);
+			
 
 		} else {
 
@@ -380,8 +381,14 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 			}
-
+			
 		}
+		
+		//Add DossierActionUser
+		
+		DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
+		
+		dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
 
 		return dossierAction;
 	}
