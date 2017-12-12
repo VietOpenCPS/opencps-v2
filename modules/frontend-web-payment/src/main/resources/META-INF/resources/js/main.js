@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	var paymentViewJX = new VueJX({
 		el: 'paymentViewJX',
 		pk: 1,
-		groupid: 20143,
+		groupid: themeDisplay.getScopeGroupId(),
 		data: {
 			stageScroll: 0,
 			detailPage: false,
