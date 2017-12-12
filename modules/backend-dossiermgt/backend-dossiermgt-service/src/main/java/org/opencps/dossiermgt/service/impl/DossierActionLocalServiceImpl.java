@@ -215,6 +215,10 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return dossierActionPersistence.fetchByDID_ACTC(dossierId, actionCode);
 	}
 	
+	public List<DossierAction> getDossierActionById(long dossierId){
+		return dossierActionPersistence.findByDID(dossierId);
+	}
+	
 	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 
