@@ -269,7 +269,9 @@
 			loadDossierDetail:function(e){
 				e.preventDefault();
 				var dossierItemStatus = e.data.dossierStatus;
-				var id = $(e.currentTarget).attr("dataPk");
+				var id = e.data.dossierId;
+				console.log("Mahoso: "+id);
+				console.log("Trangthai: "+dossierItemStatus);
 				manageDossier.navigate("/"+dossierItemStatus+"/dossiers/"+id);	
 			},
 			stylePager: function(e){

@@ -138,7 +138,7 @@
 			
 			<div class="col-sm-3">
 				<strong>
-					<a href="${(ajax.customer_dossier_detail_2)!}&${portletNamespace}dossierId=#=dossierId#" class="link-detail-employee" data-pk="#=dossierId#" >
+					<a href="javascript:;" class="link-detail-employee" data-pk="#=dossierId#" data-bind="events: { click : loadDossierDetail}">
 						#=serviceName#
 					</a>
 				</strong>

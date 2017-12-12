@@ -20,9 +20,9 @@
 		$(".itemStatus").css("pointer-events","auto");
 		$("#profileStatus li").removeClass('active');
 		$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
-		$('#profileStatus li[dataPk=""]').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
-		$('#profileStatus li[dataPk=""]').css("pointer-events","none");
-		$('#profileStatus li[dataPk=""]').addClass('active')
+		$('#profileStatus li[dataPk="all"]').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
+		$('#profileStatus li[dataPk="all"]').css("pointer-events","none");
+		$('#profileStatus li[dataPk="all"]').addClass('active')
 	});
 	manageDossier.route("/thongbao", function(){
         $("#mainType1").hide();
