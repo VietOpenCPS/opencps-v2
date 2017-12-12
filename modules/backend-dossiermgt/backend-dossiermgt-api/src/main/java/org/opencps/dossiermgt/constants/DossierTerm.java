@@ -35,11 +35,17 @@ public class DossierTerm {
 	public static final String SUBMITTING = "submitting";
 	public static final String SUBMIT_DATE = "submitDate";
 	public static final String RECEIVE_DATE = "receiveDate";
+	public static final String RECEIVE_DATE_TIMESTAMP = "receiveDateTimestamp";
 	public static final String DUE_DATE = "dueDate";
+	public static final String DUE_DATE_TIMESTAMP = "dueDateTimestamp";
 	public static final String RELEASE_DATE = "releaseDate";
+	public static final String RELEASE_DATE_TIMESTAMP = "releaseDateTimestamp";
 	public static final String FINISH_DATE = "finishDate";
+	public static final String FINISH_DATE_TIMESTAMP = "finishDateTimestamp";
 	public static final String CANCELLING_DATE = "cancellingDate";
+	public static final String CANCELLING_DATE_TIMESTAMP = "cancellingDateTimestamp";
 	public static final String CORRECTING_DATE = "correctingDate";
+	public static final String CORRECTING_DATE_TIMESTAMP = "correctingDateTimestamp";
 	public static final String DOSSIER_STATUS = "dossierStatus";
 	public static final String DOSSIER_STATUS_TEXT = "dossierStatusText";
 	public static final String DOSSIER_SUB_STATUS = "dossierSubStatus";

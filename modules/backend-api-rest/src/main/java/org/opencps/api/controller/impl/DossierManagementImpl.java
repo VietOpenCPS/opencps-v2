@@ -128,23 +128,24 @@ public class DossierManagementImpl implements DossierManagement {
 
 			switch (top) {
 			case "receive":
-				sorts = new Sort[] {
-						SortFactoryUtil.create(DossierTerm.RECEIVE_DATE + "_sortable", Sort.LONG_TYPE, true) };
+				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.RECEIVE_DATE_TIMESTAMP + "_sortable",
+						Sort.LONG_TYPE, false) };
 				break;
 			case "overdue":
-				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.DUE_DATE + "_sortable", Sort.LONG_TYPE, true) };
+				sorts = new Sort[] {
+						SortFactoryUtil.create(DossierTerm.DUE_DATE_TIMESTAMP + "_sortable", Sort.LONG_TYPE, false) };
 				break;
 			case "release":
-				sorts = new Sort[] {
-						SortFactoryUtil.create(DossierTerm.RELEASE_DATE + "_sortable", Sort.LONG_TYPE, true) };
+				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.RELEASE_DATE_TIMESTAMP + "_sortable",
+						Sort.LONG_TYPE, false) };
 				break;
 			case "cancelling":
-				sorts = new Sort[] {
-						SortFactoryUtil.create(DossierTerm.CANCELLING_DATE + "_sortable", Sort.LONG_TYPE, true) };
+				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CANCELLING_DATE_TIMESTAMP + "_sortable",
+						Sort.LONG_TYPE, false) };
 				break;
 			case "corecting":
-				sorts = new Sort[] {
-						SortFactoryUtil.create(DossierTerm.CORRECTING_DATE + "_sortable", Sort.LONG_TYPE, true) };
+				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CORRECTING_DATE_TIMESTAMP + "_sortable",
+						Sort.LONG_TYPE, false) };
 				break;
 			default:
 				break;
@@ -221,9 +222,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
 					input.getDossierTemplateNo(), groupId);
-			
-			//Create dossierNote
-			
+
+			// Create dossierNote
 
 			ServiceProcess process = ServiceProcessLocalServiceUtil.getServiceProcess(option.getServiceProcessId());
 

@@ -80,6 +80,21 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addTextSortable(DossierTerm.CORRECTING_DATE,
 				APIDateTimeUtils.convertDateToString(object.getCorrecttingDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 
+		document.addNumberSortable(DossierTerm.RECEIVE_DATE_TIMESTAMP,
+				Validator.isNotNull(object.getReceiveDate()) ? object.getReceiveDate().getTime() : 0);
+
+		document.addNumberSortable(DossierTerm.DUE_DATE_TIMESTAMP,
+				Validator.isNotNull(object.getDueDate()) ? object.getDueDate().getTime() : 0);
+
+		document.addNumberSortable(DossierTerm.RELEASE_DATE_TIMESTAMP,
+				Validator.isNotNull(object.getReleaseDate()) ? object.getReleaseDate().getTime() : 0);
+
+		document.addNumberSortable(DossierTerm.CANCELLING_DATE_TIMESTAMP,
+				Validator.isNotNull(object.getCancellingDate()) ? object.getCancellingDate().getTime() : 0);
+
+		document.addNumberSortable(DossierTerm.CORRECTING_DATE_TIMESTAMP,
+				Validator.isNotNull(object.getCorrecttingDate()) ? object.getCorrecttingDate().getTime() : 0);
+
 		// add number fields
 		document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());
 		document.addNumberSortable(DossierTerm.FOLDER_ID, object.getFolderId());
