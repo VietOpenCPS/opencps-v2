@@ -35,10 +35,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				'onLoad': '_initlistgroupFilter',
 				'onClick': 'filterChange',
 				'events': {
-					filterChange: function (value) {
+					filterChange: function (item) {
 						var vm = this;
-						console.log(value);
-						vm.listgroupFilterselected = value;
+						
+						vm.listgroupFilterselected = item.id;
 						vm._inipaymentList(false);
 						vm.detailPage = false;
 					},
