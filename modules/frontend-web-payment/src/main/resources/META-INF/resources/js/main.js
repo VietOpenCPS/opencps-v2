@@ -5,10 +5,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		pk: 1,
 		groupid: 20143,
 		data: {
-			stageScroll: 0,
 			detailPage: false,
 			viewmore: false,
-			showmore: false,
 			detailModel: {
 
 			},
@@ -35,10 +33,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				'onLoad': '_initlistgroupFilter',
 				'onClick': 'filterChange',
 				'events': {
-					filterChange: function (value) {
+					filterChange: function (item) {
 						var vm = this;
-						console.log(value);
-						vm.listgroupFilterselected = value;
+						vm.listgroupFilterselected = item.id;
 						vm._inipaymentList(false);
 						vm.detailPage = false;
 					},
@@ -102,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			'paymentConfirm': {
 				'id': 'paymentConfirm',
 				'name': 'paymentConfirm',
-				'cssClass': 'btn--flat ml-0 pl-0',
+				'cssClass': 'btn--flat ml-0 pl-0 h-icon-xs',
 				'label': 'Xác nhận',
 				'type': 'button',
 				'left_icon': 'done_all',
@@ -304,7 +301,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						var btn_view_more = document.getElementById("btn_view_more");
 
 						if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-							stageScroll = btn_view_more.offsetTop - 300;
 							vm._inipaymentList(true);
 						}
 
