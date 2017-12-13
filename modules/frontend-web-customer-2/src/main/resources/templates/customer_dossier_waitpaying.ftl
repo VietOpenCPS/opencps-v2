@@ -211,7 +211,6 @@
 				headers : {"groupId": ${groupId}},
 				async : false,
 				data : {
-					paymentStatus : 0
 				},
 				success : function(result){
 					if(result.data){
@@ -246,9 +245,7 @@
 					});
 
 					var payment = fnLoadPayment(result.dossierId);
-					if(!payment){
-						$("#paymentDossierContent").html("");
-					}
+					
 
 					var viewModel = kendo.observable({
 
