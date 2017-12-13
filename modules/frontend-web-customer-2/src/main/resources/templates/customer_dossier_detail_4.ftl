@@ -42,7 +42,7 @@
 					<span class="text-bold">Mã tiếp nhận</span>: <span data-bind="text:dossierNo"></span>
 				</div>
 				<div class="row" id="">
-					<a href="javascript:;" class="text-blue text-underline">Thông tin chủ hồ sơ</a>
+					<a href="javascript:;" class="text-light-blue text-underline">Thông tin chủ hồ sơ</a>
 				</div>
 			</div>
 			
@@ -60,9 +60,9 @@
 				</div> 
 				<span class="text-uppercase hover-pointer">Hướng dẫn</span> 
 				<i class="fa fa-angle-down pull-right hover-pointer MR15" aria-hidden="true" style="font-size: 150%;"></i>
-			</div>
+			</div>	
 
-			<div class="content-part collapse PB15" id="collapseDossierG">
+			<div class="content-part collapse PB15 toggle-hide" id="collapseDossierG">
 				<span data-bind="html:dossierNote"></span>
 				<#-- <p class="MB0 text-light-blue PB15"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p> -->
 			</div>
@@ -100,7 +100,7 @@
 								</span>
 
 								<div class="actions">
-									<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" >
+									<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#>
 										<i class="fa fa-archive" aria-hidden="true"></i>
 									</a>
 
@@ -124,22 +124,23 @@
 							var dossierFile =  getReferentUidFile(${dossierId},id);
 							#
 
+							<div class="collapse" id="collapseDossierPart#:id#">
 
-							<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# id="collapseDossierPart#:id#" class="collapse">
-
-								<div class="row">
-									<div class="col-xs-12 col-sm-12 text-right">
-										<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
-										type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
-										<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
-									</div>
+								<div class="col-xs-12 col-sm-12 text-right">
+									<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
+									type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
+									<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
 								</div>
 
-								<form id="formPartNo#:id#">
+								<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}#>
 
-								</form>
+									<form id="formPartNo#:id#">
 
+									</form>
+
+								</div>
 							</div>
+							
 							#
 
 							$.ajax({
@@ -319,7 +320,7 @@
 				<li>
 					<div class="row">
 						<div class="col-sm-12">
-							<a href="${api.server}/dossiers/#:dossierId#/files/#:fileTemplateNo#" class="download-file-result" data-pk="#:dossierId#">
+							<a href="${api.server}/dossiers/${(dossierId)!}/files/#:referenceUid#" class="download-file-result" data-pk="#:referenceUid#">
 								<i class="fa fa-download"></i> 
 								#:displayName#
 							</a>
@@ -428,200 +429,256 @@
 
 	$(function(){
 		$( "body" ).data( "dossierFiles", [] );
-		var fnBindDossierTemplClick = function(){
-		//upload file click
-		$(".dossier-file").unbind().change(function(){
+
+
+		$(document).off("change",".dossier-file");
+		$(document).on("change",".dossier-file",function(){
 			console.log("change");
+
 			var partNo = $(this).attr("part-no");
 			var fileTemplateNo = $(this).attr("file-template-no");
 			var dossierTemplateNo = $("#dossierTemplateNo").val();
+			var hasform = $(this).attr("hasform");
+
 			console.log(partNo);
 			console.log(fileTemplateNo);
 			console.log($(this)[0].files[0]);
 
-			funUploadFile($(this),partNo,dossierTemplateNo+"",fileTemplateNo);
+			funUploadFile($(this),partNo,dossierTemplateNo+"",fileTemplateNo,hasform);
+			$(this).val("");
 		});
 
-		//tai giay to kho luu tru
-		$(".uploadfile-form-repository").unbind().click(function(){
-			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_detail_filetemplate}",function(result){
+		$(document).off("click",".uploadfile-form-repository");
+		$(document).on("click",".uploadfile-form-repository",function(){
+			var dossierId = "${(dossierId)!}";
+			var dossierTemplateNo = $("#dossierTemplateNo").val();
+			var partNo = $(this).attr("part-no");
+			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_detail_filetemplate}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
 				$(this).modal("show");
 			});
 		});
 
-		//xem file tai len theo tp ho so
-		$(".dossier-component-profile").unbind().click(function() {
+		$(document).off("click",".dossier-component-profile");
+		$(document).on("click",".dossier-component-profile",function(){
 			var partNo = $(this).attr("data-partno");
-			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}?dossierPartNo="+partNo,function(result){
-				$(this).modal("show");
+			var dossierId = "${(dossierId)!}";
+			var dossierTemplateId = "${(dossierTemplateId)!}";
+			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateId="+dossierTemplateId,function(result){
+
 			});
 		});
-	}
 
-	$("#btn-view-extendguide").click(function(){
-		if($("#extend-guide").attr("status")=="none"){
-			$("#extend-guide").show();
-			$("#extend-guide").attr("status","show");
-		}else{
-			$("#extend-guide").hide();
-			$("#extend-guide").attr("status","none");
-		}
-	});
+		$(document).off("click",".delete-dossier-file");
+		$(document).on("click",".delete-dossier-file",function(){
+			var dossierId  = "${dossierId}";
+			var dataPartNo = $(this).attr("data-partno");
+			try{
+				$("#formPartNo"+dataPartNo).alpaca('get').setValue({});
+			}catch (e){
 
-	$("#btn-submit-dossier").click(function(){
-		var data = $('#dossierFormSubmiting').serialize();
-		$.ajax({
-			type : 'GET', 
-			url  : '${api.server}/dossiers/${dossierId}/submitting', 
-			data : data,
-			headers : {"groupId": ${groupId}},
-			success :  function(result){                       
+			}
 
-			},
-			error : function(result){
+			console.log(dossierId);
+			console.log(dataPartNo);
+			var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
+			if(cf){
+				if(dossierId && dataPartNo){
+					$.ajax({
+						url : "${api.server}/dossiers/"+dossierId+"/files",
+						dataType : "json",
+						type : "GET",
+						headers : {"groupId": ${groupId}},
+						success : function(result) {
+							var data = result.data;
+							if(data){
+								for (var i = 0; i < data.length; i++) {
+									if(dataPartNo === data[i].dossierPartNo){
+										removeDossierFile(dossierId, data[i].referenceUid);
 
+									}
+								}
+								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
+
+								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
+								notification.show({
+									message: "Yêu cầu được thực hiện thành công"
+								}, "success");
+
+							}
+							$("#validPart"+dataPartNo).val("0");
+						},
+						error : function(result) {
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
+						}
+					});
+				}
 			}
 		});
-		console.log("success!");
-	});
 
-	var dataSourceDossiserFileTemplate;
-	var dataSourceDossiserLog;
-
-	dataSourceDossiserFileTemplate=new kendo.data.DataSource({
-		transport:{
-			read:function(options){
-				$.ajax({
-					url : "${api.server}/dossiers/${dossierId}/dossierfiles",
-					dataType : "json",
-					type : "GET",
-					headers : {"groupId": ${groupId}},
-					data : {
-
-					},
-					success : function(result){
-						options.success(result);
-					},
-					error : function(result){
-						options.error(result);
-					}
-				});
+		$("#btn-view-extendguide").click(function(){
+			if($("#extend-guide").attr("status")=="none"){
+				$("#extend-guide").show();
+				$("#extend-guide").attr("status","show");
+			}else{
+				$("#extend-guide").hide();
+				$("#extend-guide").attr("status","none");
 			}
-		},
-		schema : {
-			data : "data",
-			total : "total",
-			model : {
-				id : "dossierFileId"
-			}
-		}
-	});
+		});
 
-	dataSourceDossiserLog = new kendo.data.DataSource({
-		transport:{
-			read:function(options){
-				$.ajax({
-					url : "${api.server}/dossierlogs/${dossierId}/logs",
-					dataType : "json",
-					type : "GET",
-					headers : {"groupId": ${groupId}},
-					data:{
+		$("#btn-submit-dossier").click(function(){
+			var data = $('#dossierFormSubmiting').serialize();
+			$.ajax({
+				type : 'GET', 
+				url  : '${api.server}/dossiers/${dossierId}/submitting', 
+				data : data,
+				headers : {"groupId": ${groupId}},
+				success :  function(result){                       
 
-					},
-					success : function(result){
-						options.success(result);
-					},
-					error : function(result){
-						options.error(result);
-					}
-				});
-			}
-		},
-		schema:{
-			data:"data",
-			total:"total",
-			model:{
-				id:"dossierLogId"
-			}
-		}
-	});
+				},
+				error : function(result){
 
-	$("#listViewDossiserFileTemplate").kendoListView({
-		dataSource:dataSourceDossiserFileTemplate,
-		template:kendo.template($("#templateDossiserFileTemplate").html()),
-		autoBind: true
-	});
+				}
+			});
+			console.log("success!");
+		});
 
+		var dataSourceDossiserFileTemplate;
+		var dataSourceDossiserLog;
 
-
-	var indexDossiserLog = 0;
-	$("#listViewDossiserLog").kendoListView({
-		dataSource:dataSourceDossiserLog,
-		autoBind: true,
-		dataBound : function(){
-			indexDossiserLog = 0;
-		},
-		template: function(data){
-
-			indexDossiserLog ++;
-
-			data.itemIndex = indexDossiserLog;
-
-			return kendo.template($("#templateDossiserLog").html())(data);
-
-		},
-	});
-
-	var dataSourceDossierTemplate = new kendo.data.DataSource({
-		transport :{
-			read : function(options){
-				if(options.data.dossierTemplateNo){
+		dataSourceDossiserFileTemplate=new kendo.data.DataSource({
+			transport:{
+				read:function(options){
 					$.ajax({
-						url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateNo,
+						url : "${api.server}/dossiers/${dossierId}/files",
 						dataType : "json",
 						type : "GET",
 						headers : {"groupId": ${groupId}},
 						data : {
-
+							
 						},
 						success : function(result){
-							options.success(result.dossierParts);
-							$("#dossierTemplateNo").val(result.templateNo);
+							options.success(result);
 						},
 						error : function(result){
 							options.error(result);
 						}
 					});
 				}
+			},
+			schema : {
+				data : "data",
+				total : "total",
+				model : {
+					id : "dossierFileId"
+				}
 			}
-		},
-		schema : {
-			model : {
-				id : "partNo"
+		});
+
+		dataSourceDossiserLog = new kendo.data.DataSource({
+			transport:{
+				read:function(options){
+					$.ajax({
+						url : "${api.server}/dossierlogs/${dossierId}/logs",
+						dataType : "json",
+						type : "GET",
+						headers : {"groupId": ${groupId}},
+						data:{
+
+						},
+						success : function(result){
+							options.success(result);
+						},
+						error : function(result){
+							options.error(result);
+						}
+					});
+				}
+			},
+			schema:{
+				data:"data",
+				total:"total",
+				model:{
+					id:"dossierLogId"
+				}
 			}
-		}
-	});
+		});
 
-	var indexDossiserPart =0 ;
-	$("#lsDossierTemplPart").kendoListView({
-		dataSource : dataSourceDossierTemplate,
-		autoBind : false,
-		change : function(){
+		$("#listViewDossiserFileTemplate").kendoListView({
+			dataSource:dataSourceDossiserFileTemplate,
+			template:kendo.template($("#templateDossiserFileTemplate").html()),
+			autoBind: true
+		});
 
-		},
-		template : function(data){
 
-			indexDossiserPart ++;
 
-			data.itemIndex = indexDossiserPart;
+		var indexDossiserLog = 0;
+		$("#listViewDossiserLog").kendoListView({
+			dataSource:dataSourceDossiserLog,
+			autoBind: true,
+			dataBound : function(){
+				indexDossiserLog = 0;
+			},
+			template: function(data){
 
-			return kendo.template($("#templateDossierPart").html())(data);
+				indexDossiserLog ++;
 
-		},
-		dataBound : function(){
-			indexDossiserPart = 0;
-			//bind su kien click cho cac class
-			fnBindDossierTemplClick();
+				data.itemIndex = indexDossiserLog;
+
+				return kendo.template($("#templateDossiserLog").html())(data);
+
+			},
+		});
+
+		var dataSourceDossierTemplate = new kendo.data.DataSource({
+			transport :{
+				read : function(options){
+					if(options.data.dossierTemplateNo){
+						$.ajax({
+							url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateNo,
+							dataType : "json",
+							type : "GET",
+							headers : {"groupId": ${groupId}},
+							data : {
+
+							},
+							success : function(result){
+								options.success(result.dossierParts);
+								$("#dossierTemplateNo").val(result.templateNo);
+							},
+							error : function(result){
+								options.error(result);
+							}
+						});
+					}
+				}
+			},
+			schema : {
+				model : {
+					id : "partNo"
+				}
+			}
+		});
+
+		var indexDossiserPart =0 ;
+		$("#lsDossierTemplPart").kendoListView({
+			dataSource : dataSourceDossierTemplate,
+			autoBind : false,
+			change : function(){
+
+			},
+			template : function(data){
+
+				indexDossiserPart ++;
+
+				data.itemIndex = indexDossiserPart;
+
+				return kendo.template($("#templateDossierPart").html())(data);
+
+			},
+			dataBound : function(){
+				indexDossiserPart = 0;
 
 			//kiem tra dossier status, neu status thuoc new thi cho phep upoad hoac sua file
 			fnCheckStatusAndHideUpload($("#dossierStatus").val());
@@ -633,129 +690,129 @@
 		}
 	});
 
-	var printDetailDossier = function(dossierId){
-		if(dossierId){
-			$.ajax({
-				url : "${api.server}/dossiers/"+dossierId,
-				dataType : "json",
-				type : "GET",
-				headers : {"groupId": ${groupId}},
-				success : function(result){
-					console.log("load detail dossier!");
-					console.log(result.dossierId);
-					dataSourceDossierTemplate.read({
-						dossierTemplateNo : result.dossierTemplateNo
-					});
+		var printDetailDossier = function(dossierId){
+			if(dossierId){
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId,
+					dataType : "json",
+					type : "GET",
+					headers : {"groupId": ${groupId}},
+					success : function(result){
+						console.log("load detail dossier!");
+						console.log(result.dossierId);
+						dataSourceDossierTemplate.read({
+							dossierTemplateNo : result.dossierTemplateNo
+						});
 
-					var payment = fnLoadPayment(result.dossierId);
-					if(!payment){
-						$("#paymentDossierContent").html("");
-					}
-
-					var viewModel = kendo.observable({
-
-						dossierId : result.dossierId,
-						serviceName : result.serviceName,
-						govAgencyName : result.govAgencyName,
-						actionNote : result.actionNote,
-
-						actionNote1 : function(e){
-							var actionNote = this.get("actionNote");
-
-							if(actionNote){
-								$("#actionNote").html('<i class="fa fa-bolt" aria-hidden="true" style="color: red;"></i> <span>'+result.actionNote+'</span>');
-							}else {
-								$("#actionNote").remove();
-							}
-
-							return;
-						},
-
-						applicantName : result.applicantName,
-						address : result.address,
-						cityCode : result.cityCode,
-						districtCode : result.districtCode,
-						wardCode : result.wardCode,
-						contactTelNo : result.contactTelNo,
-						contactEmail : result.contactEmail,
-						dossierNo : result.dossierNo,
-						dossierStatusText : result.dossierStatusText,
-						stepInstruction : result.stepInstruction,
-						dossierStatus : result.dossierStatus,
-						postalAddress : result.postalAddress,
-						postalCityName : result.postalCityName,
-						postalTelNo : result.postalTelNo,
-						dossierTemplateNo : result.dossierTemplateNo,
-						viaPostal : function(e){
-							console.log(result.viaPostal);
-							if(result.viaPostal === 0){
-								$("#postal").remove();
-							}
-						},
-						submissionNote : function(e){
-							if(result.submissionNote){
-								$("#guideDossier").show();
-								return result.submissionNote;
-							}else {
-								$("#guideDossier").hide();
-								return "";
-							}
-						},
-						paymentDossier : payment,
-						paymentFee : function(e){
-							console.log(this.get('paymentDossier'));
-							if(this.get('paymentDossier').paymentFee){
-								return this.get('paymentDossier').paymentFee;
-							}
-							return "";
-						},
-						paymentAmount : function(e){
-							if(this.get('paymentDossier').paymentAmount){
-								return this.get('paymentDossier').paymentAmount;
-							}
-							return "";
-						},
-						paymentGovAgencyName : function(e){
-							if(this.get('paymentDossier').govAgencyName){
-								return this.get('paymentDossier').govAgencyName;
-							}
-							return "";
-						},
-						paymentBankInfo : function(e){
-							if(this.get('paymentDossier').bankInfo){
-								return this.get('paymentDossier').bankInfo;
-							}
-							return "";
-						},
-						paymentStatus : function(e){
-							if(this.get('paymentDossier').paymentStatus){
-								return this.get('paymentDossier').paymentStatus;
-							}
-							return "";
-						},
-						paymentApproveDatetime : function(e){
-							if(this.get('paymentDossier').approveDatetime){
-								return this.get('paymentDossier').approveDatetime;
-							}
-							return "";
-						},
-						paymentConfirmNote : function(e){
-							if(this.get('paymentDossier').confirmNote){
-								return this.get('paymentDossier').confirmNote;
-							}
-							return "";
-						},
-						isPay : function(){
-							if(this.get('paymentDossier').paymentStatus !== 2){
-								$("#unpaid").show();
-								$("#alreadyPaid").hide();
-							}
-						},
-						submitting : function(){
-							if(result.submitting){
-								$("#btn-submit-dossier").hide();
-							}
+						var payment = fnLoadPayment(result.dossierId);
+						if(!payment){
+							$("#paymentDossierContent").html("");
 						}
+
+						var viewModel = kendo.observable({
+
+							dossierId : result.dossierId,
+							serviceName : result.serviceName,
+							govAgencyName : result.govAgencyName,
+							actionNote : result.actionNote,
+
+							actionNote1 : function(e){
+								var actionNote = this.get("actionNote");
+
+								if(actionNote){
+									$("#actionNote").html('<i class="fa fa-bolt" aria-hidden="true" style="color: red;"></i> <span>'+result.actionNote+'</span>');
+								}else {
+									$("#actionNote").remove();
+								}
+
+								return;
+							},
+
+							applicantName : result.applicantName,
+							address : result.address,
+							cityCode : result.cityCode,
+							districtCode : result.districtCode,
+							wardCode : result.wardCode,
+							contactTelNo : result.contactTelNo,
+							contactEmail : result.contactEmail,
+							dossierNo : result.dossierNo,
+							dossierStatusText : result.dossierStatusText,
+							stepInstruction : result.stepInstruction,
+							dossierStatus : result.dossierStatus,
+							postalAddress : result.postalAddress,
+							postalCityName : result.postalCityName,
+							postalTelNo : result.postalTelNo,
+							dossierTemplateNo : result.dossierTemplateNo,
+							viaPostal : function(e){
+								console.log(result.viaPostal);
+								if(result.viaPostal === 0){
+									$("#postal").remove();
+								}
+							},
+							submissionNote : function(e){
+								if(result.submissionNote){
+									$("#guideDossier").show();
+									return result.submissionNote;
+								}else {
+									$("#guideDossier").hide();
+									return "";
+								}
+							},
+							paymentDossier : payment,
+							paymentFee : function(e){
+								console.log(this.get('paymentDossier'));
+								if(this.get('paymentDossier').paymentFee){
+									return this.get('paymentDossier').paymentFee;
+								}
+								return "";
+							},
+							paymentAmount : function(e){
+								if(this.get('paymentDossier').paymentAmount){
+									return this.get('paymentDossier').paymentAmount;
+								}
+								return "";
+							},
+							paymentGovAgencyName : function(e){
+								if(this.get('paymentDossier').govAgencyName){
+									return this.get('paymentDossier').govAgencyName;
+								}
+								return "";
+							},
+							paymentBankInfo : function(e){
+								if(this.get('paymentDossier').bankInfo){
+									return this.get('paymentDossier').bankInfo;
+								}
+								return "";
+							},
+							paymentStatus : function(e){
+								if(this.get('paymentDossier').paymentStatus){
+									return this.get('paymentDossier').paymentStatus;
+								}
+								return "";
+							},
+							paymentApproveDatetime : function(e){
+								if(this.get('paymentDossier').approveDatetime){
+									return this.get('paymentDossier').approveDatetime;
+								}
+								return "";
+							},
+							paymentConfirmNote : function(e){
+								if(this.get('paymentDossier').confirmNote){
+									return this.get('paymentDossier').confirmNote;
+								}
+								return "";
+							},
+							isPay : function(){
+								if(this.get('paymentDossier').paymentStatus !== 2){
+									$("#unpaid").show();
+									$("#alreadyPaid").hide();
+								}
+							},
+							submitting : function(){
+								if(result.submitting){
+									$("#btn-submit-dossier").hide();
+								}
+							}
 
 						/*dossierTemplateNo : function(e){
 							dataSourceDossierTemplate.read({
@@ -765,143 +822,143 @@
 
 					});
 
-					kendo.bind($("#detailDossier"), viewModel);
-				},
-				error : function(result){
-					$("#paymentDossierContent").html("");
-				}
+						kendo.bind($("#detailDossier"), viewModel);
+					},
+					error : function(result){
+						$("#paymentDossierContent").html("");
+					}
 
-			});
+				});
+}
+}
+
+printDetailDossier(${dossierId});
+
+var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
+	var data = new FormData();
+	console.log(file);
+
+	data.append( 'displayName', "");
+	data.append( 'file', $(file)[0].files[0]);
+	data.append('dossierPartNo', partNo);
+	data.append('referenceUid', "");
+	data.append('dossierTemplateNo', dossierTemplateNo);
+	data.append('fileTemplateNo', fileTemplateNo);
+
+	$.ajax({
+		type : 'POST', 
+		url  : '${api.server}/dossiers/${dossierId}/files', 
+		data : data,
+		headers: {"groupId": ${groupId}},
+		processData: false,
+		contentType: false,
+		cache: false,
+		async : false,
+		success :  function(result){ 
+			var fileLength = $(file)[0].files.length;
+
+			var currentFileNumber = $(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number");
+
+			var totalFile = fileLength + parseInt(currentFileNumber, 0);
+
+			$(".dossier-component-profile").filter("[data-partno="+partNo+"]").html('<span class="number-in-circle" >'+totalFile+'</span>');
+
+			$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",totalFile);
+			$("#uploadFileTemplateDialog").modal("hide");
+
+			notification.show({
+				message: "Yêu cầu được thực hiện thành công"
+			}, "success");
+
+		},
+		error:function(result){
+			notification.show({
+				message: "Thêm không thành công do số biểu mẫu bị trùng."
+			}, "error");
 		}
+	});
+	console.log("success!");
+}
+
+var fnCheckStatusAndHideUpload = function(dossierStatus){
+	if(dossierStatus !== "New" || dossierStatus !== "Receiving"){
+		$(".uploadfile-form-repository").remove();
+		$(".lbl-dossier-flie").remove();
+		$(".delete-dossier-file").remove();
+	}
+}
+
+var fnLoadPayment = function(dossierId){
+
+	console.log(dossierId);
+	var resultModel = null;
+	if(dossierId){
+		$.ajax({
+			url : "${api.server}/dossiers/"+dossierId+"/payments",
+			dataType : "json",
+			type : "GET",
+			headers : {"groupId": ${groupId}},
+			async : false,
+			data : {
+				paymentStatus : 0
+			},
+			success : function(result){
+				if(result.data){
+					resultModel = result.data[0];
+				}
+			},
+			error :  function(result){
+				$("#paymentDossier").hide();
+			}
+
+		});
 	}
 
-	printDetailDossier(${dossierId});
+	return resultModel;
+}
 
-	var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
-		var data = new FormData();
-		console.log(file);
-
-		data.append( 'displayName', "");
-		data.append( 'file', $(file)[0].files[0]);
-		data.append('dossierPartNo', partNo);
-		data.append('referenceUid', "");
-		data.append('dossierTemplateNo', dossierTemplateNo);
-		data.append('fileTemplateNo', fileTemplateNo);
-
+var funDossierFile = function(dossierId){
+	var arrFile = new Array();
+	if(dossierId){
 		$.ajax({
-			type : 'POST', 
-			url  : '${api.server}/dossiers/${dossierId}/files', 
-			data : data,
-			headers: {"groupId": ${groupId}},
-			processData: false,
-			contentType: false,
-			cache: false,
+			url : "${api.server}/dossiers/"+dossierId+"/files",
+			dataType : "json",
+			type : "GET",
+			headers : {"groupId": ${groupId}},
 			async : false,
-			success :  function(result){ 
-				var fileLength = $(file)[0].files.length;
-
-				var currentFileNumber = $(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number");
-
-				var totalFile = fileLength + parseInt(currentFileNumber, 0);
-
-				$(".dossier-component-profile").filter("[data-partno="+partNo+"]").html('<span class="number-in-circle" >'+totalFile+'</span>');
-
-				$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",totalFile);
-				$("#uploadFileTemplateDialog").modal("hide");
-
-				notification.show({
-					message: "Yêu cầu được thực hiện thành công"
-				}, "success");
+			success : function(result){
+				if(result.data){
+					arrFile = result.data;
+				}else {
+					arrFile = [];
+				}
 
 			},
-			error:function(result){
-				notification.show({
-					message: "Thêm không thành công do số biểu mẫu bị trùng."
-				}, "error");
+			error : function(result){
+
 			}
 		});
-		console.log("success!");
 	}
+	$( "body" ).data( "dossierFiles", arrFile );
+	return arrFile;
+}
 
-	var fnCheckStatusAndHideUpload = function(dossierStatus){
-		if(dossierStatus !== "New" || dossierStatus !== "Receiving"){
-			$(".uploadfile-form-repository").remove();
-			$(".lbl-dossier-flie").remove();
-			$(".delete-dossier-file").remove();
-		}
-	}
 
-	var fnLoadPayment = function(dossierId){
-
-		console.log(dossierId);
-		var resultModel = null;
-		if(dossierId){
-			$.ajax({
-				url : "${api.server}/dossiers/"+dossierId+"/payments",
-				dataType : "json",
-				type : "GET",
-				headers : {"groupId": ${groupId}},
-				async : false,
-				data : {
-					paymentStatus : 0
-				},
-				success : function(result){
-					if(result.data){
-						resultModel = result.data[0];
-					}
-				},
-				error :  function(result){
-					$("#paymentDossier").hide();
-				}
-
-			});
-		}
-
-		return resultModel;
-	}
-
-	var funDossierFile = function(dossierId){
-		var arrFile = new Array();
-		if(dossierId){
-			$.ajax({
-				url : "${api.server}/dossiers/"+dossierId+"/files",
-				dataType : "json",
-				type : "GET",
-				headers : {"groupId": ${groupId}},
-				async : false,
-				success : function(result){
-					if(result.data){
-						arrFile = result.data;
-					}else {
-						arrFile = [];
-					}
-					
-				},
-				error : function(result){
-
-				}
-			});
-		}
-		$( "body" ).data( "dossierFiles", arrFile );
-		return arrFile;
-	}
-	
-
-	var funGenNumberFile = function(arrCount){
-		console.log($(".dossier-component-profile"));
-		$(".dossier-component-profile").each(function(index){
-			var partNo = $(this).attr("data-partno");
-			var found = $.grep(arrCount, function(v) {
-				return v.dossierPartNo === partNo;
-			});
-			
-			console.log(partNo);
-			console.log(found);
-
-			$(this).attr("data-number",found.length);
-			$(this).html('<span class="number-in-circle" >'+found.length+'</span>');
+var funGenNumberFile = function(arrCount){
+	console.log($(".dossier-component-profile"));
+	$(".dossier-component-profile").each(function(index){
+		var partNo = $(this).attr("data-partno");
+		var found = $.grep(arrCount, function(v) {
+			return v.dossierPartNo === partNo;
 		});
-	}
+
+		console.log(partNo);
+		console.log(found);
+
+		$(this).attr("data-number",found.length);
+		$(this).html('<span class="number-in-circle" >'+found.length+'</span>');
+	});
+}
 });
 
 var getReferentUidFile = function(dossierId,dossierPartNo){
@@ -935,6 +992,28 @@ var getReferentUidFile = function(dossierId,dossierPartNo){
 	console.log(dossierFile);
 
 	return dossierFile;
+}
+
+var fnGetFormData = function(dossierId,referentUid){
+	var value = null;
+	if(dossierId && referentUid){
+		$.ajax({
+			url : "${api.server}/dossiers/"+dossierId+"/files/"+referentUid+"/formdata",
+			type : "GET",
+			dataType : "json",
+			async : false,
+			success : function(result){
+				value = result;
+
+			},
+			error : function(result){
+
+			}
+
+		});
+	}
+
+	return value;
 }
 
 </script>

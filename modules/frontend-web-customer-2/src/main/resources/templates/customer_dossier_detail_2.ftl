@@ -1,23 +1,22 @@
 <#if (Request)??>
 <#include "init.ftl">
 </#if>
+<div class="steps align-space-between">
+	<div class="step align-middle-lg done">
+		<span>1</span>
+		<span>Lựa chọn Dịch vụ công</span>
+	</div>
+	<div class="step align-middle-lg" id="step2">
+		<span>2</span>
+		<span>Chuẩn bị hồ sơ</span>
+	</div>
+	<div class="step align-middle-lg" id="step3">
+		<span>3</span>
+		<span>Nộp hồ sơ</span>
+	</div>
+</div>
 
 <div id="detailDossier">
-	
-	<div class="steps align-space-between">
-		<div class="step align-middle-lg done">
-			<span>1</span>
-			<span>Lựa chọn Dịch vụ công</span>
-		</div>
-		<div class="step align-middle-lg" id="step2">
-			<span>2</span>
-			<span>Chuẩn bị hồ sơ</span>
-		</div>
-		<div class="step align-middle-lg" id="step3">
-			<span>3</span>
-			<span>Nộp hồ sơ</span>
-		</div>
-	</div>
 	
 	<div class="box" >
 		<input type="hidden" name="dossierTemplateId" id="dossierTemplateId">
@@ -66,7 +65,7 @@
 
 			</div>
 
-			<div class="content-part collapse PB15" id="collapseDossierG">
+			<div class="content-part collapse PB15 toggle-hide" id="collapseDossierG">
 				<span data-bind="html:stepInstruction"></span>
 				<#-- <p class="MB0 text-light-blue PB15"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p> -->
 			</div>
@@ -84,7 +83,7 @@
 							<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
 						</div>
 					</div>
-					<div class="content-part collapse" id="collapseDossierI">
+					<div class="content-part collapse toggle-hide" id="collapseDossierI">
 						<div class="row-parts-head MT5">
 
 							<div class="row MT5">
@@ -185,14 +184,14 @@
 						</span>
 					</div>
 				</div>
-				<div class="content-part collapse in" id="lsDossierTemplPart">
+				<div class="content-part collapse in " id="lsDossierTemplPart">
 					<#-- <#include "customer_dossier_online_form.ftl"> -->
 				</div>
 				<script type="text/x-kendo-template" id="templateDossierPart">
 					#if(partType == 1){#
-					<div class="row-parts-head align-middle">
+					<div class="row-parts-head align-middle" #if(hasForm){# data-toggle="collapse" data-target="\\#collapseDossierPart#:id#" #}# >
 						<span class="text-bold MR5">#:itemIndex#.</span>
-						<span #if(hasForm){# data-toggle="collapse" data-target="\\#collapseDossierPart#:id#" #}# >
+						<span class="hover-pointer">
 							#:partName# 
 							#if(required){#
 							<span class="red">*</span>
@@ -226,22 +225,22 @@
 					var dossierFile =  getReferentUidFile(${dossierId},id);
 					#
 					
-
-					<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# id="collapseDossierPart#:id#" class="collapse">
-
-						<div class="row">
-							<div class="col-xs-12 col-sm-12 text-right">
-								<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
-								type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
-								<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
-							</div>
+					<div class="collapse" id="collapseDossierPart#:id#">
+						<div class="col-xs-12 col-sm-12 text-right">
+							<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
+							type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
+							<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
 						</div>
+						<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# >
 
-						<form id="formPartNo#:id#">
+							<form id="formPartNo#:id#">
 
-						</form>
+							</form>
 
+						</div>
 					</div>
+
+					
 					#
 					
 
@@ -363,9 +362,9 @@
 	$("#step2").addClass("done");
 	$("#step3").addClass("done");
 
-	var fnBindDossierTemplClick = function(){
-		//upload file click
-		$(".dossier-file").unbind().change(function(){
+	$(function(){
+		$(document).off("change",".dossier-file");
+		$(document).on("change",".dossier-file",function(){
 			console.log("change");
 			var partNo = $(this).attr("part-no");
 			var fileTemplateNo = $(this).attr("file-template-no");
@@ -378,8 +377,8 @@
 			$(this).val("");
 		});
 
-		//tai giay to kho luu tru
-		$(".uploadfile-form-repository").unbind().click(function(){
+		$(document).off("click",".uploadfile-form-repository");
+		$(document).on("click",".uploadfile-form-repository",function(){
 			var dossierId = "${(dossierId)!}";
 			var dossierTemplateNo = $("#dossierTemplateNo").val();
 			var partNo = $(this).attr("part-no");
@@ -388,8 +387,8 @@
 			});
 		});
 
-		//xem file tai len theo tp ho so
-		$(".dossier-component-profile").unbind().click(function() {
+		$(document).off("click",".dossier-component-profile");
+		$(document).on("click",".dossier-component-profile",function(){
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
 			var dossierTemplateId = "${(dossierTemplateId)!}";
@@ -398,7 +397,8 @@
 			});
 		});
 
-		$(".delete-dossier-file").unbind().click(function(event){
+		$(document).off("click",".delete-dossier-file");
+		$(document).on("click",".delete-dossier-file",function(){
 			var dossierId  = ${dossierId};
 			var dataPartNo = $(this).attr("data-partno");
 			try{
@@ -452,7 +452,8 @@
 				}
 			}
 		});
-	}
+	});
+
 
 	$("#btn-back-dossier").click(function(){
 		fnBack();
@@ -527,7 +528,6 @@
 		},
 		dataBound : function(){
 			indexDossiserPart = 0;
-			fnBindDossierTemplClick();
 
 			var arrFile = funDossierFile(${dossierId});
 			funGenNumberFile(arrFile);
@@ -1175,6 +1175,8 @@
 						stepInstruction : function(){
 							if(result.stepInstruction){
 								return result.stepInstruction;
+							}else {
+								return "";
 							}
 						},
 						applicantNote : function(){
@@ -1533,6 +1535,12 @@
 			}
 		}
 
+	});
+
+	$(document).ready(function(){
+		$('html, body').animate({
+			scrollTop: $("#dossierFormSubmiting").offset().top
+		}, 700);
 	});
 
 </script>
