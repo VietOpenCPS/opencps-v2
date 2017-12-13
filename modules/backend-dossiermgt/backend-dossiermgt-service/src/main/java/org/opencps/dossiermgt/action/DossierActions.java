@@ -73,4 +73,6 @@ public interface DossierActions {
 	public JSONArray getNextActions(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext) throws PortalException;
 
+	public Dossier cloneDossier(long groupId, long dossierId, ServiceContext serviceContext) throws PortalException;
+
 }

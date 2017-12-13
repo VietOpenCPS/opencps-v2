@@ -490,10 +490,12 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 		//Update formData
 		
 		DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId, fileRef);
-		dossierFile.setFormData(formData);
 		
-		DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
-
+		if (Validator.isNotNull(dossierFile)) {
+			dossierFile.setFormData(formData);
+			
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+		}
 		//DossierFileLocalServiceUtil.updateFormData(desGroupId, dossierId, fileRef, formData, serviceContext);
 
 	}
@@ -502,7 +504,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 3, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 1, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

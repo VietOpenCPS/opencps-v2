@@ -53,6 +53,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -88,6 +89,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier syncDossier(Dossier dossier) throws PortalException {
+		
+		
 		dossierPersistence.update(dossier);
 
 		return dossier;
@@ -348,6 +351,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setPostalAddress(postalAddress);
 			dossier.setPostalCityCode(postalCityCode);
 			dossier.setPostalCityName(postalCityName);
+			dossier.setPostalTelNo(postalTelNo);
 			dossier.setPassword(password);
 			dossier.setNotification(notification);
 			dossier.setOnline(online);
@@ -725,6 +729,16 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		return dossierPersistence.remove(dossier);
+
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier updateDossierBriefNote(long dossierId, String dossierBriefNote) throws PortalException {
+		Dossier dossier = dossierPersistence.findByPrimaryKey(dossierId);
+
+		dossier.setBriefNote(dossierBriefNote);
+
+		return dossierPersistence.update(dossier);
 
 	}
 
