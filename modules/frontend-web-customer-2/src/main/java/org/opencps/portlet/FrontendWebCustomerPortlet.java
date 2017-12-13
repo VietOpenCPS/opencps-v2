@@ -126,15 +126,15 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		dossierNew.put("value", "new");
 		dossierStatus.add(dossierNew);
 
-		JSONObject dossierProcessing = JSONFactoryUtil.createJSONObject();
-		dossierProcessing.put("text", "Hồ sơ chờ tiếp nhận");
-		dossierProcessing.put("value", "processing");
-		dossierStatus.add(dossierProcessing);
+		JSONObject dossierReceiving = JSONFactoryUtil.createJSONObject();
+		dossierReceiving.put("text", "Hồ sơ chờ tiếp nhận");
+		dossierReceiving.put("value", "receiving");
+		dossierStatus.add(dossierReceiving);
 		
-		JSONObject dossierProcessing = JSONFactoryUtil.createJSONObject();
-		dossierProcessing.put("text", "Hồ sơ đã tiếp nhận");
-		dossierProcessing.put("value", "processing");
-		dossierStatus.add(dossierProcessing);
+		JSONObject dossierProcessed = JSONFactoryUtil.createJSONObject();
+		dossierProcessed.put("text", "Hồ sơ đã tiếp nhận");
+		dossierProcessed.put("value", "processing");
+		dossierStatus.add(dossierProcessed);
 
 		JSONObject dossierWaiting = JSONFactoryUtil.createJSONObject();
 		dossierWaiting.put("text", "Hồ sơ chờ bổ sung");
@@ -161,10 +161,10 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		dossierCancelled.put("value", "cancelled");
 		dossierStatus.add(dossierCancelled);
 		
-		JSONObject dossierCancelled = JSONFactoryUtil.createJSONObject();
-		dossierCancelled.put("text", "Hồ sơ đến hạn XN hiệu lực");
-		dossierCancelled.put("value", "cancelled");
-		dossierStatus.add(dossierCancelled);
+		JSONObject dossierExpired = JSONFactoryUtil.createJSONObject();
+		dossierExpired.put("text", "Hồ sơ đến hạn XN hiệu lực");
+		dossierExpired.put("value", "expired");
+		dossierStatus.add(dossierExpired);
 		
 		JSONObject dossierAll = JSONFactoryUtil.createJSONObject();
 		dossierAll.put("text", "Tất cả hồ sơ");
@@ -172,7 +172,6 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		dossierStatus.add(dossierAll);
 		
 		constantsObj.put("dossierStatus", dossierStatus);
-		_log.info("CONATNTSOBJ--------------------------- "+constantsObj.toString());
 
 		return constantsObj;
 

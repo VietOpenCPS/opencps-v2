@@ -175,7 +175,7 @@
 </div>
 </div>
 
-
+<#-- 
 <div class="dossier-parts" id="paymentDossier">
 	<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierPayment">
 		<div class="background-triangle-small">III</div> 
@@ -298,7 +298,7 @@
 			</div>
 		</div>
 	</div>
-</div> 
+</div>  -->
 
 
 <div class="dossier-parts">
