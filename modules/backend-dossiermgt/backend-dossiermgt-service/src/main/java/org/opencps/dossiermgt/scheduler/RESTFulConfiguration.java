@@ -9,6 +9,9 @@ public class RESTFulConfiguration {
 	public static final String STATUS = "status";
 	public static final String MESSAGE = "message";
 	
+	public static final String SUBMIT = "submit";
+	public static final String TIMER = "timer";
+	
 	//ServerConfig
 	public static final String SERVER_USER = PropsUtil.get(ConfigProps.SERVER_USER);
 	public static final String SERVER_PASS = PropsUtil.get(ConfigProps.SERVER_PASS);
