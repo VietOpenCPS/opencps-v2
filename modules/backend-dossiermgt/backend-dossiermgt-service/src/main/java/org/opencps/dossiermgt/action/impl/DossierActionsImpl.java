@@ -777,7 +777,7 @@ public class DossierActionsImpl implements DossierActions {
 
 		Dossier desDossier = DossierLocalServiceUtil.addDossier(srcDossier);
 		
-		DossierFileLocalServiceUtil.cloneDossierFilesByDossierId(groupId, desDossier.getPrimaryKey(), srcDossier.getPrimaryKey(), 1, context);
+		DossierFileLocalServiceUtil.cloneDossierFilesByDossierId(groupId,  srcDossier.getPrimaryKey(),dossierId, 1, context);
 		
 		return desDossier;
 	}
