@@ -80,14 +80,14 @@
 								$(result.data).each(function(index, value){
 									value.count = index + 1;
 								});
-							};
+							}; 
 							options.success(result);
 							optBoxPageSize();
 							if (result.total!=0) {
 								dataSourceProfile.page(1);
 							};
 							
-							$("#statusName").html($(".itemStatus.active > a").text());
+							$("#statusName").html($(".itemStatus.active .dossierStatus").text());
 							//
 							$('.optPage[value="'+dataSourceProfile.pageSize()+'"]').attr("selected","selected");
 							// Option kendo-page
@@ -139,7 +139,8 @@
 			$("#keyInput").val("");
 			$("#serviceInfo").data("kendoComboBox").text("");
 			// $("#govAgency").data("kendoComboBox").text("");
-		}
+		};
+
 		var modelPanel = kendo.observable({
 			// dataGovAgency: dataGovAgency,
 			dataServiceInfo: dataServiceInfo,
@@ -148,8 +149,9 @@
 			// Lọc theo tháng, năm, cơ quan thực hiện, thủ tục hành chính
 			eventLookup : function(e){
 				e.preventDefault();
+				$("#dossier-emp-nav-selectbox-by-dossierNo").val("");
 				var statusDossier = $("li.itemStatus.active").attr("dataPk");
-			    if (statusDossier !== undefined) {
+			    if (statusDossier == "all") {
 					dataSourceProfile.read({
 						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
 						"serviceInfo": $("#serviceInfo").val(),
@@ -167,7 +169,7 @@
 						// "year": $("#year").val(),
 						// "month": $("#month").val(),
 						"keyword": $("#keyInput").val(),
-						"status": statusDossier 
+						"status": statusDossier
 					})
 			    }
 			},
@@ -175,11 +177,21 @@
 				e.preventDefault();
 				$("#keyInput").val("");
 				var statusDossier = $("li.itemStatus.active").attr("dataPk");
-				dataSourceProfile.read({
-					"serviceInfo": $("#serviceInfo").val(),
-					"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-					"status":statusDossier
-				})
+				if (statusDossier == "all") {
+					dataSourceProfile.read({
+						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+						"serviceInfo": $("#serviceInfo").val(),
+						"keyword": $("#keyInput").val(),
+						"status": ""
+					})
+			    } else {
+					dataSourceProfile.read({
+						"serviceInfo": $("#serviceInfo").val(),
+						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+						"keyword": $("#keyInput").val(),
+						"status": statusDossier
+					})
+			    }
 			},
 			filterStatus: function(e){
 				e.preventDefault();
@@ -190,6 +202,8 @@
 				$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 				$(e.currentTarget).children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
 				$("#keyInput").val("");
+				$("#dossier-emp-nav-selectbox-by-dossierNo").val("");
+				// 
 				var id = $(e.currentTarget).attr("dataPk");
 				manageDossier.navigate("/"+id)
 			},
@@ -242,20 +256,23 @@
 		var copyProfile = function(){
 			$(".copyProfile").click(function(e){
 				e.stopPropagation();
+				var cf = confirm("Bạn có muốn sao chép hồ sơ!");
 				var id = $(this).attr("data-Pk");
-				$.ajax({
-					url:"${api.server}/dossiers/"+id+"/cloning",
-					dataType:"json",
-					type:"POST",
-					headers: {"groupId": ${groupId}},
-					success:function(res){
-						var referenceUid = res.referenceUid;
-						manageDossier.navigate("/taohosomoi/nophoso/"+referenceUid);
-					},
-					error:function(res){
-						
-					}
-				})
+				if (cf) {
+					$.ajax({
+						url:"${api.server}/dossiers/"+id+"/cloning",
+						dataType:"json",
+						type:"POST",
+						headers: {"groupId": ${groupId}},
+						success:function(res){
+							var referenceUid = res.referenceUid;
+							manageDossier.navigate("/taohosomoi/nophoso/"+referenceUid);
+						},
+						error:function(res){
+							
+						}
+					})
+				}
 			})
 		};
 		var modelMain = kendo.observable({
@@ -269,7 +286,7 @@
 			loadDossierDetail:function(e){
 				e.preventDefault();
 				var dossierItemStatus = e.data.dossierStatus;
-				var id = $(e.currentTarget).attr("dataPk");
+				var id = e.data.dossierId;
 				manageDossier.navigate("/"+dossierItemStatus+"/dossiers/"+id);	
 			},
 			stylePager: function(e){

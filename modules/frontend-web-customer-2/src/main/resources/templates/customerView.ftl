@@ -52,14 +52,14 @@
 				</div>
 				
 				<div class="col-sm-12">
-					<ul id="profileStatus" class="ul-default ul-with-left-icon icon-folder">
+					<ul id="profileStatus" class="ul-default ul-with-left-icon icon-folder have-bagde">
 						<#if constants.dossierStatus?has_content>
 							<#list constants.dossierStatus as odossierStatus>
 								
 								<li dataPk='${odossierStatus.value}' class='itemStatus' data-bind="click: filterStatus">
 									<i class='fa fa-folder icon-left' aria-hidden='true'></i>  
-									<a href='javascript:;' >${odossierStatus.text}</a>
-									<span class="PL20">${odossierStatus.count}</span>
+									<span class="hover-pointer text-hover-blue dossierStatus">${odossierStatus.text}</span>
+									<span class="bagde">${odossierStatus.count}</span>
 								</li>
 								
 							</#list>

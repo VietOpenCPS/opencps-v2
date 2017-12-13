@@ -250,6 +250,7 @@
 									
 									options.success();
 									$('#emoloyee-list-counter').html($("#employee-listview").getKendoListView().dataSource.total());
+									$("#employee-birthdate-listview").getKendoListView().dataSource.read();
 									showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
 									
 								},

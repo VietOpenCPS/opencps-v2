@@ -301,7 +301,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 		// SyncPaymentFile and paymentfile status
 		if (method == 2 || method == 3) {
-
+			
 		}
 
 		// remove pending in DossierAction

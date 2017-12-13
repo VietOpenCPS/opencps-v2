@@ -2,13 +2,12 @@ package org.opencps.dossiermgt.action;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.ProcessAction;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -71,7 +70,7 @@ public interface DossierActions {
 	public JSONObject getDossierActions(long dossierId, long groupId, Boolean owner, int start, int end, String sort,
 			String order, ServiceContext serviceContext) throws PortalException;
 
-	public JSONObject getNextActions(String code, long dossierId, long groupId, Boolean owner, int start, int end,
-			String sort, String order, ServiceContext serviceContext) throws PortalException;
+	public JSONArray getNextActions(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext) throws PortalException;
 
 }

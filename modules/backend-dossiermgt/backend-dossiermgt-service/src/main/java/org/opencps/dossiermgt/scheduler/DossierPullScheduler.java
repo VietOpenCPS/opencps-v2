@@ -486,8 +486,15 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 		JSONObject jsDossierFile = JSONFactoryUtil.createJSONObject(sb.toString());
 
 		String fileRef = jsDossierFile.getString("referenceUid");
+		
+		//Update formData
+		
+		DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId, fileRef);
+		dossierFile.setFormData(formData);
+		
+		DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 
-		DossierFileLocalServiceUtil.updateFormData(desGroupId, dossierId, fileRef, formData, serviceContext);
+		//DossierFileLocalServiceUtil.updateFormData(desGroupId, dossierId, fileRef, formData, serviceContext);
 
 	}
 

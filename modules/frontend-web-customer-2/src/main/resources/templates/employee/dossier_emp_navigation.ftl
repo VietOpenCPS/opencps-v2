@@ -56,7 +56,7 @@
 		
 		<div class="col-sm-12">
 
-			<ul class="contact-navigator dossier-emp-navigator" id="dossier-emp-navigator-filter">
+			<ul class="contact-navigator dossier-emp-navigator have-bagde" id="dossier-emp-navigator-filter">
 
 				<#if constants.dossierStatus?has_content>
 					<#list constants.dossierStatus as odossierStatus>
@@ -69,7 +69,7 @@
 
 							</span>${odossierStatus.text}
 
-							<span class="PL20">${odossierStatus.count}</span>
+							<span class="bagde">${odossierStatus.count}</span>
 
 						</li>
 						
