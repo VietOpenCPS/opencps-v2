@@ -90,6 +90,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier syncDossier(Dossier dossier) throws PortalException {
 		
+		
 		dossierPersistence.update(dossier);
 
 		return dossier;

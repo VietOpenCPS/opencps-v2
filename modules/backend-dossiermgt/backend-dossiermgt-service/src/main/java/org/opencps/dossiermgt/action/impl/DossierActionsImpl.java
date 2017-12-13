@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
@@ -761,6 +762,7 @@ public class DossierActionsImpl implements DossierActions {
 		
 		long desDossierId = CounterLocalServiceUtil.increment(Dossier.class.getName());
 		
+		srcDossier.setUuid(UUID.randomUUID().toString());
 		srcDossier.setDossierId(desDossierId);
 		srcDossier.setDossierStatus(StringPool.BLANK);
 		srcDossier.setDossierStatusText(StringPool.BLANK);
@@ -773,7 +775,7 @@ public class DossierActionsImpl implements DossierActions {
 		srcDossier.setCounter(counter);
 		srcDossier.setReferenceUid(referenceUid);
 
-		Dossier desDossier = DossierLocalServiceUtil.syncDossier(srcDossier);
+		Dossier desDossier = DossierLocalServiceUtil.addDossier(srcDossier);
 		
 		DossierFileLocalServiceUtil.cloneDossierFilesByDossierId(groupId, desDossier.getPrimaryKey(), srcDossier.getPrimaryKey(), 1, context);
 		

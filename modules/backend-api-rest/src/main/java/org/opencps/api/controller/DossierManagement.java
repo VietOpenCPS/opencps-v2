@@ -192,10 +192,9 @@ public interface DossierManagement {
 	public Response getContactsDossier(@Context HttpHeaders header, @Context ServiceContext serviceContext,
 			@PathParam("id") Long dossierId, @Context String referenceUid);
 	
-	@GET
+	@POST
 	@Path("/{id}/cloning")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Cloning dossier and DossierFile", response = DossierDetailModel.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the dossier have been created", response = DossierDetailModel.class),
