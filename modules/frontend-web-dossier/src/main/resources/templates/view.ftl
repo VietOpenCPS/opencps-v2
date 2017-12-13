@@ -23,7 +23,11 @@
 
                 },
                 xem_them: 'Không tìm thấy hồ sơ nào',
-                hoso_title_table: 'Danh sách hồ sơ'
+                hoso_title_table: 'Danh sách hồ sơ',
+                processSteps: [],
+                stepModel: {
+
+                }
             },
             onScroll: "onScroll",
             schema: {
@@ -66,34 +70,63 @@
                             
                         },
                         _initlistgroupFilter: function(){
-                            this.stageFilterView = 'danh_sach';
-                            this.listgroupFilterItems = [
+                            var vm = this;
+                            vm.stageFilterView = 'danh_sach';
+
+                            vm.listgroupFilterItems = [
                                 {
                                     id: 'danh_sach',
                                     title: 'DANH SÁCH HỒ SƠ',
                                     items: [
                                     ]
-                                },
-                                {
-                                    id: 'tra_cuu',
-                                    title: 'TRA CỨU',
-                                    active: true,
-                                    items: [
-                                        {
-                                            id: 'tra_cuu_hoso',
-                                            title: 'Tra cứu hồ sơ'
-                                        },
-                                        {
-                                            id: 'tra_cuu_phuong_tien',
-                                            title: 'Tra cứu phương tiện sản xuất lắp rap'
-                                        },
-                                        {
-                                            id: 'tra_cuu_thong_tin_doanh_nghiep',
-                                            title: 'Tra cứu thông tin doanh nghiệp'
-                                        }
-                                    ]
                                 }
                             ];
+
+                            const config = {};
+
+                            var url = '/o/frontendwebdossier/json/menu.json';
+                            
+                            axios.get(url, config).then(function (response) {
+                                var serializable = response.data;
+
+                                for (var key in serializable.data) {
+                                    if (serializable.data[key].dossierStatus != null) {
+                                        vm.listgroupFilterItems[0].items.push({
+                                            id: serializable.data[key].dossierStatus,
+                                            title: serializable.data[key].statusName
+                                        });
+                                    } else {
+                                        vm.listgroupFilterItems[0].items.push({
+                                            id: serializable.data[key].dossierSubStatus,
+                                            title: serializable.data[key].statusName
+                                        });
+                                    }
+                                }
+                                vm.listgroupFilterItems.push(
+                                    {
+                                        id: 'tra_cuu',
+                                        title: 'TRA CỨU',
+                                        active: true,
+                                        items: [
+                                            {
+                                                id: 'tra_cuu_hoso',
+                                                title: 'Tra cứu hồ sơ'
+                                            },
+                                            {
+                                                id: 'tra_cuu_phuong_tien',
+                                                title: 'Tra cứu phương tiện sản xuất lắp rap'
+                                            },
+                                            {
+                                                id: 'tra_cuu_thong_tin_doanh_nghiep',
+                                                title: 'Tra cứu thông tin doanh nghiệp'
+                                            }
+                                        ]
+                                    }
+                                );
+                            })
+                                .catch(function (error) {
+                                    console.log(error);
+                                });
                             
                         }
                     }
@@ -199,7 +232,7 @@
                     'id': 'applicantNameFilter',
                     'name': 'applicantNameFilter',
                     "type": "select",
-                    'label': 'Chủ hồ sơ ',
+                    'label': 'Chủ hồ sơ',
                     "item_text": "name",
                     "item_value": "id",
                     "single_line": true,
@@ -219,7 +252,7 @@
                     'id': 'fromDateFilter',
                     'name': 'fromDateFilter',
                     'type': 'date',
-                    'label': 'Từ ngày ',
+                    'label': 'Từ ngày: ',
                     'placeholder': 'ngày... tháng... năm...',
                     'append_icon':'event',
                     'onClick': 'dateChangeDate',
@@ -233,7 +266,7 @@
                     'id': 'toDateFilter',
                     'name': 'toDateFilter',
                     'type': 'date',
-                    'label': 'Đến ngày ',
+                    'label': 'Đến ngày: ',
                     'placeholder': 'ngày... tháng... năm...',
                     'append_icon':'event',
                     'onClick': 'dateChangeDate',
@@ -601,6 +634,80 @@
 								console.log(error);
 							});
 
+                        },
+                        changeProcessStep: function (data){
+                            console.log(data);
+                            var vm = this;
+                            vm.stepModel = data;
+                            vm.processAssignUserIdItems = data.toUsers
+                        },
+                        _initchangeProcessStep: function (){
+                            var vm = this;
+                            const config = {};
+                            
+                            var url = '/o/frontendwebdossier/json/steps.json';
+                            
+                            axios.get(url, config).then(function (response) {
+                                var serializable = response.data;
+
+                                vm.processSteps = serializable.data;
+
+                            })
+                                .catch(function (error) {
+                                    console.log(error);
+                                });
+                        }
+                    }
+                },
+                // TODO PROCESS ACTION
+                "processActionNote": {
+                    'id': 'processActionNote',
+                    'name': 'processActionNote',
+                    "type": "text",
+                    'placeholder': 'ý kiến cán bộ ... ',
+                    'multi_line': true,
+                    'textarea': true
+                },
+                "processAssignUserId": {
+                    'id': 'processAssignUserId',
+                    'name': 'processAssignUserId',
+                    "type": "select",
+                    'label': 'Lựa chọn cán bộ phân công xử lý ',
+                    "item_text": "userName",
+                    "item_value": "userId",
+                    "single_line": true,
+                    "hide_selected": true,
+                    "chips": true,
+                    "deletable_chips": true,
+                    "loading": false,
+                    "no-data-text": "Lua chon selected",
+                    "items": [],
+                    'onLoad': '_initprocessAssignUserId',
+                    'events': {
+                        _initprocessAssignUserId: function () {
+                            
+                            this.processAssignUserIdItems = [
+                                {
+                                "userId": 1,
+                                "userName": "userName1",
+                                "moderator": false
+                                },
+                                {
+                                "userId": 2,
+                                "userName": "userName2",
+                                "moderator": false
+                                },
+                                {
+                                "userId": 3,
+                                "userName": "userName3",
+                                "moderator": false
+                                },
+                                {
+                                "userId": 4,
+                                "userName": "userName4",
+                                "moderator": false
+                                }
+                            ];
                         }
                     }
                 }
