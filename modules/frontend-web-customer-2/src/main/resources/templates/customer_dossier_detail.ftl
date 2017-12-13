@@ -1,23 +1,22 @@
 <#if (Request)??>
 <#include "init.ftl">
 </#if>
+<div class="steps align-space-between">
+	<div class="step align-middle-lg done">
+		<span>1</span>
+		<span>Lựa chọn Dịch vụ công</span>
+	</div>
+	<div class="step align-middle-lg" id="step2">
+		<span>2</span>
+		<span>Chuẩn bị hồ sơ</span>
+	</div>
+	<div class="step align-middle-lg" id="step3">
+		<span>3</span>
+		<span>Nộp hồ sơ</span>
+	</div>
+</div>
 
 <div class="box" id="detailDossier">
-
-	<div class="steps align-space-between">
-		<div class="step align-middle-lg done">
-			<span>1</span>
-			<span>Lựa chọn Dịch vụ công</span>
-		</div>
-		<div class="step align-middle-lg" id="step2">
-			<span>2</span>
-			<span>Chuẩn bị hồ sơ</span>
-		</div>
-		<div class="step align-middle-lg" id="step3">
-			<span>3</span>
-			<span>Nộp hồ sơ</span>
-		</div>
-	</div>
 
 	<input type="hidden" name="dossierTemplateId" id="dossierTemplateId">
 	<input type="hidden" name="dossierItemId" id="dossierItemId">
@@ -59,7 +58,7 @@
 			<i class="fa fa-angle-down pull-right hover-pointer MR15" aria-hidden="true" style="font-size: 150%;"></i>
 		</div>
 
-		<div class="content-part collapse PB15" id="collapseDossierG">
+		<div class="content-part collapse PB15 toggle-hide" id="collapseDossierG">
 			<span data-bind="html:dossierNote"></span>
 			<#-- <p class="MB0 text-light-blue PB15"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p> -->
 		</div>
@@ -78,7 +77,7 @@
 					</div>
 					
 				</div>
-				<div class="content-part collapse" id="collapseDossierI">
+				<div class="content-part collapse toggle-hide" id="collapseDossierI">
 					<div class="row-parts-head MT5">
 						<div class="row MT5">
 							
@@ -181,85 +180,81 @@
 				</div>
 				
 			</div>
-			<div class="content-part collapse in" id="lsDossierTemplPart" >
+			<div class="content-part collapse in " id="lsDossierTemplPart" >
 				<#-- <#include "customer_dossier_online_form.ftl"> -->
 			</div>
+
 			<script type="text/x-kendo-template" id="templateDossierPart">
-				#if(partType == 0){#
-				<div class="row-parts-head align-middle">
+				#if(partType == 1){#
+				<div class="row-parts-head align-middle" #if(hasForm){# data-toggle="collapse" data-target="\\#collapseDossierPart#:id#" #}#>
 					<span class="text-bold MR5">#:itemIndex#.</span>
-					<span 
-					#if(hasForm){# data-toggle="collapse" data-target="\\#collapseDossierPart#:id#" #}# > 
+					<span class="hover-pointer"> #:partName# 
+						#
+						if(required){
+						#
+						<span class="red">*</span>
+						<input type="hidden" id="validPart#:id#" name="validPart#:id#" class="validPart" value="0">
+						#}#
+					</span>
 
-					# :partName #  
+					<div class="actions">
+						<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#">
+							<i class="fa fa-archive" aria-hidden="true"></i>
+						</a>
 
-					#
-					if(required){
-					#
-					<span class="red">*</span>
-					<input type="hidden" id="validPart#:id#" name="validPart#:id#" class="validPart" value="0">
-					#}#
-				</span>
+						<label class="MB0 ML10 hover-pointer" for="file#:id#" title="Tải file lên" >
+							<i class="fa fa-upload text-light-blue"></i>
+						</label>
 
-				<div class="actions">
-					<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#">
-						<i class="fa fa-archive" aria-hidden="true"></i>
-					</a>
+						<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#" hasform="#if(hasForm){# true #}#">
 
-					<label class="MB0 ML10 hover-pointer" for="file#:id#" title="Tải file lên" >
-						<i class="fa fa-upload text-light-blue"></i>
-					</label>
+						<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
+							<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
+						</a>
 
-					<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#" hasform="#if(hasForm){# true #}#">
-
-					<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
-						<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
-					</a>
-
-					<a href="javascript:;" class="text-light-gray delete-dossier-file" data-toggle="tooltip" data-placement="top" title="Xóa" data-partno="#:id#">
-						<i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
-					</a>
-				</div>
-			</div>
-
-			#
-			if(hasForm){
-			var dossierFile =  getReferentUidFile(${dossierId},id);
-			#
-
-			<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px;width:100%;overflow:auto;" #}# id="collapseDossierPart#:id#" class="collapse">
-
-				<div class="row">
-					<div class="col-xs-12 col-sm-12 text-right">
-						<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
-						type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#" >Ghi lại</button>
-						<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
+						<a href="javascript:;" class="text-light-gray delete-dossier-file" data-toggle="tooltip" data-placement="top" title="Xóa" data-partno="#:id#">
+							<i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+						</a>
 					</div>
 				</div>
 
-				<form id="formPartNo#:id#">
+				#
+				if(hasForm){
+				var dossierFile =  getReferentUidFile(${dossierId},id);
+				#
 
-				</form>
+				<div class="collapse" id="collapseDossierPart#:id#">
+					<div class="col-xs-12 col-sm-12 text-right">
+						<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
+						type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
+						<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
+					</div>
+					<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# >
 
-			</div>
+						<form id="formPartNo#:id#">
 
-			#
-			$.ajax({
-			url : "${api.server}/dossiers/${dossierId}/files/"+dossierFile.referenceUid+"/formscript",
-			dataType : "text",
-			type : "GET",
-			headers : {"groupId": ${groupId}},
-			success : function(result){
-			$("\\#formPartNo"+id).empty();
+						</form>
 
-			var alpaca = eval("(" + result + ")");
-			var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
-			if(formdata){
-			$("\\#validPart"+id).val("1");
-		}
-		alpaca.data = formdata; 
+					</div>
+				</div>
 
-		$("\\#formPartNo"+id).alpaca(alpaca);
+				#
+				$.ajax({
+				url : "${api.server}/dossiers/${dossierId}/files/"+dossierFile.referenceUid+"/formscript",
+				dataType : "text",
+				type : "GET",
+				headers : {"groupId": ${groupId}},
+				success : function(result){
+				$("\\#formPartNo"+id).empty();
+
+				var alpaca = eval("(" + result + ")");
+				var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
+				if(formdata){
+				$("\\#validPart"+id).val("1");
+			}
+			alpaca.data = formdata; 
+
+			$("\\#formPartNo"+id).alpaca(alpaca);
 			<#-- $("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca'+id+'" class="btn btn-active MB10 MT10 saveForm" 
 			type="button" data-pk="'+id+'" referentUid="'+referentUidFile+'">Ghi lại</button></div></div>'); -->
 
@@ -279,7 +274,7 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<label>Ghi chú</label>
-			<input class="form-control" name="applicantNote" id="applicantNote" placeholder="Ghi chú">
+			<input class="form-control" name="applicantNote" id="applicantNote" placeholder="Ghi chú" data-bind="value : applicantNote">
 		</div>
 	</div>
 
@@ -335,9 +330,8 @@
 		$("#step2").addClass("done");
 		$("#step3").removeClass("done");
 
-		var fnBindDossierTemplClick = function(){
-		//upload file click
-		$(".dossier-file").unbind().change(function(){
+		$(document).off("change",".dossier-file");
+		$(document).on("change",".dossier-file",function(){
 			console.log("change");
 
 			var partNo = $(this).attr("part-no");
@@ -353,8 +347,8 @@
 			$(this).val("");
 		});
 
-		//tai giay to kho luu tru
-		$(".uploadfile-form-repository").unbind().click(function(){
+		$(document).off("click",".uploadfile-form-repository");
+		$(document).on("click",".uploadfile-form-repository",function(){
 			var dossierId = "${(dossierId)!}";
 			var dossierTemplateNo = $("#dossierTemplateNo").val();
 			var partNo = $(this).attr("part-no");
@@ -363,8 +357,8 @@
 			});
 		});
 
-		//xem file tai len theo tp ho so
-		$(".dossier-component-profile").unbind().click(function() {
+		$(document).off("click",".dossier-component-profile");
+		$(document).on("click",".dossier-component-profile",function(){
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
 			var dossierTemplateId = "${(dossierTemplateId)!}";
@@ -373,8 +367,8 @@
 			});
 		});
 
-		$(".delete-dossier-file").unbind().click(function(event){
-
+		$(document).off("click",".delete-dossier-file");
+		$(document).on("click",".delete-dossier-file",function(){
 			var dossierId  = "${dossierId}";
 			var dataPartNo = $(this).attr("data-partno");
 			try{
@@ -421,116 +415,114 @@
 				}
 			}
 		});
-	}
 
-	$("#btn-view-extendguide").click(function(){
-		if($("#extend-guide").attr("status")==="none"){
-			$("#extend-guide").show();
-			$("#extend-guide").attr("status","show");
-		}else{
-			$("#extend-guide").hide();
-			$("#extend-guide").attr("status","none");
-		}
-	});
-
-	$(document).on("click",".dossier-online-form",function(event){
-		console.log("abcd");
-		$(this).unbind();
-		$("#showDossierOnlineForm").load("${ajax.customer_dossier_online_form_dialog}",function(result){
-			$(this).modal("show");
+		$("#btn-view-extendguide").click(function(){
+			if($("#extend-guide").attr("status")==="none"){
+				$("#extend-guide").show();
+				$("#extend-guide").attr("status","show");
+			}else{
+				$("#extend-guide").hide();
+				$("#extend-guide").attr("status","none");
+			}
 		});
-	});
 
-	(function($) { 
-		$('.spinner .btn:first-of-type').on('click', function() { 
-			$('.spinner input').val(parseInt($('.spinner input').val(), 10) + 1); 
-		}); 
-		$('.spinner .btn:last-of-type').on('click', function() { 
-			$('.spinner input').val(parseInt($('.spinner input').val(), 10) - 1); 
-		}); 
-	})(jQuery);
-
-	$("#dossier-submit-info").click(function(){
-		$("#dossierSubmitInfo").load("${ajax.customer_dossier_info}",function(result){
-			$(this).modal("show");
+		$(document).on("click",".dossier-online-form",function(event){
+			console.log("abcd");
+			$(this).unbind();
+			$("#showDossierOnlineForm").load("${ajax.customer_dossier_online_form_dialog}",function(result){
+				$(this).modal("show");
+			});
 		});
-	});
 
-	var dataSourceDossierTemplate = new kendo.data.DataSource({
-		transport :{
-			read : function(options){
-				if(options.data.dossierTemplateNo){
-					$.ajax({
-						url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateNo,
-						dataType : "json",
-						type : "GET",
-						headers : {"groupId": ${groupId}},
-						data : {
+		(function($) { 
+			$('.spinner .btn:first-of-type').on('click', function() { 
+				$('.spinner input').val(parseInt($('.spinner input').val(), 10) + 1); 
+			}); 
+			$('.spinner .btn:last-of-type').on('click', function() { 
+				$('.spinner input').val(parseInt($('.spinner input').val(), 10) - 1); 
+			}); 
+		})(jQuery);
 
-						},
-						success : function(result){
-							options.success(result.dossierParts);
-							$("#dossierTemplateNo").val(result.templateNo);
-						},
-						error : function(result){
-							options.error(result);
-						}
-					});
+		$("#dossier-submit-info").click(function(){
+			$("#dossierSubmitInfo").load("${ajax.customer_dossier_info}",function(result){
+				$(this).modal("show");
+			});
+		});
+
+		var dataSourceDossierTemplate = new kendo.data.DataSource({
+			transport :{
+				read : function(options){
+					if(options.data.dossierTemplateNo){
+						$.ajax({
+							url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateNo,
+							dataType : "json",
+							type : "GET",
+							headers : {"groupId": ${groupId}},
+							data : {
+
+							},
+							success : function(result){
+								options.success(result.dossierParts);
+								$("#dossierTemplateNo").val(result.templateNo);
+							},
+							error : function(result){
+								options.error(result);
+							}
+						});
+					}
+				}
+			},
+			schema : {
+				model : {
+					id : "partNo"
 				}
 			}
-		},
-		schema : {
-			model : {
-				id : "partNo"
-			}
-		}
-	});
-
-	var indexDossiserPart =0 ;
-	$("#lsDossierTemplPart").kendoListView({
-		dataSource : dataSourceDossierTemplate,
-		autoBind : false,
-		change : function(){
-
-		},
-		template : function(data){
-
-			indexDossiserPart ++;
-
-			data.itemIndex = indexDossiserPart;
-
-			return kendo.template($("#templateDossierPart").html())(data);
-
-		},
-		dataBound : function(){
-			indexDossiserPart = 0;
-			fnBindDossierTemplClick();
-		}
-	});
-
-	$("#showFileTemplateDialog").click(function(){
-		$("#fileTemplateDialog").load("employeemain_dossierdetail_filetemplate.ftl",function(result){
-			$(this).modal("show");
 		});
-	});
 
-	$("#btn-save-dossier").click(function(){
-		funSaveDossier();
-	});
+		var indexDossiserPart =0 ;
+		$("#lsDossierTemplPart").kendoListView({
+			dataSource : dataSourceDossierTemplate,
+			autoBind : false,
+			change : function(){
 
-	$("#btn-submit-dossier").click(function(){
-		createActionDossier(${(dossierId)!});
-	});
+			},
+			template : function(data){
 
-	$("#btn-back-dossier").click(function(){
-		fnBack();
-	});
+				indexDossiserPart ++;
 
-	fnBack = function(){
-		window.history.back();
-	};
+				data.itemIndex = indexDossiserPart;
 
-	funSaveDossier = function(){
+				return kendo.template($("#templateDossierPart").html())(data);
+
+			},
+			dataBound : function(){
+				indexDossiserPart = 0;
+			}
+		});
+
+		$("#showFileTemplateDialog").click(function(){
+			$("#fileTemplateDialog").load("employeemain_dossierdetail_filetemplate.ftl",function(result){
+				$(this).modal("show");
+			});
+		});
+
+		$("#btn-save-dossier").click(function(){
+			funSaveDossier();
+		});
+
+		$("#btn-submit-dossier").click(function(){
+			createActionDossier(${(dossierId)!});
+		});
+
+		$("#btn-back-dossier").click(function(){
+			fnBack();
+		});
+
+		fnBack = function(){
+			window.history.back();
+		};
+
+		funSaveDossier = function(){
 		//PUT dossier
 		
 		var validator = $("#detailDossier").kendoValidator().data("kendoValidator");
@@ -571,6 +563,9 @@
 				},
 				success :  function(result){                       
 					console.log("PUT Dossier success!");
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công"
+					}, "success");
 				},
 				error:function(result){
 					console.error(result);
@@ -824,9 +819,12 @@
 						wardCode : result.wardCode,
 						contactTelNo : result.contactTelNo,
 						contactEmail : result.contactEmail,
+						applicantNote : result.applicantNote,
 						dossierNote : function(){
 							if(result.dossierNote){
 								return result.dossierNote;
+							}else {
+								return "";
 							}
 						},
 						viaPostal : function(){
@@ -1103,7 +1101,7 @@ $(document).on("click",".saveFormAlpaca",function(event){
 		console.log(referentUidFile);
 		console.log(value);
 
-		if(errorMessage.length === '' && referentUidFile){
+		if(errorMessage === '' && referentUidFile){
 			$.ajax({
 				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
 				dataType : "json",
@@ -1134,6 +1132,12 @@ $(document).on("click",".saveFormAlpaca",function(event){
 			}, "error");
 		}
 	}
+});
+
+$(document).ready(function(){
+	$('html, body').animate({
+		scrollTop: $("#dossierFormSubmiting").offset().top
+	}, 700);
 });
 
 </script>

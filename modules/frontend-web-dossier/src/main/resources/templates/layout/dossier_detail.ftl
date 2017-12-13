@@ -125,7 +125,7 @@
           <v-tabs-item :href="'#tab-dossier-detail-1'">
             THÀNH PHẦN HỒ SƠ
           </v-tabs-item>
-          <v-tabs-item :href="'#tab-dossier-detail-2'">
+          <v-tabs-item :href="'#tab-dossier-detail-2'" @click.prevent.stop="_initchangeProcessStep()">
             THỤ LÝ HỒ SƠ
           </v-tabs-item>
           <v-tabs-item :href="'#tab-dossier-detail-3'">
@@ -153,7 +153,41 @@
             </v-expansion-panel>
           </v-tabs-content>
           <v-tabs-content :id="'tab-dossier-detail-2'" reverse-transition="slide-y-transition" transition="slide-y-transition">
-            
+            <v-tabs :scrollable="false">
+              <v-tabs-bar dark class="grey-opencps-panel">
+                <v-tabs-slider color="primary"></v-tabs-slider>
+                <v-tabs-item
+                  v-for="step in processSteps"
+                  :key="step.processActionId"
+                  :href="'#tab-temp-' + step.processActionId"
+                  @click.prevent.stop="changeProcessStep(step)"
+                >
+                  {{ step.actionName }}
+                </v-tabs-item>
+                <v-menu>
+                </v-menu>
+              </v-tabs-bar>
+            </v-tabs>
+            <v-card v-if="stepModel.actionName != null">
+              <v-card-title primary-title class="mx-2">
+              <v-layout wrap> 
+                <v-flex xs12>
+                  Nhập ý kiến {{stepModel.actionName}}:
+                  <div jx-bind="processActionNote"></div>
+                </v-flex>
+                <v-flex xs12 v-if="stepModel.allowAssignUser">
+                  <div jx-bind="processAssignUserId"></div>
+                </v-flex>
+              </v-layout>
+                
+                
+                
+              </v-card-title>
+              <v-card-actions>
+                <v-btn flat color="primary" class="px-0">Xác nhận</v-btn>
+              </v-card-actions>
+            </v-card>
+             
           </v-tabs-content>
           <v-tabs-content :id="'tab-dossier-detail-3'" reverse-transition="slide-y-transition" transition="slide-y-transition">
             <div class="opencps_list_border_style" jx-bind="listHistoryProcessing"></div>
