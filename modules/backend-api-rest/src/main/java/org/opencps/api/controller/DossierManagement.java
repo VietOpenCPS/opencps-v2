@@ -191,5 +191,19 @@ public interface DossierManagement {
 
 	public Response getContactsDossier(@Context HttpHeaders header, @Context ServiceContext serviceContext,
 			@PathParam("id") Long dossierId, @Context String referenceUid);
+	
+	@GET
+	@Path("/{id}/cloning")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Cloning dossier and DossierFile", response = DossierDetailModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the dossier have been created", response = DossierDetailModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	
+	public Response cloneDossier(@Context HttpHeaders header, @Context ServiceContext serviceContext,
+			@PathParam("id") long dossierId, @Context String referenceUid);
 
 }

@@ -752,4 +752,16 @@ public class DossierActionsImpl implements DossierActions {
 	}
 	protected Log _log = LogFactoryUtil.getLog(DossierActionsImpl.class);
 
+	@Override
+	public Dossier cloneDossier(long groupId, long dossierId, ServiceContext context) throws PortalException {
+		
+		Dossier srcDossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		
+		Dossier desDossier = DossierLocalServiceUtil.syncDossier(srcDossier);
+		
+		DossierFileLocalServiceUtil.cloneDossierFilesByDossierId(groupId, desDossier.getPrimaryKey(), srcDossier.getPrimaryKey(), 1, context);
+		
+		return desDossier;
+	}
+
 }

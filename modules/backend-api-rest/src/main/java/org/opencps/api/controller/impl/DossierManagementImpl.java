@@ -29,6 +29,7 @@ import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
+import org.opencps.dossiermgt.action.impl.DossierStatisticActionImpl;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -841,6 +842,61 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 		}
+	}
+
+	@Override
+	public Response cloneDossier(HttpHeaders header, ServiceContext serviceContext, long dossierId,
+			String referenceUid) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+	
+				if (!auth.isAuth(serviceContext)) {
+					throw new UnauthenticationException();
+				}
+				
+				DossierActions actions = new DossierActionsImpl();
+
+				Dossier dossier = actions.cloneDossier(groupId, dossierId, serviceContext);
+				
+
+				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier);
+
+				return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					error.setMessage("Internal Server Error");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+
+				}
+			}
+
+		}
+
 	}
 
 }
