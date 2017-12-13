@@ -474,6 +474,10 @@
 			<finder-column name="isNew"/>
 		</finder>
 		<!-- References -->
+        <finder name="DID_FTNO" return-type="DossierFile">
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="fileTemplateNo"></finder-column>
+        </finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
