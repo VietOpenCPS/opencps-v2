@@ -20,7 +20,7 @@
 	<#-- Group1 -->
 	<div class="accordion-group">
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#group1">
+			<a class="accordion-toggle" data-toggle="collapse" href="#group1">
 				</i> HỒ SƠ SẢN XUẤT LẮP RÁP
 			</a>
 		</div>
@@ -61,13 +61,13 @@
 												<div class="clear"></div>
 												<div class="col-sm-7 PL0 MB5">
 													<span class="PR10">Xe SXLR theo thiết kế và mang nhãn hiệu hàng hóa nước ngoài</span>
-													<button class="btn btn-reset pull-right P0" id="btn2Lv31G1">Chọn</button>
+													<button data-TTHC="TT302011BGTVT-TĐTK-XCG" data-CQTH="BGTVT-CĐKVN" data-MMHS="TT302011BGTVT-TĐTK-XCG-TK" class="btn btn-reset pull-right P0" id="btn2Lv31G1">Chọn</button>
 												</div>
 												<div class="clear"></div>
 												<div class="col-sm-7 form-inline form-group MB5 PL0">
 													<label for="ip2Lv31G1" class="MR10">Xe SXLR, nhập khẩu từ linh kiện</label>
 													<input type="text" class="form-control" id="ip2Lv31G1" placeholder="Nhập số GCN xe SXLR hoặc nhập khẩu">
-													<button class="btn btn-reset chooseService pull-right P0 PT5" id="btn3Lv31G1">Chọn</button>
+													<button data-TTHC="TT302011BGTVT-TĐTK-XCG" data-CQTH="BGTVT-CĐKVN" data-MMHS="TT302011BGTVT-TĐTK-XCG-TK2" class="btn btn-reset chooseService pull-right P0 PT5" id="btn3Lv31G1">Chọn</button>
 												</div>
 												<div class="clear"></div>
 											</div>
@@ -211,7 +211,7 @@
 								<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe mô tô, xe gắn máy
 							</a>
 						</div>
-						<div id="lv12G1" class="accordion-body collapse">
+						<div id="lv12G1" class="accordion-body collapse toggle-hide">
 							<div class="accordion-inner PB0 PT0">
 								<#-- lv23G1 -->
 								<div class="PT5">
@@ -220,7 +220,7 @@
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại
 										</a>
 									</div>
-									<div id="item21" class="collapse MT10">
+									<div id="item21" class="collapse toggle-hide MT10">
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -258,7 +258,7 @@
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 										</a>
 									</div>
-									<div id="item22" class="collapse MT10">
+									<div id="item22" class="collapse toggle-hide MT10">
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -297,7 +297,7 @@
 								<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe chở người bốn bánh có gắn động cơ
 							</a>
 						</div>
-						<div id="lv13G1" class="accordion-body collapse">
+						<div id="lv13G1" class="accordion-body collapse toggle-hide">
 							<div class="accordion-inner PB0 PT0">
 								<#-- lv22G1 -->
 								<div class="PT5">
@@ -306,7 +306,7 @@
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra sản phẩm mẫu
 										</a>
 									</div>
-									<div id="item31" class="collapse MT10">
+									<div id="item31" class="collapse toggle-hide MT10">
 											<#-- lv32G1 -->
 										<div class="PB10">
 											<div class="ML80">
@@ -335,7 +335,7 @@
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại
 										</a>
 									</div>
-									<div id="item32" class="collapse MT10">
+									<div id="item32" class="collapse toggle-hide MT10">
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -373,7 +373,7 @@
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 										</a>
 									</div>
-									<div id="item33" class="collapse MT10">
+									<div id="item33" class="collapse toggle-hide MT10">
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -418,7 +418,7 @@
 				QUẢN LÝ DÁN NHÃN NĂNG LƯỢNG
 			</a>
 		</div>
-		<div id="group2" class="accordion-body collapse">
+		<div id="group2" class="accordion-body collapse toggle-hide">
 			<div class="accordion-inner">
 			</div>
 		</div>
@@ -430,7 +430,7 @@
 				QUẢN LÝ TRIỆU HỒI SẢN PHẨM
 			</a>
 		</div>
-		<div id="group3" class="accordion-body collapse">
+		<div id="group3" class="accordion-body collapse toggle-hide">
 			<div class="accordion-inner">
 			</div>
 		</div>
@@ -442,7 +442,7 @@
 				QUẢN LÝ THÔNG TIN DOANH NGHIỆP
 			</a>
 		</div>
-		<div id="group4" class="accordion-body collapse">
+		<div id="group4" class="accordion-body collapse toggle-hide">
 			<div class="accordion-inner">
 			</div>
 		</div>
@@ -461,11 +461,11 @@
 			data : {},
 			headers : {"groupId": ${groupId}},
 			success : function(result){
-				manageDossier.navigate("/taohosomoi/chuanbihoso/"+id);
+				manageDossier.navigate("/taohosomoi/chuanbihoso/"+result.dossierId);
 			},
 			error : function(result){
 				notification.show({
-          message: "Số hồ sơ không tồn tại trên nhệ thống !"
+          message: "Số hồ sơ không tồn tại trên hệ thống !"
         }, "error");
 			}
 		});
@@ -482,7 +482,7 @@
 			},
 			error : function(result){
 				notification.show({
-          message: "Số hồ sơ không tồn tại trên nhệ thống !"
+          message: "Số hồ sơ không tồn tại trên hệ thống !"
         }, "error");
 			}
 		});
@@ -494,8 +494,7 @@
 			type:"POST",
 			headers: {"groupId": ${groupId}},
 			success:function(res){
-				var dossierId = res.dossierId;
-				manageDossier.navigate("/taohosomoi/nophoso/"+dossierId);
+				manageDossier.navigate("/taohosomoi/nophoso/"+res.dossierId);
 			},
 			error:function(res){
 				
@@ -558,6 +557,12 @@
 	$(function () {
 		$(".chooseService").click(function(){
 			chooseDVC(this);
+		});
+		$("#btn2Lv31G1").click(function(){
+			dossierTemplateNo = $(this).attr("data-MMHS");
+			serviceCode = $(this).attr("data-TTHC");
+			govAgencyCode = $(this).attr("data-CQTH");
+			createDossier(dossierTemplateNo, serviceCode, govAgencyCode)
 		});
 		$(".chooseServiceValidate").click(function(){
 			chooseDVCvalidate(this);
