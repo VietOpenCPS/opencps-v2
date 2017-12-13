@@ -89,10 +89,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier syncDossier(Dossier dossier) throws PortalException {
-		Date now = new Date();
-		
-		dossier.setCreateDate(now);
-		dossier.setModifiedDate(now);
 		
 		dossierPersistence.update(dossier);
 

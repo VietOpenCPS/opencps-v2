@@ -11,6 +11,7 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -41,6 +42,7 @@ import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -757,6 +759,20 @@ public class DossierActionsImpl implements DossierActions {
 		
 		Dossier srcDossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		
+		long desDossierId = CounterLocalServiceUtil.increment(Dossier.class.getName());
+		
+		srcDossier.setDossierId(desDossierId);
+		srcDossier.setDossierStatus(StringPool.BLANK);
+		srcDossier.setDossierStatusText(StringPool.BLANK);
+		srcDossier.setDossierSubStatus(StringPool.BLANK);
+		srcDossier.setDossierSubStatusText(StringPool.BLANK);
+		
+		int counter = DossierNumberGenerator.counterDossier(srcDossier.getUserId(), groupId);
+		String referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
+
+		srcDossier.setCounter(counter);
+		srcDossier.setReferenceUid(referenceUid);
+
 		Dossier desDossier = DossierLocalServiceUtil.syncDossier(srcDossier);
 		
 		DossierFileLocalServiceUtil.cloneDossierFilesByDossierId(groupId, desDossier.getPrimaryKey(), srcDossier.getPrimaryKey(), 1, context);

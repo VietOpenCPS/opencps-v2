@@ -852,8 +852,6 @@ public class DossierManagementImpl implements DossierManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-
-	
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
 				}
