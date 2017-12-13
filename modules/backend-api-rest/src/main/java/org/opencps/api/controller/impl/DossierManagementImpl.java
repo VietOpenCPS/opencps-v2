@@ -94,7 +94,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
-			
+
 			String status = query.getStatus();
 			String substatus = query.getSubstatus();
 			String agency = query.getAgency();
@@ -126,6 +126,33 @@ public class DossierManagementImpl implements DossierManagement {
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
+			if (Validator.isNotNull(top)) {
+				switch (top) {
+				case "receive":
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.RECEIVE_DATE_TIMESTAMP + "_sortable",
+							Sort.LONG_TYPE, false) };
+					break;
+				case "overdue":
+					sorts = new Sort[] {
+							SortFactoryUtil.create(DossierTerm.DUE_DATE_TIMESTAMP + "_sortable", Sort.LONG_TYPE, false) };
+					break;
+				case "release":
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.RELEASE_DATE_TIMESTAMP + "_sortable",
+							Sort.LONG_TYPE, false) };
+					break;
+				case "cancelling":
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CANCELLING_DATE_TIMESTAMP + "_sortable",
+							Sort.LONG_TYPE, false) };
+					break;
+				case "corecting":
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CORRECTING_DATE_TIMESTAMP + "_sortable",
+							Sort.LONG_TYPE, false) };
+					break;
+				default:
+					break;
+				}
+				
+			}
 			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					query.getStart(), query.getEnd(), serviceContext);
 
@@ -197,9 +224,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
 					input.getDossierTemplateNo(), groupId);
-			
-			//Create dossierNote
-			
+
+			// Create dossierNote
 
 			ServiceProcess process = ServiceProcessLocalServiceUtil.getServiceProcess(option.getServiceProcessId());
 
@@ -235,7 +261,7 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getContactEmail(), input.getDossierTemplateNo(), password, 0, StringPool.BLANK,
 					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, online, process.getDirectNotification(),
 					input.getApplicantNote(), serviceContext);
-			
+
 			if (Validator.isNull(dossier)) {
 				throw new NotFoundException("Cant add DOSSIER");
 			}

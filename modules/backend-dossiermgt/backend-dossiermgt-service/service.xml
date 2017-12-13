@@ -795,6 +795,11 @@
 			<finder-column name="serviceProcessId" />
 			<finder-column name="actionCode" />
 		</finder>
+        <finder name="G_SPID_PRESC" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="serviceProcessId"></finder-column>
+            <finder-column name="preStepCode"></finder-column>
+        </finder>
 		
 
 	</entity>
@@ -847,6 +852,9 @@
 			<finder-column name="dossierId" />
 			<finder-column name="userId" />
 		</finder>
+        <finder name="DID" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+        </finder>
 	</entity>
 
 	<entity local-service="true" name="DossierActionUser"

@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	var paymentViewJX = new VueJX({
 		el: 'paymentViewJX',
 		pk: 1,
-		groupid: 20143,
+		groupid: themeDisplay.getScopeGroupId(),
 		data: {
 			detailPage: false,
 			viewmore: false,
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				'events': {
 					paymentConfirmAction: function () {
 						var vm = this;
-
+console.log(vn);
 						if (vm.paymentListselected.length === 0) {
 							alert('Chưa chọn phiếu thanh toán nào?. ');
 							return;
