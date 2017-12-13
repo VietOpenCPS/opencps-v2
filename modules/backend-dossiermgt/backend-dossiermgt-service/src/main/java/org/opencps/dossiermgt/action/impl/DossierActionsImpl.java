@@ -622,6 +622,10 @@ public class DossierActionsImpl implements DossierActions {
 		if (dossier.getOnline() && action.getSyncActionCode().length() != 0) {
 			isSync = true;
 		}
+		
+		_log.info("GROUPID_"+ groupId);
+		_log.info("ISSYNC_"+isSync);
+		
 
 		return isSync;
 

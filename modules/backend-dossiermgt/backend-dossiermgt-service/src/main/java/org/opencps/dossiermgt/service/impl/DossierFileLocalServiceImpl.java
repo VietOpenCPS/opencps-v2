@@ -443,7 +443,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 	public DossierFile getDossierFileByReferenceUid(long dossierId, String referenceUid) throws PortalException {
 
-		return dossierFilePersistence.findByD_RUID(dossierId, referenceUid, false);
+		return dossierFilePersistence.fetchByDID_REF(dossierId, referenceUid);
 	}
 
 	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,

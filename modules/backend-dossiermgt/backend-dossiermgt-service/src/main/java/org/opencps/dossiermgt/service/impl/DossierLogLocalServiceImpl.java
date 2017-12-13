@@ -95,7 +95,7 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 
 		Date now = new Date();
 
-		User userAction = userLocalService.getUser(userId);
+		//User userAction = userLocalService.getUser(userId);
 		
 
 		long dossierFileId = counterLocalService.increment(DossierLog.class.getName());
@@ -106,9 +106,9 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
         object.setCompanyId(serviceContext.getCompanyId());
         object.setGroupId(groupId);
         object.setModifiedDate(now);
-        object.setUserId(userAction.getUserId());
-        object.setUserName(userAction.getFullName());
-        object.setAuthor(userAction.getFullName());
+       // object.setUserId(userAction.getUserId());
+        //object.setUserName(userAction.getFullName());
+        object.setAuthor(author);
 
         // Add other fields
         object.setDossierId(dossierId);
