@@ -121,7 +121,6 @@
 								<div class="col-sm-10" data-bind="text:paymentApproveDatetime"></div>
 							</div>
 
-
 							<div id="unpaid">
 								<div class="row MB10">
 									<div class="col-sm-12">
