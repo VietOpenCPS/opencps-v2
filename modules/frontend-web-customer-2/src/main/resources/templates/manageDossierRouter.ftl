@@ -40,13 +40,21 @@
 			$("#mainType1").show();
 			$(".filterField").show();
 			$("#mainType2").hide();
-			layout.showIn("#main_section", viewMainList);       
-			dataSourceProfile.read({
-				"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-				"serviceInfo":$("#serviceInfo").val(),
-				"govAgencyCode":$("#govAgency").val(),
-				"status":id
-			});
+			layout.showIn("#main_section", viewMainList);
+			if (id == "all") {
+				dataSourceProfile.read({
+					"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+					"serviceInfo":$("#serviceInfo").val(),
+					"govAgencyCode":$("#govAgency").val(),
+				});
+			} else {
+				dataSourceProfile.read({
+					"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+					"serviceInfo":$("#serviceInfo").val(),
+					"govAgencyCode":$("#govAgency").val(),
+					"status":id
+				});
+			}   
 			$(".itemStatus").css("pointer-events","auto");
 			$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");

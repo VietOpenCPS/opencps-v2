@@ -105,7 +105,7 @@
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra sản phẩm mẫu
 										</a>
 									</div>
-									<div id="lv22G1" class="collapse MT10">
+									<div id="lv22G1" class="collapse toggle-hide MT10">
 											<#-- lv32G1 -->
 										<div class="PB10">
 											<div class="ML80">
@@ -134,7 +134,7 @@
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại
 										</a>
 									</div>
-									<div id="lv23G1" class="collapse MT10">
+									<div id="lv23G1" class="collapse toggle-hide MT10">
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -172,7 +172,7 @@
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 										</a>
 									</div>
-									<div id="lv24G1" class="collapse MT10">
+									<div id="lv24G1" class="collapse toggle-hide MT10">
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
