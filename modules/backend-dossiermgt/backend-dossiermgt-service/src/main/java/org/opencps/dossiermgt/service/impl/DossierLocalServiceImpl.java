@@ -731,6 +731,16 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.remove(dossier);
 
 	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier updateDossierBriefNote(long dossierId, String dossierBriefNote) throws PortalException {
+		Dossier dossier = dossierPersistence.findByPrimaryKey(dossierId);
+
+		dossier.setBriefNote(dossierBriefNote);
+
+		return dossierPersistence.update(dossier);
+
+	}
 
 	public int countByUserId(long userId, long groupId) {
 		return dossierPersistence.countByG_UID(groupId, userId);
