@@ -11,8 +11,8 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DeliverableTypesManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DeliverableTypesUtils;
+import org.opencps.api.deliverabletype.model.DeliverableTypeDetailModel;
 import org.opencps.api.deliverabletype.model.DeliverableTypeInputModel;
-import org.opencps.api.deliverabletype.model.DeliverableTypesModel;
 import org.opencps.api.deliverabletype.model.DeliverableTypesResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
@@ -26,7 +26,6 @@ import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -52,10 +51,10 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 			JSONObject deliverableTypeJsonObject = action.getDeliverableTypes(groupId, start, end);
 
-			List<Document> documents = (List<Document>) deliverableTypeJsonObject.get("data");
+			List<DeliverableType> lstDeliverableType = (List<DeliverableType>) deliverableTypeJsonObject.get("lstDeliverableType");
 			
 			results.setTotal(deliverableTypeJsonObject.getInt("total"));
-			results.getData().addAll(DeliverableTypesUtils.mappingToDeliverableTypesResultsModel(documents));
+			results.getData().addAll(DeliverableTypesUtils.mappingToDeliverableTypesResultsModel(lstDeliverableType));
 
 			return Response.status(200).entity(results).build();
 
@@ -66,12 +65,12 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 	@Override
 	public Response addDeliverableType(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, DeliverableTypeInputModel model) {
+			User user, ServiceContext serviceContext, DeliverableTypeInputModel input) {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		String counter = String.valueOf(model.getCounter());
+		String counter = String.valueOf(input.getCounter());
 
 		try {
 
@@ -80,11 +79,11 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			}
 			DeliverableTypesActions action = new DeliverableTypesActionsImpl();
 
-			DeliverableType deliverableType = action.addDeliverableType(groupId, model.getDeliverableName(),
-					model.getDeliverableType(), model.getCodePattern(), counter, model.getFormScript(),
-					model.getFormReport(), model.getMappingData(), serviceContext);
+			DeliverableType deliverableType = action.addDeliverableType(groupId, input.getDeliverableName(),
+					input.getDeliverableType(), input.getCodePattern(), counter, input.getFormScript(),
+					input.getFormReport(), input.getMappingData(), serviceContext);
 
-			DeliverableTypesModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
+			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 
 			return Response.status(200).entity(result).build();
 
@@ -115,7 +114,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 					model.getDeliverableName(), model.getDeliverableType(), model.getCodePattern(), counter,
 					model.getFormScript(), model.getFormReport(), model.getMappingData(), serviceContext);
 
-			DeliverableTypesModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
+			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 
 			return Response.status(200).entity(result).build();
 
@@ -144,7 +143,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 			DeliverableType deliverableType = action.removeDeliverableType(groupId, id);
 
-			DeliverableTypesModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
+			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 
 			return Response.status(200).entity(result).build();
 
@@ -191,7 +190,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			
 			DeliverableType deliverableType = action.updateDeliverableTypeFormScript(groupId, deliverableTypeId, formScript, serviceContext);
 			
-			DeliverableTypesModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
+			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 			
 			return Response.status(200).entity(result).build();
 
@@ -238,7 +237,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			
 			DeliverableType deliverableType = action.updateDeliverableTypeFormReport(groupId, deliverableTypeId, formReport, serviceContext);
 			
-			DeliverableTypesModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
+			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 			
 			return Response.status(200).entity(result).build();
 
@@ -285,7 +284,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			
 			DeliverableType deliverableType = action.updateDeliverableTypeMappingData(groupId, deliverableTypeId, mappingData, serviceContext);
 			
-			DeliverableTypesModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
+			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 			
 			return Response.status(200).entity(result).build();
 

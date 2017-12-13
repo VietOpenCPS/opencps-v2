@@ -4,9 +4,10 @@ package org.opencps.api.controller.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencps.api.deliverabletype.model.DeliverableTypeDetailModel;
 import org.opencps.api.deliverabletype.model.DeliverableTypesModel;
 import org.opencps.api.dossierlog.model.DossierLogSearchIdModel;
-import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierLogTerm;
 import org.opencps.dossiermgt.model.DeliverableType;
 
@@ -16,13 +17,13 @@ import com.liferay.portal.kernel.util.Validator;
 
 public class DeliverableTypesUtils {
 
-	public static List<DeliverableTypesModel> mappingToDeliverableTypesData(List<DeliverableType> lstdeliverableType) {
+	public static List<DeliverableTypeDetailModel> mappingToDeliverableTypesData(List<DeliverableType> lstdeliverableType) {
 
-		List<DeliverableTypesModel> outputs = new ArrayList<DeliverableTypesModel>();
+		List<DeliverableTypeDetailModel> outputs = new ArrayList<DeliverableTypeDetailModel>();
 
 		for (DeliverableType deliverableType : lstdeliverableType) {
 
-			DeliverableTypesModel model = mappingToDeliverableTypesModel(deliverableType);
+			DeliverableTypeDetailModel model = mappingToDeliverableTypesModel(deliverableType);
 
 			outputs.add(model);
 		}
@@ -30,12 +31,12 @@ public class DeliverableTypesUtils {
 		return outputs;
 	}
 
-	public static DeliverableTypesModel mappingToDeliverableTypesModel(DeliverableType deliverableType) {
+	public static DeliverableTypeDetailModel mappingToDeliverableTypesModel(DeliverableType deliverableType) {
 
 		if (deliverableType == null) {
 			return null;
 		}
-		DeliverableTypesModel model = new DeliverableTypesModel();
+		DeliverableTypeDetailModel model = new DeliverableTypeDetailModel();
 
 		model.setDeliverableType(deliverableType.getTypeCode());
 		model.setDeliverableName(deliverableType.getTypeName());
@@ -46,22 +47,24 @@ public class DeliverableTypesUtils {
 	}
 
 	public static List<DeliverableTypesModel> mappingToDeliverableTypesResultsModel(
-			List<Document> documents) {
+			List<DeliverableType> lstdeliverableType) {
 		List<DeliverableTypesModel> outputs = new ArrayList<DeliverableTypesModel>();
-		if(Validator.isNotNull(documents)){
-			for (Document document : documents) {
+		if(Validator.isNotNull(lstdeliverableType)){
+			for (DeliverableType deliverableType : lstdeliverableType) {
 	
 				DeliverableTypesModel model = new DeliverableTypesModel();
 	
-				long deliverableTypeId = GetterUtil.getLong(document.get("entryClassPK"));
-				long counter = GetterUtil.getLong(document.get(DeliverableTypesTerm.COUNTER));
+				long deliverableTypeId = GetterUtil.getLong(deliverableType.getDeliverableTypeId());
+				long counter = GetterUtil.getLong(deliverableType.getCounter());
 	
 				model.setDeliverableTypeId(deliverableTypeId);
-				model.setCreateDate(document.get(DeliverableTypesTerm.CREATE_DATE));
-				model.setModifiedDate(document.get(DeliverableTypesTerm.MODIFIED_DATE));
-				model.setDeliverableType(document.get(DeliverableTypesTerm.DELIVERABLE_TYPE));
-				model.setDeliverableName(document.get(DeliverableTypesTerm.DELIVERABLE_NAME));
-				model.setCodePattern(document.get(DeliverableTypesTerm.CODEPATTERN));
+				model.setCreateDate(APIDateTimeUtils.convertDateToString(
+						deliverableType.getCreateDate()));
+				model.setModifiedDate(APIDateTimeUtils.convertDateToString(
+						deliverableType.getModifiedDate()));
+				model.setDeliverableType(deliverableType.getTypeCode());
+				model.setDeliverableName(deliverableType.getTypeName());
+				model.setCodePattern(deliverableType.getCodePattern());
 				model.setCounter(counter);
 				
 				outputs.add(model);

@@ -46,4 +46,15 @@
 			<xsd:element name="mappingData" type="xsd:string" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
+	
+	<xsd:element name="DeliverableTypeDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="deliverableType" type="xsd:string" minOccurs="0" />
+				<xsd:element name="deliverableName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="codePattern" type="xsd:string" minOccurs="0" />
+				<xsd:element name="counter" type="xsd:long" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 </xsd:schema>
