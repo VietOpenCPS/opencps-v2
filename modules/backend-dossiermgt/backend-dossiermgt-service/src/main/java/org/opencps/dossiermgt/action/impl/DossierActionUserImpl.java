@@ -39,7 +39,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 	}
 
 	@Override
-	public void initDossierActionUser(long dossierActionId, long userId, long groupId) {
+	public void initDossierActionUser(long dossierActionId, long userId, long groupId, long assignUserId) {
 		// Get DossierAction
 		DossierAction dossierAction = DossierActionLocalServiceUtil.getDossierActionById(dossierActionId, userId);
 		String actionCode = dossierAction.getActionCode();
@@ -65,7 +65,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 			// Get list user
 			List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
 			for (User user : users) {
-				boolean assigned = user.getUserId() == userId ? true : false;
+				boolean assigned = user.getUserId() == assignUserId ? true : false;
 				org.opencps.dossiermgt.model.DossierActionUser model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
 				model.setUserId(user.getUserId());
 				model.setDossierActionId(dossierActionId);

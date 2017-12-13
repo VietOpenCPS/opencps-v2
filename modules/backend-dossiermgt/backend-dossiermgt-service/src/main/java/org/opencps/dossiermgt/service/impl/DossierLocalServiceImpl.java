@@ -829,8 +829,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		int month = GetterUtil.getInteger(params.get(DossierTerm.MONTH));
 		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
 
-		System.out.println("======================== " + follow + "|" + submitting);
-
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -880,6 +878,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
 
 			query.addField(DossierTerm.USER_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if (Validator.isNotNull(follow) && Boolean.parseBoolean(follow) && userId > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
+
+			query.addField(DossierTerm.ACTION_USERIDS);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -1036,6 +1042,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		
+		if (Validator.isNotNull(follow) && Boolean.parseBoolean(follow) && userId > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
+
+			query.addField(DossierTerm.ACTION_USERIDS);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 
 		if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(submitting));
@@ -1103,7 +1117,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (Validator.isNotNull(step)) {
 			MultiMatchQuery query = new MultiMatchQuery(step);
 
-			query.addFields(DossierTerm.STEP);
+			query.addFields(DossierTerm.STEP_CODE);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

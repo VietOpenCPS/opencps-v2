@@ -90,18 +90,17 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		DossierAction object = null;
 		long userId = 0l;
-		
+
 		String fullName = StringPool.BLANK;
-		
+
 		Date now = new Date();
-		
-		
+
 		if (context.getUserId() > 0) {
 			User userAction = userLocalService.getUser(context.getUserId());
-			
+
 			userId = userAction.getUserId();
 			fullName = userAction.getFullName();
-			
+
 		}
 
 		if (dossierActionId == 0) {
@@ -134,14 +133,23 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			object.setNextActionId(nextActionId);
 			object.setPayload(payload);
 			object.setStepInstruction(stepInstruction);
-			
-			//Add DossierActionId to Dossier
-			
-			//TODO add Indexer for Dossier after update DossierAction
+
+			// Add DossierActionId to Dossier
+
+			// TODO add Indexer for Dossier after update DossierAction
 			Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
 			dossier.setDossierActionId(dossierActionId);
 			dossierPersistence.update(dossier);
 
+			Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
+
+			try {
+				indexer.reindex(dossier);
+			} catch (SearchException e) {
+				e.printStackTrace();
+			}
+			
+			
 		} else {
 
 		}
@@ -150,8 +158,6 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		return object;
 	}
-	
-	
 
 	@Indexable(type = IndexableType.DELETE)
 	public DossierAction removeAction(long actionId) throws PortalException {
@@ -159,7 +165,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		return dossierActionPersistence.remove(action);
 	}
-	
+
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateNextActionId(long actionId, long nextActionId) throws PortalException {
 		DossierAction action = dossierActionPersistence.fetchByPrimaryKey(actionId);
@@ -197,41 +203,44 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			throws PortalException {
 
 	}
-	
+
 	public DossierAction getByPenddingStatus(long dossierId, boolean pending) {
 		return dossierActionPersistence.fetchByDID_DPG(dossierId, pending);
 	}
-	
+
 	public DossierAction getByNextActionId(long dossierId, long nextActionId) {
 		return dossierActionPersistence.fetchByDID_NACTID(dossierId, nextActionId);
 	}
-		
+
 	public DossierAction getDossierActionById(long dossierId, long userId) {
 		return dossierActionPersistence.fetchByDID_UID(dossierId, userId);
 	}
-	
-	
-	public DossierAction getDossierActionbyDossierIdandActionCode(long dossierId, String actionCode){
+
+	public DossierAction getDossierActionbyDossierIdandActionCode(long dossierId, String actionCode) {
 		return dossierActionPersistence.fetchByDID_ACTC(dossierId, actionCode);
 	}
-	
+
+	public List<DossierAction> getDossierActionById(long dossierId) {
+		return dossierActionPersistence.findByDID(dossierId);
+	}
+
 	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
-//		String secetKey = GetterUtil.getString(params.get("secetKey"));
+		// String secetKey = GetterUtil.getString(params.get("secetKey"));
 
 		Indexer<DossierAction> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierAction.class);
 
-        searchContext.addFullQueryEntryClassName(CLASS_NAME);
-        searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-        searchContext.setAttribute("paginationType", "regular");
-        searchContext.setLike(true);
-        searchContext.setStart(start);
-        searchContext.setEnd(end);
-        searchContext.setAndSearch(true);
-        searchContext.setSorts(sorts);
+		searchContext.addFullQueryEntryClassName(CLASS_NAME);
+		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setLike(true);
+		searchContext.setStart(start);
+		searchContext.setEnd(end);
+		searchContext.setAndSearch(true);
+		searchContext.setSorts(sorts);
 
 		BooleanQuery booleanQuery = null;
 
@@ -255,16 +264,17 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 			}
 		}
-//		if (!(Validator.isNotNull(secetKey) && secetKey.contentEquals("OPENCPSV2"))) {
-			if (Validator.isNotNull(groupId)) {
-				MultiMatchQuery query = new MultiMatchQuery(groupId);
+		// if (!(Validator.isNotNull(secetKey) &&
+		// secetKey.contentEquals("OPENCPSV2"))) {
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-				query.addFields(Field.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 
-//		}
+		// }
 
 		String dossierId = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
 
@@ -280,7 +290,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}
-	
+
 	public long countLucene(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
 
@@ -326,9 +336,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-
 		String dossierId = String.valueOf(params.get(DossierActionTerm.DOSSIER_ID));
-
 
 		if (Validator.isNotNull(dossierId)) {
 			MultiMatchQuery query = new MultiMatchQuery(dossierId);
@@ -338,11 +346,10 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 	}
-	
+
 	public static final String CLASS_NAME = DossierAction.class.getName();
 }
