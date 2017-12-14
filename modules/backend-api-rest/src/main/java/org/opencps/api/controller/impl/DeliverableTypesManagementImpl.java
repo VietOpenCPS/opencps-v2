@@ -51,8 +51,9 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 			JSONObject deliverableTypeJsonObject = action.getDeliverableTypes(groupId, start, end);
 
-			List<DeliverableType> lstDeliverableType = (List<DeliverableType>) deliverableTypeJsonObject.get("lstDeliverableType");
-			
+			List<DeliverableType> lstDeliverableType = (List<DeliverableType>) deliverableTypeJsonObject
+					.get("lstDeliverableType");
+
 			results.setTotal(deliverableTypeJsonObject.getInt("total"));
 			results.getData().addAll(DeliverableTypesUtils.mappingToDeliverableTypesResultsModel(lstDeliverableType));
 
@@ -122,16 +123,14 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return processException(e);
 		}
 	}
-	
+
 	@Override
-	public Response removeDeliverabletypes(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id) {
+	public Response removeDeliverabletypes(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id) {
 		// TODO Remove Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		
-		
 
 		try {
 
@@ -172,9 +171,9 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return processException(e);
 		}
 	}
-	
+
 	public Response updateDeliverableTypeFormScript(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId, String formScript){
+			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId, String formScript) {
 		// TODO Update FormScript of Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -187,18 +186,19 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			}
 
 			DeliverableTypesActions action = new DeliverableTypesActionsImpl();
-			
-			DeliverableType deliverableType = action.updateDeliverableTypeFormScript(groupId, deliverableTypeId, formScript, serviceContext);
-			
+
+			DeliverableType deliverableType = action.updateDeliverableTypeFormScript(groupId, deliverableTypeId,
+					formScript, serviceContext);
+
 			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
-			
+
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			return processException(e);
 		}
 	}
-	
+
 	@Override
 	public Response getFormReportByDeliverableTypeId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId) {
@@ -219,9 +219,9 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return processException(e);
 		}
 	}
-	
+
 	public Response updateDeliverableTypeFormReport(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId, String formReport){
+			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId, String formReport) {
 		// TODO Update FormReport of Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -234,18 +234,19 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			}
 
 			DeliverableTypesActions action = new DeliverableTypesActionsImpl();
-			
-			DeliverableType deliverableType = action.updateDeliverableTypeFormReport(groupId, deliverableTypeId, formReport, serviceContext);
-			
+
+			DeliverableType deliverableType = action.updateDeliverableTypeFormReport(groupId, deliverableTypeId,
+					formReport, serviceContext);
+
 			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
-			
+
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			return processException(e);
 		}
 	}
-	
+
 	@Override
 	public Response getMappingDataByDeliverableTypeId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId) {
@@ -266,9 +267,9 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return processException(e);
 		}
 	}
-	
+
 	public Response updateDeliverableTypeMappingData(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId, String mappingData){
+			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId, String mappingData) {
 		// TODO Update FormReport of Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -281,18 +282,19 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			}
 
 			DeliverableTypesActions action = new DeliverableTypesActionsImpl();
-			
-			DeliverableType deliverableType = action.updateDeliverableTypeMappingData(groupId, deliverableTypeId, mappingData, serviceContext);
-			
+
+			DeliverableType deliverableType = action.updateDeliverableTypeMappingData(groupId, deliverableTypeId,
+					mappingData, serviceContext);
+
 			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
-			
+
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			return processException(e);
 		}
 	}
-	
+
 	@Override
 	public Response getDeliverabletypebyId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id) {
@@ -306,7 +308,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			}
 
 			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getDeliverableTypebyId(groupId, id);
-			
+
 			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 
 			return Response.status(200).entity(result).build();
@@ -315,7 +317,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return processException(e);
 		}
 	}
-	
+
 	private Response processException(Exception e) {
 		ErrorMsg error = new ErrorMsg();
 

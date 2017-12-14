@@ -140,8 +140,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 	}
 
-	public DeliverableType removeDeliverableType(long groupId, String deliverableTypeId)
-			throws PortalException {
+	public DeliverableType removeDeliverableType(long groupId, String deliverableTypeId) throws PortalException {
 		// TODO remove DeliverableType
 
 		validateRemoveDeliverableType(groupId, deliverableTypeId);
@@ -169,7 +168,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 		return deliverableTypePersistence.update(deliverableType);
 	}
-	
+
 	public DeliverableType updateFormReport(long groupId, long deliverableTypeId, String formReport,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 		// TODO Update FormReport of DeliverableType
@@ -184,7 +183,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 		return deliverableTypePersistence.update(deliverableType);
 	}
-	
+
 	public DeliverableType updateMappingData(long groupId, long deliverableTypeId, String mappingData,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 		// TODO Update FormReport of DeliverableType
@@ -198,18 +197,18 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 		return deliverableTypePersistence.update(deliverableType);
 	}
-	
-	public DeliverableType getDeliverableTypebyId(long groupId, String deliverableTypeId)
-			throws PortalException {
+
+	public DeliverableType getDeliverableTypebyId(long groupId, String deliverableTypeId) throws PortalException {
 		// TODO remove DeliverableType
 
-		//validateRemoveDeliverableType(groupId, deliverableTypeId, deliverableType_);
+		// validateRemoveDeliverableType(groupId, deliverableTypeId,
+		// deliverableType_);
 
 		DeliverableType deliverableTypeObj = null;
 
 		long id = Long.valueOf(deliverableTypeId);
 		deliverableTypeObj = deliverableTypePersistence.fetchByPrimaryKey(id);
-		
+
 		if (Validator.isNull(deliverableTypeObj)) {
 			deliverableTypeObj = deliverableTypePersistence.fetchByG_DLT(groupId, deliverableTypeId);
 		}

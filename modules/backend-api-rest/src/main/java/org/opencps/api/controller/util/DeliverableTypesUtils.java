@@ -17,7 +17,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 public class DeliverableTypesUtils {
 
-	public static List<DeliverableTypeDetailModel> mappingToDeliverableTypesData(List<DeliverableType> lstdeliverableType) {
+	public static List<DeliverableTypeDetailModel> mappingToDeliverableTypesData(
+			List<DeliverableType> lstdeliverableType) {
 
 		List<DeliverableTypeDetailModel> outputs = new ArrayList<DeliverableTypeDetailModel>();
 
@@ -49,31 +50,30 @@ public class DeliverableTypesUtils {
 	public static List<DeliverableTypesModel> mappingToDeliverableTypesResultsModel(
 			List<DeliverableType> lstdeliverableType) {
 		List<DeliverableTypesModel> outputs = new ArrayList<DeliverableTypesModel>();
-		if(Validator.isNotNull(lstdeliverableType)){
+		if (Validator.isNotNull(lstdeliverableType)) {
 			for (DeliverableType deliverableType : lstdeliverableType) {
-	
+
 				DeliverableTypesModel model = new DeliverableTypesModel();
-	
+
 				long deliverableTypeId = GetterUtil.getLong(deliverableType.getDeliverableTypeId());
 				long counter = GetterUtil.getLong(deliverableType.getCounter());
-	
+
 				model.setDeliverableTypeId(deliverableTypeId);
-				model.setCreateDate(APIDateTimeUtils.convertDateToString(
-						deliverableType.getCreateDate()));
-				model.setModifiedDate(APIDateTimeUtils.convertDateToString(
-						deliverableType.getModifiedDate()));
+				model.setCreateDate(APIDateTimeUtils.convertDateToString(deliverableType.getCreateDate()));
+				model.setModifiedDate(APIDateTimeUtils.convertDateToString(deliverableType.getModifiedDate()));
 				model.setDeliverableType(deliverableType.getTypeCode());
 				model.setDeliverableName(deliverableType.getTypeName());
 				model.setCodePattern(deliverableType.getCodePattern());
 				model.setCounter(counter);
-				
+
 				outputs.add(model);
 			}
 		}
 		return outputs;
 	}
 
-	public static List<DossierLogSearchIdModel> mappingToDeliverableTypesSearchByIdResultsModel(List<Document> documents) {
+	public static List<DossierLogSearchIdModel> mappingToDeliverableTypesSearchByIdResultsModel(
+			List<Document> documents) {
 
 		List<DossierLogSearchIdModel> outputs = new ArrayList<DossierLogSearchIdModel>();
 
