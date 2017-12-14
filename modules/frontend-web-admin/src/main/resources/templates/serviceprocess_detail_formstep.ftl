@@ -235,9 +235,10 @@
 			noDataTemplate: 'Không có dữ liệu',
 			change : function(e){
 				var value = this.value();
-				console.log("change");
+				
 				console.log(value);
 				if(value){
+					console.log("change");
 					$("#dossierSubStatus").data("kendoComboBox").dataSource.read({
 						parent : value
 					});
@@ -254,28 +255,35 @@
 			dataSource : {
 				transport : {
 					read : function(options){
-
+						console.log("read");
+						var parent = "";
+						if(options.data.parent){
+							parent = options.data.parent;
+						}
 						$.ajax({
 							url : "${api.server}/dictcollections/DOSSIER_STATUS/dictitems",
 							dataType : "json",
 							type : "GET",
 							headers: {"groupId": ${groupId}},
 							data : {
-								parent : options.data.parent
+								parent : parent
 							},
 							success : function(result){
-								option.success(result);
+								options.success(result);
 							},
 							error : function(xhr){
-								option.error(xhr);
+								options.error(xhr);
 							}
 
 						});
 					}
 				},
 				schema: {
+					total : "total",
 					data : "data",
-					total : "total"
+					model : {
+						id : "itemCode"
+					}
 				}
 			},
 			noDataTemplate: 'Không có dữ liệu'
