@@ -134,6 +134,131 @@
 							if (event.keyCode === 13 || vm.keywordsSearchTraCuuPhuongTien.length > 3 || vm.keywordsSearchTraCuuPhuongTien.length === 0) {
 								
 							}
+                },
+                xem_them: 'Không tìm thấy hồ sơ nào',
+                hoso_title_table: 'Danh sách hồ sơ',
+                processSteps: [],
+                stepModel: {
+
+                }
+            },
+            onScroll: "onScroll",
+            schema: {
+                // TODO menu filter
+                'navigationFilter': {
+                    'id': 'navigationFilter',
+                    'name': 'navigationFilter',
+                    "type": "navigation",
+                    "template": "menu_template",
+                    "template_content": "dossierViewJX_form_template"
+                },
+                'listgroupFilter': {
+                    'id': 'listgroupFilter',
+                    'name': 'listgroupFilter',
+                    "type": "listgroup",
+                    "child_items": "items",
+                    "data_title": "title",
+                    "data_value": "id",
+                    "onLoad": "_initlistgroupFilter",
+                    "onClick": "filterChange",
+                    "events": {
+                        filterChange: function(item){
+                            var vm = this;
+                            vm.detailPage = false;
+                            vm.listgroupFilterselected = item.id;
+                            if ( item.id !== 'tra_cuu' ){
+                                vm.stageFilterView = item.id;
+                                vm.hoso_title_table = item.title;
+                            }
+                            
+                            if (item.id == 'tra_cuu_hoso') {
+                                vm._initraCuuHoSoTable(false);
+                            } else if (item.id == 'tra_cuu_phuong_tien') {
+                                // TODO vm._inidanhSachHoSoTable(false);
+                            } else if (item.id == 'tra_cuu_thong_tin_doanh_nghiep') {
+                                vm._inithongTinDoanhNghiepTable(false);
+                            } else {
+                                vm._inidanhSachHoSoTable(false);
+                            }
+                            
+                        },
+                        _initlistgroupFilter: function(){
+                            var vm = this;
+                            vm.stageFilterView = 'danh_sach';
+
+                            vm.listgroupFilterItems = [
+                                {
+                                    id: 'danh_sach',
+                                    title: 'DANH SÁCH HỒ SƠ',
+                                    items: [
+                                    ]
+                                }
+                            ];
+
+                            const config = {};
+
+                            var url = '/o/frontendwebdossier/json/menu.json';
+                            
+                            axios.get(url, config).then(function (response) {
+                                var serializable = response.data;
+
+                                for (var key in serializable.data) {
+                                    if (serializable.data[key].dossierStatus != null) {
+                                        vm.listgroupFilterItems[0].items.push({
+                                            id: serializable.data[key].dossierStatus,
+                                            title: serializable.data[key].statusName
+                                        });
+                                    } else {
+                                        vm.listgroupFilterItems[0].items.push({
+                                            id: serializable.data[key].dossierSubStatus,
+                                            title: serializable.data[key].statusName
+                                        });
+                                    }
+                                }
+                                vm.listgroupFilterItems.push(
+                                    {
+                                        id: 'tra_cuu',
+                                        title: 'TRA CỨU',
+                                        active: true,
+                                        items: [
+                                            {
+                                                id: 'tra_cuu_hoso',
+                                                title: 'Tra cứu hồ sơ'
+                                            },
+                                            {
+                                                id: 'tra_cuu_phuong_tien',
+                                                title: 'Tra cứu phương tiện sản xuất lắp rap'
+                                            },
+                                            {
+                                                id: 'tra_cuu_thong_tin_doanh_nghiep',
+                                                title: 'Tra cứu thông tin doanh nghiệp'
+                                            }
+                                        ]
+                                    }
+                                );
+                            })
+                                .catch(function (error) {
+                                    console.log(error);
+                                });
+                            
+                        }
+                    }
+                },
+                'keywordsSearchTraCuuHoSo': {
+                    'id': 'keywordsSearchTraCuuHoSo',
+                    'name': 'keywordsSearchTraCuuHoSo',
+                    'type': 'text',
+                    'cssClass': 'pt-1',
+                    'placeholder': 'Tìm kiếm theo từ khoá...',
+                    'solo': true,
+                    'append_icon': 'search',
+                    'onKeyup': 'filterTraCuuHoSoKeywords',
+                    'events': {
+                        filterTraCuuHoSoKeywords: function (event) {
+                            var vm = this;
+                            if (event.keyCode === 13 || vm.keywordsSearchTraCuuHoSo.length > 3 || vm.keywordsSearchTraCuuHoSo.length === 0) {
+                                vm._initraCuuHoSoTable(false);
+                            }
 
 						}
 					}
@@ -219,6 +344,135 @@
 							
 							axios.get(url, config).then(function (response) {
 								var serializable = response.data;
+                        }
+                    }
+                },
+                "keywordFilter": {
+                    'id': 'keywordFilter',
+                    'name': 'keywordFilter',
+                    "type": "text",
+                    'append_icon': 'search',
+                    'placeholder': 'Nhập từ khoá ',
+                    "events": {
+                    }
+                },
+                "serviceInfoFilter": {
+                    'id': 'serviceInfoFilter',
+                    'name': 'serviceInfoFilter',
+                    "type": "select",
+                    'label': 'Lựa chọn thủ tục hành chính ',
+                    "item_text": "name",
+                    "item_value": "id",
+                    "single_line": true,
+                    "loading": false,
+                    "events": {
+                    }
+                },
+                "applicantNameFilter": {
+                    'id': 'applicantNameFilter',
+                    'name': 'applicantNameFilter',
+                    "type": "select",
+                    'label': 'Chủ hồ sơ',
+                    "item_text": "name",
+                    "item_value": "id",
+                    "single_line": true,
+                    "loading": false,
+                    "events": {
+                    }
+                },
+                "dossierNoFilter": {
+                    'id': 'dossierNoFilter',
+                    'name': 'dossierNoFilter',
+                    "type": "text",
+                    'label': 'Nhập mã tiếp nhận ',
+                    "events": {
+                    }
+                },
+                'fromDateFilter' : {
+                    'id': 'fromDateFilter',
+                    'name': 'fromDateFilter',
+                    'type': 'date',
+                    'label': 'Từ ngày: ',
+                    'placeholder': 'ngày... tháng... năm...',
+                    'append_icon':'event',
+                    'onClick': 'dateChangeDate',
+                    'events': {
+                        dateChangeDate: function () {
+                            console.log(' --> onChange: fromDateFilter: ' + this.fromDateFilter);
+                        }
+                    }
+                },
+                'toDateFilter' : {
+                    'id': 'toDateFilter',
+                    'name': 'toDateFilter',
+                    'type': 'date',
+                    'label': 'Đến ngày: ',
+                    'placeholder': 'ngày... tháng... năm...',
+                    'append_icon':'event',
+                    'onClick': 'dateChangeDate',
+                    'events': {
+                        dateChangeDate: function () {
+                            console.log(' --> onChange: toDateFilter: ' + this.toDateFilter);
+                        }
+                    }
+                },
+                'thongTinDoanhNghiepTable': {
+                    'id': 'thongTinDoanhNghiepTable',
+                    'name': 'thongTinDoanhNghiepTable',
+                    'type': 'table',
+                    'item_key': 'dossierNo',
+                    'headers': 'headers',
+                    'template': 'thong_tin_doanh_nghiep_table_template',
+                    'onLoad': '_inithongTinDoanhNghiepTable',
+                    'events': {
+                        _inithongTinDoanhNghiepTable: function (append) {
+                            console.log(11111111111111);
+                            var vm = this;
+                            vm.viewmore = true;
+                            this.thongTinDoanhNghiepTableheaders = [
+                                {
+                                    text: 'STT',
+                                    align: 'left',
+                                    sortable: false,
+                                    value: 'stt'
+                                },
+                                {
+                                    text: 'Tên, địa chỉ cơ sở sản xuất / Cơ sở nhập khẩu',
+                                    align: 'left',
+                                    sortable: true,
+                                    value: 'dossierNo'
+                                },
+                                {
+                                    text: 'Mã số thuế, điện thoại, fax, email',
+                                    align: 'left',
+                                    sortable: true,
+                                    value: 'createDate'
+                                },
+                                {
+                                    text: 'Người đại diện, chức danh',
+                                    align: 'left',
+                                    sortable: true,
+                                    value: 'applicantName'
+                                },
+                                {
+                                    text: 'Thông tin nhà xưởng (SL, địa chỉ, diện tích, nhân lực, công suất theo tháng)',
+                                    align: 'center',
+                                    sortable: true,
+                                    value: 'action'
+                                },
+                                {
+                                    text: 'Tên sản phẩm',
+                                    align: 'left',
+                                    sortable: true,
+                                    value: 'action'
+                                },
+                                {
+                                    text: 'Tình trạng đăng ký',
+                                    align: 'center',
+                                    sortable: true,
+                                    value: 'action'
+                                }
+                            ];
 
 								vm.serviceInfoFilterItems = serializable.data;
 								
@@ -681,6 +935,85 @@
 				}
 			}
 		});
+                        },
+                        changeProcessStep: function (data){
+                            console.log(data);
+                            var vm = this;
+                            vm.stepModel = data;
+                            vm.processAssignUserIdItems = data.toUsers
+                        },
+                        _initchangeProcessStep: function (){
+                            var vm = this;
+                            const config = {};
+                            
+                            var url = '/o/frontendwebdossier/json/steps.json';
+                            
+                            axios.get(url, config).then(function (response) {
+                                var serializable = response.data;
+
+                                vm.processSteps = serializable.data;
+
+                            })
+                                .catch(function (error) {
+                                    console.log(error);
+                                });
+                        }
+                    }
+                },
+                // TODO PROCESS ACTION
+                "processActionNote": {
+                    'id': 'processActionNote',
+                    'name': 'processActionNote',
+                    "type": "text",
+                    'placeholder': 'ý kiến cán bộ ... ',
+                    'multi_line': true,
+                    'textarea': true
+                },
+                "processAssignUserId": {
+                    'id': 'processAssignUserId',
+                    'name': 'processAssignUserId',
+                    "type": "select",
+                    'label': 'Lựa chọn cán bộ phân công xử lý ',
+                    "item_text": "userName",
+                    "item_value": "userId",
+                    "single_line": true,
+                    "hide_selected": true,
+                    "chips": true,
+                    "deletable_chips": true,
+                    "loading": false,
+                    "no-data-text": "Lua chon selected",
+                    "items": [],
+                    'onLoad': '_initprocessAssignUserId',
+                    'events': {
+                        _initprocessAssignUserId: function () {
+                            
+                            this.processAssignUserIdItems = [
+                                {
+                                "userId": 1,
+                                "userName": "userName1",
+                                "moderator": false
+                                },
+                                {
+                                "userId": 2,
+                                "userName": "userName2",
+                                "moderator": false
+                                },
+                                {
+                                "userId": 3,
+                                "userName": "userName3",
+                                "moderator": false
+                                },
+                                {
+                                "userId": 4,
+                                "userName": "userName4",
+                                "moderator": false
+                                }
+                            ];
+                        }
+                    }
+                }
+            }
+        });
 
 		dossierViewJX._builder('dossierViewJX');
 	});

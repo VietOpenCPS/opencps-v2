@@ -55,12 +55,6 @@
 		var dataSourceProfile = new kendo.data.DataSource({
 			transport:{
 				read:function(options){
-					// if (options.data.year=="") {
-					// 	options.data.year = 0;
-					// };
-					// if (options.data.month=="") {
-					// 	options.data.month = 0;
-					// };
 					$.ajax({
 						// url: "http://localhost:3000/dossiers",
 						url:"${api.server}/dossiers",
@@ -88,6 +82,7 @@
 							};
 							
 							$("#statusName").html($(".itemStatus.active .dossierStatus").text());
+							$('#profileStatus li[dataPk="all"] .bagde').html(result.total);
 							//
 							$('.optPage[value="'+dataSourceProfile.pageSize()+'"]').attr("selected","selected");
 							// Option kendo-page
@@ -110,7 +105,47 @@
 				}
 			}
 		});
-		
+		// Get total dossierStatus
+		var statusDossierItems = ["new","waiting","paying","done","cancelling","cancelled","expired"]
+		var getTotal = function(){
+			$(statusDossierItems).each(function(index,value){
+				getTotalItemDossier(value);
+			})
+		};
+		var getTotalItemDossier = function(dossierItemStatus){
+			if ((dossierItemStatus == "cancelling") || (dossierItemStatus == "cancelled")){
+				$.ajax({
+					url:"${api.server}/dossiers",
+					dataType:"json",
+					type:"GET",
+					headers : {"groupId": ${groupId}},
+					data:{
+						status : dossierItemStatus,
+						keyword: "CancellingDate",
+					},
+					success:function(result){
+						$('#profileStatus li[dataPk='+dossierItemStatus+'] .bagde').html(result.total);
+					},
+					error:function(result){
+					}
+				})
+			}	else {
+				$.ajax({
+					url:"${api.server}/dossiers",
+					dataType:"json",
+					type:"GET",
+					headers : {"groupId": ${groupId}},
+					data:{
+						status : dossierItemStatus
+					},
+					success:function(result){
+						$('#profileStatus li[dataPk='+dossierItemStatus+'] .bagde').html(result.total);
+					},
+					error:function(result){
+					}
+				})
+			}	
+		}
 	// Source for combobox Year, Month
 		var today = new Date();
 	    yyyy = today.getFullYear();
@@ -178,19 +213,19 @@
 				$("#keyInput").val("");
 				var statusDossier = $("li.itemStatus.active").attr("dataPk");
 				if (statusDossier == "all") {
-					dataSourceProfile.read({
-						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-						"serviceInfo": $("#serviceInfo").val(),
-						"keyword": $("#keyInput").val(),
-						"status": ""
-					})
+						dataSourceProfile.read({
+							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+							"serviceInfo": $("#serviceInfo").val(),
+							"keyword": $("#keyInput").val(),
+							"status": ""
+						})
 			    } else {
-					dataSourceProfile.read({
-						"serviceInfo": $("#serviceInfo").val(),
-						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-						"keyword": $("#keyInput").val(),
-						"status": statusDossier
-					})
+						dataSourceProfile.read({
+							"serviceInfo": $("#serviceInfo").val(),
+							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+							"keyword": $("#keyInput").val(),
+							"status": statusDossier
+						})
 			    }
 			},
 			filterStatus: function(e){
@@ -222,14 +257,26 @@
 				event.preventDefault();
 				event.stopPropagation();
 				event.stopImmediatePropagation();
-				fileAttachmentDownload({
-					method: "GET",
+				// fileAttachmentDownload({
+				// 	method: "GET",
+				// 	url:"${api.server}/dossiers/"+id+"/download",
+				// 	headers: {"groupId": ${groupId}},
+				// 	success: function(sttCode){
+						
+				// 	},
+				// 	error: function(sttCode){
+						
+				// 	}
+				// });
+				$.ajax({
 					url:"${api.server}/dossiers/"+id+"/download",
 					headers: {"groupId": ${groupId}},
-					success: function(sttCode){
+					dataType:"json",
+					type:"GET",
+					success:function(res){
 						
 					},
-					error: function(sttCode){
+					error:function(res){
 						
 					}
 				});

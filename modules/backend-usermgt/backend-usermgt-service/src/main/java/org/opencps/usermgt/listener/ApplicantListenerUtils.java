@@ -46,6 +46,8 @@ public class ApplicantListenerUtils {
 
 			String emailBody = notificationtemplate.getEmailBody();
 
+			object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, notificationtemplate.getGuestUrlPattern());
+			object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, notificationtemplate.getGuestUrlPattern());
 			
 			String [] oldSubs = buildOldSubs(object);
 			
@@ -101,19 +103,9 @@ public class ApplicantListenerUtils {
 		}
 		if (Validator.isNotNull(object.get(ApplicantListenerMessageKeys.ACTIVATION_LINK))) {
 			
-			StringBuffer emailLinkSb = new StringBuffer();
-			
-			emailLinkSb.append("<a href=\"");
-			emailLinkSb.append(object.get(ApplicantListenerMessageKeys.ACTIVATION_LINK).toString()
-					+ object.get(ApplicantListenerMessageKeys.ACTIVATION_CODE));
-			emailLinkSb.append("\" >");
-			
-			emailLinkSb.append(object.get(ApplicantListenerMessageKeys.ACTIVATION_LINK));
-			
-			emailLinkSb.append("</a>");
-			
-			sb.append(emailLinkSb.toString());
+			sb.append(object.get(ApplicantListenerMessageKeys.HOME_PAGE_URL).toString() + object.get(ApplicantListenerMessageKeys.ACTIVATION_CODE).toString());
 			sb.append(StringPool.COMMA);
+			
 		}
 		if (Validator.isNotNull(object.get(ApplicantListenerMessageKeys.USER_NAME))) {
 			sb.append(object.get(ApplicantListenerMessageKeys.USER_NAME));
