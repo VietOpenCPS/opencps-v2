@@ -45,8 +45,8 @@ public class DossierNumberGenerator {
 			// replace year
 			pattern = pattern.replace(listPattern[1], y);
 		}
-		//String processId = String.valueOf(DossierLocalServiceUtil.countLucene(param, sc) + 1)
-		String processId = "100";
+		String processId = String.valueOf(DossierLocalServiceUtil.countLucene(param, sc) + 1);
+//		String processId = "100";
 		String processP = "";
 		if (listPattern[0].equals("{code}")) {
 			// replace code
