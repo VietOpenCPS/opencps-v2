@@ -22,19 +22,11 @@
 			{{ props.item.receiveDate | date }}
 		</td>
 		<td style="padding-top: 15px;" class="text-xs-left">
-			///
+			{{ props.item.dueDate | date }}
 		</td>
 		
 		<td style="padding-top: 15px;" class="text-xs-left">
-		
-			-Loại sản phẩm: ///
-			<br>
-			-Tên thuơng mại: ///
-			<br>
-			-Nhãn hiệu/số loại: ///
-			<br>
 			{{ props.item.briefNote }}
-		
 		</td>
 		<td style="padding-top: 15px;" class="text-xs-left">{{ props.item.lastActionNote }}</td>
 	</template>
