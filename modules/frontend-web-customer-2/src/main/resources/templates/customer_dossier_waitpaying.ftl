@@ -121,7 +121,6 @@
 								<div class="col-sm-10" data-bind="text:paymentApproveDatetime"></div>
 							</div>
 
-
 							<div id="unpaid">
 								<div class="row MB10">
 									<div class="col-sm-12">
@@ -211,7 +210,6 @@
 				headers : {"groupId": ${groupId}},
 				async : false,
 				data : {
-					paymentStatus : 0
 				},
 				success : function(result){
 					if(result.data){
@@ -246,9 +244,7 @@
 					});
 
 					var payment = fnLoadPayment(result.dossierId);
-					if(!payment){
-						$("#paymentDossierContent").html("");
-					}
+					
 
 					var viewModel = kendo.observable({
 

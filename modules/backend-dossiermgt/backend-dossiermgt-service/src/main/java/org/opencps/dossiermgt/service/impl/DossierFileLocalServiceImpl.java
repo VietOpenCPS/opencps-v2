@@ -443,7 +443,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 	public DossierFile getDossierFileByReferenceUid(long dossierId, String referenceUid) throws PortalException {
 
-		return dossierFilePersistence.findByD_RUID(dossierId, referenceUid, false);
+		return dossierFilePersistence.fetchByDID_REF(dossierId, referenceUid);
 	}
 
 	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
@@ -678,6 +678,10 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 				throw new DuplicateDossierFileException();
 			}
 		}
+	}
+	
+	public DossierFile getDossierFileByDID_FTNO(long dossierId, String fileTemplateNo){
+		return dossierFilePersistence.fetchByDID_FTNO(dossierId, fileTemplateNo);
 	}
 
 	public static final String CLASS_NAME = DossierFile.class.getName();

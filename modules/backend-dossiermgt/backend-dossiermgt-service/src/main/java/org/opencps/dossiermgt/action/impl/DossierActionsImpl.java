@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.util.DossierContentGenerator;
+import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -41,6 +44,7 @@ import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -483,6 +487,12 @@ public class DossierActionsImpl implements DossierActions {
 			
 		}
 		
+		ProcessStep postStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
+		
+		String dossierBriefNote = DossierContentGenerator.getBriefNote(groupId, dossierId, postStep.getBriefNote());
+		
+		DossierLocalServiceUtil.updateDossierBriefNote(dossierId, dossierBriefNote);
+		
 		//Add DossierActionUser
 		
 		DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
@@ -622,6 +632,10 @@ public class DossierActionsImpl implements DossierActions {
 		if (dossier.getOnline() && action.getSyncActionCode().length() != 0) {
 			isSync = true;
 		}
+		
+		_log.info("GROUPID_"+ groupId);
+		_log.info("ISSYNC_"+isSync);
+		
 
 		return isSync;
 
@@ -747,5 +761,32 @@ public class DossierActionsImpl implements DossierActions {
 
 	}
 	protected Log _log = LogFactoryUtil.getLog(DossierActionsImpl.class);
+
+	@Override
+	public Dossier cloneDossier(long groupId, long dossierId, ServiceContext context) throws PortalException {
+		
+		Dossier srcDossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		
+		long desDossierId = CounterLocalServiceUtil.increment(Dossier.class.getName());
+		
+		srcDossier.setUuid(UUID.randomUUID().toString());
+		srcDossier.setDossierId(desDossierId);
+		srcDossier.setDossierStatus(StringPool.BLANK);
+		srcDossier.setDossierStatusText(StringPool.BLANK);
+		srcDossier.setDossierSubStatus(StringPool.BLANK);
+		srcDossier.setDossierSubStatusText(StringPool.BLANK);
+		
+		int counter = DossierNumberGenerator.counterDossier(srcDossier.getUserId(), groupId);
+		String referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
+
+		srcDossier.setCounter(counter);
+		srcDossier.setReferenceUid(referenceUid);
+
+		Dossier desDossier = DossierLocalServiceUtil.addDossier(srcDossier);
+		
+		DossierFileLocalServiceUtil.cloneDossierFilesByDossierId(groupId,  srcDossier.getPrimaryKey(),dossierId, 1, context);
+		
+		return desDossier;
+	}
 
 }

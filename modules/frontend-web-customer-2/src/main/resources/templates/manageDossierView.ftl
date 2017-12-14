@@ -131,9 +131,7 @@
 				<div class="row M0 ">
 
 					<div class="col-sm-1">
-						
-						#=counter#
-							
+						#=count#
 					</div>
 					
 					<div class="col-sm-3">
@@ -147,18 +145,15 @@
 					</div>
 
 					<div class="col-sm-1">
-						# if(dossierNo != null && dossierNo != ""){#
-				
-							#=dossierNo#
-
+						# if(dossierId != null && dossierId != ""){#
+							#=dossierId#
 						#} else {#
 							<i class="text-gray">Chưa cập nhật</i>
 						#}#
 						<br>
-						# if(dossierId != null && dossierId != ""){#
-				
-							#=dossierId#
-
+						
+						# if(dossierNo != null && dossierNo != ""){#
+							#=dossierNo#
 						#} else {#
 							<i class="text-gray">Chưa cập nhật</i>
 						#}#
@@ -190,54 +185,54 @@
 
 					<div class="col-sm-3">
 						-Loại sản phẩm:
-						# if(briefNote != null && briefNote != ""){#
+						<#-- # if(briefNote != null && briefNote != ""){#
 				
 							#=briefNote#
 
 						#} else {#
 							<i class="text-gray">Chưa cập nhật</i>
-						#}#
+						#}# -->
 						<br>
 						-Tên thuơng mại:
-						# if(briefNote != null && briefNote != ""){#
+						<#-- # if(briefNote != null && briefNote != ""){#
 				
 							#=briefNote#
 
 						#} else {#
 							<i class="text-gray">Chưa cập nhật</i>
-						#}#
+						#}# -->
 						<br>
 						-Nhãn hiệu/số loại:
-						# if(briefNote != null && briefNote != ""){#
+						<#-- # if(briefNote != null && briefNote != ""){#
 				
 							#=briefNote#
 
 						#} else {#
 							<i class="text-gray">Chưa cập nhật</i>
-						#}#
+						#}# -->
 						<br>
-						<i class="text-gray">
-							Hồ sơ này sẽ giải quyết trong vòng #=dossierId# ngày, khi đó bạn hãy đến cơ quan tiếp nhận hồ sơ để lấy kết quả khi hồ sơ hoàn tất.
-						</i>
+						# if(typeof briefNote !== "undefined"){#
+							<i class="text-light-gray">#=briefNote#</i>
+						#} else {#
+							<i class="text-gray">Chưa cập nhật</i>
+						#}#
 					</div>
 
 					<div class="col-sm-1">
-						# if(briefNote != null && briefNote != ""){#
-				
-							#=briefNote#
-
+						# if(typeof actionNote !== "undefined"){#
+							<i>#:actionNote#</i>
 						#} else {#
-							<i class="text-gray">Chưa cập nhật</i>
+							<i>Chưa cập nhật</i>
 						#}#
 					</div>
 
 					<div class="col-xs-1 col-sm-1 text-right">
-
-						<button type="button" class="btn-link no-border downloadProfile" data-pk="#:dossierId#">
-							<i class="fa fa-download" aria-hidden="true"/>
-							Tải kết quả
-						</button>
-						
+						#if(dossierStatus === "done"){#
+							<button type="button" class="btn-link no-border downloadProfile" data-pk="#:dossierId#">
+								<i class="fa fa-download" aria-hidden="true"/>
+								Tải kết quả
+							</button>
+						#}#
 						<button type="button" class="btn-link no-border copyProfile" data-pk="#:dossierId#">
 							<i class="fa fa-file-o" aria-hidden="true"></i>
 							Sao chép

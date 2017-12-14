@@ -86,6 +86,7 @@ public class DossierUtils {
 			model.setServerNo(doc.get(DossierTerm.SERVER_NO));
 			
 			model.setViaPostal(doc.get(DossierTerm.VIA_POSTAL));
+			model.setPostalAddress(doc.get(DossierTerm.POSTAL_ADDRESS));
 			model.setPostalCityCode(doc.get(DossierTerm.POSTAL_CITY_CODE));
 			model.setPostalCityName(doc.get(DossierTerm.POSTAL_CITY_NAME));
 			model.setPostalTelNo(doc.get(DossierTerm.POSTAL_TEL_NO));

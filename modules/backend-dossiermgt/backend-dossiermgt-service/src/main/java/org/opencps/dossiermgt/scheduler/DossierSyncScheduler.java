@@ -35,7 +35,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-@Component(immediate = true, service = DossierSyncScheduler.class)
+//@Component(immediate = true, service = DossierSyncScheduler.class)
 public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 
 	@Override
@@ -70,6 +70,8 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 					RESTFulConfiguration.CLIENT_PASS, properties, serviceContext);
 
 			if (resDossierSync.getInt(RESTFulConfiguration.STATUS) == 200) {
+				
+				_log.info("DOSSIER_SYN_"+resDossierSync);
 
 				JSONObject jsData = JSONFactoryUtil
 						.createJSONObject(resDossierSync.getString(RESTFulConfiguration.MESSAGE));

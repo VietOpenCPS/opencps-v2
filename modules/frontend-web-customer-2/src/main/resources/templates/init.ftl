@@ -29,4 +29,6 @@
 	<#assign dossier = (Request.dossier)!>
 	<#assign dossierPartNo = (Request.dossierPartNo)!>
 	<#assign dossierTemplateNo = (Request.dossierTemplateNo)!>
+	<#assign constants = (Request.constants)!>
+	
 </#if>
