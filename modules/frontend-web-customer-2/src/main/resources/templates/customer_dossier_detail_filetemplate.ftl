@@ -109,6 +109,7 @@
 						headers: {"groupId": ${groupId}},
 						data : {
 							keyword : options.data.keyword,
+							type : 1,
 							owner : true,
 							original : true
 						},

@@ -35,10 +35,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				'onLoad': '_initlistgroupFilter',
 				'onClick': 'filterChange',
 				'events': {
-					filterChange: function (value) {
+					filterChange: function (item) {
 						var vm = this;
-						console.log(value);
-						vm.listgroupFilterselected = value;
+						
+						vm.listgroupFilterselected = item.id;
 						vm._inipaymentList(false);
 						vm.detailPage = false;
 					},
@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							
 						};
 
-						var url = '/o/frontendwebpayment/json/payment_files.json';
+						var url = '/o/rest/v2/paymentfiles';
 
 						axios.get(url, config).then(function (response) {
 							var serializable = response.data;
@@ -348,6 +348,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						})
 							.catch(function (error) {
 								console.log(error);
+								vm.paymentListItems = [];
+								vm.viewmore = false;
 							});
 
 					},
@@ -357,8 +359,38 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 						vm.detailModel = vm.paymentListItems[index];
 						vm.detailModel.index = index;
+						
+						// TODO: call API lay file
+						var url ="/o/rest/v2/employees/1401/photo" ;
+						vm._showFile({
+							config : {
+								headers: {'groupId': themeDisplay.getScopeGroupId()},
+								responseType: 'blob'
+							},
+							url : url
+						});
 
 						window.scrollBy(0, -99999);
+					},
+					_showFile: function (options) {
+						
+						axios.get(options.url, options.config).then(function (response) {
+							
+							var url = window.URL.createObjectURL(response.data);
+							var iFrame = document.getElementById("objectView2");
+							
+							iFrame.innerHTML = '<iframe src="'+url+'" width="100%" height="100%"> </iframe>';
+						})
+							.catch(function (error) {
+								console.log(error);
+							});
+						
+					},
+					paggingPaymentList: function(){
+						this.start = this.start + 8;
+						this.end = this.end + 8;
+						
+						this._inipaymentList(true);
 					},
 					onScroll(e) {
 						var onBottom = window.pageYOffset || document.documentElement.scrollTop;
@@ -367,7 +399,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 						if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
 							stageScroll = btn_view_more.offsetTop - 300;
-							vm._inipaymentList(true);
+							//vm._inipaymentList(true);
 						}
 
 					}

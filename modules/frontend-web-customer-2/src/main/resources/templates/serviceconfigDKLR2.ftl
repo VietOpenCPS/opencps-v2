@@ -8,7 +8,7 @@
 			<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe chở hàng bốn bánh có gắn động cơ
 		</a>
 	</div>
-	<div id="lv14G1" class="accordion-body collapse">
+	<div id="lv14G1" class="accordion-body collapse toggle-hide">
 		<div class="accordion-inner PB0 PT0">
 			<#-- lv23G1 -->
 			<div class="PT5">
@@ -17,7 +17,7 @@
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại
 					</a>
 				</div>
-				<div id="item41" class="collapse MT10">
+				<div id="item41" class="collapse toggle-hide MT10">
 					<div class="PB10">
 						<div class="ML80">
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -55,7 +55,7 @@
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 					</a>
 				</div>
-				<div id="item42" class="collapse MT10">
+				<div id="item42" class="collapse toggle-hide MT10">
 					<div class="PB10">
 						<div class="ML80">
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -94,7 +94,7 @@
 			<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe đạp điện
 		</a>
 	</div>
-	<div id="lv15G1" class="accordion-body collapse">
+	<div id="lv15G1" class="accordion-body collapse toggle-hide">
 		<div class="accordion-inner PB0 PT0">
 			<#-- lv23G1 -->
 			<div class="PT5">
@@ -103,7 +103,7 @@
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại
 					</a>
 				</div>
-				<div id="item51" class="collapse MT10">
+				<div id="item51" class="collapse toggle-hide MT10">
 					<div class="PB10">
 						<div class="ML80">
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -141,7 +141,7 @@
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 					</a>
 				</div>
-				<div id="item52" class="collapse MT10">
+				<div id="item52" class="collapse toggle-hide MT10">
 					<div class="PB10">
 						<div class="ML80">
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -181,7 +181,7 @@
 			<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe chuyên dùng
 		</a>
 	</div>
-	<div id="lv16G1" class="accordion-body collapse">
+	<div id="lv16G1" class="accordion-body collapse toggle-hide">
 		<div class="accordion-inner PB0 PT0">
 			<#-- lv2G1 -->
 			<div class="PT5">
@@ -190,7 +190,7 @@
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Thẩm định thiết kế
 					</a>
 				</div>
-				<div id="item61" class="collapse MT10">
+				<div id="item61" class="collapse toggle-hide MT10">
 					<#-- lv3G1 -->
 					<div class="PB10">
 						<div class="ML80">
@@ -235,7 +235,7 @@
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại
 					</a>
 				</div>
-				<div id="item62" class="collapse MT10">
+				<div id="item62" class="collapse toggle-hide MT10">
 					<div class="PB10">
 						<div class="ML80">
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -273,7 +273,7 @@
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 					</a>
 				</div>
-				<div id="item63" class="collapse MT10">
+				<div id="item63" class="collapse toggle-hide MT10">
 					<div class="PB10">
 						<div class="ML80">
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -313,7 +313,7 @@
 			<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Linh kiện phụ tùng
 		</a>
 	</div>
-	<div id="lv17G1" class="accordion-body collapse">
+	<div id="lv17G1" class="accordion-body collapse toggle-hide">
 		<div class="accordion-inner PB0 PT0">
 			<#-- lv23G1 -->
 			<div class="PT5">
@@ -322,7 +322,7 @@
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại LK xe cơ giới
 					</a>
 				</div>
-				<div id="item71" class="collapse MT10">
+				<div id="item71" class="collapse toggle-hide MT10">
 					<div class="PB10">
 						<div class="ML80">
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -360,7 +360,7 @@
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại LK xe mô tô, xe gắn máy
 					</a>
 				</div>
-				<div id="item72" class="collapse MT10">
+				<div id="item72" class="collapse toggle-hide MT10">
 					<div class="PB10">
 						<div class="ML80">
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -398,8 +398,8 @@
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại LK xe đạp điện
 					</a>
 				</div>
-				<div id="item73" class="collapse MT10">
-					<div class="PB10">
+				<div id="item73" class="collapse toggle-hide MT10">
+					<#-- <div class="PB10">
 						<div class="ML80">
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip1item73" class="MR10">Cấp mới</label>
@@ -426,7 +426,7 @@
 							</div>
 							<div class="clear"></div>
 						</div>
-					</div>
+					</div> -->
 				</div>
 			</div>
 			<#--  -->
@@ -436,8 +436,8 @@
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại LK xe máy chuyên dùng
 					</a>
 				</div>
-				<div id="item74" class="collapse MT10">
-					<div class="PB10">
+				<div id="item74" class="collapse toggle-hide MT10">
+					<#-- <div class="PB10">
 						<div class="ML80">
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip1item74" class="MR10">Cấp mới</label>
@@ -464,7 +464,7 @@
 							</div>
 							<div class="clear"></div>
 						</div>
-					</div>
+					</div> -->
 				</div>
 			</div>
 			<#--  -->
@@ -474,8 +474,8 @@
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại LK xe chở người bốn bánh
 					</a>
 				</div>
-				<div id="item75" class="collapse MT10">
-					<div class="PB10">
+				<div id="item75" class="collapse toggle-hide MT10">
+					<#-- <div class="PB10">
 						<div class="ML80">
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip1item75" class="MR10">Cấp mới</label>
@@ -502,7 +502,7 @@
 							</div>
 							<div class="clear"></div>
 						</div>
-					</div>
+					</div> -->
 				</div>
 			</div>
 			<#--  -->
@@ -512,8 +512,8 @@
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại LK xe chở người bốn bánh
 					</a>
 				</div>
-				<div id="item76" class="collapse MT10">
-					<div class="PB10">
+				<div id="item76" class="collapse toggle-hide MT10">
+					<#-- <div class="PB10">
 						<div class="ML80">
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip1item76" class="MR10">Cấp mới</label>
@@ -540,7 +540,7 @@
 							</div>
 							<div class="clear"></div>
 						</div>
-					</div>
+					</div> -->
 				</div>
 			</div>
 		</div>

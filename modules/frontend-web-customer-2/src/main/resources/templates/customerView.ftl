@@ -33,7 +33,7 @@
 						<input name="serviceInfo" id="serviceInfo" data-role="combobox" data-placeholder="Chọn thủ tục hành chính" data-text-field="serviceName" data-value-field="serviceCode" data-bind="source:dataServiceInfo, events: { change: eventLookup,dataBound: dataBound}">
 					</div>
 				</div>
-				<div class="col-md-12 MB5 filterField">
+				<div class="col-md-12 MB10 filterField">
 					<input id="dossier-emp-nav-selectbox-by-dossierNo" placeholder="Mã tiếp nhận" name="dossierNo" class="form-control dossier-emp-nav-selectbox" data-bind="events: { keyup: filterDossierNo}" style="height:30px" />
 				</div>
 				
@@ -50,23 +50,54 @@
 						data-datePicker-msg="Ngày không hợp lệ!"
 						name="endDate" class="form-control dossier-emp-nav-selectbox" />
 				</div>
-				
-				<div class="col-sm-12">
-					<ul id="profileStatus" class="ul-default ul-with-left-icon icon-folder have-bagde">
-						<#if constants.dossierStatus?has_content>
-							<#list constants.dossierStatus as odossierStatus>
-								
-								<li dataPk='${odossierStatus.value}' class='itemStatus' data-bind="click: filterStatus">
-									<i class='fa fa-folder icon-left' aria-hidden='true'></i>  
-									<span class="hover-pointer text-hover-blue dossierStatus">${odossierStatus.text}</span>
-									<span class="bagde">${odossierStatus.count}</span>
-								</li>
-								
-							</#list>
-						</#if>
-					</ul>
+				<#--  -->
+				<div class="col-sm-12 MB10">
+					<div class="accordion">
+						<div class="accordion-group">
+							<div class="accordion-heading" style="background-color: #14bef0;border: none;font-family: 'Roboto-Regular'">
+								<a class="" style="color: #ffffff" data-toggle="collapse" href="#groupFilterStatus">
+									DANH SÁCH
+								</a>
+							</div>
+							<div id="groupFilterStatus" class="accordion-body collapse in">
+								<div class="accordion-inner">
+									<ul id="profileStatus" class="ul-default ul-with-left-icon icon-folder have-bagde">
+										<#if constants.dossierStatus?has_content>
+											<#list constants.dossierStatus as odossierStatus>
+												<li dataPk='${odossierStatus.value}' class='itemStatus' data-bind="click: filterStatus">
+													<i class='fa fa-folder icon-left' aria-hidden='true'></i>  
+													<span class="hover-pointer text-hover-blue dossierStatus">${odossierStatus.text}</span>
+													<span class="bagde">0</span>
+												</li>
+											</#list>
+										</#if>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
-
+				<#--  -->
+				<div class="col-sm-12">
+					<div class="accordion">
+						<div class="accordion-group">
+							<div class="accordion-heading" style="background-color: #14bef0;border: none;font-family: 'Roboto-Regular'">
+								<a style="color: #ffffff" data-toggle="collapse" href="#groupLookup">
+									TRA CỨU
+								</a>
+							</div>
+							<div id="groupLookup" class="accordion-body collapse in">
+								<div class="accordion-inner">
+									<ul id="" class="ul-default have-bagde">
+										<li class="hover-pointer text-hover-blue">Tra cứu chứng chỉ</li>
+										<li class="hover-pointer text-hover-blue">Tra cứu phương tiện xuất xưởng</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<#--  -->
 			</div>
 	
 		</div>

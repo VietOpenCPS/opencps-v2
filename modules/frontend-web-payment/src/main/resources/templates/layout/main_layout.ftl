@@ -4,19 +4,19 @@
       <div class="layout wrap">
   		<#include "payment_detail.ftl">
         <v-slide-x-transition>
-          <div class="row-header" v-if="!detailPage">
+          <div class="row-header flex-break" v-if="!detailPage">
             <div class="background-triangle-big"> Kết quả tìm kiếm</div>
-            <div class="layout row wrap header_tools">
+            <div class="layout row wrap header_tools w-100-xs">
             
-              <div class="flex xs5 sm5 solo" jx-bind="paymentMethodSearch">
+              <div class="flex xs8 sm5 solo" jx-bind="paymentMethodSearch">
   
               </div>
   
-              <div class="flex xs5 sm2" jx-bind="paymentConfirm">
+              <div class="flex xs4 sm2" jx-bind="paymentConfirm">
   
               </div>
   
-              <div class="flex pr-3" jx-bind="keywordsSearch">
+              <div class="flex pr-3 w-100-xs" jx-bind="keywordsSearch">
   
               </div>
   
@@ -31,7 +31,7 @@
         <div id="btn_view_more" class="text-center" style="width: 100%;" v-if="!detailPage">
           <v-scale-transition>
   
-            <v-btn round dark color="blue darken-2" :loading="viewmore" :disabled="viewmore">
+            <v-btn round dark color="blue darken-2" :loading="viewmore" :disabled="viewmore" @click.prevent.stop="paggingPaymentList">
               {{xem_them}}
               <span slot="loader">Đang tải ...</span>
             </v-btn>
