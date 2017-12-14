@@ -16,7 +16,7 @@ public class DossierOverDueUtils {
 		// TODO add logic here
 		return null;
 	}
-
+	
 	public static String getEstimateDate(int processingDay) {
 		Date now = new Date();
 		int start = -1, end = -1;
@@ -28,7 +28,8 @@ public class DossierOverDueUtils {
 		List<Holiday> lstHoliday = HolidayLocalServiceUtil.getHolidaies(start, end);
 
 		for (Holiday holiday : lstHoliday) {
-			if (holiday.getHolidayDate().after(now) && holiday.getHolidayDate().before(c.getTime())) {
+			Date holidaydate = holiday.getHolidayDate();
+			if ((holidaydate.compareTo(now) > 0 && holidaydate.compareTo(c.getTime())<0) || holidaydate.compareTo(c.getTime()) == 0) {
 				processingDay++;
 			}
 		}
