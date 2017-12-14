@@ -39,7 +39,7 @@ public class VRActionsImpl implements VRActions {
 		JSONArray techSpecArr = JSONFactoryUtil.createJSONArray();
 
 		try {
-			
+
 			// get id THONG_SO_KY_THUAT
 			DictCollection nhomThongSoKyThuat = DictCollectionLocalServiceUtil
 					.fetchByF_dictCollectionCode(VRKeys.NHOM_THONG_SO_KY_THUAT, groupId);
@@ -94,7 +94,8 @@ public class VRActionsImpl implements VRActions {
 					techspec.put("basicunit", vrConfig.getSpecificationBasicUnit());
 					techspec.put("placeholder", vrConfig.getSpecificationEntryPlaceholder());
 					if (Validator.isNotNull(vrConfig.getSpecificationDataCollectionId())) {
-						techspec.put("datasource", getDataSource(vrConfig.getSpecificationDataCollectionId(), groupId));
+						techspec.put("datasource",
+								getDataSource(vrConfig.getSpecificationDataCollectionId(), groupId, vehicleClass));
 					}
 
 					items.put(techspec);
@@ -104,9 +105,9 @@ public class VRActionsImpl implements VRActions {
 
 				techSpecArr.put(jsonTechSpec);
 			}
-			
+
 			if (dossierFileId != 0) {
-				//DB chua luu formSchema, nen do data vao techSpecArr
+				// DB chua luu formSchema, nen do data vao techSpecArr
 				techSpecArr = getFormData(dossierFileId, techSpecArr);
 			}
 
@@ -129,29 +130,30 @@ public class VRActionsImpl implements VRActions {
 
 		JSONObject formData = null;
 
-		//JSONArray formSchema = null;
+		// JSONArray formSchema = null;
 
 		if (Validator.isNotNull(dossierFile)) {
 
 			try {
 				formData = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
-				
-				//DB chua luu FormSchema
 
-				//formSchema = JSONFactoryUtil.createJSONArray(dossierFile.getFormSchema());
+				// DB chua luu FormSchema
+
+				// formSchema =
+				// JSONFactoryUtil.createJSONArray(dossierFile.getFormSchema());
 
 				int length = formSchema.length();
 
 				for (int i = 0; i < length; i++) {
-					
+
 					JSONObject parent = formSchema.getJSONObject(i);
 
 					String keyObject = parent.getString("key");
-					
+
 					_log.info("keyObject " + keyObject);
 
 					String keyValue = formData.getString(keyObject);
-					
+
 					_log.info("keyValue " + keyValue);
 
 					parent.put("value", keyValue);
@@ -183,8 +185,8 @@ public class VRActionsImpl implements VRActions {
 			}
 
 		}
-		
-		if(output.length() == 0){
+
+		if (output.length() == 0) {
 			output = formSchema;
 		}
 
@@ -239,8 +241,12 @@ public class VRActionsImpl implements VRActions {
 			List<VRLimitConfigTechSpec> vrLimits = VRLimitConfigTechSpecLocalServiceUtil.getLimitConfigs(vehicleClass,
 					dictGroupName, fomulaType);
 
+			JSONObject jsContent = JSONFactoryUtil.createJSONObject();
+
+			jsContent.put("TechSpecs", getLimitsConfig(vrLimits));
+
 			returnObj.put("status", HttpsURLConnection.HTTP_OK);
-			returnObj.put("content", getLimitsConfig(vrLimits));
+			returnObj.put("content", jsContent);
 
 		} catch (Exception e) {
 			returnObj.put("status", HttpsURLConnection.HTTP_FORBIDDEN);
@@ -321,7 +327,7 @@ public class VRActionsImpl implements VRActions {
 
 					techspec.put("placeholder", vrConfig.getSpecificationEntryPlaceholder());
 					if (Validator.isNotNull(vrConfig.getSpecificationDataCollectionId())) {
-						techspec.put("datasource", getDataSource(vrConfig.getSpecificationDataCollectionId(), groupId));
+						techspec.put("datasource", getDataSource(vrConfig.getSpecificationDataCollectionId(), groupId, vehicleClass));
 					}
 
 					items.put(techspec);
@@ -365,25 +371,33 @@ public class VRActionsImpl implements VRActions {
 	 * @param dataSourceCode
 	 * @return
 	 */
-	private JSONArray getDataSource(String collectionCode, long groupId) {
+	private JSONArray getDataSource(String collectionCode, long groupId, String vehicleClass) {
 
 		JSONArray datasource = JSONFactoryUtil.createJSONArray();
 
-		long dictCollectionId = getDictCollectionId(collectionCode, groupId);
-		
+		long dictGroupCollectionId = getDictCollectionId(vehicleClass, groupId);
+
+		DictGroup phanLoaiNhomTTSKT = DictGroupLocalServiceUtil.getByGC_GI_DCI(collectionCode, groupId,
+				dictGroupCollectionId);
+
+		List<DictItemGroup> danhSachNhomThongSoKT = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId,
+				phanLoaiNhomTTSKT.getPrimaryKey());
+
+		// long dictCollectionId = getDictCollectionId(collectionCode, groupId);
+
 		try {
-			if (dictCollectionId != 0) {
-				List<DictItem> lsDictItems = DictItemLocalServiceUtil.findByF_dictCollectionId(dictCollectionId);
 
-				for (DictItem di : lsDictItems) {
-					JSONObject diObject = JSONFactoryUtil.createJSONObject();
+			for (DictItemGroup dg : danhSachNhomThongSoKT) {
+				JSONObject diObject = JSONFactoryUtil.createJSONObject();
 
-					diObject.put("value", di.getItemCode());
-					diObject.put("text", di.getItemName());
+				DictItem dictItem = DictItemLocalServiceUtil.getDictItem(dg.getDictItemId());
 
-					datasource.put(diObject);
-				}
+				diObject.put("value", dictItem.getItemCode());
+				diObject.put("text", dictItem.getItemName());
+
+				datasource.put(diObject);
 			}
+
 		} catch (Exception e) {
 			_log.error(e);
 		}
