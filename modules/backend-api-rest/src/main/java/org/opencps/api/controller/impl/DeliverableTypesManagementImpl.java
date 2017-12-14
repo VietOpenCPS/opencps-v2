@@ -306,8 +306,10 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			}
 
 			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getDeliverableTypebyId(groupId, id);
+			
+			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 
-			return Response.status(200).entity(deliverableType.getFormScript()).build();
+			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			return processException(e);
