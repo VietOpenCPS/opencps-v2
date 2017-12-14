@@ -63,7 +63,7 @@ public class DossierNumberGenerator {
 			pattern = pattern.replace(processP, processId);
 		} else if (processId.length() > processIdPattern.length()) {
 			pattern = pattern.replace(processP,
-					processId.substring(processId.length() - processIdPattern.length() - 1));
+					processId.substring(processId.length() - processIdPattern.length()));
 		} else {
 			String p = "%0" + (processIdPattern.length() - processId.length()) + "d%s";
 			pattern = pattern.replace(processP,
