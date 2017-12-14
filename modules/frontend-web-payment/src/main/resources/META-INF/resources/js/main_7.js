@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							
 						};
 
-						var url = '/o/frontendwebpayment/json/payment_files.json';
+						var url = '/o/rest/v2/paymentfiles';
 
 						axios.get(url, config).then(function (response) {
 							var serializable = response.data;
@@ -348,6 +348,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						})
 							.catch(function (error) {
 								console.log(error);
+								vm.paymentListItems = [];
+								vm.viewmore = false;
 							});
 
 					},
@@ -384,6 +386,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							});
 						
 					},
+					paggingPaymentList: function(){
+						this.start = this.start + 8;
+						this.end = this.end + 8;
+						
+						this._inipaymentList(true);
+					},
 					onScroll(e) {
 						var onBottom = window.pageYOffset || document.documentElement.scrollTop;
 						var vm = this;
@@ -391,7 +399,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 						if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
 							stageScroll = btn_view_more.offsetTop - 300;
-							vm._inipaymentList(true);
+							//vm._inipaymentList(true);
 						}
 
 					}

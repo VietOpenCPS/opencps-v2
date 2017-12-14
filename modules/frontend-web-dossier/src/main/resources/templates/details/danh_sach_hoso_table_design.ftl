@@ -5,17 +5,31 @@
 		<td style="padding-top: 15px;">{{ props.index + 1 }}</td>
 		<td style="padding-top: 15px;" class="text-xs-left">
 			<a href="javascript:;" @click.prevent.stop="toDetailHoSo(props.item)">
-			{{ props.item.dossierNo }}
+				{{ props.item.serviceName }} 
+				<br>
+				{{ props.item.govAgencyName }} 
 			</a>
+			
 		</td>
 		<td style="padding-top: 15px;" class="text-xs-center">
-			<a href="javascript:;" @click.prevent.stop="toDetailHoSo(props.item)">
-			{{ props.item.createDate | date }}
-			</a>
+			{{ props.item.dossierNo }} 
+			<br>
+			{{ props.item.dossierId }} 
 		</td>
-		<td style="padding-top: 15px;" class="text-xs-left">{{ props.item.paymentAmount | money }}</td>
-		<td style="padding-top: 15px;" class="text-xs-left">{{ props.item.applicantName }}</td>
-		<td style="padding-top: 15px;" class="text-xs-left">{{ props.item.applicantName }}</td>
-		<td style="padding-top: 15px;" class="text-xs-left">{{ props.item.applicantName }}</td>
+		<td style="padding-top: 15px;" class="text-xs-left">
+			{{ props.item.submitDate | date }}
+			<br>
+			{{ props.item.receiveDate | date }}
+		</td>
+		<td style="padding-top: 15px;" class="text-xs-left">
+			{{ props.item.dueDate | date }}
+		</td>
+		
+		<td style="padding-top: 15px;" class="text-xs-left">
+			{{ props.item.briefNote }}
+		</td>
+		<td style="padding-top: 15px;" class="text-xs-left">{{ props.item.lastActionNote }}</td>
 	</template>
 </div>
+
+
