@@ -343,7 +343,7 @@
 
 <div class="button-row MT20">
 	<button class="btn btn-active" id="btn-back-dossier" type="button"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
-	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+	<button class="btn btn-active" id="btn-submit-dossier" data-bind="attr : {submitting : submitting}"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 	<button class="btn btn-active" id="btn-delete-dossier" data-bind="attr : {data-pk : dossierId}"><i class="fa fa-trash"></i> Xóa</button>
 </div>
 </div>
@@ -391,9 +391,9 @@
 		$(document).on("click",".dossier-component-profile",function(){
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
-			var dossierTemplateId = "${(dossierTemplateId)!}";
-			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateId="+dossierTemplateId,function(result){
-
+			var dossierTemplateNo = "${(dossierTemplateId)!}";
+			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
+				$(this).modal("show");
 			});
 		});
 
@@ -580,7 +580,8 @@
 		if( jQuery.isEmptyObject(validateAplicantInfo) && jQuery.isEmptyObject(validatePostal) ){
 			$.ajax({
 				type : 'GET', 
-				url  : '${api.server}/dossiers/${dossierId}/submitting', 
+				url  : '${api.server}/dossiers/${dossierId}/submitting',
+				dataType : "json", 
 				data : {
 
 				},
@@ -589,7 +590,7 @@
 					Accept : "application/json"
 				},
 				success :  function(result){    
-
+					console.log("submit dossier success!");
 					manageDossier.navigate("/taohosomoi/nopthanhcong/${dossierId}"); 
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công!"
@@ -602,7 +603,7 @@
 				}
 			});
 
-			console.log("submit dossier success!");
+			
 		}else {
 			notification.show({
 				message: "Vui lòng kiểm tra lại các thông tin bắt buộc!"
@@ -1218,6 +1219,7 @@
 								$("#btn-submit-dossier").hide();
 								$("#btn-submit-dossier-header").hide();
 							}
+							return result.submitting;
 						}
 
 					});
