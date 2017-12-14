@@ -21,7 +21,6 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -34,7 +33,6 @@ import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
@@ -796,30 +794,75 @@ public class DossierActionsImpl implements DossierActions {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		Hits hits = null;
-
 		SearchContext searchContext = new SearchContext();
 
 		searchContext.setCompanyId(companyId);
 
+		String statusCode = StringPool.BLANK;
+
+		String subStatusCode = StringPool.BLANK;
+
+		JSONArray statistics = JSONFactoryUtil.createJSONArray();
+
+		long total = 0;
+
 		try {
-
-			// hits = DossierLocalServiceUtil.searchLucene(params, sorts, start,
-			// end, searchContext);
-
 			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
 					groupId);
+			statusCode = GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS));
 
-			List<DictItem> dictItems = DictItemLocalServiceUtil
-					.findByF_dictCollectionId(dictCollection.getDictCollectionId());
-			
-			for(DictItem dictItem : dictItems){
-				String statusCode = dictItem.getItemCode();
+			subStatusCode = GetterUtil.getString(params.get(DossierTerm.DOSSIER_SUB_STATUS));
+
+			if (Validator.isNotNull(statusCode) || Validator.isNotNull(subStatusCode)) {
+				DictItem dictItem = null;
+				if (Validator.isNotNull(statusCode)) {
+					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(statusCode,
+							dictCollection.getDictCollectionId(), groupId);
+				} else {
+					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(subStatusCode,
+							dictCollection.getDictCollectionId(), groupId);
+				}
+
+				if (dictItem != null) {
+					long count = DossierLocalServiceUtil.countLucene(params, searchContext);
+
+					JSONObject statistic = JSONFactoryUtil.createJSONObject();
+					statistic.put("dossierStatus", statusCode);
+					statistic.put("dossierSubStatus", subStatusCode);
+					statistic.put("level", dictItem.getLevel());
+					statistic.put("statusName", dictItem.getItemName());
+					statistic.put("count", count);
+
+					statistics.put(statistic);
+
+					total = count;
+				}
+
+			} else {
+
+				List<DictItem> dictItems = DictItemLocalServiceUtil
+						.findByF_dictCollectionId(dictCollection.getDictCollectionId());
+
+				for (DictItem dictItem : dictItems) {
+					statusCode = dictItem.getLevel() == 0 ? dictItem.getItemCode() : StringPool.BLANK;
+					subStatusCode = dictItem.getLevel() == 1 ? dictItem.getItemCode() : StringPool.BLANK;
+					params.put(DossierTerm.DOSSIER_STATUS, statusCode);
+					params.put(DossierTerm.DOSSIER_SUB_STATUS, subStatusCode);
+					long count = DossierLocalServiceUtil.countLucene(params, searchContext);
+
+					JSONObject statistic = JSONFactoryUtil.createJSONObject();
+
+					statistic.put("dossierStatus", statusCode);
+					statistic.put("dossierSubStatus", subStatusCode);
+					statistic.put("level", dictItem.getLevel());
+					statistic.put("statusName", dictItem.getItemName());
+					statistic.put("count", count);
+					total += count;
+					statistics.put(statistic);
+				}
 			}
 
-			result.put("data", hits.toList());
-
-			long total = DossierLocalServiceUtil.countLucene(params, searchContext);
+			result.put("data", statistics);
 
 			result.put("total", total);
 

@@ -1,7 +1,6 @@
 package org.opencps.api.controller.impl;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,8 +10,8 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.StatisticManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
-import org.opencps.api.controller.util.DossierUtils;
-import org.opencps.api.dossier.model.DossierResultsModel;
+import org.opencps.api.controller.util.StatisticUtils;
+import org.opencps.api.statistic.model.StatisticDossierResults;
 import org.opencps.api.statistic.model.StatisticDossierSearchModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
@@ -22,12 +21,12 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
 
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -39,7 +38,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 	@Override
 	public Response getDossierTodo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, StatisticDossierSearchModel query) {
-		
+
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
@@ -50,28 +49,31 @@ public class StatisticManagementImpl implements StatisticManagement {
 				throw new UnauthenticationException();
 			}
 
-			
-
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(DossierTerm.DOSSIER_STATUS, query.getDossierStatus());
 			params.put(DossierTerm.DOSSIER_SUB_STATUS, query.getDossierSubStatus());
-			
-			//params.put("LEVEL", query.getLevel());
-			
-			JSONObject jsonData = actions.getDossierTodo(user.getUserId(), company.getCompanyId(), groupId, params, null,
-					serviceContext);
+			params.put(Field.USER_ID, String.valueOf(user.getUserId()));
+			params.put(DossierTerm.FOLLOW, String.valueOf(true));
 
-			DossierResultsModel results = new DossierResultsModel();
+			// params.put("LEVEL", query.getLevel());
+
+			JSONObject jsonData = actions.getDossierTodo(user.getUserId(), company.getCompanyId(), groupId, params,
+					null, serviceContext);
+
+			StatisticDossierResults results = new StatisticDossierResults();
 
 			results.setTotal(jsonData.getInt("total"));
 
-			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+			results.getStatisticDossierModel()
+					.addAll(StatisticUtils.mapperStatisticDossierList((JSONArray) jsonData.get("data")));
 
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
+
 			ErrorMsg error = new ErrorMsg();
 
 			if (e instanceof UnauthenticationException) {
