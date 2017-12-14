@@ -17,11 +17,12 @@
 		$("#mainType2").hide();
 		resetValueFilter();
 		layout.showIn("#main_section", viewMainList);
-		$(".itemStatus").css("pointer-events","auto");
+		dataSourceProfile.read();
+		// $(".itemStatus").css("pointer-events","auto");
 		$("#profileStatus li").removeClass('active');
 		$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 		$('#profileStatus li[dataPk= "all"]').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
-		$('#profileStatus li[dataPk= "all"]').css("pointer-events","none");
+		// $('#profileStatus li[dataPk= "all"]').css("pointer-events","none");
 		$('#profileStatus li[dataPk= "all"]').addClass('active')
 	});
 	manageDossier.route("/thongbao", function(){
@@ -33,7 +34,7 @@
         });
         $("#profileStatus li").removeClass('active');
         $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
-        $(".itemStatus").css("pointer-events","auto");
+        // $(".itemStatus").css("pointer-events","auto");
     });
     manageDossier.route("/taohosomoi/chuanbihoso/(:dossierId)", function(dossierId){
 	    $("#mainType1").hide();
@@ -57,7 +58,30 @@
 <script type="text/javascript">
 	$(function(){
     	// Run Routing
+    	var flagSort = true;
     	manageDossier.start();
-    	getTotal()
+    	// 
+    	getTotal();
+    	// 
+    	var sortItem;
+		var sortType;
+		var sortFieldDossier = function(selected){
+			sortItem = $(selected).attr("sort");
+			sortType = $(selected).attr("sort-type");
+			// 
+			if (sortType == "desc") {
+    			dataSourceProfile.sort({ field: sortItem, dir: "desc" });
+    			$(selected).attr("sort-type","asc")
+    		} else {
+    			dataSourceProfile.sort({ field: sortItem, dir: "asc" });
+    			$(selected).attr("sort-type","desc")
+    		}
+		};
+    	$(".fieldDossier").click(function(){
+    		sortFieldDossier(this);
+    		// $(this).children(".icon-sort").children().toggle();
+    		$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});
+    		
+    	})
     });
 </script>
