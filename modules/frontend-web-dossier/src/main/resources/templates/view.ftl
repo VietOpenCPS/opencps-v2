@@ -27,7 +27,8 @@
                 processSteps: [],
                 stepModel: {
 
-                }
+                },
+                showContactDetail: false
 			},
 			onScroll: 'onScroll',
 			schema: {
@@ -825,10 +826,25 @@
 						_inilistHistoryProcessing: function () {
 
 							var vm = this;
+							vm.listHistoryProcessingItems = [];
 
-							const config = {};
+						},
+						selectDossierActionTab(){
+						
+							console.log("___________-");
+							console.log(this.detailModel.govAgencyName);
+							var vm = this;
 
-							var url = "/o/frontendwebpayment/json/payment_files.json";
+							const config = {
+								headers: {
+									'groupId': themeDisplay.getScopeGroupId()
+								},
+								data: {
+									dossierId: this.detailModel.dossierId
+								}
+							};
+							
+							var url = "/o/frontendwebdossier/json/dossier_logs.json?t=1";
 
 							axios.get(url, config).then(function (response) {
 								var serializable = response.data;
@@ -837,7 +853,12 @@
 							.catch(function (error) {
 								console.log(error);
 							});
-
+						
+						},
+						downloadFile( fileAttachId ){
+							console.log(fileAttachId);
+							var url = "/o/rest/v2/employees/1401/photo";
+							window.open(url); 
 						}
 					}
 				},
