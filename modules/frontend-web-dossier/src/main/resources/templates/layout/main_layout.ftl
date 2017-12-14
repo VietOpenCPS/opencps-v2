@@ -21,7 +21,7 @@
 
         </div>
 
-        <div class="layout wrap" v-else-if="stageFilterView !== 'tra_cuu_hoso' && !detailPage">
+        <div class="layout wrap" v-else-if="stageFilterView === 'danh_sach' && !detailPage">
         
           <#include "danh_sach_hoso.ftl">
 
@@ -35,5 +35,6 @@
 
         </div>
       </v-slide-x-transition>
+
     </div>
   </div>
