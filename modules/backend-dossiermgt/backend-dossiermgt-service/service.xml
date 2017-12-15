@@ -977,6 +977,72 @@
 
 	</entity>
 
+	<entity local-service="true" name="Registration" remote-service="false"
+		table="opencps_registration" uuid="true">
+
+		<column name="registrationId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="applicantName" type="int" />
+		<column name="applicantIdType" type="int" />
+		<column name="applicantIdNo" type="int" />
+		<column name="applicantIdDate" type="int" />
+		<column name="address" type="int" />
+		<column name="cityCode" type="int" />
+		<column name="cityName" type="int" />
+		<column name="districtCode" type="int" />
+		<column name="districtName" type="int" />
+		<column name="wardCode" type="String" />
+		<column name="wardName" type="String" />
+		<column name="contactName" type="String" />
+		<column name="contactTelNo" type="String" />
+		<column name="contactEmail" type="String" />
+		<column name="govAgencyCode" type="int" />
+		<column name="govAgencyName" type="boolean" />
+		<column name="registrationState" type="boolean" />
+		<column name="registrationClass" type="boolean" />
+		<column name="submitting" type="boolean" />
+		<!-- Order -->
+
+		<!-- Filter -->
+
+
+	</entity>
+	
+	<entity local-service="true" name="RegistrationForm" remote-service="false"
+		table="opencps_registrationform" uuid="true">
+
+		<column name="registrationFormId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="registrationId" type="long" />
+		<column name="referenceUid" type="String" />
+		<column name="formNo" type="String" />
+		<column name="formName" type="String" />
+		<column name="formData" type="String" />
+		<column name="formScript" type="String" />
+		<column name="formReport" type="String" />
+		<column name="fileEntryId" type="long" />
+		<column name="isNew" type="boolean" />
+		<column name="removed" type="boolean" />
+		<!-- Order -->
+
+		<!-- Filter -->
+
+
+	</entity>
+
 	<entity local-service="true" name="DeliverableType"
 		remote-service="false" table="opencps_deliverabletype" uuid="true">
 
