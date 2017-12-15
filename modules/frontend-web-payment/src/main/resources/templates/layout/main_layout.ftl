@@ -28,16 +28,7 @@
   
           </div>
         </v-slide-x-transition>
-        <div id="btn_view_more" class="text-center" style="width: 100%;" v-if="!detailPage">
-          <v-scale-transition>
-  
-            <v-btn round dark color="blue darken-2" :loading="viewmore" :disabled="viewmore" @click.prevent.stop="paggingPaymentList">
-              {{xem_them}}
-              <span slot="loader">Đang tải ...</span>
-            </v-btn>
-  
-          </v-scale-transition>
-        </div>
+        
       </div>
     </div>
   </div>
