@@ -11,13 +11,16 @@
 		    layout.showIn("#main_section", viewMainList);
 	    }
 	});
+	// Show màn hình start
 	manageDossier.route("/", function() {
 		$("#mainType1").show();
 		$(".filterField").show();
 		$("#mainType2").hide();
 		resetValueFilter();
 		layout.showIn("#main_section", viewMainList);
-		dataSourceProfile.read();
+		dataSourceProfile.read({
+			"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
+		});
 		// $(".itemStatus").css("pointer-events","auto");
 		$("#profileStatus li").removeClass('active');
 		$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
@@ -25,6 +28,7 @@
 		// $('#profileStatus li[dataPk= "all"]').css("pointer-events","none");
 		$('#profileStatus li[dataPk= "all"]').addClass('active')
 	});
+	// Show màn hình thông báo chi tiết
 	manageDossier.route("/thongbao", function(){
         $("#mainType1").hide();
         $(".filterField").hide();
@@ -82,5 +86,6 @@
     		// $(this).children(".icon-sort").children().toggle();
     		$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});	
     	});
+
     });
 </script>

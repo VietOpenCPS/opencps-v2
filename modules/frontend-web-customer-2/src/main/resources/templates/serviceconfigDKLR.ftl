@@ -39,13 +39,15 @@
 							<div class="accordion-inner PB0 PT0">
 								<#-- lv2G1 -->
 								<div class="PT5">
-									<div class="ML40">
-										<a data-toggle="collapse" href="#lv21G1"> 
+									<div class="ML40 col-sm-6 P5 PL0">
+										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Thẩm định thiết kế
-										</a>
+										</span>
+										<button data-TTHC="TT302011BGTVTTDTKXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTTDTKXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv31G1">Chọn</button>
 									</div>
-									<div id="lv21G1" class="collapse in MT10">
-										<#-- lv3G1 -->
+									<div class="clear"></div>
+									<#-- <div id="lv21G1" class="collapse in MT10">
+
 										<div class="PB10">
 											<div class="ML80">
 												<a data-toggle="collapse" href="#lv31G1"> 
@@ -72,7 +74,7 @@
 												<div class="clear"></div>
 											</div>
 										</div>
-										<#-- lv31G1 -->
+
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -84,7 +86,7 @@
 												<div class="clear"></div>
 											</div>
 										</div>
-										<#-- lv32G1 -->
+
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -96,17 +98,19 @@
 												<div class="clear"></div>
 											</div>
 										</div>
-									</div>
+									</div> -->
 								</div>
 								<#-- lv22G1 -->
 								<div class="PT5">
-									<div class="align-middle PL40">
-										<a data-toggle="collapse" href="#lv22G1"> 
+									<div class="ML40 col-sm-6 P5 PL0">
+										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra sản phẩm mẫu
-										</a>
+										</span>
+										<button data-TTHC="TT302011BGTVTKTSPMXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTKTSPMXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv32G1">Chọn</button>
 									</div>
-									<div id="lv22G1" class="collapse toggle-hide MT10">
-											<#-- lv32G1 -->
+									<div class="clear"></div>
+									<#-- <div id="lv22G1" class="collapse toggle-hide MT10">
+											
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -125,16 +129,18 @@
 												<div class="clear"></div>
 											</div>
 										</div>
-									</div>
+									</div> -->
 								</div>
 								<#-- lv23G1 -->
 								<div class="PT5">
-									<div class="align-middle PL40">
-										<a data-toggle="collapse" href="#lv23G1"> 
+									<div class="ML40 col-sm-6 P5 PL0">
+										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại
-										</a>
+										</span>
+										<button data-TTHC="TT302011BGTVTCNCLKLTXXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCNCLKLTXXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv23G1">Chọn</button>
 									</div>
-									<div id="lv23G1" class="collapse toggle-hide MT10">
+									<div class="clear"></div>
+									<#-- <div id="lv23G1" class="collapse toggle-hide MT10">
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -163,16 +169,18 @@
 												<div class="clear"></div>
 											</div>
 										</div>
-									</div>
+									</div> -->
 								</div>
 								<#-- lv24G1 -->
 								<div class="PT5 PB5">
-									<div class="align-middle PL40">
-										<a data-toggle="collapse" href="#lv24G1"> 
+									<div class="ML40 col-sm-6 P5 PL0">
+										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
-										</a>
+										</span>
+										<button data-TTHC="TT302011BGTVTCPPXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv24G1">Chọn</button>
 									</div>
-									<div id="lv24G1" class="collapse toggle-hide MT10">
+									<div class="clear"></div>
+									<#-- <div id="lv24G1" class="collapse toggle-hide MT10">
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -199,8 +207,9 @@
 												<div class="clear"></div>
 											</div>
 										</div>
-									</div>
+									</div> -->
 								</div>
+								<div class="clear"></div>
 							</div>
 						</div>
 					</div>
@@ -215,12 +224,14 @@
 							<div class="accordion-inner PB0 PT0">
 								<#-- lv23G1 -->
 								<div class="PT5">
-									<div class="align-middle PL40">
-										<a data-toggle="collapse" href="#item21"> 
+									<div class="ML40 col-sm-6 P5 PL0">
+										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại
-										</a>
+										</span>
+										<button data-TTHC="TT302011BGTVTCNCLKLTXXMTGM" data-CQTH="BGTVTCDDKVN" data-MMHS="TT302011BGTVTCNCLKLTXXMTGM" class="btn btn-reset chooseService pull-right P0" id="btn1item21">Chọn</button>
 									</div>
-									<div id="item21" class="collapse toggle-hide MT10">
+									<div class="clear"></div>
+									<#-- <div id="item21" class="collapse toggle-hide MT10">
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -249,16 +260,18 @@
 												<div class="clear"></div>
 											</div>
 										</div>
-									</div>
+									</div> -->
 								</div>
 								<#-- lv24G1 -->
 								<div class="PT5 PB5">
-									<div class="align-middle PL40">
-										<a data-toggle="collapse" href="#item22"> 
+									<div class="ML40 col-sm-6 P5 PL0">
+										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
-										</a>
+										</span>
+										<button data-TTHC="TT302011BGTVTCPPXMTGM" data-CQTH="BGTVTCDDKVN" data-MMHS="TT302011BGTVTCPPXMTGM" class="btn btn-reset chooseService pull-right P0" id="btn1item22">Chọn</button>
 									</div>
-									<div id="item22" class="collapse toggle-hide MT10">
+									<div class="clear"></div>
+									<#-- <div id="item22" class="collapse toggle-hide MT10">
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -285,7 +298,7 @@
 												<div class="clear"></div>
 											</div>
 										</div>
-									</div>
+									</div> -->
 								</div>
 							</div>
 						</div>
@@ -301,13 +314,15 @@
 							<div class="accordion-inner PB0 PT0">
 								<#-- lv22G1 -->
 								<div class="PT5">
-									<div class="align-middle PL40">
-										<a data-toggle="collapse" href="#item31"> 
+									<div class="ML40 col-sm-6 P5 PL0">
+										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra sản phẩm mẫu
-										</a>
+										</span>
+										<button data-TTHC="TT302011BGTVTKTSPMXBBCN" data-CQTH="BGTVTCDDKVN" data-MMHS="TT302011BGTVTKTSPMXBBCN" class="btn btn-reset chooseService pull-right P0" id="btn1Lv32G1">Chọn</button>
 									</div>
-									<div id="item31" class="collapse toggle-hide MT10">
-											<#-- lv32G1 -->
+									<div class="clear"></div>
+									<#-- <div id="item31" class="collapse toggle-hide MT10">
+											
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -326,16 +341,18 @@
 												<div class="clear"></div>
 											</div>
 										</div>
-									</div>
+									</div> -->
 								</div>
 								<#-- lv23G1 -->
 								<div class="PT5">
-									<div class="align-middle PL40">
-										<a data-toggle="collapse" href="#item32"> 
+									<div class="ML40 col-sm-6 P5 PL0">
+										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại
-										</a>
+										</span>
+										<button data-TTHC="TT302011BGTVTCNCLKLTXXBBCN" data-CQTH="BGTVTCDDKVN" data-MMHS="TT302011BGTVTCNCLKLTXXBBCN" class="btn btn-reset chooseService pull-right P0" id="btn1item32">Chọn</button>
 									</div>
-									<div id="item32" class="collapse toggle-hide MT10">
+									<div class="clear"></div>
+									<#-- <div id="item32" class="collapse toggle-hide MT10">
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -364,16 +381,18 @@
 												<div class="clear"></div>
 											</div>
 										</div>
-									</div>
+									</div> -->
 								</div>
 								<#-- lv24G1 -->
 								<div class="PT5 PB5">
-									<div class="align-middle PL40">
-										<a data-toggle="collapse" href="#item33"> 
+									<div class="ML40 col-sm-6 P5 PL0">
+										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
-										</a>
+										</span>
+										<button data-TTHC="TT302011BGTVTCPPXBBCN" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXBBCN"  class="btn btn-reset chooseService pull-right P0" id="btn1item33">Chọn</button>
 									</div>
-									<div id="item33" class="collapse toggle-hide MT10">
+									<div class="clear"></div>
+									<#-- <div id="item33" class="collapse toggle-hide MT10">
 										<div class="PB10">
 											<div class="ML80">
 												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
@@ -400,7 +419,7 @@
 												<div class="clear"></div>
 											</div>
 										</div>
-									</div>
+									</div> -->
 								</div>
 							</div>
 						</div>
