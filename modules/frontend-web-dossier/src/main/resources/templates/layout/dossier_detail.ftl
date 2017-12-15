@@ -82,7 +82,8 @@
 				</div>
 				<div>
 					<a href="javascript:;" @click="showContactDetail = !showContactDetail">
-					Thông tin liên hệ: <v-icon color="primary">chevron_right</v-icon>
+					Thông tin liên hệ: <v-icon color="primary" v-if="!showContactDetail">keyboard_arrow_down</v-icon>
+					<v-icon color="primary" v-if="showContactDetail">keyboard_arrow_up</v-icon>
 					</a>
 					
 					<v-slide-y-transition>
@@ -208,7 +209,7 @@
 			<script type="text/javascript">
 				
 				$(function() {
-	
+				
 				$('#comments-container').comments({
 					profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
 					textareaRows: 1,

@@ -6,7 +6,7 @@
                 <div class="flex xs12 " jx-bind="dossierNoFilter"></div>
                 <v-expansion-panel light class="panel-dossier-navigation">
                         <v-expansion-panel-content :key="1">
-                                <div slot="header">HỒ SƠ CẦN XỬ LÝ</div>
+                                <div slot="header" @click="filterAllDossierWithOutStatus()">HỒ SƠ CẦN XỬ LÝ</div>
                                 <div class="flex xs12 status-dossier-navigation" jx-bind="listgroupHoSoFilter"></div>
                         </v-expansion-panel-content>
                         <v-expansion-panel-content :key="2">

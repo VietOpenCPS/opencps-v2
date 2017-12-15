@@ -4,7 +4,7 @@
 <div class="application theme--light">
   
 	<div id="dossierViewJX" style="width: 100%;"> </div>
-  
+	
 </div>
 
 <script type="text/javascript">
@@ -16,6 +16,7 @@
 			pk: 1,
 			groupid: themeDisplay.getScopeGroupId(),
 			data: {
+				offsetTop: 0,
 				stageFilterView: null,
 				detailPage: false,
 				viewmore: false,
@@ -28,7 +29,8 @@
                 stepModel: {
 
                 },
-                showContactDetail: false
+                showContactDetail: false,
+				dossierFiles: []
 			},
 			onScroll: 'onScroll',
 			schema: {
@@ -50,7 +52,7 @@
                             var vm = this;
                             const config = {};
                             
-                            var url = '/o/frontendwebdossier/json/steps.json';
+                            var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/nextactions';
                             
                             axios.get(url, config).then(function (response) {
                                 var serializable = response.data;
@@ -62,8 +64,15 @@
                                     console.log(error);
                                 });
                         },
+						filterAllDossierWithOutStatus: function () {
+							this.stageFilterView = 'danh_sach';
+							this._inidanhSachHoSoTable(false);
+						},
                         onScroll(e) {
-						
+							this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
+						},
+						onScrollTop (e) {
+							window.scrollBy(0, -99999)
 						}
 					}
 				},
@@ -83,7 +92,7 @@
 							var vm = this;
 							vm.detailPage = false;
 							vm.listgroupHoSoFilterselected = item.id;
-							console.log(vm.listgroupHoSoFilterselected);
+							
 							if ( item.id !== 'tra_cuu' ){
 								vm.stageFilterView = item.id;
 								vm.hoso_title_table = item.title;
@@ -96,7 +105,6 @@
 							} else if (item.id == 'tra_cuu_thong_tin_doanh_nghiep') {
 								vm._inithongTinDoanhNghiepTable(false);
 							} else {
-								console.log(item.id);
 								vm._inidanhSachHoSoTable(false);
 							}
 							
@@ -109,7 +117,7 @@
 
                             const config = {};
 
-                            var url = '/o/frontendwebdossier/json/menu.json';
+                            var url = '/o/rest/v2/statistics/dossiers/todo';
                             
                             axios.get(url, config).then(function (response) {
                                 var serializable = response.data;
@@ -123,6 +131,7 @@
 										count: serializable.data[key].count,
 										action: 'folder',
 										action_active: 'folder_open',
+										/**
 										items: [
 											{
 												id: 'danh_sach_1',
@@ -135,6 +144,7 @@
 												count: serializable.data[key].count
 											}
                                     	]
+										*/
                                     });
                                 }
                             })
@@ -586,11 +596,7 @@
 								} else {
 									vm.traCuuHoSoTableItems = serializable.data;
 									
-									if(serializable.total % 8 > 0){
-										vm.traCuuHoSoTableTotal = serializable.total / 8 + 1;
-									} else {
-										vm.traCuuHoSoTableTotal = serializable.total;
-									}
+									vm.danhSachHoSoTableTotal = Math.ceil(serializable.total / 8);
 								}
 
 								vm.xem_them = 'Xem thêm 8+ bản ghi';
@@ -723,11 +729,7 @@
 								} else {
 									vm.danhSachHoSoTableItems = serializable.data;
 
-									if(serializable.total % 8 > 0){
-										vm.danhSachHoSoTableTotal = serializable.total / 8 + 1;
-									} else {
-										vm.danhSachHoSoTableTotal = serializable.total;
-									}
+									vm.danhSachHoSoTableTotal = Math.ceil(serializable.total / 8);
 									
 								}
 
@@ -746,9 +748,28 @@
 						toDetailHoSo: function (item) {
 							console.log(item);
 							var vm = this;
-							vm.detailModel = item;
-							vm.detailPage = true;
-							window.scrollBy(0, -99999);
+
+							// call DetailAPI.
+							const config = {
+								headers: {'groupId': themeDisplay.getScopeGroupId()}
+							};
+
+							var url = '/o/rest/v2/dossiers/'+item.dossierId;
+							
+							axios.get(url, config).then(function (response) {
+								var serializable = response.data;
+
+								vm.detailModel = serializable;
+								vm.detailPage = true;
+								window.scrollBy(0, -99999);
+								
+								vm._inilistDocumentIn(vm.detailModel);
+
+							})
+								.catch(function (error) {
+									console.log(error);
+								});
+							
 						},
 						_paggingDanhSachHoSo: function() {
 							this._inidanhSachHoSoTable(false);
@@ -767,50 +788,108 @@
 					'name': 'listDocumentIn',
 					'type': 'listview',
 					'template': 'list_document_in_template',
-					'onLoad': '_inilistDocumentIn',
 					'events': {
-						_inilistDocumentIn: function () {
-
+						_inilistDocumentIn: function (item) {
 							var vm = this;
 
-							const config = {};
+							const config = {
+								headers: {'groupId': themeDisplay.getScopeGroupId()}
+							};
 
-							var url = "/o/frontendwebpayment/json/payment_files.json";
+							var url = "/o/rest/v2/dossiertemplates/"+item.dossierTemplateNo;
+							var urlFiles = "/o/rest/v2/dossiers/"+item.dossierId+"/files";
 
-							axios.get(url, config).then(function (response) {
+							axios.get(urlFiles, config).then(function (response) {
 								var serializable = response.data;
-								vm.listDocumentInItems = serializable.data;
+								vm.dossierFiles = serializable.data;
+								
+								axios.get(url, config).then(function (response) {
+									var serializable = response.data;
+									
+									var listIn = [], listOut = [];
+									for(var key in serializable.dossierParts){
+										
+										var countData = 0;
+										for(var keyFile in vm.dossierFiles){
+											
+											if ( vm.dossierFiles[keyFile].dossierPartNo === serializable.dossierParts[key].partNo ) {
+												countData = countData + 1;
+												
+											}
+											
+											if ( vm.dossierFiles[keyFile].dossierPartType === 2 ) {
+												serializable.dossierParts[key].referenceUid = vm.dossierFiles[keyFile].referenceUid;
+											}
+
+										}
+										
+										serializable.dossierParts[key].counter = countData;
+										
+										if ( serializable.dossierParts[key].partType === 2 ) {
+											listOut.push(serializable.dossierParts[key]);
+										} else {
+											listIn.push(serializable.dossierParts[key]);
+										}
+									}
+									
+									vm.listDocumentInItems = listIn;
+									vm.listDocumentOutItems = listOut;
+									
+
+
+								})
+								.catch(function (error) {
+									console.log(error);
+								});
 							})
 							.catch(function (error) {
 								console.log(error);
 							});
 
+						},
+						viewDossierFileVersion: function (item) {
+							var vm = this;
+							vm.dossierViewJXTitle = item.partName;
+							var listFilesUpload = [];
+							for (var key in vm.dossierFiles){
+								if (vm.dossierFiles[key].dossierPartNo === item.partNo) {
+									listFilesUpload.push(vm.dossierFiles[key]);
+								}
+							}
+							vm.listDocumentInPartNoItems = listFilesUpload;
+							console.log(vm.listDocumentInPartNoItems);
+							vm.popUpViewDossierFile = !vm.popUpViewDossierFile;
 						}
 					}
+				},
+				'listDocumentInPartNo': {
+					'id': 'listDocumentInPartNo',
+					'name': 'listDocumentInPartNo',
+					'type': 'listview',
+					'template': 'list_document_in_part_no_template'
 				},
 				'listDocumentOut': {
 					'id': 'listDocumentOut',
 					'name': 'listDocumentOut',
 					'type': 'listview',
 					'template': 'list_document_in_template',
-					'onLoad': '_inilistDocumentOut',
 					'events': {
-						_inilistDocumentOut: function () {
-
+						downloadReferenceFile: function (item) {
+							// call DownloadFile.
 							var vm = this;
+							const config = {
+								headers: {'groupId': themeDisplay.getScopeGroupId()}
+							};
 
-							const config = {};
-
-							var url = "/o/frontendwebpayment/json/payment_files.json";
-
+							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/files/'+item.referenceUid;
+							
 							axios.get(url, config).then(function (response) {
 								var serializable = response.data;
-								vm.listDocumentOutItems = serializable.data;
+								
 							})
-							.catch(function (error) {
-								console.log(error);
-							});
-
+								.catch(function (error) {
+									console.log(error);
+								});
 						}
 					}
 				},
@@ -844,11 +923,16 @@
 								}
 							};
 							
-							var url = "/o/frontendwebdossier/json/dossier_logs.json?t=1";
-
+							//var url = "/o/frontendwebdossier/json/dossier_logs.json?t=1";
+							var url = "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/logs";
+							vm.listHistoryProcessingItems = [];
 							axios.get(url, config).then(function (response) {
 								var serializable = response.data;
-								vm.listHistoryProcessingItems = serializable.data;
+								for (var key in serializable.data) {
+									if (serializable.data[key].notificationType === 'PROCESS_TYPE') {
+										vm.listHistoryProcessingItems.push(serializable.data[key]);
+									}
+								}
 							})
 							.catch(function (error) {
 								console.log(error);
@@ -913,7 +997,57 @@
                             ];
                         }
                     }
-                }
+                },
+				// TODO POPUP
+				'popUpViewDossierFile' : {
+					'id': 'popUpViewDossierFile',
+					'name': 'popUpViewDossierFile',
+					"type": "dialog",
+					"type_dialog": "fullScreen",
+					'icon_save': 'undo',
+					'label_save': 'Quay lại',
+					"color": "primary",
+					"template": "popUpViewDossierFileTemplate",
+					"events": {
+						popUpViewDossierFileClose: function () {
+							console.log("close popup");
+							this.popUpViewDossierFile = false;
+						},
+						popUpViewDossierFileSave: function () {
+							console.log("save popup");
+							var vm = this;
+							vm.popUpViewDossierFile = false;
+						},
+						previewDossierPDF: function (item) {
+							var vm = this;
+							
+							// TODO: call API lay file
+							var url ="/o/rest/v2/employees/1303/photo" ;
+							vm._showFile({
+								config : {
+									headers: {'groupId': themeDisplay.getScopeGroupId()},
+									responseType: 'blob'
+								},
+								url : url
+							});
+
+						},
+						_showFile: function (options) {
+							
+							axios.get(options.url, options.config).then(function (response) {
+								
+								var url = window.URL.createObjectURL(response.data);
+								var iFrame = document.getElementById("dossierPDFView");
+								
+								iFrame.innerHTML = '<iframe src="'+url+'" width="100%" height="100%"> </iframe>';
+							})
+								.catch(function (error) {
+									console.log(error);
+								});
+							
+						}
+					}
+				}
 			}
 		});
 
@@ -1233,7 +1367,6 @@ white-space: normal;
 	cursor: pointer;
 }
 
-
 </style>
 
 <style>
@@ -1295,5 +1428,7 @@ white-space: normal;
 .panel-dossier-navigation .status-dossier-navigation .list--group .list__tile__action .icon {
     color: #2a2a2a !important;
 }
-
+.control-menu {
+    z-index: 200;
+}
 </style>
