@@ -48,7 +48,7 @@
 			
 			
 			<div class="col-sm-12">
-				<span data-bind="attr : {actionNote : actionNote1}" id="actionNote"></span>
+				 <span data-bind="attr : {actionNote1 : actionNote1}" id="actionNote1"></span> 
 			</div>
 		</div>
 
@@ -421,7 +421,7 @@
 
 </div>
 <div class="button-row MT20">
-	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value:submitting"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value:submitting"><i class="fa fa-paper-plane" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý..."></i> Nộp hồ sơ</button>
 </div>
 </div>
 
@@ -528,6 +528,7 @@
 		});
 
 		$("#btn-submit-dossier").click(function(){
+			$(event.currentTarget).button('loading');
 			var data = $('#dossierFormSubmiting').serialize();
 			$.ajax({
 				type : 'GET', 
@@ -535,10 +536,10 @@
 				data : data,
 				headers : {"groupId": ${groupId}},
 				success :  function(result){                       
-
+					$(event.currentTarget).button('reset');
 				},
 				error : function(result){
-
+					$(event.currentTarget).button('reset');
 				}
 			});
 			console.log("success!");
@@ -726,15 +727,13 @@
 							dossierId : result.dossierId,
 							serviceName : result.serviceName,
 							govAgencyName : result.govAgencyName,
-							actionNote : result.actionNote,
 
 							actionNote1 : function(e){
-								var actionNote = this.get("actionNote");
 
-								if(actionNote){
-									$("#actionNote").html('<i class="fa fa-bolt" aria-hidden="true" style="color: red;"></i> <span>'+result.actionNote+'</span>');
+								if(result.actionNote){
+									$("#actionNote1").html('<i class="fa fa-bolt" aria-hidden="true" style="color: red;"></i> <span>'+result.actionNote+'</span>');
 								}else {
-									$("#actionNote").remove();
+									$("#actionNote1").remove();
 								}
 
 								return;

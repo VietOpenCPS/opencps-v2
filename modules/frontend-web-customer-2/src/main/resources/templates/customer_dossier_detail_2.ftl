@@ -343,7 +343,7 @@
 
 <div class="button-row MT20">
 	<button class="btn btn-active" id="btn-back-dossier" type="button"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
-	<button class="btn btn-active" id="btn-submit-dossier" data-bind="attr : {submitting : submitting}"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+	<button class="btn btn-active" id="btn-submit-dossier" data-bind="attr : {submitting : submitting}" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý..." > <i class="fa fa-paper-plane" ></i> Nộp hồ sơ</button>
 	<button class="btn btn-active" id="btn-delete-dossier" data-bind="attr : {data-pk : dossierId}"><i class="fa fa-trash"></i> Xóa</button>
 </div>
 </div>
@@ -563,6 +563,8 @@
 	});
 
 	$("#btn-submit-dossier").click(function(){
+		$("#btn-submit-dossier").button('loading');
+
 		funSubmitDossier();
 	});
 
@@ -591,12 +593,14 @@
 				},
 				success :  function(result){    
 					console.log("submit dossier success!");
+					$("#btn-submit-dossier").button('reset');
 					manageDossier.navigate("/taohosomoi/nopthanhcong/${dossierId}"); 
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công!"
 					}, "success");      
 				},
 				error:function(result){
+					$("#btn-submit-dossier").button('reset');
 					notification.show({
 						message: "Có lỗi sảy ra!"
 					}, "error");
