@@ -40,9 +40,11 @@ import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
+import org.opencps.dossiermgt.service.comparator.DictItemComparator;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -840,8 +842,9 @@ public class DossierActionsImpl implements DossierActions {
 
 			} else {
 
-				List<DictItem> dictItems = DictItemLocalServiceUtil
-						.findByF_dictCollectionId(dictCollection.getDictCollectionId());
+				List<DictItem> dictItems = DictItemLocalServiceUtil.findByF_dictCollectionId(
+						dictCollection.getDictCollectionId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+						new DictItemComparator(false, "treeIndex", String.class));
 
 				for (DictItem dictItem : dictItems) {
 					statusCode = dictItem.getLevel() == 0 ? dictItem.getItemCode() : StringPool.BLANK;
