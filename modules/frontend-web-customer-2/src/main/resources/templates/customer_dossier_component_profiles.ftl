@@ -55,7 +55,7 @@
 													</div>
 
 													<div class="col-xs-12 col-sm-3 align-center">
-														<button class="btn btn-reset btn-delete-component-profile" data-pk="#:id#"><i class="fa fa-trash"></i> Xóa</button>
+														<button class="btn btn-reset btn-delete-component-profile" data-pk="#:id#" eForm="#:eForm#"><i class="fa fa-trash"></i> Xóa</button>
 													</div>
 												</div>
 
@@ -110,12 +110,15 @@
 <script type="text/javascript">
 	$(function(){
 		/*		var template = kendo.template($("#template").html());*/
-		var fnBindClickDeleteFile = function(dataSource){
-			$(".btn-delete-component-profile").unbind().click(function(event){
-				event.preventDefault();
-				var id=$(this).attr("data-pk");
-				var cf = confirm("Bạn có muốn xóa tệp tin này!");
-				if(cf){
+		$(document).off("click",".btn-delete-component-profile");
+		$(document).on("click",".btn-delete-component-profile",function(event){
+
+			var id=$(this).attr("data-pk");
+			var eForm = $(this).attr("eForm");
+			var cf = confirm("Bạn có muốn xóa tệp tin này!");
+			if(cf){
+				if (eForm == "false") {
+					console.log("eForm false");
 					$.ajax({
 						url : "${api.server}/dossiers/${dossierId}/files/"+id,
 						type : "DELETE",
@@ -126,7 +129,31 @@
 						},
 						success:function(result){
 
-							dataSource.pushDestroy(result);
+							dataSourceDossierFile.pushDestroy(result);
+
+							notification.show({
+								message: "Xóa thành công!"
+							}, "success");
+
+						},
+						error:function(result){
+							notification.show({
+								message: "Xẩy ra lỗi, vui lòng thử lại"
+							}, "error");
+						}
+
+					});
+				}else {
+					console.log("eForm true");
+					$.ajax({
+						url : "${api.server}/dossiers/${dossierId}/files/"+id+"/formdata",
+						type : "PUT",
+						dataType : "json",
+						headers : {"groupId": ${groupId}},
+						data : {
+							formdata: JSON.stringify({})
+						},
+						success:function(result){
 
 							notification.show({
 								message: "Xóa thành công!"
@@ -141,10 +168,10 @@
 
 					});
 				}
-				
-				console.log(id);
-			});
-		}
+			}
+
+			console.log(id);
+		});
 
 		var flag = 0;
 		var dataSourceDossierFile=new kendo.data.DataSource({
@@ -163,8 +190,11 @@
 								notification.show({
 									message: "Bạn chưa tải file lên, Vui lòng tải lên để xem"
 								}, "error");
+
 							}else {
+
 								$("#profileDetail").modal("show");
+								
 							}
 						},
 						error : function (result) {
@@ -200,8 +230,6 @@
 			dataBound : function(e) {
 				console.log(e);
 				printDossierPartName();
-				fnBindClickDeleteFile($("#listViewDossierFile").getKendoListView().dataSource);
-				$("#listViewDossierFile")
 			},
 			change: function(){
 				var data = dataSourceDossierFile.view(),
@@ -270,7 +298,7 @@
 
 
 
-	function fileAttachmentUrl ( options) {
+function fileAttachmentUrl ( options) {
 
   // Use XMLHttpRequest instead of Jquery $ajax
   var xhttp = new XMLHttpRequest();

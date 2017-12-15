@@ -17,11 +17,11 @@
 				$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"",function(result){
 				})
 			};
-		    $(".itemStatus").css("pointer-events","auto");
+		 //    $(".itemStatus").css("pointer-events","auto");
 			$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
-			$('#profileStatus li[dataPk='+dossierItemStatus+']').css("pointer-events","none");
+			// $('#profileStatus li[dataPk='+dossierItemStatus+']').css("pointer-events","none");
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').addClass('active');
 		});
 		manageDossier.route("/taohosomoi", function(id){
@@ -32,7 +32,7 @@
 				});
 			$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
-			$(".itemStatus").css("pointer-events","auto");
+			// $(".itemStatus").css("pointer-events","auto");
 		});
 
 		manageDossier.route("/(:id)", function(id) {
@@ -46,7 +46,16 @@
 					"serviceInfo":$("#serviceInfo").val(),
 					"govAgencyCode":$("#govAgency").val(),
 				});
-			} else {
+			} else if (id == "waitReceiving") {
+				dataSourceProfile.read({
+					"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+					"serviceInfo":$("#serviceInfo").val(),
+					"govAgencyCode":$("#govAgency").val(),
+					"status":"new",
+					"submitting":true
+				});
+			}
+			else {
 				dataSourceProfile.read({
 					"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
 					"serviceInfo":$("#serviceInfo").val(),
@@ -54,11 +63,11 @@
 					"status":id
 				});
 			}   
-			$(".itemStatus").css("pointer-events","auto");
+			// $(".itemStatus").css("pointer-events","auto");
 			$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 			$('#profileStatus li[dataPk='+id+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
-			$('#profileStatus li[dataPk='+id+']').css("pointer-events","none");
+			// $('#profileStatus li[dataPk='+id+']').css("pointer-events","none");
 			$('#profileStatus li[dataPk='+id+']').addClass('active');
         }); 
 
@@ -74,7 +83,7 @@
         });
         $("#profileStatus li").removeClass('active');
         $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
-        $(".itemStatus").css("pointer-events","auto");
+        // $(".itemStatus").css("pointer-events","auto");
       });
       manageDossier.route("/taohosomoi/doman", function(){
         $("#mainType1").hide();
@@ -88,7 +97,7 @@
         });
         $("#profileStatus li").removeClass('active');
         $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
-        $(".itemStatus").css("pointer-events","auto");
+        // $(".itemStatus").css("pointer-events","auto");
       });
 	</script>
 

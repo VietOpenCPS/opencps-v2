@@ -35,7 +35,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-//@Component(immediate = true, service = DossierSyncScheduler.class)
+@Component(immediate = true, service = DossierSyncScheduler.class)
 public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 
 	@Override
@@ -173,7 +173,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 3, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 1, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

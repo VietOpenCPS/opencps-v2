@@ -86,5 +86,6 @@ public class DossierTerm {
 	public static final String FOLLOW = "follow";
 	public static final String STEP = "step";
 	public static final String TOP = "top";
+	public static final String STATE = "state";
 
 }
