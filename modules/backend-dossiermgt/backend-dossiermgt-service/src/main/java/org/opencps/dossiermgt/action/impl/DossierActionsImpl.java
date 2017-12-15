@@ -465,7 +465,11 @@ public class DossierActionsImpl implements DossierActions {
 			if (hasDossierSync) {
 				// SyncAction
 				int method = 0;
-
+				
+				_log.info(new Date());
+				
+				_log.info("GROUPID_"+groupId+"dossierId_"+dossierId);
+				
 				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
 						isCreateDossier, method, dossier.getPrimaryKey(), StringPool.BLANK,
 						serviceProcess.getServerNo());
@@ -475,7 +479,7 @@ public class DossierActionsImpl implements DossierActions {
 				// SyncDossierFile
 				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getByDossierIdAndIsNew(dossierId, true);
 				
-
+				_log.info("DOSSIER_FILES"+lsDossierFile.size());
 				for (DossierFile dosserFile : lsDossierFile) {
 
 					DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
@@ -497,7 +501,7 @@ public class DossierActionsImpl implements DossierActions {
 		
 		DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
 		
-		dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
+		//dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
 
 		return dossierAction;
 	}

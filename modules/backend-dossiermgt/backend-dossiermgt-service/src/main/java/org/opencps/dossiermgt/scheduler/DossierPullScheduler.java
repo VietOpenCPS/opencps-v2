@@ -89,7 +89,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 		try {
 			String endPointDossier = "dossiers?submitting=true&secetKey=" + serectKey;
 
-			JSONObject resDossierSearch = rest.callAPI(0l, HttpMethods.GET, "application/json",
+			JSONObject resDossierSearch = rest.callAPI(55217, HttpMethods.GET, "application/json",
 					RESTFulConfiguration.SERVER_PATH_BASE, endPointDossier, RESTFulConfiguration.SERVER_USER,
 					RESTFulConfiguration.SERVER_PASS, properties, serviceContext);
 
@@ -387,7 +387,11 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				int responseCode = conn.getResponseCode();
 
 				if (responseCode != 200) {
-					throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+					
+					if (responseCode != 204) {
+						throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+					}
+					
 				} else {
 
 					InputStream is = conn.getInputStream();

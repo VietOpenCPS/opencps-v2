@@ -410,6 +410,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setSubmitting(true);
 		dossier.setSubmitDate(now);
+		
 		dossierPersistence.update(dossier);
 
 		return dossier;
