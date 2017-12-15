@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.util.Validator;
 public class DossierActionListenner extends BaseModelListener<DossierAction> {
 	@Override
 	public void onAfterCreate(DossierAction model) throws ModelListenerException {
+		
+		
 		if (Validator.isNotNull(model.getSyncActionCode()) && model.getSyncActionCode().length() != 0) {
 			String content = "On DossiserAction Created";
 			String notificationType = "";
