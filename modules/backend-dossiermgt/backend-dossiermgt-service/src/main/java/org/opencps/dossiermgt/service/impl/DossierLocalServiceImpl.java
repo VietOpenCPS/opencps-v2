@@ -55,6 +55,7 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
@@ -904,7 +905,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(state)) {
 			if (state.equals("cancelling")) {
-				
+
 				BooleanQuery subQuery = new BooleanQueryImpl();
 
 				MultiMatchQuery query1 = new MultiMatchQuery(String.valueOf(0));
@@ -932,19 +933,56 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(status)) {
-			MultiMatchQuery query = new MultiMatchQuery(status);
 
-			query.addFields(DossierTerm.DOSSIER_STATUS);
+			String[] lstStatus = StringUtil.split(status);
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			if (lstStatus != null && lstStatus.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < lstStatus.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(lstStatus[i]);
+
+					query.addField(DossierTerm.DOSSIER_STATUS);
+
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(status);
+
+				query.addFields(DossierTerm.DOSSIER_STATUS);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+
 		}
 
 		if (Validator.isNotNull(subStatus)) {
-			MultiMatchQuery query = new MultiMatchQuery(subStatus);
 
-			query.addFields(DossierTerm.DOSSIER_SUB_STATUS);
+			String[] lstSubStatus = StringUtil.split(subStatus);
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			if (lstSubStatus != null && lstSubStatus.length > 0) {
+
+				BooleanQuery subQuery = new BooleanQueryImpl();
+
+				for (int i = 0; i < lstSubStatus.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(lstSubStatus[i]);
+
+					query.addField(DossierTerm.DOSSIER_SUB_STATUS);
+
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(subStatus);
+
+				query.addFields(DossierTerm.DOSSIER_SUB_STATUS);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		if (Validator.isNotNull(agency)) {
@@ -1083,10 +1121,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
+
 		if (Validator.isNotNull(state)) {
 			if (state.equals("cancelling")) {
-				
+
 				BooleanQuery subQuery = new BooleanQueryImpl();
 
 				MultiMatchQuery query1 = new MultiMatchQuery(String.valueOf(0));
@@ -1114,19 +1152,56 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(status)) {
-			MultiMatchQuery query = new MultiMatchQuery(status);
 
-			query.addFields(DossierTerm.DOSSIER_STATUS);
+			String[] lstStatus = StringUtil.split(status);
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			if (lstStatus != null && lstStatus.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < lstStatus.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(lstStatus[i]);
+
+					query.addField(DossierTerm.DOSSIER_STATUS);
+
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(status);
+
+				query.addFields(DossierTerm.DOSSIER_STATUS);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+
 		}
 
 		if (Validator.isNotNull(subStatus)) {
-			MultiMatchQuery query = new MultiMatchQuery(subStatus);
 
-			query.addFields(DossierTerm.DOSSIER_SUB_STATUS);
+			String[] lstSubStatus = StringUtil.split(subStatus);
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			if (lstSubStatus != null && lstSubStatus.length > 0) {
+
+				BooleanQuery subQuery = new BooleanQueryImpl();
+
+				for (int i = 0; i < lstSubStatus.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(lstSubStatus[i]);
+
+					query.addField(DossierTerm.DOSSIER_SUB_STATUS);
+
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(subStatus);
+
+				query.addFields(DossierTerm.DOSSIER_SUB_STATUS);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		if (Validator.isNotNull(agency)) {
