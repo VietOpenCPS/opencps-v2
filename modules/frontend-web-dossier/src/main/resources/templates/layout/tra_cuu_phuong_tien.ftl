@@ -23,16 +23,3 @@
     <div class="layout wrap" jx-bind="paymentList" v-if="!detailPage"></div>
 
 </v-slide-x-transition>
-
-<div id="btn_view_more" class="text-center" style="width: 100%;" v-if="!detailPage">
-
-    <v-scale-transition>
-
-    <v-btn round dark color="blue darken-2" :loading="viewmore" :disabled="viewmore">
-        Không có kết quả tra cứu phương tiện
-        <span slot="loader">Đang tải ...</span>
-    </v-btn>
-
-    </v-scale-transition>
-
-</div>

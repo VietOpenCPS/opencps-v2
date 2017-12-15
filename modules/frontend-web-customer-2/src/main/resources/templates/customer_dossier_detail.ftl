@@ -35,9 +35,9 @@
 				<i class="fa fa-save"></i>
 				Lưu
 			</a>
-			<a href="javascript:;" onclick="createActionDossier(${(dossierId)!});">
+			<a href="javascript:;" onclick="fnNext();">
 				<i class="fa fa-sign-in" aria-hidden="true"></i>
-				Chuyển bước
+				Tiếp tục
 			</a>
 		</div>
 	</div>
@@ -65,7 +65,7 @@
 		
 	</div>
 
-	<div class="row">
+	<div class="row" id="applicantInfo">
 		<div class="col-sm-12">
 			<div class="dossier-parts">
 				<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierI">
@@ -270,7 +270,7 @@
 </div>
 </div>
 
-<div class="row-parts-content">
+<div class="row-parts-content" id="postalInfo">
 	<div class="row">
 		<div class="col-sm-12">
 			<label>Ghi chú</label>
@@ -305,7 +305,7 @@
 <div class="button-row MT20">
 	<button class="btn btn-active" id="btn-back-dossier" type="button"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
 	<button class="btn btn-active" id="btn-save-dossier" type="button"><i class="fa fa-save"></i> Lưu</button>
-	<button class="btn btn-active" id="btn-submit-dossier" type="button"><i class="fa fa-sign-in" aria-hidden="true"></i> Chuyển bước</button>
+	<button class="btn btn-active" id="btn-submit-dossier" type="button"><i class="fa fa-sign-in" aria-hidden="true"></i> Tiếp tục</button>
 	<#-- <button class="btn btn-active" id="btn-submit-dossier"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 	<button class="btn btn-active"><i class="fa fa-trash"></i> Xóa</button> -->
 </div>
@@ -325,6 +325,7 @@
 	var funSaveDossier;
 	var createActionDossier;
 	var fnBack;
+	var fnNext;
 	$(function(){
 		
 		$("#step2").addClass("done");
@@ -361,9 +362,9 @@
 		$(document).on("click",".dossier-component-profile",function(){
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
-			var dossierTemplateId = "${(dossierTemplateId)!}";
-			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateId="+dossierTemplateId,function(result){
-
+			var dossierTemplateNo = $("#dossierTemplateNo").val();
+			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
+				$(this).modal("show");
 			});
 		});
 
@@ -393,7 +394,6 @@
 								for (var i = 0; i < data.length; i++) {
 									if(dataPartNo === data[i].dossierPartNo){
 										removeDossierFile(dossierId, data[i].referenceUid);
-
 									}
 								}
 								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
@@ -511,8 +511,12 @@
 		});
 
 		$("#btn-submit-dossier").click(function(){
-			createActionDossier(${(dossierId)!});
+			manageDossier.navigate("/taohosomoi/nophoso/${dossierId}");
 		});
+
+		fnNext = function(){
+			manageDossier.navigate("/taohosomoi/nophoso/${dossierId}");
+		}
 
 		$("#btn-back-dossier").click(function(){
 			fnBack();
@@ -525,12 +529,13 @@
 		funSaveDossier = function(){
 		//PUT dossier
 		
-		var validator = $("#detailDossier").kendoValidator().data("kendoValidator");
+		var postalValidator = $("#postalInfo").kendoValidator().data("kendoValidator");
+		var applicantValidator = $("#applicantInfo").kendoValidator().data("kendoValidator");
 		var validateDossierTemplate = fnCheckValidTemplate();
 
 		console.log("validPart-----------------------");
 		console.log(validateDossierTemplate);
-		if(validator.validate() && validateDossierTemplate ){
+		if(applicantValidator.validate() && postalValidator.validate() && validateDossierTemplate ){
 			$.ajax({
 				url  : '${api.server}/dossiers/${dossierId}', 
 				dataType : "json",
@@ -563,9 +568,10 @@
 				},
 				success :  function(result){                       
 					console.log("PUT Dossier success!");
-					notification.show({
+					createActionDossier(${dossierId});
+					/*notification.show({
 						message: "Yêu cầu được thực hiện thành công"
-					}, "success");
+					}, "success");*/
 				},
 				error:function(result){
 					console.error(result);
@@ -588,21 +594,19 @@
 				url : "${api.server}/dossiers/"+dossierId+"/actions",
 				dataType : "json",
 				type : "POST",
-				headers: {"groupId": ${groupId}},
+				headers: {
+					"groupId": ${groupId},
+					Accept : "application/json"
+				},
 				data : {
 					actionCode  : 1100,
 					actionNote :  $("#applicantNote").val()
-					/*actionUser : $("#actionUser").val(),
-					
-					*/
 				},
 				success : function(result){
 					console.log("create acion dossier success!");
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
-
-					manageDossier.navigate("/taohosomoi/nophoso/${dossierId}");
 				},
 				error : function(result){
 
@@ -863,7 +867,6 @@
 			headers : {"groupId": ${groupId}},
 			success : function(result) {
 
-
 			},
 			error : function(result) {
 
@@ -994,7 +997,7 @@ var getReferentUidFile = function(dossierId,dossierPartNo){
 	return dossierFile;
 }
 
-/*$(function(){
+$(function(){
 	manageDossier.route("/taohosomoi/nophoso/(:dossierId)", function(dossierId){
 		$("#mainType1").hide();
 		$("#mainType2").show();
@@ -1003,7 +1006,7 @@ var getReferentUidFile = function(dossierId,dossierPartNo){
 		});
 	});
 });
-*/
+
 var fnGetFormData = function(dossierId,referentUid){
 	var value = null;
 	if(dossierId && referentUid){
