@@ -146,10 +146,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			RegistrationTemplates registrationTemplate = action.removeRegistrationTemplate(groupId,
 					registrationTemplateId);
 
-			RegistrationTemplateDetailModel result = RegistrationTemplatesUtils
-					.mappingToRegistrationTemplateModel(registrationTemplate);
-
-			return Response.status(200).entity(result).build();
+			return Response.status(200).entity("OK!").build();
 
 		} catch (Exception e) {
 			return processException(e);
