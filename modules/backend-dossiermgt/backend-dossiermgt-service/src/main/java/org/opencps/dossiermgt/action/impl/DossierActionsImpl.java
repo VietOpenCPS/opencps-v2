@@ -21,7 +21,6 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -34,7 +33,6 @@ import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
@@ -381,11 +379,11 @@ public class DossierActionsImpl implements DossierActions {
 		boolean isSubmitType = isSubmitType(processAction);
 
 		boolean hasDossierSync = false;
-		
+
 		if (processActionId != 0) {
 			hasDossierSync = hasDossierSync(groupId, dossierId, referenceUid, processAction);
 		}
-		
+
 		// TODO take a look later
 
 		boolean hasForedDossierSync = forcedDossierSync(groupId, dossierId, referenceUid, processAction, isSubmitType);
@@ -428,7 +426,6 @@ public class DossierActionsImpl implements DossierActions {
 					0l, actionCode, actionUser, processAction.getActionName(), actionNote, actionOverdue,
 					processAction.getSyncActionCode(), false, processAction.getRollbackable(), curStep.getStepCode(),
 					curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(), context);
-			
 
 		} else {
 
@@ -478,8 +475,7 @@ public class DossierActionsImpl implements DossierActions {
 
 				// SyncDossierFile
 				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getByDossierIdAndIsNew(dossierId, true);
-				
-				_log.info("DOSSIER_FILES"+lsDossierFile.size());
+
 				for (DossierFile dosserFile : lsDossierFile) {
 
 					DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
@@ -488,17 +484,17 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 			}
-			
+
 		}
-		
+
 		ProcessStep postStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
-		
+
 		String dossierBriefNote = DossierContentGenerator.getBriefNote(groupId, dossierId, postStep.getBriefNote());
-		
+
 		DossierLocalServiceUtil.updateDossierBriefNote(dossierId, dossierBriefNote);
-		
-		//Add DossierActionUser
-		
+
+		// Add DossierActionUser
+
 		DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
 		
 		//dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
@@ -613,12 +609,14 @@ public class DossierActionsImpl implements DossierActions {
 
 		String postStepCode = action.getPostStepCode();
 
-		//ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
+		// ProcessStep step =
+		// ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId,
+		// serviceProcessId);
 
 		// DOSSIER has nextAction form NEW to PROCESSING that it was created on
 		// client and it wasn't created ONLINE
 		if (hasDossierSync && dossier.getDossierStatus().contentEquals(DossierStatusConstants.NEW)
-				 && !dossier.isOnline()) {
+				&& !dossier.isOnline()) {
 			isCreate = true;
 		}
 
@@ -636,10 +634,9 @@ public class DossierActionsImpl implements DossierActions {
 		if (dossier.getOnline() && action.getSyncActionCode().length() != 0) {
 			isSync = true;
 		}
-		
-		_log.info("GROUPID_"+ groupId);
-		_log.info("ISSYNC_"+isSync);
-		
+
+		_log.info("GROUPID_" + groupId);
+		_log.info("ISSYNC_" + isSync);
 
 		return isSync;
 
@@ -764,22 +761,23 @@ public class DossierActionsImpl implements DossierActions {
 		return lstprocessStep;
 
 	}
+
 	protected Log _log = LogFactoryUtil.getLog(DossierActionsImpl.class);
 
 	@Override
 	public Dossier cloneDossier(long groupId, long dossierId, ServiceContext context) throws PortalException {
-		
+
 		Dossier srcDossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-		
+
 		long desDossierId = CounterLocalServiceUtil.increment(Dossier.class.getName());
-		
+
 		srcDossier.setUuid(UUID.randomUUID().toString());
 		srcDossier.setDossierId(desDossierId);
 		srcDossier.setDossierStatus(StringPool.BLANK);
 		srcDossier.setDossierStatusText(StringPool.BLANK);
 		srcDossier.setDossierSubStatus(StringPool.BLANK);
 		srcDossier.setDossierSubStatusText(StringPool.BLANK);
-		
+
 		int counter = DossierNumberGenerator.counterDossier(srcDossier.getUserId(), groupId);
 		String referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
 
@@ -787,10 +785,97 @@ public class DossierActionsImpl implements DossierActions {
 		srcDossier.setReferenceUid(referenceUid);
 
 		Dossier desDossier = DossierLocalServiceUtil.addDossier(srcDossier);
-		
-		DossierFileLocalServiceUtil.cloneDossierFilesByDossierId(groupId,  srcDossier.getPrimaryKey(),dossierId, 1, context);
-		
+
+		DossierFileLocalServiceUtil.cloneDossierFilesByDossierId(groupId, srcDossier.getPrimaryKey(), dossierId, 1,
+				context);
+
 		return desDossier;
+	}
+
+	@Override
+	public JSONObject getDossierTodo(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, ServiceContext serviceContext) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		SearchContext searchContext = new SearchContext();
+
+		searchContext.setCompanyId(companyId);
+
+		String statusCode = StringPool.BLANK;
+
+		String subStatusCode = StringPool.BLANK;
+
+		JSONArray statistics = JSONFactoryUtil.createJSONArray();
+
+		long total = 0;
+
+		try {
+			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
+					groupId);
+			statusCode = GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS));
+
+			subStatusCode = GetterUtil.getString(params.get(DossierTerm.DOSSIER_SUB_STATUS));
+
+			if (Validator.isNotNull(statusCode) || Validator.isNotNull(subStatusCode)) {
+				DictItem dictItem = null;
+				if (Validator.isNotNull(statusCode)) {
+					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(statusCode,
+							dictCollection.getDictCollectionId(), groupId);
+				} else {
+					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(subStatusCode,
+							dictCollection.getDictCollectionId(), groupId);
+				}
+
+				if (dictItem != null) {
+					long count = DossierLocalServiceUtil.countLucene(params, searchContext);
+
+					JSONObject statistic = JSONFactoryUtil.createJSONObject();
+					statistic.put("dossierStatus", statusCode);
+					statistic.put("dossierSubStatus", subStatusCode);
+					statistic.put("level", dictItem.getLevel());
+					statistic.put("statusName", dictItem.getItemName());
+					statistic.put("count", count);
+
+					statistics.put(statistic);
+
+					total = count;
+				}
+
+			} else {
+
+				List<DictItem> dictItems = DictItemLocalServiceUtil
+						.findByF_dictCollectionId(dictCollection.getDictCollectionId());
+
+				for (DictItem dictItem : dictItems) {
+					statusCode = dictItem.getLevel() == 0 ? dictItem.getItemCode() : StringPool.BLANK;
+					subStatusCode = dictItem.getLevel() == 1 ? dictItem.getItemCode() : StringPool.BLANK;
+					params.put(DossierTerm.DOSSIER_STATUS, statusCode);
+					params.put(DossierTerm.DOSSIER_SUB_STATUS, subStatusCode);
+					long count = DossierLocalServiceUtil.countLucene(params, searchContext);
+
+					JSONObject statistic = JSONFactoryUtil.createJSONObject();
+
+					statistic.put("dossierStatus", statusCode);
+					statistic.put("dossierSubStatus", subStatusCode);
+					statistic.put("level", dictItem.getLevel());
+					statistic.put("statusName", dictItem.getItemName());
+					statistic.put("count", count);
+					total += count;
+					statistics.put(statistic);
+				}
+			}
+
+			result.put("data", statistics);
+
+			result.put("total", total);
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return result;
+
 	}
 
 }

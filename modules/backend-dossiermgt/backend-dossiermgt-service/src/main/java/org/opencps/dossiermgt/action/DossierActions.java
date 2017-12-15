@@ -75,4 +75,7 @@ public interface DossierActions {
 
 	public Dossier cloneDossier(long groupId, long dossierId, ServiceContext serviceContext) throws PortalException;
 
+	public JSONObject getDossierTodo(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, ServiceContext serviceContext);
+
 }

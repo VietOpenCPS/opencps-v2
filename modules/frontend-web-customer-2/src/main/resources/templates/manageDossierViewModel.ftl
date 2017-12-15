@@ -66,13 +66,14 @@
 							dossierNo: options.data.dossierNo,
 							keyword: options.data.keyword,
 							status : options.data.status,
-							// year: options.data.year,
-							// month: options.data.month
+							submitting: options.data.submitting
 						},
 						success:function(result){
 							if (result.total!=0) {
+								var indexItem = result.total+1;
 								$(result.data).each(function(index, value){
-									value.count = index + 1;
+									indexItem -= 1;
+									value.count = indexItem;
 								});
 							}; 
 							options.success(result);
@@ -82,7 +83,6 @@
 							};
 							
 							$("#statusName").html($(".itemStatus.active .dossierStatus").text());
-							$('#profileStatus li[dataPk="all"] .bagde').html(result.total);
 							//
 							$('.optPage[value="'+dataSourceProfile.pageSize()+'"]').attr("selected","selected");
 							// Option kendo-page
@@ -103,25 +103,26 @@
 				model:{
 					id: "dossierId"
 				}
-			}
+			},
+			sort: { field: "submitDate", dir: "desc" }
 		});
 		// Get total dossierStatus
-		var statusDossierItems = ["new","waiting","paying","done","cancelling","cancelled","expired"]
+		var statusDossierItems = ["new","waitReceiving","receiving","waiting","paying","done","cancelling","cancelled","expired","all"];
 		var getTotal = function(){
 			$(statusDossierItems).each(function(index,value){
 				getTotalItemDossier(value);
 			})
 		};
 		var getTotalItemDossier = function(dossierItemStatus){
-			if ((dossierItemStatus == "cancelling") || (dossierItemStatus == "cancelled")){
+			if ((dossierItemStatus == "waitReceiving")){
 				$.ajax({
 					url:"${api.server}/dossiers",
 					dataType:"json",
 					type:"GET",
 					headers : {"groupId": ${groupId}},
 					data:{
-						status : dossierItemStatus,
-						keyword: "CancellingDate",
+						status : "new",
+						submitting: true
 					},
 					success:function(result){
 						$('#profileStatus li[dataPk='+dossierItemStatus+'] .bagde').html(result.total);
@@ -129,7 +130,22 @@
 					error:function(result){
 					}
 				})
-			}	else {
+			}	else if(dossierItemStatus == "all") {
+				$.ajax({
+					url:"${api.server}/dossiers",
+					dataType:"json",
+					type:"GET",
+					headers : {"groupId": ${groupId}},
+					data:{
+
+					},
+					success:function(result){
+						$('#profileStatus li[dataPk='+dossierItemStatus+'] .bagde').html(result.total);
+					},
+					error:function(result){
+					}
+				})
+			} else {
 				$.ajax({
 					url:"${api.server}/dossiers",
 					dataType:"json",
@@ -144,7 +160,7 @@
 					error:function(result){
 					}
 				})
-			}	
+			}
 		}
 	// Source for combobox Year, Month
 		var today = new Date();
@@ -168,44 +184,40 @@
 	// -=-=-=-=-=-=-=Model=-=-=-=-=-=-=-=-=-
 	// Model Panel
 		var resetValueFilter = function(){
-			// $("#month").data("kendoComboBox").text("");
-			// $("#year").data("kendoComboBox").text("");
 			$("#dossier-emp-nav-selectbox-by-dossierNo").val("");
 			$("#keyInput").val("");
 			$("#serviceInfo").data("kendoComboBox").text("");
-			// $("#govAgency").data("kendoComboBox").text("");
 		};
 
 		var modelPanel = kendo.observable({
-			// dataGovAgency: dataGovAgency,
 			dataServiceInfo: dataServiceInfo,
-			// dataYear: dataYear,
-			// dataMonth: dataMonth,
-			// Lọc theo tháng, năm, cơ quan thực hiện, thủ tục hành chính
 			eventLookup : function(e){
 				e.preventDefault();
 				$("#dossier-emp-nav-selectbox-by-dossierNo").val("");
 				var statusDossier = $("li.itemStatus.active").attr("dataPk");
 			    if (statusDossier == "all") {
-					dataSourceProfile.read({
-						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-						"serviceInfo": $("#serviceInfo").val(),
-						// "govAgencyCode": $("#govAgency").val(),
-						// "year": $("#year").val(),
-						// "month": $("#month").val(),
-						"keyword": $("#keyInput").val(),
-						"status": ""
-					})
-			    } else {
-					dataSourceProfile.read({
-						"serviceInfo": $("#serviceInfo").val(),
-						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-						// "govAgencyCode": $("#govAgency").val(),
-						// "year": $("#year").val(),
-						// "month": $("#month").val(),
-						"keyword": $("#keyInput").val(),
-						"status": statusDossier
-					})
+						dataSourceProfile.read({
+							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+							"serviceInfo": $("#serviceInfo").val(),
+							"keyword": $("#keyInput").val(),
+							"status": ""
+						})
+			    } else if(statusDossier == "waitReceiving"){
+			    	dataSourceProfile.read({
+							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+							"serviceInfo": $("#serviceInfo").val(),
+							"keyword": $("#keyInput").val(),
+							"status": "new",
+							"submitting": true
+						})
+			    } 
+			    else {
+						dataSourceProfile.read({
+							"serviceInfo": $("#serviceInfo").val(),
+							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+							"keyword": $("#keyInput").val(),
+							"status": statusDossier
+						})
 			    }
 			},
 			filterDossierNo: function(e){
@@ -219,7 +231,17 @@
 							"keyword": $("#keyInput").val(),
 							"status": ""
 						})
-			    } else {
+			    } 
+			    else if(statusDossier == "waitReceiving"){
+			    	dataSourceProfile.read({
+							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+							"serviceInfo": $("#serviceInfo").val(),
+							"keyword": $("#keyInput").val(),
+							"status": "new",
+							"submitting":true
+						})
+			    }
+			    	else {
 						dataSourceProfile.read({
 							"serviceInfo": $("#serviceInfo").val(),
 							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
@@ -232,13 +254,12 @@
 				e.preventDefault();
 				$("#profileStatus li").removeClass("active");
 				$(e.currentTarget).addClass("active");
-				$(".itemStatus").css("pointer-events","auto");
-				$(e.currentTarget).css("pointer-events","none");
 				$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 				$(e.currentTarget).children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
 				$("#keyInput").val("");
 				$("#dossier-emp-nav-selectbox-by-dossierNo").val("");
-				// 
+				//
+				dataSourceProfile.sort({ field: "submitDate", dir: "desc" }); 
 				var id = $(e.currentTarget).attr("dataPk");
 				manageDossier.navigate("/"+id)
 			},
@@ -312,8 +333,7 @@
 						type:"POST",
 						headers: {"groupId": ${groupId}},
 						success:function(res){
-							var referenceUid = res.referenceUid;
-							manageDossier.navigate("/taohosomoi/nophoso/"+referenceUid);
+							manageDossier.navigate("/taohosomoi/nophoso/"+res.dossierId);
 						},
 						error:function(res){
 							
@@ -345,14 +365,14 @@
 				loadProfile();
 				loadAddRes();
 				copyProfile();
-				$(".actionDossier a").hover(function(){ $(this).css("color","#14bef0")}, function(){ $(this).css("color","#2a2a2a") }
-				);
+				$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});
+				$("th").css("vertical-align","top")
 			}
 		});
 		
 
 	</script>
-		
+
 
 
 	

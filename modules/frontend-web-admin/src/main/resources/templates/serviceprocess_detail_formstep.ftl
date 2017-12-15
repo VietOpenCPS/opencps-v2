@@ -232,31 +232,58 @@
 					total : "total"
 				}
 			},
-			noDataTemplate: 'Không có dữ liệu'
+			noDataTemplate: 'Không có dữ liệu',
+			change : function(e){
+				var value = this.value();
+				
+				console.log(value);
+				if(value){
+					console.log("change");
+					$("#dossierSubStatus").data("kendoComboBox").dataSource.read({
+						parent : value
+					});
+				}
+
+			}
 		});
 
 		$("#dossierSubStatus").kendoComboBox({
 			dataTextField: "itemName",
 			dataValueField: "itemCode",
 			filter: "contains",
+			autoBind : false,
 			dataSource : {
 				transport : {
-					read : {
-						url : "${api.server}/dictcollections/DOSSIER_STATUS/dictitems",
-						dataType : "json",
-						type : "GET",
-						headers: {"groupId": ${groupId}},
-						success : function(result){
-
-						},
-						error : function(xhr){
-
+					read : function(options){
+						console.log("read");
+						var parent = "";
+						if(options.data.parent){
+							parent = options.data.parent;
 						}
+						$.ajax({
+							url : "${api.server}/dictcollections/DOSSIER_STATUS/dictitems",
+							dataType : "json",
+							type : "GET",
+							headers: {"groupId": ${groupId}},
+							data : {
+								parent : parent
+							},
+							success : function(result){
+								options.success(result);
+							},
+							error : function(xhr){
+								options.error(xhr);
+							}
+
+						});
 					}
 				},
 				schema: {
+					total : "total",
 					data : "data",
-					total : "total"
+					model : {
+						id : "itemCode"
+					}
 				}
 			},
 			noDataTemplate: 'Không có dữ liệu'

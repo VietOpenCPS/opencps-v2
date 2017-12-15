@@ -559,7 +559,8 @@
 							
 						},
 						success : function(result){
-							options.success(result);
+							var arrResult = fnGetPartype2(result.data);
+							options.success(arrResult);
 						},
 						error : function(result){
 							options.error(result);
@@ -568,8 +569,6 @@
 				}
 			},
 			schema : {
-				data : "data",
-				total : "total",
 				model : {
 					id : "dossierFileId"
 				}
@@ -610,6 +609,19 @@
 			template:kendo.template($("#templateDossiserFileTemplate").html()),
 			autoBind: true
 		});
+
+		var fnGetPartype2 = function(arrFile){
+			var arrResult = new Array();
+			if(arrFile){
+				for (var i = 0; i < arrFile.length; i++) {
+					if(arrFile[i].dossierPartType == 2){
+						arrResult.push(arrFile[i]);
+					}
+				}
+			}
+			console.log(arrResult);
+			return arrResult;
+		}
 
 
 
