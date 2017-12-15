@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:complexType name="RegistrationTemplatesModel">
+		<xsd:sequence>
+			<xsd:element name="registrationTemplateId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="formNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="formName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="multiple" type="xsd:boolean" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="RegistrationTemplatesResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="RegistrationTemplatesModel"  minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="RegistrationTemplatesSearchIdModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="registrationTemplateId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="formNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="formName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="multiple" type="xsd:boolean" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="RegistrationTemplateInputModel">
+		<xsd:sequence>
+			<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="formNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="formName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="multiple" type="xsd:boolean" minOccurs="0" />
+			<xsd:element name="formScript" type="xsd:string" minOccurs="0" />
+			<xsd:element name="formReport" type="xsd:string" minOccurs="0" />
+			<xsd:element name="sampleData" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="RegistrationTemplateDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="registrationTemplateId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="formNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="formName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="multiple" type="xsd:boolean" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
