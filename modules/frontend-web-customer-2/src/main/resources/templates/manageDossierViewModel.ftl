@@ -83,6 +83,7 @@
 							};
 							
 							$("#statusName").html($(".itemStatus.active .dossierStatus").text());
+							$('#profileStatus li[dataPk="all"] .bagde').html(result.total);
 							//
 							$('.optPage[value="'+dataSourceProfile.pageSize()+'"]').attr("selected","selected");
 							// Option kendo-page
@@ -107,7 +108,7 @@
 			sort: { field: "submitDate", dir: "desc" }
 		});
 		// Get total dossierStatus
-		var statusDossierItems = ["new","waitReceiving","receiving","waiting","paying","done","cancelling","cancelled","expired","all"];
+		var statusDossierItems = ["new","receiving","processing","waiting","paying","done","cancelling","cancelled","expired"];
 		var getTotal = function(){
 			$(statusDossierItems).each(function(index,value){
 				getTotalItemDossier(value);
@@ -123,21 +124,6 @@
 					data:{
 						status : "new",
 						submitting: true
-					},
-					success:function(result){
-						$('#profileStatus li[dataPk='+dossierItemStatus+'] .bagde').html(result.total);
-					},
-					error:function(result){
-					}
-				})
-			}	else if(dossierItemStatus == "all") {
-				$.ajax({
-					url:"${api.server}/dossiers",
-					dataType:"json",
-					type:"GET",
-					headers : {"groupId": ${groupId}},
-					data:{
-
 					},
 					success:function(result){
 						$('#profileStatus li[dataPk='+dossierItemStatus+'] .bagde').html(result.total);
@@ -366,7 +352,7 @@
 				loadAddRes();
 				copyProfile();
 				$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});
-				$("th").css("vertical-align","top")
+				$("th").css("vertical-align","top");
 			}
 		});
 		

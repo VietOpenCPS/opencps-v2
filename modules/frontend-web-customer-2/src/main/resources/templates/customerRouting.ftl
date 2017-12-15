@@ -80,8 +80,7 @@
     	$(".fieldDossier").click(function(){
     		sortFieldDossier(this);
     		// $(this).children(".icon-sort").children().toggle();
-    		$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});
-    		
-    	})
+    		$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});	
+    	});
     });
 </script>
