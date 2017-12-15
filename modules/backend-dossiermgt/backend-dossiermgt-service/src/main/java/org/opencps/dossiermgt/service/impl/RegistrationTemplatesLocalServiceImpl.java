@@ -75,6 +75,7 @@ public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplates
 		object.setGovAgencyCode(govAgencyCode);
 		object.setGovAgencyName(govAgencyName);
 		object.setFormNo(formNo);
+		object.setFormName(formName);
 		object.setMultiple(multiple);
 		object.setFormScript(formScript);
 		object.setFormReport(formReport);
@@ -113,6 +114,7 @@ public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplates
 			registrationTemplates.setGovAgencyCode(govAgencyCode);
 			registrationTemplates.setGovAgencyName(govAgencyName);
 			registrationTemplates.setFormNo(formNo);
+			registrationTemplates.setFormName(formName);
 			registrationTemplates.setMultiple(multiple);
 			registrationTemplates.setFormScript(formScript);
 			registrationTemplates.setFormReport(formReport);
@@ -127,6 +129,7 @@ public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplates
 			registrationTemplates.setGovAgencyCode(govAgencyCode);
 			registrationTemplates.setGovAgencyName(govAgencyName);
 			registrationTemplates.setFormNo(formNo);
+			registrationTemplates.setFormName(formName);
 			registrationTemplates.setMultiple(multiple);
 			registrationTemplates.setFormScript(formScript);
 			registrationTemplates.setFormReport(formReport);

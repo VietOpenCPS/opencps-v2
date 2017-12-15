@@ -35,7 +35,7 @@ public class RegistrationTemplatesActionsImpl implements RegistrationTemplatesAc
 			int total = RegistrationTemplatesLocalServiceUtil.getRegistrationTemplatesesCount();
 
 			result.put("total", total);
-			result.put("lstDeliverableType", lstRegistrationTemplates);
+			result.put("lstRegistrationTemplate", lstRegistrationTemplates);
 
 		} catch (Exception e) {
 			_log.error(e);
