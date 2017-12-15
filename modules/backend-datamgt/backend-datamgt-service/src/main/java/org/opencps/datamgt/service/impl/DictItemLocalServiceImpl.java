@@ -742,6 +742,12 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 	}
 
+	public List<DictItem> findByF_dictCollectionId_parentItemId(long dictCollectionId, long parentItemId) {
+
+		return dictItemPersistence.findByF_dictCollectionId_parentItemId(dictCollectionId, parentItemId);
+
+	}
+
 	public boolean initDictItem(long groupId, long dictCollectionId) {
 
 		boolean result = false;

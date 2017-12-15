@@ -95,7 +95,7 @@ public class JobposActions implements JobposInterface {
 			mJobPos.setDescription(description);
 
 		}
-		
+
 		if (Validator.isNotNull(leader)) {
 
 			mJobPos.setLeader(leader);
@@ -222,5 +222,9 @@ public class JobposActions implements JobposInterface {
 			_log.error(e);
 		}
 
+	}
+
+	public JobPos getJobPos(long jobPosId) {
+		return JobPosLocalServiceUtil.fetchJobPos(jobPosId);
 	}
 }
