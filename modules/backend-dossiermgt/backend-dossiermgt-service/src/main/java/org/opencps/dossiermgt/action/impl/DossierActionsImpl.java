@@ -497,8 +497,8 @@ public class DossierActionsImpl implements DossierActions {
 
 		DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
 
-		// dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(),
-		// userId, groupId, assignUserId);
+		dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(),
+		userId, groupId, assignUserId);
 
 		return dossierAction;
 	}
