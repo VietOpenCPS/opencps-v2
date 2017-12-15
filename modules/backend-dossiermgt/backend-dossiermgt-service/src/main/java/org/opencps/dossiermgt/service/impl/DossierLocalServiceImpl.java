@@ -1010,7 +1010,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String agency = GetterUtil.getString(params.get(DossierTerm.AGENCY));
 		String service = GetterUtil.getString(params.get(DossierTerm.SERVICE));
 		String template = GetterUtil.getString(params.get(DossierTerm.TEMPLATE));
-
+		String state = GetterUtil.getString(params.get(DossierTerm.STATE));
 		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
 
 		// TODO add more logic here
@@ -1082,6 +1082,27 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			query.addField(DossierTerm.ACTION_USERIDS);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if (Validator.isNotNull(state)) {
+			if (state.equals("cancelling")) {
+				
+				BooleanQuery subQuery = new BooleanQueryImpl();
+
+				MultiMatchQuery query1 = new MultiMatchQuery(String.valueOf(0));
+
+				query1.addField(DossierTerm.CANCELLING_DATE_TIMESTAMP);
+
+				MultiMatchQuery query2 = new MultiMatchQuery("cancelled");
+
+				query2.addField(DossierTerm.DOSSIER_STATUS);
+
+				subQuery.add(query1, BooleanClauseOccur.MUST_NOT);
+
+				subQuery.add(query2, BooleanClauseOccur.MUST_NOT);
+
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
 		}
 
 		if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
