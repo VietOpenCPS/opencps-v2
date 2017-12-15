@@ -601,7 +601,8 @@
 								
 							};
 
-							var url = '/o/rest/v2/dossiers';
+							//var url = '/o/rest/v2/dossiers';
+							var url = "http://hanoi.fds.vn:2281/api/dossiers";
 							
 							axios.get(url, config).then(function (response) {
 								var serializable = response.data;
@@ -1036,21 +1037,32 @@ body .danhSachHoSoTable__class table.table th {
   vertical-align: middle;
 }
 
+
+body .danhSachHoSoTable__class table.table th:nth-child(1) {
+  width: 40px;
+}
 body .danhSachHoSoTable__class table.table th:nth-child(2) {
   width: 40px;
 }
 body .danhSachHoSoTable__class table.table th:nth-child(3) {
-  width: 400px;
+  width: 240px;
+}
+body .danhSachHoSoTable__class table.table th:nth-child(4) {
+  width: 150px;
 }
 body .danhSachHoSoTable__class table.table th:nth-child(5) {
-  width: 100px;
+  width: 120px;
 }
 body .danhSachHoSoTable__class table.table th:nth-child(6) {
-  width: 200px;
+  width: 120px;
 }
 body .danhSachHoSoTable__class table.table th:nth-child(7) {
-  width: 300px;
+  width: 100px;
 }
+body .danhSachHoSoTable__class table.table th:nth-child(8) {
+  width: 90px;
+}
+
 
 .grey-opencps-panel {
 	background-color: #e1e2e1 !important;
