@@ -29,7 +29,6 @@ import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
-import org.opencps.dossiermgt.action.impl.DossierStatisticActionImpl;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -108,6 +107,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String step = query.getStep();
 			String submitting = query.getSubmitting();
 			String top = query.getTop();
+			String state = query.getState();
 
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -123,6 +123,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TOP, top);
 			params.put(DossierTerm.USER_ID, user.getUserId());
 			params.put("secetKey", query.getSecetKey());
+			params.put(DossierTerm.STATE, state);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };

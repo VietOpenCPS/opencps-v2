@@ -338,9 +338,15 @@
 		},
 		change : function(e){
 			var value = this.value();
-			$("#service").data("kendoComboBox").dataSource.read({
-				domain : value
-			});
+			if(value){
+
+				$("#service").data("kendoComboBox").dataSource.read({
+					domain : value
+				});
+
+				$("#service").data("kendoComboBox").select(-1);
+			}
+			
 		}
 	});
 
@@ -372,16 +378,25 @@
 			},
 			schema:{
 				data:"data",
-				total:"total"
+				total:"total",
+				model : {
+					id : "serviceInfoId"
+				}
 			}
 		},
 		change : function(e){
-			var domainCode = $("#service").data("kendoComboBox").dataItem().domainCode;
-			console.log(domainCode);
-			if(domainCode){
-				$("#domainCode").data("kendoComboBox").value(domainCode);
-				$("#domainCode").data("kendoComboBox")._isSelect = false;
+			console.log(this.value());
+			try {
+				var domainCode = $("#service").data("kendoComboBox").dataItem().domainCode;
+				console.log(domainCode);
+				if(domainCode){
+					$("#domainCode").data("kendoComboBox").value(domainCode);
+					$("#domainCode").data("kendoComboBox")._isSelect = false;
+				}
+			}catch (e) {
+				console.log(e);
 			}
+			
 		}
 	});
 </script>

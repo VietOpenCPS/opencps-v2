@@ -18,7 +18,6 @@ import java.util.LinkedHashMap;
 
 import org.opencps.dossiermgt.constants.DossierStatisticTerm;
 import org.opencps.dossiermgt.model.DossierStatistic;
-import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.base.DossierStatisticLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -73,7 +72,7 @@ public class DossierStatisticLocalServiceImpl extends DossierStatisticLocalServi
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
 
-		Indexer<ServiceInfo> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ServiceInfo.class);
+		Indexer<DossierStatistic> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierStatistic.class);
 
 		searchContext.addFullQueryEntryClassName(DossierStatistic.class.getName());
 		searchContext.setEntryClassNames(new String[] { DossierStatistic.class.getName() });
@@ -99,16 +98,50 @@ public class DossierStatisticLocalServiceImpl extends DossierStatisticLocalServi
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		String statisticId = GetterUtil.getString(params.get(DossierStatisticTerm.DOSSIER_STATISTIC_ID));
 		
-		if (Validator.isNotNull(statisticId)) {
-			MultiMatchQuery query = new MultiMatchQuery(groupId);
+		// Extra fields
+		String year = GetterUtil.getString(params.get(DossierStatisticTerm.YEAR));
+		String month = GetterUtil.getString(params.get(DossierStatisticTerm.MONTH));
+		String domainCd = GetterUtil.getString(params.get(DossierStatisticTerm.DOMAIN_CODE));
+		String agencyCd = GetterUtil.getString(params.get(DossierStatisticTerm.GOV_AGENCY_CODE));
+		String level = GetterUtil.getString(params.get(DossierStatisticTerm.ADMINISTRATION_LEVEL));
+		if (Validator.isNotNull(year)) {
+			MultiMatchQuery query = new MultiMatchQuery(year);
 
-			query.addFields(DossierStatisticTerm.DOSSIER_STATISTIC_ID);
+			query.addFields(DossierStatisticTerm.YEAR);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		
+		if (Validator.isNotNull(month)) {
+			MultiMatchQuery query = new MultiMatchQuery(month);
 
+			query.addFields(DossierStatisticTerm.MONTH);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if (Validator.isNotNull(domainCd)) {
+			MultiMatchQuery query = new MultiMatchQuery(domainCd);
+
+			query.addFields(DossierStatisticTerm.DOMAIN_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		if (Validator.isNotNull(agencyCd)) {
+			MultiMatchQuery query = new MultiMatchQuery(agencyCd);
+
+			query.addFields(DossierStatisticTerm.GOV_AGENCY_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		if (Validator.isNotNull(level)) {
+			MultiMatchQuery query = new MultiMatchQuery(level);
+
+			query.addFields(DossierStatisticTerm.ADMINISTRATION_LEVEL);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, DossierStatistic.class.getName());
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}

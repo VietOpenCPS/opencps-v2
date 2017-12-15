@@ -44,7 +44,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 		_log.info("Dossiser UpDate.....");
 		// The case submitting
 		// If submitting = true then update DossierSync
-		int method = 0;
+/*		int method = 0;
 		if (model.getSubmitting()) {
 			if (model.getDossierStatus().contentEquals(DossierStatusConstants.NEW)) {
 				// Update DossierSync with createDossier = true, method = 0 (update DossierAction)
@@ -55,7 +55,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 				// TODO Add case for update dossierFile, paymentFile
 				
 			}
-		}
+		}*/
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
 		serviceContext.setUserId(model.getUserId());

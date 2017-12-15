@@ -21,7 +21,6 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
 
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -67,7 +66,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			results.setTotal(jsonData.getInt("total"));
 
 			results.getStatisticDossierModel()
-					.addAll(StatisticUtils.mapperStatisticDossierList((JSONArray) jsonData.get("data")));
+					.addAll(StatisticUtils.mapperStatisticDossierList(jsonData.getJSONArray("data")));
 
 			return Response.status(200).entity(results).build();
 

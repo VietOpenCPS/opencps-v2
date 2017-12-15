@@ -24,49 +24,49 @@
 				    <thead>
 				      <tr>
 				        <th class="fieldDossier text-center hover-pointer" sort="count" sort-type="desc">
-							<span>STT</span>
-							<span class="pull-right align-middle PT5 text-light-gray">
-								<i class="fa fa-sort" aria-hidden="true"></i>
-							</span>
+									<span>STT</span>
+									<span class="pull-right align-middle PT5 text-light-gray">
+										<i class="fa fa-sort" aria-hidden="true"></i>
+									</span>
 				        </th>
 				        <th class="fieldDossier text-center hover-pointer" sort="serviceName" sort-type="desc">
 				        	<span>Tên thủ tục</span>
 				        	<span class="pull-right align-middle PT5 text-light-gray">
-								<i class="fa fa-sort" aria-hidden="true"></i>
-							</span></br>
-							<span>Cơ quan quản lý</span>		
+										<i class="fa fa-sort" aria-hidden="true"></i>
+									</span></br>
+									<span>Cơ quan quản lý</span>		
 				        </th>
 				        <th class="fieldDossier text-center hover-pointer PL0 PR5" sort="dossierId" sort-type="desc">
 				        	<span>Mã hồ sơ </span>
 				        	<span class="pull-right align-middle PT5 text-light-gray">
-								<i class="fa fa-sort" aria-hidden="true"></i>
-							</span></br>
-							<span>Số hồ sơ</span>
+										<i class="fa fa-sort" aria-hidden="true"></i>
+									</span></br>
+									<span class="PR10">Số hồ sơ</span>
 				        </th>
 				        <th class="fieldDossier text-center hover-pointer" sort="submitDate" sort-type="asc">
 				        	<strong>Ngày gửi</strong>
 				        	<span class="pull-right align-middle PT5 text-light-gray">
-								<i class="fa fa-sort" aria-hidden="true"></i>
-							</span></br>
-							<strong>Ngày tiếp nhận</strong>
+										<i class="fa fa-sort" aria-hidden="true"></i>
+									</span></br>
+									<strong>Ngày tiếp nhận</strong>
 				        </th>
-				        <th class="fieldDossier text-center hover-pointer" sort="dossierId" sort-type="desc">
+				        <th class="fieldDossier text-center hover-pointer">
 				        	<strong>Số chứng chỉ</strong>
 				        	<span class="pull-right align-middle PT5 text-light-gray">
-								<i class="fa fa-sort" aria-hidden="true"></i>
-							</span>	
+										<i class="fa fa-sort" aria-hidden="true"></i>
+									</span>	
 				        </th>
-				        <th class="fieldDossier text-center hover-pointer" sort="dossierId" sort-type="desc">
+				        <th class="fieldDossier text-center hover-pointer">
 				        	<strong>Nội dung</strong>
 				        	<span class="pull-right align-middle PT5 text-light-gray">
-								<i class="fa fa-sort" aria-hidden="true"></i>
-							</span>	
+										<i class="fa fa-sort" aria-hidden="true"></i>
+									</span>	
 				        </th>
 				        <th class="fieldDossier text-center hover-pointer" sort="actionNote" sort-type="desc">
 				        	<strong>Ghi chú</strong>
 				        	<span class="pull-right align-middle PT5 text-light-gray">
-								<i class="fa fa-sort" aria-hidden="true"></i>
-							</span>	
+										<i class="fa fa-sort" aria-hidden="true"></i>
+									</span>	
 				        </th>
 				        <th class="text-center">
 				        	<strong>Hành động</strong>
@@ -106,7 +106,7 @@
 				
 				<td class="" style="width: 25%">
 					<strong>
-						<a href="javascript:;" class="link-detail-employee" data-pk="#=dossierId#" data-bind="events: { click : loadDossierDetail}">
+						<a href="javascript:;" class="link-detail-employee text-hover-blue" data-pk="#=dossierId#" data-bind="events: { click : loadDossierDetail}">
 							#=serviceName#
 						</a>
 					</strong>
@@ -114,19 +114,19 @@
 					#=govAgencyName#
 				</td>
 
-				<td class="" style="width: 8%">
-						#=dossierId#
-					<br>
-						#=dossierNo#
+				<td class="text-center" style="width: 8%">
+						<p><strong>#=dossierId#</strong></p>
+					
+						<p>#=dossierNo#</p>
 				</td>
 
-				<td class="" style="width: 12%">
+				<td class="text-center" style="width: 12%">
 					#if ( submitDate!="" && submitDate!=null ) {#
-						#= kendo.toString(kendo.parseDate(submitDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#
+						<p>#= kendo.toString(kendo.parseDate(submitDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#</p>
 					#}#
-					<br>
+					
 					#if ( receiveDate!="" && receiveDate!=null ) {#
-						#= kendo.toString(kendo.parseDate(receiveDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#
+						<p>#= kendo.toString(kendo.parseDate(receiveDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#</p>
 					#}#
 				</td>
 
@@ -139,14 +139,13 @@
 					<i class="text-light-gray">#=briefNote#</i>
 				</td>
 
-				<td class="" style="width: 13%">
-					#=serviceName#
+				<td class="text-center" style="width: 13%">
 					# if(typeof actionNote !== "undefined"){#
 						<i>#:actionNote#</i>
 					#}#
 				</td>
 
-				<td class="" style="width: 9%">
+				<td class="text-center" style="width: 9%">
 					#if(dossierStatus == "done"){#
 						<button type="button" class="btn-link no-border downloadProfile" data-pk="#:dossierId#">
 							<i class="fa fa-download" aria-hidden="true"/>
