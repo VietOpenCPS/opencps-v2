@@ -128,7 +128,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 
 		JSONObject dossierReceiving = JSONFactoryUtil.createJSONObject();
 		dossierReceiving.put("text", "Hồ sơ chờ tiếp nhận");
-		dossierReceiving.put("value", "new");
+		dossierReceiving.put("value", "receiving");
 		dossierStatus.add(dossierReceiving);
 		
 		JSONObject dossierProcessed = JSONFactoryUtil.createJSONObject();
