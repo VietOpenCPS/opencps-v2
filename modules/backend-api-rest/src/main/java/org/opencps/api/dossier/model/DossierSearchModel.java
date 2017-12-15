@@ -69,7 +69,8 @@ import javax.xml.bind.annotation.XmlType;
     "step",
     "submitting",
     "top",
-    "secetKey"
+    "secetKey",
+    "state"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -110,7 +111,8 @@ public class DossierSearchModel {
     protected String top;
 	@QueryParam(value = "secetKey")
     protected String secetKey;
-	
+	@QueryParam(value = "state")
+    protected String state;
 
     public String getSecetKey() {
 		return secetKey;
@@ -118,6 +120,14 @@ public class DossierSearchModel {
 
 	public void setSecetKey(String secetKey) {
 		this.secetKey = secetKey;
+	}
+	
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 
 	/**

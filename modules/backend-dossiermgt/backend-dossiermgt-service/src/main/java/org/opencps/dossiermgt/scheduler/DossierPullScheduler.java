@@ -387,7 +387,11 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				int responseCode = conn.getResponseCode();
 
 				if (responseCode != 200) {
-					throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+					
+					if (responseCode != 204) {
+						throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+					}
+					
 				} else {
 
 					InputStream is = conn.getInputStream();

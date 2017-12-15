@@ -40,9 +40,11 @@ import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
+import org.opencps.dossiermgt.service.comparator.DictItemComparator;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -462,7 +464,11 @@ public class DossierActionsImpl implements DossierActions {
 			if (hasDossierSync) {
 				// SyncAction
 				int method = 0;
-
+				
+				_log.info(new Date());
+				
+				_log.info("GROUPID_"+groupId+"dossierId_"+dossierId);
+				
 				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
 						isCreateDossier, method, dossier.getPrimaryKey(), StringPool.BLANK,
 						serviceProcess.getServerNo());
@@ -492,8 +498,8 @@ public class DossierActionsImpl implements DossierActions {
 		// Add DossierActionUser
 
 		DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
-
-		dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
+		
+		//dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
 
 		return dossierAction;
 	}
@@ -840,8 +846,9 @@ public class DossierActionsImpl implements DossierActions {
 
 			} else {
 
-				List<DictItem> dictItems = DictItemLocalServiceUtil
-						.findByF_dictCollectionId(dictCollection.getDictCollectionId());
+				List<DictItem> dictItems = DictItemLocalServiceUtil.findByF_dictCollectionId(
+						dictCollection.getDictCollectionId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+						new DictItemComparator(false, "treeIndex", String.class));
 
 				for (DictItem dictItem : dictItems) {
 					statusCode = dictItem.getLevel() == 0 ? dictItem.getItemCode() : StringPool.BLANK;
