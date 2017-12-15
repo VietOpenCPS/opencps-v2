@@ -23,7 +23,7 @@
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip1item41" class="MR10">Cấp mới</label>
 								<input type="text" class="form-control" id="ip1item41" placeholder="Nhập số GCN (hồ sơ) CNCL kiểu loại">
-								<button class="btn btn-reset pull-right chooseService P0 PT5" id="btn1item41">Chọn</button>
+								<button data-TTHC="TT302011BGTVTCNCLKLTXXBBCH" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCNCLKLTXXBBCH" class="btn btn-reset pull-right chooseService P0 PT5" id="btn1item41">Chọn</button>
 							</div>
 							<div class="clear"></div>
 						</div>
@@ -61,7 +61,7 @@
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip1item42" class="MR45">Phương thức 1: cấp theo lô</label>
 								<input type="text" class="form-control" id="ip1item42" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-								<button class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item42">Chọn</button>
+								<button data-TTHC="TT302011BGTVTCPPXBBCH" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXBBCH" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item42">Chọn</button>
 							</div>
 							<div class="clear"></div>
 						</div>
@@ -69,7 +69,7 @@
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip2item42" class="MR60">Phương thức 2: giám sát</label>
 								<input type="text" class="form-control" id="ip2item42" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-								<button class="btn btn-reset chooseService pull-right P0 PT5" id="btn2item42">Chọn</button>
+								<button data-TTHC="TT302011BGTVTCPPXBBCH" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXBBCH" class="btn btn-reset chooseService pull-right P0 PT5" id="btn2item42">Chọn</button>
 							</div>
 							<div class="clear"></div>
 						</div>
@@ -77,7 +77,7 @@
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip3item42" class="MR10">Phương thức 3: kiểm tra đột xuất</label>
 								<input type="text" class="form-control" id="ip3item42" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-								<button class="btn btn-reset chooseService pull-right P0 PT5" id="btn3item42">Chọn</button>
+								<button data-TTHC="TT302011BGTVTCPPXBBCH" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXBBCH" class="btn btn-reset chooseService pull-right P0 PT5" id="btn3item42">Chọn</button>
 							</div>
 							<div class="clear"></div>
 						</div>
@@ -109,7 +109,7 @@
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip1item51" class="MR10">Cấp mới</label>
 								<input type="text" class="form-control" id="ip1item51" placeholder="Nhập số GCN (hồ sơ) CNCL kiểu loại">
-								<button class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item51">Chọn</button>
+								<button data-TTHC="TT302011BGTVTCNCLKLTXXDD" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCNCLKLTXXDD" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item51">Chọn</button>
 							</div>
 							<div class="clear"></div>
 						</div>
@@ -147,7 +147,7 @@
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip1item52" class="MR45">Phương thức 1: cấp theo lô</label>
 								<input type="text" class="form-control" id="ip1item52" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-								<button class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item52">Chọn</button>
+								<button data-TTHC="TT302011BGTVTCPPXDD" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXDD" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item52">Chọn</button>
 							</div>
 							<div class="clear"></div>
 						</div>
@@ -155,7 +155,7 @@
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip2item52" class="MR60">Phương thức 2: giám sát</label>
 								<input type="text" class="form-control" id="ip2item52" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-								<button class="btn btn-reset chooseService pull-right P0 PT5" id="btn2item52">Chọn</button>
+								<button data-TTHC="TT302011BGTVTCPPXDD" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXDD" class="btn btn-reset chooseService pull-right P0 PT5" id="btn2item52">Chọn</button>
 							</div>
 							<div class="clear"></div>
 						</div>
@@ -163,7 +163,7 @@
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip3item52" class="MR10">Phương thức 3: kiểm tra đột xuất</label>
 								<input type="text" class="form-control" id="ip3item52" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-								<button class="btn btn-reset chooseService pull-right P0 PT5" id="btn3item52">Chọn</button>
+								<button data-TTHC="TT302011BGTVTCPPXDD" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXDD" class="btn btn-reset chooseService pull-right P0 PT5" id="btn3item52">Chọn</button>
 							</div>
 							<div class="clear"></div>
 						</div>
@@ -197,7 +197,7 @@
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip1item61" class="MR10">Cấp mới</label>
 								<input type="text" class="form-control" id="ip1item61" placeholder="Nhập số GCN (hồ sơ) thẩm định thiết kế">
-								<button class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item61">Chọn</button>
+								<button data-TTHC="TT302011BGTVTTDTKXMCD" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTTDTKXMCD" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item61">Chọn</button>
 							</div>
 							<div class="clear"></div>
 						</div>
@@ -241,7 +241,7 @@
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip1item62" class="MR10">Cấp mới</label>
 								<input type="text" class="form-control" id="ip1item62" placeholder="Nhập số GCN (hồ sơ) thẩm định thiết kế">
-								<button class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item62">Chọn</button>
+								<button data-TTHC="TT302011BGTVTTDTKXMCD" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTTDTKXMCD" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item62">Chọn</button>
 							</div>
 							<div class="clear"></div>
 						</div>
@@ -328,7 +328,7 @@
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip1item71" class="MR10">Cấp mới</label>
 								<input type="text" class="form-control" id="ip1item71" placeholder="Nhập số GCN (hồ sơ) CNCL kiểu loại LK">
-								<button class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item71">Chọn</button>
+								<button data-TTHC="TT302011BGTVTCNCLKLLKXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCNCLKLLKXCG" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item71">Chọn</button>
 							</div>
 							<div class="clear"></div>
 						</div>
@@ -366,7 +366,7 @@
 							<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
 								<label for="ip1item72" class="MR10">Cấp mới</label>
 								<input type="text" class="form-control" id="ip1item72" placeholder="Nhập số GCN (hồ sơ) CNCL kiểu loại LK">
-								<button class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item72">Chọn</button>
+								<button data-TTHC="TT302011BGTVTCNCLKLLKXM" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCNCLKLLKXM" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item72">Chọn</button>
 							</div>
 							<div class="clear"></div>
 						</div>

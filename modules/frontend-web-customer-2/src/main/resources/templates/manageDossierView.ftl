@@ -18,94 +18,67 @@
 					</div>
 				</div>
 			</div>
-			<div id="wrapMain">
-				<div class="col-sm-12 P0" id="customer_dossierlist">
-					<div class="form-group row M0 border-bottom PB5 border-color-lightblue align-middle gutter-sm">
-
-						<div class="col-sm-1">
-							
-							<strong>STT</strong>
+			<div id="wrapMain" class="table-responsive">
+				<table class="table table-bordered M0">
+					<#-- Table header -->
+				    <thead>
+				      <tr>
+				        <th class="fieldDossier text-center hover-pointer" sort="count" sort-type="desc">
+									<span>STT</span>
+									<span class="pull-right align-middle PT5 text-light-gray">
+										<i class="fa fa-sort" aria-hidden="true"></i>
+									</span>
+				        </th>
+				        <th class="fieldDossier text-center hover-pointer" sort="serviceName" sort-type="desc">
+				        	<span>Tên thủ tục</span>
+				        	<span class="pull-right align-middle PT5 text-light-gray">
+										<i class="fa fa-sort" aria-hidden="true"></i>
+									</span></br>
+									<span>Cơ quan quản lý</span>		
+				        </th>
+				        <th class="fieldDossier text-center hover-pointer PL0 PR5" sort="dossierId" sort-type="desc">
+				        	<span>Mã hồ sơ </span>
+				        	<span class="pull-right align-middle PT5 text-light-gray">
+										<i class="fa fa-sort" aria-hidden="true"></i>
+									</span></br>
+									<span class="PR10">Số hồ sơ</span>
+				        </th>
+				        <th class="fieldDossier text-center hover-pointer" sort="submitDate" sort-type="asc">
+				        	<strong>Ngày gửi</strong>
+				        	<span class="pull-right align-middle PT5 text-light-gray">
+										<i class="fa fa-sort" aria-hidden="true"></i>
+									</span></br>
+									<strong>Ngày tiếp nhận</strong>
+				        </th>
+				        <th class="fieldDossier text-center hover-pointer">
+				        	<strong>Số chứng chỉ</strong>
+				        	<span class="pull-right align-middle PT5 text-light-gray">
+										<i class="fa fa-sort" aria-hidden="true"></i>
+									</span>	
+				        </th>
+				        <th class="fieldDossier text-center hover-pointer">
+				        	<strong>Nội dung</strong>
+				        	<span class="pull-right align-middle PT5 text-light-gray">
+										<i class="fa fa-sort" aria-hidden="true"></i>
+									</span>	
+				        </th>
+				        <th class="fieldDossier text-center hover-pointer" sort="actionNote" sort-type="desc">
+				        	<strong>Ghi chú</strong>
+				        	<span class="pull-right align-middle PT5 text-light-gray">
+										<i class="fa fa-sort" aria-hidden="true"></i>
+									</span>	
+				        </th>
+				        <th class="text-center">
+				        	<strong>Hành động</strong>
+				        </th>
+				      </tr>
+				    </thead>
+					<#-- Table body -->
+					<tbody class="" data-role="listview" data-auto-bind="false" data-bind="source: dataSourceProfile, events:{dataBound : changeList}" data-template="proFileTemplate" id="listViewDossier">
 						
-						</div>
-						
-						<div class="col-sm-3">
-							
-							<strong>
-								<div>Tên thủ tục</div>
-								<div>Cơ quan quản lý</div>
-							</strong>
-						
-						</div>
+					</tbody>
+				</table>
 
-						<div class="col-sm-1">
-							
-							<strong>
-
-								<div>Mã hồ sơ</div>
-								<div>Số hồ sơ</div>
-
-							</strong>
-						
-						</div>
-						
-						<div class="col-sm-1">
-							
-							<strong>
-
-								<div>Ngày gửi</div>
-								<div>Ngày tiếp nhận</div>
-
-							</strong>
-						
-						</div>
-
-						<div class="col-sm-1">
-							
-							<strong>
-
-								<div>Số chứng chỉ</div>
-
-							</strong>
-						
-						</div>
-
-						<div class="col-sm-3">
-							
-							<strong>
-
-								<div>Nội dung</div>
-
-							</strong>
-						
-						</div>
-
-						<div class="col-sm-1">
-							
-							<strong>
-
-								<div>Ghi chú</div>
-
-							</strong>
-						
-						</div>
-
-						<div class="col-sm-1">
-							
-							<strong>
-
-								<div>Hành động</div>
-
-							</strong>
-						
-						</div>
-
-			</div>
-
-			<div>
-
-				<ul class="ul-with-border" data-role="listview" data-auto-bind="false" data-bind="source: dataSourceProfile, events:{dataBound : changeList}" data-template="proFileTemplate" id="listViewDossier">
-					
-				</ul>
 			</div>
 			<div class="footerListProfile row-header col-sm-12 PT20 PR0" style="background: #f6f6f6">
 				<div class="clearfix align-middle" style="float: right">
@@ -126,121 +99,65 @@
 	</script>
 		<#-- for listview dossier-->
 		<script type="text/x-kendo-template" id="proFileTemplate">
-			<li class="PT10 PB10 border-bottom gutter-sm">
-	
-				<div class="row M0 ">
+			<tr class="">
+				<td class="text-center" style="width: 5%">
+					#=count#
+				</td>
+				
+				<td class="" style="width: 25%">
+					<strong>
+						<a href="javascript:;" class="link-detail-employee text-hover-blue" data-pk="#=dossierId#" data-bind="events: { click : loadDossierDetail}">
+							#=serviceName#
+						</a>
+					</strong>
+					<br>
+					#=govAgencyName#
+				</td>
 
-					<div class="col-sm-1">
-						#=count#
-					</div>
+				<td class="text-center" style="width: 8%">
+						<p><strong>#=dossierId#</strong></p>
 					
-					<div class="col-sm-3">
-						<strong>
-							<a href="javascript:;" class="link-detail-employee" data-pk="#=dossierId#" data-bind="events: { click : loadDossierDetail}">
-								#=serviceName#
-							</a>
-						</strong>
-						<br>
-						#=govAgencyName#
-					</div>
+						<p>#=dossierNo#</p>
+				</td>
 
-					<div class="col-sm-1">
-						# if(dossierId != null && dossierId != ""){#
-							#=dossierId#
-						#} else {#
-							<i class="text-gray">Chưa cập nhật</i>
-						#}#
-						<br>
-						
-						# if(dossierNo != null && dossierNo != ""){#
-							#=dossierNo#
-						#} else {#
-							<i class="text-gray">Chưa cập nhật</i>
-						#}#
-					</div>
+				<td class="text-center" style="width: 12%">
+					#if ( submitDate!="" && submitDate!=null ) {#
+						<p>#= kendo.toString(kendo.parseDate(submitDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#</p>
+					#}#
+					
+					#if ( receiveDate!="" && receiveDate!=null ) {#
+						<p>#= kendo.toString(kendo.parseDate(receiveDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#</p>
+					#}#
+				</td>
 
-					<div class="col-sm-1">
-						#if ( submitDate!="" && submitDate!=null ) {#
-							#= kendo.toString(kendo.parseDate(submitDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#
-						#} else {#
-							<i class="text-gray">__/__/____</i>
-						#}#
-						<br>
-						#if ( receiveDate!="" && receiveDate!=null ) {#
-							#= kendo.toString(kendo.parseDate(receiveDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#
-						#} else {#
-							<i class="text-gray">__/__/____</i>
-						#}#
-					</div>
+				<td class="" style="width: 10%">
+					<#-- Số chứng chỉ -->
+					<#-- #=briefNote# -->
+				</td>
 
-					<div class="col-sm-1">
-						# if(briefNote != null && briefNote != ""){#
-				
-							#=briefNote#
+				<td class="" style="width: 18%">
+					<i class="text-light-gray">#=briefNote#</i>
+				</td>
 
-						#} else {#
-							<i class="text-gray">Chưa cập nhật</i>
-						#}#
-					</div>
+				<td class="text-center" style="width: 13%">
+					# if(typeof actionNote !== "undefined"){#
+						<i>#:actionNote#</i>
+					#}#
+				</td>
 
-					<div class="col-sm-3">
-						-Loại sản phẩm:
-						<#-- # if(briefNote != null && briefNote != ""){#
-				
-							#=briefNote#
-
-						#} else {#
-							<i class="text-gray">Chưa cập nhật</i>
-						#}# -->
-						<br>
-						-Tên thuơng mại:
-						<#-- # if(briefNote != null && briefNote != ""){#
-				
-							#=briefNote#
-
-						#} else {#
-							<i class="text-gray">Chưa cập nhật</i>
-						#}# -->
-						<br>
-						-Nhãn hiệu/số loại:
-						<#-- # if(briefNote != null && briefNote != ""){#
-				
-							#=briefNote#
-
-						#} else {#
-							<i class="text-gray">Chưa cập nhật</i>
-						#}# -->
-						<br>
-						# if(typeof briefNote !== "undefined"){#
-							<i class="text-light-gray">#=briefNote#</i>
-						#} else {#
-							<i class="text-gray">Chưa cập nhật</i>
-						#}#
-					</div>
-
-					<div class="col-sm-1">
-						# if(typeof actionNote !== "undefined"){#
-							<i>#:actionNote#</i>
-						#} else {#
-							<i>Chưa cập nhật</i>
-						#}#
-					</div>
-
-					<div class="col-xs-1 col-sm-1 text-right">
-						#if(dossierStatus === "done"){#
-							<button type="button" class="btn-link no-border downloadProfile" data-pk="#:dossierId#">
-								<i class="fa fa-download" aria-hidden="true"/>
-								Tải kết quả
-							</button>
-						#}#
-						<button type="button" class="btn-link no-border copyProfile" data-pk="#:dossierId#">
-							<i class="fa fa-file-o" aria-hidden="true"></i>
-							Sao chép
+				<td class="text-center" style="width: 9%">
+					#if(dossierStatus == "done"){#
+						<button type="button" class="btn-link no-border downloadProfile" data-pk="#:dossierId#">
+							<i class="fa fa-download" aria-hidden="true"/>
+							Tải kết quả
 						</button>
-							
-					</div>
-				</div>	
-			
-	 		</li>
+					#}#
+					<button type="button" class="btn-link no-border copyProfile" data-pk="#:dossierId#">
+						<i class="fa fa-file-o" aria-hidden="true"></i>
+						Sao chép
+					</button>
+						
+				</td>
 
-</script>
+	 		</tr>
+		</script>
