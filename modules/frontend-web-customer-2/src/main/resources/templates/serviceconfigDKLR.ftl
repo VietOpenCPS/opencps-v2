@@ -468,58 +468,10 @@
 	</div>
 </div>
 <script type="text/javascript">
-	var inputValue;
 	var dossierTemplateNo;
 	var serviceCode;
 	var govAgencyCode;
-	var dataSourceDossier = function(id){
-		$.ajax({
-			url : "${api.server}/dossiers/"+id,
-			dataType : "json",
-			type : "GET",
-			data : {},
-			headers : {"groupId": ${groupId}},
-			success : function(result){
-				manageDossier.navigate("/taohosomoi/chuanbihoso/"+result.dossierId);
-			},
-			error : function(result){
-				notification.show({
-          message: "Số hồ sơ không tồn tại trên hệ thống !"
-        }, "error");
-			}
-		});
-	};
-	var dataSourceDossierEx = function(id){
-		$.ajax({
-			url : "${api.server}/dossiers/"+id,
-			dataType : "json",
-			type : "GET",
-			data : {},
-			headers : {"groupId": ${groupId}},
-			success : function(result){
-				cloningProfile(id)
-			},
-			error : function(result){
-				notification.show({
-          message: "Số hồ sơ không tồn tại trên hệ thống !"
-        }, "error");
-			}
-		});
-	};
-	var cloningProfile = function(id){
-		$.ajax({
-			url:"${api.server}/dossiers/"+id+"/cloning",
-			dataType:"json",
-			type:"POST",
-			headers: {"groupId": ${groupId}},
-			success:function(res){
-				manageDossier.navigate("/taohosomoi/nophoso/"+res.dossierId);
-			},
-			error:function(res){
-				
-			}
-		})
-	};
+	
 	var createDossier = function(dossierTemplateNo,serviceCode,govAgencyCode){
 		$.ajax({
       url : "${api.server}/dossiers",
@@ -549,46 +501,16 @@
       error : function(result){
       }
     });
-	}
-	// Chọn dịch vụ công
-	var chooseDVC = function(selector){
-		inputValue = $(selector).parent().children("input").val();
-		if (inputValue == "") {
-			dossierTemplateNo = $(selector).attr("data-MMHS");
-			serviceCode = $(selector).attr("data-TTHC");
-			govAgencyCode = $(selector).attr("data-CQTH");
-			createDossier(dossierTemplateNo, serviceCode, govAgencyCode)
-		} else {
-			dataSourceDossier(inputValue);
-		}
-	};
-	var chooseDVCvalidate = function(selector){
-		inputValue = $(selector).parent().children("input").val();
-		if (inputValue == "") {
-			$(selector).parent().addClass("has-error");
-			return false;
-		} else {
-			$(selector).parent().removeClass("has-error");
-			dataSourceDossierEx(inputValue);
-		}
-	};
-	// 
+	} 
 	$(function () {
 		$(".chooseService").click(function(){
-			chooseDVC(this);
-		});
-		$("#btn2Lv31G1").click(function(){
 			dossierTemplateNo = $(this).attr("data-MMHS");
 			serviceCode = $(this).attr("data-TTHC");
 			govAgencyCode = $(this).attr("data-CQTH");
 			createDossier(dossierTemplateNo, serviceCode, govAgencyCode)
 		});
-		$(".chooseServiceValidate").click(function(){
-			chooseDVCvalidate(this);
-		});
 		// 
 		$("label").css("font-family","Roboto-Regular");
-		$(".form-inline input").css({"width":"260px", "height": "25px", "border-radius":"0"});
 		$(".clear").css("clear","both");
 		//
 	})
