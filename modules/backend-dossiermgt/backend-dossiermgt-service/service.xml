@@ -475,6 +475,10 @@
 			<finder-column name="isNew" />
 		</finder>
 		<!-- References -->
+		<finder name="DID_FTNO" return-type="DossierFile">
+			<finder-column name="dossierId"></finder-column>
+			<finder-column name="fileTemplateNo"></finder-column>
+		</finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -796,6 +800,11 @@
 			<finder-column name="serviceProcessId" />
 			<finder-column name="actionCode" />
 		</finder>
+		<finder name="G_SPID_PRESC" return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="serviceProcessId"></finder-column>
+			<finder-column name="preStepCode"></finder-column>
+		</finder>
 
 
 	</entity>
@@ -847,6 +856,9 @@
 		<finder return-type="DossierAction" name="DID_UID">
 			<finder-column name="dossierId" />
 			<finder-column name="userId" />
+		</finder>
+		<finder name="DID" return-type="Collection">
+			<finder-column name="dossierId"></finder-column>
 		</finder>
 	</entity>
 
@@ -1056,13 +1068,18 @@
 		<column name="createDate" type="Date" />
 		<column name="modifiedDate" type="Date" />
 
-		<column name="deliverableType" type="String" />
-		<column name="deliverableName" type="String" />
+		<column name="typeCode" type="String" />
+		<column name="typeName" type="String" />
 		<column name="formScript" type="String" />
 		<column name="formReport" type="String" />
 		<column name="codePattern" type="String" />
 		<column name="counter" type="String" />
 		<column name="mappingData" type="String" />
+
+		<finder return-type="DeliverableType" name="G_DLT">
+			<finder-column name="groupId" />
+			<finder-column name="typeCode" />
+		</finder>
 
 	</entity>
 
@@ -1130,6 +1147,36 @@
 		<column name="deliverableAction" type="int" />
 		<column name="actionDate" type="Date" />
 		<column name="payload" type="String" />
+	</entity>
+
+	<entity local-service="true" name="RegistrationTemplates"
+		remote-service="false" table="opencps_registrationtemplate" uuid="true">
+
+		<column name="registrationTemplateId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="govAgencyCode" type="String" />
+		<column name="govAgencyName" type="String" />
+		<column name="formNo" type="String" />
+		<column name="formName" type="String" />
+		<column name="multiple" type="boolean" />
+		<column name="formScript" type="String" />
+		<column name="formReport" type="String" />
+		<column name="sampleData" type="String" />
+		
+		<finder return-type="RegistrationTemplates" name="G_REGID">
+			<finder-column name="groupId" />
+			<finder-column name="registrationTemplateId" />
+		</finder>		
 	</entity>
 
 	<exceptions>

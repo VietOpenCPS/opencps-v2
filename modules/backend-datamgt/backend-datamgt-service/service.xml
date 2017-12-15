@@ -119,6 +119,10 @@
             <finder-column name="parentItemId"></finder-column>
             <finder-column name="treeIndex" comparator="LIKE"></finder-column>
         </finder>
+        <finder name="F_dictCollectionId_parentItemId" return-type="Collection">
+            <finder-column name="dictCollectionId"></finder-column>
+            <finder-column name="parentItemId"></finder-column>
+        </finder>
 	</entity>
 
 	<entity name="DictGroup" uuid="true" local-service="true"
