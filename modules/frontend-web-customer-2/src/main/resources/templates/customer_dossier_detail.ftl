@@ -304,7 +304,7 @@
 
 <div class="button-row MT20">
 	<button class="btn btn-active" id="btn-back-dossier" type="button"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
-	<button class="btn btn-active" id="btn-save-dossier" type="button"><i class="fa fa-save"></i> Lưu</button>
+	<button class="btn btn-active" id="btn-save-dossier" type="button" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý..."><i class="fa fa-save"></i> Lưu</button>
 	<button class="btn btn-active" id="btn-submit-dossier" type="button"><i class="fa fa-sign-in" aria-hidden="true"></i> Tiếp tục</button>
 	<#-- <button class="btn btn-active" id="btn-submit-dossier"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 	<button class="btn btn-active"><i class="fa fa-trash"></i> Xóa</button> -->
@@ -528,7 +528,7 @@
 
 		funSaveDossier = function(){
 		//PUT dossier
-		
+		$("#btn-save-dossier").button('loading');
 		var postalValidator = $("#postalInfo").kendoValidator().data("kendoValidator");
 		var applicantValidator = $("#applicantInfo").kendoValidator().data("kendoValidator");
 		var validateDossierTemplate = fnCheckValidTemplate();
@@ -566,7 +566,8 @@
 					postalAddress: $("#postalAddress").val(),
 
 				},
-				success :  function(result){                       
+				success :  function(result){          
+					$("#btn-save-dossier").button('reset');             
 					console.log("PUT Dossier success!");
 					createActionDossier(${dossierId});
 					/*notification.show({
@@ -574,6 +575,7 @@
 					}, "success");*/
 				},
 				error:function(result){
+					$("#btn-save-dossier").button('reset'); 
 					console.error(result);
 					notification.show({
 						message: "Xảy ra lỗi, xin vui lòng thử lại"
@@ -581,6 +583,7 @@
 				}	
 			});
 		}else {
+			$("#btn-save-dossier").button('reset');
 			notification.show({
 				message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi lưu!"
 			}, "error");
@@ -603,13 +606,14 @@
 					actionNote :  $("#applicantNote").val()
 				},
 				success : function(result){
+					$("#btn-save-dossier").button('reset');
 					console.log("create acion dossier success!");
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
 				},
 				error : function(result){
-
+					$("#btn-save-dossier").button('reset');
 					notification.show({
 						message: "Xảy ra lỗi, xin vui lòng thử lại"
 					}, "error");
