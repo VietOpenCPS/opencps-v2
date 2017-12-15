@@ -609,6 +609,7 @@
 
 			
 		}else {
+			$("#btn-submit-dossier").button('reset');
 			notification.show({
 				message: "Vui lòng kiểm tra lại các thông tin bắt buộc!"
 			}, "error");
