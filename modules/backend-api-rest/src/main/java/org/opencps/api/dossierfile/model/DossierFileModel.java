@@ -58,6 +58,7 @@ import javax.xml.bind.annotation.XmlType;
     "dossierPartNo",
     "dossierPartType",
     "fileTemplateNo",
+    "dossierPartName",
     "displayName",
     "fileType",
     "fileSize",
@@ -81,6 +82,7 @@ public class DossierFileModel {
     protected Integer dossierPartType;
     protected String fileTemplateNo;
     protected String displayName;
+	protected String dossierPartName;
     protected String fileType;
     protected Long fileSize;
     protected String fileVersion;
@@ -91,7 +93,16 @@ public class DossierFileModel {
     protected Boolean eForm;
 	protected String formData;
     protected String formReport;
- 
+    
+    public String getDossierPartName() {
+		return dossierPartName;
+	}
+
+	public void setDossierPartName(String dossierPartName) {
+		this.dossierPartName = dossierPartName;
+	}
+
+
     /**
      * Gets the value of the fileSize property.
      * 
