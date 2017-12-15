@@ -500,12 +500,12 @@
 					}, "error");
 					return false;
 				}
-				if ($("#allowAssignUser").prop("checked") && !$("#assignUserId").val()){
+				/*if ($("#allowAssignUser").prop("checked") && !$("#assignUserId").val()){
 					notification.show({
 						message: "Mời chọn người được phân công"
 					}, "error");
 					return false;
-				}
+				}*/
 				if ($("#requestPayment").prop("checked") && !$("#paymentFee").val()){
 					notification.show({
 						message: "Mời nhập phí"
