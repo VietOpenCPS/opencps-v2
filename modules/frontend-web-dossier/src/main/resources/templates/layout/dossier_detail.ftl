@@ -192,11 +192,10 @@
 					</v-flex>
 					</v-layout>
 					
-					
-					
 					</v-card-title>
 					<v-card-actions>
-					<v-btn flat color="primary" class="px-0">Xác nhận</v-btn>
+					<v-btn flat color="primary" class="px-0"
+						@click.prevent.stop="postNextActions(stepModel)">Xác nhận</v-btn>
 					</v-card-actions>
 				</v-card>
 			 

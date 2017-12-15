@@ -42,17 +42,42 @@
 					"template": "menu_template",
 					"template_content": "dossierViewJX_form_template",
 					'events': {
-                        changeProcessStep: function (data){
-                            console.log(data);
+                        changeProcessStep: function (item){
+                            console.log(item);
                             var vm = this;
-                            vm.stepModel = data;
-                            vm.processAssignUserIdItems = data.toUsers
+                            vm.stepModel = item;
+                            vm.processAssignUserIdItems = item.toUsers
+                        },
+						postNextActions: function (item){
+                            console.log(item);
+                            var vm = this;
+
+							var url = '/dossiers/'+vm.detailModel.dossierId+'/actions';
+                            const config = {
+								headers: {'groupId': themeDisplay.getScopeGroupId()},
+								data: {
+									"actionCode": item.actionCode,
+									"actionUser": themeDisplay.getUserId(),
+									"actionNote": vm.processActionNote,
+									"assignUserId": vm.processAssignUserId.userId
+								}
+							};
+                            axios.post(url, config).then(function (response) {
+                                var serializable = response.data;
+
+                                vm.processSteps = serializable.data;
+
+                            })
+                                .catch(function (error) {
+                                    console.log(error);
+                                });
                         },
                         _initchangeProcessStep: function (){
                             var vm = this;
                             const config = {};
                             
                             var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/nextactions';
+                            // var url = '/o/frontendwebdossier/json/steps.json';
                             
                             axios.get(url, config).then(function (response) {
                                 var serializable = response.data;
@@ -115,38 +140,44 @@
 
                             vm.listgroupHoSoFilterItems = [];
 
-                            const config = {};
+                            const config = {
+								headers: {'groupId': themeDisplay.getScopeGroupId()}
+							};
 
                             var url = '/o/rest/v2/statistics/dossiers/todo';
                             
                             axios.get(url, config).then(function (response) {
                                 var serializable = response.data;
 
+								var indexTree = -1;
                                 for (var key in serializable.data) {
-                                     vm.listgroupHoSoFilterItems.push({
-										id: serializable.data[key].dossierSubStatus,
-										idSub: serializable.data[key].dossierSubStatus,
-										title: serializable.data[key].statusName,
-										level: serializable.data[key].level,
-										count: serializable.data[key].count,
-										action: 'folder',
-										action_active: 'folder_open',
-										/**
-										items: [
-											{
-												id: 'danh_sach_1',
-												title: 'DANH SÁCH HỒ SƠ 1',
-												count: serializable.data[key].count
-											},
-											{
-												id: 'danh_sach_2',
-												title: 'DANH SÁCH HỒ SƠ 2',
-												count: serializable.data[key].count
-											}
-                                    	]
-										*/
-                                    });
+									console.log(serializable.data[key].statusName);
+                                    if ( serializable.data[key].level === 0 ) {
+										serializable.data[key].items = [];
+
+										vm.listgroupHoSoFilterItems.push({
+											id: serializable.data[key].dossierStatus,
+											idSub: serializable.data[key].dossierSubStatus,
+											title: serializable.data[key].statusName,
+											level: serializable.data[key].level,
+											count: serializable.data[key].count,
+											action: 'folder',
+											action_active: 'folder_open',
+											items: []
+										});
+										indexTree = indexTree + 1;
+									} else {
+										vm.listgroupHoSoFilterItems[indexTree].items.push({
+											id: serializable.data[key].dossierSubStatus,
+											idSub: serializable.data[key].dossierSubStatus,
+											title: serializable.data[key].statusName,
+											level: serializable.data[key].level,
+											count: serializable.data[key].count
+										});
+									}
                                 }
+
+								console.log(vm.listgroupHoSoFilterItems);
                             })
                                 .catch(function (error) {
                                     console.log(error);
@@ -698,7 +729,7 @@
 								keyword: vm.keywordsSearch,
 								owner: vm.applicantNameFilter.applicantIdNo,
 								service: vm.serviceInfoFilter.serviceCode,
-								follow: true,
+								//follow: true,
 								dossierNo: vm.dossierNoFilter,
 								start: vm.danhSachHoSoTablepage * 8 - 8,
 								end: vm.danhSachHoSoTablepage * 8,
@@ -857,8 +888,10 @@
 								}
 							}
 							vm.listDocumentInPartNoItems = listFilesUpload;
-							console.log(vm.listDocumentInPartNoItems);
-							vm.popUpViewDossierFile = !vm.popUpViewDossierFile;
+							if (item.counter > 0){
+								vm.popUpViewDossierFile = !vm.popUpViewDossierFile;
+							}
+							
 						}
 					}
 				},
@@ -941,7 +974,7 @@
 						},
 						downloadFile( fileAttachId ){
 							console.log(fileAttachId);
-							var url = "/o/rest/v2/employees/1401/photo";
+							var url = "/o/rest/v2/employees/10101/photo";
 							window.open(url); 
 						}
 					}
@@ -1011,18 +1044,25 @@
 					"events": {
 						popUpViewDossierFileClose: function () {
 							console.log("close popup");
+							var iFrame = document.getElementById("dossierPDFView");
+							var dossierPDFViewNotFound = document.getElementById("dossierPDFViewNotFound");
+							iFrame.innerHTML = '';
 							this.popUpViewDossierFile = false;
 						},
 						popUpViewDossierFileSave: function () {
 							console.log("save popup");
 							var vm = this;
+							var iFrame = document.getElementById("dossierPDFView");
+							iFrame.innerHTML = '';
+							dossierPDFViewNotFound.innerHTML = '';
 							vm.popUpViewDossierFile = false;
 						},
 						previewDossierPDF: function (item) {
 							var vm = this;
-							
+							vm.dossierViewJXTitle = item.displayName;
 							// TODO: call API lay file
-							var url ="/o/rest/v2/employees/1303/photo" ;
+							var url ="/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid ;
+							// var url = "/o/rest/v2/dossiers/14203/files/a148ee9b-b1a7-b2e7-ca0e-e6503a65b8eb";
 							vm._showFile({
 								config : {
 									headers: {'groupId': themeDisplay.getScopeGroupId()},
@@ -1033,16 +1073,17 @@
 
 						},
 						_showFile: function (options) {
-							
+							var iFrame = document.getElementById("dossierPDFView");
+							var dossierPDFViewNotFound = document.getElementById("dossierPDFViewNotFound");
 							axios.get(options.url, options.config).then(function (response) {
-								
 								var url = window.URL.createObjectURL(response.data);
-								var iFrame = document.getElementById("dossierPDFView");
-								
+								iFrame.className = "";
 								iFrame.innerHTML = '<iframe src="'+url+'" width="100%" height="100%"> </iframe>';
+								dossierPDFViewNotFound.innerHTML = '';
 							})
 								.catch(function (error) {
 									console.log(error);
+									dossierPDFViewNotFound.innerHTML = 'Tài liệu đính kèm không tồn tại!';
 								});
 							
 						}
@@ -1430,5 +1471,25 @@ white-space: normal;
 }
 .control-menu {
     z-index: 200;
+}
+
+.panel-dossier-navigation .status-dossier-navigation a {
+    color: #2a2a2a !important;
+    font-size: 13px;
+    padding: 5px;
+    height: auto;
+}
+
+.navigation-drawer.theme--dark .list__tile__action:first-child .icon {
+    color: #ffc107;
+    padding-left: 8px;
+    position: absolute;
+    top: 5px;
+}
+
+.list__tile__title {
+    white-space: normal;
+    height: auto;
+    line-height: normal;
 }
 </style>
