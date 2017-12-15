@@ -50,10 +50,10 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -89,8 +89,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier syncDossier(Dossier dossier) throws PortalException {
-		
-		
+
 		dossierPersistence.update(dossier);
 
 		return dossier;
@@ -731,7 +730,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.remove(dossier);
 
 	}
-	
+
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateDossierBriefNote(long dossierId, String dossierBriefNote) throws PortalException {
 		Dossier dossier = dossierPersistence.findByPrimaryKey(dossierId);
@@ -828,13 +827,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String agency = GetterUtil.getString(params.get(DossierTerm.AGENCY));
 		String service = GetterUtil.getString(params.get(DossierTerm.SERVICE));
 		String template = GetterUtil.getString(params.get(DossierTerm.TEMPLATE));
-
 		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
-
-		// TODO add more logic here
-
+		String state = GetterUtil.getString(params.get(DossierTerm.STATE));
 		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
-		String top = GetterUtil.getString(params.get(DossierTerm.TOP));
+
+		// String top = GetterUtil.getString(params.get(DossierTerm.TOP));
 
 		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
 		String submitting = GetterUtil.getString(params.get(DossierTerm.SUBMITTING));
@@ -895,13 +892,35 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
+
 		if (Validator.isNotNull(follow) && Boolean.parseBoolean(follow) && userId > 0) {
+
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
 
 			query.addField(DossierTerm.ACTION_USERIDS);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(state)) {
+			if (state.equals("cancelling")) {
+				
+				BooleanQuery subQuery = new BooleanQueryImpl();
+
+				MultiMatchQuery query1 = new MultiMatchQuery(String.valueOf(0));
+
+				query1.addField(DossierTerm.CANCELLING_DATE_TIMESTAMP);
+
+				MultiMatchQuery query2 = new MultiMatchQuery("cancelled");
+
+				query2.addField(DossierTerm.DOSSIER_STATUS);
+
+				subQuery.add(query1, BooleanClauseOccur.MUST_NOT);
+
+				subQuery.add(query2, BooleanClauseOccur.MUST_NOT);
+
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
 		}
 
 		if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
@@ -996,7 +1015,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		// TODO add more logic here
 		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
-		String top = GetterUtil.getString(params.get(DossierTerm.TOP));
+		// String top = GetterUtil.getString(params.get(DossierTerm.TOP));
 
 		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
 		String submitting = GetterUtil.getString(params.get(DossierTerm.SUBMITTING));
@@ -1056,7 +1075,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
+
 		if (Validator.isNotNull(follow) && Boolean.parseBoolean(follow) && userId > 0) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
 
