@@ -707,13 +707,19 @@ public class DossierActionsImpl implements DossierActions {
 			boolean online, boolean notification, String applicantNote, ServiceContext context) throws PortalException {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-
 		Date appIdDate = null;
+
+		try {
+			appIdDate = sdf.parse(applicantIdDate);
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 
 		Dossier dossier = null;
 
 		try {
-			appIdDate = sdf.parse(applicantIdDate);
 
 			dossier = DossierLocalServiceUtil.initDossier(groupId, dossierId, referenceUid, counter, serviceCode,
 					serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,
