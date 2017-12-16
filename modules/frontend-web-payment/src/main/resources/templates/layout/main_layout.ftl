@@ -23,6 +23,8 @@
             </div>
           </div>
         </v-slide-x-transition>
+        
+        
         <v-slide-x-transition>
           <div class="layout wrap" jx-bind="paymentList" v-if="!detailPage">
   

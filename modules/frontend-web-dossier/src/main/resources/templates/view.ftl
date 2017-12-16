@@ -750,8 +750,8 @@
 								
 							};
 
-							//var url = '/o/rest/v2/dossiers';
-							var url = "http://hanoi.fds.vn:2281/api/dossiers";
+							var url = '/o/rest/v2/dossiers';
+							//var url = "http://hanoi.fds.vn:2281/api/dossiers";
 							
 							axios.get(url, config).then(function (response) {
 								var serializable = response.data;
