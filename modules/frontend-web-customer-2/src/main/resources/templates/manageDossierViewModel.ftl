@@ -80,7 +80,7 @@
 							optBoxPageSize();
 							if (result.total!=0) {
 								dataSourceProfile.page(1);
-								dataSourceProfile.sort({ field: "submitDate", dir: "desc" });
+								dataSourceProfile.sort({ field: "createDate", dir: "desc" });
 							};
 							
 							$("#statusName").html($(".itemStatus.active .dossierStatus").text());
@@ -105,7 +105,7 @@
 					id: "dossierId"
 				}
 			},
-			sort: { field: "submitDate", dir: "desc" }
+			sort: { field: "createDate", dir: "desc" }
 		});
 		// Get total dossierStatus
 		var statusDossierItems = ["new","receiving","processing","waiting","paying","done","cancelling","cancelled","expired","all"];
