@@ -181,6 +181,9 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			serviceConfig.setRegistration(registration);
 
 		}
+		
+		
+		serviceConfig.setServiceInfoId(serviceInfoId);
 
 		ServiceInfo si = serviceInfoPersistence.fetchByPrimaryKey(serviceInfoId);
 
