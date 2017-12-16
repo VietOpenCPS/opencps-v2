@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class PaymentFileManagementImpl implements PaymentFileManagement {
 
@@ -73,7 +74,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			// TODO: Condition sort
 			Sort[] sorts = new Sort[] {};
-			// Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			// Sort[] sorts = new Sort[] {
+			// SortFactoryUtil.create(query.getSort() + "_sortable",
+			// Sort.STRING_TYPE,
 			// GetterUtil.getBoolean(query.getOrder())) };
 
 			PaymentFileActions actions = new PaymentFileActionsImpl();
@@ -103,7 +106,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	/**
 	 * Create PaymentFile of DossierId
 	 * 
-	 * @param form params
+	 * @param form
+	 *            params
 	 * @return Response
 	 */
 	@Override
@@ -148,7 +152,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	 * Get detail PaymentFile of DossierId and referenceUid
 	 * 
 	 * @param dossierId,
-	 *@param referenceUid
+	 * @param referenceUid
 	 * @return Response
 	 */
 	@Override
@@ -171,21 +175,26 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			// TODO: Condition sort
 			Sort[] sorts = new Sort[] {};
-			// Sort[] sorts = new Sort[] {SortFactoryUtil.create(query.getSort() + "_sortable",Sort.STRING_TYPE,
+			// Sort[] sorts = new Sort[] {SortFactoryUtil.create(query.getSort()
+			// + "_sortable",Sort.STRING_TYPE,
 			// GetterUtil.getBoolean(query.getOrder())) };
 
 			PaymentFileActions actions = new PaymentFileActionsImpl();
-			// PaymentFileResultModel PaymentFileDetail = new PaymentFileResultModel();
-			// PaymentFile paymentFile = actions.getPaymentFileDetail(dossierId, referenceUid);
+			// PaymentFileResultModel PaymentFileDetail = new
+			// PaymentFileResultModel();
+			// PaymentFile paymentFile = actions.getPaymentFileDetail(dossierId,
+			// referenceUid);
 
 			// get JSON data by dossierId
 			List<Document> data = actions.getPaymentFileDetail(dossierId, referenceUid, serviceContext.getCompanyId(),
 					groupId, sorts, start, end, serviceContext);
 
 			List<PaymentFileModel> paymentFileDetail = PaymentFileUtils.mappingToPaymentFileModel(data);
-			// dossierPermission.hasGetDetailDossier(groupId, user.getUserId(), dossier, option.getServiceProcessId());
+			// dossierPermission.hasGetDetailDossier(groupId, user.getUserId(),
+			// dossier, option.getServiceProcessId());
 
-			// DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier);
+			// DossierDetailModel result =
+			// DossierUtils.mappingForGetDetail(dossier);
 			PaymentFileModel results = paymentFileDetail.get(0);
 
 			return Response.status(200).entity(results).build();
@@ -235,7 +244,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	/**
 	 * Update info EpaymentProfile of DossierId and referenceUid
 	 * 
-	 * @param form params
+	 * @param form
+	 *            params
 	 * @return Response
 	 */
 	@Override
@@ -269,7 +279,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	/**
 	 * Update Payment File Confirm of DossierId and referenceUid
 	 * 
-	 * @param form params
+	 * @param form
+	 *            params
 	 * @return Response
 	 */
 	@Override
@@ -305,7 +316,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	/**
 	 * Update Payment File Approval of DossierId and referenceUid
 	 * 
-	 * @param form params
+	 * @param form
+	 *            params
 	 * @return Response
 	 */
 	@Override
@@ -341,6 +353,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 	/**
 	 * Download payment File Confirm
+	 * 
 	 * @param
 	 * @return Response
 	 */
@@ -351,7 +364,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			
+
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
@@ -359,16 +372,18 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			PaymentFileActions action = new PaymentFileActionsImpl();
 			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(id, referenceUid);
 
-			if(paymentFile.getConfirmFileEntryId() > 0) {
+			if (paymentFile.getConfirmFileEntryId() > 0) {
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getConfirmFileEntryId());
-	
-				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
-	
+
+				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+						true);
+
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
-	
-				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileEntry.getFileName() + "\"");
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
 				responseBuilder.header("Content-Type", fileEntry.getMimeType());
-	
+
 				return responseBuilder.build();
 			} else {
 				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
@@ -381,6 +396,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 	/**
 	 * Download Invoice File Confirm
+	 * 
 	 * @param
 	 * @return Response
 	 */
@@ -390,7 +406,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			
+
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
@@ -398,16 +414,18 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			PaymentFileActions action = new PaymentFileActionsImpl();
 			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(id, referenceUid);
 
-			if(paymentFile.getInvoiceFileEntryId() > 0) {
+			if (paymentFile.getInvoiceFileEntryId() > 0) {
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
-	
-				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
-	
+
+				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+						true);
+
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
-	
-				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileEntry.getFileName() + "\"");
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
 				responseBuilder.header("Content-Type", fileEntry.getMimeType());
-	
+
 				return responseBuilder.build();
 			} else {
 				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
@@ -420,6 +438,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 	/**
 	 * Get all Payment File
+	 * 
 	 * @param
 	 * @return Response
 	 */
@@ -455,8 +474,14 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			params.put(PaymentFileTerm.STATUS, search.getStatus());
 			/* Add params in Map - END */
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean(search.getOrder())) };
+			// Default sort by modifiedDate
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true) };
+
+			if (Validator.isNotNull(search.getSort()) && Validator.isNotNull(search.getOrder())) {
+				sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_sortable", Sort.STRING_TYPE,
+						GetterUtil.getBoolean(search.getOrder())) };
+			}
 
 			JSONObject paymentFileJsonObject = action.getPaymentFiles(serviceContext.getUserId(),
 					serviceContext.getCompanyId(), groupId, params, sorts, search.getStart(), search.getEnd(),
