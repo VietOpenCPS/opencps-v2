@@ -15,6 +15,7 @@ import org.opencps.api.context.provider.LocaleContextProvider;
 import org.opencps.api.context.provider.ServiceContextProvider;
 import org.opencps.api.context.provider.UserContextProvider;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
+import org.opencps.api.controller.impl.CommentManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
 import org.opencps.api.controller.impl.DeliverableTypesManagementImpl;
 import org.opencps.api.controller.impl.DossierActionManagementImpl;
@@ -86,6 +87,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new StatisticManagementImpl());
 		singletons.add(new DeliverableTypesManagementImpl());
 		singletons.add(new RegistrationTemplatesManagementImpl());
+		singletons.add(new CommentManagementImpl());
 		singletons.add(new RegistrationManagementImpl());
 		// add service provider
 		singletons.add(_serviceContextProvider);
