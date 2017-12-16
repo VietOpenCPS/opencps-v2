@@ -490,6 +490,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			List<Document> documents = (List<Document>) paymentFileJsonObject.get("data");
 
 			results.setTotal(paymentFileJsonObject.getInt("total"));
+			
 			results.getData().addAll(PaymentFileUtils.mappingToPaymentFileSearchResultModel(documents));
 
 			return Response.status(200).entity(results).build();
