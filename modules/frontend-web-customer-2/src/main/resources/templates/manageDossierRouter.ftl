@@ -22,6 +22,15 @@
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').addClass('active');
 		});
+		// Show
+		manageDossier.route("/dossiers/(:id)/yeucauhuy", function(id){
+			$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+id+"&${portletNamespace}resCancelling=true",function(result){
+			})
+		});
+		manageDossier.route("/dossiers/(:id)/guibosung", function(id){
+			$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+id+"&${portletNamespace}sendAdd=true",function(result){
+			})
+		});
 		// Show màn hình chọn dịch vụ công
 		manageDossier.route("/taohosomoi", function(id){
 			$("#mainType1").hide();
