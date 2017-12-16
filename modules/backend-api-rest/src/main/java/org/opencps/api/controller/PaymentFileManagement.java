@@ -216,7 +216,6 @@ public interface PaymentFileManagement {
 	/* Search List of payment bill - START */
 	@GET
 	@Path("/paymentfiles")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
 	@ApiOperation(value = "Get info Payment files", response = PaymentFileSearchResultModel.class)
 	@ApiResponses(value = {
