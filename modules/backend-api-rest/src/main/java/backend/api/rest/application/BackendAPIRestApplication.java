@@ -33,6 +33,7 @@ import org.opencps.api.controller.impl.NotificationTypeManagementImpl;
 import org.opencps.api.controller.impl.OfficeSiteManagementImpl;
 import org.opencps.api.controller.impl.PaymentConfigManagementImpl;
 import org.opencps.api.controller.impl.PaymentFileManagementImpl;
+import org.opencps.api.controller.impl.RegistrationManagementImpl;
 import org.opencps.api.controller.impl.RegistrationTemplatesManagementImpl;
 import org.opencps.api.controller.impl.ServerConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceConfigManagementImpl;
@@ -85,6 +86,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new StatisticManagementImpl());
 		singletons.add(new DeliverableTypesManagementImpl());
 		singletons.add(new RegistrationTemplatesManagementImpl());
+		singletons.add(new RegistrationManagementImpl());
 		// add service provider
 		singletons.add(_serviceContextProvider);
 		singletons.add(_companyContextProvider);
