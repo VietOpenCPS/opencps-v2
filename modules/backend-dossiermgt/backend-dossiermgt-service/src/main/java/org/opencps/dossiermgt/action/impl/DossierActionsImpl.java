@@ -40,11 +40,9 @@ import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
-import org.opencps.dossiermgt.service.comparator.DictItemComparator;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -464,11 +462,11 @@ public class DossierActionsImpl implements DossierActions {
 			if (hasDossierSync) {
 				// SyncAction
 				int method = 0;
-				
+
 				_log.info(new Date());
-				
-				_log.info("GROUPID_"+groupId+"dossierId_"+dossierId);
-				
+
+				_log.info("GROUPID_" + groupId + "dossierId_" + dossierId);
+
 				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
 						isCreateDossier, method, dossier.getPrimaryKey(), StringPool.BLANK,
 						serviceProcess.getServerNo());
@@ -498,8 +496,9 @@ public class DossierActionsImpl implements DossierActions {
 		// Add DossierActionUser
 
 		DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
-		
-		//dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
+
+		dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(),
+		userId, groupId, assignUserId);
 
 		return dossierAction;
 	}
@@ -845,11 +844,12 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 			} else {
-
-				List<DictItem> dictItems = DictItemLocalServiceUtil.findByF_dictCollectionId(
+				
+				//DictItem: treeIndex chua luu dung nen chua dung duoc ham nay
+				/*List<DictItem> dictItems = DictItemLocalServiceUtil.findByF_dictCollectionId(
 						dictCollection.getDictCollectionId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 						new DictItemComparator(false, "treeIndex", String.class));
-
+				
 				for (DictItem dictItem : dictItems) {
 					statusCode = dictItem.getLevel() == 0 ? dictItem.getItemCode() : StringPool.BLANK;
 					subStatusCode = dictItem.getLevel() == 1 ? dictItem.getItemCode() : StringPool.BLANK;
@@ -867,6 +867,57 @@ public class DossierActionsImpl implements DossierActions {
 					total += count;
 					statistics.put(statistic);
 				}
+				*/
+
+				List<DictItem> dictItems = DictItemLocalServiceUtil
+						.findByF_dictCollectionId_parentItemId(dictCollection.getDictCollectionId(), 0);
+
+				for (DictItem dictItem : dictItems) {
+					
+					statusCode = dictItem.getItemCode();
+					subStatusCode = StringPool.BLANK;
+					
+					params.put(DossierTerm.DOSSIER_STATUS, statusCode);
+					
+					long count = DossierLocalServiceUtil.countLucene(params, searchContext);
+
+					JSONObject statistic = JSONFactoryUtil.createJSONObject();
+
+					statistic.put("dossierStatus", statusCode);
+					statistic.put("dossierSubStatus", subStatusCode);
+					statistic.put("level", dictItem.getLevel());
+					statistic.put("statusName", dictItem.getItemName());
+					statistic.put("count", count);
+					total += count;
+					statistics.put(statistic);
+					
+					List<DictItem> childDictItems = DictItemLocalServiceUtil
+							.findByF_dictCollectionId_parentItemId(dictCollection.getDictCollectionId(), dictItem.getDictItemId());
+					
+					if(childDictItems != null){
+						for(DictItem childDictItem : childDictItems){
+							
+							subStatusCode = childDictItem.getItemCode();
+							statusCode = StringPool.BLANK;
+							
+							params.put(DossierTerm.DOSSIER_SUB_STATUS, subStatusCode);
+							
+							long childCount = DossierLocalServiceUtil.countLucene(params, searchContext);
+
+							JSONObject childStatistic = JSONFactoryUtil.createJSONObject();
+
+							childStatistic.put("dossierStatus", statusCode);
+							childStatistic.put("dossierSubStatus", subStatusCode);
+							childStatistic.put("level", childDictItem.getLevel());
+							childStatistic.put("statusName", childDictItem.getItemName());
+							childStatistic.put("count", childCount);
+							
+							//Khong tinh tong so cua con do da tinh tong cua cha
+							//total += childCount;
+							statistics.put(childStatistic);
+						}
+					}
+				}
 			}
 
 			result.put("data", statistics);
@@ -878,7 +929,6 @@ public class DossierActionsImpl implements DossierActions {
 		}
 
 		return result;
-
 	}
 
 }

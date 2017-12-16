@@ -39,20 +39,21 @@ public class DossierActionUserImpl implements DossierActionUser {
 	}
 
 	@Override
-	public void initDossierActionUser(long dossierActionId, long userId, long groupId, long assignUserId) {
+	public void initDossierActionUser(long dossierActionId, long userId, long groupId, long assignUserId)
+			throws PortalException {
 		// Get DossierAction
-		DossierAction dossierAction = DossierActionLocalServiceUtil.getDossierActionById(dossierActionId, userId);
+		DossierAction dossierAction = DossierActionLocalServiceUtil.getDossierAction(dossierActionId);
 		String actionCode = dossierAction.getActionCode();
 		long serviceProcessId = dossierAction.getServiceProcessId();
-		
+
 		// Get ProcessAction
 		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(serviceProcessId, actionCode);
 		String stepCode = processAction.getPostStepCode();
-		
+
 		// Get ProcessStep
 		ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
 		long processStepId = processStep.getProcessStepId();
-		
+
 		// Get List ProcessStepRole
 		List<ProcessStepRole> listProcessStepRole = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStepId);
 		for (ProcessStepRole processStepRole : listProcessStepRole) {
