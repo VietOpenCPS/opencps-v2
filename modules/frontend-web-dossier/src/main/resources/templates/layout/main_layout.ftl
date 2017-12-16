@@ -21,7 +21,7 @@
 
         </div>
 
-        <div class="layout wrap" v-else-if="stageFilterView === 'danh_sach' && !detailPage">
+        <div class="layout wrap" v-else-if="stageFilterView !== 'tra_cuu' && !detailPage">
         
           <#include "danh_sach_hoso.ftl">
 
@@ -36,5 +36,12 @@
         </div>
       </v-slide-x-transition>
 
+      <v-fab-transition>
+        <v-btn color="primary" dark fixed bottom right fab ripple v-show="offsetTop > 200"
+        v-on:click.native="onScrollTop">
+          <v-icon>keyboard_arrow_up</v-icon>
+        </v-btn>
+      </v-fab-transition>
+      
     </div>
   </div>

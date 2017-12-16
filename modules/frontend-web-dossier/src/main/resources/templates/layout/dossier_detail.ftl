@@ -82,7 +82,8 @@
 				</div>
 				<div>
 					<a href="javascript:;" @click="showContactDetail = !showContactDetail">
-					Thông tin liên hệ: <v-icon color="primary">chevron_right</v-icon>
+					Thông tin liên hệ: <v-icon color="primary" v-if="!showContactDetail">keyboard_arrow_down</v-icon>
+					<v-icon color="primary" v-if="showContactDetail">keyboard_arrow_up</v-icon>
 					</a>
 					
 					<v-slide-y-transition>
@@ -191,11 +192,10 @@
 					</v-flex>
 					</v-layout>
 					
-					
-					
 					</v-card-title>
 					<v-card-actions>
-					<v-btn flat color="primary" class="px-0">Xác nhận</v-btn>
+					<v-btn flat color="primary" class="px-0"
+						@click.prevent.stop="postNextActions(stepModel)">Xác nhận</v-btn>
 					</v-card-actions>
 				</v-card>
 			 
@@ -204,9 +204,10 @@
 			<div class="opencps_list_border_style" jx-bind="listHistoryProcessing"></div>
 			</v-tabs-content>
 			<v-tabs-content :id="'tab-dossier-detail-4'" reverse-transition="slide-y-transition" transition="slide-y-transition">
-			
+
 				<div id="comments-container" class="pt-3 px-4" style="background: white;"></div>
 				<div id="comments-container-pk" style="display: none;">{{detailModel.dossierId}}</div>
+
 			</v-tabs-content>
 		</v-tabs-items>
 	</v-tabs>
@@ -219,11 +220,12 @@
 	     var users = [];
 	     
 	     var getContacts = function(){
+	     var dossierIdComment = $('#comments-container-pk').text().trim();
 			 $.ajax({
-	            url: '/o/rest/v2/contacts',
+	            url: '/o/rest/v2/'+dossierIdComment+'/dossiers/contact',
 	            type: 'GET',
 	            headers: {
-	                "groupId": groupId
+	                "groupId": themeDisplay.getScopeGroupId()
 	            },
 	            async: false,
 	            dataType: 'json',
@@ -358,7 +360,6 @@
                         error: function(xhr){
                             onSuccess([]);
                             onError();
-                            showMessageByAPICode(xhr.status);
                         }
                     });
                 },
@@ -383,7 +384,6 @@
                         success: function(comment) {
                             if(comment != null){
                                 onSuccess(formatComment(comment, users));
-                                showMessageToastr("success", "Yêu cầu được thực hiện thành công!");
                             }else{
                                 onSuccess([]);
                             }
@@ -391,7 +391,6 @@
                         },
                         error: function(xhr){
                             onError();
-                            showMessageByAPICode(xhr.status);
                         }
                     });
                 },
@@ -415,11 +414,9 @@
                         },
                         success: function(comment) {
                             onSuccess(formatComment(comment, users));
-                            showMessageToastr("success", "Yêu cầu được thực hiện thành công!");
                         },
                         error: function(xhr){
                             onError();
-                            showMessageByAPICode(xhr.status);
                         }
                     });
                 },
@@ -433,11 +430,9 @@
                         dataType: 'json',
                         success: function(comment) {
                             onSuccess();
-                            showMessageToastr("success", "Yêu cầu được thực hiện thành công!");
                         },
                         error: function(xhr){
                             onError();
-                            showMessageByAPICode(xhr.status);
                         }
                     });
                 },
@@ -460,11 +455,9 @@
                             },
                             success: function(comment) {
                                 onSuccess(formatComment(comment, users));
-                                showMessageToastr("success", "Yêu cầu được thực hiện thành công!");
                             },
                             error: function(xhr){
                                 onError();
-                                showMessageByAPICode(xhr.status);
                             }
                         });
                     }else{
@@ -481,12 +474,10 @@
                             dataType: 'json',
                             success: function(comment) {
                                 onSuccess(formatComment(comment, users));
-                                showMessageToastr("success", "Yêu cầu được thực hiện thành công!");
                                 
                             },
                             error: function(xhr){
                                 onError();
-                                showMessageByAPICode(xhr.status);
                             }
                         });
                     }
@@ -551,11 +542,9 @@
                                 comment = formatComment(comment, users);
                                 successfulUploads.push(comment);
                                 serverResponded();                      
-                                showMessageToastr("success", "Yêu cầu được thực hiện thành công!");
                             },
                             error: function(xhr, data) {
                                 serverResponded();
-                                showMessageByAPICode(xhr.status);
                             }
                         });
                     });

@@ -2,7 +2,7 @@
 
 <div class="row-header flex-break" v-if="!detailPage">
 
-    <div class="background-triangle-big"> {{hoso_title_table}} </div>
+    <div class="background-triangle-big"> <v-icon flat fab color="white" class="setting_action_all">settings</v-icon> {{hoso_title_table}} </div>
 
     <div class="layout row wrap header_tools w-100-xs">
 
