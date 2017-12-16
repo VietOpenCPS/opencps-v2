@@ -23,11 +23,8 @@
 					<#-- Table header -->
 				    <thead>
 				      <tr>
-				        <th class="fieldDossier text-center hover-pointer" sort="count" sort-type="desc">
+				        <th class="fieldDossier text-center hover-pointer">
 									<span>STT</span>
-									<span class="pull-right align-middle PT5 text-light-gray">
-										<i class="fa fa-sort" aria-hidden="true"></i>
-									</span>
 				        </th>
 				        <th class="fieldDossier text-center hover-pointer" sort="serviceName" sort-type="desc">
 				        	<span>Tên thủ tục</span>
@@ -43,7 +40,7 @@
 									</span></br>
 									<span class="PR10">Số hồ sơ</span>
 				        </th>
-				        <th class="fieldDossier text-center hover-pointer" sort="submitDate" sort-type="asc">
+				        <th class="fieldDossier text-center hover-pointer" sort="submitDate" sort-type="desc">
 				        	<strong>Ngày gửi</strong>
 				        	<span class="pull-right align-middle PT5 text-light-gray">
 										<i class="fa fa-sort" aria-hidden="true"></i>
@@ -52,21 +49,12 @@
 				        </th>
 				        <th class="fieldDossier text-center hover-pointer">
 				        	<strong>Số chứng chỉ</strong>
-				        	<span class="pull-right align-middle PT5 text-light-gray">
-										<i class="fa fa-sort" aria-hidden="true"></i>
-									</span>	
 				        </th>
 				        <th class="fieldDossier text-center hover-pointer">
 				        	<strong>Nội dung</strong>
-				        	<span class="pull-right align-middle PT5 text-light-gray">
-										<i class="fa fa-sort" aria-hidden="true"></i>
-									</span>	
 				        </th>
-				        <th class="fieldDossier text-center hover-pointer" sort="actionNote" sort-type="desc">
+				        <th class="fieldDossier text-center hover-pointer">
 				        	<strong>Ghi chú</strong>
-				        	<span class="pull-right align-middle PT5 text-light-gray">
-										<i class="fa fa-sort" aria-hidden="true"></i>
-									</span>	
 				        </th>
 				        <th class="text-center">
 				        	<strong>Hành động</strong>
@@ -139,7 +127,7 @@
 					<i class="text-light-gray">#=briefNote#</i>
 				</td>
 
-				<td class="text-center" style="width: 13%">
+				<td class="" style="width: 13%">
 					# if(typeof actionNote !== "undefined"){#
 						<i>#:actionNote#</i>
 					#}#
