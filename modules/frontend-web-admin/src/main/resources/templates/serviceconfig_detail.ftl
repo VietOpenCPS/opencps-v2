@@ -131,7 +131,7 @@
 			success : function(result){
 				console.log(result);
 				var viewModel = kendo.observable({
-					serviceInfoId: result.serviceInfoId,
+					serviceInfoId: result.serviceInfoId,	
 					govAgencyCode: result.govAgencyCode,
 					serviceLevel: result.serviceLevel,
 					serviceUrl: result.serviceUrl,
@@ -384,7 +384,12 @@
 				data:"data",
 				total:"total",
 				model : {
-					id : "serviceInfoId"
+					id : "serviceInfoId",
+					fields : {
+						serviceName : {
+							type: "string"
+						}
+					}
 				}
 			}
 		},
@@ -401,6 +406,9 @@
 				console.log(e);
 			}
 			
+		},
+		dataBound : function(){
+			$(".k-clear-value").addClass("k-hidden")
 		}
 	});
 </script>
