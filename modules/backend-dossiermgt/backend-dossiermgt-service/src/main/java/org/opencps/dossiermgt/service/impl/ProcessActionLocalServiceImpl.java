@@ -359,10 +359,10 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			throw new RequiredPaymentFeeException("RequiredPaymentFeeException");
 		}
 
-		if (allowAssignUser && Validator.isNull(assignUserId)) {
+/*		if (allowAssignUser && Validator.isNull(assignUserId)) {
 			throw new RequiredAssignUserIdException("RequiredAssignUserIdException");
 		}
-
+*/
 		// TODO add more validate for actionCode, actionName, createDossierFiles
 		// returnDossierFiles, makeBriefNote in here
 

@@ -1,3 +1,4 @@
+
 package backend.api.rest.application;
 
 import java.util.HashSet;
@@ -32,7 +33,6 @@ import org.opencps.api.controller.impl.NotificationTypeManagementImpl;
 import org.opencps.api.controller.impl.OfficeSiteManagementImpl;
 import org.opencps.api.controller.impl.PaymentConfigManagementImpl;
 import org.opencps.api.controller.impl.PaymentFileManagementImpl;
-import org.opencps.api.controller.impl.RegistrationManagementImpl;
 import org.opencps.api.controller.impl.RegistrationTemplatesManagementImpl;
 import org.opencps.api.controller.impl.ServerConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceConfigManagementImpl;
@@ -42,6 +42,7 @@ import org.opencps.api.controller.impl.StatisticManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
+import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -79,13 +80,11 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new JobposManagementImpl());
 		singletons.add(new UserManagementImpl());
 		singletons.add(new EmployeeManagementImpl());
-
+		singletons.add(new DossierStatisticImpl());
 		singletons.add(new FileAttachManagementImpl());
 		singletons.add(new StatisticManagementImpl());
 		singletons.add(new DeliverableTypesManagementImpl());
 		singletons.add(new RegistrationTemplatesManagementImpl());
-		singletons.add(new RegistrationManagementImpl());
-		
 		// add service provider
 		singletons.add(_serviceContextProvider);
 		singletons.add(_companyContextProvider);
@@ -113,5 +112,6 @@ public class BackendAPIRestApplication extends Application {
 
 	@Reference
 	private ServiceContextProvider _serviceContextProvider;
+
 
 }

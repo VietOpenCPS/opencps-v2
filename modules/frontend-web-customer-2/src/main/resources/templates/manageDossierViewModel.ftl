@@ -66,7 +66,7 @@
 							dossierNo: options.data.dossierNo,
 							keyword: options.data.keyword,
 							status : options.data.status,
-							submitting: options.data.submitting
+							state: options.data.state
 						},
 						success:function(result){
 							if (result.total!=0) {
@@ -80,10 +80,10 @@
 							optBoxPageSize();
 							if (result.total!=0) {
 								dataSourceProfile.page(1);
+								dataSourceProfile.sort({ field: "createDate", dir: "desc" });
 							};
 							
 							$("#statusName").html($(".itemStatus.active .dossierStatus").text());
-							$('#profileStatus li[dataPk="all"] .bagde').html(result.total);
 							//
 							$('.optPage[value="'+dataSourceProfile.pageSize()+'"]').attr("selected","selected");
 							// Option kendo-page
@@ -105,25 +105,39 @@
 					id: "dossierId"
 				}
 			},
-			sort: { field: "submitDate", dir: "desc" }
+			sort: { field: "createDate", dir: "desc" }
 		});
 		// Get total dossierStatus
-		var statusDossierItems = ["new","receiving","processing","waiting","paying","done","cancelling","cancelled","expired"];
+		var statusDossierItems = ["new","receiving","processing","waiting","paying","done","cancelling","cancelled","expired","all"];
 		var getTotal = function(){
 			$(statusDossierItems).each(function(index,value){
 				getTotalItemDossier(value);
 			})
 		};
 		var getTotalItemDossier = function(dossierItemStatus){
-			if ((dossierItemStatus == "waitReceiving")){
+			if ((dossierItemStatus == "cancelling")){
 				$.ajax({
 					url:"${api.server}/dossiers",
 					dataType:"json",
 					type:"GET",
 					headers : {"groupId": ${groupId}},
 					data:{
-						status : "new",
-						submitting: true
+						state: "cancelling"
+					},
+					success:function(result){
+						$('#profileStatus li[dataPk='+dossierItemStatus+'] .bagde').html(result.total);
+					},
+					error:function(result){
+					}
+				})
+			} else if(dossierItemStatus == "all"){
+				$.ajax({
+					url:"${api.server}/dossiers",
+					dataType:"json",
+					type:"GET",
+					headers : {"groupId": ${groupId}},
+					data:{
+						status:"new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
 					},
 					success:function(result){
 						$('#profileStatus li[dataPk='+dossierItemStatus+'] .bagde').html(result.total);
@@ -186,15 +200,14 @@
 							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
 							"serviceInfo": $("#serviceInfo").val(),
 							"keyword": $("#keyInput").val(),
-							"status": ""
+							"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
 						})
-			    } else if(statusDossier == "waitReceiving"){
+			    } else if(statusDossier == "cancelling"){
 			    	dataSourceProfile.read({
 							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
 							"serviceInfo": $("#serviceInfo").val(),
 							"keyword": $("#keyInput").val(),
-							"status": "new",
-							"submitting": true
+							"state": "cancelling"
 						})
 			    } 
 			    else {
@@ -215,16 +228,15 @@
 							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
 							"serviceInfo": $("#serviceInfo").val(),
 							"keyword": $("#keyInput").val(),
-							"status": ""
+							"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
 						})
 			    } 
-			    else if(statusDossier == "waitReceiving"){
+			    else if(statusDossier == "cancelling"){
 			    	dataSourceProfile.read({
 							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
 							"serviceInfo": $("#serviceInfo").val(),
 							"keyword": $("#keyInput").val(),
-							"status": "new",
-							"submitting":true
+							"state": "cancelling"
 						})
 			    }
 			    	else {
@@ -245,7 +257,7 @@
 				$("#keyInput").val("");
 				$("#dossier-emp-nav-selectbox-by-dossierNo").val("");
 				//
-				dataSourceProfile.sort({ field: "submitDate", dir: "desc" }); 
+				// dataSourceProfile.sort({ field: "submitDate", dir: "desc" }); 
 				var id = $(e.currentTarget).attr("dataPk");
 				manageDossier.navigate("/"+id)
 			},
@@ -339,8 +351,15 @@
 			loadDossierDetail:function(e){
 				e.preventDefault();
 				var dossierItemStatus = e.data.dossierStatus;
+				var cancellingDateDossier = e.data.cancellingDate;
 				var id = e.data.dossierId;
-				manageDossier.navigate("/"+dossierItemStatus+"/dossiers/"+id);	
+				//
+				if (cancellingDateDossier != null && dossierItemStatus != "cancelled") {
+					manageDossier.navigate("/cancelling/dossiers/"+id);
+				} else {
+					manageDossier.navigate("/"+dossierItemStatus+"/dossiers/"+id);	
+				}
+				// 
 			},
 			stylePager: function(e){
 				e.preventDefault();
@@ -355,7 +374,6 @@
 				$("th").css("vertical-align","top");
 			}
 		});
-		
 
 	</script>
 
