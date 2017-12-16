@@ -814,9 +814,9 @@ public class DossierActionsImpl implements DossierActions {
 		try {
 			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
 					groupId);
-			statusCode = GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS));
+			statusCode = GetterUtil.getString(params.get(DossierTerm.STATUS));
 
-			subStatusCode = GetterUtil.getString(params.get(DossierTerm.DOSSIER_SUB_STATUS));
+			subStatusCode = GetterUtil.getString(params.get(DossierTerm.SUBSTATUS));
 
 			if (Validator.isNotNull(statusCode) || Validator.isNotNull(subStatusCode)) {
 				DictItem dictItem = null;
@@ -877,7 +877,8 @@ public class DossierActionsImpl implements DossierActions {
 					statusCode = dictItem.getItemCode();
 					subStatusCode = StringPool.BLANK;
 					
-					params.put(DossierTerm.DOSSIER_STATUS, statusCode);
+					params.put(DossierTerm.STATUS, statusCode);
+					params.put(DossierTerm.SUBSTATUS, subStatusCode);
 					
 					long count = DossierLocalServiceUtil.countLucene(params, searchContext);
 
@@ -898,15 +899,18 @@ public class DossierActionsImpl implements DossierActions {
 						for(DictItem childDictItem : childDictItems){
 							
 							subStatusCode = childDictItem.getItemCode();
+							
 							statusCode = StringPool.BLANK;
 							
-							params.put(DossierTerm.DOSSIER_SUB_STATUS, subStatusCode);
+							params.put(DossierTerm.STATUS, statusCode);
+							
+							params.put(DossierTerm.SUBSTATUS, subStatusCode);
 							
 							long childCount = DossierLocalServiceUtil.countLucene(params, searchContext);
 
 							JSONObject childStatistic = JSONFactoryUtil.createJSONObject();
 
-							childStatistic.put("dossierStatus", statusCode);
+							childStatistic.put("dossierStatus", dictItem.getItemCode());
 							childStatistic.put("dossierSubStatus", subStatusCode);
 							childStatistic.put("level", childDictItem.getLevel());
 							childStatistic.put("statusName", childDictItem.getItemName());

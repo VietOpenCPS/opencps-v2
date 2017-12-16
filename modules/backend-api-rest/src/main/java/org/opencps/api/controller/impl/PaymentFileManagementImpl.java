@@ -406,13 +406,20 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-
+			System.out.println("////////////////////////////////// " + 1);
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
 
 			PaymentFileActions action = new PaymentFileActionsImpl();
+			
+			System.out.println("////////////////////////////////// id" + id);
+			
+			System.out.println("////////////////////////////////// referenceUid" + referenceUid);
+			
 			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(id, referenceUid);
+			
+			System.out.println("////////////////////////////////// paymentFile" + paymentFile.getDossierId());
 
 			if (paymentFile.getInvoiceFileEntryId() > 0) {
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
