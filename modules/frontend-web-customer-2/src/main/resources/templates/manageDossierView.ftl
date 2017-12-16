@@ -18,6 +18,7 @@
 					</div>
 				</div>
 			</div>
+			<#--  -->
 			<div id="wrapMain" class="table-responsive">
 				<table class="table table-bordered M0">
 					<#-- Table header -->
@@ -98,8 +99,7 @@
 							#=serviceName#
 						</a>
 					</strong>
-					<br>
-					#=govAgencyName#
+					
 				</td>
 
 				<td class="text-center" style="width: 8%">
@@ -109,12 +109,12 @@
 				</td>
 
 				<td class="text-center" style="width: 12%">
-					#if ( submitDate!="" && submitDate!=null ) {#
-						<p>#= kendo.toString(kendo.parseDate(submitDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#</p>
+					#if (submitDate) {#
+						<p>#:submitDate#</p>
 					#}#
 					
-					#if ( receiveDate!="" && receiveDate!=null ) {#
-						<p>#= kendo.toString(kendo.parseDate(receiveDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#</p>
+					#if (receiveDate) {#
+						<p>#:receiveDate#</p>
 					#}#
 				</td>
 
@@ -123,7 +123,7 @@
 					<#-- #=briefNote# -->
 				</td>
 
-				<td class="" style="width: 18%">
+				<td class="" style="width: 17%">
 					<i class="text-light-gray">#=briefNote#</i>
 				</td>
 
@@ -133,17 +133,29 @@
 					#}#
 				</td>
 
-				<td class="text-center" style="width: 9%">
+				<td class="PT0" style="width: 10%">
 					#if(dossierStatus == "done"){#
-						<button type="button" class="btn-link no-border downloadProfile" data-pk="#:dossierId#">
+						<button type="button" class="btn-link no-border PT10 downloadProfile" data-pk="#:dossierId#">
 							<i class="fa fa-download" aria-hidden="true"/>
 							Tải kết quả
 						</button>
 					#}#
-					<button type="button" class="btn-link no-border copyProfile" data-pk="#:dossierId#">
+					<#--  -->
+					<button type="button" class="btn-link no-border PT10 copyProfile" data-pk="#:dossierId#">
 						<i class="fa fa-file-o" aria-hidden="true"></i>
 						Sao chép
 					</button>
+					<#--  -->
+					#if(dossierStatus == "waiting"){#
+						<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="#:dossierId#">
+							<i class="fa fa-paper-plane" aria-hidden="true"></i>
+							Yêu cầu hủy
+						</button></br>
+						<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
+							<i class="fa fa-paper-plane" aria-hidden="true"></i>
+							Gửi bổ sung
+						</button>
+					#}#
 						
 				</td>
 
