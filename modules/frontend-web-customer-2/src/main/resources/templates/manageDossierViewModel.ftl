@@ -137,7 +137,7 @@
 					type:"GET",
 					headers : {"groupId": ${groupId}},
 					data:{
-						status:""
+						status:"new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
 					},
 					success:function(result){
 						$('#profileStatus li[dataPk='+dossierItemStatus+'] .bagde').html(result.total);

@@ -50,13 +50,13 @@
 									</span></br>
 									<strong>Ngày tiếp nhận</strong>
 				        </th>
-				        <th class="fieldDossier text-center hover-pointer">
+				        <th class="fieldDossier text-center hover-pointer" sort="" sort-type="desc">
 				        	<strong>Số chứng chỉ</strong>
 				        	<span class="pull-right align-middle PT5 text-light-gray">
 										<i class="fa fa-sort" aria-hidden="true"></i>
 									</span>	
 				        </th>
-				        <th class="fieldDossier text-center hover-pointer">
+				        <th class="fieldDossier text-center hover-pointer" sort="" sort-type="desc">
 				        	<strong>Nội dung</strong>
 				        	<span class="pull-right align-middle PT5 text-light-gray">
 										<i class="fa fa-sort" aria-hidden="true"></i>
@@ -139,7 +139,7 @@
 					<i class="text-light-gray">#=briefNote#</i>
 				</td>
 
-				<td class="text-center" style="width: 13%">
+				<td class="" style="width: 13%">
 					# if(typeof actionNote !== "undefined"){#
 						<i>#:actionNote#</i>
 					#}#
