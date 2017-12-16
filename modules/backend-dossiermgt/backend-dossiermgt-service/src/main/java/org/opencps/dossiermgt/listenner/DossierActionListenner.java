@@ -83,7 +83,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				}
 
 				payload.put("jobPosName", jobPosName);
-				payload.put("stepName", model.getStepName());
+				payload.put("stepName", model.getActionName());
 				payload.put("stepInstruction", model.getStepInstruction());
 				payload.put("files", files);
 
