@@ -22,6 +22,7 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -34,6 +35,7 @@ import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
@@ -61,6 +63,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -219,9 +222,9 @@ public class DossierActionsImpl implements DossierActions {
 					for (ProcessAction processAction : lstProcessAction) {
 
 						String[] preConditions = StringUtil.split(processAction.getPreCondition());
-						
+
 						String createDossierFiles = processAction.getCreateDossierFiles();
-						
+
 						if (preConditions != null && preConditions.length > 0) {
 							for (String preCondition : preConditions) {
 								if (preCondition.equalsIgnoreCase("payok")) {
@@ -289,17 +292,58 @@ public class DossierActionsImpl implements DossierActions {
 								}
 							}
 						}
+
+						List<String> dossierFileTemplateNos = ListUtil.toList(StringUtil.split(createDossierFiles));
 						
-						String[] dossierFileTemplateNos = StringUtil.split(createDossierFiles);
-						if(dossierFileTemplateNos != null && dossierFileTemplateNos.length > 0){
-							for(int i = 0; i < dossierFileTemplateNos.length; i++){
-								//DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.get
+						List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByD_DP(dossierId, 2);
+						
+						JSONArray createFiles = JSONFactoryUtil.createJSONArray();
+
+						if (dossierFileTemplateNos != null && !dossierFileTemplateNos.isEmpty()) {
+							DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil
+									.getByTemplateNo(groupId, dossier.getDossierTemplateNo());
+							List<DossierPart> dossierParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
+									dossierTemplate.getTemplateNo());
+							if (dossierParts != null) {
+								for (DossierPart dossierPart : dossierParts) {
+									String fileTemplateNo = dossierPart.getFileTemplateNo();
+									if (dossierFileTemplateNos.contains(fileTemplateNo)) {
+										JSONObject createFile = JSONFactoryUtil.createJSONObject();
+										createFile.put("dossierPartId", dossierPart.getDossierPartId());
+										createFile.put("partNo", dossierPart.getPartNo());
+										createFile.put("partName", dossierPart.getPartName());
+										createFile.put("partTip", dossierPart.getPartTip());
+										createFile.put("multiple", dossierPart.getMultiple());
+										createFile.put("templateFileNo", dossierPart.getTemplateNo());
+										boolean eForm = false;
+										String formData = StringPool.BLANK;
+										String formScript = StringPool.BLANK;
+										
+										if(dossierFiles != null){
+											df: for(DossierFile dossierFile : dossierFiles){
+												if(dossierFile.getDossierPartNo().equals(dossierPart.getPartNo())){
+													eForm = dossierFile.getEForm();
+													formData = dossierFile.getFormData();
+													formScript = dossierFile.getFormScript();
+													break df;
+												}
+											}
+										}
+										
+										createFile.put("eform", eForm);
+										createFile.put("formData", formData);
+										createFile.put("formScript", formScript);
+										
+										createFiles.put(createFile);
+									
+									}
+								}
 							}
 						}
 
 						result.put("processAction", processAction);
 						result.put("lstUser", lstUser);
-						//result.put("lstDossierFile", lstUser);
+						result.put("createFiles", createFiles);
 						results.put(result);
 					}
 				} catch (Exception e) {
