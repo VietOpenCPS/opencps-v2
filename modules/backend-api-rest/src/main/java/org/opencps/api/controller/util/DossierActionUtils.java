@@ -2,6 +2,7 @@ package org.opencps.api.controller.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.opencps.api.dossier.model.ActionExecutedModel;
 import org.opencps.api.dossier.model.ListContacts;
@@ -123,12 +124,22 @@ public class DossierActionUtils {
 
 				for (User user : lstUser) {
 					DossierActionNextActiontoUser modelUser = new DossierActionNextActiontoUser();
+					
+					Map<String, Object> attr = user.getModelAttributes();
 
 					long userId = GetterUtil.getLong(user.getUserId());
+					
+					boolean moderator = false;
+					
+					if(attr != null && attr.containsKey("moderator")){
+						moderator = GetterUtil.getBoolean(attr.get("moderator"));
+					}
 
 					modelUser.setUserId(userId);
 					
 					modelUser.setUserName(user.getFullName());
+
+					modelUser.setModerator(moderator);
 
 					outputUsers.add(modelUser);
 				}

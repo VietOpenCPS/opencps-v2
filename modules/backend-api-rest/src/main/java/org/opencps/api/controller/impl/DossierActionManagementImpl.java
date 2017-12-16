@@ -21,7 +21,6 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.ProcessAction;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -90,7 +89,8 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error("@GET: " + e);
+
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");
