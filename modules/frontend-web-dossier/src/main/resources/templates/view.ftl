@@ -30,7 +30,9 @@
 
                 },
                 showContactDetail: false,
-				dossierFiles: []
+				dossierFiles: [],
+				statusParamFilter: null,
+				substatusParamFilter: null
 			},
 			onScroll: 'onScroll',
 			schema: {
@@ -117,11 +119,14 @@
 							var vm = this;
 							vm.detailPage = false;
 							vm.listgroupHoSoFilterselected = item.id;
-							
+							vm.danhSachHoSoTablepage = 1;
+							console.log(item);
 							if ( item.id !== 'tra_cuu' ){
 								vm.stageFilterView = item.id;
 								vm.hoso_title_table = item.title;
-							}
+								vm.statusParamFilter = item.id;
+								vm.substatusParamFilter = item.idSub;
+							} 
 							
 							if (item.id == 'tra_cuu_hoso') {
 								vm._initraCuuHoSoTable(false);
@@ -177,7 +182,6 @@
 									}
                                 }
 
-								console.log(vm.listgroupHoSoFilterItems);
                             })
                                 .catch(function (error) {
                                     console.log(error);
@@ -721,15 +725,15 @@
 							var substatusParam = null;
 
 							if (vm.stageFilterView !== 'danh_sach') {
-								statusParam = vm.stageFilterView;
-								substatusParam = vm.stageFilterView;
+								statusParam = vm.statusParamFilter;
+								substatusParam = vm.substatusParamFilter;
 							}
 
 							var paramsBuilder = {
 								keyword: vm.keywordsSearch,
 								owner: vm.applicantNameFilter.applicantIdNo,
 								service: vm.serviceInfoFilter.serviceCode,
-								//follow: true,
+								follow: true,
 								dossierNo: vm.dossierNoFilter,
 								start: vm.danhSachHoSoTablepage * 8 - 8,
 								end: vm.danhSachHoSoTablepage * 8,
