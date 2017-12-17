@@ -1051,7 +1051,9 @@
 		<!-- Order -->
 
 		<!-- Filter -->
-
+		<finder return-type="Collection" name="G_REGID">
+			<finder-column name="registrationId" />
+		</finder>
 
 	</entity>
 
