@@ -247,7 +247,7 @@
 	     var getContacts = function(){
 	     var dossierIdComment = $('#comments-container-pk').text().trim();
 			 $.ajax({
-	            url: '/o/rest/v2/'+dossierIdComment+'/dossiers/contact',
+	            url: '/o/rest/v2/dossiers/'+dossierIdComment+'/contacts',
 	            type: 'GET',
 	            headers: {
 	                "groupId": themeDisplay.getScopeGroupId()
@@ -264,8 +264,8 @@
 	                    
 	                    $.each(contacts, function(index, contact){
 	                        var user = {};
-	                        user.id = contact.userMappingId;
-	                        user.fullname = contact.fullName;
+	                        user.id = contact.userId;
+	                        user.fullname = contact.userName;
 	                        user.email = contact.email;
 	                        user.profilePictureURL = contact.profileUrl
 	                        users.push(user);
@@ -326,7 +326,7 @@
                     fileName: 'fileName',
                     pings: 'pings',
                     creator: 'userId',
-                    fullname: 'fullName',
+                    fullname: 'fullname',
                     profileURL: 'profileUrl',
                     profilePictureURL: 'pictureUrl',
                     isNew: 'isNew',
@@ -548,9 +548,9 @@
                         
                         formData.append('pings', comment.pings.join());
                         
-                        formData.append('email', themeDisplay.getUserName());
+                        formData.append('email', themeDisplay.getUserId());
                         
-                        formData.append('fullName', themeDisplay.getUserName());
+                        formData.append('fullname', themeDisplay.getUserName());
     
                         $.ajax({
                             url: '/o/rest/v2/comments/uploads',

@@ -75,7 +75,7 @@
 									indexItem -= 1;
 									value.count = indexItem;
 								});
-							}; 
+							};
 							options.success(result);
 							optBoxPageSize();
 							if (result.total!=0) {
@@ -97,6 +97,7 @@
 					});
 				}
 			},
+			page: 1,
 			pageSize: 10,
 			schema:{
 				data:"data",
@@ -105,7 +106,8 @@
 					id: "dossierId"
 				}
 			},
-			sort: { field: "createDate", dir: "desc" }
+			sort: { field: "createDate", dir: "desc" },
+			
 		});
 		// Get total dossierStatus
 		var statusDossierItems = ["new","receiving","processing","waiting","paying","done","cancelling","cancelled","expired","all"];
@@ -340,6 +342,20 @@
 				}
 			})
 		};
+		var resCancelling = function(){
+			$(".resCancelling").click(function(e){
+				e.stopPropagation();
+				var id = $(this).attr("data-Pk");
+				manageDossier.navigate("/dossiers/"+id+"/yeucauhuy");
+			});
+		};
+		var sendAdd = function(){
+			$(".sendAdd").click(function(e){
+				e.stopPropagation();
+				var id = $(this).attr("data-Pk");
+				manageDossier.navigate("/dossiers/"+id+"/guibosung");
+			});
+		};
 		var modelMain = kendo.observable({
 			dataSourceProfile : dataSourceProfile,
 			// modelPanel: modelPanel,
@@ -370,6 +386,8 @@
 				loadProfile();
 				loadAddRes();
 				copyProfile();
+				resCancelling();
+				sendAdd();
 				$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});
 				$("th").css("vertical-align","top");
 			}

@@ -51,8 +51,8 @@ public class StatisticManagementImpl implements StatisticManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put(DossierTerm.DOSSIER_STATUS, query.getDossierStatus());
-			params.put(DossierTerm.DOSSIER_SUB_STATUS, query.getDossierSubStatus());
+			params.put(DossierTerm.STATUS, query.getDossierStatus());
+			params.put(DossierTerm.SUBSTATUS, query.getDossierSubStatus());
 			params.put(Field.USER_ID, String.valueOf(user.getUserId()));
 			params.put(DossierTerm.FOLLOW, String.valueOf(true));
 
