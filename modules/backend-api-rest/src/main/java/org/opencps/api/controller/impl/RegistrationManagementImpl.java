@@ -6,6 +6,7 @@ import org.opencps.api.controller.RegistrationManagement;
 import org.opencps.dossiermgt.action.RegistrationActions;
 import org.opencps.dossiermgt.action.impl.RegistrationActionsImpl;
 import org.opencps.dossiermgt.model.Registration;
+import org.opencps.dossiermgt.model.impl.RegistrationImpl;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
