@@ -43,7 +43,28 @@
           "userName": "userName4",
           "moderator": false
         }
+      ],
+      "createFiles": [
+        {
+          "dossierPartId": 1,
+          "partNo": "123123",
+          "partName": "tra keet qua 1",
+          "partTip": "tra keet qua 1",
+          "multiple": false,
+          "eform": false,
+          "templateFileNo": ""
+        },
+        {
+          "dossierPartId": 2,
+          "partNo": "12312322",
+          "partName": "tra keet qua 2",
+          "partTip": "tra keet qua 2",
+          "multiple": false,
+          "eform": false,
+          "templateFileNo": ""
+        }
       ]
+      
     },
     {
       "processActionId": 3,
