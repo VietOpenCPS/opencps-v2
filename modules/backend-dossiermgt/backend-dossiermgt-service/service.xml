@@ -1001,24 +1001,24 @@
 		<column name="createDate" type="Date" />
 		<column name="modifiedDate" type="Date" />
 
-		<column name="applicantName" type="int" />
-		<column name="applicantIdType" type="int" />
-		<column name="applicantIdNo" type="int" />
-		<column name="applicantIdDate" type="int" />
-		<column name="address" type="int" />
-		<column name="cityCode" type="int" />
-		<column name="cityName" type="int" />
-		<column name="districtCode" type="int" />
-		<column name="districtName" type="int" />
+		<column name="applicantName" type="String" />
+		<column name="applicantIdType" type="String" />
+		<column name="applicantIdNo" type="String" />
+		<column name="applicantIdDate" type="Date" />
+		<column name="address" type="String" />
+		<column name="cityCode" type="String" />
+		<column name="cityName" type="String" />
+		<column name="districtCode" type="String" />
+		<column name="districtName" type="String" />
 		<column name="wardCode" type="String" />
 		<column name="wardName" type="String" />
 		<column name="contactName" type="String" />
 		<column name="contactTelNo" type="String" />
 		<column name="contactEmail" type="String" />
-		<column name="govAgencyCode" type="int" />
-		<column name="govAgencyName" type="boolean" />
-		<column name="registrationState" type="boolean" />
-		<column name="registrationClass" type="boolean" />
+		<column name="govAgencyCode" type="String" />
+		<column name="govAgencyName" type="String" />
+		<column name="registrationState" type="int" />
+		<column name="registrationClass" type="String" />
 		<column name="submitting" type="boolean" />
 		<!-- Order -->
 
@@ -1026,9 +1026,9 @@
 
 
 	</entity>
-	
-	<entity local-service="true" name="RegistrationForm" remote-service="false"
-		table="opencps_registrationform" uuid="true">
+
+	<entity local-service="true" name="RegistrationForm"
+		remote-service="false" table="opencps_registrationform" uuid="true">
 
 		<column name="registrationFormId" type="long" primary="true" />
 
@@ -1051,7 +1051,14 @@
 		<!-- Order -->
 
 		<!-- Filter -->
-
+		<finder return-type="Collection" name="G_REGID">
+			<finder-column name="registrationId" />
+		</finder>
+		
+		<finder return-type="RegistrationForm" name="G_REGID_REFID">
+			<finder-column name="registrationId" />
+			<finder-column name="referenceUid" />
+		</finder>
 
 	</entity>
 
@@ -1111,6 +1118,7 @@
 		<column name="issueDate" type="Date" />
 		<column name="revalidate" type="Date" />
 		<column name="deliverableState" type="String" />
+
 		<finder return-type="Deliverable" name="DID">
 			<finder-column name="deliverableId" />
 		</finder>
@@ -1155,7 +1163,7 @@
 		<column name="registrationTemplateId" type="long" primary="true" />
 
 		<!-- Audit fields -->
-		
+
 		<column name="groupId" type="long" />
 		<column name="userId" type="long" />
 		<column name="userName" type="String" />
@@ -1172,11 +1180,11 @@
 		<column name="formScript" type="String" />
 		<column name="formReport" type="String" />
 		<column name="sampleData" type="String" />
-		
+
 		<finder return-type="RegistrationTemplates" name="G_REGID">
 			<finder-column name="groupId" />
 			<finder-column name="registrationTemplateId" />
-		</finder>		
+		</finder>
 	</entity>
 
 	<exceptions>

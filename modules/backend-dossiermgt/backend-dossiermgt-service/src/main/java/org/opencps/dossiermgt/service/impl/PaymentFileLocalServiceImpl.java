@@ -14,8 +14,6 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,8 +23,6 @@ import java.util.List;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
-import org.opencps.dossiermgt.constants.ServiceConfigTerm;
-import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -55,6 +51,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the payment file local service.
@@ -86,17 +84,13 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 	/**
 	 * Get list payment File using SearchLucene
-	 * @param 
+	 * 
+	 * @param
 	 * @return Hits
 	 */
 	@SuppressWarnings("deprecation")
 	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
-		
-		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
-		String groupId = (String) params.get(Field.GROUP_ID);
-		String dossierId = (String) params.get(DossierTerm.DOSSIER_ID);
-		String referenceUid = (String) params.get(PaymentFileTerm.REFERENCE_UID);
 
 		Indexer<PaymentFile> indexer = IndexerRegistryUtil.nullSafeGetIndexer(PaymentFile.class);
 
@@ -108,6 +102,16 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
+
+		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+		String groupId = (String) params.get(Field.GROUP_ID);
+		String dossierId = (String) params.get(DossierTerm.DOSSIER_ID);
+		String referenceUid = (String) params.get(PaymentFileTerm.REFERENCE_UID);
+
+		// Extra fields
+		String service = String.valueOf((params.get(PaymentFileTerm.SERVICE)));
+		String agency = GetterUtil.getString(params.get(PaymentFileTerm.AGENCY));
+		String status = String.valueOf((params.get(PaymentFileTerm.STATUS)));
 
 		BooleanQuery booleanQuery = null;
 
@@ -125,7 +129,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(ServiceConfigTerm.SERVICE_NAME);
+				query.addFields(PaymentFileTerm.SERVICE_NAME, PaymentFileTerm.GOV_AGENCY_NAME);
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -159,15 +163,10 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		}
 
-		// Extra fields
-		String service = String.valueOf((params.get(PaymentFileTerm.SERVICE)));
-		String agency = GetterUtil.getString(params.get(PaymentFileTerm.AGENCY));
-		String status = String.valueOf((params.get(PaymentFileTerm.STATUS)));
-
 		if (Validator.isNotNull(service)) {
 			MultiMatchQuery query = new MultiMatchQuery(service);
 
-			query.addFields(PaymentFileTerm.SERVICE);
+			query.addFields(PaymentFileTerm.SERVICE_CODE);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -175,7 +174,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		if (Validator.isNotNull(agency)) {
 			MultiMatchQuery query = new MultiMatchQuery(agency);
 
-			query.addFields(PaymentFileTerm.AGENCY);
+			query.addFields(PaymentFileTerm.GOV_AGENCY_CODE);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -183,7 +182,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		if (Validator.isNotNull(status)) {
 			MultiMatchQuery query = new MultiMatchQuery(status);
 
-			query.addFields(PaymentFileTerm.STATUS);
+			query.addFields(PaymentFileTerm.PAYMENT_STATUS);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -195,15 +194,12 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 	/**
 	 * Count number payment File using countLucene
-	 * @param 
+	 * 
+	 * @param
 	 * @return Long
 	 */
 	public long countLucene(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
-
-		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
-		String groupId = (String) params.get(Field.GROUP_ID);
-		String dossierId = (String) params.get(DossierTerm.DOSSIER_ID);
 
 		Indexer<PaymentFile> indexer = IndexerRegistryUtil.nullSafeGetIndexer(PaymentFile.class);
 
@@ -212,6 +208,15 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		searchContext.setAttribute("paginationType", "regular");
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
+
+		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+		String groupId = (String) params.get(Field.GROUP_ID);
+		String dossierId = (String) params.get(DossierTerm.DOSSIER_ID);
+
+		// Extra fields
+		String service = String.valueOf((params.get(PaymentFileTerm.SERVICE)));
+		String agency = GetterUtil.getString(params.get(PaymentFileTerm.AGENCY));
+		String status = String.valueOf((params.get(PaymentFileTerm.STATUS)));
 
 		BooleanQuery booleanQuery = null;
 
@@ -229,7 +234,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(ServiceInfoTerm.SERVICE_NAME);
+				query.addFields(PaymentFileTerm.SERVICE_NAME, PaymentFileTerm.GOV_AGENCY_NAME);
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -253,15 +258,10 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		}
 
-		// Extra fields
-		String service = String.valueOf((params.get(PaymentFileTerm.SERVICE)));
-		String agency = GetterUtil.getString(params.get(PaymentFileTerm.AGENCY));
-		String status = String.valueOf((params.get(PaymentFileTerm.STATUS)));
-
 		if (Validator.isNotNull(service)) {
 			MultiMatchQuery query = new MultiMatchQuery(service);
 
-			query.addFields(PaymentFileTerm.SERVICE);
+			query.addFields(PaymentFileTerm.SERVICE_CODE);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -269,7 +269,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		if (Validator.isNotNull(agency)) {
 			MultiMatchQuery query = new MultiMatchQuery(agency);
 
-			query.addFields(PaymentFileTerm.AGENCY);
+			query.addFields(PaymentFileTerm.GOV_AGENCY_CODE);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -277,7 +277,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		if (Validator.isNotNull(status)) {
 			MultiMatchQuery query = new MultiMatchQuery(status);
 
-			query.addFields(PaymentFileTerm.STATUS);
+			query.addFields(PaymentFileTerm.PAYMENT_STATUS);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -291,6 +291,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 	/**
 	 * Create a payment File
+	 * 
 	 * @param
 	 * @return PaymentFile
 	 */
@@ -300,7 +301,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			long paymentAmount, String paymentNote, String epaymentProfile, String bankInfo,
 			ServiceContext serviceContext) throws PortalException {
 
-//		validate(groupId, serviceConfigId, serviceInfoId, govAgencyCode, serviceLevel, serviceUrl, objName);
+		// validate(groupId, serviceConfigId, serviceInfoId, govAgencyCode,
+		// serviceLevel, serviceUrl, objName);
 
 		Date now = new Date();
 
@@ -309,7 +311,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		long paymentFileId = counterLocalService.increment(PaymentFile.class.getName());
 
 		PaymentFile paymentFile = paymentFilePersistence.create(paymentFileId);
-		
+
 		paymentFile.setGroupId(groupId);
 		paymentFile.setCompanyId(auditUser.getCompanyId());
 		paymentFile.setUserId(auditUser.getUserId());
@@ -344,6 +346,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 	/**
 	 * Get info Epayment Profile
+	 * 
 	 * @param
 	 * @return PaymentFile
 	 */
@@ -355,34 +358,36 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 	/**
 	 * Update info Epayment Profile
+	 * 
 	 * @param
 	 * @return PaymentFile
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentFile updateEProfile(long dossierId, String referenceUid, String strInput, ServiceContext context)
 			throws PortalException {
-		
+
 		PaymentFile object = (PaymentFile) paymentFilePersistence.findByF_DUID(dossierId, referenceUid);
 
 		Date now = new Date();
 
 		User userAction = userLocalService.getUser(context.getUserId());
-		
+
 		// Update audit fields
 		object.setModifiedDate(now);
 		object.setUserId(userAction.getUserId());
 		object.setUserName(userAction.getFullName());
 
 		object.setEpaymentProfile(strInput);
-		
+
 		paymentFilePersistence.update(object);
-		
+
 		return object;
 
 	}
 
 	/**
 	 * update payment File Confirm
+	 * 
 	 * @param
 	 * @return PaymentFile
 	 */
@@ -390,45 +395,46 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	public PaymentFile updateFileConfirm(long groupId, long dossierId, String referenceUid, String confirmNote,
 			String paymentMethod, String confirmPayload, String sourceFileName, long fileSize, InputStream inputStream,
 			ServiceContext serviceContext) throws PortalException, SystemException {
-		
+
 		long userId = serviceContext.getUserId();
 
-//		User auditUser = userPersistence.fetchByPrimaryKey(serviceContext.getUserId());
-		
+		// User auditUser =
+		// userPersistence.fetchByPrimaryKey(serviceContext.getUserId());
+
 		PaymentFile object = (PaymentFile) paymentFilePersistence.findByF_DUID(dossierId, referenceUid);
 		if (object != null) {
 			long fileEntryId = 0;
 			try {
-				FileEntry fileEntry = FileUploadUtils.uploadPaymentFile(userId, 
-						groupId, inputStream, sourceFileName, null, fileSize,
-						serviceContext);
-				
-				if(fileEntry != null) {
+				FileEntry fileEntry = FileUploadUtils.uploadPaymentFile(userId, groupId, inputStream, sourceFileName,
+						null, fileSize, serviceContext);
+
+				if (fileEntry != null) {
 					fileEntryId = fileEntry.getFileEntryId();
 				}
-			} catch(Exception e) {
+			} catch (Exception e) {
 				throw new SystemException(e);
 			}
 
 			Date now = new Date();
 
-//			User userAction = userLocalService.getUser(userId);
-//			long paymentFileId = counterLocalService.increment(PaymentFile.class.getName());
+			// User userAction = userLocalService.getUser(userId);
+			// long paymentFileId =
+			// counterLocalService.increment(PaymentFile.class.getName());
 			// TODO: have add fields default???
 			// Add audit fields
-//			object.setCompanyId(serviceContext.getCompanyId());
-//			object.setGroupId(groupId);
-//			object.setCreateDate(now);
+			// object.setCompanyId(serviceContext.getCompanyId());
+			// object.setGroupId(groupId);
+			// object.setCreateDate(now);
 			object.setModifiedDate(now);
-//			object.setUserId(userAction.getUserId());
-//			object.setUserName(userAction.getFullName());
+			// object.setUserId(userAction.getUserId());
+			// object.setUserName(userAction.getFullName());
 
 			// Add other fields
-//			object.setDossierId(dossierId);
-//			if(Validator.isNull(referenceUid)) {
-//				referenceUid = PortalUUIDUtil.generate();
-//			}
-//			object.setReferenceUid(referenceUid);
+			// object.setDossierId(dossierId);
+			// if(Validator.isNull(referenceUid)) {
+			// referenceUid = PortalUUIDUtil.generate();
+			// }
+			// object.setReferenceUid(referenceUid);
 
 			object.setConfirmNote(confirmNote);
 			object.setPaymentMethod(paymentMethod);
@@ -444,33 +450,34 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 	/**
 	 * Update payment File Approval
+	 * 
 	 * @param
 	 * @return PaymentFile
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentFile updateFileApproval(long groupId, long id, String referenceUid, String approveDatetime,
 			String accountUserName, String govAgencyTaxNo, String invoiceTemplateNo, String sourceFileName,
-			String invoiceIssueNo, String invoiceNo, long fileSize, InputStream inputStream, ServiceContext serviceContext)
-			throws PortalException, SystemException, java.text.ParseException {
-		
+			String invoiceIssueNo, String invoiceNo, long fileSize, InputStream inputStream,
+			ServiceContext serviceContext) throws PortalException, SystemException, java.text.ParseException {
+
 		long userId = serviceContext.getUserId();
 
-//		User auditUser = userPersistence.fetchByPrimaryKey(serviceContext.getUserId());
-		
+		// User auditUser =
+		// userPersistence.fetchByPrimaryKey(serviceContext.getUserId());
+
 		PaymentFile object = (PaymentFile) paymentFilePersistence.findByF_DUID(id, referenceUid);
 		if (object != null) {
 			long fileEntryId = 0;
 			try {
-				FileEntry fileEntry = FileUploadUtils.uploadPaymentFile(userId, 
-						groupId, inputStream, sourceFileName, null, fileSize,
-						serviceContext);
-				
-				if(fileEntry != null) {
+				FileEntry fileEntry = FileUploadUtils.uploadPaymentFile(userId, groupId, inputStream, sourceFileName,
+						null, fileSize, serviceContext);
+
+				if (fileEntry != null) {
 					fileEntryId = fileEntry.getFileEntryId();
 				} else {
-					//TODO: Case when no have fileEntry
+					// TODO: Case when no have fileEntry
 				}
-			} catch(Exception e) {
+			} catch (Exception e) {
 				throw new SystemException(e);
 			}
 
@@ -478,20 +485,20 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 			// TODO: have add fields default???
 			// Add audit fields
-//			object.setCompanyId(serviceContext.getCompanyId());
-//			object.setGroupId(groupId);
-//			object.setCreateDate(now);
+			// object.setCompanyId(serviceContext.getCompanyId());
+			// object.setGroupId(groupId);
+			// object.setCreateDate(now);
 			object.setModifiedDate(now);
-//			object.setUserId(userAction.getUserId());
-//			object.setUserName(userAction.getFullName());
+			// object.setUserId(userAction.getUserId());
+			// object.setUserName(userAction.getFullName());
 
 			// Add other fields
-//			object.setDossierId(dossierId);
-//			if(Validator.isNull(referenceUid)) {
-//				referenceUid = PortalUUIDUtil.generate();
-//			}
-			
-//			object.setReferenceUid(referenceUid);
+			// object.setDossierId(dossierId);
+			// if(Validator.isNull(referenceUid)) {
+			// referenceUid = PortalUUIDUtil.generate();
+			// }
+
+			// object.setReferenceUid(referenceUid);
 
 			// Parse String to Date
 			SimpleDateFormat format = new SimpleDateFormat("DD-MM-YYYY HH:MM:SS");
@@ -503,7 +510,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			object.setInvoiceIssueNo(invoiceIssueNo);
 			object.setInvoiceNo(invoiceNo);
 			object.setConfirmFileEntryId(fileEntryId);
-			
+
 		} else {
 			//
 		}
@@ -511,12 +518,13 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		return paymentFilePersistence.update(object);
 	}
 
-	//8
-	
+	// 8
+
 	public PaymentFile getPaymentFileByReferenceUid(long dossierId, String referenceUid) throws PortalException {
 
 		return paymentFilePersistence.findByD_RUID(dossierId, referenceUid);
 	}
+
 	@Override
 	public List<PaymentFile> getByDossierId(long dossierId) {
 		// TODO Auto-generated method stub

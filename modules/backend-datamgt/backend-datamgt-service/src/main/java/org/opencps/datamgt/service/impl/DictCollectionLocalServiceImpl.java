@@ -108,7 +108,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 			throws DuplicateCategoryException, UnauthenticationException, UnauthorizationException,
 			NoSuchUserException {
 
-		DictCollection dictColl = dictCollectionPersistence.fetchByF_dictCollectionCode(collectionCode.toUpperCase(), groupId);
+		DictCollection dictColl = dictCollectionPersistence.fetchByF_dictCollectionCode(collectionCode, groupId);
 
 		if (Validator.isNotNull(dictColl)) {
 
@@ -137,7 +137,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		if (Validator.isNotNull(collectionCode)) {
 
-			collectionCode = collectionCode.toUpperCase();
+			collectionCode = collectionCode;
 
 		}
 
@@ -259,7 +259,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		DictCollection dictCollection = dictCollectionPersistence.fetchByPrimaryKey(dictCollectionId);
 
-		DictCollection dictColl = dictCollectionPersistence.fetchByF_dictCollectionCode(collectionCode.toUpperCase(),
+		DictCollection dictColl = dictCollectionPersistence.fetchByF_dictCollectionCode(collectionCode,
 				dictCollection.getGroupId());
 
 		if ( Validator.isNotNull(dictColl) && dictColl.getDictCollectionId() != dictCollectionId) {
@@ -274,7 +274,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		if (Validator.isNotNull(collectionCode)) {
 
-			collectionCode = collectionCode.toUpperCase();
+			collectionCode = collectionCode;
 
 		}
 
@@ -309,7 +309,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 			groupId = 0;
 		}
 
-		return dictCollectionPersistence.fetchByF_dictCollectionCode(collectionCode.toUpperCase(), groupId);
+		return dictCollectionPersistence.fetchByF_dictCollectionCode(collectionCode, groupId);
 
 	}
 	

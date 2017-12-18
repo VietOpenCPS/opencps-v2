@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.action.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.opencps.dossiermgt.exception.DossierAccessException;
@@ -47,6 +48,20 @@ public class DossierPermission {
 			boolean isAuthorityEmpoyee = false;
 
 			List<ServiceProcessRole> roles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
+			
+			List<ProcessStep> processSteps = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcessId);
+			
+			List<ProcessStepRole> processStepRoles = new ArrayList<ProcessStepRole>();
+			
+			for (ProcessStep processStep : processSteps) {
+				List<ProcessStepRole> elms = new ArrayList<ProcessStepRole>();
+				
+				elms = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStep.getPrimaryKey());
+				
+				processStepRoles.addAll(elms);
+			}
+			
+			
 			ok: for (ServiceProcessRole role : roles) {
 				long[] userIds = UserLocalServiceUtil.getRoleUserIds(role.getRoleId());
 
@@ -54,6 +69,18 @@ public class DossierPermission {
 					if (spUid == userId) {
 						isAuthorityEmpoyee = true;
 						break ok;
+					}
+				}
+			}
+			
+			
+			ok2: for (ProcessStepRole role : processStepRoles) {
+				long[] userIds = UserLocalServiceUtil.getRoleUserIds(role.getRoleId());
+
+				for (long spUid : userIds) {
+					if (spUid == userId) {
+						isAuthorityEmpoyee = true;
+						break ok2;
 					}
 				}
 			}

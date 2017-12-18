@@ -308,8 +308,12 @@
 
 		<!-- Order -->
 		<order by="asc">
-			<order-column name="createDate" />
+			<order-column name="modifiedDate" />
 		</order>
+		
+		<finder return-type="Collection" name="F_groupId" where=" ( content is not null ) ">
+			<finder-column name="groupId"></finder-column>
+		</finder>
 
 	</entity>
 	
