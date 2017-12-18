@@ -19,11 +19,14 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.MultipartUtility;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.service.DossierActionLocalService;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
@@ -249,9 +252,17 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				// the case resubmit
 				if (object.getBoolean(DossierTerm.SUBMITTING, false)) {
 					// Check autoEvent
-					ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPI_PRESC_AEV(
-							syncServiceProcess.getServiceProcessId(), object.getString(DossierTerm.DOSSIER_STATUS),
-							"SUBMIT");
+					ProcessAction processAction = null;
+					
+					try {
+						DossierAction dossierAction = DossierActionLocalServiceUtil.getDossierAction(desDossier.getDossierActionId());
+						
+						processAction = ProcessActionLocalServiceUtil.fetchBySPI_PRESC_AEV(
+								syncServiceProcess.getServiceProcessId(), dossierAction.getStepCode(),
+								"SUBMIT");
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
 					
 					if (Validator.isNotNull(processAction)) {
 						//doAction
