@@ -18,16 +18,14 @@
 					</div>
 				</div>
 			</div>
+			<#--  -->
 			<div id="wrapMain" class="table-responsive">
 				<table class="table table-bordered M0">
 					<#-- Table header -->
 				    <thead>
 				      <tr>
-				        <th class="fieldDossier text-center hover-pointer" sort="count" sort-type="desc">
+				        <th class="fieldDossier text-center hover-pointer">
 									<span>STT</span>
-									<span class="pull-right align-middle PT5 text-light-gray">
-										<i class="fa fa-sort" aria-hidden="true"></i>
-									</span>
 				        </th>
 				        <th class="fieldDossier text-center hover-pointer" sort="serviceName" sort-type="desc">
 				        	<span>Tên thủ tục</span>
@@ -43,7 +41,7 @@
 									</span></br>
 									<span class="PR10">Số hồ sơ</span>
 				        </th>
-				        <th class="fieldDossier text-center hover-pointer" sort="submitDate" sort-type="asc">
+				        <th class="fieldDossier text-center hover-pointer" sort="submitDate" sort-type="desc">
 				        	<strong>Ngày gửi</strong>
 				        	<span class="pull-right align-middle PT5 text-light-gray">
 										<i class="fa fa-sort" aria-hidden="true"></i>
@@ -52,21 +50,12 @@
 				        </th>
 				        <th class="fieldDossier text-center hover-pointer">
 				        	<strong>Số chứng chỉ</strong>
-				        	<span class="pull-right align-middle PT5 text-light-gray">
-										<i class="fa fa-sort" aria-hidden="true"></i>
-									</span>	
 				        </th>
 				        <th class="fieldDossier text-center hover-pointer">
 				        	<strong>Nội dung</strong>
-				        	<span class="pull-right align-middle PT5 text-light-gray">
-										<i class="fa fa-sort" aria-hidden="true"></i>
-									</span>	
 				        </th>
-				        <th class="fieldDossier text-center hover-pointer" sort="actionNote" sort-type="desc">
+				        <th class="fieldDossier text-center hover-pointer">
 				        	<strong>Ghi chú</strong>
-				        	<span class="pull-right align-middle PT5 text-light-gray">
-										<i class="fa fa-sort" aria-hidden="true"></i>
-									</span>	
 				        </th>
 				        <th class="text-center">
 				        	<strong>Hành động</strong>
@@ -110,8 +99,7 @@
 							#=serviceName#
 						</a>
 					</strong>
-					<br>
-					#=govAgencyName#
+					
 				</td>
 
 				<td class="text-center" style="width: 8%">
@@ -121,12 +109,12 @@
 				</td>
 
 				<td class="text-center" style="width: 12%">
-					#if ( submitDate!="" && submitDate!=null ) {#
-						<p>#= kendo.toString(kendo.parseDate(submitDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#</p>
+					#if (submitDate) {#
+						<p>#:submitDate#</p>
 					#}#
 					
-					#if ( receiveDate!="" && receiveDate!=null ) {#
-						<p>#= kendo.toString(kendo.parseDate(receiveDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#</p>
+					#if (receiveDate) {#
+						<p>#:receiveDate#</p>
 					#}#
 				</td>
 
@@ -135,27 +123,39 @@
 					<#-- #=briefNote# -->
 				</td>
 
-				<td class="" style="width: 18%">
+				<td class="" style="width: 17%">
 					<i class="text-light-gray">#=briefNote#</i>
 				</td>
 
-				<td class="text-center" style="width: 13%">
+				<td class="" style="width: 13%">
 					# if(typeof actionNote !== "undefined"){#
 						<i>#:actionNote#</i>
 					#}#
 				</td>
 
-				<td class="text-center" style="width: 9%">
+				<td class="PT0" style="width: 10%">
 					#if(dossierStatus == "done"){#
-						<button type="button" class="btn-link no-border downloadProfile" data-pk="#:dossierId#">
+						<button type="button" class="btn-link no-border PT10 downloadProfile" data-pk="#:dossierId#">
 							<i class="fa fa-download" aria-hidden="true"/>
 							Tải kết quả
 						</button>
 					#}#
-					<button type="button" class="btn-link no-border copyProfile" data-pk="#:dossierId#">
+					<#--  -->
+					<button type="button" class="btn-link no-border PT10 copyProfile" data-pk="#:dossierId#">
 						<i class="fa fa-file-o" aria-hidden="true"></i>
 						Sao chép
 					</button>
+					<#--  -->
+					#if(dossierStatus == "waiting"){#
+						<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="#:dossierId#">
+							<i class="fa fa-paper-plane" aria-hidden="true"></i>
+							Yêu cầu hủy
+						</button></br>
+						<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
+							<i class="fa fa-paper-plane" aria-hidden="true"></i>
+							Gửi bổ sung
+						</button>
+					#}#
 						
 				</td>
 

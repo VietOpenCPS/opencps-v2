@@ -4,24 +4,25 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.paymentfile.model.PaymentFileInputModel;
 import org.opencps.api.paymentfile.model.PaymentFileModel;
 import org.opencps.api.paymentfile.model.PaymentFileSearchTemplateModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 public class PaymentFileUtils {
 
@@ -115,7 +116,7 @@ public class PaymentFileUtils {
 			model.setApplicantName(dossier.getApplicantName());
 			model.setApplicantIdNo(dossier.getApplicantIdNo());
 		} catch (Exception e) {
-			// TODO: handle exception
+			_log.error(e);
 		}
 		model.setPaymentFee(paymentFile.getPaymentFee());
 		model.setPaymentAmount(paymentFile.getPaymentAmount());
@@ -144,14 +145,19 @@ public class PaymentFileUtils {
 		model.setReferenceUid(paymentFile.getReferenceUid());
 		model.setGovAgencyCode(paymentFile.getGovAgencyCode());
 		model.setGovAgencyName(paymentFile.getGovAgencyName());
-		// TODO:
+		Dossier dossier = null;
 		try {
-			Dossier dossier = DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
-			model.setApplicantName(dossier.getApplicantName());
-			model.setApplicantIdNo(dossier.getApplicantIdNo());
+			dossier = DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
+
 		} catch (Exception e) {
-			// TODO: handle exception
+			_log.error(e);
 		}
+
+		model.setApplicantName((dossier != null && Validator.isNotNull(dossier.getApplicantName()))
+				? dossier.getApplicantName() : StringPool.BLANK);
+		model.setApplicantIdNo((dossier != null && Validator.isNotNull(dossier.getApplicantIdNo()))
+				? dossier.getApplicantIdNo() : StringPool.BLANK);
+
 		model.setIsNew(GetterUtil.getInteger(paymentFile.getIsNew()));
 		model.setPaymentFee(paymentFile.getPaymentFee());
 		model.setPaymentAmount(paymentFile.getPaymentAmount());
@@ -162,7 +168,9 @@ public class PaymentFileUtils {
 		model.setPaymentMethod(paymentFile.getPaymentMethod());
 		model.setConfirmDatetime(APIDateTimeUtils.convertDateToString(paymentFile.getConfirmDatetime()));
 		model.setConfirmPayload(paymentFile.getConfirmPayload());
+
 		DLFileVersion dlFilePayLoad = getFileInfo(GetterUtil.getLong(paymentFile.getConfirmFileEntryId()));
+
 		if (dlFilePayLoad != null) {
 			model.setConfirmFileType(dlFilePayLoad.getExtension());
 			model.setConfirmFileSize(dlFilePayLoad.getSize());
@@ -177,7 +185,9 @@ public class PaymentFileUtils {
 		model.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 		model.setInvoiceIssueNo(paymentFile.getInvoiceIssueNo());
 		model.setInvoiceNo(paymentFile.getInvoiceNo());
+
 		DLFileVersion dlFileInvoice = getFileInfo(GetterUtil.getLong(paymentFile.getInvoiceFileEntryId()));
+
 		if (dlFileInvoice != null) {
 			model.setConfirmFileType(dlFileInvoice.getExtension());
 			model.setConfirmFileSize(dlFileInvoice.getSize());
@@ -276,10 +286,12 @@ public class PaymentFileUtils {
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileId);
 				dlFileVersion = DLFileVersionLocalServiceUtil.getLatestFileVersion(fileEntry.getFileEntryId(), true);
 			} catch (Exception e) {
-				// TODO:
+				_log.error(e);
 			}
 		}
 		return dlFileVersion;
 	}
+
+	private static Log _log = LogFactoryUtil.getLog(PaymentFileUtils.class.getName());
 
 }

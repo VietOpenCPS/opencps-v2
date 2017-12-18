@@ -82,7 +82,8 @@
 				</div>
 				<div>
 					<a href="javascript:;" @click="showContactDetail = !showContactDetail">
-					Thông tin liên hệ: <v-icon color="primary">chevron_right</v-icon>
+					Thông tin liên hệ: <v-icon color="primary" v-if="!showContactDetail">keyboard_arrow_down</v-icon>
+					<v-icon color="primary" v-if="showContactDetail">keyboard_arrow_up</v-icon>
 					</a>
 					
 					<v-slide-y-transition>
@@ -142,7 +143,7 @@
 			<v-tabs-item :href="'#tab-dossier-detail-3'" @click.prevent.stop="selectDossierActionTab(detailModel)">
 			TIẾN TRÌNH XỬ LÝ
 			</v-tabs-item>
-			<v-tabs-item :href="'#tab-dossier-detail-4'">
+			<v-tabs-item :href="'#tab-dossier-detail-4'" onclick="getContacts(1)">
 			TRAO ĐỔI THÔNG TIN
 			</v-tabs-item>
 			<v-tabs-slider color="primary"></v-tabs-slider>
@@ -191,11 +192,10 @@
 					</v-flex>
 					</v-layout>
 					
-					
-					
 					</v-card-title>
 					<v-card-actions>
-					<v-btn flat color="primary" class="px-0">Xác nhận</v-btn>
+					<v-btn flat color="primary" class="px-0"
+						@click.prevent.stop="postNextActions(stepModel)">Xác nhận</v-btn>
 					</v-card-actions>
 				</v-card>
 			 
@@ -204,226 +204,412 @@
 			<div class="opencps_list_border_style" jx-bind="listHistoryProcessing"></div>
 			</v-tabs-content>
 			<v-tabs-content :id="'tab-dossier-detail-4'" reverse-transition="slide-y-transition" transition="slide-y-transition">
-			<div id="comments-container" class="pt-3 px-4" style="background: white;"></div>
-			<script type="text/javascript">
-				
-				$(function() {
-	
-				$('#comments-container').comments({
-					profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
-					textareaRows: 1,
-					enableAttachments: true,
-					enableHashtags: true,
-					enablePinging: true,
-					postCommentOnEnter: false,
-					forceResponsive: false,
-					readOnly: false,
-					newestText: "Mới nhất",
-					oldestText: "Cũ nhất",
-					popularText: "Phổ biến",
-					attachmentsText: "Đính kèm",
-					sendText: "Gửi",
-					replyText: "Trả lời",
-					editText: "Sửa",
-					editedText: "Đã sửa",
-					youText: "Bạn",
-					saveText: "Ghi lại",
-					deleteText: "Xóa",
-					viewAllRepliesText: "Xem tất cả câu trả lời",
-					hideRepliesText: "Ẩn câu trả lời",
-					noCommentsText: "Không có bình luận nào",
-					noAttachmentsText: "Không có tệp đính kèm",
-					attachmentDropText: "Kéo thả tệp đính kèm",
-					fieldMappings: {
-					id: 'commentId',
-					parent: 'parent',
-					userId: 'userId',
-					created: 'createdDate',
-					modified: 'modifiedDate',
-					content: 'content',
-					fileURL: 'fileUrl',
-					fileMimeType: 'fileType',
-					fileName: 'fileName',
-					pings: 'pings',
-					creator: 'userId',
-					fullname: 'fullName',
-					profileURL: 'profileUrl',
-					profilePictureURL: 'pictureUrl',
-					isNew: 'isNew',
-					createdByAdmin: 'isAdmin',
-					createdByCurrentUser: 'createdByCurrentUser',
-					upvoteCount: 'upvoteCount',
-					userHasUpvoted: 'userHasUpvoted',
-					email: 'email',
-					className: 'className',
-					classPK: 'classPK',
-					},
-	
-					getUsers: function(success, error) {
-					var usersArray = [
-					{
-						id: 1,
-						fullname: "Current User",
-						email: "current.user@viima.com",
-						profile_picture_url: "https://app.viima.com/static/media/user_profiles/user-icon.png"
-					},
-					{
-						id: 2,
-						fullname: "Jack Hemsworth",
-						email: "jack.hemsworth@viima.com",
-						profile_picture_url: "https://app.viima.com/static/media/user_profiles/user-icon.png"
-					},
-					{
-						id: 3,
-						fullname: "Hank Smith",
-						email: "hank.smith@viima.com",
-						profile_picture_url: "https://app.viima.com/static/media/user_profiles/user-icon.png"
-					},
-					{
-						id: 4,
-						fullname: "Todd Brown",
-						email: "todd.brown@viima.com",
-						profile_picture_url: "https://app.viima.com/static/media/user_profiles/user-icon.png"
-					},
-					{
-						id: 5,
-						fullname: "Administrator",
-						email: "administrator@viima.com",
-						profile_picture_url: "https://app.viima.com/static/media/user_profiles/user-icon.png"
-					},
-					{
-						id: 6,
-						fullname: "Simon Powell",
-						email: "simon.powell@viima.com",
-						profile_picture_url: "https://app.viima.com/static/media/user_profiles/user-icon.png"
-					},
-					{
-						id: 7,
-						fullname: "Bryan Connery",
-						email: "bryan.connery@viima.com",
-						profile_picture_url: "https://app.viima.com/static/media/user_profiles/user-icon.png"
-					}
-					]
-					success(usersArray);
-					},
-					getComments: function(success, error) {
-					var commentsArray = [{
-						id: 1,
-						"created": "2015-01-10",
-						"modified": "2015-01-10",
-						"content": "Quisque ligula eros ullamcorper quis, lacinia quis facilisis sed sapien. Mauris varius diam vitae arcu. Sed arcu lectus auctor vitae, consectetuer et venenatis eget velit.",
-						"pings": [],
-						"creator": 1,
-						"fullname": "You",
-						"profile_picture_url": "https://app.viima.com/static/media/user_profiles/user-icon.png",
-						"created_by_admin": false,
-						"created_by_current_user": true,
-						"upvote_count": 0,
-						"user_has_upvoted": false
-					},
-					{
-						id: 2,
-						"created": "2015-01-10",
-						"modified": "2015-01-10",
-						"content": "Quisque ligula eros ullamcorper quis, lacinia quis facilisis sed sapien. Mauris varius diam vitae arcu. Sed arcu lectus auctor vitae, consectetuer et venenatis eget velit.",
-						"pings": [],
-						"creator": 2,
-						"fullname": "You",
-						"profile_picture_url": "https://app.viima.com/static/media/user_profiles/user-icon.png",
-						"created_by_admin": false,
-						"created_by_current_user": true,
-						"upvote_count": 0,
-						"user_has_upvoted": false
-					}];
-					success(commentsArray);
-					 
-					},
-					postComment: function(data, success, error) {
-					// 
-					},
-					putComment: function(data, success, error) {
-					
-					},
-					deleteComment: function(data, success, error) {
-					setTimeout(function() {
-						success();
-					}, 500);
-					},
-					upvoteComment: function(data, success, error) {
-					setTimeout(function() {
-						success(data);
-					}, 500);
-					},
-					uploadAttachments: function(dataArray, success, error) {
-					setTimeout(function() {
-						success(dataArray);
-					}, 500);
-					},
-				});
-	
-				function formatComment(comment, users) {
-					if (comment.parent == 0) {
-					comment.parent = null;
-					}
-	
-					if (comment.fileName == "") {
-					comment.fileName = null;
-					}
-	
-					if (comment.fileType == "") {
-					comment.fileType = null;
-					}
-	
-					if (comment.fileUrl == "") {
-					comment.fileUrl = null;
-					}
-	
-					if (comment.pictureUrl == "") {
-					comment.pictureUrl = null;
-					}
-	
-					if (comment.profileUrl == "") {
-					comment.profileUrl = null;
-					}
-	
-					if (comment.pings == "") {
-					comment.pings = null;
-					} else {
-					var pings = comment.pings.toString();
-					var arrPings = pings.split(",");
-	
-	
-					$(arrPings).each(function (index, id) {
-	
-						$(users).each(function (i, user) {
-	
-						if (id == user.id) {
-							comment.content = comment.content.replace('@' + id, '@' + users[i].fullname);
-							return false;
-						}
-						});
-					});
-					}
-	
-					var createdDate = new Date(comment.createDate);
-	
-					var createdDateText = formatDate(createdDate, 'yyyy-MM-dd HH:mm');
-	
-					var modifiedDate = new Date(comment.modifiedDate);
-	
-					var modifiedDateText = formatDate(modifiedDate, 'yyyy-MM-dd HH:mm');
-	
-					comment.createdDate = createdDateText;
-	
-					comment.modifiedDate = modifiedDateText;
-	
-					return comment;
-				}
-				
-				});
-		
-			</script>
+
+				<div id="comments-container" class="pt-3 px-4" style="background: white;"></div>
+				<div id="comments-container-pk" style="display: none;">{{detailModel.dossierId}}</div>
+
 			</v-tabs-content>
 		</v-tabs-items>
 	</v-tabs>
 </div>
+
+
+			
+<script type="text/javascript">
+	
+	     var users = [];
+	     
+	     var getContacts = function(){
+	     var dossierIdComment = $('#comments-container-pk').text().trim();
+			 $.ajax({
+	            url: '/o/rest/v2/dossiers/'+dossierIdComment+'/contacts',
+	            type: 'GET',
+	            headers: {
+	                "groupId": themeDisplay.getScopeGroupId()
+	            },
+	            async: false,
+	            dataType: 'json',
+	            data: {
+	                userMapping: true
+	            },
+	            
+	            success: function(result) {
+	                if(result != null && result.hasOwnProperty('data')){
+	                    var contacts = result.data;
+	                    
+	                    $.each(contacts, function(index, contact){
+	                        var user = {};
+	                        user.id = contact.userId;
+	                        user.fullname = contact.userName;
+	                        user.email = contact.email;
+	                        user.profilePictureURL = contact.profileUrl
+	                        users.push(user);
+	                    });
+	                  }else{
+	                    users = [];
+	                }
+	                
+	                renderComment(users);
+	            },
+	            error: function(){
+	                users = [];
+	                renderComment(users);
+	            }
+	        });
+
+		};
+		
+		function renderComment(users){
+
+			var dossierId = $('#comments-container-pk').text().trim();
+			var groupId = themeDisplay.getScopeGroupId();
+
+            $('#comments-container').comments({
+                profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
+                textareaRows: 1,
+                enableAttachments: true,
+                enableHashtags: true,
+                enablePinging: true,
+                postCommentOnEnter: false,
+                forceResponsive: false,
+                readOnly: false,
+                newestText: "Mới nhất",
+                oldestText: "Cũ nhất",
+                popularText: "Phổ biến",
+                attachmentsText: "Đính kèm",
+                sendText: "Gửi",
+                replyText: "Trả lời",
+                editText: "Sửa",
+                editedText: "Đã sửa",
+                youText: "Bạn",
+                saveText: "Ghi lại",
+                deleteText: "Xóa",
+                viewAllRepliesText: "Xem tất cả câu trả lời",
+                hideRepliesText: "Ẩn câu trả lời",
+                noCommentsText: "Không có bình luận nào",
+                noAttachmentsText: "Không có tệp đính kèm",
+                attachmentDropText: "Kéo thả tệp đính kèm",
+                fieldMappings: {
+                    id: 'commentId',
+                    parent: 'parent',
+                    userId: 'userId',
+                    created: 'createdDate',
+                    modified: 'modifiedDate',
+                    content: 'content',
+                    fileURL: 'fileUrl',
+                    fileMimeType: 'fileType',
+                    fileName: 'fileName',
+                    pings: 'pings',
+                    creator: 'userId',
+                    fullname: 'fullname',
+                    profileURL: 'profileUrl',
+                    profilePictureURL: 'pictureUrl',
+                    isNew: 'isNew',
+                    createdByAdmin: 'isAdmin',
+                    createdByCurrentUser: 'createdByCurrentUser',
+                    upvoteCount: 'upvoteCount',
+                    userHasUpvoted: 'userHasUpvoted',
+                    email: 'email',
+                    className: 'className',
+                    classPK: 'classPK',
+                },
+                
+                timeFormatter: function(time) {
+                    
+                    if(time != null){
+                        
+                        var dt  = time.split(/\ |\s/);
+                        if(dt.length == 2){
+                            var d = dt[0].split(/\-|\s/);
+                        
+                            return (d.slice(0,3).reverse().join('/')) + ' ' + dt[1];
+                        }else{
+                            return time;
+                        }
+                    }
+                    
+                    return '';
+                },
+                
+                getUsers: function(onSuccess, onError) {
+                   onSuccess(users);
+                   onError();
+                },
+                
+                getComments: function(onSuccess, onError) {
+                    $.ajax({
+                        url: '/o/rest/v2/comments/org.opencps.dossiermgt.model.Dossier/'+ dossierId,
+                        type: 'GET',
+                        headers: {
+                            "groupId": groupId
+                        },
+                        async: false,
+                        dataType: 'json',
+                        data: {
+                            
+                        },
+                        success: function(comments) {
+                         
+                            var data = [];
+                            
+                            $.each(comments.data, function(index, comment){
+                                data.push(formatComment(comment, users));
+                            });
+                            onSuccess(data);
+                        },
+                        error: function(xhr){
+                            onSuccess([]);
+                            onError();
+                        }
+                    });
+                },
+                postComment: function(data, onSuccess, onError) {
+                    var strPings = data.pings.join();
+                    $.ajax({
+                        url: '/o/rest/v2/comments',
+                        type: 'POST',
+                        headers: {
+                            "groupId": groupId
+                        },
+                        async: false,
+                        dataType: 'json',
+                        data: {
+                            className: 'org.opencps.dossiermgt.model.Dossier',
+                            classPK: dossierId,
+                            parent: data.parent != null ? data.parent : 0,
+                            pings: strPings,
+                            content: data.content,
+                            upvoteCount: data.upvoteCount
+                        },
+                        success: function(comment) {
+                            if(comment != null){
+                                onSuccess(formatComment(comment, users));
+                            }else{
+                                onSuccess([]);
+                            }
+                            
+                        },
+                        error: function(xhr){
+                            onError();
+                        }
+                    });
+                },
+                putComment: function(data, onSuccess, onError) {
+                    
+                    $.ajax({
+                        url: '/o/rest/v2/comments/' + data.commentId,
+                        type: 'PUT',
+                        headers: {
+                            "groupId": groupId
+                        },
+                        async: false,
+                        dataType: 'json',
+                        data: {
+                            className: 'org.opencps.dossiermgt.model.Dossier',
+                            classPK: dossierId,
+                            parent: data.parent != null ? data.parent : 0,
+                            pings: data.pings.join(),
+                            content: data.content,
+                            upvoteCount: data.upvoteCount
+                        },
+                        success: function(comment) {
+                            onSuccess(formatComment(comment, users));
+                        },
+                        error: function(xhr){
+                            onError();
+                        }
+                    });
+                },
+                deleteComment: function(data, onSuccess, onError) {
+                   
+                   	$.ajax({
+                        url: '/o/rest/v2/comments/' + data.commentId,
+                        type: 'DELETE',
+                        data: data,
+                        async: false,
+                        dataType: 'json',
+                        success: function(comment) {
+                            onSuccess();
+                        },
+                        error: function(xhr){
+                            onError();
+                        }
+                    });
+                },
+                upvoteComment: function(data, onSuccess, onError) {
+                    
+                    if(data.userHasUpvoted){
+                        $.ajax({
+                            url: '/o/rest/v2/comments/' + data.commentId + '/upvotes',
+                            type: 'PUT',
+                            headers: {
+                                "groupId": groupId
+                            },
+                            async: false,
+                            dataType: 'json',
+                            data: {
+                                commentId: data.commentId,
+                                className: data.className,
+                                classPK: data.classPK,
+                                upvoteCount: data.upvoteCount
+                            },
+                            success: function(comment) {
+                                onSuccess(formatComment(comment, users));
+                            },
+                            error: function(xhr){
+                                onError();
+                            }
+                        });
+                    }else{
+                        $.ajax({
+                            url: '/o/rest/v2/comments/' + data.commentId + '/upvotes',
+                            type: 'DELETE',
+                            data: {
+                                commentId: data.commentId,
+                                className: data.className,
+                                classPK: data.classPK,
+                                upvoteCount: data.upvoteCount
+                            },
+                            async: false,
+                            dataType: 'json',
+                            success: function(comment) {
+                                onSuccess(formatComment(comment, users));
+                                
+                            },
+                            error: function(xhr){
+                                onError();
+                            }
+                        });
+                    }
+    
+                },
+                uploadAttachments: function(comments, onSuccess, onError) {
+                    var responses = 0;
+                    var successfulUploads = [];
+    
+                    var serverResponded = function() {
+                        responses++;
+    
+                        if(responses == comments.length) {
+                            
+                            if(successfulUploads.length == 0) {
+                                onError();
+    
+                            } else {
+                                onSuccess(successfulUploads)
+                            }
+                        }
+                    }
+    
+                    $(comments).each(function(index, comment) {
+                        var formData = new FormData();
+                        
+                        $(Object.keys(comment)).each(function(index, key) {
+                            var value = comment[key];
+                            if(value) formData.append(key, value);
+                        });
+                        
+                        formData.append('className', 'org.opencps.dossiermgt.model.Dossier');
+                        
+                        formData.append('classPK', dossierId);
+                        
+                        formData.append('parent', comment.parent != null ? comment.parent : 0);
+                        
+                        formData.append('fileName', comment.file.name);
+                        
+                        formData.append('fileType', comment.file.type);
+                        
+                        formData.append('fileSize', comment.file.size);
+                        
+                        formData.append('pings', comment.pings.join());
+                        
+                        formData.append('email', themeDisplay.getUserId());
+                        
+                        formData.append('fullname', themeDisplay.getUserName());
+    
+                        $.ajax({
+                            url: '/o/rest/v2/comments/uploads',
+                            dataType: 'json',
+                            type: 'POST',
+                            headers: {
+                                "groupId": groupId
+                            },
+                            data: formData,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            success: function(comment) {
+                                comment = formatComment(comment, users);
+                                successfulUploads.push(comment);
+                                serverResponded();                      
+                            },
+                            error: function(xhr, data) {
+                                serverResponded();
+                            }
+                        });
+                    });
+                }
+            });
+        }
+		
+		function formatComment(comment, users){
+			
+			if(comment.parent == 0){
+				comment.parent = null;
+			}
+			
+			if(comment.fileName == ""){
+				comment.fileName = null;
+			}
+			
+			if(comment.fileType == ""){
+				comment.fileType = null;
+			}
+			
+			if(comment.fileUrl == ""){
+				comment.fileUrl = null;
+			}
+			
+			if(comment.pictureUrl ==""){
+			    comment.pictureUrl = null;
+			}
+			
+			if(comment.profileUrl ==""){
+                comment.profileUrl = null;
+            }
+            
+            if(comment.pings ==""){
+                comment.pings = null;
+            }else{
+                var pings = comment.pings.toString();
+                var arrPings = pings.split(",");
+                
+               
+                $(arrPings).each(function(index, id) {
+                    
+                    $(users).each(function(i, user) {
+                       
+                         if(id == user.id){
+                             comment.content = comment.content.replace('@' + id, '@' + users[i].fullname);
+                             return false; 
+                        }
+                    });
+                });
+            }
+			
+			var createdDate = new Date(comment.createDate);
+			
+			var createdDateText = "2017-12-12 12:12";
+			
+			var modifiedDate = new Date(comment.modifiedDate);
+			
+			var modifiedDateText = "2017-12-12 12:12";
+			
+			comment.createdDate = createdDateText;
+			
+			comment.modifiedDate = modifiedDateText;
+			
+			return comment;
+		}
+
+</script>

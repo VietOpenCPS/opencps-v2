@@ -104,7 +104,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 			new String[] { String.class.getName() },
 			CommentModelImpl.UUID_COLUMN_BITMASK |
-			CommentModelImpl.CREATEDATE_COLUMN_BITMASK);
+			CommentModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_UUID = new FinderPath(CommentModelImpl.ENTITY_CACHE_ENABLED,
 			CommentModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
@@ -903,7 +903,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			new String[] { String.class.getName(), Long.class.getName() },
 			CommentModelImpl.UUID_COLUMN_BITMASK |
 			CommentModelImpl.COMPANYID_COLUMN_BITMASK |
-			CommentModelImpl.CREATEDATE_COLUMN_BITMASK);
+			CommentModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_UUID_C = new FinderPath(CommentModelImpl.ENTITY_CACHE_ENABLED,
 			CommentModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
@@ -1471,6 +1471,508 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 	private static final String _FINDER_COLUMN_UUID_C_UUID_2 = "comment.uuid = ? AND ";
 	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(comment.uuid IS NULL OR comment.uuid = '') AND ";
 	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 = "comment.companyId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GROUPID =
+		new FinderPath(CommentModelImpl.ENTITY_CACHE_ENABLED,
+			CommentModelImpl.FINDER_CACHE_ENABLED, CommentImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_groupId",
+			new String[] {
+				Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GROUPID =
+		new FinderPath(CommentModelImpl.ENTITY_CACHE_ENABLED,
+			CommentModelImpl.FINDER_CACHE_ENABLED, CommentImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByF_groupId",
+			new String[] { Long.class.getName() },
+			CommentModelImpl.GROUPID_COLUMN_BITMASK |
+			CommentModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GROUPID = new FinderPath(CommentModelImpl.ENTITY_CACHE_ENABLED,
+			CommentModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_groupId",
+			new String[] { Long.class.getName() });
+
+	/**
+	 * Returns all the comments where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @return the matching comments
+	 */
+	@Override
+	public List<Comment> findByF_groupId(long groupId) {
+		return findByF_groupId(groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the comments where groupId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link CommentModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of comments
+	 * @param end the upper bound of the range of comments (not inclusive)
+	 * @return the range of matching comments
+	 */
+	@Override
+	public List<Comment> findByF_groupId(long groupId, int start, int end) {
+		return findByF_groupId(groupId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the comments where groupId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link CommentModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of comments
+	 * @param end the upper bound of the range of comments (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching comments
+	 */
+	@Override
+	public List<Comment> findByF_groupId(long groupId, int start, int end,
+		OrderByComparator<Comment> orderByComparator) {
+		return findByF_groupId(groupId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the comments where groupId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link CommentModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of comments
+	 * @param end the upper bound of the range of comments (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching comments
+	 */
+	@Override
+	public List<Comment> findByF_groupId(long groupId, int start, int end,
+		OrderByComparator<Comment> orderByComparator, boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GROUPID;
+			finderArgs = new Object[] { groupId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GROUPID;
+			finderArgs = new Object[] { groupId, start, end, orderByComparator };
+		}
+
+		List<Comment> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Comment>)finderCache.getResult(finderPath, finderArgs,
+					this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Comment comment : list) {
+					if ((groupId != comment.getGroupId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_COMMENT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GROUPID_GROUPID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(CommentModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (!pagination) {
+					list = (List<Comment>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Comment>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first comment in the ordered set where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching comment
+	 * @throws NoSuchCommentException if a matching comment could not be found
+	 */
+	@Override
+	public Comment findByF_groupId_First(long groupId,
+		OrderByComparator<Comment> orderByComparator)
+		throws NoSuchCommentException {
+		Comment comment = fetchByF_groupId_First(groupId, orderByComparator);
+
+		if (comment != null) {
+			return comment;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchCommentException(msg.toString());
+	}
+
+	/**
+	 * Returns the first comment in the ordered set where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching comment, or <code>null</code> if a matching comment could not be found
+	 */
+	@Override
+	public Comment fetchByF_groupId_First(long groupId,
+		OrderByComparator<Comment> orderByComparator) {
+		List<Comment> list = findByF_groupId(groupId, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last comment in the ordered set where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching comment
+	 * @throws NoSuchCommentException if a matching comment could not be found
+	 */
+	@Override
+	public Comment findByF_groupId_Last(long groupId,
+		OrderByComparator<Comment> orderByComparator)
+		throws NoSuchCommentException {
+		Comment comment = fetchByF_groupId_Last(groupId, orderByComparator);
+
+		if (comment != null) {
+			return comment;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchCommentException(msg.toString());
+	}
+
+	/**
+	 * Returns the last comment in the ordered set where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching comment, or <code>null</code> if a matching comment could not be found
+	 */
+	@Override
+	public Comment fetchByF_groupId_Last(long groupId,
+		OrderByComparator<Comment> orderByComparator) {
+		int count = countByF_groupId(groupId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Comment> list = findByF_groupId(groupId, count - 1, count,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the comments before and after the current comment in the ordered set where groupId = &#63;.
+	 *
+	 * @param commentId the primary key of the current comment
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next comment
+	 * @throws NoSuchCommentException if a comment with the primary key could not be found
+	 */
+	@Override
+	public Comment[] findByF_groupId_PrevAndNext(long commentId, long groupId,
+		OrderByComparator<Comment> orderByComparator)
+		throws NoSuchCommentException {
+		Comment comment = findByPrimaryKey(commentId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Comment[] array = new CommentImpl[3];
+
+			array[0] = getByF_groupId_PrevAndNext(session, comment, groupId,
+					orderByComparator, true);
+
+			array[1] = comment;
+
+			array[2] = getByF_groupId_PrevAndNext(session, comment, groupId,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Comment getByF_groupId_PrevAndNext(Session session,
+		Comment comment, long groupId,
+		OrderByComparator<Comment> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_COMMENT_WHERE);
+
+		query.append(_FINDER_COLUMN_F_GROUPID_GROUPID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(CommentModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(comment);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Comment> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the comments where groupId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 */
+	@Override
+	public void removeByF_groupId(long groupId) {
+		for (Comment comment : findByF_groupId(groupId, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(comment);
+		}
+	}
+
+	/**
+	 * Returns the number of comments where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @return the number of matching comments
+	 */
+	@Override
+	public int countByF_groupId(long groupId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GROUPID;
+
+		Object[] finderArgs = new Object[] { groupId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_COMMENT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GROUPID_GROUPID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GROUPID_GROUPID_2 = "comment.groupId = ? AND  ( comment.content is not null ) ";
 
 	public CommentPersistenceImpl() {
 		setModelClass(Comment.class);
@@ -1793,6 +2295,23 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+					args);
+			}
+
+			if ((commentModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GROUPID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						commentModelImpl.getOriginalGroupId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GROUPID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GROUPID,
+					args);
+
+				args = new Object[] { commentModelImpl.getGroupId() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GROUPID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GROUPID,
 					args);
 			}
 		}
