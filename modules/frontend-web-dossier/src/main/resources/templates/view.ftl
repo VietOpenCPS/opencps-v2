@@ -112,7 +112,7 @@
 						showAlpacaJSFORM: function (item) {
 							//alapcajs Form
 							var alpacajsForm = document.getElementById("alpacajs_form_"+item.dossierPartId);
-							if (alpacajsForm != null && alpacajsForm.innerHTML == '') {
+							if (alpacajsForm.innerHTML == '' && item.eform) {
 								console.log(item);
 								$("#alpacajs_form_"+item.dossierPartId).alpaca({
 									"schema": {
@@ -172,9 +172,9 @@
 
 							const postData = {
 								"actionCode": item.actionCode,
-								"actionUser": 'dsadsa',
-								"actionNote": 'dsadsa',
-								"assignUserId": 0
+								"actionUser": themeDisplay.getUserName(),
+								"actionNote": vm.processActionNote,
+								"assignUserId": vm.processAssignUserId.userId
 							};
 							
 							$.ajax({
@@ -184,9 +184,9 @@
 								},
 								data: {
 									"actionCode": item.actionCode,
-									"actionUser": 'dsadsa',
-									"actionNote": 'dsadsa',
-									"assignUserId": 0
+									"actionUser": themeDisplay.getUserName(),
+									"actionNote": vm.processActionNote,
+									"assignUserId": vm.processAssignUserId.userId
 								},
 								type: 'POST',
 								dataType: 'json',
@@ -1159,14 +1159,16 @@
 							// call DownloadFile.
 							var vm = this;
 							const config = {
-								headers: {'groupId': themeDisplay.getScopeGroupId()}
+								headers: {'groupId': themeDisplay.getScopeGroupId()},
+								responseType: 'blob'
 							};
 
 							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/files/'+item.referenceUid;
 							
 							axios.get(url, config).then(function (response) {
-								var serializable = response.data;
-								
+								var url = window.URL.createObjectURL(response.data);
+								console.log(url);
+								window.open(url);
 							})
 								.catch(function (error) {
 									console.log(error);

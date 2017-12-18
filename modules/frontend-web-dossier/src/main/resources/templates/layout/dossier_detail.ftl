@@ -63,19 +63,19 @@
 					<span class="text-bold">
 					Thời gian gửi: 
 					</span>
-					{{ detailModel.submitDate | date }}
+					{{ detailModel.submitDate}}
 				</div>
 				<div class="pb-1">
 					<span class="text-bold">
 					Thời gian tiếp nhận: 
 					</span>
-					{{ detailModel.receiveDate | date }}
+					{{ detailModel.receiveDate}}
 				</div>
 				<div class="pb-1">
 					<span class="text-bold">
 					Thời hạn xử lý: 
 					</span>
-					{{ detailModel.dueDate | date }}
+					{{ detailModel.dueDate}}
 				</div>
 				<div class="pb-1">
 					<span class="text-bold">
@@ -217,7 +217,7 @@
                             </div>
 
                             <input type="file" :id="'inputfile_'+item.dossierPartId" style="display:none" v-on:change="singleFileUploadInput($event, item)"/>
-                            <div class="text-right pr-4">
+                            <div class="text-right pr-4" v-if="item.eform">
                                 <v-btn color="primary" 
                                     :loading="loadingAlpacajsForm"
                                     :disabled="loadingAlpacajsForm"
