@@ -105,7 +105,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 			NoSuchUserException {
 
 		/*
-		 * DictGroup dictColl = dictGroupPersistence.fetchByF_groupCode(groupCode.toUpperCase(), groupId);
+		 * DictGroup dictColl = dictGroupPersistence.fetchByF_groupCode(groupCode, groupId);
 		 * ThanhNV: hotFix check duplicate
 		 * 
 		 */
@@ -138,7 +138,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(groupCode)) {
 
-			groupCode = groupCode.toUpperCase();
+			groupCode = groupCode;
 
 		}
 
@@ -159,7 +159,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		// Other fields
 		dictGroup.setDictCollectionId(dictCollectionId);
-		dictGroup.setGroupCode(groupCode.toUpperCase());
+		dictGroup.setGroupCode(groupCode);
 		dictGroup.setGroupName(groupName);
 		dictGroup.setGroupNameEN(groupNameEN);
 		dictGroup.setGroupDescription(groupDescription);
@@ -264,11 +264,11 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 		DictGroup dictGroup = dictGroupPersistence.fetchByPrimaryKey(dictGroupId);
 
 		/*
-		 * DictGroup dictColl = dictGroupPersistence.fetchByF_groupCode(groupCode.toUpperCase(), dictGroup.getGroupId());
+		 * DictGroup dictColl = dictGroupPersistence.fetchByF_groupCode(groupCode, dictGroup.getGroupId());
 		 * ThanhNV: hotFix check duplicate
 		 * 
 		 */
-		DictGroup dictColl = dictGroupPersistence.fetchByGC_GI_DCI(groupCode.toUpperCase(), dictGroup.getGroupId(), dictCollectionId);
+		DictGroup dictColl = dictGroupPersistence.fetchByGC_GI_DCI(groupCode, dictGroup.getGroupId(), dictCollectionId);
 
 		if (Validator.isNotNull(dictColl) && dictColl.getDictGroupId() != dictGroupId) {
 
@@ -282,7 +282,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(groupCode)) {
 
-			groupCode = groupCode.toUpperCase();
+			groupCode = groupCode;
 
 		}
 
@@ -293,7 +293,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		// Other fields
 		dictGroup.setDictCollectionId(dictCollectionId);
-		dictGroup.setGroupCode(groupCode.toUpperCase());
+		dictGroup.setGroupCode(groupCode);
 		dictGroup.setGroupName(groupName);
 		dictGroup.setGroupNameEN(groupNameEN);
 		dictGroup.setGroupDescription(groupDescription);
@@ -313,7 +313,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 	 */
 	public DictGroup fetchByF_DictGroupCode(String groupCode, long groupId) {
 
-		return dictGroupPersistence.fetchByF_groupCode(groupCode.toUpperCase(), groupId);
+		return dictGroupPersistence.fetchByF_groupCode(groupCode, groupId);
 
 	}
 
