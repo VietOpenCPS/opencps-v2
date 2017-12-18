@@ -103,18 +103,18 @@
 				</td>
 
 				<td class="text-center" style="width: 8%">
-						<p><strong>#=dossierId#</strong></p>
+						<p title="Mã hồ sơ"><strong>#=dossierId#</strong></p>
 					
-						<p>#=dossierNo#</p>
+						<p title="Số hồ sơ">#=dossierNo#</p>
 				</td>
 
 				<td class="text-center" style="width: 12%">
 					#if (submitDate) {#
-						<p>#:submitDate#</p>
+						<p title="Ngày gửi">#:submitDate#</p>
 					#}#
 					
 					#if (receiveDate) {#
-						<p>#:receiveDate#</p>
+						<p title="Ngày tiếp nhận">#:receiveDate#</p>
 					#}#
 				</td>
 
@@ -133,7 +133,7 @@
 					#}#
 				</td>
 
-				<td class="PT0" style="width: 10%">
+				<td class="PT0 PR0" style="width: 10%">
 					#if(dossierStatus == "done"){#
 						<button type="button" class="btn-link no-border PT10 downloadProfile" data-pk="#:dossierId#">
 							<i class="fa fa-download" aria-hidden="true"/>

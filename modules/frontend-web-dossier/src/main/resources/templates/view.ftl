@@ -26,9 +26,7 @@
 				xem_them: 'Không tìm thấy hồ sơ nào',
 				hoso_title_table: 'Danh sách hồ sơ',
                 processSteps: [],
-                stepModel: {
-
-                },
+                stepModel: null,
                 showContactDetail: false,
 				dossierFiles: [],
 				statusParamFilter: null,
@@ -47,36 +45,99 @@
                         changeProcessStep: function (item){
                             console.log(item);
                             var vm = this;
-                            vm.stepModel = item;
+
+							var createFiles = item.createFiles;
+
+							item.createFiles = [];
+							item.createFiles.pust(createFiles);
+
+							console.log(item);
+							if (item.autoEvent !== 'submit' && item.autoEvent !== 'timer') {
+								vm.stepModel = item;
+							} else {
+								vm.stepModel = null;
+							}
+                            
                             vm.processAssignUserIdItems = item.toUsers
                         },
 						postNextActions: function (item){
-                            console.log(item);
+							
                             var vm = this;
 
-							var url = '/dossiers/'+vm.detailModel.dossierId+'/actions';
+							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/actions';
                             const config = {
-								headers: {'groupId': themeDisplay.getScopeGroupId()},
-								data: {
-									"actionCode": item.actionCode,
-									"actionUser": themeDisplay.getUserId(),
-									"actionNote": vm.processActionNote,
-									"assignUserId": vm.processAssignUserId.userId
+								headers: {
+									'groupId': themeDisplay.getScopeGroupId(),
+									'Content-type': 'application/x-www-form-urlencoded'
 								}
 							};
-                            axios.post(url, config).then(function (response) {
+
+							var assignUserId = 0;
+
+							if (vm.processAssignUserId.userId > 0) {
+								assignUserId = vm.processAssignUserId.userId;
+							}
+
+							const postData = {
+								"actionCode": item.actionCode,
+								"actionUser": 'dsadsa',
+								"actionNote": 'dsadsa',
+								"assignUserId": 0
+							};
+							
+							$.ajax({
+								url: url,
+								headers: {
+								"groupId": themeDisplay.getScopeGroupId()
+								},
+								data: {
+									"actionCode": item.actionCode,
+									"actionUser": 'dsadsa',
+									"actionNote": 'dsadsa',
+									"assignUserId": 0
+								},
+								type: 'POST',
+								dataType: 'json',
+								contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+								success: function(data, textStatus, xhr) {
+								
+									vm.snackbartextdossierViewJX = item.actionName + " thành công!";
+									vm.snackbardossierViewJX = true;
+
+									vm._initlistgroupHoSoFilter();
+
+									vm.detailPage = false;
+								
+								},
+								error: function(xhr, textStatus, errorThrown) {
+								
+									vm.snackbartextdossierViewJX = item.actionName + " thất bại!";
+                      				vm.snackbarerordossierViewJX = true;
+								
+								}
+							});
+		  /**
+                            axios.post(url, postData, config).then(function (response) {
                                 var serializable = response.data;
 
-                                vm.processSteps = serializable.data;
+                                vm.snackbartextdossierViewJX = item.actionName + " thành công!";
+                      			vm.snackbardossierViewJX = true;
+
+								vm._initlistgroupHoSoFilter();
 
                             })
                                 .catch(function (error) {
                                     console.log(error);
+									vm.snackbartextdossierViewJX = item.actionName + " thất bại!";
+                      				vm.snackbarerordossierViewJX = true;
                                 });
+								*/
                         },
                         _initchangeProcessStep: function (){
                             var vm = this;
-                            const config = {};
+                            const config = {
+								headers: {'groupId': themeDisplay.getScopeGroupId()}
+							};
                             
                             var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/nextactions';
                             // var url = '/o/frontendwebdossier/json/steps.json';
@@ -94,6 +155,46 @@
 						filterAllDossierWithOutStatus: function () {
 							this.stageFilterView = 'danh_sach';
 							this._inidanhSachHoSoTable(false);
+						},
+						singleFileUpload: function (item) {
+							this.$refs.inputttt.click()
+						},
+						singleFileUploadInput: function (e, item) {
+							
+							var files = e.target.files || e.dataTransfer.files;
+							
+
+							var file = files[0];
+
+							var vm = this;
+							var url = '/dossiers/'+vm.detailModel.dossierId+'/files';
+
+							const config = {
+								headers: {
+									'groupId': themeDisplay.getScopeGroupId()
+								}
+							};
+
+							const postData = {
+								"displayName": file.name,
+								"file": file,
+								"dossierPartNo": item.partNo,
+								"dossierTemplateNo": vm.detailModel.dossierTemplateNo,
+								"fileTemplateNo": item.templateFileNo,
+								"fileType": '',
+								"isSync": ''
+							};
+                            axios.post(url, postData, config).then(function (response) {
+                                var serializable = response.data;
+
+								vm._initchangeProcessStep();
+
+                            })
+                                .catch(function (error) {
+                                    console.log(error);
+									vm.snackbartextdossierViewJX = item.actionName + " thất bại!";
+                      				vm.snackbarerordossierViewJX = true;
+                                });
 						},
                         onScroll(e) {
 							this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
@@ -120,12 +221,18 @@
 							vm.detailPage = false;
 							vm.listgroupHoSoFilterselected = item.id;
 							vm.danhSachHoSoTablepage = 1;
-							console.log(item);
+							
 							if ( item.id !== 'tra_cuu' ){
 								vm.stageFilterView = item.id;
 								vm.hoso_title_table = item.title;
-								vm.statusParamFilter = item.id;
-								vm.substatusParamFilter = item.idSub;
+								if (item.level === 1) {
+									vm.statusParamFilter = item.idSub;
+									vm.substatusParamFilter = item.id;
+								} else {
+									vm.statusParamFilter = item.id;
+									vm.substatusParamFilter = item.idSub;
+								}
+								
 							} 
 							
 							if (item.id == 'tra_cuu_hoso') {
@@ -156,7 +263,7 @@
 
 								var indexTree = -1;
                                 for (var key in serializable.data) {
-									console.log(serializable.data[key].statusName);
+									
                                     if ( serializable.data[key].level === 0 ) {
 										serializable.data[key].items = [];
 
@@ -172,13 +279,30 @@
 										});
 										indexTree = indexTree + 1;
 									} else {
+										if (vm.listgroupHoSoFilterItems[indexTree].level === 0) {
+											vm.listgroupHoSoFilterItems.splice(indexTree, 1);
+										}
+
+										vm.listgroupHoSoFilterItems.push({
+											id: serializable.data[key].dossierSubStatus,
+											idSub: serializable.data[key].dossierStatus,
+											title: serializable.data[key].statusName,
+											level: serializable.data[key].level,
+											count: serializable.data[key].count,
+											action: 'folder',
+											action_active: 'folder_open',
+											items: []
+										});
+
+										/**
 										vm.listgroupHoSoFilterItems[indexTree].items.push({
 											id: serializable.data[key].dossierSubStatus,
-											idSub: serializable.data[key].dossierSubStatus,
+											idSub: serializable.data[key].dossierStatus,
 											title: serializable.data[key].statusName,
 											level: serializable.data[key].level,
 											count: serializable.data[key].count
 										});
+										*/
 									}
                                 }
 
@@ -453,7 +577,7 @@
 					'previous': '_previousThongTinDoanhNghiepTable',
 					'events': {
 						_inithongTinDoanhNghiepTable: function (append) {
-							console.log("--thongTinDoanhNghiepTable--");
+							
 							var vm = this;
 							vm.viewmore = true;
 							this.thongTinDoanhNghiepTableheaders = [
@@ -782,9 +906,9 @@
 
 						},
 						toDetailHoSo: function (item) {
-							console.log(item);
+							
 							var vm = this;
-
+							vm.stepModel = null;
 							// call DetailAPI.
 							const config = {
 								headers: {'groupId': themeDisplay.getScopeGroupId()}
@@ -897,6 +1021,11 @@
 								vm.popUpViewDossierFile = !vm.popUpViewDossierFile;
 							}
 							
+						},
+						viewDossierFileVersionArchive: function (item) {
+							var vm = this;
+							vm.dossierViewJXTitle = item.partName;
+							vm.popUpViewDossierFile = !vm.popUpViewDossierFile;
 						}
 					}
 				},
@@ -947,22 +1076,17 @@
 
 						},
 						selectDossierActionTab(){
-						
-							console.log("___________-");
-							console.log(this.detailModel.govAgencyName);
+							
 							var vm = this;
 
 							const config = {
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId()
-								},
-								data: {
-									dossierId: this.detailModel.dossierId
 								}
 							};
 							
 							//var url = "/o/frontendwebdossier/json/dossier_logs.json?t=1";
-							var url = "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/logs";
+							var url = "/o/rest/v2/dossierlogs/"+vm.detailModel.dossierId+"/logs";
 							vm.listHistoryProcessingItems = [];
 							axios.get(url, config).then(function (response) {
 								var serializable = response.data;
@@ -978,7 +1102,7 @@
 						
 						},
 						downloadFile( fileAttachId ){
-							console.log(fileAttachId);
+							
 							var url = "/o/rest/v2/employees/10101/photo";
 							window.open(url); 
 						}
@@ -1507,5 +1631,25 @@ white-space: normal;
     white-space: normal;
     height: auto;
     line-height: normal;
+}
+.panel-dossier-navigation .status-dossier-navigation ul > li > ul.list--group > li a .status__counter {
+    top: 3px;
+}
+.panel-dossier-navigation .status-dossier-navigation ul > li > ul.list--group > li a .list__tile__action:first-child .icon {
+    top: 0px;
+}
+.expansion__list_style,
+.expansion__list_style .expansion-panel__container {
+  box-shadow: none;
+}
+.expansion__list_style .expansion-panel__header {
+	padding: 4px 24px !important;
+}
+.expansion__list_style .expansion-panel__container .header__icon{
+	display: none;
+}
+
+.snackbar-error {
+background-color: #c62828 !important;
 }
 </style>
