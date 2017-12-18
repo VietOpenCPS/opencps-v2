@@ -15,6 +15,7 @@ import org.opencps.api.controller.util.RegistrationFormUtils;
 import org.opencps.api.controller.util.RegistrationUtils;
 import org.opencps.api.registration.model.RegistrationDetailModel;
 import org.opencps.api.registration.model.RegistrationInputModel;
+import org.opencps.api.registration.model.RegistrationResultsModel;
 import org.opencps.api.registrationform.model.RegistrationFormDetailModel;
 import org.opencps.api.registrationform.model.RegistrationFormInputModel;
 import org.opencps.api.registrationform.model.RegistrationFormModel;
@@ -30,6 +31,7 @@ import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.impl.RegistrationImpl;
+import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -43,9 +45,28 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	Log _log = LogFactoryUtil.getLog(RegistrationManagementImpl.class);
 
 	@Override
-	public Response getList(String stage, String agency, String keyword, String owner, String sort, String submitting) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response getList(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext) {
+		BackendAuth auth = new BackendAuthImpl();
+		int start = -1, end = -1;
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			RegistrationResultsModel results = new RegistrationResultsModel();
+
+			List<Registration> lstRegistrationModel = RegistrationLocalServiceUtil.getRegistrations(start, end);
+			
+			results.setTotal(RegistrationLocalServiceUtil.getRegistrationsCount());
+			results.getData().addAll(RegistrationUtils.mappingToRegistrationResultsModel(lstRegistrationModel));
+
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
 	}
 
 	@Override
@@ -172,8 +193,9 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 			RegistrationForm registrationForm = action.insert(groupId, input.getRegistrationId(),
-					input.getReferenceUid(), input.getFormNo(), input.getFormName(), input.getFormData(), input.getFormScript(), input.getFormReport(),
-					input.getFileEntryId(), input.isIsNew(), input.isRemoved(), serviceContext);
+					input.getReferenceUid(), input.getFormNo(), input.getFormName(), input.getFormData(),
+					input.getFormScript(), input.getFormReport(), input.getFileEntryId(), input.isIsNew(),
+					input.isRemoved(), serviceContext);
 
 			result = RegistrationFormUtils.mappingToRegistrationFormDetailModel(registrationForm);
 
