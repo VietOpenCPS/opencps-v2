@@ -9,9 +9,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 
 public interface RegistrationFormActions {
 
-	public void update(RegistrationForm model);
-
-	public void delete(long registrationFormId) throws PortalException;
+	public RegistrationForm update(RegistrationForm model);
 
 	public RegistrationForm getDetail(long registrationFormId) throws PortalException;
 
@@ -20,4 +18,6 @@ public interface RegistrationFormActions {
 	public RegistrationForm insert(long groupId, long registrationId, String referenceUid, String formNo, String formName,
 			String formData, String formScript, String formReport, long fileEntryId, boolean isNew, boolean removed,
 			ServiceContext serviceContext) throws PortalException;
+
+	public RegistrationForm deleteRegistrationForm(long registrationId, String referenceUid) throws PortalException;
 }

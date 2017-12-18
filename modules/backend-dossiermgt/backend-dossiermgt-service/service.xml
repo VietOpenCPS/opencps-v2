@@ -1054,6 +1054,11 @@
 		<finder return-type="Collection" name="G_REGID">
 			<finder-column name="registrationId" />
 		</finder>
+		
+		<finder return-type="RegistrationForm" name="G_REGID_REFID">
+			<finder-column name="registrationId" />
+			<finder-column name="referenceUid" />
+		</finder>
 
 	</entity>
 

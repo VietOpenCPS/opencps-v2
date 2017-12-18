@@ -21,14 +21,15 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 	}
 
 	@Override
-	public void update(RegistrationForm model) {
-		RegistrationFormLocalServiceUtil.updateRegistrationForm(model);
+	public RegistrationForm update(RegistrationForm model) {
+		return RegistrationFormLocalServiceUtil.updateRegistrationForm(model);
 
 	}
 
 	@Override
-	public void delete(long registrationFormId) throws PortalException {
-		RegistrationFormLocalServiceUtil.deleteRegistrationForm(registrationFormId);
+	public RegistrationForm deleteRegistrationForm(long registrationId, String referenceUid) throws PortalException {
+		
+		return RegistrationFormLocalServiceUtil.deleteRegistrationForm(registrationId, referenceUid);
 
 	}
 

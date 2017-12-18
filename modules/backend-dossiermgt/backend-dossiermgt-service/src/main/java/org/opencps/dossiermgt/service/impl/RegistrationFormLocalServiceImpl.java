@@ -89,4 +89,15 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		return registrationFormPersistence.update(object);
 	}
+	
+	public RegistrationForm deleteRegistrationForm(long registrationId, String referenceUid){
+		
+		RegistrationForm registrationForm = findFormbyRegidRefid(registrationId, referenceUid);
+		
+		return registrationFormPersistence.remove(registrationForm);
+	}
+	
+	public RegistrationForm findFormbyRegidRefid(long registrationId, String referenceUid){
+		return registrationFormPersistence.fetchByG_REGID_REFID(registrationId, referenceUid);
+	}
 }

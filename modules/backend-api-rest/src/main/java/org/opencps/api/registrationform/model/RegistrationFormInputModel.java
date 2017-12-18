@@ -8,6 +8,7 @@
 
 package org.opencps.api.registrationform.model;
 
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -58,15 +59,25 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "RegistrationFormInputModel")
 public class RegistrationFormInputModel {
 
+	@FormParam(value = "registrationId")
     protected Long registrationId;
+	@FormParam(value = "referenceUid")
     protected String referenceUid;
+	@FormParam(value = "formNo")
     protected String formNo;
+	@FormParam(value = "formName")
     protected String formName;
+	@FormParam(value = "formData")
     protected String formData;
+	@FormParam(value = "formScript")
     protected String formScript;
+	@FormParam(value = "formReport")
     protected String formReport;
+	@FormParam(value = "fileEntryId")
     protected Long fileEntryId;
+	@FormParam(value = "isNew")
     protected Boolean isNew;
+	@FormParam(value = "removed")
     protected Boolean removed;
 
     /**
