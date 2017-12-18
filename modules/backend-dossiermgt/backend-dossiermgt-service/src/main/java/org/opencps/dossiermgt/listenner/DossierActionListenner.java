@@ -62,6 +62,8 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				}
 
 				String content = model.getActionNote();
+				
+				//JSONArray payloads = JSONFactoryUtil.createJSONArray();
 
 				JSONObject payload = JSONFactoryUtil.createJSONObject();
 
@@ -83,15 +85,17 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				}
 
 				payload.put("jobPosName", jobPosName);
-				payload.put("stepName", model.getStepName());
+				payload.put("stepName", model.getActionName());
 				payload.put("stepInstruction", model.getStepInstruction());
 				payload.put("files", files);
+				
+				//payloads.put(payload);
 
 				serviceContext.setCompanyId(model.getCompanyId());
 				serviceContext.setUserId(userId);
 				
 				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
-						content, "PROCESS_TYPE", payload.toJSONString(), serviceContext);
+						content, "PROCESS_TYPE", payload.toString(), serviceContext);
 				
 			} catch (SystemException | PortalException e) {
 				_log.error(e);

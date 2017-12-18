@@ -43,7 +43,7 @@
 										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Thẩm định thiết kế
 										</span>
-										<button data-TTHC="TT302011BGTVTTDTKXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTTDTKXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv31G1">Chọn</button>
+										<button data-TTHC="TEST" data-CQTH="BGTVTCDKVN" data-MMHS="TEST" class="btn btn-reset chooseService pull-right P0" id="btn1Lv31G1">Chọn</button>
 									</div>
 									<div class="clear"></div>
 									<#-- <div id="lv21G1" class="collapse in MT10">
@@ -106,7 +106,7 @@
 										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra sản phẩm mẫu
 										</span>
-										<button data-TTHC="TT302011BGTVTKTSPMXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTKTSPMXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv32G1">Chọn</button>
+										<button data-TTHC="TEST" data-CQTH="BGTVTCDKVN" data-MMHS="TEST" class="btn btn-reset chooseService pull-right P0" id="btn1Lv32G1">Chọn</button>
 									</div>
 									<div class="clear"></div>
 									<#-- <div id="lv22G1" class="collapse toggle-hide MT10">
