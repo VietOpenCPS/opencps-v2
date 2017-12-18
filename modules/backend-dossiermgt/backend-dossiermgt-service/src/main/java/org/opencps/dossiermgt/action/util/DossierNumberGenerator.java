@@ -90,18 +90,22 @@ public class DossierNumberGenerator {
 		return password;
 	}
 
-	/*public static void main(String[] args) {
-		String noPattern = "{nnnnnnnnnnn}/{yy}/{$TEXT1 [$var@fileTemplateNo$]}/{$TEXT2 [$var@fileTemplateNo$]}-{$TEXT3 [$var@fileTemplateNo$]}";
+	public static void main(String[] args) {
+		String noPattern = "{nnnnnnnnnnn}/{yyyy}/{$TEXT1 [$var@fileTemplateNo$]}/{$TEXT2 [$var@fileTemplateNo$]}-{$TEXT3 [$var@fileTemplateNo$]}";
 
 		// String pattern = "\\[\\$(.*?)\\$\\]";
 
 		String codePattern = "\\{(n+)\\}";
 		String yearPattern = "\\{(y+)\\}";
+		
 		String variablePattern = "\\{\\$(.*?)\\}";
+		
+		String defaultValuePattern = "(.*?)\\s";
 
 		String[] patterns = new String[] { codePattern, yearPattern, variablePattern };
 
 		for (String pattern : patterns) {
+			
 			Pattern r = Pattern.compile(pattern);
 
 			Matcher m = r.matcher(noPattern);
@@ -109,24 +113,40 @@ public class DossierNumberGenerator {
 			int count = 0;
 
 			while (m.find()) {
+				String tmp = m.group(1);
 				if (r.toString().equals(codePattern)) {
 					String number = String.valueOf(100);
-					//System.out.println(m.group(1).);
-					if (number.length() < m.group(1).length()) {
-						number = m.group(1).substring(0, m.group(1).length() - number.length()).concat(number)
-								.replaceAll(m.group(1).intern(), String.valueOf(0));
+					// System.out.println(m.group(1).);
+					
+					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+					if (number.length() < tmp.length()) {
+						number = tmp.substring(0, tmp.length() - number.length()).concat(number);
 					}
 
 					System.out.println(number);
 
 				} else if (r.toString().equals(yearPattern)) {
-					System.out.println("1111");
+					String year = String.valueOf(2017);
+					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+					
+					if(year.length() < tmp.length()){
+						year = tmp.substring(0, tmp.length() - year.length()).concat(year);
+					}else if(year.length() > tmp.length()){
+						year = year.substring(year.length() - tmp.length(), year.length());
+					}
+						
+					System.out.println(year);
+					
 				} else if (r.toString().equals(variablePattern)) {
-					System.out.println("2222");
+					Pattern r1 = Pattern.compile(defaultValuePattern);
+					System.out.println(tmp);
+					Matcher m1 = r1.matcher(tmp);
+					
+					System.out.println(m1.group());
 				}
 
 				noPattern = noPattern.replace(m.group(0), "$variable" + count + "$");
-				System.out.println(m.group(1));
+				//System.out.println(m.group(1));
 				// patternContentMaps.put("$variable" + count + "$",
 				// m.group(1));
 				m = r.matcher(noPattern);
@@ -134,5 +154,5 @@ public class DossierNumberGenerator {
 			}
 		}
 
-	}*/
+	}
 }
