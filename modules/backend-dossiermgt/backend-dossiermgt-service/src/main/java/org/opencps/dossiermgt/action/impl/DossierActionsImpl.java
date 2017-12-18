@@ -294,14 +294,15 @@ public class DossierActionsImpl implements DossierActions {
 						}
 
 						List<String> dossierFileTemplateNos = ListUtil.toList(StringUtil.split(createDossierFiles));
-						
-						List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByD_DP(dossierId, 2);
-						
+
+						List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByD_DP(dossierId,
+								2);
+
 						JSONArray createFiles = JSONFactoryUtil.createJSONArray();
 
 						if (dossierFileTemplateNos != null && !dossierFileTemplateNos.isEmpty()) {
-							DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil
-									.getByTemplateNo(groupId, dossier.getDossierTemplateNo());
+							DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId,
+									dossier.getDossierTemplateNo());
 							List<DossierPart> dossierParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
 									dossierTemplate.getTemplateNo());
 							if (dossierParts != null) {
@@ -315,27 +316,50 @@ public class DossierActionsImpl implements DossierActions {
 										createFile.put("partTip", dossierPart.getPartTip());
 										createFile.put("multiple", dossierPart.getMultiple());
 										createFile.put("templateFileNo", dossierPart.getTemplateNo());
+
 										boolean eForm = false;
 										String formData = StringPool.BLANK;
 										String formScript = StringPool.BLANK;
-										
-										if(dossierFiles != null){
-											df: for(DossierFile dossierFile : dossierFiles){
-												if(dossierFile.getDossierPartNo().equals(dossierPart.getPartNo())){
+										String docFileReferenceUid = StringPool.BLANK;
+										int counter = 0;
+
+										List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
+												.getDossierFileByDID_DPNO(dossierId, dossierPart.getPartNo(), false);
+
+										counter = (dossierFilesResult != null && dossierFilesResult.isEmpty())
+												? dossierFilesResult.size() : 0;
+
+										/*if (dossierFiles != null) {
+											df: for (DossierFile dossierFile : dossierFiles) {
+												if (dossierFile.getDossierPartNo().equals(dossierPart.getPartNo())) {
 													eForm = dossierFile.getEForm();
 													formData = dossierFile.getFormData();
 													formScript = dossierFile.getFormScript();
+													docFileReferenceUid = dossierFile.getReferenceUid();
+													break df;
+												}
+											}
+										}*/
+												
+										if (dossierFilesResult != null) {
+											df: for (DossierFile dossierFile : dossierFilesResult) {
+												if (dossierFile.getDossierPartNo().equals(dossierPart.getPartNo())) {
+													eForm = dossierFile.getEForm();
+													formData = dossierFile.getFormData();
+													formScript = dossierFile.getFormScript();
+													docFileReferenceUid = dossierFile.getReferenceUid();
 													break df;
 												}
 											}
 										}
-										
+
 										createFile.put("eform", eForm);
 										createFile.put("formData", formData);
 										createFile.put("formScript", formScript);
-										
+										createFile.put("referenceUid", docFileReferenceUid);
+										createFile.put("counter", counter);
 										createFiles.put(createFile);
-									
+
 									}
 								}
 							}
