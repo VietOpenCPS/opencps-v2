@@ -198,7 +198,7 @@
                             </v-layout>
                         </v-card-title>
                         <v-expansion-panel class="my-0 expansion__list_style">
-                            <v-expansion-panel-content v-for="(item,i) in stepModel.createFiles" :key="item.dossierPartId">
+                            <v-expansion-panel-content v-for="(item,i) in stepModel.createFiles" v-if="item" :key="item.dossierPartId">
                             <div slot="header">{{i + 1}}. {{item.partName}}</div>
                             <div slot="header" class="text-right">
                                 <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="viewDossierFileVersionArchive(item)">

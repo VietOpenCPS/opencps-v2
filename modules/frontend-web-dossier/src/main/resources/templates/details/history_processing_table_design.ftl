@@ -4,7 +4,7 @@
 		<td style="padding-top: 15px;" class="text-xs-left">
 		
 			<p> Ông/bà <b>{{ props.item.author }}</b> 
-			<span class="text-blue">{{ props.item.payload.stepName }}</span>
+			<span class="text-blue">( {{ props.item.payload.stepName }} )</span>
  			<br/>
 			<span class="text-light-gray">{{ props.item.createDate | date }}</span>
 			</p>

@@ -43,15 +43,14 @@
 					"template_content": "dossierViewJX_form_template",
 					'events': {
                         changeProcessStep: function (item){
-                            console.log(item);
                             var vm = this;
+							
+							if (item.hasOwnProperty('createFiles') && !(item.createFiles instanceof Array)) {
+								var createFilesTemp = item.createFiles;
+								item.createFiles = [];
+								item.createFiles.push(createFilesTemp);
+							}
 
-							var createFiles = item.createFiles;
-
-							item.createFiles = [];
-							item.createFiles.pust(createFiles);
-
-							console.log(item);
 							if (item.autoEvent !== 'submit' && item.autoEvent !== 'timer') {
 								vm.stepModel = item;
 							} else {
@@ -165,9 +164,9 @@
 							
 
 							var file = files[0];
-
+							console.log(file);
 							var vm = this;
-							var url = '/dossiers/'+vm.detailModel.dossierId+'/files';
+							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/files';
 
 							const config = {
 								headers: {
@@ -176,7 +175,7 @@
 							};
 
 							const postData = {
-								"displayName": file.name,
+								"displayName": "123123",
 								"file": file,
 								"dossierPartNo": item.partNo,
 								"dossierTemplateNo": vm.detailModel.dossierTemplateNo,
@@ -184,6 +183,43 @@
 								"fileType": '',
 								"isSync": ''
 							};
+							var data = new FormData();
+							data.append( 'displayName', file.name );
+							data.append( 'file', file );
+							data.append( 'dossierPartNo', item.partNo );
+							data.append( 'dossierTemplateNo', vm.detailModel.dossierTemplateNo );
+							data.append( 'fileTemplateNo', item.templateFileNo );
+							data.append( 'fileType', '' );
+							data.append( 'isSync', '' );
+							data.append( 'referenceUid', '' );
+							/**
+							data.append( 'file', file );
+							data.append( 'fileType', file.type );
+							data.append( 'fileName', file.name );
+							data.append( 'fileSize', file.size );
+							data.append( 'dossierPartNo', item.partNo);
+							data.append( 'referenceUid', "");
+							data.append( 'fileTemplateNo', item.templateFileNo);
+							data.append( 'dossierTemplateNo', vm.detailModel.dossierTemplateNo);
+							*/
+							$.ajax({
+								type : 'POST', 
+								url  : url, 
+								data : data,
+								headers: {"groupId": themeDisplay.getScopeGroupId()},
+								processData: false,
+								contentType: false,
+								cache: false,
+								async : false,
+								success :  function(result){ 
+									vm._initchangeProcessStep();
+								},
+								error:function(result){
+									vm.snackbartextdossierViewJX = "Tải file thất bại!";
+                      				vm.snackbarerordossierViewJX = true;
+								}
+							});
+							/**
                             axios.post(url, postData, config).then(function (response) {
                                 var serializable = response.data;
 
@@ -195,6 +231,7 @@
 									vm.snackbartextdossierViewJX = item.actionName + " thất bại!";
                       				vm.snackbarerordossierViewJX = true;
                                 });
+							*/
 						},
                         onScroll(e) {
 							this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
@@ -1240,14 +1277,6 @@
 		cursor: pointer;
 	}
 
-
-	.border-right-1 {
-		border-right: 1px solid #e1e2e1;
-	}
-	code {
-		cursor: pointer;
-	}
-
 	.btn-view{
 		min-height: 46px;
 		box-shadow: none;
@@ -1651,5 +1680,10 @@ white-space: normal;
 
 .snackbar-error {
 background-color: #c62828 !important;
+}
+
+.table__overflow .table {
+    margin: 0;
+    min-width: 1000px;
 }
 </style>
