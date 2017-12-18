@@ -65,12 +65,16 @@ public class DossierLogUtils {
 			int counter = GetterUtil.getInteger(document.get(DossierLogTerm.COUNTER));
 
 			model.setDossierLogId(dossierLogId);
+			
 			String strDate = document.get(DossierLogTerm.CREATE_DATE);
+			
 			Date date = null;
+			
 			if (Validator.isNotNull(strDate)) {
-				date = APIDateTimeUtils.convertStringToDate(strDate, "yyyyMMddHH:mm:ss");
+				date = APIDateTimeUtils.convertStringToDate(strDate, "yyyyMMddHHmmss");
 			}
-			model.setCreateDate(APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP));
+			
+			model.setCreateDate(date != null ? APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP): strDate);
 			model.setAuthor(document.get(DossierLogTerm.AUTHOR));
 			model.setContent(document.get(DossierLogTerm.CONTENT));
 			model.setNotificationType(document.get(DossierLogTerm.NOTIFICATION_TYPE));
@@ -86,6 +90,8 @@ public class DossierLogUtils {
 
 		return outputs;
 	}
+	
+
 
 	public static List<DossierLogSearchIdModel> mappingToDossierLogSearchByIdResultsModel(List<Document> documents) {
 
@@ -102,7 +108,17 @@ public class DossierLogUtils {
 			model.setDossierLogId(dossierLogId);
 			model.setAuthor(document.get(DossierLogTerm.AUTHOR));
 			model.setContent(document.get(DossierLogTerm.CONTENT));
-			model.setCreateDate(document.get(DossierLogTerm.CREATE_DATE));
+			
+			String strDate = document.get(DossierLogTerm.CREATE_DATE);
+			
+			Date date = null;
+			
+			if (Validator.isNotNull(strDate)) {
+				date = APIDateTimeUtils.convertStringToDate(strDate, "yyyyMMddHHmmss");
+			}
+			
+			model.setCreateDate(date != null ? APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP): strDate);	
+			//model.setCreateDate(document.get(DossierLogTerm.CREATE_DATE));
 			model.setNotificationType(document.get(DossierLogTerm.NOTIFICATION_TYPE));
 			model.setPayload(document.get(DossierLogTerm.PAYLOAD));
 
