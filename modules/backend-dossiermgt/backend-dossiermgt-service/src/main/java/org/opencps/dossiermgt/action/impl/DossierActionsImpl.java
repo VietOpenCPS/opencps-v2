@@ -488,13 +488,21 @@ public class DossierActionsImpl implements DossierActions {
 
 			getDossierStatus(jsStatus, groupId, DOSSIER_SATUS_DC_CODE, DossierStatusConstants.NEW);
 
-			DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, DossierStatusConstants.NEW,
-					jsStatus.getString(DossierStatusConstants.NEW), StringPool.BLANK, StringPool.BLANK, context);
 
 			dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId, serviceProcessId,
 					0l, actionCode, actionUser, processAction.getActionName(), actionNote, actionOverdue,
 					processAction.getSyncActionCode(), false, processAction.getRollbackable(), curStep.getStepCode(),
 					curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(), context);
+			
+			// Add DossierActionUser
+
+			DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
+
+			dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
+			
+			DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, DossierStatusConstants.NEW,
+					jsStatus.getString(DossierStatusConstants.NEW), StringPool.BLANK, StringPool.BLANK, context);
+
 
 		} else {
 
@@ -509,10 +517,6 @@ public class DossierActionsImpl implements DossierActions {
 
 			getDossierStatus(jsStatus, groupId, DOSSIER_SUB_SATUS_DC_CODE, curStep.getDossierSubStatus());
 
-			// Set dossierStatus by CUR_STEP
-			DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, curStep.getDossierStatus(),
-					jsStatus.getString(curStep.getDossierStatus()), curStep.getDossierSubStatus(),
-					jsSubStatus.getString(curStep.getDossierSubStatus()), context);
 
 			DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
 
@@ -521,6 +525,18 @@ public class DossierActionsImpl implements DossierActions {
 					processAction.getSyncActionCode(), hasDossierSync, processAction.getRollbackable(),
 					curStep.getStepCode(), curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(),
 					context);
+			
+			// Add DossierActionUser
+
+			DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
+
+			dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
+			
+			// Set dossierStatus by CUR_STEP
+			DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, curStep.getDossierStatus(),
+					jsStatus.getString(curStep.getDossierStatus()), curStep.getDossierSubStatus(),
+					jsSubStatus.getString(curStep.getDossierSubStatus()), context);
+
 
 			// update nextActionId
 			if (Validator.isNotNull(prvAction)) {
@@ -562,11 +578,7 @@ public class DossierActionsImpl implements DossierActions {
 
 		DossierLocalServiceUtil.updateDossierBriefNote(dossierId, dossierBriefNote);
 
-		// Add DossierActionUser
 
-		DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
-
-		dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
 
 		return dossierAction;
 	}
@@ -775,13 +787,19 @@ public class DossierActionsImpl implements DossierActions {
 			boolean online, boolean notification, String applicantNote, ServiceContext context) throws PortalException {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-
 		Date appIdDate = null;
+
+		try {
+			appIdDate = sdf.parse(applicantIdDate);
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 
 		Dossier dossier = null;
 
 		try {
-			appIdDate = sdf.parse(applicantIdDate);
 
 			dossier = DossierLocalServiceUtil.initDossier(groupId, dossierId, referenceUid, counter, serviceCode,
 					serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,

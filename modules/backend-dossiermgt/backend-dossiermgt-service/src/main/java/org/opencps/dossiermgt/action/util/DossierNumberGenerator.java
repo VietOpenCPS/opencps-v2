@@ -3,6 +3,8 @@ package org.opencps.dossiermgt.action.util;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -46,7 +48,7 @@ public class DossierNumberGenerator {
 			pattern = pattern.replace(listPattern[1], y);
 		}
 		String processId = String.valueOf(DossierLocalServiceUtil.countLucene(param, sc) + 1);
-//		String processId = "100";
+		// String processId = "100";
 		String processP = "";
 		if (listPattern[0].equals("{code}")) {
 			// replace code
@@ -62,17 +64,15 @@ public class DossierNumberGenerator {
 		if (processId.length() == processIdPattern.length()) {
 			pattern = pattern.replace(processP, processId);
 		} else if (processId.length() > processIdPattern.length()) {
-			pattern = pattern.replace(processP,
-					processId.substring(processId.length() - processIdPattern.length()));
+			pattern = pattern.replace(processP, processId.substring(processId.length() - processIdPattern.length()));
 		} else {
 			String p = "%0" + (processIdPattern.length() - processId.length()) + "d%s";
-			pattern = pattern.replace(processP,
-					String.format(p,0, processId));
+			pattern = pattern.replace(processP, String.format(p, 0, processId));
 		}
 
 		return pattern;
 	}
-	
+
 	public static int counterDossier(long userId, long groupId) {
 		// TODO add more logic for the case DOSSIER was created in Client by
 		// EMPLOYEE
@@ -89,4 +89,50 @@ public class DossierNumberGenerator {
 
 		return password;
 	}
+
+	/*public static void main(String[] args) {
+		String noPattern = "{nnnnnnnnnnn}/{yy}/{$TEXT1 [$var@fileTemplateNo$]}/{$TEXT2 [$var@fileTemplateNo$]}-{$TEXT3 [$var@fileTemplateNo$]}";
+
+		// String pattern = "\\[\\$(.*?)\\$\\]";
+
+		String codePattern = "\\{(n+)\\}";
+		String yearPattern = "\\{(y+)\\}";
+		String variablePattern = "\\{\\$(.*?)\\}";
+
+		String[] patterns = new String[] { codePattern, yearPattern, variablePattern };
+
+		for (String pattern : patterns) {
+			Pattern r = Pattern.compile(pattern);
+
+			Matcher m = r.matcher(noPattern);
+
+			int count = 0;
+
+			while (m.find()) {
+				if (r.toString().equals(codePattern)) {
+					String number = String.valueOf(100);
+					//System.out.println(m.group(1).);
+					if (number.length() < m.group(1).length()) {
+						number = m.group(1).substring(0, m.group(1).length() - number.length()).concat(number)
+								.replaceAll(m.group(1).intern(), String.valueOf(0));
+					}
+
+					System.out.println(number);
+
+				} else if (r.toString().equals(yearPattern)) {
+					System.out.println("1111");
+				} else if (r.toString().equals(variablePattern)) {
+					System.out.println("2222");
+				}
+
+				noPattern = noPattern.replace(m.group(0), "$variable" + count + "$");
+				System.out.println(m.group(1));
+				// patternContentMaps.put("$variable" + count + "$",
+				// m.group(1));
+				m = r.matcher(noPattern);
+				count++;
+			}
+		}
+
+	}*/
 }
