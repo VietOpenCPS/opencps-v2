@@ -39,6 +39,7 @@ public class DossierUtils {
 			model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
 			model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
 			model.setApplicantName(doc.get(DossierTerm.APPLICANT_NAME));
+			model.setApplicantNote(doc.get(DossierTerm.APPLICANT_NOTE));
 			model.setApplicantIdType(doc.get(DossierTerm.APPLICANT_ID_TYPE));
 			model.setApplicantIdNo(doc.get(DossierTerm.APPLICANT_ID_NO));
 			model.setApplicantIdDate(doc.get(DossierTerm.APPLICANT_ID_DATE));
@@ -83,7 +84,13 @@ public class DossierUtils {
 			model.setHasPassword(doc.get(DossierTerm.PASSWORD));
 			model.setDossierTemplateNo(doc.get(DossierTerm.DOSSIER_TEMPLATE_NO));
 			model.setServerNo(doc.get(DossierTerm.SERVER_NO));
-
+			
+			model.setViaPostal(doc.get(DossierTerm.VIA_POSTAL));
+			model.setPostalAddress(doc.get(DossierTerm.POSTAL_ADDRESS));
+			model.setPostalCityCode(doc.get(DossierTerm.POSTAL_CITY_CODE));
+			model.setPostalCityName(doc.get(DossierTerm.POSTAL_CITY_NAME));
+			model.setPostalTelNo(doc.get(DossierTerm.POSTAL_TEL_NO));
+			
 			ouputs.add(model);
 		}
 

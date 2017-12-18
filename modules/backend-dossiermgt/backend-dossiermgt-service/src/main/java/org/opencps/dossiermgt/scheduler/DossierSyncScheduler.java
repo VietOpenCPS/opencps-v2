@@ -70,6 +70,8 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 					RESTFulConfiguration.CLIENT_PASS, properties, serviceContext);
 
 			if (resDossierSync.getInt(RESTFulConfiguration.STATUS) == 200) {
+				
+				_log.info("DOSSIER_SYN_"+resDossierSync);
 
 				JSONObject jsData = JSONFactoryUtil
 						.createJSONObject(resDossierSync.getString(RESTFulConfiguration.MESSAGE));
@@ -171,7 +173,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 500, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 1, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

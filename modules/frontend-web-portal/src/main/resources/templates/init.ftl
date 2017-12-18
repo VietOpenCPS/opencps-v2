@@ -45,6 +45,7 @@
 <script type="text/javascript">
   var notification;
   $(document).ready(function() {
+  try {
     notification = $("#notification").kendoNotification({
       position: {
         pinned: true,
@@ -64,5 +65,7 @@
       }
       ]
     }).data("kendoNotification");
+    
+  } catch (e) { console.log(e);}
   });
 </script>

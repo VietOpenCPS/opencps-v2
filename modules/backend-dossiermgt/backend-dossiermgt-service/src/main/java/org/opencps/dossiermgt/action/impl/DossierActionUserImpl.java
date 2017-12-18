@@ -39,20 +39,21 @@ public class DossierActionUserImpl implements DossierActionUser {
 	}
 
 	@Override
-	public void initDossierActionUser(long dossierActionId, long userId, long groupId) {
+	public void initDossierActionUser(long dossierActionId, long userId, long groupId, long assignUserId)
+			throws PortalException {
 		// Get DossierAction
-		DossierAction dossierAction = DossierActionLocalServiceUtil.getDossierActionById(dossierActionId, userId);
+		DossierAction dossierAction = DossierActionLocalServiceUtil.getDossierAction(dossierActionId);
 		String actionCode = dossierAction.getActionCode();
 		long serviceProcessId = dossierAction.getServiceProcessId();
-		
+
 		// Get ProcessAction
 		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(serviceProcessId, actionCode);
 		String stepCode = processAction.getPostStepCode();
-		
+
 		// Get ProcessStep
 		ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
 		long processStepId = processStep.getProcessStepId();
-		
+
 		// Get List ProcessStepRole
 		List<ProcessStepRole> listProcessStepRole = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStepId);
 		for (ProcessStepRole processStepRole : listProcessStepRole) {
@@ -65,7 +66,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 			// Get list user
 			List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
 			for (User user : users) {
-				boolean assigned = user.getUserId() == userId ? true : false;
+				boolean assigned = user.getUserId() == assignUserId ? true : false;
 				org.opencps.dossiermgt.model.DossierActionUser model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
 				model.setUserId(user.getUserId());
 				model.setDossierActionId(dossierActionId);

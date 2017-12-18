@@ -85,6 +85,12 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	}
 
 	@Override
+	public String getApplicantByUserId(ServiceContext context) throws PortalException {
+		long mappingID = context.getUserId();
+		return JSONFactoryUtil.looseSerialize(ApplicantLocalServiceUtil.fetchByMappingID(mappingID));
+	}
+	
+	@Override
 	public Applicant updateApplicant(ServiceContext context,long groupId, long applicantId, String applicantName, String address, String cityCode,
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail) throws PortalException {

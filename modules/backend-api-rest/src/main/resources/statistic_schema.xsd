@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://benchresources.in/cdm/Player" xmlns:tns="http://benchresources.in/cdm/Player"
+	elementFormDefault="qualified">
+
+	<!-- Statistic Dossier Model -->
+	<xsd:element name="StatisticDossierModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="dossierStatus" type="xsd:string" />
+				<xsd:element name="dossierSubStatus" type="xsd:string" />
+				<xsd:element name="level" type="xsd:int" />
+				<xsd:element name="statusName" type="xsd:string" />
+				<xsd:element name="count" type="xsd:long" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="StatisticDossierResults">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" />
+				<xsd:element ref="tns:StatisticDossierModel" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="StatisticDossierSearchModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- default -->
+				<xsd:element name="dossierStatus" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierSubStatus" type="xsd:string" minOccurs="0" />
+				<xsd:element name="level" type="xsd:integer" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
+

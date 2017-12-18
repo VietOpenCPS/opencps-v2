@@ -28,7 +28,9 @@ public interface ApplicantActions {
 
 	public Applicant getApplicantDetail(ServiceContext context, long applicantId)
 			throws PortalException;
-
+	
+	public String getApplicantByUserId(ServiceContext context) throws PortalException;
+	
 	public Applicant updateApplicant(ServiceContext context,long groupId, long applicantId, String applicantName, String address, String cityCode, String cityName, String districtCode,
 			String districtName, String wardCode, String wardName, String contactName, String contactTelNo,
 			String contactEmail)
