@@ -30,7 +30,8 @@
                 showContactDetail: false,
 				dossierFiles: [],
 				statusParamFilter: null,
-				substatusParamFilter: null
+				substatusParamFilter: null,
+				loadingAlpacajsForm: false,
 			},
 			onScroll: 'onScroll',
 			schema: {
@@ -42,6 +43,97 @@
 					"template": "menu_template",
 					"template_content": "dossierViewJX_form_template",
 					'events': {
+						deleteDossierFileVersion: function (item) {
+							var vm = this;
+
+							vm.$dialog.confirm('Bạn có muốn xóa file toàn bộ file của thành phần này!', {
+								html: true,
+								loader: true,
+								okText: 'Xác nhận',
+								cancelText: 'Quay lại',
+								animation: 'fade'
+							})
+								.then((dialog) => {
+									$.ajax({
+										url : "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid,
+										dataType : "json",
+										type : "DELETE",
+										headers: {
+											"groupId": themeDisplay.getScopeGroupId()
+										},
+										success : function(result){
+											vm.snackbartextdossierViewJX = "Xoá dữ liệu thành phần hồ sơ thành công!";
+											vm.snackbardossierViewJX = true;
+											vm._initchangeProcessStep();
+										},
+										error : function(result){
+											vm.snackbartextdossierViewJX = "Xoá dữ liệu thành phần hồ sơ thất bại!";
+											vm.snackbarerordossierViewJX = true;
+										}
+									});
+									dialog.close();
+								})
+								.catch((e) => {
+									console.log(e)
+								})
+						},
+						submitAlpacajsForm: function (item) {
+							var vm = this;
+
+							vm.loadingAlpacajsForm = true;
+							var control = $("#alpacajs_form_"+item.dossierPartId).alpaca("get");
+							var formData = control.getValue();
+							
+							$.ajax({
+								url : "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid+"/formdata",
+								dataType : "json",
+								type : "PUT",
+								headers: {
+									"groupId": themeDisplay.getScopeGroupId(),
+									Accept : "application/json"
+								},
+								data : {
+									formdata: JSON.stringify(formData)
+								},
+								success : function(result){
+									vm.snackbartextdossierViewJX = "Lưu form thành công!";
+                      				vm.snackbardossierViewJX = true;
+									vm._initchangeProcessStep();
+									vm.loadingAlpacajsForm = false;
+								},
+								error : function(result){
+									vm.snackbartextdossierViewJX = "Lưu form thất bại!";
+                      				vm.snackbarerordossierViewJX = true;
+									  vm.loadingAlpacajsForm = false;
+								}
+							});
+							
+						},
+						showAlpacaJSFORM: function (item) {
+							//alapcajs Form
+							var alpacajsForm = document.getElementById("alpacajs_form_"+item.dossierPartId);
+							if (alpacajsForm != null && alpacajsForm.innerHTML == '') {
+								console.log(item);
+								$("#alpacajs_form_"+item.dossierPartId).alpaca({
+									"schema": {
+										"title": "What do you think of Alpaca?",
+										"type": "object",
+										"properties": {
+											"name": {
+												"type": "string",
+												"title": "Name"
+											},
+											"ranking": {
+												"type": "string",
+												"title": "Ranking",
+												"enum": ['excellent', 'not too shabby', 'alpaca built my hotrod']
+											}
+										}
+									}
+								});
+							}
+							
+						},
                         changeProcessStep: function (item){
                             var vm = this;
 							
@@ -57,7 +149,8 @@
 								vm.stepModel = null;
 							}
                             
-                            vm.processAssignUserIdItems = item.toUsers
+                            vm.processAssignUserIdItems = item.toUsers;
+							
                         },
 						postNextActions: function (item){
 							
@@ -162,27 +255,11 @@
 							
 							var files = e.target.files || e.dataTransfer.files;
 							
-
 							var file = files[0];
 							console.log(file);
 							var vm = this;
 							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/files';
 
-							const config = {
-								headers: {
-									'groupId': themeDisplay.getScopeGroupId()
-								}
-							};
-
-							const postData = {
-								"displayName": "123123",
-								"file": file,
-								"dossierPartNo": item.partNo,
-								"dossierTemplateNo": vm.detailModel.dossierTemplateNo,
-								"fileTemplateNo": item.templateFileNo,
-								"fileType": '',
-								"isSync": ''
-							};
 							var data = new FormData();
 							data.append( 'displayName', file.name );
 							data.append( 'file', file );
@@ -192,16 +269,7 @@
 							data.append( 'fileType', '' );
 							data.append( 'isSync', '' );
 							data.append( 'referenceUid', '' );
-							/**
-							data.append( 'file', file );
-							data.append( 'fileType', file.type );
-							data.append( 'fileName', file.name );
-							data.append( 'fileSize', file.size );
-							data.append( 'dossierPartNo', item.partNo);
-							data.append( 'referenceUid', "");
-							data.append( 'fileTemplateNo', item.templateFileNo);
-							data.append( 'dossierTemplateNo', vm.detailModel.dossierTemplateNo);
-							*/
+
 							$.ajax({
 								type : 'POST', 
 								url  : url, 
@@ -212,6 +280,8 @@
 								cache: false,
 								async : false,
 								success :  function(result){ 
+									vm.snackbartextdossierViewJX = " Tải file thành công!";
+                      				vm.snackbardossierViewJX = true;
 									vm._initchangeProcessStep();
 								},
 								error:function(result){
@@ -1054,9 +1124,9 @@
 								}
 							}
 							vm.listDocumentInPartNoItems = listFilesUpload;
-							if (item.counter > 0){
+							//if (item.counter > 0){
 								vm.popUpViewDossierFile = !vm.popUpViewDossierFile;
-							}
+							//}
 							
 						},
 						viewDossierFileVersionArchive: function (item) {

@@ -163,7 +163,7 @@
 			<v-expansion-panel expand class="my-0">
 				<v-expansion-panel-content v-bind:value="true">
 				<div slot="header" class="text-bold"> <span>II. </span>Kết quả</div>
-				<div class="opencps_list_border_style" jx-bind="listDocumentOut"></div>
+				<div class="opencps_list_border_style" jx-bind="listDocumentOut"></div> 
 				</v-expansion-panel-content>
 			</v-expansion-panel>
 			</v-tabs-content>
@@ -199,7 +199,7 @@
                         </v-card-title>
                         <v-expansion-panel class="my-0 expansion__list_style">
                             <v-expansion-panel-content v-for="(item,i) in stepModel.createFiles" v-if="item" :key="item.dossierPartId">
-                            <div slot="header">{{i + 1}}. {{item.partName}}</div>
+                            <div slot="header" @click="showAlpacaJSFORM(item)">{{i + 1}}. {{item.partName}} <small v-if="item.eform">( Form trực tuyến )</small> </div>
                             <div slot="header" class="text-right">
                                 <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="viewDossierFileVersionArchive(item)">
                                     <v-icon>archive</v-icon>
@@ -211,12 +211,20 @@
                                     0
                                 </v-btn>
                                 
-                                <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="">
+                                <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="deleteDossierFileVersion(item)">
                                     <v-icon>delete</v-icon>
                                 </v-btn>
                             </div>
 
                             <input type="file" :id="'inputfile_'+item.dossierPartId" style="display:none" v-on:change="singleFileUploadInput($event, item)"/>
+                            <div class="text-right pr-4">
+                                <v-btn color="primary" 
+                                    :loading="loadingAlpacajsForm"
+                                    :disabled="loadingAlpacajsForm"
+                                    v-on:click.native="submitAlpacajsForm(item)"> Ghi lại </v-btn>
+                            </div>
+                            <div :id="'alpacajs_form_'+item.dossierPartId" class="expansion-panel__header"></div>
+
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                         <v-card-actions>
@@ -225,7 +233,7 @@
                         </v-card-actions>
                     </div>
 				</v-card>
-			
+                
 			</v-tabs-content>
 			<v-tabs-content :id="'tab-dossier-detail-3'" reverse-transition="slide-y-transition" transition="slide-y-transition">
 			<div class="opencps_list_border_style" jx-bind="listHistoryProcessing"></div>
@@ -376,11 +384,14 @@
                         success: function(comments) {
                          
                             var data = [];
+
+                            if (comments.hasOwnProperty('data')) {
+                                $.each(comments.data, function(index, comment){
+                                    data.push(formatComment(comment, users));
+                                });
+                                onSuccess(data);
+                            }
                             
-                            $.each(comments.data, function(index, comment){
-                                data.push(formatComment(comment, users));
-                            });
-                            onSuccess(data);
                         },
                         error: function(xhr){
                             onSuccess([]);

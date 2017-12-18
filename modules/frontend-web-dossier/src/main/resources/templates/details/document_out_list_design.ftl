@@ -25,5 +25,6 @@
 	.btn__link_normal .btn__content {
 		white-space: normal;
 		text-align: left;
+		word-break: break-all;
 	}
 </style>
