@@ -323,12 +323,16 @@ public class DossierActionsImpl implements DossierActions {
 										String docFileReferenceUid = StringPool.BLANK;
 										int counter = 0;
 
+										//List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
+										//		.getDossierFileByDID_DPNO(dossierId, dossierPart.getPartNo(), false);
+										
 										List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
-												.getDossierFileByDID_DPNO(dossierId, dossierPart.getPartNo(), false);
+													.getDossierFileByDID_FTNO_DPT(dossierId, fileTemplateNo, 2, false);
 
 										counter = (dossierFilesResult != null && dossierFilesResult.isEmpty())
 												? dossierFilesResult.size() : 0;
-
+												
+												
 										/*if (dossierFiles != null) {
 											df: for (DossierFile dossierFile : dossierFiles) {
 												if (dossierFile.getDossierPartNo().equals(dossierPart.getPartNo())) {

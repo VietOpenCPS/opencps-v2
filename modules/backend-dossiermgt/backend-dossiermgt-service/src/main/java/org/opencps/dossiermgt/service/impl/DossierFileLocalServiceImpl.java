@@ -925,6 +925,10 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 	public List<DossierFile> getDossierFileByDID_DPNO(long dossierId, String dossierPartNo, boolean removed){
 		return dossierFilePersistence.findByDID_DPNO(dossierId, dossierPartNo, removed);
 	}
+	
+	public List<DossierFile> getDossierFileByDID_FTNO_DPT(long dossierId, String fileTemplateNo, int dossierPartType, boolean removed){
+		return dossierFilePersistence.findByDID_FTNO_DPT(dossierId, fileTemplateNo, dossierPartType, removed);
+	}
 
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }

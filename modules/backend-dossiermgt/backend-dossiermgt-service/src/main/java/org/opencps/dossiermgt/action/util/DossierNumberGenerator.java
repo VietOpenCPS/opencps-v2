@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 
 public class DossierNumberGenerator {
 
@@ -91,65 +92,73 @@ public class DossierNumberGenerator {
 	}
 
 	public static void main(String[] args) {
-		String noPattern = "{nnnnnnnnnnn}/{yyyy}/{$TEXT1 [$var@fileTemplateNo$]}/{$TEXT2 [$var@fileTemplateNo$]}-{$TEXT3 [$var@fileTemplateNo$]}";
-
-		// String pattern = "\\[\\$(.*?)\\$\\]";
-
+		String seriNumberPattern = "{nnnnnnnnnnn}/{yyyy}/{$aaaa [$var@fileTemplateNo$]}/{$TEXT2 [$var@fileTemplateNo$]}-{$TEXT3 [$var@fileTemplateNo$]}";
 		String codePattern = "\\{(n+)\\}";
 		String yearPattern = "\\{(y+)\\}";
-		
-		String variablePattern = "\\{\\$(.*?)\\}";
-		
-		String defaultValuePattern = "(.*?)\\s";
+		String dynamicVariablePattern = "\\{\\$(.*?)\\}";
 
-		String[] patterns = new String[] { codePattern, yearPattern, variablePattern };
+		String defaultValuePattern = "^([A-Z]|[a-z])+\\d*\\s";
+		String extractValuePattern = "\\[\\$(.*?)\\$\\]";
+
+		String[] patterns = new String[] { codePattern, yearPattern, dynamicVariablePattern };
 
 		for (String pattern : patterns) {
-			
+
 			Pattern r = Pattern.compile(pattern);
 
-			Matcher m = r.matcher(noPattern);
+			Matcher m = r.matcher(seriNumberPattern);
 
 			int count = 0;
 
 			while (m.find()) {
 				String tmp = m.group(1);
 				if (r.toString().equals(codePattern)) {
+					
 					String number = String.valueOf(100);
 					// System.out.println(m.group(1).);
-					
+
 					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
 					if (number.length() < tmp.length()) {
 						number = tmp.substring(0, tmp.length() - number.length()).concat(number);
 					}
 
-					System.out.println(number);
-
 				} else if (r.toString().equals(yearPattern)) {
 					String year = String.valueOf(2017);
 					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
-					
-					if(year.length() < tmp.length()){
+
+					if (year.length() < tmp.length()) {
 						year = tmp.substring(0, tmp.length() - year.length()).concat(year);
-					}else if(year.length() > tmp.length()){
+					} else if (year.length() > tmp.length()) {
 						year = year.substring(year.length() - tmp.length(), year.length());
 					}
-						
-					System.out.println(year);
-					
-				} else if (r.toString().equals(variablePattern)) {
+
+				} else if (r.toString().equals(dynamicVariablePattern)) {
 					Pattern r1 = Pattern.compile(defaultValuePattern);
-					System.out.println(tmp);
+					// System.out.println(tmp);
 					Matcher m1 = r1.matcher(tmp);
-					
-					System.out.println(m1.group());
+					String defaultValue = (m1.find() ? m1.group() : StringPool.BLANK).trim();
+					System.out.println(defaultValue);
+
+					Pattern r2 = Pattern.compile(extractValuePattern);
+					Matcher m2 = r2.matcher(tmp);
+					String extractContent = (m2.find() ? m2.group(1) : StringPool.BLANK).trim();
+					String key = StringPool.BLANK;
+					String data = StringPool.BLANK;
+					String[] textSplit = StringUtil.split(extractContent, "@");
+					if (textSplit == null || textSplit.length < 2) {
+
+					} else {
+						key = textSplit[0];
+						data = textSplit[1];
+					}
+					System.out.println(extractContent);
 				}
 
-				noPattern = noPattern.replace(m.group(0), "$variable" + count + "$");
-				//System.out.println(m.group(1));
+				seriNumberPattern = seriNumberPattern.replace(m.group(0), "$variable" + count + "$");
+				// System.out.println(m.group(1));
 				// patternContentMaps.put("$variable" + count + "$",
 				// m.group(1));
-				m = r.matcher(noPattern);
+				m = r.matcher(seriNumberPattern);
 				count++;
 			}
 		}
