@@ -207,8 +207,8 @@
                                 <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="document.getElementById('inputfile_'+item.dossierPartId).click()">
                                     <v-icon>file_upload</v-icon>
                                 </v-btn>
-                                <v-btn color="primary" fab small dark class="small-btn-x mx-0 my-0" v-on:click.native="viewDossierFileVersion(item)">
-                                    0
+                                <v-btn color="primary" fab small dark class="small-btn-x mx-0 my-0" v-on:click.native="viewDossierFileResult(item)">
+                                    {{item.counter}}
                                 </v-btn>
                                 
                                 <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="deleteDossierFileVersion(item)">

@@ -1133,6 +1133,13 @@
 							var vm = this;
 							vm.dossierViewJXTitle = item.partName;
 							vm.popUpViewDossierFile = !vm.popUpViewDossierFile;
+						},
+						viewDossierFileResult: function (item) {
+							var vm = this;
+							//if (item.counter > 0){
+								vm.popUpViewDossierFile = !vm.popUpViewDossierFile;
+							//}
+							
 						}
 					}
 				},
