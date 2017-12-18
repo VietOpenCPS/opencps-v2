@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@Api(value = "/registrations/{id}/forms", description = "APIs for Deliverables")
+@Api(value = "/registrations/{id}/forms", description = "APIs for registrationforms")
 public interface RegistrationFormManagement {
 
 	@DELETE

@@ -46,11 +46,9 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 	@Override
 	public Response getList(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
-			ServiceContext serviceContext, String stage, String agency, String keyword, String owner, String sort,
-			String submitting) {
+			ServiceContext serviceContext) {
 		BackendAuth auth = new BackendAuthImpl();
-		int start = 0, end = 0;
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		int start = -1, end = -1;
 		try {
 
 			if (!auth.isAuth(serviceContext)) {

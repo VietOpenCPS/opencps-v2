@@ -18,6 +18,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.opencps.api.registration.model.RegistrationInputModel;
 import org.opencps.api.registrationform.model.RegistrationFormInputModel;
 
@@ -27,24 +28,16 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiParam;
 
 @Api(value = "/registrations/{id}/logs", description = "APIs for Deliverables")
 public interface RegistrationManagement {
+	
 	@GET
 	@Path("/registrations")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	public Response getList(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
-			ServiceContext serviceContext, 
-			@ApiParam(value = "formdata of registrationForm", required = true) @FormParam("stage") String stage,
-			@ApiParam(value = "formdata of registrationForm", required = true) @FormParam("agency") String agency,
-			@ApiParam(value = "formdata of registrationForm", required = true) @FormParam("keyword") String keyword,
-			@ApiParam(value = "formdata of registrationForm", required = true) @FormParam("owner") String owner,
-			@ApiParam(value = "formdata of registrationForm", required = true) @FormParam("sort") String sort,
-			@ApiParam(value = "formdata of registrationForm", required = true) @FormParam("submitting") String submitting);
-	
-	
+	public Response getList(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext);
 
 	@POST
 	@Path("/registrations")
