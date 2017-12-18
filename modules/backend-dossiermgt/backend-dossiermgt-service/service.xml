@@ -618,7 +618,12 @@
 		<finder return-type="Collection" name="FB_GID">
 			<finder-column name="groupId" />
 		</finder>
-
+		
+		<finder return-type="PaymentConfig" name="FB_GID_govAgencyCode">
+			<finder-column name="groupId" />
+			<finder-column name="govAgencyCode" />
+		</finder>
+		
 		<!-- References -->
 
 	</entity>
