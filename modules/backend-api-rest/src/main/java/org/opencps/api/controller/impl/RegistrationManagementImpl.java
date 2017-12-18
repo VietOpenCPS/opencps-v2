@@ -11,10 +11,8 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.RegistrationManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
-import org.opencps.api.controller.util.DeliverableTypesUtils;
 import org.opencps.api.controller.util.RegistrationFormUtils;
 import org.opencps.api.controller.util.RegistrationUtils;
-import org.opencps.api.deliverabletype.model.DeliverableTypesResultsModel;
 import org.opencps.api.registration.model.RegistrationDetailModel;
 import org.opencps.api.registration.model.RegistrationInputModel;
 import org.opencps.api.registration.model.RegistrationResultsModel;
@@ -26,22 +24,16 @@ import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.RegistrationActions;
 import org.opencps.dossiermgt.action.RegistrationFormActions;
-import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.action.impl.RegistrationActionsImpl;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
-import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
-import org.opencps.dossiermgt.model.RegistrationModel;
 import org.opencps.dossiermgt.model.impl.RegistrationImpl;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
-import org.opencps.dossiermgt.service.impl.RegistrationLocalServiceImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -56,7 +48,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	public Response getList(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, String stage, String agency, String keyword, String owner, String sort,
 			String submitting) {
-		// TODO Auto-generated method stub
 		BackendAuth auth = new BackendAuthImpl();
 		int start = 0, end = 0;
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));

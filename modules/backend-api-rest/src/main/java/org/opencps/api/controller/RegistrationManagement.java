@@ -43,6 +43,8 @@ public interface RegistrationManagement {
 			@ApiParam(value = "formdata of registrationForm", required = true) @FormParam("owner") String owner,
 			@ApiParam(value = "formdata of registrationForm", required = true) @FormParam("sort") String sort,
 			@ApiParam(value = "formdata of registrationForm", required = true) @FormParam("submitting") String submitting);
+	
+	
 
 	@POST
 	@Path("/registrations")

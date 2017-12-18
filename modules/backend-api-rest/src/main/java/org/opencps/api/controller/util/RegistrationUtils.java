@@ -5,11 +5,9 @@ package org.opencps.api.controller.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opencps.api.deliverabletype.model.DeliverableTypesModel;
 import org.opencps.api.registration.model.RegistrationDetailModel;
 import org.opencps.api.registration.model.RegistrationModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.Registration;
 
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -77,6 +75,7 @@ public class RegistrationUtils {
 				model.setRegistrationState(registration.getRegistrationState());
 				model.setRegistrationClass(registration.getRegistrationClass());
 				model.setSubmitting(registration.isSubmitting());
+				
 				outputs.add(model);
 			}
 		}
