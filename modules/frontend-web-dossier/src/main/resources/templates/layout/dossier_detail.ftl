@@ -15,7 +15,10 @@
 					<v-icon class="mr-2">undo</v-icon>
 				Quay lại
 				</v-btn>
-		
+                <v-btn v-if="navigationFilterview" v-on:click.native="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0"><v-icon>fullscreen</v-icon></v-btn>
+
+                <v-btn v-if="!navigationFilterview" v-on:click.native="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0"><v-icon>fullscreen_exit</v-icon></v-btn>
+
 			</div>
 	
 		</div>
@@ -165,13 +168,14 @@
 			</v-expansion-panel>
 			</v-tabs-content>
 			<v-tabs-content :id="'tab-dossier-detail-2'" reverse-transition="slide-y-transition" transition="slide-y-transition">
-				<v-tabs :scrollable="false">
+				<v-tabs :scrollable="false" v-if="processSteps">
 					<v-tabs-bar dark class="grey-opencps-panel">
 					<v-tabs-slider color="primary"></v-tabs-slider>
 					<v-tabs-item
 						v-for="step in processSteps"
 						:key="step.processActionId"
 						:href="'#tab-temp-' + step.processActionId"
+                        v-if="step.autoEvent !== 'submit'"
 						@click.prevent.stop="changeProcessStep(step)"
 					>
 						{{ step.actionName }}
@@ -180,25 +184,48 @@
 					</v-menu>
 					</v-tabs-bar>
 				</v-tabs>
-				<v-card v-if="stepModel.actionName != null">
-					<v-card-title primary-title class="mx-2">
-					<v-layout wrap> 
-					<v-flex xs12>
-						Nhập ý kiến {{stepModel.actionName}}:
-						<div jx-bind="processActionNote"></div>
-					</v-flex>
-					<v-flex xs12 v-if="stepModel.allowAssignUser">
-						<div jx-bind="processAssignUserId"></div>
-					</v-flex>
-					</v-layout>
-					
-					</v-card-title>
-					<v-card-actions>
-					<v-btn flat color="primary" class="px-0"
-						@click.prevent.stop="postNextActions(stepModel)">Xác nhận</v-btn>
-					</v-card-actions>
+				<v-card v-if="stepModel != null">
+                    <div>
+                        <v-card-title primary-title class="mx-2 pb-0">
+                            <v-layout wrap> 
+                                <v-flex xs12>
+                                    Nhập ý kiến {{stepModel.actionName}}:
+                                    <div jx-bind="processActionNote"></div>
+                                </v-flex>
+                                <v-flex xs12 v-if="stepModel.allowAssignUser">
+                                    <div jx-bind="processAssignUserId"></div>
+                                </v-flex>
+                            </v-layout>
+                        </v-card-title>
+                        <v-expansion-panel class="my-0 expansion__list_style">
+                            <v-expansion-panel-content v-for="(item,i) in stepModel.createFiles" :key="item.dossierPartId">
+                            <div slot="header">{{i + 1}}. {{item.partName}}</div>
+                            <div slot="header" class="text-right">
+                                <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="viewDossierFileVersionArchive(item)">
+                                    <v-icon>archive</v-icon>
+                                </v-btn>
+                                <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="document.getElementById('inputfile_'+item.dossierPartId).click()">
+                                    <v-icon>file_upload</v-icon>
+                                </v-btn>
+                                <v-btn color="primary" fab small dark class="small-btn-x mx-0 my-0" v-on:click.native="viewDossierFileVersion(item)">
+                                    0
+                                </v-btn>
+                                
+                                <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="">
+                                    <v-icon>delete</v-icon>
+                                </v-btn>
+                            </div>
+
+                            <input type="file" :id="'inputfile_'+item.dossierPartId" style="display:none" v-on:change="singleFileUploadInput($event, item)"/>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                        <v-card-actions>
+                            <v-btn flat color="primary" class="px-0"
+                            @click.prevent.stop="postNextActions(stepModel)">Xác nhận</v-btn>
+                        </v-card-actions>
+                    </div>
 				</v-card>
-			 
+			
 			</v-tabs-content>
 			<v-tabs-content :id="'tab-dossier-detail-3'" reverse-transition="slide-y-transition" transition="slide-y-transition">
 			<div class="opencps_list_border_style" jx-bind="listHistoryProcessing"></div>
@@ -212,8 +239,6 @@
 		</v-tabs-items>
 	</v-tabs>
 </div>
-
-
 			
 <script type="text/javascript">
 	
@@ -222,7 +247,7 @@
 	     var getContacts = function(){
 	     var dossierIdComment = $('#comments-container-pk').text().trim();
 			 $.ajax({
-	            url: '/o/rest/v2/'+dossierIdComment+'/dossiers/contact',
+	            url: '/o/rest/v2/dossiers/'+dossierIdComment+'/contacts',
 	            type: 'GET',
 	            headers: {
 	                "groupId": themeDisplay.getScopeGroupId()
@@ -239,8 +264,8 @@
 	                    
 	                    $.each(contacts, function(index, contact){
 	                        var user = {};
-	                        user.id = contact.userMappingId;
-	                        user.fullname = contact.fullName;
+	                        user.id = contact.userId;
+	                        user.fullname = contact.userName;
 	                        user.email = contact.email;
 	                        user.profilePictureURL = contact.profileUrl
 	                        users.push(user);
@@ -301,7 +326,7 @@
                     fileName: 'fileName',
                     pings: 'pings',
                     creator: 'userId',
-                    fullname: 'fullName',
+                    fullname: 'fullname',
                     profileURL: 'profileUrl',
                     profilePictureURL: 'pictureUrl',
                     isNew: 'isNew',
@@ -523,9 +548,9 @@
                         
                         formData.append('pings', comment.pings.join());
                         
-                        formData.append('email', themeDisplay.getUserName());
+                        formData.append('email', themeDisplay.getUserId());
                         
-                        formData.append('fullName', themeDisplay.getUserName());
+                        formData.append('fullname', themeDisplay.getUserName());
     
                         $.ajax({
                             url: '/o/rest/v2/comments/uploads',

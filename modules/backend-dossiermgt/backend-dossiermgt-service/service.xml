@@ -479,7 +479,7 @@
 			<finder-column name="dossierId"></finder-column>
 			<finder-column name="fileTemplateNo"></finder-column>
 		</finder>
-        <finder name="DID_DPNO" return-type="Collection">
+		<finder name="DID_DPNO" return-type="Collection">
             <finder-column name="dossierId"></finder-column>
             <finder-column name="dossierPartNo"></finder-column>
             <finder-column name="removed"></finder-column>
@@ -1056,7 +1056,14 @@
 		<!-- Order -->
 
 		<!-- Filter -->
-
+		<finder return-type="Collection" name="G_REGID">
+			<finder-column name="registrationId" />
+		</finder>
+		
+		<finder return-type="RegistrationForm" name="G_REGID_REFID">
+			<finder-column name="registrationId" />
+			<finder-column name="referenceUid" />
+		</finder>
 
 	</entity>
 
