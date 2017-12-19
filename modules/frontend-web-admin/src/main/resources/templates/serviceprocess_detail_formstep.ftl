@@ -256,7 +256,7 @@
 				transport : {
 					read : function(options){
 						console.log("read");
-						var parent = "";
+						var parent = 0;
 						if(options.data.parent){
 							parent = options.data.parent;
 						}
