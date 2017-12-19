@@ -89,8 +89,8 @@
 		<#-- for listview dossier-->
 		<script type="text/x-kendo-template" id="proFileTemplate">
 			<tr class="">
-				<td class="text-center" style="width: 5%">
-					#=count#
+				<td class="text-center count" style="width: 5%">
+					
 				</td>
 				
 				<td class="" style="width: 25%">
@@ -148,7 +148,7 @@
 					<#--  -->
 					#if(dossierStatus == "waiting"){#
 						<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="#:dossierId#">
-							<i class="fa fa-paper-plane" aria-hidden="true"></i>
+							<i class="fa fa-reply" aria-hidden="true"></i>
 							Yêu cầu hủy
 						</button></br>
 						<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
