@@ -367,7 +367,6 @@ public class DossierActionsImpl implements DossierActions {
 											eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true : false;
 											formData = dossierPart.getSampleData();
 											formScript = dossierPart.getFormScript();
-											docFileReferenceUid = StringPool.BLANK;
 
 											if (returnDossierFileTemplateNos
 													.contains(dossierPart.getFileTemplateNo())) {
@@ -377,10 +376,13 @@ public class DossierActionsImpl implements DossierActions {
 											// create Dossier File
 											DossierFileActions actions = new DossierFileActionsImpl();
 
-											actions.addDossierFile(groupId, dossierId, referenceUid,
-													dossier.getDossierTemplateNo(), dossierPart.getPartNo(),
-													fileTemplateNo, StringPool.BLANK, StringPool.BLANK, 0L, null,
-													StringPool.BLANK, String.valueOf(false), serviceContext);
+											DossierFile dossierFile = actions.addDossierFile(groupId, dossierId,
+													referenceUid, dossier.getDossierTemplateNo(),
+													dossierPart.getPartNo(), fileTemplateNo, StringPool.BLANK,
+													StringPool.BLANK, 0L, null, StringPool.BLANK, String.valueOf(false),
+													serviceContext);
+
+											docFileReferenceUid = dossierFile.getReferenceUid();
 
 										}
 
