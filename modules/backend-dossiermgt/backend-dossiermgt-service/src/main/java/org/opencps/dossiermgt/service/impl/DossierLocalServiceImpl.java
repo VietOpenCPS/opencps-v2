@@ -88,6 +88,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	 * org.opencps.dossiermgt.service.DossierLocalServiceUtil} to access the
 	 * dossier local service.
 	 */
+	
+	
+	
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier syncDossier(Dossier dossier) throws PortalException {
 

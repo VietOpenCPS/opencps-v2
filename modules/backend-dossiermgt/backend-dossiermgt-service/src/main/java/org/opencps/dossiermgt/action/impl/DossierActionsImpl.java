@@ -16,6 +16,7 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.util.DossierContentGenerator;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -505,6 +506,11 @@ public class DossierActionsImpl implements DossierActions {
 		} else {
 			processAction = getProcessAction(groupId, dossierId, referenceUid, actionCode, serviceProcessId);
 		}
+		
+		//Add paymentFile
+		if (Validator.isNotNull(processAction.getPaymentFee())) {
+			DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId, context);
+		}
 
 		if (Validator.isNull(processAction))
 			throw new NotFoundException("ProcessActionNotFoundException");
@@ -571,6 +577,7 @@ public class DossierActionsImpl implements DossierActions {
 			_log.info("NEXT_ACTION");
 
 			JSONObject jsStatus = JSONFactoryUtil.createJSONObject();
+
 			JSONObject jsSubStatus = JSONFactoryUtil.createJSONObject();
 
 			// String syncActionCode = processAction.getSyncActionCode();
@@ -578,6 +585,28 @@ public class DossierActionsImpl implements DossierActions {
 			getDossierStatus(jsStatus, groupId, DOSSIER_SATUS_DC_CODE, curStep.getDossierStatus());
 
 			getDossierStatus(jsStatus, groupId, DOSSIER_SATUS_DC_CODE, curStep.getDossierSubStatus());
+
+			// update reference dossier
+			
+
+			if (Validator.isNull(dossier.getDossierNo())
+					&& (curStep.getDossierStatus().contentEquals(DossierStatusConstants.PAYING)
+							|| (curStep.getDossierStatus().contentEquals(DossierStatusConstants.PROCESSING)))) {
+				
+				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+				params.put(DossierTerm.AGENCY, dossier.getGovAgencyCode());
+				params.put(DossierTerm.SERVICE, dossier.getServiceCode());
+				params.put(DossierTerm.TEMPLATE, dossier.getDossierTemplateNo());
+				SearchContext sc = new SearchContext();
+				sc.setCompanyId(dossier.getCompanyId());
+				
+				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
+						dossierId, serviceProcess.getDossierNoPattern(), params, sc);
+				
+				dossier.setDossierNo(dossierRef);
+				//To index
+				DossierLocalServiceUtil.syncDossier(dossier);
+			}
 
 			DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
 
@@ -635,8 +664,11 @@ public class DossierActionsImpl implements DossierActions {
 		ProcessStep postStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 
 		String dossierBriefNote = DossierContentGenerator.getBriefNote(groupId, dossierId, postStep.getBriefNote());
-
-		DossierLocalServiceUtil.updateDossierBriefNote(dossierId, dossierBriefNote);
+		
+		if (Validator.isNotNull(dossierBriefNote)) {
+			DossierLocalServiceUtil.updateDossierBriefNote(dossierId, dossierBriefNote);
+		}
+		
 
 		return dossierAction;
 	}
@@ -804,11 +836,14 @@ public class DossierActionsImpl implements DossierActions {
 		ProcessAction action = null;
 
 		try {
-			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode);
+			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
+					serviceProcessId);
 
 			Dossier dossier = getDossier(groupId, dossierId, refId);
 
 			String dossierStatus = dossier.getDossierStatus();
+
+			String dossierSubStatus = dossier.getDossierSubStatus();
 
 			for (ProcessAction act : actions) {
 
@@ -816,16 +851,17 @@ public class DossierActionsImpl implements DossierActions {
 
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
 
-				if (Validator.isNotNull(step)) {
-					if (step.getDossierStatus().equalsIgnoreCase(dossierStatus)) {
+				if (Validator.isNull(step)) {
+					action = act;
+					break;
+				} else {
+					if (step.getDossierStatus().contentEquals(dossierStatus)
+							&& StringUtil.containsIgnoreCase(step.getDossierSubStatus(), dossierSubStatus)) {
+
 						action = act;
 						break;
 					}
-				} else {
-					action = act;
-					break;
 				}
-
 			}
 
 		} catch (Exception e) {
