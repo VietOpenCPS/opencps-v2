@@ -106,6 +106,26 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			return processException(e);
 		}
 	}
+	
+	@Override
+	public Response getformScriptbyRegidRefid(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long registrationId, String referenceUid)
+			throws PortalException {
+		BackendAuth auth = new BackendAuthImpl();
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(registrationId,
+					referenceUid);
+
+			return Response.status(200).entity(registrationForm.getFormScript()).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
 
 	private Response processException(Exception e) {
 		ErrorMsg error = new ErrorMsg();

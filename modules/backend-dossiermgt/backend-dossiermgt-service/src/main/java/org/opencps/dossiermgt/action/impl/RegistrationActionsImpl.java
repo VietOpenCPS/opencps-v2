@@ -15,12 +15,12 @@ public class RegistrationActionsImpl implements RegistrationActions {
 			String applicantIdDate, String address, String cityCode, String cityName, String districtCode,
 			String districtName, String wardCode, String wardName, String contactName, String contactTelNo,
 			String contactEmail, String govAgencyCode, String govAgencyName, int registrationState,
-			String registrationClass, boolean submitting, ServiceContext serviceContext)
+			String registrationClass, ServiceContext serviceContext)
 			throws SystemException, PortalException {
 
 		return RegistrationLocalServiceUtil.insert(groupId, applicantName, applicantIdType, applicantIdNo, applicantIdDate,
 				address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
-				contactEmail, govAgencyCode, govAgencyName, registrationState, registrationClass, submitting,
+				contactEmail, govAgencyCode, govAgencyName, registrationState, registrationClass,
 				serviceContext);
 	}
 

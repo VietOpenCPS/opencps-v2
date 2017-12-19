@@ -15,6 +15,7 @@ import org.opencps.api.controller.util.RegistrationFormUtils;
 import org.opencps.api.controller.util.RegistrationUtils;
 import org.opencps.api.registration.model.RegistrationDetailModel;
 import org.opencps.api.registration.model.RegistrationInputModel;
+import org.opencps.api.registration.model.RegistrationModel;
 import org.opencps.api.registration.model.RegistrationResultsModel;
 import org.opencps.api.registrationform.model.RegistrationFormDetailModel;
 import org.opencps.api.registrationform.model.RegistrationFormInputModel;
@@ -58,7 +59,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			RegistrationResultsModel results = new RegistrationResultsModel();
 
 			List<Registration> lstRegistrationModel = RegistrationLocalServiceUtil.getRegistrations(start, end);
-			
+
 			results.setTotal(RegistrationLocalServiceUtil.getRegistrationsCount());
 			results.getData().addAll(RegistrationUtils.mappingToRegistrationResultsModel(lstRegistrationModel));
 
@@ -82,7 +83,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 					input.getCityName(), input.getDistrictCode(), input.getDistrictName(), input.getWardCode(),
 					input.getWardName(), input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
 					input.getGovAgencyCode(), input.getGovAgencyName(), input.getRegistrationState(),
-					input.getRegistrationClass(), input.isSubmitting(), serviceContext);
+					input.getRegistrationClass(), serviceContext);
 
 			result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
 
@@ -93,15 +94,23 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	}
 
 	@Override
-	public Response getDetail(Long id) {
-		Registration detail = null;
+	public Response getDetail(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, Long id) {
+		BackendAuth auth = new BackendAuthImpl();
 		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
 			RegistrationActions action = new RegistrationActionsImpl();
-			detail = action.getDetail(id);
+			
+			Registration detail = action.getDetail(id);
+			
+			RegistrationModel result = RegistrationUtils.mappingToRegistrationModel(detail);
+			
+			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			_log.error(e);
+			return processException(e);
 		}
-		return Response.status(200).entity(detail).build();
 	}
 
 	@Override
@@ -130,7 +139,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			model.setContactEmail(input.getContactEmail());
 			model.setRegistrationClass(input.getRegistrationClass());
 			model.setRegistrationState(input.getRegistrationState());
-			model.setSubmitting(input.isSubmitting());
 
 			Registration registration = action.update(model);
 

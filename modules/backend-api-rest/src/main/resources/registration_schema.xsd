@@ -20,7 +20,6 @@
 			<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
 			<xsd:element name="registrationState" type="xsd:int" minOccurs="0" />
 			<xsd:element name="registrationClass" type="xsd:string" minOccurs="0" />
-			<xsd:element name="submitting" type="xsd:boolean" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	

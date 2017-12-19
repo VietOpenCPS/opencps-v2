@@ -29,9 +29,9 @@ import com.liferay.portal.kernel.service.ServiceContext;
 
 import io.swagger.annotations.Api;
 
-@Api(value = "/registrations/{id}/logs", description = "APIs for Deliverables")
+@Api(value = "/registrations", description = "APIs for Deliverables")
 public interface RegistrationManagement {
-	
+
 	@GET
 	@Path("/registrations")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -51,7 +51,9 @@ public interface RegistrationManagement {
 	@Path("/registrations/{id}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	public Response getDetail(@PathParam("id") Long id);
+	public Response getDetail(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") Long id);
 
 	@PUT
 	@Path("/registrations/{id}")

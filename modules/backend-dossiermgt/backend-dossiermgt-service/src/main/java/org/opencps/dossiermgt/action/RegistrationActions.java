@@ -17,5 +17,6 @@ public interface RegistrationActions {
 			String applicantIdDate, String address, String cityCode, String cityName, String districtCode,
 			String districtName, String wardCode, String wardName, String contactName, String contactTelNo,
 			String contactEmail, String govAgencyCode, String govAgencyName, int registrationState,
-			String registrationClass, boolean submitting, ServiceContext serviceContext) throws SystemException, PortalException;
+			String registrationClass, ServiceContext serviceContext) throws SystemException, PortalException;
+
 }

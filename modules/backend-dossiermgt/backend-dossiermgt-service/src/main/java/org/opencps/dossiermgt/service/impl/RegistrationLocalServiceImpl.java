@@ -51,7 +51,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			String applicantIdDate, String address, String cityCode, String cityName, String districtCode,
 			String districtName, String wardCode, String wardName, String contactName, String contactTelNo,
 			String contactEmail, String govAgencyCode, String govAgencyName, int registrationState,
-			String registrationClass, boolean submitting, ServiceContext serviceContext)
+			String registrationClass, ServiceContext serviceContext)
 			throws PortalException, SystemException {
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
@@ -83,7 +83,6 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setGovAgencyName(govAgencyName);
 		model.setRegistrationClass(registrationClass);
 		model.setRegistrationState(registrationState);
-		model.setSubmitting(submitting);
 
 		return registrationPersistence.update(model);
 
