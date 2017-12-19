@@ -1427,119 +1427,119 @@ public class AdminPortlet extends FreeMarkerPortlet {
 	}
 
 	public void saveDictItem(
-		ActionRequest actionRequest, ActionResponse actionResponse)
-		throws IOException {
+			ActionRequest actionRequest, ActionResponse actionResponse)
+			throws IOException {
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-		long groupId = themeDisplay.getScopeGroupId();
+			long groupId = themeDisplay.getScopeGroupId();
 
-		long userId = themeDisplay.getUserId();
+			long userId = themeDisplay.getUserId();
 
-		String itemCode = ParamUtil.getString(actionRequest, "itemCode");
-		String itemName = ParamUtil.getString(actionRequest, "itemName");
-		String itemNameEN = ParamUtil.getString(actionRequest, "itemNameEN");
-		String itemCodeOld = ParamUtil.getString(actionRequest, "itemCodeOld");
-		String collectionCode =
-			ParamUtil.getString(actionRequest, "collectionCode");
-		String itemDescription =
-			ParamUtil.getString(actionRequest, "itemDescription");
-		int sibling = ParamUtil.getInteger(actionRequest, "sibling", 0);
-		String parentItemCode =
-			ParamUtil.getString(actionRequest, "parentItemCode");
-		String groupCodes = ParamUtil.getString(actionRequest, "groupCode");
+			String itemCode = ParamUtil.getString(actionRequest, "itemCode");
+			String itemName = ParamUtil.getString(actionRequest, "itemName");
+			String itemNameEN = ParamUtil.getString(actionRequest, "itemNameEN");
+			String itemCodeOld = ParamUtil.getString(actionRequest, "itemCodeOld");
+			String collectionCode =
+				ParamUtil.getString(actionRequest, "collectionCode");
+			String itemDescription =
+				ParamUtil.getString(actionRequest, "itemDescription");
+			int sibling = ParamUtil.getInteger(actionRequest, "sibling", 0);
+			String parentItemCode =
+				ParamUtil.getString(actionRequest, "parentItemCode");
+			String groupCodes = ParamUtil.getString(actionRequest, "groupCode");
 
-		String metaData = ParamUtil.getString(actionRequest, "metaData");
+			String metaData = ParamUtil.getString(actionRequest, "metaData");
 
-		DictCollectionActions dictCollectionActions =
-			new DictCollectionActions();
+			DictCollectionActions dictCollectionActions =
+				new DictCollectionActions();
 
-		JSONObject result = JSONFactoryUtil.createJSONObject();
+			JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		try {
-			ServiceContext serviceContext =
-				ServiceContextFactory.getInstance(actionRequest);
+			try {
+				ServiceContext serviceContext =
+					ServiceContextFactory.getInstance(actionRequest);
 
-			DictItem dictItem = null;
+				DictItem dictItem = null;
 
-			if (Validator.isNotNull(itemCodeOld)) {
+				if (Validator.isNotNull(itemCodeOld)) {
 
-				dictItem = dictCollectionActions.updateDictItemByItemCode(
-					userId, groupId, serviceContext, collectionCode,
-					itemCodeOld, itemCode, itemName, itemNameEN,
-					itemDescription, String.valueOf(sibling), parentItemCode);
+					dictItem = dictCollectionActions.updateDictItemByItemCode(
+						userId, groupId, serviceContext, collectionCode,
+						itemCodeOld, itemCode, itemName, itemNameEN,
+						itemDescription, String.valueOf(sibling), parentItemCode);
+
+					dictItem = dictCollectionActions.updateMetaDataByItemCode(
+						userId, groupId, serviceContext, collectionCode,
+						itemCode, metaData);
+					
+				}
+				else {
+					dictItem = dictCollectionActions.addDictItems(
+						userId, groupId, collectionCode, parentItemCode, itemCode,
+						itemName, itemNameEN, itemDescription,
+						String.valueOf(sibling), 0, metaData, serviceContext);
+				}
+
+				groupCodes = dictCollectionActions.updateDictItemGroup(
+					userId, groupId, dictItem.getDictItemId(), groupCodes,
+					serviceContext);
+
+				result.put(
+					"createDate", DateTimeUtils.convertDateToString(
+						dictItem.getCreateDate(), DateTimeUtils._TIMESTAMP));
+				result.put(
+					"modifiedDate", DateTimeUtils.convertDateToString(
+						dictItem.getModifiedDate(), DateTimeUtils._TIMESTAMP));
+				result.put("itemCode", dictItem.getItemCode());
+				result.put(
+					"itemName", Validator.isNotNull(dictItem.getItemName())
+						? dictItem.getItemName() : StringPool.BLANK);
+				result.put(
+					"itemNameEN", Validator.isNotNull(dictItem.getItemNameEN())
+						? dictItem.getItemNameEN() : StringPool.BLANK);
+				result.put("itemDescription", dictItem.getItemDescription());
+				result.put("parentItem", dictItem.getParentItemId());
+				result.put("level", dictItem.getLevel());
+				result.put("sibling", dictItem.getSibling());
+				result.put("treeIndex", dictItem.getTreeIndex());
+				result.put("dictItemId", dictItem.getDictItemId());
+				result.put("groupCode", groupCodes);
+
 			}
-			else {
-				dictItem = dictCollectionActions.addDictItems(
-					userId, groupId, collectionCode, parentItemCode, itemCode,
-					itemName, itemNameEN, itemDescription,
-					String.valueOf(sibling), 0, metaData, serviceContext);
+			catch (Exception e) {
+				_log.error(e);
+				if (e instanceof UnauthenticationException) {
+
+					result.put("statusCode", 401);
+
+				}
+
+				if (e instanceof UnauthorizationException) {
+
+					result.put("statusCode", 403);
+
+				}
+
+				if (e instanceof NoSuchUserException) {
+
+					result.put("statusCode", 401);
+
+				}
+
+				if (e instanceof DuplicateCategoryException) {
+
+					result.put("statusCode", 409);
+
+				}
+				result.put("msg", "error");
 			}
-
-			// TODO template commented
-			// groupCodes = dictCollectionActions.updateDictItemGroup(
-			// userId, groupId, dictItem.getDictItemId(), groupCodes,
-			// serviceContext);
-
-			groupCodes = dictCollectionActions.updateDictItemGroup(
-				userId, groupId, dictItem.getDictItemId(), groupCodes,
-				serviceContext);
-
-			result.put(
-				"createDate", DateTimeUtils.convertDateToString(
-					dictItem.getCreateDate(), DateTimeUtils._TIMESTAMP));
-			result.put(
-				"modifiedDate", DateTimeUtils.convertDateToString(
-					dictItem.getModifiedDate(), DateTimeUtils._TIMESTAMP));
-			result.put("itemCode", dictItem.getItemCode());
-			result.put(
-				"itemName", Validator.isNotNull(dictItem.getItemName())
-					? dictItem.getItemName() : StringPool.BLANK);
-			result.put(
-				"itemNameEN", Validator.isNotNull(dictItem.getItemNameEN())
-					? dictItem.getItemNameEN() : StringPool.BLANK);
-			result.put("itemDescription", dictItem.getItemDescription());
-			result.put("parentItem", dictItem.getParentItemId());
-			result.put("level", dictItem.getLevel());
-			result.put("sibling", dictItem.getSibling());
-			result.put("treeIndex", dictItem.getTreeIndex());
-			result.put("dictItemId", dictItem.getDictItemId());
-			result.put("groupCode", groupCodes);
+			finally {
+				writeJSON(actionRequest, actionResponse, result);
+			}
 
 		}
-		catch (Exception e) {
-			_log.error(e);
-			if (e instanceof UnauthenticationException) {
-
-				result.put("statusCode", 401);
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				result.put("statusCode", 403);
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				result.put("statusCode", 401);
-
-			}
-
-			if (e instanceof DuplicateCategoryException) {
-
-				result.put("statusCode", 409);
-
-			}
-			result.put("msg", "error");
-		}
-		finally {
-			writeJSON(actionRequest, actionResponse, result);
-		}
-
-	}
 
 	private Log _log = LogFactoryUtil.getLog(AdminPortlet.class.getName());
 }

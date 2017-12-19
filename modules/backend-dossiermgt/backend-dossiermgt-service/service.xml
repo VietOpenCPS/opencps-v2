@@ -1049,6 +1049,27 @@
 
 
 	</entity>
+	
+	<entity local-service="true" name="RegistrationLog" remote-service="false"
+		table="opencps_registrationlog" uuid="true">
+
+		<column name="registrationLogId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+	
+		<column name="registrationId" type="long" />
+		<column name="author" type="String" />
+		<column name="content" type="String" />
+		<column name="payload" type="String" />
+		<!-- Order -->
+		<!-- Filter -->
+
+
+	</entity>
 
 	<entity local-service="true" name="RegistrationForm"
 		remote-service="false" table="opencps_registrationform" uuid="true">
