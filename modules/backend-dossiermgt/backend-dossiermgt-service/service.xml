@@ -797,6 +797,12 @@
 			<finder-column name="actionCode" />
 		</finder>
 
+		<finder return-type="Collection" name="GI_AC_SP">
+			<finder-column name="groupId" />
+			<finder-column name="actionCode" />
+			<finder-column name="serviceProcessId"/>
+		</finder>
+
 		<finder return-type="Collection" name="PRE_CODE">
 			<finder-column name="preStepCode" />
 			<finder-column name="groupId" />
