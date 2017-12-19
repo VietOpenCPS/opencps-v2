@@ -30,7 +30,8 @@
                 showContactDetail: false,
 				dossierFiles: [],
 				statusParamFilter: null,
-				substatusParamFilter: null
+				substatusParamFilter: null,
+				loadingAlpacajsForm: false,
 			},
 			onScroll: 'onScroll',
 			schema: {
@@ -42,23 +43,114 @@
 					"template": "menu_template",
 					"template_content": "dossierViewJX_form_template",
 					'events': {
+						deleteDossierFileVersion: function (item) {
+							var vm = this;
+
+							vm.$dialog.confirm('Bạn có muốn xóa file toàn bộ file của thành phần này!', {
+								html: true,
+								loader: true,
+								okText: 'Xác nhận',
+								cancelText: 'Quay lại',
+								animation: 'fade'
+							})
+								.then((dialog) => {
+									$.ajax({
+										url : "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid,
+										dataType : "json",
+										type : "DELETE",
+										headers: {
+											"groupId": themeDisplay.getScopeGroupId()
+										},
+										success : function(result){
+											vm.snackbartextdossierViewJX = "Xoá dữ liệu thành phần hồ sơ thành công!";
+											vm.snackbardossierViewJX = true;
+											vm._initchangeProcessStep();
+										},
+										error : function(result){
+											vm.snackbartextdossierViewJX = "Xoá dữ liệu thành phần hồ sơ thất bại!";
+											vm.snackbarerordossierViewJX = true;
+										}
+									});
+									dialog.close();
+								})
+								.catch((e) => {
+									console.log(e)
+								})
+						},
+						submitAlpacajsForm: function (item) {
+							var vm = this;
+
+							vm.loadingAlpacajsForm = true;
+							var control = $("#alpacajs_form_"+item.dossierPartId).alpaca("get");
+							var formData = control.getValue();
+							
+							$.ajax({
+								url : "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid+"/formdata",
+								dataType : "json",
+								type : "PUT",
+								headers: {
+									"groupId": themeDisplay.getScopeGroupId(),
+									Accept : "application/json"
+								},
+								data : {
+									formdata: JSON.stringify(formData)
+								},
+								success : function(result){
+									vm.snackbartextdossierViewJX = "Lưu form thành công!";
+                      				vm.snackbardossierViewJX = true;
+									vm._initchangeProcessStep();
+									vm.loadingAlpacajsForm = false;
+								},
+								error : function(result){
+									vm.snackbartextdossierViewJX = "Lưu form thất bại!";
+                      				vm.snackbarerordossierViewJX = true;
+									  vm.loadingAlpacajsForm = false;
+								}
+							});
+							
+						},
+						showAlpacaJSFORM: function (item) {
+							//alapcajs Form
+							var alpacajsForm = document.getElementById("alpacajs_form_"+item.dossierPartId);
+							if (alpacajsForm.innerHTML == '' && item.eform) {
+								console.log(item);
+								$("#alpacajs_form_"+item.dossierPartId).alpaca({
+									"schema": {
+										"title": "What do you think of Alpaca?",
+										"type": "object",
+										"properties": {
+											"name": {
+												"type": "string",
+												"title": "Name"
+											},
+											"ranking": {
+												"type": "string",
+												"title": "Ranking",
+												"enum": ['excellent', 'not too shabby', 'alpaca built my hotrod']
+											}
+										}
+									}
+								});
+							}
+							
+						},
                         changeProcessStep: function (item){
-                            console.log(item);
                             var vm = this;
+							
+							if (item.hasOwnProperty('createFiles') && !(item.createFiles instanceof Array)) {
+								var createFilesTemp = item.createFiles;
+								item.createFiles = [];
+								item.createFiles.push(createFilesTemp);
+							}
 
-							var createFiles = item.createFiles;
-
-							item.createFiles = [];
-							item.createFiles.pust(createFiles);
-
-							console.log(item);
 							if (item.autoEvent !== 'submit' && item.autoEvent !== 'timer') {
 								vm.stepModel = item;
 							} else {
 								vm.stepModel = null;
 							}
                             
-                            vm.processAssignUserIdItems = item.toUsers
+                            vm.processAssignUserIdItems = item.toUsers;
+							
                         },
 						postNextActions: function (item){
 							
@@ -80,9 +172,9 @@
 
 							const postData = {
 								"actionCode": item.actionCode,
-								"actionUser": 'dsadsa',
-								"actionNote": 'dsadsa',
-								"assignUserId": 0
+								"actionUser": themeDisplay.getUserName(),
+								"actionNote": vm.processActionNote,
+								"assignUserId": vm.processAssignUserId.userId
 							};
 							
 							$.ajax({
@@ -92,9 +184,9 @@
 								},
 								data: {
 									"actionCode": item.actionCode,
-									"actionUser": 'dsadsa',
-									"actionNote": 'dsadsa',
-									"assignUserId": 0
+									"actionUser": themeDisplay.getUserName(),
+									"actionNote": vm.processActionNote,
+									"assignUserId": vm.processAssignUserId.userId
 								},
 								type: 'POST',
 								dataType: 'json',
@@ -163,27 +255,41 @@
 							
 							var files = e.target.files || e.dataTransfer.files;
 							
-
 							var file = files[0];
-
+							console.log(file);
 							var vm = this;
-							var url = '/dossiers/'+vm.detailModel.dossierId+'/files';
+							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/files';
 
-							const config = {
-								headers: {
-									'groupId': themeDisplay.getScopeGroupId()
+							var data = new FormData();
+							data.append( 'displayName', file.name );
+							data.append( 'file', file );
+							data.append( 'dossierPartNo', item.partNo );
+							data.append( 'dossierTemplateNo', vm.detailModel.dossierTemplateNo );
+							data.append( 'fileTemplateNo', item.templateFileNo );
+							data.append( 'fileType', '' );
+							data.append( 'isSync', '' );
+							data.append( 'referenceUid', '' );
+
+							$.ajax({
+								type : 'POST', 
+								url  : url, 
+								data : data,
+								headers: {"groupId": themeDisplay.getScopeGroupId()},
+								processData: false,
+								contentType: false,
+								cache: false,
+								async : false,
+								success :  function(result){ 
+									vm.snackbartextdossierViewJX = " Tải file thành công!";
+                      				vm.snackbardossierViewJX = true;
+									vm._initchangeProcessStep();
+								},
+								error:function(result){
+									vm.snackbartextdossierViewJX = "Tải file thất bại!";
+                      				vm.snackbarerordossierViewJX = true;
 								}
-							};
-
-							const postData = {
-								"displayName": file.name,
-								"file": file,
-								"dossierPartNo": item.partNo,
-								"dossierTemplateNo": vm.detailModel.dossierTemplateNo,
-								"fileTemplateNo": item.templateFileNo,
-								"fileType": '',
-								"isSync": ''
-							};
+							});
+							/**
                             axios.post(url, postData, config).then(function (response) {
                                 var serializable = response.data;
 
@@ -195,6 +301,7 @@
 									vm.snackbartextdossierViewJX = item.actionName + " thất bại!";
                       				vm.snackbarerordossierViewJX = true;
                                 });
+							*/
 						},
                         onScroll(e) {
 							this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
@@ -1017,15 +1124,22 @@
 								}
 							}
 							vm.listDocumentInPartNoItems = listFilesUpload;
-							if (item.counter > 0){
+							//if (item.counter > 0){
 								vm.popUpViewDossierFile = !vm.popUpViewDossierFile;
-							}
+							//}
 							
 						},
 						viewDossierFileVersionArchive: function (item) {
 							var vm = this;
 							vm.dossierViewJXTitle = item.partName;
 							vm.popUpViewDossierFile = !vm.popUpViewDossierFile;
+						},
+						viewDossierFileResult: function (item) {
+							var vm = this;
+							//if (item.counter > 0){
+								vm.popUpViewDossierFile = !vm.popUpViewDossierFile;
+							//}
+							
 						}
 					}
 				},
@@ -1045,14 +1159,16 @@
 							// call DownloadFile.
 							var vm = this;
 							const config = {
-								headers: {'groupId': themeDisplay.getScopeGroupId()}
+								headers: {'groupId': themeDisplay.getScopeGroupId()},
+								responseType: 'blob'
 							};
 
 							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/files/'+item.referenceUid;
 							
 							axios.get(url, config).then(function (response) {
-								var serializable = response.data;
-								
+								var url = window.URL.createObjectURL(response.data);
+								console.log(url);
+								window.open(url);
 							})
 								.catch(function (error) {
 									console.log(error);
@@ -1232,14 +1348,6 @@
 	.card__text i {
 		font-size: 16px;
 	}
-
-	.border-right-1 {
-		border-right: 1px solid #e1e2e1;
-	}
-	code {
-		cursor: pointer;
-	}
-
 
 	.border-right-1 {
 		border-right: 1px solid #e1e2e1;
@@ -1651,5 +1759,10 @@ white-space: normal;
 
 .snackbar-error {
 background-color: #c62828 !important;
+}
+
+.table__overflow .table {
+    margin: 0;
+    min-width: 1000px;
 }
 </style>
