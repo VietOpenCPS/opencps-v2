@@ -1,11 +1,18 @@
 package org.opencps.dossiermgt.action.impl;
 
+import java.util.List;
+
 import org.opencps.dossiermgt.action.RegistrationActions;
 import org.opencps.dossiermgt.model.Registration;
+import org.opencps.dossiermgt.model.RegistrationForm;
+import org.opencps.dossiermgt.model.RegistrationLog;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
+import org.opencps.dossiermgt.service.RegistrationLogLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 public class RegistrationActionsImpl implements RegistrationActions {
@@ -47,6 +54,17 @@ public class RegistrationActionsImpl implements RegistrationActions {
 	public Registration getDetail(long registrationId) throws PortalException {
 		return RegistrationLocalServiceUtil.getRegistration(registrationId);
 
+	}
+
+	@Override
+	public RegistrationLog addLog(String author, long groupId, long userId, long registrationId, String content,
+			List<RegistrationForm> payload) {
+		JSONObject jsonObj = JSONFactoryUtil.createJSONObject();
+		jsonObj.put("result", payload);
+		String strPayload = jsonObj.toJSONString();
+		return RegistrationLogLocalServiceUtil.addLog(author, groupId, userId, registrationId, content, strPayload);
+		
+		
 	}
 
 }
