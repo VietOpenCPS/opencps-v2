@@ -247,7 +247,17 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		dataMgtURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 		dataMgtURL.setParameter(
 			"mvcPath", "/templates/datamgt/dictcollection_index.ftl");
-
+		
+		PortletURL registrationTemplatesURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		registrationTemplatesURL.setPortletMode(PortletMode.VIEW);
+		registrationTemplatesURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		registrationTemplatesURL.setParameter(
+			"mvcPath", "/templates/registrationtemplates.ftl");
+		
+		
+		urlObject.put("registrationtemplates", registrationTemplatesURL.toString());
 		urlObject.put("serviceinfo_list", serviceInfoListURL.toString());
 		urlObject.put("serviceinfo_form", serviceInfoFormURL.toString());
 		urlObject.put(
