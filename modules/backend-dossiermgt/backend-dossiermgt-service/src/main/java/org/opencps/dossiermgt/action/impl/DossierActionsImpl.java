@@ -297,14 +297,25 @@ public class DossierActionsImpl implements DossierActions {
 
 						List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByD_DP(dossierId,
 								2);
+						
+						_log.info("///////////////////////////// dossierActionId " + dossierActionId + "|serviceProcessId " + serviceProcessId + "|stepCode " + stepCode + "|processActionId " + processAction.getProcessActionId());
 
 						JSONArray createFiles = JSONFactoryUtil.createJSONArray();
 
 						if (dossierFileTemplateNos != null && !dossierFileTemplateNos.isEmpty()) {
+							
+							_log.info("///////////////////////////// dossierFileTemplateNos " + dossierFileTemplateNos);
+							
 							DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId,
 									dossier.getDossierTemplateNo());
+							
+							_log.info("///////////////////////////// dossier.getDossierTemplateNo() " + dossier.getDossierTemplateNo());
+							
 							List<DossierPart> dossierParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
 									dossierTemplate.getTemplateNo());
+							
+							_log.info("///////////////////////////// dossierTemplate.getTemplateNo() " + dossierTemplate.getTemplateNo());
+							
 							if (dossierParts != null) {
 								for (DossierPart dossierPart : dossierParts) {
 									String fileTemplateNo = dossierPart.getFileTemplateNo();
@@ -326,6 +337,7 @@ public class DossierActionsImpl implements DossierActions {
 										//List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 										//		.getDossierFileByDID_DPNO(dossierId, dossierPart.getPartNo(), false);
 										
+										_log.info("////////////////////////////////////// fileTemplateNo " + fileTemplateNo);								
 										List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 													.getDossierFileByDID_FTNO_DPT(dossierId, fileTemplateNo, 2, false);
 

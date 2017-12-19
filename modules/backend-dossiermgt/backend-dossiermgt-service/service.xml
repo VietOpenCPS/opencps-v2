@@ -475,9 +475,10 @@
 			<finder-column name="isNew" />
 		</finder>
 		<!-- References -->
-		<finder name="DID_FTNO" return-type="DossierFile">
+		<finder name="DID_FTNO" return-type="Collection">
 			<finder-column name="dossierId"></finder-column>
 			<finder-column name="fileTemplateNo"></finder-column>
+            <finder-column name="removed"></finder-column>
 		</finder>
 		<finder name="DID_DPNO" return-type="Collection">
             <finder-column name="dossierId"></finder-column>
