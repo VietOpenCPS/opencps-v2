@@ -1939,5 +1939,11 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		return dossierFilePersistence.findByDID_FTNO_DPT(dossierId, fileTemplateNo, dossierPartType, removed);
 	}
 
+	public List<DossierFile> getDossierFileByDID_FTNO_DPT(long dossierId, String fileTemplateNo, int dossierPartType,
+			boolean removed, int start, int end, OrderByComparator orderByComparator) {
+		return dossierFilePersistence.findByDID_FTNO_DPT(dossierId, fileTemplateNo, dossierPartType, removed, start,
+				end, orderByComparator);
+	}
+
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }
