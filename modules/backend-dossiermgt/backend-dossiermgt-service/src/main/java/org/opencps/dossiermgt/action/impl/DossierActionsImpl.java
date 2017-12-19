@@ -335,7 +335,7 @@ public class DossierActionsImpl implements DossierActions {
 										createFile.put("partTip", dossierPart.getPartTip());
 										createFile.put("multiple", dossierPart.getMultiple());
 										createFile.put("templateFileNo", dossierPart.getTemplateNo());
-
+										long fileEntryId = 0;
 										boolean eForm = false;
 										String formData = StringPool.BLANK;
 										String formScript = StringPool.BLANK;
@@ -355,7 +355,7 @@ public class DossierActionsImpl implements DossierActions {
 													formData = dossierFile.getFormData();
 													formScript = dossierFile.getFormScript();
 													docFileReferenceUid = dossierFile.getReferenceUid();
-
+													fileEntryId = dossierFile.getFileEntryId();
 													if (returnDossierFileTemplateNos
 															.contains(dossierFile.getFileTemplateNo())) {
 														returned = true;
@@ -399,6 +399,7 @@ public class DossierActionsImpl implements DossierActions {
 										createFile.put("referenceUid", docFileReferenceUid);
 										createFile.put("counter", counter);
 										createFile.put("returned", returned);
+										createFile.put("fileEntryId", fileEntryId);
 										createFiles.put(createFile);
 
 									}
