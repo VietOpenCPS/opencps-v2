@@ -85,13 +85,20 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 			// TODO: handle exception
 			_log.info(e.getMessage());
 		}
-
+		
+		
+		
 		String dossierPartNo =
 			ParamUtil.getString(renderRequest, "dossierPartNo");
 		System.out.println("dossierPartNo:" + dossierPartNo);
 
 		String dossierTemplateNo =
 			ParamUtil.getString(renderRequest, "dossierTemplateNo");
+		
+		String resCancelling = ParamUtil.getString(renderRequest, "resCancelling");
+		String sendAdd = ParamUtil.getString(renderRequest, "sendAdd");
+		
+		String lblApplicantNote = getLabelApplicantNote(resCancelling,sendAdd);
 
 		// apiObject.put("applicant", applicantObj);
 
@@ -107,7 +114,10 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute("dossierPartNo", dossierPartNo);
 		renderRequest.setAttribute("dossierTemplateNo", dossierTemplateNo);
 		renderRequest.setAttribute("constants", constantsObj);
-
+		renderRequest.setAttribute("resCancelling", resCancelling);
+		renderRequest.setAttribute("sendAdd", sendAdd);
+		renderRequest.setAttribute("lblApplicantNote", lblApplicantNote);
+		
 		super.render(renderRequest, renderResponse);
 
 	}
@@ -175,6 +185,21 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 
 		return constantsObj;
 
+	}
+	
+	private String getLabelApplicantNote(String resCancelling, String sendAdd) {
+
+		if(resCancelling != null && resCancelling != ""){
+			return "Lý do yêu cầu huỷ" ;
+		}
+		
+		if(sendAdd != null && sendAdd != ""){
+			return "Yêu cầu gửi bổ sung";
+		}
+		
+		
+		return "Ghi chú";
+		
 	}
 
 	private JSONObject generateURLJsonObject(RenderResponse renderResponse)
