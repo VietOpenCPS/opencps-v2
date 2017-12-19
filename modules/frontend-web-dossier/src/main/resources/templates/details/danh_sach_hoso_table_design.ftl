@@ -17,12 +17,12 @@
 			{{ props.item.dossierId }} 
 		</td>
 		<td style="padding-top: 15px;" class="text-xs-left">
-			{{ props.item.submitDate | date }}
+			{{ props.item.submitDate}}
 			<br>
-			{{ props.item.receiveDate | date }}
+			{{ props.item.receiveDate}}
 		</td>
 		<td style="padding-top: 15px;" class="text-xs-left">
-			{{ props.item.dueDate | date }}
+			{{ props.item.dueDate}}
 		</td>
 		
 		<td style="padding-top: 15px;" class="text-xs-left">

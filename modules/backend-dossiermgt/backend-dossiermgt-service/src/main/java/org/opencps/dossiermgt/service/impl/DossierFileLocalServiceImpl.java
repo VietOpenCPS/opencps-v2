@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.exception.DuplicateDossierFileException;
 import org.opencps.dossiermgt.exception.InvalidDossierStatusException;
@@ -171,7 +172,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		}
 
 		if (Validator.isNotNull(dossierPart.getSampleData())) {
-			object.setFormData(sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext));
+			object.setFormData(
+					AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext));
 		}
 
 		object.setDisplayName(displayName);
@@ -1588,6 +1590,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		// \"ngay\":\"07/12/2017\",\"diachi\":\"hà
 		// nội\",\"tendoanhnghiep\":\"ABC\",\"bang\":[{\"stt\":\"1\",\"tenphepthu\":\"phép
 		// thử 1\"}]}}";
+
 		// Binhth add message bus to processing jasper file
 		Message message = new Message();
 
