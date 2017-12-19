@@ -20,7 +20,7 @@ public class RegistrationUtils {
 			Registration registration) {
 
 		if (registration == null) {
-			return null;
+			return new RegistrationDetailModel();
 		}
 		RegistrationDetailModel model = new RegistrationDetailModel();
 

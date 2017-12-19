@@ -1,6 +1,10 @@
 package org.opencps.dossiermgt.action;
 
+import java.util.List;
+
 import org.opencps.dossiermgt.model.Registration;
+import org.opencps.dossiermgt.model.RegistrationForm;
+import org.opencps.dossiermgt.model.RegistrationLog;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -18,4 +22,6 @@ public interface RegistrationActions {
 			String districtName, String wardCode, String wardName, String contactName, String contactTelNo,
 			String contactEmail, String govAgencyCode, String govAgencyName, int registrationState,
 			String registrationClass, boolean submitting, ServiceContext serviceContext) throws SystemException, PortalException;
+	
+	public RegistrationLog addLog(String author, long groupId, long userId, long registrationId, String content, List<RegistrationForm> payload);
 }
