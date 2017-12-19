@@ -1,6 +1,5 @@
 package org.opencps.api.controller.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -14,8 +13,8 @@ import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.RegistrationFormUtils;
 import org.opencps.api.controller.util.RegistrationUtils;
 import org.opencps.api.registration.model.RegistrationDetailModel;
+import org.opencps.api.registration.model.RegistrationDetailResultModel;
 import org.opencps.api.registration.model.RegistrationInputModel;
-import org.opencps.api.registration.model.RegistrationModel;
 import org.opencps.api.registration.model.RegistrationResultsModel;
 import org.opencps.api.registrationform.model.RegistrationFormDetailModel;
 import org.opencps.api.registrationform.model.RegistrationFormInputModel;
@@ -31,11 +30,9 @@ import org.opencps.dossiermgt.action.impl.RegistrationActionsImpl;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
-import org.opencps.dossiermgt.model.impl.RegistrationImpl;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.flash.FlashMagicBytesUtil.Result;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -105,11 +102,10 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				throw new UnauthenticationException();
 			}
 			RegistrationActions action = new RegistrationActionsImpl();
-			
+
 			Registration detail = action.getDetail(id);
-			
-			detail = action.getDetail(id);
-			RegistrationDetailModel result = RegistrationUtils.mappingToRegistrationDetailModel(detail);
+
+			RegistrationDetailResultModel result = RegistrationUtils.mappingToRegistrationDetailResultModel(detail);
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
 			_log.error(e);
@@ -118,41 +114,28 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	}
 
 	@Override
-	public Response update(RegistrationInputModel input, Long id) {
-		RegistrationDetailModel result = null;
+	public Response update(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, RegistrationInputModel input, long registrationId) {
+		
 		try {
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			RegistrationActions action = new RegistrationActionsImpl();
-			Registration model = new RegistrationImpl();
-			Date now = new Date();
-			model.setRegistrationId(id);
 
-			model.setModifiedDate(now);
+			Registration registration = action.updateRegistration(groupId, registrationId, input.getApplicantName(),
+					input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
+					input.getAddress(), input.getCityCode(), input.getCityName(), input.getDistrictCode(),
+					input.getDistrictName(), input.getWardCode(), input.getWardName(), input.getContactName(),
+					input.getContactTelNo(), input.getContactEmail(), input.getGovAgencyCode(),
+					input.getGovAgencyName(), input.getRegistrationState(), input.getRegistrationClass(),
+					serviceContext);
 
-			model.setApplicantName(input.getApplicantName());
-			model.setApplicantIdType(input.getApplicantIdType());
-			model.setApplicantIdNo(input.getApplicantIdNo());
-			model.setAddress(input.getAddress());
-			model.setCityCode(input.getCityCode());
-			model.setCityName(input.getCityName());
-			model.setDistrictCode(input.getDistrictCode());
-			model.setDistrictName(input.getDistrictName());
-			model.setWardCode(input.getWardCode());
-			model.setWardName(input.getWardName());
-			model.setContactName(input.getContactName());
-			model.setContactTelNo(input.getContactTelNo());
-			model.setContactEmail(input.getContactEmail());
-			model.setRegistrationClass(input.getRegistrationClass());
-			model.setRegistrationState(input.getRegistrationState());
-
-			Registration registration = action.update(model);
-
-			result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
+			RegistrationDetailModel result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
+			
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
 			_log.error(e);
 			return processException(e);
 		}
-
 	}
 
 	@Override

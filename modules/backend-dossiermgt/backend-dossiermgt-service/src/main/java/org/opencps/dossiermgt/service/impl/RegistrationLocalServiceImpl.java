@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.opencps.dossiermgt.model.Registration;
-import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
@@ -97,32 +96,30 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 				.getRegistrationTemplateses(start, end);
 
 		for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
-			int fileEntryId = getfileEntryId(registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
-					registrationTemplates.getFormReport());
+			int fileEntryId = getfileEntryId(registrationTemplates.getSampleData(),
+					registrationTemplates.getFormScript(), registrationTemplates.getFormReport());
 
-			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.addRegistrationForm(groupId,
-					registrationId, referenceUid, registrationTemplates.getFormNo(),
-					registrationTemplates.getFormName(), registrationTemplates.getSampleData(),
-					registrationTemplates.getFormScript(), registrationTemplates.getFormReport(), fileEntryId, false,
-					false, serviceContext);
+			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
+					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
+					registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
+					registrationTemplates.getFormReport(), fileEntryId, false, false, serviceContext);
 		}
 		return registrationPersistence.update(model);
 	}
-	
-	public Registration updateRegistration(long groupId, long registrationId, String applicantName, String applicantIdType, String applicantIdNo,
-			String applicantIdDate, String address, String cityCode, String cityName, String districtCode,
-			String districtName, String wardCode, String wardName, String contactName, String contactTelNo,
-			String contactEmail, String govAgencyCode, String govAgencyName, int registrationState,
-			String registrationClass, ServiceContext serviceContext)throws PortalException, SystemException{
-		
-		int start = -1, end = -1;
-		
+
+	public Registration updateRegistration(long groupId, long registrationId, String applicantName,
+			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String contactEmail, String govAgencyCode, String govAgencyName,
+			int registrationState, String registrationClass, ServiceContext serviceContext)
+			throws PortalException, SystemException {
+
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
 		User userAction = userLocalService.getUser(userId);
 
 		Registration model = registrationPersistence.fetchByPrimaryKey(registrationId);
-		
+
 		model.setGroupId(groupId);
 		model.setCreateDate(now);
 		model.setModifiedDate(now);
@@ -145,32 +142,8 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setGovAgencyName(govAgencyName);
 		model.setRegistrationClass(registrationClass);
 		model.setRegistrationState(registrationState);
-		
-		List<RegistrationForm> lstRegistrationForm = RegistrationFormLocalServiceUtil
-				.getRegistrationForms(start, end);
-		for (RegistrationForm registrationForm : lstRegistrationForm){
-			if(registrationForm.isRemoved() == false){
-				registrationForm.setRemoved(true);
-			}
-			RegistrationFormLocalServiceUtil.updateRegistrationForm(registrationForm);
-		}
-		
-		String referenceUid = UUID.randomUUID().toString();
 
-		List<RegistrationTemplates> lstRegistrationTemplate = RegistrationTemplatesLocalServiceUtil
-				.getRegistrationTemplateses(start, end);
-
-		for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
-			int fileEntryId = getfileEntryId(registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
-					registrationTemplates.getFormReport());
-
-			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.addRegistrationForm(groupId,
-					registrationId, referenceUid, registrationTemplates.getFormNo(),
-					registrationTemplates.getFormName(), registrationTemplates.getSampleData(),
-					registrationTemplates.getFormScript(), registrationTemplates.getFormReport(), fileEntryId, false,
-					false, serviceContext);
-		}
-				return null;
+		return registrationPersistence.update(model);
 	}
 
 	public int getfileEntryId(String formdata, String formScript, String formReport) {
