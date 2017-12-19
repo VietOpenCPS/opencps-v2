@@ -194,6 +194,10 @@ public class PaymentConfigLocalServiceImpl extends PaymentConfigLocalServiceBase
 		return paymentConfig;
 	}
 
+	public PaymentConfig getPaymentConfigByGovAgencyCode(long groupId, String govAgencyCode) {
+		return paymentConfigPersistence.fetchByFB_GID_govAgencyCode(groupId, govAgencyCode);
+	}
+	
 	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 

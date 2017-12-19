@@ -2,11 +2,13 @@ package org.opencps.api.controller.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.opencps.api.dossier.model.ActionExecutedModel;
 import org.opencps.api.dossier.model.ListContacts;
 import org.opencps.api.dossier.model.UserModel;
 import org.opencps.api.dossieraction.model.DossierActionNextActionModel;
+import org.opencps.api.dossieraction.model.DossierActionNextActioncreateFiles;
 import org.opencps.api.dossieraction.model.DossierActionNextActiontoUser;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -62,7 +64,7 @@ public class DossierActionUtils {
 		model.setAutoEvent(processAction.getAutoEvent());
 		// model.setPreCondition_0020(processAction.getPreCondition());
 		// .setAllowAssignUser("" + (processAction.getAllowAssignUser()));
-		model.setAssignUserId((int) (processAction.getAssignUserId()));
+		model.setAssignUserId((processAction.getAssignUserId()));
 
 		ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(processAction.getPostStepCode(),
 				processAction.getGroupId(), processAction.getServiceProcessId());
@@ -105,6 +107,8 @@ public class DossierActionUtils {
 
 				List<User> lstUser = (List<User>) jsonObject.get("lstUser");
 
+				JSONArray createFiles = jsonObject.getJSONArray("createFiles");
+
 				DossierActionNextActionModel model = new DossierActionNextActionModel();
 
 				long processActionId = GetterUtil.getLong(processAction.getProcessActionId());
@@ -117,23 +121,58 @@ public class DossierActionUtils {
 				model.setPostStepCode(processAction.getPostStepCode());
 				model.setAutoEvent(processAction.getAutoEvent());
 				model.setPreCondition(processAction.getPreCondition());
-				model.setAllowAssignUser(assignUserId);
+				model.setAllowAssignUser(processAction.getAllowAssignUser());
+				model.setAssignUserId(assignUserId);
 
 				List<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
 
 				for (User user : lstUser) {
 					DossierActionNextActiontoUser modelUser = new DossierActionNextActiontoUser();
 
+					Map<String, Object> attr = user.getModelAttributes();
+
 					long userId = GetterUtil.getLong(user.getUserId());
 
+					boolean moderator = false;
+
+					if (attr != null && attr.containsKey("moderator")) {
+						moderator = GetterUtil.getBoolean(attr.get("moderator"));
+					}
+
 					modelUser.setUserId(userId);
-					
+
 					modelUser.setUserName(user.getFullName());
+
+					modelUser.setModerator(moderator);
 
 					outputUsers.add(modelUser);
 				}
 
 				model.getToUsers().addAll(outputUsers);
+
+				List<DossierActionNextActioncreateFiles> outputCreeateFiles = new ArrayList<DossierActionNextActioncreateFiles>();
+
+				if (createFiles != null && createFiles.length() > 0) {
+					for (int f = 0; f < createFiles.length(); f++) {
+						JSONObject createFile = createFiles.getJSONObject(f);
+						DossierActionNextActioncreateFiles dossierActionNextActioncreateFile = new DossierActionNextActioncreateFiles();
+						dossierActionNextActioncreateFile.setDossierPartId(createFile.getLong("dossierPartId"));
+						dossierActionNextActioncreateFile.setEform(createFile.getBoolean("eform"));
+						dossierActionNextActioncreateFile.setFormData(createFile.getString("formData"));
+						dossierActionNextActioncreateFile.setFormScript(createFile.getString("formScript"));
+						dossierActionNextActioncreateFile.setMultiple(createFile.getBoolean("multiple"));
+						dossierActionNextActioncreateFile.setPartName(createFile.getString("partName"));
+						dossierActionNextActioncreateFile.setPartNo(createFile.getString("partNo"));
+						dossierActionNextActioncreateFile.setPartTip(createFile.getString("partTip"));
+						dossierActionNextActioncreateFile.setTemplateFileNo(createFile.getString("templateFileNo"));
+						dossierActionNextActioncreateFile.setReferenceUid(createFile.getString("referenceUid"));
+						dossierActionNextActioncreateFile.setCounter(createFile.getInt("counter"));
+						outputCreeateFiles.add(dossierActionNextActioncreateFile);
+
+					}
+				}
+
+				model.getCreateFiles().addAll(outputCreeateFiles);
 
 				outputs.add(model);
 			}

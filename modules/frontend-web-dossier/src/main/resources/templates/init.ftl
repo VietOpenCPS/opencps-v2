@@ -13,3 +13,5 @@
 <#include "details/document_out_list_design.ftl">
 
 <#include "details/history_processing_table_design.ftl">
+
+<#include "details/popup_dossier_file.ftl">

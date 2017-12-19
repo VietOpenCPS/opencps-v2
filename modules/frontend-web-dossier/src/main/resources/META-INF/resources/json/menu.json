@@ -11,14 +11,14 @@
     {
       "dossierStatus": "cho_tiep_nhan1",
       "dossierSubStatus": "cho_tiep_nhan1",
-      "level": 0,
+      "level": 1,
       "statusName": "Chờ tiếp nhận 1",
       "count": 16
     },
     {
       "dossierStatus": "cho_tiep_nhan2",
       "dossierSubStatus": "cho_tiep_nhan2",
-      "level": 0,
+      "level": 1,
       "statusName": "Chờ tiếp nhận 2",
       "count": 32
     }

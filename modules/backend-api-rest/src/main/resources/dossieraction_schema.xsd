@@ -38,9 +38,10 @@
 			<xsd:element name="postStepCode" type="xsd:string" minOccurs="0" />
 			<xsd:element name="autoEvent" type="xsd:string" minOccurs="0" />
 			<xsd:element name="preCondition" type="xsd:string" minOccurs="0" />
-			<xsd:element name="allowAssignUser" type="xsd:long" minOccurs="0" />
-			<xsd:element name="assignUserId" type="xsd:int" minOccurs="0" />
+			<xsd:element name="allowAssignUser" type="xsd:boolean" minOccurs="0" />
+			<xsd:element name="assignUserId" type="xsd:long" minOccurs="0" />
 			<xsd:element name="toUsers" type="DossierActionNextActiontoUser" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="createFiles" type="DossierActionNextActioncreateFiles" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -49,6 +50,22 @@
 			<xsd:element name="userId" type="xsd:long" minOccurs="0" />
 			<xsd:element name="userName" type="xsd:string" minOccurs="0" />
 			<xsd:element name="moderator" type="xsd:boolean" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="DossierActionNextActioncreateFiles">
+		<xsd:sequence>
+			<xsd:element name="dossierPartId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="partNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="partTip" type="xsd:string" minOccurs="0" />
+			<xsd:element name="partName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="templateFileNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="eform" type="xsd:boolean" minOccurs="0" />
+			<xsd:element name="multiple" type="xsd:boolean" minOccurs="0" />
+			<xsd:element name="formScript" type="xsd:string" minOccurs="0" />
+			<xsd:element name="formData" type="xsd:string" minOccurs="0" />
+			<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
+			<xsd:element name="counter" type="xsd:integer" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	

@@ -160,7 +160,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 			String collectionName, String collectionNameEN, String description, ServiceContext serviceContext)
 			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException,
 			DuplicateCategoryException {
-		DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code.toUpperCase(),
+		DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code,
 				groupId);
 
 		if (Validator.isNotNull(collectionCode)) {
@@ -188,7 +188,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 		}
 
 		dictCollection = DictCollectionLocalServiceUtil.updateDictCollection(userId,
-				dictCollection.getDictCollectionId(), dictCollection.getCollectionCode().toUpperCase(),
+				dictCollection.getDictCollectionId(), dictCollection.getCollectionCode(),
 				dictCollection.getCollectionName(), dictCollection.getCollectionNameEN(),
 				dictCollection.getDescription(), dictCollection.getDataForm(), serviceContext);
 
@@ -209,7 +209,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 			throws NotFoundException, UnauthenticationException, UnauthorizationException {
 		boolean flag = false;
 
-		DictCollection dictColl = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code.toUpperCase(),
+		DictCollection dictColl = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code,
 				groupId);
 
 		if (Validator.isNull(dictColl)) {
@@ -242,7 +242,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 	public DictCollection addDataForm(long userId, long groupId, String code, String dataform,
 			ServiceContext serviceContext) throws NoSuchUserException, NotFoundException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException {
-		DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code.toUpperCase(),
+		DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code,
 				groupId);
 
 		if (Validator.isNotNull(dataform)) {
@@ -252,7 +252,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 		}
 
 		dictCollection = DictCollectionLocalServiceUtil.updateDictCollection(userId,
-				dictCollection.getDictCollectionId(), dictCollection.getCollectionCode().toUpperCase(),
+				dictCollection.getDictCollectionId(), dictCollection.getCollectionCode(),
 				dictCollection.getCollectionName(), dictCollection.getCollectionNameEN(),
 				dictCollection.getDescription(), dictCollection.getDataForm(), serviceContext);
 
@@ -352,7 +352,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 			UnauthenticationException, UnauthorizationException, DuplicateCategoryException {
 		DictGroup dictGroup = null;
 
-		DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code.toUpperCase(),
+		DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code,
 				groupId);
 
 		dictGroup = DictGroupLocalServiceUtil.addDictGroup(userId, groupId, dictCollection.getDictCollectionId(),
@@ -380,7 +380,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 			String groupName, String groupNameEN, String groupDescription, ServiceContext serviceContext)
 			throws NoSuchUserException, UnauthenticationException, UnauthorizationException, DuplicateCategoryException,
 			NotFoundException {
-		DictGroup dictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCodeRoot.toUpperCase(), groupId);
+		DictGroup dictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCodeRoot, groupId);
 
 		if (Validator.isNotNull(groupCode)) {
 

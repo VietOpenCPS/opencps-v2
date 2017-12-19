@@ -359,10 +359,10 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			throw new RequiredPaymentFeeException("RequiredPaymentFeeException");
 		}
 
-		if (allowAssignUser && Validator.isNull(assignUserId)) {
+/*		if (allowAssignUser && Validator.isNull(assignUserId)) {
 			throw new RequiredAssignUserIdException("RequiredAssignUserIdException");
 		}
-
+*/
 		// TODO add more validate for actionCode, actionName, createDossierFiles
 		// returnDossierFiles, makeBriefNote in here
 
@@ -371,6 +371,11 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	public List<ProcessAction> getByActionCode(long groupId, String actionCode) throws PortalException {
 		return processActionPersistence.findByGI_AC(groupId, actionCode);
 	}
+	
+	public List<ProcessAction> getByActionCode(long groupId, String actionCode, long serviceProcessId) throws PortalException {
+		return processActionPersistence.findByGI_AC_SP(groupId, actionCode, serviceProcessId);
+	}
+
 
 	public ProcessAction fetchBySPI_PRESC_AEV(long serviceProcessId, String preStepCode, String autoEvent) {
 		return processActionPersistence.fetchBySPI_PRESC_AEV(serviceProcessId, preStepCode, autoEvent);
