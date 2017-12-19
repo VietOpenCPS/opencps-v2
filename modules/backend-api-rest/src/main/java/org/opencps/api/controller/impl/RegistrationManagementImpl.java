@@ -34,6 +34,7 @@ import org.opencps.dossiermgt.model.impl.RegistrationImpl;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.flash.FlashMagicBytesUtil.Result;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -58,13 +59,14 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			RegistrationResultsModel results = new RegistrationResultsModel();
 
 			List<Registration> lstRegistrationModel = RegistrationLocalServiceUtil.getRegistrations(start, end);
-			
+
 			results.setTotal(RegistrationLocalServiceUtil.getRegistrationsCount());
 			results.getData().addAll(RegistrationUtils.mappingToRegistrationResultsModel(lstRegistrationModel));
 
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -85,11 +87,12 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 					input.getRegistrationClass(), input.isSubmitting(), serviceContext);
 
 			result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
-
+			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
 			_log.error(e);
+			return processException(e);
 		}
-		return Response.status(200).entity(result).build();
+
 	}
 
 	@Override
@@ -98,10 +101,13 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 		try {
 			RegistrationActions action = new RegistrationActionsImpl();
 			detail = action.getDetail(id);
+			RegistrationDetailModel result = RegistrationUtils.mappingToRegistrationDetailModel(detail);
+			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
 			_log.error(e);
+			return processException(e);
 		}
-		return Response.status(200).entity(detail).build();
+
 	}
 
 	@Override
@@ -135,11 +141,12 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			Registration registration = action.update(model);
 
 			result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
-
+			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
 			_log.error(e);
+			return processException(e);
 		}
-		return Response.status(200).entity(result).build();
+
 	}
 
 	@Override
@@ -147,10 +154,12 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 		try {
 			RegistrationActions action = new RegistrationActionsImpl();
 			action.delete(id);
+			return Response.status(200).entity("Success").build();
 		} catch (Exception e) {
 			_log.error(e);
+			return processException(e);
 		}
-		return Response.status(200).entity("Success").build();
+
 	}
 
 	@Override
@@ -174,6 +183,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -198,11 +208,12 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 					input.isRemoved(), serviceContext);
 
 			result = RegistrationFormUtils.mappingToRegistrationFormDetailModel(registrationForm);
-
+			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
 			_log.error(e);
+			return processException(e);
 		}
-		return Response.status(200).entity(result).build();
+
 	}
 
 	private Response processException(Exception e) {
