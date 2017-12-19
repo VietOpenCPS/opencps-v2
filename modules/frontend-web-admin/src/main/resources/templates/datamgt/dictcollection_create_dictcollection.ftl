@@ -124,8 +124,9 @@
 					var dataSource = $("#_collection_listView").getKendoListView().dataSource;
 					
 					$("#_collection_hidden_new_id").val(data.collectionCode);
-					dataSource.pushCreate(data);
-					$('#dictCollectionCounterList').html(dataSource.total());
+					dataSource.read();
+					//dataSource.pushCreate(data);
+					//$('#dictCollectionCounterList').html(dataSource.total());
 					$("#modal").trigger({ type: "click" });
 					showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
 					

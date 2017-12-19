@@ -41,8 +41,11 @@
 				<div class="form-group">
 		
 					<label for="colectionCode">Mã danh mục cha:</label>
-					<input type="text" id="_collectionSub_dictItem_edit_parentItemCode" name="_collectionSub_dictItem_edit_parentItemCode" class="form-control"
-					data-value='${(dictCollection_dictItem.parentItemCode)!}'  />
+					<input type="text" id="_collectionSub_dictItem_edit_parentItemCode" 
+						name="_collectionSub_dictItem_edit_parentItemCode" class="form-control"
+						data-value='${(dictCollection_dictItem.parentItemCode)!}'
+						data-pk='${(dictCollection_dictItem.itemCode)!}'
+						  />
 				
 				</div>
 				
@@ -378,7 +381,8 @@
 			schema: {
 				data: "data",
 				total: "total"
-			}
+			},
+			filter: { field: "itemCode", operator: "neq", value: $( "#_collectionSub_dictItem_edit_parentItemCode" ).attr("data-pk") }
 		}
 		
 	}).data("kendoDropDownList");
