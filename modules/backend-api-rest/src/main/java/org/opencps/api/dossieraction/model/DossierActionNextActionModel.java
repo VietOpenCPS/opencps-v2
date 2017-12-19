@@ -67,8 +67,8 @@ public class DossierActionNextActionModel {
     protected String postStepCode;
     protected String autoEvent;
     protected String preCondition;
-    protected Long allowAssignUser;
-    protected Integer assignUserId;
+    protected Boolean allowAssignUser;
+    protected Long assignUserId;
     protected List<DossierActionNextActiontoUser> toUsers;
     protected List<DossierActionNextActioncreateFiles> createFiles;
 
@@ -248,7 +248,7 @@ public class DossierActionNextActionModel {
      *     {@link Long }
      *     
      */
-    public Long getAllowAssignUser() {
+    public Boolean getAllowAssignUser() {
         return allowAssignUser;
     }
 
@@ -260,7 +260,7 @@ public class DossierActionNextActionModel {
      *     {@link Long }
      *     
      */
-    public void setAllowAssignUser(Long value) {
+    public void setAllowAssignUser(Boolean value) {
         this.allowAssignUser = value;
     }
 
@@ -272,7 +272,7 @@ public class DossierActionNextActionModel {
      *     {@link Integer }
      *     
      */
-    public Integer getAssignUserId() {
+    public Long getAssignUserId() {
         return assignUserId;
     }
 
@@ -284,7 +284,7 @@ public class DossierActionNextActionModel {
      *     {@link Integer }
      *     
      */
-    public void setAssignUserId(Integer value) {
+    public void setAssignUserId(Long value) {
         this.assignUserId = value;
     }
 
