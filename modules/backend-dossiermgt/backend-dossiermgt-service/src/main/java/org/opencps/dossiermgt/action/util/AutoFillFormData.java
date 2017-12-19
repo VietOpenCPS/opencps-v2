@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.action.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 
@@ -22,13 +24,13 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class AutoFillFormData {
-	
+
 	public static String sampleDataBinding(String sampleData, long dossierId, ServiceContext serviceContext) {
 		// TODO Auto-generated method stub
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		try {
 			result = JSONFactoryUtil.createJSONObject(sampleData);
-			
+
 			String _subjectName = StringPool.BLANK;
 			String _subjectId = StringPool.BLANK;
 			String _address = StringPool.BLANK;
@@ -41,19 +43,19 @@ public class AutoFillFormData {
 			String _contactName = StringPool.BLANK;
 			String _contactTelNo = StringPool.BLANK;
 			String _contactEmail = StringPool.BLANK;
-			
+
 			// TODO
 			String _dossierFileNo = StringPool.BLANK;
 			String _dossierFileDate = StringPool.BLANK;
-			
+
 			// get data applicant or employee
 			ApplicantActions applicantActions = new ApplicantActionsImpl();
-			
+
 			try {
 				String applicantStr = applicantActions.getApplicantByUserId(serviceContext);
-				
+
 				JSONObject applicantJSON = JSONFactoryUtil.createJSONObject(applicantStr);
-				
+
 				_subjectName = applicantJSON.getString("applicantName");
 				_subjectId = applicantJSON.getString("applicantId");
 				_address = applicantJSON.getString("address");
@@ -66,24 +68,24 @@ public class AutoFillFormData {
 				_contactName = applicantJSON.getString("contactName");
 				_contactTelNo = applicantJSON.getString("contactTelNo");
 				_contactEmail = applicantJSON.getString("contactEmail");
-				
+
 			} catch (PortalException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			//process sampleData
-			if(Validator.isNull(sampleData)){
+			// process sampleData
+			if (Validator.isNull(sampleData)) {
 				sampleData = "{}";
 			}
-			
+
 			Map<String, Object> jsonMap = jsonToMap(result);
-			
+
 			for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
 
 				String value = String.valueOf(entry.getValue());
-				
+
 				if (value.startsWith("_") && !value.contains(":")) {
-					
+
 					if (value.equals("_subjectName")) {
 						jsonMap.put(entry.getKey(), _subjectName);
 					} else if (value.equals("_subjectId")) {
@@ -109,7 +111,7 @@ public class AutoFillFormData {
 					} else if (value.equals("_contactEmail")) {
 						jsonMap.put(entry.getKey(), _contactEmail);
 					}
-					
+
 				} else if (value.startsWith("_") && value.contains(":")) {
 					String resultBinding = StringPool.BLANK;
 					String[] valueSplit = value.split(":");
@@ -149,9 +151,9 @@ public class AutoFillFormData {
 					String variable = stringSplit[0];
 					String paper = stringSplit[1];
 					try {
-						DossierFile dossierFile = DossierFileLocalServiceUtil
-								.getDossierFileByDID_FTNO(dossierId, paper);
-						
+						DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
+								paper, false, new DossierFileComparator(false, "createDate", Date.class));
+
 						if (Validator.isNotNull(dossierFile) && Validator.isNotNull(dossierFile.getFormData())) {
 							JSONObject jsonOtherData = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
 							Map<String, Object> jsonOtherMap = jsonToMap(jsonOtherData);
@@ -194,63 +196,59 @@ public class AutoFillFormData {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 		return result.toJSONString();
 	}
-	
 
-	
-	
 	public static Map<String, Object> jsonToMap(JSONObject json) {
-        Map<String, Object> retMap = new HashMap<String, Object>();
+		Map<String, Object> retMap = new HashMap<String, Object>();
 
-        if(Validator.isNotNull(json)) {
-            try {
+		if (Validator.isNotNull(json)) {
+			try {
 				retMap = toMap(json);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-        }
-        return retMap;
-    }
-	
+		}
+		return retMap;
+	}
+
 	public static Map<String, Object> toMap(JSONObject object) throws JSONException {
-        Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 
-        Iterator<String> keysItr = object.keys();
-        while(keysItr.hasNext()) {
-            String key = keysItr.next();
-            Object value = null;
-            if(Validator.isNotNull(object.getJSONArray(key))) {
-                value = (JSONArray) object.getJSONArray(key);
-                map.put(key, value);
-            }
+		Iterator<String> keysItr = object.keys();
+		while (keysItr.hasNext()) {
+			String key = keysItr.next();
+			Object value = null;
+			if (Validator.isNotNull(object.getJSONArray(key))) {
+				value = (JSONArray) object.getJSONArray(key);
+				map.put(key, value);
+			}
 
-            else if(Validator.isNotNull(object.getJSONObject(key))) {
-                value = (JSONObject) object.getJSONObject(key);
-                map.put(key, value);
-            }
-            
-            else  {
-                value = object.getString(key);
-                map.put(key, value);
-            }
-        }
-        return map;
-    }
+			else if (Validator.isNotNull(object.getJSONObject(key))) {
+				value = (JSONObject) object.getJSONObject(key);
+				map.put(key, value);
+			}
 
-    public static List<Object> toList(JSONArray array) throws JSONException {
-        List<Object> list = new ArrayList<Object>();
-        for(int i = 0; i < array.length(); i++) {
-            Object value = array.getJSONObject(i);
+			else {
+				value = object.getString(key);
+				map.put(key, value);
+			}
+		}
+		return map;
+	}
 
-            if(value instanceof JSONObject) {
-                value = toMap((JSONObject) value);
-            }
-            list.add(value);
-        }
-        return list;
-    }
+	public static List<Object> toList(JSONArray array) throws JSONException {
+		List<Object> list = new ArrayList<Object>();
+		for (int i = 0; i < array.length(); i++) {
+			Object value = array.getJSONObject(i);
+
+			if (value instanceof JSONObject) {
+				value = toMap((JSONObject) value);
+			}
+			list.add(value);
+		}
+		return list;
+	}
 }

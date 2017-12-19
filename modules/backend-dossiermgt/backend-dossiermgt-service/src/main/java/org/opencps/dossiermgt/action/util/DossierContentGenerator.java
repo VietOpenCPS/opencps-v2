@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.action.util;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -13,6 +14,7 @@ import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -123,8 +125,8 @@ public class DossierContentGenerator {
 					String dataKey = textSplit[0];
 					String fileTemplateNo = textSplit[1];
 					System.out.println("//////////////////////// " + dataKey + " | " + fileTemplateNo);
-					DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO(dossierId,
-							fileTemplateNo);
+					DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
+							fileTemplateNo, false, new DossierFileComparator(false, "createDate", Date.class));
 					if (dossierFile == null) {
 						briefNotePattern = briefNotePattern.replace(tmpKey, StringPool.BLANK);
 					} else {

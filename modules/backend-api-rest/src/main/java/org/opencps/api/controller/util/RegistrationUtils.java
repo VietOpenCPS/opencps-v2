@@ -17,7 +17,7 @@ public class RegistrationUtils {
 	public static RegistrationDetailModel mappingToRegistrationDetailModel(Registration registration) {
 
 		if (registration == null) {
-			return null;
+			return new RegistrationDetailModel();
 		}
 		RegistrationDetailModel model = new RegistrationDetailModel();
 

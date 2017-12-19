@@ -64,7 +64,7 @@ public class DossierActionUtils {
 		model.setAutoEvent(processAction.getAutoEvent());
 		// model.setPreCondition_0020(processAction.getPreCondition());
 		// .setAllowAssignUser("" + (processAction.getAllowAssignUser()));
-		model.setAssignUserId((int) (processAction.getAssignUserId()));
+		model.setAssignUserId((processAction.getAssignUserId()));
 
 		ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(processAction.getPostStepCode(),
 				processAction.getGroupId(), processAction.getServiceProcessId());
@@ -121,7 +121,8 @@ public class DossierActionUtils {
 				model.setPostStepCode(processAction.getPostStepCode());
 				model.setAutoEvent(processAction.getAutoEvent());
 				model.setPreCondition(processAction.getPreCondition());
-				model.setAllowAssignUser(assignUserId);
+				model.setAllowAssignUser(processAction.getAllowAssignUser());
+				model.setAssignUserId(assignUserId);
 
 				List<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
 
@@ -164,7 +165,8 @@ public class DossierActionUtils {
 						dossierActionNextActioncreateFile.setPartNo(createFile.getString("partNo"));
 						dossierActionNextActioncreateFile.setPartTip(createFile.getString("partTip"));
 						dossierActionNextActioncreateFile.setTemplateFileNo(createFile.getString("templateFileNo"));
-
+						dossierActionNextActioncreateFile.setReferenceUid(createFile.getString("referenceUid"));
+						dossierActionNextActioncreateFile.setCounter(createFile.getInt("counter"));
 						outputCreeateFiles.add(dossierActionNextActioncreateFile);
 
 					}
