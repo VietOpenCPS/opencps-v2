@@ -69,7 +69,8 @@ import javax.xml.bind.annotation.XmlType;
     "removed",
     "eForm",
     "formData",
-    "formReport"
+    "formReport",
+    "formScript"
 })
 @XmlRootElement(name = "DossierFileModel")
 public class DossierFileModel {

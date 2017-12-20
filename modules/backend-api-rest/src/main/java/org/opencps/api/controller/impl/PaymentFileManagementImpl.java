@@ -29,8 +29,10 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -44,6 +46,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class PaymentFileManagementImpl implements PaymentFileManagement {
@@ -115,8 +118,13 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
 		long userId = serviceContext.getUserId();
+
 		long dossierId = GetterUtil.getLong(id);
+
+		// TODO get Dossier by referenceUid if dossierId = 0
+		String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -132,6 +140,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			/* Check user is login - END */
 
 			PaymentFileActions actions = new PaymentFileActionsImpl();
+
 			PaymentFileInputModel PaymentFileInput = new PaymentFileInputModel();
 
 			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, input.getReferenceUid(),
@@ -412,13 +421,13 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			}
 
 			PaymentFileActions action = new PaymentFileActionsImpl();
-			
+
 			System.out.println("////////////////////////////////// id" + id);
-			
+
 			System.out.println("////////////////////////////////// referenceUid" + referenceUid);
-			
+
 			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(id, referenceUid);
-			
+
 			System.out.println("////////////////////////////////// paymentFile" + paymentFile.getDossierId());
 
 			if (paymentFile.getInvoiceFileEntryId() > 0) {
@@ -497,7 +506,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			List<Document> documents = (List<Document>) paymentFileJsonObject.get("data");
 
 			results.setTotal(paymentFileJsonObject.getInt("total"));
-			
+
 			results.getData().addAll(PaymentFileUtils.mappingToPaymentFileSearchResultModel(documents));
 
 			return Response.status(200).entity(results).build();

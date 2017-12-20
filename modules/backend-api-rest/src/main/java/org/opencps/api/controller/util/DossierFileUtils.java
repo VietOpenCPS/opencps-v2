@@ -85,7 +85,7 @@ public class DossierFileUtils {
         model.setSignInfo(dossierFile.getSignInfo());
         model.setRemoved(dossierFile.getRemoved());
         model.setEForm(dossierFile.getEForm());
-        model.setFormReport(dossierFile.getFormReport());
+        model.setFormReport(StringPool.BLANK);
         model.setFormScript(dossierFile.getFormScript());
         model.setFormData(dossierFile.getFormData());
         model.setDossierFileId(dossierFile.getDossierFileId());
