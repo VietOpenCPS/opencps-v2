@@ -77,7 +77,7 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 			String govAgencyName, String applicantName, String applicantIdNo, String paymentFee, long paymentAmount,
 			String paymentNote, String epaymentProfile, String bankInfo, ServiceContext serviceContext)
 			throws PortalException {
-
+		
 		if(Validator.isNull(referenceUid)){
 			referenceUid = PortalUUIDUtil.generate();
 		}
