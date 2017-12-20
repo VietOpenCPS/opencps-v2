@@ -136,6 +136,12 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 
 		return PaymentFileLocalServiceUtil.getEpaymentProfile(dossierId, referenceUid);
 	}
+	
+	@Override
+	public PaymentFile getPaymentFile(long dossierId, String referenceUid) {
+
+		return PaymentFileLocalServiceUtil.getPaymentFile(dossierId, referenceUid);
+	}
 
 	/**
 	 * Update info EpaymentProfile of DossierId and referenceUid

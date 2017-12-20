@@ -44,7 +44,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class PaymentFileManagementImpl implements PaymentFileManagement {
@@ -170,7 +169,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	public Response getPaymentFileByReferenceUid(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, Long id, String referenceUid) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long dossierId = GetterUtil.getLong(id);
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -181,11 +180,11 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				throw new UnauthenticationException();
 			}
 			// Search full query
-			int start = -1;
-			int end = -1;
+			//int start = -1;
+			//int end = -1;
 
 			// TODO: Condition sort
-			Sort[] sorts = new Sort[] {};
+			//Sort[] sorts = new Sort[] {};
 			// Sort[] sorts = new Sort[] {SortFactoryUtil.create(query.getSort()
 			// + "_sortable",Sort.STRING_TYPE,
 			// GetterUtil.getBoolean(query.getOrder())) };
@@ -197,18 +196,23 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			// referenceUid);
 
 			// get JSON data by dossierId
-			List<Document> data = actions.getPaymentFileDetail(dossierId, referenceUid, serviceContext.getCompanyId(),
-					groupId, sorts, start, end, serviceContext);
+			
+			//List<Document> data = actions.getPaymentFileDetail(dossierId, referenceUid, serviceContext.getCompanyId(),
+			//		groupId, sorts, start, end, serviceContext);
 
-			List<PaymentFileModel> paymentFileDetail = PaymentFileUtils.mappingToPaymentFileModel(data);
+			//List<PaymentFileModel> paymentFileDetail = PaymentFileUtils.mappingToPaymentFileModel(data);
 			// dossierPermission.hasGetDetailDossier(groupId, user.getUserId(),
 			// dossier, option.getServiceProcessId());
 
 			// DossierDetailModel result =
 			// DossierUtils.mappingForGetDetail(dossier);
-			PaymentFileModel results = paymentFileDetail.get(0);
+			//PaymentFileModel results = paymentFileDetail.get(0);
+			
+			PaymentFile paymentFile = actions.getPaymentFile(dossierId, referenceUid);
+				
+			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 
-			return Response.status(200).entity(results).build();
+			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			return processException(e);
