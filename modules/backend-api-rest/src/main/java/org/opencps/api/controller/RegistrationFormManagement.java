@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@Api(value = "/registrations/{id}/forms", description = "APIs for registrationforms")
+@Api(value = "/registrations", description = "APIs for registrationforms")
 public interface RegistrationFormManagement {
 
 	@DELETE
@@ -68,5 +68,16 @@ public interface RegistrationFormManagement {
 			@ApiParam(value = "registrationId", required = true) @PathParam("id") long id,
 			@ApiParam(value = "referenceUid", required = true) @PathParam("referenceUid") String referenceUid,
 			@ApiParam(value = "formdata of registrationForm", required = true) @FormParam("formdata") String formdata)
+			throws PortalException;
+	
+	@GET
+	@Path("/registrations/{id}/forms/{referenceUid}/formscript")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	public Response getformScriptbyRegidRefid(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@ApiParam(value = "registrationId", required = true) @PathParam("id") long id,
+			@ApiParam(value = "referenceUid", required = true) @PathParam("referenceUid") String referenceUid)
 			throws PortalException;
 }

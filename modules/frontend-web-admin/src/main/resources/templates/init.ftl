@@ -26,6 +26,7 @@
 <#assign url = (Request.url)!>
 <#assign api = (Request.api)!>
 <#assign constant = (Request.constant)!>
+<#assign registrationtemplates = (Request.registrationtemplates)!>
 
 
 <!--INIT EMPLOYEE-->

@@ -8,6 +8,7 @@
 
 package org.opencps.api.registration.model;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -108,11 +109,10 @@ public class RegistrationInputModel {
     @FormParam(value = "govAgencyName")
     protected String govAgencyName;
     @FormParam(value = "registrationState")
+    @DefaultValue(value = "0")
     protected Integer registrationState;
     @FormParam(value = "registrationClass")
     protected String registrationClass;
-    @FormParam(value = "submitting")
-    protected Boolean submitting;
 
     /**
      * Gets the value of the applicantName property.
@@ -544,30 +544,6 @@ public class RegistrationInputModel {
      */
     public void setRegistrationClass(String value) {
         this.registrationClass = value;
-    }
-
-    /**
-     * Gets the value of the submitting property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isSubmitting() {
-        return submitting;
-    }
-
-    /**
-     * Sets the value of the submitting property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setSubmitting(Boolean value) {
-        this.submitting = value;
     }
 
 }

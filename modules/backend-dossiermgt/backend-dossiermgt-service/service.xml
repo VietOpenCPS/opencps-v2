@@ -475,10 +475,22 @@
 			<finder-column name="isNew" />
 		</finder>
 		<!-- References -->
-		<finder name="DID_FTNO" return-type="DossierFile">
+		<finder name="DID_FTNO" return-type="Collection">
 			<finder-column name="dossierId"></finder-column>
 			<finder-column name="fileTemplateNo"></finder-column>
+            <finder-column name="removed"></finder-column>
 		</finder>
+		<finder name="DID_DPNO" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="dossierPartNo"></finder-column>
+            <finder-column name="removed"></finder-column>
+        </finder>
+        <finder name="DID_FTNO_DPT" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="fileTemplateNo"></finder-column>
+            <finder-column name="dossierPartType"></finder-column>
+            <finder-column name="removed"></finder-column>
+        </finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -785,6 +797,12 @@
 			<finder-column name="actionCode" />
 		</finder>
 
+		<finder return-type="Collection" name="GI_AC_SP">
+			<finder-column name="groupId" />
+			<finder-column name="actionCode" />
+			<finder-column name="serviceProcessId"/>
+		</finder>
+
 		<finder return-type="Collection" name="PRE_CODE">
 			<finder-column name="preStepCode" />
 			<finder-column name="groupId" />
@@ -1030,6 +1048,31 @@
 		<!-- Filter -->
 
 
+	</entity>
+	
+	<entity local-service="true" name="RegistrationLog" remote-service="false"
+		table="opencps_registrationlog" uuid="true">
+
+		<column name="registrationLogId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+	
+		<column name="registrationId" type="long" />
+		<column name="author" type="String" />
+		<column name="content" type="String" />
+		<column name="payload" type="String" />
+		<!-- Order -->
+		<!-- Filter -->
+
+		<finder return-type="Collection" name="G_REGID">
+			<finder-column name="groupId" />
+			<finder-column name="registrationId" />
+		</finder>
+		
 	</entity>
 
 	<entity local-service="true" name="RegistrationForm"

@@ -24,11 +24,15 @@
 		});
 		// Show
 		manageDossier.route("/dossiers/(:id)/yeucauhuy", function(id){
-			$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+id+"&${portletNamespace}resCancelling=true",function(result){
+			$("#mainType1").hide();
+			$("#mainType2").show();
+			$("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+id+"&${portletNamespace}resCancelling=true",function(result){
 			})
 		});
 		manageDossier.route("/dossiers/(:id)/guibosung", function(id){
-			$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+id+"&${portletNamespace}sendAdd=true",function(result){
+			$("#mainType1").hide();
+			$("#mainType2").show();
+			$("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+id+"&${portletNamespace}sendAdd=true",function(result){
 			})
 		});
 		// Show màn hình chọn dịch vụ công

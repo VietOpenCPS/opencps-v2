@@ -43,6 +43,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DossierActionNextActioncreateFiles", propOrder = {
     "dossierPartId",
+    "referenceUid",
     "partNo",
     "partTip",
     "partName",
@@ -50,7 +51,8 @@ import javax.xml.bind.annotation.XmlType;
     "eform",
     "multiple",
     "formScript",
-    "formData"
+    "formData",
+    "counter"
 })
 public class DossierActionNextActioncreateFiles {
 
@@ -63,6 +65,57 @@ public class DossierActionNextActioncreateFiles {
     protected Boolean multiple;
     protected String formScript;
     protected String formData;
+    protected String referenceUid;
+    protected Integer counter;
+    
+    
+    /**
+     * Sets the value of the counter property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+    public void setCounter(Integer value) {
+        this.counter = value;
+    }
+
+    /**
+     * Gets the value of the counter property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+    public Integer getCounter() {
+        return counter;
+    }
+    
+    /**
+     * Sets the value of the referenceUid property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setReferenceUid(String value) {
+        this.referenceUid = value;
+    }
+
+    /**
+     * Gets the value of the referenceUid property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getReferenceUid() {
+        return referenceUid;
+    }
 
     /**
      * Gets the value of the dossierPartId property.

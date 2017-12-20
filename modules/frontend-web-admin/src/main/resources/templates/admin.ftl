@@ -109,6 +109,14 @@
 				</div>
 				<div class="col-sm-9 PL10 P0">Tạo Eform</div>
 			</li>
+			<li class="clearfix" >
+				<div class="col-sm-2 clearfix ">
+					<a href="javascript:;" >
+						<i class="fa fa-gg" aria-hidden="true"></i>
+					</a>
+				</div>
+				<div class="col-sm-9 PL10 P0">Mẫu đăng kí hồ sơ thương nhân</div>
+			</li>
 		</ul>
 	</div>
 </div>
@@ -130,7 +138,8 @@
 			'holiday.ftl',
 			'${ajax.payment_config}',
 			'${ajax.manage_account}',
-			'efrom.ftl'
+			'efrom.ftl',
+			'${ajax.registrationtemplates}',
 		]
 	}).data('kendoTabStrip');
 
