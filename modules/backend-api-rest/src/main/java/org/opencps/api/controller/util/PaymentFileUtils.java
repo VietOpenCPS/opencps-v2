@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -44,7 +45,7 @@ public class PaymentFileUtils {
 		for (Document doc : documents) {
 			PaymentFileModel model = new PaymentFileModel();
 
-			String strCreateDate = doc.get(PaymentFileTerm.CREATE_DATE);
+			String strCreateDate = doc.get(Field.CREATE_DATE);
 
 			Date createDate = null;
 
@@ -55,7 +56,7 @@ public class PaymentFileUtils {
 			model.setCreateDate(createDate != null
 					? APIDateTimeUtils.convertDateToString(createDate, APIDateTimeUtils._TIMESTAMP) : strCreateDate);
 
-			String strModifiedDate = doc.get(PaymentFileTerm.MODIFIED_DATE);
+			String strModifiedDate = doc.get(Field.MODIFIED_DATE);
 
 			Date modifiedDate = null;
 
