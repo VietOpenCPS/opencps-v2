@@ -1224,7 +1224,7 @@ var fnCancelling = function(dossierId){
 			Accept : "application/json"
 		},
 		data : {
-			applicantNote : $("textarea#applicantNote").val()
+			
 		},
 		success : function(result){
 			notification.show({
@@ -1250,7 +1250,7 @@ var fnSubmitting = function(dossierId){
 			Accept : "application/json"
 		},
 		data : {
-			applicantNote : $("textarea#applicantNote").val()
+			
 		},
 		success : function(result){
 			notification.show({
