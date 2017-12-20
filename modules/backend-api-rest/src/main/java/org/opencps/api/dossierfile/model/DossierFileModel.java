@@ -93,6 +93,15 @@ public class DossierFileModel {
     protected Boolean eForm;
 	protected String formData;
     protected String formReport;
+    protected String formScript;
+    
+    public String getFormScript() {
+		return formScript;
+	}
+
+	public void setFormScript(String formScript) {
+		this.formScript = formScript;
+	}
     
     public String getDossierPartName() {
 		return dossierPartName;
