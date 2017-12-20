@@ -829,6 +829,14 @@
 			<finder-column name="preStepCode"></finder-column>
 		</finder>
 
+		<finder return-type="Collection" name="PSC_AEV">
+			<finder-column name="autoEvent" />
+		</finder>
+
+		<finder return-type="Collection" name="PSC_AEV_GI">
+			<finder-column name="groupId" />
+			<finder-column name="autoEvent" />
+		</finder>
 
 	</entity>
 
@@ -1068,7 +1076,11 @@
 		<!-- Order -->
 		<!-- Filter -->
 
-
+		<finder return-type="Collection" name="G_REGID">
+			<finder-column name="groupId" />
+			<finder-column name="registrationId" />
+		</finder>
+		
 	</entity>
 
 	<entity local-service="true" name="RegistrationForm"

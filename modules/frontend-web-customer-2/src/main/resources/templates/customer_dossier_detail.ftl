@@ -1218,13 +1218,13 @@ var fnCancelling = function(dossierId){
 	$.ajax({
 		url : "${api.server}/dossiers/"+dossierId+"/cancelling",
 		dataType : "json",
-		type : "PUT",
+		type : "GET",
 		headers: {
 			"groupId": ${groupId},
 			Accept : "application/json"
 		},
 		data : {
-			applicantNote : $("textarea#applicantNote").val()
+			
 		},
 		success : function(result){
 			notification.show({
@@ -1244,13 +1244,13 @@ var fnSubmitting = function(dossierId){
 	$.ajax({
 		url : "${api.server}/dossiers/"+dossierId+"/submitting",
 		dataType : "json",
-		type : "PUT",
+		type : "GET",
 		headers: {
 			"groupId": ${groupId},
 			Accept : "application/json"
 		},
 		data : {
-			applicantNote : $("textarea#applicantNote").val()
+			
 		},
 		success : function(result){
 			notification.show({
