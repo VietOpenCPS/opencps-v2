@@ -34,6 +34,7 @@ import org.opencps.dossiermgt.model.PaymentFile;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -125,7 +126,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		long dossierId = GetterUtil.getLong(id);
 
 		// TODO get Dossier by referenceUid if dossierId = 0
-		//String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
+		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -169,8 +170,11 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	public Response getPaymentFileByReferenceUid(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, Long id, String referenceUid) {
 
-		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long dossierId = GetterUtil.getLong(id);
+
+		// TODO get Dossier by referenceUid if dossierId = 0
+		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -180,11 +184,11 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				throw new UnauthenticationException();
 			}
 			// Search full query
-			//int start = -1;
-			//int end = -1;
+			// int start = -1;
+			// int end = -1;
 
 			// TODO: Condition sort
-			//Sort[] sorts = new Sort[] {};
+			// Sort[] sorts = new Sort[] {};
 			// Sort[] sorts = new Sort[] {SortFactoryUtil.create(query.getSort()
 			// + "_sortable",Sort.STRING_TYPE,
 			// GetterUtil.getBoolean(query.getOrder())) };
@@ -196,20 +200,22 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			// referenceUid);
 
 			// get JSON data by dossierId
-			
-			//List<Document> data = actions.getPaymentFileDetail(dossierId, referenceUid, serviceContext.getCompanyId(),
-			//		groupId, sorts, start, end, serviceContext);
 
-			//List<PaymentFileModel> paymentFileDetail = PaymentFileUtils.mappingToPaymentFileModel(data);
+			// List<Document> data = actions.getPaymentFileDetail(dossierId,
+			// referenceUid, serviceContext.getCompanyId(),
+			// groupId, sorts, start, end, serviceContext);
+
+			// List<PaymentFileModel> paymentFileDetail =
+			// PaymentFileUtils.mappingToPaymentFileModel(data);
 			// dossierPermission.hasGetDetailDossier(groupId, user.getUserId(),
 			// dossier, option.getServiceProcessId());
 
 			// DossierDetailModel result =
 			// DossierUtils.mappingForGetDetail(dossier);
-			//PaymentFileModel results = paymentFileDetail.get(0);
-			
+			// PaymentFileModel results = paymentFileDetail.get(0);
+
 			PaymentFile paymentFile = actions.getPaymentFile(dossierId, referenceUid);
-				
+
 			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 
 			return Response.status(200).entity(result).build();
@@ -237,13 +243,21 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			}
 
 			PaymentFileActions actions = new PaymentFileActionsImpl();
+
 			long dossierId = GetterUtil.getLong(id);
 
-			PaymentFile paymentFile = actions.getEpaymentProfile(dossierId, referenceUid);
+			// TODO get Dossier by referenceUid if dossierId = 0
+			// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
 
-			String results = paymentFile.getEpaymentProfile();
+			PaymentFile paymentFile = actions.getPaymentFile(dossierId, referenceUid);
 
-			return Response.status(200).entity(results).build();
+			String result = paymentFile.getEpaymentProfile();
+			
+			//TODO process result before response
+			
+			System.out.println("/////////////////////////////////// result " + result);
+
+			return Response.status(200).entity(null).build();
 
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();
