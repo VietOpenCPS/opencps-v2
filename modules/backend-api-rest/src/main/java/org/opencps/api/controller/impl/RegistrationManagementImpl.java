@@ -179,7 +179,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 	@Override
 	public Response addRegistrationForm(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, RegistrationFormInputModel input) {
+			User user, ServiceContext serviceContext, RegistrationFormInputModel input, long registrationId, String formNo) {
 		BackendAuth auth = new BackendAuthImpl();
 		RegistrationFormDetailModel result = null;
 		try {
@@ -191,8 +191,8 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			RegistrationForm registrationForm = action.insert(groupId, input.getRegistrationId(),
-					input.getReferenceUid(), input.getFormNo(), input.getFormName(), input.getFormData(),
+			RegistrationForm registrationForm = action.insert(groupId, registrationId,
+					input.getReferenceUid(), formNo, input.getFormName(), input.getFormData(),
 					input.getFormScript(), input.getFormReport(), input.getFileEntryId(), input.isIsNew(),
 					input.isRemoved(), serviceContext);
 

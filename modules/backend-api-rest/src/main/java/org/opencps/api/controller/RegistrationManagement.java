@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
 
 @Api(value = "/registrations", description = "APIs for Deliverables")
 public interface RegistrationManagement {
@@ -79,5 +80,7 @@ public interface RegistrationManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	public Response addRegistrationForm(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @BeanParam RegistrationFormInputModel input);
+			@Context ServiceContext serviceContext, @BeanParam RegistrationFormInputModel input,
+			@ApiParam(value = "registrationId", required = true) @PathParam("id") long registrationId,
+			@ApiParam(value = "formNo", required = true) @PathParam("formNo") String formNo);
 }
