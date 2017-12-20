@@ -1068,7 +1068,11 @@
 		<!-- Order -->
 		<!-- Filter -->
 
-
+		<finder return-type="Collection" name="G_REGID">
+			<finder-column name="groupId" />
+			<finder-column name="registrationId" />
+		</finder>
+		
 	</entity>
 
 	<entity local-service="true" name="RegistrationForm"
