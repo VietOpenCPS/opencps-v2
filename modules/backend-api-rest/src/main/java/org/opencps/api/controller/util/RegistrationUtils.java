@@ -21,7 +21,8 @@ public class RegistrationUtils {
 			return new RegistrationDetailModel();
 		}
 		RegistrationDetailModel model = new RegistrationDetailModel();
-
+		
+		model.setRegistrationId(registration.getRegistrationId());
 		model.setApplicantName(registration.getApplicantName());
 		model.setApplicantIdType(registration.getApplicantIdType());
 		model.setApplicantIdNo(registration.getApplicantIdNo());
