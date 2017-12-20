@@ -108,9 +108,9 @@ public class NotificationTemplateUtils {
 			for (Document document : listDocument) {
 				ett = new NotificationtemplateModel();
 
-				ett.setModifiedDate(
+				/*ett.setModifiedDate(
 						Validator.isNotNull(document.getDate("modified")) ? APIDateTimeUtils.convertDateToString(
-								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);*/
 				ett.setNotificationType(document.get(NotificationTemplateTerm.NOTIFICATTION_TYPE));
 
 				ett.setTypeName(initTemplates.get(document.get(NotificationTemplateTerm.NOTIFICATTION_TYPE)));

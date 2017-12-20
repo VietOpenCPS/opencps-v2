@@ -328,7 +328,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute(
 			"url", generateURLCommon(renderRequest, renderResponse));
 
-		renderRequest.setAttribute("constants", generalConstantsCommon());
+		renderRequest.setAttribute("constants", generalConstantsCommon(renderRequest));
 
 		renderRequest.setAttribute("param", generalParamsCommon(renderRequest));
 	}
@@ -881,7 +881,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		return params;
 	}
 
-	private JSONObject generalConstantsCommon() {
+	private JSONObject generalConstantsCommon(RenderRequest renderRequest) {
 
 		JSONObject constants = JSONFactoryUtil.createJSONObject();
 
@@ -946,8 +946,56 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 		constants.put(
 			"workingUnit_workingUnitClassName", WorkingUnit.class.getName());
+		
+		constants.put(
+				"notification_interval", generateNotiIntervals(renderRequest));
 
 		return constants;
+	}
+	
+	private List<JSONObject> generateNotiIntervals(RenderRequest renderRequest) {
+		
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+		PortletConfig portletConfig = PortletConfigFactoryUtil.get(
+			themeDisplay.getPortletDisplay().getId());
+
+		ResourceBundle resourceBundle =
+			portletConfig.getResourceBundle(themeDisplay.getLocale());
+		
+		List<JSONObject> intervals = new ArrayList<JSONObject>();
+		JSONObject interval1 = JSONFactoryUtil.createJSONObject();
+		interval1.put("value", "minutely");
+		interval1.put("text", LanguageUtil.get(resourceBundle, "minutely"));
+		intervals.add(interval1);
+
+		JSONObject interval2 = JSONFactoryUtil.createJSONObject();
+		interval2.put("value", "5-mins");
+		interval2.put("text", LanguageUtil.get(resourceBundle, "5-mins"));
+		intervals.add(interval2);
+
+		JSONObject interval3 = JSONFactoryUtil.createJSONObject();
+		interval3.put("value", "15-mins");
+		interval3.put("text", LanguageUtil.get(resourceBundle, "15-mins"));
+		intervals.add(interval3);
+
+		JSONObject interval4 = JSONFactoryUtil.createJSONObject();
+		interval4.put("value", "30-mins");
+		interval4.put("text", LanguageUtil.get(resourceBundle, "30-mins"));
+		intervals.add(interval4);
+
+		JSONObject interval5 = JSONFactoryUtil.createJSONObject();
+		interval5.put("value", "hourly");
+		interval5.put("text", LanguageUtil.get(resourceBundle, "hourly"));
+		intervals.add(interval5);
+
+		JSONObject interval6 = JSONFactoryUtil.createJSONObject();
+		interval6.put("value", "daily");
+		interval6.put("text", LanguageUtil.get(resourceBundle, "daily"));
+		intervals.add(interval6);
+		
+		return intervals;
+		
 	}
 
 	private JSONObject generateURLCommon(
@@ -1234,6 +1282,28 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			portletURLs.put("adminLocationPortlet", adminLocationPortlet);
 
 			// Notification -> include portlet
+			
+			JSONObject adminNotificationPortlet =
+					JSONFactoryUtil.createJSONObject();
+
+			PortletURL notificationListURL = renderResponse.createRenderURL();
+			notificationListURL.setParameter(
+				"mvcPath", "/templates/notification/notification_template_list.ftl");
+			notificationListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+			adminNotificationPortlet.put(
+				"notification_template_list", notificationListURL);
+
+			PortletURL notificationDetailURL = renderResponse.createRenderURL();
+			notificationDetailURL.setParameter(
+				"mvcPath", "/templates/notification/notification_template_detail.ftl");
+			notificationDetailURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+			adminNotificationPortlet.put(
+				"notification_template_detail", notificationDetailURL);
+
+			portletURLs.put(
+				"adminNotificationPortlet", adminNotificationPortlet);
 
 			// Workingunit
 
