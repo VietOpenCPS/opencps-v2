@@ -2,6 +2,7 @@ package org.opencps.api.controller.util;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.opencps.api.paymentfile.model.PaymentFileInputModel;
@@ -43,10 +44,30 @@ public class PaymentFileUtils {
 		for (Document doc : documents) {
 			PaymentFileModel model = new PaymentFileModel();
 
-			// model.setCreateDate(APIDateTimeUtils.convertDateToString(doc.getDate(PaymentFileTerm.CREATE_DATE)));
-			// model.setModifiedDate(APIDateTimeUtils.convertDateToString(doc.getDate(PaymentFileTerm.MODIFIED_DATE)));
-			model.setCreateDate(doc.get(PaymentFileTerm.CREATE_DATE));
-			model.setModifiedDate(doc.get(PaymentFileTerm.MODIFIED_DATE));
+			String strCreateDate = doc.get(PaymentFileTerm.CREATE_DATE);
+
+			Date createDate = null;
+
+			if (Validator.isNotNull(strCreateDate)) {
+				createDate = APIDateTimeUtils.convertStringToDate(strCreateDate, "yyyyMMddHHmmss");
+			}
+
+			model.setCreateDate(createDate != null
+					? APIDateTimeUtils.convertDateToString(createDate, APIDateTimeUtils._TIMESTAMP) : strCreateDate);
+
+			String strModifiedDate = doc.get(PaymentFileTerm.MODIFIED_DATE);
+
+			Date modifiedDate = null;
+
+			if (Validator.isNotNull(strModifiedDate)) {
+				modifiedDate = APIDateTimeUtils.convertStringToDate(strModifiedDate, "yyyyMMddHHmmss");
+			}
+
+			model.setModifiedDate(modifiedDate != null
+					? APIDateTimeUtils.convertDateToString(modifiedDate, APIDateTimeUtils._TIMESTAMP)
+					: strModifiedDate);
+			// model.setCreateDate(doc.get(PaymentFileTerm.CREATE_DATE));
+			// model.setModifiedDate(doc.get(PaymentFileTerm.MODIFIED_DATE));
 			model.setReferenceUid(doc.get(PaymentFileTerm.REFERENCE_UID));
 			model.setGovAgencyCode(doc.get(PaymentFileTerm.GOV_AGENCY_CODE));
 			model.setGovAgencyName(doc.get(PaymentFileTerm.GOV_AGENCY_NAME));

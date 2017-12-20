@@ -29,10 +29,8 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
-import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -60,34 +58,38 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Response getPaymentFilesByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String id) {
+			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileSearchModel search) {
 
 		BackendAuth auth = new BackendAuthImpl();
 		try {
+
 			// Check user is login
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			// Search full query
-			int start = -1;
-			int end = -1;
+			if (search.getEnd() == 0) {
+				search.setStart(-1);
+				search.setEnd(-1);
+			}
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			long dossierId = GetterUtil.getLong(id);
 
-			// TODO: Condition sort
-			Sort[] sorts = new Sort[] {};
-			// Sort[] sorts = new Sort[] {
-			// SortFactoryUtil.create(query.getSort() + "_sortable",
-			// Sort.STRING_TYPE,
-			// GetterUtil.getBoolean(query.getOrder())) };
+			// Default sort by modifiedDate
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true) };
+
+			if (Validator.isNotNull(search.getSort()) && Validator.isNotNull(search.getOrder())) {
+				sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_sortable", Sort.STRING_TYPE,
+						GetterUtil.getBoolean(search.getOrder())) };
+			}
 
 			PaymentFileActions actions = new PaymentFileActionsImpl();
 			PaymentFileResultModel results = new PaymentFileResultModel();
 
 			// get JSON data by dossierId
 			JSONObject jsonData = actions.getByDossierId(dossierId, serviceContext.getCompanyId(), groupId, sorts,
-					start, end, serviceContext);
+					search.getStart(), search.getEnd(), serviceContext);
 
 			// Parse JSONObejct to PaymentFileResultModel Object
 			results.setTotal(jsonData.getInt("total"));
@@ -124,7 +126,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		long dossierId = GetterUtil.getLong(id);
 
 		// TODO get Dossier by referenceUid if dossierId = 0
-		String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
+		//String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
 
 		BackendAuth auth = new BackendAuthImpl();
 
