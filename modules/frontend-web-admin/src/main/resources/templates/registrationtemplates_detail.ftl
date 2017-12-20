@@ -38,7 +38,7 @@
         </div>
         <div class="row MT5">
           <div class="col-xs-12 col-sm-12">
-            <div class="checkbox MB0 MT5"> <input type="checkbox" id="required" name="required" data-bind="checked:required"> <label>Cho phép tạo nhiều thành phần</label> </div>
+            <div class="checkbox MB0 MT5"> <input type="checkbox" id="required" name="required"> <label>Cho phép tạo nhiều thành phần</label> </div>
           </div>
         </div>
       </div>
@@ -166,13 +166,13 @@
 
       } catch (e) {
         notification.show({
-          message: "Form lỗi, Vui lòng kiểm tra lại cú pháp"
+          message: "Form lỗi, Vui lòng kiểm tra lại cú pháp!"
         }, "error");
 
       }
     }else { 
       notification.show({
-        message: "Vui lòng nhập FormScript"
+        message: "Vui lòng nhập Mã tạo form!"
       }, "error");
     }  
   }); 
@@ -212,10 +212,7 @@
         multiple: $('#required').is(':checked')
       },
       success: function(result) {
-        notification.show({
-          message: "Yêu cầu được thực hiện thành công"
-        }, "success");
-
+        
         registrationTemplatePartDataPk = result.registrationTemplateId;
 
         var upFormscriptSuccess = false, upFormReportSuccess = false, upSampleDataSuccess = false;
@@ -226,7 +223,7 @@
           headers: {"groupId": ${groupId}},
           async: false,
           data: {
-            value: $("#formScript").val()
+            formScript: $("#formScript").val()
           },
           success: function(result) {
             upFormscriptSuccess = true;
@@ -239,7 +236,7 @@
           headers: {"groupId": ${groupId}},
           async: false,
           data: {
-            value: $("#formReport").val()
+            formReport: $("#formReport").val()
           },
           success: function(result) {
             upFormReportSuccess = true;
@@ -252,7 +249,7 @@
           headers: {"groupId": ${groupId}},
           async: false,
           data: {
-            value: $("#sampleData").val()
+            sampleData: $("#sampleData").val()
           },
           success: function(result) {
             upSampleDataSuccess = true;
@@ -260,7 +257,10 @@
         });
 
         if (upFormscriptSuccess && upFormReportSuccess && upSampleDataSuccess){
-         
+          notification.show({
+            message: "Yêu cầu được thực hiện thành công"
+          }, "success");
+
           $("#registration_template_list_view").getKendoListView().dataSource.read();
           
         } else {
