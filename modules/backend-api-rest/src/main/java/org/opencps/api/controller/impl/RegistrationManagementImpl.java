@@ -190,10 +190,12 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			
+			long fileEntryId = getfileEntryId(input.getFormData(), input.getFormScript(), input.getFormReport());
 
 			RegistrationForm registrationForm = action.insert(groupId, registrationId,
 					input.getReferenceUid(), formNo, input.getFormName(), input.getFormData(),
-					input.getFormScript(), input.getFormReport(), input.getFileEntryId(), input.isIsNew(),
+					input.getFormScript(), input.getFormReport(), fileEntryId, input.isIsNew(),
 					input.isRemoved(), serviceContext);
 
 			result = RegistrationFormUtils.mappingToRegistrationFormDetailModel(registrationForm);
@@ -232,5 +234,12 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			}
 		}
+	}
+	
+	public long getfileEntryId(String formdata, String formScript, String formReport) {
+
+		long fileEntryId = 0;
+
+		return fileEntryId;
 	}
 }
