@@ -22,6 +22,8 @@ import javax.portlet.WindowStateException;
 
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.communication.action.impl.NotificationTemplateActions;
+import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.constants.DictGroupTerm;
@@ -334,6 +336,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		renderFrontendWebJobposPortlet(renderRequest, renderResponse);
 		renderFrontendWebAdminPortlet(renderRequest, renderResponse);
 		renderFrontendWebWorkingUnitPortlet(renderRequest, renderResponse);
+		renderFrontendWebNotificationPortlet(renderRequest, renderResponse);
 
 		renderRequest.setAttribute(
 			"url", generateURLCommon(renderRequest, renderResponse));
@@ -341,6 +344,50 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute("constants", generalConstantsCommon(renderRequest));
 
 		renderRequest.setAttribute("param", generalParamsCommon(renderRequest));
+	}
+	
+	private void renderFrontendWebNotificationPortlet(
+			RenderRequest renderRequest, RenderResponse renderResponse) {
+		_log.info("=====================renderFrontendWebNotificationPortlet===============");
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+		ServiceContext serviceContext = null;
+		
+		try {
+			serviceContext = ServiceContextFactory.getInstance(renderRequest);
+		}
+		catch (Exception e) {
+			_log.error(e);
+			throw new NullPointerException();
+		}
+
+		long groupId = themeDisplay.getScopeGroupId();
+
+		long userId = themeDisplay.getUserId();
+
+		String notificationType =
+			ParamUtil.getString(renderRequest, "notificationType");
+
+		NotificationTemplateActions notificationTemplateActions =
+			new NotificationTemplateActions();
+
+		Notificationtemplate notificationTemplate = null;
+
+		if (Validator.isNotNull(notificationType)) {
+			try {
+
+				notificationTemplate = notificationTemplateActions.read(
+					userId, groupId, notificationType, serviceContext);
+				JSONObject object = ObjectConverterUtil.objectToJSON(
+					notificationTemplate.getClass(), notificationTemplate);
+				renderRequest.setAttribute("notificationTemplate", object);
+
+			}
+			catch (Exception e) {
+				_log.error(e);
+			}
+		}
 	}
 
 	public void renderFrontendWebWorkingUnitPortlet(

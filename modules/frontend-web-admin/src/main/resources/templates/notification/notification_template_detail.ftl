@@ -207,7 +207,7 @@
 			
 			<div class="form-group text-right" >
 					
-				<button class="btn btn-sm btn-primary btn-default" id="_notification_submitEditNotification" 
+				<button class="btn btn-sm btn-active" id="_notification_submitEditNotification" 
 					name="_notification_submitEditNotification" type="button" 
 					data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 					<i class="fa fa-check-circle"></i> 

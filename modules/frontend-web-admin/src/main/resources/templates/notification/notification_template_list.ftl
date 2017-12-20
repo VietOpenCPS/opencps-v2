@@ -14,7 +14,7 @@
 					oninput="_notification_autocompleteSearch()" 
 					placeholder="Tên mẫu thông báo">
 				
-				<div class="input-group-addon btn-primary" id="_notification_btnSearch">
+				<div class="input-group-addon btn-active" id="_notification_btnSearch">
 					
 					<i class="fa fa-search" aria-hidden="true"></i>
 				
