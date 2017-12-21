@@ -252,9 +252,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			PaymentFile paymentFile = actions.getPaymentFile(dossierId, referenceUid);
 
 			String result = paymentFile.getEpaymentProfile();
-			
-			//TODO process result before response
-			
+
+			// TODO process result before response
+
 			System.out.println("/////////////////////////////////// result " + result);
 
 			return Response.status(200).entity(null).build();
@@ -314,11 +314,17 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	 */
 	@Override
 	public Response updatePaymentFileConfirm(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long id, String referenceUid, Attachment file,
+			Locale locale, User user, ServiceContext serviceContext, String id, String referenceUid, Attachment file,
 			String confirmNote, String paymentMethod, String confirmPayload) {
 
 		BackendAuth auth = new BackendAuthImpl();
+
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		long dossierId = GetterUtil.getLong(id);
+
+		// TODO get Dossier by referenceUid if dossierId = 0
+		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
 
 		try {
 
@@ -330,8 +336,11 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			PaymentFileActions action = new PaymentFileActionsImpl();
 
-			PaymentFile paymentFile = action.updateFileConfirm(groupId, id, referenceUid, confirmNote, paymentMethod,
-					confirmPayload, dataHandler.getName(), 0L, dataHandler.getInputStream(), serviceContext);
+			PaymentFile paymentFile = action.updateFileConfirm(groupId, dossierId, referenceUid, confirmNote,
+					paymentMethod, confirmPayload, dataHandler.getName(), 0L, dataHandler.getInputStream(),
+					serviceContext);
+			
+			System.out.println("/////////////////////////////////// Done " + paymentFile.getPaymentFileId());
 
 			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 

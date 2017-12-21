@@ -406,15 +406,19 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		// User auditUser =
 		// userPersistence.fetchByPrimaryKey(serviceContext.getUserId());
 
-		PaymentFile object = (PaymentFile) paymentFilePersistence.findByF_DUID(dossierId, referenceUid);
-		if (object != null) {
+		PaymentFile paymentFile = paymentFilePersistence.fetchByD_RUID(dossierId, referenceUid);
+		
+		if (paymentFile != null) {
+			
 			long fileEntryId = 0;
+			
 			try {
 				FileEntry fileEntry = FileUploadUtils.uploadPaymentFile(userId, groupId, inputStream, sourceFileName,
 						null, fileSize, serviceContext);
 
 				if (fileEntry != null) {
 					fileEntryId = fileEntry.getFileEntryId();
+					System.out.println("////////////////////fileEntryId " + fileEntryId);
 				}
 			} catch (Exception e) {
 				throw new SystemException(e);
@@ -422,35 +426,15 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 			Date now = new Date();
 
-			// User userAction = userLocalService.getUser(userId);
-			// long paymentFileId =
-			// counterLocalService.increment(PaymentFile.class.getName());
-			// TODO: have add fields default???
-			// Add audit fields
-			// object.setCompanyId(serviceContext.getCompanyId());
-			// object.setGroupId(groupId);
-			// object.setCreateDate(now);
-			object.setModifiedDate(now);
-			// object.setUserId(userAction.getUserId());
-			// object.setUserName(userAction.getFullName());
+			paymentFile.setModifiedDate(now);
+			paymentFile.setConfirmNote(confirmNote);
+			paymentFile.setPaymentMethod(paymentMethod);
+			paymentFile.setConfirmPayload(confirmPayload);
+			paymentFile.setConfirmFileEntryId(fileEntryId);
 
-			// Add other fields
-			// object.setDossierId(dossierId);
-			// if(Validator.isNull(referenceUid)) {
-			// referenceUid = PortalUUIDUtil.generate();
-			// }
-			// object.setReferenceUid(referenceUid);
+		} 
 
-			object.setConfirmNote(confirmNote);
-			object.setPaymentMethod(paymentMethod);
-			object.setConfirmPayload(confirmPayload);
-			object.setConfirmFileEntryId(fileEntryId);
-
-		} else {
-			//
-		}
-
-		return paymentFilePersistence.update(object);
+		return paymentFilePersistence.update(paymentFile);
 	}
 
 	/**
