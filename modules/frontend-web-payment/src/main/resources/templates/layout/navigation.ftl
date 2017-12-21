@@ -6,4 +6,5 @@
 		</div>
     	<div class="flex xs12 mb-3 px-0 panel-dossier-navigation" jx-bind="listgroupFilter"></div>
 	</div>
+	<input type="file" name="inputfile_temp" id="inputfile_temp" style="display:none" />
 </div>

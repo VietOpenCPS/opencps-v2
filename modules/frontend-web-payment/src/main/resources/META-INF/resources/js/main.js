@@ -144,31 +144,39 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										var currentItemSelected = vm.paymentListselected[j];
 
 										if (currentItem != null && currentItemSelected != null
-											&& currentItem.dossierNo === currentItemSelected.dossierNo) {
+											&& currentItem.dossierId === currentItemSelected.dossierId) {
 
-											var url = '/o/rest/v2/dossiers/' + vm.paymentListItems[i].dossierId + '/payments/' + vm.paymentListItems[i].referenceUid + '/confirm';
-											
+											var url = '/o/rest/v2/dossiers/' + vm.paymentListselected[j].dossierId + '/payments/' + vm.paymentListselected[j].referenceUid + '/confirm/noattachment';
+										
 											/* TODO: confirmPayload tam thoi khong truyen len*/
-											var paramsBuilder = {
-												confirmNote: vm.paymentListItems[i].confirmNote,
-												paymentMethod: vm.paymentMethodSearch,
-												confirmPayload: ""
-											};
-											
-											const config = {
-												
-												headers: {'groupId': themeDisplay.getScopeGroupId()}
-												
-											};
-											
-											axios.put(url, paramsBuilder, config).then(function (response) {
-												var serializable = response.data;
+											var data = new FormData();
+											data.append( 'file', $("#inputfile_temp")[0].files[0]);
+											data.append( 'confirmNote', vm.paymentListItems[j].confirmNote );
+											data.append( 'paymentMethod', vm.paymentMethodSearch );
+											data.append( 'confirmPayload', "" );
 
-												/*TODO: put success */
-											})
-												.catch(function (error) {
-													console.log(error);
-												});
+											$.ajax({
+												type : 'PUT', 
+												url  : url, 
+												data : data,
+												headers: {"groupId": themeDisplay.getScopeGroupId()},
+												processData: false,
+												contentType: false,
+												cache: false,
+												async : false,
+												success: function(data, textStatus, xhr) {
+												
+													vm.snackbartextpaymentViewJX = "Xác nhận thanh toán thành công!";
+													vm.snackbarpaymentViewJX = true;
+
+												
+												},
+												error: function(xhr, textStatus, errorThrown) {
+												
+													vm.snackbartextpaymentViewJX = "Xác nhận thanh toán thất bại!";
+				                      				vm.snackbarerorpaymentViewJX = true;
+												}
+											});
 											
 											vm.paymentListItems.splice(i, 1);
 
@@ -207,29 +215,37 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						})
 							.then((dialog) => {
 
-								var url = '/o/rest/v2/dossiers/' + vm.paymentListItems[index].dossierId + '/payments/' + vm.paymentListItems[index].dossierId + '/confirm';
+								var url = '/o/rest/v2/dossiers/' + vm.paymentListItems[index].dossierId + '/payments/' + vm.paymentListItems[index].referenceUid + '/confirm/noattachment';
 								
 								/* TODO: confirmPayload tam thoi khong truyen len*/
-								var paramsBuilder = {
-									confirmNote: vm.paymentListItems[index].confirmNote,
-									paymentMethod: vm.paymentMethodSearch,
-									confirmPayload: ""
-								};
-								
-								const config = {
-									
-									headers: {'groupId': themeDisplay.getScopeGroupId()}
-									
-								};
-								
-								axios.put(url, paramsBuilder, config).then(function (response) {
-									var serializable = response.data;
+								var data = new FormData();
+								data.append( 'file', $("#inputfile_temp")[0].files[0]);
+								data.append( 'confirmNote', vm.paymentListItems[index].confirmNote );
+								data.append( 'paymentMethod', vm.paymentMethodSearch );
+								data.append( 'confirmPayload', "" );
 
-									/*TODO: put success */
-								})
-									.catch(function (error) {
-										console.log(error);
-									});
+								$.ajax({
+									type : 'PUT', 
+									url  : url, 
+									data : data,
+									headers: {"groupId": themeDisplay.getScopeGroupId()},
+									processData: false,
+									contentType: false,
+									cache: false,
+									async : false,
+									success: function(data, textStatus, xhr) {
+									
+										vm.snackbartextpaymentViewJX = "Xác nhận thanh toán thành công!";
+										vm.snackbarpaymentViewJX = true;
+
+									
+									},
+									error: function(xhr, textStatus, errorThrown) {
+									
+										vm.snackbartextpaymentViewJX = "Xác nhận thanh toán thất bại!";
+	                      				vm.snackbarerorpaymentViewJX = true;
+									}
+								});
 								
 								vm.paymentListItems.splice(index, 1);
 
@@ -264,8 +280,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				'id': 'paymentList',
 				'name': 'paymentList',
 				'type': 'table',
+				'cssClass': 'danhSachPaymentTable__class',
 				'select_all': true,
-				'item_key': 'dossierNo',
+				'item_key': 'dossierId',
 				'headers': 'headers',
 				'template': 'activity_expand_list_template',
 				'onLoad': '_inipaymentList',
@@ -296,13 +313,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							},
 							{
 								text: 'Tổng tiền',
-								align: 'right',
+								align: 'center',
 								sortable: true,
 								value: 'paymentAmount'
 							},
 							{
 								text: 'Tên doanh nghiệp',
-								align: 'left',
+								align: 'center',
 								sortable: true,
 								value: 'applicantName'
 							},
