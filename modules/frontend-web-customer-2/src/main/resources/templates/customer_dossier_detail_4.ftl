@@ -19,27 +19,27 @@
 		</div>
 
 		<div class="dossier-general-info P15 MB30">
-			<p class="text-bold">Thông tin chung hồ sơ</p>
 			<div class="col-sm-4">
-				<div class="row MB5">
-					<span class="text-bold">Cơ quan thực hiện</span>: <span data-bind="text:govAgencyName"></span>
+				<div class="row">
+					<span class="text-bold">Tình trạng</span>: <i data-bind="text:dossierStatusText" class="red"></i>
 				</div>
 				<div class="row">
-					<span class="text-bold">Tình trạng</span> <i data-bind="text:dossierStatusText" class="red"></i>
+					<i data-bind="html:briefNote" class="text-light-gray"></i>
 				</div>
 			</div>
-			<div class="col-sm-4 text-center">
+			<div class="col-sm-4">
 				<div class="row MB5" id="">
-					<span class="text-bold">Thời gian gửi</span>: <span data-bind="text:submitDate"></span>
+					<span class="text-bold">Mã tiếp nhận</span>: <span data-bind="text:dossierNo"></span>
+					
 				</div>
 				<div class="row" id="">
 					<span class="text-bold">Mã số hồ sơ</span>: <span data-bind="text : dossierId"></span>
 				</div>
 			</div>
 			
-			<div class="col-sm-4 text-center">
+			<div class="col-sm-4">
 				<div class="row MB5" id="">
-					<span class="text-bold">Mã tiếp nhận</span>: <span data-bind="text:dossierNo"></span>
+					<span class="text-bold">Thời gian gửi</span>: <span data-bind="text:submitDate"></span>
 				</div>
 				<div class="row" id="">
 					<a href="javascript:;" class="text-light-blue text-underline">Thông tin chủ hồ sơ</a>
@@ -219,13 +219,13 @@
 	</div>
 	<div class="content-part collapse in" id="collapseDossierPart">
 		<div class="row-parts-head MT5">
-			<ul class="ul-with-border">
-				<div id="listViewDossiserLog"></div>
+			<ul id="listViewDossiserLog" class="ul-default mimic-table">
+				
 			</ul>
 			<script type="text/x-kendo-template" id="templateDossiserLog">
-				<li>
+				<li class="clearfix eq-height-lg P0">
 					<div class="row">
-						<div class="col-sm-1">
+						<div class="col-sm-0 text-center center-all row-blue P15" >
 							#:itemIndex#.
 						</div>
 
@@ -247,36 +247,39 @@
 			}
 			#
 
-			<div class="col-sm-11 PL0">
-				<div class="row">
-					<span class="text-bold">#:author#  (#:jobposTitle#) &nbsp;</span> <span class="text-light-blue">#:briefNote#</span> -->
-					<p>#:createDate#</p>
-				</div>
-				<div class="row">
-					<p>Ý kiến: #:content#</p>
-				</div>
+			<div class="col-sm-12 M0 P5 PL10">
+				<span class="text-bold">#:author# </span> <span class="text-light-gray">(#:jobposTitle#) &nbsp;</span> <span class="text-light-blue">#:briefNote#</span> 
+				<p>#:createDate#</p>
 
-				<div class="row">
-					#
-					if(dossier){
-					for(var i = 0 ; i < dossier.length ; i++){
+				<p>Ý kiến: #:content#</p>
 
-					#
-					<img src="images/docx.png" alt=""> <a href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].referenceUid#" class="text-greyy">#:dossier[i].fileName#</a>
-
-					#
-				} 
-
-			}
+				#
+				if(dossier){
+				for(var i = 0 ; i < dossier.length ; i++){
+				if(dossier[i].fileType === "pdf"){
+				#
+				<p><img src="images/pdf.png" alt=""> <a href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].referenceUid#" class="text-greyy text-hover-blue">#:dossier[i].fileName#</a> </p>
+				#
+			}else {
 			#
-		</div>
-	</div>
+			<p><img src="images/docx.png" alt=""> <a href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].referenceUid#" class="text-greyy text-hover-blue">#:dossier[i].fileName#</a> </p>
+			#
+
+		}
+
+	} 
+
+}
+#
+</div>
 </div>
 </li>
 </script>
+
 </div>
 </div>
 </div> 
+
 
 <div class="row-parts-content" id="postal" data-bind="value: viaPostal">
 	<div class="row">
@@ -305,7 +308,6 @@
 
 	$(function(){
 		$( "body" ).data( "dossierFiles", [] );
-
 
 		$(document).off("change",".dossier-file");
 		$(document).on("change",".dossier-file",function(){
@@ -446,7 +448,8 @@
 
 						},
 						success : function(result){
-							options.success(result);
+							var arrLogsResult = fnGetLogs(result.data);
+							options.success(arrLogsResult);
 						},
 						error : function(result){
 							options.error(result);
@@ -480,6 +483,20 @@
 			}
 			console.log(arrResult);
 			return arrResult;
+		}
+
+		var fnGetLogs = function(arrLogs){
+			var arrLogsResult = new Array();
+			if(arrLogs){
+				for (var i = 0; i < arrLogs.length; i++) {
+					if(arrLogs[i].notificationType === 'PROCESS_TYPE'){
+						arrLogsResult.push(arrLogs[i]);
+
+					}
+				}
+			}
+
+			return arrLogsResult;
 		}
 
 
@@ -599,6 +616,13 @@
 
 							applicantName : result.applicantName,
 							address : result.address,
+							briefNote : function(e){
+								if(result.briefNote){
+									return result.briefNote;
+								}else {
+									return "";
+								}
+							},
 							cityCode : result.cityCode,
 							districtCode : result.districtCode,
 							wardCode : result.wardCode,
@@ -966,6 +990,7 @@ $(document).on("click",".saveFormAlpaca",function(event){
 		console.log(value);
 
 		if(errorMessage === '' && referentUidFile){
+			
 			$.ajax({
 				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
 				dataType : "json",
@@ -990,6 +1015,7 @@ $(document).on("click",".saveFormAlpaca",function(event){
 					}, "error");
 				}
 			});
+
 		}else {
 			notification.show({
 				message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi ghi lại!"

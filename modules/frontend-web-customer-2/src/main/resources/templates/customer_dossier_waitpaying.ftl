@@ -239,9 +239,6 @@
 				success : function(result){
 					console.log("load detail dossier!");
 					console.log(result.dossierId);
-					dataSourceDossierTemplate.read({
-						dossierTemplateNo : result.dossierTemplateNo
-					});
 
 					var payment = fnLoadPayment(result.dossierId);
 					
