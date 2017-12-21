@@ -61,4 +61,28 @@
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
+	
+	<xsd:element name="RegistrationTemplateFormScriptInputUpdateModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="formScript" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="RegistrationTemplateFormReportInputUpdateModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="formReport" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+		<xsd:element name="RegistrationTemplateSampleDataInputUpdateModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="sampleData" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 </xsd:schema>
