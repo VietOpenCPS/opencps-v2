@@ -148,33 +148,27 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 											var url = '/o/rest/v2/dossiers/' + vm.paymentListselected[j].dossierId + '/payments/' + vm.paymentListselected[j].referenceUid + '/confirm/noattachment';
 										
-											/* TODO: confirmPayload tam thoi khong truyen len*/
-											var data = new FormData();
-											data.append( 'file', $("#inputfile_temp")[0].files[0]);
-											data.append( 'confirmNote', vm.paymentListItems[j].confirmNote );
-											data.append( 'paymentMethod', vm.paymentMethodSearch );
-											data.append( 'confirmPayload', "" );
-
+											
 											$.ajax({
-												type : 'PUT', 
-												url  : url, 
-												data : data,
-												headers: {"groupId": themeDisplay.getScopeGroupId()},
-												processData: false,
-												contentType: false,
-												cache: false,
-												async : false,
-												success: function(data, textStatus, xhr) {
-												
+												url : url,
+												headers: {
+													"groupId": themeDisplay.getScopeGroupId()
+												},
+												data : {
+													confirmNote: vm.paymentListItems[j].confirmNote,
+													paymentMethod: vm.paymentMethodSearch,
+													confirmPayload: ''
+												},
+												type : "PUT",
+												dataType: 'json',
+												contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+												success : function(result){
 													vm.snackbartextpaymentViewJX = "Xác nhận thanh toán thành công!";
 													vm.snackbarpaymentViewJX = true;
-
-												
 												},
-												error: function(xhr, textStatus, errorThrown) {
-												
+												error : function(result){
 													vm.snackbartextpaymentViewJX = "Xác nhận thanh toán thất bại!";
-				                      				vm.snackbarerorpaymentViewJX = true;
+													vm.snackbarerorpaymentViewJX = true;
 												}
 											});
 											
@@ -218,34 +212,31 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								var url = '/o/rest/v2/dossiers/' + vm.paymentListItems[index].dossierId + '/payments/' + vm.paymentListItems[index].referenceUid + '/confirm/noattachment';
 								
 								/* TODO: confirmPayload tam thoi khong truyen len*/
-								var data = new FormData();
-								data.append( 'file', $("#inputfile_temp")[0].files[0]);
-								data.append( 'confirmNote', vm.paymentListItems[index].confirmNote );
-								data.append( 'paymentMethod', vm.paymentMethodSearch );
-								data.append( 'confirmPayload', "" );
 
 								$.ajax({
-									type : 'PUT', 
-									url  : url, 
-									data : data,
-									headers: {"groupId": themeDisplay.getScopeGroupId()},
-									processData: false,
-									contentType: false,
-									cache: false,
-									async : false,
-									success: function(data, textStatus, xhr) {
-									
+									url : url,
+									headers: {
+										"groupId": themeDisplay.getScopeGroupId()
+									},
+									data : {
+										confirmNote: vm.paymentListItems[index].confirmNote,
+										paymentMethod: vm.paymentMethodSearch,
+										confirmPayload: ''
+									},
+									type : "PUT",
+									dataType: 'json',
+									contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+									success : function(result){
 										vm.snackbartextpaymentViewJX = "Xác nhận thanh toán thành công!";
 										vm.snackbarpaymentViewJX = true;
-
-									
 									},
-									error: function(xhr, textStatus, errorThrown) {
-									
+									error : function(result){
 										vm.snackbartextpaymentViewJX = "Xác nhận thanh toán thất bại!";
-	                      				vm.snackbarerorpaymentViewJX = true;
+										vm.snackbarerorpaymentViewJX = true;
 									}
 								});
+
+								
 								
 								vm.paymentListItems.splice(index, 1);
 
