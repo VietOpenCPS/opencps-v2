@@ -277,22 +277,27 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	 */
 	@Override
 	public Response updateEpaymentProfile(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String id, String referenceUid, JSONObject input) {
+			Locale locale, User user, ServiceContext serviceContext, String id, String referenceUid, PaymentFileInputModel input) {
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
+			
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
+			
 			if (!auth.hasResource(serviceContext, PaymentConfig.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException();
 			}
-
+			
 			long dossierId = GetterUtil.getLong(id);
+
+			// TODO get Dossier by referenceUid if dossierId = 0
+			// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
+			
 			PaymentFileActions actions = new PaymentFileActionsImpl();
 
-			PaymentFile paymentFile = actions.updateEProfile(dossierId, referenceUid, input.toString(), serviceContext);
+			PaymentFile paymentFile = actions.updateEProfile(dossierId, referenceUid, input.getEpaymentProfile(), serviceContext);
 
 			String result = paymentFile.getEpaymentProfile();
 

@@ -371,7 +371,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	public PaymentFile updateEProfile(long dossierId, String referenceUid, String strInput, ServiceContext context)
 			throws PortalException {
 
-		PaymentFile object = (PaymentFile) paymentFilePersistence.findByF_DUID(dossierId, referenceUid);
+		PaymentFile object = (PaymentFile) paymentFilePersistence.findByD_RUID(dossierId, referenceUid);
 
 		Date now = new Date();
 

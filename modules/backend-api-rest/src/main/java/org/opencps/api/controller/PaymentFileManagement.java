@@ -125,7 +125,7 @@ public interface PaymentFileManagement {
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "id of Payment", required = true) @PathParam("id") String id,
 			@ApiParam (value = "referenceUid of Payment", required = true) @PathParam("referenceUid") String referenceUid,
-			@BeanParam JSONObject input);
+			@BeanParam PaymentFileInputModel input);
 	/* Update info EpaymentProfile - END */
 
 	//6
