@@ -75,6 +75,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 					if (dossierFiles != null) {
 						for (DossierFile dossierFile : dossierFiles) {
 							JSONObject file = JSONFactoryUtil.createJSONObject();
+							
 							file.put("dossierFileId", dossierFile.getDossierFileId());
 							file.put("fileName", dossierFile.getDisplayName());
 							file.put("createDate", APIDateTimeUtils.convertDateToString(dossierFile.getCreateDate(),

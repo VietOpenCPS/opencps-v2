@@ -77,7 +77,7 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 			String govAgencyName, String applicantName, String applicantIdNo, String paymentFee, long paymentAmount,
 			String paymentNote, String epaymentProfile, String bankInfo, ServiceContext serviceContext)
 			throws PortalException {
-		
+		_log.info("boom boom");
 		if(Validator.isNull(referenceUid)){
 			referenceUid = PortalUUIDUtil.generate();
 		}
@@ -88,6 +88,8 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 					epaymentProfile, bankInfo, serviceContext);
 		} catch (PortalException e) {
 			// TODO Auto-generated catch block
+			_log.info("boom boom");
+			_log.info(e);
 			e.printStackTrace();
 			throw new PortalException();
 		}
