@@ -10,7 +10,7 @@
 	</ul>
 	<script type="text/x-keno-template" id="registrationsTemplate">
 		<li class="registrationsLogItem">
-			<p>#:content#</p>
+			 <p> Lần #:content#</p>
 		</li>
 	</script>
 </div>

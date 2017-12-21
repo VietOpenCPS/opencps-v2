@@ -290,9 +290,19 @@
 				</form>
 
 				#
-				var formScript = formScript;
-				formScript.data = formData;
-				$("\\#formPartNo"+formNo).alpaca(formScript);
+				try {
+					if(formScript){
+						var formScript = eval("(" + formScript + ")");
+						if(formData){
+							formScript.data = eval("(" + formData + ")");
+						}
+						
+						$("\\#formPartNo"+formNo).alpaca(formScript);
+					}
+				}catch(e){
+
+				}
+				
 				#
 
 			</div>
