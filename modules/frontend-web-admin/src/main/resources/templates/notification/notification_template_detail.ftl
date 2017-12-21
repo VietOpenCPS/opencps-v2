@@ -128,14 +128,16 @@
             <div class="form-group" >
                 <label class="font-bold">Lịch kiểm tra để gửi thông báo</label>
                 <select class="form-control" id="_notificationSubDetail_interval" name="_notificationSubDetail_interval">
-                    <#if constant.notification_interval?has_content>
+                    <#if constants.notification_interval?has_content>
                       
-                        <#list constant.notification_interval as oInterval>
+                        <#list constants.notification_interval as oInterval>
                             
-                            <option value="${oInterval.value}" <#if oInterval.value == notificationTemplate.interval>
+                            <option value="${(oInterval.value)!}" 
+                            	<#if oInterval.value == notificationTemplate.interval>
                                 selected="true"
-                            </#if>>
-                                ${oInterval.text}
+                            	</#if>
+                            >
+                                ${(oInterval.text)!}
                             </option>
                         </#list>
                     </#if> 
