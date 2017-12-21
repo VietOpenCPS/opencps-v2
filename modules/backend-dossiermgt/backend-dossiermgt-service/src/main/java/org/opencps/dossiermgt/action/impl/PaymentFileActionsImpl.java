@@ -82,9 +82,15 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 			referenceUid = PortalUUIDUtil.generate();
 		}
 		
-		return PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId, referenceUid,
-				govAgencyCode, govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount, paymentNote,
-				epaymentProfile, bankInfo, serviceContext);
+		try {
+			return PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId, referenceUid,
+					govAgencyCode, govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount, paymentNote,
+					epaymentProfile, bankInfo, serviceContext);
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new PortalException();
+		}
 
 	}
 
