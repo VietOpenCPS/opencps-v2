@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 
 import org.opencps.communication.model.Notificationtemplate;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.search.Sort;
@@ -29,4 +30,10 @@ public interface NotificationTemplateInterface {
 			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException;
 
 	public JSONObject getNotificationTypes();
+	
+	public Notificationtemplate create(long userId, long groupId, String notificationType, String emailBody,
+			String emailSubject, String sendEmail, String textMessage, String textSMS, String expireDuration,
+			String userUrlPattern, String guestUrlPattern, String interval, String grouping,
+			ServiceContext serviceContext) throws NoSuchUserException, NotFoundException, UnauthenticationException,
+			UnauthorizationException, DuplicateCategoryException;
 }
