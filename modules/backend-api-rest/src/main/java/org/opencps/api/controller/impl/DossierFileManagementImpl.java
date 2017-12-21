@@ -238,6 +238,11 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 
 			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(id, referenceUid);
+			
+			// TODO download file with dossierFileID
+			if (Validator.isNull(dossierFile) && Validator.isNumber(referenceUid)) {
+				dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(Long.valueOf(referenceUid));
+			}
 
 			if (dossierFile.getFileEntryId() > 0) {
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());

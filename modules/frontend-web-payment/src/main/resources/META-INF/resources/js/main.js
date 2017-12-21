@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										if (currentItem != null && currentItemSelected != null
 											&& currentItem.dossierNo === currentItemSelected.dossierNo) {
 
-											var url = '/o/rest/v2/dossiers/' + vm.paymentListItems[i].dossierId + '/payments/' + vm.paymentListItems[i].dossierId + '/confirm';
+											var url = '/o/rest/v2/dossiers/' + vm.paymentListItems[i].dossierId + '/payments/' + vm.paymentListItems[i].referenceUid + '/confirm';
 											
 											/* TODO: confirmPayload tam thoi khong truyen len*/
 											var paramsBuilder = {
