@@ -136,10 +136,10 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 			return Response.status(200).entity(notificationtemplateModel).build();
 
 		} catch (Exception e) {
-			_log.error("@PUT: " + e);
+			_log.error(e);
 			if (e instanceof UnauthenticationException) {
 
-				_log.error("@POST: " + e);
+				_log.error(e);
 				ErrorMsg error = new ErrorMsg();
 
 				error.setMessage("authentication failed!");
@@ -152,7 +152,7 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 
 			if (e instanceof UnauthorizationException) {
 
-				_log.error("@POST: " + e);
+				_log.error(e);
 				ErrorMsg error = new ErrorMsg();
 
 				error.setMessage("permission denied!");
@@ -165,7 +165,7 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 
 			if (e instanceof NoSuchUserException) {
 
-				_log.error("@POST: " + e);
+				_log.error(e);
 				ErrorMsg error = new ErrorMsg();
 
 				error.setMessage("conflict!");

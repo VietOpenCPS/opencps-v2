@@ -30,7 +30,7 @@ public interface NotificationTemplateInterface {
 			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException;
 
 	public JSONObject getNotificationTypes();
-	
+
 	public Notificationtemplate create(long userId, long groupId, String notificationType, String emailBody,
 			String emailSubject, String sendEmail, String textMessage, String textSMS, String expireDuration,
 			String userUrlPattern, String guestUrlPattern, String interval, String grouping,

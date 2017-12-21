@@ -149,7 +149,7 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 			notificationtemplate.setExpireDuration(Integer.valueOf(expireDuration));
 
 		}
-		
+
 		if (Validator.isNotNull(userUrlPattern)) {
 
 			notificationtemplate.setUserUrlPattern(userUrlPattern);
@@ -170,7 +170,6 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 			notificationtemplate.setGrouping(Boolean.valueOf(grouping));
 
 		}
-
 
 		notificationtemplate = NotificationtemplateLocalServiceUtil.updateNotificationTemplate(userId,
 				notificationtemplate.getNotificationTemplateId(), notificationtemplate.getNotificationType(),
@@ -210,4 +209,5 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 
 		return ett;
 	}
+
 }
