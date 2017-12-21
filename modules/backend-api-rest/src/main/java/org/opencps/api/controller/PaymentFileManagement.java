@@ -190,7 +190,7 @@ public interface PaymentFileManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access defined", response = ExceptionModel.class) })
 	public Response downloadConfirmFile(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@ApiParam(value = "id of dossier", required = true) @PathParam("id") Long id,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
 			@ApiParam (value = "reference of paymentFile", required = true) @PathParam("referenceUid") String referenceUid);
 	/* Download file confirm - END */
 
@@ -207,7 +207,7 @@ public interface PaymentFileManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access defined", response = ExceptionModel.class) })
 	public Response downloadInvoiceFile(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@ApiParam(value = "id of dossier", required = true) @PathParam("id") Long id,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
 			@ApiParam(value = "reference of paymentFile", required = true) @PathParam("referenceUid") String referenceUid);
 	/* Download file invoice - END */
 

@@ -251,13 +251,11 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			PaymentFile paymentFile = actions.getPaymentFile(dossierId, referenceUid);
 
-			String result = paymentFile.getEpaymentProfile();
+			String ePaymentProfile = paymentFile.getEpaymentProfile();
 
-			// TODO process result before response
+			JSONObject result = JSONFactoryUtil.createJSONObject(ePaymentProfile);
 
-			System.out.println("/////////////////////////////////// result " + result);
-
-			return Response.status(200).entity(null).build();
+			return Response.status(200).entity(result.toJSONString()).build();
 
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();
@@ -400,9 +398,14 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	 */
 	@Override
 	public Response downloadConfirmFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, Long id, String referenceUid) {
+			User user, ServiceContext serviceContext, String id, String referenceUid) {
 
 		BackendAuth auth = new BackendAuthImpl();
+		
+		long dossierId = GetterUtil.getLong(id);
+
+		// TODO get Dossier by referenceUid if dossierId = 0
+		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
 
 		try {
 
@@ -411,9 +414,10 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			}
 
 			PaymentFileActions action = new PaymentFileActionsImpl();
-			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(id, referenceUid);
+			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossierId, referenceUid);
 
 			if (paymentFile.getConfirmFileEntryId() > 0) {
+				
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getConfirmFileEntryId());
 
 				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
@@ -426,6 +430,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				responseBuilder.header("Content-Type", fileEntry.getMimeType());
 
 				return responseBuilder.build();
+				
 			} else {
 				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 			}
@@ -443,24 +448,24 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	 */
 	@Override
 	public Response downloadInvoiceFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, Long id, String referenceUid) {
+			User user, ServiceContext serviceContext, String id, String referenceUid) {
 		BackendAuth auth = new BackendAuthImpl();
+		
+		long dossierId = GetterUtil.getLong(id);
+
+		// TODO get Dossier by referenceUid if dossierId = 0
+		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
 
 		try {
-			System.out.println("////////////////////////////////// " + 1);
+			
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
 
 			PaymentFileActions action = new PaymentFileActionsImpl();
 
-			System.out.println("////////////////////////////////// id" + id);
-
-			System.out.println("////////////////////////////////// referenceUid" + referenceUid);
-
-			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(id, referenceUid);
-
-			System.out.println("////////////////////////////////// paymentFile" + paymentFile.getDossierId());
+		
+			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossierId, referenceUid);
 
 			if (paymentFile.getInvoiceFileEntryId() > 0) {
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
