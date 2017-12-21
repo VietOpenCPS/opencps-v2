@@ -411,16 +411,17 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		if (paymentFile != null) {
 
 			long fileEntryId = 0;
+			if (inputStream != null) {
+				try {
+					FileEntry fileEntry = FileUploadUtils.uploadPaymentFile(userId, groupId, inputStream,
+							sourceFileName, null, fileSize, serviceContext);
 
-			try {
-				FileEntry fileEntry = FileUploadUtils.uploadPaymentFile(userId, groupId, inputStream, sourceFileName,
-						null, fileSize, serviceContext);
-
-				if (fileEntry != null) {
-					fileEntryId = fileEntry.getFileEntryId();
+					if (fileEntry != null) {
+						fileEntryId = fileEntry.getFileEntryId();
+					}
+				} catch (Exception e) {
+					throw new SystemException(e);
 				}
-			} catch (Exception e) {
-				throw new SystemException(e);
 			}
 
 			Date now = new Date();
@@ -444,34 +445,33 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentFile updateFileApproval(long groupId, long dossierId, String referenceUid, String approveDatetime,
-			String accountUserName, String govAgencyTaxNo, String invoiceTemplateNo,
-			String invoiceIssueNo, String invoiceNo, String sourceFileName, long fileSize, InputStream inputStream,
+			String accountUserName, String govAgencyTaxNo, String invoiceTemplateNo, String invoiceIssueNo,
+			String invoiceNo, String sourceFileName, long fileSize, InputStream inputStream,
 			ServiceContext serviceContext) throws PortalException, SystemException, java.text.ParseException {
 
-		long userId = serviceContext.getUserId();
-
 		PaymentFile paymentFile = paymentFilePersistence.fetchByD_RUID(dossierId, referenceUid);
-		
-		
 
 		if (paymentFile != null) {
-			
+
 			long fileEntryId = 0;
+			if (inputStream != null) {
+				long userId = serviceContext.getUserId();
+				try {
+					FileEntry fileEntry = FileUploadUtils.uploadPaymentFile(userId, groupId, inputStream,
+							sourceFileName, null, fileSize, serviceContext);
 
-			try {
-				FileEntry fileEntry = FileUploadUtils.uploadPaymentFile(userId, groupId, inputStream, sourceFileName,
-						null, fileSize, serviceContext);
-
-				if (fileEntry != null) {
-					fileEntryId = fileEntry.getFileEntryId();
+					if (fileEntry != null) {
+						fileEntryId = fileEntry.getFileEntryId();
+					}
+				} catch (Exception e) {
+					// e.printStackTrace();
+					throw new SystemException(e);
 				}
-			} catch (Exception e) {
-				//e.printStackTrace();
-				throw new SystemException(e);
+
 			}
 
 			Date now = new Date();
-			
+
 			paymentFile.setModifiedDate(now);
 			// Parse String to Date
 			SimpleDateFormat format = new SimpleDateFormat("DD-MM-YYYY HH:MM:SS");
