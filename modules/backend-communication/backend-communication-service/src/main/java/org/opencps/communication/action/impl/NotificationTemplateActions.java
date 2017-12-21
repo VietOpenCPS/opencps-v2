@@ -9,6 +9,7 @@ import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.utils.DateTimeUtils;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -149,7 +150,7 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 			notificationtemplate.setExpireDuration(Integer.valueOf(expireDuration));
 
 		}
-		
+
 		if (Validator.isNotNull(userUrlPattern)) {
 
 			notificationtemplate.setUserUrlPattern(userUrlPattern);
@@ -170,7 +171,6 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 			notificationtemplate.setGrouping(Boolean.valueOf(grouping));
 
 		}
-
 
 		notificationtemplate = NotificationtemplateLocalServiceUtil.updateNotificationTemplate(userId,
 				notificationtemplate.getNotificationTemplateId(), notificationtemplate.getNotificationType(),
@@ -194,6 +194,21 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 		result.put("total", initTemplates.size());
 
 		return result;
+	}
+
+	@Override
+	public Notificationtemplate create(long userId, long groupId, String notificationType, String emailBody,
+			String emailSubject, String sendEmail, String textMessage, String textSMS, String expireDuration,
+			String userUrlPattern, String guestUrlPattern, String interval, String grouping,
+			ServiceContext serviceContext)
+			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException, DuplicateCategoryException {
+		Notificationtemplate ett = null;
+
+		ett = NotificationtemplateLocalServiceUtil.addNotificationTemplate(userId, groupId, notificationType,
+				emailSubject, emailBody, textMessage, Boolean.valueOf(textSMS), Boolean.valueOf(sendEmail), userUrlPattern, guestUrlPattern, interval,
+				Boolean.valueOf(grouping), serviceContext);
+
+		return ett;
 	}
 
 }

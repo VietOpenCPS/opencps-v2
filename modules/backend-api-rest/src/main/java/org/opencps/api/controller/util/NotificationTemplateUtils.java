@@ -108,9 +108,9 @@ public class NotificationTemplateUtils {
 			for (Document document : listDocument) {
 				ett = new NotificationtemplateModel();
 
-				/*ett.setModifiedDate(
+				ett.setModifiedDate( Validator.isNotNull(document.get("modified")) &&
 						Validator.isNotNull(document.getDate("modified")) ? APIDateTimeUtils.convertDateToString(
-								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);*/
+								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 				ett.setNotificationType(document.get(NotificationTemplateTerm.NOTIFICATTION_TYPE));
 
 				ett.setTypeName(initTemplates.get(document.get(NotificationTemplateTerm.NOTIFICATTION_TYPE)));
@@ -120,7 +120,7 @@ public class NotificationTemplateUtils {
 				ett.setTextMessage(document.get(NotificationTemplateTerm.NOTIFICATION_TEXT_MESSAGE));
 				ett.setSendEmail(Boolean.valueOf(document.get(NotificationTemplateTerm.SEND_EMAIL)));
 				ett.setSendSMS(Boolean.valueOf(document.get(NotificationTemplateTerm.NOTIFICATION_SEND_SMS)));
-				ett.setExpireDuration(Integer.valueOf(document.get(NotificationTemplateTerm.EXPIRE_DURATION)));
+				ett.setExpireDuration(GetterUtil.get(document.get(NotificationTemplateTerm.EXPIRE_DURATION), 0));
 				ett.setUserUrlPattern(document.get(NotificationTemplateTerm.USER_URL_PARTTERN));
 				ett.setGuestUrlPattern(document.get(NotificationTemplateTerm.GUEST_URL_PARTTERN));
 				ett.setInterval(document.get(NotificationTemplateTerm.INTERVAL));

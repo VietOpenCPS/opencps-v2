@@ -252,4 +252,68 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 		}
 	}
 
+	@Override
+	public Response create(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, NotificationtemplateInputModel input) {
+		NotificationTemplateInterface actions = new NotificationTemplateActions();
+		NotificationtemplateModel notificationtemplateModel = new NotificationtemplateModel();
+
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			Notificationtemplate notificationtemplate = actions.create(user.getUserId(), groupId, input.getNotificationType(),
+					input.getEmailBody(), input.getEmailSubject(), input.getSendEmail(), input.getTextMessage(),
+					input.getTextSMS(), input.getExpireDuration(), input.getUserUrlPattern(),
+					input.getGuestUrlPattern(), input.getInterval(), input.getGrouping(), serviceContext);
+
+			notificationtemplateModel = NotificationTemplateUtils.mapperNotificationtemplateModel(notificationtemplate);
+
+			return Response.status(200).entity(notificationtemplateModel).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			if (e instanceof UnauthenticationException) {
+
+				_log.error(e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+
+			}
+
+			if (e instanceof UnauthorizationException) {
+
+				_log.error(e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			}
+
+			if (e instanceof NoSuchUserException) {
+
+				_log.error(e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+
+			return Response.status(500).build();
+		}
+	}
+
 }
