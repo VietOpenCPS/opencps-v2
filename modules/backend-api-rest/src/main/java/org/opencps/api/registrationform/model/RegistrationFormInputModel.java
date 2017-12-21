@@ -8,6 +8,7 @@
 
 package org.opencps.api.registrationform.model;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -76,8 +77,10 @@ public class RegistrationFormInputModel {
 	@FormParam(value = "fileEntryId")
     protected Long fileEntryId;
 	@FormParam(value = "isNew")
+	@DefaultValue(value = "true")
     protected Boolean isNew;
 	@FormParam(value = "removed")
+	@DefaultValue(value = "false")
     protected Boolean removed;
 
     /**

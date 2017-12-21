@@ -54,6 +54,8 @@ public interface PaymentFileActions {
 	 */
 	public PaymentFile getEpaymentProfile(long dossierId, String referenceUid);
 	
+	public PaymentFile getPaymentFile(long dossierId, String referenceUid);
+	
 	/**
 	 * Update info EpaymentProfile of DossierId and referenceUid
 	 * 

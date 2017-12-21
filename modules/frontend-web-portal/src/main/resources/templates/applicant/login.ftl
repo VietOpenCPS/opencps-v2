@@ -3,26 +3,34 @@
 </#if>
 
 <#if isSignedIn == false>
-<div class="hidden-xs hidden-sm">
+<div class="">
 	<form action="${loginURL}" method="post" class="eq-height-lg" name="login_form">
 		<input name="${portletNamespace}action" id="input_action" type="hidden"/>
-		<div class="">
-			<input type="text" class="form-control input-sm" name="${portletNamespace}login" id="input_login" placeholder="Tài khoản đăng nhập" title="Tài khoản đăng nhập">
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="">
+					<input type="text" class="form-control input-sm" name="${portletNamespace}login" id="input_login" placeholder="Tài khoản đăng nhập" title="Tài khoản đăng nhập">
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="">
+					<input type="password" class="form-control input-sm" name="${portletNamespace}password" id="input_password" placeholder="Mật khẩu" title="Mật khẩu">
+				</div>
+			</div>
 		</div>
-		<div class="">
-			<input type="password" class="form-control input-sm" name="${portletNamespace}password" id="input_password" placeholder="Mật khẩu" title="Mật khẩu">
+		<div class="row">
+			<div class="col-sm-6">
+				
+				<a href="/forgotten-password" class="text-hover-blue">Quên mật khẩu?</a>
+				
+			</div>
+			<div class="col-sm-6 text-right">
+				<button class="btn btn-active btn-sm" type="button" id="btn-register-applicant">Đăng ký</button>
+				<button class="btn btn-active btn-sm">Đăng nhập</button>
+			</div>
 		</div>
-		<div class="">
-			<button class="btn btn-active btn-sm">Đăng nhập</button>
-		</div>
+		
 	</form>
-	<div class="row MT5">
-		<div class="col-xs-12 col-sm-5">
-		</div>
-		<div class="col-xs-12 col-sm-5 P0">
-			<a href="/forgotten-password" class="text-hover-blue">Quên mật khẩu?</a>
-		</div>
-	</div>
 </div>
 <div class="visible-xs visible-sm">
 	<a href="#">Đăng nhập</a>
@@ -48,3 +56,9 @@
 	</div>
 </div>
 </#if>
+
+<script type="text/javascript">
+	$("#btn-register-applicant").click(function () {
+		window.location.href = "http://dangkiemlaprap.mt.gov.vn/web/cong-tiep-nhan/register";
+	});
+</script>
