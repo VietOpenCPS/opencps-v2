@@ -166,7 +166,7 @@ public interface PaymentFileManagement {
 	public Response updatePaymentFileApproval(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, 
-			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
 			@ApiParam(value = "reference of paymentFile", required = true) @PathParam("referenceUid") String referenceUid,
 			@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file,
 			@ApiParam(value = "Metadata of PaymentFile") @Multipart("approveDatetime") String approveDatetime,

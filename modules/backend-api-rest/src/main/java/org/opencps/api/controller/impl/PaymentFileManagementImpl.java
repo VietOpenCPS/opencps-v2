@@ -340,8 +340,6 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					paymentMethod, confirmPayload, dataHandler.getName(), 0L, dataHandler.getInputStream(),
 					serviceContext);
 			
-			System.out.println("/////////////////////////////////// Done " + paymentFile.getPaymentFileId());
-
 			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 
 			return Response.status(200).entity(result).build();
@@ -360,11 +358,16 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	 */
 	@Override
 	public Response updatePaymentFileApproval(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long id, String referenceUid, Attachment file,
+			Locale locale, User user, ServiceContext serviceContext, String id, String referenceUid, Attachment file,
 			String approveDatetime, String accountUserName, String govAgencyTaxNo, String invoiceTemplateNo,
 			String invoiceIssueNo, String invoiceNo) {
 		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		long dossierId = GetterUtil.getLong(id);
+
+		// TODO get Dossier by referenceUid if dossierId = 0
+		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
 
 		try {
 
@@ -375,11 +378,11 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			DataHandler dataHandler = file.getDataHandler();
 
 			PaymentFileActions action = new PaymentFileActionsImpl();
-
-			PaymentFile paymentFile = action.updateFileApproval(groupId, id, referenceUid, approveDatetime,
+			
+			PaymentFile paymentFile = action.updateFileApproval(groupId, dossierId, referenceUid, approveDatetime,
 					accountUserName, govAgencyTaxNo, invoiceTemplateNo, invoiceIssueNo, invoiceNo,
 					dataHandler.getName(), 0L, dataHandler.getInputStream(), serviceContext);
-
+			
 			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 
 			return Response.status(200).entity(result).build();
