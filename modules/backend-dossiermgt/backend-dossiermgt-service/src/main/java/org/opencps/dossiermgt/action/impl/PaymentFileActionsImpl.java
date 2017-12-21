@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 public class PaymentFileActionsImpl implements PaymentFileActions{
 
@@ -75,10 +77,22 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 			String govAgencyName, String applicantName, String applicantIdNo, String paymentFee, long paymentAmount,
 			String paymentNote, String epaymentProfile, String bankInfo, ServiceContext serviceContext)
 			throws PortalException {
-
-		return PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId, referenceUid,
-				govAgencyCode, govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount, paymentNote,
-				epaymentProfile, bankInfo, serviceContext);
+		_log.info("boom boom");
+		if(Validator.isNull(referenceUid)){
+			referenceUid = PortalUUIDUtil.generate();
+		}
+		
+		try {
+			return PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId, referenceUid,
+					govAgencyCode, govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount, paymentNote,
+					epaymentProfile, bankInfo, serviceContext);
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+			_log.info("boom boom");
+			_log.info(e);
+			e.printStackTrace();
+			throw new PortalException();
+		}
 
 	}
 
@@ -129,6 +143,12 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 	public PaymentFile getEpaymentProfile(long dossierId, String referenceUid) {
 
 		return PaymentFileLocalServiceUtil.getEpaymentProfile(dossierId, referenceUid);
+	}
+	
+	@Override
+	public PaymentFile getPaymentFile(long dossierId, String referenceUid) {
+
+		return PaymentFileLocalServiceUtil.getPaymentFile(dossierId, referenceUid);
 	}
 
 	/**

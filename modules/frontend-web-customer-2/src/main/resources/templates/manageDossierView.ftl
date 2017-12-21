@@ -31,8 +31,7 @@
 				        	<span>Tên thủ tục</span>
 				        	<span class="pull-right align-middle PT5 text-light-gray">
 										<i class="fa fa-sort" aria-hidden="true"></i>
-									</span></br>
-									<span>Cơ quan quản lý</span>		
+									</span>		
 				        </th>
 				        <th class="fieldDossier text-center hover-pointer PL0 PR5" sort="dossierId" sort-type="desc">
 				        	<span>Mã hồ sơ </span>

@@ -33,7 +33,7 @@
 		</div>
 
 		<script type="text/x-kendo-template" id="registration_template_template">
-			<li class="clearfix" data-regTemplateId="#:id#" data-govAgc="#:govAgencyCode#" data-formNo="#:formNo#" data-formName="#:formName#" style="padding: 10px 0 10px 5px;"  aria-selected="true">
+			<li class="clearfix" data-regTemplateId="#:id#" data-govAgc="#:govAgencyCode#" data-multiple="#:multiple#" data-formNo="#:formNo#" data-formName="#:formName#" style="padding: 10px 0 10px 5px;"  aria-selected="true">
 				<div class="P0 col-xs-12 col-sm-12 registration-template-item" data-pk="#: id #">
 					<strong class="col-sm-11 PL0 PR5">#: formName #</strong>
 					<a class="btn-group deleteItem col-sm-1 P0" registrationId="#:id#" href="javascript:;" title="Xóa">
@@ -120,7 +120,8 @@
 			pageSize: 10,
 			serverPaging: false,
 			serverSorting: false,
-			serverFiltering: false
+			serverFiltering: false,
+			sort: { field: "createDate", dir: "desc" }
 		});
 
 		// var firstTimeLoad = true;
@@ -136,21 +137,22 @@
 					$("#registration_template_pager .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"})
 			},
 			change: function() {
-				var registrationTemplateId, registrationformNo, registrationformName, registrationGovagency;
+				var registrationTemplateId, registrationformNo, registrationformName, registrationGovagency, registrationMultiple;
 				var index = this.select().index();
 				var dataItem = this.dataSource.view()[index];
 				registrationTemplateId = this.select().attr("data-regTemplateId");
 				registrationformNo = this.select().attr("data-formNo");
 				registrationformName = this.select().attr("data-formName");
 				registrationGovagency = this.select().attr("data-govAgc");
+				registrationMultiple = this.select().attr("data-multiple");
 				$("#btn_save_registration_template").attr("data-pk", dataItem.id);
-				loadregistrationTempDetail(registrationTemplateId, registrationformNo, registrationformName,registrationGovagency);
+				loadregistrationTempDetail(registrationTemplateId, registrationformNo, registrationformName,registrationGovagency,registrationMultiple);
 				deleteRegistrationTemp();
 				$("#registration_template_pager .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"})
 			}
 		});
 		var deleteRegistrationTemp = function () {
-			$(".deleteItem").click(function(e) {
+			$(".deleteItem").unbind().click(function(e) {
 				e.preventDefault();
 				event.stopPropagation();
 				var itemId = $(e.currentTarget).attr("registrationId");
@@ -162,14 +164,12 @@
 						dataType: "json",
 						headers: {"groupId": ${groupId}},
 						success: function(result) {
-							options.success(result);
 							notification.show({
-								message: "Yêu cầu được thực hiện thành công"
+								message: "Xóa mẫu thành phần hồ sơ thành công!"
 							}, "success");
 							$("#registration_template_list_view").getKendoListView().dataSource.read();
 						},
 						error: function(result) {
-							options.error(result);
 							notification.show({
 								message: "Xảy ra lỗi, vui lòng thử lại"
 							}, "error");
@@ -231,14 +231,15 @@
 				formName : "",
 				formScript: "",
 				formReport: "",
-				sampleData:""
+				sampleData:"",
+				multiple: false
 			});
 			kendo.bind($("#registration_template_part_model"), viewModel);
 			$("#btn_save_registration_template_part").attr("data-pk", "");
 		});
 // ---------------------
-	  var loadregistrationTempDetail = function(registrationTemplateId,registrationformNo,registrationformName,registrationGovagency){
-	    $("#btn_save_registration_template_part").attr("data-pk", registrationTemplateId);
+	  var loadregistrationTempDetail = function(registrationTemplateId,registrationformNo,registrationformName,registrationGovagency,registrationMultiple){
+	    
 	    var formScript, formReport, sampleData;
 	    $.ajax({
 	      url: "${api.server}" + "/registrationtemplates/" + registrationTemplateId+"/formscript",
@@ -248,7 +249,7 @@
 	      headers: {"groupId": ${groupId}},
 	      async: false,
 	      success: function(result) {
-	        formScript = result.value;
+	        formScript = result.formScript;
 	      }
 	    });
 	    $.ajax({
@@ -259,7 +260,7 @@
 	      headers: {"groupId": ${groupId}},
 	      async: false,
 	      success: function(result) {
-	        formReport = result.value
+	        formReport = result.formReport;
 	      }
 	    });
 	    $.ajax({
@@ -270,7 +271,7 @@
 	      headers: {"groupId": ${groupId}},
 	      async: false,
 	      success: function(result) {
-	        sampleData = result.value;
+	        sampleData = result.sampleData;
 	      }
 	    });
 
@@ -279,11 +280,17 @@
 	      formName: registrationformName,
 	      formScript: formScript,
 	      formReport: formReport,
-	      sampleData: sampleData,
+	      sampleData: sampleData
 	    });
 
 	    kendo.bind($("#registration_template_part_model"), viewModel);
 	    $("#govAgencyDetail").data("kendoComboBox").value(registrationGovagency);
+	    $("#btn_save_registration_template_part").attr("data-pk", registrationTemplateId);
+	    var multipleDetail;
+	    if (registrationMultiple == "false") {
+	    	multipleDetail = false
+	    } else {multipleDetail= true};
+	    $("#required").prop( "checked", multipleDetail);
 	  };
 
 </script>

@@ -121,7 +121,7 @@ public class RegistrationUtils {
 			model.setAddress(registration.getAddress());
 			model.setCityCode(registration.getCityCode());
 			model.setCityName(registration.getCityName());
-			model.setDistrictCode(registration.getDistrictName());
+			model.setDistrictCode(registration.getDistrictCode());
 			model.setWardCode(registration.getWardCode());
 			model.setWardName(registration.getWardName());
 			model.setContactName(registration.getContactName());

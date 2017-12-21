@@ -39,7 +39,8 @@ public interface RegistrationFormManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	public Response deleteFormbyRegId(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id,
+			@Context ServiceContext serviceContext, 
+			@PathParam("id") long id,
 			@PathParam("referenceUid") String referenceUid);
 
 	@GET

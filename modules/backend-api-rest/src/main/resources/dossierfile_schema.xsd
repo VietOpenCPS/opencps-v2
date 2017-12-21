@@ -20,6 +20,9 @@
 			<xsd:element name="signInfo" type="xsd:string" minOccurs="0" />
 			<xsd:element name="removed" type="xsd:boolean" minOccurs="0" />
 			<xsd:element name="eForm" type="xsd:boolean" minOccurs="0" />
+			<xsd:element name="formData" type="xsd:string" minOccurs="0" />
+			<xsd:element name="formScript" type="xsd:string" minOccurs="0" />
+			<xsd:element name="formReport" type="xsd:string" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 

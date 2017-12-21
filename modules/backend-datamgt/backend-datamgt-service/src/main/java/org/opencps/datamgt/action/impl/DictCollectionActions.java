@@ -542,9 +542,9 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 				hits = DictItemGroupLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 				
-				for (Document doc : hits.toList()) {
+				/*for (Document doc : hits.toList()) {
 					_log.info(doc);
-				}
+				}*/
 				
 				result.put("data", hits.toList());
 

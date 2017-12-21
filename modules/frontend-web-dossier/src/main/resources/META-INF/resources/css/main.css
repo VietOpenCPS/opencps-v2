@@ -1,5 +1,44 @@
- html .portlet-boundary_frontend_web_dossier_portlet_FrontendWebDossierPortlet_ .portlet-content {
+html .portlet-boundary_frontend_web_dossier_portlet_FrontendWebDossierPortlet_ .portlet-content {
 	background: transparent;
     border: 0;
     border-radius: 0;
- }
+}
+.small-btn-x {
+    width: 26px !important;
+    height: 26px !important;
+}
+.opencps_list_border_style .card {
+    border-radius: 0;
+    border: 0;
+    margin: 0;
+}
+table.table thead th {
+    white-space: normal !important;
+}
+body .danhSachHoSoTable__class table.table th:nth-child(1) {
+  width: 40px;
+}
+body .danhSachHoSoTable__class table.table th:nth-child(2) {
+  width: 40px;
+  padding: 0;
+}
+body .danhSachHoSoTable__class table.table th:nth-child(3) {
+  width: 240px;
+}
+body .danhSachHoSoTable__class table.table th:nth-child(4) {
+  width: 110px;
+}
+body .danhSachHoSoTable__class table.table th:nth-child(5) {
+  width: 125px;
+  padding: 0;
+}
+body .danhSachHoSoTable__class table.table th:nth-child(6) {
+  width: 120px;
+}
+body .danhSachHoSoTable__class table.table th:nth-child(7) {
+  width: 100px;
+}
+body .danhSachHoSoTable__class table.table th:nth-child(8) {
+  width: 90px;
+  padding: 0;
+}
