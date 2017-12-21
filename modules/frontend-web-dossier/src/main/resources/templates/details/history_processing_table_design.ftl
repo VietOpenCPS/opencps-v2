@@ -10,7 +10,8 @@
 			</p>
 			<p>Ý kiến: {{ props.item.content }}</p>
 			
-			<p
+			<p	
+				class="history__download__link"
 				v-for="file in props.item.payload.files"
 				:key="file.dossierFileId"
 				@click.prevent.stop="downloadFile(file.dossierFileId)"
@@ -22,3 +23,12 @@
 		</td>
 	</template>
 </div>
+
+<style>
+	.history__download__link:hover{
+	background-color: whitesmoke;
+	cursor: pointer;
+	font-family: 'Roboto-Bold';
+	border-radius: 4px;
+	}
+</style>
