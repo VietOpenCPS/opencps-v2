@@ -195,6 +195,6 @@ public interface RegistrationTemplatesManagement {
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "id of DeliverableType", required = true) @PathParam("id") long registrationTemplatesId,
-			@ApiParam(value = "sampledata of  registrationTemplate", required = true) @FormParam("sampledata") String sampledata);
+			@ApiParam(value = "sampledata of  registrationTemplate", required = true) @FormParam("sampleData") String sampledata);
 
 }

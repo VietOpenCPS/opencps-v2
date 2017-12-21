@@ -139,7 +139,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	}
 
 	@Override
-	public Response delete(Long id) {
+	public Response delete(long id) {
 		try {
 			RegistrationActions action = new RegistrationActionsImpl();
 			action.delete(id);
