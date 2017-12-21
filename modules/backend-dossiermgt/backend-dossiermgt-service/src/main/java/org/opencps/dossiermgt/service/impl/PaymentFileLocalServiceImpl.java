@@ -350,10 +350,15 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	 * @param
 	 * @return PaymentFile
 	 */
+	//wtf?..... clgt?
 	public PaymentFile getEpaymentProfile(long dossierId, String referenceUid) {
 
 		return (PaymentFile) paymentFilePersistence.findByF_DUID(dossierId, referenceUid);
 
+	}
+	
+	public PaymentFile getPaymentFile(long dossierId, String referenceUid){
+		return paymentFilePersistence.fetchByD_RUID(dossierId, referenceUid);
 	}
 
 	/**

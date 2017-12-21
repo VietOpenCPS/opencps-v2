@@ -2,6 +2,7 @@ package org.opencps.api.controller.util;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.opencps.api.paymentfile.model.PaymentFileInputModel;
@@ -20,6 +21,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -43,10 +45,30 @@ public class PaymentFileUtils {
 		for (Document doc : documents) {
 			PaymentFileModel model = new PaymentFileModel();
 
-			// model.setCreateDate(APIDateTimeUtils.convertDateToString(doc.getDate(PaymentFileTerm.CREATE_DATE)));
-			// model.setModifiedDate(APIDateTimeUtils.convertDateToString(doc.getDate(PaymentFileTerm.MODIFIED_DATE)));
-			model.setCreateDate(doc.get(PaymentFileTerm.CREATE_DATE));
-			model.setModifiedDate(doc.get(PaymentFileTerm.MODIFIED_DATE));
+			String strCreateDate = doc.get(Field.CREATE_DATE);
+
+			Date createDate = null;
+
+			if (Validator.isNotNull(strCreateDate)) {
+				createDate = APIDateTimeUtils.convertStringToDate(strCreateDate, "yyyyMMddHHmmss");
+			}
+
+			model.setCreateDate(createDate != null
+					? APIDateTimeUtils.convertDateToString(createDate, APIDateTimeUtils._TIMESTAMP) : strCreateDate);
+
+			String strModifiedDate = doc.get(Field.MODIFIED_DATE);
+
+			Date modifiedDate = null;
+
+			if (Validator.isNotNull(strModifiedDate)) {
+				modifiedDate = APIDateTimeUtils.convertStringToDate(strModifiedDate, "yyyyMMddHHmmss");
+			}
+
+			model.setModifiedDate(modifiedDate != null
+					? APIDateTimeUtils.convertDateToString(modifiedDate, APIDateTimeUtils._TIMESTAMP)
+					: strModifiedDate);
+			// model.setCreateDate(doc.get(PaymentFileTerm.CREATE_DATE));
+			// model.setModifiedDate(doc.get(PaymentFileTerm.MODIFIED_DATE));
 			model.setReferenceUid(doc.get(PaymentFileTerm.REFERENCE_UID));
 			model.setGovAgencyCode(doc.get(PaymentFileTerm.GOV_AGENCY_CODE));
 			model.setGovAgencyName(doc.get(PaymentFileTerm.GOV_AGENCY_NAME));
