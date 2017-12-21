@@ -215,13 +215,10 @@
                             <v-expansion-panel-content v-for="(item,i) in stepModel.createFiles" v-if="item" :key="item.dossierPartId">
                             <div slot="header" @click="showAlpacaJSFORM(item)">{{i + 1}}. {{item.partName}} <small v-if="item.eform">( Form trực tuyến )</small> </div>
                             <div slot="header" class="text-right">
-                                <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="viewDossierFileVersionArchive(item)">
-                                    <v-icon>archive</v-icon>
-                                </v-btn>
                                 <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="singleFileUpload(item)">
                                     <v-icon>file_upload</v-icon>
                                 </v-btn>
-                                <v-btn color="primary" fab small dark class="small-btn-x mx-0 my-0" v-on:click.native="viewDossierFileResult(item)">
+                                <v-btn color="primary" fab small dark class="small-btn-x mx-0 my-0" v-on:click.native="viewDossierFileResult(item, i)">
                                     {{item.counter}}
                                 </v-btn>
                                 
@@ -230,7 +227,7 @@
                                 </v-btn>
                             </div>
 
-                            <input type="file" :id="'inputfile_'+item.dossierPartId" style="display:none" v-on:change="singleFileUploadInput($event, item)"/>
+                            <input type="file" :id="'inputfile_'+item.dossierPartId" style="display:none" v-on:change="singleFileUploadInput($event, item, i)"/>
                             <div class="text-right pr-4" v-if="item.eform">
                                 <v-btn color="primary" 
                                     :loading="loadingAlpacajsForm"

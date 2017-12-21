@@ -5,8 +5,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		pk: 1,
 		groupid: themeDisplay.getScopeGroupId(),
 		data: {
+			stageScroll: 0,
 			detailPage: false,
 			viewmore: false,
+			showmore: false,
 			detailModel: {
 
 			},
@@ -35,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				'events': {
 					filterChange: function (item) {
 						var vm = this;
+						
 						vm.listgroupFilterselected = item.id;
 						vm._inipaymentList(false);
 						vm.detailPage = false;
@@ -99,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			'paymentConfirm': {
 				'id': 'paymentConfirm',
 				'name': 'paymentConfirm',
-				'cssClass': 'btn--flat ml-0 pl-0 h-icon-xs',
+				'cssClass': 'btn--flat ml-0 pl-0',
 				'label': 'Xác nhận',
 				'type': 'button',
 				'left_icon': 'done_all',
@@ -107,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				'events': {
 					paymentConfirmAction: function () {
 						var vm = this;
-console.log(vn);
+
 						if (vm.paymentListselected.length === 0) {
 							alert('Chưa chọn phiếu thanh toán nào?. ');
 							return;
@@ -134,7 +137,6 @@ console.log(vn);
 						})
 							.then((dialog) => {
 
-
 								for (var i = vm.paymentListItems.length - 1; i >= 0; i--) {
 									for (var j = 0; j < vm.paymentListselected.length; j++) {
 
@@ -144,12 +146,37 @@ console.log(vn);
 										if (currentItem != null && currentItemSelected != null
 											&& currentItem.dossierNo === currentItemSelected.dossierNo) {
 
+											var url = '/o/rest/v2/dossiers/' + vm.paymentListItems[i].dossierId + '/payments/' + vm.paymentListItems[i].dossierId + '/confirm';
+											
+											/* TODO: confirmPayload tam thoi khong truyen len*/
+											var paramsBuilder = {
+												confirmNote: vm.paymentListItems[i].confirmNote,
+												paymentMethod: vm.paymentMethodSearch,
+												confirmPayload: ""
+											};
+											
+											const config = {
+												
+												headers: {'groupId': themeDisplay.getScopeGroupId()}
+												
+											};
+											
+											axios.put(url, paramsBuilder, config).then(function (response) {
+												var serializable = response.data;
+
+												/*TODO: put success */
+											})
+												.catch(function (error) {
+													console.log(error);
+												});
+											
 											vm.paymentListItems.splice(i, 1);
 
 										}
 
 									}
 								}
+								
 								vm.paymentListselected = [];
 								dialog.close();
 							})
@@ -162,7 +189,7 @@ console.log(vn);
 						console.log(vm.paymentMethodSearch);
 
 						var labelBtn = 'Xác nhận';
-
+						console.log("call333333");
 						var dateConfirmPayment = new Date();
 						var month = dateConfirmPayment.getMonth() + 1;
 						var day = dateConfirmPayment.getDate();
@@ -180,6 +207,30 @@ console.log(vn);
 						})
 							.then((dialog) => {
 
+								var url = '/o/rest/v2/dossiers/' + vm.paymentListItems[index].dossierId + '/payments/' + vm.paymentListItems[index].dossierId + '/confirm';
+								
+								/* TODO: confirmPayload tam thoi khong truyen len*/
+								var paramsBuilder = {
+									confirmNote: vm.paymentListItems[index].confirmNote,
+									paymentMethod: vm.paymentMethodSearch,
+									confirmPayload: ""
+								};
+								
+								const config = {
+									
+									headers: {'groupId': themeDisplay.getScopeGroupId()}
+									
+								};
+								
+								axios.put(url, paramsBuilder, config).then(function (response) {
+									var serializable = response.data;
+
+									/*TODO: put success */
+								})
+									.catch(function (error) {
+										console.log(error);
+									});
+								
 								vm.paymentListItems.splice(index, 1);
 
 								dialog.close();
@@ -222,6 +273,7 @@ console.log(vn);
 					_inipaymentList: function (append) {
 
 						var vm = this;
+						
 						vm.viewmore = true;
 						this.paymentListheaders = [
 							{
@@ -261,10 +313,23 @@ console.log(vn);
 								value: 'action'
 							}
 						];
+						
+						var paramsBuilder = {keyword: vm.keywordsSearch};
+						
+						if (vm.listgroupFilterselected === 4){
+							// TODO
+							paramsBuilder['statusTEMP'] = vm.listgroupFilterselected;
+						} else {
+							paramsBuilder['status'] = vm.listgroupFilterselected;
+						}
+						
+						const config = {
+							params: paramsBuilder,
+							headers: {'groupId': themeDisplay.getScopeGroupId()}
+							
+						};
 
-						const config = {};
-
-						var url = '/o/frontendwebpayment/json/payment_files.json';
+						var url = '/o/rest/v2/dossiers/paymentfiles';
 
 						axios.get(url, config).then(function (response) {
 							var serializable = response.data;
@@ -283,6 +348,8 @@ console.log(vn);
 						})
 							.catch(function (error) {
 								console.log(error);
+								vm.paymentListItems = [];
+								vm.viewmore = false;
 							});
 
 					},
@@ -292,8 +359,38 @@ console.log(vn);
 
 						vm.detailModel = vm.paymentListItems[index];
 						vm.detailModel.index = index;
+						
+						// TODO: call API lay file
+						var url ="/o/rest/v2/employees/1401/photo" ;
+						vm._showFile({
+							config : {
+								headers: {'groupId': themeDisplay.getScopeGroupId()},
+								responseType: 'blob'
+							},
+							url : url
+						});
 
 						window.scrollBy(0, -99999);
+					},
+					_showFile: function (options) {
+						
+						axios.get(options.url, options.config).then(function (response) {
+							
+							var url = window.URL.createObjectURL(response.data);
+							var iFrame = document.getElementById("objectView2");
+							
+							iFrame.innerHTML = '<iframe src="'+url+'" width="100%" height="100%"> </iframe>';
+						})
+							.catch(function (error) {
+								console.log(error);
+							});
+						
+					},
+					paggingPaymentList: function(){
+						this.start = this.start + 8;
+						this.end = this.end + 8;
+						
+						this._inipaymentList(true);
 					},
 					onScroll(e) {
 						var onBottom = window.pageYOffset || document.documentElement.scrollTop;
@@ -301,7 +398,8 @@ console.log(vn);
 						var btn_view_more = document.getElementById("btn_view_more");
 
 						if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-							vm._inipaymentList(true);
+							stageScroll = btn_view_more.offsetTop - 300;
+							//vm._inipaymentList(true);
 						}
 
 					}

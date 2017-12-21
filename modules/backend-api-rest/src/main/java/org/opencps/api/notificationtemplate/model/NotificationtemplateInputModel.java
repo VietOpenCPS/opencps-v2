@@ -50,7 +50,8 @@ import javax.xml.bind.annotation.XmlType;
     "userUrlPattern",
     "guestUrlPattern",
     "interval",
-    "grouping"
+    "grouping",
+    "notificationType"
 })
 @XmlRootElement(name = "NotificationtemplateInputModel")
 public class NotificationtemplateInputModel {
@@ -80,7 +81,8 @@ public class NotificationtemplateInputModel {
     protected String interval;
     @FormParam(value = "grouping")
     protected String grouping;
-
+    @FormParam(value = "notificationType")
+    protected String notificationType;
     /**
      * Gets the value of the sendEmail property.
      * 
@@ -247,6 +249,14 @@ public class NotificationtemplateInputModel {
 
 	public void setGrouping(String grouping) {
 		this.grouping = grouping;
+	}
+
+	public String getNotificationType() {
+		return notificationType;
+	}
+
+	public void setNotificationType(String notificationType) {
+		this.notificationType = notificationType;
 	}
 
 }
