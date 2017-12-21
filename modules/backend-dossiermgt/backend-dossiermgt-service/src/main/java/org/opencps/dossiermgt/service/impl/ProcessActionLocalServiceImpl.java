@@ -371,6 +371,11 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	public List<ProcessAction> getByActionCode(long groupId, String actionCode) throws PortalException {
 		return processActionPersistence.findByGI_AC(groupId, actionCode);
 	}
+	
+	public List<ProcessAction> getByActionCode(long groupId, String actionCode, long serviceProcessId) throws PortalException {
+		return processActionPersistence.findByGI_AC_SP(groupId, actionCode, serviceProcessId);
+	}
+
 
 	public ProcessAction fetchBySPI_PRESC_AEV(long serviceProcessId, String preStepCode, String autoEvent) {
 		return processActionPersistence.fetchBySPI_PRESC_AEV(serviceProcessId, preStepCode, autoEvent);
@@ -387,5 +392,14 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	public List<ProcessAction> getProcessActionByG_SPID_PRESC(long groupId, long serviceProcessId, String preStepCode)
 			throws PortalException {
 		return processActionPersistence.findByG_SPID_PRESC(groupId, serviceProcessId, preStepCode);
+	}
+	
+	public List<ProcessAction> getByGroupAndAutoEvent(long groupId, String autoEvent, int start, int end) {
+		
+		if (groupId == 0)
+			return processActionPersistence.findByPSC_AEV(autoEvent, start, end);
+		else 
+			return processActionPersistence.findByPSC_AEV_GI(groupId,autoEvent, start, end);
+
 	}
 }

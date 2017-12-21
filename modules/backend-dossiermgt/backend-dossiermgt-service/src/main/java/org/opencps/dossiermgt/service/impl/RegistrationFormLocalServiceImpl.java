@@ -90,6 +90,38 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		return registrationFormPersistence.update(object);
 	}
 	
+	public RegistrationForm updateRegistrationForm(long groupId, long registrationId, String referenceUid, String formNo,
+			String formName, String formData, String formScript, String formReport, long fileEntryId, boolean isNew,
+			boolean removed, ServiceContext serviceContext)throws PortalException {
+		long userId = serviceContext.getUserId();
+
+		Date now = new Date();
+
+		User userAction = userLocalService.getUser(userId);
+
+		RegistrationForm object = registrationFormPersistence.fetchByG_REGID_REFID(registrationId, referenceUid);
+
+		/// Add audit fields
+		object.setGroupId(groupId);
+		object.setCreateDate(now);
+		object.setModifiedDate(now);
+		object.setUserId(userAction.getUserId());
+
+		// Add other fields
+		object.setRegistrationId(registrationId);
+		object.setReferenceUid(referenceUid);
+		object.setFormNo(formNo);
+		object.setFormName(formName);
+		object.setFormData(formData);
+		object.setFormScript(formScript);
+		object.setFormReport(formReport);
+		object.setFileEntryId(fileEntryId);
+		object.setIsNew(isNew);
+		object.setRemoved(removed);
+
+		return registrationFormPersistence.update(object);
+	}
+	
 	public RegistrationForm deleteRegistrationForm(long registrationId, String referenceUid){
 		
 		RegistrationForm registrationForm = findFormbyRegidRefid(registrationId, referenceUid);

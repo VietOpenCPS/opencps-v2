@@ -20,13 +20,13 @@
 			<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
 			<xsd:element name="registrationState" type="xsd:int" minOccurs="0" />
 			<xsd:element name="registrationClass" type="xsd:string" minOccurs="0" />
-			<xsd:element name="submitting" type="xsd:boolean" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
 	<xsd:element name="RegistrationDetailModel">
 		<xsd:complexType>
 			<xsd:sequence>
+				<xsd:element name="registrationId" type="xsd:long" minOccurs="0" />
 				<xsd:element name="applicantName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="applicantIdType" type="xsd:string" minOccurs="0" />
 				<xsd:element name="applicantIdNo" type="xsd:string" minOccurs="0" />
@@ -79,6 +79,37 @@
 			<xsd:sequence>
 				<xsd:element name="total" type="xsd:int" minOccurs="0" />
 				<xsd:element name="data" type="RegistrationModel"  minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="RegistrationDetailResultModel">
+		<xsd:complexType >
+			<xsd:sequence>
+				<xsd:element name="registrationId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="userId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="userName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdType" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="address" type="xsd:string" minOccurs="0" />
+				<xsd:element name="cityCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="cityName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="districtCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="districtName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="wardCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="wardName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="contactName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="contactTelNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="contactEmail" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="registrationState" type="xsd:int" minOccurs="0" />
+				<xsd:element name="registrationClass" type="xsd:string" minOccurs="0" />
+				<xsd:element name="submitting" type="xsd:boolean" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>

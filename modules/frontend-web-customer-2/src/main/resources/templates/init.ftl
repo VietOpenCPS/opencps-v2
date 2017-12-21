@@ -30,5 +30,8 @@
 	<#assign dossierPartNo = (Request.dossierPartNo)!>
 	<#assign dossierTemplateNo = (Request.dossierTemplateNo)!>
 	<#assign constants = (Request.constants)!>
+	<#assign resCancelling = (Request.resCancelling)!>
+	<#assign sendAdd = (Request.sendAdd)!>
+	<#assign lblApplicantNote = (Request.lblApplicantNote)!>
 	
 </#if>
