@@ -641,7 +641,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					"chips": true,
 					"deletable_chips": true,
 					"loading": false,
-					"no-data-text": "Lua chon selected",
+					"no_data_text": "Lua chon selected",
 					"items": [],
 					"onLoad": "_initServiceInfoFilterData",
 					"onChange": "_filterDanhSachHoSoOnchange($event)",
@@ -698,7 +698,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					"chips": true,
 					"deletable_chips": true,
 					"loading": false,
-					"no-data-text": "Lua chon selected",
+					"no_data_text": "Lua chon selected",
 					"items": [],
 					"onLoad": "_initApplicantNameFilterData",
 					"onChange": "_applicantFilterDanhSachHoSoOnchange($event)",
@@ -854,6 +854,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'id': 'traCuuHoSoTable',
 					'name': 'traCuuHoSoTable',
 					'type': 'table',
+					'no_data_text': 'Không tìm thấy hồ sơ nào!',
 					'item_key': 'dossierNo',
 					'headers': 'headers',
 					'template': 'tra_cuu_hoso_table_template',
@@ -891,7 +892,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								},
 								{
 									text: 'Số chứng chỉ, ngày cấp',
-									align: 'center',
+									align: 'left',
 									sortable: false,
 									value: 'action'
 								},
@@ -903,7 +904,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								},
 								{
 									text: 'Ghi chú',
-									align: 'center',
+									align: 'left',
 									sortable: true,
 									value: 'lastActionNote'
 								}
@@ -973,6 +974,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'id': 'danhSachHoSoTable',
 					'name': 'danhSachHoSoTable',
 					'type': 'table',
+					'no_data_text': 'Không tìm thấy hồ sơ nào!',
 					'cssClass': 'danhSachHoSoTable__class',
 					'select_all': true,
 					'item_key': 'dossierId',
@@ -1014,7 +1016,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								},
 								{
 									text: 'Số chứng chỉ, ngày cấp',
-									align: 'center',
+									align: 'left',
 									sortable: false,
 									value: 'action'
 								},
@@ -1026,7 +1028,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								},
 								{
 									text: 'Ghi chú',
-									align: 'center',
+									align: 'left',
 									sortable: true,
 									value: 'lastActionNote'
 								}
@@ -1360,7 +1362,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                     "chips": true,
                     "deletable_chips": true,
                     "loading": false,
-                    "no-data-text": "Lua chon selected",
+                    "no_data_text": "Lua chon selected",
                     "items": [],
                     'onLoad': '_initprocessAssignUserId',
                     'events': {
