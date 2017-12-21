@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.opencps.dossiermgt.action.RegistrationActions;
+import org.opencps.dossiermgt.action.RegistrationLogActions;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.RegistrationLog;
@@ -63,8 +64,19 @@ public class RegistrationActionsImpl implements RegistrationActions {
 		}
 
 		// add registrationLog
+		String content = "";
+		RegistrationLogActions registrationLogActions = new RegistrationLogActionsImpl();
+		List<RegistrationLog> lstRegistrationLog = registrationLogActions.getRegistrationLogbyId(groupId, registrationId);
+		if(lstRegistrationLog.size() == 0){
+			content = "1";
+		}else{
+			content = String.valueOf(Integer.valueOf(lstRegistrationLog.get(0).getContent()) + 1);
+		}
+		
 		if (Validator.isNotNull(lstRegistrationFormchange)) {
-			addLog("", groupId, userId, registrationId, "", lstRegistrationFormchange);
+			if(registrationState == 2 || registrationState == 3){
+				addLog("", groupId, userId, registrationId, content, lstRegistrationFormchange);
+			}
 		}
 
 		// create referenceUid
