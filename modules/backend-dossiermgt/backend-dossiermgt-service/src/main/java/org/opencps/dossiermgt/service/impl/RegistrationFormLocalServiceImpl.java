@@ -18,6 +18,7 @@ import aQute.bnd.annotation.ProviderType;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.base.RegistrationFormLocalServiceBaseImpl;
@@ -64,6 +65,8 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		Date now = new Date();
 
 		User userAction = userLocalService.getUser(userId);
+		
+		referenceUid = UUID.randomUUID().toString();
 
 		long registrationFormId = counterLocalService.increment(RegistrationForm.class.getName());
 
@@ -124,9 +127,11 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 	
 	public RegistrationForm deleteRegistrationForm(long registrationId, String referenceUid){
 		
-		RegistrationForm registrationForm = findFormbyRegidRefid(registrationId, referenceUid);
+		RegistrationForm object = registrationFormPersistence.fetchByG_REGID_REFID(registrationId, referenceUid);
 		
-		return registrationFormPersistence.remove(registrationForm);
+		object.setRemoved(true);
+		
+		return registrationFormPersistence.update(object);
 	}
 	
 	public RegistrationForm findFormbyRegidRefid(long registrationId, String referenceUid){

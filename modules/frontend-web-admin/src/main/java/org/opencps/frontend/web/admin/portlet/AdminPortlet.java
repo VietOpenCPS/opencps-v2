@@ -348,7 +348,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 	
 	private void renderFrontendWebNotificationPortlet(
 			RenderRequest renderRequest, RenderResponse renderResponse) {
-		_log.info("=====================renderFrontendWebNotificationPortlet===============");
+		
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
 

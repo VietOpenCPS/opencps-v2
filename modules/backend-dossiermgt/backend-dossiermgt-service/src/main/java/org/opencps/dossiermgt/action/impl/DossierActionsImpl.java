@@ -334,7 +334,7 @@ public class DossierActionsImpl implements DossierActions {
 										createFile.put("partName", dossierPart.getPartName());
 										createFile.put("partTip", dossierPart.getPartTip());
 										createFile.put("multiple", dossierPart.getMultiple());
-										createFile.put("templateFileNo", dossierPart.getTemplateNo());
+										createFile.put("templateFileNo", dossierPart.getFileTemplateNo());
 										long fileEntryId = 0;
 										boolean eForm = false;
 										String formData = StringPool.BLANK;
@@ -389,8 +389,10 @@ public class DossierActionsImpl implements DossierActions {
 
 										dossierFilesResult = DossierFileLocalServiceUtil
 												.getDossierFileByDID_FTNO_DPT(dossierId, fileTemplateNo, 2, false);
+										
+										_log.info("///////////////////////////// getDossierFileByDID_FTNO_DPT " + dossierId + "|" + fileTemplateNo + "|");
 
-										counter = (dossierFilesResult != null && dossierFilesResult.isEmpty())
+										counter = (dossierFilesResult != null && !dossierFilesResult.isEmpty())
 												? dossierFilesResult.size() : 0;
 
 										createFile.put("eform", eForm);

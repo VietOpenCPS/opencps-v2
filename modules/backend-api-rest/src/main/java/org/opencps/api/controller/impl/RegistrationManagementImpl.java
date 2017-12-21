@@ -139,7 +139,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	}
 
 	@Override
-	public Response delete(Long id) {
+	public Response delete(long id) {
 		try {
 			RegistrationActions action = new RegistrationActionsImpl();
 			action.delete(id);
@@ -179,7 +179,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 	@Override
 	public Response addRegistrationForm(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, RegistrationFormInputModel input) {
+			User user, ServiceContext serviceContext, RegistrationFormInputModel input, long registrationId, String formNo) {
 		BackendAuth auth = new BackendAuthImpl();
 		RegistrationFormDetailModel result = null;
 		try {
@@ -190,10 +190,12 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			
+			long fileEntryId = getfileEntryId(input.getFormData(), input.getFormScript(), input.getFormReport());
 
-			RegistrationForm registrationForm = action.insert(groupId, input.getRegistrationId(),
-					input.getReferenceUid(), input.getFormNo(), input.getFormName(), input.getFormData(),
-					input.getFormScript(), input.getFormReport(), input.getFileEntryId(), input.isIsNew(),
+			RegistrationForm registrationForm = action.insert(groupId, registrationId,
+					input.getReferenceUid(), formNo, input.getFormName(), input.getFormData(),
+					input.getFormScript(), input.getFormReport(), fileEntryId, input.isIsNew(),
 					input.isRemoved(), serviceContext);
 
 			result = RegistrationFormUtils.mappingToRegistrationFormDetailModel(registrationForm);
@@ -232,5 +234,12 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			}
 		}
+	}
+	
+	public long getfileEntryId(String formdata, String formScript, String formReport) {
+
+		long fileEntryId = 0;
+
+		return fileEntryId;
 	}
 }

@@ -12,7 +12,10 @@ import org.opencps.api.controller.RegistrationTemplatesManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.RegistrationTemplatesUtils;
 import org.opencps.api.registrationtemplate.model.RegistrationTemplateDetailModel;
+import org.opencps.api.registrationtemplate.model.RegistrationTemplateFormReportInputUpdateModel;
+import org.opencps.api.registrationtemplate.model.RegistrationTemplateFormScriptInputUpdateModel;
 import org.opencps.api.registrationtemplate.model.RegistrationTemplateInputModel;
+import org.opencps.api.registrationtemplate.model.RegistrationTemplateSampleDataInputUpdateModel;
 import org.opencps.api.registrationtemplate.model.RegistrationTemplatesResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
@@ -158,6 +161,8 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			Company company, Locale locale, User user, ServiceContext serviceContext, long registrationTemplateId) {
 		// TODO Get FormScript of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
+		
+		RegistrationTemplateFormScriptInputUpdateModel result = new RegistrationTemplateFormScriptInputUpdateModel();
 
 		try {
 
@@ -167,8 +172,10 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
 					.getRegistrationTemplates(registrationTemplateId);
+			
+			result.setFormScript(registrationTemplate.getFormScript());
 
-			return Response.status(200).entity(registrationTemplate.getFormScript()).build();
+			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			return processException(e);
@@ -209,6 +216,8 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			Company company, Locale locale, User user, ServiceContext serviceContext, long registrationTemplateId) {
 		// TODO Get FormReport of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
+		
+		RegistrationTemplateFormReportInputUpdateModel result = new RegistrationTemplateFormReportInputUpdateModel();
 
 		try {
 
@@ -218,8 +227,10 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
 					.getRegistrationTemplates(registrationTemplateId);
+			
+			result.setFormReport(registrationTemplate.getFormReport());
 
-			return Response.status(200).entity(registrationTemplate.getFormReport()).build();
+			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			return processException(e);
@@ -260,6 +271,8 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			Company company, Locale locale, User user, ServiceContext serviceContext, long registrationTemplateId) {
 		// TODO Get SampleData of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
+		
+		RegistrationTemplateSampleDataInputUpdateModel result = new RegistrationTemplateSampleDataInputUpdateModel();
 
 		try {
 
@@ -269,8 +282,10 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
 					.getRegistrationTemplates(registrationTemplateId);
+			
+			result.setSampleData(registrationTemplate.getSampleData());
 
-			return Response.status(200).entity(registrationTemplate.getSampleData()).build();
+			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			return processException(e);

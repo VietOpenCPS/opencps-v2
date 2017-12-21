@@ -7,7 +7,6 @@ import org.opencps.communication.action.NotificationTemplateInterface;
 import org.opencps.communication.constants.NotificationMGTConstants;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
-import org.opencps.communication.utils.DateTimeUtils;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;

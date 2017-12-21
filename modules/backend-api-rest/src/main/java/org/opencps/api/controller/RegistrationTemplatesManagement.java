@@ -99,7 +99,7 @@ public interface RegistrationTemplatesManagement {
 	@DELETE
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "Remove a Deliverabletypes by its id", response = RegistrationTemplatesModel.class)
+	@ApiOperation(value = "Remove a  registrationTemplate by its id", response = RegistrationTemplatesModel.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a Dossier was removed", response = RegistrationTemplatesModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
@@ -122,7 +122,7 @@ public interface RegistrationTemplatesManagement {
 	public Response getFormScriptByRegistrationTemplateId(@Context HttpServletRequest request,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
-			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id);
+			@ApiParam(value = "id of  registrationTemplate", required = true) @PathParam("id") long id);
 
 	@PUT
 	@Path("/{id}/formscript")
@@ -136,8 +136,8 @@ public interface RegistrationTemplatesManagement {
 	public Response updateRegistrationTemplateFormScript(@Context HttpServletRequest request,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
-			@ApiParam(value = "id of DeliverableType", required = true) @PathParam("id") long registrationTemplateId,
-			@ApiParam(value = "FormScript of dossierfile", required = true) @FormParam("formScript") String formScript);
+			@ApiParam(value = "id of  registrationTemplate", required = true) @PathParam("id") long registrationTemplateId,
+			@ApiParam(value = "FormScript of  registrationTemplate", required = true) @FormParam("formScript") String formScript);
 
 	@GET
 	@Path("/{id}/formreport")
@@ -169,10 +169,10 @@ public interface RegistrationTemplatesManagement {
 			@ApiParam(value = "formReport of registrationTemplate", required = true) @FormParam("formReport") String formReport);
 
 	@GET
-	@Path("/{id}/sampleData")
+	@Path("/{id}/sampledata")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@ApiOperation(value = "getMappingDataByDeliverableTypeId", response = JSONObject.class)
+	@ApiOperation(value = "getsampledataByDeliverableTypeId", response = JSONObject.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a formdata", response = JSONObject.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
@@ -183,10 +183,10 @@ public interface RegistrationTemplatesManagement {
 			@ApiParam(value = "id of RegistrationTemplate", required = true) @PathParam("id") long id);
 
 	@PUT
-	@Path("/{id}/sampleData")
+	@Path("/{id}/sampledata")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "update mappingdata")
+	@ApiOperation(value = "update sampledata")
 	@ApiResponses(value = { @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns"),
 			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
@@ -195,6 +195,6 @@ public interface RegistrationTemplatesManagement {
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "id of DeliverableType", required = true) @PathParam("id") long registrationTemplatesId,
-			@ApiParam(value = "MappingData of dossierfile", required = true) @FormParam("mappingData") String mappingData);
+			@ApiParam(value = "sampledata of  registrationTemplate", required = true) @FormParam("sampleData") String sampledata);
 
 }

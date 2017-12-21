@@ -25,6 +25,11 @@
 	.btn__link_normal .btn__content {
 		white-space: normal;
 		text-align: left;
-		word-break: break-all;
+	}
+	.btn__link_delete {
+		min-width: 60px !important;
+	}
+	.btn__link_delete .btn__content {
+		color: #c62828 !important;
 	}
 </style>

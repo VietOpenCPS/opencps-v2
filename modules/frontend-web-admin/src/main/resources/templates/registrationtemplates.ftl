@@ -120,7 +120,8 @@
 			pageSize: 10,
 			serverPaging: false,
 			serverSorting: false,
-			serverFiltering: false
+			serverFiltering: false,
+			sort: { field: "createDate", dir: "desc" }
 		});
 
 		// var firstTimeLoad = true;
@@ -151,7 +152,7 @@
 			}
 		});
 		var deleteRegistrationTemp = function () {
-			$(".deleteItem").click(function(e) {
+			$(".deleteItem").unbind().click(function(e) {
 				e.preventDefault();
 				event.stopPropagation();
 				var itemId = $(e.currentTarget).attr("registrationId");
@@ -164,7 +165,7 @@
 						headers: {"groupId": ${groupId}},
 						success: function(result) {
 							notification.show({
-								message: "Yêu cầu được thực hiện thành công"
+								message: "Xóa mẫu thành phần hồ sơ thành công!"
 							}, "success");
 							$("#registration_template_list_view").getKendoListView().dataSource.read();
 						},
