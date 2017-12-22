@@ -16,6 +16,7 @@ import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalService;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -50,6 +51,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 @Component(immediate = true, service = TimerScheduler.class)
 public class TimerScheduler extends BaseSchedulerEntryMessageListener {
@@ -96,13 +99,27 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 			if (lenght != 0) {
 				JSONObject content = results.getJSONObject(0);
-				
-				
-				
-				dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(),
-						content.getString("actionCode"), content.getLong("processActionId"), systemUser.getFullName(),
-						content.getString("actionName"), content.getLong("assignUserId"), systemUser.getUserId(),
-						serviceContext);
+
+				long processActionId = content.getLong("processActionId");
+
+				ProcessAction action = ProcessActionLocalServiceUtil.fetchProcessAction(processActionId);
+
+				String perConditionStr = StringPool.BLANK;
+
+				if (Validator.isNotNull(action)) {
+					perConditionStr = action.getPreCondition();
+				}
+
+				boolean checkPreCondition = DossierMgtUtils
+						.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
+
+				if (checkPreCondition) {
+					dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(),
+							content.getString("actionCode"), content.getLong("processActionId"),
+							systemUser.getFullName(), content.getString("actionName"), content.getLong("assignUserId"),
+							systemUser.getUserId(), serviceContext);
+				}
+
 			}
 
 		}
