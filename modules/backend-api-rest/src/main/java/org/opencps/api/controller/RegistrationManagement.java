@@ -32,16 +32,6 @@ import io.swagger.annotations.ApiParam;
 @Api(value = "/registrations", description = "APIs for Deliverables")
 public interface RegistrationManagement {
 
-	@GET
-	@Path("/registrations")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	public Response getList(@Context ServiceContext serviceContext, @DefaultValue("") @Context String stage,
-			@DefaultValue("") @Context String agency, @DefaultValue("") @Context String owner,
-			@DefaultValue("") @Context String registrationClass, @DefaultValue("") @Context String submitting,
-			@DefaultValue("") @Context String keyword, @DefaultValue("") @Context String sort,
-			@Context HttpHeaders header);
-
 	@POST
 	@Path("/registrations")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })

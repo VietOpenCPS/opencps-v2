@@ -5,7 +5,15 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
@@ -49,9 +57,17 @@ import com.liferay.portal.kernel.util.GetterUtil;
 public class RegistrationManagementImpl implements RegistrationManagement {
 	Log _log = LogFactoryUtil.getLog(RegistrationManagementImpl.class);
 
-	@Override
-	public Response getList(ServiceContext serviceContext, String stage, String agency, String owner,
-			String registrationClass, String submitting, String keyword, String sort, HttpHeaders header) {
+	@GET
+	@Path("/registrations")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	public Response getList(@Context ServiceContext serviceContext, @DefaultValue("") @QueryParam("stage") String stage,
+			@DefaultValue("") @QueryParam("agency") String agency, @DefaultValue("") @QueryParam("owner") String owner,
+			@DefaultValue("") @QueryParam("registrationClass") String registrationClass,
+			@DefaultValue("") @QueryParam("submitting") String submitting,
+			@DefaultValue("") @QueryParam("keyword") String keyword, @DefaultValue("") @QueryParam("sort") String sort,
+			@Context HttpHeaders header) {
+
 		BackendAuth auth = new BackendAuthImpl();
 		RegistrationActions actions = new RegistrationActionsImpl();
 		try {
@@ -77,12 +93,13 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 					groupId, params, sorts, -1, -1, serviceContext);
 
 			RegistrationResultsModel results = new RegistrationResultsModel();
-//			long userId = serviceContext.getUserId();
-//			List<Registration> lstRegistrationModel = RegistrationLocalServiceUtil.getRegistrations(start, end);
-//
+			// long userId = serviceContext.getUserId();
+			// List<Registration> lstRegistrationModel =
+			// RegistrationLocalServiceUtil.getRegistrations(start, end);
+			//
 			results.setTotal(jsonData.getInt("total"));
-			results.getData()
-					.addAll(RegistrationUtils.mappingToRegistrationResultModel((List<Document>) jsonData.get("data"), serviceContext));
+			results.getData().addAll(RegistrationUtils
+					.mappingToRegistrationResultModel((List<Document>) jsonData.get("data"), serviceContext));
 
 			return Response.status(200).entity(results).build();
 
