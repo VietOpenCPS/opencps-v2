@@ -742,6 +742,12 @@
 			<finder-column name="groupId" />
 			<finder-column name="serviceProcessId" />
 		</finder>
+		
+		<finder return-type="Collection" name="SC_SPID">
+			<finder-column name="stepCode" />
+			<finder-column name="serviceProcessId" />
+		</finder>
+		
 
 	</entity>
 
