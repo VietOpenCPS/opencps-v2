@@ -218,7 +218,7 @@
 				<div class="collapse" id="collapseRegistrationPart#:id#">
 					<div class="col-xs-12 col-sm-12 text-right">
 						<button id="btn-save-formalpaca#:formNo#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
-						type="button" data-pk="#:formNo#" >Ghi lại</button>
+						type="button" data-pk="#:formNo#" referenceUid="#:id#">Ghi lại</button>
 						<input type="hidden" name="" id="dossierFileId#:id#" value="#:id#">
 					</div>
 
@@ -279,7 +279,7 @@
 		<div class="collapse" id="collapseRegistrationPart#:id#">
 			<div class="col-xs-12 col-sm-12 text-right">
 				<button id="btn-save-formalpaca#:formNo#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
-				type="button" data-pk="#:formNo#" >Ghi lại</button>
+				type="button" data-pk="#:formNo#" referenceUid="#:id#">Ghi lại</button>
 				<input type="hidden" name="" id="dossierFileId#:id#" value="#:id#">
 			</div>
 
@@ -422,7 +422,7 @@
 						contactName : $("#contactName").val(),
 						contactTelNo : $("#contactTelNo").val(),
 						contactEmail : $("#contactEmail").val(),
-						registrationState : 1
+						registrationState : 2
 
 					},
 					success :  function(result){ 
@@ -756,7 +756,7 @@ var fnSaveForm = function(id, value){
 $(document).off("click",".saveFormAlpaca");
 $(document).on("click",".saveFormAlpaca",function(event){
 	var id = $(this).attr("data-pk");
-	var referentUidFile = $(this).attr("data-pk");
+	var referentUidFile = $(this).attr("referenceUid");
 
 	console.log(id);
 	console.log("ccc");
