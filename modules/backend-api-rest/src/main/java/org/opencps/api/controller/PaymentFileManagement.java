@@ -12,6 +12,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -261,6 +262,34 @@ public interface PaymentFileManagement {
 	public Response getPaymentFiles(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "body params of post", required = true) @BeanParam PaymentFileSearchModel search);
+	/* Search List of payment bill - END */
+	
+	@GET
+	@Path("/keypay/{id}/{paymentFileId}")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	public Response processingKeyPay(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@PathParam("id") long id,
+			@PathParam("paymentFileId") long paymentFileId,
+			@QueryParam("command") String command,
+			@QueryParam("merchant_trans_id") String merchant_trans_id,
+			@QueryParam("merchant_code") String merchant_code,
+			@QueryParam("response_code") String response_code,
+			@QueryParam("trans_id") String trans_id,
+			@QueryParam("good_code") String good_code,
+			@QueryParam("net_cost") String net_cost,
+			@QueryParam("ship_fee") String ship_fee,
+			@QueryParam("tax") String tax,
+			@QueryParam("service_code") String service_code,
+			@QueryParam("currency_code") String currency_code,
+			@QueryParam("bank_code") String bank_code,
+			@QueryParam("desc_1") String desc_1,
+			@QueryParam("desc_2") String desc_2,
+			@QueryParam("desc_3") String desc_3,
+			@QueryParam("desc_4") String desc_4,
+			@QueryParam("desc_5") String desc_5,
+			@QueryParam("secure_hash") String secure_hash);
 	/* Search List of payment bill - END */
 
 }
