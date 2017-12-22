@@ -31,14 +31,28 @@
 				<i class="fa fa-reply" aria-hidden="true"></i>
 				Quay lại
 			</a>
-			<a href="javascript:;" onclick="funSaveDossier();">
-				<i class="fa fa-save"></i>
-				Lưu
-			</a>
-			<a href="javascript:;" onclick="fnNext();">
-				<i class="fa fa-sign-in" aria-hidden="true"></i>
-				Tiếp tục
-			</a>
+
+			<#if resCancelling?has_content >
+
+				<a href="javascript:;" class="btn btn-active" id="btn-rescancelling-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
+
+			<#elseif sendAdd?has_content >
+
+				<a href="javascript:;" class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
+
+			<#else>
+
+				<a href="javascript:;" onclick="funSaveDossier();">
+					<i class="fa fa-save"></i>
+					Lưu
+				</a>
+				<a href="javascript:;" onclick="fnNext();">
+					<i class="fa fa-sign-in" aria-hidden="true"></i>
+					Tiếp tục
+				</a>
+
+			</#if>
+
 		</div>
 	</div>
 

@@ -187,7 +187,7 @@
 				QUẢN LÝ DÁN NHÃN NĂNG LƯỢNG
 			</a>
 		</div>
-		<div id="group2" class="accordion-body collapse toggle-hide">
+		<div id="group2" class="accordion-body collapse toggle-hide" style="background-color: #ffffff">
 			<div class="accordion-inner PB0 PT0">
 				<div class="PT5">
 					<div class="ML40 col-sm-6 P5 PL0">
@@ -218,7 +218,7 @@
 				QUẢN LÝ TRIỆU HỒI SẢN PHẨM
 			</a>
 		</div>
-		<div id="group3" class="accordion-body collapse toggle-hide">
+		<div id="group3" class="accordion-body collapse toggle-hide" style="background-color: #ffffff">
 			<div class="accordion-inner">
 				<div class="PT5">
 					<div class="ML40 col-sm-6 P5 PL0">
@@ -248,7 +248,7 @@
 				QUẢN LÝ THÔNG TIN DOANH NGHIỆP
 			</a>
 		</div>
-		<div id="group4" class="accordion-body collapse toggle-hide">
+		<div id="group4" class="accordion-body collapse toggle-hide" style="background-color: #ffffff">
 			<div class="accordion-inner">
 				<div class="PT5">
 					<div class="ML40 col-sm-6 P5 PL0">
@@ -337,6 +337,7 @@
         manageDossier.navigate("/taohosomoi/chuanbihoso/"+result.dossierId);
       },
       error : function(result){
+      	selector.button('reset');
       }
     });
 	} 

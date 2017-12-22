@@ -92,7 +92,7 @@
 					
 				</td>
 				
-				<td class="" style="width: 25%">
+				<td class="" style="width: 22%">
 					<strong>
 						<a href="javascript:;" class="link-detail-employee text-hover-blue" data-pk="#=dossierId#" data-bind="events: { click : loadDossierDetail}">
 							#=serviceName#
@@ -126,7 +126,7 @@
 					<i class="text-light-gray">#=briefNote#</i>
 				</td>
 
-				<td class="" style="width: 13%">
+				<td class="" style="width: 16%">
 					# if(typeof actionNote !== "undefined"){#
 						<i>#:actionNote#</i>
 					#}#

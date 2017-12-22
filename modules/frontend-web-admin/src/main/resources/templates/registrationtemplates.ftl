@@ -217,10 +217,6 @@
 			})
 		};
 	// -------------
-		$(document).on("click", ".btn-edit-registration-template", function(event){
-			event.preventDefault();
-			formControl($(this).attr("data-pk"));
-		});
 		// Button Add registrationtemplate
 		$(document).on("click", "#btn_add_registrationtemplate", function(event){
 			event.preventDefault();

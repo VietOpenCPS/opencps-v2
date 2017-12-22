@@ -132,7 +132,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 	@Override
 	public Response removeRegistrationTemplate(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String registrationTemplateId) {
+			Locale locale, User user, ServiceContext serviceContext, long registrationTemplateId) {
 		// TODO Remove RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -146,10 +146,9 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 			RegistrationTemplatesActions action = new RegistrationTemplatesActionsImpl();
 
-			RegistrationTemplates registrationTemplate = action.removeRegistrationTemplate(groupId,
-					registrationTemplateId);
+			action.removeRegistrationTemplate(groupId, registrationTemplateId);
 
-			return Response.status(200).entity("OK!").build();
+			return Response.status(200).entity("Success").build();
 
 		} catch (Exception e) {
 			return processException(e);
@@ -161,7 +160,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			Company company, Locale locale, User user, ServiceContext serviceContext, long registrationTemplateId) {
 		// TODO Get FormScript of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
-		
+
 		RegistrationTemplateFormScriptInputUpdateModel result = new RegistrationTemplateFormScriptInputUpdateModel();
 
 		try {
@@ -172,7 +171,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
 					.getRegistrationTemplates(registrationTemplateId);
-			
+
 			result.setFormScript(registrationTemplate.getFormScript());
 
 			return Response.status(200).entity(result).build();
@@ -216,7 +215,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			Company company, Locale locale, User user, ServiceContext serviceContext, long registrationTemplateId) {
 		// TODO Get FormReport of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
-		
+
 		RegistrationTemplateFormReportInputUpdateModel result = new RegistrationTemplateFormReportInputUpdateModel();
 
 		try {
@@ -227,7 +226,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
 					.getRegistrationTemplates(registrationTemplateId);
-			
+
 			result.setFormReport(registrationTemplate.getFormReport());
 
 			return Response.status(200).entity(result).build();
@@ -271,7 +270,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			Company company, Locale locale, User user, ServiceContext serviceContext, long registrationTemplateId) {
 		// TODO Get SampleData of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
-		
+
 		RegistrationTemplateSampleDataInputUpdateModel result = new RegistrationTemplateSampleDataInputUpdateModel();
 
 		try {
@@ -282,7 +281,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
 					.getRegistrationTemplates(registrationTemplateId);
-			
+
 			result.setSampleData(registrationTemplate.getSampleData());
 
 			return Response.status(200).entity(result).build();
