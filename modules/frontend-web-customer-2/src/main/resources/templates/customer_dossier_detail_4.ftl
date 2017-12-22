@@ -208,76 +208,73 @@
 </div>
 
 <div class="dossier-parts">
-	<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierPart">
-		<div class="background-triangle-small">III</div> 
-		<div class="col-sm-12 PL0">
+    <div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierPart">
+        <div class="background-triangle-small">III</div> 
+        <div class="col-sm-12 PL0">
 
-			<span class="text-uppercase hover-pointer">Tiến trình xử lý</span>
-			<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
-		</div>
-		
-	</div>
-	<div class="content-part collapse in" id="collapseDossierPart">
-		<div class="row-parts-head MT5">
-			<ul id="listViewDossiserLog" class="ul-default mimic-table">
-				
-			</ul>
-			<script type="text/x-kendo-template" id="templateDossiserLog">
-				<li class="clearfix eq-height-lg P0">
-					<div class="row">
-						<div class="col-sm-0 text-center center-all row-blue P15" >
-							#:itemIndex#.
-						</div>
+            <span class="text-uppercase hover-pointer">Tiến trình xử lý</span>
+            <i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
+        </div>
+        
+    </div>
+    <div class="content-part collapse in" id="collapseDossierPart">
+        <div class="row-parts-head MT5">
+            <ul id="listViewDossiserLog" class="ul-default mimic-table">
+                
+            </ul>
+            <script type="text/x-kendo-template" id="templateDossiserLog">
+                <li class="clearfix eq-height-lg P0">
+                    <div class="orderNo col-sm-0 text-center center-all row-blue P15">
+                        #:itemIndex#.
+                    </div>
 
+                    #
+                    var jobposTitle = "";
+                    var briefNote = "";
+                    var dossier ;
+                    try {
+                    
+                        var payLoadObj = payload;
+
+                        jobPosName = payLoadObj.hasOwnProperty("jobPosName")?payLoadObj.jobPosName : "";
+                        stepInstruction = payLoadObj.hasOwnProperty("stepInstruction")?payLoadObj.stepInstruction : "";
+                        dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
+						
+	                }catch(e){
+		                console.log(e);
+		            }
+		            #
+
+		            <div class="col-sm-12 M0 P5 PL10">
+		                <span class="text-bold">#:author# </span> <span class="text-light-gray">(#:jobPosName#) &nbsp;</span> <span class="text-light-blue">#:stepInstruction#</span> 
+		                <p>
+		                    #if ( createDate!="" && createDate!=null ) {#
+		                        #= kendo.toString(kendo.parseDate(createDate, 'yyyy-MM-dd'), 'hh:mm - dd/MM/yyyy')#
+		                    #}#
+		                </p>
+
+		                <p>Ý kiến: #:content#</p>
+
+		                #
+		                if(dossier){
+			                for(var i = 0 ; i < dossier.length ; i++){
+				                #
+					                <p>
+					                	<a target="_blank" href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].dossierFileId#" class="text-greyy text-hover-blue">
+					                		<i aria-hidden="true" class="fa fa-download PR5"></i>
+					                		#:dossier[i].fileName#
+					                	</a> 
+					                </p>
+				                #
+			    			} 
+						}
 						#
-						var jobposTitle = "";
-						var briefNote = "";
-						var dossier ;
-						try {
-						if(payload){
-						var payLoadObj = JSON.parse(payLoad);
+					</div>
+				</li>
+			</script>
 
-						jobposTitle = payLoadObj.jobposTitle;
-						briefNote = payLoadObj.briefNote;
-						dossier = payLoadObj.dossier;
-					}
-
-				}catch(e){
-				console.log(e);
-			}
-			#
-
-			<div class="col-sm-12 M0 P5 PL10">
-				<span class="text-bold">#:author# </span> <span class="text-light-gray">(#:jobposTitle#) &nbsp;</span> <span class="text-light-blue">#:briefNote#</span> 
-				<p>#:createDate#</p>
-
-				<p>Ý kiến: #:content#</p>
-
-				#
-				if(dossier){
-				for(var i = 0 ; i < dossier.length ; i++){
-				if(dossier[i].fileType === "pdf"){
-				#
-				<p><img src="images/pdf.png" alt=""> <a href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].referenceUid#" class="text-greyy text-hover-blue">#:dossier[i].fileName#</a> </p>
-				#
-			}else {
-			#
-			<p><img src="images/docx.png" alt=""> <a href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].referenceUid#" class="text-greyy text-hover-blue">#:dossier[i].fileName#</a> </p>
-			#
-
-		}
-
-	} 
-
-}
-#
-</div>
-</div>
-</li>
-</script>
-
-</div>
-</div>
+		</div>
+	</div>
 </div> 
 
 
@@ -448,7 +445,8 @@
 
 						},
 						success : function(result){
-							var arrLogsResult = fnGetLogs(result.data);
+							var data = result.hasOwnProperty("data")?result.data:[];
+							var arrLogsResult = fnGetLogs(data.data);
 							options.success(arrLogsResult);
 						},
 						error : function(result){
@@ -486,17 +484,21 @@
 		}
 
 		var fnGetLogs = function(arrLogs){
+			
 			var arrLogsResult = new Array();
+			var count = 0;
+			var result = {};
 			if(arrLogs){
 				for (var i = 0; i < arrLogs.length; i++) {
 					if(arrLogs[i].notificationType === 'PROCESS_TYPE'){
 						arrLogsResult.push(arrLogs[i]);
-
+						count++;
 					}
 				}
 			}
-
-			return arrLogsResult;
+			result["data"] = arrLogsResult;
+			result["total"] = count;
+			return result;
 		}
 
 
