@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.action.impl;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,17 +15,25 @@ import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationActionsImpl implements RegistrationActions {
-
+	
+	Log _log = LogFactoryUtil.getLog(RegistrationActionsImpl.class);
+	
 	@Override
 	public Registration insert(long groupId, String applicantName, String applicantIdType, String applicantIdNo,
 			String applicantIdDate, String address, String cityCode, String cityName, String districtCode,
@@ -66,15 +75,16 @@ public class RegistrationActionsImpl implements RegistrationActions {
 		// add registrationLog
 		String content = "";
 		RegistrationLogActions registrationLogActions = new RegistrationLogActionsImpl();
-		List<RegistrationLog> lstRegistrationLog = registrationLogActions.getRegistrationLogbyId(groupId, registrationId);
-		if(lstRegistrationLog.size() == 0){
+		List<RegistrationLog> lstRegistrationLog = registrationLogActions.getRegistrationLogbyId(groupId,
+				registrationId);
+		if (lstRegistrationLog.size() == 0) {
 			content = "1";
-		}else{
+		} else {
 			content = String.valueOf(Integer.valueOf(lstRegistrationLog.get(0).getContent()) + 1);
 		}
-		
+
 		if (Validator.isNotNull(lstRegistrationFormchange)) {
-			if(registrationState == 2 || registrationState == 3){
+			if (registrationState == 2 || registrationState == 3) {
 				addLog("", groupId, userId, registrationId, content, lstRegistrationFormchange);
 			}
 		}
@@ -140,7 +150,7 @@ public class RegistrationActionsImpl implements RegistrationActions {
 			mediaItemsJsonObject.put("removed", registrationForm.getRemoved());
 			jsArray.put(mediaItemsJsonObject);
 		}
-//		jsonObj.put("result", jsArray.to);
+		// jsonObj.put("result", jsArray.to);
 		String strPayload = jsArray.toJSONString();
 		return RegistrationLogLocalServiceUtil.addLog(author, groupId, userId, registrationId, content, strPayload);
 
@@ -151,5 +161,32 @@ public class RegistrationActionsImpl implements RegistrationActions {
 		int fileEntryId = 0;
 
 		return fileEntryId;
+	}
+
+	@Override
+	public JSONObject getRegistrations(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		Hits hits = null;
+
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(companyId);
+
+		try {
+
+			hits = RegistrationLocalServiceUtil.searchLucene(userId,params, sorts, start, end, searchContext);
+
+			result.put("data", hits.toList());
+
+//			long total = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
+
+			result.put("total", hits.toList().size());
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return result;
 	}
 }

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -35,8 +36,11 @@ public interface RegistrationManagement {
 	@Path("/registrations")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	public Response getList(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext);
+	public Response getList(@Context ServiceContext serviceContext, @DefaultValue("") @Context String stage,
+			@DefaultValue("") @Context String agency, @DefaultValue("") @Context String owner,
+			@DefaultValue("") @Context String registrationClass, @DefaultValue("") @Context String submitting,
+			@DefaultValue("") @Context String keyword, @DefaultValue("") @Context String sort,
+			@Context HttpHeaders header);
 
 	@POST
 	@Path("/registrations")
@@ -66,8 +70,7 @@ public interface RegistrationManagement {
 	@Path("/registrations/{id}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	public Response delete(
-			@ApiParam(value = "registrationId", required = true)@PathParam("id") long id);
+	public Response delete(@ApiParam(value = "registrationId", required = true) @PathParam("id") long id);
 
 	@GET
 	@Path("/registrations/{id}/forms")

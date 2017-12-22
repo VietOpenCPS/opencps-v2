@@ -8,13 +8,54 @@ import org.opencps.api.registration.model.RegistrationDetailModel;
 import org.opencps.api.registration.model.RegistrationDetailResultModel;
 import org.opencps.api.registration.model.RegistrationModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
 
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationUtils {
+	public static List<RegistrationModel> mappingToRegistrationResultModel(List<Document> documents,
+			ServiceContext serviceContext) {
+		List<RegistrationModel> data = new ArrayList<RegistrationModel>();
 
+		for (Document doc : documents) {
+			RegistrationModel model = new RegistrationModel();
+
+			model.setRegistrationId(GetterUtil.getLong(doc.get(RegistrationTerm.REGISTRATION_ID)));
+//			model.setServiceInfoId(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
+			model.setCreateDate(doc.get(Field.CREATE_DATE));
+			model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
+			model.setUserId(GetterUtil.getLong(doc.get(Field.USER_ID)));
+			model.setApplicantName(doc.get(RegistrationTerm.APPLICANT_NAME));
+			model.setApplicantIdType(doc.get(RegistrationTerm.APPLICANT_ID_TYPE));
+			model.setApplicantIdNo(doc.get(RegistrationTerm.APPLICANT_ID_NO));
+			model.setApplicantIdDate(doc.get(RegistrationTerm.APPLICANT_ID_DATE));
+			model.setAddress(doc.get(RegistrationTerm.ADDRESS));
+			model.setCityCode(doc.get(RegistrationTerm.CITY_CODE));
+			model.setCityName(doc.get(RegistrationTerm.CITY_NAME));
+			model.setDistrictCode(doc.get(RegistrationTerm.DISTRICT_CODE));
+			model.setDistrictName(doc.get(RegistrationTerm.DISTRICT_NAME));
+			model.setWardCode(doc.get(RegistrationTerm.WARD_CODE));
+			model.setWardName(doc.get(RegistrationTerm.WARD_NAME));
+			model.setContactName(doc.get(RegistrationTerm.CONTACT_NAME));
+			model.setContactTelNo(doc.get(RegistrationTerm.CONTACT_TEL_NO));
+			model.setContactEmail(doc.get(RegistrationTerm.CONTACT_EMAIL));
+			model.setGovAgencyCode(doc.get(RegistrationTerm.GOV_AGENCY_CODE));
+			model.setGovAgencyName(doc.get(RegistrationTerm.GOV_AGENCY_NAME));
+			model.setRegistrationState(GetterUtil.getInteger(doc.get(RegistrationTerm.REGISTRATIONSTATE)));
+			model.setRegistrationClass(doc.get(RegistrationTerm.REGISTRATION_CLASS));
+			model.setSubmitting(GetterUtil.getBoolean(doc.get(RegistrationTerm.SUBMITTING)));
+			data.add(model);
+		}
+
+		return data;
+	}
+	
+	
 	public static RegistrationDetailModel mappingToRegistrationDetailModel(Registration registration) {
 
 		if (registration == null) {
