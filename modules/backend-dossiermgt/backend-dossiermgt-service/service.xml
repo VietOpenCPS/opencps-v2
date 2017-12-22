@@ -499,6 +499,13 @@
 			<finder-column name="dossierPartType"></finder-column>
 			<finder-column name="removed"></finder-column>
 		</finder>
+        <finder name="DID_FTNO_DPT_NOT_NULL_FID" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="fileTemplateNo"></finder-column>
+            <finder-column name="dossierPartType"></finder-column>
+            <finder-column name="fileEntryId" comparator="&gt;"></finder-column>
+            <finder-column name="removed"></finder-column>
+        </finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
