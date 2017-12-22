@@ -247,7 +247,9 @@
 		            }
 	            #
 				<tr>
-					<td style="padding-top: 15px; padding-right: 15px">#:itemIndex#</td>
+					<td style="padding-top: 15px; padding-right: 15px">
+						<span class="text-bold">#:itemIndex#</span>
+					</td>
 					<td style="padding-top: 15px">
 						
 						<span class="text-bold PR10">#:author# </span> <span class="text-light-blue">#:stepName#</span> 
