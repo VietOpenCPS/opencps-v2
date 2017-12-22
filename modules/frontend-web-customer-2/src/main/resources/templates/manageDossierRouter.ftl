@@ -15,6 +15,9 @@
 			if (dossierItemStatus == "new") {
 				$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+id+"",function(result){
 				})
+			} else if(dossierItemStatus == "paying"){
+				$("#mainType2").load("${ajax.customer_dossier_waitpaying}&${portletNamespace}dossierId="+id+"",function(result){
+				})
 			} else {
 				$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"",function(result){
 				})
