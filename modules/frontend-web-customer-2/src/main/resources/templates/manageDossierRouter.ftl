@@ -56,6 +56,8 @@
 		});
 		// Show danh sách hồ sơ lọc theo các trạng thái
 		manageDossier.route("/(:id)", function(id) {
+			$(".fa-expand").css("display","block");
+			$(".fa-compress").css("display","none");
 			$("#mainType1").show();
 			$(".filterField").show();
 			$("#mainType2").hide();

@@ -28,7 +28,7 @@
 					<#-- Table header -->
 				    <thead>
 				      <tr>
-				        <th class="fieldDossier text-center hover-pointer">
+				        <th class="text-center hover-pointer">
 									<span>STT</span>
 				        </th>
 				        <th class="fieldDossier text-center hover-pointer" sort="serviceName" sort-type="desc">
@@ -51,13 +51,13 @@
 									</span></br>
 									<strong>Ngày tiếp nhận</strong>
 				        </th>
-				        <th class="fieldDossier text-center hover-pointer">
+				        <th class="text-center hover-pointer">
 				        	<strong>Số chứng chỉ</strong>
 				        </th>
-				        <th class="fieldDossier text-center hover-pointer">
+				        <th class="text-center hover-pointer">
 				        	<strong>Nội dung</strong>
 				        </th>
-				        <th class="fieldDossier text-center hover-pointer">
+				        <th class="text-center hover-pointer">
 				        	<strong>Ghi chú</strong>
 				        </th>
 				        <th class="text-center">
