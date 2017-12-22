@@ -28,6 +28,15 @@
 				<xsd:element name="paymentNote" type="xsd:string" minOccurs="0" />
 				<xsd:element name="epaymentProfile" type="xsd:string" minOccurs="0" />
 				<xsd:element name="bankInfo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="confirmNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="paymentMethod" type="xsd:string" minOccurs="0" />
+				<xsd:element name="confirmPayload" type="xsd:string" minOccurs="0" />
+				<xsd:element name="approveDatetime" type="xsd:string" minOccurs="0" />
+				<xsd:element name="accountUserName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyTaxNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="invoiceTemplateNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="invoiceIssueNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="invoiceNo" type="xsd:string" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
