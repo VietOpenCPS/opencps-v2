@@ -165,6 +165,10 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 							.getServiceProcess(option.getServiceProcessId());
 
 					syncProcesses.add(desServiceProcess);
+					
+					break;
+					
+					//TODO : check again
 				}
 
 			} catch (Exception e) {
@@ -487,6 +491,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			multipart.addFormField("displayName", displayName);
 			multipart.addFormField("fileType", StringPool.BLANK);
 			multipart.addFormField("isSync", StringPool.BLANK);
+			multipart.addFormField("formData", formData);
 
 			JSONObject object = JSONFactoryUtil.createJSONObject();
 
@@ -494,9 +499,9 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 			//updateFormData(desGroupId, response, dossierId, formData, serviceContext);
 			
-			DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(desGroupId, fileTemplateNo);
+			//DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(desGroupId, fileTemplateNo);
 			
-			pullFormData(desGroupId, fileRef, dossierTemplateNo, dossierId, formData, part, serviceContext);
+			//pullFormData(desGroupId, fileRef, dossierTemplateNo, dossierId, formData, part, serviceContext);
 
 			resetDossier(desGroupId, dossierRef, false, serviceContext);
 
@@ -510,6 +515,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			String formData, DossierPart part, ServiceContext serviceContext) {
 		try {
 			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId, fileRef);
+			
+			
 
 			if (Validator.isNull(dossierFile)) {
 				// create dossierFile
@@ -517,12 +524,11 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 						PortalUUIDUtil.generate(), dossierTemplateNo, part.getPartNo(), part.getFileTemplateNo(),
 						part.getPartName(), StringPool.BLANK, 0, null, StringPool.BLANK, StringPool.FALSE,
 						serviceContext);
-
-				dossierFile.setFormData(formData);
-
-				DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
-
 			}
+			
+			dossierFile.setFormData(formData);
+
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 
 		} catch (Exception e) {
 			_log.error(e);

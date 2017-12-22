@@ -739,6 +739,9 @@
 			data.append('referenceUid', "");
 			data.append('dossierTemplateNo', dossierTemplateNo);
 			data.append('fileTemplateNo', fileTemplateNo);
+			data.append('formData', "");
+			data.append('isSync', "");
+			data.append('fileType', "");
 
 			$.ajax({
 				type : 'POST', 

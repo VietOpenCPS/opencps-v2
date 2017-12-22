@@ -218,7 +218,7 @@
 				<div class="collapse" id="collapseRegistrationPart#:id#">
 					<div class="col-xs-12 col-sm-12 text-right">
 						<button id="btn-save-formalpaca#:formNo#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
-						type="button" data-pk="#:formNo#" >Ghi lại</button>
+						type="button" data-pk="#:formNo#" referenceUid="#:id#">Ghi lại</button>
 						<input type="hidden" name="" id="dossierFileId#:id#" value="#:id#">
 					</div>
 
@@ -279,7 +279,7 @@
 		<div class="collapse" id="collapseRegistrationPart#:id#">
 			<div class="col-xs-12 col-sm-12 text-right">
 				<button id="btn-save-formalpaca#:formNo#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
-				type="button" data-pk="#:formNo#" >Ghi lại</button>
+				type="button" data-pk="#:formNo#" referenceUid="#:id#">Ghi lại</button>
 				<input type="hidden" name="" id="dossierFileId#:id#" value="#:id#">
 			</div>
 
@@ -294,13 +294,13 @@
 					if(formScript){
 						var formScript = eval("(" + formScript + ")");
 						if(formData){
-							formScript.data = eval("(" + formData + ")");
+							formScript.data = eval("(" + formData + ")");			
 						}
 						
 						$("\\#formPartNo"+formNo).alpaca(formScript);
 					}
 				}catch(e){
-
+					console.log(e);
 				}
 				
 				#
@@ -431,6 +431,7 @@
 						notification.show({
 							message: "Yêu cầu được thực hiện thành công"
 						}, "success");
+						$("#lsRegistrationsLogs").getKendoListView().dataSource.read();
 					},
 					error:function(xhr){
 						console.log(xhr);
@@ -756,7 +757,7 @@ var fnSaveForm = function(id, value){
 $(document).off("click",".saveFormAlpaca");
 $(document).on("click",".saveFormAlpaca",function(event){
 	var id = $(this).attr("data-pk");
-	var referentUidFile = $(this).attr("data-pk");
+	var referentUidFile = $(this).attr("referenceUid");
 
 	console.log(id);
 	console.log("ccc");

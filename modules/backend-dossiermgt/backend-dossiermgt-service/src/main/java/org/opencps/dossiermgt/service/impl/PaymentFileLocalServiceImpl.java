@@ -398,6 +398,33 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentFile updateFileConfirm(long groupId, long dossierId, String referenceUid, String confirmNote,
+			String paymentMethod, String confirmPayload, ServiceContext serviceContext)
+			throws PortalException, SystemException {
+
+		PaymentFile paymentFile = paymentFilePersistence.fetchByD_RUID(dossierId, referenceUid);
+
+		if (paymentFile != null) {
+
+			Date now = new Date();
+
+			paymentFile.setModifiedDate(now);
+			paymentFile.setConfirmNote(confirmNote);
+			paymentFile.setPaymentMethod(paymentMethod);
+			paymentFile.setConfirmPayload(confirmPayload);
+			paymentFile.setPaymentStatus(2);
+		}
+
+		return paymentFilePersistence.update(paymentFile);
+	}
+
+	/**
+	 * update payment File Confirm
+	 * 
+	 * @param
+	 * @return PaymentFile
+	 */
+	@Indexable(type = IndexableType.REINDEX)
+	public PaymentFile updateFileConfirm(long groupId, long dossierId, String referenceUid, String confirmNote,
 			String paymentMethod, String confirmPayload, String sourceFileName, long fileSize, InputStream inputStream,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 
@@ -420,7 +447,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 						fileEntryId = fileEntry.getFileEntryId();
 					}
 				} catch (Exception e) {
-					throw new SystemException(e);
+					// throw new SystemException(e);
 				}
 			}
 
@@ -431,6 +458,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setPaymentMethod(paymentMethod);
 			paymentFile.setConfirmPayload(confirmPayload);
 			paymentFile.setConfirmFileEntryId(fileEntryId);
+			// paymentFile.setPaymentStatus(2);
 
 		}
 
@@ -443,6 +471,35 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	 * @param
 	 * @return PaymentFile
 	 */
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PaymentFile updateFileApproval(long groupId, long dossierId, String referenceUid, String approveDatetime,
+			String accountUserName, String govAgencyTaxNo, String invoiceTemplateNo, String invoiceIssueNo,
+			String invoiceNo, ServiceContext serviceContext)
+			throws PortalException, SystemException, java.text.ParseException {
+
+		PaymentFile paymentFile = paymentFilePersistence.fetchByD_RUID(dossierId, referenceUid);
+
+		if (paymentFile != null) {
+
+			Date now = new Date();
+
+			paymentFile.setModifiedDate(now);
+			// Parse String to Date
+			SimpleDateFormat format = new SimpleDateFormat("DD-MM-YYYY HH:MM:SS");
+			Date dateApproved = format.parse(approveDatetime);
+			paymentFile.setApproveDatetime(dateApproved);
+			paymentFile.setAccountUserName(accountUserName);
+			paymentFile.setGovAgencyTaxNo(govAgencyTaxNo);
+			paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
+			paymentFile.setInvoiceIssueNo(invoiceIssueNo);
+			paymentFile.setInvoiceNo(invoiceNo);
+
+		}
+
+		return paymentFilePersistence.update(paymentFile);
+	}
+
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentFile updateFileApproval(long groupId, long dossierId, String referenceUid, String approveDatetime,
 			String accountUserName, String govAgencyTaxNo, String invoiceTemplateNo, String invoiceIssueNo,
