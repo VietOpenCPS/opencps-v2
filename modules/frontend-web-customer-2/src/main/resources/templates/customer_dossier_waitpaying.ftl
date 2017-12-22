@@ -363,7 +363,6 @@
 		if(referenceUid){
 
 			var data = new FormData();
-			console.log(file);
 
 			data.append( 'file', $("#filePayment")[0].files[0]);
 			data.append( 'confirmNote', $("textarea#confirmNote").val());

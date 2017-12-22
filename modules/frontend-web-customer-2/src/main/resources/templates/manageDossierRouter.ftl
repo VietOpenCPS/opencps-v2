@@ -117,5 +117,19 @@
       $("#profileStatus li").removeClass('active');
       $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
     });
+    manageDossier.route("/keyPay/dossiers/(:id)", function(id){
+			$("#panel_list").show();
+			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
+			$("#mainType1").hide();
+			$("#mainType2").show();
+			$(".filterField").hide();
+			$("#mainType2").load("${ajax.notificationPaying}&${portletNamespace}dossierId="+id+"",function(result){
+			});
+			
+			$("#profileStatus li").removeClass('active');
+			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
+			$('#profileStatus li[dataPk='+dossierItemStatus+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
+			$('#profileStatus li[dataPk='+dossierItemStatus+']').addClass('active');
+		});
 	</script>
 
