@@ -30,10 +30,10 @@ public class RegistrationUtils {
 			model.setCreateDate(doc.get(Field.CREATE_DATE));
 			model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
 			model.setUserId(GetterUtil.getLong(doc.get(Field.USER_ID)));
-			model.setApplicantName(doc.get(RegistrationTerm.APPLICANT_NAME));
-			model.setApplicantIdType(doc.get(RegistrationTerm.APPLICANT_ID_TYPE));
-			model.setApplicantIdNo(doc.get(RegistrationTerm.APPLICANT_ID_NO));
-			model.setApplicantIdDate(doc.get(RegistrationTerm.APPLICANT_ID_DATE));
+			model.setApplicantName(doc.get(RegistrationTerm.APPLICATION_NAME));
+			model.setApplicantIdType(doc.get(RegistrationTerm.APPLICATION_ID_TYPE));
+			model.setApplicantIdNo(doc.get(RegistrationTerm.APPLICATION_ID_NO));
+			model.setApplicantIdDate(doc.get(RegistrationTerm.APPLICATION_ID_DATE));
 			model.setAddress(doc.get(RegistrationTerm.ADDRESS));
 			model.setCityCode(doc.get(RegistrationTerm.CITY_CODE));
 			model.setCityName(doc.get(RegistrationTerm.CITY_NAME));

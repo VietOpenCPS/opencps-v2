@@ -25,4 +25,7 @@ public class RegistrationTerm {
 	public static final String WARD_CODE = "wardCode";
 	public static final String WARD_NAME = "wardName";
 	public static final String CONTACT_NAME = "contactName";
+	public static final String CONTACT_TEL_NO = "contactTelNo";
+	public static final String CONTACT_EMAIL = "contactEmail";
+	public static final String GOV_AGENCY_NAME = "govAgencyName";
 }
