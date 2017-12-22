@@ -13,6 +13,10 @@
 	});
 	// Show màn hình start
 	manageDossier.route("/", function() {
+		$("#panel_list").show();
+		$(".fa-expand").css("display","block");
+		$(".fa-compress").css("display","none");
+		$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 		$("#mainType1").show();
 		$(".filterField").show();
 		$("#mainType2").hide();
@@ -41,6 +45,8 @@
         // $(".itemStatus").css("pointer-events","auto");
     });
     manageDossier.route("/taohosomoi/chuanbihoso/(:dossierId)", function(dossierId){
+    	$("#panel_list").show();
+		$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 	    $("#mainType1").hide();
 	    $("#mainType2").show();
 	    $("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+dossierId,function(result){
@@ -48,6 +54,8 @@
 	    });
 	  });
 	  manageDossier.route("/taohosomoi/nophoso/(:dossierId)", function(dossierId){
+	  		$("#panel_list").show();
+			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 			$("#mainType1").hide();
 			$("#mainType2").show();
 			$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+dossierId,function(result){
