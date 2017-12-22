@@ -6,19 +6,19 @@
 		<div id="contentMain" class="row panel M0" style="border: none;box-shadow: none">
 			<div class="panel-heading P0">
 				<div class="row PL15 PR15">
-					<div class="row-header"> 
+					<div class="row-header align-middle-lg">
 						<div class="background-triangle-big">
 							<i class="fa fa-file-text"></i>
 						</div>
 						<span class="text-bold" id="statusName" style="text-transform:uppercase;"></span>
-						<span id="fullScreen" data-bind="events: { click: fullScreen}">
-							<i class="fa fa-expand fs20 toggle-collapse MT10 MR10 pull-right" aria-hidden="true"></i>
-							<i class="fa fa-compress fs20 pull-right MT10 MR10" aria-hidden="true" style="display: none"></i>
-						</span>
-						
-						<div class="form-group search-icon pull-right MB0 MR10" style="margin-top:4px">
+						<div class="form-group search-icon pull-right MR10 MLA">
 							<input type="text" class="form-control" id="keyInput" placeholder="Nhập từ khóa" data-bind="events: { keyup: filterKey}" style="width: 290px; height:30px">
 						</div>
+						<span id="fullScreen" data-bind="events: { click: fullScreen}">
+							<i class="fa fa-expand fs20 toggle-collapse MT5 MR10 pull-right" aria-hidden="true"></i>
+							<i class="fa fa-compress fs20 pull-right MT5 MR10" aria-hidden="true" style="display: none"></i>
+						</span>
+						
 					</div>
 				</div>
 			</div>
