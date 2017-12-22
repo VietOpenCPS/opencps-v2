@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * The implementation of the registration local service.
@@ -153,4 +154,84 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		return fileEntryId;
 	}
 
+	
+	// binhth
+	public List<Registration> getdByF_submitting(long groupId, boolean submitting) {
+		return registrationPersistence.findByF_submitting(groupId, submitting);
+	}
+	
+	public Registration registrationSync(long groupId, String uuid, String applicantName,
+			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String contactEmail, String govAgencyCode, String govAgencyName,
+			int registrationState, String registrationClass, ServiceContext serviceContext)
+			throws PortalException, SystemException {
+
+		Date now = new Date();
+		long userId = serviceContext.getUserId();
+		User userAction = userLocalService.getUser(userId);
+
+		
+		Registration registration = registrationPersistence.fetchByUUID_G(uuid, groupId);
+
+		if (Validator.isNotNull(registration)) {
+			registration.setModifiedDate(now);
+			registration.setUserId(userAction.getUserId());
+			
+			registration.setApplicantName(applicantName);
+			registration.setApplicantIdType(applicantIdType);
+			registration.setApplicantIdNo(applicantIdNo);
+			registration.setAddress(address);
+			registration.setCityCode(cityCode);
+			registration.setCityName(cityName);
+			registration.setDistrictCode(districtCode);
+			registration.setDistrictName(districtName);
+			registration.setWardCode(wardCode);
+			registration.setWardName(wardName);
+			registration.setContactName(contactName);
+			registration.setContactTelNo(contactTelNo);
+			registration.setContactEmail(contactEmail);
+			registration.setGovAgencyCode(govAgencyCode);
+			registration.setGovAgencyName(govAgencyName);
+			registration.setRegistrationClass(registrationClass);
+			registration.setRegistrationState(registrationState);
+			
+			registration = registrationPersistence.update(registration);
+		} else {
+			
+			long registrationId = counterLocalService.increment(Registration.class.getName());
+			
+			registration = registrationPersistence.create(registrationId);
+			
+			registration.setGroupId(groupId);
+			registration.setCreateDate(now);
+			registration.setModifiedDate(now);
+			registration.setUserId(userAction.getUserId());
+			
+			registration.setApplicantName(applicantName);
+			registration.setApplicantIdType(applicantIdType);
+			registration.setApplicantIdNo(applicantIdNo);
+			registration.setAddress(address);
+			registration.setCityCode(cityCode);
+			registration.setCityName(cityName);
+			registration.setDistrictCode(districtCode);
+			registration.setDistrictName(districtName);
+			registration.setWardCode(wardCode);
+			registration.setWardName(wardName);
+			registration.setContactName(contactName);
+			registration.setContactTelNo(contactTelNo);
+			registration.setContactEmail(contactEmail);
+			registration.setGovAgencyCode(govAgencyCode);
+			registration.setGovAgencyName(govAgencyName);
+			registration.setRegistrationClass(registrationClass);
+			registration.setRegistrationState(registrationState);
+			
+			registration.setUuid(uuid);
+			
+			registration = registrationPersistence.update(registration);
+			
+		}
+
+		return registration;
+	}
 }

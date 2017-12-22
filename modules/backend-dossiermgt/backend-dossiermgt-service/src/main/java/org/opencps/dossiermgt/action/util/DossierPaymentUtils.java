@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 public class DossierPaymentUtils {
 
@@ -75,7 +76,7 @@ public class DossierPaymentUtils {
 			// generator epaymentProfile
 			JSONObject epaymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
 			
-			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, dossier.getReferenceUid(),
+			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, null,
 					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantName(),
 					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, null, paymentConfig.getBankInfo(), serviceContext);
 			
@@ -87,6 +88,7 @@ public class DossierPaymentUtils {
 					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId, paymentFile.getPaymentFileId(), pattern, dossierId);
 					
 					epaymentProfileJSON.put("keypayUrl", generatorPayURL);
+					epaymentProfileJSON.put("detailUrl", epaymentConfigJSON.getString("paymentResultUrl") + dossierId);
 					epaymentProfileJSON.put("keypayGoodCode", PaymentUrlGenerator.generatorGoodCode(11));
 					epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
 					

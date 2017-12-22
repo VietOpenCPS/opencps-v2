@@ -20,12 +20,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.base.RegistrationFormLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * The implementation of the registration form local service.
@@ -136,5 +139,57 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 	
 	public RegistrationForm findFormbyRegidRefid(long registrationId, String referenceUid){
 		return registrationFormPersistence.fetchByG_REGID_REFID(registrationId, referenceUid);
+	}
+	
+	//binhth
+	public List<RegistrationForm> findByG_REGID_ISNEW(long registrationId, boolean isNew) {
+		return registrationFormPersistence.findByG_REGID_ISNEW(registrationId, isNew);
+	}
+	
+	public RegistrationForm registrationFormSync(long groupId, String uuidRegistration, String referenceUid,
+			String formNo, String formName, String formData, String formScript, String formReport, ServiceContext serviceContext)
+			throws PortalException, SystemException {
+
+		Date now = new Date();
+		long userId = serviceContext.getUserId();
+		User userAction = userLocalService.getUser(userId);
+
+		
+		Registration registration = registrationPersistence.fetchByUUID_G(uuidRegistration, groupId);
+		RegistrationForm registrationForm = registrationFormPersistence.fetchByG_REGID_REFID(registration.getRegistrationId(), referenceUid);
+		
+		if (Validator.isNotNull(registrationForm)) {
+			registrationForm.setModifiedDate(now);
+			registrationForm.setUserId(userAction.getUserId());
+			
+			registrationForm.setFormNo(formNo);
+			registrationForm.setFormName(formName);
+			registrationForm.setFormData(formData);
+			registrationForm.setFormScript(formScript);
+			registrationForm.setFormReport(formReport);
+			
+			registrationForm = registrationFormPersistence.update(registrationForm);
+		} else {
+			
+			long registrationFormId = counterLocalService.increment(RegistrationForm.class.getName());
+			
+			registrationForm = registrationFormPersistence.create(registrationFormId);
+			
+			registrationForm.setGroupId(groupId);
+			registrationForm.setCreateDate(now);
+			registrationForm.setModifiedDate(now);
+			registrationForm.setUserId(userAction.getUserId());
+			
+			registrationForm.setFormNo(formNo);
+			registrationForm.setFormName(formName);
+			registrationForm.setFormData(formData);
+			registrationForm.setFormScript(formScript);
+			registrationForm.setFormReport(formReport);
+			
+			registrationForm = registrationFormPersistence.update(registrationForm);
+			
+		}
+
+		return registrationForm;
 	}
 }

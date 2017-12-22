@@ -1054,7 +1054,10 @@
 		<!-- Order -->
 
 		<!-- Filter -->
-
+		<finder return-type="Collection" name="F_submitting">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="submitting"></finder-column>
+		</finder>
 
 	</entity>
 
@@ -1121,7 +1124,12 @@
 			<finder-column name="registrationId" />
 			<finder-column name="referenceUid" />
 		</finder>
-
+		
+		<finder return-type="Collection" name="G_REGID_ISNEW">
+			<finder-column name="registrationId" />
+			<finder-column name="isNew" />
+		</finder>
+		
 	</entity>
 
 	<entity local-service="true" name="DeliverableType"
