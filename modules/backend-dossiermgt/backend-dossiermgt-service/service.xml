@@ -396,6 +396,14 @@
 		</finder>
 
 		<!-- References -->
+        <finder name="G_C_GAC_SC_DTNO_NOTDS" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="companyId"></finder-column>
+            <finder-column name="govAgencyCode"></finder-column>
+            <finder-column name="serviceCode"></finder-column>
+            <finder-column name="dossierTemplateNo"></finder-column>
+            <finder-column name="dossierStatus" comparator="!="></finder-column>
+        </finder>
 
 	</entity>
 
@@ -491,6 +499,13 @@
 			<finder-column name="dossierPartType"></finder-column>
 			<finder-column name="removed"></finder-column>
 		</finder>
+        <finder name="DID_FTNO_DPT_NOT_NULL_FID" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="fileTemplateNo"></finder-column>
+            <finder-column name="dossierPartType"></finder-column>
+            <finder-column name="fileEntryId" comparator="&gt;"></finder-column>
+            <finder-column name="removed"></finder-column>
+        </finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -742,6 +757,12 @@
 			<finder-column name="groupId" />
 			<finder-column name="serviceProcessId" />
 		</finder>
+		
+		<finder return-type="Collection" name="SC_SPID">
+			<finder-column name="stepCode" />
+			<finder-column name="serviceProcessId" />
+		</finder>
+		
 
 	</entity>
 
@@ -1052,6 +1073,14 @@
 		<column name="registrationClass" type="String" />
 		<column name="submitting" type="boolean" />
 
+		<!-- Order -->
+
+		<!-- Filter -->
+		<finder return-type="Collection" name="F_submitting">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="submitting"></finder-column>
+		</finder>
+
 	</entity>
 
 	<entity local-service="true" name="RegistrationLog"
@@ -1117,7 +1146,12 @@
 			<finder-column name="registrationId" />
 			<finder-column name="referenceUid" />
 		</finder>
-
+		
+		<finder return-type="Collection" name="G_REGID_ISNEW">
+			<finder-column name="registrationId" />
+			<finder-column name="isNew" />
+		</finder>
+		
 	</entity>
 
 	<entity local-service="true" name="DeliverableType"

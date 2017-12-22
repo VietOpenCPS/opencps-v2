@@ -14,18 +14,14 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
 import org.opencps.dossiermgt.constants.RegistrationTerm;
-import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
-import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
@@ -50,8 +46,9 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the registration local service.
@@ -179,6 +176,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		return fileEntryId;
 	}
 
+
 	public Hits searchLucene(long userId, LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
@@ -261,6 +259,88 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+	}
+
+
+	
+	// binhth
+	public List<Registration> getdByF_submitting(long groupId, boolean submitting) {
+		return registrationPersistence.findByF_submitting(groupId, submitting);
+	}
+	
+	public Registration registrationSync(long groupId, String uuid, String applicantName,
+			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String contactEmail, String govAgencyCode, String govAgencyName,
+			int registrationState, String registrationClass, ServiceContext serviceContext)
+			throws PortalException, SystemException {
+
+		Date now = new Date();
+		long userId = serviceContext.getUserId();
+		User userAction = userLocalService.getUser(userId);
+
+		
+		Registration registration = registrationPersistence.fetchByUUID_G(uuid, groupId);
+
+		if (Validator.isNotNull(registration)) {
+			registration.setModifiedDate(now);
+			registration.setUserId(userAction.getUserId());
+			
+			registration.setApplicantName(applicantName);
+			registration.setApplicantIdType(applicantIdType);
+			registration.setApplicantIdNo(applicantIdNo);
+			registration.setAddress(address);
+			registration.setCityCode(cityCode);
+			registration.setCityName(cityName);
+			registration.setDistrictCode(districtCode);
+			registration.setDistrictName(districtName);
+			registration.setWardCode(wardCode);
+			registration.setWardName(wardName);
+			registration.setContactName(contactName);
+			registration.setContactTelNo(contactTelNo);
+			registration.setContactEmail(contactEmail);
+			registration.setGovAgencyCode(govAgencyCode);
+			registration.setGovAgencyName(govAgencyName);
+			registration.setRegistrationClass(registrationClass);
+			registration.setRegistrationState(registrationState);
+			
+			registration = registrationPersistence.update(registration);
+		} else {
+			
+			long registrationId = counterLocalService.increment(Registration.class.getName());
+			
+			registration = registrationPersistence.create(registrationId);
+			
+			registration.setGroupId(groupId);
+			registration.setCreateDate(now);
+			registration.setModifiedDate(now);
+			registration.setUserId(userAction.getUserId());
+			
+			registration.setApplicantName(applicantName);
+			registration.setApplicantIdType(applicantIdType);
+			registration.setApplicantIdNo(applicantIdNo);
+			registration.setAddress(address);
+			registration.setCityCode(cityCode);
+			registration.setCityName(cityName);
+			registration.setDistrictCode(districtCode);
+			registration.setDistrictName(districtName);
+			registration.setWardCode(wardCode);
+			registration.setWardName(wardName);
+			registration.setContactName(contactName);
+			registration.setContactTelNo(contactTelNo);
+			registration.setContactEmail(contactEmail);
+			registration.setGovAgencyCode(govAgencyCode);
+			registration.setGovAgencyName(govAgencyName);
+			registration.setRegistrationClass(registrationClass);
+			registration.setRegistrationState(registrationState);
+			
+			registration.setUuid(uuid);
+			
+			registration = registrationPersistence.update(registration);
+			
+		}
+
+		return registration;
 	}
 
 }

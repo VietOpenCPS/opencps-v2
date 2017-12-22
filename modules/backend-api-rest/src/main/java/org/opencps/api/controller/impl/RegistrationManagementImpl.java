@@ -282,4 +282,29 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 		return fileEntryId;
 	}
+
+	@Override
+	public Response registrationSyncs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, RegistrationInputModel input,
+			boolean submitting, String uuid) {
+		BackendAuth auth = new BackendAuthImpl();
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			RegistrationLocalServiceUtil.registrationSync(groupId, uuid, input.getApplicantName(), input.getApplicantIdType(), input.getApplicantIdNo(),
+					input.getApplicantIdDate(), input.getAddress(), input.getCityCode(), input.getCityName(), input.getDistrictCode(), input.getDistrictName(), input.getWardCode(), input.getWardName(),
+					input.getContactName(), input.getContactTelNo(), input.getContactEmail(), input.getGovAgencyCode(), input.getGovAgencyName(), input.getRegistrationState(),
+					input.getRegistrationClass(), serviceContext);
+
+			return Response.status(200).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return processException(e);
+		}
+	}
 }

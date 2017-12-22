@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -77,4 +77,13 @@ public interface RegistrationManagement {
 			@Context ServiceContext serviceContext, @BeanParam RegistrationFormInputModel input,
 			@ApiParam(value = "registrationId", required = true) @PathParam("id") long registrationId,
 			@ApiParam(value = "formNo", required = true) @PathParam("formNo") String formNo);
+	
+	@POST
+	@Path("/registrations/syncs")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	public Response registrationSyncs(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@BeanParam RegistrationInputModel input, @FormParam("submitting") boolean submitting, @FormParam("uuid_") String uuid);
+	
 }

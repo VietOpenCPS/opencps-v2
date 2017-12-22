@@ -21,19 +21,20 @@ public interface PaymentFileActions {
 	 * @param serviceInfoId
 	 * @return JSONObject
 	 */
-	public JSONObject getByDossierId(long dossierId, long companyId, long groupId,
-			Sort[] sorts, int start, int end, ServiceContext serviceContext);
+	public JSONObject getByDossierId(long dossierId, long companyId, long groupId, Sort[] sorts, int start, int end,
+			ServiceContext serviceContext);
 
 	/**
 	 * Add PaymentFile of DossierId
 	 * 
-	 * @param form data
+	 * @param form
+	 *            data
 	 * @return PaymentFile
 	 */
-	public PaymentFile createPaymentFile(long userId,long groupId, long dossierId, String referenceUid, String govAgencyCode,
-			String govAgencyName, String applicantName, String applicantIdNo, String paymentFee, long paymentAmount,
-			String paymentNote, String epaymentProfile, String bankInfo, ServiceContext serviceContext)
-			throws PortalException;
+	public PaymentFile createPaymentFile(long userId, long groupId, long dossierId, String referenceUid,
+			String govAgencyCode, String govAgencyName, String applicantName, String applicantIdNo, String paymentFee,
+			long paymentAmount, String paymentNote, String epaymentProfile, String bankInfo,
+			ServiceContext serviceContext) throws PortalException;
 
 	/**
 	 * Get detail PaymentFile of DossierId and referenceUid
@@ -53,13 +54,14 @@ public interface PaymentFileActions {
 	 * @return PaymentFile
 	 */
 	public PaymentFile getEpaymentProfile(long dossierId, String referenceUid);
-	
+
 	public PaymentFile getPaymentFile(long dossierId, String referenceUid);
-	
+
 	/**
 	 * Update info EpaymentProfile of DossierId and referenceUid
 	 * 
-	 * @param form params
+	 * @param form
+	 *            params
 	 * @return PaymentFile
 	 */
 	public PaymentFile updateEProfile(long dossierId, String referenceUid, String strInput,
@@ -68,7 +70,19 @@ public interface PaymentFileActions {
 	/**
 	 * Update Payment File Confirm of DossierId and referenceUid
 	 * 
-	 * @param form params
+	 * @param form
+	 *            params
+	 * @return PaymentFile
+	 */
+	public PaymentFile updateFileConfirm(long groupId, long id, String referenceUid, String confirmNote,
+			String paymentMethod, String confirmPayload, ServiceContext serviceContext)
+			throws SystemException, PortalException;
+
+	/**
+	 * Update Payment File Confirm of DossierId and referenceUid
+	 * 
+	 * @param form
+	 *            params
 	 * @return PaymentFile
 	 */
 	public PaymentFile updateFileConfirm(long groupId, long id, String referenceUid, String confirmNote,
@@ -78,28 +92,40 @@ public interface PaymentFileActions {
 	/**
 	 * Update Payment File Approval of DossierId and referenceUid
 	 * 
-	 * @param form params
+	 * @param form
+	 *            params
 	 * @return PaymentFile
 	 */
+	public PaymentFile updateFileApproval(long groupId, long id, String referenceUid, String approveDatetime,
+			String accountUserName, String govAgencyTaxNo, String invoiceTemplateNo, String invoiceIssueNo,
+			String invoiceNo, ServiceContext serviceContext) throws SystemException, PortalException, java.text.ParseException;
+	
+	
 	public PaymentFile updateFileApproval(long groupId, long id, String referenceUid, String approveDatetime,
 			String accountUserName, String govAgencyTaxNo, String invoiceTemplateNo, String invoiceIssueNo,
 			String invoiceNo, String sourceFileName, long fileSize, InputStream inputStream,
 			ServiceContext serviceContext) throws SystemException, PortalException, java.text.ParseException;
 
-	//8,9
+	// 8,9
 	/**
 	 * Download file confirm
+	 * 
 	 * @param id
 	 * @param referenceUid
 	 * @return PaymentFile
 	 */
 	public PaymentFile getPaymentFileByReferenceUid(Long id, String referenceUid) throws PortalException;
+
 	/**
 	 * Get all Payment File
+	 * 
 	 * @param
 	 * @return PaymentFile
 	 */
 	public JSONObject getPaymentFiles(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
+	
+	
+	public List<PaymentFile> getPaymentFiles(long dossierId);
 
 }
