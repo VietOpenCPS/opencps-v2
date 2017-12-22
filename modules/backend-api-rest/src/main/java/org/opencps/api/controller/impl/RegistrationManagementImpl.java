@@ -1,10 +1,19 @@
 package org.opencps.api.controller.impl;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
@@ -28,38 +37,70 @@ import org.opencps.dossiermgt.action.RegistrationActions;
 import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.impl.RegistrationActionsImpl;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
+import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 public class RegistrationManagementImpl implements RegistrationManagement {
 	Log _log = LogFactoryUtil.getLog(RegistrationManagementImpl.class);
 
-	@Override
-	public Response getList(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
-			ServiceContext serviceContext) {
+	@GET
+	@Path("/registrations")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	public Response getList(@Context ServiceContext serviceContext, @DefaultValue("") @QueryParam("stage") String stage,
+			@DefaultValue("") @QueryParam("agency") String agency, @DefaultValue("") @QueryParam("owner") String owner,
+			@DefaultValue("") @QueryParam("registrationClass") String registrationClass,
+			@DefaultValue("") @QueryParam("submitting") String submitting,
+			@DefaultValue("") @QueryParam("keyword") String keyword, @DefaultValue("") @QueryParam("sort") String sort,
+			@Context HttpHeaders header) {
+
 		BackendAuth auth = new BackendAuthImpl();
-		int start = -1, end = -1;
+		RegistrationActions actions = new RegistrationActionsImpl();
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(Field.KEYWORD_SEARCH, keyword);
+			params.put(RegistrationTerm.REGISTRATIONSTATE, stage);
+			params.put(RegistrationTerm.GOV_AGENCY_CODE, agency);
+			params.put(RegistrationTerm.OWNER, owner);
+			params.put(RegistrationTerm.REGISTRATION_CLASS, registrationClass);
+			params.put(RegistrationTerm.SUBMITTING, submitting);
+
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(sort + "_sortable", Sort.STRING_TYPE, false) };
+
+			JSONObject jsonData = actions.getRegistrations(serviceContext.getUserId(), serviceContext.getCompanyId(),
+					groupId, params, sorts, -1, -1, serviceContext);
 
 			RegistrationResultsModel results = new RegistrationResultsModel();
-
-			List<Registration> lstRegistrationModel = RegistrationLocalServiceUtil.getRegistrations(start, end);
-
-			results.setTotal(RegistrationLocalServiceUtil.getRegistrationsCount());
-			results.getData().addAll(RegistrationUtils.mappingToRegistrationResultsModel(lstRegistrationModel));
+			// long userId = serviceContext.getUserId();
+			// List<Registration> lstRegistrationModel =
+			// RegistrationLocalServiceUtil.getRegistrations(start, end);
+			//
+			results.setTotal(jsonData.getInt("total"));
+			results.getData().addAll(RegistrationUtils
+					.mappingToRegistrationResultModel((List<Document>) jsonData.get("data"), serviceContext));
 
 			return Response.status(200).entity(results).build();
 
