@@ -129,14 +129,12 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		}
 
 		Date now = new Date();
-		
+
 		User userAction = null;
-		
+
 		if (userId != 0) {
 			userAction = userLocalService.getUser(userId);
 		}
-
-		
 
 		long dossierFileId = counterLocalService.increment(DossierFile.class.getName());
 
@@ -1949,6 +1947,19 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			boolean removed, int start, int end, OrderByComparator orderByComparator) {
 		return dossierFilePersistence.findByDID_FTNO_DPT(dossierId, fileTemplateNo, dossierPartType, removed, start,
 				end, orderByComparator);
+	}
+
+	public List<DossierFile> getDossierFileByDID_FTNO_DPT_NOT_NULL_FID(long dossierId, String fileTemplateNo,
+			int dossierPartType, long fileEntryId, boolean removed) {
+		return dossierFilePersistence.findByDID_FTNO_DPT_NOT_NULL_FID(dossierId, fileTemplateNo, dossierPartType,
+				fileEntryId, removed);
+	}
+
+	public List<DossierFile> getDossierFileByDID_FTNO_DPT_NOT_NULL_FID(long dossierId, String fileTemplateNo,
+			int dossierPartType, long fileEntryId, boolean removed, int start, int end,
+			OrderByComparator orderByComparator) {
+		return dossierFilePersistence.findByDID_FTNO_DPT_NOT_NULL_FID(dossierId, fileTemplateNo, dossierPartType,
+				fileEntryId, removed, start, end, orderByComparator);
 	}
 
 	public static final String CLASS_NAME = DossierFile.class.getName();

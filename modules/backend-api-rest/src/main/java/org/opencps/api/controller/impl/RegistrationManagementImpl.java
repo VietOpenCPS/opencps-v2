@@ -116,7 +116,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	@Override
 	public Response update(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, RegistrationInputModel input, long registrationId) {
-		
+
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			RegistrationActions action = new RegistrationActionsImpl();
@@ -130,7 +130,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 					serviceContext);
 
 			RegistrationDetailModel result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
-			
+
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
 			_log.error(e);
@@ -179,7 +179,8 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 	@Override
 	public Response addRegistrationForm(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, RegistrationFormInputModel input, long registrationId, String formNo) {
+			User user, ServiceContext serviceContext, RegistrationFormInputModel input, long registrationId,
+			String formNo) {
 		BackendAuth auth = new BackendAuthImpl();
 		RegistrationFormDetailModel result = null;
 		try {
@@ -190,13 +191,12 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			
+
 			long fileEntryId = getfileEntryId(input.getFormData(), input.getFormScript(), input.getFormReport());
 
-			RegistrationForm registrationForm = action.insert(groupId, registrationId,
-					input.getReferenceUid(), formNo, input.getFormName(), input.getFormData(),
-					input.getFormScript(), input.getFormReport(), fileEntryId, input.isIsNew(),
-					input.isRemoved(), serviceContext);
+			RegistrationForm registrationForm = action.insert(groupId, registrationId, input.getReferenceUid(), formNo,
+					input.getFormName(), input.getFormData(), input.getFormScript(), input.getFormReport(), fileEntryId,
+					input.isIsNew(), input.isRemoved(), serviceContext);
 
 			result = RegistrationFormUtils.mappingToRegistrationFormDetailModel(registrationForm);
 			return Response.status(200).entity(result).build();
@@ -235,11 +235,36 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			}
 		}
 	}
-	
+
 	public long getfileEntryId(String formdata, String formScript, String formReport) {
 
 		long fileEntryId = 0;
 
 		return fileEntryId;
+	}
+
+	@Override
+	public Response registrationSyncs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, RegistrationInputModel input,
+			boolean submitting, String uuid) {
+		BackendAuth auth = new BackendAuthImpl();
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			RegistrationLocalServiceUtil.registrationSync(groupId, uuid, input.getApplicantName(), input.getApplicantIdType(), input.getApplicantIdNo(),
+					input.getApplicantIdDate(), input.getAddress(), input.getCityCode(), input.getCityName(), input.getDistrictCode(), input.getDistrictName(), input.getWardCode(), input.getWardName(),
+					input.getContactName(), input.getContactTelNo(), input.getContactEmail(), input.getGovAgencyCode(), input.getGovAgencyName(), input.getRegistrationState(),
+					input.getRegistrationClass(), serviceContext);
+
+			return Response.status(200).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return processException(e);
+		}
 	}
 }
