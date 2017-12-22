@@ -331,7 +331,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 		// TODO get Dossier by referenceUid if dossierId = 0
 		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
-
+		
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -355,6 +355,45 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			e.printStackTrace();
+			
+			return processException(e);
+		}
+	}
+	
+	@Override
+	public Response updatePaymentFileConfirmNoAttachment(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, String referenceUid, PaymentFileInputModel input) {
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		long dossierId = GetterUtil.getLong(id);
+
+		// TODO get Dossier by referenceUid if dossierId = 0
+		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
+		
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			
+
+			PaymentFileActions action = new PaymentFileActionsImpl();
+
+			PaymentFile paymentFile = action.updateFileConfirm(groupId, dossierId, referenceUid, input.getConfirmNote(),
+					input.getPaymentMethod(), input.getConfirmPayload(), serviceContext);
+
+			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			
 			return processException(e);
 		}
 	}
@@ -378,7 +417,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 		// TODO get Dossier by referenceUid if dossierId = 0
 		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
-
+		
 		try {
 
 			if (!auth.isAuth(serviceContext)) {

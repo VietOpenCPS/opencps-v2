@@ -47,9 +47,11 @@ import com.liferay.portal.kernel.util.StringPool;
  * 
  * 
  */
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = { "referenceUid", "govAgencyCode", "govAgencyName", "applicantName", "applicantIdNo",
-		"paymentFee", "paymentAmount", "paymentNote", "epaymentProfile", "bankInfo" })
+		"paymentFee", "paymentAmount", "paymentNote", "epaymentProfile", "bankInfo", "confirmNote", "paymentMethod",
+		"confirmPayload" })
 @XmlRootElement(name = "PaymentFileInputModel")
 public class PaymentFileInputModel {
 	@DefaultValue(StringPool.BLANK)
@@ -91,6 +93,81 @@ public class PaymentFileInputModel {
 	@DefaultValue(StringPool.BLANK)
 	@FormParam(value = "bankInfo")
 	protected String bankInfo;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "confirmNote")
+	protected String confirmNote;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "paymentMethod")
+	protected String paymentMethod;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "confirmPayload")
+	protected String confirmPayload;
+
+	/**
+	 * Gets the value of the confirmNote property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getConfirmNote() {
+		return confirmNote;
+	}
+
+	/**
+	 * Sets the value of the confirmNote property.
+	 * 
+	 * @param referenceUid
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setConfirmNote(String confirmNote) {
+		this.confirmNote = confirmNote;
+	}
+
+	/**
+	 * Gets the value of the paymentMethod property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	/**
+	 * Sets the value of the paymentMethod property.
+	 * 
+	 * @param referenceUid
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+
+	/**
+	 * Gets the value of the confirmPayload property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getConfirmPayload() {
+		return confirmPayload;
+	}
+
+	/**
+	 * Sets the value of the confirmPayload property.
+	 * 
+	 * @param referenceUid
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setConfirmPayload(String confirmPayload) {
+		this.confirmPayload = confirmPayload;
+	}
 
 	/**
 	 * Gets the value of the serviceInfoId property.
