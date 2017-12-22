@@ -39,4 +39,7 @@ public class DossierMgtUtils {
 		return dossier;
 	}
 
+	public static boolean checkPreCondition(){
+		return true;
+	}
 }
