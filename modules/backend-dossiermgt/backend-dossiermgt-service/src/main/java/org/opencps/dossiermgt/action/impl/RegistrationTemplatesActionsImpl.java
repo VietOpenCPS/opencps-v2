@@ -65,10 +65,10 @@ public class RegistrationTemplatesActionsImpl implements RegistrationTemplatesAc
 	}
 
 	@Override
-	public RegistrationTemplates removeRegistrationTemplate(long groupId, String registrationTemplateId)
+	public RegistrationTemplates removeRegistrationTemplate(long groupId, long registrationTemplateId)
 			throws PortalException {
-
-		return RegistrationTemplatesLocalServiceUtil.removeRegistrationTemplate(groupId, registrationTemplateId);
+		
+		return RegistrationTemplatesLocalServiceUtil.deleteRegistrationTemplates(registrationTemplateId);
 	}
 
 	@Override

@@ -23,22 +23,28 @@ body .danhSachHoSoTable__class table.table th:nth-child(2) {
   padding: 0;
 }
 body .danhSachHoSoTable__class table.table th:nth-child(3) {
-  width: 240px;
+  width: 150px;
+  padding-left: 8px;
 }
 body .danhSachHoSoTable__class table.table th:nth-child(4) {
-  width: 110px;
+  width: 90px;
+  padding-left: 8px;
 }
 body .danhSachHoSoTable__class table.table th:nth-child(5) {
-  width: 125px;
-  padding: 0;
+  width: 100px;
+  padding-left: 8px;
+  padding-right: 0;
 }
 body .danhSachHoSoTable__class table.table th:nth-child(6) {
-  width: 120px;
+  width: 90px;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 body .danhSachHoSoTable__class table.table th:nth-child(7) {
   width: 100px;
+  padding-left: 8px;
 }
 body .danhSachHoSoTable__class table.table th:nth-child(8) {
   width: 90px;
-  padding: 0;
+  padding-left: 8px;
 }

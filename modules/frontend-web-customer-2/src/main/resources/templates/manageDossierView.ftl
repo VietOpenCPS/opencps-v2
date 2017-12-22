@@ -11,7 +11,11 @@
 							<i class="fa fa-file-text"></i>
 						</div>
 						<span class="text-bold" id="statusName" style="text-transform:uppercase;"></span>
-						<i class="fa fa-expand fs20 toggle-collapse MT10 MR10 pull-right" aria-hidden="true"></i>
+						<span id="fullScreen" data-bind="events: { click: fullScreen}">
+							<i class="fa fa-expand fs20 toggle-collapse MT10 MR10 pull-right" aria-hidden="true"></i>
+							<i class="fa fa-compress fs20 pull-right MT10 MR10" aria-hidden="true" style="display: none"></i>
+						</span>
+						
 						<div class="form-group search-icon pull-right MB0 MR10" style="margin-top:4px">
 							<input type="text" class="form-control" id="keyInput" placeholder="Nhập từ khóa" data-bind="events: { keyup: filterKey}" style="width: 290px; height:30px">
 						</div>
@@ -82,9 +86,9 @@
 				</div>	
 			</div>
 			
-			
 		</div>
 	</script>
+	<#-- <#include "notificationPaying.ftl"> -->
 		<#-- for listview dossier-->
 		<script type="text/x-kendo-template" id="proFileTemplate">
 			<tr class="">
@@ -92,7 +96,7 @@
 					
 				</td>
 				
-				<td class="" style="width: 25%">
+				<td class="" style="width: 22%">
 					<strong>
 						<a href="javascript:;" class="link-detail-employee text-hover-blue" data-pk="#=dossierId#" data-bind="events: { click : loadDossierDetail}">
 							#=serviceName#
@@ -126,7 +130,7 @@
 					<i class="text-light-gray">#=briefNote#</i>
 				</td>
 
-				<td class="" style="width: 13%">
+				<td class="" style="width: 16%">
 					# if(typeof actionNote !== "undefined"){#
 						<i>#:actionNote#</i>
 					#}#

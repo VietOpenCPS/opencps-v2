@@ -20,7 +20,7 @@ public interface RegistrationTemplatesActions {
 			String formScript, String formReport, String sampleData, ServiceContext serviceContext)
 			throws SystemException, PortalException;
 
-	public RegistrationTemplates removeRegistrationTemplate(long groupId, String registrationTemplateId)
+	public RegistrationTemplates removeRegistrationTemplate(long groupId, long registrationTemplateId)
 			throws PortalException;
 
 	public RegistrationTemplates updateFormScript(long groupId, long registrationTemplateId, String formScript,
@@ -31,5 +31,6 @@ public interface RegistrationTemplatesActions {
 
 	public RegistrationTemplates updateSampledata(long groupId, long registrationTemplatesId, String sampleData,
 			ServiceContext serviceContext) throws SystemException, PortalException;
+
 
 }
