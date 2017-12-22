@@ -142,11 +142,11 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 			params.put(RegistrationTerm.WARD_CODE, registration.getWardCode());
 			params.put(RegistrationTerm.WARD_NAME, registration.getWardName());
 			params.put(RegistrationTerm.CONTACT_NAME, registration.getContactName());
-			params.put(RegistrationTerm.CONTACT_TELNO, registration.getContactTelNo());
+			params.put(RegistrationTerm.CONTACT_TEL_NO, registration.getContactTelNo());
 			params.put(RegistrationTerm.CONTACT_EMAIL, registration.getContactEmail());
 			params.put(RegistrationTerm.GOV_AGENCY_CODE, registration.getGovAgencyCode());
 			params.put(RegistrationTerm.GOV_AGENCY_NAME, registration.getGovAgencyName());
-			params.put(RegistrationTerm.REGISTRATION_STATE, registration.getRegistrationState());
+			params.put(RegistrationTerm.REGISTRATIONSTATE, registration.getRegistrationState());
 			params.put(RegistrationTerm.REGISTRATION_CLASS, registration.getRegistrationClass());
 			params.put(RegistrationTerm.SUBMITTING, registration.getSubmitting());
 			

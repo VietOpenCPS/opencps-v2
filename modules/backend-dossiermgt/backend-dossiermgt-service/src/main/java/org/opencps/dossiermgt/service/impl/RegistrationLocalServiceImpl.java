@@ -14,12 +14,12 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
@@ -29,8 +29,26 @@ import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.BooleanQuery;
+import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the registration local service.
@@ -53,6 +71,9 @@ import com.liferay.portal.kernel.util.Validator;
 @ProviderType
 public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseImpl {
 
+	public static final String CLASS_NAME = Registration.class.getName();
+
+	@Indexable(type = IndexableType.REINDEX)
 	public Registration insert(long groupId, String applicantName, String applicantIdType, String applicantIdNo,
 			String applicantIdDate, String address, String cityCode, String cityName, String districtCode,
 			String districtName, String wardCode, String wardName, String contactName, String contactTelNo,
@@ -108,6 +129,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		return registrationPersistence.update(model);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	public Registration updateRegistration(long groupId, long registrationId, String applicantName,
 			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
@@ -153,6 +175,92 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		return fileEntryId;
 	}
+
+
+	public Hits searchLucene(long userId, LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
+			SearchContext searchContext) throws ParseException, SearchException {
+		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+		String groupId = (String) params.get(Field.GROUP_ID);
+
+		Indexer<Registration> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Registration.class);
+
+		searchContext.addFullQueryEntryClassName(CLASS_NAME);
+		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setLike(true);
+		searchContext.setStart(start);
+		searchContext.setEnd(end);
+		searchContext.setAndSearch(true);
+		searchContext.setSorts(sorts);
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
+
+			query.addFields(Field.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		// Extra fields
+		String registrationState = GetterUtil.getString(params.get(RegistrationTerm.REGISTRATIONSTATE));
+		String govAgencyCode = GetterUtil.getString(params.get(RegistrationTerm.GOV_AGENCY_CODE));
+		String owner = GetterUtil.getString(params.get(RegistrationTerm.OWNER));
+		String registrationClass = GetterUtil.getString(params.get(RegistrationTerm.REGISTRATION_CLASS));
+		String submitting = GetterUtil.getString(params.get(RegistrationTerm.SUBMITTING));
+
+		if (Validator.isNotNull(registrationState) && !registrationState.isEmpty()) {
+			MultiMatchQuery query = new MultiMatchQuery(registrationState);
+
+			query.addFields(RegistrationTerm.REGISTRATIONSTATE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(govAgencyCode) && !govAgencyCode.isEmpty()) {
+			MultiMatchQuery query = new MultiMatchQuery(govAgencyCode);
+
+			query.addFields(RegistrationTerm.GOV_AGENCY_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(owner) && !owner.isEmpty()) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
+
+			query.addFields(RegistrationTerm.USER_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(registrationClass) && !registrationClass.isEmpty()) {
+			MultiMatchQuery query = new MultiMatchQuery(registrationClass);
+
+			query.addFields(RegistrationTerm.REGISTRATION_CLASS);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(submitting) && !submitting.isEmpty()) {
+			MultiMatchQuery query = new MultiMatchQuery(submitting);
+
+			query.addFields(RegistrationTerm.SUBMITTING);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
+
+		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+	}
+
 
 	
 	// binhth
@@ -234,4 +342,5 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		return registration;
 	}
+
 }
