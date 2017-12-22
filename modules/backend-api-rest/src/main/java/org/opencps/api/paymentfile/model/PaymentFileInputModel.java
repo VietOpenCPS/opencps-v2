@@ -5,7 +5,6 @@
 // Generated on: 2017.09.11 at 06:53:24 PM ICT 
 //
 
-
 package org.opencps.api.paymentfile.model;
 
 import javax.ws.rs.DefaultValue;
@@ -17,11 +16,13 @@ import javax.xml.bind.annotation.XmlType;
 
 import com.liferay.portal.kernel.util.StringPool;
 
-
 /**
- * <p>Java class for anonymous complex type.
+ * <p>
+ * Java class for anonymous complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -46,287 +47,408 @@ import com.liferay.portal.kernel.util.StringPool;
  * 
  * 
  */
+
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-		"referenceUid",
-		"govAgencyCode",
-		"govAgencyName",
-		"applicantName",
-		"applicantIdNo",
-		"paymentFee",
-		"paymentAmount",
-		"paymentNote",
-		"epaymentProfile",
-		"bankInfo"
-})
+@XmlType(name = "", propOrder = { "referenceUid", "govAgencyCode", "govAgencyName", "applicantName", "applicantIdNo",
+		"paymentFee", "paymentAmount", "paymentNote", "epaymentProfile", "bankInfo", "confirmNote", "paymentMethod",
+		"confirmPayload", "approveDatetime", "accountUserName", "govAgencyTaxNo", "invoiceTemplateNo", "invoiceIssueNo",
+		"invoiceNo" })
 @XmlRootElement(name = "PaymentFileInputModel")
 public class PaymentFileInputModel {
-	@DefaultValue("0")@FormParam(value = "referenceUid")
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "referenceUid")
 	protected String referenceUid;
 
-	@DefaultValue(StringPool.BLANK) @FormParam(value = "govAgencyCode")
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "govAgencyCode")
 	protected String govAgencyCode;
 
-	@DefaultValue(StringPool.BLANK) @FormParam(value = "govAgencyName")
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "govAgencyName")
 	protected String govAgencyName;
 
-	@DefaultValue(StringPool.BLANK) @FormParam(value = "applicantName")
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "applicantName")
 	protected String applicantName;
 
-	@DefaultValue(StringPool.BLANK) @FormParam(value = "applicantIdNo")
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "applicantIdNo")
 	protected String applicantIdNo;
 
-	@DefaultValue(StringPool.BLANK) @FormParam(value = "paymentFee")
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "paymentFee")
 	protected String paymentFee;
 
-	@DefaultValue("0") @FormParam(value = "paymentAmount")
+	@DefaultValue("0")
+	@FormParam(value = "paymentAmount")
 	protected Long paymentAmount;
 
-	@DefaultValue(StringPool.BLANK) @FormParam(value = "paymentNote")
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "paymentNote")
 	protected String paymentNote;
 
-	@DefaultValue(StringPool.BLANK) @FormParam(value = "epaymentProfile")
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "epaymentProfile")
 	protected String epaymentProfile;
 
-	@DefaultValue(StringPool.BLANK) @FormParam(value = "bankInfo")
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "bankInfo")
 	protected String bankInfo;
 
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "confirmNote")
+	protected String confirmNote;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "paymentMethod")
+	protected String paymentMethod;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "confirmPayload")
+	protected String confirmPayload;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "approveDatetime")
+	protected String approveDatetime;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "accountUserName")
+	protected String accountUserName;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "govAgencyTaxNo")
+	protected String govAgencyTaxNo;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "invoiceTemplateNo")
+	protected String invoiceTemplateNo;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "invoiceIssueNo")
+	protected String invoiceIssueNo;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "invoiceNo")
+	protected String invoiceNo;
+	
+
+	public String getApproveDatetime() {
+		return approveDatetime;
+	}
+
+	public void setApproveDatetime(String approveDatetime) {
+		this.approveDatetime = approveDatetime;
+	}
+
+	public String getAccountUserName() {
+		return accountUserName;
+	}
+
+	public void setAccountUserName(String accountUserName) {
+		this.accountUserName = accountUserName;
+	}
+
+	public String getGovAgencyTaxNo() {
+		return govAgencyTaxNo;
+	}
+
+	public void setGovAgencyTaxNo(String govAgencyTaxNo) {
+		this.govAgencyTaxNo = govAgencyTaxNo;
+	}
+
+	public String getInvoiceTemplateNo() {
+		return invoiceTemplateNo;
+	}
+
+	public void setInvoiceTemplateNo(String invoiceTemplateNo) {
+		this.invoiceTemplateNo = invoiceTemplateNo;
+	}
+
+	public String getInvoiceIssueNo() {
+		return invoiceIssueNo;
+	}
+
+	public void setInvoiceIssueNo(String invoiceIssueNo) {
+		this.invoiceIssueNo = invoiceIssueNo;
+	}
+
+	public String getInvoiceNo() {
+		return invoiceNo;
+	}
+
+	public void setInvoiceNo(String invoiceNo) {
+		this.invoiceNo = invoiceNo;
+	}
+
 	/**
-     * Gets the value of the serviceInfoId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
+	 * Gets the value of the confirmNote property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getConfirmNote() {
+		return confirmNote;
+	}
+
+	/**
+	 * Sets the value of the confirmNote property.
+	 * 
+	 * @param referenceUid
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setConfirmNote(String confirmNote) {
+		this.confirmNote = confirmNote;
+	}
+
+	/**
+	 * Gets the value of the paymentMethod property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	/**
+	 * Sets the value of the paymentMethod property.
+	 * 
+	 * @param referenceUid
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+
+	/**
+	 * Gets the value of the confirmPayload property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getConfirmPayload() {
+		return confirmPayload;
+	}
+
+	/**
+	 * Sets the value of the confirmPayload property.
+	 * 
+	 * @param referenceUid
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setConfirmPayload(String confirmPayload) {
+		this.confirmPayload = confirmPayload;
+	}
+
+	/**
+	 * Gets the value of the serviceInfoId property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
 	public String getReferenceUid() {
 		return referenceUid;
 	}
 
-    /**
-     * Sets the value of the serviceInfoId property.
-     * 
-     * @param referenceUid
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
+	/**
+	 * Sets the value of the serviceInfoId property.
+	 * 
+	 * @param referenceUid
+	 *            allowed object is {@link String }
+	 * 
+	 */
 	public void setReferenceUid(String referenceUid) {
 		this.referenceUid = referenceUid;
 	}
 
 	/**
-     * Gets the value of the govAgencyCode property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
+	 * Gets the value of the govAgencyCode property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
 	public String getGovAgencyCode() {
 		return govAgencyCode;
 	}
 
-    /**
-     * Sets the value of the govAgencyCode property.
-     * 
-     * @param govAgencyCode
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
+	/**
+	 * Sets the value of the govAgencyCode property.
+	 * 
+	 * @param govAgencyCode
+	 *            allowed object is {@link String }
+	 * 
+	 */
 	public void setGovAgencyCode(String govAgencyCode) {
 		this.govAgencyCode = govAgencyCode;
 	}
 
 	/**
-     * Gets the value of the govAgencyName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
+	 * Gets the value of the govAgencyName property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
 	public String getGovAgencyName() {
 		return govAgencyName;
 	}
 
-    /**
-     * Sets the value of the govAgencyName property.
-     * 
-     * @param govAgencyName
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
+	/**
+	 * Sets the value of the govAgencyName property.
+	 * 
+	 * @param govAgencyName
+	 *            allowed object is {@link String }
+	 * 
+	 */
 	public void setGovAgencyName(String govAgencyName) {
 		this.govAgencyName = govAgencyName;
 	}
 
 	/**
-     * Gets the value of the applicantName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
+	 * Gets the value of the applicantName property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
 	public String getApplicantName() {
 		return applicantName;
 	}
 
-    /**
-     * Sets the value of the applicantName property.
-     * 
-     * @param applicantName
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
+	/**
+	 * Sets the value of the applicantName property.
+	 * 
+	 * @param applicantName
+	 *            allowed object is {@link String }
+	 * 
+	 */
 	public void setApplicantName(String applicantName) {
 		this.applicantName = applicantName;
 	}
 
 	/**
-     * Gets the value of the applicantIdNo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
+	 * Gets the value of the applicantIdNo property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
 	public String getApplicantIdNo() {
 		return applicantIdNo;
 	}
 
-    /**
-     * Sets the value of the applicantIdNo property.
-     * 
-     * @param applicantIdNo
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
+	/**
+	 * Sets the value of the applicantIdNo property.
+	 * 
+	 * @param applicantIdNo
+	 *            allowed object is {@link String }
+	 * 
+	 */
 	public void setApplicantIdNo(String applicantIdNo) {
 		this.applicantIdNo = applicantIdNo;
 	}
 
 	/**
-     * Gets the value of the paymentFee property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
+	 * Gets the value of the paymentFee property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
 	public String getPaymentFee() {
 		return paymentFee;
 	}
 
-    /**
-     * Sets the value of the paymentFee property.
-     * 
-     * @param paymentFee
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
+	/**
+	 * Sets the value of the paymentFee property.
+	 * 
+	 * @param paymentFee
+	 *            allowed object is {@link String }
+	 * 
+	 */
 	public void setPaymentFee(String paymentFee) {
 		this.paymentFee = paymentFee;
 	}
 
 	/**
-     * Gets the value of the paymentAmount property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
+	 * Gets the value of the paymentAmount property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
 	public Long getPaymentAmount() {
 		return paymentAmount;
 	}
 
-    /**
-     * Sets the value of the paymentAmount property.
-     * 
-     * @param paymentAmount
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
+	/**
+	 * Sets the value of the paymentAmount property.
+	 * 
+	 * @param paymentAmount
+	 *            allowed object is {@link String }
+	 * 
+	 */
 	public void setPaymentAmount(Long paymentAmount) {
 		this.paymentAmount = paymentAmount;
 	}
 
 	/**
-     * Gets the value of the paymentNote property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
+	 * Gets the value of the paymentNote property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
 	public String getPaymentNote() {
 		return paymentNote;
 	}
 
-    /**
-     * Sets the value of the paymentNote property.
-     * 
-     * @param paymentNote
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
+	/**
+	 * Sets the value of the paymentNote property.
+	 * 
+	 * @param paymentNote
+	 *            allowed object is {@link String }
+	 * 
+	 */
 	public void setPaymentNote(String paymentNote) {
 		this.paymentNote = paymentNote;
 	}
 
 	/**
-     * Gets the value of the epaymentProfile property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
+	 * Gets the value of the epaymentProfile property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
 	public String getEpaymentProfile() {
 		return epaymentProfile;
 	}
 
-    /**
-     * Sets the value of the epaymentProfile property.
-     * 
-     * @param epaymentProfile
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
+	/**
+	 * Sets the value of the epaymentProfile property.
+	 * 
+	 * @param epaymentProfile
+	 *            allowed object is {@link String }
+	 * 
+	 */
 	public void setEpaymentProfile(String epaymentProfile) {
 		this.epaymentProfile = epaymentProfile;
 	}
 
 	/**
-     * Gets the value of the bankInfo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
+	 * Gets the value of the bankInfo property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
 	public String getBankInfo() {
 		return bankInfo;
 	}
 
-    /**
-     * Sets the value of the bankInfo property.
-     * 
-     * @param bankInfo
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
+	/**
+	 * Sets the value of the bankInfo property.
+	 * 
+	 * @param bankInfo
+	 *            allowed object is {@link String }
+	 * 
+	 */
 	public void setBankInfo(String bankInfo) {
 		this.bankInfo = bankInfo;
 	}

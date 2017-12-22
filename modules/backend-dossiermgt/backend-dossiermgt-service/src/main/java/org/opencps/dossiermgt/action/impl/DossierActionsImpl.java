@@ -334,7 +334,7 @@ public class DossierActionsImpl implements DossierActions {
 										createFile.put("partName", dossierPart.getPartName());
 										createFile.put("partTip", dossierPart.getPartTip());
 										createFile.put("multiple", dossierPart.getMultiple());
-										createFile.put("templateFileNo", dossierPart.getTemplateNo());
+										createFile.put("templateFileNo", dossierPart.getFileTemplateNo());
 										long fileEntryId = 0;
 										boolean eForm = false;
 										String formData = StringPool.BLANK;
@@ -389,8 +389,10 @@ public class DossierActionsImpl implements DossierActions {
 
 										dossierFilesResult = DossierFileLocalServiceUtil
 												.getDossierFileByDID_FTNO_DPT(dossierId, fileTemplateNo, 2, false);
+										
+										_log.info("///////////////////////////// getDossierFileByDID_FTNO_DPT " + dossierId + "|" + fileTemplateNo + "|");
 
-										counter = (dossierFilesResult != null && dossierFilesResult.isEmpty())
+										counter = (dossierFilesResult != null && !dossierFilesResult.isEmpty())
 												? dossierFilesResult.size() : 0;
 
 										createFile.put("eform", eForm);
@@ -590,25 +592,6 @@ public class DossierActionsImpl implements DossierActions {
 			// update reference dossier
 			
 
-			if (Validator.isNull(dossier.getDossierNo())
-					&& (curStep.getDossierStatus().contentEquals(DossierStatusConstants.PAYING)
-							|| (curStep.getDossierStatus().contentEquals(DossierStatusConstants.PROCESSING)))) {
-				
-				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-				params.put(DossierTerm.AGENCY, dossier.getGovAgencyCode());
-				params.put(DossierTerm.SERVICE, dossier.getServiceCode());
-				params.put(DossierTerm.TEMPLATE, dossier.getDossierTemplateNo());
-				SearchContext sc = new SearchContext();
-				sc.setCompanyId(dossier.getCompanyId());
-				
-				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
-						dossierId, serviceProcess.getDossierNoPattern(), params, sc);
-				
-				dossier.setDossierNo(dossierRef);
-				//To index
-				DossierLocalServiceUtil.syncDossier(dossier);
-			}
-
 			DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
 
 			dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId, serviceProcessId,
@@ -627,6 +610,28 @@ public class DossierActionsImpl implements DossierActions {
 			DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, curStep.getDossierStatus(),
 					jsStatus.getString(curStep.getDossierStatus()), curStep.getDossierSubStatus(),
 					jsSubStatus.getString(curStep.getDossierSubStatus()), context);
+			
+
+			if (Validator.isNull(dossier.getDossierNo())
+					&& (curStep.getDossierStatus().contentEquals(DossierStatusConstants.PAYING)
+							|| (curStep.getDossierStatus().contentEquals(DossierStatusConstants.PROCESSING)))) {
+				
+				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+				params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
+				params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
+				params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
+				params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
+				//SearchContext sc = new SearchContext();
+				//sc.setCompanyId(dossier.getCompanyId());
+				
+				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
+						dossierId, serviceProcess.getDossierNoPattern(), params);
+				
+				dossier.setDossierNo(dossierRef);
+				//To index
+				DossierLocalServiceUtil.syncDossier(dossier);
+			}
+
 
 			// update nextActionId
 			if (Validator.isNotNull(prvAction)) {

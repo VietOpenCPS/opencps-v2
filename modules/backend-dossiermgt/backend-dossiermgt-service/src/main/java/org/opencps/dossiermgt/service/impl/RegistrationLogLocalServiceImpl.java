@@ -25,6 +25,8 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.impl.RegistrationLogImpl;
 import org.opencps.dossiermgt.service.base.RegistrationLogLocalServiceBaseImpl;
 
+import com.liferay.portal.kernel.service.ServiceContext;
+
 /**
  * The implementation of the registration log local service.
  *
@@ -54,9 +56,12 @@ public class RegistrationLogLocalServiceImpl extends RegistrationLogLocalService
 	 */
 	public RegistrationLog addLog(String author, long groupId, long userId, long registrationId, String content,
 			String payload) {
-		long id = counterLocalService.increment(RegistrationLog.class.getName());
-		RegistrationLogImpl registrationLog = new RegistrationLogImpl();
-		registrationLog.setRegistrationLogId(id);
+		
+		long registrationLogId = counterLocalService.increment(RegistrationLog.class.getName());
+		
+		RegistrationLog registrationLog = registrationLogPersistence.create(registrationLogId);
+		
+		registrationLog.setRegistrationLogId(registrationLogId);
 		registrationLog.setRegistrationId(registrationId);
 		registrationLog.setGroupId(groupId);
 		registrationLog.setUserId(userId);
@@ -65,6 +70,12 @@ public class RegistrationLogLocalServiceImpl extends RegistrationLogLocalService
 		registrationLog.setAuthor(author);
 		registrationLog.setContent(content);
 		registrationLog.setPayload(payload);
-		return addRegistrationLog(registrationLog);
+		
+		return registrationLogPersistence.update(registrationLog);
+	}
+	
+	public List<RegistrationLog> getRegistrationLogbyRegId(long groupId, long registrationId){
+		
+		return registrationLogPersistence.findByG_REGID(groupId, registrationId);
 	}
 }

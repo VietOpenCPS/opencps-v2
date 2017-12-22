@@ -52,7 +52,7 @@ public interface PaymentFileManagement {
 				@ApiResponse (code = HttpURLConnection.HTTP_FORBIDDEN, message = "Accsess denied", response = ExceptionModel.class) })
 	public Response getPaymentFilesByDossierId(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id );
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id, @BeanParam PaymentFileSearchModel search);
 	/* Get List of payment File - END */
 
 	//2
@@ -125,7 +125,7 @@ public interface PaymentFileManagement {
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "id of Payment", required = true) @PathParam("id") String id,
 			@ApiParam (value = "referenceUid of Payment", required = true) @PathParam("referenceUid") String referenceUid,
-			@BeanParam JSONObject input);
+			@BeanParam PaymentFileInputModel input);
 	/* Update info EpaymentProfile - END */
 
 	//6
@@ -143,12 +143,29 @@ public interface PaymentFileManagement {
 	public Response updatePaymentFileConfirm(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, 
-			@ApiParam(value = "id of payments", required = true) @PathParam("id") long id,
+			@ApiParam(value = "id of payments", required = true) @PathParam("id") String id,
 			@ApiParam(value = "reference of paymentFile", required = true) @PathParam("referenceUid") String referenceUid,
-			@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file,
+			@ApiParam(value = "Attachment files") @Multipart("file") Attachment file,
 			@ApiParam(value = "Metadata of PaymentFile") @Multipart("confirmNote") String confirmNote,
 			@ApiParam(value = "Metadata of PaymentFile") @Multipart("paymentMethod") String paymentMethod,
 			@ApiParam(value = "Metadata of PaymentFile") @Multipart("confirmPayload") String confirmPayload);
+	
+	@PUT
+	@Path("/{id}/payments/{referenceUid}/confirm/noattachment")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@ApiOperation(value = "Update PaymentFile")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns"),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response updatePaymentFileConfirmNoAttachment(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, 
+			@ApiParam(value = "id of payments", required = true) @PathParam("id") String id,
+			@ApiParam(value = "reference of paymentFile", required = true) @PathParam("referenceUid") String referenceUid,
+			@BeanParam PaymentFileInputModel input);
 	/* Confirm payment - END */
 
 	//7
@@ -166,15 +183,32 @@ public interface PaymentFileManagement {
 	public Response updatePaymentFileApproval(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, 
-			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
 			@ApiParam(value = "reference of paymentFile", required = true) @PathParam("referenceUid") String referenceUid,
-			@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file,
+			@ApiParam(value = "Attachment files") @Multipart("file") Attachment file,
 			@ApiParam(value = "Metadata of PaymentFile") @Multipart("approveDatetime") String approveDatetime,
 			@ApiParam(value = "Metadata of PaymentFile") @Multipart("accountUserName") String accountUserName,
 			@ApiParam(value = "Metadata of PaymentFile") @Multipart("govAgencyTaxNo") String govAgencyTaxNo,
 			@ApiParam(value = "Metadata of PaymentFile") @Multipart("invoiceTemplateNo") String invoiceTemplateNo,
 			@ApiParam(value = "Metadata of PaymentFile") @Multipart("invoiceIssueNo") String invoiceIssueNo,
 			@ApiParam(value = "Metadata of PaymentFile") @Multipart("invoiceNo") String invoiceNo);
+	
+	@PUT
+	@Path("/{id}/payments/{referenceUid}/approval/noattachment")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@ApiOperation(value = "Update PaymentFile")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns"),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response updatePaymentFileApprovalNoAttachment(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, 
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
+			@ApiParam(value = "reference of paymentFile", required = true) @PathParam("referenceUid") String referenceUid,
+			@BeanParam PaymentFileInputModel input);
 	/* Approved payment - END */
 
 	//8
@@ -190,7 +224,7 @@ public interface PaymentFileManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access defined", response = ExceptionModel.class) })
 	public Response downloadConfirmFile(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@ApiParam(value = "id of dossier", required = true) @PathParam("id") Long id,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
 			@ApiParam (value = "reference of paymentFile", required = true) @PathParam("referenceUid") String referenceUid);
 	/* Download file confirm - END */
 
@@ -207,7 +241,7 @@ public interface PaymentFileManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access defined", response = ExceptionModel.class) })
 	public Response downloadInvoiceFile(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@ApiParam(value = "id of dossier", required = true) @PathParam("id") Long id,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
 			@ApiParam(value = "reference of paymentFile", required = true) @PathParam("referenceUid") String referenceUid);
 	/* Download file invoice - END */
 

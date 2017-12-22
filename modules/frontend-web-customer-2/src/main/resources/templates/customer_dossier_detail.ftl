@@ -31,14 +31,28 @@
 				<i class="fa fa-reply" aria-hidden="true"></i>
 				Quay lại
 			</a>
-			<a href="javascript:;" onclick="funSaveDossier();">
-				<i class="fa fa-save"></i>
-				Lưu
-			</a>
-			<a href="javascript:;" onclick="fnNext();">
-				<i class="fa fa-sign-in" aria-hidden="true"></i>
-				Tiếp tục
-			</a>
+
+			<#if resCancelling?has_content >
+
+				<a href="javascript:;" class="btn btn-active" id="btn-rescancelling-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
+
+			<#elseif sendAdd?has_content >
+
+				<a href="javascript:;" class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
+
+			<#else>
+
+				<a href="javascript:;" onclick="funSaveDossier();">
+					<i class="fa fa-save"></i>
+					Lưu
+				</a>
+				<a href="javascript:;" onclick="fnNext();">
+					<i class="fa fa-sign-in" aria-hidden="true"></i>
+					Tiếp tục
+				</a>
+
+			</#if>
+
 		</div>
 	</div>
 
@@ -198,6 +212,7 @@
 					</span>
 
 					<div class="actions">
+
 						<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#">
 							<i class="fa fa-archive" aria-hidden="true"></i>
 						</a>
@@ -206,7 +221,7 @@
 							<i class="fa fa-upload text-light-blue"></i>
 						</label>
 
-						<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#" hasform="#if(hasForm){# true #}#">
+						<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#" hasform="#if(hasForm){# true #}#" >
 
 						<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 							<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
@@ -922,6 +937,7 @@
 		data.append('referenceUid', "");
 		data.append('dossierTemplateNo', dossierTemplateNo);
 		data.append('fileTemplateNo', fileTemplateNo);
+		data.append('formData', "");
 		data.append('fileType', "");
 		data.append('isSync', "");
 
@@ -1218,13 +1234,13 @@ var fnCancelling = function(dossierId){
 	$.ajax({
 		url : "${api.server}/dossiers/"+dossierId+"/cancelling",
 		dataType : "json",
-		type : "PUT",
+		type : "GET",
 		headers: {
 			"groupId": ${groupId},
 			Accept : "application/json"
 		},
 		data : {
-			applicantNote : $("textarea#applicantNote").val()
+			
 		},
 		success : function(result){
 			notification.show({
@@ -1244,13 +1260,13 @@ var fnSubmitting = function(dossierId){
 	$.ajax({
 		url : "${api.server}/dossiers/"+dossierId+"/submitting",
 		dataType : "json",
-		type : "PUT",
+		type : "GET",
 		headers: {
 			"groupId": ${groupId},
 			Accept : "application/json"
 		},
 		data : {
-			applicantNote : $("textarea#applicantNote").val()
+			
 		},
 		success : function(result){
 			notification.show({

@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.action.util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 
@@ -69,9 +71,34 @@ public class DossierPaymentUtils {
 		PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId, dossier.getGovAgencyCode());
 
 		try {
-			actions.createPaymentFile(userId, groupId, dossierId, dossier.getReferenceUid(),
+			
+			// generator epaymentProfile
+			JSONObject epaymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
+			
+			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, dossier.getReferenceUid(),
 					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantName(),
-					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, paymentConfig.getEpaymentConfig(), paymentConfig.getBankInfo(), serviceContext);
+					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, null, paymentConfig.getBankInfo(), serviceContext);
+			
+			JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
+			
+			if (epaymentConfigJSON.has("paymentKeypayDomain")) {
+				
+				try {
+					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId, paymentFile.getPaymentFileId(), pattern, dossierId);
+					
+					epaymentProfileJSON.put("keypayUrl", generatorPayURL);
+					epaymentProfileJSON.put("keypayGoodCode", PaymentUrlGenerator.generatorGoodCode(11));
+					epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
+					
+					actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(), serviceContext);
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			
 		} catch (PortalException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

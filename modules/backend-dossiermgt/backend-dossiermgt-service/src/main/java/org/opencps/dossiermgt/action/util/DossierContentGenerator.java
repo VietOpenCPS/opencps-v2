@@ -16,7 +16,6 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.StringPool;
@@ -113,8 +112,6 @@ public class DossierContentGenerator {
 				count++;
 			}
 
-			System.out.println("//////////////////////// briefNotePattern" + briefNotePattern);
-
 			for (Map.Entry<String, String> entry : patternContentMaps.entrySet()) {
 				String tmpKey = entry.getKey();
 				String patternContent = entry.getValue();
@@ -124,19 +121,27 @@ public class DossierContentGenerator {
 				} else {
 					String dataKey = textSplit[0];
 					String fileTemplateNo = textSplit[1];
-					System.out.println("//////////////////////// " + dataKey + " | " + fileTemplateNo);
+					
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
 							fileTemplateNo, false, new DossierFileComparator(false, "createDate", Date.class));
+					
+					
 					if (dossierFile == null) {
 						briefNotePattern = briefNotePattern.replace(tmpKey, StringPool.BLANK);
 					} else {
+						
 						String formData = dossierFile.getFormData();
 						if (Validator.isNull(formData)) {
 							briefNotePattern = briefNotePattern.replace(tmpKey, StringPool.BLANK);
 						} else {
 							try {
+								String value = StringPool.BLANK;
+								
 								JSONObject object = JSONFactoryUtil.createJSONObject(formData);
-								String value = object.getString(dataKey);
+								if(object.has(dataKey)){
+									value = object.getString(dataKey);
+								}
+								
 								briefNotePattern = briefNotePattern.replace(tmpKey,
 										Validator.isNotNull(value) ? value : StringPool.BLANK);
 							} catch (Exception e) {

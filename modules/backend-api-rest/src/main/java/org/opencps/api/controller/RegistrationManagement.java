@@ -66,7 +66,8 @@ public interface RegistrationManagement {
 	@Path("/registrations/{id}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	public Response delete(@PathParam("id") Long id);
+	public Response delete(
+			@ApiParam(value = "registrationId", required = true)@PathParam("id") long id);
 
 	@GET
 	@Path("/registrations/{id}/forms")

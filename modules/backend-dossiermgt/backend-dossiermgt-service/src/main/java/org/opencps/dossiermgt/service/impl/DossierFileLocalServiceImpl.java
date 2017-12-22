@@ -129,8 +129,14 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		}
 
 		Date now = new Date();
+		
+		User userAction = null;
+		
+		if (userId != 0) {
+			userAction = userLocalService.getUser(userId);
+		}
 
-		User userAction = userLocalService.getUser(userId);
+		
 
 		long dossierFileId = counterLocalService.increment(DossierFile.class.getName());
 
@@ -141,8 +147,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		object.setGroupId(groupId);
 		object.setCreateDate(now);
 		object.setModifiedDate(now);
-		object.setUserId(userAction.getUserId());
-		object.setUserName(userAction.getFullName());
+		object.setUserId(Validator.isNotNull(userAction) ? userAction.getUserId() : 0l);
+		object.setUserName(Validator.isNotNull(userAction) ? userAction.getFullName() : StringPool.BLANK);
 
 		// Add other fields
 

@@ -51,7 +51,7 @@
 <#assign params = Request.params?eval>
 </#if>
 <#if Request.constants??>
-<#assign constants = Request.constants?eval>
+<#assign constants = Request.constants>
 </#if>
 
 <!--INIT  WORKING UNIT-->
