@@ -52,10 +52,10 @@ public class RegistrationIndexer extends BaseIndexer<Registration> {
 
 		document.addNumberSortable(RegistrationTerm.REGISTRATION_ID, object.getRegistrationId());
 
-		document.addKeywordSortable(RegistrationTerm.APPLICANT_NAME, object.getApplicantName());
-		document.addKeywordSortable(RegistrationTerm.APPLICANT_ID_TYPE, object.getApplicantIdType());
-		document.addKeywordSortable(RegistrationTerm.APPLICANT_ID_NO, object.getApplicantIdNo());
-		document.addKeywordSortable(RegistrationTerm.APPLICANT_ID_DATE, GetterUtil.getString(object.getApplicantIdDate()));
+		document.addKeywordSortable(RegistrationTerm.APPLICATION_NAME, object.getApplicantName());
+		document.addKeywordSortable(RegistrationTerm.APPLICATION_ID_TYPE, object.getApplicantIdType());
+		document.addKeywordSortable(RegistrationTerm.APPLICATION_ID_NO, object.getApplicantIdNo());
+		document.addKeywordSortable(RegistrationTerm.APPLICATION_ID_DATE, GetterUtil.getString(object.getApplicantIdDate()));
 		document.addKeywordSortable(RegistrationTerm.ADDRESS, object.getAddress());
 		document.addKeywordSortable(RegistrationTerm.CITY_CODE, object.getCityCode());
 		document.addKeywordSortable(RegistrationTerm.CITY_NAME, object.getCityName());
