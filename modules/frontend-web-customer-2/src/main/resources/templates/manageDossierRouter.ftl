@@ -7,6 +7,8 @@
 		var viewMainList = new kendo.View("mainTemplate", {model: modelMain});
 		// Show màn hình chi tiết hồ sơ
 		manageDossier.route("/(:dossierItemStatus)/dossiers/(:id)", function(dossierItemStatus, id){
+			$("#panel_list").show();
+			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 			$("#mainType1").hide();
 			$("#mainType2").show();
 			$(".filterField").hide();
@@ -24,12 +26,16 @@
 		});
 		// Show
 		manageDossier.route("/dossiers/(:id)/yeucauhuy", function(id){
+			$("#panel_list").show();
+			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 			$("#mainType1").hide();
 			$("#mainType2").show();
 			$("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+id+"&${portletNamespace}resCancelling=true",function(result){
 			})
 		});
 		manageDossier.route("/dossiers/(:id)/guibosung", function(id){
+			$("#panel_list").show();
+			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 			$("#mainType1").hide();
 			$("#mainType2").show();
 			$("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+id+"&${portletNamespace}sendAdd=true",function(result){
