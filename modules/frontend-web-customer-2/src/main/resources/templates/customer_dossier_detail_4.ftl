@@ -219,16 +219,19 @@
     </div>
     <div class="content-part collapse in" id="collapseDossierPart">
         <div class="row-parts-head MT5">
-            <ul id="listViewDossiserLog" class="ul-default mimic-table">
-                
-            </ul>
+            
+            <div class="table-responsive">
+			    <table class="table table-bordered table_history_style">
+			      <tbody>
+			      		<div id="listViewDossiserLog">
+			      			
+			      		</div>
+			      </tbody>
+			   	</table>
+			</div>
             <script type="text/x-kendo-template" id="templateDossiserLog">
-                <li class="clearfix eq-height-lg P0">
-                    <div class="orderNo col-sm-0 text-center center-all row-blue P15">
-                        #:itemIndex#.
-                    </div>
-
-                    #
+				
+				#
                     var jobposTitle = "";
                     var briefNote = "";
                     var dossier ;
@@ -236,17 +239,18 @@
                     
                         var payLoadObj = payload;
 
-                        jobPosName = payLoadObj.hasOwnProperty("jobPosName")?payLoadObj.jobPosName : "";
-                        stepInstruction = payLoadObj.hasOwnProperty("stepInstruction")?payLoadObj.stepInstruction : "";
+                        stepName = payLoadObj.hasOwnProperty("stepName")?payLoadObj.stepName : "";
                         dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
 						
 	                }catch(e){
 		                console.log(e);
 		            }
-		            #
-
-		            <div class="col-sm-12 M0 P5 PL10">
-		                <span class="text-bold">#:author# </span> <span class="text-light-gray">(#:jobPosName#) &nbsp;</span> <span class="text-light-blue">#:stepInstruction#</span> 
+	            #
+				<tr>
+					<td style="padding-top: 15px; padding-right: 15px">#:itemIndex#</td>
+					<td style="padding-top: 15px">
+						
+						<span class="text-bold PR10">#:author# </span> <span class="text-light-blue">#:stepName#</span> 
 		                <p>
 		                    #if ( createDate!="" && createDate!=null ) {#
 		                        #= kendo.toString(kendo.parseDate(createDate, 'yyyy-MM-dd'), 'hh:mm - dd/MM/yyyy')#
@@ -269,8 +273,9 @@
 			    			} 
 						}
 						#
-					</div>
-				</li>
+
+					</td>
+				</tr>
 			</script>
 
 		</div>
@@ -438,433 +443,9 @@
 
 						},
 						success : function(result){
-							var data = result.hasOwnProperty("data")?result.data:[];
-							var mmmm = {
-    "total": 27,
-    "data": [
-        {
-            "dossierLogId": "8307",
-            "payload": {
-                "stepName": "Lưu hồ sơ",
-                "files": [
-                    {
-                        "fileName": "Bản thông tin Xe cơ giới trong Thẩm định thiết kế",
-                        "dossierFileId": "18106",
-                        "createDate": "2017-12-20T16:06:43.000Z"
-                    }
-                ],
-                "jobPosName": "",
-                "stepInstruction": ""
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "PROCESS_TYPE",
-            "content": "",
-            "createDate": "2017-12-20T16:07:05.000Z"
-        },
-        {
-            "dossierLogId": "8306",
-            "payload": {
-                "jobposTitle": "64603: Create Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": ""
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "Dossier00",
-            "content": "On Dossiser Created",
-            "createDate": "2017-12-20T16:06:43.000Z"
-        },
-        {
-            "dossierLogId": "8311",
-            "payload": {
-                "stepName": "Gửi hồ sơ",
-                "files": [],
-                "jobPosName": "",
-                "stepInstruction": ""
-            },
-            "author": "Test Test",
-            "notificationType": "PROCESS_TYPE",
-            "content": "",
-            "createDate": "2017-12-20T16:08:26.000Z"
-        },
-        {
-            "dossierLogId": "8319",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER04",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:09:34.000Z"
-        },
-        {
-            "dossierLogId": "8317",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER01",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:09:25.000Z"
-        },
-        {
-            "dossierLogId": "8318",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER01",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:09:34.000Z"
-        },
-        {
-            "dossierLogId": "8321",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER04",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:09:54.000Z"
-        },
-        {
-            "dossierLogId": "8322",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER01",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:09:58.000Z"
-        },
-        {
-            "dossierLogId": "8320",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER01",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:09:54.000Z"
-        },
-        {
-            "dossierLogId": "8323",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER04",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:09:58.000Z"
-        },
-        {
-            "dossierLogId": "8324",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER01",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:10:10.000Z"
-        },
-        {
-            "dossierLogId": "8325",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER04",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:10:10.000Z"
-        },
-        {
-            "dossierLogId": "8316",
-            "payload": {
-                "stepName": "Chờ bổ sung hồ sơ trước tiếp nhận",
-                "files": [],
-                "jobPosName": "",
-                "stepInstruction": ""
-            },
-            "author": "Test Test",
-            "notificationType": "PROCESS_TYPE",
-            "content": "",
-            "createDate": "2017-12-20T16:09:25.000Z"
-        },
-        {
-            "dossierLogId": "8331",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER04",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:11:09.000Z"
-        },
-        {
-            "dossierLogId": "8329",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER04",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:10:40.000Z"
-        },
-        {
-            "dossierLogId": "8330",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER01",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:11:09.000Z"
-        },
-        {
-            "dossierLogId": "8326",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER01",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:10:37.000Z"
-        },
-        {
-            "dossierLogId": "8327",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER04",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:10:37.000Z"
-        },
-        {
-            "dossierLogId": "8328",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER01",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:10:40.000Z"
-        },
-        {
-            "dossierLogId": "8338",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER04",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:11:16.000Z"
-        },
-        {
-            "dossierLogId": "8337",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER01",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:11:16.000Z"
-        },
-        {
-            "dossierLogId": "8340",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER04",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:11:25.000Z"
-        },
-        {
-            "dossierLogId": "8339",
-            "payload": {
-                "jobposTitle": "64603: Request Addition Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER01",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:11:25.000Z"
-        },
-        {
-            "dossierLogId": "8341",
-            "payload": {
-                "stepName": "Bổ sung trước tiếp nhận",
-                "files": [],
-                "jobPosName": "",
-                "stepInstruction": ""
-            },
-            "author": "Test Test",
-            "notificationType": "PROCESS_TYPE",
-            "content": "a",
-            "createDate": "2017-12-20T16:11:25.000Z"
-        },
-        {
-            "dossierLogId": "8342",
-            "payload": {
-                "jobposTitle": "64603: Create Dossier",
-                "dossier": [
-                    {
-                        "referenceUid": "cfd2231c-02de-48c1-a089-8af22b48495e"
-                    }
-                ],
-                "briefNote": "Nhãn hiệu: <br>\nTên thương mại: "
-            },
-            "author": "Công ty Trường Hải business",
-            "notificationType": "DOSSIER04",
-            "content": "On Dossiser Additional",
-            "createDate": "2017-12-20T16:11:25.000Z"
-        },
-        {
-            "dossierLogId": "8354",
-            "payload": {
-                "stepName": "tự động chuyển sang đang xử lý",
-                "files": [],
-                "jobPosName": "",
-                "stepInstruction": ""
-            },
-            "author": "Test Test",
-            "notificationType": "PROCESS_TYPE",
-            "content": "",
-            "createDate": "2017-12-20T16:14:25.000Z"
-        },
-        {
-            "dossierLogId": "8514",
-            "payload": {
-                "stepName": "Nhận kết quả hồ sơ",
-                "files": [],
-                "jobPosName": "",
-                "stepInstruction": ""
-            },
-            "author": "Test Test",
-            "notificationType": "PROCESS_TYPE",
-            "content": "",
-            "createDate": "2017-12-20T17:13:16.000Z"
-        }
-    ]
-};
-							var arrLogsResult = fnGetLogs(mmmm.data);
+							var result.data = result.hasOwnProperty("data")?result.data:[];
+							
+							var arrLogsResult = fnGetLogs(result.data);
 							options.success(arrLogsResult);
 						},
 						error : function(result){
@@ -1435,3 +1016,14 @@ $(document).on("click",".saveFormAlpaca",function(event){
 
 });
 </script>
+
+<style type="text/css" media="screen">
+
+	.table_history_style .table tr:nth-child(odd) td:first-child {
+	    background-color: #E9F7F8;
+	}
+
+	.table_history_style .table tr:nth-child(even) td:first-child {
+	    background-color: #D9E7E8;
+	}
+</style>
