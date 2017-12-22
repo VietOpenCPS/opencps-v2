@@ -44,7 +44,7 @@ public class DossierMgtUtils {
 	}
 
 	public static boolean checkPreCondition(String[] preConditions, Dossier dossier) {
-		boolean result = false;
+		boolean result = true;
 		for (String preCondition : preConditions) {
 			switch (preCondition) {
 			case "payok":
