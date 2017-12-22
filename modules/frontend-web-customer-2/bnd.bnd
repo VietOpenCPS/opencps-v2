@@ -1,5 +1,5 @@
 Bundle-Name: frontend-web-customer-2
-Bundle-SymbolicName: org.opencps
+Bundle-SymbolicName: org.opencps.customer2
 Bundle-Version: 1.0.0
 Export-Package: org.opencps.constants
 

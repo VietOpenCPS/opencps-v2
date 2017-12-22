@@ -212,6 +212,7 @@
 					</span>
 
 					<div class="actions">
+
 						<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#">
 							<i class="fa fa-archive" aria-hidden="true"></i>
 						</a>
@@ -220,7 +221,7 @@
 							<i class="fa fa-upload text-light-blue"></i>
 						</label>
 
-						<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#" hasform="#if(hasForm){# true #}#">
+						<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#" hasform="#if(hasForm){# true #}#" >
 
 						<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 							<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
@@ -936,6 +937,7 @@
 		data.append('referenceUid', "");
 		data.append('dossierTemplateNo', dossierTemplateNo);
 		data.append('fileTemplateNo', fileTemplateNo);
+		data.append('formData', "");
 		data.append('fileType', "");
 		data.append('isSync', "");
 

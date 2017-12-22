@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -36,7 +37,7 @@ public class DossierNumberGenerator {
 	}
 
 	public static String generateDossierNumber(long groupId, long companyId, long dossierId, String seriNumberPattern,
-			LinkedHashMap<String, Object> params, SearchContext searchContext) throws ParseException, SearchException {
+			LinkedHashMap<String, Object> params, SearchContext ...searchContext) throws ParseException, SearchException {
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
 		String dossierNumber = StringPool.BLANK;
@@ -70,7 +71,18 @@ public class DossierNumberGenerator {
 
 					if (r.toString().equals(codePattern)) {
 
-						String number = String.valueOf(DossierLocalServiceUtil.countLucene(params, searchContext) + 1);
+						// String number =
+						// String.valueOf(DossierLocalServiceUtil.countLucene(params,
+						// searchContext) + 1);
+
+						String number = String
+								.valueOf(DossierLocalServiceUtil.countDossierByG_C_GAC_SC_DTNO_NOTDS(groupId, companyId,
+										GetterUtil.getString(params.get(DossierTerm.GOV_AGENCY_CODE)),
+										GetterUtil.getString(params.get(DossierTerm.SERVICE_CODE)),
+										GetterUtil.getString(params.get(DossierTerm.DOSSIER_TEMPLATE_NO)),
+										GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS))) + 1);
+						
+						_log.info("//////////////////////////////////////////////////////////// " + number);
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
 

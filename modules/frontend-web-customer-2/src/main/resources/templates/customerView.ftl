@@ -34,7 +34,7 @@
 					</div>
 				</div>
 				<div class="col-md-12 MB10 filterField">
-					<input id="dossier-emp-nav-selectbox-by-dossierNo" placeholder="Mã tiếp nhận" name="dossierNo" class="form-control dossier-emp-nav-selectbox" data-bind="events: { keyup: filterDossierNo}" style="height:30px" />
+					<input id="dossier-emp-nav-selectbox-by-dossierNo" placeholder="Số hồ sơ" name="dossierNo" class="form-control dossier-emp-nav-selectbox" data-bind="events: { keyup: filterDossierNo}" style="height:30px" />
 				</div>
 				
 				<div class="hidden col-md-12 MB5">

@@ -32,13 +32,6 @@ import io.swagger.annotations.ApiParam;
 @Api(value = "/registrations", description = "APIs for Deliverables")
 public interface RegistrationManagement {
 
-	@GET
-	@Path("/registrations")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	public Response getList(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext);
-
 	@POST
 	@Path("/registrations")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -67,8 +60,7 @@ public interface RegistrationManagement {
 	@Path("/registrations/{id}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	public Response delete(
-			@ApiParam(value = "registrationId", required = true)@PathParam("id") long id);
+	public Response delete(@ApiParam(value = "registrationId", required = true) @PathParam("id") long id);
 
 	@GET
 	@Path("/registrations/{id}/forms")

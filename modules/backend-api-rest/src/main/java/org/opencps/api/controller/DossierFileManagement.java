@@ -3,6 +3,7 @@ package org.opencps.api.controller;
 import java.net.HttpURLConnection;
 import java.util.Locale;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
@@ -28,6 +29,7 @@ import org.opencps.api.dossierfile.model.DossierFileSearchModel;
 import org.opencps.api.dossierfile.model.DossierFileSearchResultsModel;
 import org.opencps.exception.model.ExceptionModel;
 
+import com.liferay.osgi.util.service.Reference;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -112,7 +114,8 @@ public interface DossierFileManagement {
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("fileTemplateNo") String fileTemplateNo,
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("displayName") String displayName,
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("fileType") String fileType,
-			@ApiParam(value = "Metadata of DossierFile") @Multipart("isSync") String isSync);
+			@ApiParam(value = "Metadata of DossierFile") @Multipart("isSync") String isSync,
+			@ApiParam(value = "Metadata of DossierFile") @Multipart("formData") @Nullable String formData);
 
 	/*
 	 * @POST
