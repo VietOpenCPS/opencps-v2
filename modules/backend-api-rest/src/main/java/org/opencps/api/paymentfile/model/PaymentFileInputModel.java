@@ -51,7 +51,8 @@ import com.liferay.portal.kernel.util.StringPool;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = { "referenceUid", "govAgencyCode", "govAgencyName", "applicantName", "applicantIdNo",
 		"paymentFee", "paymentAmount", "paymentNote", "epaymentProfile", "bankInfo", "confirmNote", "paymentMethod",
-		"confirmPayload" })
+		"confirmPayload", "approveDatetime", "accountUserName", "govAgencyTaxNo", "invoiceTemplateNo", "invoiceIssueNo",
+		"invoiceNo" })
 @XmlRootElement(name = "PaymentFileInputModel")
 public class PaymentFileInputModel {
 	@DefaultValue(StringPool.BLANK)
@@ -105,6 +106,79 @@ public class PaymentFileInputModel {
 	@DefaultValue(StringPool.BLANK)
 	@FormParam(value = "confirmPayload")
 	protected String confirmPayload;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "approveDatetime")
+	protected String approveDatetime;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "accountUserName")
+	protected String accountUserName;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "govAgencyTaxNo")
+	protected String govAgencyTaxNo;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "invoiceTemplateNo")
+	protected String invoiceTemplateNo;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "invoiceIssueNo")
+	protected String invoiceIssueNo;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "invoiceNo")
+	protected String invoiceNo;
+	
+
+	public String getApproveDatetime() {
+		return approveDatetime;
+	}
+
+	public void setApproveDatetime(String approveDatetime) {
+		this.approveDatetime = approveDatetime;
+	}
+
+	public String getAccountUserName() {
+		return accountUserName;
+	}
+
+	public void setAccountUserName(String accountUserName) {
+		this.accountUserName = accountUserName;
+	}
+
+	public String getGovAgencyTaxNo() {
+		return govAgencyTaxNo;
+	}
+
+	public void setGovAgencyTaxNo(String govAgencyTaxNo) {
+		this.govAgencyTaxNo = govAgencyTaxNo;
+	}
+
+	public String getInvoiceTemplateNo() {
+		return invoiceTemplateNo;
+	}
+
+	public void setInvoiceTemplateNo(String invoiceTemplateNo) {
+		this.invoiceTemplateNo = invoiceTemplateNo;
+	}
+
+	public String getInvoiceIssueNo() {
+		return invoiceIssueNo;
+	}
+
+	public void setInvoiceIssueNo(String invoiceIssueNo) {
+		this.invoiceIssueNo = invoiceIssueNo;
+	}
+
+	public String getInvoiceNo() {
+		return invoiceNo;
+	}
+
+	public void setInvoiceNo(String invoiceNo) {
+		this.invoiceNo = invoiceNo;
+	}
 
 	/**
 	 * Gets the value of the confirmNote property.

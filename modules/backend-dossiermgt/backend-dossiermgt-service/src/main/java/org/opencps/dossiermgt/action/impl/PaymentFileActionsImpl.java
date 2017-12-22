@@ -216,6 +216,16 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 				inputStream, serviceContext);
 	}
 
+	@Override
+	public PaymentFile updateFileApproval(long groupId, long id, String referenceUid, String approveDatetime,
+			String accountUserName, String govAgencyTaxNo, String invoiceTemplateNo, String invoiceIssueNo,
+			String invoiceNo, ServiceContext serviceContext)
+			throws SystemException, PortalException, java.text.ParseException {
+
+		return PaymentFileLocalServiceUtil.updateFileApproval(groupId, id, referenceUid, approveDatetime,
+				accountUserName, govAgencyTaxNo, invoiceTemplateNo, invoiceIssueNo, invoiceNo, serviceContext);
+	}
+
 	// 8,9
 	/**
 	 * Download file Confirm by referenceUid

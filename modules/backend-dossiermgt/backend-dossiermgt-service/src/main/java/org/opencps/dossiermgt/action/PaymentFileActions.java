@@ -98,6 +98,11 @@ public interface PaymentFileActions {
 	 */
 	public PaymentFile updateFileApproval(long groupId, long id, String referenceUid, String approveDatetime,
 			String accountUserName, String govAgencyTaxNo, String invoiceTemplateNo, String invoiceIssueNo,
+			String invoiceNo, ServiceContext serviceContext) throws SystemException, PortalException, java.text.ParseException;
+	
+	
+	public PaymentFile updateFileApproval(long groupId, long id, String referenceUid, String approveDatetime,
+			String accountUserName, String govAgencyTaxNo, String invoiceTemplateNo, String invoiceIssueNo,
 			String invoiceNo, String sourceFileName, long fileSize, InputStream inputStream,
 			ServiceContext serviceContext) throws SystemException, PortalException, java.text.ParseException;
 
