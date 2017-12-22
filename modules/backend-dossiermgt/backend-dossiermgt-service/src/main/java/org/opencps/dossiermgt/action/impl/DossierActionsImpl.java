@@ -378,7 +378,8 @@ public class DossierActionsImpl implements DossierActions {
 										}
 
 										dossierFilesResult = DossierFileLocalServiceUtil
-												.getDossierFileByDID_FTNO_DPT(dossierId, fileTemplateNo, 2, false);
+												.getDossierFileByDID_FTNO_DPT_NOT_NULL_FID(dossierId, fileTemplateNo, 2,
+														0, false);
 
 										counter = (dossierFilesResult != null && !dossierFilesResult.isEmpty())
 												? dossierFilesResult.size() : 0;
