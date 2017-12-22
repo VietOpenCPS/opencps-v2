@@ -405,6 +405,12 @@
 				counter();
 				$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});
 				$("th").css("vertical-align","top");
+			},
+			fullScreen: function(e){
+				e.preventDefault();
+				$("#fullScreen").children().toggle();
+				$("#panel_list").toggle();
+				$("#mainType1").toggleClass("col-sm-10","col-sm-12")
 			}
 		});
 
