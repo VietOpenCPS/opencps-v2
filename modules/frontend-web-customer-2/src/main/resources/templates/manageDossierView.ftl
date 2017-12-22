@@ -91,17 +91,17 @@
 	<#-- <#include "notificationPaying.ftl"> -->
 		<#-- for listview dossier-->
 		<script type="text/x-kendo-template" id="proFileTemplate">
-			<tr class="">
+			<tr class="rowTable">
 				<td class="text-center count" style="width: 5%">
 					
 				</td>
 				
 				<td class="" style="width: 22%">
-					<strong>
+					<span>
 						<a href="javascript:;" class="link-detail-employee text-hover-blue" data-pk="#=dossierId#" data-bind="events: { click : loadDossierDetail}">
 							#=serviceName#
 						</a>
-					</strong>
+					</span>
 					
 				</td>
 
