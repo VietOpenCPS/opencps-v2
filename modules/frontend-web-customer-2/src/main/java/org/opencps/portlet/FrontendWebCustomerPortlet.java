@@ -395,6 +395,15 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 			"mvcPath", "/templates/customer_dossier_waitpaying.ftl");
 
 		urlObject.put("customer_dossier_waitpaying", customerDossierWaitPaying);
+		
+		PortletURL customerNotificationPayingURL = renderResponse.createRenderURL();
+		customerNotificationPayingURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		customerNotificationPayingURL.setParameter(
+			"mvcPath", "/templates/notificationPaying.ftl");
+
+		urlObject.put("notificationPaying", customerNotificationPayingURL);
+		
+		
 
 		return urlObject;
 	}
