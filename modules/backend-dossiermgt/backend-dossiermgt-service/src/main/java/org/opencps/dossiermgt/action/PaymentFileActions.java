@@ -124,5 +124,8 @@ public interface PaymentFileActions {
 	 */
 	public JSONObject getPaymentFiles(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
+	
+	
+	public List<PaymentFile> getPaymentFiles(long dossierId);
 
 }
