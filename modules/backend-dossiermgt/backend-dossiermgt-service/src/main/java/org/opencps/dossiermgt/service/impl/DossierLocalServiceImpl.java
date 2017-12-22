@@ -88,9 +88,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	 * org.opencps.dossiermgt.service.DossierLocalServiceUtil} to access the
 	 * dossier local service.
 	 */
-	
-	
-	
+
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier syncDossier(Dossier dossier) throws PortalException {
 
@@ -413,7 +411,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setSubmitting(true);
 		dossier.setSubmitDate(now);
-		
+
 		dossierPersistence.update(dossier);
 
 		return dossier;
@@ -1300,6 +1298,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		return dossierNote;
+	}
+
+	public long countDossierByG_C_GAC_SC_DTNO_NOTDS(long groupId, long companyId, String govAgencyCode, String serviceCode,
+			String dossierTemplateNo, String dossierStatus) {
+		return dossierPersistence.countByG_C_GAC_SC_DTNO_NOTDS(groupId, companyId, govAgencyCode, serviceCode,
+				dossierTemplateNo, dossierStatus);
 	}
 
 	private String getServerNo(long groupId) {
