@@ -21,10 +21,10 @@
 	<input type="hidden" name="dossierTemplateId" id="dossierTemplateId">
 	<input type="hidden" name="dossierItemId" id="dossierItemId">
 	<input type="hidden" name="dossierTemplateNo" id="dossierTemplateNo" data-bind="value : dossierTemplateNo">
-	<div class="row-header align-middle">
+	<div class="row-header  align-middle-lg">
 		<div class="background-triangle-big">Tên thủ tục</div> 
 		<span class="text-bold" data-bind="text:serviceName"></span>
-		<div class="pull-right group-icons">
+		<div class="pull-right group-icons align-middle-lg">
 
 
 			<a href="javascript:;" onclick="fnBack();">
