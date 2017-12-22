@@ -187,7 +187,7 @@
 		
 	</div>
 	<div class="content-part collapse in" id="collapseDossierResult">
-		<div class="row-parts-head MT5">
+		<div class="row-parts-head P0">
 			<ul class="ul-with-border">
 				<div id="listViewDossiserFileTemplate"></div>
 			</ul>
