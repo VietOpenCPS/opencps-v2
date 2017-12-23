@@ -85,7 +85,9 @@
 							};
 							
 							//$("#statusName").html($(".itemStatus.active .dossierStatus").text());
-							modelMain.set("visibleHeader", $(".itemStatus.active .dossierStatus").text());
+							if ( modelMain.get("visibleHeader") == "default" ) {
+								modelMain.set("visibleHeader", $(".itemStatus.active .dossierStatus").text());
+							}
 							
 							//
 							$('.optPage[value="'+dataSourceProfile.pageSize()+'"]').attr("selected","selected");
@@ -266,7 +268,7 @@
 				var id = $(e.currentTarget).attr("dataPk");
 				manageDossier.navigate("/"+id);
 				modelMain.set("isInvestigated", false);
-				
+				modelMain.set("visibleHeader", $(".itemStatus.active .dossierStatus").text());
 			},
 			load_serviceConfig:function(e){
 				e.preventDefault();
@@ -277,13 +279,17 @@
 			},
 			filterInvestigation: function(e){
 				e.preventDefault();
-				console.log(">>dd>>>>>>");
-				var id = $(e.currentTarget).attr("data-pk");
 				
+				var id = $(e.currentTarget).attr("data-pk");
+				manageDossier.navigate("/"+id);
+				
+				console.log($(e.currentTarget));
+				var textHead = $(e.currentTarget).text().trim();
 				modelMain.set("isInvestigated", true);
-				modelMain.set("visibleHeader", $(e.currentTarget).text());
-				console.log("OoK"+modelMain.get("isInvestigated"));
-				console.log(id+">>>>>>");
+				modelMain.set("visibleHeader", textHead);
+				
+				console.log("TODO: lay danh sach theo "+id+">>>>>>"+ textHead);
+				console.log(modelMain.get("visibleHeader"));
 				
 			}
 		});
@@ -432,10 +438,10 @@
 			filterInvestigation: function(e){
 				e.preventDefault();
 				// TODO: filter list by tra cuu ho so
-				console.log($(e.currentTarget));
+				console.log($(e.currentTarget).val());
 				
 			},
-			visibleHeader: ""
+			visibleHeader: "default"
 		});
 
 	</script>

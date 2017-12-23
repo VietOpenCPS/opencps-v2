@@ -42,7 +42,9 @@
 					<span class="text-bold">Thời gian gửi</span>: <span data-bind="text:submitDate"></span>
 				</div>
 				<div class="row" id="">
-					<a href="javascript:;" class="text-light-blue text-underline">Thông tin chủ hồ sơ</a>
+					<a href="javascript:;" class="text-light-blue text-underline">
+						THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+					</a>
 				</div>
 			</div>
 			
