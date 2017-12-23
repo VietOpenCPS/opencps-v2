@@ -618,6 +618,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			params.put(PaymentFileTerm.SERVICE, search.getService());
 			params.put(PaymentFileTerm.AGENCY, search.getAgency());
 			params.put(PaymentFileTerm.STATUS, search.getStatus());
+			params.put(PaymentFileTerm.IS_NEW, search.getIsNew());
 			/* Add params in Map - END */
 
 			// Default sort by modifiedDate

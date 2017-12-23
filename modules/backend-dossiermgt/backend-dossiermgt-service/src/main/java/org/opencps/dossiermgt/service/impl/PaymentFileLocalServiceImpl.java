@@ -23,9 +23,7 @@ import java.util.List;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
-import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.PaymentFileLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -111,6 +109,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String dossierId = (String) params.get(DossierTerm.DOSSIER_ID);
 		String referenceUid = (String) params.get(PaymentFileTerm.REFERENCE_UID);
+		String isNew = (String) params.get(PaymentFileTerm.IS_NEW);
 
 		// Extra fields
 		String service = String.valueOf((params.get(PaymentFileTerm.SERVICE)));
@@ -190,6 +189,14 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		
+		if (Validator.isNotNull(isNew) && Boolean.parseBoolean(isNew)) {
+			MultiMatchQuery query = new MultiMatchQuery(isNew);
+
+			query.addFields(PaymentFileTerm.IS_NEW);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -221,6 +228,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		String service = String.valueOf((params.get(PaymentFileTerm.SERVICE)));
 		String agency = GetterUtil.getString(params.get(PaymentFileTerm.AGENCY));
 		String status = String.valueOf((params.get(PaymentFileTerm.STATUS)));
+		String isNew = (String) params.get(PaymentFileTerm.IS_NEW);
 
 		BooleanQuery booleanQuery = null;
 
@@ -285,6 +293,14 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		
+		if (Validator.isNotNull(isNew) && Boolean.parseBoolean(isNew)) {
+			MultiMatchQuery query = new MultiMatchQuery(isNew);
+
+			query.addFields(PaymentFileTerm.IS_NEW);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -333,7 +349,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		paymentFile.setEpaymentProfile(epaymentProfile);
 		paymentFile.setBankInfo(bankInfo);
 
-		try {
+		//WTF?...
+		/*try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 			dossier.setApplicantName(applicantName);
 			dossier.setApplicantIdNo(applicantIdNo);
@@ -341,7 +358,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			dossierPersistence.update(dossier);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 
 		paymentFilePersistence.update(paymentFile);
 
@@ -547,7 +564,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
 			paymentFile.setInvoiceIssueNo(invoiceIssueNo);
 			paymentFile.setInvoiceNo(invoiceNo);
-			paymentFile.setConfirmFileEntryId(fileEntryId);
+			paymentFile.setInvoiceFileEntryId(fileEntryId);
 
 		}
 
