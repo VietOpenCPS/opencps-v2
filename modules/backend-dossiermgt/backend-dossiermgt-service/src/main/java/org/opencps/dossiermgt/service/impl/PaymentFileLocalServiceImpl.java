@@ -107,6 +107,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String dossierId = (String) params.get(DossierTerm.DOSSIER_ID);
 		String referenceUid = (String) params.get(PaymentFileTerm.REFERENCE_UID);
+		String isNew = (String) params.get(PaymentFileTerm.IS_NEW);
 
 		// Extra fields
 		String service = String.valueOf((params.get(PaymentFileTerm.SERVICE)));
@@ -186,6 +187,14 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		
+		if (Validator.isNotNull(isNew) && Boolean.parseBoolean(isNew)) {
+			MultiMatchQuery query = new MultiMatchQuery(isNew);
+
+			query.addFields(PaymentFileTerm.IS_NEW);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -217,6 +226,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		String service = String.valueOf((params.get(PaymentFileTerm.SERVICE)));
 		String agency = GetterUtil.getString(params.get(PaymentFileTerm.AGENCY));
 		String status = String.valueOf((params.get(PaymentFileTerm.STATUS)));
+		String isNew = (String) params.get(PaymentFileTerm.IS_NEW);
 
 		BooleanQuery booleanQuery = null;
 
@@ -278,6 +288,14 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			MultiMatchQuery query = new MultiMatchQuery(status);
 
 			query.addFields(PaymentFileTerm.PAYMENT_STATUS);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if (Validator.isNotNull(isNew) && Boolean.parseBoolean(isNew)) {
+			MultiMatchQuery query = new MultiMatchQuery(isNew);
+
+			query.addFields(PaymentFileTerm.IS_NEW);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
