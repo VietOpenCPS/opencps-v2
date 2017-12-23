@@ -52,6 +52,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class ServiceProcessManagementImpl implements ServiceProcessManagement {
@@ -579,7 +580,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new DuplicateStepNoException("DuplicateStepNoException");
 			}
 
-			ProcessStep step = actions.updateProcessStep(groupId, input.getStepCode(), input.getStepName(), id,
+			ProcessStep step = actions.updateProcessStep(groupId, StringPool.BLANK, input.getStepCode(), input.getStepName(), id,
 					input.getSequenceNo(), input.getDossierStatus(), input.getDossierSubStatus(),
 					GetterUtil.getInteger(input.getDurationCount()), input.getCustomProcessUrl(),
 					input.getStepInstruction(), input.getBriefNote(), GetterUtil.getBoolean(input.getEditable()), serviceContext);
@@ -641,8 +642,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			if (Validator.isNull(addstep)) {
 				throw new DuplicateStepNoException("InvalidStepCode");
 			}
-
-			ProcessStep step = actions.updateProcessStep(groupId, code, input.getStepName(), id, input.getSequenceNo(),
+			
+			ProcessStep step = actions.updateProcessStep(groupId, code, input.getStepCode(), input.getStepName(), id, input.getSequenceNo(),
 					input.getDossierStatus(), input.getDossierSubStatus(),
 					GetterUtil.getInteger(input.getDurationCount()), input.getCustomProcessUrl(),
 					input.getStepInstruction(), input.getBriefNote(), GetterUtil.getBoolean(input.getEditable()), serviceContext);
