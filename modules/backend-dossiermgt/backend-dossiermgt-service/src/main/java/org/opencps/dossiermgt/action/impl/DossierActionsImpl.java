@@ -500,7 +500,7 @@ public class DossierActionsImpl implements DossierActions {
 
 		// Add paymentFile
 		if (Validator.isNotNull(processAction.getPaymentFee())) {
-			DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId, context);
+			DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId, context, serviceProcess.getServerNo());
 		}
 
 		if (Validator.isNull(processAction))
@@ -628,9 +628,6 @@ public class DossierActionsImpl implements DossierActions {
 				// SyncAction
 				int method = 0;
 
-				_log.info(new Date());
-
-				_log.info("GROUPID_" + groupId + "dossierId_" + dossierId);
 
 				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
 						isCreateDossier, method, dossier.getPrimaryKey(), StringPool.BLANK,
