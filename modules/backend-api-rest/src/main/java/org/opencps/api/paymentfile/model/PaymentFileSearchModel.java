@@ -49,6 +49,7 @@ import com.liferay.portal.kernel.util.StringPool;
     "service",
     "agency",
     "keyword",
+    "isnew",
     "status",
     "start",
     "end",
@@ -65,6 +66,8 @@ public class PaymentFileSearchModel {
 	private String keyword;
 	@QueryParam(value = "status")
     private String status;
+	@QueryParam(value = "isnew")
+    private String isnew;
 	@QueryParam(value = "start")
 	private int start;
 	@QueryParam(value = "end")
@@ -73,6 +76,30 @@ public class PaymentFileSearchModel {
 	private String sort;
 	@QueryParam(value = "order")
 	private String order;
+	
+	/**
+     * Gets the value of the isnew property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getIsNew() {
+        return isnew;
+    }
+
+    /**
+     * Sets the value of the keyword property.
+     * 
+     * @param isnew
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setIsNew(String isnew) {
+        this.isnew = isnew;
+    }
 
     /**
      * Gets the value of the keyword property.
