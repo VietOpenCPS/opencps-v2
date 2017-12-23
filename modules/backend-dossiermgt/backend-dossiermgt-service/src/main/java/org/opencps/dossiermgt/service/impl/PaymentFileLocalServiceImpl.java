@@ -79,7 +79,11 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	 * org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil} to access the
 	 * payment file local service.
 	 */
-
+	
+	public PaymentFile fectPaymentFile(long dossierId, String refId) {
+		return paymentFilePersistence.fetchByD_RUID(dossierId, refId);
+	}
+	
 	/**
 	 * Get list payment File using SearchLucene
 	 * 
@@ -376,6 +380,10 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 	public PaymentFile getPaymentFile(long dossierId, String referenceUid) {
 		return paymentFilePersistence.fetchByD_RUID(dossierId, referenceUid);
+	}
+	
+	public List<PaymentFile> getSyncPaymentFile(long groupId, boolean isNew) {
+		return paymentFilePersistence.findByISN_GID(groupId, isNew);
 	}
 
 	/**
