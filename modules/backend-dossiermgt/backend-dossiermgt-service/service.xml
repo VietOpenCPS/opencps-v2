@@ -1072,6 +1072,7 @@
 		<column name="registrationState" type="int" />
 		<column name="registrationClass" type="String" />
 		<column name="submitting" type="boolean" />
+
 		<!-- Order -->
 
 		<!-- Filter -->
