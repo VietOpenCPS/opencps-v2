@@ -347,7 +347,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		paymentFile.setEpaymentProfile(epaymentProfile);
 		paymentFile.setBankInfo(bankInfo);
 
-		try {
+		//WTF?...
+		/*try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 			dossier.setApplicantName(applicantName);
 			dossier.setApplicantIdNo(applicantIdNo);
@@ -355,7 +356,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			dossierPersistence.update(dossier);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 
 		paymentFilePersistence.update(paymentFile);
 
