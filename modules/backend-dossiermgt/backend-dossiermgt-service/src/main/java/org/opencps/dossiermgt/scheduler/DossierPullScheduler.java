@@ -13,24 +13,29 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.ws.rs.HttpMethod;
+
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.action.util.MultipartUtility;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
-import org.opencps.dossiermgt.service.DossierActionLocalService;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -165,10 +170,10 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 							.getServiceProcess(option.getServiceProcessId());
 
 					syncProcesses.add(desServiceProcess);
-					
+
 					break;
-					
-					//TODO : check again
+
+					// TODO : check again
 				}
 
 			} catch (Exception e) {
@@ -302,11 +307,184 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			pullDossierFiles(desDossier.getGroupId(), desDossier.getDossierId(), lsFileSync, sourceGroupId, dossierId,
 					referenceUid, serviceContext);
 
+			// get the list of payment file need to sync
+
 		}
 
 		// ResetDossier
 		resetDossier(sourceGroupId, referenceUid, true, serviceContext);
 
+	}
+
+	private void getPaymentFiles(long srcGroupId, long srcDossierId, List<JSONObject> lsPaymentsFileSync) {
+
+		try {
+
+			InvokeREST rest = new InvokeREST();
+
+			HashMap<String, String> properties = new HashMap<String, String>();
+			properties.put("Content-Type", "application/x-www-form-urlencoded");
+
+			String path = "dossiers/" + srcDossierId + "/payments";
+
+			ServiceContext serviceContext = new ServiceContext();
+
+			JSONObject resDossierFile = rest.callAPI(srcGroupId, HttpMethods.GET, "application/json",
+					RESTFulConfiguration.SERVER_PATH_BASE, path, RESTFulConfiguration.SERVER_USER,
+					RESTFulConfiguration.SERVER_PASS, properties, serviceContext);
+
+			if (GetterUtil.getInteger(resDossierFile.get(RESTFulConfiguration.STATUS)) != HttpURLConnection.HTTP_OK) {
+				throw new RuntimeException(
+						"Failed : HTTP error code : " + resDossierFile.get(RESTFulConfiguration.STATUS));
+			} else {
+
+				JSONObject jsData = JSONFactoryUtil
+						.createJSONObject(resDossierFile.getString(RESTFulConfiguration.MESSAGE));
+
+				JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+
+				for (int i = 0; i < array.length(); i++) {
+					JSONObject object = array.getJSONObject(i);
+
+					if (GetterUtil.getBoolean(object.get("isNew"))) {
+						lsPaymentsFileSync.add(object);
+					}
+
+				}
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void pullPaymentFile(long srcGroupId, long srcDossierId, long groupId, long dossierId,
+			List<JSONObject> syncPaymentFiles, ServiceContext context) throws PortalException {
+		for (JSONObject object : syncPaymentFiles) {
+			// Add paymentFile to CLIENT
+
+			PaymentFileActions actions = new PaymentFileActionsImpl();
+
+			// check paymentFile is exist
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossierId,
+					object.getString("referenceUid"));
+
+			if (Validator.isNull(paymentFile)) {
+				paymentFile = actions.createPaymentFile(context.getUserId(), groupId, dossierId,
+						object.getString("referenceUid"), object.getString("govAgencyCode "),
+						object.getString("govAgencyName"), object.getString("applicantName"),
+						object.getString("applicantIdNo"), object.getString("paymentFee"),
+						object.getLong("paymentAmount"), object.getString("paymentNote"),
+						object.getString("epaymentProfile"), object.getString("bankInfo"), context);
+			}
+			//
+			// paymentFile.setPaymentStatus(object.getInt("paymentStatus"));
+			paymentFile.setPaymentMethod(object.getString("paymentMethod"));
+
+			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+
+			// Add fileConfirmId
+			if (object.getLong("confirmFileEntryId") != 0) {
+				// Download confirmFile form SERVER
+
+				try {
+
+					String fileRef = object.getString("referenceUid");
+
+					// Get file from SERVER
+					String path = "dossiers/" + srcDossierId + "/payments/" + fileRef + "/confirmfile";
+
+					URL url = new URL(RESTFulConfiguration.SERVER_PATH_BASE + path);
+
+					HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+					String authString = RESTFulConfiguration.SERVER_USER + ":" + RESTFulConfiguration.SERVER_PASS;
+
+					String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
+
+					conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+
+					conn.setRequestMethod(HttpMethods.GET);
+					conn.setDoInput(true);
+					conn.setDoOutput(true);
+					conn.setRequestProperty("Accept", "application/json");
+					conn.setRequestProperty("groupId", String.valueOf(srcGroupId));
+
+					int responseCode = conn.getResponseCode();
+
+					if (responseCode != 200) {
+						if (responseCode != 204) {
+							throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+						}
+
+					} else {
+
+						InputStream is = conn.getInputStream();
+
+						String raw = conn.getHeaderField("Content-Disposition");
+						// raw = "attachment; filename=abc.jpg"
+						File tempFile = null;
+
+						if (raw != null && raw.indexOf("=") != -1) {
+							String fileName = raw.split("=")[1];
+
+							tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()), fileName);
+
+						} else {
+							tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()),
+									StringPool.PERIOD + "tmp");
+						}
+
+						FileOutputStream outStream = new FileOutputStream(tempFile);
+
+						int bytesRead = -1;
+						byte[] buffer = new byte[BUFFER_SIZE];
+						while ((bytesRead = is.read(buffer)) != -1) {
+							outStream.write(buffer, 0, bytesRead);
+						}
+
+						outStream.close();
+						is.close();
+
+						String requestURL = RESTFulConfiguration.CLIENT_PATH_BASE + "dossiers/" + dossierId
+								+ "/payments/" + fileRef + "/confirm";
+
+						try {
+							DossierFile dossierFile = DossierFileLocalServiceUtil
+									.getDossierFileByReferenceUid(dossierId, fileRef);
+							if (Validator.isNotNull(dossierFile)) {
+								requestURL = requestURL + StringPool.FORWARD_SLASH + fileRef;
+							}
+						} catch (Exception e) {
+							// TODO: Don't doing anything
+						}
+
+						String clientAuthString = new String(Base64.getEncoder().encodeToString(
+								(RESTFulConfiguration.CLIENT_USER + StringPool.COLON + RESTFulConfiguration.CLIENT_PASS)
+										.getBytes()));
+
+						pullPaymentFile(requestURL, "UTF-8", groupId, dossierId, clientAuthString, tempFile,
+								StringPool.BLANK, object.getString("paymentMethod"), object.getString("confirmPayload"),
+								context);
+
+					}
+
+					conn.disconnect();
+
+				} catch (MalformedURLException e) {
+
+					e.printStackTrace();
+				} catch (IOException e) {
+
+					e.printStackTrace();
+
+				}
+
+				// Add conformFile to CLIENT
+			}
+
+		}
 	}
 
 	private void resetDossier(long groupId, String refId, boolean isServer, ServiceContext serviceContext) {
@@ -411,12 +589,13 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 						throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 					} else {
 						// Sync FormData
-						
+
 						String dossierTemplateNo = ref.getString("dossierTemplateNo");
 						String formData = ref.getString("formData");
-						
-						DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(desGroupId, ref.getString("fileTemplateNo"));
-						
+
+						DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(desGroupId,
+								ref.getString("fileTemplateNo"));
+
 						pullFormData(desGroupId, fileRef, dossierTemplateNo, dossierId, formData, part, serviceContext);
 					}
 
@@ -475,6 +654,32 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 	}
 
+	private void pullPaymentFile(String requestURL, String charset, long desGroupId, long dossierId,
+			String authStringEnc, File file, String confirmNote, String paymentMethod, String confirmPayload,
+			ServiceContext serviceContext) {
+
+		try {
+			MultipartUtility multipart = new MultipartUtility(requestURL, charset, desGroupId, authStringEnc,
+					HttpMethod.PUT);
+			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
+
+			multipart.addFilePart("file", file);
+			multipart.addFormField("confirmNote", confirmNote);
+			multipart.addFormField("paymentMethod", paymentMethod);
+			multipart.addFormField("confirmPayload", confirmPayload);
+
+			JSONObject object = JSONFactoryUtil.createJSONObject();
+
+			List<String> response = multipart.finish();
+
+			// resetDossier(desGroupId, dossierRef, false, serviceContext);
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+	}
+
 	private void pullDossierFile(String requestURL, String charset, long desGroupId, long dossierId,
 			String authStringEnc, File file, String dossierTemplateNo, String dossierPartNo, String fileTemplateNo,
 			String displayName, String formData, String dossierRef, String fileRef, ServiceContext serviceContext) {
@@ -497,11 +702,15 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 			List<String> response = multipart.finish();
 
-			//updateFormData(desGroupId, response, dossierId, formData, serviceContext);
-			
-			//DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(desGroupId, fileTemplateNo);
-			
-			//pullFormData(desGroupId, fileRef, dossierTemplateNo, dossierId, formData, part, serviceContext);
+			// updateFormData(desGroupId, response, dossierId, formData,
+			// serviceContext);
+
+			// DossierPart part =
+			// DossierPartLocalServiceUtil.getByFileTemplateNo(desGroupId,
+			// fileTemplateNo);
+
+			// pullFormData(desGroupId, fileRef, dossierTemplateNo, dossierId,
+			// formData, part, serviceContext);
 
 			resetDossier(desGroupId, dossierRef, false, serviceContext);
 
@@ -511,12 +720,16 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 	}
 
+	private void pullPaymentFiles(long srcGroupId, long desDossierId) throws PortalException {
+		// get all paymentFile need to sync
+
+		//
+	}
+
 	private void pullFormData(long desGroupId, String fileRef, String dossierTemplateNo, long dossierId,
 			String formData, DossierPart part, ServiceContext serviceContext) {
 		try {
 			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId, fileRef);
-			
-			
 
 			if (Validator.isNull(dossierFile)) {
 				// create dossierFile
@@ -525,7 +738,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 						part.getPartName(), StringPool.BLANK, 0, null, StringPool.BLANK, StringPool.FALSE,
 						serviceContext);
 			}
-			
+
 			dossierFile.setFormData(formData);
 
 			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
