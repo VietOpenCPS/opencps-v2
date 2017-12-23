@@ -23,9 +23,7 @@ import java.util.List;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
-import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.PaymentFileLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -558,7 +556,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
 			paymentFile.setInvoiceIssueNo(invoiceIssueNo);
 			paymentFile.setInvoiceNo(invoiceNo);
-			paymentFile.setConfirmFileEntryId(fileEntryId);
+			paymentFile.setInvoiceFileEntryId(fileEntryId);
 
 		}
 
