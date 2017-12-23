@@ -15,6 +15,9 @@
 			if (dossierItemStatus == "new") {
 				$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+id+"",function(result){
 				})
+			} else if(dossierItemStatus == "paying"){
+				$("#mainType2").load("${ajax.customer_dossier_waitpaying}&${portletNamespace}dossierId="+id+"",function(result){
+				})
 			} else {
 				$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"",function(result){
 				})
@@ -53,6 +56,8 @@
 		});
 		// Show danh sách hồ sơ lọc theo các trạng thái
 		manageDossier.route("/(:id)", function(id) {
+			$(".fa-expand").css("display","block");
+			$(".fa-compress").css("display","none");
 			$("#mainType1").show();
 			$(".filterField").show();
 			$("#mainType2").hide();
@@ -112,5 +117,19 @@
       $("#profileStatus li").removeClass('active');
       $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
     });
+    manageDossier.route("/keyPay/dossiers/(:id)", function(id){
+			$("#panel_list").show();
+			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
+			$("#mainType1").hide();
+			$("#mainType2").show();
+			$(".filterField").hide();
+			$("#mainType2").load("${ajax.notificationPaying}&${portletNamespace}dossierId="+id+"",function(result){
+			});
+			
+			$("#profileStatus li").removeClass('active');
+			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
+			$('#profileStatus li[dataPk='+dossierItemStatus+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
+			$('#profileStatus li[dataPk='+dossierItemStatus+']').addClass('active');
+		});
 	</script>
 

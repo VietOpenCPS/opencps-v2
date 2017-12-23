@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.action;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.dossiermgt.model.Registration;
@@ -8,6 +9,8 @@ import org.opencps.dossiermgt.model.RegistrationLog;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 public interface RegistrationActions {
@@ -28,4 +31,6 @@ public interface RegistrationActions {
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
 			String contactTelNo, String contactEmail, String govAgencyCode, String govAgencyName, int registrationState,
 			String registrationClass, ServiceContext serviceContext) throws PortalException;
+	public JSONObject getRegistrations(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext);
 }

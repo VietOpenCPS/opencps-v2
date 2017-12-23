@@ -65,6 +65,33 @@ public class MultipartUtility {
 		writer = new PrintWriter(new OutputStreamWriter(outputStream, charset), true);
 	}
 
+	public MultipartUtility(String requestURL, String charset, long groupId, String authStringEnc, String method)
+			throws IOException {
+		this.charset = charset;
+
+		// creates a unique boundary based on time stamp
+		boundary = "===" + System.currentTimeMillis() + "===";
+
+		URL url = new URL(requestURL);
+		httpConn = (HttpURLConnection) url.openConnection();
+		httpConn.setUseCaches(false);
+		httpConn.setDoOutput(true); // indicates POST method
+		httpConn.setDoInput(true);
+		httpConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+		httpConn.setRequestProperty("User-Agent", "OpenCPS-Agent");
+
+		httpConn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+
+		httpConn.setRequestMethod(method);
+		httpConn.setDoInput(true);
+		httpConn.setDoOutput(true);
+		httpConn.setRequestProperty("Accept", "application/json");
+		httpConn.setRequestProperty("groupId", String.valueOf(groupId));
+
+		outputStream = httpConn.getOutputStream();
+		writer = new PrintWriter(new OutputStreamWriter(outputStream, charset), true);
+	}
+
 	/**
 	 * Adds a form field to the request
 	 * 

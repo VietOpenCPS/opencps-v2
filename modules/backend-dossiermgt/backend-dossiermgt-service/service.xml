@@ -499,6 +499,13 @@
 			<finder-column name="dossierPartType"></finder-column>
 			<finder-column name="removed"></finder-column>
 		</finder>
+        <finder name="DID_FTNO_DPT_NOT_NULL_FID" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="fileTemplateNo"></finder-column>
+            <finder-column name="dossierPartType"></finder-column>
+            <finder-column name="fileEntryId" comparator="&gt;"></finder-column>
+            <finder-column name="removed"></finder-column>
+        </finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -598,6 +605,12 @@
 			<finder-column name="referenceUid" />
 		</finder>
 		<!-- References -->
+		
+		<finder return-type="Collection" name="ISN_GID">
+			<finder-column name="groupId" />
+			<finder-column name="isNew" />
+		</finder>
+		
 
 	</entity>
 
@@ -1065,10 +1078,14 @@
 		<column name="registrationState" type="int" />
 		<column name="registrationClass" type="String" />
 		<column name="submitting" type="boolean" />
+
 		<!-- Order -->
 
 		<!-- Filter -->
-
+		<finder return-type="Collection" name="F_submitting">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="submitting"></finder-column>
+		</finder>
 
 	</entity>
 
@@ -1135,7 +1152,12 @@
 			<finder-column name="registrationId" />
 			<finder-column name="referenceUid" />
 		</finder>
-
+		
+		<finder return-type="Collection" name="G_REGID_ISNEW">
+			<finder-column name="registrationId" />
+			<finder-column name="isNew" />
+		</finder>
+		
 	</entity>
 
 	<entity local-service="true" name="DeliverableType"

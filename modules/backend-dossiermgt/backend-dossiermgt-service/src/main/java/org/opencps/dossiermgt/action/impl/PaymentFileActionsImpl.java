@@ -7,7 +7,10 @@ import java.util.List;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -22,6 +25,7 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
@@ -222,8 +226,17 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 			String invoiceNo, ServiceContext serviceContext)
 			throws SystemException, PortalException, java.text.ParseException {
 
-		return PaymentFileLocalServiceUtil.updateFileApproval(groupId, id, referenceUid, approveDatetime,
+		PaymentFile paymentFile = PaymentFileLocalServiceUtil.updateFileApproval(groupId, id, referenceUid, approveDatetime,
 				accountUserName, govAgencyTaxNo, invoiceTemplateNo, invoiceIssueNo, invoiceNo, serviceContext);
+		
+		//Add PaymentFileSync
+		
+		Dossier dossier = DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
+		//TODO review serverNo on this
+		DossierSyncLocalServiceUtil.updateDossierSync(groupId, serviceContext.getUserId(), paymentFile.getDossierId(), dossier.getReferenceUid(),
+				false, 3, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(), StringPool.BLANK);
+		
+		return paymentFile;
 	}
 
 	// 8,9
@@ -268,6 +281,11 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 		}
 
 		return result;
+	}
+	
+	@Override
+	public List<PaymentFile> getPaymentFiles(long dossierId){
+		return PaymentFileLocalServiceUtil.getByDossierId(dossierId);
 	}
 
 }

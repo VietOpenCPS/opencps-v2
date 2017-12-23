@@ -319,7 +319,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							data.append( 'fileType', '' );
 							data.append( 'isSync', item.returned );
 							data.append( 'referenceUid', '' );
-
+							data.append( 'formData', '' );
+							
 							$.ajax({
 								type : 'POST', 
 								url  : url, 

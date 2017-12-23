@@ -1,6 +1,8 @@
 package org.opencps.api.controller.impl;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -29,8 +31,12 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -612,6 +618,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			params.put(PaymentFileTerm.SERVICE, search.getService());
 			params.put(PaymentFileTerm.AGENCY, search.getAgency());
 			params.put(PaymentFileTerm.STATUS, search.getStatus());
+			params.put(PaymentFileTerm.IS_NEW, search.getIsNew());
 			/* Add params in Map - END */
 
 			// Default sort by modifiedDate
@@ -667,5 +674,55 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			}
 		}
+	}
+
+	@Override
+	public Response processingKeyPay(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, long paymentFileId, String command, String merchant_trans_id, String merchant_code,
+			String response_code, String trans_id, String good_code, String net_cost, String ship_fee, String tax,
+			String service_code, String currency_code, String bank_code, String desc_1, String desc_2, String desc_3,
+			String desc_4, String desc_5, String secure_hash) {
+		// TODO Auto-generated method stub
+		URI uri = null;
+		try {
+			
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fetchPaymentFile(paymentFileId);
+			
+			//TODO change paymentStatus
+			JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+			
+			epaymentProfileJSON.put("command", command);
+			epaymentProfileJSON.put("merchant_trans_id", merchant_trans_id);
+			epaymentProfileJSON.put("merchant_code", merchant_code);
+			epaymentProfileJSON.put("response_code", response_code);
+			epaymentProfileJSON.put("trans_id", trans_id);
+			epaymentProfileJSON.put("good_code", good_code);
+			epaymentProfileJSON.put("net_cost", net_cost);
+			epaymentProfileJSON.put("ship_fee", ship_fee);
+			epaymentProfileJSON.put("tax", tax);
+			epaymentProfileJSON.put("service_code", service_code);
+			epaymentProfileJSON.put("currency_code", currency_code);
+			epaymentProfileJSON.put("bank_code", bank_code);
+			epaymentProfileJSON.put("desc_1", desc_1);
+			epaymentProfileJSON.put("desc_2", desc_2);
+			epaymentProfileJSON.put("desc_3", desc_3);
+			epaymentProfileJSON.put("desc_4", desc_4);
+			epaymentProfileJSON.put("desc_5", desc_5);
+			epaymentProfileJSON.put("secure_hash", secure_hash);
+			
+			PaymentFileActions actions = new PaymentFileActionsImpl();
+			actions.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(), serviceContext);
+			
+			uri = new URI(epaymentProfileJSON.getString("detailUrl"));
+			
+			return Response.temporaryRedirect(uri).build();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return Response.noContent().build();
+		}
+		
 	}
 }
