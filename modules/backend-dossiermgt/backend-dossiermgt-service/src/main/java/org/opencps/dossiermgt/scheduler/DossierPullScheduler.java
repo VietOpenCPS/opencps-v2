@@ -450,16 +450,6 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 						String requestURL = RESTFulConfiguration.CLIENT_PATH_BASE + "dossiers/" + dossierId
 								+ "/payments/" + fileRef + "/confirm";
 
-						try {
-							DossierFile dossierFile = DossierFileLocalServiceUtil
-									.getDossierFileByReferenceUid(dossierId, fileRef);
-							if (Validator.isNotNull(dossierFile)) {
-								requestURL = requestURL + StringPool.FORWARD_SLASH + fileRef;
-							}
-						} catch (Exception e) {
-							// TODO: Don't doing anything
-						}
-
 						String clientAuthString = new String(Base64.getEncoder().encodeToString(
 								(RESTFulConfiguration.CLIENT_USER + StringPool.COLON + RESTFulConfiguration.CLIENT_PASS)
 										.getBytes()));

@@ -483,8 +483,9 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setPaymentMethod(paymentMethod);
 			paymentFile.setConfirmPayload(confirmPayload);
 			paymentFile.setConfirmFileEntryId(fileEntryId);
-			// paymentFile.setPaymentStatus(2);
-
+			//TODO review payment status
+			paymentFile.setPaymentStatus(1);
+			paymentFile.setIsNew(true);
 		}
 
 		return paymentFilePersistence.update(paymentFile);
