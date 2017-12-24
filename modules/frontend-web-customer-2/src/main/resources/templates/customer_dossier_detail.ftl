@@ -86,7 +86,9 @@
 					<div class="background-triangle-small">I</div> 
 					<div class="col-sm-12 PL0">
 						
-						<span class="text-uppercase hover-pointer">Thông tin chủ hồ sơ</span>
+						<span class="text-uppercase hover-pointer">
+							THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+						</span>
 						<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
 					</div>
 					

@@ -28,4 +28,6 @@
 	<#assign registrationId = (Request.registrationId)!>
 	<#assign registrationFormNo = (Request.registrationFormNo)!>
 	<#assign registration = (Request.registration)!>
+	
+	<#assign constants = (Request.constants)!>
 </#if>
