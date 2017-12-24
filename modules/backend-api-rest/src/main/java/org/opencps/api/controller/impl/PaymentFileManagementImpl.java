@@ -43,6 +43,8 @@ import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -128,6 +130,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		_log.info("groupId_"+groupId);
+		_log.info("groupId_"+id);
 
 		long userId = serviceContext.getUserId();
 		
@@ -734,8 +739,10 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		long dossierId = GetterUtil.getLong(id);
 
 		Dossier dossier = null;
-
-		dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		
+		if (dossierId != 0) {
+			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		}
 
 		if (Validator.isNull(dossier)) {
 			dossier = DossierLocalServiceUtil.getByRef(groupId, id);
@@ -743,4 +750,6 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 		return dossier;
 	}
+	
+	Log _log = LogFactoryUtil.getLog(PaymentFileManagementImpl.class);
 }

@@ -312,9 +312,10 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 		// Sync paymentFile
 		if (method == 2) {
-			String endPointSynAction = "dossiers/" + dossierId + "/payments";
 			
 			DossierSync sync = DossierSyncLocalServiceUtil.getDossierSync(dossierSyncId);
+			
+			String endPointSynAction = "dossiers/" + sync.getDossierReferenceUid() + "/payments";
 
 			PaymentFile paymentFileClient = PaymentFileLocalServiceUtil.fectPaymentFile(sync.getDossierId(), sync.getFileReferenceUid());
 
