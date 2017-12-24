@@ -40,6 +40,7 @@ import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
@@ -129,8 +130,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		long userId = serviceContext.getUserId();
-
-		long dossierId = GetterUtil.getLong(id);
+		
 
 		// TODO get Dossier by referenceUid if dossierId = 0
 		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
@@ -142,6 +142,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			Dossier dossier = getDossier(id, groupId);
+
+			long dossierId = dossier.getPrimaryKey();
 
 			if (!auth.hasResource(serviceContext, PaymentFile.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException();
@@ -724,5 +727,20 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			return Response.noContent().build();
 		}
 		
+	}
+	
+	protected Dossier getDossier(String id, long groupId) throws PortalException {
+		// TODO update logic here
+		long dossierId = GetterUtil.getLong(id);
+
+		Dossier dossier = null;
+
+		dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+
+		if (Validator.isNull(dossier)) {
+			dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+		}
+
+		return dossier;
 	}
 }
