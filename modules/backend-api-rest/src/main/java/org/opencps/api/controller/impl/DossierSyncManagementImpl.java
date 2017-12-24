@@ -313,8 +313,10 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 		// Sync paymentFile
 		if (method == 2) {
 			String endPointSynAction = "dossiers/" + dossierId + "/payments";
+			
+			DossierSync sync = DossierSyncLocalServiceUtil.getDossierSync(dossierSyncId);
 
-			PaymentFile paymentFileClient = PaymentFileLocalServiceUtil.fectPaymentFile(dossierSyncId, refId);
+			PaymentFile paymentFileClient = PaymentFileLocalServiceUtil.fectPaymentFile(sync.getDossierId(), sync.getFileReferenceUid());
 
 			Map<String, Object> params = new LinkedHashMap<>();
 			params.put("referenceUid", paymentFileClient.getReferenceUid());
@@ -330,9 +332,20 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			// TODO update payload
 			params.put("invoicePayload", StringPool.BLANK);
 
-			rest.callPostAPI(groupId, HttpMethods.POST, "application/json", RESTFulConfiguration.SERVER_PATH_BASE,
+			JSONObject resSynFile = rest.callPostAPI(groupId, HttpMethods.POST, "application/json", RESTFulConfiguration.SERVER_PATH_BASE,
 					endPointSynAction, RESTFulConfiguration.SERVER_USER, RESTFulConfiguration.SERVER_PASS, properties,
 					params, serviceContext);
+			
+			if (resSynFile.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
+				// remove DossierSync
+				DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
+
+				// Reset isNew
+
+				paymentFileClient.setIsNew(false);
+				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFileClient);
+				//DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+			}
 		}
 
 		// Sync paymentStatus

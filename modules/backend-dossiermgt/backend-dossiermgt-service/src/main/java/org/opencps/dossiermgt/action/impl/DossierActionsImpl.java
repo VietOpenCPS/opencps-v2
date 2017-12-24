@@ -470,6 +470,7 @@ public class DossierActionsImpl implements DossierActions {
 		// Update DossierLog
 
 		// Update DossierSync (if it in the client)
+		context.setUserId(userId);
 
 		DossierAction dossierAction = null;
 
