@@ -371,10 +371,20 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				String endPointSynAction = "dossiers/" + dossierId + "/payments/" + paymentFileClient.getReferenceUid()
 						+ "/approval";
 
-				rest.callPostFileAPI(groupId, HttpMethod.PUT, "application/json", RESTFulConfiguration.SERVER_PATH_BASE,
+				JSONObject resSynFile = rest.callPostFileAPI(groupId, HttpMethod.PUT, "application/json", RESTFulConfiguration.SERVER_PATH_BASE,
 						endPointSynAction, RESTFulConfiguration.SERVER_USER, RESTFulConfiguration.SERVER_PASS,
 						properties, file, serviceContext);
+				
+				if (resSynFile.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
+					// remove DossierSync
+					DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
 
+					// Reset isNew
+
+					paymentFileClient.setIsNew(false);
+					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFileClient);
+					//DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+				}
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -383,8 +393,6 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 		// remove pending in DossierAction
 		int countDossierSync = DossierSyncLocalServiceUtil.countByGroupDossierId(groupId, dossierId);
-
-		_log.info("COUNT_DOSSIER_SYNC = " + countDossierSync);
 
 		if (countDossierSync == 0) {
 			DossierActionLocalServiceUtil.updatePending(clientDossierActionId, false);
