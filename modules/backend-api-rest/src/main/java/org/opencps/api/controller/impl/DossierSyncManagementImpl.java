@@ -387,7 +387,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			DLFileVersion dlFileVersion = DLFileVersionLocalServiceUtil.getLatestFileVersion(fileEntry.getFileEntryId(),
 					true);
 
-			tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()), fileEntry.getExtension());
+			tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()), StringPool.PERIOD + fileEntry.getExtension());
 
 			InputStream io = DLFileEntryLocalServiceUtil.getFileAsStream(fileEntryId, dlFileVersion.getVersion());
 			OutputStream outStream = new FileOutputStream(tempFile);
