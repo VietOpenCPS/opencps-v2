@@ -365,15 +365,17 @@ public class DossierActionsImpl implements DossierActions {
 											}
 
 											// create Dossier File
-											DossierFileActions actions = new DossierFileActionsImpl();
+											if (eForm) {
+												DossierFileActions actions = new DossierFileActionsImpl();
 
-											DossierFile dossierFile = actions.addDossierFile(groupId, dossierId,
-													referenceUid, dossier.getDossierTemplateNo(),
-													dossierPart.getPartNo(), fileTemplateNo, StringPool.BLANK,
-													StringPool.BLANK, 0L, null, StringPool.BLANK, String.valueOf(false),
-													serviceContext);
+												DossierFile dossierFile = actions.addDossierFile(groupId, dossierId,
+														referenceUid, dossier.getDossierTemplateNo(),
+														dossierPart.getPartNo(), fileTemplateNo, StringPool.BLANK,
+														StringPool.BLANK, 0L, null, StringPool.BLANK,
+														String.valueOf(false), serviceContext);
 
-											docFileReferenceUid = dossierFile.getReferenceUid();
+												docFileReferenceUid = dossierFile.getReferenceUid();
+											}
 
 										}
 
@@ -468,6 +470,7 @@ public class DossierActionsImpl implements DossierActions {
 		// Update DossierLog
 
 		// Update DossierSync (if it in the client)
+		context.setUserId(userId);
 
 		DossierAction dossierAction = null;
 
