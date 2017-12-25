@@ -52,7 +52,7 @@
 		</div>
 
 		<div class="guide-section PB0">
-			<div class="head-part" data-toggle="collapse" data-target="#collapseDossierG">
+			<div class="head-part slide-toggle">
 				<div class="background-triangle-small">
 					<i class="fa fa-star"></i>
 
@@ -62,7 +62,7 @@
 
 			</div>
 
-			<div class="content-part collapse PB15 toggle-hide" id="collapseDossierG">
+			<div class="content-part collapse PB15" id="collapseDossierG">
 				<span data-bind="html:stepInstruction"></span>
 				<#-- <p class="MB0 text-light-blue PB15"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p> -->
 			</div>
@@ -72,7 +72,7 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="dossier-parts" >
-					<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierI">
+					<div class="head-part align-middle slide-toggle">
 						<div class="background-triangle-small">I</div>
 						<div class="col-sm-12 PL0">
 
@@ -82,7 +82,7 @@
 							<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
 						</div>
 					</div>
-					<div class="content-part collapse toggle-hide" id="collapseDossierI">
+					<div class="content-part collapse" id="collapseDossierI">
 						<div class="row-parts-head MT5">
 
 							<div class="row MT5">
@@ -171,7 +171,7 @@
 
 		<div id="dossierFormSubmiting">
 			<div class="dossier-parts">
-				<div class="head-part align-middle PB5" data-toggle="collapse" data-target="#lsDossierTemplPart">
+				<div class="head-part align-middle PB5 slide-toggle">
 					<div class="background-triangle-small hover-pointer">II</div> 
 					<div class="col-sm-12 PL0">
 						<span class="text-uppercase hover-pointer">Thành phần hồ sơ</span> 

@@ -26,7 +26,75 @@
     <style type="text/css">
         body {
             font-size: 13px;
-        }
+        };
+        /* Cac buoc */
+.steps {
+    margin-bottom: 15px;
+}
+.steps .step {
+    width: -webkit-calc((100% - 4%) / 3);
+    width: calc((100% - 4%) / 3);
+    margin-right: 2%;
+    background-color: #ccc;
+    padding: 5px 15px 5px 0;
+    position: relative;
+    overflow: hidden;
+}
+.steps .step.done {
+    background-color: #14bef0;  
+}
+.steps .step:before, .steps .step:after {
+    content: "";
+    position: absolute;
+    width: 45px;
+    height: 100%;
+    border: 5px solid #f6f6f6;
+    border-width: 5px 5px 0 0;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    left: 10px;
+}
+.steps .step:after {
+    left: 300px;
+    border-width: 20px 20px 0 0;
+    width: 55px;
+    height: 55px;
+}
+.steps .step:last-child {
+    margin-right: 0;
+}
+.steps .step span {
+    display: inline-block;
+    line-height: normal;
+    color: white;
+}
+.steps .step span:first-child {
+    font-size: 26px;
+    width: 50px;
+    text-align: center;
+    margin-right: 25px;
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+}
+
+@media (max-width: 767px) {
+    .steps {
+        margin-left: 0;
+    }
+    .steps .step {
+        padding: 5px 10px;
+        border-radius: 6px;
+        text-align: center;
+    }
+    .steps .step:before, .steps .step:after {
+        display: none;
+    }
+    .steps .step span:first-child {
+        font-size: 18px;
+        width: 100%;
+        margin: 0;
+    }
+}
     </style>
 	<header id="banner">
 		<div class="container-fluid align-middle">

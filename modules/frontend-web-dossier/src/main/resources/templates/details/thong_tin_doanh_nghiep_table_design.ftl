@@ -15,6 +15,7 @@
 		<td style="padding: 8px;" class="text-xs-left">
 			///
 		</td>
+
 		<td style="padding: 8px;" class="text-xs-left">
 			
 			<a href="javascript:;" @click.prevent.stop="toDetailHoSoDoanhNghiep(props.item)">
@@ -22,5 +23,6 @@
 			</a>
 		
 		</td>
+
 	</template>
 </div>

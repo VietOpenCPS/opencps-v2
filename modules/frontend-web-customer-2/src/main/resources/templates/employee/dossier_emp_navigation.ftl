@@ -1,4 +1,4 @@
-<#include "init.ftl">
+<#-- <#include "init.ftl">
 
 <div class="dossier-emp-navigator-wrapper">
 
@@ -210,4 +210,4 @@
 	});
 
 })(jQuery);
-</script>
+</script> -->
