@@ -89,8 +89,14 @@
 							<div id="groupLookup" class="accordion-body collapse in">
 								<div class="accordion-inner">
 									<ul id="" class="ul-default have-bagde">
-										<li class="hover-pointer text-hover-blue">Tra cứu chứng chỉ</li>
-										<li class="hover-pointer text-hover-blue">Tra cứu phương tiện xuất xưởng</li>
+										<li class="hover-pointer text-hover-blue" 
+											data-bind="click: filterInvestigation" data-pk="tracuuchungchi">
+											Tra cứu chứng chỉ
+										</li>
+										<li class="hover-pointer text-hover-blue" 
+											data-bind="click: filterInvestigation" data-pk="tracuuphuongtienxuatxuong">
+											Tra cứu phương tiện xuất xưởng
+										</li>
 									</ul>
 								</div>
 							</div>

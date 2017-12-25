@@ -33,7 +33,9 @@
 			<span class="text-bold">Mã số hồ sơ</span>: <span data-bind="text : dossierNo">0123456789</span>
 		</div>
 		<div class="col-sm-4">
-			<a href="#" class="text-blue text-underline">Thông tin chủ hồ sơ</a>
+			<a href="#" class="text-blue text-underline">
+				THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+			</a>
 		</div>
 	</div>
 
