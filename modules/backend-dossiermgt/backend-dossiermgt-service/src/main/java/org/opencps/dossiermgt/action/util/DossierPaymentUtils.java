@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +26,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.security.RandomUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -44,6 +46,8 @@ public class DossierPaymentUtils {
 		for (String msg : messages) {
 			System.out.println(msg);
 		}
+		
+		System.out.println("DossierPaymentUtils.main()"+ RandomUtil.nextInt(999999));
 	}
 
 	// call processPaymentFile create paymentFile
@@ -88,14 +92,17 @@ public class DossierPaymentUtils {
 			if (epaymentConfigJSON.has("paymentKeypayDomain")) {
 
 				try {
-					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
-							paymentFile.getPaymentFileId(), pattern, dossierId);
-
-					epaymentProfileJSON.put("keypayUrl", generatorPayURL);
+					String keypayMerchantCode = PaymentUrlGenerator.generatorGoodCode(6);
+					
 					epaymentProfileJSON.put("detailUrl", epaymentConfigJSON.getString("paymentResultUrl") + dossierId);
 					epaymentProfileJSON.put("keypayGoodCode", PaymentUrlGenerator.generatorGoodCode(11));
-					epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
+					epaymentProfileJSON.put("keypayMerchantCode", keypayMerchantCode);
 
+					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
+							paymentFile.getPaymentFileId(), pattern, dossierId, keypayMerchantCode);
+
+					epaymentProfileJSON.put("keypayUrl", generatorPayURL);
+					
 					actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
 							serviceContext);
 
