@@ -563,7 +563,7 @@ public class DossierActionsImpl implements DossierActions {
 
 			dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
 
-			DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, DossierStatusConstants.NEW,
+			dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, DossierStatusConstants.NEW,
 					jsStatus.getString(DossierStatusConstants.NEW), StringPool.BLANK, StringPool.BLANK, context);
 
 		} else {
@@ -597,7 +597,7 @@ public class DossierActionsImpl implements DossierActions {
 			dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
 
 			// Set dossierStatus by CUR_STEP
-			DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, curStep.getDossierStatus(),
+			dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, curStep.getDossierStatus(),
 					jsStatus.getString(curStep.getDossierStatus()), curStep.getDossierSubStatus(),
 					jsSubStatus.getString(curStep.getDossierSubStatus()), context);
 
