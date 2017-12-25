@@ -605,6 +605,12 @@
 			<finder-column name="referenceUid" />
 		</finder>
 		<!-- References -->
+		
+		<finder return-type="Collection" name="ISN_GID">
+			<finder-column name="groupId" />
+			<finder-column name="isNew" />
+		</finder>
+		
 
 	</entity>
 
