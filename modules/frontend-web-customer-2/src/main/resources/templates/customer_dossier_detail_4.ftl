@@ -11,10 +11,17 @@
 			<div class="background-triangle-big">Tên thủ tục</div> 
 			<span class="text-bold" data-bind="text:serviceName"></span>
 			<div class="pull-right group-icons">
-				<a href="">
-					<i class="fa fa-paper-plane" aria-hidden="true"></i> 
-					Nộp hồ sơ
-				</a>
+				<#if sendReissue?has_content >
+				
+				<a class="btn btn-active" onclick="fnCorrecting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
+
+				<#elseif sendAdd?has_content >
+
+				<a class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
+
+				<#else>
+
+				</#if>
 			</div>
 		</div>
 
@@ -208,78 +215,78 @@
 </div>
 
 <div class="dossier-parts">
-    <div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierPart">
-        <div class="background-triangle-small">III</div> 
-        <div class="col-sm-12 PL0">
+	<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierPart">
+		<div class="background-triangle-small">III</div> 
+		<div class="col-sm-12 PL0">
 
-            <span class="text-uppercase hover-pointer">Tiến trình xử lý</span>
-            <i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
-        </div>
-        
-    </div>
-    <div class="content-part collapse in" id="collapseDossierPart">
-        <div class="row-parts-head MT5">
-            
-            <div class="table-responsive">
-			    <table class="table table-bordered table_history_style">
-			      <tbody>
-			      		<div id="listViewDossiserLog">
-			      			
-			      		</div>
-			      </tbody>
-			   	</table>
+			<span class="text-uppercase hover-pointer">Tiến trình xử lý</span>
+			<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
+		</div>
+
+	</div>
+	<div class="content-part collapse in" id="collapseDossierPart">
+		<div class="row-parts-head MT5">
+
+			<div class="table-responsive">
+				<table class="table table-bordered table_history_style">
+					<tbody>
+						<div id="listViewDossiserLog">
+
+						</div>
+					</tbody>
+				</table>
 			</div>
-            <script type="text/x-kendo-template" id="templateDossiserLog">
+			<script type="text/x-kendo-template" id="templateDossiserLog">
 				
 				#
-                    var jobposTitle = "";
-                    var briefNote = "";
-                    var dossier ;
-                    try {
-                    
-                        var payLoadObj = payload;
+				var jobposTitle = "";
+				var briefNote = "";
+				var dossier ;
+				try {
 
-                        stepName = payLoadObj.hasOwnProperty("stepName")?payLoadObj.stepName : "";
-                        dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
-						
-	                }catch(e){
-		                console.log(e);
-		            }
-	            #
-				<tr>
-					<td style="padding-top: 15px; padding-right: 15px">#:itemIndex#</td>
-					<td style="padding-top: 15px">
-						
-						<span class="text-bold PR10">#:author# </span> <span class="text-light-blue">#:stepName#</span> 
-		                <p>
-		                    #if ( createDate!="" && createDate!=null ) {#
-		                        #= kendo.toString(kendo.parseDate(createDate, 'yyyy-MM-dd'), 'hh:mm - dd/MM/yyyy')#
-		                    #}#
-		                </p>
+				var payLoadObj = payload;
 
-		                <p>Ý kiến: #:content#</p>
+				stepName = payLoadObj.hasOwnProperty("stepName")?payLoadObj.stepName : "";
+				dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
 
-		                #
-		                if(dossier){
-			                for(var i = 0 ; i < dossier.length ; i++){
-				                #
-					                <p>
-					                	<a target="_blank" href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].dossierFileId#" class="text-greyy text-hover-blue">
-					                		<i aria-hidden="true" class="fa fa-download PR5"></i>
-					                		#:dossier[i].fileName#
-					                	</a> 
-					                </p>
-				                #
-			    			} 
-						}
-						#
+			}catch(e){
+			console.log(e);
+		}
+		#
+		<tr>
+			<td style="padding-top: 15px; padding-right: 15px">#:itemIndex#</td>
+			<td style="padding-top: 15px">
 
-					</td>
-				</tr>
-			</script>
+				<span class="text-bold PR10">#:author# </span> <span class="text-light-blue">#:stepName#</span> 
+				<p>
+					#if ( createDate!="" && createDate!=null ) {#
+					#= kendo.toString(kendo.parseDate(createDate, 'yyyy-MM-dd'), 'hh:mm - dd/MM/yyyy')#
+					#}#
+				</p>
 
-		</div>
-	</div>
+				<p>Ý kiến: #:content#</p>
+
+				#
+				if(dossier){
+				for(var i = 0 ; i < dossier.length ; i++){
+				#
+				<p>
+					<a target="_blank" href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].dossierFileId#" class="text-greyy text-hover-blue">
+						<i aria-hidden="true" class="fa fa-download PR5"></i>
+						#:dossier[i].fileName#
+					</a> 
+				</p>
+				#
+			} 
+		}
+		#
+
+	</td>
+</tr>
+</script>
+
+</div>
+</div>
 </div> 
 
 
@@ -302,7 +309,28 @@
 
 </div>
 <div class="button-row MT20">
-	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value:submitting"><i class="fa fa-paper-plane" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý..."></i> Nộp hồ sơ</button>
+
+	<#if sendReissue?has_content >
+	<div class="row MB20">
+		<div class="col-sm-12">
+			<label>${lblApplicantNote}</label>
+			<textarea class="form-control" name="applicantNote" id="applicantNote" placeholder="Ghi chú" data-bind="text : applicantNote" rows="3"></textarea>
+		</div>
+	</div>
+	<button class="btn btn-active" id="btn-sendReissue-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+
+	<#elseif sendAdd?has_content >
+	<div class="row MB20">
+		<div class="col-sm-12">
+			<label>${lblApplicantNote}</label>
+			<textarea class="form-control" name="applicantNote" id="applicantNote" placeholder="Ghi chú" data-bind="text : applicantNote" rows="3"></textarea>
+		</div>
+	</div>
+	<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+
+	<#else>
+	
+	</#if>
 </div>
 </div>
 
@@ -1015,15 +1043,125 @@ $(document).on("click",".saveFormAlpaca",function(event){
 	}
 
 });
+
+$("#btn-sendReissue-dossier").click(function(){
+	fnCorrecting(${(dossierId)!});
+});
+
+$("#btn-sendadd-dosier").click(function(){
+	fnSubmitting(${(dossierId)!});
+});
+
+
+var fnCorrecting = function(dossierId){
+	console.log("${(dossier.dossierStatus)!}");
+	if("${(dossier.dossierStatus)!}" == "done"){
+		console.log("run sendReissue!");
+		$.ajax({
+			url : "${api.server}/dossiers/${dossierId}",
+			dataType : "json",
+			type : "PUT",
+			headers: {
+				"groupId": ${groupId},
+				Accept : "application/json"
+			},
+			data : {
+				applicantNote : $("textarea#applicantNote").val()
+			},
+			success : function(result){
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId+"/correcting",
+					dataType : "json",
+					type : "GET",
+					headers: {
+						"groupId": ${groupId},
+						Accept : "application/json"
+					},
+					data : {
+
+					},
+					success : function(result){
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công!"
+						}, "success");
+
+					},
+					error : function(result){
+						notification.show({
+							message: "Thực hiện không thành công, xin vui lòng thử lại!"
+						}, "error");
+					}
+				});
+				
+			},
+			error : function(result){
+				
+			}
+		});
+	}
+
+	
+}
+
+
+var fnSubmitting = function(dossierId){
+	console.log("${(dossier.dossierStatus)!}");
+	if("${(dossier.dossierStatus)!}" == "done"){
+		console.log("run senadd!");
+		$.ajax({
+			url : "${api.server}/dossiers/${dossierId}",
+			dataType : "json",
+			type : "PUT",
+			headers: {
+				"groupId": ${groupId},
+				Accept : "application/json"
+			},
+			data : {
+				applicantNote : $("textarea#applicantNote").val()
+			},
+			success : function(result){
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId+"/submitting",
+					dataType : "json",
+					type : "GET",
+					headers: {
+						"groupId": ${groupId},
+						Accept : "application/json"
+					},
+					data : {
+
+					},
+					success : function(result){
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công!"
+						}, "success");
+
+					},
+					error : function(result){
+						notification.show({
+							message: "Thực hiện không thành công, xin vui lòng thử lại!"
+						}, "error");
+					}
+				});
+				
+			},
+			error : function(result){
+				
+			}
+		});
+	}
+
+}
+
 </script>
 
 <style type="text/css" media="screen">
 
 	.table_history_style .table tr:nth-child(odd) td:first-child {
-	    background-color: #E9F7F8;
+		background-color: #E9F7F8;
 	}
 
 	.table_history_style .table tr:nth-child(even) td:first-child {
-	    background-color: #D9E7E8;
+		background-color: #D9E7E8;
 	}
 </style>

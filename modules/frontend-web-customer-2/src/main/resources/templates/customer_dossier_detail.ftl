@@ -34,22 +34,22 @@
 
 			<#if resCancelling?has_content >
 
-				<a href="javascript:;" class="btn btn-active" id="btn-rescancelling-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
+			<a href="javascript:;" class="btn btn-active" onclick="fnCancelling(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
 
 			<#elseif sendAdd?has_content >
 
-				<a href="javascript:;" class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
+			<a href="javascript:;" class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
 
 			<#else>
 
-				<a href="javascript:;" onclick="funSaveDossier();">
-					<i class="fa fa-save"></i>
-					Lưu
-				</a>
-				<a href="javascript:;" onclick="fnNext();">
-					<i class="fa fa-sign-in" aria-hidden="true"></i>
-					Tiếp tục
-				</a>
+			<a href="javascript:;" onclick="funSaveDossier();">
+				<i class="fa fa-save"></i>
+				Lưu
+			</a>
+			<a href="javascript:;" onclick="fnNext();">
+				<i class="fa fa-sign-in" aria-hidden="true"></i>
+				Tiếp tục
+			</a>
 
 			</#if>
 
@@ -1179,6 +1179,14 @@ $(document).ready(function(){
 });
 
 $("#btn-rescancelling-dossier").click(function(){
+	fnCancelling(${(dossierId)!});
+});
+
+$("#btn-sendadd-dosier").click(function(){
+	fnSubmitting(${(dossierId)!});
+});
+
+var fnCancelling = function(dossierId){
 	console.log("${(dossier.dossierStatus)!}");
 	if("${(dossier.dossierStatus)!}" !== "new" && "${(dossier.dossierStatus)!}" !== "null" && "${(dossier.dossierStatus)!}" !== "done"){
 		console.log("run rescancelling!");
@@ -1194,7 +1202,31 @@ $("#btn-rescancelling-dossier").click(function(){
 				applicantNote : $("textarea#applicantNote").val()
 			},
 			success : function(result){
-				fnCancelling(${(dossierId)!});
+
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId+"/cancelling",
+					dataType : "json",
+					type : "GET",
+					headers: {
+						"groupId": ${groupId},
+						Accept : "application/json"
+					},
+					data : {
+
+					},
+					success : function(result){
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công!"
+						}, "success");
+
+					},
+					error : function(result){
+						notification.show({
+							message: "Thực hiện không thành công, xin vui lòng thử lại!"
+						}, "error");
+					}
+				});
+
 				
 			},
 			error : function(result){
@@ -1202,9 +1234,10 @@ $("#btn-rescancelling-dossier").click(function(){
 			}
 		});
 	}
-});
 
-$("#btn-sendadd-dosier").click(function(){
+}
+
+var fnSubmitting = function(dossierId){
 	console.log("${(dossier.dossierStatus)!}");
 	if("${(dossier.dossierStatus)!}" == "waiting"){
 		console.log("run senadd!");
@@ -1220,7 +1253,29 @@ $("#btn-sendadd-dosier").click(function(){
 				applicantNote : $("textarea#applicantNote").val()
 			},
 			success : function(result){
-				fnSubmitting(${(dossierId)!});
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId+"/submitting",
+					dataType : "json",
+					type : "GET",
+					headers: {
+						"groupId": ${groupId},
+						Accept : "application/json"
+					},
+					data : {
+
+					},
+					success : function(result){
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công!"
+						}, "success");
+
+					},
+					error : function(result){
+						notification.show({
+							message: "Thực hiện không thành công, xin vui lòng thử lại!"
+						}, "error");
+					}
+				});
 				
 			},
 			error : function(result){
@@ -1228,58 +1283,8 @@ $("#btn-sendadd-dosier").click(function(){
 			}
 		});
 	}
-});
 
-var fnCancelling = function(dossierId){
-	$.ajax({
-		url : "${api.server}/dossiers/"+dossierId+"/cancelling",
-		dataType : "json",
-		type : "GET",
-		headers: {
-			"groupId": ${groupId},
-			Accept : "application/json"
-		},
-		data : {
-			
-		},
-		success : function(result){
-			notification.show({
-				message: "Yêu cầu được thực hiện thành công!"
-			}, "success");
-
-		},
-		error : function(result){
-			notification.show({
-				message: "Thực hiện không thành công, xin vui lòng thử lại!"
-			}, "error");
-		}
-	});
-}
-
-var fnSubmitting = function(dossierId){
-	$.ajax({
-		url : "${api.server}/dossiers/"+dossierId+"/submitting",
-		dataType : "json",
-		type : "GET",
-		headers: {
-			"groupId": ${groupId},
-			Accept : "application/json"
-		},
-		data : {
-			
-		},
-		success : function(result){
-			notification.show({
-				message: "Yêu cầu được thực hiện thành công!"
-			}, "success");
-
-		},
-		error : function(result){
-			notification.show({
-				message: "Thực hiện không thành công, xin vui lòng thử lại!"
-			}, "error");
-		}
-	});
+	
 }
 
 
