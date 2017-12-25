@@ -26,7 +26,7 @@ public class RegistrationUtils {
 			RegistrationModel model = new RegistrationModel();
 
 			model.setRegistrationId(GetterUtil.getLong(doc.get(RegistrationTerm.REGISTRATION_ID)));
-//			model.setServiceInfoId(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
+			// model.setServiceInfoId(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setCreateDate(doc.get(Field.CREATE_DATE));
 			model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
 			model.setUserId(GetterUtil.getLong(doc.get(Field.USER_ID)));
@@ -54,15 +54,55 @@ public class RegistrationUtils {
 
 		return data;
 	}
-	
-	
+
+	public static List<RegistrationModel> mappingRegistrationToRegistrationResultModel(List<Registration> registrations,
+			ServiceContext serviceContext) {
+		List<RegistrationModel> data = new ArrayList<RegistrationModel>();
+
+		for (Registration registration : registrations) {
+			RegistrationModel model = new RegistrationModel();
+
+			model.setRegistrationId(registration.getRegistrationId());
+			// model.setServiceInfoId(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
+			model.setCreateDate(
+					APIDateTimeUtils.convertDateToString(registration.getCreateDate(), APIDateTimeUtils._TIMESTAMP));
+			model.setModifiedDate(
+					APIDateTimeUtils.convertDateToString(registration.getModifiedDate(), APIDateTimeUtils._TIMESTAMP));
+			model.setUserId(registration.getUserId());
+			model.setApplicantName(registration.getApplicantName());
+			model.setApplicantIdType(registration.getApplicantIdType());
+			model.setApplicantIdNo(registration.getApplicantIdNo());
+			model.setApplicantIdDate(APIDateTimeUtils.convertDateToString(registration.getApplicantIdDate(),
+					APIDateTimeUtils._TIMESTAMP));
+			model.setAddress(registration.getAddress());
+			model.setCityCode(registration.getCityCode());
+
+			model.setCityName(registration.getCityName());
+			model.setDistrictCode(registration.getDistrictCode());
+			model.setDistrictName(registration.getDistrictName());
+			model.setWardCode(registration.getWardCode());
+			model.setWardName(registration.getWardName());
+			model.setContactName(registration.getContactName());
+			model.setContactTelNo(registration.getContactTelNo());
+			model.setContactEmail(registration.getContactEmail());
+			model.setGovAgencyCode(registration.getGovAgencyCode());
+			model.setGovAgencyName(registration.getGovAgencyName());
+			model.setRegistrationState(registration.getRegistrationState());
+			model.setRegistrationClass(registration.getRegistrationClass());
+			model.setSubmitting(registration.getSubmitting());
+			data.add(model);
+		}
+
+		return data;
+	}
+
 	public static RegistrationDetailModel mappingToRegistrationDetailModel(Registration registration) {
 
 		if (registration == null) {
 			return new RegistrationDetailModel();
 		}
 		RegistrationDetailModel model = new RegistrationDetailModel();
-		
+
 		model.setRegistrationId(registration.getRegistrationId());
 		model.setApplicantName(registration.getApplicantName());
 		model.setApplicantIdType(registration.getApplicantIdType());
@@ -138,7 +178,7 @@ public class RegistrationUtils {
 		}
 
 	}
-	
+
 	public static RegistrationDetailResultModel mappingToRegistrationDetailResultModel(Registration registration) {
 
 		try {
