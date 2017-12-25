@@ -139,6 +139,7 @@
 
 							#if(hasForm){
 							var dossierFile =  getReferentUidFile(${dossierId},id);
+							console.log(dossierFile);
 							#
 
 							<div class="collapse toggle-hide" id="collapseDossierPart#:id#">
@@ -1048,7 +1049,7 @@ var getReferentUidFile = function(dossierId,dossierPartNo){
 				if(result.data){
 					for (var i = 0; i < result.data.length; i++) {
 						if(result.data[i].eForm){
-							if(dossierPartNo == result.data[i].dossierPartNo){
+							if(dossierPartNo === result.data[i].dossierPartNo){
 								dossierFile = result.data[i];
 								return ;
 							}
