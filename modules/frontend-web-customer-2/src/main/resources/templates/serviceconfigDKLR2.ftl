@@ -91,7 +91,7 @@
 					<span> 
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại
 					</span>
-					<button data-TTHC="TT302011BGTVTCNCLKLTXXDD" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCNCLKLTXXDD" class="btn btn-reset chooseService pull-right P0" id="btn1item61">Chọn</button>
+					<button class="btn btn-reset pull-right P0" id="btn1item61">Chọn</button>
 				</div>
 				<div class="clear"></div>
 			</div>
