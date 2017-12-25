@@ -45,6 +45,9 @@
 	<bean class="org.opencps.dossiermgt.service.indexer.DossierFileIndexer"
 		id="org.opencps.dossiermgt.service.indexer.DossierFileIndexer" />
 
+	<bean class="org.opencps.dossiermgt.service.indexer.RegistrationLogIndexer"
+		id="org.opencps.dossiermgt.service.indexer.RegistrationLogIndexer" />
+
 	<!-- Listeners -->
 	<bean id="dossier.listener.jasper" class="org.opencps.jasper.message.Engine" />
 

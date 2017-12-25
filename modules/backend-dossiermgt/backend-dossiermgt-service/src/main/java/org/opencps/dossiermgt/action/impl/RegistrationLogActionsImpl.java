@@ -29,4 +29,11 @@ public class RegistrationLogActionsImpl implements RegistrationLogActions {
 		return RegistrationLogLocalServiceUtil.getRegistrationLogbyRegId(groupId, registrationId);
 
 	}
+
+	@Override
+	public RegistrationLog addRegistrationLogById(long groupId, long registrationId, String author, String content,
+			String payload, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		return RegistrationLogLocalServiceUtil.addLog(author, groupId, registrationId, registrationId, content, payload);
+	}
 }
