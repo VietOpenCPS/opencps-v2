@@ -168,7 +168,8 @@
 								</div>
 							</div>
 
-							<#-- <div id="alreadyPaid" data-bind="value: isPay">
+							<#-- 
+							<div id="alreadyPaid" data-bind="value: isPay">
 								<div class="row MB5">
 									<div class="col-sm-2">								
 										<span class="text-bold">Ghi chú kèm theo</span>	
@@ -192,7 +193,7 @@
 
 </div>
 <div class="button-row MT20">
-	<button class="btn btn-active" id="btn-submit-dossier" type="button" onclick="fnBack();"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
+	<button class="btn btn-active" type="button" onclick="fnBack();"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
 </div>
 </div>
 
