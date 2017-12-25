@@ -92,10 +92,11 @@ public class DossierPaymentUtils {
 			if (epaymentConfigJSON.has("paymentKeypayDomain")) {
 
 				try {
-					String keypayMerchantCode = PaymentUrlGenerator.generatorGoodCode(6);
-					
+					epaymentProfileJSON.put("paymentPattern", pattern);
 					epaymentProfileJSON.put("detailUrl", epaymentConfigJSON.getString("paymentResultUrl") + dossierId);
 					epaymentProfileJSON.put("keypayGoodCode", PaymentUrlGenerator.generatorGoodCode(11));
+					
+					String keypayMerchantCode = PaymentUrlGenerator.generatorGoodCode(6);
 					epaymentProfileJSON.put("keypayMerchantCode", keypayMerchantCode);
 
 					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,

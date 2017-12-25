@@ -1,16 +1,20 @@
 package org.opencps.dossiermgt.action.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.PaymentFileActions;
+import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -88,9 +92,47 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 		}
 
 		try {
-			return PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId, referenceUid,
+			
+			PaymentFile result = PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId, referenceUid,
 					govAgencyCode, govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount, paymentNote,
 					epaymentProfile, bankInfo, serviceContext);
+			
+			JSONObject epaymentProfileObject = JSONFactoryUtil.createJSONObject(epaymentProfile);
+			
+			// genarater url keypay
+			// TODO
+			// binhth
+			if (epaymentProfileObject.has("paymentPattern")) {
+				
+				String generatorPayURL;
+				try {
+					
+					Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+					
+					PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
+							dossier.getGovAgencyCode());
+					
+					JSONObject epaymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
+					
+					epaymentProfileObject.put("detailUrl", epaymentConfigJSON.getString("paymentResultUrl") + dossierId);
+
+					generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
+							result.getPaymentFileId(), epaymentProfileObject.getString("paymentPattern"), dossierId, epaymentProfileObject.getString("keypayMerchantCode"));
+					
+					epaymentProfileObject.put("keypayUrl", generatorPayURL);
+					
+					result = updateEProfile(dossierId, referenceUid, epaymentProfileObject.toJSONString(), serviceContext);
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				
+			}
+			
+			return result;
+					
 		} catch (PortalException e) {
 			// TODO Auto-generated catch block
 			_log.info("boom boom");
