@@ -44,6 +44,15 @@
 			$("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+id+"&${portletNamespace}sendAdd=true",function(result){
 			})
 		});
+		// 
+		manageDossier.route("/dossiers/(:id)/yeucaucaplai", function(id){
+			$("#panel_list").show();
+			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
+			$("#mainType1").hide();
+			$("#mainType2").show();
+			$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"&${portletNamespace}sendReissue=true",function(result){
+			})
+		});
 		// Show màn hình chọn dịch vụ công
 		manageDossier.route("/taohosomoi", function(id){
 			$("#mainType1").hide();
@@ -89,6 +98,7 @@
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 			$('#profileStatus li[dataPk='+id+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
 			$('#profileStatus li[dataPk='+id+']').addClass('active');
+
     }); 
 		// Show màn hình chọn dịch vụ công
     manageDossier.route("/taohosomoi/admin", function(){

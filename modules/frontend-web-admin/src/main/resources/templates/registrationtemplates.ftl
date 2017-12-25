@@ -163,17 +163,34 @@
 						type: "DELETE",
 						dataType: "json",
 						headers: {"groupId": ${groupId}},
-						success: function(result) {
+						// statusCode: {
+					 //    200: function() {
+					 //      notification.show({
+						// 			message: "Xóa mẫu thành phần hồ sơ thành công!"
+						// 		}, "success");
+						// 		$("#registration_template_list_view").getKendoListView().dataSource.read();
+						//   }
+					 //  }
+						// success: function(result) {
+						// 	notification.show({
+						// 		message: "Xóa mẫu thành phần hồ sơ thành công!"
+						// 	}, "success");
+						// 	$("#registration_template_list_view").getKendoListView().dataSource.read();
+						// },
+						// error: function(result) {
+						// 	notification.show({
+						// 		message: "Xảy ra lỗi, vui lòng thử lại!"
+						// 	}, "error");
+						// }
+					}).done(function(){
+						notification.show({
+							message: "Xóa mẫu thành phần hồ sơ thành công!"
+						}, "success");
+						$("#registration_template_list_view").getKendoListView().dataSource.read();
+					}).fail(function(){
 							notification.show({
-								message: "Xóa mẫu thành phần hồ sơ thành công!"
-							}, "success");
-							$("#registration_template_list_view").getKendoListView().dataSource.read();
-						},
-						error: function(result) {
-							notification.show({
-								message: "Xảy ra lỗi, vui lòng thử lại"
-							}, "error");
-						}
+							message: "Xảy ra lỗi, vui lòng thử lại!"
+						}, "error");
 					});
 				}
 			});

@@ -42,7 +42,7 @@
 							<div class="col-sm-6 text-right">
 								<div class="row">
 									<div class="col-sm-5">
-										<span class="text-bold">Tên tổ chức/ Doanh nghiệp</span>
+										<span class="text-bold">Tên tổ chức/ Doanh nghiệp (<span class="red">*</span>)</span>
 									</div>
 									<div class="col-sm-7">
 										<div class="form-group"> 
@@ -54,11 +54,12 @@
 
 								<div class="row">
 									<div class="col-sm-5">
-										<span class="text-bold">Mã số thuế</span>
+										<span class="text-bold">Mã số thuế (<span class="red">*</span>)</span>
 									</div>
 									<div class="col-sm-7">
 										<div class="form-group"> 
-											<input type="text" class="form-control input-sm" data-bind="value: applicantIdNo" id="applicantIdNo" name="applicantIdNo"> 
+											<input type="text" class="form-control input-sm" data-bind="value: applicantIdNo" id="applicantIdNo" name="applicantIdNo"
+												required="required" validationMessage="Nhập mã số thuế"> 
 
 										</div>
 									</div>
@@ -77,11 +78,12 @@
 
 								<div class="row">
 									<div class="col-sm-5">
-										<span class="text-bold">Người đại diện</span>
+										<span class="text-bold">Người đại diện (<span class="red">*</span>)</span>
 									</div>
 									<div class="col-sm-7">
 										<div class="form-group"> 
-											<input type="text" class="form-control input-sm" data-bind="value: contactName" id="contactName" name="contactName"> 
+											<input type="text" class="form-control input-sm" data-bind="value: contactName" id="contactName" name="contactName"
+												required="required" validationMessage="Nhập người đại diện"> 
 										</div>
 									</div>
 								</div>
@@ -100,7 +102,7 @@
 
 								<div class="row">
 									<div class="col-sm-5">
-										<span class="text-bold">Địa chỉ email liên hệ</span>
+										<span class="text-bold">Địa chỉ email liên hệ (<span class="red">*</span>)</span>
 									</div>
 									<div class="col-sm-7">
 										<div class="form-group"> 
@@ -115,11 +117,13 @@
 								<div class="row">
 
 									<div class="col-sm-5">
-										<span class="text-bold">Địa chỉ</span>
+										<span class="text-bold">Địa chỉ (<span class="red">*</span>)</span>
 									</div>
 									<div class="col-sm-7">
 										<div class="form-group"> 
-											<input type="text" class="form-control input-sm" data-bind="value: address" id="address" name="address"> 
+											<textarea type="text" class="form-control input-sm" data-bind="value: address" id="address" name="address"
+												style="min-height:70px;" required="required" validationMessage="Nhập địa chỉ">
+											</textarea>
 										</div>
 									</div>
 								</div>
@@ -156,6 +160,17 @@
 										<div class="form-group"> 
 											<input type="text" class="form-control input-sm" data-bind="value: wardCode" id="wardCode" name="wardCode" required="required" validationMessage="Chọn Xã/ Phường"> 
 											<span data-for="wardCode" class="k-invalid-msg"></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row">
+									<div class="col-sm-5">
+										<span class="text-bold">Trạng thái</span>
+									</div>
+									<div class="col-sm-7">
+										<div class="form-group text-left" data-bind="text: registrationState"> 
+											
 										</div>
 									</div>
 								</div>
@@ -204,8 +219,13 @@
 					</span>
 
 					<div class="actions">
+						
 						<a href="javascript:;" class="registration-add-template" data-formno="#:formNo#" data-toggle="tooltip" data-placement="top">
 							<i class="fa fa-plus-circle text-light-gray" aria-hidden="true" style="font-size: 150%;"></i>
+						</a>
+						
+						<a href="javascript:;" class="registration-del-template" data-referenceuid="#:referenceUid#" >
+							<i class="fa fa-times text-light-gray" aria-hidden="true" style="font-size: 150%;"></i>
 						</a>
 
 						<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số version" data-formno="#:formNo#" data-number="">
@@ -224,7 +244,7 @@
 
 					<div class="col-sm-12" style="height:450px; width:100%;overflow:auto;" >
 
-						<form id="formPartNo#:formNo#">
+						<form id="formPartNo#:referenceUid#">
 
 						</form>
 
@@ -235,7 +255,7 @@
 						type : "GET",
 						headers : {"groupId": ${groupId}},
 						success : function(result){
-						$("\\#formPartNo"+formNo).empty();
+						$("\\#formPartNo"+referenceUid).empty();
 
 						if(result){
 						var alpaca = eval("(" + result + ")");
@@ -245,7 +265,7 @@
 					}
 					alpaca.data = formdata; 
 
-					$("\\#formPartNo"+formNo).alpaca(alpaca);
+					$("\\#formPartNo"+referenceUid).alpaca(alpaca);
 				}
 
 
@@ -285,7 +305,7 @@
 
 			<div class="col-sm-12" style="height:450px; width:100%;overflow:auto;" >
 
-				<form id="formPartNo#:formNo#">
+				<form id="formPartNo#:referenceUid#">
 
 				</form>
 
@@ -297,7 +317,7 @@
 							formScript.data = eval("(" + formData + ")");			
 						}
 						
-						$("\\#formPartNo"+formNo).alpaca(formScript);
+						$("\\#formPartNo"+referenceUid).alpaca(formScript);
 					}
 				}catch(e){
 					console.log(e);
@@ -348,6 +368,13 @@
 
 						},
 						success : function(result){
+							
+							if (result.total == 0) {
+								result["data"] = [];
+							} else if (result.total == 1) {
+								var dt = [result["data"]];
+								result["data"] = dt;
+							}
 							options.success(result);
 						},
 						error : function(result){
@@ -601,6 +628,16 @@
 					success : function(result){
 						console.log("load detail registrations!");
 						console.log(result);
+						/*23-12-2017 thanhnv: bo sung trang thai*/
+						
+						<#if constants.registrationStates?has_content>
+							<#list constants.registrationStates as oRegistrationState>
+								if (result.registrationState == "${oRegistrationState.value}") {
+									result.registrationState = "${oRegistrationState.text}";
+								}
+							</#list>
+						</#if>
+						
 						var viewModel = kendo.observable({
 
 							registrationId : result.registrationId,
@@ -762,14 +799,14 @@ $(document).on("click",".saveFormAlpaca",function(event){
 	console.log(id);
 	console.log("ccc");
 
-	var formType = $("#formPartNo"+id+" .formType").val();
+	var formType = $("#formPartNo"+referentUidFile+" .formType").val();
 	var value ;
 
 	if(formType !== "dklr"){
-		value = $("#formPartNo"+id).alpaca('get').getValue();
+		value = $("#formPartNo"+referentUidFile).alpaca('get').getValue();
 
 		var errorMessage = '';
-		$("#formPartNo"+id+' div[class*="has-error"] > label').each(function( index ) {
+		$("#formPartNo"+referentUidFile+' div[class*="has-error"] > label').each(function( index ) {
 
 			errorMessage = "notValid";
 
@@ -850,4 +887,35 @@ $(document).on("click",".registration-add-template",function(){
 	});
 });
 
+$(document).on("click",".registration-del-template",function(){
+	var referenceUid = $(this).attr("data-referenceuid");
+
+	$.ajax({
+		url : "${api.server}/registrations/${registrationId}/forms/"+ referenceUid,
+		type : "DELETE",
+		headers: {
+			"groupId": ${groupId}
+		},
+		success : function(result){
+			notification.show({
+				message: "Yêu cầu được thực hiện thành công"
+			}, "success");
+			dataSourceRegistrationsTemplate.read();
+		},
+		error : function(xhr){
+			notification.show({
+				message: "Xảy ra lỗi, xin vui lòng thử lại"
+			}, "error");
+		}
+	});
+});
+
 </script>
+
+<style>
+
+#applicantInfo .form-group {
+    margin-bottom: 5px;
+}
+
+<style>
