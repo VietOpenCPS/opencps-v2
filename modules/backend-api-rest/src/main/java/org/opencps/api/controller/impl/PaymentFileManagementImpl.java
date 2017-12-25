@@ -40,8 +40,11 @@ import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -127,10 +130,12 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		_log.info("groupId_"+groupId);
+		_log.info("groupId_"+id);
 
 		long userId = serviceContext.getUserId();
-
-		long dossierId = GetterUtil.getLong(id);
+		
 
 		// TODO get Dossier by referenceUid if dossierId = 0
 		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
@@ -142,6 +147,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			Dossier dossier = getDossier(id, groupId);
+
+			long dossierId = dossier.getPrimaryKey();
 
 			if (!auth.hasResource(serviceContext, PaymentFile.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException();
@@ -618,6 +626,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			params.put(PaymentFileTerm.SERVICE, search.getService());
 			params.put(PaymentFileTerm.AGENCY, search.getAgency());
 			params.put(PaymentFileTerm.STATUS, search.getStatus());
+			params.put(PaymentFileTerm.IS_NEW, search.getIsNew());
 			/* Add params in Map - END */
 
 			// Default sort by modifiedDate
@@ -724,4 +733,23 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		}
 		
 	}
+	
+	protected Dossier getDossier(String id, long groupId) throws PortalException {
+		// TODO update logic here
+		long dossierId = GetterUtil.getLong(id);
+
+		Dossier dossier = null;
+		
+		if (dossierId != 0) {
+			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		}
+
+		if (Validator.isNull(dossier)) {
+			dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+		}
+
+		return dossier;
+	}
+	
+	Log _log = LogFactoryUtil.getLog(PaymentFileManagementImpl.class);
 }

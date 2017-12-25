@@ -42,7 +42,7 @@
 							<div class="col-sm-6 text-right">
 								<div class="row">
 									<div class="col-sm-5">
-										<span class="text-bold">Tên tổ chức/ Doanh nghiệp</span>
+										<span class="text-bold">Tên tổ chức/ Doanh nghiệp (<span class="red">*</span>)</span>
 									</div>
 									<div class="col-sm-7">
 										<div class="form-group"> 
@@ -54,11 +54,12 @@
 
 								<div class="row">
 									<div class="col-sm-5">
-										<span class="text-bold">Mã số thuế</span>
+										<span class="text-bold">Mã số thuế (<span class="red">*</span>)</span>
 									</div>
 									<div class="col-sm-7">
 										<div class="form-group"> 
-											<input type="text" class="form-control input-sm" data-bind="value: applicantIdNo" id="applicantIdNo" name="applicantIdNo"> 
+											<input type="text" class="form-control input-sm" data-bind="value: applicantIdNo" id="applicantIdNo" name="applicantIdNo"
+												required="required" validationMessage="Nhập mã số thuế"> 
 
 										</div>
 									</div>
@@ -77,11 +78,12 @@
 
 								<div class="row">
 									<div class="col-sm-5">
-										<span class="text-bold">Người đại diện</span>
+										<span class="text-bold">Người đại diện (<span class="red">*</span>)</span>
 									</div>
 									<div class="col-sm-7">
 										<div class="form-group"> 
-											<input type="text" class="form-control input-sm" data-bind="value: contactName" id="contactName" name="contactName"> 
+											<input type="text" class="form-control input-sm" data-bind="value: contactName" id="contactName" name="contactName"
+												required="required" validationMessage="Nhập người đại diện"> 
 										</div>
 									</div>
 								</div>
@@ -100,7 +102,7 @@
 
 								<div class="row">
 									<div class="col-sm-5">
-										<span class="text-bold">Địa chỉ email liên hệ</span>
+										<span class="text-bold">Địa chỉ email liên hệ (<span class="red">*</span>)</span>
 									</div>
 									<div class="col-sm-7">
 										<div class="form-group"> 
@@ -115,11 +117,13 @@
 								<div class="row">
 
 									<div class="col-sm-5">
-										<span class="text-bold">Địa chỉ</span>
+										<span class="text-bold">Địa chỉ (<span class="red">*</span>)</span>
 									</div>
 									<div class="col-sm-7">
 										<div class="form-group"> 
-											<input type="text" class="form-control input-sm" data-bind="value: address" id="address" name="address"> 
+											<textarea type="text" class="form-control input-sm" data-bind="value: address" id="address" name="address"
+												style="min-height:70px;" required="required" validationMessage="Nhập địa chỉ">
+											</textarea>
 										</div>
 									</div>
 								</div>
@@ -156,6 +160,17 @@
 										<div class="form-group"> 
 											<input type="text" class="form-control input-sm" data-bind="value: wardCode" id="wardCode" name="wardCode" required="required" validationMessage="Chọn Xã/ Phường"> 
 											<span data-for="wardCode" class="k-invalid-msg"></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row">
+									<div class="col-sm-5">
+										<span class="text-bold">Xã/ Phường</span>
+									</div>
+									<div class="col-sm-7">
+										<div class="form-group text-left" data-bind="text: registrationState"> 
+											
 										</div>
 									</div>
 								</div>
@@ -601,6 +616,16 @@
 					success : function(result){
 						console.log("load detail registrations!");
 						console.log(result);
+						/*23-12-2017 thanhnv: bo sung trang thai*/
+						
+						<#if constants.registrationStates?has_content>
+							<#list constants.registrationStates as oRegistrationState>
+								if (result.registrationState == "${oRegistrationState.value}") {
+									result.registrationState = "${oRegistrationState.text}";
+								}
+							</#list>
+						</#if>
+						
 						var viewModel = kendo.observable({
 
 							registrationId : result.registrationId,
@@ -851,3 +876,11 @@ $(document).on("click",".registration-add-template",function(){
 });
 
 </script>
+
+<style>
+
+#applicantInfo .form-group {
+    margin-bottom: 5px;
+}
+
+<style>

@@ -241,15 +241,18 @@
 					dossierStatus: processStep.dossierStatus,
 					dossierSubStatus: function(e){
 
-
-						if($("#dossierSubStatus").val() && processStep.dossierSubStatus !== $("#dossierSubStatus").val()){
+						//console.log(processStep.dossierSubStatus);
+						//console.log($("#dossierSubStatus").val());
+						/*if($("#dossierSubStatus").val() && processStep.dossierSubStatus !== $("#dossierSubStatus").val()){
 							return $("#dossierSubStatus").val();
 						}else {
 							$("#dossierSubStatus").data("kendoComboBox").dataSource.read({
 								parent : processStep.dossierStatus
 							});
-						}
-
+						}*/
+						$("#dossierSubStatus").data("kendoComboBox").dataSource.read({
+							parent : processStep.dossierStatus
+						});
 						return processStep.dossierSubStatus;
 					},
 					editable: processStep.editable,

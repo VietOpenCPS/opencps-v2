@@ -21,10 +21,10 @@
 	<input type="hidden" name="dossierTemplateId" id="dossierTemplateId">
 	<input type="hidden" name="dossierItemId" id="dossierItemId">
 	<input type="hidden" name="dossierTemplateNo" id="dossierTemplateNo" data-bind="value : dossierTemplateNo">
-	<div class="row-header align-middle">
+	<div class="row-header  align-middle-lg">
 		<div class="background-triangle-big">Tên thủ tục</div> 
 		<span class="text-bold" data-bind="text:serviceName"></span>
-		<div class="pull-right group-icons">
+		<div class="pull-right group-icons align-middle-lg">
 
 
 			<a href="javascript:;" onclick="fnBack();">
@@ -86,7 +86,9 @@
 					<div class="background-triangle-small">I</div> 
 					<div class="col-sm-12 PL0">
 						
-						<span class="text-uppercase hover-pointer">Thông tin chủ hồ sơ</span>
+						<span class="text-uppercase hover-pointer">
+							THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+						</span>
 						<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
 					</div>
 					

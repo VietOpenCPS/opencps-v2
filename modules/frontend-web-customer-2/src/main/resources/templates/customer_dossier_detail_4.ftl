@@ -42,7 +42,9 @@
 					<span class="text-bold">Thời gian gửi</span>: <span data-bind="text:submitDate"></span>
 				</div>
 				<div class="row" id="">
-					<a href="javascript:;" class="text-light-blue text-underline">Thông tin chủ hồ sơ</a>
+					<a href="javascript:;" class="text-light-blue text-underline">
+						THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+					</a>
 				</div>
 			</div>
 			
@@ -187,7 +189,7 @@
 		
 	</div>
 	<div class="content-part collapse in" id="collapseDossierResult">
-		<div class="row-parts-head MT5">
+		<div class="row-parts-head P0">
 			<ul class="ul-with-border">
 				<div id="listViewDossiserFileTemplate"></div>
 			</ul>
@@ -208,69 +210,82 @@
 </div>
 
 <div class="dossier-parts">
-    <div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierPart">
-        <div class="background-triangle-small">III</div> 
-        <div class="col-sm-12 PL0">
+	<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierPart">
+		<div class="background-triangle-small">III</div> 
+		<div class="col-sm-12 PL0">
 
-            <span class="text-uppercase hover-pointer">Tiến trình xử lý</span>
-            <i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
-        </div>
-        
-    </div>
-    <div class="content-part collapse in" id="collapseDossierPart">
-        <div class="row-parts-head MT5">
-            <ul id="listViewDossiserLog" class="ul-default mimic-table">
-                
-            </ul>
-            <script type="text/x-kendo-template" id="templateDossiserLog">
-                <li class="clearfix eq-height-lg P0">
-                    <div class="orderNo col-sm-0 text-center center-all row-blue P15">
-                        #:itemIndex#.
-                    </div>
+			<span class="text-uppercase hover-pointer">Tiến trình xử lý</span>
+			<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
+		</div>
+		
+	</div>
+	<div class="content-part collapse in" id="collapseDossierPart">
+		<div class="row-parts-head MT5">
+			
+			<div class="table-responsive">
+				<table class="table table-bordered table_history_style">
+				  <tbody id="listViewDossiserLog">
+				  		
+				  </tbody>
+			   	</table>
+			</div>
+			<script type="text/x-kendo-template" id="templateDossiserLog">
+				
+				#
+					var jobposTitle = "";
+					var briefNote = "";
+					var dossier ;
+					try {
+					
+						var payLoadObj = payload;
 
-                    #
-                    var jobposTitle = "";
-                    var briefNote = "";
-                    var dossier ;
-                    try {
-                    
-                        var payLoadObj = payload;
-
-                        jobPosName = payLoadObj.hasOwnProperty("jobPosName")?payLoadObj.jobPosName : "";
-                        stepInstruction = payLoadObj.hasOwnProperty("stepInstruction")?payLoadObj.stepInstruction : "";
-                        dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
+						stepName = payLoadObj.hasOwnProperty("stepName")?payLoadObj.stepName : "";
+						dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
 						
-	                }catch(e){
-		                console.log(e);
-		            }
-		            #
+					}catch(e){
+						console.log(e);
+					}
+				#
+				<tr>
+					<td style="padding-top: 15px; width: 1%;">
+						<span class="text-bold">#:itemIndex#</span>
+					</td>
+					<td style="padding-top: 15px">
+						
+						<span class="text-bold PR10">#:author# </span>
 
-		            <div class="col-sm-12 M0 P5 PL10">
-		                <span class="text-bold">#:author# </span> <span class="text-light-gray">(#:jobPosName#) &nbsp;</span> <span class="text-light-blue">#:stepInstruction#</span> 
-		                <p>
-		                    #if ( createDate!="" && createDate!=null ) {#
-		                        #= kendo.toString(kendo.parseDate(createDate, 'yyyy-MM-dd'), 'hh:mm - dd/MM/yyyy')#
-		                    #}#
-		                </p>
+						#if ( stepName!="" && stepName!=null ) {#
 
-		                <p>Ý kiến: #:content#</p>
+							<span class="text-light-blue">(#:stepName#)</span> 
+						#}#
 
-		                #
-		                if(dossier){
-			                for(var i = 0 ; i < dossier.length ; i++){
-				                #
-					                <p>
-					                	<a target="_blank" href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].dossierFileId#" class="text-greyy text-hover-blue">
-					                		<i aria-hidden="true" class="fa fa-download PR5"></i>
-					                		#:dossier[i].fileName#
-					                	</a> 
-					                </p>
-				                #
-			    			} 
+						<p>
+							#if ( createDate!="" && createDate!=null ) {#
+								#= kendo.toString(kendo.parseDate(createDate, 'yyyy-MM-dd'), 'hh:mm - dd/MM/yyyy')#
+							#}#
+						</p>
+						
+						#if ( content!="" && content!=null ) {#
+							<p>Ý kiến: #:content#</p>
+						#}#
+
+						#
+						if(dossier){
+							for(var i = 0 ; i < dossier.length ; i++){
+								#
+									<p>
+										<a target="_blank" href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].dossierFileId#" class="text-greyy text-hover-blue">
+											<i aria-hidden="true" class="fa fa-download PR5"></i>
+											#:dossier[i].fileName#
+										</a> 
+									</p>
+								#
+							} 
 						}
 						#
-					</div>
-				</li>
+
+					</td>
+				</tr>
 			</script>
 
 		</div>
@@ -308,16 +323,11 @@
 
 		$(document).off("change",".dossier-file");
 		$(document).on("change",".dossier-file",function(){
-			console.log("change");
 
 			var partNo = $(this).attr("part-no");
 			var fileTemplateNo = $(this).attr("file-template-no");
 			var dossierTemplateNo = $("#dossierTemplateNo").val();
 			var hasform = $(this).attr("hasform");
-
-			console.log(partNo);
-			console.log(fileTemplateNo);
-			console.log($(this)[0].files[0]);
 
 			funUploadFile($(this),partNo,dossierTemplateNo+"",fileTemplateNo,hasform);
 			$(this).val("");
@@ -353,8 +363,6 @@
 
 			}
 
-			console.log(dossierId);
-			console.log(dataPartNo);
 			var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
 			if(cf){
 				if(dossierId && dataPartNo){
@@ -445,8 +453,9 @@
 
 						},
 						success : function(result){
-							var data = result.hasOwnProperty("data")?result.data:[];
-							var arrLogsResult = fnGetLogs(data.data);
+							result["data"] = result.hasOwnProperty("data")?result["data"]:[];
+							
+							var arrLogsResult = fnGetLogs(result.data);
 							options.success(arrLogsResult);
 						},
 						error : function(result){
@@ -479,7 +488,7 @@
 					}
 				}
 			}
-			console.log(arrResult);
+			
 			return arrResult;
 		}
 
@@ -588,8 +597,7 @@
 					type : "GET",
 					headers : {"groupId": ${groupId}},
 					success : function(result){
-						console.log("load detail dossier!");
-						console.log(result.dossierId);
+						
 						dataSourceDossierTemplate.read({
 							dossierTemplateNo : result.dossierTemplateNo
 						});
@@ -639,7 +647,7 @@
 							postalTelNo : result.postalTelNo,
 							dossierTemplateNo : result.dossierTemplateNo,
 							viaPostal : function(e){
-								console.log(result.viaPostal);
+								
 								if(result.viaPostal === 0){
 									$("#postal").remove();
 								}
@@ -655,7 +663,7 @@
 							},
 							paymentDossier : payment,
 							paymentFee : function(e){
-								console.log(this.get('paymentDossier'));
+								
 								if(this.get('paymentDossier').paymentFee){
 									return this.get('paymentDossier').paymentFee;
 								}
@@ -731,7 +739,6 @@
 
 		var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
 			var data = new FormData();
-			console.log(file);
 
 			data.append( 'displayName', "");
 			data.append( 'file', $(file)[0].files[0]);
@@ -775,7 +782,7 @@
 					}, "error");
 				}
 			});
-			console.log("success!");
+			
 		}
 
 		var fnCheckStatusAndHideUpload = function(dossierStatus){
@@ -788,7 +795,6 @@
 
 		var fnLoadPayment = function(dossierId){
 
-			console.log(dossierId);
 			var resultModel = null;
 			if(dossierId){
 				$.ajax({
@@ -843,15 +849,12 @@
 
 
 		var funGenNumberFile = function(arrCount){
-			console.log($(".dossier-component-profile"));
+			
 			$(".dossier-component-profile").each(function(index){
 				var partNo = $(this).attr("data-partno");
 				var found = $.grep(arrCount, function(v) {
 					return v.dossierPartNo === partNo;
 				});
-
-				console.log(partNo);
-				console.log(found);
 
 				$(this).attr("data-number",found.length);
 				$(this).html('<span class="number-in-circle" >'+found.length+'</span>');
@@ -887,7 +890,6 @@ var getReferentUidFile = function(dossierId,dossierPartNo){
 			}
 		});
 	}
-	console.log(dossierFile);
 
 	return dossierFile;
 }
@@ -926,21 +928,21 @@ $(document).on("click","#btn-submit-dossier",function(event){
 			Accept : "application/json"
 
 		},
-		success :  function(result){                       
+		success :  function(result){					   
 
 		},
 		error : function(result){
 
 		}
 	});
-	console.log("success!");
+	
 });
 
 
 var fnSaveForm = function(id, value){
 	var current = $("#btn-save-formalpaca"+id);
 	var referentUid = current.attr("referenceUid");
-	console.log(referentUid);
+	
 	if(referentUid){
 		$.ajax({
 			url : "${api.server}/dossiers/${dossierId}/files/"+referentUid+"/formdata",
@@ -957,7 +959,7 @@ var fnSaveForm = function(id, value){
 				notification.show({
 					message: "Yêu cầu được thực hiện thành công!"
 				}, "success");
-				console.log($("#validPart"+id));
+				
 				$("#validPart"+id).val("1");
 			},
 			error : function(result){
@@ -974,9 +976,6 @@ $(document).on("click",".saveFormAlpaca",function(event){
 	var id = $(this).attr("data-pk");
 	var referentUidFile = $(this).attr("referenceUid");
 
-	console.log(id);
-	console.log("ccc");
-
 	var formType = $("#formPartNo"+id+" .formType").val();
 	var value ;
 
@@ -990,9 +989,6 @@ $(document).on("click",".saveFormAlpaca",function(event){
 			errorMessage = "notValid";
 
 		});
-		console.log(errorMessage);
-		console.log(referentUidFile);
-		console.log(value);
 
 		if(errorMessage === '' && referentUidFile){
 			
@@ -1011,7 +1007,7 @@ $(document).on("click",".saveFormAlpaca",function(event){
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công!"
 					}, "success");
-					console.log($("#validPart"+id));
+					
 					$("#validPart"+id).val("1");
 				},
 				error : function(result){
@@ -1030,3 +1026,14 @@ $(document).on("click",".saveFormAlpaca",function(event){
 
 });
 </script>
+
+<style type="text/css" media="screen">
+
+	.table_history_style tr:nth-child(odd) td:first-child {
+		background-color: #E9F7F8;
+	}
+
+	.table_history_style tr:nth-child(even) td:first-child {
+		background-color: #D9E7E8;
+	}
+</style>

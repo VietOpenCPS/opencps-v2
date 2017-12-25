@@ -75,11 +75,14 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
 
+		
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			
+			boolean isCitizen = dossierPermission.isCitizen(user.getUserId());
 
 			dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
 
@@ -104,6 +107,10 @@ public class DossierManagementImpl implements DossierManagement {
 			int year = query.getYear();
 			int month = query.getMonth();
 			String owner = query.getOwner();
+			//If user is citizen then default owner true
+			if(isCitizen){
+				owner = String.valueOf(true);
+			}
 			String follow = query.getFollow();
 			String step = query.getStep();
 			String submitting = query.getSubmitting();

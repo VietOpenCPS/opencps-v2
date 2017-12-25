@@ -25,7 +25,9 @@
 					<span class="text-bold">Mã tiếp nhận</span>: <span data-bind="text:govAgencyName"></span>
 				</div>
 				<div class="row" id="">
-					<a href="javascript:;" class="text-blue text-underline">Thông tin chủ hồ sơ</a>
+					<a href="javascript:;" class="text-blue text-underline">
+						THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+					</a>
 				</div>
 			</div>
 			<div class="col-sm-4 text-center">
@@ -363,7 +365,6 @@
 		if(referenceUid){
 
 			var data = new FormData();
-			console.log(file);
 
 			data.append( 'file', $("#filePayment")[0].files[0]);
 			data.append( 'confirmNote', $("textarea#confirmNote").val());
