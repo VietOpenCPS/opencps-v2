@@ -161,6 +161,11 @@
 							<i class="fa fa-reply" aria-hidden="true"/>
 							Yêu cầu cấp lại
 						</button>
+						<#--  -->
+						<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
+							<i class="fa fa-paper-plane" aria-hidden="true"></i>
+							Gửi bổ sung
+						</button>
 					#}#
 					<#--	-->
 					<button type="button" class="btn-link no-border PT10 copyProfile" data-pk="#:dossierId#">
