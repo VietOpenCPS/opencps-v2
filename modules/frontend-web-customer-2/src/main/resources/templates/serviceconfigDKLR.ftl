@@ -77,7 +77,7 @@
 										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 										</span>
-										<button data-TTHC="TT302011BGTVTCPPXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv24G1">Chọn</button>
+										<button data-TTHC="TT302011BGTVTCPP" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv24G1">Chọn</button>
 									</div>
 									<div class="clear"></div>
 									
@@ -112,7 +112,7 @@
 										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 										</span>
-										<button data-TTHC="TT302011BGTVTCPPXMTGM" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXMTGM" class="btn btn-reset chooseService pull-right P0" id="btn1item22">Chọn</button>
+										<button data-TTHC="TT302011BGTVTCPP" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXMTGM" class="btn btn-reset chooseService pull-right P0" id="btn1item22">Chọn</button>
 									</div>
 									<div class="clear"></div>
 									
@@ -157,7 +157,7 @@
 										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 										</span>
-										<button data-TTHC="TT302011BGTVTCPPXBBCN" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXBBCN"  class="btn btn-reset chooseService pull-right P0" id="btn1item33">Chọn</button>
+										<button data-TTHC="TT302011BGTVTCPP" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXBBCN"  class="btn btn-reset chooseService pull-right P0" id="btn1item33">Chọn</button>
 									</div>
 									<div class="clear"></div>
 									
