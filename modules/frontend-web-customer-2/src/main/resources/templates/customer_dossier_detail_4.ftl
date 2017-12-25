@@ -150,11 +150,7 @@
 									<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
 								</div>
 
-								<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# >
-
-									<form id="formPartNo#:id#">
-
-									</form>
+								<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# id="formPartNo#:id#">
 
 								</div>
 							</div>

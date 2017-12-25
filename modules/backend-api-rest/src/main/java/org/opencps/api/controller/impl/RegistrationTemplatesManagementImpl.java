@@ -53,12 +53,12 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			RegistrationTemplatesResultsModel results = new RegistrationTemplatesResultsModel();
 
 			RegistrationTemplatesActions action = new RegistrationTemplatesActionsImpl();
-			
+
 			JSONObject registrationTemplateJsonObject = JSONFactoryUtil.createJSONObject();
-			
-			if(Validator.isNull(formNo) && Validator.isNull(govAgencyCode)){
+
+			if (Validator.isNull(formNo) && Validator.isNull(govAgencyCode)) {
 				registrationTemplateJsonObject = action.getRegistrationTemplates(groupId, start, end);
-			}else{
+			} else {
 				registrationTemplateJsonObject = action.getRegistrationTemplates(formNo, govAgencyCode);
 			}
 
@@ -154,9 +154,13 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 			RegistrationTemplatesActions action = new RegistrationTemplatesActionsImpl();
 
-			action.removeRegistrationTemplate(groupId, registrationTemplateId);
+			RegistrationTemplates registrationTemplate = action.removeRegistrationTemplate(groupId,
+					registrationTemplateId);
 
-			return Response.status(200).entity("Success").build();
+			RegistrationTemplateDetailModel result = RegistrationTemplatesUtils
+					.mappingToRegistrationTemplateModel(registrationTemplate);
+
+			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			return processException(e);

@@ -31,7 +31,7 @@ public class PaymentUrlGenerator {
 	}
 
 	public static String generatorPayURL(long groupId, long paymentFileId, String pattern,
-			long dossierId) throws IOException {
+			long dossierId, String keypayMerchantCode) throws IOException {
 
 		String result = "";
 		try {
@@ -47,7 +47,7 @@ public class PaymentUrlGenerator {
 			if (Validator.isNotNull(paymentConfig)) {
 				List<String> lsMessages = _putPaymentMessage(pattern);
 
-				long merchant_trans_id = _genetatorTransactionId();
+				long merchant_trans_id = _genetatorTransactionId(keypayMerchantCode);
 
 				JSONObject epaymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
 
@@ -154,11 +154,17 @@ public class PaymentUrlGenerator {
 				param.append("country_code=").append(URLEncoder.encode(keypay.getCountry_code(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
 
-				param.append("desc_1=&");
-				param.append("desc_2=&");
-				param.append("desc_3=&");
-				param.append("desc_4=&");
-				param.append("desc_5=&");
+				param.append("desc_1=&").append(URLEncoder.encode(desc_1, "UTF-8"))
+				.append(StringPool.AMPERSAND);
+				param.append("desc_2=&").append(URLEncoder.encode(desc_2, "UTF-8"))
+				.append(StringPool.AMPERSAND);
+				param.append("desc_3=&").append(URLEncoder.encode(desc_3, "UTF-8"))
+				.append(StringPool.AMPERSAND);
+				param.append("desc_4=&").append(URLEncoder.encode(desc_4, "UTF-8"))
+				.append(StringPool.AMPERSAND);
+				param.append("desc_5=&").append(URLEncoder.encode(desc_5, "UTF-8"))
+				.append(StringPool.AMPERSAND);
+				
 				param.append("xml_description=").append(URLEncoder.encode(keypay.getXml_description(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
 				param.append("secure_hash=").append(keypay.getSecure_hash());
@@ -218,11 +224,11 @@ public class PaymentUrlGenerator {
 	 * @param paymentFile
 	 * @return
 	 */
-	private static long _genetatorTransactionId() {
+	private static long _genetatorTransactionId(String keypayMerchantCode) {
 
 		long transactionId = 0;
 		try {
-			transactionId = CounterLocalServiceUtil.increment(PaymentFile.class.getName() + ".genetatorTransactionId");
+			transactionId = Long.valueOf(keypayMerchantCode);
 		} catch (SystemException e) {
 			_log.error(e);
 		}

@@ -183,8 +183,12 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	public Response delete(long id) {
 		try {
 			RegistrationActions action = new RegistrationActionsImpl();
-			action.delete(id);
-			return Response.status(200).entity("Success").build();
+			
+			Registration registration = action.delete(id);
+			
+			RegistrationDetailModel result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
+			
+			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
 			_log.error(e);
 			return processException(e);
