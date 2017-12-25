@@ -464,7 +464,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Dossier dossier = null;
 
 		if (id != 0) {
-			dossier = dossierPersistence.fetchByPrimaryKey(id);
+			dossier = dossierPersistence.findByPrimaryKey(id);
 		} else {
 			dossier = dossierPersistence.fetchByG_REF(groupId, refId);
 		}
