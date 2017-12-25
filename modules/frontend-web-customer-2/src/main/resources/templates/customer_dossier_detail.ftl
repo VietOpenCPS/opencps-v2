@@ -34,11 +34,11 @@
 
 			<#if resCancelling?has_content >
 
-			<a href="javascript:;" class="btn btn-active" onclick="fnCancelling(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
+			<a href="javascript:;" class="btn btn-active" onclick="fnCancelling(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu hủy</a>
 
 			<#elseif sendAdd?has_content >
 
-			<a href="javascript:;" class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
+			<a href="javascript:;" class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
 
 			<#else>
 
@@ -53,12 +53,6 @@
 
 			</#if>
 
-		</div>
-	</div>
-
-	<div class="dossier-general-info P15 MB15" style="display: none;">
-		<div class="col-sm-12">
-			Cơ quan thực hiện <span class="text-bold" data-bind="text:govAgencyName"></span>
 		</div>
 	</div>
 
@@ -240,7 +234,7 @@
 				var dossierFile =  getReferentUidFile(${dossierId},id);
 				#
 
-				<div class="collapse" id="collapseDossierPart#:id#">
+				<div class="collapse toggle-hide" id="collapseDossierPart#:id#">
 					<div class="col-xs-12 col-sm-12 text-right">
 						<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
 						type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
@@ -344,7 +338,7 @@
 
 <div id="uploadFileTemplateDialog" class="modal fade" role="dialog">
 	
-</div>
+</div>  
 
 
 <div id="profileDetail" class="modal fade" role="dialog">

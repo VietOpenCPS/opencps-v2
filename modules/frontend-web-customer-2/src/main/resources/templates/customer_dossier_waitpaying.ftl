@@ -19,10 +19,9 @@
 		</div>
 
 		<div class="dossier-general-info P15 MB30">
-			<p class="text-bold">Thông tin chung hồ sơ</p>
 			<div class="col-sm-4">
 				<div class="row MB5">
-					<span class="text-bold">Mã tiếp nhận</span>: <span data-bind="text:govAgencyName"></span>
+					<span class="text-bold">Số hồ sơ</span>: <span data-bind="text:dossierNo"></span>
 				</div>
 				<div class="row" id="">
 					<a href="javascript:;" class="text-blue text-underline">
@@ -32,10 +31,10 @@
 			</div>
 			<div class="col-sm-4 text-center">
 				<div class="row MB5" id="">
-					<span class="text-bold">Thời gian gửi</span>: <span data-bind="text:submitDate"></span>
+					<span class="text-bold">Thời gian gửi</span>: <span data-bind="text:confirmDatetime"></span>
 				</div>
 				<div class="row" id="">
-					<span class="text-bold">Mã số hồ sơ</span>: <span data-bind="text : dossierId"></span>
+					<span class="text-bold">Mã hồ sơ</span>: <span data-bind="text : dossierId"></span>
 				</div>
 			</div>
 			
@@ -308,6 +307,11 @@
 							if(this.get('paymentDossier').paymentStatus !== 2){
 								$("#unpaid").show();
 								$("#alreadyPaid").hide();
+							}
+						},
+						confirmDatetime : function(){
+							if(this.get('paymentDossier').confirmDatetime ){
+								return this.get('paymentDossier').confirmDatetime;
 							}
 						},
 						submitting : function(){
