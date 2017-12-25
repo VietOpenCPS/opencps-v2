@@ -55,7 +55,7 @@
 				</div>
 				<div class="row" id="">
 					<a href="javascript:;" class="text-light-blue text-underline">
-						THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+						Thông tin chủ hồ sơ
 					</a>
 				</div>
 			</div>

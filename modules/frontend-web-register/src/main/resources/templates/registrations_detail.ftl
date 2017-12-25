@@ -166,7 +166,7 @@
 								
 								<div class="row">
 									<div class="col-sm-5">
-										<span class="text-bold">Xã/ Phường</span>
+										<span class="text-bold">Trạng thái</span>
 									</div>
 									<div class="col-sm-7">
 										<div class="form-group text-left" data-bind="text: registrationState"> 
@@ -219,8 +219,13 @@
 					</span>
 
 					<div class="actions">
+						
 						<a href="javascript:;" class="registration-add-template" data-formno="#:formNo#" data-toggle="tooltip" data-placement="top">
 							<i class="fa fa-plus-circle text-light-gray" aria-hidden="true" style="font-size: 150%;"></i>
+						</a>
+						
+						<a href="javascript:;" class="registration-del-template" data-referenceuid="#:referenceUid#" >
+							<i class="fa fa-times text-light-gray" aria-hidden="true" style="font-size: 150%;"></i>
 						</a>
 
 						<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số version" data-formno="#:formNo#" data-number="">
@@ -239,7 +244,7 @@
 
 					<div class="col-sm-12" style="height:450px; width:100%;overflow:auto;" >
 
-						<form id="formPartNo#:formNo#">
+						<form id="formPartNo#:referenceUid#">
 
 						</form>
 
@@ -250,7 +255,7 @@
 						type : "GET",
 						headers : {"groupId": ${groupId}},
 						success : function(result){
-						$("\\#formPartNo"+formNo).empty();
+						$("\\#formPartNo"+referenceUid).empty();
 
 						if(result){
 						var alpaca = eval("(" + result + ")");
@@ -260,7 +265,7 @@
 					}
 					alpaca.data = formdata; 
 
-					$("\\#formPartNo"+formNo).alpaca(alpaca);
+					$("\\#formPartNo"+referenceUid).alpaca(alpaca);
 				}
 
 
@@ -300,7 +305,7 @@
 
 			<div class="col-sm-12" style="height:450px; width:100%;overflow:auto;" >
 
-				<form id="formPartNo#:formNo#">
+				<form id="formPartNo#:referenceUid#">
 
 				</form>
 
@@ -312,7 +317,7 @@
 							formScript.data = eval("(" + formData + ")");			
 						}
 						
-						$("\\#formPartNo"+formNo).alpaca(formScript);
+						$("\\#formPartNo"+referenceUid).alpaca(formScript);
 					}
 				}catch(e){
 					console.log(e);
@@ -363,6 +368,13 @@
 
 						},
 						success : function(result){
+							
+							if (result.total == 0) {
+								result["data"] = [];
+							} else if (result.total == 1) {
+								var dt = [result["data"]];
+								result["data"] = dt;
+							}
 							options.success(result);
 						},
 						error : function(result){
@@ -787,14 +799,14 @@ $(document).on("click",".saveFormAlpaca",function(event){
 	console.log(id);
 	console.log("ccc");
 
-	var formType = $("#formPartNo"+id+" .formType").val();
+	var formType = $("#formPartNo"+referentUidFile+" .formType").val();
 	var value ;
 
 	if(formType !== "dklr"){
-		value = $("#formPartNo"+id).alpaca('get').getValue();
+		value = $("#formPartNo"+referentUidFile).alpaca('get').getValue();
 
 		var errorMessage = '';
-		$("#formPartNo"+id+' div[class*="has-error"] > label').each(function( index ) {
+		$("#formPartNo"+referentUidFile+' div[class*="has-error"] > label').each(function( index ) {
 
 			errorMessage = "notValid";
 
@@ -871,6 +883,29 @@ $(document).on("click",".registration-add-template",function(){
 		error : function(xhr){
 			console.log("post formno error!");
 			dataSourceRegistrationsTemplate.read();
+		}
+	});
+});
+
+$(document).on("click",".registration-del-template",function(){
+	var referenceUid = $(this).attr("data-referenceuid");
+
+	$.ajax({
+		url : "${api.server}/registrations/${registrationId}/forms/"+ referenceUid,
+		type : "DELETE",
+		headers: {
+			"groupId": ${groupId}
+		},
+		success : function(result){
+			notification.show({
+				message: "Yêu cầu được thực hiện thành công"
+			}, "success");
+			dataSourceRegistrationsTemplate.read();
+		},
+		error : function(xhr){
+			notification.show({
+				message: "Xảy ra lỗi, xin vui lòng thử lại"
+			}, "error");
 		}
 	});
 });
