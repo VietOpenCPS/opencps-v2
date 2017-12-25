@@ -76,6 +76,7 @@
 									value.count = indexItem;
 								});
 							};
+
 							options.success(result);
 							optBoxPageSize();
 							if (result.total!=0) {
@@ -83,7 +84,11 @@
 								dataSourceProfile.sort({ field: "createDate", dir: "desc" });
 							};
 							
-							$("#statusName").html($(".itemStatus.active .dossierStatus").text());
+							//$("#statusName").html($(".itemStatus.active .dossierStatus").text());
+							if ( modelMain.get("visibleHeader") == "default" ) {
+								modelMain.set("visibleHeader", $(".itemStatus.active .dossierStatus").text());
+							}
+							
 							//
 							$('.optPage[value="'+dataSourceProfile.pageSize()+'"]').attr("selected","selected");
 							// Option kendo-page
@@ -261,14 +266,31 @@
 				//
 				// dataSourceProfile.sort({ field: "submitDate", dir: "desc" }); 
 				var id = $(e.currentTarget).attr("dataPk");
-				manageDossier.navigate("/"+id)
+				manageDossier.navigate("/"+id);
+				modelMain.set("isInvestigated", false);
+				modelMain.set("visibleHeader", $(".itemStatus.active .dossierStatus").text());
 			},
 			load_serviceConfig:function(e){
 				e.preventDefault();
 				manageDossier.navigate("/taohosomoi");
 			},
 			dataBound: function() {
-				$(".k-clear-value").addClass("k-hidden")
+				$(".k-clear-value").addClass("k-hidden");
+			},
+			filterInvestigation: function(e){
+				e.preventDefault();
+				
+				var id = $(e.currentTarget).attr("data-pk");
+				manageDossier.navigate("/"+id);
+				
+				console.log($(e.currentTarget));
+				var textHead = $(e.currentTarget).text().trim();
+				modelMain.set("isInvestigated", true);
+				modelMain.set("visibleHeader", textHead);
+				
+				console.log("TODO: lay danh sach theo "+id+">>>>>>"+ textHead);
+				console.log(modelMain.get("visibleHeader"));
+				
 			}
 		});
 	// Model MainSection
@@ -356,6 +378,19 @@
 				manageDossier.navigate("/dossiers/"+id+"/guibosung");
 			});
 		};
+		var counter = function(){
+			if ($("#listViewDossier").data("kendoListView").dataSource.total()!=0) {
+				var count = $("#listViewDossier").data("kendoListView").dataSource.currentRangeStart();
+				var countLast = $("#listViewDossier").data("kendoListView").dataSource.view().length+count;
+				var arrCount = [];
+				for (var i = count; i < countLast; i++) {
+					arrCount.push(i+1)
+				};
+				$(".count").each(function(index,value){
+					$(value).html(arrCount[index])
+				})
+			}		
+		};
 		var modelMain = kendo.observable({
 			dataSourceProfile : dataSourceProfile,
 			// modelPanel: modelPanel,
@@ -388,9 +423,25 @@
 				copyProfile();
 				resCancelling();
 				sendAdd();
+				counter();
 				$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});
 				$("th").css("vertical-align","top");
-			}
+			},
+			fullScreen: function(e){
+				e.preventDefault();
+				$("#fullScreen").children().toggle();
+				$("#panel_list").toggle();
+				$("#mainType1").toggleClass("col-sm-10","col-sm-12");
+				
+			},
+			isInvestigated: false,
+			filterInvestigation: function(e){
+				e.preventDefault();
+				// TODO: filter list by tra cuu ho so
+				console.log($(e.currentTarget).val());
+				
+			},
+			visibleHeader: "default"
 		});
 
 	</script>

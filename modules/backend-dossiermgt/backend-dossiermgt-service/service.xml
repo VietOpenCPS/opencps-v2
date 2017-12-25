@@ -396,6 +396,14 @@
 		</finder>
 
 		<!-- References -->
+        <finder name="G_C_GAC_SC_DTNO_NOTDS" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="companyId"></finder-column>
+            <finder-column name="govAgencyCode"></finder-column>
+            <finder-column name="serviceCode"></finder-column>
+            <finder-column name="dossierTemplateNo"></finder-column>
+            <finder-column name="dossierStatus" comparator="!="></finder-column>
+        </finder>
 
 	</entity>
 
@@ -475,10 +483,29 @@
 			<finder-column name="isNew" />
 		</finder>
 		<!-- References -->
-		<finder name="DID_FTNO" return-type="DossierFile">
+		<finder name="DID_FTNO" return-type="Collection">
 			<finder-column name="dossierId"></finder-column>
 			<finder-column name="fileTemplateNo"></finder-column>
+			<finder-column name="removed"></finder-column>
 		</finder>
+		<finder name="DID_DPNO" return-type="Collection">
+			<finder-column name="dossierId"></finder-column>
+			<finder-column name="dossierPartNo"></finder-column>
+			<finder-column name="removed"></finder-column>
+		</finder>
+		<finder name="DID_FTNO_DPT" return-type="Collection">
+			<finder-column name="dossierId"></finder-column>
+			<finder-column name="fileTemplateNo"></finder-column>
+			<finder-column name="dossierPartType"></finder-column>
+			<finder-column name="removed"></finder-column>
+		</finder>
+        <finder name="DID_FTNO_DPT_NOT_NULL_FID" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="fileTemplateNo"></finder-column>
+            <finder-column name="dossierPartType"></finder-column>
+            <finder-column name="fileEntryId" comparator="&gt;"></finder-column>
+            <finder-column name="removed"></finder-column>
+        </finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -578,6 +605,12 @@
 			<finder-column name="referenceUid" />
 		</finder>
 		<!-- References -->
+		
+		<finder return-type="Collection" name="ISN_GID">
+			<finder-column name="groupId" />
+			<finder-column name="isNew" />
+		</finder>
+		
 
 	</entity>
 
@@ -617,6 +650,11 @@
 		<!-- Finder methods -->
 		<finder return-type="Collection" name="FB_GID">
 			<finder-column name="groupId" />
+		</finder>
+
+		<finder return-type="PaymentConfig" name="FB_GID_govAgencyCode">
+			<finder-column name="groupId" />
+			<finder-column name="govAgencyCode" />
 		</finder>
 
 		<!-- References -->
@@ -725,6 +763,12 @@
 			<finder-column name="groupId" />
 			<finder-column name="serviceProcessId" />
 		</finder>
+		
+		<finder return-type="Collection" name="SC_SPID">
+			<finder-column name="stepCode" />
+			<finder-column name="serviceProcessId" />
+		</finder>
+		
 
 	</entity>
 
@@ -780,6 +824,12 @@
 			<finder-column name="actionCode" />
 		</finder>
 
+		<finder return-type="Collection" name="GI_AC_SP">
+			<finder-column name="groupId" />
+			<finder-column name="actionCode" />
+			<finder-column name="serviceProcessId" />
+		</finder>
+
 		<finder return-type="Collection" name="PRE_CODE">
 			<finder-column name="preStepCode" />
 			<finder-column name="groupId" />
@@ -806,6 +856,14 @@
 			<finder-column name="preStepCode"></finder-column>
 		</finder>
 
+		<finder return-type="Collection" name="PSC_AEV">
+			<finder-column name="autoEvent" />
+		</finder>
+
+		<finder return-type="Collection" name="PSC_AEV_GI">
+			<finder-column name="groupId" />
+			<finder-column name="autoEvent" />
+		</finder>
 
 	</entity>
 
@@ -1020,10 +1078,42 @@
 		<column name="registrationState" type="int" />
 		<column name="registrationClass" type="String" />
 		<column name="submitting" type="boolean" />
+
 		<!-- Order -->
 
 		<!-- Filter -->
+		<finder return-type="Collection" name="F_submitting">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="submitting"></finder-column>
+		</finder>
 
+	</entity>
+
+	<entity local-service="true" name="RegistrationLog"
+		remote-service="false" table="opencps_registrationlog" uuid="true">
+
+		<column name="registrationLogId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="registrationId" type="long" />
+		<column name="author" type="String" />
+		<column name="content" type="String" />
+		<column name="payload" type="String" />
+		<!-- Order -->
+		<order>
+			<order-column name="createDate" order-by="desc" />
+		</order>
+
+		<!-- Filter -->
+		<finder return-type="Collection" name="G_REGID">
+			<finder-column name="groupId" />
+			<finder-column name="registrationId" />
+		</finder>
 
 	</entity>
 
@@ -1049,17 +1139,25 @@
 		<column name="isNew" type="boolean" />
 		<column name="removed" type="boolean" />
 		<!-- Order -->
+		<order>
+			<order-column name="createDate" order-by="desc" />
+		</order>
 
 		<!-- Filter -->
 		<finder return-type="Collection" name="G_REGID">
 			<finder-column name="registrationId" />
 		</finder>
-		
+
 		<finder return-type="RegistrationForm" name="G_REGID_REFID">
 			<finder-column name="registrationId" />
 			<finder-column name="referenceUid" />
 		</finder>
-
+		
+		<finder return-type="Collection" name="G_REGID_ISNEW">
+			<finder-column name="registrationId" />
+			<finder-column name="isNew" />
+		</finder>
+		
 	</entity>
 
 	<entity local-service="true" name="DeliverableType"

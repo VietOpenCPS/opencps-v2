@@ -21,24 +21,38 @@
 	<input type="hidden" name="dossierTemplateId" id="dossierTemplateId">
 	<input type="hidden" name="dossierItemId" id="dossierItemId">
 	<input type="hidden" name="dossierTemplateNo" id="dossierTemplateNo" data-bind="value : dossierTemplateNo">
-	<div class="row-header align-middle">
+	<div class="row-header  align-middle-lg">
 		<div class="background-triangle-big">Tên thủ tục</div> 
 		<span class="text-bold" data-bind="text:serviceName"></span>
-		<div class="pull-right group-icons">
+		<div class="pull-right group-icons align-middle-lg">
 
 
 			<a href="javascript:;" onclick="fnBack();">
 				<i class="fa fa-reply" aria-hidden="true"></i>
 				Quay lại
 			</a>
-			<a href="javascript:;" onclick="funSaveDossier();">
-				<i class="fa fa-save"></i>
-				Lưu
-			</a>
-			<a href="javascript:;" onclick="fnNext();">
-				<i class="fa fa-sign-in" aria-hidden="true"></i>
-				Tiếp tục
-			</a>
+
+			<#if resCancelling?has_content >
+
+				<a href="javascript:;" class="btn btn-active" id="btn-rescancelling-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
+
+			<#elseif sendAdd?has_content >
+
+				<a href="javascript:;" class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
+
+			<#else>
+
+				<a href="javascript:;" onclick="funSaveDossier();">
+					<i class="fa fa-save"></i>
+					Lưu
+				</a>
+				<a href="javascript:;" onclick="fnNext();">
+					<i class="fa fa-sign-in" aria-hidden="true"></i>
+					Tiếp tục
+				</a>
+
+			</#if>
+
 		</div>
 	</div>
 
@@ -72,7 +86,9 @@
 					<div class="background-triangle-small">I</div> 
 					<div class="col-sm-12 PL0">
 						
-						<span class="text-uppercase hover-pointer">Thông tin chủ hồ sơ</span>
+						<span class="text-uppercase hover-pointer">
+							THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+						</span>
 						<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
 					</div>
 					
@@ -198,6 +214,7 @@
 					</span>
 
 					<div class="actions">
+
 						<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#">
 							<i class="fa fa-archive" aria-hidden="true"></i>
 						</a>
@@ -206,7 +223,7 @@
 							<i class="fa fa-upload text-light-blue"></i>
 						</label>
 
-						<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#" hasform="#if(hasForm){# true #}#">
+						<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#" hasform="#if(hasForm){# true #}#" >
 
 						<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 							<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
@@ -271,18 +288,12 @@
 </div>
 
 <div class="row-parts-content" id="postalInfo">
-	<div class="row">
-		<div class="col-sm-12">
-			<label>Ghi chú</label>
-			<input class="form-control" name="applicantNote" id="applicantNote" placeholder="Ghi chú" data-bind="value : applicantNote">
-		</div>
-	</div>
 
 	<div class="checkbox ML15">
 		<input type="checkbox" id="viaPostal" name="viaPostal" data-bind="attr : {viaPostal : viaPostal}"> <label class="text-normal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
 	</div>
 	
-	<div class="row MB20">
+	<div class="row">
 		<div class="col-xs-12 col-sm-7">
 			<label>Địa chỉ nhận kết quả</label>
 			<input type="text" class="form-control input-small" placeholder="Ghi rõ thôn, số nhà, tên đường - phố" id="postalAddress" name="postalAddress" required="required" validationMessage="Bạn phải nhập địa chỉ nhận kết quả" data-bind="value : postalAddress">
@@ -299,13 +310,34 @@
 			<span data-for="postalTelNo" class="k-invalid-msg"></span> 
 		</div>
 	</div>
+
+	<div class="row MB20">
+		<div class="col-sm-12">
+			<label>${lblApplicantNote}</label>
+			<textarea class="form-control" name="applicantNote" id="applicantNote" placeholder="Ghi chú" data-bind="text : applicantNote" rows="3"></textarea>
+		</div>
+	</div>
 </div>
 </div>
 
 <div class="button-row MT20">
 	<button class="btn btn-active" id="btn-back-dossier" type="button"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
+	
+
+	<#if resCancelling?has_content >
+
+	<button class="btn btn-active" id="btn-rescancelling-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+
+	<#elseif sendAdd?has_content >
+
+	<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+
+	<#else>
+
 	<button class="btn btn-active" id="btn-save-dossier" type="button" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý..."><i class="fa fa-save"></i> Lưu</button>
 	<button class="btn btn-active" id="btn-submit-dossier" type="button"><i class="fa fa-sign-in" aria-hidden="true"></i> Tiếp tục</button>
+	
+	</#if>
 	<#-- <button class="btn btn-active" id="btn-submit-dossier"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 	<button class="btn btn-active"><i class="fa fa-trash"></i> Xóa</button> -->
 </div>
@@ -560,7 +592,7 @@
 					contactTelNo : $("#contactTelNo").val(),
 					contactEmail : $("#contactEmail").val(),
 					viaPostal : $("#viaPostal").is(":checked") ? 2 : 1,
-					applicantNote : $("#applicantNote").val(),
+					applicantNote : $("textarea#applicantNote").val(),
 					postalTelNo: $("#postalTelNo").val(),
 					postalCityCode: $("#postalCityCode").val(),
 					postalAddress: $("#postalAddress").val(),
@@ -603,7 +635,7 @@
 				},
 				data : {
 					actionCode  : 1100,
-					actionNote :  $("#applicantNote").val()
+					actionNote :  $("textarea#applicantNote").val()
 				},
 				success : function(result){
 					$("#btn-save-dossier").button('reset');
@@ -677,7 +709,7 @@
 		dataSource : {
 			transport : {
 				read : function(options){
-					var parent = "${(applicant.cityCode)!}";
+					var parent = "${(dossier.cityCode)!}";
 					if(options.data.parent){
 						parent = options.data.parent;
 					}
@@ -724,7 +756,7 @@
 		dataSource : {
 			transport : {
 				read : function(options){
-					var parent = "${(applicant.districtCode)!}";
+					var parent = "${(dossier.districtCode)!}";
 					if(options.data.parent){
 						parent = options.data.parent;
 					}
@@ -907,6 +939,7 @@
 		data.append('referenceUid', "");
 		data.append('dossierTemplateNo', dossierTemplateNo);
 		data.append('fileTemplateNo', fileTemplateNo);
+		data.append('formData', "");
 		data.append('fileType', "");
 		data.append('isSync', "");
 
@@ -1146,5 +1179,110 @@ $(document).ready(function(){
 		scrollTop: $("#dossierFormSubmiting").offset().top
 	}, 700);
 });
+
+$("#btn-rescancelling-dossier").click(function(){
+	console.log("${(dossier.dossierStatus)!}");
+	if("${(dossier.dossierStatus)!}" !== "new" && "${(dossier.dossierStatus)!}" !== "null" && "${(dossier.dossierStatus)!}" !== "done"){
+		console.log("run rescancelling!");
+		$.ajax({
+			url : "${api.server}/dossiers/${dossierId}",
+			dataType : "json",
+			type : "PUT",
+			headers: {
+				"groupId": ${groupId},
+				Accept : "application/json"
+			},
+			data : {
+				applicantNote : $("textarea#applicantNote").val()
+			},
+			success : function(result){
+				fnCancelling(${(dossierId)!});
+				
+			},
+			error : function(result){
+				
+			}
+		});
+	}
+});
+
+$("#btn-sendadd-dosier").click(function(){
+	console.log("${(dossier.dossierStatus)!}");
+	if("${(dossier.dossierStatus)!}" == "waiting"){
+		console.log("run senadd!");
+		$.ajax({
+			url : "${api.server}/dossiers/${dossierId}",
+			dataType : "json",
+			type : "PUT",
+			headers: {
+				"groupId": ${groupId},
+				Accept : "application/json"
+			},
+			data : {
+				applicantNote : $("textarea#applicantNote").val()
+			},
+			success : function(result){
+				fnSubmitting(${(dossierId)!});
+				
+			},
+			error : function(result){
+				
+			}
+		});
+	}
+});
+
+var fnCancelling = function(dossierId){
+	$.ajax({
+		url : "${api.server}/dossiers/"+dossierId+"/cancelling",
+		dataType : "json",
+		type : "GET",
+		headers: {
+			"groupId": ${groupId},
+			Accept : "application/json"
+		},
+		data : {
+			
+		},
+		success : function(result){
+			notification.show({
+				message: "Yêu cầu được thực hiện thành công!"
+			}, "success");
+
+		},
+		error : function(result){
+			notification.show({
+				message: "Thực hiện không thành công, xin vui lòng thử lại!"
+			}, "error");
+		}
+	});
+}
+
+var fnSubmitting = function(dossierId){
+	$.ajax({
+		url : "${api.server}/dossiers/"+dossierId+"/submitting",
+		dataType : "json",
+		type : "GET",
+		headers: {
+			"groupId": ${groupId},
+			Accept : "application/json"
+		},
+		data : {
+			
+		},
+		success : function(result){
+			notification.show({
+				message: "Yêu cầu được thực hiện thành công!"
+			}, "success");
+
+		},
+		error : function(result){
+			notification.show({
+				message: "Thực hiện không thành công, xin vui lòng thử lại!"
+			}, "error");
+		}
+	});
+}
+
 
 </script>

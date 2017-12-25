@@ -12,7 +12,10 @@ import org.opencps.api.controller.RegistrationTemplatesManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.RegistrationTemplatesUtils;
 import org.opencps.api.registrationtemplate.model.RegistrationTemplateDetailModel;
+import org.opencps.api.registrationtemplate.model.RegistrationTemplateFormReportInputUpdateModel;
+import org.opencps.api.registrationtemplate.model.RegistrationTemplateFormScriptInputUpdateModel;
 import org.opencps.api.registrationtemplate.model.RegistrationTemplateInputModel;
+import org.opencps.api.registrationtemplate.model.RegistrationTemplateSampleDataInputUpdateModel;
 import org.opencps.api.registrationtemplate.model.RegistrationTemplatesResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
@@ -129,7 +132,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 	@Override
 	public Response removeRegistrationTemplate(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String registrationTemplateId) {
+			Locale locale, User user, ServiceContext serviceContext, long registrationTemplateId) {
 		// TODO Remove RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -143,10 +146,9 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 			RegistrationTemplatesActions action = new RegistrationTemplatesActionsImpl();
 
-			RegistrationTemplates registrationTemplate = action.removeRegistrationTemplate(groupId,
-					registrationTemplateId);
+			action.removeRegistrationTemplate(groupId, registrationTemplateId);
 
-			return Response.status(200).entity("OK!").build();
+			return Response.status(200).entity("Success").build();
 
 		} catch (Exception e) {
 			return processException(e);
@@ -159,6 +161,8 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 		// TODO Get FormScript of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
 
+		RegistrationTemplateFormScriptInputUpdateModel result = new RegistrationTemplateFormScriptInputUpdateModel();
+
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -168,7 +172,9 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
 					.getRegistrationTemplates(registrationTemplateId);
 
-			return Response.status(200).entity(registrationTemplate.getFormScript()).build();
+			result.setFormScript(registrationTemplate.getFormScript());
+
+			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			return processException(e);
@@ -210,6 +216,8 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 		// TODO Get FormReport of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
 
+		RegistrationTemplateFormReportInputUpdateModel result = new RegistrationTemplateFormReportInputUpdateModel();
+
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -219,7 +227,9 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
 					.getRegistrationTemplates(registrationTemplateId);
 
-			return Response.status(200).entity(registrationTemplate.getFormReport()).build();
+			result.setFormReport(registrationTemplate.getFormReport());
+
+			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			return processException(e);
@@ -261,6 +271,8 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 		// TODO Get SampleData of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
 
+		RegistrationTemplateSampleDataInputUpdateModel result = new RegistrationTemplateSampleDataInputUpdateModel();
+
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -270,7 +282,9 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
 					.getRegistrationTemplates(registrationTemplateId);
 
-			return Response.status(200).entity(registrationTemplate.getSampleData()).build();
+			result.setSampleData(registrationTemplate.getSampleData());
+
+			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			return processException(e);

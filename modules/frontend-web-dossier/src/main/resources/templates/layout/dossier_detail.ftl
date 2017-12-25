@@ -9,15 +9,15 @@
 				{{detailModel.dossierNo}}
 		
 			</div>
-			<div class="flex xs3 text-right">
+			<div class="flex xs5 sm3 text-right" style="margin-left: auto;">
 		
 				<v-btn flat class=" my-0 py-0 btn-border-left" color="grey darken-1" v-on:click.native="detailPage = !detailPage">
 					<v-icon class="mr-2">undo</v-icon>
 				Quay lại
 				</v-btn>
-                <v-btn v-if="navigationFilterview" v-on:click.native="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0"><v-icon>fullscreen</v-icon></v-btn>
+                <v-btn v-if="navigationFilterview" v-on:click.native="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0 hidden-sm-and-down"><v-icon>fullscreen</v-icon></v-btn>
 
-                <v-btn v-if="!navigationFilterview" v-on:click.native="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0"><v-icon>fullscreen_exit</v-icon></v-btn>
+                <v-btn v-if="!navigationFilterview" v-on:click.native="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0 hidden-sm-and-down"><v-icon>fullscreen_exit</v-icon></v-btn>
 
 			</div>
 	
@@ -52,10 +52,13 @@
 				<span class="text-bold">
 				Chuyển bởi: 
 				</span>
+				{{detailModel.lastActionUser}}
+			</div>
+            <div>
 				{{detailModel.lastActionName}}
 			</div>
 			<div>
-				<v-icon color="red darken-2">feedback</v-icon> {{detailModel.lastActionNote}}
+				{{detailModel.lastActionNote}}
 			</div>
 			</v-flex>
 			<v-flex xs12 sm6>
@@ -63,19 +66,19 @@
 					<span class="text-bold">
 					Thời gian gửi: 
 					</span>
-					{{ detailModel.submitDate | date }}
+					{{ detailModel.submitDate}}
 				</div>
 				<div class="pb-1">
 					<span class="text-bold">
 					Thời gian tiếp nhận: 
 					</span>
-					{{ detailModel.receiveDate | date }}
+					{{ detailModel.receiveDate}}
 				</div>
 				<div class="pb-1">
 					<span class="text-bold">
 					Thời hạn xử lý: 
 					</span>
-					{{ detailModel.dueDate | date }}
+					{{ detailModel.dueDate}}
 				</div>
 				<div class="pb-1">
 					<span class="text-bold">
@@ -93,8 +96,8 @@
 						<div v-if="showContactDetail">
 							<div class="pb-1">
 								<span class="text-bold">
-								contactName: 
-								</span>
+								Tên doanh nghiệp: 
+								</span> 
 								{{detailModel.contactName}}
 							</div>
 							<div class="pb-1">
@@ -127,9 +130,7 @@
 		<div class="text-bold primary--text expansion-panel__header">Thông tin sản phẩm</div>
 		<v-layout wrap class="px-4 pb-2">
 			<v-flex xs12 sm6>
-			<div class="pb-1">
-				{{detailModel.briefNote}}
-			</div>
+			<div class="pb-1" v-html="detailModel.briefNote"></div>
 			</v-flex>
 		</v-layout>
 		</v-expansion-panel-content>
@@ -163,14 +164,13 @@
 			<v-expansion-panel expand class="my-0">
 				<v-expansion-panel-content v-bind:value="true">
 				<div slot="header" class="text-bold"> <span>II. </span>Kết quả</div>
-				<div class="opencps_list_border_style" jx-bind="listDocumentOut"></div>
+				<div class="opencps_list_border_style" jx-bind="listDocumentOut"></div> 
 				</v-expansion-panel-content>
 			</v-expansion-panel>
 			</v-tabs-content>
 			<v-tabs-content :id="'tab-dossier-detail-2'" reverse-transition="slide-y-transition" transition="slide-y-transition">
 				<v-tabs :scrollable="false" v-if="processSteps">
-					<v-tabs-bar dark class="grey-opencps-panel">
-					<v-tabs-slider color="primary"></v-tabs-slider>
+					<v-tabs-bar dark class="grey-opencps-panel grey-opencps-panel-group-button">
 					<v-tabs-item
 						v-for="step in processSteps"
 						:key="step.processActionId"
@@ -178,7 +178,21 @@
                         v-if="step.autoEvent !== 'submit'"
 						@click.prevent.stop="changeProcessStep(step)"
 					>
-						{{ step.actionName }}
+                        <v-btn
+                            :loading="true"
+                            :disabled="true"
+                            v-if="stepLoading"
+                        >
+                            <span slot="loader">Loading...</span>
+                        </v-btn>
+                        <v-btn
+                            color="primary"
+                            class="mx-0 my-0"
+                            v-else
+                        >
+                            {{ step.actionName }}
+                        </v-btn>
+						
 					</v-tabs-item>
 					<v-menu>
 					</v-menu>
@@ -198,34 +212,39 @@
                             </v-layout>
                         </v-card-title>
                         <v-expansion-panel class="my-0 expansion__list_style">
-                            <v-expansion-panel-content v-for="(item,i) in stepModel.createFiles" :key="item.dossierPartId">
-                            <div slot="header">{{i + 1}}. {{item.partName}}</div>
+                            <v-expansion-panel-content v-for="(item,i) in stepModel.createFiles" v-if="item" :key="item.dossierPartId">
+                            <div slot="header" @click="showAlpacaJSFORM(item)">{{i + 1}}. {{item.partName}} <small v-if="item.eform">( Form trực tuyến )</small> </div>
                             <div slot="header" class="text-right">
-                                <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="viewDossierFileVersionArchive(item)">
-                                    <v-icon>archive</v-icon>
-                                </v-btn>
-                                <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="document.getElementById('inputfile_'+item.dossierPartId).click()">
+                                <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="singleFileUpload(item)">
                                     <v-icon>file_upload</v-icon>
                                 </v-btn>
-                                <v-btn color="primary" fab small dark class="small-btn-x mx-0 my-0" v-on:click.native="viewDossierFileVersion(item)">
-                                    0
+                                <v-btn color="primary" fab small dark class="small-btn-x mx-0 my-0" v-on:click.native="viewDossierFileResult(item, i)">
+                                    {{item.counter}}
                                 </v-btn>
                                 
-                                <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="">
+                                <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="deleteDossierFileVersion(item)">
                                     <v-icon>delete</v-icon>
                                 </v-btn>
                             </div>
 
-                            <input type="file" :id="'inputfile_'+item.dossierPartId" style="display:none" v-on:change="singleFileUploadInput($event, item)"/>
+                            <input type="file" :id="'inputfile_'+item.dossierPartId" style="display:none" v-on:change="singleFileUploadInput($event, item, i)"/>
+                            <div class="text-right pr-4" v-if="item.eform">
+                                <v-btn color="primary" 
+                                    :loading="loadingAlpacajsForm"
+                                    :disabled="loadingAlpacajsForm"
+                                    v-on:click.native="submitAlpacajsForm(item)"> Ghi lại </v-btn>
+                            </div>
+                            <div :id="'alpacajs_form_'+item.dossierPartId" class="expansion-panel__header"></div>
+
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                         <v-card-actions>
-                            <v-btn flat color="primary" class="px-0"
+                            <v-btn flat color="primary" class="px-0" :loading="actionsSubmitLoading" :disabled="actionsSubmitLoading"
                             @click.prevent.stop="postNextActions(stepModel)">Xác nhận</v-btn>
                         </v-card-actions>
                     </div>
 				</v-card>
-			
+                
 			</v-tabs-content>
 			<v-tabs-content :id="'tab-dossier-detail-3'" reverse-transition="slide-y-transition" transition="slide-y-transition">
 			<div class="opencps_list_border_style" jx-bind="listHistoryProcessing"></div>
@@ -376,11 +395,14 @@
                         success: function(comments) {
                          
                             var data = [];
+
+                            if (comments.hasOwnProperty('data')) {
+                                $.each(comments.data, function(index, comment){
+                                    data.push(formatComment(comment, users));
+                                });
+                                onSuccess(data);
+                            }
                             
-                            $.each(comments.data, function(index, comment){
-                                data.push(formatComment(comment, users));
-                            });
-                            onSuccess(data);
                         },
                         error: function(xhr){
                             onSuccess([]);

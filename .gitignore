@@ -68,3 +68,4 @@ gradle-local.properties
 mt-dklr/**
 theme_nz/*
 modules/vr-business
+gradle.properties

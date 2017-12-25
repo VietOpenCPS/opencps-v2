@@ -34,7 +34,7 @@
 					</div>
 				</div>
 				<div class="col-md-12 MB10 filterField">
-					<input id="dossier-emp-nav-selectbox-by-dossierNo" placeholder="Mã tiếp nhận" name="dossierNo" class="form-control dossier-emp-nav-selectbox" data-bind="events: { keyup: filterDossierNo}" style="height:30px" />
+					<input id="dossier-emp-nav-selectbox-by-dossierNo" placeholder="Số hồ sơ" name="dossierNo" class="form-control dossier-emp-nav-selectbox" data-bind="events: { keyup: filterDossierNo}" style="height:30px" />
 				</div>
 				
 				<div class="hidden col-md-12 MB5">
@@ -89,8 +89,14 @@
 							<div id="groupLookup" class="accordion-body collapse in">
 								<div class="accordion-inner">
 									<ul id="" class="ul-default have-bagde">
-										<li class="hover-pointer text-hover-blue">Tra cứu chứng chỉ</li>
-										<li class="hover-pointer text-hover-blue">Tra cứu phương tiện xuất xưởng</li>
+										<li class="hover-pointer text-hover-blue" 
+											data-bind="click: filterInvestigation" data-pk="tracuuchungchi">
+											Tra cứu chứng chỉ
+										</li>
+										<li class="hover-pointer text-hover-blue" 
+											data-bind="click: filterInvestigation" data-pk="tracuuphuongtienxuatxuong">
+											Tra cứu phương tiện xuất xưởng
+										</li>
 									</ul>
 								</div>
 							</div>

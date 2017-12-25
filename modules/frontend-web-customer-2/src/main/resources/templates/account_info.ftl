@@ -5,7 +5,9 @@
 <div class="panel">
   <div class="panel-heading P0">
     <div class="row-header">
-      <div class="background-triangle-big">Thông tin chủ hồ sơ</div>
+      <div class="background-triangle-big">
+      	THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+      </div>
       <span class="panel-title">Thông tin đánh dấu <span class="red">*</span> là thông tin bắt buộc nhập</span>
     </div>
   </div>

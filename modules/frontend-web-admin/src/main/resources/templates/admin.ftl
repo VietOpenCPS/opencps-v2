@@ -45,6 +45,14 @@
 				</div>
 				<div class="col-sm-9 PL10 P0">Cán bộ</div>
 			</li>
+			<li class="clearfix employee" >
+				<div class="col-sm-2 clearfix ">
+					<a href="javascript:;" >
+						<i class="fa fa-gg" aria-hidden="true"></i>
+					</a>
+				</div>
+				<div class="col-sm-9 PL10 P0">Mẫu thông báo</div>
+			</li>
 			<li class="clearfix" >
 				<div class="col-sm-2 clearfix ">
 					<a href="javascript:;" >
@@ -101,6 +109,14 @@
 				</div>
 				<div class="col-sm-9 PL10 P0">Tạo Eform</div>
 			</li>
+			<li class="clearfix" >
+				<div class="col-sm-2 clearfix ">
+					<a href="javascript:;" >
+						<i class="fa fa-gg" aria-hidden="true"></i>
+					</a>
+				</div>
+				<div class="col-sm-9 PL10 P0">Mẫu đăng kí hồ sơ thương nhân</div>
+			</li>
 		</ul>
 	</div>
 </div>
@@ -115,13 +131,15 @@
 			'${url.adminWorkingUnitPortlet.working_unit_list}',
 			'${url.adminJobPosPortlet.jobpos_list}',
 			'${url.employeePortlet.employee_index}',
+			'${url.adminNotificationPortlet.notification_template_list}',
 			'${ajax.dossiertemplate}',
 			'${ajax.serviceprocess}',
 			'${ajax.serviceconfig}',
 			'holiday.ftl',
 			'${ajax.payment_config}',
 			'${ajax.manage_account}',
-			'efrom.ftl'
+			'efrom.ftl',
+			'${ajax.registrationtemplates}',
 		]
 	}).data('kendoTabStrip');
 

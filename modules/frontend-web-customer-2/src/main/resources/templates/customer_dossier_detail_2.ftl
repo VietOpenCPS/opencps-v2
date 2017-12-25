@@ -79,7 +79,9 @@
 						<div class="background-triangle-small">I</div>
 						<div class="col-sm-12 PL0">
 
-							<span class="text-uppercase hover-pointer">Thông tin chủ hồ sơ</span>
+							<span class="text-uppercase hover-pointer">
+								THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+							</span>
 							<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
 						</div>
 					</div>
@@ -275,18 +277,6 @@
 </div>
 
 <div class="row-parts-content">
-	<div class="row MB5">
-
-		<div class="col-sm-1">
-			<label>Ghi chú</label>
-		</div>
-		<div class="col-sm-11">
-			<span id="applicantNote" data-pk="1" data-type="textarea" data-toggle="#editApplicantNote" data-original-title="Ghi chú" tabindex="-1" class="" data-bind="text:applicantNote"></span>
-			<span class="pull-right">
-				<a href="javascript:;" id="editApplicantNote" style="float: right"><i class="fa fa-pencil"></i></a>
-			</span>
-		</div>
-	</div>
 
 	<div class="checkbox ML15">
 		<input type="checkbox" data-bind="attr : {viaPostal: viaPostal}" name="viaPostal" id="viaPostal"> <label class="text-normal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
@@ -338,13 +328,30 @@
 		</div>
 
 	</div>
+
+	<div class="row MB5">
+
+		<div class="col-sm-1">
+			<label>Ghi chú</label>
+		</div>
+		<div class="col-sm-11">
+			<span id="applicantNote" data-pk="1" data-type="textarea" data-toggle="#editApplicantNote" data-original-title="Ghi chú" tabindex="-1" class="" data-bind="text:applicantNote"></span>
+			<span class="pull-right">
+				<a href="javascript:;" id="editApplicantNote" style="float: right"><i class="fa fa-pencil"></i></a>
+			</span>
+		</div>
+	</div>
+
 </div>
 </div>
 
 <div class="button-row MT20">
 	<button class="btn btn-active" id="btn-back-dossier" type="button"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
-	<button class="btn btn-active" id="btn-submit-dossier" data-bind="attr : {submitting : submitting}" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý..." > <i class="fa fa-paper-plane" ></i> Nộp hồ sơ</button>
+
+	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+
 	<button class="btn btn-active" id="btn-delete-dossier" data-bind="attr : {data-pk : dossierId}"><i class="fa fa-trash"></i> Xóa</button>
+	
 </div>
 </div>
 
@@ -1320,6 +1327,7 @@
 		data.append('dossierTemplateNo', dossierTemplateNo);
 		data.append('fileTemplateNo', fileTemplateNo);
 		data.append('fileType', "");
+		data.append('formData', "");
 		data.append('isSync', "");
 
 		$.ajax({
@@ -1549,5 +1557,7 @@
 			scrollTop: $("#dossierFormSubmiting").offset().top
 		}, 700);
 	});
+
+	
 
 </script>

@@ -25,7 +25,9 @@
 					<span class="text-bold">Mã tiếp nhận</span>: <span data-bind="text:govAgencyName"></span>
 				</div>
 				<div class="row" id="">
-					<a href="javascript:;" class="text-blue text-underline">Thông tin chủ hồ sơ</a>
+					<a href="javascript:;" class="text-blue text-underline">
+						THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+					</a>
 				</div>
 			</div>
 			<div class="col-sm-4 text-center">
@@ -106,7 +108,6 @@
 								<div class="col-sm-10" data-bind="text:paymentBankInfo"></div>
 							</div>
 
-
 							<div class="row MB5">
 								<div class="col-sm-2">								
 									<span class="text-bold">Trạng thái</span>	
@@ -124,8 +125,8 @@
 							<div id="unpaid">
 								<div class="row MB10">
 									<div class="col-sm-12">
-										<button class="btn btn-sm btn-border-color MR10 text-light-blue" onclick="">Thanh toán trực tuyến</button> 
-										<button class="btn btn-sm btn-border-color MR10 text-light-blue" onclick="">Thông báo đã nộp chuyển khoản</button>
+										<button class="btn btn-sm btn-border-color MR10 text-light-blue" id="dossier-payment-online" data-bind="attr : {data-pk : referenceUid}">Thanh toán trực tuyến</button> 
+										<button class="btn btn-sm btn-border-color MR10 text-light-blue" data-bind="attr : {data-pk : referenceUid}" id="dossier-payment-confirm">Thông báo đã nộp chuyển khoản</button>
 										<button class="btn btn-sm btn-border-color text-light-blue" onclick="">Xem phiếu thanh toán</button>
 									</div>
 								</div>
@@ -146,8 +147,8 @@
 
 											</div>
 										</div>
-										<input type="file" id="file" name="file" class="hidden" >
-										<label class="btn btn-sm MB0 ML10 hover-pointer" for="file" title="Tải file lên" >
+										<input type="file" id="filePayment" name="filePayment" class="hidden" >
+										<label class="btn btn-sm MB0 ML10 hover-pointer" for="filePayment" title="Tải file lên" >
 											<span class="text-normal">Chọn ảnh từ máy</span>
 										</label>
 									</div>
@@ -183,17 +184,17 @@
 									<div class="col-sm-10" data-bind="text: paymentBankInfo"></div>
 								</div>
 							</div>
- -->
-						</div>
+						-->
 					</div>
 				</div>
 			</div>
-		</div> 
+		</div>
+	</div> 
 
-	</div>
-	<div class="button-row MT20">
-		<button class="btn btn-active" id="btn-submit-dossier" type="button" onclick="fnBack();"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
-	</div>
+</div>
+<div class="button-row MT20">
+	<button class="btn btn-active" id="btn-submit-dossier" type="button" onclick="fnBack();"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
+</div>
 </div>
 
 <script type="text/javascript">
@@ -239,9 +240,6 @@
 				success : function(result){
 					console.log("load detail dossier!");
 					console.log(result.dossierId);
-					dataSourceDossierTemplate.read({
-						dossierTemplateNo : result.dossierTemplateNo
-					});
 
 					var payment = fnLoadPayment(result.dossierId);
 					
@@ -260,6 +258,13 @@
 							console.log(this.get('paymentDossier'));
 							if(this.get('paymentDossier').paymentFee){
 								return this.get('paymentDossier').paymentFee;
+							}
+							return "";
+						},
+						referenceUid : function(e){
+							console.log(this.get('paymentDossier'));
+							if(this.get('paymentDossier').referenceUid){
+								return this.get('paymentDossier').referenceUid;
 							}
 							return "";
 						},
@@ -331,5 +336,60 @@
 
 	printDetailDossier(${dossierId});
 
+
+	$("#dossier-payment-online").click(function(){
+		var referenceUid = $(this).attr("data-pk");
+		if(referenceUid){
+			$.ajax({
+				url : "${api.server}/dossiers/${dossierId}/payments/"+referenceUid+"/epaymentprofile",
+				dataType : "json",
+				type : "GET",
+				headers : {"groupId": ${groupId}},
+				async : false,
+				data : {
+				},
+				success : function(result){
+					window.location.href = result.keypayUrl;
+				},
+				error :  function(result){
+					
+				}
+
+			});
+		}
+	});
+
 	
+	$("#dossier-payment-confirm").click(function(){
+		var referenceUid = $(this).attr("data-pk");
+		if(referenceUid){
+
+			var data = new FormData();
+
+			data.append( 'file', $("#filePayment")[0].files[0]);
+			data.append( 'confirmNote', $("textarea#confirmNote").val());
+			data.append( 'paymentMethod', "Chuyển khoản");
+			$.ajax({
+				url : "${api.server}/dossiers/${dossierId}/payments/"+referenceUid+"/confirm",
+				dataType : "json",
+				type : "PUT",
+				headers : {"groupId": ${groupId}},
+				processData: false,
+				contentType: false,
+				cache: false,
+				data : data,
+				success : function(result){
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công"
+					}, "success");
+				},
+				error :  function(result){
+					notification.show({
+						message: "Thực hiện không thành công, xin vui lòng thử lại"
+					}, "error");
+				}
+
+			});
+		}
+	});
 </script>

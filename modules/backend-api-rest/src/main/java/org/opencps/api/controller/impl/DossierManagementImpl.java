@@ -61,6 +61,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierManagementImpl implements DossierManagement {
@@ -74,11 +75,14 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
 
+		
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			
+			boolean isCitizen = dossierPermission.isCitizen(user.getUserId());
 
 			dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
 
@@ -103,6 +107,10 @@ public class DossierManagementImpl implements DossierManagement {
 			int year = query.getYear();
 			int month = query.getMonth();
 			String owner = query.getOwner();
+			//If user is citizen then default owner true
+			if(isCitizen){
+				owner = String.valueOf(true);
+			}
 			String follow = query.getFollow();
 			String step = query.getStep();
 			String submitting = query.getSubmitting();
@@ -135,8 +143,8 @@ public class DossierManagementImpl implements DossierManagement {
 							Sort.LONG_TYPE, false) };
 					break;
 				case "overdue":
-					sorts = new Sort[] {
-							SortFactoryUtil.create(DossierTerm.DUE_DATE_TIMESTAMP + "_sortable", Sort.LONG_TYPE, false) };
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.DUE_DATE_TIMESTAMP + "_sortable",
+							Sort.LONG_TYPE, false) };
 					break;
 				case "release":
 					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.RELEASE_DATE_TIMESTAMP + "_sortable",
@@ -153,7 +161,7 @@ public class DossierManagementImpl implements DossierManagement {
 				default:
 					break;
 				}
-				
+
 			}
 			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					query.getStart(), query.getEnd(), serviceContext);
@@ -766,11 +774,13 @@ public class DossierManagementImpl implements DossierManagement {
 		ProcessAction action = null;
 
 		try {
-			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode);
+			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode, serviceProcessId);
 
 			Dossier dossier = getDossier(groupId, dossierId, refId);
 
 			String dossierStatus = dossier.getDossierStatus();
+
+			String dossierSubStatus = dossier.getDossierSubStatus();
 
 			for (ProcessAction act : actions) {
 
@@ -782,7 +792,9 @@ public class DossierManagementImpl implements DossierManagement {
 					action = act;
 					break;
 				} else {
-					if (step.getDossierStatus().contentEquals(dossierStatus)) {
+					if (step.getDossierStatus().contentEquals(dossierStatus)
+							&& StringUtil.containsIgnoreCase(step.getDossierSubStatus(), dossierSubStatus)) {
+
 						action = act;
 						break;
 					}
@@ -853,18 +865,17 @@ public class DossierManagementImpl implements DossierManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-				if (!auth.isAuth(serviceContext)) {
-					throw new UnauthenticationException();
-				}
-				
-				DossierActions actions = new DossierActionsImpl();
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
 
-				Dossier dossier = actions.cloneDossier(groupId, dossierId, serviceContext);
-				
+			DossierActions actions = new DossierActionsImpl();
 
-				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier);
+			Dossier dossier = actions.cloneDossier(groupId, dossierId, serviceContext);
 
-				return Response.status(200).entity(result).build();
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier);
+
+			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();

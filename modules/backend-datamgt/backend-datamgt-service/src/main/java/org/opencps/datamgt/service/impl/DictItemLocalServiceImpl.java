@@ -490,10 +490,13 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		String dictCollectionId = (String) params.get(DictItemTerm.DICT_COLLECTION_ID);
 		String dictItemParentId = String.valueOf(params.get(DictItemTerm.PARENT_ITEM_ID));
 		String parentItemCode = (String) params.get(DictItemTerm.PARENT_ITEM_CODE);
-
+		
+		/*
+		 * ThanhNv: fixbug get all DictItem in a collection
 		if (Validator.isNull(parentItemCode)) {
 			parentItemCode = "0";
 		}
+		*/
 
 		String dictItemCode = (String) params.get(DictItemTerm.ITEM_CODE);
 		String keywords = (String) params.get("keywords");

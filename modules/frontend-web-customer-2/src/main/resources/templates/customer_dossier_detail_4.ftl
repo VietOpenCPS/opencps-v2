@@ -13,42 +13,44 @@
 			<div class="pull-right group-icons">
 				<a href="">
 					<i class="fa fa-paper-plane" aria-hidden="true"></i> 
-					Lưu
+					Nộp hồ sơ
 				</a>
 			</div>
 		</div>
 
 		<div class="dossier-general-info P15 MB30">
-			<p class="text-bold">Thông tin chung hồ sơ</p>
 			<div class="col-sm-4">
-				<div class="row MB5">
-					<span class="text-bold">Cơ quan thực hiện</span>: <span data-bind="text:govAgencyName"></span>
+				<div class="row">
+					<span class="text-bold">Tình trạng</span>: <i data-bind="text:dossierStatusText" class="red"></i>
 				</div>
 				<div class="row">
-					<span class="text-bold">Tình trạng</span> <i data-bind="text:dossierStatusText" class="red"></i>
+					<i data-bind="html:briefNote" class="text-light-gray"></i>
 				</div>
 			</div>
-			<div class="col-sm-4 text-center">
+			<div class="col-sm-4">
 				<div class="row MB5" id="">
-					<span class="text-bold">Thời gian gửi</span>: <span data-bind="text:submitDate"></span>
+					<span class="text-bold">Mã tiếp nhận</span>: <span data-bind="text:dossierNo"></span>
+					
 				</div>
 				<div class="row" id="">
 					<span class="text-bold">Mã số hồ sơ</span>: <span data-bind="text : dossierId"></span>
 				</div>
 			</div>
 			
-			<div class="col-sm-4 text-center">
+			<div class="col-sm-4">
 				<div class="row MB5" id="">
-					<span class="text-bold">Mã tiếp nhận</span>: <span data-bind="text:dossierNo"></span>
+					<span class="text-bold">Thời gian gửi</span>: <span data-bind="text:submitDate"></span>
 				</div>
 				<div class="row" id="">
-					<a href="javascript:;" class="text-light-blue text-underline">Thông tin chủ hồ sơ</a>
+					<a href="javascript:;" class="text-light-blue text-underline">
+						THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+					</a>
 				</div>
 			</div>
 			
 			
 			<div class="col-sm-12">
-				 <span data-bind="attr : {actionNote1 : actionNote1}" id="actionNote1"></span> 
+				<span data-bind="attr : {actionNote1 : actionNote1}" id="actionNote1"></span> 
 			</div>
 		</div>
 
@@ -132,7 +134,7 @@
 									<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
 								</div>
 
-								<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}#>
+								<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# >
 
 									<form id="formPartNo#:id#">
 
@@ -175,131 +177,6 @@
 </div>
 </div>
 
-<#-- 
-<div class="dossier-parts" id="paymentDossier">
-	<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierPayment">
-		<div class="background-triangle-small">III</div> 
-		<div class="col-sm-12 PL0">
-
-			<span class="text-uppercase hover-pointer">Thanh toán</span>
-			<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
-		</div>
-		
-	</div>
-	<div class="content-part collapse in" id="collapseDossierPayment">
-		<div class="row-parts-head MT5">
-			<div class="row">
-				<div class="col-sm-12" id="paymentDossierContent" data-bind="value: paymentDossier">
-
-					<div class="row MB5">
-						<div class="col-sm-2">								
-							<span class="text-bold">Tên phí thanh toán</span>	
-						</div>
-						<div class="col-sm-10" data-bind="text: paymentFee"></div> 
-					</div>
-
-					<div class="row MB5">
-						<div class="col-sm-2">								
-							<span class="text-bold">Gía trị thanh toán</span>	
-						</div>
-						<div class="col-sm-10 red" data-bind="text:paymentAmount"></div>
-					</div>
-
-					<div class="row MB5">
-						<div class="col-sm-2">								
-							<span class="text-bold">Chuyển khoản đến</span>	
-						</div>
-						<div class="col-sm-10" data-bind="text:paymentGovAgencyName "></div>
-					</div>
-
-					<div class="row MB5">
-						<div class="col-sm-2">								
-							<span class="text-bold">Thông tin tài khoản nhận</span>
-						</div>
-						<div class="col-sm-10" data-bind="text:paymentBankInfo"></div>
-					</div>
-
-
-					<div class="row MB5">
-						<div class="col-sm-2">								
-							<span class="text-bold">Trạng thái</span>	
-						</div>
-						<div class="col-sm-10" data-bind="text:paymentStatus"></div>
-					</div>
-
-					<div class="row MB10">
-						<div class="col-sm-2">								
-							<span class="text-bold">Ngày thanh toán</span>	
-						</div>
-						<div class="col-sm-10" data-bind="text:paymentApproveDatetime"></div>
-					</div>
-
-
-					<div id="unpaid">
-						<div class="row MB10">
-							<div class="col-sm-12">
-								<button class="btn btn-sm MR10">Trực tuyến</button> 
-								<button class="btn btn-sm">Báo nộp chuyển khoản</button>
-							</div>
-						</div>
-
-						<div class="row MB20 MT20" data-bind="value: isPay">
-							<div class="col-sm-12 text-center">
-								<div class="row">
-									<div class="col-sm-3">
-										
-									</div>
-									<div class="col-sm-6 text-center MB10">
-										<span class="text-center">Chứng từ thanh toán cho chuyển khoản là giấy yêu cầu nộp tiền vào ngân hàng hoặc hóa đơn chứng nhận giao dịch chuyển khoản được in ra</span>
-									</div>
-									<div class="col-sm-3">
-										
-									</div>
-								</div>
-								<input type="file" id="file" name="file" class="hidden" >
-								<label class="btn btn-sm MB0 ML10 hover-pointer" for="file" title="Tải file lên" >
-									Chọn ảnh từ máy
-								</label>
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="col-sm-11">
-								<div class="form-group"> 
-									<label class="control-label">Ghi chú kèm theo</label> 
-									<textarea class="form-control" rows="2" id="confirmNote" name="confirmNote" data-bind="text:confirmNote">
-
-									</textarea> 
-								</div>
-							</div> 
-							<div class="col-sm-1 MT30">
-								<button class="btn">Gửi</button>
-							</div>
-						</div>
-					</div>
-
-					<div id="alreadyPaid" data-bind="value: isPay">
-						<div class="row MB5">
-							<div class="col-sm-2">								
-								<span class="text-bold">Ghi chú kèm theo</span>	
-							</div>
-							<div class="col-sm-10" data-bind="text: paymentConfirmNote"></div>
-						</div>
-
-						<div class="row MB5">
-							<div class="col-sm-2">								
-								<span class="text-bold">Chứng từ kèm theo</span>	
-							</div>
-							<div class="col-sm-10" data-bind="text: paymentBankInfo"></div>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</div>
-	</div>
-</div>  -->
-
 
 <div class="dossier-parts">
 	<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierResult">
@@ -312,7 +189,7 @@
 		
 	</div>
 	<div class="content-part collapse in" id="collapseDossierResult">
-		<div class="row-parts-head MT5">
+		<div class="row-parts-head P0">
 			<ul class="ul-with-border">
 				<div id="listViewDossiserFileTemplate"></div>
 			</ul>
@@ -344,64 +221,77 @@
 	</div>
 	<div class="content-part collapse in" id="collapseDossierPart">
 		<div class="row-parts-head MT5">
-			<ul class="ul-with-border">
-				<div id="listViewDossiserLog"></div>
-			</ul>
+			
+			<div class="table-responsive">
+				<table class="table table-bordered table_history_style">
+				  <tbody id="listViewDossiserLog">
+				  		
+				  </tbody>
+			   	</table>
+			</div>
 			<script type="text/x-kendo-template" id="templateDossiserLog">
-				<li>
-					<div class="row">
-						<div class="col-sm-1">
-							#:itemIndex#.
-						</div>
+				
+				#
+					var jobposTitle = "";
+					var briefNote = "";
+					var dossier ;
+					try {
+					
+						var payLoadObj = payload;
+
+						stepName = payLoadObj.hasOwnProperty("stepName")?payLoadObj.stepName : "";
+						dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
+						
+					}catch(e){
+						console.log(e);
+					}
+				#
+				<tr>
+					<td style="padding-top: 15px; width: 1%;">
+						<span class="text-bold">#:itemIndex#</span>
+					</td>
+					<td style="padding-top: 15px">
+						
+						<span class="text-bold PR10">#:author# </span>
+
+						#if ( stepName!="" && stepName!=null ) {#
+
+							<span class="text-light-blue">(#:stepName#)</span> 
+						#}#
+
+						<p>
+							#if ( createDate!="" && createDate!=null ) {#
+								#= kendo.toString(kendo.parseDate(createDate, 'yyyy-MM-dd'), 'hh:mm - dd/MM/yyyy')#
+							#}#
+						</p>
+						
+						#if ( content!="" && content!=null ) {#
+							<p>Ý kiến: #:content#</p>
+						#}#
 
 						#
-						var jobposTitle = "";
-						var briefNote = "";
-						var dossier ;
-						try {
-						if(payload){
-						var payLoadObj = JSON.parse(payLoad);
+						if(dossier){
+							for(var i = 0 ; i < dossier.length ; i++){
+								#
+									<p>
+										<a target="_blank" href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].dossierFileId#" class="text-greyy text-hover-blue">
+											<i aria-hidden="true" class="fa fa-download PR5"></i>
+											#:dossier[i].fileName#
+										</a> 
+									</p>
+								#
+							} 
+						}
+						#
 
-						jobposTitle = payLoadObj.jobposTitle;
-						briefNote = payLoadObj.briefNote;
-						dossier = payLoadObj.dossier;
-					}
+					</td>
+				</tr>
+			</script>
 
-				}catch(e){
-				console.log(e);
-			}
-			#
-
-			<div class="col-sm-11 PL0">
-				<div class="row">
-					<span class="text-bold">#:author#  (#:jobposTitle#) &nbsp;</span> <span class="text-light-blue">#:briefNote#</span> -->
-					<p>#:createDate#</p>
-				</div>
-				<div class="row">
-					<p>Ý kiến: #:content#</p>
-				</div>
-
-				<div class="row">
-					#
-					if(dossier){
-					for(var i = 0 ; i < dossier.length ; i++){
-
-					#
-					<img src="images/docx.png" alt=""> <a href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].referenceUid#" class="text-greyy">#:dossier[i].fileName#</a>
-
-					#
-				} 
-
-			}
-			#
 		</div>
 	</div>
-</div>
-</li>
-</script>
-</div>
-</div>
 </div> 
+
 
 <div class="row-parts-content" id="postal" data-bind="value: viaPostal">
 	<div class="row">
@@ -413,6 +303,7 @@
 </div>
 
 <div id="uploadFileTemplateDialog" class="modal fade" role="dialog">
+	
 </div>
 
 <div id="profileDetail" class="modal fade" role="dialog">
@@ -430,19 +321,13 @@
 	$(function(){
 		$( "body" ).data( "dossierFiles", [] );
 
-
 		$(document).off("change",".dossier-file");
 		$(document).on("change",".dossier-file",function(){
-			console.log("change");
 
 			var partNo = $(this).attr("part-no");
 			var fileTemplateNo = $(this).attr("file-template-no");
 			var dossierTemplateNo = $("#dossierTemplateNo").val();
 			var hasform = $(this).attr("hasform");
-
-			console.log(partNo);
-			console.log(fileTemplateNo);
-			console.log($(this)[0].files[0]);
 
 			funUploadFile($(this),partNo,dossierTemplateNo+"",fileTemplateNo,hasform);
 			$(this).val("");
@@ -478,8 +363,6 @@
 
 			}
 
-			console.log(dossierId);
-			console.log(dataPartNo);
 			var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
 			if(cf){
 				if(dossierId && dataPartNo){
@@ -527,24 +410,6 @@
 			}
 		});
 
-		$("#btn-submit-dossier").click(function(){
-			$(event.currentTarget).button('loading');
-			var data = $('#dossierFormSubmiting').serialize();
-			$.ajax({
-				type : 'GET', 
-				url  : '${api.server}/dossiers/${dossierId}/submitting', 
-				data : data,
-				headers : {"groupId": ${groupId}},
-				success :  function(result){                       
-					$(event.currentTarget).button('reset');
-				},
-				error : function(result){
-					$(event.currentTarget).button('reset');
-				}
-			});
-			console.log("success!");
-		});
-
 		var dataSourceDossiserFileTemplate;
 		var dataSourceDossiserLog;
 
@@ -588,7 +453,10 @@
 
 						},
 						success : function(result){
-							options.success(result);
+							result["data"] = result.hasOwnProperty("data")?result["data"]:[];
+							
+							var arrLogsResult = fnGetLogs(result.data);
+							options.success(arrLogsResult);
 						},
 						error : function(result){
 							options.error(result);
@@ -620,8 +488,26 @@
 					}
 				}
 			}
-			console.log(arrResult);
+			
 			return arrResult;
+		}
+
+		var fnGetLogs = function(arrLogs){
+			
+			var arrLogsResult = new Array();
+			var count = 0;
+			var result = {};
+			if(arrLogs){
+				for (var i = 0; i < arrLogs.length; i++) {
+					if(arrLogs[i].notificationType === 'PROCESS_TYPE'){
+						arrLogsResult.push(arrLogs[i]);
+						count++;
+					}
+				}
+			}
+			result["data"] = arrLogsResult;
+			result["total"] = count;
+			return result;
 		}
 
 
@@ -711,8 +597,7 @@
 					type : "GET",
 					headers : {"groupId": ${groupId}},
 					success : function(result){
-						console.log("load detail dossier!");
-						console.log(result.dossierId);
+						
 						dataSourceDossierTemplate.read({
 							dossierTemplateNo : result.dossierTemplateNo
 						});
@@ -741,6 +626,13 @@
 
 							applicantName : result.applicantName,
 							address : result.address,
+							briefNote : function(e){
+								if(result.briefNote){
+									return result.briefNote;
+								}else {
+									return "";
+								}
+							},
 							cityCode : result.cityCode,
 							districtCode : result.districtCode,
 							wardCode : result.wardCode,
@@ -755,7 +647,7 @@
 							postalTelNo : result.postalTelNo,
 							dossierTemplateNo : result.dossierTemplateNo,
 							viaPostal : function(e){
-								console.log(result.viaPostal);
+								
 								if(result.viaPostal === 0){
 									$("#postal").remove();
 								}
@@ -771,7 +663,7 @@
 							},
 							paymentDossier : payment,
 							paymentFee : function(e){
-								console.log(this.get('paymentDossier'));
+								
 								if(this.get('paymentDossier').paymentFee){
 									return this.get('paymentDossier').paymentFee;
 								}
@@ -840,137 +732,135 @@
 					}
 
 				});
-}
-}
+			}
+		}
 
-printDetailDossier(${dossierId});
+		printDetailDossier(${dossierId});
 
-var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
-	var data = new FormData();
-	console.log(file);
+		var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
+			var data = new FormData();
 
-	data.append( 'displayName', "");
-	data.append( 'file', $(file)[0].files[0]);
-	data.append('dossierPartNo', partNo);
-	data.append('referenceUid', "");
-	data.append('dossierTemplateNo', dossierTemplateNo);
-	data.append('fileTemplateNo', fileTemplateNo);
+			data.append( 'displayName', "");
+			data.append( 'file', $(file)[0].files[0]);
+			data.append('dossierPartNo', partNo);
+			data.append('referenceUid', "");
+			data.append('dossierTemplateNo', dossierTemplateNo);
+			data.append('fileTemplateNo', fileTemplateNo);
+			data.append('formData', "");
+			data.append('isSync', "");
+			data.append('fileType', "");
 
-	$.ajax({
-		type : 'POST', 
-		url  : '${api.server}/dossiers/${dossierId}/files', 
-		data : data,
-		headers: {"groupId": ${groupId}},
-		processData: false,
-		contentType: false,
-		cache: false,
-		async : false,
-		success :  function(result){ 
-			var fileLength = $(file)[0].files.length;
+			$.ajax({
+				type : 'POST', 
+				url  : '${api.server}/dossiers/${dossierId}/files', 
+				data : data,
+				headers: {"groupId": ${groupId}},
+				processData: false,
+				contentType: false,
+				cache: false,
+				async : false,
+				success :  function(result){ 
+					var fileLength = $(file)[0].files.length;
 
-			var currentFileNumber = $(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number");
+					var currentFileNumber = $(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number");
 
-			var totalFile = fileLength + parseInt(currentFileNumber, 0);
+					var totalFile = fileLength + parseInt(currentFileNumber, 0);
 
-			$(".dossier-component-profile").filter("[data-partno="+partNo+"]").html('<span class="number-in-circle" >'+totalFile+'</span>');
+					$(".dossier-component-profile").filter("[data-partno="+partNo+"]").html('<span class="number-in-circle" >'+totalFile+'</span>');
 
-			$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",totalFile);
-			$("#uploadFileTemplateDialog").modal("hide");
+					$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",totalFile);
+					$("#uploadFileTemplateDialog").modal("hide");
 
-			notification.show({
-				message: "Yêu cầu được thực hiện thành công"
-			}, "success");
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công"
+					}, "success");
 
-		},
-		error:function(result){
-			notification.show({
-				message: "Thêm không thành công do số biểu mẫu bị trùng."
-			}, "error");
+				},
+				error:function(result){
+					notification.show({
+						message: "Thêm không thành công do số biểu mẫu bị trùng."
+					}, "error");
+				}
+			});
+			
+		}
+
+		var fnCheckStatusAndHideUpload = function(dossierStatus){
+			if(dossierStatus !== "New" || dossierStatus !== "Receiving"){
+				$(".uploadfile-form-repository").remove();
+				$(".lbl-dossier-flie").remove();
+				$(".delete-dossier-file").remove();
+			}
+		}
+
+		var fnLoadPayment = function(dossierId){
+
+			var resultModel = null;
+			if(dossierId){
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId+"/payments",
+					dataType : "json",
+					type : "GET",
+					headers : {"groupId": ${groupId}},
+					async : false,
+					data : {
+						paymentStatus : 0
+					},
+					success : function(result){
+						if(result.data){
+							resultModel = result.data[0];
+						}
+					},
+					error :  function(result){
+						$("#paymentDossier").hide();
+					}
+
+				});
+			}
+
+			return resultModel;
+		}
+
+		var funDossierFile = function(dossierId){
+			var arrFile = new Array();
+			if(dossierId){
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId+"/files",
+					dataType : "json",
+					type : "GET",
+					headers : {"groupId": ${groupId}},
+					async : false,
+					success : function(result){
+						if(result.data){
+							arrFile = result.data;
+						}else {
+							arrFile = [];
+						}
+
+					},
+					error : function(result){
+
+					}
+				});
+			}
+			$( "body" ).data( "dossierFiles", arrFile );
+			return arrFile;
+		}
+
+
+		var funGenNumberFile = function(arrCount){
+			
+			$(".dossier-component-profile").each(function(index){
+				var partNo = $(this).attr("data-partno");
+				var found = $.grep(arrCount, function(v) {
+					return v.dossierPartNo === partNo;
+				});
+
+				$(this).attr("data-number",found.length);
+				$(this).html('<span class="number-in-circle" >'+found.length+'</span>');
+			});
 		}
 	});
-	console.log("success!");
-}
-
-var fnCheckStatusAndHideUpload = function(dossierStatus){
-	if(dossierStatus !== "New" || dossierStatus !== "Receiving"){
-		$(".uploadfile-form-repository").remove();
-		$(".lbl-dossier-flie").remove();
-		$(".delete-dossier-file").remove();
-	}
-}
-
-var fnLoadPayment = function(dossierId){
-
-	console.log(dossierId);
-	var resultModel = null;
-	if(dossierId){
-		$.ajax({
-			url : "${api.server}/dossiers/"+dossierId+"/payments",
-			dataType : "json",
-			type : "GET",
-			headers : {"groupId": ${groupId}},
-			async : false,
-			data : {
-				paymentStatus : 0
-			},
-			success : function(result){
-				if(result.data){
-					resultModel = result.data[0];
-				}
-			},
-			error :  function(result){
-				$("#paymentDossier").hide();
-			}
-
-		});
-	}
-
-	return resultModel;
-}
-
-var funDossierFile = function(dossierId){
-	var arrFile = new Array();
-	if(dossierId){
-		$.ajax({
-			url : "${api.server}/dossiers/"+dossierId+"/files",
-			dataType : "json",
-			type : "GET",
-			headers : {"groupId": ${groupId}},
-			async : false,
-			success : function(result){
-				if(result.data){
-					arrFile = result.data;
-				}else {
-					arrFile = [];
-				}
-
-			},
-			error : function(result){
-
-			}
-		});
-	}
-	$( "body" ).data( "dossierFiles", arrFile );
-	return arrFile;
-}
-
-
-var funGenNumberFile = function(arrCount){
-	console.log($(".dossier-component-profile"));
-	$(".dossier-component-profile").each(function(index){
-		var partNo = $(this).attr("data-partno");
-		var found = $.grep(arrCount, function(v) {
-			return v.dossierPartNo === partNo;
-		});
-
-		console.log(partNo);
-		console.log(found);
-
-		$(this).attr("data-number",found.length);
-		$(this).html('<span class="number-in-circle" >'+found.length+'</span>');
-	});
-}
-});
 
 var getReferentUidFile = function(dossierId,dossierPartNo){
 	var dossierFile;
@@ -1000,7 +890,6 @@ var getReferentUidFile = function(dossierId,dossierPartNo){
 			}
 		});
 	}
-	console.log(dossierFile);
 
 	return dossierFile;
 }
@@ -1027,4 +916,124 @@ var fnGetFormData = function(dossierId,referentUid){
 	return value;
 }
 
+$(document).on("click","#btn-submit-dossier",function(event){
+	var data = $('#dossierFormSubmiting').serialize();
+	$.ajax({
+		type : 'GET', 
+		url  : '${api.server}/dossiers/${dossierId}/submitting', 
+		data : data,
+		headers : 
+		{
+			"groupId": ${groupId},
+			Accept : "application/json"
+
+		},
+		success :  function(result){					   
+
+		},
+		error : function(result){
+
+		}
+	});
+	
+});
+
+
+var fnSaveForm = function(id, value){
+	var current = $("#btn-save-formalpaca"+id);
+	var referentUid = current.attr("referenceUid");
+	
+	if(referentUid){
+		$.ajax({
+			url : "${api.server}/dossiers/${dossierId}/files/"+referentUid+"/formdata",
+			dataType : "json",
+			type : "PUT",
+			headers: {
+				"groupId": ${groupId},
+				Accept : "application/json"
+			},
+			data : {
+				formdata: JSON.stringify(value)
+			},
+			success : function(result){
+				notification.show({
+					message: "Yêu cầu được thực hiện thành công!"
+				}, "success");
+				
+				$("#validPart"+id).val("1");
+			},
+			error : function(result){
+				notification.show({
+					message: "Thực hiện không thành công, xin vui lòng thử lại!"
+				}, "error");
+			}
+		});
+	}
+}
+
+$(document).off("click",".saveFormAlpaca");
+$(document).on("click",".saveFormAlpaca",function(event){
+	var id = $(this).attr("data-pk");
+	var referentUidFile = $(this).attr("referenceUid");
+
+	var formType = $("#formPartNo"+id+" .formType").val();
+	var value ;
+
+	if(formType !== "dklr"){
+		value = $("#formPartNo"+id).alpaca('get').getValue();
+
+
+		var errorMessage = '';
+		$("#formPartNo"+id+' div[class*="has-error"] > label').each(function( index ) {
+
+			errorMessage = "notValid";
+
+		});
+
+		if(errorMessage === '' && referentUidFile){
+			
+			$.ajax({
+				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
+				dataType : "json",
+				type : "PUT",
+				headers: {
+					"groupId": ${groupId},
+					Accept : "application/json"
+				},
+				data : {
+					formdata: JSON.stringify(value)
+				},
+				success : function(result){
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công!"
+					}, "success");
+					
+					$("#validPart"+id).val("1");
+				},
+				error : function(result){
+					notification.show({
+						message: "Thực hiện không thành công, xin vui lòng thử lại!"
+					}, "error");
+				}
+			});
+
+		}else {
+			notification.show({
+				message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi ghi lại!"
+			}, "error");
+		}
+	}
+
+});
 </script>
+
+<style type="text/css" media="screen">
+
+	.table_history_style tr:nth-child(odd) td:first-child {
+		background-color: #E9F7F8;
+	}
+
+	.table_history_style tr:nth-child(even) td:first-child {
+		background-color: #D9E7E8;
+	}
+</style>

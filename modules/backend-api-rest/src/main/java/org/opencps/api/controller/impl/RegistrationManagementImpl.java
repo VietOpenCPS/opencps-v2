@@ -1,11 +1,19 @@
 package org.opencps.api.controller.impl;
 
-import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
@@ -14,6 +22,7 @@ import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.RegistrationFormUtils;
 import org.opencps.api.controller.util.RegistrationUtils;
 import org.opencps.api.registration.model.RegistrationDetailModel;
+import org.opencps.api.registration.model.RegistrationDetailResultModel;
 import org.opencps.api.registration.model.RegistrationInputModel;
 import org.opencps.api.registration.model.RegistrationResultsModel;
 import org.opencps.api.registrationform.model.RegistrationFormDetailModel;
@@ -28,43 +37,75 @@ import org.opencps.dossiermgt.action.RegistrationActions;
 import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.impl.RegistrationActionsImpl;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
+import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
-import org.opencps.dossiermgt.model.impl.RegistrationImpl;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 public class RegistrationManagementImpl implements RegistrationManagement {
 	Log _log = LogFactoryUtil.getLog(RegistrationManagementImpl.class);
 
-	@Override
-	public Response getList(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
-			ServiceContext serviceContext) {
+	@GET
+	@Path("/registrations")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	public Response getList(@Context ServiceContext serviceContext, @DefaultValue("") @QueryParam("stage") String stage,
+			@DefaultValue("") @QueryParam("agency") String agency, @DefaultValue("") @QueryParam("owner") String owner,
+			@DefaultValue("") @QueryParam("registrationClass") String registrationClass,
+			@DefaultValue("") @QueryParam("submitting") String submitting,
+			@DefaultValue("") @QueryParam("keyword") String keyword, @DefaultValue("") @QueryParam("sort") String sort,
+			@Context HttpHeaders header) {
+
 		BackendAuth auth = new BackendAuthImpl();
-		int start = -1, end = -1;
+		RegistrationActions actions = new RegistrationActionsImpl();
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(Field.KEYWORD_SEARCH, keyword);
+			params.put(RegistrationTerm.REGISTRATIONSTATE, stage);
+			params.put(RegistrationTerm.GOV_AGENCY_CODE, agency);
+			params.put(RegistrationTerm.OWNER, owner);
+			params.put(RegistrationTerm.REGISTRATION_CLASS, registrationClass);
+			params.put(RegistrationTerm.SUBMITTING, submitting);
+
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(sort + "_sortable", Sort.STRING_TYPE, false) };
+
+			JSONObject jsonData = actions.getRegistrations(serviceContext.getUserId(), serviceContext.getCompanyId(),
+					groupId, params, sorts, -1, -1, serviceContext);
 
 			RegistrationResultsModel results = new RegistrationResultsModel();
-
-			List<Registration> lstRegistrationModel = RegistrationLocalServiceUtil.getRegistrations(start, end);
-			
-			results.setTotal(RegistrationLocalServiceUtil.getRegistrationsCount());
-			results.getData().addAll(RegistrationUtils.mappingToRegistrationResultsModel(lstRegistrationModel));
+			// long userId = serviceContext.getUserId();
+			// List<Registration> lstRegistrationModel =
+			// RegistrationLocalServiceUtil.getRegistrations(start, end);
+			//
+			results.setTotal(jsonData.getInt("total"));
+			results.getData().addAll(RegistrationUtils
+					.mappingToRegistrationResultModel((List<Document>) jsonData.get("data"), serviceContext));
 
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -82,75 +123,73 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 					input.getCityName(), input.getDistrictCode(), input.getDistrictName(), input.getWardCode(),
 					input.getWardName(), input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
 					input.getGovAgencyCode(), input.getGovAgencyName(), input.getRegistrationState(),
-					input.getRegistrationClass(), input.isSubmitting(), serviceContext);
+					input.getRegistrationClass(), serviceContext);
 
 			result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
-
+			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
 			_log.error(e);
+			return processException(e);
 		}
-		return Response.status(200).entity(result).build();
+
 	}
 
 	@Override
-	public Response getDetail(Long id) {
-		Registration detail = null;
+	public Response getDetail(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, Long id) {
+		BackendAuth auth = new BackendAuthImpl();
 		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
 			RegistrationActions action = new RegistrationActionsImpl();
-			detail = action.getDetail(id);
+
+			Registration detail = action.getDetail(id);
+
+			RegistrationDetailResultModel result = RegistrationUtils.mappingToRegistrationDetailResultModel(detail);
+			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
 			_log.error(e);
+			return processException(e);
 		}
-		return Response.status(200).entity(detail).build();
 	}
 
 	@Override
-	public Response update(RegistrationInputModel input, Long id) {
-		RegistrationDetailModel result = null;
+	public Response update(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, RegistrationInputModel input, long registrationId) {
+
 		try {
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			RegistrationActions action = new RegistrationActionsImpl();
-			Registration model = new RegistrationImpl();
-			Date now = new Date();
-			model.setRegistrationId(id);
 
-			model.setModifiedDate(now);
+			Registration registration = action.updateRegistration(groupId, registrationId, input.getApplicantName(),
+					input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
+					input.getAddress(), input.getCityCode(), input.getCityName(), input.getDistrictCode(),
+					input.getDistrictName(), input.getWardCode(), input.getWardName(), input.getContactName(),
+					input.getContactTelNo(), input.getContactEmail(), input.getGovAgencyCode(),
+					input.getGovAgencyName(), input.getRegistrationState(), input.getRegistrationClass(),
+					serviceContext);
 
-			model.setApplicantName(input.getApplicantName());
-			model.setApplicantIdType(input.getApplicantIdType());
-			model.setApplicantIdNo(input.getApplicantIdNo());
-			model.setAddress(input.getAddress());
-			model.setCityCode(input.getCityCode());
-			model.setCityName(input.getCityName());
-			model.setDistrictCode(input.getDistrictCode());
-			model.setDistrictName(input.getDistrictName());
-			model.setWardCode(input.getWardCode());
-			model.setWardName(input.getWardName());
-			model.setContactName(input.getContactName());
-			model.setContactTelNo(input.getContactTelNo());
-			model.setContactEmail(input.getContactEmail());
-			model.setRegistrationClass(input.getRegistrationClass());
-			model.setRegistrationState(input.getRegistrationState());
-			model.setSubmitting(input.isSubmitting());
+			RegistrationDetailModel result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
 
-			Registration registration = action.update(model);
-
-			result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
-
+			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
 			_log.error(e);
+			return processException(e);
 		}
-		return Response.status(200).entity(result).build();
 	}
 
 	@Override
-	public Response delete(Long id) {
+	public Response delete(long id) {
 		try {
 			RegistrationActions action = new RegistrationActionsImpl();
 			action.delete(id);
+			return Response.status(200).entity("Success").build();
 		} catch (Exception e) {
 			_log.error(e);
+			return processException(e);
 		}
-		return Response.status(200).entity("Success").build();
+
 	}
 
 	@Override
@@ -174,13 +213,15 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
 
 	@Override
 	public Response addRegistrationForm(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, RegistrationFormInputModel input) {
+			User user, ServiceContext serviceContext, RegistrationFormInputModel input, long registrationId,
+			String formNo) {
 		BackendAuth auth = new BackendAuthImpl();
 		RegistrationFormDetailModel result = null;
 		try {
@@ -192,17 +233,19 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			RegistrationForm registrationForm = action.insert(groupId, input.getRegistrationId(),
-					input.getReferenceUid(), input.getFormNo(), input.getFormName(), input.getFormData(),
-					input.getFormScript(), input.getFormReport(), input.getFileEntryId(), input.isIsNew(),
-					input.isRemoved(), serviceContext);
+			long fileEntryId = getfileEntryId(input.getFormData(), input.getFormScript(), input.getFormReport());
+
+			RegistrationForm registrationForm = action.insert(groupId, registrationId, input.getReferenceUid(), formNo,
+					input.getFormName(), input.getFormData(), input.getFormScript(), input.getFormReport(), fileEntryId,
+					input.isIsNew(), input.isRemoved(), serviceContext);
 
 			result = RegistrationFormUtils.mappingToRegistrationFormDetailModel(registrationForm);
-
+			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
 			_log.error(e);
+			return processException(e);
 		}
-		return Response.status(200).entity(result).build();
+
 	}
 
 	private Response processException(Exception e) {
@@ -231,6 +274,38 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
 
 			}
+		}
+	}
+
+	public long getfileEntryId(String formdata, String formScript, String formReport) {
+
+		long fileEntryId = 0;
+
+		return fileEntryId;
+	}
+
+	@Override
+	public Response registrationSyncs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, RegistrationInputModel input,
+			boolean submitting, String uuid) {
+		BackendAuth auth = new BackendAuthImpl();
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			RegistrationLocalServiceUtil.registrationSync(groupId, uuid, input.getApplicantName(), input.getApplicantIdType(), input.getApplicantIdNo(),
+					input.getApplicantIdDate(), input.getAddress(), input.getCityCode(), input.getCityName(), input.getDistrictCode(), input.getDistrictName(), input.getWardCode(), input.getWardName(),
+					input.getContactName(), input.getContactTelNo(), input.getContactEmail(), input.getGovAgencyCode(), input.getGovAgencyName(), input.getRegistrationState(),
+					input.getRegistrationClass(), serviceContext);
+
+			return Response.status(200).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return processException(e);
 		}
 	}
 }

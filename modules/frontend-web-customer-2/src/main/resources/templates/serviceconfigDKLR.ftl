@@ -56,59 +56,7 @@
 										<button data-TTHC="TT302011BGTVTTDTKXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTTDTKXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv31G1">Chọn</button>
 									</div>
 									<div class="clear"></div>
-									<#-- <div id="lv21G1" class="collapse in MT10">
-
-										<div class="PB10">
-											<div class="ML80">
-												<a data-toggle="collapse" href="#lv31G1"> 
-													<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp mới
-												</a>
-											</div>
-											<div id="lv31G1" class="collapse in MT5 ML100">
-												<div class="form-inline form-group col-sm-7 MB5 PL0">
-													<label for="ip1Lv31G1" class="MR10">Xe SXLR, nhập khẩu từ xe cơ sở</label>
-													<input type="text" class="form-control" id="ip1Lv31G1" placeholder="Nhập số GCN xe SXLR hoặc nhập khẩu">
-													<button data-TTHC="TT302011BGTVTTDTKXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTTDTKXCG" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1Lv31G1">Chọn</button>
-												</div>
-												<div class="clear"></div>
-												<div class="col-sm-7 PL0 MB5">
-													<span class="PR10">Xe SXLR theo thiết kế và mang nhãn hiệu hàng hóa nước ngoài</span>
-													<button data-TTHC="TT302011BGTVTTDTKXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTTDTKXCG" class="btn btn-reset pull-right P0" id="btn2Lv31G1">Chọn</button>
-												</div>
-												<div class="clear"></div>
-												<div class="col-sm-7 form-inline form-group MB5 PL0">
-													<label for="ip2Lv31G1" class="MR10">Xe SXLR, nhập khẩu từ linh kiện</label>
-													<input type="text" class="form-control" id="ip2Lv31G1" placeholder="Nhập số GCN xe SXLR hoặc nhập khẩu">
-													<button data-TTHC="TT302011BGTVTTDTKXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTTDTKXCG" class="btn btn-reset chooseService pull-right P0 PT5" id="btn3Lv31G1">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-										</div>
-
-										<div class="PB10">
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip4Lv31G1" class="MR10">Mở rộng</label>
-													<input type="text" class="form-control" id="ip4Lv31G1" placeholder="Nhập số GCN hồ sơ gốc">
-													<span class="red ML10">(*)</span>
-													<button class="btn btn-reset chooseServiceValidate pull-right P0 PT5" id="btn4Lv31G1">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-										</div>
-
-										<div class="PB10">
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip5Lv32G1" class="MR20">Cấp lại</label>
-													<input type="text" class="form-control" id="ip5Lv32G1" placeholder="Nhập số GCN hồ sơ gốc/ mở rộng">
-													<span class="red ML10">(*)</span>
-													<button class="btn btn-reset chooseServiceValidate pull-right P0 PT5" id="btn5Lv31G1">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-										</div>
-									</div> -->
+									
 								</div>
 								<#-- lv22G1 -->
 								<div class="PT5">
@@ -119,27 +67,7 @@
 										<button data-TTHC="TT302011BGTVTKTSPMXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTKTSPMXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv32G1">Chọn</button>
 									</div>
 									<div class="clear"></div>
-									<#-- <div id="lv22G1" class="collapse toggle-hide MT10">
-											
-										<div class="PB10">
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip1Lv32G1" class="MR10">Đăng ký kiểm tra lần đầu</label>
-													<input type="text" class="form-control" id="ip1Lv32G1" placeholder="Nhập số GCN (hồ sơ) thẩm định thiết kế">
-													<button data-TTHC="TT302011BGTVTKTSPMXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTKTSPMXCG" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1Lv32G1">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip2Lv32G1" class="MR40">Đăng ký kiểm tra lại</label>
-													<input type="text" class="form-control" id="ip2Lv32G1" placeholder="Nhập số GCN (hồ sơ) thẩm định thiết kế">
-													<button data-TTHC="TT302011BGTVTKTSPMXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTKTSPMXCG" class="btn btn-reset chooseService pull-right P0 PT5" id="btn2Lv32G1">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-										</div>
-									</div> -->
+									
 								</div>
 								<#-- lv23G1 -->
 								<div class="PT5">
@@ -150,36 +78,7 @@
 										<button data-TTHC="TT302011BGTVTCNCLKLTXXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCNCLKLTXXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv23G1">Chọn</button>
 									</div>
 									<div class="clear"></div>
-									<#-- <div id="lv23G1" class="collapse toggle-hide MT10">
-										<div class="PB10">
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip1Lv23G1" class="MR10">Cấp mới</label>
-													<input type="text" class="form-control" id="ip1Lv23G1" placeholder="Nhập số GCN (hồ sơ) thẩm định thiết kế">
-													<button data-TTHC="TT302011BGTVTCNCLKLTXXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCNCLKLTXXCG" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1Lv23G1">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip2Lv23G1" class="MR10">Mở rộng</label>
-													<input type="text" class="form-control" id="ip2Lv23G1" placeholder="Nhập số GCN hồ sơ gốc">
-													<span class="red ML10">(*)</span>
-													<button class="btn btn-reset chooseServiceValidate pull-right P0 PT5" id="btn2Lv23G1">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip3Lv23G1" class="MR20">Cấp lại</label>
-													<input type="text" class="form-control" id="ip3Lv23G1" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-													<span class="red ML10">(*)</span>
-													<button class="btn btn-reset chooseServiceValidate pull-right P0 PT5" id="btn3Lv23G1">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-										</div>
-									</div> -->
+									
 								</div>
 								<#-- lv24G1 -->
 								<div class="PT5 PB5">
@@ -190,34 +89,7 @@
 										<button data-TTHC="TT302011BGTVTCPPXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv24G1">Chọn</button>
 									</div>
 									<div class="clear"></div>
-									<#-- <div id="lv24G1" class="collapse toggle-hide MT10">
-										<div class="PB10">
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip1Lv24G1" class="MR45">Phương thức 1: cấp theo lô</label>
-													<input type="text" class="form-control" id="ip1Lv24G1" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-													<button data-TTHC="TT302011BGTVTCPPXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXCG" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1Lv24G1">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip2Lv24G1" class="MR60">Phương thức 2: giám sát</label>
-													<input type="text" class="form-control" id="ip2Lv24G1" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-													<button data-TTHC="TT302011BGTVTCPPXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXCG" class="btn btn-reset chooseService pull-right P0 PT5" id="btn2Lv24G1">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip3Lv24G1" class="MR10">Phương thức 3: kiểm tra đột xuất</label>
-													<input type="text" class="form-control" id="ip3Lv24G1" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-													<button data-TTHC="TT302011BGTVTCPPXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXCG" class="btn btn-reset chooseService pull-right P0 PT5" id="btn3Lv24G1">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-										</div>
-									</div> -->
+									
 								</div>
 								<div class="clear"></div>
 							</div>
@@ -238,39 +110,10 @@
 										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại
 										</span>
-										<button data-TTHC="TT302011BGTVTCNCLKLTXXMTGM" data-CQTH="BGTVTCDDKVN" data-MMHS="TT302011BGTVTCNCLKLTXXMTGM" class="btn btn-reset chooseService pull-right P0" id="btn1item21">Chọn</button>
+										<button data-TTHC="TT302011BGTVTCNCLKLTXXMTGM" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCNCLKLTXXMTGM" class="btn btn-reset chooseService pull-right P0" id="btn1item21">Chọn</button>
 									</div>
 									<div class="clear"></div>
-									<#-- <div id="item21" class="collapse toggle-hide MT10">
-										<div class="PB10">
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip1item21" class="MR10">Cấp mới</label>
-													<input type="text" class="form-control" id="ip1item21" placeholder="Nhập số GCN (hồ sơ) CL kiểu loại">
-													<button data-TTHC="TT302011BGTVTCNCLKLTXXMTGM" data-CQTH="BGTVTCDDKVN" data-MMHS="TT302011BGTVTCNCLKLTXXMTGM" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item21">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip2item21" class="MR10">Mở rộng</label>
-													<input type="text" class="form-control" id="ip2item21" placeholder="Nhập số GCN hồ sơ gốc">
-													<span class="red ML10">(*)</span>
-													<button class="btn btn-reset chooseServiceValidate pull-right P0 PT5" id="btn2item21">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip3item21" class="MR20">Cấp lại</label>
-													<input type="text" class="form-control" id="ip3item21" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-													<span class="red ML10">(*)</span>
-													<button class="btn btn-reset chooseServiceValidate pull-right P0 PT5" id="btn3item21">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-										</div>
-									</div> -->
+									
 								</div>
 								<#-- lv24G1 -->
 								<div class="PT5 PB5">
@@ -278,37 +121,10 @@
 										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 										</span>
-										<button data-TTHC="TT302011BGTVTCPPXMTGM" data-CQTH="BGTVTCDDKVN" data-MMHS="TT302011BGTVTCPPXMTGM" class="btn btn-reset chooseService pull-right P0" id="btn1item22">Chọn</button>
+										<button data-TTHC="TT302011BGTVTCPPXMTGM" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXMTGM" class="btn btn-reset chooseService pull-right P0" id="btn1item22">Chọn</button>
 									</div>
 									<div class="clear"></div>
-									<#-- <div id="item22" class="collapse toggle-hide MT10">
-										<div class="PB10">
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip1item22" class="MR45">Phương thức 1: cấp theo lô</label>
-													<input type="text" class="form-control" id="ip1item22" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-													<button data-TTHC="TT302011BGTVTCPPXMTGM" data-CQTH="BGTVTCDDKVN" data-MMHS="TT302011BGTVTCPPXMTGM" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item22">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip2item22" class="MR60">Phương thức 2: giám sát</label>
-													<input type="text" class="form-control" id="ip2item22" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-													<button data-TTHC="TT302011BGTVTCPPXMTGM" data-CQTH="BGTVTCDDKVN" data-MMHS="TT302011BGTVTCPPXMTGM" class="btn btn-reset chooseService pull-right P0 PT5" id="btn2item22">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip3item22" class="MR10">Phương thức 3: kiểm tra đột xuất</label>
-													<input type="text" class="form-control" id="ip3item22" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-													<button data-TTHC="TT302011BGTVTCPPXMTGM" data-CQTH="BGTVTCDDKVN" data-MMHS="TT302011BGTVTCPPXMTGM" class="btn btn-reset chooseService pull-right P0 PT5" id="btn3item22">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-										</div>
-									</div> -->
+									
 								</div>
 							</div>
 						</div>
@@ -328,30 +144,10 @@
 										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra sản phẩm mẫu
 										</span>
-										<button data-TTHC="TT302011BGTVTKTSPMXBBCN" data-CQTH="BGTVTCDDKVN" data-MMHS="TT302011BGTVTKTSPMXBBCN" class="btn btn-reset chooseService pull-right P0" id="btn1Lv32G1">Chọn</button>
+										<button data-TTHC="TT302011BGTVTKTSPMXBBCN" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTKTSPMXBBCN" class="btn btn-reset chooseService pull-right P0" id="btn1Lv32G1">Chọn</button>
 									</div>
 									<div class="clear"></div>
-									<#-- <div id="item31" class="collapse toggle-hide MT10">
-											
-										<div class="PB10">
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip1item31" class="MR10">Đăng ký kiểm tra lần đầu</label>
-													<input type="text" class="form-control" id="ip1item31" placeholder="Nhập số GCN (hồ sơ) thẩm định thiết kế">
-													<button data-TTHC="TT302011BGTVTKTSPMXBBCN" data-CQTH="BGTVTCDDKVN" data-MMHS="TT302011BGTVTKTSPMXBBCN" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1Lv32G1">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip2item31" class="MR40">Đăng ký kiểm tra lại</label>
-													<input type="text" class="form-control" id="ip2item31" placeholder="Nhập số GCN (hồ sơ) thẩm định thiết kế">
-													<button data-TTHC="TT302011BGTVTKTSPMXBBCN" data-CQTH="BGTVTCDDKVN" data-MMHS="TT302011BGTVTKTSPMXBBCN" class="btn btn-reset chooseService pull-right P0 PT5" id="btn2item31">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-										</div>
-									</div> -->
+									
 								</div>
 								<#-- lv23G1 -->
 								<div class="PT5">
@@ -359,39 +155,10 @@
 										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại
 										</span>
-										<button data-TTHC="TT302011BGTVTCNCLKLTXXBBCN" data-CQTH="BGTVTCDDKVN" data-MMHS="TT302011BGTVTCNCLKLTXXBBCN" class="btn btn-reset chooseService pull-right P0" id="btn1item32">Chọn</button>
+										<button data-TTHC="TT302011BGTVTCNCLKLTXXBBCN" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCNCLKLTXXBBCN" class="btn btn-reset chooseService pull-right P0" id="btn1item32">Chọn</button>
 									</div>
 									<div class="clear"></div>
-									<#-- <div id="item32" class="collapse toggle-hide MT10">
-										<div class="PB10">
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip1item32" class="MR10">Cấp mới</label>
-													<input type="text" class="form-control" id="ip1item32" placeholder="Nhập số GCN (hồ sơ) thẩm định thiết kế">
-													<button data-TTHC="TT302011BGTVTCNCLKLTXXBBCN" data-CQTH="BGTVTCDDKVN" data-MMHS="TT302011BGTVTCNCLKLTXXBBCN" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item32">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip2item32" class="MR10">Mở rộng</label>
-													<input type="text" class="form-control" id="ip2item32" placeholder="Nhập số GCN hồ sơ gốc">
-													<span class="red ML10">(*)</span>
-													<button class="btn btn-reset chooseServiceValidate pull-right P0 PT5" id="btn2item32">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip3item32" class="MR20">Cấp lại</label>
-													<input type="text" class="form-control" id="ip3item32" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-													<span class="red ML10">(*)</span>
-													<button class="btn btn-reset chooseServiceValidate pull-right P0 PT5" id="btn3Lv23G1">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-										</div>
-									</div> -->
+									
 								</div>
 								<#-- lv24G1 -->
 								<div class="PT5 PB5">
@@ -402,34 +169,7 @@
 										<button data-TTHC="TT302011BGTVTCPPXBBCN" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXBBCN"  class="btn btn-reset chooseService pull-right P0" id="btn1item33">Chọn</button>
 									</div>
 									<div class="clear"></div>
-									<#-- <div id="item33" class="collapse toggle-hide MT10">
-										<div class="PB10">
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip1item33" class="MR45">Phương thức 1: cấp theo lô</label>
-													<input type="text" class="form-control" id="ip1item33" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-													<button data-TTHC="TT302011BGTVTCPPXBBCN" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXBBCN"  class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item33">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip2item33" class="MR60">Phương thức 2: giám sát</label>
-													<input type="text" class="form-control" id="ip2item33" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-													<button data-TTHC="TT302011BGTVTCPPXBBCN" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXBBCN" class="btn btn-reset chooseService pull-right P0 PT5" id="btn2item33">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-											<div class="ML80">
-												<div class="col-sm-7 form-inline form-group MB5 PL0 PR5">
-													<label for="ip3item33" class="MR10">Phương thức 3: kiểm tra đột xuất</label>
-													<input type="text" class="form-control" id="ip3item33" placeholder="Nhập số GCN hồ sơ gốc / mở rộng">
-													<button data-TTHC="TT302011BGTVTCPPXBBCN" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXBBCN" class="btn btn-reset chooseService pull-right P0 PT5" id="btn3item33">Chọn</button>
-												</div>
-												<div class="clear"></div>
-											</div>
-										</div>
-									</div> -->
+									
 								</div>
 							</div>
 						</div>
@@ -447,10 +187,29 @@
 				QUẢN LÝ DÁN NHÃN NĂNG LƯỢNG
 			</a>
 		</div>
-		<div id="group2" class="accordion-body collapse toggle-hide">
-			<div class="accordion-inner">
+		<div id="group2" class="accordion-body collapse toggle-hide" style="background-color: #ffffff">
+			<div class="accordion-inner PB0 PT0">
+				<div class="PT5">
+					<div class="ML40 col-sm-6 P5 PL0">
+						<span> 
+							<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Đăng ký chứng nhận mức tiêu thụ nhiên liệu đối với xe ô tô sản xuất, lắp ráp
+						</span>
+						<button data-TTHC="432014TTLTBGTVTBCTTTNLSXLR" data-CQTH="BGTVTCDKVN" data-MMHS="432014TTLTBGTVTBCTTTNLSXLR" class="btn btn-reset chooseService pull-right P0">Chọn</button>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="PT5">
+					<div class="ML40 col-sm-6 P5 PL0">
+						<span> 
+							<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Đăng ký chứng nhận mức tiêu thụ nhiên liệu đối với xe ô tô nhập khẩu
+						</span>
+						<button data-TTHC="432014TTLTBGTVTBCTTTNLNK" data-CQTH="BGTVTCDKVN" data-MMHS="432014TTLTBGTVTBCTTTNLNK" class="btn btn-reset chooseService pull-right P0">Chọn</button>
+					</div>
+					<div class="clear"></div>
+				</div>
 			</div>
 		</div>
+
 	</div>
 	<#-- Group3 -->
 	<div class="accordion-group">
@@ -459,8 +218,26 @@
 				QUẢN LÝ TRIỆU HỒI SẢN PHẨM
 			</a>
 		</div>
-		<div id="group3" class="accordion-body collapse toggle-hide">
+		<div id="group3" class="accordion-body collapse toggle-hide" style="background-color: #ffffff">
 			<div class="accordion-inner">
+				<div class="PT5">
+					<div class="ML40 col-sm-6 P5 PL0">
+						<span> 
+							<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Triệu hồi sản phẩm xe cơ giới sản xuất, lắp ráp linh kiện sử dụng để lắp ráp xe
+						</span>
+						<button data-TTHC="TT302011BGTVTTHSPSXLR" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTTHSPSXLR" class="btn btn-reset chooseService pull-right P0">Chọn</button>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="PT5">
+					<div class="ML40 col-sm-6 P5 PL0">
+						<span> 
+							<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Triệu hồi sản phẩm xe cơ giới nhập khẩu linh kiện sử dụng để lắp ráp xe
+						</span>
+						<button data-TTHC="TT302011BGTVTTHSPNK" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTTHSPNK" class="btn btn-reset chooseService pull-right P0">Chọn</button>
+					</div>
+					<div class="clear"></div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -471,8 +248,57 @@
 				QUẢN LÝ THÔNG TIN DOANH NGHIỆP
 			</a>
 		</div>
-		<div id="group4" class="accordion-body collapse toggle-hide">
+		<div id="group4" class="accordion-body collapse toggle-hide" style="background-color: #ffffff">
 			<div class="accordion-inner">
+				<div class="PT5">
+					<div class="ML40 col-sm-6 P5 PL0">
+						<span> 
+							<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra thiết bị kiểm tra xuất xưởng đối với cơ sở đăng ký lần đầu
+						</span>
+						<button data-TTHC="TT302011BGTVTKTTBLANDAU" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTKTTBLANDAU" class="btn btn-reset chooseService pull-right P0">Chọn</button>
+					</div>
+					<div class="clear"></div>
+				</div>
+
+				<div class="PT5">
+					<div class="ML40 col-sm-6 P5 PL0">
+						<span> 
+							<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra thiết bị kiểm tra xuất xưởng đối với cơ sở đăng ký kiểm tra hàng năm
+						</span>
+						<button data-TTHC="TT302011BGTVTKTTB" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTKTTB" class="btn btn-reset chooseService pull-right P0">Chọn</button>
+					</div>
+					<div class="clear"></div>
+				</div>
+
+				<div class="PT5">
+					<div class="ML40 col-sm-6 P5 PL0">
+						<span class="col-sm-10 PL0"> 
+							<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Đánh giá điều kiện đảm bảo chất lượng xưởng lắp ráp của cơ sở sản xuất/ nhà sản xuất nước ngoài (Đánh giá COP) trong thủ tục sản xuất lắp ráp
+						</span>
+						<button data-TTHC="TT302011BGTVTCOP" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCOP" class="btn btn-reset chooseService pull-right P0">Chọn</button>
+					</div>
+					<div class="clear"></div>
+				</div>
+
+				<div class="PT5">
+					<div class="ML40 col-sm-6 P5 PL0">
+						<span> 
+							<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra, đánh giá cơ sở bảo hành, bảo dưỡng đối với cơ sở đánh giá lần đầu
+						</span>
+						<button data-TTHC="TT192012TTBGTVTDGLD" data-CQTH="BGTVTCDKVN" data-MMHS="TT192012TTBGTVTDGLD" class="btn btn-reset chooseService pull-right P0">Chọn</button>
+					</div>
+					<div class="clear"></div>
+				</div>
+
+				<div class="PT5">
+					<div class="ML40 col-sm-6 P5 PL0">
+						<span class="col-sm-10 PL0">
+							<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra, đánh giá cơ sở bảo hành, bảo dưỡng đối với cơ sở đánh giá bổ sung, đánh giá cấp lại GCN hết hiệu lực
+						</span>
+						<button data-TTHC="TT192012TTBGTVTDGBS" data-CQTH="BGTVTCDKVN" data-MMHS="TT192012TTBGTVTDGBS" class="btn btn-reset chooseService pull-right P0">Chọn</button>
+					</div>
+					<div class="clear"></div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -481,8 +307,9 @@
 	var dossierTemplateNo;
 	var serviceCode;
 	var govAgencyCode;
+	var selector;
 	
-	var createDossier = function(dossierTemplateNo,serviceCode,govAgencyCode){
+	var createDossier = function(dossierTemplateNo,serviceCode,govAgencyCode,selector){
 		$.ajax({
       url : "${api.server}/dossiers",
       dataType : "json",
@@ -506,18 +333,22 @@
       },
       headers : {"groupId": ${groupId}},
       success : function(result){
+      	selector.button('reset');
         manageDossier.navigate("/taohosomoi/chuanbihoso/"+result.dossierId);
       },
       error : function(result){
+      	selector.button('reset');
       }
     });
 	} 
 	$(function () {
 		$(".chooseService").click(function(){
+			$(this).button('loading');
+			selector = $(this);
 			dossierTemplateNo = $(this).attr("data-MMHS");
 			serviceCode = $(this).attr("data-TTHC");
 			govAgencyCode = $(this).attr("data-CQTH");
-			createDossier(dossierTemplateNo, serviceCode, govAgencyCode)
+			createDossier(dossierTemplateNo, serviceCode, govAgencyCode,selector)
 		});
 		// 
 		$("label").css("font-family","Roboto-Regular");

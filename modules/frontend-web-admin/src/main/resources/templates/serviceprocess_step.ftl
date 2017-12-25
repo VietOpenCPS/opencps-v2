@@ -239,7 +239,22 @@
 					stepName: processStep.stepName,
 					sequenceNo: processStep.sequenceNo,
 					dossierStatus: processStep.dossierStatus,
-					dossierSubStatus: processStep.dossierSubStatus,
+					dossierSubStatus: function(e){
+
+						//console.log(processStep.dossierSubStatus);
+						//console.log($("#dossierSubStatus").val());
+						/*if($("#dossierSubStatus").val() && processStep.dossierSubStatus !== $("#dossierSubStatus").val()){
+							return $("#dossierSubStatus").val();
+						}else {
+							$("#dossierSubStatus").data("kendoComboBox").dataSource.read({
+								parent : processStep.dossierStatus
+							});
+						}*/
+						$("#dossierSubStatus").data("kendoComboBox").dataSource.read({
+							parent : processStep.dossierStatus
+						});
+						return processStep.dossierSubStatus;
+					},
 					editable: processStep.editable,
 					durationCount: processStep.durationCount,
 					customProcessUrl: processStep.customProcessUrl,

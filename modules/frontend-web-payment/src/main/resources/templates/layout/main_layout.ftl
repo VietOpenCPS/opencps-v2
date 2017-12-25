@@ -16,7 +16,7 @@
   
               </div>
   
-              <div class="flex pr-3 w-100-xs" jx-bind="keywordsSearch">
+              <div class="flex pr-3 w-100-xs" jx-bind="keywordsSearch" style="display: flex;display: -webkit-flex;">
   
               </div>
   
