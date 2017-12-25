@@ -358,27 +358,27 @@
 				var dossier ;
 				try {
 
-				var payLoadObj = payload;
+					var payLoadObj = payload;
 
-				stepName = payLoadObj.hasOwnProperty("stepName")?payLoadObj.stepName : "";
-				dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
+					stepName = payLoadObj.hasOwnProperty("stepName")?payLoadObj.stepName : "";
+					dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
 
-			}catch(e){
-			console.log(e);
-		}
-		#
-		<tr>
-			<td style="padding-top: 15px; width: 1%;">
-				<span class="text-bold">#:itemIndex#</span>
-			</td>
-			<td style="padding-top: 15px">
+				}catch(e){
+					console.log(e);
+				}
+				#
+			<tr>
+				<td style="padding-top: 15px; width: 1%;">
+					<span class="text-bold">#:itemIndex#</span>
+				</td>
+				<td style="padding-top: 15px">
 
-				<span class="text-bold PR10">#:author# </span>
+					<span class="text-bold PR10">#:author# </span>
 
-				#if ( stepName!="" && stepName!=null ) {#
+					#if ( stepName!="" && stepName!=null ) {#
 
-				<span class="text-light-blue">(#:stepName#)</span> 
-				#}#
+					<span class="text-light-blue">(#:stepName#)</span> 
+					#}#
 
 				<p>
 					#if ( createDate!="" && createDate!=null ) {#
@@ -387,63 +387,26 @@
 				</p>
 
 				#if ( content!="" && content!=null ) {#
-				<p>Ý kiến: #:content#</p>
+					<p>Ý kiến: #:content#</p>
 				#}#
 
 				#
 				if(dossier){
-				for(var i = 0 ; i < dossier.length ; i++){
+					for(var i = 0 ; i < dossier.length ; i++){
 				#
-				<p>
-					<a target="_blank" href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].dossierFileId#" class="text-greyy text-hover-blue">
-						<i aria-hidden="true" class="fa fa-download PR5"></i>
-						#:dossier[i].fileName#
-					</a> 
-				</p>
+					<p>
+						<a target="_blank" href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].dossierFileId#" class="text-greyy text-hover-blue">
+							<i aria-hidden="true" class="fa fa-download PR5"></i>
+							#:dossier[i].fileName#
+						</a> 
+					</p>
 				#
-			} 
-		}
-		#
+					}	 
+				}
+				#
 
-		var payLoadObj = payload;
-
-		stepName = payLoadObj.hasOwnProperty("stepName")?payLoadObj.stepName : "";
-		dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
-
-	}catch(e){
-	console.log(e);
-}
-#
-<tr>
-	<td style="padding-top: 15px; padding-right: 15px">#:itemIndex#</td>
-	<td style="padding-top: 15px">
-
-		<span class="text-bold PR10">#:author# </span> <span class="text-light-blue">#:stepName#</span> 
-		<p>
-			#if ( createDate!="" && createDate!=null ) {#
-			#= kendo.toString(kendo.parseDate(createDate, 'yyyy-MM-dd'), 'hh:mm - dd/MM/yyyy')#
-			#}#
-		</p>
-
-		<p>Ý kiến: #:content#</p>
-
-		#
-		if(dossier){
-		for(var i = 0 ; i < dossier.length ; i++){
-		#
-		<p>
-			<a target="_blank" href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].dossierFileId#" class="text-greyy text-hover-blue">
-				<i aria-hidden="true" class="fa fa-download PR5"></i>
-				#:dossier[i].fileName#
-			</a> 
-		</p>
-		#
-	} 
-}
-#
-
-</td>
-</tr>
+				</td>
+			</tr>
 </script>
 
 </div>
