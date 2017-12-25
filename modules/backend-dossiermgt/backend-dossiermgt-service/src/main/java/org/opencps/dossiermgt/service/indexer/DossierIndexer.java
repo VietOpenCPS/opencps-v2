@@ -10,6 +10,8 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -217,7 +219,24 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		}
 
 		document.addTextSortable(DossierTerm.ACTION_USERIDS, StringUtil.merge(actionUserIds, StringPool.SPACE));
-
+		
+		//binhth index dossierId CTN
+		// TODO
+		List<ServerConfig> configs = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+		
+		long groupIdCTN = 0;
+		
+		if (Validator.isNotNull(configs) && !configs.isEmpty()) {
+			groupIdCTN = configs.get(0).getGroupId();
+		}
+		
+		Dossier dossierCTN = DossierLocalServiceUtil.getByRef(groupIdCTN, object.getReferenceUid());
+		long dossierIDCTN = 0;
+		if (Validator.isNotNull(dossierCTN)) {
+			dossierIDCTN = dossierCTN.getDossierId();
+		}
+		document.addNumberSortable(DossierTerm.DOSSIER_ID+"CTN", dossierIDCTN);
 		return document;
 	}
 

@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
+ *         &lt;element name="dossierIdCTN" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
  *         &lt;element name="dossierId" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
  *         &lt;element name="userId" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
  *         &lt;element name="userName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
@@ -96,6 +97,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
+	"dossierIdCTN",
     "dossierId",
     "groupId",
     "userId",
@@ -167,6 +169,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class DossierDataModel {
 
+	protected Integer dossierIdCTN;
     protected Integer dossierId;
     protected Integer groupId;
     protected Integer userId;
@@ -1788,5 +1791,13 @@ public class DossierDataModel {
     public void setOnline(String value) {
         this.online = value;
     }
+
+	public Integer getDossierIdCTN() {
+		return dossierIdCTN;
+	}
+
+	public void setDossierIdCTN(Integer dossierIdCTN) {
+		this.dossierIdCTN = dossierIdCTN;
+	}
 
 }

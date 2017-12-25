@@ -17,6 +17,7 @@ package org.opencps.dossiermgt.service.impl;
 import aQute.bnd.annotation.ProviderType;
 
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.base.RegistrationTemplatesLocalServiceBaseImpl;
@@ -48,6 +49,20 @@ import com.liferay.portal.kernel.util.Validator;
  */
 @ProviderType
 public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplatesLocalServiceBaseImpl {
+	
+	public List<RegistrationTemplates> getRegistrationTemplatesbyFormNo(String formNo){
+		
+		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByFNO(formNo);
+		
+		return lstRegistrationTemplates;
+	}
+	
+	public List<RegistrationTemplates> getRegistrationTemplatesbyGOVCODE(String govAgencyCode){
+		
+		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByGOVCODE(govAgencyCode);
+		
+		return lstRegistrationTemplates;
+	}
 
 	public RegistrationTemplates addRegistrationTemplates(long groupId, String govAgencyCode, String govAgencyName,
 			String formNo, String formName, boolean multiple, String formScript, String formReport, String sampleData,
