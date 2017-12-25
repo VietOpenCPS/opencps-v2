@@ -13,7 +13,7 @@
 		<td style="padding: 8px;" class="text-xs-left">
 			{{ props.item.dossierNo }} 
 			<br v-if="props.item.dossierNo">
-			{{ props.item.dossierId }} 
+			{{ props.item.dossierIdCTN }} 
 		</td>
 		<td style="padding: 8px;" class="text-xs-left">
 			{{ props.item.submitDate}}

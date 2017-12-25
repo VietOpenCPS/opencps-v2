@@ -78,6 +78,7 @@
 					</div>	
 
 					<div class="content-part collapse PB15" id="collapseDossierG">
+
 						<span data-bind="html:dossierNote"></span>
 						<#-- <p class="MB0 text-light-blue PB15"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p> -->
 					</div>
@@ -150,11 +151,7 @@
 									<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
 								</div>
 
-								<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# >
-
-									<form id="formPartNo#:id#">
-
-									</form>
+								<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# id="formPartNo#:id#">
 
 								</div>
 							</div>
@@ -194,7 +191,9 @@
 </div>
 
 <div class="dossier-parts" id="paymentDossier">
+
 	<div class="head-part align-middle MB5 slide-toggle">
+
 		<div class="background-triangle-small" id="paymentDossierNum">II</div> 
 		<div class="col-sm-12 PL0">
 
@@ -301,7 +300,9 @@
 </div> 
 
 <div class="dossier-parts">
+
 	<div class="head-part align-middle slide-toggle">
+
 		<div class="background-triangle-small" id="resultDossierNum">II</div> 
 		<div class="col-sm-12 PL0">
 
@@ -332,6 +333,7 @@
 </div>
 
 <div class="dossier-parts">
+
 	<div class="head-part align-middle slide-toggle">
 		<div class="background-triangle-small" id="logDossierNum">III</div> 
 		<div class="col-sm-12 PL0">
