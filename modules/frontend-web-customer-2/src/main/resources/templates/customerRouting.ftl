@@ -25,6 +25,8 @@
 		dataSourceProfile.read({
 			"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
 		});
+		getTotal();
+
 		// $(".itemStatus").css("pointer-events","auto");
 		$("#profileStatus li").removeClass('active');
 		$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");

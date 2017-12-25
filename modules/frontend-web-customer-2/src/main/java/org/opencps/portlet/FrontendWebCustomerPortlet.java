@@ -96,8 +96,10 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		String resCancelling =
 			ParamUtil.getString(renderRequest, "resCancelling");
 		String sendAdd = ParamUtil.getString(renderRequest, "sendAdd");
+		String sendReissue = ParamUtil.getString(renderRequest, "sendReissue");
+		
 
-		String lblApplicantNote = getLabelApplicantNote(resCancelling, sendAdd);
+		String lblApplicantNote = getLabelApplicantNote(resCancelling, sendAdd, sendReissue);
 
 		// apiObject.put("applicant", applicantObj);
 
@@ -115,6 +117,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute("constants", constantsObj);
 		renderRequest.setAttribute("resCancelling", resCancelling);
 		renderRequest.setAttribute("sendAdd", sendAdd);
+		renderRequest.setAttribute("sendReissue", sendReissue);
 		renderRequest.setAttribute("lblApplicantNote", lblApplicantNote);
 
 		super.render(renderRequest, renderResponse);
@@ -186,7 +189,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 
 	}
 
-	private String getLabelApplicantNote(String resCancelling, String sendAdd) {
+	private String getLabelApplicantNote(String resCancelling, String sendAdd, String sendReissue) {
 
 		if (resCancelling != null && resCancelling != "") {
 			return "Lý do yêu cầu huỷ";
@@ -194,6 +197,10 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 
 		if (sendAdd != null && sendAdd != "") {
 			return "Yêu cầu gửi bổ sung";
+		}
+		
+		if(sendReissue != null && sendReissue != ""){
+			return "yêu cầu cấp lại";
 		}
 
 		return "Ghi chú";
