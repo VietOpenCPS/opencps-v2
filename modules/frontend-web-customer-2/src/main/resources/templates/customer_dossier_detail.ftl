@@ -307,7 +307,7 @@
 
 	<div class="row MB20">
 		<div class="col-sm-12">
-			<#-- <label>${lblApplicantNote}</label> -->
+			<label>${lblApplicantNote}</label>
 			<textarea class="form-control" name="applicantNote" id="applicantNote" placeholder="Ghi chú" data-bind="text : applicantNote" rows="3"></textarea>
 		</div>
 	</div>
