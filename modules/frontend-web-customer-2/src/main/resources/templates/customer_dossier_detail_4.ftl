@@ -42,7 +42,9 @@
 					<span class="text-bold">Thời gian gửi</span>: <span data-bind="text:submitDate"></span>
 				</div>
 				<div class="row" id="">
-					<a href="javascript:;" class="text-light-blue text-underline">Thông tin chủ hồ sơ</a>
+					<a href="javascript:;" class="text-light-blue text-underline">
+						THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+					</a>
 				</div>
 			</div>
 			
@@ -208,69 +210,77 @@
 </div>
 
 <div class="dossier-parts">
-    <div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierPart">
-        <div class="background-triangle-small">III</div> 
-        <div class="col-sm-12 PL0">
+	<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierPart">
+		<div class="background-triangle-small">III</div> 
+		<div class="col-sm-12 PL0">
 
-            <span class="text-uppercase hover-pointer">Tiến trình xử lý</span>
-            <i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
-        </div>
-        
-    </div>
-    <div class="content-part collapse in" id="collapseDossierPart">
-        <div class="row-parts-head MT5">
-            
-            <div class="table-responsive">
-			    <table class="table table-bordered table_history_style">
-			      <tbody>
-			      		<div id="listViewDossiserLog">
-			      			
-			      		</div>
-			      </tbody>
+			<span class="text-uppercase hover-pointer">Tiến trình xử lý</span>
+			<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
+		</div>
+		
+	</div>
+	<div class="content-part collapse in" id="collapseDossierPart">
+		<div class="row-parts-head MT5">
+			
+			<div class="table-responsive">
+				<table class="table table-bordered table_history_style">
+				  <tbody id="listViewDossiserLog">
+				  		
+				  </tbody>
 			   	</table>
 			</div>
-            <script type="text/x-kendo-template" id="templateDossiserLog">
+			<script type="text/x-kendo-template" id="templateDossiserLog">
 				
 				#
-                    var jobposTitle = "";
-                    var briefNote = "";
-                    var dossier ;
-                    try {
-                    
-                        var payLoadObj = payload;
+					var jobposTitle = "";
+					var briefNote = "";
+					var dossier ;
+					try {
+					
+						var payLoadObj = payload;
 
-                        stepName = payLoadObj.hasOwnProperty("stepName")?payLoadObj.stepName : "";
-                        dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
+						stepName = payLoadObj.hasOwnProperty("stepName")?payLoadObj.stepName : "";
+						dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
 						
-	                }catch(e){
-		                console.log(e);
-		            }
-	            #
+					}catch(e){
+						console.log(e);
+					}
+				#
 				<tr>
-					<td style="padding-top: 15px; padding-right: 15px">#:itemIndex#</td>
+					<td style="padding-top: 15px; width: 1%;">
+						<span class="text-bold">#:itemIndex#</span>
+					</td>
 					<td style="padding-top: 15px">
 						
-						<span class="text-bold PR10">#:author# </span> <span class="text-light-blue">#:stepName#</span> 
-		                <p>
-		                    #if ( createDate!="" && createDate!=null ) {#
-		                        #= kendo.toString(kendo.parseDate(createDate, 'yyyy-MM-dd'), 'hh:mm - dd/MM/yyyy')#
-		                    #}#
-		                </p>
+						<span class="text-bold PR10">#:author# </span>
 
-		                <p>Ý kiến: #:content#</p>
+						#if ( stepName!="" && stepName!=null ) {#
 
-		                #
-		                if(dossier){
-			                for(var i = 0 ; i < dossier.length ; i++){
-				                #
-					                <p>
-					                	<a target="_blank" href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].dossierFileId#" class="text-greyy text-hover-blue">
-					                		<i aria-hidden="true" class="fa fa-download PR5"></i>
-					                		#:dossier[i].fileName#
-					                	</a> 
-					                </p>
-				                #
-			    			} 
+							<span class="text-light-blue">(#:stepName#)</span> 
+						#}#
+
+						<p>
+							#if ( createDate!="" && createDate!=null ) {#
+								#= kendo.toString(kendo.parseDate(createDate, 'yyyy-MM-dd'), 'hh:mm - dd/MM/yyyy')#
+							#}#
+						</p>
+						
+						#if ( content!="" && content!=null ) {#
+							<p>Ý kiến: #:content#</p>
+						#}#
+
+						#
+						if(dossier){
+							for(var i = 0 ; i < dossier.length ; i++){
+								#
+									<p>
+										<a target="_blank" href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].dossierFileId#" class="text-greyy text-hover-blue">
+											<i aria-hidden="true" class="fa fa-download PR5"></i>
+											#:dossier[i].fileName#
+										</a> 
+									</p>
+								#
+							} 
 						}
 						#
 
@@ -443,7 +453,7 @@
 
 						},
 						success : function(result){
-							var result.data = result.hasOwnProperty("data")?result.data:[];
+							result["data"] = result.hasOwnProperty("data")?result["data"]:[];
 							
 							var arrLogsResult = fnGetLogs(result.data);
 							options.success(arrLogsResult);
@@ -918,7 +928,7 @@ $(document).on("click","#btn-submit-dossier",function(event){
 			Accept : "application/json"
 
 		},
-		success :  function(result){                       
+		success :  function(result){					   
 
 		},
 		error : function(result){
@@ -1019,11 +1029,11 @@ $(document).on("click",".saveFormAlpaca",function(event){
 
 <style type="text/css" media="screen">
 
-	.table_history_style .table tr:nth-child(odd) td:first-child {
-	    background-color: #E9F7F8;
+	.table_history_style tr:nth-child(odd) td:first-child {
+		background-color: #E9F7F8;
 	}
 
-	.table_history_style .table tr:nth-child(even) td:first-child {
-	    background-color: #D9E7E8;
+	.table_history_style tr:nth-child(even) td:first-child {
+		background-color: #D9E7E8;
 	}
 </style>
