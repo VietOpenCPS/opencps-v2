@@ -14,7 +14,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 public interface RegistrationActions {
-	public void delete(long registrationId) throws PortalException;
+	public Registration delete(long registrationId) throws PortalException;
 
 	public Registration getDetail(long registrationId) throws PortalException;
 
