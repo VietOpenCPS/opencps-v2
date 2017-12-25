@@ -29,6 +29,7 @@
 
 	<xsd:complexType name="DossierDataModel">
 		<xsd:sequence>
+			<xsd:element name="dossierIdCTN" type="xsd:int" minOccurs="0" />
 			<xsd:element name="dossierId" type="xsd:int" minOccurs="0" />
 			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
 			<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
