@@ -4,11 +4,11 @@
 <#-- Xe chở hàng bốn bánh có gắn động cơ -->
 <div class="accordion-group">
 	<div class="accordion-heading">
-		<a class="accordion-toggle" data-toggle="collapse" href="#lv14G1"> 
+		<a class="accordion-toggle slide-toggle-lv2"> 
 			<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe chở hàng bốn bánh có gắn động cơ
 		</a>
 	</div>
-	<div id="lv14G1" class="accordion-body collapse toggle-hide">
+	<div id="lv14G1" class="accordion-body collapse">
 		<div class="accordion-inner PB0 PT0">
 			<#-- lv23G1 -->
 			<div class="PT5">
@@ -36,11 +36,11 @@
 <#-- Xe đạp điện -->
 <div class="accordion-group">
 	<div class="accordion-heading">
-		<a class="accordion-toggle" data-toggle="collapse" href="#lv15G1"> 
+		<a class="accordion-toggle slide-toggle-lv2"> 
 			<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe đạp điện
 		</a>
 	</div>
-	<div id="lv15G1" class="accordion-body collapse toggle-hide">
+	<div id="lv15G1" class="accordion-body collapse">
 		<div class="accordion-inner PB0 PT0">
 			<#-- lv23G1 -->
 			<div class="PT5">
@@ -69,11 +69,11 @@
 <div class="accordion-group">
 	<#--lv1G1 -->
 	<div class="accordion-heading">
-		<a class="accordion-toggle" data-toggle="collapse" href="#lv16G1"> 
+		<a class="accordion-toggle slide-toggle-lv2"> 
 			<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe chuyên dùng
 		</a>
 	</div>
-	<div id="lv16G1" class="accordion-body collapse toggle-hide">
+	<div id="lv16G1" class="accordion-body collapse">
 		<div class="accordion-inner PB0 PT0">
 			<#-- lv2G1 -->
 			<div class="PT5">
@@ -113,11 +113,11 @@
 <div class="accordion-group">
 	<#--lv1G1 -->
 	<div class="accordion-heading">
-		<a class="accordion-toggle" data-toggle="collapse" href="#lv17G1"> 
+		<a class="accordion-toggle slide-toggle-lv2"> 
 			<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Linh kiện phụ tùng
 		</a>
 	</div>
-	<div id="lv17G1" class="accordion-body collapse toggle-hide">
+	<div id="lv17G1" class="accordion-body collapse">
 		<div class="accordion-inner PB0 PT0">
 			<#-- lv23G1 -->
 			<div class="PT5">

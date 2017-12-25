@@ -20,7 +20,7 @@
 	<#-- Group1 -->
 	<div class="accordion-group">
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" href="#group1">
+			<a class="accordion-toggle slide-toggle">
 				</i> HỒ SƠ SẢN XUẤT LẮP RÁP
 			</a>
 		</div>
@@ -31,7 +31,7 @@
 					<div class="accordion-group">
 						<#--lv1G1 -->
 						<div class="accordion-heading">
-							<a class="accordion-toggle" data-toggle="collapse" href="#lv1G1"> 
+							<a class="accordion-toggle slide-toggle-lv2">
 								<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe cơ giới
 							</a>
 						</div>
@@ -89,7 +89,7 @@
 					<#-- Xe mô tô, xe gắn máy -->
 					<div class="accordion-group">
 						<div class="accordion-heading">
-							<a class="accordion-toggle" data-toggle="collapse" href="#lv12G1"> 
+							<a class="accordion-toggle slide-toggle-lv2"> 
 								<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe mô tô, xe gắn máy
 							</a>
 						</div>
@@ -123,7 +123,7 @@
 					<#-- Xe chở người bốn bánh có gắn động cơ -->
 					<div class="accordion-group">
 						<div class="accordion-heading">
-							<a class="accordion-toggle" data-toggle="collapse" href="#lv13G1"> 
+							<a class="accordion-toggle slide-toggle-lv2"> 
 								<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe chở người bốn bánh có gắn động cơ
 							</a>
 						</div>
@@ -174,11 +174,11 @@
 	<#-- Group2 -->
 	<div class="accordion-group">
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#group2">
+			<a class="accordion-toggle slide-toggle">
 				QUẢN LÝ DÁN NHÃN NĂNG LƯỢNG
 			</a>
 		</div>
-		<div id="group2" class="accordion-body collapse toggle-hide" style="background-color: #ffffff">
+		<div id="group2" class="accordion-body collapse" style="background-color: #ffffff">
 			<div class="accordion-inner PB0 PT0">
 				<div class="PT5">
 					<div class="ML40 col-sm-6 P5 PL0">
@@ -205,11 +205,11 @@
 	<#-- Group3 -->
 	<div class="accordion-group">
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#group3">
+			<a class="accordion-toggle slide-toggle">
 				QUẢN LÝ TRIỆU HỒI SẢN PHẨM
 			</a>
 		</div>
-		<div id="group3" class="accordion-body collapse toggle-hide" style="background-color: #ffffff">
+		<div id="group3" class="accordion-body collapse" style="background-color: #ffffff">
 			<div class="accordion-inner">
 				<div class="PT5">
 					<div class="ML40 col-sm-6 P5 PL0">
@@ -235,11 +235,11 @@
 	<#-- Group4 -->
 	<div class="accordion-group">
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#group4">
+			<a class="accordion-toggle slide-toggle">
 				QUẢN LÝ THÔNG TIN DOANH NGHIỆP
 			</a>
 		</div>
-		<div id="group4" class="accordion-body collapse toggle-hide" style="background-color: #ffffff">
+		<div id="group4" class="accordion-body collapse" style="background-color: #ffffff">
 			<div class="accordion-inner">
 				<div class="PT5">
 					<div class="ML40 col-sm-6 P5 PL0">
