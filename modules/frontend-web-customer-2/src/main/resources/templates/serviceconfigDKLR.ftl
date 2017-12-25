@@ -37,16 +37,7 @@
 						</div>
 						<div id="lv1G1" class="accordion-body collapse in">
 							<div class="accordion-inner PB0 PT0">
-								<div class="PT5">
-									<div class="ML40 col-sm-6 P5 PL0">
-										<span> 
-											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Thẩm định thiết kế TEST
-										</span>
-										<button data-TTHC="TEST" data-CQTH="BGTVTCDKVN" data-MMHS="TEST" class="btn btn-reset chooseService pull-right P0">Chọn</button>
-									</div>
-									<div class="clear"></div>
-									
-								</div>
+								
 								<#-- lv2G1 -->
 								<div class="PT5">
 									<div class="ML40 col-sm-6 P5 PL0">
