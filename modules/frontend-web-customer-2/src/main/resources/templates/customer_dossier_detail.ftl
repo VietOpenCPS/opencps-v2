@@ -196,7 +196,7 @@
 
 			<script type="text/x-kendo-template" id="templateDossierPart">
 				#if(partType == 1){#
-				<div class="row-parts-head align-middle" #if(hasForm){# data-toggle="collapse" data-target="\\#collapseDossierPart#:id#" #}#>
+				<div class="row-parts-head align-middle slide-toggle">
 					<span class="text-bold MR5">#:itemIndex#.</span>
 					<span class="hover-pointer"> #:partName# 
 						#
@@ -234,7 +234,7 @@
 				var dossierFile =  getReferentUidFile(${dossierId},id);
 				#
 
-				<div class="collapse toggle-hide" id="collapseDossierPart#:id#">
+				<div class="collapse" id="collapseDossierPart#:id#">
 					<div class="col-xs-12 col-sm-12 text-right">
 						<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
 						type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
