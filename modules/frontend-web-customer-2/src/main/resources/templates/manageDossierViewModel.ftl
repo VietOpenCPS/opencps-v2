@@ -117,6 +117,7 @@
 		// Get total dossierStatus
 		var statusDossierItems = ["new","receiving","processing","waiting","paying","done","cancelling","cancelled","expired","all"];
 		var getTotal = function(){
+			console.log("GET total");
 			$(statusDossierItems).each(function(index,value){
 				getTotalItemDossier(value);
 			})
@@ -325,6 +326,17 @@
 				});
 			});
 		};
+		// 
+		var resDone = function(){
+			$(".resDone").click(function(event){
+				var id = $(this).attr("data-Pk");
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+				manageDossier.navigate("/dossiers/"+id+"/yeucaucaplai");
+			});
+		}
+		// 
 		var loadAddRes = function(){
 			$(".downloadAddRes").click(function(e){
 				e.stopPropagation();
