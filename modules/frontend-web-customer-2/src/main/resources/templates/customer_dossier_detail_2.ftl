@@ -42,15 +42,12 @@
 		</div>
 
 		<div class="dossier-general-info P15 MB30">
-			<div class="col-sm-12">
-				<span class="text-bold">Cơ quan thực hiện</span>: 
-				<span data-bind="text:govAgencyName"></span>
-			</div>
+			
 			<div class="col-sm-5">
 				<span class="text-bold">Trạng thái</span>: <i data-bind="text:dossierStatusText"></i>
 			</div>
 			<div class="col-sm-7">
-				<span class="text-bold">Mã số hồ sơ</span>: <span data-bind="text : dossierId"></span>
+				<span class="text-bold">Mã hồ sơ</span>: <span data-bind="text : dossierId"></span>
 			</div>
 		</div>
 
@@ -80,7 +77,7 @@
 						<div class="col-sm-12 PL0">
 
 							<span class="text-uppercase hover-pointer">
-								THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+								Thông tin chủ hồ sơ
 							</span>
 							<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
 						</div>
@@ -227,7 +224,7 @@
 					var dossierFile =  getReferentUidFile(${dossierId},id);
 					#
 					
-					<div class="collapse" id="collapseDossierPart#:id#">
+					<div class="collapse toggle-hide" id="collapseDossierPart#:id#">
 						<div class="col-xs-12 col-sm-12 text-right">
 							<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
 							type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>

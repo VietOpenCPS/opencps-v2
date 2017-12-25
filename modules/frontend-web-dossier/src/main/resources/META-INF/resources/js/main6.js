@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				loadingAlpacajsForm: false,
 				stepLoading: false,
 				actionsSubmitLoading: false,
-				popupResultFile: false
+				popupResultFile: false,
+				traCuuFilter: false
 			},
 			onScroll: 'onScroll',
 			schema: {
@@ -283,7 +284,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
                         },
 						filterAllDossierWithOutStatus: function () {
 							this.stageFilterView = 'danh_sach';
+							this.traCuuFilter = false;
 							this._inidanhSachHoSoTable(false);
+						},
+						filterTraCuu: function () {
+							this.traCuuFilter = true;
 						},
 						singleFileUpload: function (item) {
 							var vm = this;
@@ -758,7 +763,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'id': 'thongTinDoanhNghiepTable',
 					'name': 'thongTinDoanhNghiepTable',
 					'type': 'table',
-					'item_key': 'dossierNo',
+					'no_data_text': 'Không tìm thấy hồ sơ thương nhân nào!',
+					'cssClass': 'thongTinDoanhNghiepTable__class',
+					'item_key': 'registrationId',
 					'headers': 'headers',
 					'template': 'thong_tin_doanh_nghiep_table_template',
 					'pagging': '_paggingThongTinDoanhNghiepTable',
@@ -780,13 +787,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									text: 'Tên, địa chỉ cơ sở sản xuất / Cơ sở nhập khẩu',
 									align: 'left',
 									sortable: true,
-									value: 'dossierNo'
+									value: 'address'
 								},
 								{
 									text: 'Mã số thuế, điện thoại, fax, email',
 									align: 'left',
 									sortable: true,
-									value: 'createDate'
+									value: 'contactEmail'
 								},
 								{
 									text: 'Người đại diện, chức danh',
@@ -796,8 +803,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								},
 								{
 									text: 'Thông tin nhà xưởng (SL, địa chỉ, diện tích, nhân lực, công suất theo tháng)',
-									align: 'center',
-									sortable: true,
+									align: 'left',
+									sortable: false,
 									value: 'action'
 								},
 								{
@@ -808,40 +815,43 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								},
 								{
 									text: 'Tình trạng đăng ký',
-									align: 'center',
+									align: 'left',
 									sortable: true,
-									value: 'action'
+									value: 'registrationState'
 								}
 							];
 
-							const config = {};
+							var paramsBuilder = {
+								keyword: vm.keywordsSearchTraCuuDoanhNghiep,
+								start: vm.thongTinDoanhNghiepTablepage * 8 - 8,
+								end: vm.thongTinDoanhNghiepTablepage * 8,
+							};
+							
+							//TODO
+							const config = {
+								params: paramsBuilder,
+								headers: {'groupId': 55217}
+								
+							};
 
-							var url = '/o/frontendwebdossier/json/payment_files.json';
+							var url = '/o/rest/v2/registrations';
 							
 							axios.get(url, config).then(function (response) {
 								var serializable = response.data;
 
-								if (append) {
-									vm.thongTinDoanhNghiepTableItems.push.apply(vm.thongTinDoanhNghiepTableItems, serializable.data);
-								} else {
-									vm.thongTinDoanhNghiepTableItems = serializable.data;
-									vm.thongTinDoanhNghiepTableTotal = serializable.total;
-								}
-
-								vm.xem_them = 'Xem thêm 8+ bản ghi';
-								if (serializable.data.length === 0) {
-									vm.xem_them = 'Tổng số ( ' + serializable.total + ' ) bản ghi'
-								}
-								vm.viewmore = false;
+								vm.thongTinDoanhNghiepTableItems = serializable.data;
+								vm.thongTinDoanhNghiepTableTotal = Math.ceil(serializable.total / 8);
+								
 							})
 								.catch(function (error) {
 									console.log(error);
+									vm.thongTinDoanhNghiepTableItems = [];
 								});
 
 						},
 						_paggingThongTinDoanhNghiepTable: function() {
 							
-							this._inidanhSachHoSoTable(false);
+							this._inithongTinDoanhNghiepTable(false);
 						},
 						_nextThongTinDoanhNghiepTable: function() {
 							
@@ -856,7 +866,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'name': 'traCuuHoSoTable',
 					'type': 'table',
 					'no_data_text': 'Không tìm thấy hồ sơ nào!',
-					'item_key': 'dossierNo',
+					'cssClass': 'danhSachHoSoTable__class',
+					'select_all': true,
+					'item_key': 'dossierId',
 					'headers': 'headers',
 					'template': 'tra_cuu_hoso_table_template',
 					'pagging': '_paggingTraCuuHoSoTable',
@@ -912,22 +924,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							];
 							
 							var paramsBuilder = {
-								keyword: vm.keywordsSearch,
-								owner: vm.applicantNameFilter.applicantIdNo,
-								service: vm.serviceInfoFilter.serviceCode,
-								follow: true,
-								dossierNo: vm.dossierNoFilter,
-								start: vm.danhSachHoSoTablepage * 8 - 8,
-								end: vm.danhSachHoSoTablepage * 8,
+								keyword: vm.keywordsSearchTraCuuHoSo,
+								start: vm.traCuuHoSoTablepage * 8 - 8,
+								end: vm.traCuuHoSoTablepage * 8,
 							};
-						
 							
-							
-							if ( vm.keywordFilter != null ) {
-								paramsBuilder['keyword'] = vm.keywordFilter;
-							} else {
-								paramsBuilder['keyword'] = vm.keywordsSearchDanhSachHoSo;
-							}
 							const config = {
 								params: paramsBuilder,
 								headers: {'groupId': themeDisplay.getScopeGroupId()}

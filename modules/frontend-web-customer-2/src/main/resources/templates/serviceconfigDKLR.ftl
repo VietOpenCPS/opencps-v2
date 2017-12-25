@@ -31,7 +31,7 @@
 					<div class="accordion-group">
 						<#--lv1G1 -->
 						<div class="accordion-heading">
-							<a class="accordion-toggle slide-toggle-lv2">
+							<a class="accordion-toggle slide-toggle-lv2"> 
 								<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe cơ giới
 							</a>
 						</div>
