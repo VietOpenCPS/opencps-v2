@@ -2,9 +2,11 @@ package frontend.web.register.portlet;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -13,8 +15,10 @@ import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.portlet.Portlet;
+import javax.portlet.PortletConfig;
 import javax.portlet.PortletException;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
@@ -106,6 +110,7 @@ public class FrontendWebRegisterPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute("registrationTemplateId", registrationTemplateId);
 		renderRequest.setAttribute("registrationId", registrationId);
 		renderRequest.setAttribute("registrationFormNo", registrationFormNo);
+		renderRequest.setAttribute("constants", generateConstantsJsonObject(themeDisplay));
 
 		super.render(renderRequest, renderResponse);
 
@@ -145,6 +150,35 @@ public class FrontendWebRegisterPortlet extends FreeMarkerPortlet {
 			themeDisplay.getPortletDisplay().getNamespace());
 
 		return apiObject;
+	}
+	
+	private JSONObject generateConstantsJsonObject(ThemeDisplay themeDisplay) {
+
+		JSONObject constants = JSONFactoryUtil.createJSONObject();
+
+		constants.put("registrationStates", getRegistrationStates(themeDisplay));
+
+		return constants;
+	}
+	
+	private List<JSONObject> getRegistrationStates(ThemeDisplay themeDisplay) {
+
+		JSONObject regObject = JSONFactoryUtil.createJSONObject();
+		List<JSONObject> registrationState = new ArrayList<>();
+		
+		PortletConfig portletConfig = PortletConfigFactoryUtil.get(
+				themeDisplay.getPortletDisplay().getId());
+		ResourceBundle resourceBundle =
+				portletConfig.getResourceBundle(themeDisplay.getLocale());
+
+		for (int i=0; i<4; i++) {
+			regObject = JSONFactoryUtil.createJSONObject();
+			regObject.put("value", i);
+			regObject.put("text", LanguageUtil.get(resourceBundle, "registration-state"+i));
+			registrationState.add(regObject);
+		}
+
+		return registrationState;
 	}
 
 	private static final Log _log =
