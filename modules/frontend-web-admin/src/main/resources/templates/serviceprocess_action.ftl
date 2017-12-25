@@ -68,7 +68,6 @@
 		</div>
 	</div>
 
-
 	<script type="text/javascript">
 		(function($){
 			var serviceProcessActionDataSource = new kendo.data.DataSource({
@@ -299,6 +298,7 @@
 				$("#serviceprocess_detail_formaction_container").hide();
 			});
 
+			$(document).off("click", "#btn_add_service_process_action");
 			$(document).on("click", "#btn_add_service_process_action", function(event){
 				event.preventDefault();
 				$("#serviceprocess_action_container").hide();
@@ -329,6 +329,7 @@
 				$("#btn_save_service_process_action").attr("data-pk", "");
 			});
 
+			$(document).off("click", "#btn_save_service_process_action");
 			$(document).on("click", "#btn_save_service_process_action", function(event){
 				event.preventDefault();
 
@@ -340,6 +341,9 @@
 				} else {
 					addServiceProcessAction(serviceProcessId);
 				}
+
+				/*$("#serviceprocess_action_container").show();
+				$("#serviceprocess_detail_formaction_container").hide();*/
 			});
 
 			var updateServiceProcessAction = function(serviceProcessId, actionId){
@@ -369,7 +373,8 @@
 							notification.show({
 								message: "Yêu cầu được thực hiện thành công"
 							}, "success");
-
+							$("#serviceprocess_action_container").show();
+							$("#serviceprocess_detail_formaction_container").hide();
 							// var serviceProcessAction = serviceProcessActionDataSource.get(actionId);
 
 							// serviceProcessAction.set("actionCode", $("#actionCode").val());
@@ -389,8 +394,7 @@
 
 							serviceProcessActionDataSource.read();
 
-							$("#serviceprocess_action_container").show();
-							$("#serviceprocess_detail_formaction_container").hide();
+							
 						},
 						error: function(result) {
 							if (result.responseJSON.description){
@@ -402,6 +406,9 @@
 									message: "Xẩy ra lỗi, vui lòng thử lại"
 								}, "error");
 							}
+
+							$("#serviceprocess_action_container").show();
+							$("#serviceprocess_detail_formaction_container").hide();
 						}
 					});
 				}
@@ -435,12 +442,17 @@
 								message: "Yêu cầu được thực hiện thành công"
 							}, "success");
 
+							$("#serviceprocess_action_container").show();
+							$("#serviceprocess_detail_formaction_container").hide();
+
 							serviceProcessActionDataSource.insert(0, {
 								"processActionId": result.processActionId,
 								"actionCode": $("#actionCode").val(),
 								"actionName": $("#actionName").val(),
 								"preStepCode": $("#preStepCode").val(),
+								"preStepName" : $("#preStepCode").data("kendoComboBox").text(),
 								"postStepCode": $("#postStepCode").val(),
+								"postStepName" : $("#postStepCode").data("kendoComboBox").text(),
 								"autoEvent": $("#autoEvent").val(),
 								"preCondition": $("#preCondition").val(),
 								"allowAssignUser": $("#allowAssignUser").prop("checked"),
@@ -450,11 +462,10 @@
 								"createDossierFiles": getCreateDossierFiles(),
 								"returnDossierFiles": getReturnDossierFiles(),
 								"syncActionCode": $("#syncActionCode").val(),
-								"rollbackable": $("#rollbackable").prop("checked"),
+								"rollbackable": $("#rollbackable").prop("checked")
 							});
 
-							$("#serviceprocess_action_container").show();
-							$("#serviceprocess_detail_formaction_container").hide();
+							
 						},
 						error: function(result) {
 							if (result.responseJSON.description){
@@ -466,6 +477,9 @@
 									message: "Xẩy ra lỗi, vui lòng thử lại"
 								}, "error");
 							}
+
+							$("#serviceprocess_action_container").show();
+							$("#serviceprocess_detail_formaction_container").hide();
 						}
 					});
 				}

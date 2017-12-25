@@ -10,6 +10,7 @@ package org.opencps.api.paymentfile.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -90,6 +91,7 @@ import javax.xml.bind.annotation.XmlType;
     "invoiceFileType",
     "invoiceFileSize"
 })
+@XmlRootElement(name = "PaymentFileModel")
 public class PaymentFileModel {
     protected String createDate;
     protected String modifiedDate;

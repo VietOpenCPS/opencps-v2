@@ -112,7 +112,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	public Response addDossierFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String referenceUid,
 			String dossierTemplateNo, String dossierPartNo, String fileTemplateNo, String displayName, String fileType,
-			String isSync) {
+			String isSync, String formData) {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -148,6 +148,12 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			DossierFile dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid,
 					dossierTemplateNo, dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
 					dataHandler.getInputStream(), fileType, isSync, serviceContext);
+			
+			if(Validator.isNotNull(formData)) {
+				dossierFile.setFormData(formData);
+			}
+			
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 
 			DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
 
@@ -238,6 +244,11 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 
 			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(id, referenceUid);
+			
+			// TODO download file with dossierFileID
+			if (Validator.isNull(dossierFile) && Validator.isNumber(referenceUid)) {
+				dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(Long.valueOf(referenceUid));
+			}
 
 			if (dossierFile.getFileEntryId() > 0) {
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());

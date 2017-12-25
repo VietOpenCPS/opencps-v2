@@ -85,20 +85,19 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 			// TODO: handle exception
 			_log.info(e.getMessage());
 		}
-		
-		
-		
+
 		String dossierPartNo =
 			ParamUtil.getString(renderRequest, "dossierPartNo");
 		System.out.println("dossierPartNo:" + dossierPartNo);
 
 		String dossierTemplateNo =
 			ParamUtil.getString(renderRequest, "dossierTemplateNo");
-		
-		String resCancelling = ParamUtil.getString(renderRequest, "resCancelling");
+
+		String resCancelling =
+			ParamUtil.getString(renderRequest, "resCancelling");
 		String sendAdd = ParamUtil.getString(renderRequest, "sendAdd");
-		
-		String lblApplicantNote = getLabelApplicantNote(resCancelling,sendAdd);
+
+		String lblApplicantNote = getLabelApplicantNote(resCancelling, sendAdd);
 
 		// apiObject.put("applicant", applicantObj);
 
@@ -117,7 +116,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute("resCancelling", resCancelling);
 		renderRequest.setAttribute("sendAdd", sendAdd);
 		renderRequest.setAttribute("lblApplicantNote", lblApplicantNote);
-		
+
 		super.render(renderRequest, renderResponse);
 
 	}
@@ -140,7 +139,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		dossierReceiving.put("text", "Hồ sơ chờ tiếp nhận");
 		dossierReceiving.put("value", "receiving");
 		dossierStatus.add(dossierReceiving);
-		
+
 		JSONObject dossierProcessed = JSONFactoryUtil.createJSONObject();
 		dossierProcessed.put("text", "Hồ sơ đã tiếp nhận");
 		dossierProcessed.put("value", "processing");
@@ -160,46 +159,45 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		dossierDone.put("text", "Hồ sơ đã kết thúc");
 		dossierDone.put("value", "done");
 		dossierStatus.add(dossierDone);
-		
+
 		JSONObject dossierCancelling = JSONFactoryUtil.createJSONObject();
 		dossierCancelling.put("text", "Hồ sơ yêu cầu hủy");
 		dossierCancelling.put("value", "cancelling");
 		dossierStatus.add(dossierCancelling);
-		
+
 		JSONObject dossierCancelled = JSONFactoryUtil.createJSONObject();
 		dossierCancelled.put("text", "Hồ sơ xác nhận hủy");
 		dossierCancelled.put("value", "cancelled");
 		dossierStatus.add(dossierCancelled);
-		
+
 		JSONObject dossierExpired = JSONFactoryUtil.createJSONObject();
 		dossierExpired.put("text", "Hồ sơ đến hạn XN hiệu lực");
 		dossierExpired.put("value", "expired");
 		dossierStatus.add(dossierExpired);
-		
+
 		JSONObject dossierAll = JSONFactoryUtil.createJSONObject();
 		dossierAll.put("text", "Tất cả hồ sơ");
 		dossierAll.put("value", "all");
 		dossierStatus.add(dossierAll);
-		
+
 		constantsObj.put("dossierStatus", dossierStatus);
 
 		return constantsObj;
 
 	}
-	
+
 	private String getLabelApplicantNote(String resCancelling, String sendAdd) {
 
-		if(resCancelling != null && resCancelling != ""){
-			return "Lý do yêu cầu huỷ" ;
+		if (resCancelling != null && resCancelling != "") {
+			return "Lý do yêu cầu huỷ";
 		}
-		
-		if(sendAdd != null && sendAdd != ""){
+
+		if (sendAdd != null && sendAdd != "") {
 			return "Yêu cầu gửi bổ sung";
 		}
-		
-		
+
 		return "Ghi chú";
-		
+
 	}
 
 	private JSONObject generateURLJsonObject(RenderResponse renderResponse)
@@ -390,6 +388,22 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 			"mvcPath", "/templates/serviceconfigDKLR.ftl");
 
 		urlObject.put("serviceconfigDKLR", customerDossierServiceconfigDKLR);
+
+		PortletURL customerDossierWaitPaying = renderResponse.createRenderURL();
+		customerDossierWaitPaying.setWindowState(LiferayWindowState.EXCLUSIVE);
+		customerDossierWaitPaying.setParameter(
+			"mvcPath", "/templates/customer_dossier_waitpaying.ftl");
+
+		urlObject.put("customer_dossier_waitpaying", customerDossierWaitPaying);
+		
+		PortletURL customerNotificationPayingURL = renderResponse.createRenderURL();
+		customerNotificationPayingURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		customerNotificationPayingURL.setParameter(
+			"mvcPath", "/templates/notificationPaying.ftl");
+
+		urlObject.put("notificationPaying", customerNotificationPayingURL);
+		
+		
 
 		return urlObject;
 	}

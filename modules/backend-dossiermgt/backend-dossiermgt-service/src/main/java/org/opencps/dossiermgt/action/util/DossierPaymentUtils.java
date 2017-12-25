@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.action.util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -15,7 +16,9 @@ import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -27,6 +30,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 public class DossierPaymentUtils {
 
@@ -43,35 +47,71 @@ public class DossierPaymentUtils {
 	}
 
 	// call processPaymentFile create paymentFile
-	public static void processPaymentFile(String pattern, long groupId, long dossierId, long userId, ServiceContext serviceContext)
-			throws JSONException {
-		
+	public static void processPaymentFile(String pattern, long groupId, long dossierId, long userId,
+			ServiceContext serviceContext, String serverNo) throws JSONException {
+
 		// get total payment amount
 		int payment = getTotalPayment(pattern, dossierId, userId, serviceContext);
-		
-		// get PaymentFee 
+
+		// get PaymentFee
 		List<String> messages = getMessagePayment(pattern);
-		
+
 		// TODO paymentNote
 		String paymentNote = StringPool.BLANK;
 		String paymentFee = StringPool.BLANK;
-		
-		if(messages.size() > 0){
+
+		if (messages.size() > 0) {
 			paymentFee = messages.get(0);
 		}
-		
+
 		// create paymentFile
 		PaymentFileActions actions = new PaymentFileActionsImpl();
-		
+
 		// get dossier
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
-		PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId, dossier.getGovAgencyCode());
+		PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
+				dossier.getGovAgencyCode());
 
 		try {
-			actions.createPaymentFile(userId, groupId, dossierId, dossier.getReferenceUid(),
+
+			// generator epaymentProfile
+			JSONObject epaymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
+
+			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, null,
 					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantName(),
-					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, paymentConfig.getEpaymentConfig(), paymentConfig.getBankInfo(), serviceContext);
+					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, null, paymentConfig.getBankInfo(),
+					serviceContext);
+
+			JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
+
+			if (epaymentConfigJSON.has("paymentKeypayDomain")) {
+
+				try {
+					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
+							paymentFile.getPaymentFileId(), pattern, dossierId);
+
+					epaymentProfileJSON.put("keypayUrl", generatorPayURL);
+					epaymentProfileJSON.put("detailUrl", epaymentConfigJSON.getString("paymentResultUrl") + dossierId);
+					epaymentProfileJSON.put("keypayGoodCode", PaymentUrlGenerator.generatorGoodCode(11));
+					epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
+
+					actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
+							serviceContext);
+
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+
+			// Create paymentfile sync
+			if (Validator.isNotNull(serverNo)) {
+				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
+						false, 2, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(), serverNo);
+			}
+
 		} catch (PortalException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

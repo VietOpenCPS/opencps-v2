@@ -7,7 +7,10 @@ import java.util.List;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -22,8 +25,11 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
-public class PaymentFileActionsImpl implements PaymentFileActions{
+public class PaymentFileActionsImpl implements PaymentFileActions {
 
 	Log _log = LogFactoryUtil.getLog(ServiceInfoActionsImpl.class);
 
@@ -34,8 +40,8 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 	 * @return JSONObject
 	 */
 	@Override
-	public JSONObject getByDossierId(long dossierId,long companyId, long groupId,
-			Sort[] sorts, int start, int end, ServiceContext serviceContext) {
+	public JSONObject getByDossierId(long dossierId, long companyId, long groupId, Sort[] sorts, int start, int end,
+			ServiceContext serviceContext) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		Hits hits = null;
@@ -46,7 +52,7 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 		params.put(Field.GROUP_ID, String.valueOf(groupId));
 		params.put(DossierTerm.DOSSIER_ID, String.valueOf(dossierId));
-		
+
 		try {
 
 			hits = PaymentFileLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
@@ -67,18 +73,31 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 	/**
 	 * Create PaymentFile of DossierId
 	 * 
-	 * @param form params
+	 * @param form
+	 *            params
 	 * @return PaymentFile
 	 */
 	@Override
-	public PaymentFile createPaymentFile(long userId, long groupId, long dossierId, String referenceUid, String govAgencyCode,
-			String govAgencyName, String applicantName, String applicantIdNo, String paymentFee, long paymentAmount,
-			String paymentNote, String epaymentProfile, String bankInfo, ServiceContext serviceContext)
-			throws PortalException {
+	public PaymentFile createPaymentFile(long userId, long groupId, long dossierId, String referenceUid,
+			String govAgencyCode, String govAgencyName, String applicantName, String applicantIdNo, String paymentFee,
+			long paymentAmount, String paymentNote, String epaymentProfile, String bankInfo,
+			ServiceContext serviceContext) throws PortalException {
+		_log.info("boom boom");
+		if (Validator.isNull(referenceUid)) {
+			referenceUid = PortalUUIDUtil.generate();
+		}
 
-		return PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId, referenceUid,
-				govAgencyCode, govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount, paymentNote,
-				epaymentProfile, bankInfo, serviceContext);
+		try {
+			return PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId, referenceUid,
+					govAgencyCode, govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount, paymentNote,
+					epaymentProfile, bankInfo, serviceContext);
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+			_log.info("boom boom");
+			_log.info(e);
+			e.printStackTrace();
+			throw new PortalException();
+		}
 
 	}
 
@@ -131,10 +150,17 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 		return PaymentFileLocalServiceUtil.getEpaymentProfile(dossierId, referenceUid);
 	}
 
+	@Override
+	public PaymentFile getPaymentFile(long dossierId, String referenceUid) {
+
+		return PaymentFileLocalServiceUtil.getPaymentFile(dossierId, referenceUid);
+	}
+
 	/**
 	 * Update info EpaymentProfile of DossierId and referenceUid
 	 * 
-	 * @param form params
+	 * @param form
+	 *            params
 	 * @return PaymentFile
 	 */
 	@Override
@@ -147,7 +173,24 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 	/**
 	 * Update Payment File Confirm of DossierId and referenceUid
 	 * 
-	 * @param form params
+	 * @param form
+	 *            params
+	 * @return PaymentFile
+	 */
+	@Override
+	public PaymentFile updateFileConfirm(long groupId, long id, String referenceUid, String confirmNote,
+			String paymentMethod, String confirmPayload, ServiceContext serviceContext)
+			throws SystemException, PortalException {
+
+		return PaymentFileLocalServiceUtil.updateFileConfirm(groupId, id, referenceUid, confirmNote, paymentMethod,
+				confirmPayload, serviceContext);
+	}
+
+	/**
+	 * Update Payment File Confirm of DossierId and referenceUid
+	 * 
+	 * @param form
+	 *            params
 	 * @return PaymentFile
 	 */
 	@Override
@@ -155,14 +198,15 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 			String paymentMethod, String confirmPayload, String sourceFileName, long fileSize, InputStream inputStream,
 			ServiceContext serviceContext) throws SystemException, PortalException {
 
-		return PaymentFileLocalServiceUtil.updateFileConfirm(groupId, id, referenceUid, confirmNote,
-				paymentMethod, confirmPayload, sourceFileName, fileSize, inputStream, serviceContext);
+		return PaymentFileLocalServiceUtil.updateFileConfirm(groupId, id, referenceUid, confirmNote, paymentMethod,
+				confirmPayload, sourceFileName, fileSize, inputStream, serviceContext);
 	}
 
 	/**
 	 * Update Payment File Approval of DossierId and referenceUid
 	 * 
-	 * @param form params
+	 * @param form
+	 *            params
 	 * @return PaymentFile
 	 */
 	@Override
@@ -172,21 +216,43 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 			ServiceContext serviceContext) throws SystemException, PortalException, java.text.ParseException {
 
 		return PaymentFileLocalServiceUtil.updateFileApproval(groupId, id, referenceUid, approveDatetime,
-				accountUserName, govAgencyTaxNo, invoiceTemplateNo, invoiceIssueNo,
-				invoiceNo, sourceFileName, fileSize, inputStream, serviceContext);
+				accountUserName, govAgencyTaxNo, invoiceTemplateNo, invoiceIssueNo, invoiceNo, sourceFileName, fileSize,
+				inputStream, serviceContext);
 	}
 
-	//8,9
+	@Override
+	public PaymentFile updateFileApproval(long groupId, long id, String referenceUid, String approveDatetime,
+			String accountUserName, String govAgencyTaxNo, String invoiceTemplateNo, String invoiceIssueNo,
+			String invoiceNo, ServiceContext serviceContext)
+			throws SystemException, PortalException, java.text.ParseException {
+
+		PaymentFile paymentFile = PaymentFileLocalServiceUtil.updateFileApproval(groupId, id, referenceUid, approveDatetime,
+				accountUserName, govAgencyTaxNo, invoiceTemplateNo, invoiceIssueNo, invoiceNo, serviceContext);
+		
+		//Add PaymentFileSync
+		
+		Dossier dossier = DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
+		//TODO review serverNo on this
+		DossierSyncLocalServiceUtil.updateDossierSync(groupId, serviceContext.getUserId(), paymentFile.getDossierId(), dossier.getReferenceUid(),
+				false, 3, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(), StringPool.BLANK);
+		
+		return paymentFile;
+	}
+
+	// 8,9
 	/**
 	 * Download file Confirm by referenceUid
-	 * @throws PortalException 
+	 * 
+	 * @throws PortalException
 	 */
 	@Override
 	public PaymentFile getPaymentFileByReferenceUid(Long id, String referenceUid) throws PortalException {
 		return PaymentFileLocalServiceUtil.getPaymentFileByReferenceUid(id, referenceUid);
 	}
+
 	/**
 	 * Get all Payment File
+	 * 
 	 * @param
 	 * @return PaymentFile
 	 */
@@ -215,6 +281,11 @@ public class PaymentFileActionsImpl implements PaymentFileActions{
 		}
 
 		return result;
+	}
+	
+	@Override
+	public List<PaymentFile> getPaymentFiles(long dossierId){
+		return PaymentFileLocalServiceUtil.getByDossierId(dossierId);
 	}
 
 }

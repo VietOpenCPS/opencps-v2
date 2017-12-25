@@ -40,7 +40,7 @@
 	    "total",
 	    "data"
 	})
-	@XmlRootElement(name = "PaymentFileResultModel")
+	@XmlRootElement(name = "data")
 	public class PaymentFileResultModel {
 
 	    protected Integer total;
