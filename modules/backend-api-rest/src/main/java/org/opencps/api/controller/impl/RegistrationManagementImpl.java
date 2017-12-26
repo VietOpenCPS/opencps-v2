@@ -99,8 +99,8 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			// RegistrationLocalServiceUtil.getRegistrations(start, end);
 			//
 			results.setTotal(jsonData.getInt("total"));
-			results.getData().addAll(RegistrationUtils
-					.mappingToRegistrationResultModel((List<Document>) jsonData.get("data"), serviceContext));
+			//results.getData().addAll(RegistrationUtils
+			//		.mappingToRegistrationResultModel((List<Document>) jsonData.get("data"), serviceContext));
 			
 			results.getData().addAll(RegistrationUtils
 					.mappingRegistrationToRegistrationResultModel((List<Registration>) jsonData.get("data"), serviceContext));

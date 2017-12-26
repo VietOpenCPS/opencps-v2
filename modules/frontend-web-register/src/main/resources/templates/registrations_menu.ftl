@@ -52,8 +52,10 @@
 				owner : true
 			},
 			success : function(result){
+				console.log(result);
 				if(result.data){
 					registrationId = result.data[0].registrationId;
+					console.log(registrationId);
 				}
 			},
 			error : function(result){
@@ -238,7 +240,7 @@
 
 	$(function(){
 		var registrationId = fnGetRegistrationsId();
-		if(!registrationId){
+		if(parseInt(registrationId) == 0){
 			console.log("create!");
 			registrationId = fnCreateRegistrations("BGTVTCDKVN");
 			manageRegistrations.navigate("/registration/"+registrationId);
