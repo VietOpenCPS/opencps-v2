@@ -31,7 +31,7 @@ public class PaymentUrlGenerator {
 	}
 
 	public static String generatorPayURL(long groupId, long paymentFileId, String pattern,
-			long dossierId, String keypayMerchantCode) throws IOException {
+			long dossierId, String keypayMerchantCode, String keypayGoodCode) throws IOException {
 
 		String result = "";
 		try {
@@ -55,6 +55,10 @@ public class PaymentUrlGenerator {
 
 				String good_code = generatorGoodCode(10);
 
+				if (Validator.isNotNull(keypayGoodCode)) {
+					good_code = keypayGoodCode;
+				}
+				
 				String net_cost = String.valueOf((int) paymentFile.getPaymentAmount());
 				String ship_fee = "0";
 				String tax = "0";
