@@ -99,8 +99,11 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			// RegistrationLocalServiceUtil.getRegistrations(start, end);
 			//
 			results.setTotal(jsonData.getInt("total"));
+			//results.getData().addAll(RegistrationUtils
+			//		.mappingToRegistrationResultModel((List<Document>) jsonData.get("data"), serviceContext));
+			
 			results.getData().addAll(RegistrationUtils
-					.mappingToRegistrationResultModel((List<Document>) jsonData.get("data"), serviceContext));
+					.mappingRegistrationToRegistrationResultModel((List<Registration>) jsonData.get("data"), serviceContext));
 
 			return Response.status(200).entity(results).build();
 
@@ -183,11 +186,11 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	public Response delete(long id) {
 		try {
 			RegistrationActions action = new RegistrationActionsImpl();
-			
+
 			Registration registration = action.delete(id);
-			
+
 			RegistrationDetailModel result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
-			
+
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
 			_log.error(e);
@@ -290,8 +293,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 	@Override
 	public Response registrationSyncs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, RegistrationInputModel input,
-			boolean submitting, String uuid) {
+			User user, ServiceContext serviceContext, RegistrationInputModel input, boolean submitting, String uuid) {
 		BackendAuth auth = new BackendAuthImpl();
 		try {
 
@@ -301,10 +303,13 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			RegistrationLocalServiceUtil.registrationSync(groupId, uuid, input.getApplicantName(), input.getApplicantIdType(), input.getApplicantIdNo(),
-					input.getApplicantIdDate(), input.getAddress(), input.getCityCode(), input.getCityName(), input.getDistrictCode(), input.getDistrictName(), input.getWardCode(), input.getWardName(),
-					input.getContactName(), input.getContactTelNo(), input.getContactEmail(), input.getGovAgencyCode(), input.getGovAgencyName(), input.getRegistrationState(),
-					input.getRegistrationClass(), serviceContext);
+			RegistrationLocalServiceUtil.registrationSync(groupId, uuid, input.getApplicantName(),
+					input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
+					input.getAddress(), input.getCityCode(), input.getCityName(), input.getDistrictCode(),
+					input.getDistrictName(), input.getWardCode(), input.getWardName(), input.getContactName(),
+					input.getContactTelNo(), input.getContactEmail(), input.getGovAgencyCode(),
+					input.getGovAgencyName(), input.getRegistrationState(), input.getRegistrationClass(),
+					serviceContext);
 
 			return Response.status(200).build();
 		} catch (Exception e) {

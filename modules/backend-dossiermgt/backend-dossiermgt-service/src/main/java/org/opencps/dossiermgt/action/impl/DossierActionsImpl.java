@@ -243,6 +243,10 @@ public class DossierActionsImpl implements DossierActions {
 						JSONObject result = JSONFactoryUtil.createJSONObject();
 
 						String postStepCode = processAction.getPostStepCode();
+						
+						if(Validator.isNull(postStepCode)){
+							continue;
+						}
 
 						ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId,
 								processAction.getServiceProcessId());

@@ -334,7 +334,7 @@
 
 <div class="button-row MT20">
 	<button class="btn btn-active" id="btn-back-registrations" type="button"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
-	<button class="btn btn-active" id="btn-save-registrations" type="button" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý..."><i class="fa fa-save"></i> Lưu</button>
+	<button class="btn btn-active" id="btn-save-registrations" style="display:none" type="button" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý..."><i class="fa fa-save"></i> Lưu</button>
 </div>
 
 <script type="text/javascript">
