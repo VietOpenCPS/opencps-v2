@@ -237,44 +237,42 @@
 				
 				<div class="collapse" id="collapseRegistrationPart#:id#">
 					<div class="col-xs-12 col-sm-12 text-right">
-						<button id="btn-save-formalpaca#:formNo#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
+						<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
 						type="button" data-pk="#:formNo#" referenceUid="#:id#">Ghi lại</button>
 						<input type="hidden" name="" id="dossierFileId#:id#" value="#:id#">
 					</div>
 
 					<div class="col-sm-12" style="height:450px; width:100%;overflow:auto;" >
 
-						<form id="formPartNo#:referenceUid#">
+						<form id="formPartNo#:id#">
 
 						</form>
 
-						#
+					#
 						$.ajax({
 						url : "${api.server}/registrations/${registrationId}/forms/"+id+"/formscript",
 						dataType : "text",
 						type : "GET",
 						headers : {"groupId": ${groupId}},
 						success : function(result){
-						$("\\#formPartNo"+referenceUid).empty();
-
-						if(result){
-						var alpaca = eval("(" + result + ")");
-						var formdata = fnGetFormData(${registrationId},id);
-						if(formdata){
-						$("\\#validPart"+formNo).val("1");
-					}
-					alpaca.data = formdata; 
-
-					$("\\#formPartNo"+referenceUid).alpaca(alpaca);
-				}
-
-
-			},
-			error : function(result){
-
-		}
-	});
-	#
+							$("\\#formPartNo"+id).empty();
+							
+							if(result){
+								var alpaca = eval("(" + result + ")");
+								var formdata = fnGetFormData(${registrationId},id);
+								if(formdata){
+									$("\\#validPart"+formNo).val("1");
+								}
+								alpaca.data = formdata; 
+			
+								$("\\#formPartNo"+id).alpaca(alpaca);
+							}
+						},
+						error : function(result){
+				
+						}
+					});
+				#
 
 </div>
 </div>
@@ -298,7 +296,7 @@
 
 		<div class="collapse" id="collapseRegistrationPart#:id#">
 			<div class="col-xs-12 col-sm-12 text-right">
-				<button id="btn-save-formalpaca#:formNo#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
+				<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
 				type="button" data-pk="#:formNo#" referenceUid="#:id#">Ghi lại</button>
 				<input type="hidden" name="" id="dossierFileId#:id#" value="#:id#">
 			</div>
@@ -626,8 +624,7 @@
 					type : "GET",
 					headers : {"groupId": ${groupId}},
 					success : function(result){
-						console.log("load detail registrations!");
-						console.log(result);
+						
 						/*23-12-2017 thanhnv: bo sung trang thai*/
 						
 						<#if constants.registrationStates?has_content>
@@ -714,7 +711,7 @@ var getReferentUidFile = function(dossierId,dossierPartNo){
 			}
 		});
 	}
-	console.log(dossierFile);
+	
 	return dossierFile;
 }
 
@@ -741,12 +738,12 @@ var fnGetFormData = function(registrationId,referentUid){
 }
 
 var fnCheckValidTemplate = function(){
-	console.log($(".validPart"));
+	
 	var valid = true;
 	try {
 
 		$(".validPart").each(function(index){
-			console.log($(this).val());
+			
 			if($(this).val() === "0"){
 				valid = false;
 			}
@@ -762,7 +759,7 @@ var fnCheckValidTemplate = function(){
 var fnSaveForm = function(id, value){
 	var current = $("#btn-save-formalpaca"+id);
 	var referentUid = current.attr("referenceUid");
-	console.log(referentUid);
+	
 	if(referentUid){
 		$.ajax({
 			url : "${api.server}/registrations/${registrationId}/forms/"+referentUid+"/formdata",
@@ -779,7 +776,7 @@ var fnSaveForm = function(id, value){
 				notification.show({
 					message: "Yêu cầu được thực hiện thành công!"
 				}, "success");
-				console.log($("#validPart"+id));
+				
 				$("#validPart"+id).val("1");
 			},
 			error : function(result){
@@ -796,9 +793,6 @@ $(document).on("click",".saveFormAlpaca",function(event){
 	var id = $(this).attr("data-pk");
 	var referentUidFile = $(this).attr("referenceUid");
 
-	console.log(id);
-	console.log("ccc");
-
 	var formType = $("#formPartNo"+referentUidFile+" .formType").val();
 	var value ;
 
@@ -811,9 +805,6 @@ $(document).on("click",".saveFormAlpaca",function(event){
 			errorMessage = "notValid";
 
 		});
-		console.log(errorMessage);
-		console.log(referentUidFile);
-		console.log(value);
 
 		if(errorMessage === '' && referentUidFile){
 			$.ajax({
@@ -831,7 +822,7 @@ $(document).on("click",".saveFormAlpaca",function(event){
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công!"
 					}, "success");
-					console.log($("#validPart"+id));
+					
 					$("#validPart"+id).val("1");
 				},
 				error : function(result){
@@ -877,11 +868,15 @@ $(document).on("click",".registration-add-template",function(){
 			Accept : "application/json"
 		},
 		success : function(result){
-			console.log("post formno success!");
+			notification.show({
+				message: "Yêu cầu được thực hiện thành công"
+			}, "success");
 			dataSourceRegistrationsTemplate.read();
 		},
 		error : function(xhr){
-			console.log("post formno error!");
+			notification.show({
+				message: "Xảy ra lỗi, xin vui lòng thử lại"
+			}, "error");
 			dataSourceRegistrationsTemplate.read();
 		}
 	});
@@ -907,6 +902,7 @@ $(document).on("click",".registration-del-template",function(){
 				message: "Xảy ra lỗi, xin vui lòng thử lại"
 			}, "error");
 		}
+
 	});
 });
 

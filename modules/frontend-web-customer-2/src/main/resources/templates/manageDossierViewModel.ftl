@@ -61,13 +61,7 @@
 						dataType:"json",
 						type:"GET",
 						headers : {"groupId": ${groupId}},
-						data:{
-							service: options.data.serviceInfo,
-							dossierNo: options.data.dossierNo,
-							keyword: options.data.keyword,
-							status : options.data.status,
-							state: options.data.state
-						},
+						data: options.data,
 						success:function(result){
 							if (result.total!=0) {
 								var indexItem = result.total+1;
@@ -85,9 +79,6 @@
 							};
 							
 							//$("#statusName").html($(".itemStatus.active .dossierStatus").text());
-							if ( modelMain.get("visibleHeader") == "default" ) {
-								modelMain.set("visibleHeader", $(".itemStatus.active .dossierStatus").text());
-							}
 							
 							//
 							$('.optPage[value="'+dataSourceProfile.pageSize()+'"]').attr("selected","selected");
@@ -282,18 +273,27 @@
 				e.preventDefault();
 				
 				var id = $(e.currentTarget).attr("data-pk");
-				manageDossier.navigate("/"+id);
 				
-				console.log($(e.currentTarget));
 				var textHead = $(e.currentTarget).text().trim();
 				modelMain.set("isInvestigated", true);
 				modelMain.set("visibleHeader", textHead);
+				modelPanel.set("investigationId", id);
 				
-				console.log("TODO: lay danh sach theo "+id+">>>>>>"+ textHead);
-				console.log(modelMain.get("visibleHeader"));
+				manageDossier.navigate("/tracuu/"+id);
 				
-			}
+				dataSourceProfile.read({
+					"tracuu": modelPanel.get("investigationId"),
+					"soChungChi": modelMain.soChungChi,
+					"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+					"serviceInfo":$("#serviceInfo").val(),
+					"govAgencyCode":$("#govAgency").val(),
+					"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
+				});
+				
+			},
+			investigationId: "default"
 		});
+		
 	// Model MainSection
 		var loadProfile = function(){
 			$(".downloadProfile").click(function(event){
@@ -449,11 +449,19 @@
 			isInvestigated: false,
 			filterInvestigation: function(e){
 				e.preventDefault();
-				// TODO: filter list by tra cuu ho so
-				console.log($(e.currentTarget).val());
+				
+				dataSourceProfile.read({
+					"tracuu": modelPanel.get("investigationId"),
+					"soChungChi": modelMain.soChungChi,
+					"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+					"serviceInfo":$("#serviceInfo").val(),
+					"govAgencyCode":$("#govAgency").val(),
+					"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
+				});
 				
 			},
-			visibleHeader: "default"
+			visibleHeader: "default",
+			soChungChi: ""
 		});
 
 	</script>

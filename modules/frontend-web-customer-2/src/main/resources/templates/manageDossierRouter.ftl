@@ -98,6 +98,8 @@
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 			$('#profileStatus li[dataPk='+id+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
 			$('#profileStatus li[dataPk='+id+']').addClass('active');
+			modelMain.set("visibleHeader", $('#profileStatus li[dataPk='+id+'] .dossierStatus').text());
+			modelMain.set("isInvestigated", false);
     }); 
 		// Show màn hình chọn dịch vụ công
     manageDossier.route("/taohosomoi/admin", function(){
@@ -140,5 +142,22 @@
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').addClass('active');
 		});
+		
+	// Show danh sách hồ sơ lọc theo tra cuu
+		manageDossier.route("/tracuu/(:id)", function(id) {
+			console.log(">>>>>>>>>>Show danh sách hồ sơ lọc theo tra cuu");
+			$(".fa-expand").css("display","block");
+			$(".fa-compress").css("display","none");
+			$("#mainType1").show();
+			$(".filterField").show();
+			$("#mainType2").hide();
+			layout.showIn("#main_section", viewMainList);
+			
+			modelMain.set("visibleHeader", $( '#groupLookup li[data-pk='+id+']' ).text());
+			modelPanel.set("investigationId", id),
+			
+			$("#profileStatus li").removeClass('active');
+			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
+	}); 
 	</script>
 
