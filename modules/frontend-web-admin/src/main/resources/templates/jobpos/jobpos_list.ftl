@@ -1,11 +1,11 @@
-<#include "init.ftl">
+<#-- <#include "init.ftl">
 
 <div class="row">
 
-	<!— left —>
+
 	<div class="col-md-3 panel P0">
 
-		<!--search-->
+		
 		<div class="panel-body">
 	
 			<span id="_jobpos_editLabel" class="btn btn-active btn-block"> 
@@ -85,9 +85,9 @@
 		</script>
 
 	</div>
-	<!— end left —>
+	
 
-	<!--load right-->
+	
 	<div class="col-md-9 " id="_jobpos_right-page"> </div>
 
 </div>
@@ -372,3 +372,4 @@
 		
 	})(jQuery);
 </script>
+ -->

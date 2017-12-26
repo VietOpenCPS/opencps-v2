@@ -26,11 +26,13 @@ import org.opencps.dossiermgt.action.impl.RegistrationTemplatesActionsImpl;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationTemplatesManagementImpl implements RegistrationTemplatesManagement {
 
@@ -52,7 +54,13 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 			RegistrationTemplatesActions action = new RegistrationTemplatesActionsImpl();
 
-			JSONObject registrationTemplateJsonObject = action.getRegistrationTemplates(formNo, govAgencyCode);
+			JSONObject registrationTemplateJsonObject = JSONFactoryUtil.createJSONObject();
+
+			if (Validator.isNull(formNo) && Validator.isNull(govAgencyCode)) {
+				registrationTemplateJsonObject = action.getRegistrationTemplates(groupId, start, end);
+			} else {
+				registrationTemplateJsonObject = action.getRegistrationTemplates(formNo, govAgencyCode);
+			}
 
 			List<RegistrationTemplates> lstRegistrationTemplate = (List<RegistrationTemplates>) registrationTemplateJsonObject
 					.get("lstRegistrationTemplate");
@@ -146,9 +154,13 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 			RegistrationTemplatesActions action = new RegistrationTemplatesActionsImpl();
 
-			action.removeRegistrationTemplate(groupId, registrationTemplateId);
+			RegistrationTemplates registrationTemplate = action.removeRegistrationTemplate(groupId,
+					registrationTemplateId);
 
-			return Response.status(200).entity("Success").build();
+			RegistrationTemplateDetailModel result = RegistrationTemplatesUtils
+					.mappingToRegistrationTemplateModel(registrationTemplate);
+
+			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			return processException(e);

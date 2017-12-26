@@ -115,8 +115,8 @@ public class RegistrationActionsImpl implements RegistrationActions {
 	}
 
 	@Override
-	public void delete(long registrationId) throws PortalException {
-		RegistrationLocalServiceUtil.deleteRegistration(registrationId);
+	public Registration delete(long registrationId) throws PortalException {
+		return RegistrationLocalServiceUtil.deleteRegistration(registrationId);
 
 	}
 

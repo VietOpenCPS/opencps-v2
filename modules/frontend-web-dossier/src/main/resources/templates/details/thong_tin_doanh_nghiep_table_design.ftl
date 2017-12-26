@@ -15,6 +15,14 @@
 		<td style="padding: 8px;" class="text-xs-left">
 			///
 		</td>
-		<td style="padding: 8px;" class="text-xs-left">{{ props.item.registrationState }}</td>
+
+		<td style="padding: 8px;" class="text-xs-left">
+			
+			<a href="javascript:;" @click.prevent.stop="toDetailHoSoDoanhNghiep(props.item)">
+				{{ props.item.registrationState | registrationState }}
+			</a>
+		
+		</td>
+
 	</template>
 </div>

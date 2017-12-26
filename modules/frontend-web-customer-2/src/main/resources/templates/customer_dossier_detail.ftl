@@ -57,7 +57,7 @@
 	</div>
 
 	<div class="guide-section PB0">
-		<div class="head-part" data-toggle="collapse" data-target="#collapseDossierG">
+		<div class="head-part slide-toggle">
 			<div class="background-triangle-small">
 				<i class="fa fa-star"></i>
 				
@@ -66,7 +66,7 @@
 			<i class="fa fa-angle-down pull-right hover-pointer MR15" aria-hidden="true" style="font-size: 150%;"></i>
 		</div>
 
-		<div class="content-part collapse PB15 toggle-hide" id="collapseDossierG">
+		<div class="content-part collapse PB15" id="collapseDossierG">
 			<span data-bind="html:dossierNote"></span>
 			<#-- <p class="MB0 text-light-blue PB15"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p> -->
 		</div>
@@ -76,7 +76,7 @@
 	<div class="row" id="applicantInfo">
 		<div class="col-sm-12">
 			<div class="dossier-parts">
-				<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierI">
+				<div class="head-part align-middle slide-toggle">
 					<div class="background-triangle-small">I</div> 
 					<div class="col-sm-12 PL0">
 						
@@ -87,7 +87,7 @@
 					</div>
 					
 				</div>
-				<div class="content-part collapse toggle-hide" id="collapseDossierI">
+				<div class="content-part collapse" id="collapseDossierI">
 					<div class="row-parts-head MT5">
 						<div class="row MT5">
 							
@@ -177,7 +177,7 @@
 
 	<div id="dossierFormSubmiting">
 		<div class="dossier-parts">
-			<div class="head-part align-middle PB5" data-toggle="collapse" data-target="#lsDossierTemplPart">
+			<div class="head-part align-middle PB5 slide-toggle">
 				<div class="background-triangle-small hover-pointer">II</div> 
 				<div class="col-sm-12 PL0">
 					<span class="text-uppercase hover-pointer">Thành phần hồ sơ</span> 
@@ -196,7 +196,7 @@
 
 			<script type="text/x-kendo-template" id="templateDossierPart">
 				#if(partType == 1){#
-				<div class="row-parts-head align-middle" #if(hasForm){# data-toggle="collapse" data-target="\\#collapseDossierPart#:id#" #}#>
+				<div class="row-parts-head align-middle slide-toggle">
 					<span class="text-bold MR5">#:itemIndex#.</span>
 					<span class="hover-pointer"> #:partName# 
 						#
@@ -234,7 +234,7 @@
 				var dossierFile =  getReferentUidFile(${dossierId},id);
 				#
 
-				<div class="collapse toggle-hide" id="collapseDossierPart#:id#">
+				<div class="collapse" id="collapseDossierPart#:id#">
 					<div class="col-xs-12 col-sm-12 text-right">
 						<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
 						type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>

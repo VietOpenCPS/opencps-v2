@@ -48,7 +48,7 @@
 		</div>
 
 		<div class="guide-section PB0">
-			<div class="head-part" data-toggle="collapse" data-target="#collapseDossierG">
+			<div class="head-part slide-toggle">
 				<div class="background-triangle-small">
 					<i class="fa fa-star"></i>
 
@@ -65,7 +65,7 @@
 		</div>
 
 		<div class="dossier-parts" id="paymentDossier">
-			<div class="head-part align-middle MB5" data-toggle="collapse" data-target="#collapseDossierPayment">
+			<div class="head-part align-middle MB5 slide-toggle">
 				<div class="background-triangle-small">III</div> 
 				<div class="col-sm-12 PL0">
 

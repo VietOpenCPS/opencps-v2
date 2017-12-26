@@ -436,6 +436,7 @@
 				resCancelling();
 				sendAdd();
 				counter();
+				resDone();
 				$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});
 				$("th").css("vertical-align","top");
 			},

@@ -37,16 +37,7 @@
 						</div>
 						<div id="lv1G1" class="accordion-body collapse in">
 							<div class="accordion-inner PB0 PT0">
-								<div class="PT5">
-									<div class="ML40 col-sm-6 P5 PL0">
-										<span> 
-											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Thẩm định thiết kế TEST
-										</span>
-										<button data-TTHC="TEST" data-CQTH="BGTVTCDKVN" data-MMHS="TEST" class="btn btn-reset chooseService pull-right P0">Chọn</button>
-									</div>
-									<div class="clear"></div>
-									
-								</div>
+								
 								<#-- lv2G1 -->
 								<div class="PT5">
 									<div class="ML40 col-sm-6 P5 PL0">
@@ -86,7 +77,7 @@
 										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 										</span>
-										<button data-TTHC="TT302011BGTVTCPPXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv24G1">Chọn</button>
+										<button data-TTHC="TT302011BGTVTCPP" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv24G1">Chọn</button>
 									</div>
 									<div class="clear"></div>
 									
@@ -98,7 +89,7 @@
 					<#-- Xe mô tô, xe gắn máy -->
 					<div class="accordion-group">
 						<div class="accordion-heading">
-							<a class="accordion-toggle" data-toggle="collapse" href="#lv12G1"> 
+							<a class="accordion-toggle slide-toggle-lv2"> 
 								<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe mô tô, xe gắn máy
 							</a>
 						</div>
@@ -121,7 +112,7 @@
 										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 										</span>
-										<button data-TTHC="TT302011BGTVTCPPXMTGM" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXMTGM" class="btn btn-reset chooseService pull-right P0" id="btn1item22">Chọn</button>
+										<button data-TTHC="TT302011BGTVTCPP" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXMTGM" class="btn btn-reset chooseService pull-right P0" id="btn1item22">Chọn</button>
 									</div>
 									<div class="clear"></div>
 									
@@ -132,7 +123,7 @@
 					<#-- Xe chở người bốn bánh có gắn động cơ -->
 					<div class="accordion-group">
 						<div class="accordion-heading">
-							<a class="accordion-toggle" data-toggle="collapse" href="#lv13G1"> 
+							<a class="accordion-toggle slide-toggle-lv2"> 
 								<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe chở người bốn bánh có gắn động cơ
 							</a>
 						</div>
@@ -166,7 +157,7 @@
 										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 										</span>
-										<button data-TTHC="TT302011BGTVTCPPXBBCN" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXBBCN"  class="btn btn-reset chooseService pull-right P0" id="btn1item33">Chọn</button>
+										<button data-TTHC="TT302011BGTVTCPP" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXBBCN"  class="btn btn-reset chooseService pull-right P0" id="btn1item33">Chọn</button>
 									</div>
 									<div class="clear"></div>
 									
@@ -183,11 +174,11 @@
 	<#-- Group2 -->
 	<div class="accordion-group">
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#group2">
+			<a class="accordion-toggle slide-toggle">
 				QUẢN LÝ DÁN NHÃN NĂNG LƯỢNG
 			</a>
 		</div>
-		<div id="group2" class="accordion-body collapse toggle-hide" style="background-color: #ffffff">
+		<div id="group2" class="accordion-body collapse" style="background-color: #ffffff">
 			<div class="accordion-inner PB0 PT0">
 				<div class="PT5">
 					<div class="ML40 col-sm-6 P5 PL0">
@@ -214,11 +205,11 @@
 	<#-- Group3 -->
 	<div class="accordion-group">
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#group3">
+			<a class="accordion-toggle slide-toggle">
 				QUẢN LÝ TRIỆU HỒI SẢN PHẨM
 			</a>
 		</div>
-		<div id="group3" class="accordion-body collapse toggle-hide" style="background-color: #ffffff">
+		<div id="group3" class="accordion-body collapse" style="background-color: #ffffff">
 			<div class="accordion-inner">
 				<div class="PT5">
 					<div class="ML40 col-sm-6 P5 PL0">
@@ -244,11 +235,11 @@
 	<#-- Group4 -->
 	<div class="accordion-group">
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#group4">
+			<a class="accordion-toggle slide-toggle">
 				QUẢN LÝ THÔNG TIN DOANH NGHIỆP
 			</a>
 		</div>
-		<div id="group4" class="accordion-body collapse toggle-hide" style="background-color: #ffffff">
+		<div id="group4" class="accordion-body collapse" style="background-color: #ffffff">
 			<div class="accordion-inner">
 				<div class="PT5">
 					<div class="ML40 col-sm-6 P5 PL0">
