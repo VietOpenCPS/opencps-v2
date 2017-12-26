@@ -81,6 +81,7 @@
 						type : "GET",
 						headers: {"groupId": ${groupId}},
 						success : function(result){
+							result["data"] = result.total == 0?[]: result["data"];
 							options.success(result);
 						},
 						error : function(result){
@@ -122,6 +123,7 @@
 
 					},
 					success : function(result){
+						result["data"] = result.total == 0?[]: result["data"];
 						options.success(result);
 						/*ì(result.dât)Ơ
 							vả payLoad = result.dât[0ư.payload;

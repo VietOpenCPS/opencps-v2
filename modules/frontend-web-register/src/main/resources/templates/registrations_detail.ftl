@@ -25,7 +25,7 @@
 	<div class="row" id="applicantInfo">
 		<div class="col-sm-12">
 			<div class="dossier-parts">
-				<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierI">
+				<div class="head-part align-middle slide-toggle">
 					<div class="background-triangle-small">I</div> 
 					<div class="col-sm-12 PL0">
 						
@@ -186,7 +186,7 @@
 
 	<div id="dossierFormSubmiting">
 		<div class="dossier-parts">
-			<div class="head-part align-middle PB5" data-toggle="collapse" data-target="#lsRegistrationtemplates">
+			<div class="head-part align-middle PB5 slide-toggle" >
 				<div class="background-triangle-small hover-pointer">II</div> 
 				<div class="col-sm-12 PL0">
 					<span class="text-uppercase hover-pointer">Thành phần hồ sơ</span> 
@@ -207,7 +207,7 @@
 				# if(!removed) {#
 
 				<div class="registrationTemplateIndex">
-					<div class="row-parts-head align-middle" data-toggle="collapse" data-target="\\#collapseRegistrationPart#:id#">
+					<div class="row-parts-head align-middle slide-toggle">
 						<span class="text-bold MR5">#:itemIndex#.</span>
 						<span class="hover-pointer"> #:formName# 
 						<#-- #
@@ -258,6 +258,7 @@
 							$("\\#formPartNo"+id).empty();
 							
 							if(result){
+								console.log(">>>>>>>>>>>>>>>>"+result);
 								var alpaca = eval("(" + result + ")");
 								var formdata = fnGetFormData(${registrationId},id);
 								if(formdata){
@@ -283,7 +284,7 @@
 
 <script type="text/x-kendo-template" id="templateRegistrationtemplatesLogs">
 	<div>
-		<div class="row-parts-head align-middle" data-toggle="collapse" data-target="\\#collapseRegistrationPart#:id#">
+		<div class="row-parts-head align-middle slide-toggle">
 			<span class="text-bold MR5">#:itemIndex#.</span>
 			<span class="hover-pointer"> #:formName# </span>
 
@@ -367,12 +368,7 @@
 						},
 						success : function(result){
 							
-							if (result.total == 0) {
-								result["data"] = [];
-							} else if (result.total == 1) {
-								var dt = [result["data"]];
-								result["data"] = dt;
-							}
+							result["data"] = result.total == 0?[]: result["data"];
 							options.success(result);
 						},
 						error : function(result){
@@ -494,6 +490,7 @@
 								parent : 0
 							},
 							success : function(result){
+								result["data"] = result.total == 0?[]: result["data"];
 								options.success(result);
 							},
 							error : function(result){
@@ -545,6 +542,7 @@
 								parent : parent
 							},
 							success : function(result){
+								result["data"] = result.total == 0?[]: result["data"];
 								options.success(result);
 							},
 							error : function(result){
@@ -591,6 +589,7 @@
 								parent : parent
 							},
 							success : function(result){
+								result["data"] = result.total == 0?[]: result["data"];
 								options.success(result);
 							},
 							error : function(result){

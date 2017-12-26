@@ -98,6 +98,8 @@
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 			$('#profileStatus li[dataPk='+id+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
 			$('#profileStatus li[dataPk='+id+']').addClass('active');
+			modelMain.set("visibleHeader", $('#profileStatus li[dataPk='+id+'] .dossierStatus').text());
+			modelMain.set("isInvestigated", false);
 
     }); 
 		// Show màn hình chọn dịch vụ công
