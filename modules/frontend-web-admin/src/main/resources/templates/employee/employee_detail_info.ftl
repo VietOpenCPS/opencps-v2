@@ -1,4 +1,4 @@
-<#include "init.ftl">
+<#-- <#include "init.ftl">
 
 <div class="employee-deatil-info-wraper">
 	
@@ -1026,4 +1026,4 @@ function employeeChangeAvatar(fileInput) {
 	
 })(jQuery);
 
-</script>
+</script> -->

@@ -19,23 +19,22 @@
 		</div>
 
 		<div class="dossier-general-info P15 MB30">
-			<p class="text-bold">Thông tin chung hồ sơ</p>
 			<div class="col-sm-4">
 				<div class="row MB5">
-					<span class="text-bold">Mã tiếp nhận</span>: <span data-bind="text:govAgencyName"></span>
+					<span class="text-bold">Số hồ sơ</span>: <span data-bind="text:dossierNo"></span>
 				</div>
 				<div class="row" id="">
 					<a href="javascript:;" class="text-blue text-underline">
-						THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+						Thông tin chủ hồ sơ
 					</a>
 				</div>
 			</div>
 			<div class="col-sm-4 text-center">
 				<div class="row MB5" id="">
-					<span class="text-bold">Thời gian gửi</span>: <span data-bind="text:submitDate"></span>
+					<span class="text-bold">Thời gian gửi</span>: <span data-bind="text:confirmDatetime"></span>
 				</div>
 				<div class="row" id="">
-					<span class="text-bold">Mã số hồ sơ</span>: <span data-bind="text : dossierId"></span>
+					<span class="text-bold">Mã hồ sơ</span>: <span data-bind="text : dossierId"></span>
 				</div>
 			</div>
 			
@@ -49,7 +48,7 @@
 		</div>
 
 		<div class="guide-section PB0">
-			<div class="head-part" data-toggle="collapse" data-target="#collapseDossierG">
+			<div class="head-part slide-toggle">
 				<div class="background-triangle-small">
 					<i class="fa fa-star"></i>
 
@@ -66,7 +65,7 @@
 		</div>
 
 		<div class="dossier-parts" id="paymentDossier">
-			<div class="head-part align-middle MB5" data-toggle="collapse" data-target="#collapseDossierPayment">
+			<div class="head-part align-middle MB5 slide-toggle">
 				<div class="background-triangle-small">III</div> 
 				<div class="col-sm-12 PL0">
 
@@ -169,7 +168,8 @@
 								</div>
 							</div>
 
-							<#-- <div id="alreadyPaid" data-bind="value: isPay">
+							<#-- 
+							<div id="alreadyPaid" data-bind="value: isPay">
 								<div class="row MB5">
 									<div class="col-sm-2">								
 										<span class="text-bold">Ghi chú kèm theo</span>	
@@ -193,7 +193,7 @@
 
 </div>
 <div class="button-row MT20">
-	<button class="btn btn-active" id="btn-submit-dossier" type="button" onclick="fnBack();"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
+	<button class="btn btn-active" type="button" onclick="fnBack();"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
 </div>
 </div>
 
@@ -308,6 +308,11 @@
 							if(this.get('paymentDossier').paymentStatus !== 2){
 								$("#unpaid").show();
 								$("#alreadyPaid").hide();
+							}
+						},
+						confirmDatetime : function(){
+							if(this.get('paymentDossier').confirmDatetime ){
+								return this.get('paymentDossier').confirmDatetime;
 							}
 						},
 						submitting : function(){

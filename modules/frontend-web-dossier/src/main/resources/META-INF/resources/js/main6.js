@@ -8,10 +8,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				offsetTop: 0,
 				stageFilterView: null,
 				detailPage: false,
+				detailRegistPage: false,
 				viewmore: false,
-				detailModel: {
-
-				},
+				detailModel: {},
+				detailRegistModel: {},
 				xem_them: 'Không tìm thấy hồ sơ nào',
 				hoso_title_table: 'Danh sách hồ sơ',
                 processSteps: [],
@@ -23,7 +23,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				loadingAlpacajsForm: false,
 				stepLoading: false,
 				actionsSubmitLoading: false,
-				popupResultFile: false
+				popupResultFile: false,
+
+				traCuuFilter: false,
+				registForms: [],
+				alapcaJSRei: {}
 			},
 			onScroll: 'onScroll',
 			schema: {
@@ -170,6 +174,42 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							}
 							
 						},
+						showAlpacaJSFORMRegist: function (item) {
+							var vm = this;
+							//alapcajs Form
+							const config = {
+								headers: {'groupId': themeDisplay.getScopeGroupId()}
+							};
+                            
+							var url = '/o/rest/v2/registrations/'+vm.detailRegistModel.registrationId+'/forms/' + item.referenceUid +"/formscript";
+                            // var url = '/o/frontendwebdossier/json/steps.json';
+                            
+                            axios.get(url, config).then(function (response) {
+                                var serializable = response.data;
+
+    							vm.alapcaJSRei = eval('('+serializable+')');
+    							
+    							 axios.get('/o/rest/v2/registrations/'+vm.detailRegistModel.registrationId+'/forms/' + item.referenceUid +"/formdata", 
+    									 config).then(function (response) {
+    	                                var serializable = response.data;
+    	    							
+    	                                vm.alapcaJSRei['data'] = serializable;
+    	    							console.log(vm.alapcaJSRei);
+    	    							console.log($("#regist_form_"+item.referenceUid));
+    	    							$("#regist_form_"+item.referenceUid).alpaca(vm.alapcaJSRei);
+    	    							
+    	                            })
+    	                                .catch(function (error) {
+    	                                    console.log(error);
+    	                                });
+    							
+                            })
+                                .catch(function (error) {
+                                    console.log(error);
+									vm.stepLoading = false;
+                                });
+							
+						},
                         changeProcessStep: function (item){
                             var vm = this;
 							
@@ -283,7 +323,19 @@ document.addEventListener('DOMContentLoaded', function (event) {
                         },
 						filterAllDossierWithOutStatus: function () {
 							this.stageFilterView = 'danh_sach';
+							this.traCuuFilter = false;
+<<<<<<< HEAD:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main6.js
+=======
+							this.detailRegistPage = false;
+>>>>>>> opencps-v2/develop:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main.js
 							this._inidanhSachHoSoTable(false);
+						},
+						filterTraCuu: function () {
+							this.traCuuFilter = true;
+<<<<<<< HEAD:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main6.js
+=======
+							this.detailRegistPage = false;
+>>>>>>> opencps-v2/develop:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main.js
 						},
 						singleFileUpload: function (item) {
 							var vm = this;
@@ -381,6 +433,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						groupHoSoFilter: function(item){
 							var vm = this;
 							vm.detailPage = false;
+							vm.detailRegistPage = false;
 							vm.listgroupHoSoFilterselected = item.id;
 							vm.danhSachHoSoTablepage = 1;
 							
@@ -454,10 +507,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										});
 										
 									} else {
-										if (vm.listgroupHoSoFilterItems[indexTree].level === 0) {
-											vm.listgroupHoSoFilterItems.splice(indexTree, 1);
-											indexTree = indexTree - 1;
+										if (vm.listgroupHoSoFilterItems[indexTree]) {
+											if (vm.listgroupHoSoFilterItems[indexTree].level === 0) {
+												vm.listgroupHoSoFilterItems.splice(indexTree, 1);
+												indexTree = indexTree - 1;
+											}
 										}
+										
 										if (serializable.data[key].dossierStatus !== 'system'
 											&& serializable.data[key].dossierStatus !== 'error'
 											&& serializable.data[key].dossierStatus !== 'releasing'
@@ -495,6 +551,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									}
 									indexTree = indexTree + 1;
                                 }
+                                vm.listgroupHoSoFilterItems.splice(0, 1);
 
                             })
                                 .catch(function (error) {
@@ -758,7 +815,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'id': 'thongTinDoanhNghiepTable',
 					'name': 'thongTinDoanhNghiepTable',
 					'type': 'table',
-					'item_key': 'dossierNo',
+					'no_data_text': 'Không tìm thấy hồ sơ thương nhân nào!',
+					'cssClass': 'thongTinDoanhNghiepTable__class',
+					'item_key': 'registrationId',
 					'headers': 'headers',
 					'template': 'thong_tin_doanh_nghiep_table_template',
 					'pagging': '_paggingThongTinDoanhNghiepTable',
@@ -768,6 +827,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						_inithongTinDoanhNghiepTable: function (append) {
 							
 							var vm = this;
+							vm.traCuuFilter = true;
 							vm.viewmore = true;
 							this.thongTinDoanhNghiepTableheaders = [
 								{
@@ -780,13 +840,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									text: 'Tên, địa chỉ cơ sở sản xuất / Cơ sở nhập khẩu',
 									align: 'left',
 									sortable: true,
-									value: 'dossierNo'
+									value: 'address'
 								},
 								{
 									text: 'Mã số thuế, điện thoại, fax, email',
 									align: 'left',
 									sortable: true,
-									value: 'createDate'
+									value: 'contactEmail'
 								},
 								{
 									text: 'Người đại diện, chức danh',
@@ -796,8 +856,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								},
 								{
 									text: 'Thông tin nhà xưởng (SL, địa chỉ, diện tích, nhân lực, công suất theo tháng)',
-									align: 'center',
-									sortable: true,
+									align: 'left',
+									sortable: false,
 									value: 'action'
 								},
 								{
@@ -808,45 +868,100 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								},
 								{
 									text: 'Tình trạng đăng ký',
-									align: 'center',
+									align: 'left',
 									sortable: true,
-									value: 'action'
+									value: 'registrationState'
 								}
 							];
 
-							const config = {};
+							var paramsBuilder = {
+								keyword: vm.keywordsSearchTraCuuDoanhNghiep,
+								start: vm.thongTinDoanhNghiepTablepage * 8 - 8,
+								end: vm.thongTinDoanhNghiepTablepage * 8,
+							};
+							
+							//TODO
+							const config = {
+								params: paramsBuilder,
+<<<<<<< HEAD:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main6.js
+								headers: {'groupId': 55217}
+=======
+								headers: {'groupId': themeDisplay.getScopeGroupId()}
+>>>>>>> opencps-v2/develop:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main.js
+								
+							};
 
-							var url = '/o/frontendwebdossier/json/payment_files.json';
+							var url = '/o/rest/v2/registrations';
 							
 							axios.get(url, config).then(function (response) {
 								var serializable = response.data;
 
-								if (append) {
-									vm.thongTinDoanhNghiepTableItems.push.apply(vm.thongTinDoanhNghiepTableItems, serializable.data);
-								} else {
-									vm.thongTinDoanhNghiepTableItems = serializable.data;
-									vm.thongTinDoanhNghiepTableTotal = serializable.total;
-								}
-
-								vm.xem_them = 'Xem thêm 8+ bản ghi';
-								if (serializable.data.length === 0) {
-									vm.xem_them = 'Tổng số ( ' + serializable.total + ' ) bản ghi'
-								}
-								vm.viewmore = false;
+								vm.thongTinDoanhNghiepTableItems = serializable.data;
+								vm.thongTinDoanhNghiepTableTotal = Math.ceil(serializable.total / 8);
+								
 							})
 								.catch(function (error) {
 									console.log(error);
+									vm.thongTinDoanhNghiepTableItems = [];
 								});
 
 						},
 						_paggingThongTinDoanhNghiepTable: function() {
 							
-							this._inidanhSachHoSoTable(false);
+							this._inithongTinDoanhNghiepTable(false);
 						},
 						_nextThongTinDoanhNghiepTable: function() {
 							
 						},
 						_previousThongTinDoanhNghiepTable: function() {
+							
+						},
+						toDetailHoSoDoanhNghiep: function (item) {
+							
+							var vm = this;
+							
+							// call DetailAPI.
+							const config = {
+								headers: {'groupId': themeDisplay.getScopeGroupId()}
+							};
+
+							var url = '/o/rest/v2/registrations/'+item.registrationId;
+							
+							axios.get(url, config).then(function (response) {
+								var serializable = response.data;
+
+								vm.detailRegistModel = serializable;
+								vm.detailRegistPage = true;
+								window.scrollBy(0, -99999);
+								console.log(1231231);
+								vm._getListForms();
+
+							})
+								.catch(function (error) {
+									console.log(error);
+								});
+							
+						},
+						_getListForms: function () {
+							console.log(66666666666666);
+							var vm = this;
+							
+							// call DetailAPI.
+							const config = {
+								headers: {'groupId': themeDisplay.getScopeGroupId()}
+							};
+
+							var url = '/o/rest/v2/registrations/'+vm.detailRegistModel.registrationId+'/forms';
+							
+							axios.get(url, config).then(function (response) {
+								var serializable = response.data;
+
+								vm.registForms = serializable.data;
+
+							})
+								.catch(function (error) {
+									console.log(error);
+								});
 							
 						}
 					}
@@ -856,7 +971,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'name': 'traCuuHoSoTable',
 					'type': 'table',
 					'no_data_text': 'Không tìm thấy hồ sơ nào!',
-					'item_key': 'dossierNo',
+					'cssClass': 'danhSachHoSoTable__class',
+					'select_all': true,
+					'item_key': 'dossierId',
 					'headers': 'headers',
 					'template': 'tra_cuu_hoso_table_template',
 					'pagging': '_paggingTraCuuHoSoTable',
@@ -865,6 +982,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'events': {
 						_initraCuuHoSoTable: function (append) {
 							var vm = this;
+							vm.traCuuFilter = true;
 							vm.viewmore = true;
 							this.traCuuHoSoTableheaders = [
 								{
@@ -912,22 +1030,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							];
 							
 							var paramsBuilder = {
-								keyword: vm.keywordsSearch,
-								owner: vm.applicantNameFilter.applicantIdNo,
-								service: vm.serviceInfoFilter.serviceCode,
-								follow: true,
-								dossierNo: vm.dossierNoFilter,
-								start: vm.danhSachHoSoTablepage * 8 - 8,
-								end: vm.danhSachHoSoTablepage * 8,
+								keyword: vm.keywordsSearchTraCuuHoSo,
+								start: vm.traCuuHoSoTablepage * 8 - 8,
+								end: vm.traCuuHoSoTablepage * 8,
 							};
-						
 							
-							
-							if ( vm.keywordFilter != null ) {
-								paramsBuilder['keyword'] = vm.keywordFilter;
-							} else {
-								paramsBuilder['keyword'] = vm.keywordsSearchDanhSachHoSo;
-							}
 							const config = {
 								params: paramsBuilder,
 								headers: {'groupId': themeDisplay.getScopeGroupId()}
@@ -944,7 +1051,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								} else {
 									vm.traCuuHoSoTableItems = serializable.data;
 									
-									vm.danhSachHoSoTableTotal = Math.ceil(serializable.total / 8);
+									vm.traCuuHoSoTableTotal = Math.ceil(serializable.total / 8);
 								}
 
 								vm.xem_them = 'Xem thêm 8+ bản ghi';
@@ -988,6 +1095,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'events': {
 						_inidanhSachHoSoTable: function (append) {
 							var vm = this;
+							vm.traCuuFilter = false;
 							vm.viewmore = true;
 
 							this.danhSachHoSoTableheaders = [
