@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.opencps.dossiermgt.action.RegistrationActions;
+import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.RegistrationLogActions;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
@@ -181,26 +182,18 @@ public class RegistrationActionsImpl implements RegistrationActions {
 			Sort[] sorts, int start, int end, ServiceContext serviceContext) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		// Hits hits = null;
+		Hits hits = null;
 
-		// SearchContext searchContext = new SearchContext();
-		// searchContext.setCompanyId(companyId);
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(companyId);
 
 		try {
 
-			// hits = RegistrationLocalServiceUtil.searchLucene(userId,params,
-			// sorts, start, end, searchContext);
+			hits = RegistrationLocalServiceUtil.searchLucene(userId, params, sorts, start, end, searchContext);
 
-			// result.put("data", hits.toList());
+			result.put("data", hits.toList());
 
-			// long total = ServiceInfoLocalServiceUtil.countLucene(params,
-			// searchContext);
-
-			List<Registration> registrations = RegistrationLocalServiceUtil.getRegistrationByGID_UID(groupId, userId);
-
-			result.put("data", registrations);
-
-			result.put("total", registrations.size());
+			result.put("total", RegistrationLocalServiceUtil.countLucense(userId, params, sorts, start, end, searchContext));
 
 		} catch (Exception e) {
 			_log.error(e);
