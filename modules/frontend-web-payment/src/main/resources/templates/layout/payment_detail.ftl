@@ -34,13 +34,13 @@
 		<div class="panel">
 			
 				<v-layout wrap class="px-3 py-2">
-					
+
 					<v-flex xs12 >
 						<span class="text-bold">Tên tổ chức/cá nhân: </span> {{detailModel.applicantName}}
 					</v-flex>
 					
 					<v-flex xs12 >
-						<span class="text-bold">Địa chỉ: </span> ///
+						<span class="text-bold">Tổng tiền: </span> <span class="red--text"> {{detailModel.paymentAmount | money}} VNĐ </span>
 					</v-flex>
 					
 					<v-flex xs12 >

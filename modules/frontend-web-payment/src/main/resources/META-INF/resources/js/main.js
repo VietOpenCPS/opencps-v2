@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		pk: 1,
 		groupid: themeDisplay.getScopeGroupId(),
 		data: {
-			stageScroll: 0,
+			offsetTop: 0,
 			detailPage: false,
 			viewmore: false,
 			showmore: false,
@@ -38,9 +38,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					filterChange: function (item) {
 						var vm = this;
 						
+						vm.paymentListpage = 1;
 						vm.listgroupFilterselected = item.id;
 						vm._inipaymentList(false);
 						vm.detailPage = false;
+
 					},
 					_initlistgroupFilter: function () {
 						this.listgroupFilterItems = [
@@ -276,6 +278,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				'item_key': 'dossierId',
 				'headers': 'headers',
 				'template': 'activity_expand_list_template',
+				'pagging': '_paggingPaymentList',
+				'next': '_nextPaymentList',
+				'previous': '_previousPaymentList',
 				'onLoad': '_inipaymentList',
 				'events': {
 					_inipaymentList: function (append) {
@@ -322,7 +327,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							}
 						];
 						
-						var paramsBuilder = {keyword: vm.keywordsSearch};
+						var paramsBuilder = {
+								keyword: vm.keywordsSearch,
+								start: vm.paymentListpage * 8 - 8,
+								end: vm.paymentListpage * 8,
+						};
 						
 						if (vm.listgroupFilterselected === 4){
 							// TODO
@@ -333,7 +342,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						
 						const config = {
 							params: paramsBuilder,
-							headers: {'groupId': themeDisplay.getScopeGroupId()}
+							headers: {
+								'groupId': themeDisplay.getScopeGroupId()
+							}
 							
 						};
 
@@ -346,6 +357,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								vm.paymentListItems.push.apply(vm.paymentListItems, serializable.data);
 							} else {
 								vm.paymentListItems = serializable.data;
+								vm.paymentListTotal = Math.ceil(serializable.total / 8);
 							}
 
 							vm.xem_them = 'Xem thêm 8+ bản ghi';
@@ -360,6 +372,16 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								vm.viewmore = false;
 							});
 
+					},
+					_paggingPaymentList: function() {
+						
+						this._inipaymentList(false);
+					},
+					_nextPaymentList: function() {
+						
+					},
+					_previousPaymentList: function() {
+						
 					},
 					toPaymentDetail: function (index) {
 						var vm = this;
@@ -401,15 +423,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						this._inipaymentList(true);
 					},
 					onScroll(e) {
-						var onBottom = window.pageYOffset || document.documentElement.scrollTop;
-						var vm = this;
-						var btn_view_more = document.getElementById("btn_view_more");
-
-						if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-							stageScroll = btn_view_more.offsetTop - 300;
-							//vm._inipaymentList(true);
-						}
-
+						this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
+					},
+					onScrollTop (e) {
+						window.scrollBy(0, -99999)
 					}
 				}
 			}
