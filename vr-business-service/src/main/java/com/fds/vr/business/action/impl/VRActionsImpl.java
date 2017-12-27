@@ -13,6 +13,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 
 import com.fds.vr.business.action.VRActions;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -34,7 +36,6 @@ public class VRActionsImpl implements VRActions {
 	@Override
 	public JSONObject getTechSpecByVehicleClass(long groupId, String module, long dossierId, long dossierFileId,
 			String vehicleClass) {
-
 
 		JSONObject returnObj = JSONFactoryUtil.createJSONObject();
 		JSONArray techSpecArr = JSONFactoryUtil.createJSONArray();
@@ -117,8 +118,180 @@ public class VRActionsImpl implements VRActions {
 
 		} catch (Exception e) {
 			_log.error(e);
-			//returnObj.put("status", HttpsURLConnection.HTTP_OK);
-			//returnObj.put("content", techSpecArr);
+			// returnObj.put("status", HttpsURLConnection.HTTP_OK);
+			// returnObj.put("content", techSpecArr);
+		}
+
+		return returnObj;
+	}
+
+	@Override
+	public JSONObject getTechSpecByVehicleClassExt(long groupId, String module, long dossierId, long dossierFileId,
+			String fileTemplateNo, String vehicleClass) {
+
+		JSONObject returnObj = JSONFactoryUtil.createJSONObject();
+		JSONArray techSpecArr = JSONFactoryUtil.createJSONArray();
+
+		try {
+
+			// get id THONG_SO_KY_THUAT
+			DictCollection nhomThongSoKyThuat = DictCollectionLocalServiceUtil
+					.fetchByF_dictCollectionCode(VRKeys.NHOM_THONG_SO_KY_THUAT, groupId);
+
+			long ttktId = nhomThongSoKyThuat.getPrimaryKey();
+
+			DictGroup phanLoaiNhomTTSKT = DictGroupLocalServiceUtil.getByGC_GI_DCI(vehicleClass, groupId, ttktId);
+
+			List<DictItemGroup> danhSachNhomThongSoKTChiTiet = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId,
+					phanLoaiNhomTTSKT.getPrimaryKey());
+
+			if (Validator.isNull(module)) {
+				module = "1";
+			}
+
+			for (DictItemGroup dg : danhSachNhomThongSoKTChiTiet) {
+
+				DictItem dictItem = DictItemLocalServiceUtil.getDictItem(dg.getDictItemId());
+
+				List<VRConfigTechSpec> configTechSpecs = VRConfigTechSpecLocalServiceUtil.getByVCSC(vehicleClass,
+						dictItem.getItemCode(), module);
+
+				JSONObject jsonTechSpec = JSONFactoryUtil.createJSONObject();
+
+				jsonTechSpec.put("key", dictItem.getItemCode());
+				jsonTechSpec.put("type", "label");
+				jsonTechSpec.put("title", dictItem.getItemName());
+				jsonTechSpec.put("required", false);
+				jsonTechSpec.put("Reference", false);
+				jsonTechSpec.put("placeholder", dictItem.getItemDescription());
+				jsonTechSpec.put("datasource", StringPool.BLANK);
+				jsonTechSpec.put("value", StringPool.BLANK);
+
+				JSONArray items = JSONFactoryUtil.createJSONArray();
+
+				for (VRConfigTechSpec vrConfig : configTechSpecs) {
+
+					JSONObject techspec = JSONFactoryUtil.createJSONObject();
+
+					String tmpKey = vrConfig.getSpecificationCode();
+
+					String tmpType = vrConfig.getSpecificationEntryType();
+
+					techspec.put("key", tmpKey);
+
+					techspec.put("type", vrConfig.getSpecificationEntryType());
+
+					techspec.put("title", vrConfig.getSpecificationDisplayName());
+
+					techspec.put("required", vrConfig.getSpecificationMandatory());
+
+					techspec.put("Reference", false);
+
+					techspec.put("standard", vrConfig.getSpecificationStandard());
+					techspec.put("basicunit", vrConfig.getSpecificationBasicUnit());
+					techspec.put("placeholder", vrConfig.getSpecificationEntryPlaceholder());
+					if (Validator.isNotNull(vrConfig.getSpecificationDataCollectionId())) {
+						techspec.put("datasource",
+								getDataSource(vrConfig.getSpecificationDataCollectionId(), groupId, vehicleClass));
+					}
+					String value = StringPool.BLANK;
+					String value_text = StringPool.BLANK;
+					String result = StringPool.BLANK;
+					String resultTD = StringPool.BLANK;
+
+					DossierFile dossierFile = null;
+
+					if (dossierFileId > 0) {
+						// Update online form
+						dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(dossierFileId);
+					} else {
+						// View online form
+						if (Validator.isNotNull(fileTemplateNo)) {
+							try {
+								dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
+										fileTemplateNo, false, OrderByComparatorFactoryUtil
+												.create("opencps_dossierFile", "createDate", false));
+
+							} catch (Exception e) {
+								_log.error("Not found dossierFile with dossierId " + dossierId + "|fileTemplateNo "
+										+ fileTemplateNo, e);
+							}
+						}
+					}
+
+					JSONObject formDataObject = null;
+
+					if (dossierFile != null && Validator.isNotNull(dossierFile.getFormData())) {
+						try {
+							formDataObject = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
+						} catch (Exception e) {
+							_log.error("Can not create json object from formData", e);
+						}
+					}
+
+					if (formDataObject != null) {
+
+						//_log.info("///////////////////////////////////////////// dossierFileId " + dossierFileId);
+						//_log.info("///////////////////////////////////////////// tmpKey " + tmpKey);
+						//_log.info("///////////////////////////////////////////// tmpType " + tmpType);
+
+						if (formDataObject.has(tmpKey)) {
+							value = formDataObject.getString(tmpKey);
+							//_log.info("///////////////////////////////////////////// value " + value);
+						}
+
+						if (formDataObject.has(tmpKey + "_text") && (tmpType.equalsIgnoreCase("select")
+								|| tmpType.equalsIgnoreCase("select1") || tmpType.equalsIgnoreCase("select2")
+								|| tmpType.equalsIgnoreCase("select3"))) {
+							value_text = formDataObject.getString(tmpKey + "_text");
+							//_log.info("///////////////////////////////////////////// value_text " + value_text);
+						}
+
+						if (dossierFileId > 0) {
+							// Update online form
+							if (formDataObject.has("bb_" + tmpKey)) {
+								resultTD = formDataObject.getString("bb_" + tmpKey);
+								//_log.info("///////////////////////////////////////////// resultTD " + resultTD);
+							}
+
+							if (formDataObject.has("kl_" + tmpKey)) {
+								result = formDataObject.getString("kl_" + tmpKey);
+								//_log.info("///////////////////////////////////////////// result " + result);
+							}
+
+						} else {
+							// View online form
+							result = StringPool.BLANK;
+							resultTD = value;
+						}
+
+					}
+
+					techspec.put("value_text", value_text);
+					techspec.put("resultTD", resultTD);
+					techspec.put("result", result);
+					techspec.put("value", value);
+
+					items.put(techspec);
+				}
+
+				jsonTechSpec.put("items", items);
+
+				techSpecArr.put(jsonTechSpec);
+			}
+
+			if (dossierFileId != 0) {
+				// DB chua luu formSchema, nen do data vao techSpecArr
+				techSpecArr = getFormData(dossierFileId, techSpecArr);
+			}
+
+			returnObj.put("status", HttpsURLConnection.HTTP_OK);
+			returnObj.put("content", techSpecArr);
+
+		} catch (Exception e) {
+			_log.error(e);
+			// returnObj.put("status", HttpsURLConnection.HTTP_OK);
+			// returnObj.put("content", techSpecArr);
 		}
 
 		return returnObj;
@@ -152,9 +325,7 @@ public class VRActionsImpl implements VRActions {
 
 					String keyObject = parent.getString("key");
 
-
 					String keyValue = formData.getString(keyObject);
-
 
 					parent.put("value", keyValue);
 
@@ -181,7 +352,7 @@ public class VRActionsImpl implements VRActions {
 					output.put(parent);
 				}
 			} catch (Exception e) {
-				//_log.error(e);
+				// _log.error(e);
 			}
 
 		}
@@ -327,7 +498,8 @@ public class VRActionsImpl implements VRActions {
 
 					techspec.put("placeholder", vrConfig.getSpecificationEntryPlaceholder());
 					if (Validator.isNotNull(vrConfig.getSpecificationDataCollectionId())) {
-						techspec.put("datasource", getDataSource(vrConfig.getSpecificationDataCollectionId(), groupId, vehicleClass));
+						techspec.put("datasource",
+								getDataSource(vrConfig.getSpecificationDataCollectionId(), groupId, vehicleClass));
 					}
 
 					items.put(techspec);
@@ -375,7 +547,7 @@ public class VRActionsImpl implements VRActions {
 
 		JSONArray datasource = JSONFactoryUtil.createJSONArray();
 
-		_log.info("collectionCode"+collectionCode+"groupId"+groupId+"vehicleClass"+vehicleClass);
+		_log.info("collectionCode" + collectionCode + "groupId" + groupId + "vehicleClass" + vehicleClass);
 
 		// long dictCollectionId = getDictCollectionId(collectionCode, groupId);
 
@@ -387,7 +559,7 @@ public class VRActionsImpl implements VRActions {
 
 			List<DictItemGroup> danhSachNhomThongSoKT = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId,
 					phanLoaiNhomTTSKT.getPrimaryKey());
-			
+
 			for (DictItemGroup dg : danhSachNhomThongSoKT) {
 				JSONObject diObject = JSONFactoryUtil.createJSONObject();
 
@@ -400,9 +572,9 @@ public class VRActionsImpl implements VRActions {
 			}
 
 		} catch (Exception e) {
-			//_log.error(e);
+			// _log.error(e);
 		}
-		_log.info("datasource"+datasource.length());
+		_log.info("datasource" + datasource.length());
 
 		return datasource;
 	}
