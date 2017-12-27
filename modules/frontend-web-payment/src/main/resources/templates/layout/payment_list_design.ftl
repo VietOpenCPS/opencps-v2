@@ -2,7 +2,7 @@
 <div id="activity_expand_list_template" class="hidden">
 	<template slot="items" slot-scope="props">
 		<td style="padding-top: 2px;"> <v-checkbox primary hide-details v-model="props.selected" ></v-checkbox> </td>
-		<td style="padding-top: 8px; padding-left: 0px;;">{{ props.index + 1 }}</td>
+		<td style="padding-top: 8px; padding-left: 0px;;">{{ paymentListpage * 8 - 8 + props.index + 1 }}</td>
 		<td style="padding-top: 8px; padding-left: 0px; padding-right: 0px;" class="text-xs-left">{{ props.item.referenceUid }}</td>
 		<td style="padding-top: 8px;" class="text-xs-center">{{ props.item.createDate | date }}</td>
 		<td style="padding-top: 8px;" class="text-xs-right red--text">{{ props.item.paymentAmount | money }} VNĐ</td>

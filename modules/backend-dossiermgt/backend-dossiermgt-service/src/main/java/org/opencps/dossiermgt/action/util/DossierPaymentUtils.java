@@ -101,7 +101,7 @@ public class DossierPaymentUtils {
 					epaymentProfileJSON.put("keypayMerchantCode", keypayMerchantCode);
 
 					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
-							paymentFile.getPaymentFileId(), pattern, dossierId, keypayMerchantCode, keypayGoodCode);
+							paymentFile.getPaymentFileId(), pattern, dossierId);
 
 					epaymentProfileJSON.put("keypayUrl", generatorPayURL);
 					
