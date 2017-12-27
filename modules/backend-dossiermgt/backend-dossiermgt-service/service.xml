@@ -1292,10 +1292,12 @@
 		</finder>
 		
 		<finder return-type="Collection" name="FNO">
+			<finder-column name="groupId" />
 			<finder-column name="formNo" />
 		</finder>
 		
 		<finder return-type="Collection" name="GOVCODE">
+			<finder-column name="groupId" />
 			<finder-column name="govAgencyCode" />
 		</finder>
 	</entity>

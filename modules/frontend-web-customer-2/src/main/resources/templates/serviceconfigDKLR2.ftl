@@ -8,7 +8,7 @@
 			<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe chở hàng bốn bánh có gắn động cơ
 		</a>
 	</div>
-	<div id="lv14G1" class="accordion-body collapse">
+	<div id="lv14G1" class="accordion-body collapse toggle-hide">
 		<div class="accordion-inner PB0 PT0">
 			<#-- lv23G1 -->
 			<div class="PT5">
@@ -40,7 +40,7 @@
 			<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe đạp điện
 		</a>
 	</div>
-	<div id="lv15G1" class="accordion-body collapse">
+	<div id="lv15G1" class="accordion-body collapse toggle-hide">
 		<div class="accordion-inner PB0 PT0">
 			<#-- lv23G1 -->
 			<div class="PT5">
@@ -73,7 +73,7 @@
 			<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe chuyên dùng
 		</a>
 	</div>
-	<div id="lv16G1" class="accordion-body collapse">
+	<div id="lv16G1" class="accordion-body collapse toggle-hide">
 		<div class="accordion-inner PB0 PT0">
 			<#-- lv2G1 -->
 			<div class="PT5">
@@ -117,7 +117,7 @@
 			<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Linh kiện phụ tùng
 		</a>
 	</div>
-	<div id="lv17G1" class="accordion-body collapse">
+	<div id="lv17G1" class="accordion-body collapse toggle-hide">
 		<div class="accordion-inner PB0 PT0">
 			<#-- lv23G1 -->
 			<div class="PT5">
