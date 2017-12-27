@@ -43,31 +43,17 @@ public class RegistrationActionsImpl implements RegistrationActions {
 			String registrationClass, ServiceContext serviceContext) throws SystemException, PortalException {
 		List<Registration> listRegistration = RegistrationLocalServiceUtil.getRegistrationByGID_UID(groupId,
 				serviceContext.getUserId());
-
-		RegistrationFormActions actionForm = new RegistrationFormActionsImpl();
 		if (listRegistration.size() == 0) {
-			Registration registration = RegistrationLocalServiceUtil.insert(groupId, applicantName, applicantIdType,
-					applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
-					wardName, contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, 0, "",
-					serviceContext);
-
-			actionForm.addRegistrationFormbaseonRegTemplate(groupId, registration.getRegistrationId(), govAgencyCode,
-					serviceContext);
-
-			return registration;
+			return RegistrationLocalServiceUtil.insert(groupId, applicantName, applicantIdType, applicantIdNo,
+					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
+					contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, 0, "", serviceContext);
 		} else {
 			Registration registration = listRegistration.get(0);
 			int state = registration.getRegistrationState();
 			if (state == 2) {
-				Registration registrationNew = RegistrationLocalServiceUtil.insert(groupId, applicantName,
-						applicantIdType, applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode,
-						districtName, wardCode, wardName, contactName, contactTelNo, contactEmail, govAgencyCode,
-						govAgencyName, 0, "", serviceContext);
-
-				actionForm.addRegistrationFormbaseonRegTemplate(groupId, registrationNew.getRegistrationId(),
-						govAgencyCode, serviceContext);
-
-				return registrationNew;
+				return RegistrationLocalServiceUtil.insert(groupId, applicantName, applicantIdType, applicantIdNo,
+						applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
+						contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, 0, "", serviceContext);
 			} else {
 				return registration;
 			}
