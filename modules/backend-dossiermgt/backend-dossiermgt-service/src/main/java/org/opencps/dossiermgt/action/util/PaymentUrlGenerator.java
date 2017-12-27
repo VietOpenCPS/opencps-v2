@@ -31,7 +31,7 @@ public class PaymentUrlGenerator {
 	}
 
 	public static String generatorPayURL(long groupId, long paymentFileId, String pattern,
-			long dossierId, String keypayMerchantCode, String keypayGoodCode) throws IOException {
+			long dossierId) throws IOException {
 
 		String result = "";
 		try {
@@ -47,7 +47,7 @@ public class PaymentUrlGenerator {
 			if (Validator.isNotNull(paymentConfig)) {
 				List<String> lsMessages = _putPaymentMessage(pattern);
 
-				long merchant_trans_id = _genetatorTransactionId(keypayMerchantCode);
+				long merchant_trans_id = _genetatorTransactionId();
 
 				JSONObject epaymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
 
@@ -55,10 +55,6 @@ public class PaymentUrlGenerator {
 
 				String good_code = generatorGoodCode(10);
 
-				if (Validator.isNotNull(keypayGoodCode)) {
-					good_code = keypayGoodCode;
-				}
-				
 				String net_cost = String.valueOf((int) paymentFile.getPaymentAmount());
 				String ship_fee = "0";
 				String tax = "0";
@@ -228,11 +224,11 @@ public class PaymentUrlGenerator {
 	 * @param paymentFile
 	 * @return
 	 */
-	private static long _genetatorTransactionId(String keypayMerchantCode) {
+	private static long _genetatorTransactionId() {
 
 		long transactionId = 0;
 		try {
-			transactionId = Long.valueOf(keypayMerchantCode);
+			transactionId = CounterLocalServiceUtil.increment(PaymentFile.class.getName() + ".genetatorTransactionId");
 		} catch (SystemException e) {
 			_log.error(e);
 		}
