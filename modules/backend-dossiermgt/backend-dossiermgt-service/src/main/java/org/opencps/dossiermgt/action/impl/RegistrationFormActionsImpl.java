@@ -58,23 +58,19 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 	@Override
 	public void addRegistrationFormbaseonRegTemplate(long groupId, long registrationId, String govAgencyCode,
 			ServiceContext serviceContext) throws PortalException, SystemException {
-		try {
-			// get lstRegistrationTemplate
-			List<RegistrationTemplates> lstRegistrationTemplate = RegistrationTemplatesLocalServiceUtil
-					.getRegistrationTemplatesbyGOVCODE(groupId, govAgencyCode);
+		// get lstRegistrationTemplate
+		List<RegistrationTemplates> lstRegistrationTemplate = RegistrationTemplatesLocalServiceUtil
+				.getRegistrationTemplatesbyGOVCODE(groupId, govAgencyCode);
 
-			// add registrationForm
-			for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
-				// create referenceUid
-				String referenceUid = UUID.randomUUID().toString();
-				
-				RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
-						registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
-						registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
-						registrationTemplates.getFormReport(), 0, false, false, serviceContext);
-			}
-		} catch (Exception e) {
-			_log.error(e);
+		// add registrationForm
+		for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
+			// create referenceUid
+			String referenceUid = UUID.randomUUID().toString();
+
+			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
+					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
+					registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
+					registrationTemplates.getFormReport(), 0, false, false, serviceContext);
 		}
 	}
 }
