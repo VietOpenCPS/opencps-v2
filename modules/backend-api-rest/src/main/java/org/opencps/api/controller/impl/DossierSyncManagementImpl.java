@@ -244,6 +244,8 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 		if (method == 0) {
 			String endPointSynAction = "dossiers/" + refId + "/actions";
+			String endPointSynDossierNo = "dossiers/" + refId + "/dossierno/" ;
+			
 
 			Map<String, Object> params = new LinkedHashMap<>();
 			params.put("actionCode", actionCode);
@@ -399,6 +401,21 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			DossierActionLocalServiceUtil.updatePending(clientDossierActionId, false);
 		}
 
+	}
+	
+	protected Dossier getDossier(String id, long groupId) throws PortalException {
+		// TODO update logic here
+		long dossierId = GetterUtil.getLong(id);
+
+		Dossier dossier = null;
+
+		dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+
+		if (Validator.isNull(dossier)) {
+			dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+		}
+
+		return dossier;
 	}
 
 	private File getFile(long fileEntryId){
