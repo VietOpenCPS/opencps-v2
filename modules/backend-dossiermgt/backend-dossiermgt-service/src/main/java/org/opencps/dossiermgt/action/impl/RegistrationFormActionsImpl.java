@@ -1,10 +1,13 @@
 package org.opencps.dossiermgt.action.impl;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.model.RegistrationForm;
+import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
+import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -28,7 +31,7 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 
 	@Override
 	public RegistrationForm deleteRegistrationForm(long registrationId, String referenceUid) throws PortalException {
-		
+
 		return RegistrationFormLocalServiceUtil.deleteRegistrationForm(registrationId, referenceUid);
 
 	}
@@ -45,6 +48,38 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 		List<RegistrationForm> lstRegistrationForm = RegistrationFormLocalServiceUtil.getFormsbyRegId(registrationId);
 
 		return lstRegistrationForm;
+	}
+
+	@Override
+	public void addRegistrationFormbaseonRegTemplate(long groupId, long registrationId,
+			ServiceContext serviceContext) throws PortalException {
+
+		int start = -1, end = -1;
+
+		// create referenceUid
+		String referenceUid = UUID.randomUUID().toString();
+
+		// get lstRegistrationTemplate
+		List<RegistrationTemplates> lstRegistrationTemplate = RegistrationTemplatesLocalServiceUtil
+				.getRegistrationTemplateses(start, end);
+
+		// add registrationForm
+		for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
+			int fileEntryId = getfileEntryId(registrationTemplates.getSampleData(),
+					registrationTemplates.getFormScript(), registrationTemplates.getFormReport());
+
+			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
+					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
+					registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
+					registrationTemplates.getFormReport(), fileEntryId, false, false, serviceContext);
+		}
+	}
+
+	public int getfileEntryId(String formdata, String formScript, String formReport) {
+
+		int fileEntryId = 0;
+
+		return fileEntryId;
 	}
 
 }

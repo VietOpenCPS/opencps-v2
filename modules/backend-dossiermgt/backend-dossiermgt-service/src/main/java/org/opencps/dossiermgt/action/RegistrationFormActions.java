@@ -20,4 +20,7 @@ public interface RegistrationFormActions {
 			ServiceContext serviceContext) throws PortalException;
 
 	public RegistrationForm deleteRegistrationForm(long registrationId, String referenceUid) throws PortalException;
+
+	public void addRegistrationFormbaseonRegTemplate(long groupId, long registrationId, ServiceContext serviceContext)
+			throws PortalException;
 }
