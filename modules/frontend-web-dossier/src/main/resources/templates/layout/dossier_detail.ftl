@@ -4,9 +4,9 @@
 		<div class="background-triangle-big"> Tên thủ tục </div>
 		<div class="layout row wrap header_tools row-blue">
 	
-			<div class="flex xs9 solo pl-4">
+			<div class="flex xs9 solo pl-4 text-ellipsis">
 		
-				{{detailModel.dossierNo}}
+				{{detailModel.dossierNo}} {{detailModel.serviceName}}
 		
 			</div>
 			<div class="flex xs5 sm3 text-right" style="margin-left: auto;">

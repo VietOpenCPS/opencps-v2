@@ -374,6 +374,7 @@
 			data.append( 'file', $("#filePayment")[0].files[0]);
 			data.append( 'confirmNote', $("textarea#confirmNote").val());
 			data.append( 'paymentMethod', "Chuyển khoản");
+			data.append( 'confirmPayload', null);
 			$.ajax({
 				url : "${api.server}/dossiers/${dossierId}/payments/"+referenceUid+"/confirm",
 				dataType : "json",
