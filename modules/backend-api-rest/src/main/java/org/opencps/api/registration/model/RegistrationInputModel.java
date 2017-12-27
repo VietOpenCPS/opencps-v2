@@ -111,6 +111,7 @@ public class RegistrationInputModel {
     @FormParam(value = "registrationState")
     @DefaultValue(value = "0")
     protected Integer registrationState;
+    @DefaultValue(value = "")
     @FormParam(value = "registrationClass")
     protected String registrationClass;
 

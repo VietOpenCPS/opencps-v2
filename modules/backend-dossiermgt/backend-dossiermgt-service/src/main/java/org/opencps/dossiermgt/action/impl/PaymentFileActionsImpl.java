@@ -97,43 +97,6 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 					referenceUid, govAgencyCode, govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount,
 					paymentNote, epaymentProfile, bankInfo, serviceContext);
 
-			JSONObject epaymentProfileObject = JSONFactoryUtil.createJSONObject(epaymentProfile);
-
-			// genarater url keypay
-			// TODO
-			// binhth
-			if (epaymentProfileObject.has("paymentPattern")) {
-
-				String generatorPayURL;
-				try {
-
-					Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-
-					PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
-							dossier.getGovAgencyCode());
-
-					JSONObject epaymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
-
-					epaymentProfileObject.put("detailUrl",
-							epaymentConfigJSON.getString("paymentResultUrl") + dossierId);
-
-					generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId, result.getPaymentFileId(),
-							epaymentProfileObject.getString("paymentPattern"), dossierId,
-							epaymentProfileObject.getString("keypayMerchantCode"),
-							epaymentProfileObject.getString("keypayGoodCode"));
-
-					epaymentProfileObject.put("keypayUrl", generatorPayURL);
-
-					result = updateEProfile(dossierId, referenceUid, epaymentProfileObject.toJSONString(),
-							serviceContext);
-
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
-
 			return result;
 
 		} catch (PortalException e) {

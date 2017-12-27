@@ -31,6 +31,13 @@
           </div>
         </v-slide-x-transition>
         
+        <v-fab-transition>
+	        <v-btn color="primary" dark fixed bottom right fab ripple v-show="offsetTop > 200"
+	        v-on:click.native="onScrollTop">
+	          <v-icon>keyboard_arrow_up</v-icon>
+	        </v-btn>
+      </v-fab-transition>
+      
       </div>
     </div>
   </div>
