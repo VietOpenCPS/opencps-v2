@@ -31,22 +31,13 @@
 					<div class="accordion-group">
 						<#--lv1G1 -->
 						<div class="accordion-heading">
-							<a class="accordion-toggle" data-toggle="collapse" href="#lv1G1"> 
+							<a class="accordion-toggle" data-toggle="collapse" href="#lv1G1">
 								<i class="fa fa-play PR5" aria-hidden="true" style="color: #14bef0"></i>Xe cơ giới
 							</a>
 						</div>
 						<div id="lv1G1" class="accordion-body collapse in">
 							<div class="accordion-inner PB0 PT0">
-								<div class="PT5">
-									<div class="ML40 col-sm-6 P5 PL0">
-										<span> 
-											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Thẩm định thiết kế TEST
-										</span>
-										<button data-TTHC="TEST" data-CQTH="BGTVTCDKVN" data-MMHS="TEST" class="btn btn-reset chooseService pull-right P0">Chọn</button>
-									</div>
-									<div class="clear"></div>
-									
-								</div>
+								
 								<#-- lv2G1 -->
 								<div class="PT5">
 									<div class="ML40 col-sm-6 P5 PL0">
@@ -86,7 +77,7 @@
 										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 										</span>
-										<button data-TTHC="TT302011BGTVTCPPXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv24G1">Chọn</button>
+										<button data-TTHC="TT302011BGTVTCPP" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXCG" class="btn btn-reset chooseService pull-right P0" id="btn1Lv24G1">Chọn</button>
 									</div>
 									<div class="clear"></div>
 									
@@ -121,7 +112,7 @@
 										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 										</span>
-										<button data-TTHC="TT302011BGTVTCPPXMTGM" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXMTGM" class="btn btn-reset chooseService pull-right P0" id="btn1item22">Chọn</button>
+										<button data-TTHC="TT302011BGTVTCPP" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXMTGM" class="btn btn-reset chooseService pull-right P0" id="btn1item22">Chọn</button>
 									</div>
 									<div class="clear"></div>
 									
@@ -166,7 +157,7 @@
 										<span> 
 											<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Cấp phát phôi phiếu
 										</span>
-										<button data-TTHC="TT302011BGTVTCPPXBBCN" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXBBCN"  class="btn btn-reset chooseService pull-right P0" id="btn1item33">Chọn</button>
+										<button data-TTHC="TT302011BGTVTCPP" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCPPXBBCN"  class="btn btn-reset chooseService pull-right P0" id="btn1item33">Chọn</button>
 									</div>
 									<div class="clear"></div>
 									
@@ -183,7 +174,7 @@
 	<#-- Group2 -->
 	<div class="accordion-group">
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#group2">
+			<a class="accordion-toggle" data-toggle="collapse" href="#group2">
 				QUẢN LÝ DÁN NHÃN NĂNG LƯỢNG
 			</a>
 		</div>
@@ -214,7 +205,7 @@
 	<#-- Group3 -->
 	<div class="accordion-group">
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#group3">
+			<a class="accordion-toggle" data-toggle="collapse" href="#group3">
 				QUẢN LÝ TRIỆU HỒI SẢN PHẨM
 			</a>
 		</div>
@@ -244,7 +235,7 @@
 	<#-- Group4 -->
 	<div class="accordion-group">
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#group4">
+			<a class="accordion-toggle" data-toggle="collapse" href="#group4">
 				QUẢN LÝ THÔNG TIN DOANH NGHIỆP
 			</a>
 		</div>

@@ -32,6 +32,7 @@
 	<#assign constants = (Request.constants)!>
 	<#assign resCancelling = (Request.resCancelling)!>
 	<#assign sendAdd = (Request.sendAdd)!>
+	<#assign sendReissue = (Request.sendReissue)!>
 	<#assign lblApplicantNote = (Request.lblApplicantNote)!>
 	
 </#if>

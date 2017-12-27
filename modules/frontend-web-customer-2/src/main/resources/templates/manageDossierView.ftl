@@ -15,7 +15,7 @@
 						<div class="MLA form-inline">
 							
 							<input type="text" class="form-control" name="soChungChi" placeholder="Nhập số chứng chỉ" 
-								data-bind="visible: isInvestigated, events: { change: filterInvestigation}" >
+								data-bind="visible: isInvestigated, events: { change: filterInvestigation}, value: soChungChi" >
 							
 							<input type="text" class="form-control" id="keyInput" placeholder="Nhập từ khóa"
 								data-bind="events: { keyup: filterKey}" style="width: 290px;">
@@ -124,10 +124,14 @@
 						<p title="Ngày gửi">
 						#:submitDate#
 						</p>
+					#} else {#
+						<i title="Ngày gửi" class="text-gray">---</i>
 					#}#
 					
 					#if (receiveDate) {#
 						<p title="Ngày tiếp nhận">#:receiveDate#</p>
+					#} else {#
+						<i title="Ngày tiếp nhận" class="text-gray">---</i>
 					#}#
 				</td>
 
@@ -151,6 +155,16 @@
 						<button type="button" class="btn-link no-border PT10 downloadProfile" data-pk="#:dossierId#">
 							<i class="fa fa-download" aria-hidden="true"/>
 							Tải kết quả
+						</button>
+						<#--  -->
+						<button type="button" class="btn-link no-border PT10 resDone" data-pk="#:dossierId#">
+							<i class="fa fa-reply" aria-hidden="true"/>
+							Yêu cầu cấp lại
+						</button>
+						<#--  -->
+						<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
+							<i class="fa fa-paper-plane" aria-hidden="true"></i>
+							Gửi bổ sung
 						</button>
 					#}#
 					<#--	-->

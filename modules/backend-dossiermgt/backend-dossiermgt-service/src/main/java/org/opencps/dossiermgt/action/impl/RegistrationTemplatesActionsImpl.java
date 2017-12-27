@@ -28,13 +28,37 @@ public class RegistrationTemplatesActionsImpl implements RegistrationTemplatesAc
 				start = -1;
 				end = -1;
 			}
-
+			
 			List<RegistrationTemplates> lstRegistrationTemplates = RegistrationTemplatesLocalServiceUtil
 					.getRegistrationTemplateses(start, end);
 
 			int total = RegistrationTemplatesLocalServiceUtil.getRegistrationTemplatesesCount();
 
 			result.put("total", total);
+			result.put("lstRegistrationTemplate", lstRegistrationTemplates);
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return result;
+	}
+	
+	@Override
+	public JSONObject getRegistrationTemplates(long groupId, String formNo, String govAgencyCode) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		List<RegistrationTemplates> lstRegistrationTemplates = null;
+		try {
+			if(formNo != null){
+				lstRegistrationTemplates = RegistrationTemplatesLocalServiceUtil
+						.getRegistrationTemplatesbyFormNo(groupId, formNo);
+			}else{
+				lstRegistrationTemplates = RegistrationTemplatesLocalServiceUtil
+						.getRegistrationTemplatesbyGOVCODE(groupId, govAgencyCode);
+			}
+
+			result.put("total", lstRegistrationTemplates.size());
 			result.put("lstRegistrationTemplate", lstRegistrationTemplates);
 
 		} catch (Exception e) {
