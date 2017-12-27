@@ -19,6 +19,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.opencps.dossiermgt.action.RegistrationFormActions;
+import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
@@ -113,20 +115,10 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setRegistrationClass(registrationClass);
 		model.setRegistrationState(registrationState);
 
-		String referenceUid = UUID.randomUUID().toString();
-
-		List<RegistrationTemplates> lstRegistrationTemplate = registrationTemplatesLocalService
-				.getRegistrationTemplateses(start, end);
-
-		for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
-			int fileEntryId = getfileEntryId(registrationTemplates.getSampleData(),
-					registrationTemplates.getFormScript(), registrationTemplates.getFormReport());
-
-			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
-					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
-					registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
-					registrationTemplates.getFormReport(), fileEntryId, false, false, serviceContext);
-		}
+		RegistrationFormActions actionForm = new RegistrationFormActionsImpl();
+		
+		actionForm.addRegistrationFormbaseonRegTemplate(groupId, registrationId, govAgencyCode, serviceContext);
+		
 		return registrationPersistence.update(model);
 	}
 
