@@ -35,6 +35,7 @@ public class VRActionsImpl implements VRActions {
 	public JSONObject getTechSpecByVehicleClass(long groupId, String module, long dossierId, long dossierFileId,
 			String vehicleClass) {
 
+
 		JSONObject returnObj = JSONFactoryUtil.createJSONObject();
 		JSONArray techSpecArr = JSONFactoryUtil.createJSONArray();
 
@@ -115,8 +116,9 @@ public class VRActionsImpl implements VRActions {
 			returnObj.put("content", techSpecArr);
 
 		} catch (Exception e) {
-			returnObj.put("status", HttpsURLConnection.HTTP_OK);
-			returnObj.put("content", techSpecArr);
+			_log.error(e);
+			//returnObj.put("status", HttpsURLConnection.HTTP_OK);
+			//returnObj.put("content", techSpecArr);
 		}
 
 		return returnObj;
@@ -150,11 +152,9 @@ public class VRActionsImpl implements VRActions {
 
 					String keyObject = parent.getString("key");
 
-					_log.info("keyObject " + keyObject);
 
 					String keyValue = formData.getString(keyObject);
 
-					_log.info("keyValue " + keyValue);
 
 					parent.put("value", keyValue);
 
@@ -181,7 +181,7 @@ public class VRActionsImpl implements VRActions {
 					output.put(parent);
 				}
 			} catch (Exception e) {
-				_log.error(e);
+				//_log.error(e);
 			}
 
 		}
@@ -375,18 +375,19 @@ public class VRActionsImpl implements VRActions {
 
 		JSONArray datasource = JSONFactoryUtil.createJSONArray();
 
-		long dictGroupCollectionId = getDictCollectionId(vehicleClass, groupId);
-
-		DictGroup phanLoaiNhomTTSKT = DictGroupLocalServiceUtil.getByGC_GI_DCI(collectionCode, groupId,
-				dictGroupCollectionId);
-
-		List<DictItemGroup> danhSachNhomThongSoKT = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId,
-				phanLoaiNhomTTSKT.getPrimaryKey());
+		_log.info("collectionCode"+collectionCode+"groupId"+groupId+"vehicleClass"+vehicleClass);
 
 		// long dictCollectionId = getDictCollectionId(collectionCode, groupId);
 
 		try {
+			long dictGroupCollectionId = getDictCollectionId(collectionCode, groupId);
 
+			DictGroup phanLoaiNhomTTSKT = DictGroupLocalServiceUtil.getByGC_GI_DCI(vehicleClass, groupId,
+					dictGroupCollectionId);
+
+			List<DictItemGroup> danhSachNhomThongSoKT = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId,
+					phanLoaiNhomTTSKT.getPrimaryKey());
+			
 			for (DictItemGroup dg : danhSachNhomThongSoKT) {
 				JSONObject diObject = JSONFactoryUtil.createJSONObject();
 
@@ -399,8 +400,9 @@ public class VRActionsImpl implements VRActions {
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
 		}
+		_log.info("datasource"+datasource.length());
 
 		return datasource;
 	}
