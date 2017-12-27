@@ -59,16 +59,15 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 	public void addRegistrationFormbaseonRegTemplate(long groupId, long registrationId, String govAgencyCode,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 		try {
-			// create referenceUid
-			String referenceUid = UUID.randomUUID().toString();
-
 			// get lstRegistrationTemplate
 			List<RegistrationTemplates> lstRegistrationTemplate = RegistrationTemplatesLocalServiceUtil
 					.getRegistrationTemplatesbyGOVCODE(groupId, govAgencyCode);
 
 			// add registrationForm
 			for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
-
+				// create referenceUid
+				String referenceUid = UUID.randomUUID().toString();
+				
 				RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
 						registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
 						registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
