@@ -113,20 +113,18 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setRegistrationClass(registrationClass);
 		model.setRegistrationState(registrationState);
 
-		String referenceUid = UUID.randomUUID().toString();
-
-		List<RegistrationTemplates> lstRegistrationTemplate = RegistrationTemplatesLocalServiceUtil
-				.getRegistrationTemplateses(start, end);
-
-		for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
-			int fileEntryId = getfileEntryId(registrationTemplates.getSampleData(),
-					registrationTemplates.getFormScript(), registrationTemplates.getFormReport());
-
-			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
-					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
-					registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
-					registrationTemplates.getFormReport(), fileEntryId, false, false, serviceContext);
-		}
+//		String referenceUid = UUID.randomUUID().toString();
+//
+//		List<RegistrationTemplates> lstRegistrationTemplate = RegistrationTemplatesLocalServiceUtil
+//				.getRegistrationTemplatesbyGOVCODE(groupId, govAgencyCode);
+//
+//		for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
+//
+//			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
+//					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
+//					registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
+//					registrationTemplates.getFormReport(), 0, false, false, serviceContext);
+//		}
 		return registrationPersistence.update(model);
 	}
 
