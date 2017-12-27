@@ -78,7 +78,7 @@
 								dataSourceProfile.sort({ field: "createDate", dir: "desc" });
 							};
 							
-							//$("#statusName").html($(".itemStatus.active .dossierStatus").text());
+							$("#statusName").html($(".itemStatus.active .dossierStatus").text());
 							
 							//
 							$('.optPage[value="'+dataSourceProfile.pageSize()+'"]').attr("selected","selected");
@@ -116,6 +116,7 @@
 		var getTotalItemDossier = function(dossierItemStatus){
 			if ((dossierItemStatus == "cancelling")){
 				$.ajax({
+					// url: "http://localhost:3000/dossiers",
 					url:"${api.server}/dossiers",
 					dataType:"json",
 					type:"GET",
@@ -131,6 +132,7 @@
 				})
 			} else if(dossierItemStatus == "all"){
 				$.ajax({
+					// url: "http://localhost:3000/dossiers",
 					url:"${api.server}/dossiers",
 					dataType:"json",
 					type:"GET",
@@ -146,6 +148,7 @@
 				})
 			} else {
 				$.ajax({
+					// url: "http://localhost:3000/dossiers",
 					url:"${api.server}/dossiers",
 					dataType:"json",
 					type:"GET",
@@ -259,8 +262,8 @@
 				// dataSourceProfile.sort({ field: "submitDate", dir: "desc" }); 
 				var id = $(e.currentTarget).attr("dataPk");
 				manageDossier.navigate("/"+id);
-				modelMain.set("isInvestigated", false);
-				modelMain.set("visibleHeader", $(".itemStatus.active .dossierStatus").text());
+				// modelMain.set("isInvestigated", false);
+				// modelMain.set("visibleHeader", $(".itemStatus.active .dossierStatus").text());
 			},
 			load_serviceConfig:function(e){
 				e.preventDefault();
@@ -271,27 +274,8 @@
 			},
 			filterInvestigation: function(e){
 				e.preventDefault();
-				
-				var id = $(e.currentTarget).attr("data-pk");
-				
-				var textHead = $(e.currentTarget).text().trim();
-				modelMain.set("isInvestigated", true);
-				modelMain.set("visibleHeader", textHead);
-				modelPanel.set("investigationId", id);
-				
-				manageDossier.navigate("/tracuu/"+id);
-				
-				dataSourceProfile.read({
-					"tracuu": modelPanel.get("investigationId"),
-					"soChungChi": modelMain.soChungChi,
-					"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-					"serviceInfo":$("#serviceInfo").val(),
-					"govAgencyCode":$("#govAgency").val(),
-					"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
-				});
-				
-			},
-			investigationId: "default"
+				manageDossier.navigate("/tra-cuu/tra-cuu-chung-chi");
+			}
 		});
 		
 	// Model MainSection
@@ -301,17 +285,7 @@
 				event.preventDefault();
 				event.stopPropagation();
 				event.stopImmediatePropagation();
-				// fileAttachmentDownload({
-				// 	method: "GET",
-				// 	url:"${api.server}/dossiers/"+id+"/download",
-				// 	headers: {"groupId": ${groupId}},
-				// 	success: function(sttCode){
-						
-				// 	},
-				// 	error: function(sttCode){
-						
-				// 	}
-				// });
+
 				$.ajax({
 					url:"${api.server}/dossiers/"+id+"/download",
 					headers: {"groupId": ${groupId}},
@@ -440,6 +414,14 @@
 				$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});
 				$("th").css("vertical-align","top");
 			},
+			filterInvestigationNo : function(e){
+				e.preventDefault();
+				dataSourceProfile.read({
+					"keyword": $("#noInput").val(),
+					"status": "done"
+				})
+			    
+			},
 			fullScreen: function(e){
 				e.preventDefault();
 				$("#fullScreen").children().toggle();
@@ -447,22 +429,14 @@
 				$("#mainType1").toggleClass("col-sm-10","col-sm-12");
 				
 			},
-			isInvestigated: false,
-			filterInvestigation: function(e){
-				e.preventDefault();
+			// isInvestigated: false,
+			// filterInvestigation: function(e){
+			// 	e.preventDefault();
+			// 	manageDossier.navigate("/tra-cuu-chung-chi");
 				
-				dataSourceProfile.read({
-					"tracuu": modelPanel.get("investigationId"),
-					"soChungChi": modelMain.soChungChi,
-					"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-					"serviceInfo":$("#serviceInfo").val(),
-					"govAgencyCode":$("#govAgency").val(),
-					"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
-				});
-				
-			},
-			visibleHeader: "default",
-			soChungChi: ""
+			// }
+			// visibleHeader: "default",
+			// soChungChi: ""
 		});
 
 	</script>
