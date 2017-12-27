@@ -51,35 +51,23 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 	}
 
 	@Override
-	public void addRegistrationFormbaseonRegTemplate(long groupId, long registrationId,
+	public void addRegistrationFormbaseonRegTemplate(long groupId, long registrationId, String govAgencyCode,
 			ServiceContext serviceContext) throws PortalException {
-
-		int start = -1, end = -1;
 
 		// create referenceUid
 		String referenceUid = UUID.randomUUID().toString();
 
 		// get lstRegistrationTemplate
 		List<RegistrationTemplates> lstRegistrationTemplate = RegistrationTemplatesLocalServiceUtil
-				.getRegistrationTemplateses(start, end);
+				.getRegistrationTemplatesbyGOVCODE(groupId, govAgencyCode);
 
 		// add registrationForm
 		for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
-			int fileEntryId = getfileEntryId(registrationTemplates.getSampleData(),
-					registrationTemplates.getFormScript(), registrationTemplates.getFormReport());
-
+			
 			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
 					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
 					registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
-					registrationTemplates.getFormReport(), fileEntryId, false, false, serviceContext);
+					registrationTemplates.getFormReport(), 0, false, false, serviceContext);
 		}
 	}
-
-	public int getfileEntryId(String formdata, String formScript, String formReport) {
-
-		int fileEntryId = 0;
-
-		return fileEntryId;
-	}
-
 }
