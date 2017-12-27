@@ -22,6 +22,9 @@ import java.util.List;
 import org.opencps.dossiermgt.model.RegistrationLog;
 import org.opencps.dossiermgt.service.base.RegistrationLogLocalServiceBaseImpl;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.service.ServiceContext;
+
 /**
  * The implementation of the registration log local service.
  *
