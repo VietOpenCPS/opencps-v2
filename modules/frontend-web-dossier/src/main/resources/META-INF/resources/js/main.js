@@ -324,18 +324,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						filterAllDossierWithOutStatus: function () {
 							this.stageFilterView = 'danh_sach';
 							this.traCuuFilter = false;
-<<<<<<< HEAD:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main6.js
-=======
 							this.detailRegistPage = false;
->>>>>>> opencps-v2/develop:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main.js
 							this._inidanhSachHoSoTable(false);
 						},
 						filterTraCuu: function () {
 							this.traCuuFilter = true;
-<<<<<<< HEAD:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main6.js
-=======
 							this.detailRegistPage = false;
->>>>>>> opencps-v2/develop:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main.js
 						},
 						singleFileUpload: function (item) {
 							var vm = this;
@@ -883,12 +877,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							//TODO
 							const config = {
 								params: paramsBuilder,
-<<<<<<< HEAD:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main6.js
-								headers: {'groupId': 55217}
-=======
 								headers: {'groupId': themeDisplay.getScopeGroupId()}
->>>>>>> opencps-v2/develop:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main.js
-								
 							};
 
 							var url = '/o/rest/v2/registrations';
