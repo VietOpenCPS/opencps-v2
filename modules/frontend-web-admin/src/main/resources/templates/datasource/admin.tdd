@@ -1,6 +1,7 @@
 {
 	"api": {
-		"server": "http://hanoi.fds.vn:2281/api"
+		"server": "http://hanoi.fds.vn:2281/api",
+		"endpoint": "http://hanoi.fds.vn:2281/api/"
 	},
 	"groupId": "11111",
 	
@@ -10,6 +11,7 @@
 		"serviceinfo_form":"serviceinfo_form.ftl",
 		"filetemplate_form":"filetemplate_form.ftl",
 		"dossiertemplate":"dossiertemplate.ftl",
+		"registrationtemplates":"registrationtemplates.ftl",
 		"dossiertemplate_form":"dossiertemplate_form.ftl",
 		"dossiertemplate_part_form":"dossiertemplate_part_form.ftl",
 		"dossierpart_form":"dossierpart_form.ftl",
@@ -62,7 +64,11 @@
             "employee_birthdate": "employee/employee_birthdate.ftl?p_p_lifecycle=1",
 			"employee_detail": "employee/employee_detail.ftl?p_p_lifecycle=1",
 			"employee_create": "employee/employee_create.ftl?p_p_lifecycle=1",
-			"employee_detail_update_jobpos": "employee/employee_detail_update_jobpos.ftl?p_p_lifecycle=1"
+			"employee_detail_update_jobpos": "employee/employee_detail_update_jobpos.ftl?p_p_lifecycle=1",
+			"employee_index": "employee/employee_index.ftl?p_p_lifecycle=1"
+		},
+		"adminJobPosPortlet": {
+			"jobpos_list": "jobpos/jobpos_list.ftl?p_p_lifecycle=1",
 		}
 	},
 	"portletNamespace" : "abc",
