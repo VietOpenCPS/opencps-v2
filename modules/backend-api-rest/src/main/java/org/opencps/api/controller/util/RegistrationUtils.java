@@ -18,8 +18,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationUtils {
-	public static List<RegistrationModel> mappingToRegistrationResultModel(List<Document> documents,
-			ServiceContext serviceContext) {
+	public static List<RegistrationModel> mappingToRegistrationResultModel(List<Document> documents) {
 		List<RegistrationModel> data = new ArrayList<RegistrationModel>();
 
 		for (Document doc : documents) {
