@@ -1,4 +1,4 @@
-<div class="row-header eq-height">
+<#-- <div class="row-header eq-height">
 			
 	<div class="col-sm-8 align-middle PL0">
 		
@@ -548,4 +548,4 @@
 		});
 		
 	});
- </script>
+ </script> -->

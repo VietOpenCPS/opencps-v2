@@ -15,7 +15,7 @@
 						<div class="MLA form-inline">
 							
 							<input type="text" class="form-control" name="soChungChi" placeholder="Nhập số chứng chỉ" 
-								data-bind="visible: isInvestigated, events: { change: filterInvestigation}" >
+								data-bind="visible: isInvestigated, events: { change: filterInvestigation}, value: soChungChi" >
 							
 							<input type="text" class="form-control" id="keyInput" placeholder="Nhập từ khóa"
 								data-bind="events: { keyup: filterKey}" style="width: 290px;">

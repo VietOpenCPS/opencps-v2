@@ -59,7 +59,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			if (Validator.isNull(formNo) && Validator.isNull(govAgencyCode)) {
 				registrationTemplateJsonObject = action.getRegistrationTemplates(groupId, start, end);
 			} else {
-				registrationTemplateJsonObject = action.getRegistrationTemplates(formNo, govAgencyCode);
+				registrationTemplateJsonObject = action.getRegistrationTemplates(groupId, formNo, govAgencyCode);
 			}
 
 			List<RegistrationTemplates> lstRegistrationTemplate = (List<RegistrationTemplates>) registrationTemplateJsonObject

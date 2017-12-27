@@ -10,12 +10,15 @@
        "alpaca_templateNo": "EMPLOYEE",
        "dossierStatus":[
           { "text" : "Hồ sơ mới", value : "new"},
+	      { "text" : "Hồ sơ chờ tiếp nhận", value : "receiving"},
+	      { "text" : "Hồ sơ đã tiếp nhận", value : "processing"},
 	      { "text" : "Hồ sơ chờ bổ sung", value : "waiting"},
 	      { "text" : "Hồ sơ chờ thanh toán", value : "paying"},
 	      { "text" : "Hồ sơ đã kết thúc", value : "done"},
 	      { "text" : "Hồ sơ yêu cầu hủy", value : "cancelling"},
 	      { "text" : "Hồ sơ xác nhận hủy", value : "cancelled"},
-	      { "text" : "Tất cả hồ sơ", value : "all", count: 160  }
+	      { "text" : "Hồ sơ đến hạn XN hiệu lực", value : "expired"},
+	      { "text" : "Tất cả hồ sơ", value : "all"}
 	    ]
 	  },
 	dossierId : 101,
@@ -26,6 +29,7 @@
 		"customer_dossier_detail_2": "customer_dossier_detail_2.ftl",
 	    "customer_dossier_detail_3": "customer_dossier_detail_3.ftl",
 		"customer_dossierlist": "customer_dossierlist.ftl",
+		"notificationPaying":"notificationPaying.ftl",
 		"customer_dossier_detail": "customer_dossier_detail.ftl",
 		"customer_dossier_detail_2": "customer_dossier_detail_2.ftl",
 		"customer_dossier_detail_3": "customer_dossier_detail_3.ftl",
@@ -50,7 +54,7 @@
 		"customer_dossier_info":"customer_dossier_info.ftl",
 		"customer_dossier_component_profiles":"customer_dossier_component_profiles.ftl",
 		"notification":"notification.ftl",
-		"customer_dosier_waitpaying" : "customer_dosier_waitpaying.ftl"
+		"customer_dossier_waitpaying" : "customer_dossier_waitpaying.ftl"
 	},
 	"groupId" : 20147,
 	"include":{
@@ -706,8 +710,7 @@
 	"dossier_success": {
 		"name": "Cục bản quyền tác giả",
 		"postoffice": "true"
-	},
-	"lblApplicantNote": "abcbd"
+	}
 
 
 }

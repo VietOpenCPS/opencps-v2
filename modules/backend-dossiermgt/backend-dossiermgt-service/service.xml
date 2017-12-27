@@ -1082,10 +1082,17 @@
 		<!-- Order -->
 
 		<!-- Filter -->
+        <order by="desc">
+            <order-column name="modifiedDate" order-by="desc"></order-column>
+        </order>
 		<finder return-type="Collection" name="F_submitting">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="submitting"></finder-column>
 		</finder>
+        <finder name="GID_UID" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="userId"></finder-column>
+        </finder>
 
 	</entity>
 
@@ -1285,10 +1292,12 @@
 		</finder>
 		
 		<finder return-type="Collection" name="FNO">
+			<finder-column name="groupId" />
 			<finder-column name="formNo" />
 		</finder>
 		
 		<finder return-type="Collection" name="GOVCODE">
+			<finder-column name="groupId" />
 			<finder-column name="govAgencyCode" />
 		</finder>
 	</entity>

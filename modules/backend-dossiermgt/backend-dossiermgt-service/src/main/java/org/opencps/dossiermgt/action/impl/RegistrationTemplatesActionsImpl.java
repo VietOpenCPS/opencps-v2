@@ -45,17 +45,17 @@ public class RegistrationTemplatesActionsImpl implements RegistrationTemplatesAc
 	}
 	
 	@Override
-	public JSONObject getRegistrationTemplates(String formNo, String govAgencyCode) {
+	public JSONObject getRegistrationTemplates(long groupId, String formNo, String govAgencyCode) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		List<RegistrationTemplates> lstRegistrationTemplates = null;
 		try {
 			if(formNo != null){
 				lstRegistrationTemplates = RegistrationTemplatesLocalServiceUtil
-						.getRegistrationTemplatesbyFormNo(formNo);
+						.getRegistrationTemplatesbyFormNo(groupId, formNo);
 			}else{
 				lstRegistrationTemplates = RegistrationTemplatesLocalServiceUtil
-						.getRegistrationTemplatesbyGOVCODE(govAgencyCode);
+						.getRegistrationTemplatesbyGOVCODE(groupId, govAgencyCode);
 			}
 
 			result.put("total", lstRegistrationTemplates.size());

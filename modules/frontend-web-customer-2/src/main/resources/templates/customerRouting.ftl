@@ -31,6 +31,9 @@
 		$("#profileStatus li").removeClass('active');
 		$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 		$('#profileStatus li[dataPk= "all"]').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
+		modelMain.set("visibleHeader", $('#profileStatus li[dataPk= "all"] .dossierStatus').text());
+		modelMain.set("isInvestigated", false);
+		
 		// $('#profileStatus li[dataPk= "all"]').css("pointer-events","none");
 		$('#profileStatus li[dataPk= "all"]').addClass('active')
 	});

@@ -68,7 +68,7 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="guide-section PB0">
-					<div class="head-part" data-toggle="collapse" data-target="#collapseDossierG">
+					<div class="head-part slide-toggle">
 						<div class="background-triangle-small">
 							<i class="fa fa-star"></i>
 
@@ -77,7 +77,8 @@
 						<i class="fa fa-angle-down pull-right hover-pointer MR15" aria-hidden="true" style="font-size: 150%;"></i>
 					</div>	
 
-					<div class="content-part collapse PB15 toggle-hide" id="collapseDossierG">
+					<div class="content-part collapse PB15" id="collapseDossierG">
+
 						<span data-bind="html:dossierNote"></span>
 						<#-- <p class="MB0 text-light-blue PB15"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p> -->
 					</div>
@@ -90,7 +91,7 @@
 			<div class="col-sm-12">
 				<form id="dossierFormSubmiting">
 					<div class="dossier-parts">
-						<div class="head-part align-middle MB5" data-toggle="collapse" data-target="#lsDossierTemplPart">
+						<div class="head-part align-middle MB5 slide-toggle">
 							<div class="background-triangle-small">I</div> 
 							<div class="col-sm-12 PL0">
 								<span class="text-uppercase hover-pointer">Thành phần hồ sơ</span> 
@@ -107,9 +108,9 @@
 						</div>
 						<script type="text/x-kendo-template" id="templateDossierPart">
 							#if(partType == 1){#
-							<div class="row-parts-head align-middle">
+							<div class="row-parts-head align-middle slide-toggle">
 								<span class="text-bold MR5">#:itemIndex#.</span>
-								<span  #if(hasForm){# data-toggle="collapse" data-target="\\#collapseDossierPart#:id#" #}# >
+								<span>
 									#:partName# 
 									#if(required){#
 									<span class="red">*</span>
@@ -142,7 +143,7 @@
 							console.log(dossierFile);
 							#
 
-							<div class="collapse toggle-hide" id="collapseDossierPart#:id#">
+							<div class="collapse" id="collapseDossierPart#:id#">
 
 								<div class="col-xs-12 col-sm-12 text-right">
 									<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
@@ -190,7 +191,9 @@
 </div>
 
 <div class="dossier-parts" id="paymentDossier">
-	<div class="head-part align-middle MB5" data-toggle="collapse" data-target="#collapseDossierPayment">
+
+	<div class="head-part align-middle MB5 slide-toggle">
+
 		<div class="background-triangle-small" id="paymentDossierNum">II</div> 
 		<div class="col-sm-12 PL0">
 
@@ -297,7 +300,9 @@
 </div> 
 
 <div class="dossier-parts">
-	<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierResult">
+
+	<div class="head-part align-middle slide-toggle">
+
 		<div class="background-triangle-small" id="resultDossierNum">II</div> 
 		<div class="col-sm-12 PL0">
 
@@ -328,7 +333,8 @@
 </div>
 
 <div class="dossier-parts">
-	<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierPart">
+
+	<div class="head-part align-middle slide-toggle">
 		<div class="background-triangle-small" id="logDossierNum">III</div> 
 		<div class="col-sm-12 PL0">
 

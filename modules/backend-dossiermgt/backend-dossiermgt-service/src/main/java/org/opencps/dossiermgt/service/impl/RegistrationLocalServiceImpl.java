@@ -46,6 +46,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
@@ -342,5 +343,12 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		return registration;
 	}
-
+	
+	public List<Registration> getRegistrationByGID_UID(long groupId, long userId){
+		return registrationPersistence.findByGID_UID(groupId, userId);
+	}
+	
+	public Registration getRegistrationByGID_UID_Last(long groupId, long userId){
+		return registrationPersistence.fetchByGID_UID_Last(groupId, userId, null);
+	}
 }

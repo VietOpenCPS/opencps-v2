@@ -94,13 +94,14 @@ public class DossierPaymentUtils {
 				try {
 					epaymentProfileJSON.put("paymentPattern", pattern);
 					epaymentProfileJSON.put("detailUrl", epaymentConfigJSON.getString("paymentResultUrl") + dossierId);
-					epaymentProfileJSON.put("keypayGoodCode", PaymentUrlGenerator.generatorGoodCode(11));
 					
 					String keypayMerchantCode = PaymentUrlGenerator.generatorGoodCode(6);
+					String keypayGoodCode = PaymentUrlGenerator.generatorGoodCode(10);
+					epaymentProfileJSON.put("keypayGoodCode", keypayGoodCode);
 					epaymentProfileJSON.put("keypayMerchantCode", keypayMerchantCode);
 
 					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
-							paymentFile.getPaymentFileId(), pattern, dossierId, keypayMerchantCode);
+							paymentFile.getPaymentFileId(), pattern, dossierId, keypayMerchantCode, keypayGoodCode);
 
 					epaymentProfileJSON.put("keypayUrl", generatorPayURL);
 					

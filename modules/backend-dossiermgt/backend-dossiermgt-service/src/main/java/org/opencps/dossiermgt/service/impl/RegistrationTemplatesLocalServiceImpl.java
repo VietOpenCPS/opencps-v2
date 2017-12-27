@@ -50,16 +50,16 @@ import com.liferay.portal.kernel.util.Validator;
 @ProviderType
 public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplatesLocalServiceBaseImpl {
 	
-	public List<RegistrationTemplates> getRegistrationTemplatesbyFormNo(String formNo){
+	public List<RegistrationTemplates> getRegistrationTemplatesbyFormNo(long groupId, String formNo){
 		
-		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByFNO(formNo);
+		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByFNO(groupId, formNo);
 		
 		return lstRegistrationTemplates;
 	}
 	
-	public List<RegistrationTemplates> getRegistrationTemplatesbyGOVCODE(String govAgencyCode){
+	public List<RegistrationTemplates> getRegistrationTemplatesbyGOVCODE(long groupId, String govAgencyCode){
 		
-		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByGOVCODE(govAgencyCode);
+		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByGOVCODE(groupId, govAgencyCode);
 		
 		return lstRegistrationTemplates;
 	}
