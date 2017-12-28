@@ -11,7 +11,7 @@
 				<div class="col-sm-3 box no-border-radius">
 					<div class="row" style="margin-bottom : 3px;">
 						<div class="col-sm-12 PT15 PB15" style="background-color: #ccc;">
-							<span class="text-bold">Thành phần hồ sơ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span>#${(dossierId)!}</span> <i class="fa fa-times pull-right hover-pointer" aria-hidden="true" data-dismiss="modal" style="font-size: 150%;"></i>
+							<span class="text-bold">Thành phần hồ sơ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span>#${(dossierId)!}</span> 
 						</div>
 					</div>
 					<div class="row">
