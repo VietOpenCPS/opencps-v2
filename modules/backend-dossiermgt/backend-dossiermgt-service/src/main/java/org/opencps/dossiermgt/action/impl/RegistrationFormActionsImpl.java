@@ -35,9 +35,9 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 	}
 
 	@Override
-	public RegistrationForm deleteRegistrationForm(long registrationId, String referenceUid) throws PortalException {
+	public RegistrationForm deleteRegistrationForm(long groupId, long registrationId, String referenceUid) throws PortalException {
 
-		return RegistrationFormLocalServiceUtil.deleteRegistrationForm(registrationId, referenceUid);
+		return RegistrationFormLocalServiceUtil.deleteRegistrationForm(groupId, registrationId, referenceUid);
 
 	}
 
@@ -48,9 +48,9 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 	}
 
 	@Override
-	public List<RegistrationForm> getFormbyRegId(long registrationId) throws PortalException {
+	public List<RegistrationForm> getFormbyRegId(long groupId, long registrationId) throws PortalException {
 
-		List<RegistrationForm> lstRegistrationForm = RegistrationFormLocalServiceUtil.getFormsbyRegId(registrationId);
+		List<RegistrationForm> lstRegistrationForm = RegistrationFormLocalServiceUtil.getFormsbyRegId(groupId, registrationId);
 
 		return lstRegistrationForm;
 	}
@@ -75,9 +75,9 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 	}
 	
 	@Override
-	public List<RegistrationForm> deleteRegistrationForms(long registrationId) throws PortalException {
+	public List<RegistrationForm> deleteRegistrationForms(long groupId, long registrationId) throws PortalException {
 
-		return RegistrationFormLocalServiceUtil.deleteRegistrationForms(registrationId);
+		return RegistrationFormLocalServiceUtil.deleteRegistrationForms(groupId, registrationId);
 
 	}
 }

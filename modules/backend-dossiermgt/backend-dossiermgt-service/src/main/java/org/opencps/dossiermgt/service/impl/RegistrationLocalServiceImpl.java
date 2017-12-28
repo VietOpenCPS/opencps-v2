@@ -27,9 +27,13 @@ import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
+import org.opencps.usermgt.service.impl.ApplicantLocalServiceImpl;
+import org.opencps.usermgt.service.util.UserMgtUtils;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -90,7 +94,13 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		Registration model = registrationPersistence.create(registrationId);
 
-		int start = -1, end = -1;
+		Date idDate = null;
+
+		try {
+			idDate = UserMgtUtils.convertDate(applicantIdDate);
+		} catch (Exception e) {
+			_log.error(RegistrationLocalServiceImpl.class.getName() + "date input error");
+		}
 
 		model.setGroupId(groupId);
 		model.setCreateDate(now);
@@ -100,6 +110,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setApplicantName(applicantName);
 		model.setApplicantIdType(applicantIdType);
 		model.setApplicantIdNo(applicantIdNo);
+		model.setApplicantIdDate(idDate);
 		model.setAddress(address);
 		model.setCityCode(cityCode);
 		model.setCityName(cityName);
@@ -114,6 +125,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setGovAgencyName(govAgencyName);
 		model.setRegistrationClass(registrationClass);
 		model.setRegistrationState(registrationState);
+		model.setSubmitting(true);
 
 		RegistrationFormActions actionForm = new RegistrationFormActionsImpl();
 		
@@ -133,6 +145,14 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
 		User userAction = userLocalService.getUser(userId);
+		
+		Date idDate = null;
+
+		try {
+			idDate = UserMgtUtils.convertDate(applicantIdDate);
+		} catch (Exception e) {
+			_log.error(RegistrationLocalServiceImpl.class.getName() + "date input error");
+		}
 
 		Registration model = registrationPersistence.fetchByPrimaryKey(registrationId);
 
@@ -140,6 +160,8 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setCreateDate(now);
 		model.setModifiedDate(now);
 		model.setUserId(userAction.getUserId());
+		model.setSubmitting(true);
+		model.setApplicantIdDate(idDate);
 		
 		if(Validator.isNotNull(applicantName)) {
 			model.setApplicantName(applicantName);
@@ -192,7 +214,6 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		if(Validator.isNotNull(registrationState)) {
 			model.setRegistrationState(registrationState);
 		}
-		
 
 		return registrationPersistence.update(model);
 	}
@@ -454,4 +475,6 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 	public Registration getRegistrationByGID_UID_Last(long groupId, long userId) {
 		return registrationPersistence.fetchByGID_UID_Last(groupId, userId, null);
 	}
+	
+	private Log _log = LogFactoryUtil.getLog(RegistrationLocalServiceImpl.class);
 }
