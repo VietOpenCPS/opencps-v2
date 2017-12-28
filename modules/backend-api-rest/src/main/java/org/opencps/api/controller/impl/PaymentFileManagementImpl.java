@@ -723,7 +723,11 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			PaymentFileActions actions = new PaymentFileActionsImpl();
 			actions.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(), serviceContext);
 			
-			uri = new URI(epaymentProfileJSON.getString("detailUrl"));
+			// Change payment Status = 2
+			actions.updateFileConfirm(paymentFile.getGroupId(), paymentFileId, paymentFile.getReferenceUid(), StringPool.BLANK, "N\u1ED9p online", JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
+			
+			JSONObject paymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
+			uri = new URI(paymentConfigJSON.getString("paymentResultUrl") + id);
 			
 			return Response.temporaryRedirect(uri).build();
 		} catch (Exception e) {

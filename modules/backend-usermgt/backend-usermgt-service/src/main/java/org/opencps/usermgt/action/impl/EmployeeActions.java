@@ -503,7 +503,8 @@ public class EmployeeActions implements EmployeeInterface {
 
 					long[] organizationIds = new long[] {};
 					long[] groupIds = {
-						groupId
+						groupId,
+						20143
 					};
 
 					String passWord = PwdGenerator.getPassword();
