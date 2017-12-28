@@ -1093,6 +1093,11 @@
             <finder-column name="groupId"></finder-column>
             <finder-column name="userId"></finder-column>
         </finder>
+        
+        <finder return-type="Registration" name="G_REGID" >
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="registrationId"></finder-column>
+        </finder>
 
 	</entity>
 
