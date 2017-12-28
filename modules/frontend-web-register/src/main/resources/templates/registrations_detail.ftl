@@ -67,7 +67,8 @@
 									<div class="col-sm-7">
 										<div class="form-group"> 
 											<input type="text" class="form-control input-sm" 
-												data-bind="value: registrationModel.applicantIdDate" 
+												data-bind="value: registrationModel.applicantIdDate"
+												data-role="datepicker" data-format="dd/MM/yyyy"
 												id="applicantIdDate" name="applicantIdDate"> 
 										</div>
 									</div>
@@ -311,17 +312,6 @@
 	
 	var fnBack;
 	var fnNext;
-	$(function(){
-
-		$("#applicantIdDate").kendoDatePicker({
-			start: "month",
-			depth: "year",
-			format: "dd/MM/yyyy",
-			dateInput: false
-		});
-
-	});
-
 
 var removeRegistrationsFile = function(registrationId, fileId){
 	$.ajax({
