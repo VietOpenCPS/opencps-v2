@@ -78,12 +78,10 @@ public class RegistrationActionsImpl implements RegistrationActions {
 
 		// changeType removed in registrationForm
 		for (RegistrationForm registrationForm : lstRegistrationForm) {
-			if (registrationForm.isRemoved() == false) {
-				registrationForm.setRemoved(true);
+				registrationForm.setIsNew(true);
 				RegistrationForm registrationFormChanged = RegistrationFormLocalServiceUtil
 						.updateRegistrationForm(registrationForm);
 				lstRegistrationFormchange.add(registrationFormChanged);
-			}
 		}
 
 		// add registrationLog
@@ -111,15 +109,15 @@ public class RegistrationActionsImpl implements RegistrationActions {
 				.getRegistrationTemplateses(start, end);
 
 		// add registrationForm
-		for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
-			int fileEntryId = getfileEntryId(registrationTemplates.getSampleData(),
-					registrationTemplates.getFormScript(), registrationTemplates.getFormReport());
-
-			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
-					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
-					registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
-					registrationTemplates.getFormReport(), fileEntryId, false, false, serviceContext);
-		}
+//		for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
+//			int fileEntryId = getfileEntryId(registrationTemplates.getSampleData(),
+//					registrationTemplates.getFormScript(), registrationTemplates.getFormReport());
+//
+//			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
+//					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
+//					registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
+//					registrationTemplates.getFormReport(), fileEntryId, false, false, serviceContext);
+//		}
 
 		return RegistrationLocalServiceUtil.updateRegistration(groupId, registrationId, applicantName, applicantIdType,
 				applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
