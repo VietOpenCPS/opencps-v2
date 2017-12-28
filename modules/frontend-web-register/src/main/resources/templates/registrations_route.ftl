@@ -130,7 +130,7 @@ $(function(){
 			
 			var obj = vm.registrationsListView_dataSource.data().filter(function( obj ) {
 							return ( obj.registrationId == pk ) ;
-						})
+						});
 			
 			vm.registrationModelMap(obj[0]);
 			
@@ -217,8 +217,13 @@ $(function(){
 							success : function(result){
 								
 								result["data"] = result.total == 0?[]: result["data"];
+								
+								result["data"] = result["data"].filter(function( obj ) {
+									return ( obj.removed == false ) ;
+								});
+								
 								var index = 0;
-								for (index=0; index<result.total; index++){
+								for (index=0; index< result["data"].length; index++){
 									
 									result["data"][index]["itemIndex"] = index+1;
 								

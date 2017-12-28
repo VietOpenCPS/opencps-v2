@@ -366,6 +366,10 @@ var fnGetFormData = function(registrationId,referentUid){
 			url : "${api.server}/registrations/"+registrationId+"/forms/"+referentUid+"/formdata",
 			type : "GET",
 			dataType : "json",
+			headers: {
+				"groupId": ${groupId},
+				Accept : "application/json"
+			},
 			async : false,
 			success : function(result){
 				value = result;
