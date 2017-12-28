@@ -247,7 +247,7 @@ public class VRActionsImpl implements VRActions {
 							//_log.info("///////////////////////////////////////////// value_text " + value_text);
 						}
 
-						if (dossierFileId > 0) {
+						if (dossierFileId > 0 && dossierFile.getFileEntryId() > 0) {
 							// Update online form
 							if (formDataObject.has("bb_" + tmpKey)) {
 								resultTD = formDataObject.getString("bb_" + tmpKey);
