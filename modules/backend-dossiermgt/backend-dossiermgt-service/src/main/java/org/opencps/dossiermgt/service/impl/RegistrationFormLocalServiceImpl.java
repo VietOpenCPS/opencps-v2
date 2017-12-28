@@ -180,6 +180,8 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 			registrationForm.setModifiedDate(now);
 			registrationForm.setUserId(userAction.getUserId());
 			
+			registrationForm.setRegistrationId(registration.getRegistrationId());
+			registrationForm.setReferenceUid(referenceUid);
 			registrationForm.setFormNo(formNo);
 			registrationForm.setFormName(formName);
 			registrationForm.setFormData(formData);
