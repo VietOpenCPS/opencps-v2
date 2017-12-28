@@ -190,11 +190,26 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			RegistrationActions action = new RegistrationActionsImpl();
-
+			String cityName = "";
+			String districtName = "";
+			String wardName = "";
+			
+			if (Validator.isNotNull(input.getCityCode())) {
+				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
+				
+			}
+			if (Validator.isNotNull(input.getDistrictCode())) {
+				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
+				
+			}
+			if (Validator.isNotNull(input.getWardCode())) {
+				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+				
+			}
 			Registration registration = action.updateRegistration(groupId, registrationId, input.getApplicantName(),
 					input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
-					input.getAddress(), input.getCityCode(), input.getCityName(), input.getDistrictCode(),
-					input.getDistrictName(), input.getWardCode(), input.getWardName(), input.getContactName(),
+					input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(),
+					districtName, input.getWardCode(), wardName, input.getContactName(),
 					input.getContactTelNo(), input.getContactEmail(), input.getGovAgencyCode(),
 					input.getGovAgencyName(), input.getRegistrationState(), input.getRegistrationClass(),
 					serviceContext);

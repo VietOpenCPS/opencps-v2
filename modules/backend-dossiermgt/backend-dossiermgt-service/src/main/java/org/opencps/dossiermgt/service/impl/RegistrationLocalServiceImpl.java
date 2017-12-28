@@ -160,26 +160,60 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setCreateDate(now);
 		model.setModifiedDate(now);
 		model.setUserId(userAction.getUserId());
-
-		model.setApplicantName(applicantName);
-		model.setApplicantIdType(applicantIdType);
-		model.setApplicantIdNo(applicantIdNo);
-		model.setApplicantIdDate(idDate);
-		model.setAddress(address);
-		model.setCityCode(cityCode);
-		model.setCityName(cityName);
-		model.setDistrictCode(districtCode);
-		model.setDistrictName(districtName);
-		model.setWardCode(wardCode);
-		model.setWardName(wardName);
-		model.setContactName(contactName);
-		model.setContactTelNo(contactTelNo);
-		model.setContactEmail(contactEmail);
-		model.setGovAgencyCode(govAgencyCode);
-		model.setGovAgencyName(govAgencyName);
-		model.setRegistrationClass(registrationClass);
-		model.setRegistrationState(registrationState);
 		model.setSubmitting(true);
+		model.setApplicantIdDate(idDate);
+		
+		if(Validator.isNotNull(applicantName)) {
+			model.setApplicantName(applicantName);
+		}
+		if(Validator.isNotNull(applicantIdType)) {
+			model.setApplicantIdType(applicantIdType);
+		}
+		if(Validator.isNotNull(applicantIdNo)) {
+			model.setApplicantIdNo(applicantIdNo);
+		}
+		if(Validator.isNotNull(address)) {
+			model.setAddress(address);
+		}
+		if(Validator.isNotNull(cityCode)) {
+			model.setCityCode(cityCode);
+		}
+		if(Validator.isNotNull(cityName)) {
+			model.setCityName(cityName);
+		}
+		if(Validator.isNotNull(districtCode)) {
+			model.setDistrictCode(districtCode);
+		}
+		if(Validator.isNotNull(districtName)) {
+			model.setDistrictName(districtName);
+		}
+		if(Validator.isNotNull(wardCode)) {
+			model.setWardCode(wardCode);
+		}
+		if(Validator.isNotNull(wardName)) {
+			model.setWardName(wardName);
+		}
+		if(Validator.isNotNull(contactName)) {
+			model.setContactName(contactName);
+		}
+		if(Validator.isNotNull(contactTelNo)) {
+			model.setContactTelNo(contactTelNo);
+		}
+		if(Validator.isNotNull(contactEmail)) {
+			model.setContactEmail(contactEmail);
+		}
+		if(Validator.isNotNull(govAgencyCode)) {
+			model.setGovAgencyCode(govAgencyCode);
+		}
+		if(Validator.isNotNull(govAgencyName)) {
+			model.setGovAgencyName(govAgencyName);
+		}
+		if(Validator.isNotNull(registrationClass)) {
+			model.setRegistrationClass(registrationClass);
+		}
+		if(Validator.isNotNull(registrationState)) {
+			model.setRegistrationState(registrationState);
+		}
 
 		return registrationPersistence.update(model);
 	}
