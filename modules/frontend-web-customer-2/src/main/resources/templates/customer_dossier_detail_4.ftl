@@ -515,7 +515,8 @@
 			<span data-bind="text:postalAddress"></span> <span data-bind="text:postalCityName"></span> <span data-bind="text:postalTelNo"></span>
 		</div>
 	</div>
-
+</div>
+<div class="row-parts-content">
 	<#if sendReissue?has_content >
 	<div class="row MB20">
 		<div class="col-sm-12">
@@ -533,7 +534,7 @@
 	</div>
 
 	<#else>
-	
+		
 	</#if>
 </div>
 
@@ -1308,6 +1309,12 @@ $("#btn-sendadd-dosier").click(function(){
 
 var fnCorrecting = function(dossierId){
 	console.log("----------4" + "${(dossier.dossierStatus)!}");
+	var applicantNote = $("textarea#applicantNote").val();
+	if(applicantNote.trim() == ''){
+		alert('Bạn phải nhập ý kiến trước khi gửi.');
+		$("textarea#applicantNote").focus();
+		return;
+	}
 	if("${(dossier.dossierStatus)!}" == "done"){
 		console.log("run sendReissue!");
 		$.ajax({

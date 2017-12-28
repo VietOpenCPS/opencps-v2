@@ -37,8 +37,14 @@
 			<a href="javascript:;" class="btn btn-active" onclick="fnCancelling(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu hủy</a>
 
 			<#elseif sendAdd?has_content >
+			
+			<#assign btnLabel = "Gửi bổ sung">
+		
+			<#if dossier.dossierStatus == "done">
+				<#assign btnLabel = "Sửa đổi bổ sung">
+			</#if>
 
-			<a href="javascript:;" class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
+			<a href="javascript:;" class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> ${btnLabel}</a>
 
 			<#else>
 
@@ -324,7 +330,13 @@
 	<#elseif sendAdd?has_content >
 
 	<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-	<a href="javascript:;" class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
+		<#assign btnLabel = "Gửi bổ sung">
+		
+		<#if dossier.dossierStatus == "done">
+			<#assign btnLabel = "Sửa đổi bổ sung">
+		</#if>
+	
+	<a href="javascript:;" class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> ${btnLabel}</a>
 	<#else>
 
 	<button class="btn btn-active" id="btn-save-dossier" type="button" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý..."><i class="fa fa-save"></i> Lưu</button>
