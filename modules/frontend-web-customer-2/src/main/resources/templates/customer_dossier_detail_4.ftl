@@ -53,11 +53,11 @@
 				<div class="row MB5" id="">
 					<span class="text-bold">Thời gian gửi</span>: <span data-bind="text:submitDate"></span>
 				</div>
-				<div class="row" id="">
+				<#-- <div class="row" id="">
 					<a href="javascript:;" class="text-light-blue text-underline">
 						Thông tin chủ hồ sơ
 					</a>
-				</div>
+				</div> -->
 			</div>
 			
 			<div class="col-sm-12">
@@ -86,7 +86,98 @@
 				</div>
 			</div>
 		</div>
+		<#-- Bổ sung thông tin chủ hồ sơ -->
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="dossier-parts" >
+					<div class="head-part align-middle slide-toggle">
+						<div class="background-triangle-small">
+							<i class="fa fa-star"></i>
+						</div>
+						<div class="col-sm-12 PL0">
 
+							<span class="text-uppercase hover-pointer">
+								Thông tin chủ hồ sơ
+							</span>
+							<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
+						</div>
+					</div>
+					<div class="content-part collapse" id="collapseDossierI">
+						<div class="row-parts-head MT5">
+
+							<div class="row MT5">
+								<div class="col-sm-2">
+									<label>Họ và tên</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:contactName"></span>
+									
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Địa chỉ</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:address"></span>
+									
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Tỉnh/ Thành phố</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:cityName"></span>
+									
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Quận/ Huyện</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:districtName" ></span>
+									
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Xã/ Phường</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:wardName" required></span>
+									
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Điện thoại</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:contactTelNo"></span>
+									
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Địa chỉ email</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:contactEmail"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<#--  -->
 		<div class="row">
 			<div class="col-sm-12">
 				<form id="dossierFormSubmiting">
@@ -806,6 +897,10 @@
 							postalCityName : result.postalCityName,
 							postalTelNo : result.postalTelNo,
 							dossierTemplateNo : result.dossierTemplateNo,
+							contactName: result.contactName,
+							cityName:result.cityName,
+							districtName:result.districtName,
+							wardName:result.wardName,
 							viaPostal : function(e){
 								
 								if(result.viaPostal === 0){
