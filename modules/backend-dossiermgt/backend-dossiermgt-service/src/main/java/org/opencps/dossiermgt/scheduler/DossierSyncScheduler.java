@@ -112,7 +112,9 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 								serviceContext);
 
 					} catch (Exception e) {
-						e.printStackTrace();
+						//e.printStackTrace();
+						
+						_log.info("Can't Sync DossierId = " + jsonDossierSync.get("dossierSyncId"));
 					}
 
 				}
