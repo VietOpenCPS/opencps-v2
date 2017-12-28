@@ -52,6 +52,8 @@ import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -663,6 +665,9 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 		} catch (Exception e) {
+			
+			_log.error(e);
+			
 			ErrorMsg error = new ErrorMsg();
 
 			if (e instanceof UnauthenticationException) {
@@ -961,5 +966,7 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 		
 	}
+	
+	Log _log = LogFactoryUtil.getLog(DossierManagementImpl.class);
 
 }
