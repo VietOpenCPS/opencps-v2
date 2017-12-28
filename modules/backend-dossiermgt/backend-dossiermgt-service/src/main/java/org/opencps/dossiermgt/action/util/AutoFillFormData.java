@@ -165,6 +165,8 @@ public class AutoFillFormData {
 										myCHK += ", " + jsonOtherMap.get(string).toString();
 									}
 									myCHK = myCHK.replaceFirst(", ", "");
+								}else{
+									myCHK = jsonOtherMap.get(variable).toString();
 								}
 							} catch (Exception e) {
 								// TODO: handle exception

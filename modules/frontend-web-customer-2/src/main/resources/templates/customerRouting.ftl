@@ -20,6 +20,7 @@
 		$("#mainType1").show();
 		$(".filterField").show();
 		$("#mainType2").hide();
+		$("#noInput").hide();
 		resetValueFilter();
 		layout.showIn("#main_section", viewMainList);
 		dataSourceProfile.read({
@@ -28,6 +29,7 @@
 		getTotal();
 
 		// $(".itemStatus").css("pointer-events","auto");
+		$('#searchCC').removeClass('active');
 		$("#profileStatus li").removeClass('active');
 		$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 		$('#profileStatus li[dataPk= "all"]').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
@@ -41,10 +43,12 @@
 	manageDossier.route("/thongbao", function(){
         $("#mainType1").hide();
         $(".filterField").hide();
+        $("#noInput").hide();
         $("#mainType2").show();
         $("#mainType2").load("${ajax.notification}",function(result){
         	// dataSourceNotify2.read();
         });
+        $('#searchCC').removeClass('active');
         $("#profileStatus li").removeClass('active');
         $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
         // $(".itemStatus").css("pointer-events","auto");
@@ -53,6 +57,7 @@
     	$("#panel_list").show();
 		$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 	    $("#mainType1").hide();
+	    $("#noInput").hide();
 	    $("#mainType2").show();
 	    $("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+dossierId,function(result){
 
@@ -62,6 +67,7 @@
 	  		$("#panel_list").show();
 			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 			$("#mainType1").hide();
+			$("#noInput").hide();
 			$("#mainType2").show();
 			$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+dossierId,function(result){
 
@@ -99,12 +105,5 @@
 	  		// $(this).children(".icon-sort").children().toggle();
 	  		$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});	
 	  	});
-	  	// 
-	 //  	$(".rowTable").hover(function(){
-	 //  			$(this).css("background","#f2f2f2");
-		//   	}, function () {
-		// 		$(this).css("background","");
-		// 	}
-		// )
 	});
 </script>

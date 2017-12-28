@@ -31,7 +31,7 @@ public class PaymentUrlGenerator {
 	}
 
 	public static String generatorPayURL(long groupId, long paymentFileId, String pattern,
-			long dossierId, String keypayMerchantCode, String keypayGoodCode) throws IOException {
+			long dossierId) throws IOException {
 
 		String result = "";
 		try {
@@ -47,7 +47,7 @@ public class PaymentUrlGenerator {
 			if (Validator.isNotNull(paymentConfig)) {
 				List<String> lsMessages = _putPaymentMessage(pattern);
 
-				long merchant_trans_id = _genetatorTransactionId(keypayMerchantCode);
+				long merchant_trans_id = _genetatorTransactionId();
 
 				JSONObject epaymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
 
@@ -55,10 +55,6 @@ public class PaymentUrlGenerator {
 
 				String good_code = generatorGoodCode(10);
 
-				if (Validator.isNotNull(keypayGoodCode)) {
-					good_code = keypayGoodCode;
-				}
-				
 				String net_cost = String.valueOf((int) paymentFile.getPaymentAmount());
 				String ship_fee = "0";
 				String tax = "0";
@@ -143,7 +139,7 @@ public class PaymentUrlGenerator {
 				param.append("ship_fee=").append(URLEncoder.encode(keypay.getShip_fee(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
 				param.append("tax=").append(URLEncoder.encode(keypay.getTax(), "UTF-8")).append(StringPool.AMPERSAND);
-				param.append("return_url=").append(URLEncoder.encode(keypay.getReturn_url()+ "/" + dossierId + "/" + paymentFileId, "UTF-8"))
+				param.append("return_url=").append(URLEncoder.encode(keypay.getReturn_url(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
 				param.append("version=").append(URLEncoder.encode(keypay.getVersion(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
@@ -158,17 +154,16 @@ public class PaymentUrlGenerator {
 				param.append("country_code=").append(URLEncoder.encode(keypay.getCountry_code(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
 
-				param.append("desc_1=&").append(URLEncoder.encode(desc_1, "UTF-8"))
-				.append(StringPool.AMPERSAND);
-				param.append("desc_2=&").append(URLEncoder.encode(desc_2, "UTF-8"))
-				.append(StringPool.AMPERSAND);
-				param.append("desc_3=&").append(URLEncoder.encode(desc_3, "UTF-8"))
-				.append(StringPool.AMPERSAND);
-				param.append("desc_4=&").append(URLEncoder.encode(desc_4, "UTF-8"))
-				.append(StringPool.AMPERSAND);
-				param.append("desc_5=&").append(URLEncoder.encode(desc_5, "UTF-8"))
-				.append(StringPool.AMPERSAND);
-				
+				param.append("desc_1=").append(URLEncoder.encode(keypay.getDesc_1(), "UTF-8"))
+						.append(StringPool.AMPERSAND);
+				param.append("desc_2=").append(URLEncoder.encode(keypay.getDesc_2(), "UTF-8"))
+						.append(StringPool.AMPERSAND);
+				param.append("desc_3=").append(URLEncoder.encode(keypay.getDesc_3(), "UTF-8"))
+						.append(StringPool.AMPERSAND);
+				param.append("desc_4=").append(URLEncoder.encode(keypay.getDesc_4(), "UTF-8"))
+						.append(StringPool.AMPERSAND);
+				param.append("desc_5=").append(URLEncoder.encode(keypay.getDesc_5(), "UTF-8"))
+						.append(StringPool.AMPERSAND);
 				param.append("xml_description=").append(URLEncoder.encode(keypay.getXml_description(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
 				param.append("secure_hash=").append(keypay.getSecure_hash());
@@ -228,11 +223,11 @@ public class PaymentUrlGenerator {
 	 * @param paymentFile
 	 * @return
 	 */
-	private static long _genetatorTransactionId(String keypayMerchantCode) {
+	private static long _genetatorTransactionId() {
 
 		long transactionId = 0;
 		try {
-			transactionId = Long.valueOf(keypayMerchantCode);
+			transactionId = CounterLocalServiceUtil.increment(PaymentFile.class.getName() + ".genetatorTransactionId");
 		} catch (SystemException e) {
 			_log.error(e);
 		}

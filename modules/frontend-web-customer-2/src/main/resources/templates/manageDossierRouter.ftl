@@ -10,6 +10,7 @@
 			$("#panel_list").show();
 			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 			$("#mainType1").hide();
+			$("#noInput").hide();
 			$("#mainType2").show();
 			$(".filterField").hide();
 			if (dossierItemStatus == "new") {
@@ -22,6 +23,7 @@
 				$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"",function(result){
 				})
 			};
+			$('#searchCC').removeClass('active');
 			$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
@@ -68,6 +70,7 @@
 			$(".fa-expand").css("display","block");
 			$(".fa-compress").css("display","none");
 			$("#mainType1").show();
+			$("#noInput").hide();
 			$(".filterField").show();
 			$("#mainType2").hide();
 			layout.showIn("#main_section", viewMainList);
@@ -95,6 +98,7 @@
 				});
 			};   
 			$("#profileStatus li").removeClass('active');
+			$('#searchCC').removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 			$('#profileStatus li[dataPk='+id+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
 			$('#profileStatus li[dataPk='+id+']').addClass('active');
@@ -113,6 +117,7 @@
         $('#serviceconfig_container').load("${ajax.serviceconfig_administration}");
         $('#input_search').val('');
       });
+      $('#searchCC').removeClass('active');
       $("#profileStatus li").removeClass('active');
       $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
     });
@@ -127,6 +132,7 @@
         $('#input_search').val('');
       });
       $("#profileStatus li").removeClass('active');
+      $('#searchCC').removeClass('active');
       $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
     });
     manageDossier.route("/keyPay/dossiers/(:id)", function(id){
@@ -144,21 +150,22 @@
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').addClass('active');
 		});
 		
-	// Show danh sách hồ sơ lọc theo tra cuu
-		manageDossier.route("/tracuu/(:id)", function(id) {
-			console.log(">>>>>>>>>>Show danh sách hồ sơ lọc theo tra cuu");
+	// Show màn hình tra cứu
+		manageDossier.route("/tra-cuu/tra-cuu-chung-chi", function() {
 			$(".fa-expand").css("display","block");
 			$(".fa-compress").css("display","none");
 			$("#mainType1").show();
-			$(".filterField").show();
+			$(".filterField").hide();
+			$("#noInput").show();
 			$("#mainType2").hide();
+			resetValueFilter();
 			layout.showIn("#main_section", viewMainList);
-			
-			modelMain.set("visibleHeader", $( '#groupLookup li[data-pk='+id+']' ).text());
-			modelPanel.set("investigationId", id),
-			
+			dataSourceProfile.read({
+				"status":"done"
+			});
 			$("#profileStatus li").removeClass('active');
+			$('#searchCC').addClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
-	}); 
+		}); 
 	</script>
 

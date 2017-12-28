@@ -36,8 +36,7 @@ public interface RegistrationManagement {
 	@Path("/registrations")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	public Response add(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+	public Response add(@Context HttpHeaders header, @Context ServiceContext serviceContext,
 			@BeanParam RegistrationInputModel input);
 
 	@GET
@@ -60,13 +59,14 @@ public interface RegistrationManagement {
 	@Path("/registrations/{id}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	public Response delete(@ApiParam(value = "registrationId", required = true) @PathParam("id") long id);
+	public Response delete(@Context HttpHeaders header,
+			@ApiParam(value = "registrationId", required = true) @PathParam("id") long id);
 
 	@GET
 	@Path("/registrations/{id}/forms")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	public Response getFormsbyRegId(@PathParam("id") long id) throws PortalException;
+	public Response getFormsbyRegId(@Context HttpHeaders header, @PathParam("id") long id) throws PortalException;
 
 	@POST
 	@Path("/registrations/{id}/forms/{formNo}")
@@ -77,13 +77,14 @@ public interface RegistrationManagement {
 			@Context ServiceContext serviceContext, @BeanParam RegistrationFormInputModel input,
 			@ApiParam(value = "registrationId", required = true) @PathParam("id") long registrationId,
 			@ApiParam(value = "formNo", required = true) @PathParam("formNo") String formNo);
-	
+
 	@POST
 	@Path("/registrations/syncs")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	public Response registrationSyncs(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@BeanParam RegistrationInputModel input, @FormParam("submitting") boolean submitting, @FormParam("uuid_") String uuid);
-	
+	public Response registrationSyncs(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @BeanParam RegistrationInputModel input,
+			@FormParam("submitting") boolean submitting, @FormParam("uuid_") String uuid);
+
 }
