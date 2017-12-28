@@ -23,7 +23,9 @@ import java.util.List;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.PaymentFileLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -79,11 +81,11 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	 * org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil} to access the
 	 * payment file local service.
 	 */
-	
+
 	public PaymentFile fectPaymentFile(long dossierId, String refId) {
 		return paymentFilePersistence.fetchByD_RUID(dossierId, refId);
 	}
-	
+
 	/**
 	 * Get list payment File using SearchLucene
 	 * 
@@ -189,7 +191,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
+
 		if (Validator.isNotNull(isNew) && Boolean.parseBoolean(isNew)) {
 			MultiMatchQuery query = new MultiMatchQuery(isNew);
 
@@ -293,7 +295,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
+
 		if (Validator.isNotNull(isNew) && Boolean.parseBoolean(isNew)) {
 			MultiMatchQuery query = new MultiMatchQuery(isNew);
 
@@ -349,16 +351,16 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		paymentFile.setEpaymentProfile(epaymentProfile);
 		paymentFile.setBankInfo(bankInfo);
 
-		//WTF?...
-		/*try {
-			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
-			dossier.setApplicantName(applicantName);
-			dossier.setApplicantIdNo(applicantIdNo);
-
-			dossierPersistence.update(dossier);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
+		// WTF?...
+		/*
+		 * try { Dossier dossier =
+		 * DossierLocalServiceUtil.getDossier(dossierId);
+		 * dossier.setApplicantName(applicantName);
+		 * dossier.setApplicantIdNo(applicantIdNo);
+		 * 
+		 * dossierPersistence.update(dossier); } catch (Exception e) {
+		 * e.printStackTrace(); }
+		 */
 
 		paymentFilePersistence.update(paymentFile);
 
@@ -381,7 +383,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	public PaymentFile getPaymentFile(long dossierId, String referenceUid) {
 		return paymentFilePersistence.fetchByD_RUID(dossierId, referenceUid);
 	}
-	
+
 	public List<PaymentFile> getSyncPaymentFile(long groupId, boolean isNew) {
 		return paymentFilePersistence.findByISN_GID(groupId, isNew);
 	}
@@ -439,6 +441,15 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setPaymentStatus(2);
 		}
 
+		// update dossier
+		
+		Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+
+		dossier.setSubmitDate(new Date());
+		dossier.setSubmitting(true);
+		
+		dossierPersistence.update(dossier);
+
 		return paymentFilePersistence.update(paymentFile);
 	}
 
@@ -483,10 +494,17 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setPaymentMethod(paymentMethod);
 			paymentFile.setConfirmPayload(confirmPayload);
 			paymentFile.setConfirmFileEntryId(fileEntryId);
-			//TODO review payment status
+			// TODO review payment status
 			paymentFile.setPaymentStatus(1);
 			paymentFile.setIsNew(true);
 		}
+
+		Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+
+		dossier.setSubmitDate(new Date());
+		dossier.setSubmitting(true);
+		
+		dossierPersistence.update(dossier);
 
 		return paymentFilePersistence.update(paymentFile);
 	}
@@ -520,7 +538,6 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
 			paymentFile.setInvoiceIssueNo(invoiceIssueNo);
 			paymentFile.setInvoiceNo(invoiceNo);
-
 		}
 
 		return paymentFilePersistence.update(paymentFile);
