@@ -209,12 +209,14 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	}
 
 	@Override
-	public Response delete(long id) {
+	public Response delete(HttpHeaders header, long id) {
 		try {
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			
 			RegistrationActions action = new RegistrationActionsImpl();
 
 			Registration registration = action.delete(id);
-			RegistrationFormLocalServiceUtil.deleteRegistrationForms(id);
+			RegistrationFormLocalServiceUtil.deleteRegistrationForms(groupId, id);
 			RegistrationDetailModel result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
 
 			return Response.status(200).entity(result).build();
@@ -226,15 +228,16 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	}
 
 	@Override
-	public Response getFormsbyRegId(long id) throws PortalException {
+	public Response getFormsbyRegId(HttpHeaders header, long id) throws PortalException {
 
 		try {
-
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 
 			RegistrationFormResultsModel result = new RegistrationFormResultsModel();
 
-			List<RegistrationForm> lstRegistrationForm = action.getFormbyRegId(id);
+			List<RegistrationForm> lstRegistrationForm = action.getFormbyRegId(groupId, id);
 			int total = lstRegistrationForm.size();
 
 			List<RegistrationFormModel> lstRegistrationFormModel = RegistrationFormUtils

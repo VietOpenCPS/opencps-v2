@@ -30,7 +30,7 @@ public class RegistrationFormUtils {
 					.getRegistration(registrationForm.getRegistrationId());
 			
 			RegistrationTemplates registrationTemplates = RegistrationTemplatesLocalServiceUtil
-					.getRegTempbyFormNoGovCode(registrationForm.getFormNo(), registration.getGovAgencyCode());
+					.getRegTempbyFormNoGovCode(registrationForm.getGroupId(), registrationForm.getFormNo(), registration.getGovAgencyCode());
 
 			model.setReferenceUid(registrationForm.getReferenceUid());
 			model.setFormNo(registrationForm.getFormNo());
@@ -58,7 +58,7 @@ public class RegistrationFormUtils {
 							.getRegistration(registrationForm.getRegistrationId());
 
 					RegistrationTemplates registrationTemplates = RegistrationTemplatesLocalServiceUtil
-							.getRegTempbyFormNoGovCode(registrationForm.getFormNo(), registration.getGovAgencyCode());
+							.getRegTempbyFormNoGovCode(registrationForm.getGroupId(), registrationForm.getFormNo(), registration.getGovAgencyCode());
 
 					RegistrationFormModel model = new RegistrationFormModel();
 
@@ -68,8 +68,11 @@ public class RegistrationFormUtils {
 					model.setIsNew(registrationForm.isIsNew());
 					model.setRemoved(registrationForm.isRemoved());
 					model.setVersion(version);
-					model.setMultiple(registrationTemplates.getMultiple());
-
+					if(Validator.isNotNull(registrationTemplates.getMultiple())){
+						model.setMultiple(registrationTemplates.getMultiple());
+					}else{
+						model.setMultiple(false);
+					}
 					outputs.add(model);
 				} catch (PortalException e) {
 					e.printStackTrace();
@@ -78,5 +81,5 @@ public class RegistrationFormUtils {
 		}
 		return outputs;
 	}
-
+	
 }
