@@ -302,7 +302,7 @@
 			click: saveRegistration}, css: { hidden: registrationModel.registrationState_hidden }"
 		id="btn-save-registrations" type="button" 
 		data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý...">
-		<i class="fa fa-save"></i> Lưu
+		<i class="fa fa-save"></i> Gửi
 	</button>
 	
 </div>
