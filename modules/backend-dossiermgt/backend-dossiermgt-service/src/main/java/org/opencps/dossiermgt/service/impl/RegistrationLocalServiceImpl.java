@@ -23,9 +23,6 @@ import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
-import org.opencps.dossiermgt.model.RegistrationTemplates;
-import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
-import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
 import org.opencps.usermgt.service.impl.ApplicantLocalServiceImpl;
 import org.opencps.usermgt.service.util.UserMgtUtils;
@@ -147,11 +144,12 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		User userAction = userLocalService.getUser(userId);
 		
 		Date idDate = null;
-
-		try {
-			idDate = UserMgtUtils.convertDate(applicantIdDate);
-		} catch (Exception e) {
-			_log.error(RegistrationLocalServiceImpl.class.getName() + "date input error");
+		if(Validator.isNotNull(applicantIdDate)){
+			try {
+				idDate = UserMgtUtils.convertDate(applicantIdDate);
+			} catch (Exception e) {
+				_log.error(e);
+			}
 		}
 
 		Registration model = registrationPersistence.fetchByPrimaryKey(registrationId);
