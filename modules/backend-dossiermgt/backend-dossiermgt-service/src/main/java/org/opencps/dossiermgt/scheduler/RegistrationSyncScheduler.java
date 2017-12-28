@@ -80,7 +80,7 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 			if (resDossierSync.getInt(RESTFulConfiguration.STATUS) == 200) {
 				
 
-				long groupId = getGroupId(resServerConfig);
+				long groupId = getGroupId(resDossierSync);
 				_log.info("resServerConfig groupId ---------- :" + groupId);
 				
 				// TODO
