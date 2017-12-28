@@ -134,12 +134,12 @@ public class PaymentUrlGenerator {
 						.append(StringPool.AMPERSAND);
 				param.append("good_code=").append(URLEncoder.encode(keypay.getGood_code(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
-				param.append("net_cost=").append(URLEncoder.encode(keypay.getNet_cost(), "UTF-8"))
+				param.append("net_cost=").append(URLEncoder.encode(keypay.getNet_cost(), "UTF-8") )
 						.append(StringPool.AMPERSAND);
 				param.append("ship_fee=").append(URLEncoder.encode(keypay.getShip_fee(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
 				param.append("tax=").append(URLEncoder.encode(keypay.getTax(), "UTF-8")).append(StringPool.AMPERSAND);
-				param.append("return_url=").append(URLEncoder.encode(keypay.getReturn_url()+ "/" + dossierId + "/" + paymentFileId, "UTF-8"))
+				param.append("return_url=").append(URLEncoder.encode(keypay.getReturn_url() + "/" + dossier.getReferenceUid(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
 				param.append("version=").append(URLEncoder.encode(keypay.getVersion(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
