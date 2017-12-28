@@ -476,5 +476,9 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		return registrationPersistence.fetchByGID_UID_Last(groupId, userId, null);
 	}
 	
+	public Registration getRegistrationByG_REGID(long groupId, long registrationId) {
+		return registrationPersistence.fetchByG_REGID(groupId, registrationId);
+	}
+	
 	private Log _log = LogFactoryUtil.getLog(RegistrationLocalServiceImpl.class);
 }
