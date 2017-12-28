@@ -234,4 +234,8 @@ public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplates
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public RegistrationTemplates getRegTempbyFormNoGovCode(String formNo, String govAgencyCode) {
+		return registrationTemplatesPersistence.fetchByGOVCODE_FORMNO(formNo, govAgencyCode);
+	}
 }
