@@ -172,6 +172,7 @@ public class DossierActionUtils {
 						dossierActionNextActioncreateFile.setTemplateFileNo(createFile.getString("templateFileNo"));
 						dossierActionNextActioncreateFile.setReferenceUid(createFile.getString("referenceUid"));
 						dossierActionNextActioncreateFile.setCounter(createFile.getInt("counter"));
+						dossierActionNextActioncreateFile.setReturned(createFile.getBoolean("returned"));
 						outputCreeateFiles.add(dossierActionNextActioncreateFile);
 
 					}

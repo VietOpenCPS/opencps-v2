@@ -515,7 +515,8 @@
 			<span data-bind="text:postalAddress"></span> <span data-bind="text:postalCityName"></span> <span data-bind="text:postalTelNo"></span>
 		</div>
 	</div>
-
+</div>
+<div class="row-parts-content">
 	<#if sendReissue?has_content >
 	<div class="row MB20">
 		<div class="col-sm-12">
@@ -533,7 +534,7 @@
 	</div>
 
 	<#else>
-	
+		
 	</#if>
 </div>
 
@@ -550,12 +551,12 @@
 	<button class="btn btn-active" id="btn-back-dossier" type="button" onclick="fnBack();"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
 	<#if sendReissue?has_content >
 	
-	<button class="btn btn-active" id="btn-sendReissue-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-
+	<button class="btn btn-active" id="btn-sendReissue-dossier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+	<a class="btn btn-active" onclick="fnCorrecting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
 	<#elseif sendAdd?has_content >
 	
-	<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-
+	<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+	<a class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
 	<#else>
 	
 	</#if>
@@ -594,9 +595,11 @@
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
 			var dossierTemplateId = "${(dossierTemplateId)!}";
-			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateId="+dossierTemplateId,function(result){
+			// $("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateId="+dossierTemplateId,function(result){
 
-			});
+			// });
+			var urlView = "http://dangkiemlaprap.mt.gov.vn/group/cong-tiep-nhan#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo+"";
+			window.open(urlView,"_blank")
 		});
 
 		$(document).off("click",".delete-dossier-file");
@@ -1307,7 +1310,13 @@ $("#btn-sendadd-dosier").click(function(){
 
 
 var fnCorrecting = function(dossierId){
-	console.log("${(dossier.dossierStatus)!}");
+	console.log("----------4" + "${(dossier.dossierStatus)!}");
+	var applicantNote = $("textarea#applicantNote").val();
+	if(applicantNote.trim() == ''){
+		alert('Bạn phải nhập ý kiến trước khi gửi.');
+		$("textarea#applicantNote").focus();
+		return;
+	}
 	if("${(dossier.dossierStatus)!}" == "done"){
 		console.log("run sendReissue!");
 		$.ajax({
@@ -1358,9 +1367,15 @@ var fnCorrecting = function(dossierId){
 
 
 var fnSubmitting = function(dossierId){
-	console.log("${(dossier.dossierStatus)!}");
+	console.log("----------4" + "${(dossier.dossierStatus)!}");
 	if("${(dossier.dossierStatus)!}" == "done"){
 		console.log("run senadd!");
+		var applicantNote = $("textarea#applicantNote").val();
+		if(applicantNote.trim() == ''){
+			alert('Bạn phải nhập ý kiến trước khi gửi.');
+			$("textarea#applicantNote").focus();
+			return;
+		}
 		$.ajax({
 			url : "${api.server}/dossiers/${dossierId}",
 			dataType : "json",

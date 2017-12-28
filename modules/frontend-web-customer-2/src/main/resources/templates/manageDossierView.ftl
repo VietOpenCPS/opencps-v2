@@ -170,7 +170,7 @@
 						<#--  -->
 						<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
 							<i class="fa fa-paper-plane" aria-hidden="true"></i>
-							Gửi bổ sung
+							Sửa đổi bổ sung
 						</button>
 					#}#
 					<#--  -->
