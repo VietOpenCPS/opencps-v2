@@ -77,36 +77,52 @@ import javax.xml.bind.annotation.XmlType;
 public class RegistrationInputModel {
 
 	@FormParam(value = "applicantName")
+	@DefaultValue(value = "")
     protected String applicantName;
 	@FormParam(value = "applicantIdType")
+	@DefaultValue(value = "")
     protected String applicantIdType;
 	@FormParam(value = "applicantIdNo")
+	@DefaultValue(value = "")
     protected String applicantIdNo;
 	@FormParam(value = "applicantIdDate")
+	@DefaultValue(value = "")
     protected String applicantIdDate;
+	@DefaultValue(value = "")
     @FormParam(value = "address")
     protected String address;
     @FormParam(value = "cityCode")
+    @DefaultValue(value = "")
     protected String cityCode;
     @FormParam(value = "cityName")
+    @DefaultValue(value = "")
     protected String cityName;
     @FormParam(value = "districtCode")
+    @DefaultValue(value = "")
     protected String districtCode;
     @FormParam(value = "districtName")
+    @DefaultValue(value = "")
     protected String districtName;
     @FormParam(value = "wardCode")
+    @DefaultValue(value = "")
     protected String wardCode;
     @FormParam(value = "wardName")
+    @DefaultValue(value = "")
     protected String wardName;
     @FormParam(value = "contactName")
+    @DefaultValue(value = "")
     protected String contactName;
     @FormParam(value = "contactTelNo")
+    @DefaultValue(value = "")
     protected String contactTelNo;
     @FormParam(value = "contactEmail")
+    @DefaultValue(value = "")
     protected String contactEmail;
     @FormParam(value = "govAgencyCode")
+    @DefaultValue(value = "")
     protected String govAgencyCode;
     @FormParam(value = "govAgencyName")
+    @DefaultValue(value = "")
     protected String govAgencyName;
     @FormParam(value = "registrationState")
     @DefaultValue(value = "0")
