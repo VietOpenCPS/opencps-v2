@@ -73,4 +73,11 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 					registrationTemplates.getFormReport(), 0, false, false, serviceContext);
 		}
 	}
+	
+	@Override
+	public List<RegistrationForm> deleteRegistrationForms(long registrationId) throws PortalException {
+
+		return RegistrationFormLocalServiceUtil.deleteRegistrationForms(registrationId);
+
+	}
 }
