@@ -9,6 +9,7 @@
 				<xsd:element name="isNew" type="xsd:boolean" minOccurs="0" />
 				<xsd:element name="removed" type="xsd:boolean" minOccurs="0" />
 				<xsd:element name="version" type="xsd:long" minOccurs="0" />
+				<xsd:element name="multiple" type="xsd:boolean" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
@@ -21,6 +22,7 @@
 				<xsd:element name="isNew" type="xsd:boolean" minOccurs="0" />
 				<xsd:element name="removed" type="xsd:boolean" minOccurs="0" />
 				<xsd:element name="version" type="xsd:long" minOccurs="0" />
+				<xsd:element name="multiple" type="xsd:boolean" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
