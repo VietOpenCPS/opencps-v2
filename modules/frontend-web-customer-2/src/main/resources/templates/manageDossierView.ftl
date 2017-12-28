@@ -125,13 +125,13 @@
 						#:submitDate#
 						</p>
 					#} else {#
-						<i title="Ngày gửi" class="text-gray">---</i>
+						<p><i title="Ngày gửi" class="text-gray">---</i></p>
 					#}#
 					
 					#if (receiveDate) {#
 						<p title="Ngày tiếp nhận">#:receiveDate#</p>
 					#} else {#
-						<i title="Ngày tiếp nhận" class="text-gray">---</i>
+						<p><i title="Ngày tiếp nhận" class="text-gray">---</i></p>
 					#}#
 				</td>
 

@@ -215,7 +215,7 @@
 
 </script>
 <#-- Phần nội dung điều khoản sử dụng -->
-<div id="rules" style="background-color: #ffffff" class="MT20">
+<div id="rules" style="background-color: #ffffff; color: black" class="MT20">
     <p>Born Hugo Alvar Henrik Aalto (February 3, 1898 - May 11, 1976) in Kuortane, Finland, was noted for his humanistic approach to modernism. He studied architecture at the Helsinki University of Technology from 1916 to 1921. In 1924 he married architect Aino Marsio.</p>
     <p>Born Hugo Alvar Henrik Aalto (February 3, 1898 - May 11, 1976) in Kuortane, Finland, was noted for his humanistic approach to modernism. He studied architecture at the Helsinki University of Technology from 1916 to 1921. In 1924 he married architect Aino Marsio.</p>
     <p>Born Hugo Alvar Henrik Aalto (February 3, 1898 - May 11, 1976) in Kuortane, Finland, was noted for his humanistic approach to modernism. He studied architecture at the Helsinki University of Technology from 1916 to 1921. In 1924 he married architect Aino Marsio.</p>
@@ -236,15 +236,14 @@
     var viewRules = $("#rules");
     $("#viewRules").click(function() {
         viewRules.data("kendoWindow").open();
-        $("div.k-widget.k-window").css("background-color","#f6f6f6")
+        $("div.k-widget.k-window").css({"background-color":"#14bef0","color":"#ffffff"})
     });
     viewRules.kendoWindow({
-        title: "Điều khoản sử dụng:",
+        title: "ĐIỀU KHOẢN SỬ DỤNG :",
         width: "50%",
         height: "500px",
         visible: false,
         actions: [
-          "Minimize",
           "Maximize",
           "Close"
         ],
