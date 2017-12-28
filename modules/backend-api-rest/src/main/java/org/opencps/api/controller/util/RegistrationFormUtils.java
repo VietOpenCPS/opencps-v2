@@ -4,6 +4,7 @@ package org.opencps.api.controller.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencps.api.controller.impl.RegistrationManagementImpl;
 import org.opencps.api.registrationform.model.RegistrationFormDetailModel;
 import org.opencps.api.registrationform.model.RegistrationFormModel;
 import org.opencps.dossiermgt.model.Registration;
@@ -13,9 +14,13 @@ import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationFormUtils {
+	
+	Log _log = LogFactoryUtil.getLog(RegistrationFormUtils.class);
 
 	public static RegistrationFormDetailModel mappingToRegistrationFormDetailModel(RegistrationForm registrationForm) {
 
@@ -24,13 +29,14 @@ public class RegistrationFormUtils {
 		}
 		long version = 1;
 		RegistrationFormDetailModel model = new RegistrationFormDetailModel();
-		
+
 		try {
 			Registration registration = RegistrationLocalServiceUtil
-					.getRegistration(registrationForm.getRegistrationId());
-			
+					.getRegistrationByG_REGID(registrationForm.getGroupId(), registrationForm.getRegistrationId());
+
 			RegistrationTemplates registrationTemplates = RegistrationTemplatesLocalServiceUtil
-					.getRegTempbyFormNoGovCode(registrationForm.getGroupId(), registrationForm.getFormNo(), registration.getGovAgencyCode());
+					.getRegTempbyFormNoGovCode(registrationForm.getGroupId(), registrationForm.getFormNo(),
+							registration.getGovAgencyCode());
 
 			model.setReferenceUid(registrationForm.getReferenceUid());
 			model.setFormNo(registrationForm.getFormNo());
@@ -39,10 +45,9 @@ public class RegistrationFormUtils {
 			model.setRemoved(registrationForm.isRemoved());
 			model.setVersion(version);
 			model.setMultiple(registrationTemplates.getMultiple());
+
+		} catch (Exception e) {
 			
-		} catch (PortalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return model;
 	}
@@ -55,31 +60,27 @@ public class RegistrationFormUtils {
 			for (RegistrationForm registrationForm : lstRegistrationForm) {
 				try {
 					Registration registration = RegistrationLocalServiceUtil
-							.getRegistration(registrationForm.getRegistrationId());
+							.getRegistrationByG_REGID(registrationForm.getGroupId(), registrationForm.getRegistrationId());
 
 					RegistrationTemplates registrationTemplates = RegistrationTemplatesLocalServiceUtil
-							.getRegTempbyFormNoGovCode(registrationForm.getGroupId(), registrationForm.getFormNo(), registration.getGovAgencyCode());
+							.getRegTempbyFormNoGovCode(registrationForm.getGroupId(), registrationForm.getFormNo(),
+									registration.getGovAgencyCode());
 
 					RegistrationFormModel model = new RegistrationFormModel();
 
 					model.setReferenceUid(registrationForm.getReferenceUid());
 					model.setFormNo(registrationForm.getFormNo());
 					model.setFormName(registrationForm.getFormName());
-					model.setIsNew(registrationForm.isIsNew());
-					model.setRemoved(registrationForm.isRemoved());
+					model.setIsNew(Boolean.valueOf(registrationForm.isIsNew()));
+					model.setRemoved(Boolean.valueOf(registrationForm.isRemoved()));
 					model.setVersion(version);
-					if(Validator.isNotNull(registrationTemplates.getMultiple())){
-						model.setMultiple(registrationTemplates.getMultiple());
-					}else{
-						model.setMultiple(false);
-					}
+					model.setMultiple(Boolean.valueOf(registrationTemplates.getMultiple()));
 					outputs.add(model);
-				} catch (PortalException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
 				}
 			}
 		}
 		return outputs;
 	}
-	
+
 }
