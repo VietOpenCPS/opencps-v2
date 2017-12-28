@@ -62,15 +62,16 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 		JSONObject resServerConfig = rest.callAPI(0l, HttpMethods.GET, "application/json",
 				RESTFulConfiguration.SERVER_PATH_BASE, serverConfigEndpoint, RESTFulConfiguration.SERVER_USER,
 				RESTFulConfiguration.SERVER_PASS, properties, serviceContext);
-
+		
 		long groupId = getGroupId(resServerConfig);
+		_log.info("resServerConfig groupId ---------- :" + groupId);
 		// TODO
 		long desGroupId = 55301;
 
 		List<Registration> registrations = new ArrayList<>();
 
 		registrations = RegistrationLocalServiceUtil.getdByF_submitting(groupId, Boolean.TRUE);
-
+		_log.info("resServerConfig registrations ---------- :" + registrations);
 		String registrationEndpoint = "registrations/syncs";
 		String registrationFormEndpoint = "registrations/syncs/form";
 		
