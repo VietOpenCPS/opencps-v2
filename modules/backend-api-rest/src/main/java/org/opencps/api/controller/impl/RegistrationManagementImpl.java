@@ -40,6 +40,7 @@ import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
+import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -188,7 +189,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			RegistrationActions action = new RegistrationActionsImpl();
 
 			Registration registration = action.delete(id);
-
+			RegistrationFormLocalServiceUtil.deleteRegistrationForms(id);
 			RegistrationDetailModel result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
 
 			return Response.status(200).entity(result).build();
