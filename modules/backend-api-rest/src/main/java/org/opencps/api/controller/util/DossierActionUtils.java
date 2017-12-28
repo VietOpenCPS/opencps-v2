@@ -102,12 +102,16 @@ public class DossierActionUtils {
 
 		if (jsonData != null) {
 			for (int i = 0; i < jsonData.length(); i++) {
+				
 				JSONObject jsonObject = jsonData.getJSONObject(i);
+				
 				ProcessAction processAction = (ProcessAction) jsonObject.get("processAction");
 
 				List<User> lstUser = (List<User>) jsonObject.get("lstUser");
 
 				JSONArray createFiles = jsonObject.getJSONArray("createFiles");
+				
+				boolean pending = jsonObject.getBoolean("pending");
 
 				DossierActionNextActionModel model = new DossierActionNextActionModel();
 
@@ -122,6 +126,7 @@ public class DossierActionUtils {
 				model.setAutoEvent(processAction.getAutoEvent());
 				model.setPreCondition(processAction.getPreCondition());
 				model.setAllowAssignUser(processAction.getAllowAssignUser());
+				model.setPending(pending);
 				model.setAssignUserId(assignUserId);
 
 				List<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();

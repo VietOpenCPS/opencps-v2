@@ -1300,6 +1300,11 @@
 			<finder-column name="groupId" />
 			<finder-column name="govAgencyCode" />
 		</finder>
+		
+		<finder return-type="RegistrationTemplates" name="GOVCODE_FORMNO">
+			<finder-column name="formNo" />
+			<finder-column name="govAgencyCode" />
+		</finder>
 	</entity>
 
 	<exceptions>

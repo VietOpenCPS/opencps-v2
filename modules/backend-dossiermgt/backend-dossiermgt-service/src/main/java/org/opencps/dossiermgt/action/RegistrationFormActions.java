@@ -23,4 +23,6 @@ public interface RegistrationFormActions {
 
 	public void addRegistrationFormbaseonRegTemplate(long groupId, long registrationId, String govAgencyCode, ServiceContext serviceContext)
 			throws PortalException;
+
+	public List<RegistrationForm> deleteRegistrationForms(long registrationId) throws PortalException;
 }

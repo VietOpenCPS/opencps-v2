@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.opencps.dossiermgt.action.RegistrationActions;
+import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.RegistrationLogActions;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
