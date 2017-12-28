@@ -90,7 +90,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		object.setFormScript(formScript);
 		object.setFormReport(formReport);
 		object.setFileEntryId(fileEntryId);
-		object.setIsNew(isNew);
+		object.setIsNew(true);
 		object.setRemoved(removed);
 
 		return registrationFormPersistence.update(object);
@@ -109,7 +109,6 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		/// Add audit fields
 		object.setGroupId(groupId);
-		object.setCreateDate(now);
 		object.setModifiedDate(now);
 		object.setUserId(userAction.getUserId());
 
@@ -122,7 +121,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		object.setFormScript(formScript);
 		object.setFormReport(formReport);
 		object.setFileEntryId(fileEntryId);
-		object.setIsNew(isNew);
+		object.setIsNew(true);
 		object.setRemoved(removed);
 
 		return registrationFormPersistence.update(object);
@@ -135,6 +134,18 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		object.setRemoved(true);
 		
 		return registrationFormPersistence.update(object);
+	}
+	
+	public List<RegistrationForm> deleteRegistrationForms(long registrationId){
+		
+		List<RegistrationForm> lstRegistrationForm = registrationFormPersistence.findByG_REGID(registrationId);
+		
+		for (RegistrationForm registrationForm: lstRegistrationForm){
+			registrationForm.setRemoved(true);
+			registrationFormPersistence.update(registrationForm);
+		}
+		
+		return lstRegistrationForm;
 	}
 	
 	public RegistrationForm findFormbyRegidRefid(long registrationId, String referenceUid){
