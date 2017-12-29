@@ -22,11 +22,11 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 	private static final Log _log = LogFactoryUtil.getLog(RegistrationFormActionsImpl.class);
 
 	@Override
-	public RegistrationForm insert(long groupId, long registrationId, String referenceUid, String formNo,
+	public RegistrationForm insert(long groupId, long companyId, long registrationId, String referenceUid, String formNo,
 			String formName, String formData, String formScript, String formReport, long fileEntryId, boolean isNew,
 			boolean removed, ServiceContext serviceContext) throws PortalException {
 
-		return RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid, formNo,
+		return RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, companyId, registrationId, referenceUid, formNo,
 				formName, formData, formScript, formReport, fileEntryId, isNew, removed, serviceContext);
 	}
 
@@ -58,7 +58,7 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 	}
 
 	@Override
-	public void addRegistrationFormbaseonRegTemplate(long groupId, long registrationId, String govAgencyCode,
+	public void addRegistrationFormbaseonRegTemplate(long groupId, long companyId, long registrationId, String govAgencyCode,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 		// get lstRegistrationTemplate
 		List<RegistrationTemplates> lstRegistrationTemplate = RegistrationTemplatesLocalServiceUtil
@@ -69,7 +69,7 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 			// create referenceUid
 			String referenceUid = UUID.randomUUID().toString();
 
-			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
+			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, companyId, registrationId, referenceUid,
 					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
 					registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
 					registrationTemplates.getFormReport(), 0, false, false, serviceContext);

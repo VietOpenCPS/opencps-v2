@@ -124,9 +124,10 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	}
 
 	@Override
-	public Response add(HttpHeaders header, ServiceContext serviceContext, RegistrationInputModel input) {
+	public Response add(HttpHeaders header, Company company, ServiceContext serviceContext, RegistrationInputModel input) {
 		RegistrationDetailModel result = null;
 		try {
+			long companyId = company.getCompanyId();
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			String cityName = "";
 			String districtName = "";
@@ -147,7 +148,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			RegistrationActions action = new RegistrationActionsImpl();
 			
 			
-			Registration registration = action.insert(groupId, input.getApplicantName(), input.getApplicantIdType(),
+			Registration registration = action.insert(groupId, companyId, input.getApplicantName(), input.getApplicantIdType(),
 					input.getApplicantIdNo(), input.getApplicantIdDate(), input.getAddress(), input.getCityCode(),
 					cityName, input.getDistrictCode(), districtName, input.getWardCode(),
 					wardName, input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
@@ -275,6 +276,8 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			String formNo) {
 		BackendAuth auth = new BackendAuthImpl();
 		RegistrationFormDetailModel result = null;
+		
+		long companyId = company.getCompanyId();
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -286,7 +289,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			long fileEntryId = getfileEntryId(input.getFormData(), input.getFormScript(), input.getFormReport());
 
-			RegistrationForm registrationForm = action.insert(groupId, registrationId, input.getReferenceUid(), formNo,
+			RegistrationForm registrationForm = action.insert(groupId, companyId, registrationId, input.getReferenceUid(), formNo,
 					input.getFormName(), input.getFormData(), input.getFormScript(), input.getFormReport(), fileEntryId,
 					input.isIsNew(), input.isRemoved(), serviceContext);
 
