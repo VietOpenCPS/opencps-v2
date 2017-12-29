@@ -402,6 +402,15 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		long userId = serviceContext.getUserId();
 		User userAction = userLocalService.getUser(userId);
 
+		Date idDate = null;
+		if(Validator.isNotNull(applicantIdDate)){
+			try {
+				idDate = UserMgtUtils.convertDate(applicantIdDate);
+			} catch (Exception e) {
+				//_log.error(e);
+			}
+		}
+		
 		Registration registration = registrationPersistence.fetchByUUID_G(uuid, groupId);
 
 		if (Validator.isNotNull(registration)) {
@@ -411,6 +420,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			registration.setApplicantName(applicantName);
 			registration.setApplicantIdType(applicantIdType);
 			registration.setApplicantIdNo(applicantIdNo);
+			registration.setApplicantIdDate(idDate);
 			registration.setAddress(address);
 			registration.setCityCode(cityCode);
 			registration.setCityName(cityName);
@@ -441,6 +451,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			registration.setApplicantName(applicantName);
 			registration.setApplicantIdType(applicantIdType);
 			registration.setApplicantIdNo(applicantIdNo);
+			registration.setApplicantIdDate(idDate);
 			registration.setAddress(address);
 			registration.setCityCode(cityCode);
 			registration.setCityName(cityName);
