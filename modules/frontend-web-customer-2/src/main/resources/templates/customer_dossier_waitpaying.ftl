@@ -181,7 +181,10 @@
 								<div class="col-sm-2">								
 									<span class="text-bold">Gía trị thanh toán</span>	
 								</div>
-								<div class="col-sm-10 red" data-bind="text:paymentAmount"></div>
+								<div class="col-sm-10 red">
+									<span data-bind="text:paymentAmount"></span>
+									<span> VNĐ</span>
+								</div>
 							</div>
 
 							<div class="row MB5">
@@ -369,7 +372,9 @@
 						},
 						paymentAmount : function(e){
 							if(this.get('paymentDossier').paymentAmount){
-								return this.get('paymentDossier').paymentAmount;
+								var value = this.get('paymentDossier').paymentAmount;
+					      var moneyCur = (value/1).toFixed(0).replace('.', ',');
+					      return moneyCur.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 							}
 							return "";
 						},
@@ -386,16 +391,24 @@
 							return "";
 						},
 						paymentStatus : function(e){
-							if(this.get('paymentDossier').paymentStatus){
-								return this.get('paymentDossier').paymentStatus;
-							}
-							return "";
+							if(this.get('paymentDossier')){
+                if(this.get('paymentDossier').paymentStatus === 0){
+                  return "Chờ nộp";
+                }else if(this.get('paymentDossier').paymentStatus === 1){
+                  return "Báo đã nộp";
+                }else if(this.get('paymentDossier').paymentStatus === 2){
+                  return "Hoàn thành";
+                }else {
+                  return "Không hợp lệ";
+                }
+              }
+              return "";
 						},
 						paymentApproveDatetime : function(e){
 							if(this.get('paymentDossier').approveDatetime){
 								return this.get('paymentDossier').approveDatetime;
 							}
-							return "";
+							return "---";
 						},
 						paymentConfirmNote : function(e){
 							if(this.get('paymentDossier').confirmNote){

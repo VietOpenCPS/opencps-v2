@@ -67,6 +67,7 @@
 			<xsd:element name="formData" type="xsd:string" minOccurs="0" />
 			<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
 			<xsd:element name="counter" type="xsd:integer" minOccurs="0" />
+			<xsd:element name="returned" type="xsd:boolean" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	

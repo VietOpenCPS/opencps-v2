@@ -1093,6 +1093,11 @@
             <finder-column name="groupId"></finder-column>
             <finder-column name="userId"></finder-column>
         </finder>
+        
+        <finder return-type="Registration" name="G_REGID" >
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="registrationId"></finder-column>
+        </finder>
 
 	</entity>
 
@@ -1152,10 +1157,12 @@
 
 		<!-- Filter -->
 		<finder return-type="Collection" name="G_REGID">
+			<finder-column name="groupId" />
 			<finder-column name="registrationId" />
 		</finder>
 
 		<finder return-type="RegistrationForm" name="G_REGID_REFID">
+			<finder-column name="groupId" />
 			<finder-column name="registrationId" />
 			<finder-column name="referenceUid" />
 		</finder>
@@ -1302,8 +1309,13 @@
 		</finder>
 		
 		<finder return-type="RegistrationTemplates" name="GOVCODE_FORMNO">
+			<finder-column name="groupId" />
 			<finder-column name="formNo" />
 			<finder-column name="govAgencyCode" />
+		</finder>
+		
+		<finder return-type="Collection" name="GROUPID">
+			<finder-column name="groupId" />
 		</finder>
 	</entity>
 
