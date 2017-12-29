@@ -54,7 +54,7 @@
 
   $.ajax({
     url: "${api.server}/dossiers/keypay/${RequestParameters.dossierUUid}/${RequestParameters.paymentFileUUid}",
-    type: "GET",
+    type: "PUT",
     dataType: "json",
     headers: {"groupId": ${groupId}},
     success: function(result) {
