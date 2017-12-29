@@ -89,11 +89,17 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 
 		String lblApplicantNote = getLabelApplicantNote(resCancelling, sendAdd, sendReissue);
 
+		String dossierUUid = ParamUtil.getString(renderRequest, "dossierUUid");
+
+		String paymentFileUUid = ParamUtil.getString(renderRequest, "paymentFileUUid");
+
 		// apiObject.put("applicant", applicantObj);
 
 		JSONObject constantsObj = createConstants();
 
 		JSONObject userInfo = generalUserInfo(themeDisplay.getUserId());
+		
+		JSONObject paymentObject = generatePaymentObject(dossierUUid, paymentFileUUid);
 
 		// set varible
 		renderRequest.setAttribute("ajax", generateURLJsonObject(renderResponse));
@@ -110,6 +116,8 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute("lblApplicantNote", lblApplicantNote);
 
 		renderRequest.setAttribute("userInfo", userInfo);
+		
+		renderRequest.setAttribute("RequestParameters", paymentObject);
 
 		super.render(renderRequest, renderResponse);
 
@@ -360,6 +368,15 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		apiObject.put("portletNamespace", themeDisplay.getPortletDisplay().getNamespace());
 
 		return apiObject;
+	}
+
+	private JSONObject generatePaymentObject(String dossierUUid, String paymentFileUUid) {
+
+		JSONObject paymentObject = JSONFactoryUtil.createJSONObject();
+
+		paymentObject.put("dossierUUid", dossierUUid);
+		paymentObject.put("paymentFileUUid", paymentFileUUid);
+		return paymentObject;
 	}
 
 	private JSONObject generalUserInfo(long userId) {

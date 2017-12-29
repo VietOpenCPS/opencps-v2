@@ -36,4 +36,6 @@
 	<#assign sendReissue = (Request.sendReissue)!>
 	<#assign lblApplicantNote = (Request.lblApplicantNote)!>
 	
+	<#assign RequestParameters = (Request.RequestParameters)!>
+	
 </#if>
