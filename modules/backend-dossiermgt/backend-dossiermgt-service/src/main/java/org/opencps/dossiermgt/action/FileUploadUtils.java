@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class FileUploadUtils {
@@ -108,8 +109,10 @@ public class FileUploadUtils {
 
 		calendar.setTime(new Date());
 		
-		if(destination == null) {
+		if(Validator.isNull(destination)) {
 			destination = StringPool.BLANK;
+		} else if(destination.indexOf(StringPool.SLASH) < 0) {
+		    destination += StringPool.SLASH;
 		}
 
 		destination += calendar.get(Calendar.YEAR) + StringPool.SLASH;

@@ -3,7 +3,7 @@
 	<div class="layout wrap">
                 <div class="flex xs12 " v-if="!traCuuFilter" jx-bind="serviceInfoFilter"></div>
                 <div class="flex xs12 " v-if="!traCuuFilter" jx-bind="applicantNameFilter"></div>
-                <div class="flex xs12 " v-if="!traCuuFilter" jx-bind="dossierNoFilter"></div>
+                <div class="flex xs12 mb-2" v-if="!traCuuFilter" jx-bind="dossierNoFilter"></div>
                 <v-expansion-panel light class="panel-dossier-navigation">
                         <v-expansion-panel-content :key="1">
                                 <div slot="header" @click="filterAllDossierWithOutStatus()">HỒ SƠ CẦN XỬ LÝ</div>

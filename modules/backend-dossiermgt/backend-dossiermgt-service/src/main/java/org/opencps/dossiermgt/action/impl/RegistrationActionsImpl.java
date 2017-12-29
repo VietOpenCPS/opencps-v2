@@ -3,20 +3,16 @@ package org.opencps.dossiermgt.action.impl;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.UUID;
 
 import org.opencps.dossiermgt.action.RegistrationActions;
-import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.RegistrationLogActions;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.RegistrationLog;
-import org.opencps.dossiermgt.model.RegistrationTemplates;
+import org.opencps.dossiermgt.model.impl.RegistrationImpl;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLogLocalServiceUtil;
-import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -101,24 +97,6 @@ public class RegistrationActionsImpl implements RegistrationActions {
 			}
 		}
 
-		// create referenceUid
-		String referenceUid = UUID.randomUUID().toString();
-
-		// get lstRegistrationTemplate
-		List<RegistrationTemplates> lstRegistrationTemplate = RegistrationTemplatesLocalServiceUtil
-				.getRegistrationTemplateses(start, end);
-
-		// add registrationForm
-//		for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
-//			int fileEntryId = getfileEntryId(registrationTemplates.getSampleData(),
-//					registrationTemplates.getFormScript(), registrationTemplates.getFormReport());
-//
-//			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
-//					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
-//					registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
-//					registrationTemplates.getFormReport(), fileEntryId, false, false, serviceContext);
-//		}
-
 		return RegistrationLocalServiceUtil.updateRegistration(groupId, registrationId, applicantName, applicantIdType,
 				applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
 				wardName, contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, registrationState,
@@ -191,7 +169,8 @@ public class RegistrationActionsImpl implements RegistrationActions {
 
 			result.put("data", hits.toList());
 
-			result.put("total", RegistrationLocalServiceUtil.countLucense(userId, params, sorts, start, end, searchContext));
+			result.put("total",
+					RegistrationLocalServiceUtil.countLucense(userId, params, sorts, start, end, searchContext));
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -199,4 +178,12 @@ public class RegistrationActionsImpl implements RegistrationActions {
 
 		return result;
 	}
+
+//	@Override
+//	public Registration updateSubmitting(long registrationId, boolean submitting) {
+//		Registration model = new RegistrationImpl();
+//		model.setSubmitting(submitting);
+//		model.setRegistrationId(registrationId);
+//		return RegistrationLocalServiceUtil.updateRegistration(model);
+//	}
 }
