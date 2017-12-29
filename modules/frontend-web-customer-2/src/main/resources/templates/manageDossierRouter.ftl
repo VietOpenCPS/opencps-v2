@@ -141,7 +141,7 @@
 			$("#mainType1").hide();
 			$("#mainType2").show();
 			$(".filterField").hide();
-			$("#mainType2").load("${ajax.notificationPaying}&dossierUUid="+id+"&paymentFileUUid="+refUid,function(result){
+			$("#mainType2").load("${ajax.notificationPaying}&${portletNamespace}dossierUUid="+id+"&${portletNamespace}paymentFileUUid="+refUid,function(result){
 			});
 			
 			
