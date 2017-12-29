@@ -6,6 +6,7 @@ import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -17,10 +18,11 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-//@Component(immediate = true, service = ModelListener.class)
-public class DossierFileListenner extends BaseModelListener<DossierFile> {
+@Component(immediate = true, service = ModelListener.class)
+public class DossierFileKySoListenner extends BaseModelListener<DossierFile> {
 
 	@Override
 	public void onBeforeCreate(DossierFile model) throws ModelListenerException {
@@ -30,17 +32,10 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 	@Override
 	public void onAfterCreate(DossierFile model) throws ModelListenerException {
 		_log.info("After Created........... ");
-		String content = "On DossiserFile Created";
-		String notificationType = "File-01";
-		String payload = DossierLogUtils.createPayload(model, null, null);
-		
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
 		serviceContext.setUserId(model.getUserId());
 		try {
-			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(), content,
-					notificationType, payload, serviceContext);
-			
 			// Binhth add message bus to processing KySO file
 			Message message = new Message();
 			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(model.getGroupId(),
@@ -60,20 +55,6 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 	@Override
 	public void onAfterRemove(DossierFile model) throws ModelListenerException {
-		String content = "On DossiserFile Delete";
-		String notificationType = "";
-		String payload = DossierLogUtils.createPayload(model, null, null);
-		
-		ServiceContext serviceContext = new ServiceContext();
-		serviceContext.setCompanyId(model.getCompanyId());
-		serviceContext.setUserId(model.getUserId());
-		
-		try {
-			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(), content,
-					notificationType, payload, serviceContext);
-		} catch (SystemException | PortalException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	@Override
@@ -87,17 +68,12 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 	
 	@Override
 	public void onAfterUpdate(DossierFile model) throws ModelListenerException {
-		String content = "On DossiserFile Update";
-		String notificationType = "";
-		String payload = DossierLogUtils.createPayload(model, null, null);
 		
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
 		serviceContext.setUserId(model.getUserId());
 		
 		try {
-			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(), content,
-					notificationType, payload, serviceContext);
 			
 			// Binhth add message bus to processing KySO file
 			Message message = new Message();
@@ -121,5 +97,5 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 	public static DossierFile modelBeforeUpdate;
 
-	private Log _log = LogFactoryUtil.getLog(DossierFileListenner.class.getName());
+	private Log _log = LogFactoryUtil.getLog(DossierFileKySoListenner.class.getName());
 }

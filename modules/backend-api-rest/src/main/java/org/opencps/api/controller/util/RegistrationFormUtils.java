@@ -4,7 +4,6 @@ package org.opencps.api.controller.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opencps.api.controller.impl.RegistrationManagementImpl;
 import org.opencps.api.registrationform.model.RegistrationFormDetailModel;
 import org.opencps.api.registrationform.model.RegistrationFormModel;
 import org.opencps.dossiermgt.model.Registration;
@@ -13,7 +12,6 @@ import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;

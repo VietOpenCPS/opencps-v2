@@ -71,6 +71,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
@@ -310,13 +311,13 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			// get the list of payment file need to sync
 			List<JSONObject> lsPaymentsFileSync = new ArrayList<>();
 
-			getPaymentFiles(sourceGroupId, dossierId, lsPaymentsFileSync);
+			//getPaymentFiles(sourceGroupId, dossierId, lsPaymentsFileSync);
 
 			// Do Pull paymentFile to client
 
-			pullPaymentFile(sourceGroupId, dossierId, desDossier.getGroupId(), desDossier.getDossierId(),
+/*			pullPaymentFile(sourceGroupId, dossierId, desDossier.getGroupId(), desDossier.getDossierId(),
 					lsPaymentsFileSync, serviceContext);
-
+*/
 		}
 
 		// ResetDossier
@@ -354,7 +355,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject object = array.getJSONObject(i);
 
-					if (GetterUtil.getBoolean(object.get("isNew"))) {
+					if (GetterUtil.getInteger(object.get("isNew")) == 1) {
 						lsPaymentsFileSync.add(object);
 					}
 
@@ -395,7 +396,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			// Add fileConfirmId
 			if (object.getLong("confirmFileEntryId") != 0) {
 				// Download confirmFile form SERVER
-
+				
 				try {
 
 					String fileRef = object.getString("referenceUid");
@@ -436,8 +437,10 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 						if (raw != null && raw.indexOf("=") != -1) {
 							String fileName = raw.split("=")[1];
+							
+							fileName = StringUtil.replace(fileName, "\"", StringPool.BLANK);
 
-							tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()), fileName);
+							tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()), StringPool.PERIOD + fileName);
 
 						} else {
 							tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()),
