@@ -94,7 +94,6 @@ $(function(){
 						},
 						success : function(result){
 							result["data"] = result.total == 0?[]: result["data"];
-							options.success(result);
 							
 							if ( result.total==0 ){
 								
@@ -103,6 +102,7 @@ $(function(){
 							} else {
 								
 								viewRegistrationModel.registrationModelMap(result.data[0]);
+								options.success(result);
 							}
 							
 						},
