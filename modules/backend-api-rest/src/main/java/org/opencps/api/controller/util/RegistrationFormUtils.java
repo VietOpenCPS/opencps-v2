@@ -63,15 +63,18 @@ public class RegistrationFormUtils {
 						.getRegTempbyFormNoGovCode(registrationForm.getGroupId(), registrationForm.getFormNo(),
 								registration.getGovAgencyCode());
 
+				boolean multiple = registrationTemplates != null ? registrationTemplates.getMultiple() : false;
+				
 				RegistrationFormModel model = new RegistrationFormModel();
-
+				
 				model.setReferenceUid(registrationForm.getReferenceUid());
 				model.setFormNo(registrationForm.getFormNo());
 				model.setFormName(registrationForm.getFormName());
 				model.setIsNew(Boolean.valueOf(registrationForm.isIsNew()));
 				model.setRemoved(Boolean.valueOf(registrationForm.isRemoved()));
 				model.setVersion(version);
-				model.setMultiple(Boolean.valueOf(registrationTemplates.getMultiple()));
+				model.setMultiple(Boolean.valueOf(multiple));
+				
 				outputs.add(model);
 			}
 		}
