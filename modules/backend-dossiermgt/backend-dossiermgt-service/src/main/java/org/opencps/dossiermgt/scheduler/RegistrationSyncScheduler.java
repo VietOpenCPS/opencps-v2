@@ -249,6 +249,7 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 			params.put("formScript", registrationForm.getFormScript());
 			params.put("formReport", registrationForm.getFormReport());
 			params.put("fileEntryId", registrationForm.getFileEntryId());
+			params.put("removed", Boolean.valueOf(registrationForm.getRemoved()));
 			
 		} catch (Exception e) {
 			throw new PortalException("RegistrationFormNotFound");

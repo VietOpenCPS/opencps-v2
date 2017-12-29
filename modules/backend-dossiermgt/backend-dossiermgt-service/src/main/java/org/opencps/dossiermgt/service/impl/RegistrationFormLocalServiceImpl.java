@@ -126,9 +126,10 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		return registrationFormPersistence.update(object);
 	}
 	
-	public RegistrationForm deleteRegistrationForm(long groupId, long registrationId, String referenceUid){
+	public RegistrationForm deleteRegistrationForm(long groupId, long registrationId, String referenceUid) 
+	    throws PortalException {
 		
-		RegistrationForm object = registrationFormPersistence.fetchByG_REGID_REFID(groupId, registrationId, referenceUid);
+		RegistrationForm object = registrationFormPersistence.findByG_REGID_REFID(groupId, registrationId, referenceUid);
 		
 		object.setRemoved(true);
 		object.setIsNew(true);
@@ -143,6 +144,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		
 		for (RegistrationForm registrationForm: lstRegistrationForm){
 			registrationForm.setRemoved(true);
+			registrationForm.setIsNew(true);
 			registrationFormPersistence.update(registrationForm);
 		}
 		
@@ -158,8 +160,10 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		return registrationFormPersistence.findByG_REGID_ISNEW(registrationId, isNew);
 	}
 	
-	public RegistrationForm registrationFormSync(long groupId, String uuidRegistration, String referenceUid,
-			String formNo, String formName, String formData, String formScript, String formReport, ServiceContext serviceContext)
+    public RegistrationForm registrationFormSync(
+        long groupId, String uuidRegistration, String referenceUid,
+        String formNo, String formName, String formData, String formScript,
+        String formReport, Boolean removed, ServiceContext serviceContext)
 			throws PortalException, SystemException {
 
 		Date now = new Date();
@@ -178,6 +182,10 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 			registrationForm.setFormData(formData);
 			registrationForm.setFormScript(formScript);
 			registrationForm.setFormReport(formReport);
+			
+			if(removed != null) {
+			    registrationForm.setRemoved(removed.booleanValue());
+			}
 			
 			if(Validator.isNotNull(formData) && Validator.isNotNull(formReport)) {
                 Message message = new Message();
@@ -212,6 +220,10 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 			registrationForm.setFormData(formData);
 			registrationForm.setFormScript(formScript);
 			registrationForm.setFormReport(formReport);
+			
+			if(removed != null) {
+                registrationForm.setRemoved(removed.booleanValue());
+            }
 			
 			if(Validator.isNotNull(formData) && Validator.isNotNull(formReport)) {
                 Message message = new Message();
