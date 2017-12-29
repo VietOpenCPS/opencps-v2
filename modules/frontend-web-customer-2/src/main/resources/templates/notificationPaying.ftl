@@ -55,8 +55,12 @@
     dataType: "json",
     headers: {"groupId": ${groupId}},
     success: function(result) {
-      // sampleData = result.sampleData;
+      
+    },
+    error:function(result){
+      
     }
+
   });
   // var viewModelInfoPaying = kendo.observable({
   //   dossierId: result.dossierId,
