@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
@@ -385,8 +386,8 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 
 		paymentObject.put("dossierUUid", dossierUUid);
 		paymentObject.put("paymentFileUUid", paymentFileUUid);
-		paymentObject.put("trans_id", trans_id);
-		paymentObject.put("good_code", good_code);
+		paymentObject.put("trans_id", Validator.isNotNull(trans_id) ? trans_id : StringPool.BLANK);
+		paymentObject.put("good_code", Validator.isNotNull(good_code) ? good_code : StringPool.BLANK);
 		return paymentObject;
 	}
 
