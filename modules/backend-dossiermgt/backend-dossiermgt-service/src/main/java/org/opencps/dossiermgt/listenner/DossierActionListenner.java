@@ -95,7 +95,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				serviceContext.setCompanyId(model.getCompanyId());
 				serviceContext.setUserId(userId);
 				
-				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
+				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getActionUser(),
 						content, "PROCESS_TYPE", payload.toString(), serviceContext);
 				
 			} catch (SystemException | PortalException e) {
