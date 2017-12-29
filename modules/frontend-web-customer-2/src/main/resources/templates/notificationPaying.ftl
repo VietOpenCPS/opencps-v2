@@ -47,16 +47,26 @@
 </div>
 
 <script type="text/javascript">
+  // /dossiers/keypay/{dossierUUid}/{paymentFileUUid}
 
-  var viewModelInfoPaying = kendo.observable({
-    dossierId: result.dossierId,
-    applicantName: result.applicantName,
-    serviceName: result.serviceName,
-    dossierNo: result.dossierNo,
-    govAgencyName: result.govAgencyName,
-    submitDate: result.submitDate,
-    dueDate: result.dueDate,
-    dossierStatusText: result.dossierStatusText
+  $.ajax({
+    url: "${api.server}/dossiers/keypay/${RequestParameters.dossierUUid}/${RequestParameters.paymentFileUUid}",
+    type: "GET",
+    dataType: "json",
+    headers: {"groupId": ${groupId}},
+    success: function(result) {
+      // sampleData = result.sampleData;
+    }
   });
-  kendo.bind($("#infoPaying"), viewModelInfoPaying);
+  // var viewModelInfoPaying = kendo.observable({
+  //   dossierId: result.dossierId,
+  //   applicantName: result.applicantName,
+  //   serviceName: result.serviceName,
+  //   dossierNo: result.dossierNo,
+  //   govAgencyName: result.govAgencyName,
+  //   submitDate: result.submitDate,
+  //   dueDate: result.dueDate,
+  //   dossierStatusText: result.dossierStatusText
+  // });
+  // kendo.bind($("#infoPaying"), viewModelInfoPaying);
 </script>
