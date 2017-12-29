@@ -21,6 +21,8 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -82,16 +84,21 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 			params.put(DossierTerm.DOSSIER_ID, String.valueOf(dossier.getDossierId()));
 			params.put(DossierTerm.REFERENCE_UID, String.valueOf(dossier.getReferenceUid()));
 			params.put(DossierActionTerm.AUTO, "timmer");
+			
 			if (Validator.isNotNull(dossier.getDossierStatus())) {
+				
 				JSONArray results = dossierActions.getNextActions(0l, company.getCompanyId(), dossier.getGroupId(), params,
 						sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
 				int lenght = results.length();
 
 				if (lenght != 0) {
+					
 					JSONObject content = results.getJSONObject(0);
 					
-					if(content.getString("autoEvent").contentEquals("timmer")) {
+					ProcessAction processAction = (ProcessAction) content.get("processAction");
+					
+					if(processAction.getAutoEvent().contentEquals("timmer")) {
 						_log.info("AUTOEVENT_DOSSIER_ID" + dossier.getPrimaryKey());
 						
 						long processActionId = content.getLong("processActionId");
@@ -109,8 +116,8 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 						if (checkPreCondition) {
 							dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(),
-									content.getString("actionCode"), content.getLong("processActionId"),
-									systemUser.getFullName(), content.getString("actionName"), content.getLong("assignUserId"),
+									processAction.getActionCode(), processAction.getProcessActionId(),
+									systemUser.getFullName(), processAction.getActionName(), processAction.getAssignUserId(),
 									systemUser.getUserId(), serviceContext);
 						}
 					}
