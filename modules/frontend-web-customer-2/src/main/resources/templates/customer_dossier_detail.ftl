@@ -607,9 +607,12 @@
 
 				},
 				success :  function(result){          
-					$("#btn-save-dossier").button('reset');             
-					console.log("PUT Dossier success!");
-					createActionDossier(${dossierId});
+					$("#btn-save-dossier").button('reset');
+					console.log(result.dossierStatus);             
+					if(result.dossierStatus == ''){
+						console.log("------>doActions");  
+						createActionDossier(${dossierId});
+					}
 					/*notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");*/
@@ -643,7 +646,8 @@
 				},
 				data : {
 					actionCode  : 1100,
-					actionNote :  $("textarea#applicantNote").val()
+					actionNote :  $("textarea#applicantNote").val(),
+					actionUser: '${(userInfo.actionUser)!}'
 				},
 				success : function(result){
 					$("#btn-save-dossier").button('reset');

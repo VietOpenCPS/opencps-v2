@@ -30,6 +30,7 @@
 	<#assign dossierPartNo = (Request.dossierPartNo)!>
 	<#assign dossierTemplateNo = (Request.dossierTemplateNo)!>
 	<#assign constants = (Request.constants)!>
+	<#assign userInfo = (Request.userInfo)!>
 	<#assign resCancelling = (Request.resCancelling)!>
 	<#assign sendAdd = (Request.sendAdd)!>
 	<#assign sendReissue = (Request.sendReissue)!>
