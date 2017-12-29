@@ -116,7 +116,7 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 							
 							Map<String, Object> paramsForm = getParamsPostRegistrationForm(registrationForm, registration.getUuid());
 							
-							JSONObject registrationFormPOSTrespone = rest.callPostAPI(desGroupId, HttpMethods.PUT, "application/json", 
+							JSONObject registrationFormPOSTrespone = rest.callPostAPI(desGroupId, HttpMethods.POST, "application/json", 
 									RESTFulConfiguration.SERVER_PATH_BASE, registrationFormEndpoint, RESTFulConfiguration.SERVER_USER,
 									RESTFulConfiguration.SERVER_PASS,
 									properties, paramsForm, serviceContext);
