@@ -390,6 +390,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		return registrationPersistence.findByF_submitting(groupId, submitting);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	public Registration registrationSync(long groupId, String uuid, String applicantName, String applicantIdType,
 			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
