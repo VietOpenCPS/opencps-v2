@@ -17,14 +17,12 @@ package org.opencps.dossiermgt.service.impl;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.UUID;
 
 import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
-import org.opencps.usermgt.service.impl.ApplicantLocalServiceImpl;
 import org.opencps.usermgt.service.util.UserMgtUtils;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -49,7 +47,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
@@ -122,7 +119,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setGovAgencyName(govAgencyName);
 		model.setRegistrationClass(registrationClass);
 		model.setRegistrationState(registrationState);
-		model.setSubmitting(true);
+		model.setSubmitting(false);
 
 		RegistrationFormActions actionForm = new RegistrationFormActionsImpl();
 		

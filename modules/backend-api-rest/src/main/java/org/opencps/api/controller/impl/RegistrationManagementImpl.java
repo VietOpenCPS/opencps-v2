@@ -97,20 +97,14 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			params.put(RegistrationTerm.REGISTRATION_CLASS, registrationClass);
 			params.put(RegistrationTerm.SUBMITTING, submitting);
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(sort + "_sortable", Sort.STRING_TYPE, false) };
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(sort + "_sortable", Sort.STRING_TYPE, true) };
 
 			JSONObject jsonData = actions.getRegistrations(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, -1, -1, serviceContext);
 
 			RegistrationResultsModel results = new RegistrationResultsModel();
-			// long userId = serviceContext.getUserId();
-			// List<Registration> lstRegistrationModel =
-			// RegistrationLocalServiceUtil.getRegistrations(start, end);
 			//
 			results.setTotal(jsonData.getInt("total"));
-			// results.getData().addAll(RegistrationUtils
-			// .mappingToRegistrationResultModel((List<Document>)
-			// jsonData.get("data"), serviceContext));
 
 			results.getData()
 					.addAll(RegistrationUtils.mappingToRegistrationResultModel((List<Document>) jsonData.get("data")));
