@@ -311,13 +311,13 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			// get the list of payment file need to sync
 			List<JSONObject> lsPaymentsFileSync = new ArrayList<>();
 
-			//getPaymentFiles(sourceGroupId, dossierId, lsPaymentsFileSync);
+			getPaymentFiles(sourceGroupId, dossierId, lsPaymentsFileSync);
 
 			// Do Pull paymentFile to client
 
-/*			pullPaymentFile(sourceGroupId, dossierId, desDossier.getGroupId(), desDossier.getDossierId(),
+			pullPaymentFile(sourceGroupId, dossierId, desDossier.getGroupId(), desDossier.getDossierId(),
 					lsPaymentsFileSync, serviceContext);
-*/
+
 		}
 
 		// ResetDossier

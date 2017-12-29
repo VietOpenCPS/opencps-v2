@@ -72,7 +72,6 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 		serviceContext.setCompanyId(company.getCompanyId());
 		serviceContext.setUserId(systemUser.getUserId());
 
-		_log.info("TOTAL_DOSSIER_" + allDossierTimer.size());
 
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -92,26 +91,31 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 			if (lenght != 0) {
 				JSONObject content = results.getJSONObject(0);
 				
+				if(content.getString("autoEvent").contentEquals("timmer")) {
+					_log.info("AUTOEVENT_DOSSIER_ID" + dossier.getPrimaryKey());
+					
+					long processActionId = content.getLong("processActionId");
+
+					ProcessAction action = ProcessActionLocalServiceUtil.fetchProcessAction(processActionId);
+
+					String perConditionStr = StringPool.BLANK;
+
+					if (Validator.isNotNull(action)) {
+						perConditionStr = action.getPreCondition();
+					}
+
+					boolean checkPreCondition = DossierMgtUtils
+							.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
+
+					if (checkPreCondition) {
+						dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(),
+								content.getString("actionCode"), content.getLong("processActionId"),
+								systemUser.getFullName(), content.getString("actionName"), content.getLong("assignUserId"),
+								systemUser.getUserId(), serviceContext);
+					}
+				}
 				
-				long processActionId = content.getLong("processActionId");
 
-				ProcessAction action = ProcessActionLocalServiceUtil.fetchProcessAction(processActionId);
-
-				String perConditionStr = StringPool.BLANK;
-
-				if (Validator.isNotNull(action)) {
-					perConditionStr = action.getPreCondition();
-				}
-
-				boolean checkPreCondition = DossierMgtUtils
-						.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
-
-				if (checkPreCondition) {
-					dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(),
-							content.getString("actionCode"), content.getLong("processActionId"),
-							systemUser.getFullName(), content.getString("actionName"), content.getLong("assignUserId"),
-							systemUser.getUserId(), serviceContext);
-				}
 
 			}
 
