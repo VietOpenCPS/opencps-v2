@@ -89,13 +89,13 @@
 							<div id="groupLookup" class="accordion-body collapse in">
 								<div class="accordion-inner">
 									<ul id="" class="ul-default have-bagde">
-										<li class="hover-pointer text-hover-blue" 
-											data-bind="click: filterInvestigation" data-pk="tracuuchungchi">
-											Tra cứu chứng chỉ
+										<li class="hover-pointer text-hover-blue itemStatus" id="searchCC" 
+											data-bind="click: filterInvestigation" >
+											<span class="dossierStatus">Tra cứu chứng chỉ</span>
 										</li>
-										<li class="hover-pointer text-hover-blue" 
-											data-bind="click: filterInvestigation" data-pk="tracuuphuongtienxuatxuong">
-											Tra cứu phương tiện xuất xưởng
+										<li class="hover-pointer text-hover-blue itemStatus" 
+											data-bind="click: filterInvestigation">
+											<span class="dossierStatus">Tra cứu phương tiện xuất xưởng</span>
 										</li>
 									</ul>
 								</div>

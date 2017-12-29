@@ -32,7 +32,6 @@ public interface RegistrationTemplatesActions {
 	public RegistrationTemplates updateSampledata(long groupId, long registrationTemplatesId, String sampleData,
 			ServiceContext serviceContext) throws SystemException, PortalException;
 
-	public JSONObject getRegistrationTemplates(String formNo, String govAgencyCode);
-
+	public JSONObject getRegistrationTemplates(long groupId,String formNo, String govAgencyCode);
 
 }

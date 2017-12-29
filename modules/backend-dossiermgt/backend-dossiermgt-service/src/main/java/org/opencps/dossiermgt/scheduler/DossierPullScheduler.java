@@ -308,6 +308,14 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					referenceUid, serviceContext);
 
 			// get the list of payment file need to sync
+			List<JSONObject> lsPaymentsFileSync = new ArrayList<>();
+
+			getPaymentFiles(sourceGroupId, dossierId, lsPaymentsFileSync);
+
+			// Do Pull paymentFile to client
+
+			pullPaymentFile(sourceGroupId, dossierId, desDossier.getGroupId(), desDossier.getDossierId(),
+					lsPaymentsFileSync, serviceContext);
 
 		}
 
@@ -769,7 +777,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 1, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 5, TimeUnit.SECOND));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

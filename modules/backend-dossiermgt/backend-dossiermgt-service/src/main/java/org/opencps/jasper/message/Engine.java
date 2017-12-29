@@ -4,12 +4,16 @@ import java.io.File;
 
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.MessageListenerException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -68,6 +72,18 @@ public class Engine implements MessageListener {
 			Indexer<DossierFile> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierFile.class);
 
 			indexer.reindex(dossierFile);
+
+			// Binhth add message bus to processing KySO file
+			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(dossierFile.getGroupId(),
+					dossierFile.getDossierTemplateNo(), dossierFile.getDossierPartNo());
+			
+			JSONObject msgDataESign = JSONFactoryUtil.createJSONObject();
+			msgDataESign.put("userId", dossierFile.getUserId());
+			msgDataESign.put("eSign", dossierPart.getESign());
+			msgDataESign.put("fileEntryId", fileEntryId);
+
+			message.put("msgToEngine", msgDataESign);
+			MessageBusUtil.sendMessage("kyso/engine/out/destination", message);
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

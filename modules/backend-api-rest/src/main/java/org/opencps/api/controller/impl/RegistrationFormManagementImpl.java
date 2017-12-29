@@ -41,9 +41,10 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 
-			RegistrationForm registrationForm = action.deleteRegistrationForm(id, referenceUid);
+			RegistrationForm registrationForm = action.deleteRegistrationForm(groupId, id, referenceUid);
 
 			if (registrationForm != null) {
 				return Response.status(200).entity("Success").build();
@@ -52,6 +53,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			}
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 
@@ -66,13 +68,14 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
-			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(registrationId,
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId, registrationId,
 					referenceUid);
 
 			return Response.status(200).entity(registrationForm.getFormData()).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -87,14 +90,15 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 
-			RegistrationForm model = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(registrationId,
+			RegistrationForm model = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId, registrationId,
 					referenceUid);
 
 			model.setFormData(formData);
 			model.setModifiedDate(now);
+			model.setIsNew(true);
 
 			RegistrationForm registrationForm = action.update(model);
 
@@ -104,7 +108,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -118,13 +122,14 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
-			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(registrationId,
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId, registrationId,
 					referenceUid);
 
 			return Response.status(200).entity(registrationForm.getFormScript()).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -175,8 +180,10 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			return Response.status(200).build();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 			return processException(e);
 		}
 	}
+	
+	
 }

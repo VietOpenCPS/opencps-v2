@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.opencps.dossiermgt.action.RegistrationActions;
+import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.RegistrationLogActions;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
@@ -31,20 +32,33 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationActionsImpl implements RegistrationActions {
-	
+
 	Log _log = LogFactoryUtil.getLog(RegistrationActionsImpl.class);
-	
+
 	@Override
 	public Registration insert(long groupId, String applicantName, String applicantIdType, String applicantIdNo,
 			String applicantIdDate, String address, String cityCode, String cityName, String districtCode,
 			String districtName, String wardCode, String wardName, String contactName, String contactTelNo,
 			String contactEmail, String govAgencyCode, String govAgencyName, int registrationState,
 			String registrationClass, ServiceContext serviceContext) throws SystemException, PortalException {
+		List<Registration> listRegistration = RegistrationLocalServiceUtil.getRegistrationByGID_UID(groupId,
+				serviceContext.getUserId());
+		if (listRegistration.size() == 0) {
+			return RegistrationLocalServiceUtil.insert(groupId, applicantName, applicantIdType, applicantIdNo,
+					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
+					contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, 0, "", serviceContext);
+		} else {
+			Registration registration = listRegistration.get(0);
+			int state = registration.getRegistrationState();
+			if (state == 2) {
+				return RegistrationLocalServiceUtil.insert(groupId, applicantName, applicantIdType, applicantIdNo,
+						applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
+						contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, 0, "", serviceContext);
+			} else {
+				return registration;
+			}
+		}
 
-		return RegistrationLocalServiceUtil.insert(groupId, applicantName, applicantIdType, applicantIdNo,
-				applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
-				contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, registrationState,
-				registrationClass, serviceContext);
 	}
 
 	@Override
@@ -64,12 +78,10 @@ public class RegistrationActionsImpl implements RegistrationActions {
 
 		// changeType removed in registrationForm
 		for (RegistrationForm registrationForm : lstRegistrationForm) {
-			if (registrationForm.isRemoved() == false) {
-				registrationForm.setRemoved(true);
+				registrationForm.setIsNew(true);
 				RegistrationForm registrationFormChanged = RegistrationFormLocalServiceUtil
 						.updateRegistrationForm(registrationForm);
 				lstRegistrationFormchange.add(registrationFormChanged);
-			}
 		}
 
 		// add registrationLog
@@ -97,15 +109,15 @@ public class RegistrationActionsImpl implements RegistrationActions {
 				.getRegistrationTemplateses(start, end);
 
 		// add registrationForm
-		for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
-			int fileEntryId = getfileEntryId(registrationTemplates.getSampleData(),
-					registrationTemplates.getFormScript(), registrationTemplates.getFormReport());
-
-			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
-					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
-					registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
-					registrationTemplates.getFormReport(), fileEntryId, false, false, serviceContext);
-		}
+//		for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
+//			int fileEntryId = getfileEntryId(registrationTemplates.getSampleData(),
+//					registrationTemplates.getFormScript(), registrationTemplates.getFormReport());
+//
+//			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
+//					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
+//					registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
+//					registrationTemplates.getFormReport(), fileEntryId, false, false, serviceContext);
+//		}
 
 		return RegistrationLocalServiceUtil.updateRegistration(groupId, registrationId, applicantName, applicantIdType,
 				applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
@@ -168,24 +180,18 @@ public class RegistrationActionsImpl implements RegistrationActions {
 			Sort[] sorts, int start, int end, ServiceContext serviceContext) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		//Hits hits = null;
+		Hits hits = null;
 
-		//SearchContext searchContext = new SearchContext();
-		//searchContext.setCompanyId(companyId);
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(companyId);
 
 		try {
 
-			//hits = RegistrationLocalServiceUtil.searchLucene(userId,params, sorts, start, end, searchContext);
+			hits = RegistrationLocalServiceUtil.searchLucene(userId, params, sorts, start, end, searchContext);
 
-			//result.put("data", hits.toList());
+			result.put("data", hits.toList());
 
-			//long total = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
-			
-			List<Registration> registrations = RegistrationLocalServiceUtil.getRegistrationByGID_UID(groupId, userId);
-			
-			result.put("data", registrations);
-
-			result.put("total", registrations.size());
+			result.put("total", RegistrationLocalServiceUtil.countLucense(userId, params, sorts, start, end, searchContext));
 
 		} catch (Exception e) {
 			_log.error(e);

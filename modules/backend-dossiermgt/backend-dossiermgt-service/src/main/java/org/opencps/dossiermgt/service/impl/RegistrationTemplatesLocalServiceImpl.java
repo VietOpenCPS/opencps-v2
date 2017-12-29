@@ -50,16 +50,23 @@ import com.liferay.portal.kernel.util.Validator;
 @ProviderType
 public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplatesLocalServiceBaseImpl {
 	
-	public List<RegistrationTemplates> getRegistrationTemplatesbyFormNo(String formNo){
+	public List<RegistrationTemplates> getRegistrationTemplatesbyGroupId(long groupId){
 		
-		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByFNO(formNo);
+		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByGROUPID(groupId);
 		
 		return lstRegistrationTemplates;
 	}
 	
-	public List<RegistrationTemplates> getRegistrationTemplatesbyGOVCODE(String govAgencyCode){
+	public List<RegistrationTemplates> getRegistrationTemplatesbyFormNo(long groupId, String formNo){
 		
-		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByGOVCODE(govAgencyCode);
+		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByFNO(groupId, formNo);
+		
+		return lstRegistrationTemplates;
+	}
+	
+	public List<RegistrationTemplates> getRegistrationTemplatesbyGOVCODE(long groupId, String govAgencyCode){
+		
+		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByGOVCODE(groupId, govAgencyCode);
 		
 		return lstRegistrationTemplates;
 	}
@@ -234,4 +241,13 @@ public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplates
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public RegistrationTemplates getRegTempbyFormNoGovCode(long groupId, String formNo, String govAgencyCode) {
+		return registrationTemplatesPersistence.fetchByGOVCODE_FORMNO(groupId, formNo, govAgencyCode);
+	}
+	
+	public RegistrationTemplates getRegTempbyRegId(long groupId, long registrationTemplatesId) {
+		return registrationTemplatesPersistence.fetchByG_REGID(groupId, registrationTemplatesId);
+	}
+	
 }

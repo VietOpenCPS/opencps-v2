@@ -52,9 +52,9 @@ import com.liferay.portal.kernel.util.Validator;
 @ProviderType
 public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServiceBaseImpl {
 
-	public List<RegistrationForm> getFormsbyRegId(long registrationId) throws PortalException {
+	public List<RegistrationForm> getFormsbyRegId(long groupId, long registrationId) throws PortalException {
 
-		List<RegistrationForm> lstRegistrationForm = registrationFormPersistence.findByG_REGID(registrationId);
+		List<RegistrationForm> lstRegistrationForm = registrationFormPersistence.findByG_REGID(groupId, registrationId);
 
 		return lstRegistrationForm;
 	}
@@ -90,7 +90,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		object.setFormScript(formScript);
 		object.setFormReport(formReport);
 		object.setFileEntryId(fileEntryId);
-		object.setIsNew(isNew);
+		object.setIsNew(true);
 		object.setRemoved(removed);
 
 		return registrationFormPersistence.update(object);
@@ -105,11 +105,10 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		User userAction = userLocalService.getUser(userId);
 
-		RegistrationForm object = registrationFormPersistence.fetchByG_REGID_REFID(registrationId, referenceUid);
+		RegistrationForm object = registrationFormPersistence.fetchByG_REGID_REFID(groupId, registrationId, referenceUid);
 
 		/// Add audit fields
 		object.setGroupId(groupId);
-		object.setCreateDate(now);
 		object.setModifiedDate(now);
 		object.setUserId(userAction.getUserId());
 
@@ -122,23 +121,35 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		object.setFormScript(formScript);
 		object.setFormReport(formReport);
 		object.setFileEntryId(fileEntryId);
-		object.setIsNew(isNew);
+		object.setIsNew(true);
 		object.setRemoved(removed);
 
 		return registrationFormPersistence.update(object);
 	}
 	
-	public RegistrationForm deleteRegistrationForm(long registrationId, String referenceUid){
+	public RegistrationForm deleteRegistrationForm(long groupId, long registrationId, String referenceUid){
 		
-		RegistrationForm object = registrationFormPersistence.fetchByG_REGID_REFID(registrationId, referenceUid);
+		RegistrationForm object = registrationFormPersistence.fetchByG_REGID_REFID(groupId, registrationId, referenceUid);
 		
 		object.setRemoved(true);
 		
 		return registrationFormPersistence.update(object);
 	}
 	
-	public RegistrationForm findFormbyRegidRefid(long registrationId, String referenceUid){
-		return registrationFormPersistence.fetchByG_REGID_REFID(registrationId, referenceUid);
+	public List<RegistrationForm> deleteRegistrationForms(long groupId, long registrationId){
+		
+		List<RegistrationForm> lstRegistrationForm = registrationFormPersistence.findByG_REGID(groupId, registrationId);
+		
+		for (RegistrationForm registrationForm: lstRegistrationForm){
+			registrationForm.setRemoved(true);
+			registrationFormPersistence.update(registrationForm);
+		}
+		
+		return lstRegistrationForm;
+	}
+	
+	public RegistrationForm findFormbyRegidRefid(long groupId, long registrationId, String referenceUid){
+		return registrationFormPersistence.fetchByG_REGID_REFID(groupId, registrationId, referenceUid);
 	}
 	
 	//binhth
@@ -156,7 +167,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		
 		Registration registration = registrationPersistence.fetchByUUID_G(uuidRegistration, groupId);
-		RegistrationForm registrationForm = registrationFormPersistence.fetchByG_REGID_REFID(registration.getRegistrationId(), referenceUid);
+		RegistrationForm registrationForm = registrationFormPersistence.fetchByG_REGID_REFID(groupId, registration.getRegistrationId(), referenceUid);
 		
 		if (Validator.isNotNull(registrationForm)) {
 			registrationForm.setModifiedDate(now);

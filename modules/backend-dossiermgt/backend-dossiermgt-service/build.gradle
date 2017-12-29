@@ -14,9 +14,7 @@ dependencies {
 	compileOnly project(":modules:backend-usermgt:backend-usermgt-service")
 	compileOnly project(":modules:backend-auth")
 	
-	
 }	
-
 
 buildService {
 	apiDir = "../backend-dossiermgt-api/src/main/java"

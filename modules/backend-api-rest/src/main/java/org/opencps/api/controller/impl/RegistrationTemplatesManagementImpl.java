@@ -28,6 +28,8 @@ import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -35,6 +37,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationTemplatesManagementImpl implements RegistrationTemplatesManagement {
+	
+	Log _log = LogFactoryUtil.getLog(RegistrationTemplatesManagementImpl.class);
 
 	@Override
 	public Response getRegistrationTemplates(HttpServletRequest request, HttpHeaders header, Company company,
@@ -59,7 +63,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			if (Validator.isNull(formNo) && Validator.isNull(govAgencyCode)) {
 				registrationTemplateJsonObject = action.getRegistrationTemplates(groupId, start, end);
 			} else {
-				registrationTemplateJsonObject = action.getRegistrationTemplates(formNo, govAgencyCode);
+				registrationTemplateJsonObject = action.getRegistrationTemplates(groupId, formNo, govAgencyCode);
 			}
 
 			List<RegistrationTemplates> lstRegistrationTemplate = (List<RegistrationTemplates>) registrationTemplateJsonObject
@@ -72,6 +76,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -102,6 +107,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -134,6 +140,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -163,6 +170,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -174,7 +182,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 		BackendAuth auth = new BackendAuthImpl();
 
 		RegistrationTemplateFormScriptInputUpdateModel result = new RegistrationTemplateFormScriptInputUpdateModel();
-
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -182,13 +190,14 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			}
 
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
-					.getRegistrationTemplates(registrationTemplateId);
+					.getRegTempbyRegId(groupId, registrationTemplateId);
 
 			result.setFormScript(registrationTemplate.getFormScript());
 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -218,6 +227,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -235,15 +245,16 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
-					.getRegistrationTemplates(registrationTemplateId);
+					.getRegTempbyRegId(groupId, registrationTemplateId);
 
 			result.setFormReport(registrationTemplate.getFormReport());
 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -273,6 +284,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -290,15 +302,16 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
-					.getRegistrationTemplates(registrationTemplateId);
+					.getRegTempbyRegId(groupId, registrationTemplateId);
 
 			result.setSampleData(registrationTemplate.getSampleData());
 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -328,6 +341,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -353,6 +367,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
