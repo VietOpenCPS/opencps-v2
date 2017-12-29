@@ -74,7 +74,6 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 		serviceContext.setCompanyId(company.getCompanyId());
 		serviceContext.setUserId(systemUser.getUserId());
 
-
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 		Sort[] sorts = new Sort[] { SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, false) };
@@ -84,23 +83,31 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 			params.put(DossierTerm.DOSSIER_ID, String.valueOf(dossier.getDossierId()));
 			params.put(DossierTerm.REFERENCE_UID, String.valueOf(dossier.getReferenceUid()));
 			params.put(DossierActionTerm.AUTO, "timmer");
-			
+
 			if (Validator.isNotNull(dossier.getDossierStatus())) {
-				
-				JSONArray results = dossierActions.getNextActions(0l, company.getCompanyId(), dossier.getGroupId(), params,
-						sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
+
+				JSONArray results = dossierActions.getNextActions(0l, company.getCompanyId(), dossier.getGroupId(),
+						params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
 				int lenght = results.length();
 
 				if (lenght != 0) {
-					
+
 					JSONObject content = results.getJSONObject(0);
-					
+
 					ProcessAction processAction = (ProcessAction) content.get("processAction");
-					
-					if(processAction.getAutoEvent().contentEquals("timmer")) {
+
+					if (processAction != null) {
+						_log.info("///////////////////////////////////////// processAction.getAutoEvent()"
+								+ processAction.getAutoEvent());
+					} else {
+						_log.info("///////////////////////////////////////// null");
+					}
+
+					if (processAction != null && Validator.isNotNull(processAction.getAutoEvent())
+							&& processAction.getAutoEvent().contentEquals("timmer")) {
 						_log.info("AUTOEVENT_DOSSIER_ID" + dossier.getPrimaryKey());
-						
+
 						long processActionId = content.getLong("processActionId");
 
 						ProcessAction action = ProcessActionLocalServiceUtil.fetchProcessAction(processActionId);
@@ -115,14 +122,13 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 								.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
 
 						if (checkPreCondition) {
-							dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(),
-									processAction.getActionCode(), processAction.getProcessActionId(),
-									systemUser.getFullName(), processAction.getActionName(), processAction.getAssignUserId(),
+							dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
+									dossier.getReferenceUid(), processAction.getActionCode(),
+									processAction.getProcessActionId(), systemUser.getFullName(),
+									processAction.getActionName(), processAction.getAssignUserId(),
 									systemUser.getUserId(), serviceContext);
 						}
 					}
-					
-
 
 				}
 
