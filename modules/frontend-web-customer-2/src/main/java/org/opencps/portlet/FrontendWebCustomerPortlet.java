@@ -374,7 +374,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 			_log.error(e);
 		}
 		JSONObject userInfo = JSONFactoryUtil.createJSONObject();
-		userInfo.put("applicantName", applicantName);
+		userInfo.put("actionUser", applicantName);
 
 		return userInfo;
 

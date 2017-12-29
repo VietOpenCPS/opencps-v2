@@ -646,7 +646,8 @@
 				},
 				data : {
 					actionCode  : 1100,
-					actionNote :  $("textarea#applicantNote").val()
+					actionNote :  $("textarea#applicantNote").val(),
+					actionUser: '${(userInfo.actionUser)!}'
 				},
 				success : function(result){
 					$("#btn-save-dossier").button('reset');
