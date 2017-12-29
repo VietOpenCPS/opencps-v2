@@ -73,18 +73,6 @@ public class Engine implements MessageListener {
 
 			indexer.reindex(dossierFile);
 
-			// Binhth add message bus to processing KySO file
-			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(dossierFile.getGroupId(),
-					dossierFile.getDossierTemplateNo(), dossierFile.getDossierPartNo());
-			
-			JSONObject msgDataESign = JSONFactoryUtil.createJSONObject();
-			msgDataESign.put("userId", dossierFile.getUserId());
-			msgDataESign.put("eSign", dossierPart.getESign());
-			msgDataESign.put("fileEntryId", fileEntryId);
-
-			message.put("msgToEngine", msgDataESign);
-			MessageBusUtil.sendMessage("kyso/engine/out/destination", message);
-
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
