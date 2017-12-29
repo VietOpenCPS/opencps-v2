@@ -404,6 +404,7 @@
 			// 	$(this).modal("show");
 			// });
 			var urlView = "http://dangkiemlaprap.mt.gov.vn/group/cong-tiep-nhan#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo+"";
+			
 			window.open(urlView,"_blank")
 		});
 
