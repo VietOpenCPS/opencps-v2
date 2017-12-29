@@ -99,8 +99,8 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 
 		String paymentFileUUid = ParamUtil.getString(renderRequest, "paymentFileUUid");
 
-		String trans_id = oRequest.getParameter("trans_id");
-		String good_code = oRequest.getParameter("good_code");
+		String trans_id = ParamUtil.getString(renderRequest, "trans_id");
+		String good_code = ParamUtil.getString(renderRequest, "good_code");
 
 		// apiObject.put("applicant", applicantObj);
 
