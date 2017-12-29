@@ -90,8 +90,6 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		Registration model = registrationPersistence.create(registrationId);
 
-		int start = -1, end = -1;
-
 		model.setGroupId(groupId);
 		model.setCreateDate(now);
 		model.setModifiedDate(now);
@@ -114,6 +112,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setGovAgencyName(govAgencyName);
 		model.setRegistrationClass(registrationClass);
 		model.setRegistrationState(registrationState);
+		model.setSubmitting(false);
 
 		RegistrationFormActions actionForm = new RegistrationFormActionsImpl();
 		

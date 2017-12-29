@@ -193,7 +193,8 @@ public class RegistrationActionsImpl implements RegistrationActions {
 
 			result.put("data", hits.toList());
 
-			result.put("total", RegistrationLocalServiceUtil.countLucense(userId, params, sorts, start, end, searchContext));
+			result.put("total",
+					RegistrationLocalServiceUtil.countLucense(userId, params, sorts, start, end, searchContext));
 
 		} catch (Exception e) {
 			_log.error(e);
