@@ -413,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							this.detailPage = !this.detailPage;
 							setTimeout(function(){ 
 								// temp fix header
-								$('th[role="columnheader"]').each(function( index ) {
+								$('.danhSachHoSoTable__class th[role="columnheader"]').each(function( index ) {
 									$( this ).html($( this ).html().replace(/\./g,"<br/>").replace(/<br>/g, "<br>"));
 								});
 							}, 300);
@@ -422,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							this.detailRegistPage = !this.detailRegistPage;
 							setTimeout(function(){ 
 								// temp fix header
-								$('th[role="columnheader"]').each(function( index ) {
+								$('.thongTinDoanhNghiepTable__class th[role="columnheader"]').each(function( index ) {
 									$( this ).html($( this ).html().replace(/\./g,"<br/>").replace(/<br>/g, "<br>"));
 								});
 							}, 300);
@@ -473,6 +473,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								// TODO vm._inidanhSachHoSoTable(false);
 							} else if (item.id == 'tra_cuu_thong_tin_doanh_nghiep') {
 								vm._inithongTinDoanhNghiepTable(false);
+								vm.detailRegistPage = false;
 							} else {
 								vm._inidanhSachHoSoTable(false);
 							}
@@ -591,6 +592,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						filterChange: function(item){
 							var vm = this;
 							vm.detailPage = false;
+							vm.detailRegistPage = false;
 							vm.listgroupTraCuuFilterselected = item.id;
 							if ( item.id !== 'tra_cuu' ){
 								vm.stageFilterView = item.id;
@@ -604,6 +606,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							} else if (item.id == 'tra_cuu_thong_tin_doanh_nghiep') {
 								vm._inithongTinDoanhNghiepTable(false);
 							}
+							
 						},
 						_initlistgroupTraCuuFilter: function(){
 							var vm = this;
@@ -911,10 +914,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								vm.thongTinDoanhNghiepTableItems = serializable.data;
 								vm.thongTinDoanhNghiepTableTotal = Math.ceil(serializable.total / 8);
 								
-								// temp fix header
-								$('th[role="columnheader"]').each(function( index ) {
-									$( this ).html($( this ).html().replace(/\./g,"<br/>").replace(/<br>/g, "<br>"));
-								});
 							})
 								.catch(function (error) {
 									console.log(error);
@@ -983,7 +982,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					        if (!date) {
 					          return null
 					        }
-					        console.log(123123123123);
 					        const [year, month, day] = date.split('-');
 					        return '${month}/${day}/${year}';
 					      },
@@ -1043,6 +1041,55 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									},
 									error: function(xhr, textStatus, errorThrown) {
 										vm.detailRegistModel = {};
+									}
+								});
+								
+								dialog.close();
+							})
+							.catch((e) => {
+								console.log(e)
+							})
+						},
+						registrationPheDuyet: function(registrationState) {
+							var vm = this;
+							
+							vm.$dialog.confirm('Bạn có muốn phe duyệt Hồ sơ Doanh Nghiệp này?', {
+								html: true,
+								loader: true,
+								okText: 'Xác nhận',
+								cancelText: 'Quay lại',
+								animation: 'fade'
+							})
+							.then((dialog) => {
+
+								// call API get file by dossierId
+								const config = {
+									headers: {'groupId': themeDisplay.getScopeGroupId()}
+								};
+								var url = "/o/rest/v2/registrations/"+vm.detailRegistModel.registrationId;
+								
+								$.ajax({
+									url: url,
+									headers: {
+										"groupId": themeDisplay.getScopeGroupId()
+									},
+									data: {
+										"registrationState": registrationState,
+									},
+									type: 'PUT',
+									dataType: 'json',
+									contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+									success: function(data, textStatus, xhr) {
+										vm.detailRegistModel = data;
+										console.log(vm.detailRegistModel);
+										vm.snackbartextdossierViewJX = "Yêu cầu xử lý thành công thành công!";
+										vm.snackbardossierViewJX = true;
+										
+									},
+									error: function(xhr, textStatus, errorThrown) {
+										vm.detailRegistModel = {};
+										vm.snackbartextdossierViewJX = "Yêu cầu xử lý thành công thất bại!";
+										vm.snackbarerordossierViewJX = true;
 									}
 								});
 								
@@ -1149,7 +1196,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								vm.viewmore = false;
 								
 								// temp fix header
-								$('th[role="columnheader"]').each(function( index ) {
+								$('.danhSachHoSoTable__class th[role="columnheader"]').each(function( index ) {
 									$( this ).html($( this ).html().replace(/\./g,"<br/>").replace(/<br>/g, "<br>"));
 								});
 							})
@@ -1291,7 +1338,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								vm.viewmore = false;
 								
 								// temp fix header
-								$('th[role="columnheader"]').each(function( index ) {
+								$('.danhSachHoSoTable__class th[role="columnheader"]').each(function( index ) {
 									$( this ).html($( this ).html().replace(/\./g,"<br/>").replace(/<br>/g, "<br>"));
 								});
 							})
