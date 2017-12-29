@@ -1,6 +1,5 @@
 package org.opencps.api.controller.impl;
 
-import java.util.Date;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +29,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 public class RegistrationFormManagementImpl implements RegistrationFormManagement {
-	Log _log = LogFactoryUtil.getLog(RegistrationFormManagementImpl.class);
+	private static Log _log = LogFactoryUtil.getLog(RegistrationFormManagementImpl.class);
 
 	@Override
 	public Response deleteFormbyRegId(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -46,10 +45,9 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 
 			action.deleteRegistrationForm(groupId, id, referenceUid);
 
-			return Response.status(200).build();
+			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 
@@ -71,7 +69,6 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			return Response.status(200).entity(registrationForm.getFormData()).build();
 
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -80,7 +77,6 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 	public Response updateRegFormFormData(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long registrationId, String referenceUid,
 			String formData) throws PortalException {
-		Date now = new Date();
 		BackendAuth auth = new BackendAuthImpl();
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -98,7 +94,6 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -119,7 +114,6 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			return Response.status(200).entity(registrationForm.getFormScript()).build();
 
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -142,7 +136,8 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
 
 			} else {
-
+			    _log.error(e);
+			    
 				error.setMessage("No Content.");
 				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 				error.setDescription("No Content.");
@@ -169,7 +164,6 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			return Response.status(200).build();
 
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 	}

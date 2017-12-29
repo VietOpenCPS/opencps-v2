@@ -247,12 +247,10 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 	}
 	
 	public RegistrationForm updateFormData(long groupId, long registrationId, String referenceUid, String formData,
-			ServiceContext serviceContext) throws PortalException, SystemException {
+			ServiceContext serviceContext) 
+		throws PortalException, SystemException {
 
-		// User user =
-		// userPersistence.findByPrimaryKey(serviceContext.getUserId());
-
-		RegistrationForm registrationForm = registrationFormPersistence.fetchByG_REGID_REFID(groupId, registrationId, referenceUid);
+		RegistrationForm registrationForm = registrationFormPersistence.findByG_REGID_REFID(groupId, registrationId, referenceUid);
 
 		String jrxmlTemplate = registrationForm.getFormReport();
 
