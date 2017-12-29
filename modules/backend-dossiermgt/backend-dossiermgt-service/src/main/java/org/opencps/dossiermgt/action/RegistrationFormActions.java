@@ -5,6 +5,7 @@ import java.util.List;
 import org.opencps.dossiermgt.model.RegistrationForm;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 public interface RegistrationFormActions {
@@ -25,4 +26,7 @@ public interface RegistrationFormActions {
 			throws PortalException;
 
 	public List<RegistrationForm> deleteRegistrationForms(long groupId, long registrationId) throws PortalException;
+
+	public RegistrationForm updateRegFormFormData(long groupId, long registrationId, String referenceUid, String formData,
+			ServiceContext serviceContext) throws SystemException, PortalException;
 }
