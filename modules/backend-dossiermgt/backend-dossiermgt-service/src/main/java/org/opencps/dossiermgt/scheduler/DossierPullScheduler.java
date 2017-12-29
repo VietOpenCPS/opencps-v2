@@ -483,6 +483,63 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				}
 
 				// Add conformFile to CLIENT
+			} else {
+				try {
+
+					String fileRef = object.getString("referenceUid");
+
+					// Get file from SERVER
+					String path = "dossiers/" + srcDossierId + "/payments/" + fileRef + "/confirmfile/noattachment";
+
+					URL url = new URL(RESTFulConfiguration.SERVER_PATH_BASE + path);
+
+					HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+					String authString = RESTFulConfiguration.SERVER_USER + ":" + RESTFulConfiguration.SERVER_PASS;
+
+					String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
+
+					conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+
+					conn.setRequestMethod(HttpMethods.GET);
+					conn.setDoInput(true);
+					conn.setDoOutput(true);
+					conn.setRequestProperty("Accept", "application/json");
+					conn.setRequestProperty("groupId", String.valueOf(srcGroupId));
+
+					int responseCode = conn.getResponseCode();
+
+					if (responseCode != 200) {
+						if (responseCode != 204) {
+							throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+						}
+
+					} else {
+
+						String requestURL = RESTFulConfiguration.CLIENT_PATH_BASE + "dossiers/" + dossierId
+								+ "/payments/" + fileRef + "/confirm/noattachment";
+
+						String clientAuthString = new String(Base64.getEncoder().encodeToString(
+								(RESTFulConfiguration.CLIENT_USER + StringPool.COLON + RESTFulConfiguration.CLIENT_PASS)
+										.getBytes()));
+
+						pullPaymentFileNoAttach(requestURL, "UTF-8", groupId, dossierId, clientAuthString, 
+								StringPool.BLANK, object.getString("paymentMethod"), object.getString("confirmPayload"),
+								context);
+
+					}
+
+					conn.disconnect();
+
+				} catch (MalformedURLException e) {
+
+					e.printStackTrace();
+				} catch (IOException e) {
+
+					e.printStackTrace();
+
+				}
+
 			}
 
 		}
@@ -665,6 +722,31 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
 
 			multipart.addFilePart("file", file);
+			multipart.addFormField("confirmNote", confirmNote);
+			multipart.addFormField("paymentMethod", paymentMethod);
+			multipart.addFormField("confirmPayload", confirmPayload);
+
+			JSONObject object = JSONFactoryUtil.createJSONObject();
+
+			List<String> response = multipart.finish();
+
+			// resetDossier(desGroupId, dossierRef, false, serviceContext);
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+	}
+	
+	private void pullPaymentFileNoAttach(String requestURL, String charset, long desGroupId, long dossierId,
+			String authStringEnc, String confirmNote, String paymentMethod, String confirmPayload,
+			ServiceContext serviceContext) {
+
+		try {
+			MultipartUtility multipart = new MultipartUtility(requestURL, charset, desGroupId, authStringEnc,
+					HttpMethod.PUT);
+			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
+
 			multipart.addFormField("confirmNote", confirmNote);
 			multipart.addFormField("paymentMethod", paymentMethod);
 			multipart.addFormField("confirmPayload", confirmPayload);
