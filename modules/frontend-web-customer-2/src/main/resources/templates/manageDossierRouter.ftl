@@ -144,10 +144,7 @@
 			$("#mainType2").load("${ajax.notificationPaying}&dossierUUid="+id+"&paymentFileUUid="+refUid,function(result){
 			});
 			
-			$("#profileStatus li").removeClass('active');
-			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
-			$('#profileStatus li[dataPk='+dossierItemStatus+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
-			$('#profileStatus li[dataPk='+dossierItemStatus+']').addClass('active');
+			
 		});
 		// View file trong Thành phần hồ sơ
 		// manageDossier.route("/(:dossierId)/files/(:dossierTemplateNo)/(:partNo)", function(dossierId,dossierTemplateNo,partNo){
