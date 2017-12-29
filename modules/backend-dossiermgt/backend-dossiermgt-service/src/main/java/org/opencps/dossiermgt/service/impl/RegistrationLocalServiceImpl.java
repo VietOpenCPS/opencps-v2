@@ -142,23 +142,21 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		long userId = serviceContext.getUserId();
 		User userAction = userLocalService.getUser(userId);
 
-		Date idDate = null;
+		Registration model = registrationPersistence.fetchByPrimaryKey(registrationId);
+
+		model.setModifiedDate(now);
+		model.setUserId(userAction.getUserId());
+		model.setSubmitting(true);
+		
 		if (Validator.isNotNull(applicantIdDate)) {
 			try {
-				idDate = UserMgtUtils.convertDate(applicantIdDate);
+				Date idDate = UserMgtUtils.convertDate(applicantIdDate);
+				
+				model.setApplicantIdDate(idDate);
 			} catch (Exception e) {
 				_log.error(e);
 			}
 		}
-
-		Registration model = registrationPersistence.fetchByPrimaryKey(registrationId);
-
-		model.setGroupId(groupId);
-		model.setCreateDate(now);
-		model.setModifiedDate(now);
-		model.setUserId(userAction.getUserId());
-		model.setSubmitting(true);
-		model.setApplicantIdDate(idDate);
 
 		if (Validator.isNotNull(applicantName)) {
 			model.setApplicantName(applicantName);
