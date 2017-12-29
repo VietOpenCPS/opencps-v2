@@ -395,7 +395,7 @@
 		$(document).on("click",".dossier-component-profile",function(){
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
-			var dossierTemplateNo = "${(dossierTemplateId)!}";
+			var dossierTemplateNo = $("#dossierTemplateNo").val();
 			// $("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
 			// 	$(this).modal("show");
 			// });

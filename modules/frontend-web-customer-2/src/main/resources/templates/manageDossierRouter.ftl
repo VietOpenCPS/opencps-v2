@@ -148,7 +148,7 @@
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').addClass('active');
 		});
 		// View file trong Thành phần hồ sơ
-		manageDossier.route("/(:dossierId)/files/(:dossierTemplateNo)/(:partNo)", function(id){
+		manageDossier.route("/(:dossierId)/files/(:dossierTemplateNo)/(:partNo)", function(dossierId,dossierTemplateNo,partNo){
 			$("#panel_list").show();
 			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 			$("#mainType1").hide();
