@@ -17,14 +17,14 @@ package org.opencps.dossiermgt.service.impl;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.UUID;
 
 import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
+import org.opencps.dossiermgt.exception.NoSuchRegistrationException;
 import org.opencps.dossiermgt.model.Registration;
+import org.opencps.dossiermgt.model.impl.RegistrationImpl;
 import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
-import org.opencps.usermgt.service.impl.ApplicantLocalServiceImpl;
 import org.opencps.usermgt.service.util.UserMgtUtils;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -49,7 +49,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
@@ -122,12 +121,12 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setGovAgencyName(govAgencyName);
 		model.setRegistrationClass(registrationClass);
 		model.setRegistrationState(registrationState);
-		model.setSubmitting(true);
+		model.setSubmitting(false);
 
 		RegistrationFormActions actionForm = new RegistrationFormActionsImpl();
-		
+
 		actionForm.addRegistrationFormbaseonRegTemplate(groupId, registrationId, govAgencyCode, serviceContext);
-		
+
 		return registrationPersistence.update(model);
 	}
 
@@ -142,74 +141,72 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
 		User userAction = userLocalService.getUser(userId);
+
+		Registration model = registrationPersistence.fetchByPrimaryKey(registrationId);
+
+		model.setModifiedDate(now);
+		model.setUserId(userAction.getUserId());
+		model.setSubmitting(true);
 		
-		Date idDate = null;
-		if(Validator.isNotNull(applicantIdDate)){
+		if (Validator.isNotNull(applicantIdDate)) {
 			try {
-				idDate = UserMgtUtils.convertDate(applicantIdDate);
+				Date idDate = UserMgtUtils.convertDate(applicantIdDate);
+				
+				model.setApplicantIdDate(idDate);
 			} catch (Exception e) {
 				_log.error(e);
 			}
 		}
 
-		Registration model = registrationPersistence.fetchByPrimaryKey(registrationId);
-
-		model.setGroupId(groupId);
-		model.setCreateDate(now);
-		model.setModifiedDate(now);
-		model.setUserId(userAction.getUserId());
-		model.setSubmitting(true);
-		model.setApplicantIdDate(idDate);
-		
-		if(Validator.isNotNull(applicantName)) {
+		if (Validator.isNotNull(applicantName)) {
 			model.setApplicantName(applicantName);
 		}
-		if(Validator.isNotNull(applicantIdType)) {
+		if (Validator.isNotNull(applicantIdType)) {
 			model.setApplicantIdType(applicantIdType);
 		}
-		if(Validator.isNotNull(applicantIdNo)) {
+		if (Validator.isNotNull(applicantIdNo)) {
 			model.setApplicantIdNo(applicantIdNo);
 		}
-		if(Validator.isNotNull(address)) {
+		if (Validator.isNotNull(address)) {
 			model.setAddress(address);
 		}
-		if(Validator.isNotNull(cityCode)) {
+		if (Validator.isNotNull(cityCode)) {
 			model.setCityCode(cityCode);
 		}
-		if(Validator.isNotNull(cityName)) {
+		if (Validator.isNotNull(cityName)) {
 			model.setCityName(cityName);
 		}
-		if(Validator.isNotNull(districtCode)) {
+		if (Validator.isNotNull(districtCode)) {
 			model.setDistrictCode(districtCode);
 		}
-		if(Validator.isNotNull(districtName)) {
+		if (Validator.isNotNull(districtName)) {
 			model.setDistrictName(districtName);
 		}
-		if(Validator.isNotNull(wardCode)) {
+		if (Validator.isNotNull(wardCode)) {
 			model.setWardCode(wardCode);
 		}
-		if(Validator.isNotNull(wardName)) {
+		if (Validator.isNotNull(wardName)) {
 			model.setWardName(wardName);
 		}
-		if(Validator.isNotNull(contactName)) {
+		if (Validator.isNotNull(contactName)) {
 			model.setContactName(contactName);
 		}
-		if(Validator.isNotNull(contactTelNo)) {
+		if (Validator.isNotNull(contactTelNo)) {
 			model.setContactTelNo(contactTelNo);
 		}
-		if(Validator.isNotNull(contactEmail)) {
+		if (Validator.isNotNull(contactEmail)) {
 			model.setContactEmail(contactEmail);
 		}
-		if(Validator.isNotNull(govAgencyCode)) {
+		if (Validator.isNotNull(govAgencyCode)) {
 			model.setGovAgencyCode(govAgencyCode);
 		}
-		if(Validator.isNotNull(govAgencyName)) {
+		if (Validator.isNotNull(govAgencyName)) {
 			model.setGovAgencyName(govAgencyName);
 		}
-		if(Validator.isNotNull(registrationClass)) {
+		if (Validator.isNotNull(registrationClass)) {
 			model.setRegistrationClass(registrationClass);
 		}
-		if(Validator.isNotNull(registrationState)) {
+		if (Validator.isNotNull(registrationState)) {
 			model.setRegistrationState(registrationState);
 		}
 
@@ -306,7 +303,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}
-	
+
 	public long countLucense(long userId, LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
@@ -484,10 +481,18 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 	public Registration getRegistrationByGID_UID_Last(long groupId, long userId) {
 		return registrationPersistence.fetchByGID_UID_Last(groupId, userId, null);
 	}
-	
+
 	public Registration getRegistrationByG_REGID(long groupId, long registrationId) {
 		return registrationPersistence.fetchByG_REGID(groupId, registrationId);
 	}
-	
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Registration updateSubmitting(long registrationId, boolean submitting) throws PortalException {
+		Registration model = registrationPersistence.findByPrimaryKey(registrationId);
+		model.setSubmitting(submitting);
+		model.setModifiedDate(new Date());
+		return registrationPersistence.update(model);
+	}
+
 	private Log _log = LogFactoryUtil.getLog(RegistrationLocalServiceImpl.class);
 }
