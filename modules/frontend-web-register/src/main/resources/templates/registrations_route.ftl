@@ -288,6 +288,7 @@ $(function(){
 			$.ajax({
 				url : "${api.server}/registrations/" +vm.registrationModel.registrationId+ "/forms/"+ referenceUid,
 				type : "DELETE",
+				dataType : "text",
 				headers: {
 					"groupId": ${groupId}
 				},
