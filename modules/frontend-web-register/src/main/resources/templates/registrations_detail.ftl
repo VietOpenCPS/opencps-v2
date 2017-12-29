@@ -216,38 +216,45 @@
 			<div id="__registrationId" data-bind="visible: false, text: registrationModel.registrationId"></div>
 
 			<script type="text/x-kendo-template" id="registration-forms-template">
-				#if(!removed) { #
+				#if(!removed) { 
+					 var checkState = viewRegistrationModel.registrationModel.registrationState; 
+				#
 					
-					<div class="registrationTemplateIndex">
+					<div class="registrationTemplateIndex" 
+						data-bind="events: {
+							click: registrationFormsListView_toggleAlpacaToForm}" data-pk="#:id#" data-formno="#:formNo#">
+						
 						<div class="row-parts-head align-middle slide-toggle">
 							<span class="text-bold MR5">#:itemIndex#.</span>
 							<span class="hover-pointer"> #:formName# </span>
 	
 							<div class="actions">
 								
-								#if(multiple) { #
+								# if ( checkState ==0 || checkState ==3 ) {#
+									#if(multiple) { #
+										<a href="javascript:;"
+											data-bind="events: {
+												click: registrationFormsListView_addTemplate
+											}"
+											data-formno="#:formNo#">
+											<i class="fa fa-plus-circle text-light-gray" aria-hidden="true" style="font-size: 150%;"></i>
+										</a>
+									#}#
+								
 									<a href="javascript:;"
 										data-bind="events: {
-											click: registrationFormsListView_addTemplate
+											click: registrationFormsListView_deleteTemplate
 										}"
-										data-formno="#:formNo#">
-										<i class="fa fa-plus-circle text-light-gray" aria-hidden="true" style="font-size: 150%;"></i>
+										data-referenceuid="#:referenceUid#" >
+										<i class="fa fa-times text-light-gray" aria-hidden="true" style="font-size: 150%;"></i>
 									</a>
 								#}#
-								
-								<a href="javascript:;"
-									data-bind="events: {
-										click: registrationFormsListView_deleteTemplate
-									}"
-									data-referenceuid="#:referenceUid#" >
-									<i class="fa fa-times text-light-gray" aria-hidden="true" style="font-size: 150%;"></i>
-								</a>
 		
 								<a href="javascript:;" 
 									data-bind="events: {
 										click: registrationFormsListView_viewJasperTemplate
 									}"
-									title="Số version" data-referenceuid="#:referenceUid#" data-formname="#:formName#">
+									title="Xem file Pdf" data-referenceuid="#:referenceUid#" data-formname="#:formName#">
 									<span class="number-in-circle" >#:version#</span>
 								</a>
 								
@@ -255,7 +262,7 @@
 									data-bind="events: {
 										click: registrationFormsListView_genAlpacaToForm
 									}"
-									data-pk="#:id#" data-formno="#:formNo#">
+									title="Xem chi tiết" data-pk="#:id#" data-formno="#:formNo#">
 									<span class="number-in-circle" > 
 										<i class="fa fa-eye" aria-hidden="true"></i>
 									</span>
@@ -265,10 +272,18 @@
 						</div>
 
 						<div class="collapse" id="collapseRegistrationPart#:id#">
+							
+							<div class="col-sm-12" style="height:450px; width:100%;overflow:auto;" >
+		
+								<form id="formPartNo#:id#">
+
+								</form>
+		
+							</div>
+							
 							<div class="col-xs-12 col-sm-12 text-right">
 								
-								# var checkState = viewRegistrationModel.registrationModel.registrationState; 
-								if ( checkState ==0 || checkState ==3 ) {#
+								# if ( checkState ==0 || checkState ==3 ) {#
 									<button id="btn-save-formalpaca#:id#" 
 										class="btn btn-active MB10 MT10 MR20 saveFormAlpaca" 
 										type="button" data-pk="#:formNo#" referenceUid="#:id#">
@@ -277,14 +292,7 @@
 								#}#
 								<input type="hidden" name="" id="dossierFileId#:id#" value="#:id#">
 							</div>
-		
-							<div class="col-sm-12" style="height:450px; width:100%;overflow:auto;" >
-		
-								<form id="formPartNo#:id#">
-
-								</form>
-		
-							</div>
+							
 						</div>
 				
 					</div>

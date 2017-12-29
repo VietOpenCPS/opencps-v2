@@ -159,7 +159,7 @@ $(function(){
 			
 			for(var k in model) {
 			
-				if( k == "applicantIdDate" && model[k] != "" ){
+				if( k == "applicantIdDate" && model[k] != "" && isNaN(model[k]) ){
 					registrationModel[k] = kendo.toString(kendo.parseDate(model[k]), 'dd/MM/yyyy');
 					
 				} else if (k == "registrationState") {
@@ -490,6 +490,23 @@ $(function(){
 			var formNo = $(e.currentTarget).attr("data-formno");
 			console.log(">>>>>>>>>>>>>>>>>FORM NO>>"+formNo);
 			console.log(">>>>>>>>>>>>>>>>>id>>"+id);
+			
+			vm._genAlpacaToForm(id, formNo);
+		
+		},
+		registrationFormsListView_toggleAlpacaToForm: function(e){
+			var vm = this;
+			
+			var id = $(e.currentTarget).attr("data-pk");
+			var formNo = $(e.currentTarget).attr("data-formno");
+			
+			if ( $("#formPartNo"+id).children().length == 0) {
+				vm._genAlpacaToForm(id, formNo);
+			}
+		
+		},
+		_genAlpacaToForm: function(id, formNo){
+			var vm = this;
 			
 			$.ajax({
 				url : "${api.server}/registrations/" + vm.registrationModel.registrationId + "/forms/"+id+"/formscript",
