@@ -218,6 +218,6 @@ public interface DossierManagement {
 
 	public Response updateDossierNo(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@PathParam("id") String id, @PathParam("reference") String reference);
+			@PathParam("id") String id, @PathParam("dossierno") String dossierno);
 
 }
