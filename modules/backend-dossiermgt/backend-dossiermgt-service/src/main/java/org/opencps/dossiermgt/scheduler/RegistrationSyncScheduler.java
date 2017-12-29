@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
+import org.opencps.dossiermgt.exception.NoSuchRegistrationException;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
@@ -84,12 +85,11 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 				long groupId = getGroupId(resDossierSync);
 				_log.info("resServerConfig groupId ---------- :" + groupId);
 				
-				// TODO
+				// TODO GROUP EMPLOYEE
 				long desGroupId = 55301;
 
-				List<Registration> registrations = new ArrayList<>();
-
-				registrations = RegistrationLocalServiceUtil.getdByF_submitting(groupId, Boolean.TRUE);
+				// listener submiting of server
+				List<Registration> registrations = RegistrationLocalServiceUtil.getdByF_submitting(groupId, Boolean.TRUE);
 				_log.info("resServerConfig registrations ---------- :" + registrations);
 				String registrationEndpoint = "registrations/syncs";
 				String registrationFormEndpoint = "registrations/syncs/form";
@@ -116,7 +116,7 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 							
 							Map<String, Object> paramsForm = getParamsPostRegistrationForm(registrationForm, registration.getUuid());
 							
-							JSONObject registrationFormPOSTrespone = rest.callPostAPI(desGroupId, HttpMethods.POST, "application/json", 
+							JSONObject registrationFormPOSTrespone = rest.callPostAPI(desGroupId, HttpMethods.PUT, "application/json", 
 									RESTFulConfiguration.SERVER_PATH_BASE, registrationFormEndpoint, RESTFulConfiguration.SERVER_USER,
 									RESTFulConfiguration.SERVER_PASS,
 									properties, paramsForm, serviceContext);
@@ -131,6 +131,33 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 						
 					}
 					
+				}
+				
+				// listener submiting of client
+				List<Registration> registrationClients = RegistrationLocalServiceUtil.getdByF_submitting(desGroupId, Boolean.TRUE);
+				
+				for (Registration registrationClient : registrationClients) {
+				    Registration registrationServer = RegistrationLocalServiceUtil.fetchRegistrationByUuidAndGroupId(
+				        registrationClient.getUuid(), groupId);
+				    
+				    if(registrationServer != null) {
+    				    try {
+    				        Map<String, Object> params = getParamsPostRegistration(registrationClient);
+                            
+                            JSONObject clientRegistrationPOSTrespone = rest.callPostAPI(groupId, HttpMethods.POST, "application/json", 
+                                    RESTFulConfiguration.SERVER_PATH_BASE, registrationEndpoint, RESTFulConfiguration.SERVER_USER,
+                                    RESTFulConfiguration.SERVER_PASS,
+                                    properties, params, serviceContext);
+                            
+                            if (clientRegistrationPOSTrespone.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
+                                registrationClient.setSubmitting(Boolean.FALSE);
+                                
+                                RegistrationLocalServiceUtil.updateRegistration(registrationClient);
+                            }
+    				    } catch (NoSuchRegistrationException nsge) {
+    				        
+    				    }
+				    }
 				}
 				
 			}
