@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.UUID;
 
 import org.opencps.dossiermgt.action.RegistrationFormActions;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
@@ -79,5 +81,12 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 
 		return RegistrationFormLocalServiceUtil.deleteRegistrationForms(groupId, registrationId);
 
+	}
+	
+	@Override
+	public RegistrationForm updateRegFormFormData(long groupId, long registrationId, String referenceUid, String formData,
+			ServiceContext serviceContext) throws SystemException, PortalException {
+
+		return RegistrationFormLocalServiceUtil.updateFormData(groupId, registrationId, referenceUid, formData, serviceContext);
 	}
 }
