@@ -443,12 +443,20 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		// update dossier
 		
-		Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
-		dossier.setSubmitDate(new Date());
-		dossier.setSubmitting(true);
-		
-		dossierPersistence.update(dossier);
+		try {
+			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+
+			dossier.setSubmitDate(new Date());
+			dossier.setSubmitting(true);
+
+			dossierPersistence.update(dossier);
+			
+			indexer.reindex(dossier);
+		} catch (SearchException e) {
+			e.printStackTrace();
+		}
 
 		return paymentFilePersistence.update(paymentFile);
 	}
@@ -499,12 +507,22 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setIsNew(true);
 		}
 
-		Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
-
-		dossier.setSubmitDate(new Date());
-		dossier.setSubmitting(true);
 		
-		dossierPersistence.update(dossier);
+		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
+
+		try {
+			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+
+			dossier.setSubmitDate(new Date());
+			dossier.setSubmitting(true);
+
+			dossierPersistence.update(dossier);
+			
+			indexer.reindex(dossier);
+		} catch (SearchException e) {
+			e.printStackTrace();
+		}
+
 
 		return paymentFilePersistence.update(paymentFile);
 	}
@@ -538,6 +556,9 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
 			paymentFile.setInvoiceIssueNo(invoiceIssueNo);
 			paymentFile.setInvoiceNo(invoiceNo);
+			
+			paymentFile.setIsNew(true);
+
 		}
 
 		return paymentFilePersistence.update(paymentFile);
@@ -583,6 +604,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setInvoiceIssueNo(invoiceIssueNo);
 			paymentFile.setInvoiceNo(invoiceNo);
 			paymentFile.setInvoiceFileEntryId(fileEntryId);
+			paymentFile.setIsNew(true);
 
 		}
 

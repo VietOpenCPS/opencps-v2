@@ -79,6 +79,7 @@ import javax.xml.bind.annotation.XmlType;
     "paymentMethod",
     "confirmDatetime",
     "confirmPayload",
+    "confirmFileEntryId",
     "confirmFileType",
     "confirmFileSize",
     "confirmNote",
@@ -110,6 +111,7 @@ public class PaymentFileModel {
     protected String paymentMethod;
     protected String confirmDatetime;
     protected String confirmPayload;
+	protected long confirmFileEntryId;
     protected String confirmFileType;
     protected Long confirmFileSize;
     protected String confirmNote;
@@ -121,6 +123,15 @@ public class PaymentFileModel {
     protected String invoiceNo;
     protected String invoiceFileType;
     protected Long invoiceFileSize;
+    
+    public long getConfirmFileEntryIds() {
+		return confirmFileEntryId;
+	}
+
+	public void setConfirmFileEntryId(long confirmFileEntryIds) {
+		this.confirmFileEntryId = confirmFileEntryIds;
+	}
+
 
     /**
      * Gets the value of the createDate property.
