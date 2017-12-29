@@ -19,7 +19,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationFormUtils {
-	
+
 	Log _log = LogFactoryUtil.getLog(RegistrationFormUtils.class);
 
 	public static RegistrationFormDetailModel mappingToRegistrationFormDetailModel(RegistrationForm registrationForm) {
@@ -47,7 +47,7 @@ public class RegistrationFormUtils {
 			model.setMultiple(registrationTemplates.getMultiple());
 
 		} catch (Exception e) {
-			
+
 		}
 		return model;
 	}
@@ -58,26 +58,23 @@ public class RegistrationFormUtils {
 		long version = 1;
 		if (Validator.isNotNull(lstRegistrationForm)) {
 			for (RegistrationForm registrationForm : lstRegistrationForm) {
-				try {
-					Registration registration = RegistrationLocalServiceUtil
-							.getRegistrationByG_REGID(registrationForm.getGroupId(), registrationForm.getRegistrationId());
+				Registration registration = RegistrationLocalServiceUtil
+						.getRegistrationByG_REGID(registrationForm.getGroupId(), registrationForm.getRegistrationId());
 
-					RegistrationTemplates registrationTemplates = RegistrationTemplatesLocalServiceUtil
-							.getRegTempbyFormNoGovCode(registrationForm.getGroupId(), registrationForm.getFormNo(),
-									registration.getGovAgencyCode());
+				RegistrationTemplates registrationTemplates = RegistrationTemplatesLocalServiceUtil
+						.getRegTempbyFormNoGovCode(registrationForm.getGroupId(), registrationForm.getFormNo(),
+								registration.getGovAgencyCode());
 
-					RegistrationFormModel model = new RegistrationFormModel();
+				RegistrationFormModel model = new RegistrationFormModel();
 
-					model.setReferenceUid(registrationForm.getReferenceUid());
-					model.setFormNo(registrationForm.getFormNo());
-					model.setFormName(registrationForm.getFormName());
-					model.setIsNew(Boolean.valueOf(registrationForm.isIsNew()));
-					model.setRemoved(Boolean.valueOf(registrationForm.isRemoved()));
-					model.setVersion(version);
-					model.setMultiple(Boolean.valueOf(registrationTemplates.getMultiple()));
-					outputs.add(model);
-				} catch (Exception e) {
-				}
+				model.setReferenceUid(registrationForm.getReferenceUid());
+				model.setFormNo(registrationForm.getFormNo());
+				model.setFormName(registrationForm.getFormName());
+				model.setIsNew(Boolean.valueOf(registrationForm.isIsNew()));
+				model.setRemoved(Boolean.valueOf(registrationForm.isRemoved()));
+				model.setVersion(version);
+				model.setMultiple(Boolean.valueOf(registrationTemplates.getMultiple()));
+				outputs.add(model);
 			}
 		}
 		return outputs;

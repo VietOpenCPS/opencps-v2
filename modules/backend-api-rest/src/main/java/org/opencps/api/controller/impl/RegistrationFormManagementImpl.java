@@ -98,6 +98,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 
 			model.setFormData(formData);
 			model.setModifiedDate(now);
+			model.setIsNew(true);
 
 			RegistrationForm registrationForm = action.update(model);
 
