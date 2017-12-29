@@ -9,6 +9,7 @@ import org.opencps.dossiermgt.action.RegistrationLogActions;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.RegistrationLog;
+import org.opencps.dossiermgt.model.impl.RegistrationImpl;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLogLocalServiceUtil;
@@ -176,5 +177,13 @@ public class RegistrationActionsImpl implements RegistrationActions {
 		}
 
 		return result;
+	}
+
+	@Override
+	public Registration updateSubmitting(long registrationId, boolean submitting) {
+		Registration model = new RegistrationImpl();
+		model.setSubmitting(submitting);
+		model.setRegistrationId(registrationId);
+		return RegistrationLocalServiceUtil.updateRegistration(model);
 	}
 }
