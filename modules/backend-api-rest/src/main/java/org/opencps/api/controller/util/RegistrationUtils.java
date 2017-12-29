@@ -2,6 +2,7 @@
 package org.opencps.api.controller.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.opencps.api.registration.model.RegistrationDetailModel;
@@ -30,9 +31,16 @@ public class RegistrationUtils {
 			model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
 			model.setUserId(GetterUtil.getLong(doc.get(Field.USER_ID)));
 			model.setApplicantName(doc.get(RegistrationTerm.APPLICATION_NAME));
+			Date date = null;
+			String applicantIdDate = doc.get(doc.get(RegistrationTerm.APPLICATION_ID_DATE));
+			if (Validator.isNotNull(applicantIdDate)) {
+				date = APIDateTimeUtils.convertStringToDate(applicantIdDate, "yyyyMMddHHmmss");
+			}
 			model.setApplicantIdType(doc.get(RegistrationTerm.APPLICATION_ID_TYPE));
 			model.setApplicantIdNo(doc.get(RegistrationTerm.APPLICATION_ID_NO));
-			model.setApplicantIdDate(doc.get(RegistrationTerm.APPLICATION_ID_DATE));
+
+			model.setApplicantIdDate(date != null
+					? APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP) : applicantIdDate);
 			model.setAddress(doc.get(RegistrationTerm.ADDRESS));
 			model.setCityCode(doc.get(RegistrationTerm.CITY_CODE));
 			model.setCityName(doc.get(RegistrationTerm.CITY_NAME));

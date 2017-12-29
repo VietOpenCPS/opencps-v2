@@ -153,7 +153,7 @@ public class AutoFillFormData {
 					try {
 						DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
 								paper, false, new DossierFileComparator(false, "createDate", Date.class));
-
+						System.out.println("AutoFillFormData.sampleDataBinding()"+dossierFile);
 						if (Validator.isNotNull(dossierFile) && Validator.isNotNull(dossierFile.getFormData())) {
 							JSONObject jsonOtherData = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
 							Map<String, Object> jsonOtherMap = jsonToMap(jsonOtherData);

@@ -1,6 +1,9 @@
 <#if (Request)??>
     <#include "init.ftl">
 </#if>
+
+<!-- Call API confirm keypay success -->
+
 <!-- Template thông tin thu phí thành công -->
 <div class="col-sm-10" style="background: #ffffff;">
   <h3 class="text-center MT30 MB30">DANH SÁCH CÁC YÊU CẦU THU PHÍ</h3>
