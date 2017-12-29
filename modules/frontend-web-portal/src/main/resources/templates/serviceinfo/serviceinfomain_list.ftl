@@ -4,7 +4,7 @@
 
 <div class="">
   <div class="col-xs-12 col-sm-12 panel P0">
-    <div class="row-header">
+    <div class="row-header align-middle">
       <div class="background-triangle-big">DANH SÁCH THỦ TỤC HÀNH CHÍNH</div>
       <span>Hiển thị <span id="numPerPage"></span> trên <span id="totalItem"></span> tổng số bản ghi được tìm thấy</span>
       <span class="show-per-page">Hiển thị

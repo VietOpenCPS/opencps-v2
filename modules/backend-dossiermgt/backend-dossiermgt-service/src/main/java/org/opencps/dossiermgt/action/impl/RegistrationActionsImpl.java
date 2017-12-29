@@ -3,20 +3,15 @@ package org.opencps.dossiermgt.action.impl;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.UUID;
 
 import org.opencps.dossiermgt.action.RegistrationActions;
-import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.RegistrationLogActions;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.RegistrationLog;
-import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLogLocalServiceUtil;
-import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -78,12 +73,10 @@ public class RegistrationActionsImpl implements RegistrationActions {
 
 		// changeType removed in registrationForm
 		for (RegistrationForm registrationForm : lstRegistrationForm) {
-			if (registrationForm.isRemoved() == false) {
-				registrationForm.setRemoved(true);
+				registrationForm.setIsNew(true);
 				RegistrationForm registrationFormChanged = RegistrationFormLocalServiceUtil
 						.updateRegistrationForm(registrationForm);
 				lstRegistrationFormchange.add(registrationFormChanged);
-			}
 		}
 
 		// add registrationLog
@@ -101,24 +94,6 @@ public class RegistrationActionsImpl implements RegistrationActions {
 			if (registrationState == 2 || registrationState == 3) {
 				addLog("", groupId, userId, registrationId, content, lstRegistrationFormchange);
 			}
-		}
-
-		// create referenceUid
-		String referenceUid = UUID.randomUUID().toString();
-
-		// get lstRegistrationTemplate
-		List<RegistrationTemplates> lstRegistrationTemplate = RegistrationTemplatesLocalServiceUtil
-				.getRegistrationTemplateses(start, end);
-
-		// add registrationForm
-		for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
-			int fileEntryId = getfileEntryId(registrationTemplates.getSampleData(),
-					registrationTemplates.getFormScript(), registrationTemplates.getFormReport());
-
-			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
-					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
-					registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
-					registrationTemplates.getFormReport(), fileEntryId, false, false, serviceContext);
 		}
 
 		return RegistrationLocalServiceUtil.updateRegistration(groupId, registrationId, applicantName, applicantIdType,

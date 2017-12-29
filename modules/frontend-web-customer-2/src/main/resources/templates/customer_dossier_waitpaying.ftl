@@ -23,11 +23,11 @@
 				<div class="row MB5">
 					<span class="text-bold">Số hồ sơ</span>: <span data-bind="text:dossierNo"></span>
 				</div>
-				<div class="row" id="">
+				<#-- <div class="row" id="">
 					<a href="javascript:;" class="text-blue text-underline">
 						Thông tin chủ hồ sơ
 					</a>
-				</div>
+				</div> -->
 			</div>
 			<div class="col-sm-4 text-center">
 				<div class="row MB5" id="">
@@ -63,10 +63,101 @@
 			</div>
 
 		</div>
+		<#-- Bổ sung thông tin chủ hồ sơ -->
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="dossier-parts" >
+					<div class="head-part align-middle slide-toggle">
+						<div class="background-triangle-small">
+							I
+						</div>
+						<div class="col-sm-12 PL0">
+
+							<span class="text-uppercase hover-pointer">
+								Thông tin chủ hồ sơ
+							</span>
+							<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
+						</div>
+					</div>
+					<div class="content-part collapse" id="collapseDossierI">
+						<div class="row-parts-head MT5">
+
+							<div class="row MT5">
+								<div class="col-sm-2">
+									<label>Họ và tên</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:contactName"></span>
+									
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Địa chỉ</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:address"></span>
+									
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Tỉnh/ Thành phố</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:cityName"></span>
+									
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Quận/ Huyện</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:districtName" ></span>
+									
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Xã/ Phường</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:wardName" required></span>
+									
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Điện thoại</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:contactTelNo"></span>
+									
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Địa chỉ email</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:contactEmail"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<#--  -->
 
 		<div class="dossier-parts" id="paymentDossier">
 			<div class="head-part align-middle MB5 slide-toggle">
-				<div class="background-triangle-small">III</div> 
+				<div class="background-triangle-small">II</div> 
 				<div class="col-sm-12 PL0">
 
 					<span class="text-uppercase hover-pointer">Thanh toán</span>
@@ -90,7 +181,10 @@
 								<div class="col-sm-2">								
 									<span class="text-bold">Gía trị thanh toán</span>	
 								</div>
-								<div class="col-sm-10 red" data-bind="text:paymentAmount"></div>
+								<div class="col-sm-10 red">
+									<span data-bind="text:paymentAmount"></span>
+									<span> VNĐ</span>
+								</div>
 							</div>
 
 							<div class="row MB5">
@@ -254,6 +348,14 @@
 						stepInstruction : result.stepInstruction,
 						dossierStatus : result.dossierStatus,
 						paymentDossier : payment,
+
+						contactName: result.contactName,
+						cityName:result.cityName,
+						districtName:result.districtName,
+						wardName:result.wardName,
+						address: result.address,
+						contactTelNo: result.contactTelNo,
+						contactEmail: result.contactEmail,
 						paymentFee : function(e){
 							console.log(this.get('paymentDossier'));
 							if(this.get('paymentDossier').paymentFee){
@@ -270,7 +372,9 @@
 						},
 						paymentAmount : function(e){
 							if(this.get('paymentDossier').paymentAmount){
-								return this.get('paymentDossier').paymentAmount;
+								var value = this.get('paymentDossier').paymentAmount;
+					      var moneyCur = (value/1).toFixed(0).replace('.', ',');
+					      return moneyCur.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 							}
 							return "";
 						},
@@ -287,16 +391,24 @@
 							return "";
 						},
 						paymentStatus : function(e){
-							if(this.get('paymentDossier').paymentStatus){
-								return this.get('paymentDossier').paymentStatus;
-							}
-							return "";
+							if(this.get('paymentDossier')){
+                if(this.get('paymentDossier').paymentStatus === 0){
+                  return "Chờ nộp";
+                }else if(this.get('paymentDossier').paymentStatus === 1){
+                  return "Báo đã nộp";
+                }else if(this.get('paymentDossier').paymentStatus === 2){
+                  return "Hoàn thành";
+                }else {
+                  return "Không hợp lệ";
+                }
+              }
+              return "";
 						},
 						paymentApproveDatetime : function(e){
 							if(this.get('paymentDossier').approveDatetime){
 								return this.get('paymentDossier').approveDatetime;
 							}
-							return "";
+							return "---";
 						},
 						paymentConfirmNote : function(e){
 							if(this.get('paymentDossier').confirmNote){

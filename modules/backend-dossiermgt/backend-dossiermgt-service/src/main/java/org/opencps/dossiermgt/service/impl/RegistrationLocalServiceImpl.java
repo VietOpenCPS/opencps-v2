@@ -17,19 +17,18 @@ package org.opencps.dossiermgt.service.impl;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.UUID;
 
 import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
-import org.opencps.dossiermgt.model.RegistrationTemplates;
-import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
-import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
+import org.opencps.usermgt.service.util.UserMgtUtils;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -48,7 +47,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
@@ -90,6 +88,14 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		Registration model = registrationPersistence.create(registrationId);
 
+		Date idDate = null;
+
+		try {
+			idDate = UserMgtUtils.convertDate(applicantIdDate);
+		} catch (Exception e) {
+			_log.error(RegistrationLocalServiceImpl.class.getName() + "date input error");
+		}
+
 		model.setGroupId(groupId);
 		model.setCreateDate(now);
 		model.setModifiedDate(now);
@@ -98,6 +104,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setApplicantName(applicantName);
 		model.setApplicantIdType(applicantIdType);
 		model.setApplicantIdNo(applicantIdNo);
+		model.setApplicantIdDate(idDate);
 		model.setAddress(address);
 		model.setCityCode(cityCode);
 		model.setCityName(cityName);
@@ -132,6 +139,15 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
 		User userAction = userLocalService.getUser(userId);
+		
+		Date idDate = null;
+		if(Validator.isNotNull(applicantIdDate)){
+			try {
+				idDate = UserMgtUtils.convertDate(applicantIdDate);
+			} catch (Exception e) {
+				_log.error(e);
+			}
+		}
 
 		Registration model = registrationPersistence.fetchByPrimaryKey(registrationId);
 
@@ -139,6 +155,8 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setCreateDate(now);
 		model.setModifiedDate(now);
 		model.setUserId(userAction.getUserId());
+		model.setSubmitting(true);
+		model.setApplicantIdDate(idDate);
 		
 		if(Validator.isNotNull(applicantName)) {
 			model.setApplicantName(applicantName);
@@ -191,7 +209,6 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		if(Validator.isNotNull(registrationState)) {
 			model.setRegistrationState(registrationState);
 		}
-		
 
 		return registrationPersistence.update(model);
 	}
@@ -453,4 +470,10 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 	public Registration getRegistrationByGID_UID_Last(long groupId, long userId) {
 		return registrationPersistence.fetchByGID_UID_Last(groupId, userId, null);
 	}
+	
+	public Registration getRegistrationByG_REGID(long groupId, long registrationId) {
+		return registrationPersistence.fetchByG_REGID(groupId, registrationId);
+	}
+	
+	private Log _log = LogFactoryUtil.getLog(RegistrationLocalServiceImpl.class);
 }

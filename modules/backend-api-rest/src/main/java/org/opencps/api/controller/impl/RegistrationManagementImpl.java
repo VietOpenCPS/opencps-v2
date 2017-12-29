@@ -97,20 +97,14 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			params.put(RegistrationTerm.REGISTRATION_CLASS, registrationClass);
 			params.put(RegistrationTerm.SUBMITTING, submitting);
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(sort + "_sortable", Sort.STRING_TYPE, false) };
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(sort + "_sortable", Sort.STRING_TYPE, true) };
 
 			JSONObject jsonData = actions.getRegistrations(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, -1, -1, serviceContext);
 
 			RegistrationResultsModel results = new RegistrationResultsModel();
-			// long userId = serviceContext.getUserId();
-			// List<Registration> lstRegistrationModel =
-			// RegistrationLocalServiceUtil.getRegistrations(start, end);
 			//
 			results.setTotal(jsonData.getInt("total"));
-			// results.getData().addAll(RegistrationUtils
-			// .mappingToRegistrationResultModel((List<Document>)
-			// jsonData.get("data"), serviceContext));
 
 			results.getData()
 					.addAll(RegistrationUtils.mappingToRegistrationResultModel((List<Document>) jsonData.get("data")));
@@ -224,12 +218,14 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	}
 
 	@Override
-	public Response delete(long id) {
+	public Response delete(HttpHeaders header, long id) {
 		try {
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			
 			RegistrationActions action = new RegistrationActionsImpl();
 
 			Registration registration = action.delete(id);
-			RegistrationFormLocalServiceUtil.deleteRegistrationForms(id);
+			RegistrationFormLocalServiceUtil.deleteRegistrationForms(groupId, id);
 			RegistrationDetailModel result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
 
 			return Response.status(200).entity(result).build();
@@ -241,15 +237,16 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	}
 
 	@Override
-	public Response getFormsbyRegId(long id) throws PortalException {
+	public Response getFormsbyRegId(HttpHeaders header, long id) throws PortalException {
 
 		try {
-
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 
 			RegistrationFormResultsModel result = new RegistrationFormResultsModel();
 
-			List<RegistrationForm> lstRegistrationForm = action.getFormbyRegId(id);
+			List<RegistrationForm> lstRegistrationForm = action.getFormbyRegId(groupId, id);
 			int total = lstRegistrationForm.size();
 
 			List<RegistrationFormModel> lstRegistrationFormModel = RegistrationFormUtils

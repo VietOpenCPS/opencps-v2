@@ -102,6 +102,8 @@
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 			$('#profileStatus li[dataPk='+id+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
 			$('#profileStatus li[dataPk='+id+']').addClass('active');
+			modelMain.set("visibleHeader", $('#profileStatus li[dataPk='+id+'] .dossierStatus').text());
+			modelMain.set("isInvestigated", false);
 
     }); 
 		// Show màn hình chọn dịch vụ công
@@ -147,7 +149,17 @@
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').addClass('active');
 		});
-		
+		// View file trong Thành phần hồ sơ
+		manageDossier.route("/(:dossierId)/files/(:dossierTemplateNo)/(:partNo)", function(id){
+			$("#panel_list").show();
+			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
+			$("#mainType1").hide();
+			$("#mainType2").show();
+
+			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
+				$("#profileDetail").modal("show");
+			});
+		});
 	// Show màn hình tra cứu
 		manageDossier.route("/tra-cuu/tra-cuu-chung-chi", function() {
 			$(".fa-expand").css("display","block");

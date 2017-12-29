@@ -46,7 +46,6 @@ public class RegistrationIndexer extends BaseIndexer<Registration> {
 		document.addDateSortable(Field.MODIFIED_DATE, object.getCreateDate());
 		document.addDateSortable(Field.CREATE_DATE, object.getModifiedDate());
 		document.addNumberSortable(Field.USER_ID, object.getUserId());
-//		document.addKeywordSortable(Field.USER_NAME, String.valueOf(object.getUserName()));
 		document.addKeywordSortable(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
 

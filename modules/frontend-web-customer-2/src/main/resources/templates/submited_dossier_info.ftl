@@ -3,7 +3,7 @@
 </#if>
 <div class="panel" id="completedDossierForm">
   <div class="panel-heading P0">
-    <div class="row-header">
+    <div class="row-header align-middle">
       <div class="background-triangle-big">Tên thủ tục</div>
       <span class="panel-title" data-bind="text:serviceName"><#-- Cấp giấy chứng nhận đăng ký bản quền tác giả cho cá nhân, tổ chức Việt Nam --></span>
     </div>
