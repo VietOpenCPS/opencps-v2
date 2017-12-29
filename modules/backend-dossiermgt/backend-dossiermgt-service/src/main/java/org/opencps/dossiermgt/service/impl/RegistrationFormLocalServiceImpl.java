@@ -131,6 +131,8 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		RegistrationForm object = registrationFormPersistence.fetchByG_REGID_REFID(groupId, registrationId, referenceUid);
 		
 		object.setRemoved(true);
+		object.setIsNew(true);
+		object.setModifiedDate(new Date());
 		
 		return registrationFormPersistence.update(object);
 	}
