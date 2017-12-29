@@ -279,7 +279,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			properties.put("dossierPartNo", dossierFile.getDossierPartNo());
 			properties.put("fileTemplateNo", dossierFile.getFileTemplateNo());
 			properties.put("displayName", dossierFile.getDisplayName());
-			properties.put("isSync", StringPool.TRUE);
+			properties.put("isSync", StringPool.FALSE);
 			properties.put("formData", dossierFile.getFormData());
 
 			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
