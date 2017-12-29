@@ -21,6 +21,7 @@ import java.util.List;
 import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
+import org.opencps.dossiermgt.exception.NoSuchRegistrationException;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.impl.RegistrationImpl;
 import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
@@ -477,10 +478,10 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public Registration updateSubmitting(long registrationId, boolean submitting) {
-		Registration model = new RegistrationImpl();
-		model.setRegistrationId(registrationId);
+	public Registration updateSubmitting(long registrationId, boolean submitting) throws PortalException {
+		Registration model = registrationPersistence.findByPrimaryKey(registrationId);
 		model.setSubmitting(submitting);
+		model.setModifiedDate(new Date());
 		return registrationPersistence.update(model);
 	}
 
