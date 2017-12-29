@@ -702,7 +702,15 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			// Change payment Status = 2
 			actions.updateFileConfirm(paymentFile.getGroupId(), paymentFile.getDossierId(), paymentFile.getReferenceUid(), StringPool.BLANK, "N\u1ED9p online", JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
 			
-			return Response.status(200).build();
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			result.put("dossierNo", dossier.getDossierNo());
+			result.put("serviceName", dossier.getServiceName());
+			result.put("govAgencyName", dossier.getGovAgencyName());
+			result.put("paymentFee", paymentFile.getPaymentFee());
+			result.put("paymentAmount", paymentFile.getPaymentAmount());
+			result.put("paymentPortal", "KEYPAY");
+			
+			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
