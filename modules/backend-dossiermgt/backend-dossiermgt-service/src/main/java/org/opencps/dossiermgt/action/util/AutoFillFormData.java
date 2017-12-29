@@ -56,7 +56,7 @@ public class AutoFillFormData {
 			String _dossierNo = StringPool.BLANK;
 			
 			if (Validator.isNotNull(dossier)) {
-				_receiveDate = dossier.getReceiveDate().toGMTString();
+				_receiveDate = Validator.isNotNull(dossier.getReceiveDate())?dossier.getReceiveDate().toGMTString():StringPool.BLANK;
 				_dossierNo = dossier.getDossierNo();
 			}
 			
