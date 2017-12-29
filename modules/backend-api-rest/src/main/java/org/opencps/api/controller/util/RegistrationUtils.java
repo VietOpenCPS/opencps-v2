@@ -210,6 +210,7 @@ public class RegistrationUtils {
 			model.setCityCode(registration.getCityCode());
 			model.setCityName(registration.getCityName());
 			model.setDistrictCode(registration.getDistrictCode());
+			model.setDistrictName(registration.getDistrictName());
 			model.setWardCode(registration.getWardCode());
 			model.setWardName(registration.getWardName());
 			model.setContactName(registration.getContactName());

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -46,8 +47,10 @@ import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
+import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
+import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -274,14 +277,20 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				throw new UnauthenticationException();
 			}
 
-			RegistrationFormActions action = new RegistrationFormActionsImpl();
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			long fileEntryId = getfileEntryId(input.getFormData(), input.getFormScript(), input.getFormReport());
+			//long fileEntryId = getfileEntryId(input.getFormData(), input.getFormScript(), input.getFormReport());
+			//TODO: lam lai
+			String govAgencyCode = "";
+			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil.getRegTempbyFormNoGovCode(
+			    groupId, formNo, govAgencyCode);
 
-			RegistrationForm registrationForm = action.insert(groupId, registrationId, input.getReferenceUid(), formNo,
-					input.getFormName(), input.getFormData(), input.getFormScript(), input.getFormReport(), fileEntryId,
-					input.isIsNew(), input.isRemoved(), serviceContext);
+			String referenceUid = UUID.randomUUID().toString();
+
+			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
+			    registrationTemplate.getFormNo(), registrationTemplate.getFormName(),
+			    registrationTemplate.getSampleData(), registrationTemplate.getFormScript(),
+			    registrationTemplate.getFormReport(), 0, true, false, serviceContext);
 
 			result = RegistrationFormUtils.mappingToRegistrationFormDetailModel(registrationForm);
 			return Response.status(200).entity(result).build();
@@ -364,9 +373,11 @@ public class RegistrationManagementImpl implements RegistrationManagement {
                 throw new UnauthenticationException();
             }
             
+            long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+            
             RegistrationForm registrationForm =
                 RegistrationFormLocalServiceUtil.findFormbyRegidRefid(
-                    serviceContext.getScopeGroupId(), registrationId, referenceUid);
+                    groupId, registrationId, referenceUid);
 
             if (registrationForm != null && registrationForm.getFileEntryId() > 0) {
                 FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(registrationForm.getFileEntryId());

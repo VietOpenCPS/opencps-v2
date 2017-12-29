@@ -137,13 +137,10 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			throws PortalException, SystemException {
 
 		Date now = new Date();
-		long userId = serviceContext.getUserId();
-		User userAction = userLocalService.getUser(userId);
 
 		Registration model = registrationPersistence.fetchByPrimaryKey(registrationId);
 
 		model.setModifiedDate(now);
-		model.setUserId(userAction.getUserId());
 		model.setSubmitting(true);
 		
 		if (Validator.isNotNull(applicantIdDate)) {
@@ -403,7 +400,6 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		if (Validator.isNotNull(registration)) {
 			registration.setModifiedDate(now);
-			registration.setUserId(userAction.getUserId());
 
 			registration.setApplicantName(applicantName);
 			registration.setApplicantIdType(applicantIdType);

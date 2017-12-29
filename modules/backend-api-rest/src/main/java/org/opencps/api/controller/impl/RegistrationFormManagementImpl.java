@@ -46,11 +46,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 
 			RegistrationForm registrationForm = action.deleteRegistrationForm(groupId, id, referenceUid);
 
-			if (registrationForm != null) {
-				return Response.status(200).entity("Success").build();
-			} else {
-				return Response.status(200).entity("Cannot Delete").build();
-			}
+			return Response.status(200).entity(registrationForm.getFormData()).build();
 
 		} catch (Exception e) {
 			_log.error(e);
