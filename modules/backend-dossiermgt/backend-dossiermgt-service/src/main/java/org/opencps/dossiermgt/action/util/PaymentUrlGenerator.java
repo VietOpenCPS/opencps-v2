@@ -112,7 +112,7 @@ public class PaymentUrlGenerator {
 				// TODO : update returnURL keyPay
 
 				String return_url = StringPool.BLANK;
-				return_url = epaymentConfigJSON.getString("paymentReturnUrl");
+				return_url = epaymentConfigJSON.getString("paymentReturnUrl")+ "/" + dossier.getReferenceUid() + "/" + paymentFile.getReferenceUid();
 
 				KeyPay keypay = new KeyPay(String.valueOf(merchant_trans_id), merchant_code, good_code, net_cost,
 						ship_fee, tax, bank_code, service_code, version, command, currency_code, desc_1, desc_2, desc_3,
@@ -139,7 +139,7 @@ public class PaymentUrlGenerator {
 				param.append("ship_fee=").append(URLEncoder.encode(keypay.getShip_fee(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
 				param.append("tax=").append(URLEncoder.encode(keypay.getTax(), "UTF-8")).append(StringPool.AMPERSAND);
-				param.append("return_url=").append(URLEncoder.encode(keypay.getReturn_url() + "/" + dossier.getReferenceUid() + "/" + paymentFile.getReferenceUid(), "UTF-8"))
+				param.append("return_url=").append(URLEncoder.encode(keypay.getReturn_url(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
 				param.append("version=").append(URLEncoder.encode(keypay.getVersion(), "UTF-8"))
 						.append(StringPool.AMPERSAND);

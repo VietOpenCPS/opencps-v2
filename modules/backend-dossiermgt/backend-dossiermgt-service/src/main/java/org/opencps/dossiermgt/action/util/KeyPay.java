@@ -267,6 +267,7 @@ public class KeyPay {
 		fields.put("tax", tax);
 		fields.put("service_code", service_code);
 		fields.put("currency_code", currency_code);
+		fields.put("return_url", return_url);
 
 		HashFunction hf = new HashFunction();
 		return hf.hashAllFields(fields, merchant_secure_key);
