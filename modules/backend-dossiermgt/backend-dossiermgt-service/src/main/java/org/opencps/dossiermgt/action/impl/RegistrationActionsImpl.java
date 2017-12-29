@@ -179,11 +179,11 @@ public class RegistrationActionsImpl implements RegistrationActions {
 		return result;
 	}
 
-	@Override
-	public Registration updateSubmitting(long registrationId, boolean submitting) {
-		Registration model = new RegistrationImpl();
-		model.setSubmitting(submitting);
-		model.setRegistrationId(registrationId);
-		return RegistrationLocalServiceUtil.updateRegistration(model);
-	}
+//	@Override
+//	public Registration updateSubmitting(long registrationId, boolean submitting) {
+//		Registration model = new RegistrationImpl();
+//		model.setSubmitting(submitting);
+//		model.setRegistrationId(registrationId);
+//		return RegistrationLocalServiceUtil.updateRegistration(model);
+//	}
 }

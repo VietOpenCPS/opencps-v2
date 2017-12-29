@@ -34,5 +34,4 @@ public interface RegistrationActions {
 	public JSONObject getRegistrations(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
 	
-	public Registration updateSubmitting(long registrationId, boolean submitting);
 }
