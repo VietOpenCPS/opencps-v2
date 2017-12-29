@@ -109,8 +109,8 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 						RegistrationLocalServiceUtil.updateRegistration(registration);
 						
 						// TODO sync registrationForm
-						List<RegistrationForm> registrationForms = new ArrayList<>();
-						registrationForms = RegistrationFormLocalServiceUtil.findByG_REGID_ISNEW(registration.getRegistrationId(), Boolean.TRUE);
+						List<RegistrationForm> registrationForms = RegistrationFormLocalServiceUtil.findByG_REGID_ISNEW(
+						    registration.getRegistrationId(), Boolean.TRUE);
 						
 						for (RegistrationForm registrationForm : registrationForms) {
 							
