@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.RegistrationManagement;
@@ -47,12 +49,15 @@ import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
@@ -63,7 +68,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationManagementImpl implements RegistrationManagement {
-	Log _log = LogFactoryUtil.getLog(RegistrationManagementImpl.class);
+	private static Log _log = LogFactoryUtil.getLog(RegistrationManagementImpl.class);
 	
 	private static String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
 	
@@ -112,7 +117,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -151,7 +155,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 
@@ -172,7 +175,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			RegistrationDetailResultModel result = RegistrationUtils.mappingToRegistrationDetailResultModel(detail);
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -212,7 +214,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -230,7 +231,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 
@@ -258,7 +258,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -287,7 +286,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			result = RegistrationFormUtils.mappingToRegistrationFormDetailModel(registrationForm);
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 
@@ -311,7 +309,8 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
 
 			} else {
-
+			    _log.error(e);
+			    
 				error.setMessage("No Content.");
 				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 				error.setDescription("No Content.");
@@ -351,10 +350,43 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			return Response.status(200).build();
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 	}
+	
+	@Override
+    public Response previewFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+            User user, ServiceContext serviceContext, long registrationId, String referenceUid) {
+        BackendAuth auth = new BackendAuthImpl();
+        try {
+
+            if (!auth.isAuth(serviceContext)) {
+                throw new UnauthenticationException();
+            }
+            
+            RegistrationForm registrationForm =
+                RegistrationFormLocalServiceUtil.findFormbyRegidRefid(
+                    serviceContext.getScopeGroupId(), registrationId, referenceUid);
+
+            if (registrationForm != null && registrationForm.getFileEntryId() > 0) {
+                FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(registrationForm.getFileEntryId());
+
+                File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
+
+                ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+                responseBuilder.header("Content-Disposition",
+                        "attachment; filename=\"" + fileEntry.getFileName() + "\"");
+                responseBuilder.header("Content-Type", fileEntry.getMimeType());
+
+                return responseBuilder.build();
+            } else {
+                return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+            }
+        } catch (Exception e) {
+            return processException(e);
+        }
+    }
 
 	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
 
