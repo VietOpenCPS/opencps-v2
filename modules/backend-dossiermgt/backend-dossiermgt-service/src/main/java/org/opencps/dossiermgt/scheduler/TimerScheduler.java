@@ -82,40 +82,42 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 			params.put(DossierTerm.DOSSIER_ID, String.valueOf(dossier.getDossierId()));
 			params.put(DossierTerm.REFERENCE_UID, String.valueOf(dossier.getReferenceUid()));
 			params.put(DossierActionTerm.AUTO, "timmer");
+			if (Validator.isNotNull(dossier.getDossierStatus())) {
+				JSONArray results = dossierActions.getNextActions(0l, company.getCompanyId(), dossier.getGroupId(), params,
+						sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
-			JSONArray results = dossierActions.getNextActions(0l, company.getCompanyId(), dossier.getGroupId(), params,
-					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
+				int lenght = results.length();
 
-			int lenght = results.length();
-
-			if (lenght != 0) {
-				JSONObject content = results.getJSONObject(0);
-				
-				if(content.getString("autoEvent").contentEquals("timmer")) {
-					_log.info("AUTOEVENT_DOSSIER_ID" + dossier.getPrimaryKey());
+				if (lenght != 0) {
+					JSONObject content = results.getJSONObject(0);
 					
-					long processActionId = content.getLong("processActionId");
+					if(content.getString("autoEvent").contentEquals("timmer")) {
+						_log.info("AUTOEVENT_DOSSIER_ID" + dossier.getPrimaryKey());
+						
+						long processActionId = content.getLong("processActionId");
 
-					ProcessAction action = ProcessActionLocalServiceUtil.fetchProcessAction(processActionId);
+						ProcessAction action = ProcessActionLocalServiceUtil.fetchProcessAction(processActionId);
 
-					String perConditionStr = StringPool.BLANK;
+						String perConditionStr = StringPool.BLANK;
 
-					if (Validator.isNotNull(action)) {
-						perConditionStr = action.getPreCondition();
+						if (Validator.isNotNull(action)) {
+							perConditionStr = action.getPreCondition();
+						}
+
+						boolean checkPreCondition = DossierMgtUtils
+								.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
+
+						if (checkPreCondition) {
+							dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(),
+									content.getString("actionCode"), content.getLong("processActionId"),
+									systemUser.getFullName(), content.getString("actionName"), content.getLong("assignUserId"),
+									systemUser.getUserId(), serviceContext);
+						}
 					}
+					
 
-					boolean checkPreCondition = DossierMgtUtils
-							.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
 
-					if (checkPreCondition) {
-						dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(),
-								content.getString("actionCode"), content.getLong("processActionId"),
-								systemUser.getFullName(), content.getString("actionName"), content.getLong("assignUserId"),
-								systemUser.getUserId(), serviceContext);
-					}
 				}
-				
-
 
 			}
 
