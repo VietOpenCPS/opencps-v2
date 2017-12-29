@@ -364,9 +364,11 @@ public class RegistrationManagementImpl implements RegistrationManagement {
                 throw new UnauthenticationException();
             }
             
+            long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+            
             RegistrationForm registrationForm =
                 RegistrationFormLocalServiceUtil.findFormbyRegidRefid(
-                    serviceContext.getScopeGroupId(), registrationId, referenceUid);
+                    groupId, registrationId, referenceUid);
 
             if (registrationForm != null && registrationForm.getFileEntryId() > 0) {
                 FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(registrationForm.getFileEntryId());
