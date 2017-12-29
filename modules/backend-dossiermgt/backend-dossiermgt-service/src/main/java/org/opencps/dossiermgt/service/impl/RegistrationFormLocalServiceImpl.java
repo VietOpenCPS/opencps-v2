@@ -20,9 +20,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.base.RegistrationFormLocalServiceBaseImpl;
@@ -34,8 +31,6 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Indexable;
-import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -188,6 +183,20 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 			registrationForm.setFormScript(formScript);
 			registrationForm.setFormReport(formReport);
 			
+			if(Validator.isNotNull(formData) && Validator.isNotNull(formReport)) {
+                Message message = new Message();
+    
+                JSONObject msgData = JSONFactoryUtil.createJSONObject();
+                msgData.put("className", RegistrationForm.class.getName());
+                msgData.put("classPK", registrationForm.getPrimaryKey());
+                msgData.put("jrxmlTemplate", formReport);
+                msgData.put("formData", formData);
+                msgData.put("userId", serviceContext.getUserId());
+    
+                message.put("msgToEngine", msgData);
+                MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+            }
+			
 			registrationForm = registrationFormPersistence.update(registrationForm);
 		} else {
 			
@@ -208,6 +217,20 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 			registrationForm.setFormScript(formScript);
 			registrationForm.setFormReport(formReport);
 			
+			if(Validator.isNotNull(formData) && Validator.isNotNull(formReport)) {
+                Message message = new Message();
+    
+                JSONObject msgData = JSONFactoryUtil.createJSONObject();
+                msgData.put("className", RegistrationForm.class.getName());
+                msgData.put("classPK", registrationForm.getPrimaryKey());
+                msgData.put("jrxmlTemplate", formReport);
+                msgData.put("formData", formData);
+                msgData.put("userId", serviceContext.getUserId());
+    
+                message.put("msgToEngine", msgData);
+                MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+            }
+			
 			registrationForm = registrationFormPersistence.update(registrationForm);
 			
 		}
@@ -220,7 +243,6 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		// User user =
 		// userPersistence.findByPrimaryKey(serviceContext.getUserId());
-		System.out.println("GET RegistrationForm" + new Date());
 
 		RegistrationForm registrationForm = registrationFormPersistence.fetchByG_REGID_REFID(groupId, registrationId, referenceUid);
 
