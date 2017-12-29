@@ -44,9 +44,9 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 
-			RegistrationForm registrationForm = action.deleteRegistrationForm(groupId, id, referenceUid);
+			action.deleteRegistrationForm(groupId, id, referenceUid);
 
-			return Response.status(200).entity(registrationForm.getFormData()).build();
+			return Response.status(200).build();
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -156,8 +156,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 	@Override
 	public Response registrationSyncsForm(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String referenceUid, String registrationUUID,
-			String formNo, String formName, String formData, String formScript, String formReport) {
-		Date now = new Date();
+			String formNo, String formName, String formData, String formScript, String formReport, Boolean removed) {
 		BackendAuth auth = new BackendAuthImpl();
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -166,7 +165,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			// TODO sync registration Form
 			RegistrationFormLocalServiceUtil.registrationFormSync(groupId, registrationUUID, referenceUid, formNo,
-					formName, formData, formScript, formReport, serviceContext);
+					formName, formData, formScript, formReport, removed, serviceContext);
 			return Response.status(200).build();
 
 		} catch (Exception e) {
