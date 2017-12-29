@@ -21,9 +21,7 @@ import java.util.List;
 import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
-import org.opencps.dossiermgt.exception.NoSuchRegistrationException;
 import org.opencps.dossiermgt.model.Registration;
-import org.opencps.dossiermgt.model.impl.RegistrationImpl;
 import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
 import org.opencps.usermgt.service.util.UserMgtUtils;
 
@@ -90,14 +88,6 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		Registration model = registrationPersistence.create(registrationId);
 
-		Date idDate = null;
-
-		try {
-			idDate = UserMgtUtils.convertDate(applicantIdDate);
-		} catch (Exception e) {
-			_log.error(RegistrationLocalServiceImpl.class.getName() + "date input error");
-		}
-
 		model.setGroupId(groupId);
 		model.setCreateDate(now);
 		model.setModifiedDate(now);
@@ -106,7 +96,15 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setApplicantName(applicantName);
 		model.setApplicantIdType(applicantIdType);
 		model.setApplicantIdNo(applicantIdNo);
-		model.setApplicantIdDate(idDate);
+		if (Validator.isNotNull(applicantIdDate)) {
+            try {
+                Date idDate = UserMgtUtils.convertDate(applicantIdDate);
+                
+                model.setApplicantIdDate(idDate);
+            } catch (Exception e) {
+                _log.error(e);
+            }
+        }
 		model.setAddress(address);
 		model.setCityCode(cityCode);
 		model.setCityName(cityName);
@@ -401,15 +399,6 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		long userId = serviceContext.getUserId();
 		User userAction = userLocalService.getUser(userId);
 
-		Date idDate = null;
-		if(Validator.isNotNull(applicantIdDate)){
-			try {
-				idDate = UserMgtUtils.convertDate(applicantIdDate);
-			} catch (Exception e) {
-				//_log.error(e);
-			}
-		}
-		
 		Registration registration = registrationPersistence.fetchByUUID_G(uuid, groupId);
 
 		if (Validator.isNotNull(registration)) {
@@ -419,7 +408,15 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			registration.setApplicantName(applicantName);
 			registration.setApplicantIdType(applicantIdType);
 			registration.setApplicantIdNo(applicantIdNo);
-			registration.setApplicantIdDate(idDate);
+			if (Validator.isNotNull(applicantIdDate)) {
+	            try {
+	                Date idDate = UserMgtUtils.convertDate(applicantIdDate);
+	                
+	                registration.setApplicantIdDate(idDate);
+	            } catch (Exception e) {
+	                _log.error(e);
+	            }
+	        }
 			registration.setAddress(address);
 			registration.setCityCode(cityCode);
 			registration.setCityName(cityName);
@@ -450,7 +447,15 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			registration.setApplicantName(applicantName);
 			registration.setApplicantIdType(applicantIdType);
 			registration.setApplicantIdNo(applicantIdNo);
-			registration.setApplicantIdDate(idDate);
+			if (Validator.isNotNull(applicantIdDate)) {
+                try {
+                    Date idDate = UserMgtUtils.convertDate(applicantIdDate);
+                    
+                    registration.setApplicantIdDate(idDate);
+                } catch (Exception e) {
+                    _log.error(e);
+                }
+            }
 			registration.setAddress(address);
 			registration.setCityCode(cityCode);
 			registration.setCityName(cityName);
