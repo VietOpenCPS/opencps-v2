@@ -11,6 +11,7 @@ import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.WindowStateException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.opencps.constants.FrontendWebCustomerPortletKeys;
 import org.opencps.dossiermgt.model.Dossier;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
@@ -51,6 +53,10 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 			throws IOException, PortletException {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
+
+		HttpServletRequest oRequest = PortalUtil.getOriginalServletRequest(request);
 
 		Applicant applicant = UserMgtUtils.getApplicant(themeDisplay.getUser().getEmailAddress());
 
@@ -79,7 +85,6 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		}
 
 		String dossierPartNo = ParamUtil.getString(renderRequest, "dossierPartNo");
-		System.out.println("dossierPartNo:" + dossierPartNo);
 
 		String dossierTemplateNo = ParamUtil.getString(renderRequest, "dossierTemplateNo");
 
@@ -93,13 +98,16 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 
 		String paymentFileUUid = ParamUtil.getString(renderRequest, "paymentFileUUid");
 
+		String trans_id = oRequest.getParameter("trans_id");
+		String good_code = oRequest.getParameter("good_code");
+
 		// apiObject.put("applicant", applicantObj);
 
 		JSONObject constantsObj = createConstants();
 
 		JSONObject userInfo = generalUserInfo(themeDisplay.getUserId());
-		
-		JSONObject paymentObject = generatePaymentObject(dossierUUid, paymentFileUUid);
+
+		JSONObject paymentObject = generatePaymentObject(dossierUUid, paymentFileUUid, trans_id, good_code);
 
 		// set varible
 		renderRequest.setAttribute("ajax", generateURLJsonObject(renderResponse));
@@ -116,7 +124,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute("lblApplicantNote", lblApplicantNote);
 
 		renderRequest.setAttribute("userInfo", userInfo);
-		
+
 		renderRequest.setAttribute("RequestParameters", paymentObject);
 
 		super.render(renderRequest, renderResponse);
@@ -370,12 +378,15 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		return apiObject;
 	}
 
-	private JSONObject generatePaymentObject(String dossierUUid, String paymentFileUUid) {
+	private JSONObject generatePaymentObject(String dossierUUid, String paymentFileUUid, String trans_id,
+			String good_code) {
 
 		JSONObject paymentObject = JSONFactoryUtil.createJSONObject();
 
 		paymentObject.put("dossierUUid", dossierUUid);
 		paymentObject.put("paymentFileUUid", paymentFileUUid);
+		paymentObject.put("trans_id", trans_id);
+		paymentObject.put("good_code", good_code);
 		return paymentObject;
 	}
 
