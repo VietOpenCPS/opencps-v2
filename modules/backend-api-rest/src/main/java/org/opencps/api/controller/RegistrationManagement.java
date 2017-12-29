@@ -101,7 +101,7 @@ public interface RegistrationManagement {
     @Path("/registrations/{id}/submitting")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-    public Response previewFile(@Context HttpServletRequest request, @Context HttpHeaders header,
+    public Response submitting(@Context HttpServletRequest request, @Context HttpHeaders header,
             @Context Company company, @Context Locale locale, @Context User user,
             @Context ServiceContext serviceContext,
             @ApiParam(value = "registrationId", required = true) @PathParam("id") long registrationId);

@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import java.io.File;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -399,18 +400,39 @@ public class RegistrationManagementImpl implements RegistrationManagement {
         }
     }
 
-	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
+    @Override
+    public Response submitting(
+        HttpServletRequest request, HttpHeaders header, Company company,
+        Locale locale, User user, ServiceContext serviceContext,
+        long registrationId) {
 
-		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
+        BackendAuth auth = new BackendAuthImpl();
+        try {
 
-		if (Validator.isNotNull(dc)) {
-			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
+            if (!auth.isAuth(serviceContext)) {
+                throw new UnauthenticationException();
+            }
+            
+            Registration registration = RegistrationLocalServiceUtil.updateSubmitting(registrationId, true);
+            
+            return Response.status(200).entity(registration).build();
+        } catch (Exception e) {
+            return processException(e);
+        }
+    }
+    
+    protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
 
-			return it.getItemName();
+        DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
 
-		} else {
-			return StringPool.BLANK;
-		}
+        if (Validator.isNotNull(dc)) {
+            DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
 
-	}
+            return it.getItemName();
+
+        } else {
+            return StringPool.BLANK;
+        }
+
+    }
 }
