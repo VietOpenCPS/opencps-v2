@@ -14,6 +14,8 @@ import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
+import org.opencps.usermgt.service.util.UserMgtUtils;
+import org.opencps.usermgt.utils.DateTimeUtils;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -210,7 +212,8 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 			params.put(RegistrationTerm.APPLICATION_NAME, registration.getApplicantName());
 			params.put(RegistrationTerm.APPLICATION_ID_TYPE, registration.getApplicantIdType());
 			params.put(RegistrationTerm.APPLICATION_ID_NO, registration.getApplicantIdNo());
-			params.put(RegistrationTerm.APPLICATION_ID_DATE, registration.getApplicantIdDate());
+			params.put(RegistrationTerm.APPLICATION_ID_DATE, DateTimeUtils.convertDateToString(
+			    registration.getApplicantIdDate(), DateTimeUtils._TIMESTAMP));
 			params.put(RegistrationTerm.ADDRESS, registration.getAddress());
 			params.put(RegistrationTerm.CITY_CODE, registration.getCityCode());
 			params.put(RegistrationTerm.CITY_NAME, registration.getCityName());

@@ -14,10 +14,12 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
@@ -406,7 +408,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			registration.setApplicantIdNo(applicantIdNo);
 			if (Validator.isNotNull(applicantIdDate)) {
 	            try {
-	                Date idDate = UserMgtUtils.convertDate(applicantIdDate);
+	                Date idDate = APIDateTimeUtils.convertStringToDate(applicantIdDate, APIDateTimeUtils._TIMESTAMP);
 	                
 	                registration.setApplicantIdDate(idDate);
 	            } catch (Exception e) {
@@ -445,7 +447,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			registration.setApplicantIdNo(applicantIdNo);
 			if (Validator.isNotNull(applicantIdDate)) {
                 try {
-                    Date idDate = UserMgtUtils.convertDate(applicantIdDate);
+                    Date idDate = APIDateTimeUtils.convertStringToDate(applicantIdDate, APIDateTimeUtils._TIMESTAMP);
                     
                     registration.setApplicantIdDate(idDate);
                 } catch (Exception e) {
@@ -495,6 +497,8 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setModifiedDate(new Date());
 		return registrationPersistence.update(model);
 	}
+	
+	private static final String _TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	private Log _log = LogFactoryUtil.getLog(RegistrationLocalServiceImpl.class);
 }
