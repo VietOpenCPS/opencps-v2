@@ -511,11 +511,6 @@ public class DossierActionsImpl implements DossierActions {
 			processAction = getProcessAction(groupId, dossierId, referenceUid, actionCode, serviceProcessId);
 		}
 
-		if (Validator.isNull(processAction))
-			throw new NotFoundException(
-					"ProcessActionNotFoundException with processActionId = " + processActionId + "|actionCode= "
-							+ actionCode + "|serviceProcessId= " + serviceProcessId + "|referenceUid= " + referenceUid + "|groupId= " + groupId);
-
 		// Add paymentFile
 		if (Validator.isNotNull(processAction.getPaymentFee())) {
 			DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId, context,
@@ -846,6 +841,13 @@ public class DossierActionsImpl implements DossierActions {
 			String dossierStatus = dossier.getDossierStatus();
 
 			String dossierSubStatus = dossier.getDossierSubStatus();
+			
+			//TODO:
+			if(actions == null || (actions != null && actions.size() == 0)) {
+				throw new NotFoundException(
+					"ProcessActionNotFoundException with actionCode= "
+							+ actionCode + "|serviceProcessId= " + serviceProcessId + "|referenceUid= " + refId + "|groupId= " + groupId);
+			}
 
 			for (ProcessAction act : actions) {
 
@@ -862,6 +864,9 @@ public class DossierActionsImpl implements DossierActions {
 
 						action = act;
 						break;
+					} else {
+						// right
+						
 					}
 				}
 			}
