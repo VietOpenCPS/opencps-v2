@@ -200,10 +200,16 @@ public class VRActionsImpl implements VRActions {
 					String resultTD = StringPool.BLANK;
 
 					DossierFile dossierFile = null;
+					
+					String formData = StringPool.BLANK;
 
 					if (dossierFileId > 0) {
 						// Update online form
 						dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(dossierFileId);
+						
+						if(dossierFile.getFileEntryId() > 0){
+							formData = dossierFile.getFormData();
+						}
 					} else {
 						// View online form
 						if (Validator.isNotNull(fileTemplateNo)) {
@@ -211,6 +217,8 @@ public class VRActionsImpl implements VRActions {
 								dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
 										fileTemplateNo, false, OrderByComparatorFactoryUtil
 												.create("opencps_dossierFile", "createDate", false));
+								
+								formData = dossierFile.getFormData();
 
 							} catch (Exception e) {
 								_log.error("Not found dossierFile with dossierId " + dossierId + "|fileTemplateNo "
@@ -221,7 +229,7 @@ public class VRActionsImpl implements VRActions {
 
 					JSONObject formDataObject = null;
 
-					if (dossierFile != null && Validator.isNotNull(dossierFile.getFormData())) {
+					if (Validator.isNotNull(dossierFile.getFormData())) {
 						try {
 							formDataObject = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
 						} catch (Exception e) {
@@ -547,7 +555,7 @@ public class VRActionsImpl implements VRActions {
 
 		JSONArray datasource = JSONFactoryUtil.createJSONArray();
 
-		_log.info("collectionCode" + collectionCode + "groupId" + groupId + "vehicleClass" + vehicleClass);
+		//_log.info("collectionCode" + collectionCode + "groupId" + groupId + "vehicleClass" + vehicleClass);
 
 		// long dictCollectionId = getDictCollectionId(collectionCode, groupId);
 
@@ -574,7 +582,7 @@ public class VRActionsImpl implements VRActions {
 		} catch (Exception e) {
 			// _log.error(e);
 		}
-		_log.info("datasource" + datasource.length());
+		//_log.info("datasource" + datasource.length());
 
 		return datasource;
 	}
