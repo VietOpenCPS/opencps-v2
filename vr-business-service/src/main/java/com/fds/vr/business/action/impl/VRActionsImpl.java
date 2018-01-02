@@ -229,9 +229,9 @@ public class VRActionsImpl implements VRActions {
 
 					JSONObject formDataObject = null;
 
-					if (Validator.isNotNull(dossierFile.getFormData())) {
+					if (Validator.isNotNull(formData)) {
 						try {
-							formDataObject = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
+							formDataObject = JSONFactoryUtil.createJSONObject(formData);
 						} catch (Exception e) {
 							_log.error("Can not create json object from formData", e);
 						}
