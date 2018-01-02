@@ -364,14 +364,7 @@ public class DossierActionsImpl implements DossierActions {
 											}
 										} else {
 											eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true : false;
-											_log.info(
-													"*********================================***************************");
-											_log.info(
-													"*********================================dossierId***************************"
-															+ dossierId);
-											_log.info(
-													"*********================================dossierPart.getSampleData()***************************"
-															+ dossierPart.getSampleData());
+										
 											formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(),
 													dossierId, serviceContext);
 											formScript = dossierPart.getFormScript();
@@ -387,7 +380,7 @@ public class DossierActionsImpl implements DossierActions {
 
 												DossierFile dossierFile = actions.addDossierFile(groupId, dossierId,
 														referenceUid, dossier.getDossierTemplateNo(),
-														dossierPart.getPartNo(), fileTemplateNo, StringPool.BLANK,
+														dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(),
 														StringPool.BLANK, 0L, null, StringPool.BLANK,
 														String.valueOf(false), serviceContext);
 

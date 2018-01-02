@@ -507,7 +507,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 					conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
 
-					conn.setRequestMethod(HttpMethods.GET);
+					conn.setRequestMethod(HttpMethods.PUT);
 					conn.setDoInput(true);
 					conn.setDoOutput(true);
 					conn.setRequestProperty("Accept", "application/json");
