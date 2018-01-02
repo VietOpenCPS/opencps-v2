@@ -63,6 +63,13 @@ gradle-local.properties
 **/backend-dossiermgt-api/**/service/
 **/backend-dossiermgt-api/**/service/persistence/
 
+**/backend-kyso-process-api/**/model/
+**/backend-kyso-process-api/**/exception/
+**/backend-kyso-process-api/**/service/
+**/backend-kyso-process-api/**/service/persistence/
+
+**/**/ServiceProps.java
+
 **/vr-business/**
 **/vr-rest/**
 mt-dklr/**
