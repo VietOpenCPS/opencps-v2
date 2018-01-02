@@ -27,9 +27,12 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
@@ -179,12 +182,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossierParts = dossierPartPersistence.findByTP_NO(groupId, dossierTemplateNo);
 
 			for (DossierPart part : dossierParts) {
-				if (Validator.isNotNull(part.getFormScript())) {
+				if (Validator.isNotNull(part.getFormScript()) && part.getPartType() != 2) {
 					String dossierFileUUID = PortalUUIDUtil.generate();
-					dossierFileLocalService.addDossierFile(groupId, dossierId, dossierFileUUID, dossierTemplateNo,
-							part.getPartNo(), part.getFileTemplateNo(), part.getPartName(), StringPool.BLANK, 0l, null,
-							StringPool.BLANK, StringPool.FALSE, context);
 
+					// TODO HotFix
+
+					if (groupId != 55301) {
+
+						dossierFileLocalService.addDossierFile(groupId, dossierId, dossierFileUUID, dossierTemplateNo,
+								part.getPartNo(), part.getFileTemplateNo(), part.getPartName(), StringPool.BLANK, 0l,
+								null, StringPool.BLANK, StringPool.FALSE, context);
+					}
 				}
 			}
 
@@ -448,6 +456,24 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+		List<PaymentFile> lsPF = paymentFileLocalService.getByDossierId(id);
+
+		/*
+		 * Indexer<PaymentFile> indexer =
+		 * IndexerRegistryUtil.nullSafeGetIndexer(PaymentFile.class);
+		 * 
+		 * for (PaymentFile pf : lsPF) { if (pf.getIsNew()) {
+		 * 
+		 * try { PaymentFile paymentFile =
+		 * PaymentFileLocalServiceUtil.getPaymentFile(pf.getPrimaryKey());
+		 * 
+		 * paymentFile.setIsNew(false);
+		 * 
+		 * paymentFilePersistence.update(paymentFile);
+		 * 
+		 * indexer.reindex(paymentFile); } catch (SearchException e) {
+		 * e.printStackTrace(); } } }
+		 */
 		dossierPersistence.update(dossier);
 
 		return dossier;
@@ -1300,8 +1326,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierNote;
 	}
 
-	public long countDossierByG_C_GAC_SC_DTNO_NOTDS(long groupId, long companyId, String govAgencyCode, String serviceCode,
-			String dossierTemplateNo, String dossierStatus) {
+	public long countDossierByG_C_GAC_SC_DTNO_NOTDS(long groupId, long companyId, String govAgencyCode,
+			String serviceCode, String dossierTemplateNo, String dossierStatus) {
 		return dossierPersistence.countByG_C_GAC_SC_DTNO_NOTDS(groupId, companyId, govAgencyCode, serviceCode,
 				dossierTemplateNo, dossierStatus);
 	}

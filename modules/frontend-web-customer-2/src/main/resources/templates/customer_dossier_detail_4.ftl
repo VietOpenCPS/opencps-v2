@@ -293,7 +293,7 @@
 		</div>
 
 	</div>
-	<div class="content-part collapse in" id="collapseDossierPayment">
+	<div class="content-part collapse" id="collapseDossierPayment">
 		<div class="row-parts-head MT5">
 			<div class="row">
 				<div class="col-sm-12" id="paymentDossierContent" data-bind="value: paymentDossier">
@@ -309,7 +309,10 @@
 						<div class="col-sm-2">								
 							<span class="text-bold">Gía trị thanh toán</span>	
 						</div>
-						<div class="col-sm-10 red" data-bind="text:paymentAmount"></div>
+						<div class="col-sm-10 red">
+							<span data-bind="text:paymentAmount"></span>
+							<span> VNĐ</span>
+						</div>
 					</div>
 
 					<div class="row MB5">
@@ -594,12 +597,12 @@
 		$(document).on("click",".dossier-component-profile",function(){
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
-			var dossierTemplateId = "${(dossierTemplateId)!}";
-			// $("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateId="+dossierTemplateId,function(result){
+			var dossierTemplateNo = $("#dossierTemplateNo").val();
+			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
 
-			// });
-			var urlView = "http://dangkiemlaprap.mt.gov.vn/group/cong-tiep-nhan#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo+"";
-			window.open(urlView,"_blank")
+			});
+			// var urlView = "http://dangkiemlaprap.mt.gov.vn/group/cong-tiep-nhan#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo+"";
+			// window.open(urlView,"_blank")
 		});
 
 		$(document).off("click",".delete-dossier-file");
@@ -930,10 +933,10 @@
 								return "";
 							},
 							paymentAmount : function(e){
-								if(this.get('paymentDossier')){
-									if(this.get('paymentDossier').paymentAmount){
-										return this.get('paymentDossier').paymentAmount;
-									}
+								if(this.get('paymentDossier').paymentAmount){
+									var value = this.get('paymentDossier').paymentAmount;
+						      var moneyCur = (value/1).toFixed(0).replace('.', ',');
+						      return moneyCur.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 								}
 								return "";
 							},

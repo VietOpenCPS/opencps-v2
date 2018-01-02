@@ -216,38 +216,45 @@
 			<div id="__registrationId" data-bind="visible: false, text: registrationModel.registrationId"></div>
 
 			<script type="text/x-kendo-template" id="registration-forms-template">
-				#if(!removed) { #
+				#if(!removed) { 
+					 var checkState = viewRegistrationModel.registrationModel.registrationState; 
+				#
 					
-					<div class="registrationTemplateIndex">
+					<div class="registrationTemplateIndex" 
+						data-bind="events: {
+							click: registrationFormsListView_toggleAlpacaToForm}" data-pk="#:id#" data-formno="#:formNo#">
+						
 						<div class="row-parts-head align-middle slide-toggle">
 							<span class="text-bold MR5">#:itemIndex#.</span>
 							<span class="hover-pointer"> #:formName# </span>
 	
 							<div class="actions">
 								
-								#if(multiple) { #
+								# if ( checkState ==0 || checkState ==3 ) {#
+									#if(multiple) { #
+										<a href="javascript:;"
+											data-bind="events: {
+												click: registrationFormsListView_addTemplate
+											}"
+											data-formno="#:formNo#">
+											<i class="fa fa-plus-circle text-light-gray" aria-hidden="true" style="font-size: 150%;"></i>
+										</a>
+									#}#
+								
 									<a href="javascript:;"
 										data-bind="events: {
-											click: registrationFormsListView_addTemplate
+											click: registrationFormsListView_deleteTemplate
 										}"
-										data-formno="#:formNo#">
-										<i class="fa fa-plus-circle text-light-gray" aria-hidden="true" style="font-size: 150%;"></i>
+										data-referenceuid="#:referenceUid#" >
+										<i class="fa fa-times text-light-gray" aria-hidden="true" style="font-size: 150%;"></i>
 									</a>
 								#}#
-								
-								<a href="javascript:;"
-									data-bind="events: {
-										click: registrationFormsListView_deleteTemplate
-									}"
-									data-referenceuid="#:referenceUid#" >
-									<i class="fa fa-times text-light-gray" aria-hidden="true" style="font-size: 150%;"></i>
-								</a>
 		
 								<a href="javascript:;" 
 									data-bind="events: {
 										click: registrationFormsListView_viewJasperTemplate
 									}"
-									title="Số version" data-referenceuid="#:referenceUid#" data-formname="#:formName#">
+									title="Xem file Pdf" data-referenceuid="#:referenceUid#" data-formname="#:formName#">
 									<span class="number-in-circle" >#:version#</span>
 								</a>
 								
@@ -255,7 +262,7 @@
 									data-bind="events: {
 										click: registrationFormsListView_genAlpacaToForm
 									}"
-									data-pk="#:id#" data-formno="#:formNo#">
+									title="Xem chi tiết" data-pk="#:id#" data-formno="#:formNo#">
 									<span class="number-in-circle" > 
 										<i class="fa fa-eye" aria-hidden="true"></i>
 									</span>
@@ -265,26 +272,32 @@
 						</div>
 
 						<div class="collapse" id="collapseRegistrationPart#:id#">
+							
+							<div class="col-sm-12" style="height:450px; width:100%;overflow:auto;" >
+
+								# if ( checkState ==0 || checkState ==3 ) {#
+									<form id="formPartNo#:id#"></form>
+									
+								#} else {#
+									<form id="formPartNo#:id#" style="pointer-events: none;"></form>
+								#}#
+							</div>
+							
 							<div class="col-xs-12 col-sm-12 text-right">
 								
-								# var checkState = viewRegistrationModel.registrationModel.registrationState; 
-								if ( checkState ==0 || checkState ==3 ) {#
+								# if ( checkState ==0 || checkState ==3 ) {#
 									<button id="btn-save-formalpaca#:id#" 
-										class="btn btn-active MB10 MT10 MR20 saveFormAlpaca" 
-										type="button" data-pk="#:formNo#" referenceUid="#:id#">
+										class="btn btn-active MB10 MT10 MR20"
+										data-bind="events: {
+											click: registrationFormsListView_saveFormAlpaca
+										}"
+										type="button" data-pk="#:formNo#" data-referenceuid="#:id#">
 										Ghi lại
 									</button>
 								#}#
 								<input type="hidden" name="" id="dossierFileId#:id#" value="#:id#">
 							</div>
-		
-							<div class="col-sm-12" style="height:450px; width:100%;overflow:auto;" >
-		
-								<form id="formPartNo#:id#">
-
-								</form>
-		
-							</div>
+							
 						</div>
 				
 					</div>
@@ -308,172 +321,10 @@
 	
 </div>
 
-<script type="text/javascript">
-	
-	var fnBack;
-	var fnNext;
-
-var removeRegistrationsFile = function(registrationId, fileId){
-	$.ajax({
-		url : "${api.server}/registrations/"+registrationId+"/files/"+fileId,
-		dataType : "json",
-		type : "DELETE",
-		headers : {"groupId": ${groupId}},
-		success : function(result) {
-
-		},
-		error : function(result) {
-
-		}
-	});
-}
-var getReferentUidFile = function(dossierId,dossierPartNo){
-	var dossierFile;
-	if(dossierId){
-		$.ajax({
-			type : 'GET', 
-			dataType : "json",
-			url  : '${api.server}/dossiers/' +$('#__registrationId').text().trim()+ '/files', 
-			headers: {"groupId": ${groupId}},
-			async : false,
-			success :  function(result){ 
-				if(result.data){
-					for (var i = 0; i < result.data.length; i++) {
-						if(result.data[i].eForm){
-							if(dossierPartNo == result.data[i].dossierPartNo){
-								dossierFile = result.data[i];
-								return ;
-							}
-
-						}
-					}
-				}
-
-			},
-			error:function(result){
-
-			}
-		});
-	}
-	
-	return dossierFile;
-}
-
-var fnGetFormData = function(registrationId,referentUid){
-	var value = null;
-	if(registrationId && referentUid){
-		$.ajax({
-			url : "${api.server}/registrations/"+registrationId+"/forms/"+referentUid+"/formdata",
-			type : "GET",
-			dataType : "json",
-			headers: {
-				"groupId": ${groupId},
-				Accept : "application/json"
-			},
-			async : false,
-			success : function(result){
-				value = result;
-
-			},
-			error : function(result){
-
-			}
-
-		});
-	}
-
-	return value;
-}
-
-var fnSaveForm = function(id, value){
-	var current = $("#btn-save-formalpaca"+id);
-	var referentUid = current.attr("referenceUid");
-	
-	if(referentUid){
-		$.ajax({
-			url : "${api.server}/registrations/" + $('#__registrationId').text().trim() + "/forms/"+referentUid+"/formdata",
-			dataType : "json",
-			type : "PUT",
-			headers: {
-				"groupId": ${groupId},
-				Accept : "application/json"
-			},
-			data : {
-				formdata: JSON.stringify(value)
-			},
-			success : function(result){
-				notification.show({
-					message: "Yêu cầu được thực hiện thành công!"
-				}, "success");
-				
-				$("#validPart"+id).val("1");
-			},
-			error : function(result){
-				notification.show({
-					message: "Thực hiện không thành công, xin vui lòng thử lại!"
-				}, "error");
-			}
-		});
-	}
-}
-
-$(document).off("click",".saveFormAlpaca");
-$(document).on("click",".saveFormAlpaca",function(event){
-	var id = $(this).attr("data-pk");
-	var referentUidFile = $(this).attr("referenceUid");
-
-	var formType = $("#formPartNo"+referentUidFile+" .formType").val();
-	var value ;
-
-	if(formType !== "dklr"){
-		value = $("#formPartNo"+referentUidFile).alpaca('get').getValue();
-
-		var errorMessage = '';
-		$("#formPartNo"+referentUidFile+' div[class*="has-error"] > label').each(function( index ) {
-
-			errorMessage = "notValid";
-
-		});
-
-		if(errorMessage === '' && referentUidFile){
-			$.ajax({
-				url : "${api.server}/registrations/" +$('#__registrationId').text().trim() + "/forms/"+referentUidFile+"/formdata",
-				dataType : "json",
-				type : "PUT",
-				headers: {
-					"groupId": ${groupId},
-					Accept : "application/json"
-				},
-				data : {
-					formdata: JSON.stringify(value)
-				},
-				success : function(result){
-					notification.show({
-						message: "Yêu cầu được thực hiện thành công!"
-					}, "success");
-					
-					$("#validPart"+id).val("1");
-				},
-				error : function(result){
-					notification.show({
-						message: "Thực hiện không thành công, xin vui lòng thử lại!"
-					}, "error");
-				}
-			});
-		}else {
-			notification.show({
-				message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi ghi lại!"
-			}, "error");
-		}
-	}
-});
-
-</script>
-
 <style>
 
 #applicantInfo .form-group {
-    margin-bottom: 5px;
+	margin-bottom: 5px;
 }
 
 </style>

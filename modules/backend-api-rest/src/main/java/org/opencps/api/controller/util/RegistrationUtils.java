@@ -2,6 +2,7 @@
 package org.opencps.api.controller.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.opencps.api.registration.model.RegistrationDetailModel;
@@ -25,14 +26,36 @@ public class RegistrationUtils {
 			RegistrationModel model = new RegistrationModel();
 
 			model.setRegistrationId(GetterUtil.getLong(doc.get(RegistrationTerm.REGISTRATION_ID)));
-			// model.setServiceInfoId(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
-			model.setCreateDate(doc.get(Field.CREATE_DATE));
-			model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
 			model.setUserId(GetterUtil.getLong(doc.get(Field.USER_ID)));
-			model.setApplicantName(doc.get(RegistrationTerm.APPLICATION_NAME));
+            model.setApplicantName(doc.get(RegistrationTerm.APPLICATION_NAME));
+			
+			String createDate = doc.get(Field.CREATE_DATE);
+            if (Validator.isNotNull(createDate)) {
+                Date date = APIDateTimeUtils.convertStringToDate(createDate, "yyyyMMddHHmmss");
+                
+                createDate = APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP);
+            }
+            model.setCreateDate(doc.get(Field.CREATE_DATE));
+			
+            String modifiedDate = doc.get(Field.MODIFIED_DATE);
+            if (Validator.isNotNull(modifiedDate)) {
+                Date date = APIDateTimeUtils.convertStringToDate(modifiedDate, "yyyyMMddHHmmss");
+                
+                modifiedDate = APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP);
+            }
+            model.setModifiedDate(modifiedDate);
+            
+			String applicantIdDate = doc.get(RegistrationTerm.APPLICATION_ID_DATE);
+			if (Validator.isNotNull(applicantIdDate)) {
+			    Date date = APIDateTimeUtils.convertStringToDate(applicantIdDate, "yyyyMMddHHmmss");
+			    
+			    applicantIdDate = APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP);
+			}
+			model.setApplicantIdDate(applicantIdDate);
+			
 			model.setApplicantIdType(doc.get(RegistrationTerm.APPLICATION_ID_TYPE));
 			model.setApplicantIdNo(doc.get(RegistrationTerm.APPLICATION_ID_NO));
-			model.setApplicantIdDate(doc.get(RegistrationTerm.APPLICATION_ID_DATE));
+
 			model.setAddress(doc.get(RegistrationTerm.ADDRESS));
 			model.setCityCode(doc.get(RegistrationTerm.CITY_CODE));
 			model.setCityName(doc.get(RegistrationTerm.CITY_NAME));
@@ -106,7 +129,7 @@ public class RegistrationUtils {
 		model.setApplicantName(registration.getApplicantName());
 		model.setApplicantIdType(registration.getApplicantIdType());
 		model.setApplicantIdNo(registration.getApplicantIdNo());
-		model.setApplicantIdDate(APIDateTimeUtils.convertDateToString(registration.getApplicantIdDate()));
+        model.setApplicantIdDate(APIDateTimeUtils.convertDateToString(registration.getApplicantIdDate(), APIDateTimeUtils._TIMESTAMP));
 		model.setAddress(registration.getAddress());
 		model.setCityCode(registration.getCityCode());
 		model.setDistrictCode(registration.getDistrictCode());
@@ -192,9 +215,9 @@ public class RegistrationUtils {
 
 			model.setRegistrationId(registrationId);
 			model.setUserId(userId);
-			model.setCreateDate(APIDateTimeUtils.convertDateToString(registration.getCreateDate()));
-			model.setModifiedDate(APIDateTimeUtils.convertDateToString(registration.getModifiedDate()));
-			model.setApplicantIdDate(APIDateTimeUtils.convertDateToString(registration.getApplicantIdDate()));
+			model.setCreateDate(APIDateTimeUtils.convertDateToString(registration.getCreateDate(), APIDateTimeUtils._TIMESTAMP));
+			model.setModifiedDate(APIDateTimeUtils.convertDateToString(registration.getModifiedDate(), APIDateTimeUtils._TIMESTAMP));
+			model.setApplicantIdDate(APIDateTimeUtils.convertDateToString(registration.getApplicantIdDate(), APIDateTimeUtils._TIMESTAMP));
 			model.setApplicantName(registration.getApplicantName());
 			model.setApplicantIdType(registration.getApplicantIdType());
 			model.setApplicantIdNo(registration.getApplicantIdNo());
@@ -202,6 +225,7 @@ public class RegistrationUtils {
 			model.setCityCode(registration.getCityCode());
 			model.setCityName(registration.getCityName());
 			model.setDistrictCode(registration.getDistrictCode());
+			model.setDistrictName(registration.getDistrictName());
 			model.setWardCode(registration.getWardCode());
 			model.setWardName(registration.getWardName());
 			model.setContactName(registration.getContactName());

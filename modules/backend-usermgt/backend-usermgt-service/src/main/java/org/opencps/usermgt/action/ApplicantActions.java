@@ -48,6 +48,6 @@ public interface ApplicantActions {
 	public Applicant lockApplicant(ServiceContext context, long applicantId)
 			throws PortalException;
 
-	
+	public Applicant getApplicantByMappingUserId(long userId) throws PortalException;
 
 }

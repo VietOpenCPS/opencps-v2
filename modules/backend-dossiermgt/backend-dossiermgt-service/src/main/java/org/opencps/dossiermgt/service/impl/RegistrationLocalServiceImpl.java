@@ -14,16 +14,16 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
-import org.opencps.dossiermgt.exception.NoSuchRegistrationException;
 import org.opencps.dossiermgt.model.Registration;
-import org.opencps.dossiermgt.model.impl.RegistrationImpl;
 import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
 import org.opencps.usermgt.service.util.UserMgtUtils;
 
@@ -90,14 +90,6 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		Registration model = registrationPersistence.create(registrationId);
 
-		Date idDate = null;
-
-		try {
-			idDate = UserMgtUtils.convertDate(applicantIdDate);
-		} catch (Exception e) {
-			_log.error(RegistrationLocalServiceImpl.class.getName() + "date input error");
-		}
-
 		model.setGroupId(groupId);
 		model.setCreateDate(now);
 		model.setModifiedDate(now);
@@ -106,7 +98,15 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setApplicantName(applicantName);
 		model.setApplicantIdType(applicantIdType);
 		model.setApplicantIdNo(applicantIdNo);
-		model.setApplicantIdDate(idDate);
+		if (Validator.isNotNull(applicantIdDate)) {
+            try {
+                Date idDate = UserMgtUtils.convertDate(applicantIdDate);
+                
+                model.setApplicantIdDate(idDate);
+            } catch (Exception e) {
+                _log.error(e);
+            }
+        }
 		model.setAddress(address);
 		model.setCityCode(cityCode);
 		model.setCityName(cityName);
@@ -139,26 +139,21 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			throws PortalException, SystemException {
 
 		Date now = new Date();
-		long userId = serviceContext.getUserId();
-		User userAction = userLocalService.getUser(userId);
 
-		Date idDate = null;
+		Registration model = registrationPersistence.fetchByPrimaryKey(registrationId);
+
+		model.setModifiedDate(now);
+		model.setSubmitting(true);
+		
 		if (Validator.isNotNull(applicantIdDate)) {
 			try {
-				idDate = UserMgtUtils.convertDate(applicantIdDate);
+				Date idDate = UserMgtUtils.convertDate(applicantIdDate);
+				
+				model.setApplicantIdDate(idDate);
 			} catch (Exception e) {
 				_log.error(e);
 			}
 		}
-
-		Registration model = registrationPersistence.fetchByPrimaryKey(registrationId);
-
-		model.setGroupId(groupId);
-		model.setCreateDate(now);
-		model.setModifiedDate(now);
-		model.setUserId(userAction.getUserId());
-		model.setSubmitting(true);
-		model.setApplicantIdDate(idDate);
 
 		if (Validator.isNotNull(applicantName)) {
 			model.setApplicantName(applicantName);
@@ -392,6 +387,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		return registrationPersistence.findByF_submitting(groupId, submitting);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	public Registration registrationSync(long groupId, String uuid, String applicantName, String applicantIdType,
 			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
@@ -406,11 +402,19 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		if (Validator.isNotNull(registration)) {
 			registration.setModifiedDate(now);
-			registration.setUserId(userAction.getUserId());
 
 			registration.setApplicantName(applicantName);
 			registration.setApplicantIdType(applicantIdType);
 			registration.setApplicantIdNo(applicantIdNo);
+			if (Validator.isNotNull(applicantIdDate)) {
+	            try {
+	                Date idDate = APIDateTimeUtils.convertStringToDate(applicantIdDate, APIDateTimeUtils._TIMESTAMP);
+	                
+	                registration.setApplicantIdDate(idDate);
+	            } catch (Exception e) {
+	                _log.error(e);
+	            }
+	        }
 			registration.setAddress(address);
 			registration.setCityCode(cityCode);
 			registration.setCityName(cityName);
@@ -441,6 +445,15 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			registration.setApplicantName(applicantName);
 			registration.setApplicantIdType(applicantIdType);
 			registration.setApplicantIdNo(applicantIdNo);
+			if (Validator.isNotNull(applicantIdDate)) {
+                try {
+                    Date idDate = APIDateTimeUtils.convertStringToDate(applicantIdDate, APIDateTimeUtils._TIMESTAMP);
+                    
+                    registration.setApplicantIdDate(idDate);
+                } catch (Exception e) {
+                    _log.error(e);
+                }
+            }
 			registration.setAddress(address);
 			registration.setCityCode(cityCode);
 			registration.setCityName(cityName);
@@ -484,6 +497,8 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setModifiedDate(new Date());
 		return registrationPersistence.update(model);
 	}
+	
+	private static final String _TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	private Log _log = LogFactoryUtil.getLog(RegistrationLocalServiceImpl.class);
 }

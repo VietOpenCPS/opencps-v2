@@ -1,8 +1,10 @@
 package org.opencps.api.controller.impl;
 
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -15,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.RegistrationManagement;
@@ -44,15 +47,20 @@ import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
+import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
+import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
@@ -63,7 +71,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationManagementImpl implements RegistrationManagement {
-	Log _log = LogFactoryUtil.getLog(RegistrationManagementImpl.class);
+	private static Log _log = LogFactoryUtil.getLog(RegistrationManagementImpl.class);
 	
 	private static String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
 	
@@ -112,7 +120,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -151,7 +158,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 
@@ -172,7 +178,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			RegistrationDetailResultModel result = RegistrationUtils.mappingToRegistrationDetailResultModel(detail);
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -212,7 +217,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -230,7 +234,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 
@@ -258,7 +261,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -275,19 +277,24 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				throw new UnauthenticationException();
 			}
 
-			RegistrationFormActions action = new RegistrationFormActionsImpl();
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			long fileEntryId = getfileEntryId(input.getFormData(), input.getFormScript(), input.getFormReport());
+			//long fileEntryId = getfileEntryId(input.getFormData(), input.getFormScript(), input.getFormReport());
+			//TODO: lam lai
+			String govAgencyCode = "";
+			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil.getRegTempbyFormNoGovCode(
+			    groupId, formNo, govAgencyCode);
 
-			RegistrationForm registrationForm = action.insert(groupId, registrationId, input.getReferenceUid(), formNo,
-					input.getFormName(), input.getFormData(), input.getFormScript(), input.getFormReport(), fileEntryId,
-					input.isIsNew(), input.isRemoved(), serviceContext);
+			String referenceUid = UUID.randomUUID().toString();
+
+			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
+			    registrationTemplate.getFormNo(), registrationTemplate.getFormName(),
+			    registrationTemplate.getSampleData(), registrationTemplate.getFormScript(),
+			    registrationTemplate.getFormReport(), 0, true, false, serviceContext);
 
 			result = RegistrationFormUtils.mappingToRegistrationFormDetailModel(registrationForm);
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 
@@ -311,7 +318,8 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
 
 			} else {
-
+			    _log.error(e);
+			    
 				error.setMessage("No Content.");
 				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 				error.setDescription("No Content.");
@@ -351,23 +359,79 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			return Response.status(200).build();
 		} catch (Exception e) {
-			_log.error(e);
 			return processException(e);
 		}
 	}
+	
+	@Override
+    public Response previewFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+            User user, ServiceContext serviceContext, long registrationId, String referenceUid) {
+        BackendAuth auth = new BackendAuthImpl();
+        try {
 
-	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
+            if (!auth.isAuth(serviceContext)) {
+                throw new UnauthenticationException();
+            }
+            
+            long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+            
+            RegistrationForm registrationForm =
+                RegistrationFormLocalServiceUtil.findFormbyRegidRefid(
+                    groupId, registrationId, referenceUid);
 
-		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
+            if (registrationForm != null && registrationForm.getFileEntryId() > 0) {
+                FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(registrationForm.getFileEntryId());
 
-		if (Validator.isNotNull(dc)) {
-			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
+                File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
 
-			return it.getItemName();
+                ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-		} else {
-			return StringPool.BLANK;
-		}
+                responseBuilder.header("Content-Disposition",
+                        "attachment; filename=\"" + fileEntry.getFileName() + "\"");
+                responseBuilder.header("Content-Type", fileEntry.getMimeType());
 
-	}
+                return responseBuilder.build();
+            } else {
+                return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+            }
+        } catch (Exception e) {
+            return processException(e);
+        }
+    }
+
+    @Override
+    public Response submitting(
+        HttpServletRequest request, HttpHeaders header, Company company,
+        Locale locale, User user, ServiceContext serviceContext,
+        long registrationId) {
+
+        BackendAuth auth = new BackendAuthImpl();
+        try {
+
+            if (!auth.isAuth(serviceContext)) {
+                throw new UnauthenticationException();
+            }
+            
+            Registration registration = RegistrationLocalServiceUtil.updateSubmitting(registrationId, true);
+            
+            return Response.status(200).entity(registration).build();
+        } catch (Exception e) {
+            return processException(e);
+        }
+    }
+    
+    protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
+
+        DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
+
+        if (Validator.isNotNull(dc)) {
+            DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
+
+            return it.getItemName();
+
+        } else {
+            return StringPool.BLANK;
+        }
+
+    }
 }

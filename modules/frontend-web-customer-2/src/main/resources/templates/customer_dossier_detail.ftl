@@ -400,11 +400,12 @@
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
 			var dossierTemplateNo = $("#dossierTemplateNo").val();
-			// $("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
-			// 	$(this).modal("show");
-			// });
-			var urlView = "http://dangkiemlaprap.mt.gov.vn/group/cong-tiep-nhan#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo+"";
-			window.open(urlView,"_blank")
+			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
+				$(this).modal("show");
+			});
+			// var urlView = "http://dangkiemlaprap.mt.gov.vn/group/cong-tiep-nhan#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo+"";
+			
+			// window.open(urlView,"_blank")
 		});
 
 		$(document).off("click",".delete-dossier-file");
@@ -606,9 +607,12 @@
 
 				},
 				success :  function(result){          
-					$("#btn-save-dossier").button('reset');             
-					console.log("PUT Dossier success!");
-					createActionDossier(${dossierId});
+					$("#btn-save-dossier").button('reset');
+					console.log(result.dossierStatus);             
+					if(result.dossierStatus == ''){
+						console.log("------>doActions");  
+						createActionDossier(${dossierId});
+					}
 					/*notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");*/
@@ -642,7 +646,8 @@
 				},
 				data : {
 					actionCode  : 1100,
-					actionNote :  $("textarea#applicantNote").val()
+					actionNote :  $("textarea#applicantNote").val(),
+					actionUser: '${(userInfo.actionUser)!}'
 				},
 				success : function(result){
 					$("#btn-save-dossier").button('reset');

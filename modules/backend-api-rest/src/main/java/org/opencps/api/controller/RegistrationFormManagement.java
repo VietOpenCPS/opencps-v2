@@ -96,5 +96,6 @@ public interface RegistrationFormManagement {
 			@FormParam("formName") String formName,
 			@FormParam("formData") String formData,
 			@FormParam("formScript") String formScript,
-			@FormParam("formReport") String formReport);
+			@FormParam("formReport") String formReport,
+			@FormParam("removed") Boolean removed);
 }

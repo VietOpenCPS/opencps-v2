@@ -76,10 +76,9 @@ public class DossierPaymentUtils {
 			// generator epaymentProfile
 			JSONObject epaymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
 			
-			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, dossier.getReferenceUid(),
+			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, null,
 					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantName(),
-					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, null, paymentConfig.getBankInfo(), serviceContext);
-			
+					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, null, paymentConfig.getBankInfo(), serviceContext);			
 			JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
 			
 			if (epaymentConfigJSON.has("paymentKeypayDomain")) {

@@ -182,10 +182,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		object.setDisplayName(displayName);
 		object.setOriginal(true);
-
-		if (Validator.isNotNull(isSync) && GetterUtil.getBoolean(isSync)) {
-			object.setIsNew(false);
-		} else {
+		
+		if (Boolean.parseBoolean(isSync)) {
 			object.setIsNew(true);
 		}
 
