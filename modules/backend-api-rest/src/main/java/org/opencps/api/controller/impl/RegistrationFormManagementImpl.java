@@ -69,8 +69,8 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 				throw new UnauthenticationException();
 			}
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId, registrationId,
-					referenceUid);
+			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId,
+					registrationId, referenceUid);
 
 			return Response.status(200).entity(registrationForm.getFormData()).build();
 
@@ -81,7 +81,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 	}
 
 	@Override
-	public Response updateDossierFileFormData(HttpServletRequest request, HttpHeaders header, Company company,
+	public Response updateRegFormFormData(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long registrationId, String referenceUid,
 			String formData) throws PortalException {
 		Date now = new Date();
@@ -93,14 +93,8 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 
-			RegistrationForm model = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId, registrationId,
-					referenceUid);
-
-			model.setFormData(formData);
-			model.setModifiedDate(now);
-			model.setIsNew(true);
-
-			RegistrationForm registrationForm = action.update(model);
+			RegistrationForm registrationForm = action.updateRegFormFormData(groupId, registrationId, referenceUid,
+					formData, serviceContext);
 
 			RegistrationFormDetailModel result = RegistrationFormUtils
 					.mappingToRegistrationFormDetailModel(registrationForm);
@@ -123,8 +117,8 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 				throw new UnauthenticationException();
 			}
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId, registrationId,
-					referenceUid);
+			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId,
+					registrationId, referenceUid);
 
 			return Response.status(200).entity(registrationForm.getFormScript()).build();
 
@@ -184,6 +178,5 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			return processException(e);
 		}
 	}
-	
-	
+
 }

@@ -46,16 +46,16 @@ public class RegistrationIndexer extends BaseIndexer<Registration> {
 		document.addDateSortable(Field.MODIFIED_DATE, object.getCreateDate());
 		document.addDateSortable(Field.CREATE_DATE, object.getModifiedDate());
 		document.addNumberSortable(Field.USER_ID, object.getUserId());
-//		document.addKeywordSortable(Field.USER_NAME, String.valueOf(object.getUserName()));
 		document.addKeywordSortable(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
 
 		document.addNumberSortable(RegistrationTerm.REGISTRATION_ID, object.getRegistrationId());
-
 		document.addKeywordSortable(RegistrationTerm.APPLICATION_NAME, object.getApplicantName());
 		document.addKeywordSortable(RegistrationTerm.APPLICATION_ID_TYPE, object.getApplicantIdType());
 		document.addKeywordSortable(RegistrationTerm.APPLICATION_ID_NO, object.getApplicantIdNo());
-		document.addKeywordSortable(RegistrationTerm.APPLICATION_ID_DATE, GetterUtil.getString(object.getApplicantIdDate()));
+		if (null != object.getApplicantIdDate()) {
+			document.addDateSortable(RegistrationTerm.APPLICATION_ID_DATE, object.getApplicantIdDate());
+		}
 		document.addKeywordSortable(RegistrationTerm.ADDRESS, object.getAddress());
 		document.addKeywordSortable(RegistrationTerm.CITY_CODE, object.getCityCode());
 		document.addKeywordSortable(RegistrationTerm.CITY_NAME, object.getCityName());
@@ -96,7 +96,7 @@ public class RegistrationIndexer extends BaseIndexer<Registration> {
 		long companyId = GetterUtil.getLong(ids[0]);
 		reindex(companyId);
 	}
-	
+
 	protected void reindex(long companyId) throws PortalException {
 		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = RegistrationLocalServiceUtil
 				.getIndexableActionableDynamicQuery();
@@ -123,7 +123,6 @@ public class RegistrationIndexer extends BaseIndexer<Registration> {
 
 		indexableActionableDynamicQuery.performActions();
 	}
-
 
 	@Override
 	protected void doReindex(Registration object) throws Exception {

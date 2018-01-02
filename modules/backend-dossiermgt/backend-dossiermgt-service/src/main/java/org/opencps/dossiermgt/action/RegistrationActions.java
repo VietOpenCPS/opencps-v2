@@ -33,4 +33,5 @@ public interface RegistrationActions {
 			String registrationClass, ServiceContext serviceContext) throws PortalException;
 	public JSONObject getRegistrations(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
+	
 }
