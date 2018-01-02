@@ -326,7 +326,7 @@
       success : function(result){
       	selector.button('reset');
         manageDossier.navigate("/taohosomoi/chuanbihoso/"+result.dossierId);
-        getTotal();
+        // getTotal();
       },
       error : function(result){
       	selector.button('reset');

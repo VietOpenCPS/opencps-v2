@@ -76,7 +76,7 @@
 							{{detailRegistModel.applicantIdDate}}
 							
 						</span>
-						<v-menu
+						<v-menu v-else
 					        lazy
 					        :close-on-content-click="false"
 					        v-model="menu"
@@ -100,14 +100,6 @@
 					        </v-date-picker>
 					      </v-menu>
 
-						<v-text-field v-else
-			              v-model="detailRegistModel.contactEmail"
-			              placeholder="địa chỉ email ..."
-			              class="pt-0 mt--5"
-			              single-line
-			              :rules="[(v) => !!v || 'Địa chỉ email bắt buộc phải nhập']"
-          				  required
-			            ></v-text-field>
 					</v-flex>
 				</v-layout>
 				<v-layout wrap class="pb-2">
@@ -229,9 +221,12 @@
 	<v-btn primary class="ml-0 mr-0" v-on:click.native="detailRegistPage = !detailRegistPage" v-if="themeDisplay.getUserId() == detailRegistModel.userId">
 		Ghi lại
 	</v-btn>
-	<v-btn primary class="ml-0 mr-0" v-on:click.native="detailRegistPage = !detailRegistPage" v-else-if="detailRegistModel.registrationState !== 2">
+	<v-btn primary class="ml-0 mr-0" v-on:click.native="registrationPheDuyet(2)" v-else-if="detailRegistModel.registrationState !== 2">
 		<v-icon class="mr-2">done</v-icon>
 		Phê duyệt
 	</v-btn>
-	
+	<v-btn primary class="ml-0 mr-0" v-on:click.native="registrationPheDuyet(3)" v-if="detailRegistModel.registrationState !== 2" >
+		<v-icon class="mr-2">undo</v-icon>
+		Yêu cầu chỉnh sửa đăng kí
+	</v-btn>
 </div>

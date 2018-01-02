@@ -1,0 +1,9 @@
+Bundle-Name: backend-kyso-process-api
+Bundle-SymbolicName: backend.kyso.process.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	org.opencps.kyso.exception,\
+	org.opencps.kyso.model,\
+	org.opencps.kyso.service,\
+	org.opencps.kyso.service.persistence
+-includeresource: META-INF/service.xml=../backend-kyso-process-service/service.xml

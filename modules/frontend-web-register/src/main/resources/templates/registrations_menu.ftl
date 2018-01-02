@@ -39,7 +39,7 @@
 		></ul>
 		
 		<script type="text/x-keno-template" id="registrationsTemplate">
-		
+			
 			<li class="clearfix PT10 PR0 PB10 PL10 registrationsLogItem hover-pointer"
 				data-pk="#= registrationId#"
 				data-bind="events: {
@@ -62,9 +62,12 @@
 					<span class="btn-block">#= applicantIdType #</span>
 				
 				</div>
-					
-				<span class="col-sm-1 PL0 PR0"></span>
 				
+				# if ( viewRegistrationModel.registrationModel.selected == true ) { #
+					<span class="col-sm-1 PL0 PR0"></span>
+				#} else { viewRegistrationModel.registrationModel.selected = true;#
+					<span class="col-sm-1 PL0 PR0 fa fa-check"></span>
+				#}#
 			 </li>
 			
 		</script>

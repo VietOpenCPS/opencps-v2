@@ -24,12 +24,12 @@
 
 
 <script>
-console.log(">>>>>>>>>>>>>>>>>>>>>>>DOM");
+
 var viewRegistrationModel;
 document.addEventListener("DOMContentLoaded", function(event) {
-console.log(">>>>>>>>>>>>>>>>>>>>>>>DOMContentLoaded");
+
 $(function(){
-	console.log(">>>>>>>>>>>>>>>>>>>>>>>document ready");
+	console.log("--start registration--");
 	$('#registration-jasper-wrapper').hide();
 	
 	viewRegistrationModel = kendo.observable({
@@ -94,6 +94,7 @@ $(function(){
 						},
 						success : function(result){
 							result["data"] = result.total == 0?[]: result["data"];
+							options.success(result);
 							
 							if ( result.total==0 ){
 								
@@ -102,7 +103,6 @@ $(function(){
 							} else {
 								
 								viewRegistrationModel.registrationModelMap(result.data[0]);
-								options.success(result);
 							}
 							
 						},
@@ -159,7 +159,7 @@ $(function(){
 			
 			for(var k in model) {
 			
-				if( k == "applicantIdDate" && model[k] != "" ){
+				if( k == "applicantIdDate" && model[k] != "" && isNaN(model[k]) ){
 					registrationModel[k] = kendo.toString(kendo.parseDate(model[k]), 'dd/MM/yyyy');
 					
 				} else if (k == "registrationState") {
@@ -288,6 +288,7 @@ $(function(){
 			$.ajax({
 				url : "${api.server}/registrations/" +vm.registrationModel.registrationId+ "/forms/"+ referenceUid,
 				type : "DELETE",
+				dataType : "text",
 				headers: {
 					"groupId": ${groupId}
 				},
@@ -488,8 +489,73 @@ $(function(){
 			
 			var id = $(e.currentTarget).attr("data-pk");
 			var formNo = $(e.currentTarget).attr("data-formno");
-			console.log(">>>>>>>>>>>>>>>>>FORM NO>>"+formNo);
-			console.log(">>>>>>>>>>>>>>>>>id>>"+id);
+			
+			vm._genAlpacaToForm(id, formNo);
+		
+		},
+		registrationFormsListView_toggleAlpacaToForm: function(e){
+			var vm = this;
+			
+			var id = $(e.currentTarget).attr("data-pk");
+			var formNo = $(e.currentTarget).attr("data-formno");
+			
+			if ( $("#formPartNo"+id).children().length == 0) {
+				vm._genAlpacaToForm(id, formNo);
+			}
+		
+		},
+		registrationFormsListView_saveFormAlpaca: function(e){
+			var vm = this;
+			
+			var id = $(e.currentTarget).attr("data-pk");
+			var referentUidFile = $(e.currentTarget).attr("data-referenceuid");
+		
+			var formType = $("#formPartNo"+referentUidFile+" .formType").val();
+			var value ;
+		
+			if(formType !== "dklr"){
+				value = $("#formPartNo"+referentUidFile).alpaca('get').getValue();
+		
+				var errorMessage = '';
+				$("#formPartNo"+referentUidFile+' div[class*="has-error"] > label').each(function( index ) {
+		
+					errorMessage = "notValid";
+		
+				});
+		
+				if(errorMessage === '' && referentUidFile){
+					$.ajax({
+						url : "${api.server}/registrations/" +$('#__registrationId').text().trim() + "/forms/"+referentUidFile+"/formdata",
+						dataType : "json",
+						type : "PUT",
+						headers: {
+							"groupId": ${groupId},
+							Accept : "application/json"
+						},
+						data : {
+							formdata: JSON.stringify(value)
+						},
+						success : function(result){
+							notification.show({
+								message: "Yêu cầu được thực hiện thành công!"
+							}, "success");
+						},
+						error : function(result){
+							notification.show({
+								message: "Thực hiện không thành công, xin vui lòng thử lại!"
+							}, "error");
+						}
+					});
+				}else {
+					notification.show({
+						message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi ghi lại!"
+					}, "error");
+				}
+			}
+		
+		},
+		_genAlpacaToForm: function(id, formNo){
+			var vm = this;
 			
 			$.ajax({
 				url : "${api.server}/registrations/" + vm.registrationModel.registrationId + "/forms/"+id+"/formscript",
@@ -500,12 +566,10 @@ $(function(){
 					$("#formPartNo"+id).empty();
 					
 					if(result){
-						console.log(">>>>>>>>>>>...GEN registration form script>>>>>>>>>");
+						
 						var alpaca = eval("(" + result + ")");
-						var formdata = fnGetFormData(vm.registrationModel.registrationId,id);
-						if(formdata){
-							$("#validPart"+formNo).val("1");
-						}
+						var formdata = vm._fnGetFormData(vm.registrationModel.registrationId,id);
+						
 						alpaca.data = formdata;
 	
 						$("#formPartNo"+id).alpaca(alpaca);
@@ -516,7 +580,34 @@ $(function(){
 				}
 			});
 		
-		}
+		},
+		_fnGetFormData : function(registrationId,referentUid){
+			var vm = this;
+			
+			var value = null;
+			if(registrationId && referentUid){
+				$.ajax({
+					url : "${api.server}/registrations/"+registrationId+"/forms/"+referentUid+"/formdata",
+					type : "GET",
+					dataType : "json",
+					headers: {
+						"groupId": ${groupId},
+						Accept : "application/json"
+					},
+					async : false,
+					success : function(result){
+						value = result;
+		
+					},
+					error : function(result){
+		
+					}
+		
+				});
+			}
+		
+			return value;
+		},
 
 	});
 	

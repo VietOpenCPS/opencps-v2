@@ -14,6 +14,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierContentGenerator;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
@@ -363,7 +364,10 @@ public class DossierActionsImpl implements DossierActions {
 											}
 										} else {
 											eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true : false;
-											formData = dossierPart.getSampleData();
+											_log.info("*********================================***************************");
+											_log.info("*********================================dossierId***************************" + dossierId);
+											_log.info("*********================================dossierPart.getSampleData()***************************" + dossierPart.getSampleData());
+											formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext);
 											formScript = dossierPart.getFormScript();
 
 											if (returnDossierFileTemplateNos
