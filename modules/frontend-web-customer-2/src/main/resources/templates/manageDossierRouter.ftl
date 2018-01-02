@@ -135,13 +135,14 @@
       $('#searchCC').removeClass('active');
       $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
     });
-    manageDossier.route("/keyPay/(:id)/(:refUid)", function(id,refUid){
+
+    manageDossier.route("/keyPay/(:id)/(:refUid)", function(id,refUid,params){
 			$("#panel_list").show();
 			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 			$("#mainType1").hide();
 			$("#mainType2").show();
 			$(".filterField").hide();
-			$("#mainType2").load("${ajax.notificationPaying}&${portletNamespace}dossierUUid="+id+"&${portletNamespace}paymentFileUUid="+refUid,function(result){
+			$("#mainType2").load("${ajax.notificationPaying}&${portletNamespace}dossierUUid="+id+"&${portletNamespace}paymentFileUUid="+refUid+"&${portletNamespace}trans_id="+params.trans_id+"&${portletNamespace}good_code="+params.good_code,function(result){
 			});
 			
 			
