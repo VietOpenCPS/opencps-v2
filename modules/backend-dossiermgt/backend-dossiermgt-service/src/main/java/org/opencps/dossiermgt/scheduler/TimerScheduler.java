@@ -97,12 +97,12 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 					ProcessAction processAction = (ProcessAction) content.get("processAction");
 
-					if (processAction != null) {
+					/*if (processAction != null) {
 						_log.info("///////////////////////////////////////// processAction.getAutoEvent()"
 								+ processAction.getAutoEvent());
 					} else {
 						_log.info("///////////////////////////////////////// null");
-					}
+					}*/
 
 					if (processAction != null && Validator.isNotNull(processAction.getAutoEvent())
 							&& processAction.getAutoEvent().contentEquals("timmer")) {
