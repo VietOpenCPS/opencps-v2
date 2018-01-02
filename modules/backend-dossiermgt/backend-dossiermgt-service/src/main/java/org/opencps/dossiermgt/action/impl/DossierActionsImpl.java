@@ -521,7 +521,7 @@ public class DossierActionsImpl implements DossierActions {
 		if (Validator.isNull(processAction))
 			throw new NotFoundException(
 					"ProcessActionNotFoundException with processActionId = " + processActionId + "|actionCode= "
-							+ actionCode + "|serviceProcessId= " + serviceProcessId + "|referenceUid= " + referenceUid);
+							+ actionCode + "|serviceProcessId= " + serviceProcessId + "|referenceUid= " + referenceUid + "|groupId= " + groupId);
 
 		// Add paymentFile
 		if (Validator.isNotNull(processAction.getPaymentFee())) {

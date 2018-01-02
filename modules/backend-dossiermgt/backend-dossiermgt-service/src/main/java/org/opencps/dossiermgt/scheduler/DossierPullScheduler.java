@@ -118,7 +118,11 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject object = array.getJSONObject(i);
 
-				pullDossier(company, object, systemUser);
+				try {
+					pullDossier(company, object, systemUser);
+				} catch (Exception e) {
+					_log.error(object.get(DossierTerm.DOSSIER_ID), e);
+				}
 			}
 
 		} catch (Exception e) {
@@ -194,6 +198,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 			if (Validator.isNull(desDossier)) {
 				// Create DOSSIER
+				
+				_log.info("====================================== syncServiceProcess " + syncServiceProcess.getServiceProcessId());
 
 				long desGroupId = syncServiceProcess.getGroupId();
 
@@ -489,7 +495,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					String fileRef = object.getString("referenceUid");
 
 					// Get file from SERVER
-					String path = "dossiers/" + srcDossierId + "/payments/" + fileRef + "/confirmfile/noattachment";
+					String path = "dossiers/" + srcDossierId + "/payments/" + fileRef + "/confirm/noattachment";
 
 					URL url = new URL(RESTFulConfiguration.SERVER_PATH_BASE + path);
 
