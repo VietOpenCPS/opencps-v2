@@ -1,6 +1,5 @@
 package org.opencps.api.controller.impl;
 
-import java.util.Date;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +29,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 public class RegistrationFormManagementImpl implements RegistrationFormManagement {
-	Log _log = LogFactoryUtil.getLog(RegistrationFormManagementImpl.class);
+	private static Log _log = LogFactoryUtil.getLog(RegistrationFormManagementImpl.class);
 
 	@Override
 	public Response deleteFormbyRegId(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -41,15 +40,12 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 
-			RegistrationForm registrationForm = action.deleteRegistrationForm(id, referenceUid);
+			action.deleteRegistrationForm(groupId, id, referenceUid);
 
-			if (registrationForm != null) {
-				return Response.status(200).entity("Success").build();
-			} else {
-				return Response.status(200).entity("Cannot Delete").build();
-			}
+			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 
 		} catch (Exception e) {
 			return processException(e);
@@ -66,9 +62,9 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
-			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(registrationId,
-					referenceUid);
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId,
+					registrationId, referenceUid);
 
 			return Response.status(200).entity(registrationForm.getFormData()).build();
 
@@ -78,25 +74,19 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 	}
 
 	@Override
-	public Response updateDossierFileFormData(HttpServletRequest request, HttpHeaders header, Company company,
+	public Response updateRegFormFormData(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long registrationId, String referenceUid,
 			String formData) throws PortalException {
-		Date now = new Date();
 		BackendAuth auth = new BackendAuthImpl();
 		try {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 
-			RegistrationForm model = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(registrationId,
-					referenceUid);
-
-			model.setFormData(formData);
-			model.setModifiedDate(now);
-
-			RegistrationForm registrationForm = action.update(model);
+			RegistrationForm registrationForm = action.updateRegFormFormData(groupId, registrationId, referenceUid,
+					formData, serviceContext);
 
 			RegistrationFormDetailModel result = RegistrationFormUtils
 					.mappingToRegistrationFormDetailModel(registrationForm);
@@ -104,7 +94,6 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			e.printStackTrace();
 			return processException(e);
 		}
 	}
@@ -118,9 +107,9 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
-			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(registrationId,
-					referenceUid);
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId,
+					registrationId, referenceUid);
 
 			return Response.status(200).entity(registrationForm.getFormScript()).build();
 
@@ -147,7 +136,8 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
 
 			} else {
-
+			    _log.error(e);
+			    
 				error.setMessage("No Content.");
 				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 				error.setDescription("No Content.");
@@ -161,8 +151,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 	@Override
 	public Response registrationSyncsForm(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String referenceUid, String registrationUUID,
-			String formNo, String formName, String formData, String formScript, String formReport) {
-		Date now = new Date();
+			String formNo, String formName, String formData, String formScript, String formReport, Boolean removed) {
 		BackendAuth auth = new BackendAuthImpl();
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -171,12 +160,12 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			// TODO sync registration Form
 			RegistrationFormLocalServiceUtil.registrationFormSync(groupId, registrationUUID, referenceUid, formNo,
-					formName, formData, formScript, formReport, serviceContext);
+					formName, formData, formScript, formReport, removed, serviceContext);
 			return Response.status(200).build();
 
 		} catch (Exception e) {
-			e.printStackTrace();
 			return processException(e);
 		}
 	}
+
 }

@@ -52,7 +52,8 @@ import javax.xml.bind.annotation.XmlType;
     "multiple",
     "formScript",
     "formData",
-    "counter"
+    "counter",
+    "returned"
 })
 public class DossierActionNextActioncreateFiles {
 
@@ -67,6 +68,32 @@ public class DossierActionNextActioncreateFiles {
     protected String formData;
     protected String referenceUid;
     protected Integer counter;
+    protected Boolean returned;
+    
+
+    /**
+     * Gets the value of the returned property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
+     */
+    public Boolean isReturned() {
+        return returned;
+    }
+
+    /**
+     * Sets the value of the returned property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
+     */
+    public void setReturned(Boolean value) {
+        this.returned = value;
+    }
     
     
     /**

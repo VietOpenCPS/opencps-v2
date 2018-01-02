@@ -37,8 +37,14 @@
 			<a href="javascript:;" class="btn btn-active" onclick="fnCancelling(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu hủy</a>
 
 			<#elseif sendAdd?has_content >
+			
+			<#assign btnLabel = "Gửi bổ sung">
+		
+			<#if dossier.dossierStatus == "done">
+				<#assign btnLabel = "Sửa đổi bổ sung">
+			</#if>
 
-			<a href="javascript:;" class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
+			<a href="javascript:;" class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> ${btnLabel}</a>
 
 			<#else>
 
@@ -315,17 +321,22 @@
 </div>
 
 <div class="button-row MT20">
-	<button class="btn btn-active" id="btn-back-dossier" type="button"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
-	
+	<button class="btn btn-active" id="btn-back-dossier" type="button"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>	
 
 	<#if resCancelling?has_content >
 
-	<button class="btn btn-active" id="btn-rescancelling-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-
+	<button class="btn btn-active" id="btn-rescancelling-dossier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+	<a href="javascript:;" class="btn btn-active" onclick="fnCancelling(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu hủy</a>
 	<#elseif sendAdd?has_content >
 
-	<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-
+	<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+		<#assign btnLabel = "Gửi bổ sung">
+		
+		<#if dossier.dossierStatus == "done">
+			<#assign btnLabel = "Sửa đổi bổ sung">
+		</#if>
+	
+	<a href="javascript:;" class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> ${btnLabel}</a>
 	<#else>
 
 	<button class="btn btn-active" id="btn-save-dossier" type="button" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý..."><i class="fa fa-save"></i> Lưu</button>
@@ -392,6 +403,9 @@
 			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
 				$(this).modal("show");
 			});
+			// var urlView = "http://dangkiemlaprap.mt.gov.vn/group/cong-tiep-nhan#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo+"";
+			
+			// window.open(urlView,"_blank")
 		});
 
 		$(document).off("click",".delete-dossier-file");
@@ -593,9 +607,12 @@
 
 				},
 				success :  function(result){          
-					$("#btn-save-dossier").button('reset');             
-					console.log("PUT Dossier success!");
-					createActionDossier(${dossierId});
+					$("#btn-save-dossier").button('reset');
+					console.log(result.dossierStatus);             
+					if(result.dossierStatus == ''){
+						console.log("------>doActions");  
+						createActionDossier(${dossierId});
+					}
 					/*notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");*/
@@ -629,7 +646,8 @@
 				},
 				data : {
 					actionCode  : 1100,
-					actionNote :  $("textarea#applicantNote").val()
+					actionNote :  $("textarea#applicantNote").val(),
+					actionUser: '${(userInfo.actionUser)!}'
 				},
 				success : function(result){
 					$("#btn-save-dossier").button('reset');
@@ -1183,8 +1201,14 @@ $("#btn-sendadd-dosier").click(function(){
 });
 
 var fnCancelling = function(dossierId){
-	console.log("${(dossier.dossierStatus)!}");
+	console.log("-----------1" + "${(dossier.dossierStatus)!}");
 	if("${(dossier.dossierStatus)!}" !== "new" && "${(dossier.dossierStatus)!}" !== "null" && "${(dossier.dossierStatus)!}" !== "done"){
+		var applicantNote = $("textarea#applicantNote").val();
+		if(applicantNote.trim() == ''){
+			alert('Bạn phải nhập ý kiến trước khi gửi.');
+			$("textarea#applicantNote").focus();
+			return;
+		}
 		console.log("run rescancelling!");
 		$.ajax({
 			url : "${api.server}/dossiers/${dossierId}",
@@ -1234,7 +1258,13 @@ var fnCancelling = function(dossierId){
 }
 
 var fnSubmitting = function(dossierId){
-	console.log("${(dossier.dossierStatus)!}");
+	console.log("----------1" + "${(dossier.dossierStatus)!}");
+	var applicantNote = $("textarea#applicantNote").val();
+	if(applicantNote.trim() == ''){
+		alert('Bạn phải nhập ý kiến trước khi gửi.');
+		$("textarea#applicantNote").focus();
+		return;
+	}
 	if("${(dossier.dossierStatus)!}" == "waiting"){
 		console.log("run senadd!");
 		$.ajax({
@@ -1279,8 +1309,51 @@ var fnSubmitting = function(dossierId){
 			}
 		});
 	}
-
 	
+	if("${(dossier.dossierStatus)!}" == "done"){
+		console.log("run senadd!");
+		$.ajax({
+			url : "${api.server}/dossiers/${dossierId}",
+			dataType : "json",
+			type : "PUT",
+			headers: {
+				"groupId": ${groupId},
+				Accept : "application/json"
+			},
+			data : {
+				applicantNote : $("textarea#applicantNote").val()
+			},
+			success : function(result){
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId+"/correcting",
+					dataType : "json",
+					type : "GET",
+					headers: {
+						"groupId": ${groupId},
+						Accept : "application/json"
+					},
+					data : {
+
+					},
+					success : function(result){
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công!"
+						}, "success");
+
+					},
+					error : function(result){
+						notification.show({
+							message: "Thực hiện không thành công, xin vui lòng thử lại!"
+						}, "error");
+					}
+				});
+				
+			},
+			error : function(result){
+				
+			}
+		});
+	}
 }
 
 

@@ -10,12 +10,12 @@
 						<div class="background-triangle-big">
 							<i class="fa fa-file-text"></i>
 						</div>
-						<span class="text-bold" data-bind="text: visibleHeader" style="text-transform:uppercase;"></span>
+						<span class="text-bold" id="statusName" style="text-transform:uppercase;"></span>
 						
 						<div class="MLA form-inline">
 							
-							<input type="text" class="form-control" name="soChungChi" placeholder="Nhập số chứng chỉ" 
-								data-bind="visible: isInvestigated, events: { change: filterInvestigation}, value: soChungChi" >
+							<input type="text" class="form-control" id="noInput" placeholder="Nhập số chứng chỉ" 
+								data-bind="events: { keyup: filterInvestigationNo}" >
 							
 							<input type="text" class="form-control" id="keyInput" placeholder="Nhập từ khóa"
 								data-bind="events: { keyup: filterKey}" style="width: 290px;">
@@ -125,13 +125,13 @@
 						#:submitDate#
 						</p>
 					#} else {#
-						<i title="Ngày gửi" class="text-gray">---</i>
+						<p><i title="Ngày gửi" class="text-gray">---</i></p>
 					#}#
 					
 					#if (receiveDate) {#
 						<p title="Ngày tiếp nhận">#:receiveDate#</p>
 					#} else {#
-						<i title="Ngày tiếp nhận" class="text-gray">---</i>
+						<p><i title="Ngày tiếp nhận" class="text-gray">---</i></p>
 					#}#
 				</td>
 
@@ -140,17 +140,23 @@
 					<#-- #=briefNote# -->
 				</td>
 
-				<td class="" style="width: 25%">
+				<td class="" style="width: 23%">
 					<i class="text-light-gray">#=briefNote#</i>
 				</td>
 
-				<td class="" style="width: 24%">
+				<td class="" style="width: 23%">
 					# if(typeof actionNote !== "undefined"){#
 						<i>#:actionNote#</i>
 					#}#
 				</td>
 
-				<td class="PT0 PR0" style="width: 9%">
+				<td class="PT0 PR0" style="width: 12%">
+					<#--	-->
+					<button type="button" class="btn-link no-border PT10 copyProfile" data-pk="#:dossierId#">
+						<i class="fa fa-file-o" aria-hidden="true"></i>
+						Sao chép
+					</button>
+					<#--	-->
 					#if(dossierStatus == "done"){#
 						<button type="button" class="btn-link no-border PT10 downloadProfile" data-pk="#:dossierId#">
 							<i class="fa fa-download" aria-hidden="true"/>
@@ -164,18 +170,13 @@
 						<#--  -->
 						<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
 							<i class="fa fa-paper-plane" aria-hidden="true"></i>
-							Gửi bổ sung
+							Sửa đổi bổ sung
 						</button>
 					#}#
-					<#--	-->
-					<button type="button" class="btn-link no-border PT10 copyProfile" data-pk="#:dossierId#">
-						<i class="fa fa-file-o" aria-hidden="true"></i>
-						Sao chép
-					</button>
-					<#--	-->
+					<#--  -->
 					#if(dossierStatus == "waiting"){#
 						<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="#:dossierId#">
-							<i class="fa fa-reply" aria-hidden="true"></i>
+							<i class="fa fa-trash-o" aria-hidden="true"></i>
 							Yêu cầu hủy
 						</button></br>
 						<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
@@ -183,7 +184,15 @@
 							Gửi bổ sung
 						</button>
 					#}#
+					<#--  -->
+					#if(dossierStatus == "receiving"){#
+						<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="#:dossierId#">
+							<i class="fa fa-trash-o" aria-hidden="true"></i>
+							Yêu cầu hủy
+						</button></br>
 						
+					#}#
+
 				</td>
 
 	 		</tr>

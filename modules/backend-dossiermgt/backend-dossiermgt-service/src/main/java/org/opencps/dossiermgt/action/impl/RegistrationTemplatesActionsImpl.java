@@ -24,15 +24,11 @@ public class RegistrationTemplatesActionsImpl implements RegistrationTemplatesAc
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		try {
-			if (start == 0) {
-				start = -1;
-				end = -1;
-			}
 			
 			List<RegistrationTemplates> lstRegistrationTemplates = RegistrationTemplatesLocalServiceUtil
-					.getRegistrationTemplateses(start, end);
+					.getRegistrationTemplatesbyGroupId(groupId);
 
-			int total = RegistrationTemplatesLocalServiceUtil.getRegistrationTemplatesesCount();
+			int total = lstRegistrationTemplates.size();
 
 			result.put("total", total);
 			result.put("lstRegistrationTemplate", lstRegistrationTemplates);

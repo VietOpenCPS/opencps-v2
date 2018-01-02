@@ -56,7 +56,8 @@ import javax.xml.bind.annotation.XmlType;
     "allowAssignUser",
     "assignUserId",
     "toUsers",
-    "createFiles"
+    "createFiles",
+    "pending"
 })
 public class DossierActionNextActionModel {
 
@@ -67,10 +68,36 @@ public class DossierActionNextActionModel {
     protected String postStepCode;
     protected String autoEvent;
     protected String preCondition;
+    protected Boolean pending;
     protected Boolean allowAssignUser;
     protected Long assignUserId;
     protected List<DossierActionNextActiontoUser> toUsers;
     protected List<DossierActionNextActioncreateFiles> createFiles;
+    
+    
+    /**
+     * Gets the value of the pending property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public Boolean getPending() {
+        return pending;
+    }
+
+    /**
+     * Sets the value of the pending property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPending(Boolean value) {
+        this.pending = value;
+    }
 
     /**
      * Gets the value of the processActionId property.

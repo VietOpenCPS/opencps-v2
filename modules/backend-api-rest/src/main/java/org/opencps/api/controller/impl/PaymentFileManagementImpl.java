@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -686,46 +687,30 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 	@Override
 	public Response processingKeyPay(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long id, long paymentFileId, String command, String merchant_trans_id, String merchant_code,
-			String response_code, String trans_id, String good_code, String net_cost, String ship_fee, String tax,
-			String service_code, String currency_code, String bank_code, String desc_1, String desc_2, String desc_3,
-			String desc_4, String desc_5, String secure_hash) {
+			User user, ServiceContext serviceContext, String dossierUUid, String paymentFileUUid) {
 		// TODO Auto-generated method stub
 		URI uri = null;
 		try {
 			
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
-			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
-			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fetchPaymentFile(paymentFileId);
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, dossierUUid);
 			
-			//TODO change paymentStatus
-			JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
-			
-			epaymentProfileJSON.put("command", command);
-			epaymentProfileJSON.put("merchant_trans_id", merchant_trans_id);
-			epaymentProfileJSON.put("merchant_code", merchant_code);
-			epaymentProfileJSON.put("response_code", response_code);
-			epaymentProfileJSON.put("trans_id", trans_id);
-			epaymentProfileJSON.put("good_code", good_code);
-			epaymentProfileJSON.put("net_cost", net_cost);
-			epaymentProfileJSON.put("ship_fee", ship_fee);
-			epaymentProfileJSON.put("tax", tax);
-			epaymentProfileJSON.put("service_code", service_code);
-			epaymentProfileJSON.put("currency_code", currency_code);
-			epaymentProfileJSON.put("bank_code", bank_code);
-			epaymentProfileJSON.put("desc_1", desc_1);
-			epaymentProfileJSON.put("desc_2", desc_2);
-			epaymentProfileJSON.put("desc_3", desc_3);
-			epaymentProfileJSON.put("desc_4", desc_4);
-			epaymentProfileJSON.put("desc_5", desc_5);
-			epaymentProfileJSON.put("secure_hash", secure_hash);
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getPaymentFileByReferenceUid(dossier.getDossierId(), paymentFileUUid);
 			
 			PaymentFileActions actions = new PaymentFileActionsImpl();
-			actions.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(), serviceContext);
 			
-			uri = new URI(epaymentProfileJSON.getString("detailUrl"));
+			// Change payment Status = 2
+			actions.updateFileConfirm(paymentFile.getGroupId(), paymentFile.getDossierId(), paymentFile.getReferenceUid(), StringPool.BLANK, "N\u1ED9p online", JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
 			
-			return Response.temporaryRedirect(uri).build();
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			result.put("dossierNo", dossier.getDossierNo());
+			result.put("serviceName", dossier.getServiceName());
+			result.put("govAgencyName", dossier.getGovAgencyName());
+			result.put("paymentFee", paymentFile.getPaymentFee());
+			result.put("paymentAmount", paymentFile.getPaymentAmount());
+			result.put("paymentPortal", "KEYPAY");
+			
+			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

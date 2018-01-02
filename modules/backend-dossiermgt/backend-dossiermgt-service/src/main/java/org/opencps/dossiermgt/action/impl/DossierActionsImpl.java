@@ -14,6 +14,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierContentGenerator;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
@@ -221,6 +222,8 @@ public class DossierActionsImpl implements DossierActions {
 
 			stepCode = dossierAction != null ? dossierAction.getStepCode() : StringPool.BLANK;
 
+			boolean pending = dossierAction != null ? dossierAction.getPending() : false;
+
 			if (Validator.isNotNull(stepCode)) {
 
 				try {
@@ -243,8 +246,8 @@ public class DossierActionsImpl implements DossierActions {
 						JSONObject result = JSONFactoryUtil.createJSONObject();
 
 						String postStepCode = processAction.getPostStepCode();
-						
-						if(Validator.isNull(postStepCode)){
+
+						if (Validator.isNull(postStepCode)) {
 							continue;
 						}
 
@@ -329,6 +332,7 @@ public class DossierActionsImpl implements DossierActions {
 										createFile.put("partTip", dossierPart.getPartTip());
 										createFile.put("multiple", dossierPart.getMultiple());
 										createFile.put("templateFileNo", dossierPart.getFileTemplateNo());
+										
 										long fileEntryId = 0;
 										boolean eForm = false;
 										String formData = StringPool.BLANK;
@@ -360,7 +364,10 @@ public class DossierActionsImpl implements DossierActions {
 											}
 										} else {
 											eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true : false;
-											formData = dossierPart.getSampleData();
+											_log.info("*********================================***************************");
+											_log.info("*********================================dossierId***************************" + dossierId);
+											_log.info("*********================================dossierPart.getSampleData()***************************" + dossierPart.getSampleData());
+											formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext);
 											formScript = dossierPart.getFormScript();
 
 											if (returnDossierFileTemplateNos
@@ -402,7 +409,7 @@ public class DossierActionsImpl implements DossierActions {
 								}
 							}
 						}
-
+						result.put("pending", pending);
 						result.put("processAction", processAction);
 						result.put("lstUser", lstUser);
 						result.put("createFiles", createFiles);
@@ -507,7 +514,8 @@ public class DossierActionsImpl implements DossierActions {
 
 		// Add paymentFile
 		if (Validator.isNotNull(processAction.getPaymentFee())) {
-			DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId, context, serviceProcess.getServerNo());
+			DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId, context,
+					serviceProcess.getServerNo());
 		}
 
 		if (Validator.isNull(processAction))
@@ -634,7 +642,6 @@ public class DossierActionsImpl implements DossierActions {
 			if (hasDossierSync) {
 				// SyncAction
 				int method = 0;
-
 
 				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
 						isCreateDossier, method, dossier.getPrimaryKey(), StringPool.BLANK,

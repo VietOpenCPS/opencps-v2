@@ -21,7 +21,7 @@
 			<div class="tab-content box">
 				<#if applicantIdType == "business">
 				<div role="tabpanel" class="tab-pane active" id="tttk">
-					<div class="row-header">
+					<div class="row-header align-middle-lg">
 						<div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div>
 						<span class="text-bold">Thông tin tài khoản</span>
 					</div>
@@ -117,7 +117,7 @@
 					</div>
 					<#else>
 					<div role="tabpanel" class="tab-pane active" id="tttk">
-						<div class="row-header">
+						<div class="row-header align-middle-lg">
 							<div class="background-triangle-big"><i class="fa fa-user" aria-hidden="true"></i></div>
 							<span class="text-bold">Thông tin tài khoản</span>
 						</div>

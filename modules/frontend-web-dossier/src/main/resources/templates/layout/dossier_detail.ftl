@@ -1,17 +1,18 @@
 <!-- TODO detailTemplate page -->
 <div v-if="detailPage" style="width: 100%;">
+	<input type="hidden" id="dossierId__hidden" :value="detailModel.dossierId" />
 	<div class="row-header">
 		<div class="background-triangle-big"> Tên thủ tục </div>
 		<div class="layout row wrap header_tools row-blue">
 	
-			<div class="flex xs9 solo pl-4">
+			<div class="flex xs9 solo pl-4 text-ellipsis">
 		
-				{{detailModel.dossierNo}}
+				{{detailModel.dossierNo}} {{detailModel.serviceName}}
 		
 			</div>
 			<div class="flex xs5 sm3 text-right" style="margin-left: auto;">
 		
-				<v-btn flat class=" my-0 py-0 btn-border-left" color="grey darken-1" v-on:click.native="detailPage = !detailPage">
+				<v-btn flat class=" my-0 py-0 btn-border-left" color="grey darken-1" v-on:click.native="undoDetailPage()">
 					<v-icon class="mr-2">undo</v-icon>
 				Quay lại
 				</v-btn>
@@ -46,7 +47,7 @@
 				<span class="text-bold">
 				Số hồ sơ: 
 				</span>
-				{{ detailModel.dossierId }}
+				{{ detailModel.dossierIdCTN }}
 			</div>
 			<div class="pb-1">
 				<span class="text-bold">
@@ -199,7 +200,10 @@
 					</v-tabs-bar>
 				</v-tabs>
 				<v-card v-if="stepModel != null">
-                    <div>
+					<div v-if="stepModel.pending">
+						Hồ sơ chờ đồng bộ ...
+					</div>
+                    <div v-else>
                         <v-card-title primary-title class="mx-2 pb-0">
                             <v-layout wrap> 
                                 <v-flex xs12>
@@ -229,13 +233,17 @@
 
                             <input type="file" :id="'inputfile_'+item.dossierPartId" style="display:none" v-on:change="singleFileUploadInput($event, item, i)"/>
                             <div class="text-right pr-4" v-if="item.eform">
-                                <v-btn color="primary" 
+                                <v-btn color="primary" :id="'btn-save-formalpaca'+item.partNo"
+                                	:referenceUid="item.referenceUid"
+                                	:dossierId="detailModel.dossierId"
+                                	class="saveForm"
                                     :loading="loadingAlpacajsForm"
                                     :disabled="loadingAlpacajsForm"
                                     v-on:click.native="submitAlpacajsForm(item)"> Ghi lại </v-btn>
                             </div>
-                            <div :id="'alpacajs_form_'+item.dossierPartId" class="expansion-panel__header"></div>
-
+                            <div :id="'alpacajs_form_'+item.partNo" class="expansion-panel__header"></div>
+							<input type="hidden" :id="item.dossierFileId + item.partNo" :value="item.partNo" />
+							
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                         <v-card-actions>
@@ -260,7 +268,32 @@
 </div>
 			
 <script type="text/javascript">
-	
+		
+		var fnSaveForm = function(id, value){
+			var current = $("#btn-save-formalpaca"+id);
+			var referentUid = current.attr("referenceUid");
+			var dossierId = current.attr("dossierId");
+			console.log('dossierId: '+dossierId);
+			if(referentUid){
+				$.ajax({
+					url : "/o/rest/v2/dossiers/"+dossierId+"/files/"+referentUid+"/formdata",
+					dataType : "json",
+					type : "PUT",
+					headers: {
+						"groupId": themeDisplay.getScopeGroupId(),
+						Accept : "application/json"
+					},
+					data : {
+						formdata: JSON.stringify(value)
+					},
+					success : function(result){
+					},
+					error : function(result){
+					}
+				});
+			}
+		};
+		
 	     var users = [];
 	     
 	     var getContacts = function(){

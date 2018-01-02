@@ -100,6 +100,8 @@ public class PaymentFileUtils {
 			model.setInvoiceTemplateNo(doc.get(PaymentFileTerm.INVOICE_TEMPLATE_NO));
 			model.setInvoiceIssueNo(doc.get(PaymentFileTerm.INVOICE_ISSUE_NO));
 			model.setInvoiceNo(doc.get(PaymentFileTerm.INVOICE_NO));
+			model.setIsNew(GetterUtil.getBoolean(doc.get(PaymentFileTerm.IS_NEW)) ? 1 :0);
+			
 			DLFileVersion dlFileInvoice = getFileInfo(
 					GetterUtil.getLong(doc.get(PaymentFileTerm.INVOICE_FILE_ENTRY_ID)));
 			if (dlFileInvoice != null) {
@@ -109,6 +111,8 @@ public class PaymentFileUtils {
 				model.setInvoiceFileType(StringPool.BLANK);
 				model.setInvoiceFileSize(0L);
 			}
+			model.setConfirmFileEntryId(GetterUtil.getLong(doc.get(PaymentFileTerm.CONFIRM_FILE_ENTRY_ID)));
+			
 			results.add(model);
 		}
 

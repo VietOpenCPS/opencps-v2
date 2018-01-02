@@ -53,11 +53,11 @@
 				<div class="row MB5" id="">
 					<span class="text-bold">Thời gian gửi</span>: <span data-bind="text:submitDate"></span>
 				</div>
-				<div class="row" id="">
+				<#-- <div class="row" id="">
 					<a href="javascript:;" class="text-light-blue text-underline">
 						Thông tin chủ hồ sơ
 					</a>
-				</div>
+				</div> -->
 			</div>
 			
 			<div class="col-sm-12">
@@ -86,7 +86,98 @@
 				</div>
 			</div>
 		</div>
+		<#-- Bổ sung thông tin chủ hồ sơ -->
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="dossier-parts" >
+					<div class="head-part align-middle slide-toggle">
+						<div class="background-triangle-small">
+							<i class="fa fa-star"></i>
+						</div>
+						<div class="col-sm-12 PL0">
 
+							<span class="text-uppercase hover-pointer">
+								Thông tin chủ hồ sơ
+							</span>
+							<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
+						</div>
+					</div>
+					<div class="content-part collapse" id="collapseDossierI">
+						<div class="row-parts-head MT5">
+
+							<div class="row MT5">
+								<div class="col-sm-2">
+									<label>Họ và tên</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:contactName"></span>
+									
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Địa chỉ</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:address"></span>
+									
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Tỉnh/ Thành phố</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:cityName"></span>
+									
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Quận/ Huyện</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:districtName" ></span>
+									
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Xã/ Phường</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:wardName" required></span>
+									
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Điện thoại</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:contactTelNo"></span>
+									
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-2">
+									<label>Địa chỉ email</label>
+								</div>
+								<div class="col-sm-10">
+									<span data-bind="text:contactEmail"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<#--  -->
 		<div class="row">
 			<div class="col-sm-12">
 				<form id="dossierFormSubmiting">
@@ -202,7 +293,7 @@
 		</div>
 
 	</div>
-	<div class="content-part collapse in" id="collapseDossierPayment">
+	<div class="content-part collapse" id="collapseDossierPayment">
 		<div class="row-parts-head MT5">
 			<div class="row">
 				<div class="col-sm-12" id="paymentDossierContent" data-bind="value: paymentDossier">
@@ -218,7 +309,10 @@
 						<div class="col-sm-2">								
 							<span class="text-bold">Gía trị thanh toán</span>	
 						</div>
-						<div class="col-sm-10 red" data-bind="text:paymentAmount"></div>
+						<div class="col-sm-10 red">
+							<span data-bind="text:paymentAmount"></span>
+							<span> VNĐ</span>
+						</div>
 					</div>
 
 					<div class="row MB5">
@@ -424,7 +518,8 @@
 			<span data-bind="text:postalAddress"></span> <span data-bind="text:postalCityName"></span> <span data-bind="text:postalTelNo"></span>
 		</div>
 	</div>
-
+</div>
+<div class="row-parts-content">
 	<#if sendReissue?has_content >
 	<div class="row MB20">
 		<div class="col-sm-12">
@@ -442,7 +537,7 @@
 	</div>
 
 	<#else>
-	
+		
 	</#if>
 </div>
 
@@ -459,12 +554,12 @@
 	<button class="btn btn-active" id="btn-back-dossier" type="button" onclick="fnBack();"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
 	<#if sendReissue?has_content >
 	
-	<button class="btn btn-active" id="btn-sendReissue-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-
+	<button class="btn btn-active" id="btn-sendReissue-dossier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+	<a class="btn btn-active" onclick="fnCorrecting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
 	<#elseif sendAdd?has_content >
 	
-	<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-
+	<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+	<a class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
 	<#else>
 	
 	</#if>
@@ -502,10 +597,12 @@
 		$(document).on("click",".dossier-component-profile",function(){
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
-			var dossierTemplateId = "${(dossierTemplateId)!}";
-			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateId="+dossierTemplateId,function(result){
+			var dossierTemplateNo = $("#dossierTemplateNo").val();
+			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
 
 			});
+			// var urlView = "http://dangkiemlaprap.mt.gov.vn/group/cong-tiep-nhan#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo+"";
+			// window.open(urlView,"_blank")
 		});
 
 		$(document).off("click",".delete-dossier-file");
@@ -806,6 +903,10 @@
 							postalCityName : result.postalCityName,
 							postalTelNo : result.postalTelNo,
 							dossierTemplateNo : result.dossierTemplateNo,
+							contactName: result.contactName,
+							cityName:result.cityName,
+							districtName:result.districtName,
+							wardName:result.wardName,
 							viaPostal : function(e){
 								
 								if(result.viaPostal === 0){
@@ -832,10 +933,10 @@
 								return "";
 							},
 							paymentAmount : function(e){
-								if(this.get('paymentDossier')){
-									if(this.get('paymentDossier').paymentAmount){
-										return this.get('paymentDossier').paymentAmount;
-									}
+								if(this.get('paymentDossier').paymentAmount){
+									var value = this.get('paymentDossier').paymentAmount;
+						      var moneyCur = (value/1).toFixed(0).replace('.', ',');
+						      return moneyCur.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 								}
 								return "";
 							},
@@ -857,11 +958,17 @@
 							},
 							paymentStatus : function(e){
 								if(this.get('paymentDossier')){
-									if(this.get('paymentDossier').paymentStatus){
-										return this.get('paymentDossier').paymentStatus;
-									}
-								}
-								return "";
+	                if(this.get('paymentDossier').paymentStatus === 0){
+	                  return "Chờ nộp";
+	                }else if(this.get('paymentDossier').paymentStatus === 1){
+	                  return "Báo đã nộp";
+	                }else if(this.get('paymentDossier').paymentStatus === 2){
+	                  return "Hoàn thành";
+	                }else {
+	                  return "Không hợp lệ";
+	                }
+	              }
+	              return "";
 							},
 							paymentApproveDatetime : function(e){
 								if(this.get('paymentDossier')){
@@ -1212,7 +1319,13 @@ $("#btn-sendadd-dosier").click(function(){
 
 
 var fnCorrecting = function(dossierId){
-	console.log("${(dossier.dossierStatus)!}");
+	console.log("----------4" + "${(dossier.dossierStatus)!}");
+	var applicantNote = $("textarea#applicantNote").val();
+	if(applicantNote.trim() == ''){
+		alert('Bạn phải nhập ý kiến trước khi gửi.');
+		$("textarea#applicantNote").focus();
+		return;
+	}
 	if("${(dossier.dossierStatus)!}" == "done"){
 		console.log("run sendReissue!");
 		$.ajax({
@@ -1263,9 +1376,15 @@ var fnCorrecting = function(dossierId){
 
 
 var fnSubmitting = function(dossierId){
-	console.log("${(dossier.dossierStatus)!}");
+	console.log("----------4" + "${(dossier.dossierStatus)!}");
 	if("${(dossier.dossierStatus)!}" == "done"){
 		console.log("run senadd!");
+		var applicantNote = $("textarea#applicantNote").val();
+		if(applicantNote.trim() == ''){
+			alert('Bạn phải nhập ý kiến trước khi gửi.');
+			$("textarea#applicantNote").focus();
+			return;
+		}
 		$.ajax({
 			url : "${api.server}/dossiers/${dossierId}",
 			dataType : "json",

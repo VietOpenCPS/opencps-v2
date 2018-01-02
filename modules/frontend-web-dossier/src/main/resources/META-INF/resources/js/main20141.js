@@ -24,10 +24,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				stepLoading: false,
 				actionsSubmitLoading: false,
 				popupResultFile: false,
-
 				traCuuFilter: false,
 				registForms: [],
-				alapcaJSRei: {}
+				alapcaJSRei: {},
+				menu: false,
+				dateFormatted: null,
 			},
 			onScroll: 'onScroll',
 			schema: {
@@ -36,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'id': 'navigationFilter',
 					'name': 'navigationFilter',
 					"type": "navigation",
-					'cssClass': 'pr-4 pt-3',
+					'cssClass': 'pr-4 pt-0',
 					"template": "menu_template",
 					"template_content": "dossierViewJX_form_template",
 					'events': {
@@ -133,44 +134,47 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						submitAlpacajsForm: function (item) {
 							var vm = this;
 
-							vm.loadingAlpacajsForm = true;
-							var control = $("#alpacajs_form_"+item.dossierPartId).alpaca("get");
-							var formData = control.getValue();
-							
-							$.ajax({
-								url : "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid+"/formdata",
-								dataType : "json",
-								type : "PUT",
-								headers: {
-									"groupId": themeDisplay.getScopeGroupId(),
-									Accept : "application/json"
-								},
-								data : {
-									formdata: JSON.stringify(formData)
-								},
-								success : function(result){
-									vm.snackbartextdossierViewJX = "Lưu form thành công!";
-                      				vm.snackbardossierViewJX = true;
-									vm._initchangeProcessStep();
-									vm.loadingAlpacajsForm = false;
-								},
-								error : function(result){
-									vm.snackbartextdossierViewJX = "Lưu form thất bại!";
-                      				vm.snackbarerordossierViewJX = true;
-									  vm.loadingAlpacajsForm = false;
-								}
-							});
-							
+							if( $("#alpacajs_form_"+item.partNo + " .formType").val() == null || 
+									$("#alpacajs_form_"+item.partNo + " .formType").val() == 'undefined' ) {
+								
+								vm.loadingAlpacajsForm = true;
+								
+								var control = $("#alpacajs_form_"+item.partNo).alpaca("get");
+								var formData = control.getValue();
+								
+								$.ajax({
+									url : "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid+"/formdata",
+									dataType : "json",
+									type : "PUT",
+									headers: {
+										"groupId": themeDisplay.getScopeGroupId(),
+										Accept : "application/json"
+									},
+									data : {
+										formdata: JSON.stringify(formData)
+									},
+									success : function(result){
+										vm.snackbartextdossierViewJX = "Lưu form thành công!";
+	                      				vm.snackbardossierViewJX = true;
+										vm.loadingAlpacajsForm = false;
+									},
+									error : function(result){
+										vm.snackbartextdossierViewJX = "Lưu form thất bại!";
+	                      				vm.snackbarerordossierViewJX = true;
+										vm.loadingAlpacajsForm = false;
+									}
+								});
+							}
 						},
 						showAlpacaJSFORM: function (item) {
 							//alapcajs Form
-							var alpacajsForm = document.getElementById("alpacajs_form_"+item.dossierPartId);
+							var alpacajsForm = document.getElementById("alpacajs_form_"+item.partNo);
 							if (alpacajsForm.innerHTML == '' && item.eform) {
 								console.log(item);
 								var alapcaJS = eval('('+item.formScript+')');
 								alapcaJS['data'] = item.formData;
 								
-								$("#alpacajs_form_"+item.dossierPartId).alpaca(alapcaJS);
+								$("#alpacajs_form_"+item.partNo).alpaca(alapcaJS);
 							}
 							
 						},
@@ -324,18 +328,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						filterAllDossierWithOutStatus: function () {
 							this.stageFilterView = 'danh_sach';
 							this.traCuuFilter = false;
-<<<<<<< HEAD:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main6.js
-=======
 							this.detailRegistPage = false;
->>>>>>> opencps-v2/develop:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main.js
 							this._inidanhSachHoSoTable(false);
 						},
 						filterTraCuu: function () {
 							this.traCuuFilter = true;
-<<<<<<< HEAD:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main6.js
-=======
 							this.detailRegistPage = false;
->>>>>>> opencps-v2/develop:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main.js
 						},
 						singleFileUpload: function (item) {
 							var vm = this;
@@ -410,6 +408,25 @@ document.addEventListener('DOMContentLoaded', function (event) {
                                 });
 							*/
 						},
+						undoDetailPage: function () {
+							
+							this.detailPage = !this.detailPage;
+							setTimeout(function(){ 
+								// temp fix header
+								$('.danhSachHoSoTable__class th[role="columnheader"]').each(function( index ) {
+									$( this ).html($( this ).html().replace(/\./g,"<br/>").replace(/<br>/g, "<br>"));
+								});
+							}, 300);
+						},
+						undoDetailRegistPage: function () {
+							this.detailRegistPage = !this.detailRegistPage;
+							setTimeout(function(){ 
+								// temp fix header
+								$('.thongTinDoanhNghiepTable__class th[role="columnheader"]').each(function( index ) {
+									$( this ).html($( this ).html().replace(/\./g,"<br/>").replace(/<br>/g, "<br>"));
+								});
+							}, 300);
+						},
                         onScroll(e) {
 							this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
 						},
@@ -456,6 +473,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								// TODO vm._inidanhSachHoSoTable(false);
 							} else if (item.id == 'tra_cuu_thong_tin_doanh_nghiep') {
 								vm._inithongTinDoanhNghiepTable(false);
+								vm.detailRegistPage = false;
 							} else {
 								vm._inidanhSachHoSoTable(false);
 							}
@@ -574,6 +592,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						filterChange: function(item){
 							var vm = this;
 							vm.detailPage = false;
+							vm.detailRegistPage = false;
 							vm.listgroupTraCuuFilterselected = item.id;
 							if ( item.id !== 'tra_cuu' ){
 								vm.stageFilterView = item.id;
@@ -587,6 +606,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							} else if (item.id == 'tra_cuu_thong_tin_doanh_nghiep') {
 								vm._inithongTinDoanhNghiepTable(false);
 							}
+							
 						},
 						_initlistgroupTraCuuFilter: function(){
 							var vm = this;
@@ -837,25 +857,25 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									value: 'stt'
 								},
 								{
-									text: 'Tên, địa chỉ cơ sở sản xuất / Cơ sở nhập khẩu',
+									text: 'Tên, địa chỉ cơ sở sản xuất. Cơ sở nhập khẩu',
 									align: 'left',
 									sortable: true,
 									value: 'address'
 								},
 								{
-									text: 'Mã số thuế, điện thoại, fax, email',
+									text: 'Mã số thuế. điện thoại. fax. email',
 									align: 'left',
 									sortable: true,
 									value: 'contactEmail'
 								},
 								{
-									text: 'Người đại diện, chức danh',
+									text: 'Người đại diện. chức danh',
 									align: 'left',
 									sortable: true,
 									value: 'applicantName'
 								},
 								{
-									text: 'Thông tin nhà xưởng (SL, địa chỉ, diện tích, nhân lực, công suất theo tháng)',
+									text: 'Thông tin nhà xưởng. (SL, địa chỉ, diện tích, nhân lực, công suất theo tháng)',
 									align: 'left',
 									sortable: false,
 									value: 'action'
@@ -883,12 +903,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							//TODO
 							const config = {
 								params: paramsBuilder,
-<<<<<<< HEAD:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main6.js
-								headers: {'groupId': 55217}
-=======
 								headers: {'groupId': themeDisplay.getScopeGroupId()}
->>>>>>> opencps-v2/develop:modules/frontend-web-dossier/src/main/resources/META-INF/resources/js/main.js
-								
 							};
 
 							var url = '/o/rest/v2/registrations';
@@ -933,7 +948,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								vm.detailRegistModel = serializable;
 								vm.detailRegistPage = true;
 								window.scrollBy(0, -99999);
-								console.log(1231231);
 								vm._getListForms();
 
 							})
@@ -943,7 +957,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							
 						},
 						_getListForms: function () {
-							console.log(66666666666666);
 							var vm = this;
 							
 							// call DetailAPI.
@@ -957,12 +970,134 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								var serializable = response.data;
 
 								vm.registForms = serializable.data;
-
+								vm.detailRegistPage = true;
+								
 							})
 								.catch(function (error) {
 									console.log(error);
 								});
 							
+						},
+						formatDate (date) {
+					        if (!date) {
+					          return null
+					        }
+					        const [year, month, day] = date.split('-');
+					        return '${month}/${day}/${year}';
+					      },
+					      parseDate (date) {
+					        if (!date) {
+					          return null;
+					        }
+
+					        const [month, day, year] = date.split('/');
+					        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+					    },
+						addRegistrations: function() {
+							var vm = this;
+							
+							vm.$dialog.confirm('Bạn có muốn thêm mới hồ sơ Doanh Nghiệp!', {
+								html: true,
+								loader: true,
+								okText: 'Xác nhận',
+								cancelText: 'Quay lại',
+								animation: 'fade'
+							})
+							.then((dialog) => {
+
+								// call API get file by dossierId
+								const config = {
+									headers: {'groupId': themeDisplay.getScopeGroupId()}
+								};
+								var url = "/o/rest/v2/registrations";
+								
+								$.ajax({
+									url: url,
+									headers: {
+										"groupId": themeDisplay.getScopeGroupId()
+									},
+									data: {
+										"applicantName": "",
+										"applicantIdType": "",
+										"applicantIdNo": "",
+										"applicantIdDate": "",
+										"address": "",
+										"cityCode": "",
+										"districtCode": "",
+										"wardCode": "",
+										"contactName": "",
+										"contactTelNo": "",
+										"contactEmail": "",
+										"govAgencyCode": "",
+										"registrationState": 2,
+										"registrationClass": ""
+									},
+									type: 'POST',
+									dataType: 'json',
+									contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+									success: function(data, textStatus, xhr) {
+										vm.detailRegistModel = data.data;
+										console.log(vm.detailRegistModel);
+									},
+									error: function(xhr, textStatus, errorThrown) {
+										vm.detailRegistModel = {};
+									}
+								});
+								
+								dialog.close();
+							})
+							.catch((e) => {
+								console.log(e)
+							})
+						},
+						registrationPheDuyet: function(registrationState) {
+							var vm = this;
+							
+							vm.$dialog.confirm('Bạn có muốn phe duyệt Hồ sơ Doanh Nghiệp này?', {
+								html: true,
+								loader: true,
+								okText: 'Xác nhận',
+								cancelText: 'Quay lại',
+								animation: 'fade'
+							})
+							.then((dialog) => {
+
+								// call API get file by dossierId
+								const config = {
+									headers: {'groupId': themeDisplay.getScopeGroupId()}
+								};
+								var url = "/o/rest/v2/registrations/"+vm.detailRegistModel.registrationId;
+								
+								$.ajax({
+									url: url,
+									headers: {
+										"groupId": themeDisplay.getScopeGroupId()
+									},
+									data: {
+										"registrationState": registrationState,
+									},
+									type: 'PUT',
+									dataType: 'json',
+									contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+									success: function(data, textStatus, xhr) {
+										vm.detailRegistModel = data;
+										console.log(vm.detailRegistModel);
+										vm.snackbartextdossierViewJX = "Yêu cầu xử lý thành công thành công!";
+										vm.snackbardossierViewJX = true;
+										
+									},
+									error: function(xhr, textStatus, errorThrown) {
+										vm.detailRegistModel = {};
+										vm.snackbartextdossierViewJX = "Yêu cầu xử lý thành công thất bại!";
+										vm.snackbarerordossierViewJX = true;
+									}
+								});
+								
+								dialog.close();
+							})
+							.catch((e) => {
+								console.log(e)
+							})
 						}
 					}
 				},
@@ -992,25 +1127,25 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									value: 'stt'
 								},
 								{
-									text: 'Tên thủ tục, tên doanh nghiệp',
+									text: 'Tên thủ tục. tên doanh nghiệp',
 									align: 'left',
 									sortable: true,
 									value: 'applicantName'
 								},
 								{
-									text: 'Mã hồ sơ, số hồ sơ',
+									text: 'Mã hồ sơ. Số hồ sơ',
 									align: 'left',
 									sortable: true,
 									value: 'dossierId'
 								},
 								{
-									text: 'Ngày gửi, ngày tiếp nhận, hạn xử lý',
+									text: 'Ngày gửi. Ngày tiếp nhận. Hạn xử lý',
 									align: 'left',
 									sortable: true,
 									value: 'submitDate'
 								},
 								{
-									text: 'Số chứng chỉ, ngày cấp',
+									text: 'Số chứng chỉ. Ngày cấp',
 									align: 'left',
 									sortable: false,
 									value: 'action'
@@ -1059,6 +1194,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									vm.xem_them = 'Tổng số ( ' + serializable.total + ' ) bản ghi'
 								}
 								vm.viewmore = false;
+								
+								// temp fix header
+								$('.danhSachHoSoTable__class th[role="columnheader"]').each(function( index ) {
+									$( this ).html($( this ).html().replace(/\./g,"<br/>").replace(/<br>/g, "<br>"));
+								});
 							})
 								.catch(function (error) {
 									console.log(error);
@@ -1106,25 +1246,25 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									value: 'stt'
 								},
 								{
-									text: 'Tên thủ tục, tên doanh nghiệp',
+									text: 'Tên thủ tục. Tên doanh nghiệp',
 									align: 'left',
 									sortable: true,
 									value: 'applicantName'
 								},
 								{
-									text: 'Mã hồ sơ, số hồ sơ',
+									text: 'Mã hồ sơ. Số hồ sơ',
 									align: 'left',
 									sortable: true,
 									value: 'dossierId'
 								},
 								{
-									text: 'Ngày gửi, ngày tiếp nhận, hạn xử lý',
+									text: 'Ngày gửi. Ngày tiếp nhận. Hạn xử lý',
 									align: 'left',
 									sortable: true,
 									value: 'submitDate'
 								},
 								{
-									text: 'Số chứng chỉ, ngày cấp',
+									text: 'Số chứng chỉ. Ngày cấp',
 									align: 'left',
 									sortable: false,
 									value: 'action'
@@ -1196,6 +1336,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									vm.xem_them = 'Tổng số ( ' + serializable.total + ' ) bản ghi'
 								}
 								vm.viewmore = false;
+								
+								// temp fix header
+								$('.danhSachHoSoTable__class th[role="columnheader"]').each(function( index ) {
+									$( this ).html($( this ).html().replace(/\./g,"<br/>").replace(/<br>/g, "<br>"));
+								});
 							})
 								.catch(function (error) {
 									console.log(error);
@@ -1218,6 +1363,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								var serializable = response.data;
 
 								vm.detailModel = serializable;
+								vm.detailModel.dossierIdCTN = item.dossierIdCTN;
 								vm.detailPage = true;
 								window.scrollBy(0, -99999);
 								
@@ -1227,7 +1373,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 								});
-							
+
 						},
 						_paggingDanhSachHoSo: function() {
 							this._inidanhSachHoSoTable(false);
@@ -1557,6 +1703,24 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 									dossierPDFViewNotFound.innerHTML = 'Tài liệu đính kèm không tồn tại!';
+								});
+							
+						},
+						previewDossierPDFNewTab: function (item) {
+							var vm = this;
+							var url ="/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid ;
+							
+							const config = {
+								headers: {'groupId': themeDisplay.getScopeGroupId()},
+								responseType: 'blob'
+							};
+							
+							axios.get(url, config).then(function (response) {
+								var url = window.URL.createObjectURL(response.data);
+								window.open(url);
+							})
+								.catch(function (error) {
+									console.log(error);
 								});
 							
 						}
