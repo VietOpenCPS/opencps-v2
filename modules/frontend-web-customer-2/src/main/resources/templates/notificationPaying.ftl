@@ -82,6 +82,7 @@
         trans_id : trans_id,
         good_code: good_code
       });
+      kendo.bind($("#infoPaying"), viewModelInfoPaying);
     },
     error: function(result){
       
@@ -89,5 +90,5 @@
 
   });
   
-  kendo.bind($("#infoPaying"), viewModelInfoPaying);
+  
 </script>

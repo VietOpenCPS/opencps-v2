@@ -30,7 +30,7 @@
 					
 				</div>
 				<div class="content-part collapse in " id="collapseDossierI">
-					<div class="row-parts-head MT5">
+					<div class="row-parts-head MT5" data-bind="css: { point-event-none: registrationModel.registrationState_hidden }">
 
 						<div class="row MT10">
 
@@ -275,12 +275,10 @@
 							
 							<div class="col-sm-12" style="height:450px; width:100%;overflow:auto;" >
 
-								# if ( checkState ==0 || checkState ==3 ) {#
-									<form id="formPartNo#:id#"></form>
+								<form id="formPartNo#:id#" 
+									data-bind="css: { point-event-none: registrationModel.registrationState_hidden }">
+								</form>
 									
-								#} else {#
-									<form id="formPartNo#:id#" style="pointer-events: none;"></form>
-								#}#
 							</div>
 							
 							<div class="col-xs-12 col-sm-12 text-right">
@@ -327,4 +325,7 @@
 	margin-bottom: 5px;
 }
 
+.point-event-none {
+	pointer-events: none;
+}
 </style>
