@@ -622,7 +622,7 @@ public class DossierActionsImpl implements DossierActions {
 				// sc.setCompanyId(dossier.getCompanyId());
 
 				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
-						dossierId, serviceProcess.getDossierNoPattern(), params);
+						dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
 
 				dossier.setDossierNo(dossierRef);
 				// To index
