@@ -89,6 +89,7 @@ public class Engine implements MessageListener {
     
     			message.put("msgToEngine", msgDataESign);
     			MessageBusUtil.sendMessage("kyso/engine/out/destination", message);
+    			
 			} else if(className.equals(RegistrationForm.class.getName())) {
 			    RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.fetchRegistrationForm(classPK);
 			    

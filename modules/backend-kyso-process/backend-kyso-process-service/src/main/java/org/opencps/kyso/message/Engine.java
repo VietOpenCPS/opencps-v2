@@ -56,8 +56,9 @@ public class Engine implements MessageListener {
 			long userId = msgData.getLong("userId");
 
 			boolean eSign = msgData.getBoolean("eSign");
-
-			if (eSign) {
+			boolean eForm = msgData.getBoolean("eForm");
+			
+			if (1==1) {
 				
 				User user = UserLocalServiceUtil.fetchUser(userId);
 				
@@ -150,7 +151,7 @@ public class Engine implements MessageListener {
 					_log.info("********************************* signatureImageHeight " + signatureImageHeight);
 					
 	//				inHash = signer.computeHash(new Rectangle(llx, lly, urx, ury), 1);
-					inHash = signer.computeHash(new Rectangle(llx, lly, urx, ury), 1);
+					inHash = signer.computeHash(new Rectangle(llx, lly + 300, urx, ury), 1);
 					fieldName = signer.getSignatureName();
 	
 					signature = Base64.getDecoder().decode("");
