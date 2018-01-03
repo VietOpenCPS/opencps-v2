@@ -340,6 +340,7 @@ public class DossierActionsImpl implements DossierActions {
 										String docFileReferenceUid = StringPool.BLANK;
 										boolean returned = false;
 										int counter = 0;
+										long dossierFileId = 0;
 
 										List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 												.getDossierFileByDID_FTNO_DPT(dossierId, fileTemplateNo, 2, false,
@@ -358,6 +359,8 @@ public class DossierActionsImpl implements DossierActions {
 															.contains(dossierFile.getFileTemplateNo())) {
 														returned = true;
 													}
+													
+													dossierFileId = dossierFile.getDossierFileId();
 
 													break df;
 												}
@@ -397,6 +400,7 @@ public class DossierActionsImpl implements DossierActions {
 												? dossierFilesResult.size() : 0;
 
 										createFile.put("eform", eForm);
+										createFile.put("dossierFileId", dossierFileId);
 										createFile.put("formData", formData);
 										createFile.put("formScript", formScript);
 										createFile.put("referenceUid", docFileReferenceUid);
