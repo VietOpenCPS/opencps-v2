@@ -164,6 +164,18 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
                                 Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(registrationClient.getUserId());
                                 applicant.setContactTelNo(registrationClient.getContactTelNo());
                                 applicant.setContactName(registrationClient.getContactName());
+                                applicant.setApplicantName(registrationClient.getApplicantName());
+                                applicant.setApplicantIdType(registrationClient.getApplicantIdType());
+                                applicant.setApplicantIdNo(registrationClient.getApplicantIdNo());
+                                applicant.setApplicantIdDate(registrationClient.getApplicantIdDate());
+                                applicant.setAddress(registrationClient.getAddress());
+                                applicant.setCityCode(registrationClient.getCityCode());
+                                applicant.setCityName(registrationClient.getCityName());
+                                applicant.setDistrictCode(registrationClient.getDistrictCode());
+                                applicant.setDistrictName(registrationClient.getDistrictName());
+                                applicant.setWardCode(registrationClient.getWardCode());
+                                applicant.setWardName(registrationClient.getWardName());
+                                applicant.setContactEmail(registrationClient.getContactEmail());
                                 
                                 ApplicantLocalServiceUtil.updateApplicant(applicant);
                                 Indexer<Applicant> indexApplicant = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
