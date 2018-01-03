@@ -388,6 +388,8 @@ public class DossierActionsImpl implements DossierActions {
 														String.valueOf(false), serviceContext);
 
 												docFileReferenceUid = dossierFile.getReferenceUid();
+												
+												dossierFileId = dossierFile.getDossierFileId();
 											}
 
 										}
