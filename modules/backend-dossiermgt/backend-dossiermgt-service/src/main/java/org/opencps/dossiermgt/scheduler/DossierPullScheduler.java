@@ -199,7 +199,6 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			if (Validator.isNull(desDossier)) {
 				// Create DOSSIER
 				
-				_log.info("====================================== syncServiceProcess " + syncServiceProcess.getServiceProcessId());
 
 				long desGroupId = syncServiceProcess.getGroupId();
 
@@ -664,43 +663,52 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					}
 
 				} else {
+					
+					DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId,
+							fileRef);
+					
+					if (Validator.isNull(dossierFile)) {
+						
+						InputStream is = conn.getInputStream();
 
-					InputStream is = conn.getInputStream();
+						File tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()),
+								StringPool.PERIOD + ref.getString("fileType"));
 
-					File tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()),
-							StringPool.PERIOD + ref.getString("fileType"));
+						FileOutputStream outStream = new FileOutputStream(tempFile);
 
-					FileOutputStream outStream = new FileOutputStream(tempFile);
-
-					int bytesRead = -1;
-					byte[] buffer = new byte[BUFFER_SIZE];
-					while ((bytesRead = is.read(buffer)) != -1) {
-						outStream.write(buffer, 0, bytesRead);
-					}
-
-					outStream.close();
-					is.close();
-
-					String requestURL = RESTFulConfiguration.CLIENT_PATH_BASE + "dossiers/" + dossierId + "/files";
-
-					try {
-						DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId,
-								fileRef);
-						if (Validator.isNotNull(dossierFile)) {
-							requestURL = requestURL + StringPool.FORWARD_SLASH + fileRef;
+						int bytesRead = -1;
+						byte[] buffer = new byte[BUFFER_SIZE];
+						while ((bytesRead = is.read(buffer)) != -1) {
+							outStream.write(buffer, 0, bytesRead);
 						}
-					} catch (Exception e) {
-						// TODO: Don't doing anything
+
+						outStream.close();
+						is.close();
+
+						String requestURL = RESTFulConfiguration.CLIENT_PATH_BASE + "dossiers/" + dossierId + "/files";
+
+	/*					try {
+							DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId,
+									fileRef);
+							if (Validator.isNotNull(dossierFile)) {
+								requestURL = requestURL + StringPool.FORWARD_SLASH + fileRef;
+							}
+						} catch (Exception e) {
+							// TODO: Don't doing anything
+						}
+	*/					
+						
+
+						String clientAuthString = new String(Base64.getEncoder().encodeToString(
+								(RESTFulConfiguration.CLIENT_USER + StringPool.COLON + RESTFulConfiguration.CLIENT_PASS)
+										.getBytes()));
+
+						pullDossierFile(requestURL, "UTF-8", desGroupId, dossierId, clientAuthString, tempFile,
+								ref.getString("dossierTemplateNo"), ref.getString("dossierPartNo"),
+								ref.getString("fileTemplateNo"), ref.getString("displayName"), ref.getString("formData"),
+								dossierRef, fileRef, serviceContext);
 					}
 
-					String clientAuthString = new String(Base64.getEncoder().encodeToString(
-							(RESTFulConfiguration.CLIENT_USER + StringPool.COLON + RESTFulConfiguration.CLIENT_PASS)
-									.getBytes()));
-
-					pullDossierFile(requestURL, "UTF-8", desGroupId, dossierId, clientAuthString, tempFile,
-							ref.getString("dossierTemplateNo"), ref.getString("dossierPartNo"),
-							ref.getString("fileTemplateNo"), ref.getString("displayName"), ref.getString("formData"),
-							dossierRef, fileRef, serviceContext);
 				}
 
 				conn.disconnect();
