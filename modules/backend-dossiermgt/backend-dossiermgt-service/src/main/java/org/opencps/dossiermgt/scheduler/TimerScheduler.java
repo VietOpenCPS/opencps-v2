@@ -10,16 +10,9 @@ import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.ProcessAction;
-import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessActionLocalService;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -28,6 +21,8 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -47,7 +42,6 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -80,8 +74,6 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 		serviceContext.setCompanyId(company.getCompanyId());
 		serviceContext.setUserId(systemUser.getUserId());
 
-		_log.info("TOTAL_DOSSIER_" + allDossierTimer.size());
-
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 		Sort[] sorts = new Sort[] { SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, false) };
@@ -92,32 +84,55 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 			params.put(DossierTerm.REFERENCE_UID, String.valueOf(dossier.getReferenceUid()));
 			params.put(DossierActionTerm.AUTO, "timmer");
 
-			JSONArray results = dossierActions.getNextActions(0l, company.getCompanyId(), dossier.getGroupId(), params,
-					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
+			if (Validator.isNotNull(dossier.getDossierStatus())) {
 
-			int lenght = results.length();
+				JSONArray results = dossierActions.getNextActions(0l, company.getCompanyId(), dossier.getGroupId(),
+						params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
-			if (lenght != 0) {
-				JSONObject content = results.getJSONObject(0);
+				int lenght = results.length();
 
-				long processActionId = content.getLong("processActionId");
+				if (lenght != 0) {
 
-				ProcessAction action = ProcessActionLocalServiceUtil.fetchProcessAction(processActionId);
+					JSONObject content = results.getJSONObject(0);
 
-				String perConditionStr = StringPool.BLANK;
+					ProcessAction processAction = (ProcessAction) content.get("processAction");
 
-				if (Validator.isNotNull(action)) {
-					perConditionStr = action.getPreCondition();
-				}
+					/*
+					 * if (processAction != null) { _log.
+					 * info("///////////////////////////////////////// processAction.getAutoEvent()"
+					 * + processAction.getAutoEvent()); } else { _log.
+					 * info("///////////////////////////////////////// null"); }
+					 */
 
-				boolean checkPreCondition = DossierMgtUtils
-						.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
+					if (processAction != null && Validator.isNotNull(processAction.getAutoEvent())
+							&& processAction.getAutoEvent().contentEquals("timmer")) {
+						_log.info("AUTOEVENT_DOSSIER_ID" + dossier.getPrimaryKey());
 
-				if (checkPreCondition) {
-					dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(),
-							content.getString("actionCode"), content.getLong("processActionId"),
-							systemUser.getFullName(), content.getString("actionName"), content.getLong("assignUserId"),
-							systemUser.getUserId(), serviceContext);
+						long processActionId = content.getLong("processActionId");
+
+						ProcessAction action = ProcessActionLocalServiceUtil.fetchProcessAction(processActionId);
+
+						String perConditionStr = StringPool.BLANK;
+
+						if (Validator.isNotNull(action)) {
+							perConditionStr = action.getPreCondition();
+						}
+
+						boolean checkPreCondition = DossierMgtUtils
+								.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
+
+						_log.info("============================================= checkPreCondition " + checkPreCondition
+								+ "|DossierId = " + dossier.getDossierId() + "|split= " + perConditionStr);
+
+						if (checkPreCondition) {
+							dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
+									dossier.getReferenceUid(), processAction.getActionCode(),
+									processAction.getProcessActionId(), systemUser.getFullName(),
+									processAction.getActionName(), processAction.getAssignUserId(),
+									systemUser.getUserId(), serviceContext);
+						}
+					}
+
 				}
 
 			}

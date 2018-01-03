@@ -34,36 +34,36 @@
 
 			<#if resCancelling?has_content >
 
-				<a href="javascript:;" class="btn btn-active" id="btn-rescancelling-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
+			<a href="javascript:;" class="btn btn-active" onclick="fnCancelling(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu hủy</a>
 
 			<#elseif sendAdd?has_content >
+			
+			<#assign btnLabel = "Gửi bổ sung">
+		
+			<#if dossier.dossierStatus == "done">
+				<#assign btnLabel = "Sửa đổi bổ sung">
+			</#if>
 
-				<a href="javascript:;" class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</a>
+			<a href="javascript:;" class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> ${btnLabel}</a>
 
 			<#else>
 
-				<a href="javascript:;" onclick="funSaveDossier();">
-					<i class="fa fa-save"></i>
-					Lưu
-				</a>
-				<a href="javascript:;" onclick="fnNext();">
-					<i class="fa fa-sign-in" aria-hidden="true"></i>
-					Tiếp tục
-				</a>
+			<a href="javascript:;" onclick="funSaveDossier();">
+				<i class="fa fa-save"></i>
+				Lưu
+			</a>
+			<a href="javascript:;" onclick="fnNext();">
+				<i class="fa fa-sign-in" aria-hidden="true"></i>
+				Tiếp tục
+			</a>
 
 			</#if>
 
 		</div>
 	</div>
 
-	<div class="dossier-general-info P15 MB15" style="display: none;">
-		<div class="col-sm-12">
-			Cơ quan thực hiện <span class="text-bold" data-bind="text:govAgencyName"></span>
-		</div>
-	</div>
-
 	<div class="guide-section PB0">
-		<div class="head-part" data-toggle="collapse" data-target="#collapseDossierG">
+		<div class="head-part slide-toggle">
 			<div class="background-triangle-small">
 				<i class="fa fa-star"></i>
 				
@@ -72,7 +72,7 @@
 			<i class="fa fa-angle-down pull-right hover-pointer MR15" aria-hidden="true" style="font-size: 150%;"></i>
 		</div>
 
-		<div class="content-part collapse PB15 toggle-hide" id="collapseDossierG">
+		<div class="content-part collapse PB15" id="collapseDossierG">
 			<span data-bind="html:dossierNote"></span>
 			<#-- <p class="MB0 text-light-blue PB15"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p> -->
 		</div>
@@ -82,18 +82,18 @@
 	<div class="row" id="applicantInfo">
 		<div class="col-sm-12">
 			<div class="dossier-parts">
-				<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierI">
+				<div class="head-part align-middle slide-toggle">
 					<div class="background-triangle-small">I</div> 
 					<div class="col-sm-12 PL0">
 						
 						<span class="text-uppercase hover-pointer">
-							THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+							Thông tin chủ hồ sơ
 						</span>
 						<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
 					</div>
 					
 				</div>
-				<div class="content-part collapse toggle-hide" id="collapseDossierI">
+				<div class="content-part collapse" id="collapseDossierI">
 					<div class="row-parts-head MT5">
 						<div class="row MT5">
 							
@@ -183,7 +183,7 @@
 
 	<div id="dossierFormSubmiting">
 		<div class="dossier-parts">
-			<div class="head-part align-middle PB5" data-toggle="collapse" data-target="#lsDossierTemplPart">
+			<div class="head-part align-middle PB5 slide-toggle">
 				<div class="background-triangle-small hover-pointer">II</div> 
 				<div class="col-sm-12 PL0">
 					<span class="text-uppercase hover-pointer">Thành phần hồ sơ</span> 
@@ -202,7 +202,7 @@
 
 			<script type="text/x-kendo-template" id="templateDossierPart">
 				#if(partType == 1){#
-				<div class="row-parts-head align-middle" #if(hasForm){# data-toggle="collapse" data-target="\\#collapseDossierPart#:id#" #}#>
+				<div class="row-parts-head align-middle slide-toggle">
 					<span class="text-bold MR5">#:itemIndex#.</span>
 					<span class="hover-pointer"> #:partName# 
 						#
@@ -321,17 +321,22 @@
 </div>
 
 <div class="button-row MT20">
-	<button class="btn btn-active" id="btn-back-dossier" type="button"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
-	
+	<button class="btn btn-active" id="btn-back-dossier" type="button"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>	
 
 	<#if resCancelling?has_content >
 
-	<button class="btn btn-active" id="btn-rescancelling-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-
+	<button class="btn btn-active" id="btn-rescancelling-dossier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+	<a href="javascript:;" class="btn btn-active" onclick="fnCancelling(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu hủy</a>
 	<#elseif sendAdd?has_content >
 
-	<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-
+	<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+		<#assign btnLabel = "Gửi bổ sung">
+		
+		<#if dossier.dossierStatus == "done">
+			<#assign btnLabel = "Sửa đổi bổ sung">
+		</#if>
+	
+	<a href="javascript:;" class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> ${btnLabel}</a>
 	<#else>
 
 	<button class="btn btn-active" id="btn-save-dossier" type="button" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý..."><i class="fa fa-save"></i> Lưu</button>
@@ -344,7 +349,7 @@
 
 <div id="uploadFileTemplateDialog" class="modal fade" role="dialog">
 	
-</div>
+</div>  
 
 
 <div id="profileDetail" class="modal fade" role="dialog">
@@ -398,6 +403,9 @@
 			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
 				$(this).modal("show");
 			});
+			// var urlView = "http://dangkiemlaprap.mt.gov.vn/group/cong-tiep-nhan#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo+"";
+			
+			// window.open(urlView,"_blank")
 		});
 
 		$(document).off("click",".delete-dossier-file");
@@ -599,9 +607,12 @@
 
 				},
 				success :  function(result){          
-					$("#btn-save-dossier").button('reset');             
-					console.log("PUT Dossier success!");
-					createActionDossier(${dossierId});
+					$("#btn-save-dossier").button('reset');
+					console.log(result.dossierStatus);             
+					if(result.dossierStatus == ''){
+						console.log("------>doActions");  
+						createActionDossier(${dossierId});
+					}
 					/*notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");*/
@@ -635,7 +646,8 @@
 				},
 				data : {
 					actionCode  : 1100,
-					actionNote :  $("textarea#applicantNote").val()
+					actionNote :  $("textarea#applicantNote").val(),
+					actionUser: '${(userInfo.actionUser)!}'
 				},
 				success : function(result){
 					$("#btn-save-dossier").button('reset');
@@ -941,7 +953,7 @@
 		data.append('fileTemplateNo', fileTemplateNo);
 		data.append('formData', "");
 		data.append('fileType', "");
-		data.append('isSync', "");
+		data.append('isSync', "true");
 
 		$.ajax({
 			type : 'POST', 
@@ -1181,8 +1193,22 @@ $(document).ready(function(){
 });
 
 $("#btn-rescancelling-dossier").click(function(){
-	console.log("${(dossier.dossierStatus)!}");
+	fnCancelling(${(dossierId)!});
+});
+
+$("#btn-sendadd-dosier").click(function(){
+	fnSubmitting(${(dossierId)!});
+});
+
+var fnCancelling = function(dossierId){
+	console.log("-----------1" + "${(dossier.dossierStatus)!}");
 	if("${(dossier.dossierStatus)!}" !== "new" && "${(dossier.dossierStatus)!}" !== "null" && "${(dossier.dossierStatus)!}" !== "done"){
+		var applicantNote = $("textarea#applicantNote").val();
+		if(applicantNote.trim() == ''){
+			alert('Bạn phải nhập ý kiến trước khi gửi.');
+			$("textarea#applicantNote").focus();
+			return;
+		}
 		console.log("run rescancelling!");
 		$.ajax({
 			url : "${api.server}/dossiers/${dossierId}",
@@ -1196,7 +1222,31 @@ $("#btn-rescancelling-dossier").click(function(){
 				applicantNote : $("textarea#applicantNote").val()
 			},
 			success : function(result){
-				fnCancelling(${(dossierId)!});
+
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId+"/cancelling",
+					dataType : "json",
+					type : "GET",
+					headers: {
+						"groupId": ${groupId},
+						Accept : "application/json"
+					},
+					data : {
+
+					},
+					success : function(result){
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công!"
+						}, "success");
+
+					},
+					error : function(result){
+						notification.show({
+							message: "Thực hiện không thành công, xin vui lòng thử lại!"
+						}, "error");
+					}
+				});
+
 				
 			},
 			error : function(result){
@@ -1204,10 +1254,17 @@ $("#btn-rescancelling-dossier").click(function(){
 			}
 		});
 	}
-});
 
-$("#btn-sendadd-dosier").click(function(){
-	console.log("${(dossier.dossierStatus)!}");
+}
+
+var fnSubmitting = function(dossierId){
+	console.log("----------1" + "${(dossier.dossierStatus)!}");
+	var applicantNote = $("textarea#applicantNote").val();
+	if(applicantNote.trim() == ''){
+		alert('Bạn phải nhập ý kiến trước khi gửi.');
+		$("textarea#applicantNote").focus();
+		return;
+	}
 	if("${(dossier.dossierStatus)!}" == "waiting"){
 		console.log("run senadd!");
 		$.ajax({
@@ -1222,7 +1279,29 @@ $("#btn-sendadd-dosier").click(function(){
 				applicantNote : $("textarea#applicantNote").val()
 			},
 			success : function(result){
-				fnSubmitting(${(dossierId)!});
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId+"/submitting",
+					dataType : "json",
+					type : "GET",
+					headers: {
+						"groupId": ${groupId},
+						Accept : "application/json"
+					},
+					data : {
+
+					},
+					success : function(result){
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công!"
+						}, "success");
+
+					},
+					error : function(result){
+						notification.show({
+							message: "Thực hiện không thành công, xin vui lòng thử lại!"
+						}, "error");
+					}
+				});
 				
 			},
 			error : function(result){
@@ -1230,58 +1309,51 @@ $("#btn-sendadd-dosier").click(function(){
 			}
 		});
 	}
-});
+	
+	if("${(dossier.dossierStatus)!}" == "done"){
+		console.log("run senadd!");
+		$.ajax({
+			url : "${api.server}/dossiers/${dossierId}",
+			dataType : "json",
+			type : "PUT",
+			headers: {
+				"groupId": ${groupId},
+				Accept : "application/json"
+			},
+			data : {
+				applicantNote : $("textarea#applicantNote").val()
+			},
+			success : function(result){
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId+"/correcting",
+					dataType : "json",
+					type : "GET",
+					headers: {
+						"groupId": ${groupId},
+						Accept : "application/json"
+					},
+					data : {
 
-var fnCancelling = function(dossierId){
-	$.ajax({
-		url : "${api.server}/dossiers/"+dossierId+"/cancelling",
-		dataType : "json",
-		type : "GET",
-		headers: {
-			"groupId": ${groupId},
-			Accept : "application/json"
-		},
-		data : {
-			
-		},
-		success : function(result){
-			notification.show({
-				message: "Yêu cầu được thực hiện thành công!"
-			}, "success");
+					},
+					success : function(result){
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công!"
+						}, "success");
 
-		},
-		error : function(result){
-			notification.show({
-				message: "Thực hiện không thành công, xin vui lòng thử lại!"
-			}, "error");
-		}
-	});
-}
-
-var fnSubmitting = function(dossierId){
-	$.ajax({
-		url : "${api.server}/dossiers/"+dossierId+"/submitting",
-		dataType : "json",
-		type : "GET",
-		headers: {
-			"groupId": ${groupId},
-			Accept : "application/json"
-		},
-		data : {
-			
-		},
-		success : function(result){
-			notification.show({
-				message: "Yêu cầu được thực hiện thành công!"
-			}, "success");
-
-		},
-		error : function(result){
-			notification.show({
-				message: "Thực hiện không thành công, xin vui lòng thử lại!"
-			}, "error");
-		}
-	});
+					},
+					error : function(result){
+						notification.show({
+							message: "Thực hiện không thành công, xin vui lòng thử lại!"
+						}, "error");
+					}
+				});
+				
+			},
+			error : function(result){
+				
+			}
+		});
+	}
 }
 
 

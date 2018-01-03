@@ -112,7 +112,7 @@ public class PaymentUrlGenerator {
 				// TODO : update returnURL keyPay
 
 				String return_url = StringPool.BLANK;
-				return_url = epaymentConfigJSON.getString("paymentReturnUrl");
+				return_url = epaymentConfigJSON.getString("paymentReturnUrl")+ "/" + dossier.getReferenceUid() + "/" + paymentFile.getReferenceUid();
 
 				KeyPay keypay = new KeyPay(String.valueOf(merchant_trans_id), merchant_code, good_code, net_cost,
 						ship_fee, tax, bank_code, service_code, version, command, currency_code, desc_1, desc_2, desc_3,
@@ -134,12 +134,12 @@ public class PaymentUrlGenerator {
 						.append(StringPool.AMPERSAND);
 				param.append("good_code=").append(URLEncoder.encode(keypay.getGood_code(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
-				param.append("net_cost=").append(URLEncoder.encode(keypay.getNet_cost(), "UTF-8"))
+				param.append("net_cost=").append(URLEncoder.encode(keypay.getNet_cost(), "UTF-8") )
 						.append(StringPool.AMPERSAND);
 				param.append("ship_fee=").append(URLEncoder.encode(keypay.getShip_fee(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
 				param.append("tax=").append(URLEncoder.encode(keypay.getTax(), "UTF-8")).append(StringPool.AMPERSAND);
-				param.append("return_url=").append(URLEncoder.encode(keypay.getReturn_url()+ "/" + dossierId + "/" + paymentFileId, "UTF-8"))
+				param.append("return_url=").append(URLEncoder.encode(keypay.getReturn_url(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
 				param.append("version=").append(URLEncoder.encode(keypay.getVersion(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
@@ -154,11 +154,16 @@ public class PaymentUrlGenerator {
 				param.append("country_code=").append(URLEncoder.encode(keypay.getCountry_code(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
 
-				param.append("desc_1=&");
-				param.append("desc_2=&");
-				param.append("desc_3=&");
-				param.append("desc_4=&");
-				param.append("desc_5=&");
+				param.append("desc_1=").append(URLEncoder.encode(keypay.getDesc_1(), "UTF-8"))
+						.append(StringPool.AMPERSAND);
+				param.append("desc_2=").append(URLEncoder.encode(keypay.getDesc_2(), "UTF-8"))
+						.append(StringPool.AMPERSAND);
+				param.append("desc_3=").append(URLEncoder.encode(keypay.getDesc_3(), "UTF-8"))
+						.append(StringPool.AMPERSAND);
+				param.append("desc_4=").append(URLEncoder.encode(keypay.getDesc_4(), "UTF-8"))
+						.append(StringPool.AMPERSAND);
+				param.append("desc_5=").append(URLEncoder.encode(keypay.getDesc_5(), "UTF-8"))
+						.append(StringPool.AMPERSAND);
 				param.append("xml_description=").append(URLEncoder.encode(keypay.getXml_description(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
 				param.append("secure_hash=").append(keypay.getSecure_hash());

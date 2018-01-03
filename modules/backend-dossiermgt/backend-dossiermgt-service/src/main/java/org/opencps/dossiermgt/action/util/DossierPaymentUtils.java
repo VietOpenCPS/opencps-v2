@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 public class DossierPaymentUtils {
 
@@ -52,58 +51,52 @@ public class DossierPaymentUtils {
 
 		// get total payment amount
 		int payment = getTotalPayment(pattern, dossierId, userId, serviceContext);
-
-		// get PaymentFee
+		
+		// get PaymentFee 
 		List<String> messages = getMessagePayment(pattern);
-
+		
 		// TODO paymentNote
 		String paymentNote = StringPool.BLANK;
 		String paymentFee = StringPool.BLANK;
-
-		if (messages.size() > 0) {
+		
+		if(messages.size() > 0){
 			paymentFee = messages.get(0);
 		}
-
+		
 		// create paymentFile
 		PaymentFileActions actions = new PaymentFileActionsImpl();
-
+		
 		// get dossier
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
-		PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
-				dossier.getGovAgencyCode());
+		PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId, dossier.getGovAgencyCode());
 
 		try {
-
+			
 			// generator epaymentProfile
 			JSONObject epaymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
-
+			
 			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, null,
 					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantName(),
-					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, null, paymentConfig.getBankInfo(),
-					serviceContext);
-
+					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, null, paymentConfig.getBankInfo(), serviceContext);			
 			JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
-
+			
 			if (epaymentConfigJSON.has("paymentKeypayDomain")) {
-
+				
 				try {
-					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
-							paymentFile.getPaymentFileId(), pattern, dossierId);
-
+					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId, paymentFile.getPaymentFileId(), pattern, dossierId);
+					
 					epaymentProfileJSON.put("keypayUrl", generatorPayURL);
-					epaymentProfileJSON.put("detailUrl", epaymentConfigJSON.getString("paymentResultUrl") + dossierId);
 					epaymentProfileJSON.put("keypayGoodCode", PaymentUrlGenerator.generatorGoodCode(11));
 					epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
-
-					actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
-							serviceContext);
-
+					
+					actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(), serviceContext);
+					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
+				
 			}
 
 			// Create paymentfile sync

@@ -7,8 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
@@ -29,6 +31,9 @@ public class AutoFillFormData {
 		// TODO Auto-generated method stub
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		try {
+			
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			
 			result = JSONFactoryUtil.createJSONObject(sampleData);
 
 			String _subjectName = StringPool.BLANK;
@@ -47,7 +52,14 @@ public class AutoFillFormData {
 			// TODO
 			String _dossierFileNo = StringPool.BLANK;
 			String _dossierFileDate = StringPool.BLANK;
-
+			String _receiveDate = StringPool.BLANK;
+			String _dossierNo = StringPool.BLANK;
+			
+			if (Validator.isNotNull(dossier)) {
+				_receiveDate = Validator.isNotNull(dossier.getReceiveDate())?dossier.getReceiveDate().toGMTString():StringPool.BLANK;
+				_dossierNo = dossier.getDossierNo();
+			}
+			
 			// get data applicant or employee
 			ApplicantActions applicantActions = new ApplicantActionsImpl();
 
@@ -110,6 +122,10 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _contactTelNo);
 					} else if (value.equals("_contactEmail")) {
 						jsonMap.put(entry.getKey(), _contactEmail);
+					} else if (value.equals("_receiveDate")) {
+						jsonMap.put(entry.getKey(), _receiveDate);
+					} else if (value.equals("_dossierNo")) {
+						jsonMap.put(entry.getKey(), _dossierNo);
 					}
 
 				} else if (value.startsWith("_") && value.contains(":")) {
@@ -140,6 +156,10 @@ public class AutoFillFormData {
 							resultBinding += ", " + _contactTelNo;
 						} else if (string.equals("_contactEmail")) {
 							resultBinding += ", " + _contactEmail;
+						} else if (value.equals("_receiveDate")) {
+							resultBinding += ", " + _receiveDate;
+						} else if (value.equals("_dossierNo")) {
+							resultBinding += ", " + _dossierNo;
 						}
 					}
 
@@ -153,7 +173,7 @@ public class AutoFillFormData {
 					try {
 						DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
 								paper, false, new DossierFileComparator(false, "createDate", Date.class));
-
+						
 						if (Validator.isNotNull(dossierFile) && Validator.isNotNull(dossierFile.getFormData())) {
 							JSONObject jsonOtherData = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
 							Map<String, Object> jsonOtherMap = jsonToMap(jsonOtherData);
@@ -165,6 +185,8 @@ public class AutoFillFormData {
 										myCHK += ", " + jsonOtherMap.get(string).toString();
 									}
 									myCHK = myCHK.replaceFirst(", ", "");
+								}else{
+									myCHK = jsonOtherMap.get(variable).toString();
 								}
 							} catch (Exception e) {
 								// TODO: handle exception

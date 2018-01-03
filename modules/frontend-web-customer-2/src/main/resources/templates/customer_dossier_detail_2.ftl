@@ -42,20 +42,17 @@
 		</div>
 
 		<div class="dossier-general-info P15 MB30">
-			<div class="col-sm-12">
-				<span class="text-bold">Cơ quan thực hiện</span>: 
-				<span data-bind="text:govAgencyName"></span>
-			</div>
+			
 			<div class="col-sm-5">
 				<span class="text-bold">Trạng thái</span>: <i data-bind="text:dossierStatusText"></i>
 			</div>
 			<div class="col-sm-7">
-				<span class="text-bold">Mã số hồ sơ</span>: <span data-bind="text : dossierId"></span>
+				<span class="text-bold">Mã hồ sơ</span>: <span data-bind="text : dossierId"></span>
 			</div>
 		</div>
 
 		<div class="guide-section PB0">
-			<div class="head-part" data-toggle="collapse" data-target="#collapseDossierG">
+			<div class="head-part slide-toggle">
 				<div class="background-triangle-small">
 					<i class="fa fa-star"></i>
 
@@ -65,7 +62,7 @@
 
 			</div>
 
-			<div class="content-part collapse PB15 toggle-hide" id="collapseDossierG">
+			<div class="content-part collapse PB15" id="collapseDossierG">
 				<span data-bind="html:stepInstruction"></span>
 				<#-- <p class="MB0 text-light-blue PB15"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p> -->
 			</div>
@@ -75,17 +72,17 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="dossier-parts" >
-					<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierI">
+					<div class="head-part align-middle slide-toggle">
 						<div class="background-triangle-small">I</div>
 						<div class="col-sm-12 PL0">
 
 							<span class="text-uppercase hover-pointer">
-								THÔNG TIN TÀI KHOẢN DOANH NGHIỆP
+								Thông tin chủ hồ sơ
 							</span>
 							<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true" style="font-size: 150%;"></i>
 						</div>
 					</div>
-					<div class="content-part collapse toggle-hide" id="collapseDossierI">
+					<div class="content-part collapse" id="collapseDossierI">
 						<div class="row-parts-head MT5">
 
 							<div class="row MT5">
@@ -174,7 +171,7 @@
 
 		<div id="dossierFormSubmiting">
 			<div class="dossier-parts">
-				<div class="head-part align-middle PB5" data-toggle="collapse" data-target="#lsDossierTemplPart">
+				<div class="head-part align-middle PB5 slide-toggle">
 					<div class="background-triangle-small hover-pointer">II</div> 
 					<div class="col-sm-12 PL0">
 						<span class="text-uppercase hover-pointer">Thành phần hồ sơ</span> 
@@ -191,7 +188,7 @@
 				</div>
 				<script type="text/x-kendo-template" id="templateDossierPart">
 					#if(partType == 1){#
-					<div class="row-parts-head align-middle" #if(hasForm){# data-toggle="collapse" data-target="\\#collapseDossierPart#:id#" #}# >
+					<div class="row-parts-head align-middle slide-toggle">
 						<span class="text-bold MR5">#:itemIndex#.</span>
 						<span class="hover-pointer">
 							#:partName# 
@@ -398,10 +395,12 @@
 		$(document).on("click",".dossier-component-profile",function(){
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
-			var dossierTemplateNo = "${(dossierTemplateId)!}";
+			var dossierTemplateNo = $("#dossierTemplateNo").val();
 			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
 				$(this).modal("show");
 			});
+			// var urlView = "http://dangkiemlaprap.mt.gov.vn/group/cong-tiep-nhan#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo+"";
+			// window.open(urlView,"_blank")
 		});
 
 		$(document).off("click",".delete-dossier-file");
@@ -604,7 +603,8 @@
 					manageDossier.navigate("/taohosomoi/nopthanhcong/${dossierId}"); 
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công!"
-					}, "success");      
+					}, "success");
+					getTotal()  
 				},
 				error:function(result){
 					$("#btn-submit-dossier").button('reset');
@@ -1328,7 +1328,7 @@
 		data.append('fileTemplateNo', fileTemplateNo);
 		data.append('fileType', "");
 		data.append('formData', "");
-		data.append('isSync', "");
+		data.append('isSync', "true");
 
 		$.ajax({
 			type : 'POST', 

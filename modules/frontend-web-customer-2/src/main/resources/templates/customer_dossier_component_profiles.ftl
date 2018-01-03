@@ -39,7 +39,7 @@
 											var collapseIn = "";
 											if(dossierPartNo === "${dossierPartNo}"){ 
 											collapseIn = "in";
-										}
+										} else {collapseIn = "toggle-hide"}
 										#
 
 										<div id="#:dossierPartNo#" class="accordion-body collapse #:collapseIn#" aria-expanded="true">

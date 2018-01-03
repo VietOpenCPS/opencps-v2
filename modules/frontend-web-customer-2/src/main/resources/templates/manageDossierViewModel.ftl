@@ -61,13 +61,7 @@
 						dataType:"json",
 						type:"GET",
 						headers : {"groupId": ${groupId}},
-						data:{
-							service: options.data.serviceInfo,
-							dossierNo: options.data.dossierNo,
-							keyword: options.data.keyword,
-							status : options.data.status,
-							state: options.data.state
-						},
+						data: options.data,
 						success:function(result){
 							if (result.total!=0) {
 								var indexItem = result.total+1;
@@ -84,10 +78,7 @@
 								dataSourceProfile.sort({ field: "createDate", dir: "desc" });
 							};
 							
-							//$("#statusName").html($(".itemStatus.active .dossierStatus").text());
-							if ( modelMain.get("visibleHeader") == "default" ) {
-								modelMain.set("visibleHeader", $(".itemStatus.active .dossierStatus").text());
-							}
+							$("#statusName").html($(".itemStatus.active .dossierStatus").text());
 							
 							//
 							$('.optPage[value="'+dataSourceProfile.pageSize()+'"]').attr("selected","selected");
@@ -117,6 +108,7 @@
 		// Get total dossierStatus
 		var statusDossierItems = ["new","receiving","processing","waiting","paying","done","cancelling","cancelled","expired","all"];
 		var getTotal = function(){
+			console.log("GET total");
 			$(statusDossierItems).each(function(index,value){
 				getTotalItemDossier(value);
 			})
@@ -124,6 +116,7 @@
 		var getTotalItemDossier = function(dossierItemStatus){
 			if ((dossierItemStatus == "cancelling")){
 				$.ajax({
+					// url: "http://localhost:3000/dossiers",
 					url:"${api.server}/dossiers",
 					dataType:"json",
 					type:"GET",
@@ -139,6 +132,7 @@
 				})
 			} else if(dossierItemStatus == "all"){
 				$.ajax({
+					// url: "http://localhost:3000/dossiers",
 					url:"${api.server}/dossiers",
 					dataType:"json",
 					type:"GET",
@@ -154,6 +148,7 @@
 				})
 			} else {
 				$.ajax({
+					// url: "http://localhost:3000/dossiers",
 					url:"${api.server}/dossiers",
 					dataType:"json",
 					type:"GET",
@@ -267,8 +262,8 @@
 				// dataSourceProfile.sort({ field: "submitDate", dir: "desc" }); 
 				var id = $(e.currentTarget).attr("dataPk");
 				manageDossier.navigate("/"+id);
-				modelMain.set("isInvestigated", false);
-				modelMain.set("visibleHeader", $(".itemStatus.active .dossierStatus").text());
+				// modelMain.set("isInvestigated", false);
+				// modelMain.set("visibleHeader", $(".itemStatus.active .dossierStatus").text());
 			},
 			load_serviceConfig:function(e){
 				e.preventDefault();
@@ -279,20 +274,10 @@
 			},
 			filterInvestigation: function(e){
 				e.preventDefault();
-				
-				var id = $(e.currentTarget).attr("data-pk");
-				manageDossier.navigate("/"+id);
-				
-				console.log($(e.currentTarget));
-				var textHead = $(e.currentTarget).text().trim();
-				modelMain.set("isInvestigated", true);
-				modelMain.set("visibleHeader", textHead);
-				
-				console.log("TODO: lay danh sach theo "+id+">>>>>>"+ textHead);
-				console.log(modelMain.get("visibleHeader"));
-				
+				manageDossier.navigate("/tra-cuu/tra-cuu-chung-chi");
 			}
 		});
+		
 	// Model MainSection
 		var loadProfile = function(){
 			$(".downloadProfile").click(function(event){
@@ -300,17 +285,7 @@
 				event.preventDefault();
 				event.stopPropagation();
 				event.stopImmediatePropagation();
-				// fileAttachmentDownload({
-				// 	method: "GET",
-				// 	url:"${api.server}/dossiers/"+id+"/download",
-				// 	headers: {"groupId": ${groupId}},
-				// 	success: function(sttCode){
-						
-				// 	},
-				// 	error: function(sttCode){
-						
-				// 	}
-				// });
+
 				$.ajax({
 					url:"${api.server}/dossiers/"+id+"/download",
 					headers: {"groupId": ${groupId}},
@@ -325,6 +300,17 @@
 				});
 			});
 		};
+		// 
+		var resDone = function(){
+			$(".resDone").click(function(event){
+				var id = $(this).attr("data-Pk");
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+				manageDossier.navigate("/dossiers/"+id+"/yeucaucaplai");
+			});
+		}
+		// 
 		var loadAddRes = function(){
 			$(".downloadAddRes").click(function(e){
 				e.stopPropagation();
@@ -424,8 +410,17 @@
 				resCancelling();
 				sendAdd();
 				counter();
+				resDone();
 				$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});
 				$("th").css("vertical-align","top");
+			},
+			filterInvestigationNo : function(e){
+				e.preventDefault();
+				dataSourceProfile.read({
+					"keyword": $("#noInput").val(),
+					"status": "done"
+				})
+			    
 			},
 			fullScreen: function(e){
 				e.preventDefault();
@@ -434,14 +429,14 @@
 				$("#mainType1").toggleClass("col-sm-10","col-sm-12");
 				
 			},
-			isInvestigated: false,
-			filterInvestigation: function(e){
-				e.preventDefault();
-				// TODO: filter list by tra cuu ho so
-				console.log($(e.currentTarget).val());
+			// isInvestigated: false,
+			// filterInvestigation: function(e){
+			// 	e.preventDefault();
+			// 	manageDossier.navigate("/tra-cuu-chung-chi");
 				
-			},
-			visibleHeader: "default"
+			// }
+			// visibleHeader: "default",
+			// soChungChi: ""
 		});
 
 	</script>

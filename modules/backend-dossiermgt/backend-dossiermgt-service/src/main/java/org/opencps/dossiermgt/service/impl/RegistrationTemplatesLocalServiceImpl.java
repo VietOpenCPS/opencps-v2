@@ -17,6 +17,7 @@ package org.opencps.dossiermgt.service.impl;
 import aQute.bnd.annotation.ProviderType;
 
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.base.RegistrationTemplatesLocalServiceBaseImpl;
@@ -48,6 +49,27 @@ import com.liferay.portal.kernel.util.Validator;
  */
 @ProviderType
 public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplatesLocalServiceBaseImpl {
+	
+	public List<RegistrationTemplates> getRegistrationTemplatesbyGroupId(long groupId){
+		
+		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByGROUPID(groupId);
+		
+		return lstRegistrationTemplates;
+	}
+	
+	public List<RegistrationTemplates> getRegistrationTemplatesbyFormNo(long groupId, String formNo){
+		
+		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByFNO(groupId, formNo);
+		
+		return lstRegistrationTemplates;
+	}
+	
+	public List<RegistrationTemplates> getRegistrationTemplatesbyGOVCODE(long groupId, String govAgencyCode){
+		
+		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByGOVCODE(groupId, govAgencyCode);
+		
+		return lstRegistrationTemplates;
+	}
 
 	public RegistrationTemplates addRegistrationTemplates(long groupId, String govAgencyCode, String govAgencyName,
 			String formNo, String formName, boolean multiple, String formScript, String formReport, String sampleData,
@@ -219,4 +241,13 @@ public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplates
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public RegistrationTemplates getRegTempbyFormNoGovCode(long groupId, String formNo, String govAgencyCode) {
+		return registrationTemplatesPersistence.fetchByGOVCODE_FORMNO(groupId, formNo, govAgencyCode);
+	}
+	
+	public RegistrationTemplates getRegTempbyRegId(long groupId, long registrationTemplatesId) {
+		return registrationTemplatesPersistence.fetchByG_REGID(groupId, registrationTemplatesId);
+	}
+	
 }

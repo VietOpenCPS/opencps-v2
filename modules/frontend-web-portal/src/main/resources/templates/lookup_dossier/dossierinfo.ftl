@@ -105,8 +105,8 @@
             transport: {
                 read: function (options) {
                     $.ajax({
-                        url: "${api.server}/dossiers/"+id+"/logs",
-                        // url:"http://localhost:3000/logs",
+                        // url: "${api.server}/dossiers/"+id+"/logs",
+                        url:"http://localhost:3000/logs",
                         dataType: "json",
                         type: 'GET',
                         headers : {"groupId": ${groupId}},

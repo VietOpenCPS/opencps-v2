@@ -13,22 +13,23 @@
         <b>ĐĂNG KÝ TÀI KHOẢN</b>
       </div>
     </div>
-    <div class="row MT10 MB10">
+     <input type="hidden" name="applicantIdType" value="business" >
+    <#-- <div class="row MT10 MB10">
       <div class="col-xs-12 col-sm-12 text-center">
        <div class="radio-inline"> <input type="radio" name="applicantIdType" value="citizen" checked> <label>Công dân</label> </div>
        <div class="radio-inline"> <input type="radio" name="applicantIdType" value="business"> <label>Doanh nghiệp</label> </div>
      </div>
-   </div>
+   </div> -->
    <div class="row MT15">
-     <div class="col-xs-12 col-sm-12" id="lblApplicantName">Họ và tên</div>
+     <div class="col-xs-12 col-sm-12" id="lblApplicantName">Tên tổ chức</div>
      <div class="col-xs-12 col-sm-12 MT5">
-      <input type="text" id="applicantName" name="applicantName" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Tên cá nhân làm thủ tục"/>
+      <input type="text" id="applicantName" name="applicantName" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Tên tổ chức"/>
     </div>
   </div>
   <div class="row MT15">
-    <div class="col-xs-12 col-sm-12" id="lblApplicantIdNo">Số CMND/ Hộ chiếu</div>
+    <div class="col-xs-12 col-sm-12" id="lblApplicantIdNo">Mã số thuế</div>
     <div class="col-xs-12 col-sm-12 MT5">
-      <input type="text" id="applicantIdNo" name="applicantIdNo" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Số CMND hoặc số Hộ chiếu"/>
+      <input type="text" id="applicantIdNo" name="applicantIdNo" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Mã số thuế"/>
     </div>
   </div>
   <div class="row MT15">
@@ -64,7 +65,7 @@
 
 <div class="row MT15">
  <div class="col-xs-12 col-sm-12">
-   <div class="checkbox-inline"> <input type="checkbox" id="agreement" name="agreement"> <label class="text-normal">Tôi đồng ý với điều khoản sử dụng. </label> </div> <span><a href="/dieu-khoan-su-dung" class="text-light-blue">Chi tiết</a></span>
+   <div class="checkbox-inline"> <input type="checkbox" id="agreement" name="agreement"> <label class="text-normal">Tôi đồng ý với điều khoản sử dụng. </label> </div> <span><a href="javascript:;" id="viewRules" class="text-light-blue">Chi tiết</a></span>
  </div>
 </div>
 <div class="row MT15 MB15 text-center">
@@ -169,33 +170,33 @@
      }
    });
     }
-
-    $('input[type=radio][name=applicantIdType]').change(function() {
-      if (this.value == 'citizen') {
-        $(this).closest('form').find("input[type=text],input[type=password], textarea").val("");
-        $("#lblApplicantName").text("Họ và tên");
-        $("#lblApplicantIdNo").text("Số CMND/ Hộ chiếu");
-        $("#applicantName").attr("placeholder","Họ và tên");
-        $("#applicantIdNo").attr("placeholder","Số CMND/ Hộ chiếu");
-      }
-      else  {
-        $(this).closest('form').find("input[type=text],input[type=password], textarea").val("");
-        $("#lblApplicantName").text("Tên tổ chức");
-        $("#lblApplicantIdNo").text("Mã số thuế");
-        $("#applicantName").attr("placeholder","Tên tổ chức");
-        $("#applicantIdNo").attr("placeholder","Mã số thuế");
-      }
-    });
-
+  // ++++++++++++++++++ fix 27/12 congtrinh0209>
+    // $('input[type=radio][name=applicantIdType]').change(function() {
+    //   if (this.value == 'citizen') {
+    //     $(this).closest('form').find("input[type=text],input[type=password], textarea").val("");
+    //     $("#lblApplicantName").text("Họ và tên");
+    //     $("#lblApplicantIdNo").text("Số CMND/ Hộ chiếu");
+    //     $("#applicantName").attr("placeholder","Họ và tên");
+    //     $("#applicantIdNo").attr("placeholder","Số CMND/ Hộ chiếu");
+    //   }
+    //   else  {
+    //     $(this).closest('form').find("input[type=text],input[type=password], textarea").val("");
+    //     $("#lblApplicantName").text("Tên tổ chức");
+    //     $("#lblApplicantIdNo").text("Mã số thuế");
+    //     $("#applicantName").attr("placeholder","Tên tổ chức");
+    //     $("#applicantIdNo").attr("placeholder","Mã số thuế");
+    //   }
+    // });
+  // +++++++++++++++++++++++++++
     $("#applicantIdDate").focusout(function(){
-     setTimeout(function(){
-      if ($("#applicantIdDate").hasClass("k-invalid")){
-       $("#applicantIdDate").parent().addClass("MB25");
-     } else {
-       $("#applicantIdDate").parent().removeClass("MB25");
-     }
-   }, 100);
-   });
+       setTimeout(function(){
+        if ($("#applicantIdDate").hasClass("k-invalid")){
+         $("#applicantIdDate").parent().addClass("MB25");
+        } else {
+           $("#applicantIdDate").parent().removeClass("MB25");
+        }
+      }, 100);
+    });
 
     $("#agreement").click(function(){
       if($(this).is(':checked')){
@@ -205,7 +206,57 @@
       }
     });
 
+    $("#viewRules").click(function(e){
+      e.preventDefault();
+
+    });
+
   })(jQuery);
 
 
 </script>
+<#-- Phần nội dung điều khoản sử dụng -->
+<div id="rules" style="background-color: #ffffff; color: black" class="MT20">
+    <p>Born Hugo Alvar Henrik Aalto (February 3, 1898 - May 11, 1976) in Kuortane, Finland, was noted for his humanistic approach to modernism. He studied architecture at the Helsinki University of Technology from 1916 to 1921. In 1924 he married architect Aino Marsio.</p>
+    <p>Born Hugo Alvar Henrik Aalto (February 3, 1898 - May 11, 1976) in Kuortane, Finland, was noted for his humanistic approach to modernism. He studied architecture at the Helsinki University of Technology from 1916 to 1921. In 1924 he married architect Aino Marsio.</p>
+    <p>Born Hugo Alvar Henrik Aalto (February 3, 1898 - May 11, 1976) in Kuortane, Finland, was noted for his humanistic approach to modernism. He studied architecture at the Helsinki University of Technology from 1916 to 1921. In 1924 he married architect Aino Marsio.</p>
+    <p>Born Hugo Alvar Henrik Aalto (February 3, 1898 - May 11, 1976) in Kuortane, Finland, was noted for his humanistic approach to modernism. He studied architecture at the Helsinki University of Technology from 1916 to 1921. In 1924 he married architect Aino Marsio.</p>
+    <p>Born Hugo Alvar Henrik Aalto (February 3, 1898 - May 11, 1976) in Kuortane, Finland, was noted for his humanistic approach to modernism. He studied architecture at the Helsinki University of Technology from 1916 to 1921. In 1924 he married architect Aino Marsio.</p>
+    <p>Born Hugo Alvar Henrik Aalto (February 3, 1898 - May 11, 1976) in Kuortane, Finland, was noted for his humanistic approach to modernism. He studied architecture at the Helsinki University of Technology from 1916 to 1921. In 1924 he married architect Aino Marsio.</p>
+    <p>Born Hugo Alvar Henrik Aalto (February 3, 1898 - May 11, 1976) in Kuortane, Finland, was noted for his humanistic approach to modernism. He studied architecture at the Helsinki University of Technology from 1916 to 1921. In 1924 he married architect Aino Marsio.</p>
+    <p>Born Hugo Alvar Henrik Aalto (February 3, 1898 - May 11, 1976) in Kuortane, Finland, was noted for his humanistic approach to modernism. He studied architecture at the Helsinki University of Technology from 1916 to 1921. In 1924 he married architect Aino Marsio.</p>
+    <p>Born Hugo Alvar Henrik Aalto (February 3, 1898 - May 11, 1976) in Kuortane, Finland, was noted for his humanistic approach to modernism. He studied architecture at the Helsinki University of Technology from 1916 to 1921. In 1924 he married architect Aino Marsio.</p>
+    <p>Born Hugo Alvar Henrik Aalto (February 3, 1898 - May 11, 1976) in Kuortane, Finland, was noted for his humanistic approach to modernism. He studied architecture at the Helsinki University of Technology from 1916 to 1921. In 1924 he married architect Aino Marsio.</p>
+
+</div>
+
+<div class="responsive-message"></div>
+
+<script>
+  $(document).ready(function() {
+    var viewRules = $("#rules");
+    $("#viewRules").click(function() {
+        viewRules.data("kendoWindow").open();
+        $("div.k-widget.k-window").css({"background-color":"#14bef0","color":"#ffffff"})
+    });
+    viewRules.kendoWindow({
+        title: "ĐIỀU KHOẢN SỬ DỤNG :",
+        width: "50%",
+        height: "500px",
+        visible: false,
+        actions: [
+          "Maximize",
+          "Close"
+        ],
+        modal: true,
+        position: {
+          top: "50px"
+        },
+        scrollable: true
+    }).data("kendoWindow").center().close();
+  });
+</script>
+
+
+
+

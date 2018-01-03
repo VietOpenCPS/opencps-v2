@@ -1,17 +1,5 @@
 package frontend.web.register.portlet;
 
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.portlet.LiferayWindowState;
-import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +19,18 @@ import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.util.UserMgtUtils;
 import org.osgi.service.component.annotations.Component;
+
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
 /**
  * @author hoanganh

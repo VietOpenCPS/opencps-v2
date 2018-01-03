@@ -14,6 +14,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierContentGenerator;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
@@ -221,6 +222,8 @@ public class DossierActionsImpl implements DossierActions {
 
 			stepCode = dossierAction != null ? dossierAction.getStepCode() : StringPool.BLANK;
 
+			boolean pending = dossierAction != null ? dossierAction.getPending() : false;
+
 			if (Validator.isNotNull(stepCode)) {
 
 				try {
@@ -243,6 +246,10 @@ public class DossierActionsImpl implements DossierActions {
 						JSONObject result = JSONFactoryUtil.createJSONObject();
 
 						String postStepCode = processAction.getPostStepCode();
+
+						if (Validator.isNull(postStepCode)) {
+							continue;
+						}
 
 						ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId,
 								processAction.getServiceProcessId());
@@ -325,6 +332,7 @@ public class DossierActionsImpl implements DossierActions {
 										createFile.put("partTip", dossierPart.getPartTip());
 										createFile.put("multiple", dossierPart.getMultiple());
 										createFile.put("templateFileNo", dossierPart.getFileTemplateNo());
+
 										long fileEntryId = 0;
 										boolean eForm = false;
 										String formData = StringPool.BLANK;
@@ -356,7 +364,9 @@ public class DossierActionsImpl implements DossierActions {
 											}
 										} else {
 											eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true : false;
-											formData = dossierPart.getSampleData();
+										
+											formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(),
+													dossierId, serviceContext);
 											formScript = dossierPart.getFormScript();
 
 											if (returnDossierFileTemplateNos
@@ -370,7 +380,7 @@ public class DossierActionsImpl implements DossierActions {
 
 												DossierFile dossierFile = actions.addDossierFile(groupId, dossierId,
 														referenceUid, dossier.getDossierTemplateNo(),
-														dossierPart.getPartNo(), fileTemplateNo, StringPool.BLANK,
+														dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(),
 														StringPool.BLANK, 0L, null, StringPool.BLANK,
 														String.valueOf(false), serviceContext);
 
@@ -398,7 +408,7 @@ public class DossierActionsImpl implements DossierActions {
 								}
 							}
 						}
-
+						result.put("pending", pending);
 						result.put("processAction", processAction);
 						result.put("lstUser", lstUser);
 						result.put("createFiles", createFiles);
@@ -503,11 +513,9 @@ public class DossierActionsImpl implements DossierActions {
 
 		// Add paymentFile
 		if (Validator.isNotNull(processAction.getPaymentFee())) {
-			DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId, context, serviceProcess.getServerNo());
+			DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId, context,
+					serviceProcess.getServerNo());
 		}
-
-		if (Validator.isNull(processAction))
-			throw new NotFoundException("ProcessActionNotFoundException");
 
 		boolean isSubmitType = isSubmitType(processAction);
 
@@ -563,7 +571,7 @@ public class DossierActionsImpl implements DossierActions {
 
 			dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
 
-			DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, DossierStatusConstants.NEW,
+			dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, DossierStatusConstants.NEW,
 					jsStatus.getString(DossierStatusConstants.NEW), StringPool.BLANK, StringPool.BLANK, context);
 
 		} else {
@@ -597,7 +605,7 @@ public class DossierActionsImpl implements DossierActions {
 			dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
 
 			// Set dossierStatus by CUR_STEP
-			DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, curStep.getDossierStatus(),
+			dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, curStep.getDossierStatus(),
 					jsStatus.getString(curStep.getDossierStatus()), curStep.getDossierSubStatus(),
 					jsSubStatus.getString(curStep.getDossierSubStatus()), context);
 
@@ -630,7 +638,6 @@ public class DossierActionsImpl implements DossierActions {
 			if (hasDossierSync) {
 				// SyncAction
 				int method = 0;
-
 
 				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
 						isCreateDossier, method, dossier.getPrimaryKey(), StringPool.BLANK,
@@ -834,6 +841,13 @@ public class DossierActionsImpl implements DossierActions {
 			String dossierStatus = dossier.getDossierStatus();
 
 			String dossierSubStatus = dossier.getDossierSubStatus();
+			
+			//TODO:
+			if(actions == null || (actions != null && actions.size() == 0)) {
+				throw new NotFoundException(
+					"ProcessActionNotFoundException with actionCode= "
+							+ actionCode + "|serviceProcessId= " + serviceProcessId + "|referenceUid= " + refId + "|groupId= " + groupId);
+			}
 
 			for (ProcessAction act : actions) {
 
@@ -850,6 +864,9 @@ public class DossierActionsImpl implements DossierActions {
 
 						action = act;
 						break;
+					} else {
+						// right
+						
 					}
 				}
 			}

@@ -139,7 +139,14 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		}
 
 	}
+	
+	@Override
+	public Applicant getApplicantByMappingUserId(long userId) throws PortalException {
+		return ApplicantLocalServiceUtil.fetchByMappingID(userId);
+	}
 
 	Log _log = LogFactoryUtil.getLog(ApplicantActionsImpl.class);
+
+	
 
 }
