@@ -56,7 +56,8 @@ public class Engine implements MessageListener {
 			long userId = msgData.getLong("userId");
 
 			boolean eSign = msgData.getBoolean("eSign");
-
+			boolean eForm = msgData.getBoolean("eForm");
+			
 			if (eSign) {
 				
 				User user = UserLocalServiceUtil.fetchUser(userId);
@@ -127,16 +128,24 @@ public class Engine implements MessageListener {
 					
 					float llx = textLocation.getAnchorX() + offsetX;
 	
-					float urx = llx + signatureImageWidth * imageZoom;
-	
 					float lly = textLocation.getAnchorY() - signatureImageHeight * imageZoom + offsetY;
 	
+					if (textLocation.getAnchorX() > 200) {
+						llx = llx - 100;
+					}
+					if (textLocation.getAnchorY() > 420) {
+						lly = lly - 420;
+					}
+//
 					if (lly < 0) {
 						lly = 0;
 					}
-					
+					if (llx < 0) {
+						llx = 0;
+					}
+					float urx = llx + signatureImageWidth * imageZoom;
 					float ury = lly + signatureImageHeight * imageZoom;
-	
+					
 					_log.info("********************************* llx " + llx);
 	
 					_log.info("********************************* lly " + lly);
@@ -149,8 +158,9 @@ public class Engine implements MessageListener {
 					
 					_log.info("********************************* signatureImageHeight " + signatureImageHeight);
 					
-	//				inHash = signer.computeHash(new Rectangle(llx, lly, urx, ury), 1);
-					inHash = signer.computeHash(new Rectangle(llx, lly, urx, ury), 1);
+//					inHash = signer.computeHash(new Rectangle(0, 0, urx, ury), 1);
+					// TODO # location fixed
+					inHash = signer.computeHash(new Rectangle(llx, lly , urx, ury), 1);
 					fieldName = signer.getSignatureName();
 	
 					signature = Base64.getDecoder().decode("");
