@@ -916,9 +916,11 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response updateDossierNo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id, String dossierno) {
+			User user, ServiceContext serviceContext, String id) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		String dossierno = GetterUtil.getString(header.getHeaderString("dossierno"));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -927,12 +929,20 @@ public class DossierManagementImpl implements DossierManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			
+			_log.info("===================== dossierId " + id);
+			
+			_log.info("===================== groupId " + groupId);
+			
+			_log.info("===================== dossierno " + dossierno);
 
 			Dossier dossier = getDossier(id, groupId);
+			
+			if(dossier != null && Validator.isNull(dossier.getDossierNo())){
+				dossier.setDossierNo(dossierno);
 
-			dossier.setDossierNo(dossierno);
-
-			DossierLocalServiceUtil.updateDossier(dossier);
+				DossierLocalServiceUtil.updateDossier(dossier);
+			}
 
 			return Response.status(200).entity("OK").build();
 
