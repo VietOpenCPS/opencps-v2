@@ -97,12 +97,12 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 					ProcessAction processAction = (ProcessAction) content.get("processAction");
 
-					/*if (processAction != null) {
-						_log.info("///////////////////////////////////////// processAction.getAutoEvent()"
-								+ processAction.getAutoEvent());
-					} else {
-						_log.info("///////////////////////////////////////// null");
-					}*/
+					/*
+					 * if (processAction != null) { _log.
+					 * info("///////////////////////////////////////// processAction.getAutoEvent()"
+					 * + processAction.getAutoEvent()); } else { _log.
+					 * info("///////////////////////////////////////// null"); }
+					 */
 
 					if (processAction != null && Validator.isNotNull(processAction.getAutoEvent())
 							&& processAction.getAutoEvent().contentEquals("timmer")) {
@@ -120,6 +120,9 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 						boolean checkPreCondition = DossierMgtUtils
 								.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
+
+						_log.info("============================================= checkPreCondition " + checkPreCondition
+								+ "|DossierId = " + dossier.getDossierId() + "|split= " + perConditionStr);
 
 						if (checkPreCondition) {
 							dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
