@@ -1,4 +1,12 @@
 document.addEventListener('DOMContentLoaded', function (event) {
+	const config = {
+		headers: {
+			'groupId': themeDisplay.getScopeGroupId(),
+			'Cache-Control': 'no-cache, no-store, must-revalidate',
+			'Pragma': 'no-cache',
+			'Expires': 0
+		}
+	};
 
 		var dossierViewJX = new VueJX({
 			el: 'dossierViewJX',
@@ -29,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				alapcaJSRei: {},
 				menu: false,
 				dateFormatted: null,
+				advanced_filter: false
 			},
 			onScroll: 'onScroll',
 			schema: {
@@ -44,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						deleteDossierFileVersion: function (item) {
 							var vm = this;
 							
-								
 							vm.$dialog.confirm('Bạn có muốn xóa file toàn bộ file của thành phần này!', {
 								html: true,
 								loader: true,
@@ -55,9 +63,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.then((dialog) => {
 
 									// call API get file by dossierId
-									const config = {
-										headers: {'groupId': themeDisplay.getScopeGroupId()}
-									};
+									
 									var urlFiles = "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files";
 									
 									axios.get(urlFiles, config).then(function (response) {
@@ -91,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									});
 									
 									dialog.close();
+									return false; 
 								})
 								.catch((e) => {
 									console.log(e)
@@ -164,6 +171,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										vm.loadingAlpacajsForm = false;
 									}
 								});
+							} else {
+								vm.loadingAlpacajsForm = true;
+								setTimeout(
+									function(){ 
+										vm.loadingAlpacajsForm = false;
+									}, 
+								3000);
 							}
 						},
 						showAlpacaJSFORM: function (item) {
@@ -181,10 +195,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						showAlpacaJSFORMRegist: function (item) {
 							var vm = this;
 							//alapcajs Form
-							const config = {
-								headers: {'groupId': themeDisplay.getScopeGroupId()}
-							};
-                            
 							var url = '/o/rest/v2/registrations/'+vm.detailRegistModel.registrationId+'/forms/' + item.referenceUid +"/formscript";
                             // var url = '/o/frontendwebdossier/json/steps.json';
                             
@@ -212,6 +222,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                                     console.log(error);
 									vm.stepLoading = false;
                                 });
+                            return false; 
 							
 						},
                         changeProcessStep: function (item){
@@ -231,8 +242,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								vm.stepModel = null;
 							}
                             
-                            vm.processAssignUserIdItems = item.toUsers;
-							
                         },
 						postNextActions: function (item){
 							
@@ -240,12 +249,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							vm.actionsSubmitLoading = true;
 
 							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/actions';
-                            const config = {
-								headers: {
-									'groupId': themeDisplay.getScopeGroupId(),
-									'Content-type': 'application/x-www-form-urlencoded'
-								}
-							};
 
 							var assignUserId = 0;
 
@@ -287,29 +290,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									vm.actionsSubmitLoading = false;
 								}
 							});
-		  /**
-                            axios.post(url, postData, config).then(function (response) {
-                                var serializable = response.data;
-
-                                vm.snackbartextdossierViewJX = item.actionName + " thành công!";
-                      			vm.snackbardossierViewJX = true;
-
-								vm._initlistgroupHoSoFilter();
-
-                            })
-                                .catch(function (error) {
-                                    console.log(error);
-									vm.snackbartextdossierViewJX = item.actionName + " thất bại!";
-                      				vm.snackbarerordossierViewJX = true;
-                                });
-								*/
+							
+							return false; 
                         },
                         _initchangeProcessStep: function (){
                             var vm = this;
 							vm.stepLoading = true;
-                            const config = {
-								headers: {'groupId': themeDisplay.getScopeGroupId()}
-							};
                             
                             var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/nextactions';
                             // var url = '/o/frontendwebdossier/json/steps.json';
@@ -324,6 +310,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                                     console.log(error);
 									vm.stepLoading = false;
                                 });
+                            return false; 
                         },
 						filterAllDossierWithOutStatus: function () {
 							this.stageFilterView = 'danh_sach';
@@ -414,7 +401,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							setTimeout(function(){ 
 								// temp fix header
 								$('.danhSachHoSoTable__class th[role="columnheader"]').each(function( index ) {
-									$( this ).html($( this ).html().replace(/\./g,"<br/>").replace(/<br>/g, "<br>"));
+									if ($( this ).attr('aria-label').indexOf("Activate") > 0) {
+										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>") + ' <i aria-hidden="true" class="material-icons icon">arrow_upward</i>');
+									} else {
+										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>"));
+									}
 								});
 							}, 300);
 						},
@@ -423,7 +414,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							setTimeout(function(){ 
 								// temp fix header
 								$('.thongTinDoanhNghiepTable__class th[role="columnheader"]').each(function( index ) {
-									$( this ).html($( this ).html().replace(/\./g,"<br/>").replace(/<br>/g, "<br>"));
+									if ($( this ).attr('aria-label').indexOf("Activate") > 0) {
+										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>") + ' <i aria-hidden="true" class="material-icons icon">arrow_upward</i>');
+									} else {
+										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>"));
+									}
 								});
 							}, 300);
 						},
@@ -486,10 +481,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
                             vm.stageFilterView = 'danh_sach';
 
                             vm.listgroupHoSoFilterItems = [];
-
-                            const config = {
-								headers: {'groupId': themeDisplay.getScopeGroupId()}
-							};
 
                             var url = '/o/rest/v2/statistics/dossiers/todo';
                             
@@ -575,7 +566,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                                 .catch(function (error) {
                                     console.log(error);
                                 });
-							
+                            return false; 
 						}
 					}
 				},
@@ -601,6 +592,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							
 							if (item.id == 'tra_cuu_hoso') {
 								vm._initraCuuHoSoTable(false);
+								vm._initAdvanced_filter_serviceInfo();
+								vm._initAdvanced_filter_loaiSanPham();
+								vm._initAdvanced_filter_nhanHieu();
+								
 							} else if (item.id == 'tra_cuu_phuong_tien') {
 								// TODO vm._inidanhSachHoSoTable(false);
 							} else if (item.id == 'tra_cuu_thong_tin_doanh_nghiep') {
@@ -728,9 +723,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					"events": {
 						_initServiceInfoFilterData: function(){
 							var vm = this;
-							const config = {
-								headers: {'groupId': themeDisplay.getScopeGroupId()}
-							};
 							
 							//TODO: API
 							var url = '/o/rest/v2/serviceinfos';
@@ -744,6 +736,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 								});
+							return false; 
 							
 						},
 						_filterDanhSachHoSoOnchange: function(data){
@@ -785,9 +778,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					"events": {
 						_initApplicantNameFilterData: function(){
 							var vm = this;
-							const config = {
-								headers: {'groupId': themeDisplay.getScopeGroupId()}
-							};
 							
 							//TODO: API
 							var url = '/o/rest/v2/applicants';
@@ -801,7 +791,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 								});
-							
+							return false; 
 						},
 						_applicantFilterDanhSachHoSoOnchange: function(data){
 							var vm = this;
@@ -896,30 +886,44 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 							var paramsBuilder = {
 								keyword: vm.keywordsSearchTraCuuDoanhNghiep,
-								start: vm.thongTinDoanhNghiepTablepage * 8 - 8,
-								end: vm.thongTinDoanhNghiepTablepage * 8,
+								start: vm.thongTinDoanhNghiepTablepage * 15 - 15,
+								end: vm.thongTinDoanhNghiepTablepage * 15,
 							};
 							
 							//TODO
-							const config = {
+							const config_registrations = {
 								params: paramsBuilder,
-								headers: {'groupId': themeDisplay.getScopeGroupId()}
+								headers: {
+									'groupId': themeDisplay.getScopeGroupId(),
+									'Cache-Control': 'no-cache, no-store, must-revalidate',
+									'Pragma': 'no-cache',
+									'Expires': 0
+								}
 							};
 
 							var url = '/o/rest/v2/registrations';
 							
-							axios.get(url, config).then(function (response) {
+							axios.get(url, config_registrations).then(function (response) {
 								var serializable = response.data;
 
 								vm.thongTinDoanhNghiepTableItems = serializable.data;
 								vm.thongTinDoanhNghiepTableTotal = Math.ceil(serializable.total / 8);
+								
+								// temp fix header
+								$('.thongTinDoanhNghiepTable__class th[role="columnheader"]').each(function( index ) {
+									if ($( this ).attr('aria-label').indexOf("Activate") > 0) {
+										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>") + ' <i aria-hidden="true" class="material-icons icon">arrow_upward</i>');
+									} else {
+										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>"));
+									}
+								});
 								
 							})
 								.catch(function (error) {
 									console.log(error);
 									vm.thongTinDoanhNghiepTableItems = [];
 								});
-
+							return false; 
 						},
 						_paggingThongTinDoanhNghiepTable: function() {
 							
@@ -934,11 +938,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						toDetailHoSoDoanhNghiep: function (item) {
 							
 							var vm = this;
-							
 							// call DetailAPI.
-							const config = {
-								headers: {'groupId': themeDisplay.getScopeGroupId()}
-							};
 
 							var url = '/o/rest/v2/registrations/'+item.registrationId;
 							
@@ -954,15 +954,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 								});
-							
+							return false; 
 						},
 						_getListForms: function () {
 							var vm = this;
-							
 							// call DetailAPI.
-							const config = {
-								headers: {'groupId': themeDisplay.getScopeGroupId()}
-							};
 
 							var url = '/o/rest/v2/registrations/'+vm.detailRegistModel.registrationId+'/forms';
 							
@@ -976,7 +972,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 								});
-							
+							return false; 
 						},
 						formatDate (date) {
 					        if (!date) {
@@ -995,7 +991,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					    },
 						addRegistrations: function() {
 							var vm = this;
-							
 							vm.$dialog.confirm('Bạn có muốn thêm mới hồ sơ Doanh Nghiệp!', {
 								html: true,
 								loader: true,
@@ -1006,9 +1001,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							.then((dialog) => {
 
 								// call API get file by dossierId
-								const config = {
-									headers: {'groupId': themeDisplay.getScopeGroupId()}
-								};
 								var url = "/o/rest/v2/registrations";
 								
 								$.ajax({
@@ -1045,6 +1037,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								});
 								
 								dialog.close();
+								return false; 
 							})
 							.catch((e) => {
 								console.log(e)
@@ -1052,7 +1045,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						},
 						registrationPheDuyet: function(registrationState) {
 							var vm = this;
-							
 							vm.$dialog.confirm('Bạn có muốn phe duyệt Hồ sơ Doanh Nghiệp này?', {
 								html: true,
 								loader: true,
@@ -1063,9 +1055,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							.then((dialog) => {
 
 								// call API get file by dossierId
-								const config = {
-									headers: {'groupId': themeDisplay.getScopeGroupId()}
-								};
 								var url = "/o/rest/v2/registrations/"+vm.detailRegistModel.registrationId;
 								
 								$.ajax({
@@ -1094,6 +1083,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								});
 								
 								dialog.close();
+								return false; 
 							})
 							.catch((e) => {
 								console.log(e)
@@ -1166,19 +1156,24 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							
 							var paramsBuilder = {
 								keyword: vm.keywordsSearchTraCuuHoSo,
-								start: vm.traCuuHoSoTablepage * 8 - 8,
-								end: vm.traCuuHoSoTablepage * 8,
+								start: vm.traCuuHoSoTablepage * 15 - 15,
+								end: vm.traCuuHoSoTablepage * 15,
 							};
 							
-							const config = {
+							const config_dossiers = {
 								params: paramsBuilder,
-								headers: {'groupId': themeDisplay.getScopeGroupId()}
+								headers: {
+									'groupId': themeDisplay.getScopeGroupId(),
+									'Cache-Control': 'no-cache, no-store, must-revalidate',
+									'Pragma': 'no-cache',
+									'Expires': 0
+								}
 								
 							};
 
 							var url = '/o/rest/v2/dossiers';
 							
-							axios.get(url, config).then(function (response) {
+							axios.get(url, config_dossiers).then(function (response) {
 								var serializable = response.data;
 
 								if (append) {
@@ -1197,14 +1192,18 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								
 								// temp fix header
 								$('.danhSachHoSoTable__class th[role="columnheader"]').each(function( index ) {
-									$( this ).html($( this ).html().replace(/\./g,"<br/>").replace(/<br>/g, "<br>"));
+									if ($( this ).attr('aria-label').indexOf("Activate") > 0) {
+										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>") + ' <i aria-hidden="true" class="material-icons icon">arrow_upward</i>');
+									} else {
+										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>"));
+									}
 								});
 							})
 								.catch(function (error) {
 									console.log(error);
 									vm.traCuuHoSoTableItems = [];
 								});
-
+							return false; 
 						},
 						_paggingTraCuuHoSoTable: function() {
 							
@@ -1297,8 +1296,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								service: vm.serviceInfoFilter.serviceCode,
 								follow: true,
 								dossierNo: vm.dossierNoFilter,
-								start: vm.danhSachHoSoTablepage * 8 - 8,
-								end: vm.danhSachHoSoTablepage * 8,
+								start: vm.danhSachHoSoTablepage * 15 - 15,
+								end: vm.danhSachHoSoTablepage * 15,
 								status: statusParam,
 								substatus: substatusParam
 							};
@@ -1310,16 +1309,20 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							} else {
 								paramsBuilder['keyword'] = vm.keywordsSearchDanhSachHoSo;
 							}
-							const config = {
+							const config_dossiers = {
 								params: paramsBuilder,
-								headers: {'groupId': themeDisplay.getScopeGroupId()}
-								
+								headers: {
+									'groupId': themeDisplay.getScopeGroupId(),
+									'Cache-Control': 'no-cache, no-store, must-revalidate',
+									'Pragma': 'no-cache',
+									'Expires': 0
+								}
 							};
 
 							var url = '/o/rest/v2/dossiers';
 							//var url = "http://hanoi.fds.vn:2281/api/dossiers";
 							
-							axios.get(url, config).then(function (response) {
+							axios.get(url, config_dossiers).then(function (response) {
 								var serializable = response.data;
 
 								if (append) {
@@ -1339,23 +1342,24 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								
 								// temp fix header
 								$('.danhSachHoSoTable__class th[role="columnheader"]').each(function( index ) {
-									$( this ).html($( this ).html().replace(/\./g,"<br/>").replace(/<br>/g, "<br>"));
+									if ($( this ).attr('aria-label').indexOf("Activate") > 0) {
+										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>") + ' <i aria-hidden="true" class="material-icons icon">arrow_upward</i>');
+									} else {
+										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>"));
+									}
 								});
 							})
 								.catch(function (error) {
 									console.log(error);
 									vm.danhSachHoSoTableItems = [];
 								});
-
+							return false; 
 						},
 						toDetailHoSo: function (item) {
 							
 							var vm = this;
 							vm.stepModel = null;
 							// call DetailAPI.
-							const config = {
-								headers: {'groupId': themeDisplay.getScopeGroupId()}
-							};
 
 							var url = '/o/rest/v2/dossiers/'+item.dossierId;
 							
@@ -1373,7 +1377,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 								});
-
+							return false; 
 						},
 						_paggingDanhSachHoSo: function() {
 							this._inidanhSachHoSoTable(false);
@@ -1395,10 +1399,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'events': {
 						_inilistDocumentIn: function (item) {
 							var vm = this;
-
-							const config = {
-								headers: {'groupId': themeDisplay.getScopeGroupId()}
-							};
+							vm.listDocumentInItems = [];
+							vm.listDocumentOutItems = [];
 
 							var url = "/o/rest/v2/dossiertemplates/"+item.dossierTemplateNo;
 							var urlFiles = "/o/rest/v2/dossiers/"+item.dossierId+"/files";
@@ -1410,7 +1412,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								axios.get(url, config).then(function (response) {
 									var serializable = response.data;
 									
-									var listIn = [], listOut = [];
+									var listIn = [], listOut = [], listAll = [];
 									for(var key in serializable.dossierParts){
 										
 										var countData = 0;
@@ -1418,14 +1420,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 											
 											if ( vm.dossierFiles[keyFile].dossierPartNo === serializable.dossierParts[key].partNo ) {
 												countData = countData + 1;
-												
-											}
-											
-											if ( vm.dossierFiles[keyFile].dossierPartType === 2 ) {
 												serializable.dossierParts[key].referenceUid = vm.dossierFiles[keyFile].referenceUid;
 												serializable.dossierParts[key].fileEntryId = vm.dossierFiles[keyFile].fileEntryId;
+												serializable.dossierParts[key].displayName = vm.dossierFiles[keyFile].displayName;
+												
+												listAll.push(serializable.dossierParts[key]);
 											}
-
+											
 										}
 										
 										serializable.dossierParts[key].counter = countData;
@@ -1435,13 +1436,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										} else {
 											listIn.push(serializable.dossierParts[key]);
 										}
+										
 									}
 									
 									vm.listDocumentInItems = listIn;
 									vm.listDocumentOutItems = listOut;
-									
-
-
+									// TEMP
+									vm._initCbxDocumentNewTab(listAll);
 								})
 								.catch(function (error) {
 									console.log(error);
@@ -1450,7 +1451,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							.catch(function (error) {
 								console.log(error);
 							});
-
+							return false; 
 						},
 						viewDossierFileVersion: function (item) {
 							var vm = this;
@@ -1472,9 +1473,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							if (item.counter > 0){
 								vm.popupResultFile = true;
 								// call API get file by dossierId
-								const config = {
-									headers: {'groupId': themeDisplay.getScopeGroupId()}
-								};
 								var urlFiles = "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files";
 								
 								axios.get(urlFiles, config).then(function (response) {
@@ -1494,7 +1492,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									console.log(error);
 								});
 							}
-							
+							return false; 
 						}
 					}
 				},
@@ -1513,14 +1511,19 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						downloadReferenceFile: function (item) {
 							// call DownloadFile.
 							var vm = this;
-							const config = {
-								headers: {'groupId': themeDisplay.getScopeGroupId()},
+							const config_blob = {
+								headers: {
+									'groupId': themeDisplay.getScopeGroupId(),
+									'Cache-Control': 'no-cache, no-store, must-revalidate',
+									'Pragma': 'no-cache',
+									'Expires': 0
+								},
 								responseType: 'blob'
 							};
 
 							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/files/'+item.referenceUid;
 							
-							axios.get(url, config).then(function (response) {
+							axios.get(url, config_blob).then(function (response) {
 								var url = window.URL.createObjectURL(response.data);
 								console.log(url);
 								window.open(url);
@@ -1528,6 +1531,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 								});
+							return false; 
 						}
 					}
 				},
@@ -1555,12 +1559,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						selectDossierActionTab(){
 							
 							var vm = this;
-
-							const config = {
-								headers: {
-									'groupId': themeDisplay.getScopeGroupId()
-								}
-							};
 							
 							//var url = "/o/frontendwebdossier/json/dossier_logs.json?t=1";
 							var url = "/o/rest/v2/dossierlogs/"+vm.detailModel.dossierId+"/logs";
@@ -1576,22 +1574,28 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							.catch(function (error) {
 								console.log(error);
 							});
-						
+							return false; 
 						},
-						downloadFile( fileAttachId ){
+						downloadFile( fileAttachId){
 							var vm = this;
 							var url = "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+fileAttachId;
-							const config = {
-								headers: {'groupId': themeDisplay.getScopeGroupId()},
+							const config_blob = {
+								headers: {
+									'groupId': themeDisplay.getScopeGroupId(),
+									'Cache-Control': 'no-cache, no-store, must-revalidate',
+									'Pragma': 'no-cache',
+									'Expires': 0
+								},
 								responseType: 'blob'
 							};
-							axios.get(url, config).then(function (response) {
+							axios.get(url, config_blob).then(function (response) {
 								var url = window.URL.createObjectURL(response.data);
 								window.open(url);
 							})
 								.catch(function (error) {
 									console.log(error);
 								});
+							return false; 
 						}
 					}
 				},
@@ -1603,50 +1607,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
                     'placeholder': 'ý kiến cán bộ ... ',
                     'multi_line': true,
                     'textarea': true
-                },
-                "processAssignUserId": {
-                    'id': 'processAssignUserId',
-                    'name': 'processAssignUserId',
-                    "type": "select",
-					'required': true,
-                    'label': 'Lựa chọn cán bộ phân công xử lý ',
-                    "item_text": "userName",
-                    "item_value": "userId",
-                    "single_line": true,
-                    "hide_selected": true,
-                    "chips": true,
-                    "deletable_chips": true,
-                    "loading": false,
-                    "no_data_text": "Lua chon selected",
-                    "items": [],
-                    'onLoad': '_initprocessAssignUserId',
-                    'events': {
-                        _initprocessAssignUserId: function () {
-                            
-                            this.processAssignUserIdItems = [
-                                {
-                                "userId": 1,
-                                "userName": "userName1",
-                                "moderator": false
-                                },
-                                {
-                                "userId": 2,
-                                "userName": "userName2",
-                                "moderator": false
-                                },
-                                {
-                                "userId": 3,
-                                "userName": "userName3",
-                                "moderator": false
-                                },
-                                {
-                                "userId": 4,
-                                "userName": "userName4",
-                                "moderator": false
-                                }
-                            ];
-                        }
-                    }
                 },
 				// TODO POPUP
 				'popUpViewDossierFile' : {
@@ -1684,7 +1644,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							// var url = "/o/rest/v2/dossiers/14203/files/a148ee9b-b1a7-b2e7-ca0e-e6503a65b8eb";
 							vm._showFile({
 								config : {
-									headers: {'groupId': themeDisplay.getScopeGroupId()},
+									headers: {
+										'groupId': themeDisplay.getScopeGroupId(),
+										'Cache-Control': 'no-cache, no-store, must-revalidate',
+										'Pragma': 'no-cache',
+										'Expires': 0
+									},
 									responseType: 'blob'
 								},
 								url : url
@@ -1704,28 +1669,196 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									console.log(error);
 									dossierPDFViewNotFound.innerHTML = 'Tài liệu đính kèm không tồn tại!';
 								});
-							
+							return false; 
 						},
 						previewDossierPDFNewTab: function (item) {
 							var vm = this;
 							var url ="/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid ;
 							
-							const config = {
-								headers: {'groupId': themeDisplay.getScopeGroupId()},
+							const config_blob = {
+								headers: {
+									'groupId': themeDisplay.getScopeGroupId(),
+									'Cache-Control': 'no-cache, no-store, must-revalidate',
+									'Pragma': 'no-cache',
+									'Expires': 0
+								},
 								responseType: 'blob'
 							};
 							
-							axios.get(url, config).then(function (response) {
+							axios.get(url, config_blob).then(function (response) {
 								var url = window.URL.createObjectURL(response.data);
 								window.open(url);
 							})
 								.catch(function (error) {
 									console.log(error);
 								});
-							
+							return false; 
 						}
 					}
-				}
+				},
+				"cbxDocumentNewTab": {
+					'id': 'cbxDocumentNewTab',
+					'name': 'cbxDocumentNewTab',
+					"type": "select",
+					'label': 'Xem tài liệu trong tabs mới',
+					"item_text": "displayName",
+					"item_value": "referenceUid",
+					"single_line": true,
+					"hide_selected": true,
+					"loading": false,
+					"no_data_text": "Lua chon selected",
+					"items": [],
+					"onChange": "_newTabCbxDocumentNewTab($event)",
+					"events": {
+						_initCbxDocumentNewTab: function(listAll){
+							var vm = this;
+							
+							vm.cbxDocumentNewTabItems = listAll;
+						},
+						_newTabCbxDocumentNewTab: function(data) {
+							var vm = this;
+							const config_blob = {
+								headers: {
+									'groupId': themeDisplay.getScopeGroupId(),
+									'Cache-Control': 'no-cache, no-store, must-revalidate',
+									'Pragma': 'no-cache',
+									'Expires': 0
+								},
+								responseType: 'blob'
+							};
+
+							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/files/'+data.referenceUid;
+							
+							axios.get(url, config_blob).then(function (response) {
+								var url = window.URL.createObjectURL(response.data);
+								console.log(url);
+								window.open(url);
+							})
+								.catch(function (error) {
+									console.log(error);
+								});
+							return false; 
+						}
+
+					}
+				},
+                // TODO ADVANCED SEARCH
+                "advanced_filter_serviceInfo": {
+                    'id': 'advanced_filter_serviceInfo',
+                    'name': 'advanced_filter_serviceInfo',
+                    "type": "select",
+                    'cssClass': 'no-wrap',
+                    "item_text": "serviceName",
+					"item_value": "serviceCode",
+                    'label': 'Lựa chọn thủ tục hành chính',
+					"hide_selected": true,
+					"combobox": true,
+					"loading": false,
+					"no_data_text": "Lua chon selected",
+					"items": [],
+                    'events': {
+                    	_initAdvanced_filter_serviceInfo: function () {
+                    		var vm = this;
+                    		vm.advanced_filter_serviceInfoItems = vm.serviceInfoFilterItems;
+                    	}
+                    }
+                },
+                "advanced_filter_applicantName": {
+                    'id': 'advanced_filter_applicantName',
+                    'name': 'advanced_filter_applicantName',
+                    "type": "text",
+                    'label': 'Tên doanh nghiệp'
+                },
+                "advanced_filter_dossierIdCTN": {
+                    'id': 'advanced_filter_dossierIdCTN',
+                    'name': 'advanced_filter_dossierIdCTN',
+                    "type": "text",
+                    'label': 'Số hồ sơ'
+                },
+                "advanced_filter_dossierNo": {
+                    'id': 'advanced_filter_dossierNo',
+                    'name': 'advanced_filter_dossierNo',
+                    "type": "text",
+                    'label': 'Số chứng chỉ '
+                },
+                "advanced_filter_loaiSanPham": {
+                    'id': 'advanced_filter_loaiSanPham',
+                    'name': 'advanced_filter_loaiSanPham',
+                    "type": "select",
+                    'cssClass': 'no-wrap',
+                    "item_text": "itemName",
+					"item_value": "itemCode",
+                    'label': 'Loại sản phẩm',
+                    "hide_selected": true,
+                    "combobox": true,
+					"loading": false,
+					"no_data_text": "Lua chon selected",
+					"items": [],
+                    'events': {
+                    	_initAdvanced_filter_loaiSanPham: function () {
+                    		var vm = this;
+                    		if (vm.advanced_filter_loaiSanPhamItems.length <= 0) {
+
+    							var url = '/o/rest/v2/dictcollections/VR03/dictitems?sort=sibling';
+    							
+    							axios.get(url, config).then(function (response) {
+    								var serializable = response.data;
+    								vm.advanced_filter_loaiSanPhamItems = serializable.data;
+    								console.log(vm.advanced_filter_loaiSanPhamItems);
+    							})
+								.catch(function (error) {
+									console.log(error);
+								});
+                    		}
+                    		return false; 
+                    	}
+                    }
+                },
+                "advanced_filter_nhanHieu": {
+                    'id': 'advanced_filter_nhanHieu',
+                    'name': 'advanced_filter_nhanHieu',
+                    "type": "select",
+                    'cssClass': 'no-wrap',
+                    "item_text": "itemName",
+					"item_value": "itemCode",
+                    'label': 'Nhãn hiệu',
+                    "hide_selected": true,
+					"combobox": true,
+					"loading": false,
+					"no_data_text": "Lua chon selected",
+					"items": [],
+                    'events': {
+                    	_initAdvanced_filter_nhanHieu: function () {
+                    		var vm = this;
+                    		if (vm.advanced_filter_nhanHieuItems.length <= 0) {
+
+    							var url = '/o/rest/v2/dictcollections/VR02/dictitems?sort=sibling';
+    							
+    							axios.get(url, config).then(function (response) {
+    								var serializable = response.data;
+    								vm.advanced_filter_nhanHieuItems = serializable.data;
+    								console.log(vm.advanced_filter_nhanHieuItems);
+    							})
+								.catch(function (error) {
+									console.log(error);
+								});
+                    		}
+                    		return false; 
+                    	}
+                    }
+                },
+                "advanced_filter_tenThuongMai": {
+                    'id': 'advanced_filter_tenThuongMai',
+                    'name': 'advanced_filter_tenThuongMai',
+                    "type": "text",
+                    'label': 'Tên thương mại'
+                },
+                "advanced_filter_maKieuLoai": {
+                    'id': 'advanced_filter_maKieuLoai',
+                    'name': 'advanced_filter_maKieuLoai',
+                    "type": "text",
+                    'label': 'Mã kiểu loại'
+                }
 			}
 		});
 

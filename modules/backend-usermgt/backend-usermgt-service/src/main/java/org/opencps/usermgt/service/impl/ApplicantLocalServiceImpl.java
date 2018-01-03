@@ -29,6 +29,7 @@ import org.opencps.usermgt.exception.NoApplicantIdTypeException;
 import org.opencps.usermgt.exception.NoApplicantNameException;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
+import org.opencps.usermgt.service.util.DateTimeUtils;
 import org.opencps.usermgt.service.util.ServiceProps;
 import org.opencps.usermgt.service.util.UserMgtUtils;
 
@@ -147,6 +148,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		Date now = new Date();
 
 		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
+		
+		Date idDate = DateTimeUtils.stringToDate(applicantIdDate);
 
 		if (applicantId == 0) {
 
@@ -213,14 +216,6 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			long mappingUserId = mappingUser.getUserId();
 
-			Date idDate = null;
-
-			try {
-				idDate = UserMgtUtils.convertDate(applicantIdDate);
-			} catch (Exception e) {
-				_log.error(ApplicantLocalServiceImpl.class.getName() + "date input error");
-			}
-
 			// Add audit field
 			applicant.setCreateDate(now);
 			applicant.setModifiedDate(now);
@@ -232,7 +227,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			applicant.setApplicantName(applicantName);
 			applicant.setApplicantIdType(applicantIdType);
 			applicant.setApplicantIdNo(applicantIdNo);
-			applicant.setApplicantIdDate(idDate);
+			if (Validator.isNotNull(idDate))
+				applicant.setApplicantIdDate(idDate);
 			applicant.setAddress(address);
 			applicant.setCityCode(cityCode);
 			applicant.setCityName(cityName);
@@ -254,14 +250,6 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			applicant.setModifiedDate(now);
 			applicant.setUserId(context.getUserId());
 			applicant.setUserName(auditUser.getFullName());
-
-			Date idDate = null;
-
-			try {
-				idDate = UserMgtUtils.convertDate(applicantIdDate);
-			} catch (Exception e) {
-				_log.error(ApplicantLocalServiceImpl.class.getName() + " date input error");
-			}
 
 			if (Validator.isNotNull(applicantName))
 				applicant.setApplicantName(applicantName);

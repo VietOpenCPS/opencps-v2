@@ -14,6 +14,8 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -48,12 +50,16 @@ public class AutoFillFormData {
 			String _contactName = StringPool.BLANK;
 			String _contactTelNo = StringPool.BLANK;
 			String _contactEmail = StringPool.BLANK;
-
+			
+			
 			// TODO
 			String _dossierFileNo = StringPool.BLANK;
 			String _dossierFileDate = StringPool.BLANK;
 			String _receiveDate = StringPool.BLANK;
 			String _dossierNo = StringPool.BLANK;
+			
+			String _employee_employeeNo = StringPool.BLANK;
+			String _employee_fullName = StringPool.BLANK;
 			
 			if (Validator.isNotNull(dossier)) {
 				_receiveDate = Validator.isNotNull(dossier.getReceiveDate())?dossier.getReceiveDate().toGMTString():StringPool.BLANK;
@@ -85,6 +91,20 @@ public class AutoFillFormData {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			
+			try {
+
+				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), serviceContext.getUserId());
+				JSONObject employeeJSON = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(employee));
+
+				_employee_employeeNo = employeeJSON.getString("_employee_employeeNo");
+				_employee_fullName = employeeJSON.getString("_employee_fullName");
+
+			} catch (PortalException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 			// process sampleData
 			if (Validator.isNull(sampleData)) {
 				sampleData = "{}";
@@ -126,6 +146,10 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _receiveDate);
 					} else if (value.equals("_dossierNo")) {
 						jsonMap.put(entry.getKey(), _dossierNo);
+					} else if (value.equals("_employee_employeeNo")) {
+						jsonMap.put(entry.getKey(), _employee_employeeNo);
+					} else if (value.equals("_employee_fullName")) {
+						jsonMap.put(entry.getKey(), _employee_fullName);
 					}
 
 				} else if (value.startsWith("_") && value.contains(":")) {
@@ -160,6 +184,10 @@ public class AutoFillFormData {
 							resultBinding += ", " + _receiveDate;
 						} else if (value.equals("_dossierNo")) {
 							resultBinding += ", " + _dossierNo;
+						} else if (value.equals("_employee_employeeNo")) {
+							resultBinding += ", " + _employee_employeeNo;
+						} else if (value.equals("_employee_fullName")) {
+							resultBinding += ", " + _employee_fullName;
 						}
 					}
 
@@ -213,12 +241,11 @@ public class AutoFillFormData {
 					result.put(entry.getKey(), entry.getValue() + "");
 				}
 			}
-
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		return result.toJSONString();
 	}
 

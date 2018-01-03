@@ -266,10 +266,10 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 			}
 
-			/*if (dossier != null && Validator.isNotNull(dossier.getDossierNo())) {
+			if (dossier != null && Validator.isNotNull(dossier.getDossierNo())) {
 				Map<String, Object> updateDossierNoParams = new LinkedHashMap<>();
 
-				params.put("dossierno", dossier.getDossierNo());
+				properties.put("dossierno", dossier.getDossierNo());
 
 				//endPointSynDossierNo = endPointSynDossierNo + HttpUtil.encodeURL(dossier.getDossierNo());
 
@@ -281,7 +281,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 					// TODO ?
 
 				}
-			}*/
+			}
 		}
 
 		// SyncDossierFile
