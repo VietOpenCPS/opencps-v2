@@ -180,14 +180,19 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			List<DossierPart> dossierParts = new ArrayList<DossierPart>();
 
 			dossierParts = dossierPartPersistence.findByTP_NO(groupId, dossierTemplateNo);
-			
+
 			for (DossierPart part : dossierParts) {
 				if (Validator.isNotNull(part.getFormScript()) && part.getPartType() != 2) {
 					String dossierFileUUID = PortalUUIDUtil.generate();
-					dossierFileLocalService.addDossierFile(groupId, dossierId, dossierFileUUID, dossierTemplateNo,
-							part.getPartNo(), part.getFileTemplateNo(), part.getPartName(), StringPool.BLANK, 0l, null,
-							StringPool.BLANK, StringPool.FALSE, context);
 
+					// TODO HotFix
+
+					if (groupId != 55301) {
+
+						dossierFileLocalService.addDossierFile(groupId, dossierId, dossierFileUUID, dossierTemplateNo,
+								part.getPartNo(), part.getFileTemplateNo(), part.getPartName(), StringPool.BLANK, 0l,
+								null, StringPool.BLANK, StringPool.FALSE, context);
+					}
 				}
 			}
 
@@ -453,25 +458,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		List<PaymentFile> lsPF = paymentFileLocalService.getByDossierId(id);
 
-/*		Indexer<PaymentFile> indexer = IndexerRegistryUtil.nullSafeGetIndexer(PaymentFile.class);
-
-		for (PaymentFile pf : lsPF) {
-			if (pf.getIsNew()) {
-
-				try {
-					PaymentFile paymentFile = PaymentFileLocalServiceUtil.getPaymentFile(pf.getPrimaryKey());
-
-					paymentFile.setIsNew(false);
-
-					paymentFilePersistence.update(paymentFile);
-
-					indexer.reindex(paymentFile);
-				} catch (SearchException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-*/
+		/*
+		 * Indexer<PaymentFile> indexer =
+		 * IndexerRegistryUtil.nullSafeGetIndexer(PaymentFile.class);
+		 * 
+		 * for (PaymentFile pf : lsPF) { if (pf.getIsNew()) {
+		 * 
+		 * try { PaymentFile paymentFile =
+		 * PaymentFileLocalServiceUtil.getPaymentFile(pf.getPrimaryKey());
+		 * 
+		 * paymentFile.setIsNew(false);
+		 * 
+		 * paymentFilePersistence.update(paymentFile);
+		 * 
+		 * indexer.reindex(paymentFile); } catch (SearchException e) {
+		 * e.printStackTrace(); } } }
+		 */
 		dossierPersistence.update(dossier);
 
 		return dossier;

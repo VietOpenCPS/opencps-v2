@@ -182,10 +182,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		object.setDisplayName(displayName);
 		object.setOriginal(true);
-
-		if (Validator.isNotNull(isSync) && GetterUtil.getBoolean(isSync)) {
-			object.setIsNew(false);
-		} else {
+		
+		if (Boolean.parseBoolean(isSync)) {
 			object.setIsNew(true);
 		}
 
@@ -679,7 +677,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 	// TODO: POST /dossiers/{id|referenceUid}/files/{referenceUid}
 
-	public DossierFile getDossierFileByReferenceUid(long dossierId, String referenceUid) throws PortalException {
+	public DossierFile getDossierFileByReferenceUid(long dossierId, String referenceUid) {
 
 		return dossierFilePersistence.fetchByDID_REF(dossierId, referenceUid);
 	}

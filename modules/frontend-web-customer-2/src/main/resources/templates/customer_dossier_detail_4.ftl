@@ -219,7 +219,7 @@
 
 									<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#">
 
-									<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
+									<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#"  data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 										<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
 									</a>
 
@@ -293,7 +293,7 @@
 		</div>
 
 	</div>
-	<div class="content-part collapse in" id="collapseDossierPayment">
+	<div class="content-part collapse" id="collapseDossierPayment">
 		<div class="row-parts-head MT5">
 			<div class="row">
 				<div class="col-sm-12" id="paymentDossierContent" data-bind="value: paymentDossier">
@@ -309,7 +309,10 @@
 						<div class="col-sm-2">								
 							<span class="text-bold">Gía trị thanh toán</span>	
 						</div>
-						<div class="col-sm-10 red" data-bind="text:paymentAmount"></div>
+						<div class="col-sm-10 red">
+							<span data-bind="text:paymentAmount"></span>
+							<span> VNĐ</span>
+						</div>
 					</div>
 
 					<div class="row MB5">
@@ -452,27 +455,27 @@
 				var dossier ;
 				try {
 
-					var payLoadObj = payload;
+				var payLoadObj = payload;
 
-					stepName = payLoadObj.hasOwnProperty("stepName")?payLoadObj.stepName : "";
-					dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
+				stepName = payLoadObj.hasOwnProperty("stepName")?payLoadObj.stepName : "";
+				dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
 
-				}catch(e){
-					console.log(e);
-				}
-				#
-			<tr>
-				<td style="padding-top: 15px; width: 1%;">
-					<span class="text-bold">#:itemIndex#</span>
-				</td>
-				<td style="padding-top: 15px">
+			}catch(e){
+			console.log(e);
+		}
+		#
+		<tr>
+			<td style="padding-top: 15px; width: 1%;">
+				<span class="text-bold">#:itemIndex#</span>
+			</td>
+			<td style="padding-top: 15px">
 
-					<span class="text-bold PR10">#:author# </span>
+				<span class="text-bold PR10">#:author# </span>
 
-					#if ( stepName!="" && stepName!=null ) {#
+				#if ( stepName!="" && stepName!=null ) {#
 
-					<span class="text-light-blue">(#:stepName#)</span> 
-					#}#
+				<span class="text-light-blue">(#:stepName#)</span> 
+				#}#
 
 				<p>
 					#if ( createDate!="" && createDate!=null ) {#
@@ -481,26 +484,26 @@
 				</p>
 
 				#if ( content!="" && content!=null ) {#
-					<p>Ý kiến: #:content#</p>
+				<p>Ý kiến: #:content#</p>
 				#}#
 
 				#
 				if(dossier){
-					for(var i = 0 ; i < dossier.length ; i++){
+				for(var i = 0 ; i < dossier.length ; i++){
 				#
-					<p>
-						<a target="_blank" href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].dossierFileId#" class="text-greyy text-hover-blue">
-							<i aria-hidden="true" class="fa fa-download PR5"></i>
-							#:dossier[i].fileName#
-						</a> 
-					</p>
+				<p>
+					<a target="_blank" href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].dossierFileId#" class="text-greyy text-hover-blue">
+						<i aria-hidden="true" class="fa fa-download PR5"></i>
+						#:dossier[i].fileName#
+					</a> 
+				</p>
 				#
-					}	 
-				}
-				#
+			}	 
+		}
+		#
 
-				</td>
-			</tr>
+	</td>
+</tr>
 </script>
 
 </div>
@@ -534,7 +537,7 @@
 	</div>
 
 	<#else>
-		
+
 	</#if>
 </div>
 
@@ -551,14 +554,18 @@
 	<button class="btn btn-active" id="btn-back-dossier" type="button" onclick="fnBack();"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
 	<#if sendReissue?has_content >
 	
-	<button class="btn btn-active" id="btn-sendReissue-dossier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-	<a class="btn btn-active" onclick="fnCorrecting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
+		<button class="btn btn-active" id="btn-sendReissue-dossier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+		<a class="btn btn-active" onclick="fnCorrecting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
+
 	<#elseif sendAdd?has_content >
 	
-	<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-	<a class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
-	<#else>
-	
+		<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+		<a class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
+
+	<#elseif dossier.dossierStatus?has_content && dossier.dossierStatus == "waiting" &&            	dossier.submitting?has_content && dossier.submitting != true>
+
+		<button class="btn btn-active" id="btn-submit-dossier" ><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+
 	</#if>
 </div>
 </div>
@@ -595,11 +602,11 @@
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
 			var dossierTemplateNo = $("#dossierTemplateNo").val();
-			// $("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
+			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
 
-			// });
-			var urlView = "http://dangkiemlaprap.mt.gov.vn/group/cong-tiep-nhan#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo+"";
-			window.open(urlView,"_blank")
+			});
+			// var urlView = "http://dangkiemlaprap.mt.gov.vn/group/cong-tiep-nhan#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo+"";
+			// window.open(urlView,"_blank")
 		});
 
 		$(document).off("click",".delete-dossier-file");
@@ -906,7 +913,7 @@
 							wardName:result.wardName,
 							viaPostal : function(e){
 								
-								if(result.viaPostal === 0){
+								if(result.viaPostal === 0 || result.viaPostal === 1){
 									$("#postal").remove();
 								}
 							},
@@ -930,10 +937,10 @@
 								return "";
 							},
 							paymentAmount : function(e){
-								if(this.get('paymentDossier')){
-									if(this.get('paymentDossier').paymentAmount){
-										return this.get('paymentDossier').paymentAmount;
-									}
+								if(this.get('paymentDossier').paymentAmount){
+									var value = this.get('paymentDossier').paymentAmount;
+									var moneyCur = (value/1).toFixed(0).replace('.', ',');
+									return moneyCur.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 								}
 								return "";
 							},
@@ -955,8 +962,14 @@
 							},
 							paymentStatus : function(e){
 								if(this.get('paymentDossier')){
-									if(this.get('paymentDossier').paymentStatus){
-										return this.get('paymentDossier').paymentStatus;
+									if(this.get('paymentDossier').paymentStatus === 0){
+										return "Chờ nộp";
+									}else if(this.get('paymentDossier').paymentStatus === 1){
+										return "Báo đã nộp";
+									}else if(this.get('paymentDossier').paymentStatus === 2){
+										return "Hoàn thành";
+									}else {
+										return "Không hợp lệ";
 									}
 								}
 								return "";
@@ -999,13 +1012,13 @@
 
 					});
 
-						kendo.bind($("#detailDossier"), viewModel);
-					},
-					error : function(result){
-						$("#paymentDossier").html("");
-					}
+kendo.bind($("#detailDossier"), viewModel);
+},
+error : function(result){
+	$("#paymentDossier").html("");
+}
 
-				});
+});
 }
 }
 
@@ -1021,7 +1034,7 @@ var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
 	data.append('dossierTemplateNo', dossierTemplateNo);
 	data.append('fileTemplateNo', fileTemplateNo);
 	data.append('formData', "");
-	data.append('isSync', "");
+	data.append('isSync', "true");
 	data.append('fileType', "");
 
 	$.ajax({
@@ -1088,7 +1101,6 @@ var fnLoadPayment = function(dossierId){
 			error :  function(result){
 				$("#paymentDossier").remove();
 			}
-
 		});
 	}
 
@@ -1189,28 +1201,6 @@ var fnGetFormData = function(dossierId,referentUid){
 
 	return value;
 }
-
-$(document).on("click","#btn-submit-dossier",function(event){
-	var data = $('#dossierFormSubmiting').serialize();
-	$.ajax({
-		type : 'GET', 
-		url  : '${api.server}/dossiers/${dossierId}/submitting', 
-		data : data,
-		headers : 
-		{
-			"groupId": ${groupId},
-			Accept : "application/json"
-
-		},
-		success :  function(result){					   
-
-		},
-		error : function(result){
-
-		}
-	});
-	
-});
 
 
 var fnSaveForm = function(id, value){
@@ -1420,6 +1410,32 @@ var fnSubmitting = function(dossierId){
 	}
 
 }
+
+$("#btn-submit-dossier").click(function(){
+	$.ajax({
+		url : "${api.server}/dossiers/${dossierId}/submitting",
+		dataType : "json",
+		type : "GET",
+		headers: {
+			"groupId": ${groupId},
+			Accept : "application/json"
+		},
+		data : {
+
+		},
+		success : function(result){
+			notification.show({
+				message: "Yêu cầu được thực hiện thành công!"
+			}, "success");
+
+		},
+		error : function(result){
+			notification.show({
+				message: "Thực hiện không thành công, xin vui lòng thử lại!"
+			}, "error");
+		}
+	});
+});
 
 var fnBack = function(){
 	window.history.back();

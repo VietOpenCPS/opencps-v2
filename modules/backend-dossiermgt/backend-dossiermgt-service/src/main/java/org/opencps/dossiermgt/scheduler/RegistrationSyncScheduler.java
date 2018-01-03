@@ -9,10 +9,13 @@ import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
+import org.opencps.dossiermgt.exception.NoSuchRegistrationException;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
+import org.opencps.usermgt.service.util.UserMgtUtils;
+import org.opencps.usermgt.utils.DateTimeUtils;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -84,12 +87,11 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 				long groupId = getGroupId(resDossierSync);
 				_log.info("resServerConfig groupId ---------- :" + groupId);
 				
-				// TODO
+				// TODO GROUP EMPLOYEE
 				long desGroupId = 55301;
 
-				List<Registration> registrations = new ArrayList<>();
-
-				registrations = RegistrationLocalServiceUtil.getdByF_submitting(groupId, Boolean.TRUE);
+				// listener submiting of server
+				List<Registration> registrations = RegistrationLocalServiceUtil.getdByF_submitting(groupId, Boolean.TRUE);
 				_log.info("resServerConfig registrations ---------- :" + registrations);
 				String registrationEndpoint = "registrations/syncs";
 				String registrationFormEndpoint = "registrations/syncs/form";
@@ -109,8 +111,8 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 						RegistrationLocalServiceUtil.updateRegistration(registration);
 						
 						// TODO sync registrationForm
-						List<RegistrationForm> registrationForms = new ArrayList<>();
-						registrationForms = RegistrationFormLocalServiceUtil.findByG_REGID_ISNEW(registration.getRegistrationId(), Boolean.TRUE);
+						List<RegistrationForm> registrationForms = RegistrationFormLocalServiceUtil.findByG_REGID_ISNEW(
+						    registration.getRegistrationId(), Boolean.TRUE);
 						
 						for (RegistrationForm registrationForm : registrationForms) {
 							
@@ -131,6 +133,33 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 						
 					}
 					
+				}
+				
+				// listener submiting of client
+				List<Registration> registrationClients = RegistrationLocalServiceUtil.getdByF_submitting(desGroupId, Boolean.TRUE);
+				
+				for (Registration registrationClient : registrationClients) {
+				    Registration registrationServer = RegistrationLocalServiceUtil.fetchRegistrationByUuidAndGroupId(
+				        registrationClient.getUuid(), groupId);
+				    
+				    if(registrationServer != null) {
+    				    try {
+    				        Map<String, Object> params = getParamsPostRegistration(registrationClient);
+                            
+                            JSONObject clientRegistrationPOSTrespone = rest.callPostAPI(groupId, HttpMethods.POST, "application/json", 
+                                    RESTFulConfiguration.SERVER_PATH_BASE, registrationEndpoint, RESTFulConfiguration.SERVER_USER,
+                                    RESTFulConfiguration.SERVER_PASS,
+                                    properties, params, serviceContext);
+                            
+                            if (clientRegistrationPOSTrespone.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
+                                registrationClient.setSubmitting(Boolean.FALSE);
+                                
+                                RegistrationLocalServiceUtil.updateRegistration(registrationClient);
+                            }
+    				    } catch (NoSuchRegistrationException nsge) {
+    				        
+    				    }
+				    }
 				}
 				
 			}
@@ -183,7 +212,8 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 			params.put(RegistrationTerm.APPLICATION_NAME, registration.getApplicantName());
 			params.put(RegistrationTerm.APPLICATION_ID_TYPE, registration.getApplicantIdType());
 			params.put(RegistrationTerm.APPLICATION_ID_NO, registration.getApplicantIdNo());
-			params.put(RegistrationTerm.APPLICATION_ID_DATE, registration.getApplicantIdDate());
+			params.put(RegistrationTerm.APPLICATION_ID_DATE, DateTimeUtils.convertDateToString(
+			    registration.getApplicantIdDate(), DateTimeUtils._TIMESTAMP));
 			params.put(RegistrationTerm.ADDRESS, registration.getAddress());
 			params.put(RegistrationTerm.CITY_CODE, registration.getCityCode());
 			params.put(RegistrationTerm.CITY_NAME, registration.getCityName());
@@ -221,6 +251,8 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 			params.put("formData", registrationForm.getFormData());
 			params.put("formScript", registrationForm.getFormScript());
 			params.put("formReport", registrationForm.getFormReport());
+			params.put("fileEntryId", registrationForm.getFileEntryId());
+			params.put("removed", Boolean.valueOf(registrationForm.getRemoved()));
 			
 		} catch (Exception e) {
 			throw new PortalException("RegistrationFormNotFound");

@@ -21,6 +21,8 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -72,8 +74,6 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 		serviceContext.setCompanyId(company.getCompanyId());
 		serviceContext.setUserId(systemUser.getUserId());
 
-		_log.info("TOTAL_DOSSIER_" + allDossierTimer.size());
-
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 		Sort[] sorts = new Sort[] { SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, false) };
@@ -84,33 +84,55 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 			params.put(DossierTerm.REFERENCE_UID, String.valueOf(dossier.getReferenceUid()));
 			params.put(DossierActionTerm.AUTO, "timmer");
 
-			JSONArray results = dossierActions.getNextActions(0l, company.getCompanyId(), dossier.getGroupId(), params,
-					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
+			if (Validator.isNotNull(dossier.getDossierStatus())) {
 
-			int lenght = results.length();
+				JSONArray results = dossierActions.getNextActions(0l, company.getCompanyId(), dossier.getGroupId(),
+						params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
-			if (lenght != 0) {
-				JSONObject content = results.getJSONObject(0);
-				
-				
-				long processActionId = content.getLong("processActionId");
+				int lenght = results.length();
 
-				ProcessAction action = ProcessActionLocalServiceUtil.fetchProcessAction(processActionId);
+				if (lenght != 0) {
 
-				String perConditionStr = StringPool.BLANK;
+					JSONObject content = results.getJSONObject(0);
 
-				if (Validator.isNotNull(action)) {
-					perConditionStr = action.getPreCondition();
-				}
+					ProcessAction processAction = (ProcessAction) content.get("processAction");
 
-				boolean checkPreCondition = DossierMgtUtils
-						.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
+					/*
+					 * if (processAction != null) { _log.
+					 * info("///////////////////////////////////////// processAction.getAutoEvent()"
+					 * + processAction.getAutoEvent()); } else { _log.
+					 * info("///////////////////////////////////////// null"); }
+					 */
 
-				if (checkPreCondition) {
-					dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(),
-							content.getString("actionCode"), content.getLong("processActionId"),
-							systemUser.getFullName(), content.getString("actionName"), content.getLong("assignUserId"),
-							systemUser.getUserId(), serviceContext);
+					if (processAction != null && Validator.isNotNull(processAction.getAutoEvent())
+							&& processAction.getAutoEvent().contentEquals("timmer")) {
+						_log.info("AUTOEVENT_DOSSIER_ID" + dossier.getPrimaryKey());
+
+						long processActionId = content.getLong("processActionId");
+
+						ProcessAction action = ProcessActionLocalServiceUtil.fetchProcessAction(processActionId);
+
+						String perConditionStr = StringPool.BLANK;
+
+						if (Validator.isNotNull(action)) {
+							perConditionStr = action.getPreCondition();
+						}
+
+						boolean checkPreCondition = DossierMgtUtils
+								.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
+
+						_log.info("============================================= checkPreCondition " + checkPreCondition
+								+ "|DossierId = " + dossier.getDossierId() + "|split= " + perConditionStr);
+
+						if (checkPreCondition) {
+							dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
+									dossier.getReferenceUid(), processAction.getActionCode(),
+									processAction.getProcessActionId(), systemUser.getFullName(),
+									processAction.getActionName(), processAction.getAssignUserId(),
+									systemUser.getUserId(), serviceContext);
+						}
+					}
+
 				}
 
 			}

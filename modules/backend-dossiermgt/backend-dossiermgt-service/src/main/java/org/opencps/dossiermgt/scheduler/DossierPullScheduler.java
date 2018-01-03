@@ -118,7 +118,11 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject object = array.getJSONObject(i);
 
-				pullDossier(company, object, systemUser);
+				try {
+					pullDossier(company, object, systemUser);
+				} catch (Exception e) {
+					_log.error(object.get(DossierTerm.DOSSIER_ID), e);
+				}
 			}
 
 		} catch (Exception e) {
@@ -194,6 +198,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 			if (Validator.isNull(desDossier)) {
 				// Create DOSSIER
+				
 
 				long desGroupId = syncServiceProcess.getGroupId();
 
@@ -311,13 +316,13 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			// get the list of payment file need to sync
 			List<JSONObject> lsPaymentsFileSync = new ArrayList<>();
 
-			//getPaymentFiles(sourceGroupId, dossierId, lsPaymentsFileSync);
+			getPaymentFiles(sourceGroupId, dossierId, lsPaymentsFileSync);
 
 			// Do Pull paymentFile to client
 
-/*			pullPaymentFile(sourceGroupId, dossierId, desDossier.getGroupId(), desDossier.getDossierId(),
+			pullPaymentFile(sourceGroupId, dossierId, desDossier.getGroupId(), desDossier.getDossierId(),
 					lsPaymentsFileSync, serviceContext);
-*/
+
 		}
 
 		// ResetDossier
@@ -483,6 +488,63 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				}
 
 				// Add conformFile to CLIENT
+			} else {
+				try {
+
+					String fileRef = object.getString("referenceUid");
+
+					// Get file from SERVER
+					String path = "dossiers/" + srcDossierId + "/payments/" + fileRef + "/confirm/noattachment";
+
+					URL url = new URL(RESTFulConfiguration.SERVER_PATH_BASE + path);
+
+					HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+					String authString = RESTFulConfiguration.SERVER_USER + ":" + RESTFulConfiguration.SERVER_PASS;
+
+					String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
+
+					conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+
+					conn.setRequestMethod(HttpMethods.PUT);
+					conn.setDoInput(true);
+					conn.setDoOutput(true);
+					conn.setRequestProperty("Accept", "application/json");
+					conn.setRequestProperty("groupId", String.valueOf(srcGroupId));
+
+					int responseCode = conn.getResponseCode();
+
+					if (responseCode != 200) {
+						if (responseCode != 204) {
+							throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+						}
+
+					} else {
+
+						String requestURL = RESTFulConfiguration.CLIENT_PATH_BASE + "dossiers/" + dossierId
+								+ "/payments/" + fileRef + "/confirm/noattachment";
+
+						String clientAuthString = new String(Base64.getEncoder().encodeToString(
+								(RESTFulConfiguration.CLIENT_USER + StringPool.COLON + RESTFulConfiguration.CLIENT_PASS)
+										.getBytes()));
+
+						pullPaymentFileNoAttach(requestURL, "UTF-8", groupId, dossierId, clientAuthString, 
+								StringPool.BLANK, object.getString("paymentMethod"), object.getString("confirmPayload"),
+								context);
+
+					}
+
+					conn.disconnect();
+
+				} catch (MalformedURLException e) {
+
+					e.printStackTrace();
+				} catch (IOException e) {
+
+					e.printStackTrace();
+
+				}
+
 			}
 
 		}
@@ -601,43 +663,52 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					}
 
 				} else {
+					
+					DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId,
+							fileRef);
+					
+					if (Validator.isNull(dossierFile)) {
+						
+						InputStream is = conn.getInputStream();
 
-					InputStream is = conn.getInputStream();
+						File tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()),
+								StringPool.PERIOD + ref.getString("fileType"));
 
-					File tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()),
-							StringPool.PERIOD + ref.getString("fileType"));
+						FileOutputStream outStream = new FileOutputStream(tempFile);
 
-					FileOutputStream outStream = new FileOutputStream(tempFile);
-
-					int bytesRead = -1;
-					byte[] buffer = new byte[BUFFER_SIZE];
-					while ((bytesRead = is.read(buffer)) != -1) {
-						outStream.write(buffer, 0, bytesRead);
-					}
-
-					outStream.close();
-					is.close();
-
-					String requestURL = RESTFulConfiguration.CLIENT_PATH_BASE + "dossiers/" + dossierId + "/files";
-
-					try {
-						DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId,
-								fileRef);
-						if (Validator.isNotNull(dossierFile)) {
-							requestURL = requestURL + StringPool.FORWARD_SLASH + fileRef;
+						int bytesRead = -1;
+						byte[] buffer = new byte[BUFFER_SIZE];
+						while ((bytesRead = is.read(buffer)) != -1) {
+							outStream.write(buffer, 0, bytesRead);
 						}
-					} catch (Exception e) {
-						// TODO: Don't doing anything
+
+						outStream.close();
+						is.close();
+
+						String requestURL = RESTFulConfiguration.CLIENT_PATH_BASE + "dossiers/" + dossierId + "/files";
+
+	/*					try {
+							DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId,
+									fileRef);
+							if (Validator.isNotNull(dossierFile)) {
+								requestURL = requestURL + StringPool.FORWARD_SLASH + fileRef;
+							}
+						} catch (Exception e) {
+							// TODO: Don't doing anything
+						}
+	*/					
+						
+
+						String clientAuthString = new String(Base64.getEncoder().encodeToString(
+								(RESTFulConfiguration.CLIENT_USER + StringPool.COLON + RESTFulConfiguration.CLIENT_PASS)
+										.getBytes()));
+
+						pullDossierFile(requestURL, "UTF-8", desGroupId, dossierId, clientAuthString, tempFile,
+								ref.getString("dossierTemplateNo"), ref.getString("dossierPartNo"),
+								ref.getString("fileTemplateNo"), ref.getString("displayName"), ref.getString("formData"),
+								dossierRef, fileRef, serviceContext);
 					}
 
-					String clientAuthString = new String(Base64.getEncoder().encodeToString(
-							(RESTFulConfiguration.CLIENT_USER + StringPool.COLON + RESTFulConfiguration.CLIENT_PASS)
-									.getBytes()));
-
-					pullDossierFile(requestURL, "UTF-8", desGroupId, dossierId, clientAuthString, tempFile,
-							ref.getString("dossierTemplateNo"), ref.getString("dossierPartNo"),
-							ref.getString("fileTemplateNo"), ref.getString("displayName"), ref.getString("formData"),
-							dossierRef, fileRef, serviceContext);
 				}
 
 				conn.disconnect();
@@ -665,6 +736,31 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
 
 			multipart.addFilePart("file", file);
+			multipart.addFormField("confirmNote", confirmNote);
+			multipart.addFormField("paymentMethod", paymentMethod);
+			multipart.addFormField("confirmPayload", confirmPayload);
+
+			JSONObject object = JSONFactoryUtil.createJSONObject();
+
+			List<String> response = multipart.finish();
+
+			// resetDossier(desGroupId, dossierRef, false, serviceContext);
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+	}
+	
+	private void pullPaymentFileNoAttach(String requestURL, String charset, long desGroupId, long dossierId,
+			String authStringEnc, String confirmNote, String paymentMethod, String confirmPayload,
+			ServiceContext serviceContext) {
+
+		try {
+			MultipartUtility multipart = new MultipartUtility(requestURL, charset, desGroupId, authStringEnc,
+					HttpMethod.PUT);
+			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
+
 			multipart.addFormField("confirmNote", confirmNote);
 			multipart.addFormField("paymentMethod", paymentMethod);
 			multipart.addFormField("confirmPayload", confirmPayload);
@@ -780,7 +876,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 5, TimeUnit.SECOND));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 45, TimeUnit.SECOND));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

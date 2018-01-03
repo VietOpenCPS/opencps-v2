@@ -205,7 +205,7 @@ public interface DossierManagement {
 	public Response cloneDossier(@Context HttpHeaders header, @Context ServiceContext serviceContext,
 			@PathParam("id") long dossierId, @Context String referenceUid);
 
-	@POST
+	@PUT
 	@Path("/{id}/dossierno/{dossierno}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -218,6 +218,6 @@ public interface DossierManagement {
 
 	public Response updateDossierNo(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@PathParam("id") String id, @PathParam("reference") String reference);
+			@PathParam("id") String id, @PathParam("dossierno") String dossierno);
 
 }
