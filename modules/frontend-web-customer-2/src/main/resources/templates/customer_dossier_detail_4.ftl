@@ -958,11 +958,17 @@
 							},
 							paymentStatus : function(e){
 								if(this.get('paymentDossier')){
-									if(this.get('paymentDossier').paymentStatus){
-										return this.get('paymentDossier').paymentStatus;
-									}
-								}
-								return "";
+	                if(this.get('paymentDossier').paymentStatus === 0){
+	                  return "Chờ nộp";
+	                }else if(this.get('paymentDossier').paymentStatus === 1){
+	                  return "Báo đã nộp";
+	                }else if(this.get('paymentDossier').paymentStatus === 2){
+	                  return "Hoàn thành";
+	                }else {
+	                  return "Không hợp lệ";
+	                }
+	              }
+	              return "";
 							},
 							paymentApproveDatetime : function(e){
 								if(this.get('paymentDossier')){
