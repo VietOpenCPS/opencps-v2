@@ -3,6 +3,8 @@ package org.opencps.communication.constants;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.opencps.auth.api.keys.NotificationType;
+
 import com.liferay.portal.kernel.util.WebKeys;
 
 import aQute.bnd.osgi.Constants;
@@ -13,72 +15,39 @@ public class NotificationMGTConstants implements Constants, WebKeys {
 
 	static {
 		
-		NOTIFICATION_TEMPLATE_INIT.put("ACTIVITY-01", "M\u1EDDi theo d\u00F5i ho\u1EA1t \u0111\u1ED9ng \u0111\u01B0\u1EE3c chia s\u1EBB");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.DOSSIER_01, "Y\u00EAu c\u1EA7u b\u1ED5 sung h\u1ED3 s\u01A1");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("ACTIVITY-02", "G\u1EEDi gi\u1EA5y m\u1EDDi tham gia m\u1ED9t s\u1EF1 ki\u1EC7n");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.DOSSIER_02, "Y\u00EAu c\u1EA7u thanh to\u00E1n");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("ACTIVITY-03", "X\u00E1c nh\u1EADn c\u1EE7a ng\u01B0\u1EDDi tham gia ho\u1EA1t \u0111\u1ED9ng");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.DOSSIER_03, "Chuy\u1EC3n ti\u1EBFp ch\u1EDD x\u1EED l\u00FD h\u1ED3 s\u01A1");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("ACTIVITY-04", "C\u1EADp nh\u1EADt th\u1EDDi gian, \u0111\u1ECBa \u0111i\u1EC3m, tr\u1EA1ng th\u00E1i c\u1EE7a ho\u1EA1t \u0111\u1ED9ng");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.DOSSIER_04, "H\u1ED3 s\u01A1 \u0111\u00E3 \u0111\u01B0\u1EE3c b\u1ED5 sung");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("ACTIVITY-05", "Nh\u1EAFc l\u1ECBch ho\u1EA1t \u0111\u1ED9ng s\u1EAFp b\u1EAFt \u0111\u1EA7u ho\u1EB7c k\u1EBFt th\u00FAc");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.DOSSIER_05, "H\u1ED3 s\u01A1 c\u00F3 y\u00EAu c\u1EA7u h\u1EE7y");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("FILEATTACH", "C\u1EADp nh\u1EADt t\u00E0i li\u1EC7u \u0111\u00EDnh k\u00E8m");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.DOSSIER_06, "H\u1ED3 s\u01A1 c\u00F3 y\u00EAu c\u1EA7u ch\u1EC9nh s\u1EEDa k\u1EBFt qu\u1EA3");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("ALBUMFILE", "C\u1EADp nh\u1EADt \u1EA3nh album");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.DOSSIER_07, "H\u1ED3 s\u01A1 b\u00E1o \u0111\u00E3 \u0111\u01B0\u1EE3c thanh to\u00E1n");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("COMMENT", "C\u1EADp nh\u1EADt b\u00ECnh lu\u1EADn m\u1EDBi");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.DOSSIER_08, "X\u00E1c nh\u1EADn h\u1ED3 \u0111\u00E3 \u0111\u01B0\u1EE3c thanh to\u00E1n");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("VOTING-01", "T\u1EA1o \u00FD ki\u1EBFn \u0111\u00E1nh gi\u00E1 m\u1EDBi");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.DOSSIER_09, "C\u1EA3nh b\u00E1o qu\u00E1 h\u1EA1n x\u1EED l\u00FD h\u1ED3 s\u01A1");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("VOTING-02", "Tr\u1EA3 l\u1EDDi c\u00E2u h\u1ECFi \u0111\u00E1nh gi\u00E1");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.DOSSIER_10, "H\u1ED3 s\u01A1 \u0111\u00E3 c\u00F3 k\u1EBFt qu\u1EA3 x\u1EED l\u00FD");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("APPROVAL-01", "Tr\u00ECnh ph\u00EA duy\u1EC7t");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.APPLICANT_01, "Th\u00F4ng b\u00E1o m\u1EDF m\u1EDBi t\u00E0i kho\u1EA3n ng\u01B0\u1EDDi l\u00E0m th\u1EE7 t\u1EE5c");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("APPROVAL-02", "\u0110\u00E3 ph\u00EA duy\u1EC7t");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.APPLICANT_02, "Th\u00F4ng b\u00E1o \u0111\u00E3 ti\u1EBFp nh\u1EADn h\u1ED3 s\u01A1 t\u1EA1i b\u1ED9 ph\u1EADn m\u1ED9t c\u1EEDa \u0111i\u1EC7n t\u1EED");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("DOCUMENT-01", "M\u1EDDi theo d\u00F5i v\u0103n b\u1EA3n \u0111\u01B0\u1EE3c chia s\u1EBB");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.APPLICANT_03, "Th\u00F4ng b\u00E1o y\u00EAu c\u1EA7u ch\u1EC9nh s\u1EEDa h\u1ED3 s\u01A1 t\u1EA1i b\u1ED9 ph\u1EADn m\u1ED9t c\u1EEDa");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("DOCUMENT-02", "C\u1EADp nh\u1EADt tr\u1EA1ng th\u00E1i v\u0103n b\u1EA3n");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.APPLICANT_04, "Th\u00F4ng b\u00E1o l\u1EA5y k\u1EBFt qu\u1EA3 h\u1ED3 s\u01A1 t\u1EA1i b\u1ED9 ph\u1EADn m\u1ED9t c\u1EEDa");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("DOCUMENT-03", "C\u1EADp nh\u1EADt d\u1EEF li\u1EC7u bi\u1EC3u m\u1EABu \u0111i\u1EC7n t\u1EED");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.APPLICANT_05, "Th\u00F4ng b\u00E1o \u0111\u00E3 ho\u00E0n th\u00E0nh tr\u1EA3 k\u1EBFt qu\u1EA3 h\u1ED3 s\u01A1");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("ARCHIVE", "C\u1EADp nh\u1EADt v\u0103n b\u1EA3n h\u1ED3 s\u01A1");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.REGISTRATION_01, "C\u00F3 \u0111\u0103ng k\u00ED h\u1ED3 s\u01A1 th\u01B0\u01A1ng nh\u00E2n m\u1EDBi");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("CHECKLIST-01", "M\u1EDDi theo d\u00F5i c\u00F4ng vi\u1EC7c c\u00F4ng vi\u1EC7c \u0111\u01B0\u1EE3c chia s\u1EBB");
+		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.REGISTRATION_02, "Thay \u0111\u1ED5i th\u00F4ng tin \u0111\u0103ng k\u00ED h\u1ED3 s\u01A1 th\u01B0\u01A1ng nh\u00E2n");
 		
-		NOTIFICATION_TEMPLATE_INIT.put("CHECKLIST-02", "Th\u00F4ng b\u00E1o ph\u00E2n c\u00F4ng th\u1EF1c hi\u1EC7n c\u00F4ng vi\u1EC7c");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("CHECKLIST-03", "C\u1EADp nh\u1EADt tr\u1EA1ng th\u00E1i c\u1EE7a c\u00F4ng vi\u1EC7c");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("CHECKLIST-04", "Nh\u1EAFc l\u1ECBch c\u00F4ng vi\u1EC7c s\u1EAFp h\u1EBFt h\u1EA1n");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("KEYRESULT-01", "Ph\u00E2n c\u00F4ng th\u1EF1c hi\u1EC7n k\u1EBFt qu\u1EA3 m\u1EE5c ti\u00EAu");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("KEYRESULT-02", "C\u1EADp nh\u1EADt k\u1EBFt qu\u1EA3 m\u1EE5c ti\u00EAu");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("PROJECT-01", "M\u1EDDi theo d\u00F5i d\u1EF1 \u00E1n \u0111\u01B0\u1EE3c chia s\u1EBB");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("PROJECT-02", "C\u1EADp nh\u1EADt tr\u1EA1ng th\u00E1i d\u1EF1 \u00E1n");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("PROJECT-03", "C\u1EADp nh\u1EADt tr\u1EA1ng th\u00E1i h\u1EA1ng m\u1EE5c (task) trong k\u1EBF ho\u1EA1ch");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("PROJECT-04", "Nh\u1EAFc l\u1ECBch h\u1EA1ng m\u1EE5c k\u1EBF ho\u1EA1ch trong k\u1EBF ho\u1EA1ch");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("USER-01", "Th\u00F4ng b\u00E1o m\u1EDF t\u00E0i kho\u1EA3n m\u1EDBi cho ng\u01B0\u1EDDi d\u00F9ng tr\u00EAn h\u1EC7 th\u1ED1ng");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("USER-02", "Th\u00F4ng b\u00E1o thay \u0111\u1ED5i tr\u1EA1ng th\u00E1i k\u00EDch ho\u1EA1t t\u00E0i kho\u1EA3n");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("USER-03", "Th\u00F4ng b\u00E1o confirm reset m\u1EADt kh\u1EA9u t\u00E0i kho\u1EA3n b\u1EDFi h\u1EC7 th\u1ED1ng (qu\u00EAn m\u1EADt kh\u1EA9u)");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("USER-04", "Th\u00F4ng b\u00E1o m\u1EADt kh\u1EA9u t\u00E0i kho\u1EA3n \u0111\u00E3 thay \u0111\u1ED5i");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("NEWSBOARD", "M\u1EDDi theo d\u00F5i b\u1EA3n tin \u0111\u01B0\u1EE3c c\u00F4ng b\u1ED1");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("WORKCHECKIN", "M\u1EDDi theo d\u00F5i l\u1ECBch checkin");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("TIMESHEET-01", "M\u1EDDi theo d\u00F5i b\u1EA3ng ch\u1EA5m c\u00F4ng th\u00E1ng");
-		
-		NOTIFICATION_TEMPLATE_INIT.put("TIMESHEET-02", "C\u1EADp nh\u1EADt d\u1EEF li\u1EC7u b\u1EA3ng ch\u1EA5m c\u00F4ng th\u00E1ng");
 	}
 }

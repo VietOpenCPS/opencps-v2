@@ -15,6 +15,7 @@ import javax.script.ScriptException;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -43,6 +44,7 @@ public class DossierPaymentUtils {
 		for (String msg : messages) {
 			System.out.println(msg);
 		}
+		
 	}
 
 	// call processPaymentFile create paymentFile

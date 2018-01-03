@@ -37,7 +37,8 @@ public class DossierNumberGenerator {
 	}
 
 	public static String generateDossierNumber(long groupId, long companyId, long dossierId, String seriNumberPattern,
-			LinkedHashMap<String, Object> params, SearchContext ...searchContext) throws ParseException, SearchException {
+			LinkedHashMap<String, Object> params, SearchContext... searchContext)
+			throws ParseException, SearchException {
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
 		String dossierNumber = StringPool.BLANK;
@@ -81,7 +82,12 @@ public class DossierNumberGenerator {
 										GetterUtil.getString(params.get(DossierTerm.SERVICE_CODE)),
 										GetterUtil.getString(params.get(DossierTerm.DOSSIER_TEMPLATE_NO)),
 										GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS))) + 1);
-						
+
+						_log.info("GovCode=" + params.get(DossierTerm.GOV_AGENCY_CODE) + "|ServiceCode="
+								+ params.get(DossierTerm.SERVICE_CODE) + "|DossierTemplateNo="
+								+ params.get(DossierTerm.DOSSIER_TEMPLATE_NO) + "|DossierStatus="
+								+ params.get(DossierTerm.DOSSIER_STATUS) + "|GrpupId=" + groupId);
+
 						_log.info("//////////////////////////////////////////////////////////// " + number);
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));

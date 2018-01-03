@@ -248,7 +248,7 @@
 			
 			notificationType: $('#_notificationSubDetail_notificationType').val(),
 			emailSubject: $('#_notificationSubDetail_emailSubject').val(),
-			emailBody: $('#_notificationSubDetail_emailBody').code(),
+			emailBody: $('#_notificationSubDetail_emailBody').summernote('code'),
 			textMessage: $('#_notificationSubDetail_textMessage').val(),
 			expireDuration: $('#_notificationSubDetail_expireDuration').val(),
 			interval: $('#_notificationSubDetail_interval').val(),

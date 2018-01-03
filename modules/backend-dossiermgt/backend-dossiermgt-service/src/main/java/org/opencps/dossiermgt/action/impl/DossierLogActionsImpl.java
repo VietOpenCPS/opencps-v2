@@ -44,7 +44,7 @@ public class DossierLogActionsImpl implements DossierLogActions {
 
 		SearchContext searchContext = new SearchContext();
 		searchContext.setCompanyId(serviceContext.getCompanyId());
-		System.out.println("/////////////////////////////////////// notificationType " + notificationType);
+		//System.out.println("/////////////////////////////////////// notificationType " + notificationType);
 		try {
 			
 			if (start == 0) {

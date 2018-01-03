@@ -13,6 +13,7 @@
         <b>ĐĂNG KÝ TÀI KHOẢN</b>
       </div>
     </div>
+     <input type="hidden" name="applicantIdType" value="business" >
     <#-- <div class="row MT10 MB10">
       <div class="col-xs-12 col-sm-12 text-center">
        <div class="radio-inline"> <input type="radio" name="applicantIdType" value="citizen" checked> <label>Công dân</label> </div>
