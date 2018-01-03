@@ -107,6 +107,7 @@ public class InvokeREST {
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {
+					_log.info("=============================== properties " + m.getKey().toString() + "|" + m.getValue().toString());
 					conn.setRequestProperty(m.getKey().toString(), m.getValue().toString());
 				}
 			}
