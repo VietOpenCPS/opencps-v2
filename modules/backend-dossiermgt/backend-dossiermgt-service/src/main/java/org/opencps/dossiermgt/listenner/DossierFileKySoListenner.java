@@ -83,6 +83,7 @@ public class DossierFileKySoListenner extends BaseModelListener<DossierFile> {
 			JSONObject msgDataESign = JSONFactoryUtil.createJSONObject();
 			msgDataESign.put("userId", model.getUserId());
 			msgDataESign.put("eSign", dossierPart.getESign());
+			msgDataESign.put("eForm", true);
 			msgDataESign.put("fileEntryId", model.getFileEntryId());
 
 			message.put("msgToEngine", msgDataESign);
