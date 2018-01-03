@@ -1328,7 +1328,7 @@
 		data.append('fileTemplateNo', fileTemplateNo);
 		data.append('fileType', "");
 		data.append('formData', "");
-		data.append('isSync', "");
+		data.append('isSync', "true");
 
 		$.ajax({
 			type : 'POST', 

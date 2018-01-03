@@ -610,6 +610,9 @@
 			<finder-column name="groupId" />
 			<finder-column name="isNew" />
 		</finder>
+        <finder name="DossierId" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+        </finder>
 		
 
 	</entity>
