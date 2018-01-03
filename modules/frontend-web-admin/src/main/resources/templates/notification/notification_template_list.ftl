@@ -25,7 +25,7 @@
 		</div>
 				
 			
-		<ul class="ul-with-border ul-with-border-style-2 mh-head-1" id="_notification_listView"></ul>
+		<ul class="ul-default ul-with-border ul-with-border-style-2 mh-head-1" id="_notification_listView"></ul>
 		
 		<script type="text/x-kendo-tmpl" id="_notification_template">
 		
@@ -43,7 +43,9 @@
 					
 				<div class="col-sm-9 PL0">
 				
-					<strong id="notificationTitle#:id#" class="btn-block">#= emailSubject #</strong>
+					<strong id="notificationTitle#:id#" title="#= emailSubject #" 
+						class="btn-block">#= emailSubject #
+					</strong>
 					<span id="notificationMsg#:id#" class="btn-block">#= notificationType #</span>
 				
 				</div>
