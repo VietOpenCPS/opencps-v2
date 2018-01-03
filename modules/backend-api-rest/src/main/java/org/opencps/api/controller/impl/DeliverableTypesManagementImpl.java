@@ -317,6 +317,13 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return processException(e);
 		}
 	}
+	
+	@Override
+	public Response getGeneratecode(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id) {
+		// TODO Get Deliverable Type by Id or typeCode
+		return null;
+	}
 
 	private Response processException(Exception e) {
 		ErrorMsg error = new ErrorMsg();
