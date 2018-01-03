@@ -1,44 +1,21 @@
 <#if (Request)??>
-	<#include "init.ftl">
+  <#include "init.ftl">
 </#if>
 
 <div id="registration_template_part_model">
 
   <form id="fm">
+    
     <div class="row MT10">
       <div class="col-xs-12 col-sm-12">
         <div class="row">
           <div class="col-xs-12 col-sm-12">
-            Cơ quan tiếp nhận hồ sơ doanh nghiệp:
-          </div>
-        </div>
-        <div class="row MT5">
-          <div class="col-xs-12 col-sm-6">
-            <input name="govAgency" id="govAgencyDetail" data-role="combobox" data-placeholder="" data-text-field="itemName" data-value-field="itemCode" data-source="dataGovAgencyDetail">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row MT10">
-      <div class="col-xs-12 col-sm-8">
-        <div class="row">
-          <div class="col-xs-12 col-sm-12">
-            Số hiệu thành phần
+            Mã Server
           </div>
         </div>
         <div class="row MT5">
           <div class="col-xs-12 col-sm-12">
-            <input id="formNo" name="formNo" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:formNo"/>
-          </div>
-        </div>
-      </div>
-      <div class="col-xs-12 col-sm-4">
-        <div class="row">
-          <div class="col-xs-12 col-sm-12 invisible">invisible</div>
-        </div>
-        <div class="row MT5">
-          <div class="col-xs-12 col-sm-12">
-            <div class="checkbox MB0 MT5"> <input type="checkbox" id="required" name="required"> <label>Cho phép tạo nhiều thành phần</label> </div>
+            <input id="serverNo" name="serverNo" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:serverNo"/>
           </div>
         </div>
       </div>
@@ -47,12 +24,12 @@
       <div class="col-xs-12 col-sm-12">
         <div class="row">
           <div class="col-xs-12 col-sm-12">
-            Tên thành phần
+            Tên Server
           </div>
         </div>
         <div class="row MT5">
           <div class="col-xs-12 col-sm-12">
-            <input id="formName" name="formName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:formName"/>
+            <input id="serverName" name="serverName" class="k-textbox form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value:serverName"/>
           </div>
         </div>
       </div>
@@ -62,12 +39,12 @@
       <div class="col-xs-12 col-sm-12">
         <div class="row">
           <div class="col-xs-12 col-sm-12">
-            Mã tạo form
+            Loại giao thức sử dụng
           </div>
         </div>
         <div class="row MT5">
           <div class="col-xs-12 col-sm-12">
-            <textarea id="formScript" rows="5" name="formScript" class="k-textbox form-control" data-bind="value:formScript"></textarea>
+            <textarea id="protocol" rows="5" name="protocol" class="k-textbox form-control" data-bind="value:protocol"></textarea>
           </div>
         </div>
       </div>
@@ -76,26 +53,12 @@
       <div class="col-xs-12 col-sm-12">
         <div class="row">
           <div class="col-xs-12 col-sm-12">
-            Mã thiết kế xml jasper
+            Tham số cofigs
           </div>
         </div>
         <div class="row MT5">
           <div class="col-xs-12 col-sm-12">
-            <textarea id="formReport" rows="5" name="formReport" class="k-textbox form-control" data-bind="value:formReport"></textarea>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row MT10">
-      <div class="col-xs-12 col-sm-12">
-        <div class="row">
-          <div class="col-xs-12 col-sm-12">
-            Dữ liệu mẫu
-          </div>
-        </div>
-        <div class="row MT5">
-          <div class="col-xs-12 col-sm-12">
-            <textarea id="sampleData" rows="5" name="sampleData" class="k-textbox form-control" data-bind="value:sampleData"></textarea>
+            <textarea id="lastSync" rows="5" name="lastSync" class="k-textbox form-control" data-bind="value:lastSync"></textarea>
           </div>
         </div>
       </div>
@@ -103,9 +66,6 @@
     <div class="row MT10 text-center">
       <button id="btn_save_registration_template_part" class="k-button btn-primary" title="Ghi lại">Ghi lại</button>
       <button id="btn_cancel_registration_template_part" class="k-button btn-default" title="Hủy bỏ">Hủy bỏ</button>
-      <button class="btn btn-active" id="btn-view-registrationtemplate-form" type="button">
-        View Form
-      </button>
     </div>
   </form>
 </div>
@@ -152,30 +112,29 @@
     updateregistrationTemplatePart(registrationTemplatePartDataPk);
   });
   // Button "ViewForm"
-  $(document).on("click","#btn-view-registrationtemplate-form",function(){
-    var formScript = $("textarea#formScript").val();
-    var sampleData = $("textarea#sampleData").val();
-    if(formScript){
+  // $(document).on("click","#btn-view-registrationtemplate-form",function(){
+  //   var thamso = $("textarea#thamso").val();
+  //   if(formScript){
       
-      try {
-        var formJson = eval("(" + formScript + ")");
-        $("#registrationtemplate-form-alpaca").empty();
-        $("#registrationtemplate-form-alpaca").alpaca(formJson);
+  //     try {
+  //       var formJson = eval("(" + formScript + ")");
+  //       $("#registrationtemplate-form-alpaca").empty();
+  //       $("#registrationtemplate-form-alpaca").alpaca(formJson);
 
-        $("#registrationTemplateFormPreView").modal("show");
+  //       $("#registrationTemplateFormPreView").modal("show");
 
-      } catch (e) {
-        notification.show({
-          message: "Form lỗi, Vui lòng kiểm tra lại cú pháp!"
-        }, "error");
+  //     } catch (e) {
+  //       notification.show({
+  //         message: "Form lỗi, Vui lòng kiểm tra lại cú pháp!"
+  //       }, "error");
 
-      }
-    }else { 
-      notification.show({
-        message: "Vui lòng nhập Mã tạo form!"
-      }, "error");
-    }  
-  }); 
+  //     }
+  //   }else { 
+  //     notification.show({
+  //       message: "Vui lòng nhập Mã tạo form!"
+  //     }, "error");
+  //   }  
+  // }); 
   // Function event "Ghi lại"
   var updateregistrationTemplatePart = function(registrationTemplatePartDataPk){
     if (!validateTemplatePart()){
@@ -184,17 +143,14 @@
     var url = "";
     var type = "";
 
-    // console.log(registrationTemplatePartDataPk);
-    // console.log($("#govAgencyDetail").val());
-    // console.log($("#formName").val());
-    // console.log($("#formNo").val());
-    // console.log($('#required').is(':checked'));
-
+    // console.log('check: ',check);
     if (registrationTemplatePartDataPk){
-      url = "${api.server}" + "/registrationtemplates/" + registrationTemplatePartDataPk;
+      // url = "${api.server}" + "/registrationtemplates/" + registrationTemplatePartDataPk;
+      url="${api.server}/serverconfigs/"+ registrationTemplatePartDataPk;
       type = "PUT";
     } else {
-      url = "${api.server}" + "/registrationtemplates";
+      // url = "${api.server}" + "/registrationtemplates";
+      url="${api.server}/serverconfigs";
       type = "POST";
     }
 
@@ -204,58 +160,31 @@
       url: url,
       type: type,
       dataType: "json",
-      headers: {"groupId": ${groupId}},
+      // headers: {"groupId": ${groupId}},
       data: {
-        govAgencyCode : $("#govAgencyDetail").val(),
-        formNo: $("#formNo").val(),
-        formName: $("#formName").val(),
-        multiple: $('#required').is(':checked')
+        serverNo: $("#serverNo").val(),
+        serverName: $("#serverName").val(),
+        protocol: $("#protocol").val(),
       },
       success: function(result) {
         
-        registrationTemplatePartDataPk = result.registrationTemplateId;
+         var h = result.serverConfigId;
 
         var upFormscriptSuccess = false, upFormReportSuccess = false, upSampleDataSuccess = false;
         $.ajax({
-          url: "${api.server}" + "/registrationtemplates/" + registrationTemplatePartDataPk +"/formscript",
+          // url: "${api.server}" + "/registrationtemplates/" + registrationTemplatePartDataPk +"/formscript",
+          url:"${api.server}/serverconfigs/"+h+"/configs",
           type: "PUT",
           dataType: "json",
-          headers: {"groupId": ${groupId}},
+          // headers: {"groupId": ${groupId}},
           async: false,
           data: {
-            formScript: $("#formScript").val()
+            lastSync: $("#lastSync").val()
           },
           success: function(result) {
             upFormscriptSuccess = true;
           }
         });
-        $.ajax({
-          url: "${api.server}" + "/registrationtemplates/" + registrationTemplatePartDataPk +"/formreport",
-          type: "PUT",
-          dataType: "json",
-          headers: {"groupId": ${groupId}},
-          async: false,
-          data: {
-            formReport: $("#formReport").val()
-          },
-          success: function(result) {
-            upFormReportSuccess = true;
-          }
-        });
-        $.ajax({
-          url: "${api.server}" + "/registrationtemplates/" + registrationTemplatePartDataPk +"/sampledata",
-          type: "PUT",
-          dataType: "json",
-          headers: {"groupId": ${groupId}},
-          async: false,
-          data: {
-            sampleData: $("#sampleData").val()
-          },
-          success: function(result) {
-            upSampleDataSuccess = true;
-          }
-        });
-
         if (upFormscriptSuccess && upFormReportSuccess && upSampleDataSuccess){
           notification.show({
             message: "Yêu cầu được thực hiện thành công"
@@ -278,13 +207,13 @@
   };
   // Function event validate
   function validateTemplatePart(){
-    if (!$("#formNo").val()){
+    if (!$("#serverNo").val()){
       notification.show({
         message: "Mời nhập số hiệu thành phần"
       }, "error");
       return false;
     }
-    if (!$("#formName").val()){
+    if (!$("#serverName").val()){
       notification.show({
         message: "Mời nhập tên thành phần"
       }, "error");
@@ -296,30 +225,6 @@
 
 </script>
 
-<script type="text/javascript">
 
-  var dataGovAgencyDetail = new kendo.data.DataSource({
-    transport:{
-      read:{
-        // url: "http://localhost:3000/dictitems",
-        url:"${api.server}/dictcollections/GOVERNMENT_AGENCY/dictitems",
-        dataType:"json",
-        type:"GET",
-        headers : {"groupId": ${groupId}}
-      }
-    },
-    schema:{
-      data:"data",
-      total:"total"
-    }
-  });
-  var govAgencyDetail = kendo.observable({
-    dataGovAgencyDetail: dataGovAgencyDetail,
-    dataBound: function() {
-      $(".k-clear-value").addClass("k-hidden")
-    }
-  });
-  kendo.bind($("#govAgencyDetail"), govAgencyDetail);
-</script>
 
 

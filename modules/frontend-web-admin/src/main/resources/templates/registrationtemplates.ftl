@@ -1,4 +1,4 @@
-<#if (Request)??>
+<#if (Request)??>Package Control: 
 <#include "init.ftl">
 </#if>
 <div class="row">
@@ -6,19 +6,14 @@
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-xs-12 col-sm-12">
-					<button id="btn_add_registrationtemplate" class="k-button btn-primary form-control" title="Thêm mẫu hồ sơ"><i class="glyphicon glyphicon-plus"></i> Thêm mẫu thành phần hồ sơ </button>
-				</div>
-			</div>
-			<div class="row MT10">
-				<div class="col-xs-12 col-sm-12">
-					<input name="govAgency" id="govAgency" data-role="combobox" data-placeholder="Chọn cơ quan" data-text-field="itemName" data-value-field="itemCode" data-source="dataGovAgency" data-bind="events: { change: filterGov, dataBound: dataBound}" style="height: 30px">
+					<button id="btn_add_registrationtemplate" class="k-button btn-primary form-control" title="Thêm mẫu hồ sơ"><i class="glyphicon glyphicon-plus"></i> Thêm mới </button>
 				</div>
 			</div>
 			<#--  -->
 			<div class="row MT10">
 				<div class="col-xs-12 col-sm-12">
 					<div class="input-group">
-						<input type="text" class="form-control" id="input_search_registrationtemplate" placeholder="Số hiệu mẫu, Tên mẫu" title="Nhập Số hiệu mẫu hoặc Tên mẫu thành phần hồ sơ để tìm kiếm">
+						<input type="text" class="form-control" id="input_search_registrationtemplate" placeholder="Tên server, Mã server" title="Nhập Tên server hoặc Mã server">
 						<div class="input-group-addon btn-primary" id="btn_search_registration_template" title="Tìm kiếm"><i class="fa fa-search" aria-hidden="true"></i></div>
 					</div>
 				</div>
@@ -33,9 +28,9 @@
 		</div>
 
 		<script type="text/x-kendo-template" id="registration_template_template">
-			<li class="clearfix" data-regTemplateId="#:id#" data-govAgc="#:govAgencyCode#" data-multiple="#:multiple#" data-formNo="#:formNo#" data-formName="#:formName#" style="padding: 10px 0 10px 5px;"  aria-selected="true">
+			<li class="clearfix" data-regTemplateId="#:id#" data-maserver="#:serverNo#" data-tenserver="#:serverName#" data-giaothuc="#:protocol#" style="padding: 10px 0 10px 5px;"  aria-selected="true">
 				<div class="P0 col-xs-12 col-sm-12 registration-template-item" data-pk="#: id #">
-					<strong class="col-sm-11 PL0 PR5">#: formName #</strong>
+					<strong class="col-sm-11 PL0 PR5">#: serverName #</strong>
 					<a class="btn-group deleteItem col-sm-1 P0" registrationId="#:id#" href="javascript:;" title="Xóa">
 						<i aria-hidden="true" class="fa fa-trash"></i>
 					</a>
@@ -46,7 +41,7 @@
 	</div>
 
 	<div class="col-xs-12 col-sm-9">
-		<div class="panel panel-heading" style="background-color: #337ab7; color: #ffffff">THÔNG TIN MẪU THÀNH PHẦN HỒ SƠ DOANH NGHIỆP</div>
+		<div class="panel panel-heading" style="background-color: #337ab7; color: #ffffff">THÔNG TIN SERVER</div>
 		<div class="panel panel-body PT0">
 			<#include "registrationtemplates_detail.ftl">
 		</div>
@@ -55,43 +50,16 @@
 
 <script type="text/javascript">
 	
-		var dataGovAgency = new kendo.data.DataSource({
-			transport:{
-				read:{
-					// url: "http://localhost:3000/dictitems",
-					url:"${api.server}/dictcollections/GOVERNMENT_AGENCY/dictitems",
-					dataType:"json",
-					type:"GET",
-					headers : {"groupId": ${groupId}}
-				}
-			},
-			schema:{
-				data:"data",
-				total:"total"
-			}
-		});
-
-		var govAgency = kendo.observable({
-			dataGovAgency: dataGovAgency,
-			dataBound: function() {
-				$(".k-clear-value").addClass("k-hidden")
-			},
-			filterGov: function(){
-				registrationtemplatesFilter()
-			}
-		});
-
-		kendo.bind($("#govAgency"), govAgency);
-		// 
 		var registrationTemplateDataSource = new kendo.data.DataSource({
 			transport: {
 				read: function(options) {
 					$.ajax({
-						url: "${api.server}" + "/registrationtemplates",
+						// url: "${api.server}" + "/registrationtemplates",
 						// url: "http://localhost:3000/registrationtemplates",
+						url:"${api.server}/serverconfigs",
 						type: "GET",
 						dataType: "json",
-						headers: {"groupId": ${groupId}},
+						// headers: {"groupId": ${groupId}},
 						data: {
 							
 						},
@@ -115,13 +83,13 @@
 			schema: {
 				total: "total",
 				data: "data",
-				model : { id: "registrationTemplateId" }
+				model : { id: "serverConfigId" }
 			},
 			pageSize: 10,
 			serverPaging: false,
 			serverSorting: false,
 			serverFiltering: false,
-			sort: { field: "createDate", dir: "desc" }
+			// sort: { field: "serverConfigId", dir: "desc" }  //sort: sắp xếp
 		});
 
 		// var firstTimeLoad = true;
@@ -137,16 +105,16 @@
 					$("#registration_template_pager .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"})
 			},
 			change: function() {
-				var registrationTemplateId, registrationformNo, registrationformName, registrationGovagency, registrationMultiple;
+				var registrationTemplateId, registrationMaserver, registrationTenserver, registrationGiaothuc;
 				var index = this.select().index();
 				var dataItem = this.dataSource.view()[index];
 				registrationTemplateId = this.select().attr("data-regTemplateId");
-				registrationformNo = this.select().attr("data-formNo");
-				registrationformName = this.select().attr("data-formName");
-				registrationGovagency = this.select().attr("data-govAgc");
-				registrationMultiple = this.select().attr("data-multiple");
+				registrationMaserver = this.select().attr("data-maserver");
+				registrationTenserver = this.select().attr("data-tenserver");
+				// registrationThamso = this.select().attr("data-thamso");
+				registrationGiaothuc = this.select().attr("data-giaothuc");
 				$("#btn_save_registration_template").attr("data-pk", dataItem.id);
-				loadregistrationTempDetail(registrationTemplateId, registrationformNo, registrationformName,registrationGovagency,registrationMultiple);
+				loadregistrationTempDetail(registrationTemplateId, registrationMaserver, registrationTenserver, registrationGiaothuc);
 				deleteRegistrationTemp();
 				$("#registration_template_pager .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"})
 			}
@@ -159,38 +127,22 @@
 				var cf = confirm("Xác nhận xóa mẫu thành phần hồ sơ: "+itemId);
 				if (cf) {
 					$.ajax({
-						url: "${api.server}/registrationtemplates/" + itemId,
+						// url: "${api.server}/registrationtemplates/" + itemId,
+						url:"${api.server}/serverconfigs/"+ itemId,
 						type: "DELETE",
 						dataType: "json",
-						headers: {"groupId": ${groupId}},
-						// statusCode: {
-					 //    200: function() {
-					 //      notification.show({
-						// 			message: "Xóa mẫu thành phần hồ sơ thành công!"
-						// 		}, "success");
-						// 		$("#registration_template_list_view").getKendoListView().dataSource.read();
-						//   }
-					 //  }
-						// success: function(result) {
-						// 	notification.show({
-						// 		message: "Xóa mẫu thành phần hồ sơ thành công!"
-						// 	}, "success");
-						// 	$("#registration_template_list_view").getKendoListView().dataSource.read();
-						// },
-						// error: function(result) {
-						// 	notification.show({
-						// 		message: "Xảy ra lỗi, vui lòng thử lại!"
-						// 	}, "error");
-						// }
-					}).done(function(){
-						notification.show({
-							message: "Xóa mẫu thành phần hồ sơ thành công!"
-						}, "success");
-						$("#registration_template_list_view").getKendoListView().dataSource.read();
-					}).fail(function(){
+						// headers: {"groupId": ${groupId}},
+						success: function(result) {
 							notification.show({
-							message: "Xảy ra lỗi, vui lòng thử lại!"
-						}, "error");
+								message: "Xóa mẫu thành phần hồ sơ thành công!"
+							}, "success");
+							$("#registration_template_list_view").getKendoListView().dataSource.read();
+						},
+						error: function(result) {
+							notification.show({
+								message: "Xảy ra lỗi, vui lòng thử lại"
+							}, "error");
+						}
 					});
 				}
 			});
@@ -217,17 +169,16 @@
 		});
 
 		var registrationtemplatesFilter = function(){
-			var filterGov = $("#govAgency").val();
 			var inputSearch = $("#input_search_registrationtemplate").val();
 			registrationTemplateDataSource.filter({
 		    logic: "and",
 		    filters: [
-	 				{ field: "govAgencyCode", operator: "contains", value: filterGov },
+	 				
 		      {
 		        logic: "or",
 		        filters: [
-		          { field: "formNo", operator: "contains", value: inputSearch },
-		      		{ field: "formName", operator: "contains", value: inputSearch }
+		          { field: "serverName", operator: "contains", value: inputSearch },
+		      		{ field: "serverNo", operator: "contains", value: inputSearch }
 		        ]
 		     	}
 		    ]
@@ -237,73 +188,44 @@
 		// Button Add registrationtemplate
 		$(document).on("click", "#btn_add_registrationtemplate", function(event){
 			event.preventDefault();
-			$("#govAgency").data("kendoComboBox").value("");
 			$("#registration_template_list_view li.k-state-selected").removeClass("k-state-selected");
 			var viewModel = kendo.observable({
-				formNo : "",
-				formName : "",
-				formScript: "",
-				formReport: "",
-				sampleData:"",
-				multiple: false
+				serverNo : "",
+				serverName : "",
+				protocol: "",
+				lastSync: ""
 			});
 			kendo.bind($("#registration_template_part_model"), viewModel);
 			$("#btn_save_registration_template_part").attr("data-pk", "");
 		});
 // ---------------------
-	  var loadregistrationTempDetail = function(registrationTemplateId,registrationformNo,registrationformName,registrationGovagency,registrationMultiple){
+	  var loadregistrationTempDetail = function(registrationTemplateId, registrationMaserver, registrationTenserver, registrationGiaothuc){
 	    
-	    var formScript, formReport, sampleData;
+	    var lastSync;
 	    $.ajax({
-	      url: "${api.server}" + "/registrationtemplates/" + registrationTemplateId+"/formscript",
+	      // url: "${api.server}" + "/registrationtemplates/" + registrationTemplateId+"/formscript",
 	      // url: "http://localhost:3000/registrationformscript",
+	      url:"${api.server}/serverconfigs/"+registrationTemplateId+"/configs",
 	      type: "GET",
-	      dataType: "json",
-	      headers: {"groupId": ${groupId}},
+	      dataType: "text",
+	      // headers: {"groupId": ${groupId}},
 	      async: false,
 	      success: function(result) {
-	        formScript = result.formScript;
+	      	lastSync=result;
 	      }
 	    });
-	    $.ajax({
-	      url: "${api.server}" + "/registrationtemplates/" + registrationTemplateId +"/formreport",
-	      // url: "http://localhost:3000/registrationformreport",
-	      type: "GET",
-	      dataType: "json",
-	      headers: {"groupId": ${groupId}},
-	      async: false,
-	      success: function(result) {
-	        formReport = result.formReport;
-	      }
-	    });
-	    $.ajax({
-	      url: "${api.server}" + "/registrationtemplates/" + registrationTemplateId + "/sampledata",
-	      // url: "http://localhost:3000/registrationformsampledata",
-	      type: "GET",
-	      dataType: "json",
-	      headers: {"groupId": ${groupId}},
-	      async: false,
-	      success: function(result) {
-	        sampleData = result.sampleData;
-	      }
-	    });
+	    
 
 	    var viewModel = kendo.observable({
-	      formNo: registrationformNo,
-	      formName: registrationformName,
-	      formScript: formScript,
-	      formReport: formReport,
-	      sampleData: sampleData
+	      serverName: registrationTenserver,
+	      serverNo: registrationMaserver,
+	      protocol: registrationGiaothuc,
+	      lastSync: lastSync
 	    });
 
 	    kendo.bind($("#registration_template_part_model"), viewModel);
-	    $("#govAgencyDetail").data("kendoComboBox").value(registrationGovagency);
 	    $("#btn_save_registration_template_part").attr("data-pk", registrationTemplateId);
-	    var multipleDetail;
-	    if (registrationMultiple == "false") {
-	    	multipleDetail = false
-	    } else {multipleDetail= true};
-	    $("#required").prop( "checked", multipleDetail);
+	   
 	  };
 
 </script>
