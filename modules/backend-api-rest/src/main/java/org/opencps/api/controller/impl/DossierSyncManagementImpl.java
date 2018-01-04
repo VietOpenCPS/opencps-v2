@@ -154,8 +154,8 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				// Get DOSSIER in CLIENT
 				Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierSync.getDossierId());
 
-				// Get dossierAction is dossierSync classPK
-				long dossierActionId = dossierSync.getClassPK();
+				// Get the latest ACTION of DOSSIER has been done
+				long dossierActionId = Validator.isNotNull(dossier) ? dossierActionId = dossier.getDossierActionId() : 0l;
 
 				if (dossierActionId != 0) {
 
@@ -371,7 +371,10 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 		// Sync paymentStatus
 		if (method == 3) {
-			PaymentFile paymentFileClient = PaymentFileLocalServiceUtil.fectPaymentFile(dossierSyncId, refId);
+		    DossierSync sync = DossierSyncLocalServiceUtil.getDossierSync(dossierSyncId);
+		    
+			PaymentFile paymentFileClient = PaymentFileLocalServiceUtil.fectPaymentFile(
+			    sync.getDossierId(), sync.getDossierReferenceUid());
 			try {
 				File file = File.createTempFile(String.valueOf(System.currentTimeMillis()), StringPool.PERIOD + "tmp");
 
@@ -413,9 +416,9 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 		}
 
 		// remove pending in DossierAction
-		int countDossierSync = DossierSyncLocalServiceUtil.countByGroupDossierId(groupId, dossierId);
+		int countDossierSync = DossierSyncLocalServiceUtil.countByDossierId(dossierId);
 
-		if (countDossierSync == 0) {
+		if (countDossierSync == 0 && clientDossierActionId > 0) {
 			DossierActionLocalServiceUtil.updatePending(clientDossierActionId, false);
 		}
 
