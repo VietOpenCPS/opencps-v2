@@ -16,5 +16,5 @@ public interface DossierActionUser {
 
 	public void initDossierActionUser(long dossierActionId, long userId, long groupId, long assignedUserId) throws PortalException;
 	
-	public void assignDossierActionUser(long dossierActionId, long userId, long groupId, String assignedUsers) throws PortalException;
+	public void assignDossierActionUser(long dossierActionId, long userId, long groupId, long assignUserId, String data) throws PortalException;
 }

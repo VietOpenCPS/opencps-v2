@@ -82,7 +82,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 	}
 
 	@Override
-	public void assignDossierActionUser(long dossierActionId, long userId, long groupId, String assignedUsers)
+	public void assignDossierActionUser(long dossierActionId, long userId, long groupId, long assignUserId, String data)
 			throws PortalException {
 		// Get DossierAction
 		DossierAction dossierAction = DossierActionLocalServiceUtil.getDossierAction(dossierActionId);
@@ -107,7 +107,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 				mod = 1;
 			}
 			// Get list user
-			JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignedUsers);
+			JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(data);
 			// TODO insert to actionUser
 		}
 	}
