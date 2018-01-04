@@ -53,7 +53,8 @@ import javax.xml.bind.annotation.XmlType;
     "formScript",
     "formData",
     "counter",
-    "returned"
+    "returned",
+    "dossierFileId"
 })
 public class DossierActionNextActioncreateFiles {
 
@@ -69,7 +70,31 @@ public class DossierActionNextActioncreateFiles {
     protected String referenceUid;
     protected Integer counter;
     protected Boolean returned;
+    protected Long dossierFileId;
     
+    /**
+     * Gets the value of the dossierFileId property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getDossierFileId() {
+        return dossierFileId;
+    }
+
+    /**
+     * Sets the value of the dossierFileId property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setDossierFileId(Long value) {
+        this.dossierFileId = value;
+    }
 
     /**
      * Gets the value of the returned property.

@@ -14,6 +14,8 @@ import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.util.UserMgtUtils;
 import org.opencps.usermgt.utils.DateTimeUtils;
 import org.osgi.service.component.annotations.Activate;
@@ -39,6 +41,8 @@ import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpMethods;
@@ -155,6 +159,27 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
                                 registrationClient.setSubmitting(Boolean.FALSE);
                                 
                                 RegistrationLocalServiceUtil.updateRegistration(registrationClient);
+                                
+                                //Update application info
+                                Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(registrationClient.getUserId());
+                                applicant.setContactTelNo(registrationClient.getContactTelNo());
+                                applicant.setContactName(registrationClient.getContactName());
+                                applicant.setApplicantName(registrationClient.getApplicantName());
+                                applicant.setApplicantIdType(registrationClient.getApplicantIdType());
+                                applicant.setApplicantIdNo(registrationClient.getApplicantIdNo());
+                                applicant.setApplicantIdDate(registrationClient.getApplicantIdDate());
+                                applicant.setAddress(registrationClient.getAddress());
+                                applicant.setCityCode(registrationClient.getCityCode());
+                                applicant.setCityName(registrationClient.getCityName());
+                                applicant.setDistrictCode(registrationClient.getDistrictCode());
+                                applicant.setDistrictName(registrationClient.getDistrictName());
+                                applicant.setWardCode(registrationClient.getWardCode());
+                                applicant.setWardName(registrationClient.getWardName());
+                                applicant.setContactEmail(registrationClient.getContactEmail());
+                                
+                                ApplicantLocalServiceUtil.updateApplicant(applicant);
+                                Indexer<Applicant> indexApplicant = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
+                                indexApplicant.reindex(applicant);
                             }
     				    } catch (NoSuchRegistrationException nsge) {
     				        

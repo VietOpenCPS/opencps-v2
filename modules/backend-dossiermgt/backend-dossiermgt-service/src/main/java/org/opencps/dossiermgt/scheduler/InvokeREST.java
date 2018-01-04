@@ -16,6 +16,8 @@ import org.opencps.dossiermgt.action.util.MultipartUtility;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 public class InvokeREST {
@@ -47,7 +49,6 @@ public class InvokeREST {
 					conn.setRequestProperty(m.getKey().toString(), m.getValue().toString());
 				}
 			}
-
 
 			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
 
@@ -81,15 +82,20 @@ public class InvokeREST {
 
 		JSONObject response = JSONFactoryUtil.createJSONObject();
 
+		HttpURLConnection conn = null;
+
+		BufferedReader br = null;
+
 		try {
 
 			URL url = new URL(pathBase + endPoint);
 
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn = (HttpURLConnection) url.openConnection();
 
 			String authString = username + ":" + password;
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
+
 			conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
 
 			conn.setRequestMethod(httpMethod);
@@ -101,12 +107,13 @@ public class InvokeREST {
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {
+					_log.info("=============================== properties " + m.getKey().toString() + "|" + m.getValue().toString());
 					conn.setRequestProperty(m.getKey().toString(), m.getValue().toString());
 				}
 			}
 
 			StringBuilder postData = new StringBuilder();
-			
+
 			for (Map.Entry<String, Object> param : params.entrySet()) {
 				if (postData.length() != 0)
 					postData.append('&');
@@ -121,7 +128,7 @@ public class InvokeREST {
 
 			conn.getOutputStream().write(postDataBytes);
 
-			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+			br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
 
 			String output;
 
@@ -137,10 +144,22 @@ public class InvokeREST {
 			conn.disconnect();
 
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			_log.error("Can't invoke api " + pathBase + endPoint, e);
 		} catch (IOException e) {
+			_log.error("Can't invoke api " + pathBase + endPoint, e);
 
-			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				conn.disconnect();
+			}
+
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					_log.error(e);
+				}
+			}
 
 		}
 
@@ -154,18 +173,18 @@ public class InvokeREST {
 		JSONObject response = JSONFactoryUtil.createJSONObject();
 
 		try {
-			
+
 			String authString = username + ":" + password;
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 
 			String requestURL = pathBase + endPoint;
-			
+
 			MultipartUtility multipart = new MultipartUtility(requestURL, "UTF-8", groupId, authStringEnc);
 			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
 
 			multipart.addFilePart("file", file);
-			
+
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {
 					multipart.addFormField(m.getKey().toString(), m.getValue().toString());
@@ -174,16 +193,15 @@ public class InvokeREST {
 			}
 
 			List<String> res = multipart.finish();
-			
+
 			StringBuilder sb = new StringBuilder();
 
 			for (String line : res) {
 				sb.append(line);
 			}
-			
+
 			response.put(RESTFulConfiguration.STATUS, HttpURLConnection.HTTP_OK);
 			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
-
 
 		} catch (Exception e) {
 			response.put(RESTFulConfiguration.STATUS, HttpURLConnection.HTTP_FORBIDDEN);
@@ -193,4 +211,5 @@ public class InvokeREST {
 		return response;
 	}
 
+	private Log _log = LogFactoryUtil.getLog(InvokeREST.class.getName());
 }

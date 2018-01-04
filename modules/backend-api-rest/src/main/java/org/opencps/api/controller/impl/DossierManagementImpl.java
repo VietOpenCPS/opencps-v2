@@ -77,13 +77,12 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
 
-		
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			
+
 			boolean isCitizen = dossierPermission.isCitizen(user.getUserId());
 
 			dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
@@ -109,8 +108,8 @@ public class DossierManagementImpl implements DossierManagement {
 			int year = query.getYear();
 			int month = query.getMonth();
 			String owner = query.getOwner();
-			//If user is citizen then default owner true
-			if(isCitizen){
+			// If user is citizen then default owner true
+			if (isCitizen) {
 				owner = String.valueOf(true);
 			}
 			String follow = query.getFollow();
@@ -665,9 +664,9 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 		} catch (Exception e) {
-			
-			_log.error(e);
-			
+
+			_log.error("Can't doAction with id = " + id, e);
+
 			ErrorMsg error = new ErrorMsg();
 
 			if (e instanceof UnauthenticationException) {
@@ -779,7 +778,8 @@ public class DossierManagementImpl implements DossierManagement {
 		ProcessAction action = null;
 
 		try {
-			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode, serviceProcessId);
+			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
+					serviceProcessId);
 
 			Dossier dossier = getDossier(groupId, dossierId, refId);
 
@@ -916,26 +916,40 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response updateDossierNo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id, String dossierno) {
-		
+			User user, ServiceContext serviceContext, String id) {
+
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		String dossierno = GetterUtil.getString(header.getHeaderString("dossierno"));
+
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			
+
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			
+			_log.info("===================== dossierId " + id);
+			
+			_log.info("===================== groupId " + groupId);
+			
+			_log.info("===================== dossierno " + dossierno);
 
 			Dossier dossier = getDossier(id, groupId);
 			
-			dossier.setDossierNo(dossierno);
-			
-			DossierLocalServiceUtil.updateDossier(dossier);
+			if(dossier != null && Validator.isNull(dossier.getDossierNo())){
+				dossier.setDossierNo(dossierno);
+
+				DossierLocalServiceUtil.updateDossier(dossier);
+			}
 
 			return Response.status(200).entity("OK").build();
 
 		} catch (Exception e) {
+
+			_log.error("Can't syncDossierNo with id = " + id, e);
+
 			ErrorMsg error = new ErrorMsg();
 
 			if (e instanceof UnauthenticationException) {
@@ -964,9 +978,9 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 		}
-		
+
 	}
-	
+
 	Log _log = LogFactoryUtil.getLog(DossierManagementImpl.class);
 
 }
