@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							$.ajax({
 								url: url,
 								headers: {
-								"groupId": themeDisplay.getScopeGroupId()
+									"groupId": themeDisplay.getScopeGroupId()
 								},
 								data: {
 									"actionCode": item.actionCode,
@@ -1620,7 +1620,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
                     'label': 'Lựa chọn cán bộ phân công xử lý ',
                     "item_text": "userName",
                     "item_value": "userId",
-                    "single_line": true,
                     "hide_selected": true,
                     "chips": true,
                     "deletable_chips": true,
