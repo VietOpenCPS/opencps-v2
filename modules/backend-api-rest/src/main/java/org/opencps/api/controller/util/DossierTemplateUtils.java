@@ -151,7 +151,7 @@ public class DossierTemplateUtils {
 		output.setEsign(Boolean.toString(object.getESign()));
 		output.setFileTemplateNo(object.getFileTemplateNo());
 		
-		output.setDeliverableType(object.getDeliverableType());
+		output.setTypeCode(object.getDeliverableType());
 		output.setDeliverableAction(object.getDeliverableAction());
 
 		return output;
