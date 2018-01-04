@@ -26,6 +26,7 @@ import java.util.Properties;
 
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.exception.DuplicateProcessNameException;
 import org.opencps.dossiermgt.exception.DuplicateProcessNoException;
@@ -365,76 +366,76 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 		
 		switch (key) {
 		case "110":
-			dossierStatus = "new";
+			dossierStatus = DossierStatusConstants.NEW;
 			break;
 
 		case "120":
-			dossierStatus = "collecting";
+			dossierStatus = DossierStatusConstants.COLLECTING;
 
 			break;
 
 		case "130":
-			dossierStatus = "receiving";
+			dossierStatus = DossierStatusConstants.RECEIVING;
 
 			break;
 
 		case "131":
-			dossierStatus = "waiting";
+			dossierStatus = DossierStatusConstants.WAITING;
 
 			break;
 
 		case "132":
-			dossierStatus = "paying";
+			dossierStatus = DossierStatusConstants.PAYING;
 
 			break;
 
 		case "200":
-			dossierStatus = "processing";
+			dossierStatus = DossierStatusConstants.PROCESSING;
 
 			break;
 
 		case "201":
-			dossierStatus = "waiting";
+			dossierStatus = DossierStatusConstants.WAITING;
 
 			break;
 
 		case "202":
-			dossierStatus = "paying";
+			dossierStatus = DossierStatusConstants.PAYING;
 
 			break;
 
 		case "210":
-			dossierStatus = "handover";
+			dossierStatus = DossierStatusConstants.HANDOVER;
 
 			break;
 
 		case "300":
-			dossierStatus = "releasing";
+			dossierStatus = DossierStatusConstants.RELEASING;
 
 			break;
 
 		case "302":
-			dossierStatus = "paying";
+			dossierStatus = DossierStatusConstants.PAYING;
 
 			break;
 
 		case "310":
-			dossierStatus = "posting";
+			dossierStatus = DossierStatusConstants.POSTING;
 
 			break;
 
 		case "400":
-			dossierStatus = "done";
+			dossierStatus = DossierStatusConstants.DONE;
 
 			break;
 
 		case "410":
-			dossierStatus = "cancelled";
+			dossierStatus = DossierStatusConstants.CANCELLED;
 
 			break;
 
 		default:
-			dossierStatus = "";
+			dossierStatus = StringPool.BLANK;
 			break;
 		}
 		
