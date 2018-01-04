@@ -77,7 +77,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 	public static final String CLASS_NAME = Registration.class.getName();
 
 	@Indexable(type = IndexableType.REINDEX)
-	public Registration insert(long groupId, String applicantName, String applicantIdType, String applicantIdNo,
+	public Registration insert(long groupId, long companyId, String applicantName, String applicantIdType, String applicantIdNo,
 			String applicantIdDate, String address, String cityCode, String cityName, String districtCode,
 			String districtName, String wardCode, String wardName, String contactName, String contactTelNo,
 			String contactEmail, String govAgencyCode, String govAgencyName, int registrationState,
@@ -124,8 +124,8 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setSubmitting(false);
 
 		RegistrationFormActions actionForm = new RegistrationFormActionsImpl();
-
-		actionForm.addRegistrationFormbaseonRegTemplate(groupId, registrationId, govAgencyCode, serviceContext);
+		
+		actionForm.addRegistrationFormbaseonRegTemplate(groupId, companyId, registrationId, govAgencyCode, serviceContext);
 
 		return registrationPersistence.update(model);
 	}

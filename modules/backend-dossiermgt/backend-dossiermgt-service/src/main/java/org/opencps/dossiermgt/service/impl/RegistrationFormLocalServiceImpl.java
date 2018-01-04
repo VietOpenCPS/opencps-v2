@@ -63,7 +63,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		return lstRegistrationForm;
 	}
 
-	public RegistrationForm addRegistrationForm(long groupId, long registrationId, String referenceUid, String formNo,
+	public RegistrationForm addRegistrationForm(long groupId, long companyId, long registrationId, String referenceUid, String formNo,
 			String formName, String formData, String formScript, String formReport, long fileEntryId, boolean isNew,
 			boolean removed, ServiceContext serviceContext) throws PortalException {
 		// TODO Add RegistrationForm
@@ -83,6 +83,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		object.setGroupId(groupId);
 		object.setCreateDate(now);
 		object.setModifiedDate(now);
+		object.setCompanyId(companyId);
 		object.setUserId(userAction.getUserId());
 
 		// Add other fields
@@ -269,6 +270,17 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		message.put("msgToEngine", msgData);
 		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
 
+		return registrationFormPersistence.update(registrationForm);
+	}
+	
+	public RegistrationForm updateFileEntryId(long registrationFormId, long fileEntryId,
+			ServiceContext serviceContext) throws PortalException, SystemException {
+		
+		RegistrationForm registrationForm = registrationFormPersistence.fetchByPrimaryKey(registrationFormId);
+		
+		registrationForm.setIsNew(true);
+		registrationForm.setFileEntryId(fileEntryId);
+		
 		return registrationFormPersistence.update(registrationForm);
 	}
 }
