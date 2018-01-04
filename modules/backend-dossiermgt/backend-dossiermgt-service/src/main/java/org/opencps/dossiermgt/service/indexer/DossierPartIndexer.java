@@ -60,6 +60,7 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 		DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(object.getGroupId(), object.getTemplateNo());
 		
 		document.addNumberSortable(DossierPartTerm.TEMPLATE_ID, dossierTemplate.getPrimaryKey());
+		document.addNumberSortable(DossierPartTerm.DELIVERABLE_ACTION, object.getDeliverableAction());
 
 
 		// add text fields
@@ -75,6 +76,7 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 		document.addTextSortable(DossierPartTerm.REQUIRED, Boolean.toString(object.getRequired()));
 		document.addTextSortable(DossierPartTerm.FILE_TEMPLATE_NO, object.getFileTemplateNo());
 		document.addTextSortable(DossierPartTerm.ESIGN, Boolean.toString(object.getESign()));
+		document.addTextSortable(DossierPartTerm.DELIVERABLE_TYPE, object.getDeliverableType());
 
 		return document;
 	}
