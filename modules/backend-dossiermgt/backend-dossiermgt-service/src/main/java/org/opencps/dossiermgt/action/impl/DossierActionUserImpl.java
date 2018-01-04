@@ -79,4 +79,11 @@ public class DossierActionUserImpl implements DossierActionUser {
 		}
 	}
 
+	@Override
+	public void assignDossierActionUser(long dossierActionId, long userId, long groupId, String assignedUsers)
+			throws PortalException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

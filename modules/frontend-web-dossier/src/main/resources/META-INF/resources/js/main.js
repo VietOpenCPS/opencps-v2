@@ -242,6 +242,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								vm.stepModel = null;
 							}
                             
+                            vm.processAssignUserIdItems = item.toUsers;
+							
                         },
 						postNextActions: function (item){
 							
@@ -252,6 +254,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 							var assignUserId = 0;
 
+							if (vm.processAssignUserId.userId > 0) {
+								assignUserId = vm.processAssignUserId.userId;
+							}
+							
 							$.ajax({
 								url: url,
 								headers: {
@@ -1605,6 +1611,50 @@ document.addEventListener('DOMContentLoaded', function (event) {
                     'placeholder': 'ý kiến cán bộ ... ',
                     'multi_line': true,
                     'textarea': true
+                },
+                "processAssignUserId": {
+                    'id': 'processAssignUserId',
+                    'name': 'processAssignUserId',
+                    "type": "select",
+					'required': true,
+                    'label': 'Lựa chọn cán bộ phân công xử lý ',
+                    "item_text": "userName",
+                    "item_value": "userId",
+                    "single_line": true,
+                    "hide_selected": true,
+                    "chips": true,
+                    "deletable_chips": true,
+                    "loading": false,
+                    "no_data_text": "Lua chon selected",
+                    "items": [],
+                    'onLoad': '_initprocessAssignUserId',
+                    'events': {
+                        _initprocessAssignUserId: function () {
+                            
+                            this.processAssignUserIdItems = [
+                                {
+                                "userId": 1,
+                                "userName": "userName1",
+                                "moderator": false
+                                },
+                                {
+                                "userId": 2,
+                                "userName": "userName2",
+                                "moderator": false
+                                },
+                                {
+                                "userId": 3,
+                                "userName": "userName3",
+                                "moderator": false
+                                },
+                                {
+                                "userId": 4,
+                                "userName": "userName4",
+                                "moderator": false
+                                }
+                            ];
+                        }
+                    }
                 },
 				// TODO POPUP
 				'popUpViewDossierFile' : {

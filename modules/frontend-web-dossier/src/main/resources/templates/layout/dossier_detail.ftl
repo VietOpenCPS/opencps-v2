@@ -262,6 +262,9 @@
                                     Nhập ý kiến {{stepModel.actionName}}:
                                     <div jx-bind="processActionNote"></div>
                                 </v-flex>
+                                <v-flex xs12 v-if="stepModel.allowAssignUser">
+                                    <div jx-bind="processAssignUserId"></div>
+                                </v-flex>
                             </v-layout>
                         </v-card-title>
                         
