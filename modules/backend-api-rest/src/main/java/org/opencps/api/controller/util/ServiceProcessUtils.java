@@ -242,6 +242,8 @@ public class ServiceProcessUtils {
 			model.setMakeBriefNote(doc.get(ProcessActionTerm.MAKE_BRIEF_NOTE));
 			model.setSyncActionCode(doc.get(ProcessActionTerm.SYNC_ACTION_CODE));
 			model.setRollbackable(doc.get(ProcessActionTerm.ROLLBACKABLE));
+			model.setCreateDossierNo(Boolean.getBoolean(doc.get(ProcessActionTerm.CREATE_DOSSIER_NO)));
+			model.seteSignature(Boolean.getBoolean(doc.get(ProcessActionTerm.ESIGNATURE)));
 
 			outputs.add(model);
 		}
@@ -307,7 +309,10 @@ public class ServiceProcessUtils {
 
 		model.getReturnDossierFiles()
 				.addAll(ListUtil.toList(StringUtil.split(action.getReturnDossierFiles(), StringPool.COMMA)));
-
+		
+		model.setCreateDossierNo(action.getCreateDossierNo());
+		model.seteSignature(action.getESignature());
+		
 		return model;
 	}
 
