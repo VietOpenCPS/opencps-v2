@@ -219,7 +219,10 @@
 
 									<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#">
 
-									<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#"  data-number="#if(hasForm){# 1 #}else {# 0 #}#">
+									<#-- <a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#"  data-number="#if(hasForm){# 1 #}else {# 0 #}#">
+										<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
+									</a> -->
+									<a href="\\#/${(dossierId)!}/files/#:dossierTemplateNo#/#:id#" target="_blank" class="dossier-component-profile" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 										<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
 									</a>
 
@@ -545,9 +548,9 @@
 	
 </div>
 
-<div id="profileDetail" class="modal fade" role="dialog">
+<#-- <div id="profileDetail" class="modal fade" role="dialog">
 
-</div>
+</div> -->
 
 </div>
 <div class="button-row MT20">
@@ -597,17 +600,16 @@
 			});
 		});
 
-		$(document).off("click",".dossier-component-profile");
-		$(document).on("click",".dossier-component-profile",function(){
-			var partNo = $(this).attr("data-partno");
-			var dossierId = "${(dossierId)!}";
-			var dossierTemplateNo = $("#dossierTemplateNo").val();
-			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
+		// $(document).off("click",".dossier-component-profile");
+		// $(document).on("click",".dossier-component-profile",function(){
+		// 	var partNo = $(this).attr("data-partno");
+		// 	var dossierId = "${(dossierId)!}";
+		// 	var dossierTemplateNo = $("#dossierTemplateNo").val();
+		// 	$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
 
-			});
-			// var urlView = "http://dangkiemlaprap.mt.gov.vn/group/cong-tiep-nhan#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo+"";
-			// window.open(urlView,"_blank")
-		});
+		// 	});
+
+		// });
 
 		$(document).off("click",".delete-dossier-file");
 		$(document).on("click",".delete-dossier-file",function(){
