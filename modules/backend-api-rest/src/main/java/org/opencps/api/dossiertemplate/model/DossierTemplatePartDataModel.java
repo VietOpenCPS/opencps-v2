@@ -50,7 +50,9 @@ import javax.xml.bind.annotation.XmlType;
     "required",
     "fileTemplateNo",
     "esign",
-    "hasForm"
+    "hasForm",
+    "deliverableType",
+    "deliverableAction"
 })
 public class DossierTemplatePartDataModel {
 
@@ -63,6 +65,25 @@ public class DossierTemplatePartDataModel {
     protected String fileTemplateNo;
     protected String esign;
     protected String hasForm;
+	protected String deliverableType;
+    protected int deliverableAction;
+
+    public String getDeliverableType() {
+		return deliverableType;
+	}
+
+	public void setDeliverableType(String deliverableType) {
+		this.deliverableType = deliverableType;
+	}
+
+	public int getDeliverableAction() {
+		return deliverableAction;
+	}
+
+	public void setDeliverableAction(int deliverableAction) {
+		this.deliverableAction = deliverableAction;
+	}
+
 
     /**
      * Gets the value of the partNo property.

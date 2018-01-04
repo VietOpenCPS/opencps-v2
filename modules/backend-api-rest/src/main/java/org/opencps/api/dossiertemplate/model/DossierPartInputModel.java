@@ -5,7 +5,6 @@
 // Generated on: 2017.09.26 at 04:44:05 PM ICT 
 //
 
-
 package org.opencps.api.dossiertemplate.model;
 
 import javax.ws.rs.FormParam;
@@ -14,11 +13,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for anonymous complex type.
+ * <p>
+ * Java class for anonymous complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -43,253 +44,237 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "partNo",
-    "partName",
-    "partTip",
-    "partType",
-    "multiple",
-    "required",
-    "fileTemplateNo",
-    "esign",
-    "hasForm"
-})
+@XmlType(name = "", propOrder = { "partNo", "partName", "partTip", "partType", "multiple", "required", "fileTemplateNo",
+		"esign", "hasForm", "deliverableType", "deliverableAction" })
 @XmlRootElement(name = "DossierPartInputModel")
 public class DossierPartInputModel {
 
 	@FormParam(value = "partNo")
-    protected String partNo;
+	protected String partNo;
 	@FormParam(value = "partName")
-    protected String partName;
+	protected String partName;
 	@FormParam(value = "partTip")
-    protected String partTip;
+	protected String partTip;
 	@FormParam(value = "partType")
-    protected int partType;
+	protected int partType;
 	@FormParam(value = "multiple")
-    protected String multiple;
+	protected String multiple;
 	@FormParam(value = "required")
-    protected String required;
+	protected String required;
 	@FormParam(value = "fileTemplateNo")
-    protected String fileTemplateNo;
+	protected String fileTemplateNo;
 	@FormParam(value = "esign")
-    protected String esign;
+	protected String esign;
 	@FormParam(value = "hasForm")
-    protected String hasForm;
+	protected String hasForm;
+	@FormParam(value = "deliverableType")
+	protected String deliverableType;
+	@FormParam(value = "deliverableAction")
+	protected int deliverableAction;
 
-    /**
-     * Gets the value of the partNo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPartNo() {
-        return partNo;
-    }
+	public String getDeliverableType() {
+		return deliverableType;
+	}
 
-    /**
-     * Sets the value of the partNo property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPartNo(String value) {
-        this.partNo = value;
-    }
+	public void setDeliverableType(String deliverableType) {
+		this.deliverableType = deliverableType;
+	}
 
-    /**
-     * Gets the value of the partName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPartName() {
-        return partName;
-    }
+	public int getDeliverableAction() {
+		return deliverableAction;
+	}
 
-    /**
-     * Sets the value of the partName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPartName(String value) {
-        this.partName = value;
-    }
+	public void setDeliverableAction(int deliverableAction) {
+		this.deliverableAction = deliverableAction;
+	}
 
-    /**
-     * Gets the value of the partTip property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPartTip() {
-        return partTip;
-    }
+	/**
+	 * Gets the value of the partNo property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPartNo() {
+		return partNo;
+	}
 
-    /**
-     * Sets the value of the partTip property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPartTip(String value) {
-        this.partTip = value;
-    }
+	/**
+	 * Sets the value of the partNo property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPartNo(String value) {
+		this.partNo = value;
+	}
 
-    /**
-     * Gets the value of the partType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getPartType() {
-        return partType;
-    }
+	/**
+	 * Gets the value of the partName property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPartName() {
+		return partName;
+	}
 
-    /**
-     * Sets the value of the partType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setPartType(Integer value) {
-        this.partType = value;
-    }
+	/**
+	 * Sets the value of the partName property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPartName(String value) {
+		this.partName = value;
+	}
 
-    /**
-     * Gets the value of the multiple property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMultiple() {
-        return multiple;
-    }
+	/**
+	 * Gets the value of the partTip property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPartTip() {
+		return partTip;
+	}
 
-    /**
-     * Sets the value of the multiple property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMultiple(String value) {
-        this.multiple = value;
-    }
+	/**
+	 * Sets the value of the partTip property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPartTip(String value) {
+		this.partTip = value;
+	}
 
-    /**
-     * Gets the value of the required property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getRequired() {
-        return required;
-    }
+	/**
+	 * Gets the value of the partType property.
+	 * 
+	 * @return possible object is {@link Integer }
+	 * 
+	 */
+	public Integer getPartType() {
+		return partType;
+	}
 
-    /**
-     * Sets the value of the required property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setRequired(String value) {
-        this.required = value;
-    }
+	/**
+	 * Sets the value of the partType property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Integer }
+	 * 
+	 */
+	public void setPartType(Integer value) {
+		this.partType = value;
+	}
 
-    /**
-     * Gets the value of the fileTemplateNo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getFileTemplateNo() {
-        return fileTemplateNo;
-    }
+	/**
+	 * Gets the value of the multiple property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getMultiple() {
+		return multiple;
+	}
 
-    /**
-     * Sets the value of the fileTemplateNo property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setFileTemplateNo(String value) {
-        this.fileTemplateNo = value;
-    }
+	/**
+	 * Sets the value of the multiple property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setMultiple(String value) {
+		this.multiple = value;
+	}
 
-    /**
-     * Gets the value of the esign property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getEsign() {
-        return esign;
-    }
+	/**
+	 * Gets the value of the required property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getRequired() {
+		return required;
+	}
 
-    /**
-     * Sets the value of the esign property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setEsign(String value) {
-        this.esign = value;
-    }
+	/**
+	 * Sets the value of the required property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setRequired(String value) {
+		this.required = value;
+	}
 
-    /**
-     * Gets the value of the hasForm property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getHasForm() {
-        return hasForm;
-    }
+	/**
+	 * Gets the value of the fileTemplateNo property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getFileTemplateNo() {
+		return fileTemplateNo;
+	}
 
-    /**
-     * Sets the value of the hasForm property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setHasForm(String value) {
-        this.hasForm = value;
-    }
+	/**
+	 * Sets the value of the fileTemplateNo property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setFileTemplateNo(String value) {
+		this.fileTemplateNo = value;
+	}
+
+	/**
+	 * Gets the value of the esign property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getEsign() {
+		return esign;
+	}
+
+	/**
+	 * Sets the value of the esign property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setEsign(String value) {
+		this.esign = value;
+	}
+
+	/**
+	 * Gets the value of the hasForm property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getHasForm() {
+		return hasForm;
+	}
+
+	/**
+	 * Sets the value of the hasForm property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setHasForm(String value) {
+		this.hasForm = value;
+	}
 
 }

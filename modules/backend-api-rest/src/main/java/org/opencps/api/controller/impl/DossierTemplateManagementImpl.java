@@ -468,11 +468,18 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			DossierPart partUpdate = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId,
 					dossierTemplate.getTemplateNo(), partNo);
 
-			DossierPart dossierPart = actions.updateDossierPart(groupId, partUpdate.getPrimaryKey(),
+/*			DossierPart dossierPart = actions.updateDossierPart(groupId, partUpdate.getPrimaryKey(),
 					dossierTemplate.getTemplateNo(), query.getPartNo(), query.getPartName(), query.getPartTip(),
 					query.getPartType(), GetterUtil.getBoolean(query.getMultiple()), StringPool.BLANK, StringPool.BLANK,
 					StringPool.BLANK, GetterUtil.getBoolean(query.getRequired()), query.getFileTemplateNo(),
 					GetterUtil.getBoolean(query.getEsign()), serviceContext);
+*/			
+			DossierPart dossierPart = actions.updateDossierPart(groupId, partUpdate.getPrimaryKey(),
+					dossierTemplate.getTemplateNo(), query.getPartNo(), query.getPartName(), query.getPartTip(),
+					query.getPartType(), GetterUtil.getBoolean(query.getMultiple()), StringPool.BLANK, StringPool.BLANK,
+					StringPool.BLANK, GetterUtil.getBoolean(query.getRequired()), query.getFileTemplateNo(),
+					GetterUtil.getBoolean(query.getEsign()), query.getDeliverableType(), query.getDeliverableAction(),
+					serviceContext);
 
 			result = DossierTemplateUtils.mappingForPartPOST(dossierPart);
 
