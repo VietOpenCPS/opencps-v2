@@ -5,14 +5,14 @@ import java.util.Date;
 
 import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.communication.model.NotificationQueue;
+import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
+import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.DossierLogUtils;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierLog;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
-import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
-import org.opencps.usermgt.listener.ApplicantListenerUtils;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
@@ -20,21 +20,21 @@ import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierListennerUltils {
-
-	static String dossierStatus = StringPool.BLANK;
-	static String notificationType = StringPool.BLANK;
 
 	static void createDossierLog(Dossier model, boolean isUpdated, boolean isChangedStatus) {
 
 		try {
 
 			String content = StringPool.BLANK;
+			String notificationType = StringPool.BLANK;
 			String payload = DossierLogUtils.createPayload(null, null, model);
 			Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(model.getUserId());
 			ServiceContext serviceContext = new ServiceContext();
@@ -45,7 +45,7 @@ public class DossierListennerUltils {
 			// when update dossier and dossierStatus is changed
 			if (isUpdated && isChangedStatus) {
 
-				dossierStatus = model.getDossierStatus();
+				String dossierStatus = model.getDossierStatus();
 				switch (dossierStatus) {
 
 				case DossierStatusConstants.WAITING:
@@ -92,7 +92,7 @@ public class DossierListennerUltils {
 					content, notificationType, payload, serviceContext);
 
 		} catch (Exception e) {
-			LogFactoryUtil.getLog(DossierListennerUltils.class.getName()).error(e);
+			e.printStackTrace();
 
 		}
 
@@ -102,9 +102,7 @@ public class DossierListennerUltils {
 
 		try {
 
-			System.out.println(">>>>>>>>>>>CREATE NOTI QUE");
-
-			notificationType = model.getNotificationType();
+			String notificationType = model.getNotificationType();
 			Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(model.getUserId());
 			JSONObject messageKey = JSONFactoryUtil.createJSONObject();
 			messageKey.put(DossierListenerMessageKeys.DOSSIER_ID, model.getDossierId());
@@ -112,7 +110,7 @@ public class DossierListennerUltils {
 			switch (notificationType) {
 
 			case NotificationType.DOSSIER_01:
-				//TODO: add message key map to notificationType
+				// TODO: add message key map to notificationType
 				sendToApplicant(applicant, notificationType, messageKey);
 				break;
 			case NotificationType.DOSSIER_02:
@@ -134,48 +132,53 @@ public class DossierListennerUltils {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.info(e);
 		}
 
 	}
-	
+
 	static void sendToApplicant(Applicant model, String notificationType, JSONObject messageKey) {
-		long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
-		NotificationQueue queue = null;
-		Date now = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
-		queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
 
-		queue.setCreateDate(now);
-		queue.setModifiedDate(now);
-		queue.setGroupId(model.getGroupId());
-		queue.setCompanyId(model.getCompanyId());
-		queue.setNotificationType(notificationType);
-		queue.setClassName(Applicant.class.getName());
+		try {
+			long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+			NotificationQueue queue = null;
+			Date now = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+			queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
 
-		queue.setClassPK(String.valueOf(model.getPrimaryKey()));
-		queue.setToUsername(model.getApplicantName());
-		queue.setToUserId(model.getUserId());
-		queue.setToEmail(model.getContactEmail());
-		queue.setToTelNo(model.getContactTelNo());
+			queue.setCreateDate(now);
+			queue.setModifiedDate(now);
+			queue.setGroupId(model.getGroupId());
+			queue.setCompanyId(model.getCompanyId());
+			queue.setNotificationType(notificationType);
+			queue.setClassName(Applicant.class.getName());
 
-		messageKey.put(ApplicantListenerMessageKeys.USER_NAME, model.getApplicantName());
-		messageKey.put("toName", model.getApplicantName());
-		messageKey.put("toAddress", model.getContactEmail());
+			queue.setClassPK(String.valueOf(model.getPrimaryKey()));
+			queue.setToUsername(model.getApplicantName());
+			queue.setToUserId(model.getUserId());
+			queue.setToEmail(model.getContactEmail());
+			queue.setToTelNo(model.getContactTelNo());
 
-		String payload = ApplicantListenerUtils.getPayload(notificationType, messageKey, model.getGroupId())
-				.toString();
+			messageKey.put("$USER_NAME$", model.getApplicantName());
+			messageKey.put("toName", model.getApplicantName());
+			messageKey.put("toAddress", model.getContactEmail());
 
-		queue.setPayload(payload);
-		queue.setExpireDate(cal.getTime());
+			String payload = getPayload(notificationType, messageKey, model.getGroupId()).toString();
 
-		NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+			queue.setPayload(payload);
+			queue.setExpireDate(cal.getTime());
+
+			NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
 	}
 
 	static void sendToEmployee(Employee model, String notificationType) {
-		
-		//TODO: info to send notification to each employee
+
+		// TODO: info to send notification to each employee
 		long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
 		NotificationQueue queue = null;
 		Date now = new Date();
@@ -198,12 +201,11 @@ public class DossierListennerUltils {
 
 		JSONObject object = JSONFactoryUtil.createJSONObject();
 
-		object.put(ApplicantListenerMessageKeys.USER_NAME, model.getFullName());
+		object.put("$USER_NAME$", model.getFullName());
 		object.put("toName", model.getFullName());
 		object.put("toAddress", model.getEmail());
 
-		String payload = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, model.getGroupId())
-				.toString();
+		String payload = getPayload(notificationType, object, model.getGroupId()).toString();
 
 		queue.setPayload(payload);
 
@@ -211,4 +213,79 @@ public class DossierListennerUltils {
 
 		NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 	}
+
+	public static JSONObject getPayload(String notiType, JSONObject object, long groupId) {
+		JSONObject payload = JSONFactoryUtil.createJSONObject();
+
+		try {
+
+			_log.info("notiType" + notiType);
+			_log.info("groupId" + groupId);
+
+			Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil
+					.fetchByF_NotificationtemplateByType(groupId, notiType);
+			String body = getEmailBody(notificationtemplate, object);
+			String subject = notificationtemplate.getEmailSubject();
+
+			payload.put("toName", object.get("toName"));
+			payload.put("toAddress", object.get("toAddress"));
+			payload.put("subject", subject);
+			payload.put("body", body);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return payload;
+	}
+
+	private static String getEmailBody(Notificationtemplate notificationtemplate, JSONObject object) {
+
+		try {
+
+			String emailBody = notificationtemplate.getEmailBody();
+
+			String[] oldSubs = buildOldSubs(object);
+
+			String[] newSubs = buildNewSubs(object);
+
+			return StringUtil.replace(emailBody, oldSubs, newSubs);
+
+		} catch (Exception e) {
+			_log.error(e);
+			return StringPool.BLANK;
+		}
+
+	}
+
+	private static String[] buildOldSubs(JSONObject object) {
+
+		StringBuffer sb = new StringBuffer();
+
+		for (int i = 0; i < object.names().length(); i++) {
+			String key = object.names().getString(i);
+			String value = (String) object.get(key);
+			sb.append(value);
+			sb.append(StringPool.COMMA);
+		}
+
+		return StringUtil.split(sb.toString(), StringPool.COMMA);
+	}
+
+	private static String[] buildNewSubs(JSONObject object) {
+
+		StringBuffer sb = new StringBuffer();
+
+		for (int i = 0; i < object.names().length(); i++) {
+			String key = object.names().getString(i);
+			String value = (String) object.get(key);
+			sb.append(value);
+			sb.append(StringPool.COMMA);
+		}
+
+		return StringUtil.split(sb.toString(), StringPool.COMMA);
+
+	}
+
+	static Log _log = LogFactoryUtil.getLog(DossierListennerUltils.class);
+
 }
