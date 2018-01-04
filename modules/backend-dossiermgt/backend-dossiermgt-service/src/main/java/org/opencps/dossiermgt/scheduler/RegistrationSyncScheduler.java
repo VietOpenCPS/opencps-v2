@@ -160,14 +160,6 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
                                 
                                 RegistrationLocalServiceUtil.updateRegistration(registrationClient);
                                 
-                                //Update application info
-                                Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(registrationClient.getUserId());
-                                applicant.setContactTelNo(registrationClient.getContactTelNo());
-                                applicant.setContactName(registrationClient.getContactName());
-                                
-                                ApplicantLocalServiceUtil.updateApplicant(applicant);
-                                Indexer<Applicant> indexApplicant = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
-                                indexApplicant.reindex(applicant);
                             }
     				    } catch (NoSuchRegistrationException nsge) {
     				        

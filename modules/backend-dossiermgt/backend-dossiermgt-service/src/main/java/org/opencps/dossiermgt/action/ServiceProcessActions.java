@@ -60,12 +60,19 @@ public interface ServiceProcessActions {
 			Sort[] sorts, int start, int end, ServiceContext serviceContext) throws PortalException;
 
 	public ProcessAction getProcessActionDetail(long processActionId) throws PortalException;
-
+	
+	@Deprecated
 	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
 			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
 			String actionName, boolean allowAssignUser, long assignUserId, boolean requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
 			boolean rollbackable, ServiceContext context) throws PortalException;
+
+	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
+			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
+			String actionName, boolean allowAssignUser, long assignUserId, boolean requestPayment, String paymentFee,
+			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
+			boolean rollbackable, boolean createDossierNo, boolean eSignature, ServiceContext context) throws PortalException;
 
 	public ProcessAction deleteProcessAction(long processActionId) throws PortalException;
 

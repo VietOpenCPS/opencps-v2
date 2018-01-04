@@ -19,12 +19,10 @@ import aQute.bnd.annotation.ProviderType;
 import java.util.Date;
 import java.util.List;
 
-import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.RegistrationLog;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.model.impl.RegistrationLogImpl;
 import org.opencps.dossiermgt.service.base.RegistrationLogLocalServiceBaseImpl;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 /**

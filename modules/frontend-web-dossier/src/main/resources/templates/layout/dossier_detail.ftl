@@ -35,7 +35,7 @@
 				<span class="text-bold">
 				Tên doanh nghiệp: 
 				</span>
-				{{ detailModel.govAgencyName }} 
+				{{ detailModel.applicantName }} 
 			</div>
 			<div class="pb-1">
 				<span class="text-bold">
@@ -203,18 +203,16 @@
 						Hồ sơ chờ đồng bộ ...
 					</div>
                     <div v-else>
-                        <v-card-title primary-title class="mx-2 pb-0">
+                    	
+                    	<v-card-title primary-title class="mx-2 pb-0" v-if="stepModel.createFiles">
                             <v-layout wrap> 
                                 <v-flex xs12>
-                                    Nhập ý kiến {{stepModel.actionName}}:
-                                    <div jx-bind="processActionNote"></div>
-                                </v-flex>
-                                <v-flex xs12 v-if="stepModel.allowAssignUser">
-                                    <div jx-bind="processAssignUserId"></div>
+                                    Thành phần kết quả:
                                 </v-flex>
                             </v-layout>
                         </v-card-title>
-                        <v-expansion-panel class="my-0 expansion__list_style">
+                        
+                    	<v-expansion-panel class="my-0 expansion__list_style">
                             <v-expansion-panel-content v-for="(item,i) in stepModel.createFiles" v-if="item" :key="item.dossierPartId">
                             <div slot="header" @click.prevent="showAlpacaJSFORM(item)">{{i + 1}}. {{item.partName}} <small v-if="item.eform">( Form trực tuyến )</small> </div>
                             <div slot="header" class="text-right">
@@ -253,10 +251,20 @@
                                     v-on:click.native.prevent.stop="submitAlpacajsForm(item)"> Ghi lại </v-btn>
                             </div>
                             <div :id="'alpacajs_form_'+item.partNo" class="expansion-panel__header"></div>
-							<input type="hidden" :id="item.dossierFileId + item.partNo" :value="item.partNo" />
+							<input type="hidden" :id="'dossierFileId' + item.partNo" :value="item.dossierFileId" />
 							
                             </v-expansion-panel-content>
                         </v-expansion-panel>
+                        
+                        <v-card-title primary-title class="mx-2 pb-0">
+                            <v-layout wrap> 
+                                <v-flex xs12>
+                                    Nhập ý kiến {{stepModel.actionName}}:
+                                    <div jx-bind="processActionNote"></div>
+                                </v-flex>
+                            </v-layout>
+                        </v-card-title>
+                        
                         <v-card-actions>
                             <v-btn flat color="primary" class="px-0" :loading="actionsSubmitLoading" :disabled="actionsSubmitLoading"
                             @click.prevent.stop="postNextActions(stepModel)">Xác nhận</v-btn>
