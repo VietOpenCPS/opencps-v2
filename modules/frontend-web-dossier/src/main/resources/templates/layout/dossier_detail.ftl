@@ -35,7 +35,7 @@
 				<span class="text-bold">
 				Tên doanh nghiệp: 
 				</span>
-				{{ detailModel.govAgencyName }} 
+				{{ detailModel.applicantName }} 
 			</div>
 			<div class="pb-1">
 				<span class="text-bold">

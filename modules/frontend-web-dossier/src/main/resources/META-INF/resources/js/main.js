@@ -1,10 +1,7 @@
 document.addEventListener('DOMContentLoaded', function (event) {
 	const config = {
 		headers: {
-			'groupId': themeDisplay.getScopeGroupId(),
-			'Cache-Control': 'no-cache, no-store, must-revalidate',
-			'Pragma': 'no-cache',
-			'Expires': 0
+			'groupId': themeDisplay.getScopeGroupId()
 		}
 	};
 
@@ -94,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									})
 									.catch(function (error) {
 										console.log(error);
+										
 									});
 									
 									dialog.close();
@@ -215,12 +213,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
     	                            })
     	                                .catch(function (error) {
     	                                    console.log(error);
+    	                                    
     	                                });
     							
                             })
                                 .catch(function (error) {
                                     console.log(error);
 									vm.stepLoading = false;
+									
                                 });
                             return false; 
 							
@@ -252,10 +252,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 							var assignUserId = 0;
 
-							if (vm.processAssignUserId.userId > 0) {
-								assignUserId = vm.processAssignUserId.userId;
-							}
-							
 							$.ajax({
 								url: url,
 								headers: {
@@ -309,6 +305,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                                 .catch(function (error) {
                                     console.log(error);
 									vm.stepLoading = false;
+									
                                 });
                             return false; 
                         },
@@ -565,6 +562,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                             })
                                 .catch(function (error) {
                                     console.log(error);
+                                    
                                 });
                             return false; 
 						}
@@ -735,6 +733,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 							
@@ -790,6 +789,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						},
@@ -895,9 +895,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								params: paramsBuilder,
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId(),
-									'Cache-Control': 'no-cache, no-store, must-revalidate',
-									'Pragma': 'no-cache',
-									'Expires': 0
 								}
 							};
 
@@ -907,7 +904,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								var serializable = response.data;
 
 								vm.thongTinDoanhNghiepTableItems = serializable.data;
-								vm.thongTinDoanhNghiepTableTotal = Math.ceil(serializable.total / 8);
+								vm.thongTinDoanhNghiepTableTotal = Math.ceil(serializable.total / 15);
 								
 								// temp fix header
 								$('.thongTinDoanhNghiepTable__class th[role="columnheader"]').each(function( index ) {
@@ -922,6 +919,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 									vm.thongTinDoanhNghiepTableItems = [];
+									
 								});
 							return false; 
 						},
@@ -953,6 +951,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						},
@@ -971,6 +970,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						},
@@ -1164,9 +1164,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								params: paramsBuilder,
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId(),
-									'Cache-Control': 'no-cache, no-store, must-revalidate',
-									'Pragma': 'no-cache',
-									'Expires': 0
 								}
 								
 							};
@@ -1181,7 +1178,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								} else {
 									vm.traCuuHoSoTableItems = serializable.data;
 									
-									vm.traCuuHoSoTableTotal = Math.ceil(serializable.total / 8);
+									vm.traCuuHoSoTableTotal = Math.ceil(serializable.total / 15);
 								}
 
 								vm.xem_them = 'Xem thêm 8+ bản ghi';
@@ -1202,6 +1199,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 									vm.traCuuHoSoTableItems = [];
+									
 								});
 							return false; 
 						},
@@ -1313,9 +1311,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								params: paramsBuilder,
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId(),
-									'Cache-Control': 'no-cache, no-store, must-revalidate',
-									'Pragma': 'no-cache',
-									'Expires': 0
 								}
 							};
 
@@ -1330,7 +1325,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								} else {
 									vm.danhSachHoSoTableItems = serializable.data;
 
-									vm.danhSachHoSoTableTotal = Math.ceil(serializable.total / 8);
+									vm.danhSachHoSoTableTotal = Math.ceil(serializable.total / 15);
 									
 								}
 
@@ -1352,6 +1347,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 									vm.danhSachHoSoTableItems = [];
+									
 								});
 							return false; 
 						},
@@ -1376,6 +1372,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						},
@@ -1399,59 +1396,62 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'events': {
 						_inilistDocumentIn: function (item) {
 							var vm = this;
-							vm.listDocumentInItems = [];
-							vm.listDocumentOutItems = [];
-
+//							vm.listDocumentInItems = [];
+//							vm.listDocumentOutItems = [];
+							
 							var url = "/o/rest/v2/dossiertemplates/"+item.dossierTemplateNo;
 							var urlFiles = "/o/rest/v2/dossiers/"+item.dossierId+"/files";
-
-							axios.get(urlFiles, config).then(function (response) {
-								var serializable = response.data;
-								vm.dossierFiles = serializable.data;
-								
-								axios.get(url, config).then(function (response) {
-									var serializable = response.data;
+							
+							axios.all([
+						        axios.get(url, config),
+						        axios.get(urlFiles, config)
+						      ])
+							  .then(axios.spread(function (urlRespones, urlFilesRespones) {
+							    // Both requests are now complete
+								  vm.dossierFiles = urlFilesRespones.data.data;
+								  
+								  var serializable = urlRespones.data;
 									
-									var listIn = [], listOut = [], listAll = [];
-									for(var key in serializable.dossierParts){
+								  var listIn = [], listOut = [], listAll = [];
+								  
+								  for(var key in serializable.dossierParts){
 										
-										var countData = 0;
-										for(var keyFile in vm.dossierFiles){
+									var countData = 0;
+									for(var keyFile in vm.dossierFiles){
+										
+										if ( vm.dossierFiles[keyFile].dossierPartNo === serializable.dossierParts[key].partNo ) {
+											countData = countData + 1;
+											serializable.dossierParts[key].referenceUid = vm.dossierFiles[keyFile].referenceUid;
+											serializable.dossierParts[key].fileEntryId = vm.dossierFiles[keyFile].fileEntryId;
+											serializable.dossierParts[key].displayName = vm.dossierFiles[keyFile].displayName;
 											
-											if ( vm.dossierFiles[keyFile].dossierPartNo === serializable.dossierParts[key].partNo ) {
-												countData = countData + 1;
-												serializable.dossierParts[key].referenceUid = vm.dossierFiles[keyFile].referenceUid;
-												serializable.dossierParts[key].fileEntryId = vm.dossierFiles[keyFile].fileEntryId;
-												serializable.dossierParts[key].displayName = vm.dossierFiles[keyFile].displayName;
-												
-												listAll.push(serializable.dossierParts[key]);
-											}
-											
-										}
-										
-										serializable.dossierParts[key].counter = countData;
-										
-										if ( serializable.dossierParts[key].partType === 2 ) {
-											listOut.push(serializable.dossierParts[key]);
-										} else {
-											listIn.push(serializable.dossierParts[key]);
+											listAll.push(serializable.dossierParts[key]);
 										}
 										
 									}
 									
-									vm.listDocumentInItems = listIn;
-									vm.listDocumentOutItems = listOut;
-									// TEMP
-									vm._initCbxDocumentNewTab(listAll);
-								})
-								.catch(function (error) {
+									serializable.dossierParts[key].counter = countData;
+									
+									if ( serializable.dossierParts[key].partType === 2 ) {
+										listOut.push(serializable.dossierParts[key]);
+									} else {
+										listIn.push(serializable.dossierParts[key]);
+									}
+									
+								}
+								
+								vm.listDocumentInItems = listIn;
+								vm.listDocumentOutItems = listOut;
+								// TEMP
+								vm._initCbxDocumentNewTab(listAll);
+								
+								return Promise.reject();
+								
+							  })).catch(function (error) {
 									console.log(error);
+									
 								});
-							})
-							.catch(function (error) {
-								console.log(error);
-							});
-							return false; 
+							return false;
 						},
 						viewDossierFileVersion: function (item) {
 							var vm = this;
@@ -1490,6 +1490,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							}
 							return false; 
@@ -1514,9 +1515,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							const config_blob = {
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId(),
-									'Cache-Control': 'no-cache, no-store, must-revalidate',
-									'Pragma': 'no-cache',
-									'Expires': 0
 								},
 								responseType: 'blob'
 							};
@@ -1530,6 +1528,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						}
@@ -1573,6 +1572,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 							.catch(function (error) {
 								console.log(error);
+								
 							});
 							return false; 
 						},
@@ -1582,9 +1582,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							const config_blob = {
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId(),
-									'Cache-Control': 'no-cache, no-store, must-revalidate',
-									'Pragma': 'no-cache',
-									'Expires': 0
 								},
 								responseType: 'blob'
 							};
@@ -1594,6 +1591,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						}
@@ -1646,9 +1644,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								config : {
 									headers: {
 										'groupId': themeDisplay.getScopeGroupId(),
-										'Cache-Control': 'no-cache, no-store, must-revalidate',
-										'Pragma': 'no-cache',
-										'Expires': 0
 									},
 									responseType: 'blob'
 								},
@@ -1668,6 +1663,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 									dossierPDFViewNotFound.innerHTML = 'Tài liệu đính kèm không tồn tại!';
+									
 								});
 							return false; 
 						},
@@ -1678,9 +1674,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							const config_blob = {
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId(),
-									'Cache-Control': 'no-cache, no-store, must-revalidate',
-									'Pragma': 'no-cache',
-									'Expires': 0
 								},
 								responseType: 'blob'
 							};
@@ -1691,6 +1684,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						}
@@ -1720,9 +1714,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							const config_blob = {
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId(),
-									'Cache-Control': 'no-cache, no-store, must-revalidate',
-									'Pragma': 'no-cache',
-									'Expires': 0
 								},
 								responseType: 'blob'
 							};
@@ -1736,6 +1727,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						}
@@ -1808,6 +1800,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
     							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
                     		}
                     		return false; 
@@ -1837,10 +1830,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
     							axios.get(url, config).then(function (response) {
     								var serializable = response.data;
     								vm.advanced_filter_nhanHieuItems = serializable.data;
-    								console.log(vm.advanced_filter_nhanHieuItems);
     							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
                     		}
                     		return false; 

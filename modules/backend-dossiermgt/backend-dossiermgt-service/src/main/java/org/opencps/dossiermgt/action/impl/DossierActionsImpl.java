@@ -60,6 +60,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
@@ -522,7 +524,49 @@ public class DossierActionsImpl implements DossierActions {
 			DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId, context,
 					serviceProcess.getServerNo());
 		}
+		// TODO
+		// Add KYSO fin processAction
+		if (/*processAction.getESignature()*/ 1 == 0) {
+			
+			// get DossierFile 
+			String fileTemplateNos = processAction.getCreateDossierFiles();
+			
+			if (Validator.isNotNull(fileTemplateNos)) {
+				String[] fileTemplateNoArray = fileTemplateNos.split(StringPool.COMMA);
+				
+				for (String fileTemplateNo : fileTemplateNoArray) {
+					
+					List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_DPT(dossierId, fileTemplateNo, 2, false);
+					
+					for (DossierFile dossierFile : dossierFiles) {
+						
+						// GetDossierPart to find eSign
+						DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(dossierFile.getGroupId(),
+								dossierFile.getDossierTemplateNo(), dossierFile.getDossierPartNo());
+						
+						// if dossierPart.getESign() == true send message to KYSO process 
+						if (dossierPart.getESign()) {
+							// Binhth add message bus to processing KySO file
+							Message message = new Message();
+							
+							JSONObject msgDataESign = JSONFactoryUtil.createJSONObject();
+							msgDataESign.put("dossierFileId", dossierFile.getDossierFileId());
+							msgDataESign.put("userId", dossierFile.getUserId());
+							msgDataESign.put("eSign", dossierPart.getESign());
+							msgDataESign.put("fileEntryId", dossierFile.getFileEntryId());
 
+							message.put("msgToEngine", msgDataESign);
+							MessageBusUtil.sendMessage("kyso/engine/out/destination", message);
+						}
+						
+					}
+					
+				}
+			}
+			
+		}
+		
+		
 		boolean isSubmitType = isSubmitType(processAction);
 
 		boolean hasDossierSync = false;

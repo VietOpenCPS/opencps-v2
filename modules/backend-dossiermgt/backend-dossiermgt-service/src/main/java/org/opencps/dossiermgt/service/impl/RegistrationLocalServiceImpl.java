@@ -216,6 +216,10 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		return fileEntryId;
 	}
+	
+	public Registration getLastSubmittingByUser(long groupId, long userId, boolean submitting) {
+		return registrationPersistence.fetchByF_USERID_SUBMITTING_First(groupId, userId, true, null);
+	}
 
 	public Hits searchLucene(long userId, LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
