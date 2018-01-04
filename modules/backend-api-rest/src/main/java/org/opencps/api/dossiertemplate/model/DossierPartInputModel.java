@@ -7,11 +7,14 @@
 
 package org.opencps.api.dossiertemplate.model;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import com.liferay.portal.kernel.util.StringPool;
 
 /**
  * <p>
@@ -45,7 +48,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = { "partNo", "partName", "partTip", "partType", "multiple", "required", "fileTemplateNo",
-		"esign", "hasForm", "deliverableType", "deliverableAction" })
+		"esign", "hasForm", "typeCode", "deliverableAction" })
 @XmlRootElement(name = "DossierPartInputModel")
 public class DossierPartInputModel {
 
@@ -67,18 +70,22 @@ public class DossierPartInputModel {
 	protected String esign;
 	@FormParam(value = "hasForm")
 	protected String hasForm;
-	@FormParam(value = "typeCode")
-	protected String deliverableType;
-	@FormParam(value = "deliverableAction")
+	
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "typeCode")
+	protected String typeCode;
+	
+	public String getTypeCode() {
+		return typeCode;
+	}
+
+	public void setTypeCode(String typeCode) {
+		this.typeCode = typeCode;
+	}
+
+	@DefaultValue("0") @FormParam(value = "deliverableAction")
 	protected int deliverableAction;
 
-	public String getDeliverableType() {
-		return deliverableType;
-	}
 
-	public void setDeliverableType(String deliverableType) {
-		this.deliverableType = deliverableType;
-	}
 
 	public int getDeliverableAction() {
 		return deliverableAction;
