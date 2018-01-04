@@ -79,6 +79,93 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	 * org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil} to access
 	 * the process action local service.
 	 */
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
+			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
+			String actionName, boolean allowAssignUser, long assignUserId, boolean requestPayment, String paymentFee,
+			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
+			boolean rollbackable, boolean createDossierNo, boolean eSignature, ServiceContext context)
+			throws PortalException {
+
+		Date now = new Date();
+
+		User userAction = userLocalService.getUser(context.getUserId());
+
+		ProcessAction object = null;
+
+		validateAdd(groupId, serviceProcessId, preStepCode, postStepCode, autoEvent, preCondition, actionCode,
+				actionName, allowAssignUser, assignUserId, requestPayment, paymentFee, createDossierFiles,
+				returnDossierFiles, makeBriefNote, syncActionCode, rollbackable);
+
+		if (processActionId == 0) {
+
+			processActionId = counterLocalService.increment(ProcessAction.class.getName());
+
+			object = processActionPersistence.create(processActionId);
+
+			// Add audit fields
+			object.setCompanyId(context.getCompanyId());
+			object.setGroupId(groupId);
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+			object.setUserName(userAction.getFullName());
+
+			object.setServiceProcessId(serviceProcessId);
+			object.setPreStepCode(preStepCode);
+			object.setPostStepCode(postStepCode);
+			object.setAutoEvent(autoEvent);
+			object.setPreCondition(preCondition);
+			object.setActionCode(actionCode);
+			object.setActionName(actionName);
+			object.setAllowAssignUser(allowAssignUser);
+			object.setAssignUserId(assignUserId);
+			object.setRequestPayment(requestPayment);
+			object.setPaymentFee(paymentFee);
+			object.setCreateDossierFiles(createDossierFiles);
+			object.setReturnDossierFiles(returnDossierFiles);
+			object.setMakeBriefNote(makeBriefNote);
+			object.setSyncActionCode(syncActionCode);
+			object.setRollbackable(rollbackable);
+			object.setCreateDossierNo(createDossierNo);
+			object.setESignature(eSignature);
+
+		} else {
+			object = processActionPersistence.fetchByPrimaryKey(processActionId);
+
+			// Add audit fields
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+			object.setUserName(userAction.getFullName());
+
+			// object.setServiceProcessId(serviceProcessId);
+			object.setPreStepCode(preStepCode);
+			object.setPostStepCode(postStepCode);
+			object.setAutoEvent(autoEvent);
+			object.setPreCondition(preCondition);
+			object.setActionCode(actionCode);
+			object.setActionName(actionName);
+			object.setAllowAssignUser(allowAssignUser);
+			object.setAssignUserId(assignUserId);
+			object.setRequestPayment(requestPayment);
+			object.setPaymentFee(paymentFee);
+			object.setCreateDossierFiles(createDossierFiles);
+			object.setReturnDossierFiles(returnDossierFiles);
+			object.setMakeBriefNote(makeBriefNote);
+			object.setSyncActionCode(syncActionCode);
+			object.setRollbackable(rollbackable);
+			object.setCreateDossierNo(createDossierNo);
+			object.setESignature(eSignature);
+
+		}
+
+		processActionPersistence.update(object);
+
+		return object;
+	}
+	
+	@Deprecated
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
 			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
