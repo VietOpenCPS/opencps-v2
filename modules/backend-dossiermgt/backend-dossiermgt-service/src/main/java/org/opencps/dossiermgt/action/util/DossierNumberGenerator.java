@@ -16,7 +16,6 @@ import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 
-import com.liferay.counter.kernel.model.Counter;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -25,7 +24,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -39,8 +37,8 @@ public class DossierNumberGenerator {
 		return UUID.randomUUID().toString();
 	}
 
-	public static String generateDossierNumber(long groupId, long companyId, long dossierId, long processOtionId, String seriNumberPattern,
-			LinkedHashMap<String, Object> params, SearchContext... searchContext)
+	public static String generateDossierNumber(long groupId, long companyId, long dossierId, long processOtionId,
+			String seriNumberPattern, LinkedHashMap<String, Object> params, SearchContext... searchContext)
 			throws ParseException, SearchException {
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
@@ -75,27 +73,12 @@ public class DossierNumberGenerator {
 
 					if (r.toString().equals(codePattern)) {
 
-						// String number =
-						// String.valueOf(DossierLocalServiceUtil.countLucene(params,
-						// searchContext) + 1);
+						String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 
-						//String number = String
-						//		.valueOf(DossierLocalServiceUtil.countDossierByG_C_GAC_SC_DTNO_NOTDS(groupId, companyId,
-						//				GetterUtil.getString(params.get(DossierTerm.GOV_AGENCY_CODE)),
-						//				GetterUtil.getString(params.get(DossierTerm.SERVICE_CODE)),
-						//				GetterUtil.getString(params.get(DossierTerm.DOSSIER_TEMPLATE_NO)),
-						//				GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS))) + 1);
-						
-						String key = ProcessOption.class.getName() + "#" + processOtionId + "#" + year;
-						
 						String number = String.valueOf(CounterLocalServiceUtil.increment(key, 1));
 
-						//_log.info("GovCode=" + params.get(DossierTerm.GOV_AGENCY_CODE) + "|ServiceCode="
-						//		+ params.get(DossierTerm.SERVICE_CODE) + "|DossierTemplateNo="
-						//		+ params.get(DossierTerm.DOSSIER_TEMPLATE_NO) + "|DossierStatus="
-						//		+ params.get(DossierTerm.DOSSIER_STATUS) + "|GrpupId=" + groupId);
-
-						_log.info("//////////////////////////////////////////////////////////// " + number + "|processOtionId= " + processOtionId);
+						_log.info("//////////////////////////////////////////////////////////// " + number
+								+ "|processOtionId= " + processOtionId);
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
 
