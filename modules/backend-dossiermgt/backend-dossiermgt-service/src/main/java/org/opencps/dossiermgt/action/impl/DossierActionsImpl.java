@@ -526,7 +526,7 @@ public class DossierActionsImpl implements DossierActions {
 		}
 		// TODO
 		// Add KYSO fin processAction
-		if (/*processAction.getESignature()*/ 1 == 1) {
+		if (/*processAction.getESignature()*/ 1 == 0) {
 			
 			// get DossierFile 
 			String fileTemplateNos = processAction.getCreateDossierFiles();
