@@ -256,8 +256,11 @@
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                         
-                        <v-card-title primary-title class="mx-2 pb-0">
+                        <v-card-title primary-title class="mx-2 py-0">
                             <v-layout wrap> 
+                            	<v-flex xs12 class="mb-3" v-if="stepModel.allowAssignUser">
+                                    <div jx-bind="processAssignUserId"></div>
+                                </v-flex>
                                 <v-flex xs12>
                                     Nhập ý kiến {{stepModel.actionName}}:
                                     <div jx-bind="processActionNote"></div>

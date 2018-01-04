@@ -169,6 +169,56 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										vm.loadingAlpacajsForm = false;
 									}
 								});
+							} else if( $("#alpacajs_form_"+item.partNo + " .formType").val() != null || 
+									$("#alpacajs_form_"+item.partNo + " .formType").val() === 'assign' ) {
+								
+								vm.loadingAlpacajsForm = true;
+								
+								var control = $("#alpacajs_form_"+item.partNo).alpaca("get");
+								var formData = control.getValue();
+								
+								$.ajax({
+									url : "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid+"/formdata",
+									dataType : "json",
+									type : "PUT",
+									headers: {
+										"groupId": themeDisplay.getScopeGroupId(),
+										Accept : "application/json"
+									},
+									data : {
+										formdata: JSON.stringify(formData)
+									},
+									success : function(result){
+										vm.snackbartextdossierViewJX = "Lưu form thành công!";
+	                      				vm.snackbardossierViewJX = true;
+										vm.loadingAlpacajsForm = false;
+									},
+									error : function(result){
+										vm.snackbartextdossierViewJX = "Lưu form thất bại!";
+	                      				vm.snackbarerordossierViewJX = true;
+										vm.loadingAlpacajsForm = false;
+									}
+								});
+								
+								$.ajax({
+									url : "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid+"/formdata",
+									dataType : "json",
+									type : "PUT",
+									headers: {
+										"groupId": themeDisplay.getScopeGroupId(),
+										Accept : "application/json"
+									},
+									data : {
+										formdata: JSON.stringify(formData)
+									},
+									success : function(result){
+									},
+									error : function(result){
+										console.log(result);
+									}
+								});
+								
+								
 							} else {
 								vm.loadingAlpacajsForm = true;
 								setTimeout(
@@ -242,6 +292,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								vm.stepModel = null;
 							}
                             
+                            vm.processAssignUserIdItems = item.toUsers;
+							
                         },
 						postNextActions: function (item){
 							
@@ -252,10 +304,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 							var assignUserId = 0;
 
+							if (vm.processAssignUserId.userId > 0) {
+								assignUserId = vm.processAssignUserId.userId;
+							}
+							
 							$.ajax({
 								url: url,
 								headers: {
-								"groupId": themeDisplay.getScopeGroupId()
+									"groupId": themeDisplay.getScopeGroupId()
 								},
 								data: {
 									"actionCode": item.actionCode,
@@ -1605,6 +1661,49 @@ document.addEventListener('DOMContentLoaded', function (event) {
                     'placeholder': 'ý kiến cán bộ ... ',
                     'multi_line': true,
                     'textarea': true
+                },
+                "processAssignUserId": {
+                    'id': 'processAssignUserId',
+                    'name': 'processAssignUserId',
+                    "type": "select",
+					'required': true,
+                    'label': 'Lựa chọn cán bộ phân công xử lý ',
+                    "item_text": "userName",
+                    "item_value": "userId",
+                    "hide_selected": true,
+                    "chips": true,
+                    "deletable_chips": true,
+                    "loading": false,
+                    "no_data_text": "Lua chon selected",
+                    "items": [],
+                    'onLoad': '_initprocessAssignUserId',
+                    'events': {
+                        _initprocessAssignUserId: function () {
+                            
+                            this.processAssignUserIdItems = [
+                                {
+                                "userId": 1,
+                                "userName": "userName1",
+                                "moderator": false
+                                },
+                                {
+                                "userId": 2,
+                                "userName": "userName2",
+                                "moderator": false
+                                },
+                                {
+                                "userId": 3,
+                                "userName": "userName3",
+                                "moderator": false
+                                },
+                                {
+                                "userId": 4,
+                                "userName": "userName4",
+                                "moderator": false
+                                }
+                            ];
+                        }
+                    }
                 },
 				// TODO POPUP
 				'popUpViewDossierFile' : {

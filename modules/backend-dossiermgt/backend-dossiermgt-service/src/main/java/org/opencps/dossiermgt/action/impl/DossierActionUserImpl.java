@@ -15,6 +15,8 @@ import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 
@@ -76,6 +78,37 @@ public class DossierActionUserImpl implements DossierActionUser {
 				// Add User
 				DossierActionUserLocalServiceUtil.addDossierActionUser(model);
 			}
+		}
+	}
+
+	@Override
+	public void assignDossierActionUser(long dossierActionId, long userId, long groupId, long assignUserId, String data)
+			throws PortalException {
+		// Get DossierAction
+		DossierAction dossierAction = DossierActionLocalServiceUtil.getDossierAction(dossierActionId);
+		String actionCode = dossierAction.getActionCode();
+		long serviceProcessId = dossierAction.getServiceProcessId();
+
+		// Get ProcessAction
+		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(serviceProcessId, actionCode);
+		String stepCode = processAction.getPostStepCode();
+
+		// Get ProcessStep
+		ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
+		long processStepId = processStep.getProcessStepId();
+
+		// Get List ProcessStepRole
+		List<ProcessStepRole> listProcessStepRole = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStepId);
+		for (ProcessStepRole processStepRole : listProcessStepRole) {
+			long roleId = processStepRole.getRoleId();
+			boolean moderator = processStepRole.getModerator();
+			int mod = 0;
+			if (moderator) {
+				mod = 1;
+			}
+			// Get list user
+			JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(data);
+			// TODO insert to actionUser
 		}
 	}
 
