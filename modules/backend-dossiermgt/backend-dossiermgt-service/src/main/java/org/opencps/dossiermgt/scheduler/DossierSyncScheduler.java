@@ -79,7 +79,18 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 				JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
 
 				// Grouping DossierSync by DossierId and order by SyncMethod
+				
 				HashMap<Long, JSONArray> dossierSyncs = new HashMap<Long, JSONArray>();
+				
+				/*List<JSONObject> list = new ArrayList<CustomObject😠);
+				Comparator<CustomObject> comparator = new Comparator<CustomObject😠) {
+				    @Override
+				    public int compare(CustomObject left, CustomObject right) {
+				        return left.getId() - right.getId(); // use your logic
+				    }
+				};
+
+				Collections.sort(list, comparator);*/
 
 				for (int i = 0; i < jsArrayData.length(); i++) {
 
