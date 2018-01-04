@@ -526,7 +526,7 @@ public class DossierActionsImpl implements DossierActions {
 		}
 		// TODO
 		// Add KYSO fin processAction
-		if (/*processAction.getESignature()*/ 1 == 0) {
+		if (processAction.getESignature()) {
 			
 			// get DossierFile 
 			String fileTemplateNos = processAction.getCreateDossierFiles();
@@ -894,9 +894,7 @@ public class DossierActionsImpl implements DossierActions {
 			
 			//TODO:
 			if(actions == null || (actions != null && actions.size() == 0)) {
-				throw new NotFoundException(
-					"ProcessActionNotFoundException with actionCode= "
-							+ actionCode + "|serviceProcessId= " + serviceProcessId + "|referenceUid= " + refId + "|groupId= " + groupId);
+				throw new NotFoundException();
 			}
 
 			for (ProcessAction act : actions) {
@@ -922,7 +920,9 @@ public class DossierActionsImpl implements DossierActions {
 			}
 
 		} catch (Exception e) {
-			throw new NotFoundException("NotProcessActionFound");
+			throw new NotFoundException(
+					"ProcessActionNotFoundException with actionCode= "
+							+ actionCode + "|serviceProcessId= " + serviceProcessId + "|referenceUid= " + refId + "|groupId= " + groupId);
 		}
 
 		return action;

@@ -156,6 +156,8 @@
 
 		$(document).on("click", ".btn-edit-dossier-template-part", function(event){
 			event.preventDefault();
+			console.log("Edit template part");
+
 			$("#dossiertemplate_part_container").hide();
 			$("#dossiertemplate_part_form_container").show();
 
@@ -198,7 +200,7 @@
 					sampleData = result.value;
 				}
 			});
-
+			console.log(dataItem);
 			var viewModel = kendo.observable({
 				partNo: dataItem.partNo,
 				partName: dataItem.partName,
@@ -210,6 +212,8 @@
 				formScript: formScript,
 				formReport: formReport,
 				sampleData: sampleData,
+				typeCode : dataItem.typeCode,
+				deliverableAction : dataItem.deliverableAction
 			});
 
 			kendo.bind($("#dossier_template_part_model"), viewModel);
@@ -228,6 +232,8 @@
 				fileTemplateNo : "",
 				required : "",
 				esign : "",
+				typeCode : "",
+				deliverableAction : ""
 			});
 
 			kendo.bind($("#dossier_template_part_model"), viewModel);
