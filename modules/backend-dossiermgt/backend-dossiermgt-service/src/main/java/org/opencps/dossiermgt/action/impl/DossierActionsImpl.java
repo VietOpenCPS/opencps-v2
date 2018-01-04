@@ -689,8 +689,9 @@ public class DossierActionsImpl implements DossierActions {
 				// SyncAction
 				int method = 0;
 
+				//TODO: if method = 0 then classPK is dossierActionId
 				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-						isCreateDossier, method, dossier.getPrimaryKey(), StringPool.BLANK,
+						isCreateDossier, method, dossierAction.getDossierActionId(), StringPool.BLANK,
 						serviceProcess.getServerNo());
 
 				// TODO add SYNC for DossierFile and PaymentFile here
