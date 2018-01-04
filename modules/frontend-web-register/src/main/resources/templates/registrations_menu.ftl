@@ -56,17 +56,16 @@
 						
 				</div>
 					
-				<div class="col-sm-9 PL0">
+				<div class="col-sm-9 PL0 PT5">
 				
 					<strong class="btn-block">#= applicantName #</strong>
-					<span class="btn-block">#= applicantIdType #</span>
 				
 				</div>
 				
 				# if ( viewRegistrationModel.registrationModel.selected == true ) { #
-					<span class="col-sm-1 PL0 PR0"></span>
+					<span class="col-sm-1 PL0 PR0 PT5"></span>
 				#} else { viewRegistrationModel.registrationModel.selected = true;#
-					<span class="col-sm-1 PL0 PR0 fa fa-check"></span>
+					<span class="col-sm-1 PL0 PR0 fa fa-check PT5"></span>
 				#}#
 			 </li>
 			

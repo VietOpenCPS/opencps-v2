@@ -1,4 +1,4 @@
-<#-- <#include "init.ftl">
+<#include "init.ftl">
 
 <div class="row">
 
@@ -372,4 +372,3 @@
 		
 	})(jQuery);
 </script>
- -->

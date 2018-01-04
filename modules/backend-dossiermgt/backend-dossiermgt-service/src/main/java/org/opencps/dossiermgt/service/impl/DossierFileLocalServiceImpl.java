@@ -677,7 +677,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 	// TODO: POST /dossiers/{id|referenceUid}/files/{referenceUid}
 
-	public DossierFile getDossierFileByReferenceUid(long dossierId, String referenceUid) throws PortalException {
+	public DossierFile getDossierFileByReferenceUid(long dossierId, String referenceUid) {
 
 		return dossierFilePersistence.fetchByDID_REF(dossierId, referenceUid);
 	}
