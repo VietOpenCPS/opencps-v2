@@ -5,8 +5,8 @@
 	<!-- Modal content-->
 	<#-- <div class="modal-content"> -->
 
-		<div class="modal-body eq-height">
-			<div class="row eq-height M0 full-width">
+		<div class="modal-body P0">
+			<div class="row M0 full-width">
 
 				<div class="col-sm-3 box no-border-radius">
 					<div class="row" style="margin-bottom : 3px;">
@@ -30,7 +30,7 @@
 											if(flag){#
 
 											<div class="accordion-heading">
-												<a class="accordion-toggle dossier-partno-title" data-toggle="collapse" id="partNo#:dossierPartNo#" data-pk="#:dossierPartNo#" data-parent="" href="\\##:dossierPartNo#" aria-expanded="true">
+												<a class="accordion-toggle dossier-partno-title slide-toggle-lv2" id="partNo#:dossierPartNo#" data-pk="#:dossierPartNo#" data-parent="" href="\\##:dossierPartNo#" aria-expanded="true">
 
 												</a>
 											</div>
@@ -39,8 +39,8 @@
 											#
 											var collapseIn = "";
 											if(dossierPartNo === "${dossierPartNo}"){ 
-											collapseIn = "in";
-										} else {collapseIn = "toggle-hide"}
+												collapseIn = "in";
+											} else {collapseIn = ""}
 										#
 
 										<div id="#:dossierPartNo#" class="accordion-body collapse #:collapseIn#" aria-expanded="true">
@@ -68,10 +68,10 @@
 								</div>
 							</script>
 
-						</div>
-					</form>
+							</div>
+						</form>
+					</div>
 				</div>
-			</div>
 
 			<div class="col-sm-9">
 				<#-- <div id="fileCarousel" class="carousel slide row" data-ride="carousel" data-interval="false"> 
@@ -249,7 +249,7 @@
 						success: function(options){
 							urlOut = options.url;
 							$("#objectView2").html("");
-							$("#objectView2").append('<iframe src="'+urlOut+'" width="100%" height="100%">    </iframe>');
+							$("#objectView2").append('<iframe src="'+urlOut+'" width="100%" style="height:100vh">    </iframe>');
 
 						},
 						error: function(){}
@@ -269,7 +269,7 @@
 
 		var printDossierPartName = function() {
 			$.ajax({
-				url : "${api.server}/dossiertemplates/"+$("#dossierTemplateNo").val(),
+				url : "${api.server}/dossiertemplates/"+${(dossier.dossierTemplateNo)!},
 				type : "GET",
 				dataType : "json",
 				headers : {"groupId": ${groupId}},
