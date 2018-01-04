@@ -210,6 +210,8 @@
 				formScript: formScript,
 				formReport: formReport,
 				sampleData: sampleData,
+				typeCode : dataItem.typeCode,
+				deliverableAction : dataItem.deliverableAction
 			});
 
 			kendo.bind($("#dossier_template_part_model"), viewModel);
@@ -228,6 +230,8 @@
 				fileTemplateNo : "",
 				required : "",
 				esign : "",
+				typeCode : "",
+				deliverableAction : ""
 			});
 
 			kendo.bind($("#dossier_template_part_model"), viewModel);
