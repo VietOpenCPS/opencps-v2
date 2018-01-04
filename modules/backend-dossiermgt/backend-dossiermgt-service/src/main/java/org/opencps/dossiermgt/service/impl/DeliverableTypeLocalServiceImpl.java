@@ -157,7 +157,6 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	public DeliverableType updateFormScript(long groupId, long deliverableTypeId, String formScript,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 		// TODO Update FormScript of DeliverableType
-		System.out.println("GET DeliverableType " + new Date());
 
 		Date now = new Date();
 
@@ -172,7 +171,6 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	public DeliverableType updateFormReport(long groupId, long deliverableTypeId, String formReport,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 		// TODO Update FormReport of DeliverableType
-		System.out.println("GET DeliverableType " + new Date());
 
 		Date now = new Date();
 
