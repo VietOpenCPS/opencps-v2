@@ -189,7 +189,10 @@
 					paymentFee: serviceProcessAction.paymentFee,
 					syncActionCode: serviceProcessAction.syncActionCode,
 					rollbackable: serviceProcessAction.rollbackable,
-					dossiertemplatesFileFilter: ""
+					dossiertemplatesFileFilter: "",
+					createDossierNo : serviceProcessAction.createDossierNo,
+					eSignature : serviceProcessAction.eSignature
+
 				});
 
 				kendo.bind($("#serviceprocesses_detail_form_action"), viewModel);
@@ -319,7 +322,9 @@
 					returnDossierFiles: "",
 					syncActionCode: "",
 					rollbackable: "",
-					dossiertemplatesFileFilter: ""
+					dossiertemplatesFileFilter: "",
+					createDossierNo : "",
+					eSignature : ""
 				});
 
 				initStepCombobox();
@@ -367,7 +372,9 @@
 							createDossierFiles: getCreateDossierFiles(),
 							returnDossierFiles: getReturnDossierFiles(),
 							syncActionCode: $("#syncActionCode").val(),
-							rollbackable: $("#rollbackable").prop("checked")
+							rollbackable: $("#rollbackable").prop("checked"),
+							createDossierNo : $("#createDossierNo").prop("checked"),
+							eSignature : $("#eSignature").prop("checked")
 						},
 						success: function(result) {
 							notification.show({
@@ -435,7 +442,9 @@
 							createDossierFiles: getCreateDossierFiles(),
 							returnDossierFiles: getReturnDossierFiles(),
 							syncActionCode: $("#syncActionCode").val(),
-							rollbackable: $("#rollbackable").prop("checked")
+							rollbackable: $("#rollbackable").prop("checked"),
+							createDossierNo : $("#createDossierNo").prop("checked"),
+							eSignature : $("#eSignature").prop("checked")
 						},
 						success: function(result) {
 							notification.show({
@@ -462,7 +471,9 @@
 								"createDossierFiles": getCreateDossierFiles(),
 								"returnDossierFiles": getReturnDossierFiles(),
 								"syncActionCode": $("#syncActionCode").val(),
-								"rollbackable": $("#rollbackable").prop("checked")
+								"rollbackable": $("#rollbackable").prop("checked"),
+								"createDossierNo" : $("#createDossierNo").prop("checked"),
+								"eSignature" : $("#eSignature").prop("checked")
 							});
 
 							

@@ -15,10 +15,12 @@ import com.itextpdf.text.pdf.PdfSignatureAppearance;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.MessageListenerException;
 import com.liferay.portal.kernel.model.User;
@@ -56,7 +58,7 @@ public class Engine implements MessageListener {
 			long userId = msgData.getLong("userId");
 
 			boolean eSign = msgData.getBoolean("eSign");
-			boolean eForm = msgData.getBoolean("eForm");
+			long dossierFileId = msgData.getLong("dossierFileId");
 			
 			if (eSign) {
 				
@@ -173,6 +175,16 @@ public class Engine implements MessageListener {
 					DLAppLocalServiceUtil.updateFileEntry(userId, dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
 							dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
 							StringPool.BLANK, false, fileSigned, serviceContext);
+					
+					// turnOn DossierFile Sync
+					
+					JSONObject msgDataIn = JSONFactoryUtil.createJSONObject();
+					msgDataIn.put("dossierFileId", dossierFileId);
+					msgDataIn.put("dossierFileSync", eSign);
+					msgDataIn.put("userId", userId);
+					
+					message.put("msgToEngine", msgDataIn);
+					MessageBusUtil.sendMessage("jasper/dossier/in/destination", message);
 					
 //					FileUtil.delete(file);
 //					FileUtil.delete(fileSigned);

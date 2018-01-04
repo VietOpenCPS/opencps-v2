@@ -101,7 +101,8 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 		SearchContext searchContext = new SearchContext();
 		searchContext.setCompanyId(companyId);
 
-		List<DossierPart> dossierParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId, GetterUtil.getString(params.get(DossierPartTerm.TEMPLATE_NO)));
+		List<DossierPart> dossierParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
+				GetterUtil.getString(params.get(DossierPartTerm.TEMPLATE_NO)));
 
 		result.put("data", dossierParts);
 
@@ -112,6 +113,7 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 		return result;
 	}
 
+	@Deprecated
 	@Override
 	public DossierPart updateDossierPart(long groupId, long dossierPartId, String templateNo, String partNo,
 			String partName, String partTip, int partType, boolean multiple, String formScript, String formReport,
@@ -197,6 +199,16 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 		}
 
 		return dossierPartId;
+	}
+
+	@Override
+	public DossierPart updateDossierPart(long groupId, long dossierPartId, String templateNo, String partNo,
+			String partName, String partTip, int partType, boolean multiple, String formScript, String formReport,
+			String sampleData, boolean required, String fileTemplateNo, boolean eSign, String deliverableType,
+			int deliverableAction, ServiceContext context) throws PortalException {
+		return DossierPartLocalServiceUtil.updateDossierPart(groupId, dossierPartId, templateNo, partNo, partName,
+				partTip, partType, multiple, formScript, formReport, sampleData, required, fileTemplateNo, eSign,
+				deliverableType, deliverableAction, context);
 	}
 
 }

@@ -1,10 +1,7 @@
 document.addEventListener('DOMContentLoaded', function (event) {
 	const config = {
 		headers: {
-			'groupId': themeDisplay.getScopeGroupId(),
-			'Cache-Control': 'no-cache, no-store, must-revalidate',
-			'Pragma': 'no-cache',
-			'Expires': 0
+			'groupId': themeDisplay.getScopeGroupId()
 		}
 	};
 
@@ -94,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									})
 									.catch(function (error) {
 										console.log(error);
+										
 									});
 									
 									dialog.close();
@@ -171,6 +169,56 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										vm.loadingAlpacajsForm = false;
 									}
 								});
+							} else if( $("#alpacajs_form_"+item.partNo + " .formType").val() != null || 
+									$("#alpacajs_form_"+item.partNo + " .formType").val() === 'assign' ) {
+								
+								vm.loadingAlpacajsForm = true;
+								
+								var control = $("#alpacajs_form_"+item.partNo).alpaca("get");
+								var formData = control.getValue();
+								
+								$.ajax({
+									url : "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid+"/formdata",
+									dataType : "json",
+									type : "PUT",
+									headers: {
+										"groupId": themeDisplay.getScopeGroupId(),
+										Accept : "application/json"
+									},
+									data : {
+										formdata: JSON.stringify(formData)
+									},
+									success : function(result){
+										vm.snackbartextdossierViewJX = "Lưu form thành công!";
+	                      				vm.snackbardossierViewJX = true;
+										vm.loadingAlpacajsForm = false;
+									},
+									error : function(result){
+										vm.snackbartextdossierViewJX = "Lưu form thất bại!";
+	                      				vm.snackbarerordossierViewJX = true;
+										vm.loadingAlpacajsForm = false;
+									}
+								});
+								
+								$.ajax({
+									url : "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid+"/formdata",
+									dataType : "json",
+									type : "PUT",
+									headers: {
+										"groupId": themeDisplay.getScopeGroupId(),
+										Accept : "application/json"
+									},
+									data : {
+										formdata: JSON.stringify(formData)
+									},
+									success : function(result){
+									},
+									error : function(result){
+										console.log(result);
+									}
+								});
+								
+								
 							} else {
 								vm.loadingAlpacajsForm = true;
 								setTimeout(
@@ -215,12 +263,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
     	                            })
     	                                .catch(function (error) {
     	                                    console.log(error);
+    	                                    
     	                                });
     							
                             })
                                 .catch(function (error) {
                                     console.log(error);
 									vm.stepLoading = false;
+									
                                 });
                             return false; 
 							
@@ -242,6 +292,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								vm.stepModel = null;
 							}
                             
+                            vm.processAssignUserIdItems = item.toUsers;
+							
                         },
 						postNextActions: function (item){
 							
@@ -259,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							$.ajax({
 								url: url,
 								headers: {
-								"groupId": themeDisplay.getScopeGroupId()
+									"groupId": themeDisplay.getScopeGroupId()
 								},
 								data: {
 									"actionCode": item.actionCode,
@@ -309,6 +361,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                                 .catch(function (error) {
                                     console.log(error);
 									vm.stepLoading = false;
+									
                                 });
                             return false; 
                         },
@@ -565,6 +618,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                             })
                                 .catch(function (error) {
                                     console.log(error);
+                                    
                                 });
                             return false; 
 						}
@@ -735,6 +789,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 							
@@ -790,6 +845,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						},
@@ -895,9 +951,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								params: paramsBuilder,
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId(),
-									'Cache-Control': 'no-cache, no-store, must-revalidate',
-									'Pragma': 'no-cache',
-									'Expires': 0
 								}
 							};
 
@@ -907,7 +960,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								var serializable = response.data;
 
 								vm.thongTinDoanhNghiepTableItems = serializable.data;
-								vm.thongTinDoanhNghiepTableTotal = Math.ceil(serializable.total / 8);
+								vm.thongTinDoanhNghiepTableTotal = Math.ceil(serializable.total / 15);
 								
 								// temp fix header
 								$('.thongTinDoanhNghiepTable__class th[role="columnheader"]').each(function( index ) {
@@ -922,6 +975,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 									vm.thongTinDoanhNghiepTableItems = [];
+									
 								});
 							return false; 
 						},
@@ -953,6 +1007,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						},
@@ -971,6 +1026,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						},
@@ -1164,9 +1220,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								params: paramsBuilder,
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId(),
-									'Cache-Control': 'no-cache, no-store, must-revalidate',
-									'Pragma': 'no-cache',
-									'Expires': 0
 								}
 								
 							};
@@ -1181,7 +1234,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								} else {
 									vm.traCuuHoSoTableItems = serializable.data;
 									
-									vm.traCuuHoSoTableTotal = Math.ceil(serializable.total / 8);
+									vm.traCuuHoSoTableTotal = Math.ceil(serializable.total / 15);
 								}
 
 								vm.xem_them = 'Xem thêm 8+ bản ghi';
@@ -1202,6 +1255,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 									vm.traCuuHoSoTableItems = [];
+									
 								});
 							return false; 
 						},
@@ -1313,9 +1367,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								params: paramsBuilder,
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId(),
-									'Cache-Control': 'no-cache, no-store, must-revalidate',
-									'Pragma': 'no-cache',
-									'Expires': 0
 								}
 							};
 
@@ -1330,7 +1381,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								} else {
 									vm.danhSachHoSoTableItems = serializable.data;
 
-									vm.danhSachHoSoTableTotal = Math.ceil(serializable.total / 8);
+									vm.danhSachHoSoTableTotal = Math.ceil(serializable.total / 15);
 									
 								}
 
@@ -1352,6 +1403,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 									vm.danhSachHoSoTableItems = [];
+									
 								});
 							return false; 
 						},
@@ -1376,6 +1428,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						},
@@ -1399,59 +1452,62 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'events': {
 						_inilistDocumentIn: function (item) {
 							var vm = this;
-							vm.listDocumentInItems = [];
-							vm.listDocumentOutItems = [];
-
+//							vm.listDocumentInItems = [];
+//							vm.listDocumentOutItems = [];
+							
 							var url = "/o/rest/v2/dossiertemplates/"+item.dossierTemplateNo;
 							var urlFiles = "/o/rest/v2/dossiers/"+item.dossierId+"/files";
-
-							axios.get(urlFiles, config).then(function (response) {
-								var serializable = response.data;
-								vm.dossierFiles = serializable.data;
-								
-								axios.get(url, config).then(function (response) {
-									var serializable = response.data;
+							
+							axios.all([
+						        axios.get(url, config),
+						        axios.get(urlFiles, config)
+						      ])
+							  .then(axios.spread(function (urlRespones, urlFilesRespones) {
+							    // Both requests are now complete
+								  vm.dossierFiles = urlFilesRespones.data.data;
+								  
+								  var serializable = urlRespones.data;
 									
-									var listIn = [], listOut = [], listAll = [];
-									for(var key in serializable.dossierParts){
+								  var listIn = [], listOut = [], listAll = [];
+								  
+								  for(var key in serializable.dossierParts){
 										
-										var countData = 0;
-										for(var keyFile in vm.dossierFiles){
+									var countData = 0;
+									for(var keyFile in vm.dossierFiles){
+										
+										if ( vm.dossierFiles[keyFile].dossierPartNo === serializable.dossierParts[key].partNo ) {
+											countData = countData + 1;
+											serializable.dossierParts[key].referenceUid = vm.dossierFiles[keyFile].referenceUid;
+											serializable.dossierParts[key].fileEntryId = vm.dossierFiles[keyFile].fileEntryId;
+											serializable.dossierParts[key].displayName = vm.dossierFiles[keyFile].displayName;
 											
-											if ( vm.dossierFiles[keyFile].dossierPartNo === serializable.dossierParts[key].partNo ) {
-												countData = countData + 1;
-												serializable.dossierParts[key].referenceUid = vm.dossierFiles[keyFile].referenceUid;
-												serializable.dossierParts[key].fileEntryId = vm.dossierFiles[keyFile].fileEntryId;
-												serializable.dossierParts[key].displayName = vm.dossierFiles[keyFile].displayName;
-												
-												listAll.push(serializable.dossierParts[key]);
-											}
-											
-										}
-										
-										serializable.dossierParts[key].counter = countData;
-										
-										if ( serializable.dossierParts[key].partType === 2 ) {
-											listOut.push(serializable.dossierParts[key]);
-										} else {
-											listIn.push(serializable.dossierParts[key]);
+											listAll.push(serializable.dossierParts[key]);
 										}
 										
 									}
 									
-									vm.listDocumentInItems = listIn;
-									vm.listDocumentOutItems = listOut;
-									// TEMP
-									vm._initCbxDocumentNewTab(listAll);
-								})
-								.catch(function (error) {
+									serializable.dossierParts[key].counter = countData;
+									
+									if ( serializable.dossierParts[key].partType === 2 ) {
+										listOut.push(serializable.dossierParts[key]);
+									} else {
+										listIn.push(serializable.dossierParts[key]);
+									}
+									
+								}
+								
+								vm.listDocumentInItems = listIn;
+								vm.listDocumentOutItems = listOut;
+								// TEMP
+								vm._initCbxDocumentNewTab(listAll);
+								
+								return Promise.reject();
+								
+							  })).catch(function (error) {
 									console.log(error);
+									
 								});
-							})
-							.catch(function (error) {
-								console.log(error);
-							});
-							return false; 
+							return false;
 						},
 						viewDossierFileVersion: function (item) {
 							var vm = this;
@@ -1490,6 +1546,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							}
 							return false; 
@@ -1514,9 +1571,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							const config_blob = {
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId(),
-									'Cache-Control': 'no-cache, no-store, must-revalidate',
-									'Pragma': 'no-cache',
-									'Expires': 0
 								},
 								responseType: 'blob'
 							};
@@ -1530,6 +1584,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						}
@@ -1573,6 +1628,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 							.catch(function (error) {
 								console.log(error);
+								
 							});
 							return false; 
 						},
@@ -1582,9 +1638,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							const config_blob = {
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId(),
-									'Cache-Control': 'no-cache, no-store, must-revalidate',
-									'Pragma': 'no-cache',
-									'Expires': 0
 								},
 								responseType: 'blob'
 							};
@@ -1594,6 +1647,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						}
@@ -1607,6 +1661,49 @@ document.addEventListener('DOMContentLoaded', function (event) {
                     'placeholder': 'ý kiến cán bộ ... ',
                     'multi_line': true,
                     'textarea': true
+                },
+                "processAssignUserId": {
+                    'id': 'processAssignUserId',
+                    'name': 'processAssignUserId',
+                    "type": "select",
+					'required': true,
+                    'label': 'Lựa chọn cán bộ phân công xử lý ',
+                    "item_text": "userName",
+                    "item_value": "userId",
+                    "hide_selected": true,
+                    "chips": true,
+                    "deletable_chips": true,
+                    "loading": false,
+                    "no_data_text": "Lua chon selected",
+                    "items": [],
+                    'onLoad': '_initprocessAssignUserId',
+                    'events': {
+                        _initprocessAssignUserId: function () {
+                            
+                            this.processAssignUserIdItems = [
+                                {
+                                "userId": 1,
+                                "userName": "userName1",
+                                "moderator": false
+                                },
+                                {
+                                "userId": 2,
+                                "userName": "userName2",
+                                "moderator": false
+                                },
+                                {
+                                "userId": 3,
+                                "userName": "userName3",
+                                "moderator": false
+                                },
+                                {
+                                "userId": 4,
+                                "userName": "userName4",
+                                "moderator": false
+                                }
+                            ];
+                        }
+                    }
                 },
 				// TODO POPUP
 				'popUpViewDossierFile' : {
@@ -1646,9 +1743,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								config : {
 									headers: {
 										'groupId': themeDisplay.getScopeGroupId(),
-										'Cache-Control': 'no-cache, no-store, must-revalidate',
-										'Pragma': 'no-cache',
-										'Expires': 0
 									},
 									responseType: 'blob'
 								},
@@ -1668,6 +1762,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.catch(function (error) {
 									console.log(error);
 									dossierPDFViewNotFound.innerHTML = 'Tài liệu đính kèm không tồn tại!';
+									
 								});
 							return false; 
 						},
@@ -1678,9 +1773,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							const config_blob = {
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId(),
-									'Cache-Control': 'no-cache, no-store, must-revalidate',
-									'Pragma': 'no-cache',
-									'Expires': 0
 								},
 								responseType: 'blob'
 							};
@@ -1691,6 +1783,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						}
@@ -1720,9 +1813,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							const config_blob = {
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId(),
-									'Cache-Control': 'no-cache, no-store, must-revalidate',
-									'Pragma': 'no-cache',
-									'Expires': 0
 								},
 								responseType: 'blob'
 							};
@@ -1736,6 +1826,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
 							return false; 
 						}
@@ -1808,6 +1899,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
     							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
                     		}
                     		return false; 
@@ -1837,10 +1929,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
     							axios.get(url, config).then(function (response) {
     								var serializable = response.data;
     								vm.advanced_filter_nhanHieuItems = serializable.data;
-    								console.log(vm.advanced_filter_nhanHieuItems);
     							})
 								.catch(function (error) {
 									console.log(error);
+									
 								});
                     		}
                     		return false; 

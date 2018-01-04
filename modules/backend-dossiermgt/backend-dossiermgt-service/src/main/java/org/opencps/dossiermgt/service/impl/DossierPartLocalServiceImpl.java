@@ -74,11 +74,11 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 	 * org.opencps.dossiermgt.service.DossierPartLocalServiceUtil} to access the
 	 * dossier part local service.
 	 */
-	 
+
 	public DossierPart getByFileTemplateNo(long groupId, String fileTemplateNo) {
 		return dossierPartPersistence.fetchByGID_FTN(groupId, fileTemplateNo);
 	}
-	
+
 	/**
 	 * @param groupId
 	 * @param templateNo
@@ -112,7 +112,7 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		if (contentType == 3) {
 			content = object.getSampleData();
 		}
-		
+
 		return content;
 	}
 
@@ -229,6 +229,84 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		return object;
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierPart updateDossierPart(long groupId, long dossierPartId, String templateNo, String partNo,
+			String partName, String partTip, int partType, boolean multiple, String formScript, String formReport,
+			String sampleData, boolean required, String fileTemplateNo, boolean eSign, String deliverableType,
+			int deliverableAction, ServiceContext context) throws PortalException {
+
+		validateUpdate(groupId, dossierPartId, templateNo, partNo, partName, partTip, partType, templateNo);
+
+		Date now = new Date();
+
+		User userAction = userLocalService.getUser(context.getUserId());
+
+		DossierPart object = null;
+
+		if (dossierPartId == 0) {
+
+			dossierPartId = counterLocalService.increment(DossierPart.class.getName());
+
+			object = dossierPartPersistence.create(dossierPartId);
+
+			// Add audit fields
+			object.setCompanyId(context.getCompanyId());
+			object.setGroupId(groupId);
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+			object.setUserName(userAction.getFullName());
+
+			// Add other fields
+
+			object.setTemplateNo(templateNo);
+			object.setPartNo(partNo);
+			object.setPartName(partName);
+			object.setPartName(partName);
+			object.setPartTip(partTip);
+			object.setPartType(partType);
+			object.setMultiple(multiple);
+			object.setFormScript(formScript);
+			object.setFormReport(formReport);
+			object.setSampleData(sampleData);
+			object.setRequired(required);
+			object.setFileTemplateNo(fileTemplateNo);
+			object.setESign(eSign);
+			object.setDeliverableType(deliverableType);
+			object.setDeliverableAction(deliverableAction);
+
+		} else {
+			object = dossierPartPersistence.fetchByPrimaryKey(dossierPartId);
+
+			// Add audit fields
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+			object.setUserName(userAction.getFullName());
+
+			// Update other fields
+
+			object.setTemplateNo(templateNo);
+			object.setPartNo(partNo);
+			object.setPartName(partName);
+			object.setPartTip(partTip);
+			object.setPartType(partType);
+			object.setMultiple(multiple);
+			object.setFormScript(formScript);
+			object.setFormReport(formReport);
+			object.setSampleData(sampleData);
+			object.setRequired(required);
+			object.setFileTemplateNo(fileTemplateNo);
+			object.setESign(eSign);
+			object.setDeliverableType(deliverableType);
+			object.setDeliverableAction(deliverableAction);
+
+		}
+
+		dossierPartPersistence.update(object);
+
+		return object;
+	}
+
 	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 
@@ -278,23 +356,23 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		}
 
 		// Extra fields
-		//String templateNo = GetterUtil.getString(params.get(DossierPartTerm.TEMPLATE_NO));
+		// String templateNo =
+		// GetterUtil.getString(params.get(DossierPartTerm.TEMPLATE_NO));
 		String partType = GetterUtil.getString(params.get(DossierPartTerm.PART_TYPE));
 		String multiple = GetterUtil.getString(params.get(DossierPartTerm.MULTIPLE));
 		String required = GetterUtil.getString(params.get(DossierPartTerm.REQUIRED));
 		String eSign = GetterUtil.getString(params.get(DossierPartTerm.ESIGN));
-		long templateId =  GetterUtil.getLong(params.get(DossierPartTerm.TEMPLATE_ID));
+		long templateId = GetterUtil.getLong(params.get(DossierPartTerm.TEMPLATE_ID));
 
-
-/*		if (Validator.isNotNull(templateNo)) {
-			MultiMatchQuery query = new MultiMatchQuery(templateNo);
-
-			query.addFields(DossierPartTerm.TEMPLATE_NO);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-*/
+		/*
+		 * if (Validator.isNotNull(templateNo)) { MultiMatchQuery query = new
+		 * MultiMatchQuery(templateNo);
+		 * 
+		 * query.addFields(DossierPartTerm.TEMPLATE_NO);
+		 * 
+		 * booleanQuery.add(query, BooleanClauseOccur.MUST); }
+		 * 
+		 */
 		if (Validator.isNotNull(templateId)) {
 			MultiMatchQuery query = new MultiMatchQuery(Long.toString(templateId));
 
@@ -302,7 +380,7 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
+
 		if (Validator.isNotNull(partType)) {
 			MultiMatchQuery query = new MultiMatchQuery(partType);
 
@@ -386,7 +464,8 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		}
 
 		// Extra fields
-		//String templateNo = GetterUtil.getString(params.get(DossierPartTerm.TEMPLATE_NO));
+		// String templateNo =
+		// GetterUtil.getString(params.get(DossierPartTerm.TEMPLATE_NO));
 		String partType = GetterUtil.getString(params.get(DossierPartTerm.PART_TYPE));
 		String multiple = GetterUtil.getString(params.get(DossierPartTerm.MULTIPLE));
 		String required = GetterUtil.getString(params.get(DossierPartTerm.REQUIRED));
@@ -394,16 +473,15 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 
 		long templateId = GetterUtil.getLong(params.get(DossierPartTerm.TEMPLATE_ID));
 
-
-/*		if (Validator.isNotNull(templateNo)) {
-			MultiMatchQuery query = new MultiMatchQuery(templateNo);
-
-			query.addFields(DossierPartTerm.TEMPLATE_NO);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-*/
+		/*
+		 * if (Validator.isNotNull(templateNo)) { MultiMatchQuery query = new
+		 * MultiMatchQuery(templateNo);
+		 * 
+		 * query.addFields(DossierPartTerm.TEMPLATE_NO);
+		 * 
+		 * booleanQuery.add(query, BooleanClauseOccur.MUST); }
+		 * 
+		 */
 		if (Validator.isNotNull(templateId)) {
 			MultiMatchQuery query = new MultiMatchQuery(Long.toString(templateId));
 
@@ -411,7 +489,7 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
+
 		if (Validator.isNotNull(partType)) {
 			MultiMatchQuery query = new MultiMatchQuery(partType);
 
@@ -459,8 +537,7 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 
 		return dossierPart;
 	}
-	
-	
+
 	public DossierPart fetchByTemplatePartNo(long groupId, String templateNo, String partNo) throws PortalException {
 		return dossierPartPersistence.fetchByTP_NO_PART(groupId, templateNo, partNo);
 	}
@@ -472,7 +549,6 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 	private void validateUpdate(long groupId, long dossierPartId, String templateNo, String partNo, String partName,
 			String partTip, int partType, String fileTemplateNo) throws PortalException {
 
-		
 		if (dossierPartId == 0) {
 			DossierPart dossierPart = dossierPartPersistence.fetchByTP_NO_PART(groupId, templateNo, partNo);
 
