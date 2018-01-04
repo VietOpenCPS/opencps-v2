@@ -121,7 +121,7 @@ public class DossierTemplateUtils {
 			model.setRequired(doc.get(DossierPartTerm.REQUIRED));
 			model.setEsign(doc.get(DossierPartTerm.ESIGN));
 			model.setFileTemplateNo(doc.get(DossierPartTerm.FILE_TEMPLATE_NO));
-			model.setDeliverableType(doc.get(DossierPartTerm.DELIVERABLE_TYPE));
+			model.setTypeCode(doc.get(DossierPartTerm.DELIVERABLE_TYPE));
 			model.setDeliverableAction(GetterUtil.getInteger(doc.get(DossierPartTerm.DELIVERABLE_ACTION)));
 			
 			boolean hasForm = false;

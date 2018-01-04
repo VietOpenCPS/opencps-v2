@@ -51,7 +51,7 @@ import javax.xml.bind.annotation.XmlType;
     "fileTemplateNo",
     "esign",
     "hasForm",
-    "deliverableType",
+    "typeCode",
     "deliverableAction"
 })
 public class DossierTemplatePartDataModel {
@@ -65,15 +65,16 @@ public class DossierTemplatePartDataModel {
     protected String fileTemplateNo;
     protected String esign;
     protected String hasForm;
-	protected String deliverableType;
+    
+	protected String typeCode;
     protected int deliverableAction;
 
-    public String getDeliverableType() {
-		return deliverableType;
+    public String getTypeCode() {
+		return typeCode;
 	}
 
-	public void setDeliverableType(String deliverableType) {
-		this.deliverableType = deliverableType;
+	public void setTypeCode(String typeCode) {
+		this.typeCode = typeCode;
 	}
 
 	public int getDeliverableAction() {

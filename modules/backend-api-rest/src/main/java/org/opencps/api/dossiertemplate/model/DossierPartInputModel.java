@@ -67,7 +67,7 @@ public class DossierPartInputModel {
 	protected String esign;
 	@FormParam(value = "hasForm")
 	protected String hasForm;
-	@FormParam(value = "deliverableType")
+	@FormParam(value = "typeCode")
 	protected String deliverableType;
 	@FormParam(value = "deliverableAction")
 	protected int deliverableAction;
