@@ -1,6 +1,5 @@
 package org.opencps.dossiermgt.action;
 
-import java.io.InputStream;
 
 import org.opencps.dossiermgt.model.DossierLog;
 

@@ -266,11 +266,14 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 			}
 
-			if (dossier != null) {
+			if (dossier != null && Validator.isNotNull(dossier.getDossierNo())) {
 				Map<String, Object> updateDossierNoParams = new LinkedHashMap<>();
-				params.put("dossierno", dossier.getDossierNo());
 
-				JSONObject resSynsDossierNo = rest.callPostAPI(groupId, HttpMethods.POST, "application/json",
+				properties.put("dossierno", dossier.getDossierNo());
+
+				//endPointSynDossierNo = endPointSynDossierNo + HttpUtil.encodeURL(dossier.getDossierNo());
+
+				JSONObject resSynsDossierNo = rest.callPostAPI(groupId, HttpMethods.PUT, "application/json",
 						RESTFulConfiguration.SERVER_PATH_BASE, endPointSynDossierNo, RESTFulConfiguration.SERVER_USER,
 						RESTFulConfiguration.SERVER_PASS, properties, updateDossierNoParams, serviceContext);
 
@@ -279,7 +282,6 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 				}
 			}
-
 		}
 
 		// SyncDossierFile

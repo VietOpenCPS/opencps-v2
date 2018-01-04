@@ -332,7 +332,7 @@ public class DossierActionsImpl implements DossierActions {
 										createFile.put("partTip", dossierPart.getPartTip());
 										createFile.put("multiple", dossierPart.getMultiple());
 										createFile.put("templateFileNo", dossierPart.getFileTemplateNo());
-										
+
 										long fileEntryId = 0;
 										boolean eForm = false;
 										String formData = StringPool.BLANK;
@@ -340,6 +340,7 @@ public class DossierActionsImpl implements DossierActions {
 										String docFileReferenceUid = StringPool.BLANK;
 										boolean returned = false;
 										int counter = 0;
+										long dossierFileId = 0;
 
 										List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 												.getDossierFileByDID_FTNO_DPT(dossierId, fileTemplateNo, 2, false,
@@ -358,16 +359,17 @@ public class DossierActionsImpl implements DossierActions {
 															.contains(dossierFile.getFileTemplateNo())) {
 														returned = true;
 													}
+													
+													dossierFileId = dossierFile.getDossierFileId();
 
 													break df;
 												}
 											}
 										} else {
 											eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true : false;
-											_log.info("*********================================***************************");
-											_log.info("*********================================dossierId***************************" + dossierId);
-											_log.info("*********================================dossierPart.getSampleData()***************************" + dossierPart.getSampleData());
-											formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext);
+										
+											formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(),
+													dossierId, serviceContext);
 											formScript = dossierPart.getFormScript();
 
 											if (returnDossierFileTemplateNos
@@ -381,11 +383,13 @@ public class DossierActionsImpl implements DossierActions {
 
 												DossierFile dossierFile = actions.addDossierFile(groupId, dossierId,
 														referenceUid, dossier.getDossierTemplateNo(),
-														dossierPart.getPartNo(), fileTemplateNo, StringPool.BLANK,
+														dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(),
 														StringPool.BLANK, 0L, null, StringPool.BLANK,
 														String.valueOf(false), serviceContext);
 
 												docFileReferenceUid = dossierFile.getReferenceUid();
+												
+												dossierFileId = dossierFile.getDossierFileId();
 											}
 
 										}
@@ -398,6 +402,7 @@ public class DossierActionsImpl implements DossierActions {
 												? dossierFilesResult.size() : 0;
 
 										createFile.put("eform", eForm);
+										createFile.put("dossierFileId", dossierFileId);
 										createFile.put("formData", formData);
 										createFile.put("formScript", formScript);
 										createFile.put("referenceUid", docFileReferenceUid);
@@ -518,9 +523,6 @@ public class DossierActionsImpl implements DossierActions {
 					serviceProcess.getServerNo());
 		}
 
-		if (Validator.isNull(processAction))
-			throw new NotFoundException("ProcessActionNotFoundException");
-
 		boolean isSubmitType = isSubmitType(processAction);
 
 		boolean hasDossierSync = false;
@@ -626,7 +628,7 @@ public class DossierActionsImpl implements DossierActions {
 				// sc.setCompanyId(dossier.getCompanyId());
 
 				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
-						dossierId, serviceProcess.getDossierNoPattern(), params);
+						dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
 
 				dossier.setDossierNo(dossierRef);
 				// To index
@@ -845,6 +847,13 @@ public class DossierActionsImpl implements DossierActions {
 			String dossierStatus = dossier.getDossierStatus();
 
 			String dossierSubStatus = dossier.getDossierSubStatus();
+			
+			//TODO:
+			if(actions == null || (actions != null && actions.size() == 0)) {
+				throw new NotFoundException(
+					"ProcessActionNotFoundException with actionCode= "
+							+ actionCode + "|serviceProcessId= " + serviceProcessId + "|referenceUid= " + refId + "|groupId= " + groupId);
+			}
 
 			for (ProcessAction act : actions) {
 
@@ -861,6 +870,9 @@ public class DossierActionsImpl implements DossierActions {
 
 						action = act;
 						break;
+					} else {
+						// right
+						
 					}
 				}
 			}

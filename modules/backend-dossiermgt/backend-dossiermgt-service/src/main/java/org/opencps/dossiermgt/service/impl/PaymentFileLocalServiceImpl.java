@@ -621,7 +621,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	@Override
 	public List<PaymentFile> getByDossierId(long dossierId) {
 		// TODO Auto-generated method stub
-		return null;
+		return paymentFilePersistence.findByDossierId(dossierId);
 	}
 
 }

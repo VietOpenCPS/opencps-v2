@@ -5,20 +5,20 @@
 		<div class="background-triangle-big"> Tên thủ tục </div>
 		<div class="layout row wrap header_tools row-blue">
 	
-			<div class="flex xs9 solo pl-4 text-ellipsis">
+			<div class="flex xs7 sm9 solo pl-4 text-ellipsis">
 		
 				{{detailModel.dossierNo}} {{detailModel.serviceName}}
 		
 			</div>
 			<div class="flex xs5 sm3 text-right" style="margin-left: auto;">
 		
-				<v-btn flat class=" my-0 py-0 btn-border-left" color="grey darken-1" v-on:click.native="undoDetailPage()">
+				<v-btn flat class=" my-0 py-0 btn-border-left" color="grey darken-1" v-on:click.native.prevent.stop="undoDetailPage()">
 					<v-icon class="mr-2">undo</v-icon>
 				Quay lại
 				</v-btn>
-                <v-btn v-if="navigationFilterview" v-on:click.native="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0 hidden-sm-and-down"><v-icon>fullscreen</v-icon></v-btn>
+                <v-btn v-if="navigationFilterview" v-on:click.native.prevent.stop="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0 hidden-sm-and-down"><v-icon>fullscreen</v-icon></v-btn>
 
-                <v-btn v-if="!navigationFilterview" v-on:click.native="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0 hidden-sm-and-down"><v-icon>fullscreen_exit</v-icon></v-btn>
+                <v-btn v-if="!navigationFilterview" v-on:click.native.prevent.stop="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0 hidden-sm-and-down"><v-icon>fullscreen_exit</v-icon></v-btn>
 
 			</div>
 	
@@ -88,7 +88,7 @@
 					{{detailModel.dossierStatusText}}
 				</div>
 				<div>
-					<a href="javascript:;" @click="showContactDetail = !showContactDetail">
+					<a href="javascript:;" @click.prevent.stop="showContactDetail = !showContactDetail">
 					Thông tin liên hệ: <v-icon color="primary" v-if="!showContactDetail">keyboard_arrow_down</v-icon>
 					<v-icon color="primary" v-if="showContactDetail">keyboard_arrow_up</v-icon>
 					</a>
@@ -176,7 +176,6 @@
 						v-for="step in processSteps"
 						:key="step.processActionId"
 						:href="'#tab-temp-' + step.processActionId"
-                        v-if="step.autoEvent !== 'submit'"
 						@click.prevent.stop="changeProcessStep(step)"
 					>
                         <v-btn
@@ -204,34 +203,44 @@
 						Hồ sơ chờ đồng bộ ...
 					</div>
                     <div v-else>
-                        <v-card-title primary-title class="mx-2 pb-0">
+                    	
+                    	<v-card-title primary-title class="mx-2 pb-0" v-if="stepModel.createFiles">
                             <v-layout wrap> 
                                 <v-flex xs12>
-                                    Nhập ý kiến {{stepModel.actionName}}:
-                                    <div jx-bind="processActionNote"></div>
-                                </v-flex>
-                                <v-flex xs12 v-if="stepModel.allowAssignUser">
-                                    <div jx-bind="processAssignUserId"></div>
+                                    Thành phần kết quả:
                                 </v-flex>
                             </v-layout>
                         </v-card-title>
-                        <v-expansion-panel class="my-0 expansion__list_style">
+                        
+                    	<v-expansion-panel class="my-0 expansion__list_style">
                             <v-expansion-panel-content v-for="(item,i) in stepModel.createFiles" v-if="item" :key="item.dossierPartId">
-                            <div slot="header" @click="showAlpacaJSFORM(item)">{{i + 1}}. {{item.partName}} <small v-if="item.eform">( Form trực tuyến )</small> </div>
+                            <div slot="header" @click.prevent="showAlpacaJSFORM(item)">{{i + 1}}. {{item.partName}} <small v-if="item.eform">( Form trực tuyến )</small> </div>
                             <div slot="header" class="text-right">
-                                <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="singleFileUpload(item)">
+                                <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native.prevent="singleFileUpload(item)">
                                     <v-icon>file_upload</v-icon>
                                 </v-btn>
-                                <v-btn color="primary" fab small dark class="small-btn-x mx-0 my-0" v-on:click.native="viewDossierFileResult(item, i)">
+                                <v-btn color="primary" fab small dark class="small-btn-x mx-0 my-0" v-on:click.native.prevent="viewDossierFileResult(item, i)">
                                     {{item.counter}}
                                 </v-btn>
                                 
-                                <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native="deleteDossierFileVersion(item)">
+                                <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native.prevent="deleteDossierFileVersion(item)">
                                     <v-icon>delete</v-icon>
                                 </v-btn>
                             </div>
 
                             <input type="file" :id="'inputfile_'+item.dossierPartId" style="display:none" v-on:change="singleFileUploadInput($event, item, i)"/>
+                            <div class="alert alert--outline success--text mx-4 hidden" :id="'message_success_'+item.referenceUid" >
+                            	<i aria-hidden="true" class="material-icons icon alert__icon">check_circle</i>
+	                            <div>
+							    	Ghi lại {{item.partName}} Thành công!.
+							  	</div>
+						  	</div>
+						  	<div class="alert alert--outline error--text mx-4 hidden" :id="'message_error_'+item.referenceUid" >
+                            	<i aria-hidden="true" class="material-icons icon alert__icon">warning</i>
+	                            <div>
+							    	Ghi lại {{item.partName}} Thất bại!.
+							  	</div>
+						  	</div>
                             <div class="text-right pr-4" v-if="item.eform">
                                 <v-btn color="primary" :id="'btn-save-formalpaca'+item.partNo"
                                 	:referenceUid="item.referenceUid"
@@ -239,13 +248,23 @@
                                 	class="saveForm"
                                     :loading="loadingAlpacajsForm"
                                     :disabled="loadingAlpacajsForm"
-                                    v-on:click.native="submitAlpacajsForm(item)"> Ghi lại </v-btn>
+                                    v-on:click.native.prevent.stop="submitAlpacajsForm(item)"> Ghi lại </v-btn>
                             </div>
                             <div :id="'alpacajs_form_'+item.partNo" class="expansion-panel__header"></div>
-							<input type="hidden" :id="item.dossierFileId + item.partNo" :value="item.partNo" />
+							<input type="hidden" :id="'dossierFileId' + item.partNo" :value="item.dossierFileId" />
 							
                             </v-expansion-panel-content>
                         </v-expansion-panel>
+                        
+                        <v-card-title primary-title class="mx-2 pb-0">
+                            <v-layout wrap> 
+                                <v-flex xs12>
+                                    Nhập ý kiến {{stepModel.actionName}}:
+                                    <div jx-bind="processActionNote"></div>
+                                </v-flex>
+                            </v-layout>
+                        </v-card-title>
+                        
                         <v-card-actions>
                             <v-btn flat color="primary" class="px-0" :loading="actionsSubmitLoading" :disabled="actionsSubmitLoading"
                             @click.prevent.stop="postNextActions(stepModel)">Xác nhận</v-btn>
@@ -287,8 +306,22 @@
 						formdata: JSON.stringify(value)
 					},
 					success : function(result){
+						console.log(result);
+					
+						$('#message_success_'+referentUid).removeClass('hidden');
+						setTimeout(
+							function(){ 
+								$('#message_success_'+referentUid).addClass('hidden');
+							}, 
+						10000);
 					},
 					error : function(result){
+						$('#message_error_'+referentUid).removeClass('hidden');
+						setTimeout(
+							function(){ 
+								$('#message_error_'+referentUid).addClass('hidden');
+							}, 
+						10000);
 					}
 				});
 			}
