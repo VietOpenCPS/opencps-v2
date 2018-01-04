@@ -1,4 +1,4 @@
-<#-- <#include "init.ftl">
+<#include "init.ftl">
 
 <div id="employee-detail-index-wrapper">
 	<div class="row clear-both">
@@ -256,4 +256,4 @@
 	
 })(jQuery);
 
-</script> -->
+</script>

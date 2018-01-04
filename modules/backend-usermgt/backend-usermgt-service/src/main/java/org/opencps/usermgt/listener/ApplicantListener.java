@@ -30,6 +30,9 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 	
 	@Override
 	public void onAfterUpdate(Applicant model) throws ModelListenerException {
+		
+		/*
+		 * 03/01/2018 ThanhNv: Khong gui thong bao khi cap nhat thong tin doanh nghiep - MR_DUAN
 		if (modelBefore.getActivationCode().length() != 0 && Validator.isNull(model.getActivationCode())) {
 			try {
 				
@@ -79,6 +82,7 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 				_log.error(e);
 			}
 		}
+		*/
 	}
 	
 	@Override
@@ -105,7 +109,7 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 			queue.setGroupId(model.getGroupId());
 			queue.setCompanyId(model.getCompanyId());
 			
-			queue.setNotificationType(NotificationType.USER_01);
+			queue.setNotificationType(NotificationType.APPLICANT_01);
 			queue.setClassName(Applicant.class.getName());
 			queue.setClassPK(String.valueOf(model.getPrimaryKey()));
 			queue.setToUsername(model.getApplicantName());
@@ -122,7 +126,7 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 			object.put("toName", model.getApplicantName());
 			object.put("toAddress", model.getContactEmail());
 			
-			String payload = ApplicantListenerUtils.getPayload(NotificationType.USER_01, object, model.getGroupId()).toString();
+			String payload = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, model.getGroupId()).toString();
 			
 			queue.setPayload(payload);
 			

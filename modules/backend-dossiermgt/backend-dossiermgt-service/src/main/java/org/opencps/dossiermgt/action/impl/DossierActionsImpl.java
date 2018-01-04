@@ -342,6 +342,7 @@ public class DossierActionsImpl implements DossierActions {
 										String docFileReferenceUid = StringPool.BLANK;
 										boolean returned = false;
 										int counter = 0;
+										long dossierFileId = 0;
 
 										List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 												.getDossierFileByDID_FTNO_DPT(dossierId, fileTemplateNo, 2, false,
@@ -360,6 +361,8 @@ public class DossierActionsImpl implements DossierActions {
 															.contains(dossierFile.getFileTemplateNo())) {
 														returned = true;
 													}
+													
+													dossierFileId = dossierFile.getDossierFileId();
 
 													break df;
 												}
@@ -387,6 +390,8 @@ public class DossierActionsImpl implements DossierActions {
 														String.valueOf(false), serviceContext);
 
 												docFileReferenceUid = dossierFile.getReferenceUid();
+												
+												dossierFileId = dossierFile.getDossierFileId();
 											}
 
 										}
@@ -399,6 +404,7 @@ public class DossierActionsImpl implements DossierActions {
 												? dossierFilesResult.size() : 0;
 
 										createFile.put("eform", eForm);
+										createFile.put("dossierFileId", dossierFileId);
 										createFile.put("formData", formData);
 										createFile.put("formScript", formScript);
 										createFile.put("referenceUid", docFileReferenceUid);
@@ -666,7 +672,7 @@ public class DossierActionsImpl implements DossierActions {
 				// sc.setCompanyId(dossier.getCompanyId());
 
 				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
-						dossierId, serviceProcess.getDossierNoPattern(), params);
+						dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
 
 				dossier.setDossierNo(dossierRef);
 				// To index

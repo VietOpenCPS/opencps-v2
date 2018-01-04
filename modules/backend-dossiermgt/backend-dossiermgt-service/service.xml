@@ -179,7 +179,8 @@
 		<column name="required" type="boolean" />
 		<column name="fileTemplateNo" type="String" />
 		<column name="eSign" type="boolean" />
-
+		<column name="deliverableType" type="String"/>
+		<column name="deliverableAction" type="int"/>
 		<!-- Order -->
 
 		<!-- Finder methods -->
@@ -446,7 +447,7 @@
 		<column name="formScript" type="String" />
 		<column name="formReport" type="String" />
 		<column name="formSchema" type="String" />
-
+		<column name="deliverableCode" type="String"/>
 
 		<!-- Order -->
 
@@ -817,7 +818,9 @@
 		<column name="makeBriefNote" type="String" />
 		<column name="syncActionCode" type="String" />
 		<column name="rollbackable" type="boolean" />
-
+		<column name="createDossierNo" type="boolean"/>
+		<column name="eSignature" type="boolean"/>
+		
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
 		</finder>
