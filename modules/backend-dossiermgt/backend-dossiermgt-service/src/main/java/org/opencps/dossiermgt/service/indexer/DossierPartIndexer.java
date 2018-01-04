@@ -61,7 +61,7 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 		DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(object.getGroupId(), object.getTemplateNo());
 		
 		document.addNumberSortable(DossierPartTerm.TEMPLATE_ID, dossierTemplate.getPrimaryKey());
-		//document.addNumberSortable(DossierPartTerm.DELIVERABLE_ACTION, Validator.isNotNull(object.getDeliverableAction()) ? object.getDeliverableAction() : 0);
+		document.addNumberSortable(DossierPartTerm.DELIVERABLE_ACTION, Validator.isNotNull(object.getDeliverableAction()) ? object.getDeliverableAction() : 0);
 
 
 		// add text fields
