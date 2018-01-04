@@ -18,7 +18,7 @@ import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 		"javax.portlet.init-param.template-path=/",
 		"javax.portlet.init-param.view-template=/templates/view.ftl",
 		"com.liferay.portlet.header-portlet-css=/css/main.css",
-		"com.liferay.portlet.footer-portlet-javascript=/js/main20182.js",
+		"com.liferay.portlet.footer-portlet-javascript=/js/main.js",
 		"javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=power-user,user"
 	},
