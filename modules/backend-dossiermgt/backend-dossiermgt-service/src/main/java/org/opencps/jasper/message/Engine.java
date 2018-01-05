@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.messaging.MessageListenerException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 public class Engine implements MessageListener {
@@ -30,12 +31,45 @@ public class Engine implements MessageListener {
 	public void receive(Message message) throws MessageListenerException {
 		// TODO Auto-generated method stub
 		try {
-			_doReceiveJasperRequest(message);
+			JSONObject msgData = (JSONObject) message.get("msgToEngine");
+			
+			boolean dossierFileSync = msgData.getBoolean("dossierFileSync");
+			
+			if (dossierFileSync) {
+				_doReceiveKySoRequest(message);
+			} else {
+				_doReceiveJasperRequest(message);
+			}
+			
 		} catch (Exception e) {
 			_log.error("Unable to process message " + message, e);
 		}
 	}
-
+	
+	private void _doReceiveKySoRequest(Message message) {
+		
+		try {
+			
+			JSONObject msgData = (JSONObject) message.get("msgToEngine");
+			
+			long dossierFileId = msgData.getLong("dossierFileId");
+			
+			DossierFile dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(dossierFileId);
+			
+			dossierFile.setIsNew(true);
+			
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+			
+			Indexer<DossierFile> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierFile.class);
+			
+			indexer.reindex(dossierFile);
+			
+		} catch (SearchException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	private void _doReceiveJasperRequest(Message message) {
 		// TODO Auto-generated method stub
 		_log.info("Dossier listener receive Jasper .............................");
@@ -78,17 +112,6 @@ public class Engine implements MessageListener {
     
     			indexer.reindex(dossierFile);
     
-    			// Binhth add message bus to processing KySO file
-    			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(dossierFile.getGroupId(),
-    					dossierFile.getDossierTemplateNo(), dossierFile.getDossierPartNo());
-    			
-    			JSONObject msgDataESign = JSONFactoryUtil.createJSONObject();
-    			msgDataESign.put("userId", dossierFile.getUserId());
-    			msgDataESign.put("eSign", dossierPart.getESign());
-    			msgDataESign.put("fileEntryId", fileEntryId);
-    
-    			message.put("msgToEngine", msgDataESign);
-    			MessageBusUtil.sendMessage("kyso/engine/out/destination", message);
 			} else if(className.equals(RegistrationForm.class.getName())) {
 			    RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.fetchRegistrationForm(classPK);
 			    

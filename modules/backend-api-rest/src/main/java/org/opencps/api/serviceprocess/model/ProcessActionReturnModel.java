@@ -69,7 +69,9 @@ import javax.xml.bind.annotation.XmlType;
     "returnDossierFiles",
     "makeBriefNote",
     "syncActionCode",
-    "rollbackable"
+    "rollbackable",
+    "createDossierNo",
+    "eSignature"
 })
 @XmlRootElement(name = "ProcessActionReturnModel")
 public class ProcessActionReturnModel {
@@ -91,8 +93,26 @@ public class ProcessActionReturnModel {
     protected String makeBriefNote;
     protected String syncActionCode;
     protected String rollbackable;
+    protected boolean createDossierNo;
+    protected boolean eSignature;
 
-    /**
+    public boolean isCreateDossierNo() {
+		return createDossierNo;
+	}
+
+	public void setCreateDossierNo(boolean createDossierNo) {
+		this.createDossierNo = createDossierNo;
+	}
+
+	public boolean iseSignature() {
+		return eSignature;
+	}
+
+	public void seteSignature(boolean eSignature) {
+		this.eSignature = eSignature;
+	}
+
+	/**
      * Gets the value of the processActionId property.
      * 
      * @return

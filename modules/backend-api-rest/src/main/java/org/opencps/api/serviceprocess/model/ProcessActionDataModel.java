@@ -70,7 +70,9 @@ import javax.xml.bind.annotation.XmlType;
     "syncActionCode",
     "rollbackable",
     "preStepName",
-    "postStepName"
+    "postStepName",
+    "createDossierNo",
+    "eSignature"
 })
 public class ProcessActionDataModel {
 
@@ -94,7 +96,26 @@ public class ProcessActionDataModel {
     protected String syncActionCode;
     protected String rollbackable;
 
-    public String getPreStepName() {
+    protected boolean createDossierNo;
+    protected boolean eSignature;
+
+    public boolean isCreateDossierNo() {
+		return createDossierNo;
+	}
+
+	public void setCreateDossierNo(boolean createDossierNo) {
+		this.createDossierNo = createDossierNo;
+	}
+
+	public boolean iseSignature() {
+		return eSignature;
+	}
+
+	public void seteSignature(boolean eSignature) {
+		this.eSignature = eSignature;
+	}
+
+	public String getPreStepName() {
 		return preStepName;
 	}
 

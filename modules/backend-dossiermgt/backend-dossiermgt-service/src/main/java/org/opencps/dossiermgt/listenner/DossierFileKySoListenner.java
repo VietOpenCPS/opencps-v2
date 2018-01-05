@@ -21,7 +21,7 @@ import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-@Component(immediate = true, service = ModelListener.class)
+//@Component(immediate = true, service = ModelListener.class)
 public class DossierFileKySoListenner extends BaseModelListener<DossierFile> {
 
 	@Override
@@ -73,24 +73,6 @@ public class DossierFileKySoListenner extends BaseModelListener<DossierFile> {
 		serviceContext.setCompanyId(model.getCompanyId());
 		serviceContext.setUserId(model.getUserId());
 		
-		try {
-			
-			// Binhth add message bus to processing KySO file
-			Message message = new Message();
-			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(model.getGroupId(),
-					model.getDossierTemplateNo(), model.getDossierPartNo());
-			
-			JSONObject msgDataESign = JSONFactoryUtil.createJSONObject();
-			msgDataESign.put("userId", model.getUserId());
-			msgDataESign.put("eSign", dossierPart.getESign());
-			msgDataESign.put("fileEntryId", model.getFileEntryId());
-
-			message.put("msgToEngine", msgDataESign);
-			MessageBusUtil.sendMessage("kyso/engine/out/destination", message);
-			
-		} catch (SystemException | PortalException e) {
-			e.printStackTrace();
-		}
 	}
 
 

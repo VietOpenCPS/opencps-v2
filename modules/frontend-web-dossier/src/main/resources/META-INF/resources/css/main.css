@@ -32,6 +32,11 @@ html .portlet-boundary_frontend_web_dossier_portlet_FrontendWebDossierPortlet_ .
 	display: none;
 }
 
+.no-wrap .input-group--select .input-group__selections__comma{
+    font-size: 13px;
+    white-space: nowrap;
+}
+
 table.table thead th {
     white-space: normal !important;
 }

@@ -15,10 +15,12 @@ import com.itextpdf.text.pdf.PdfSignatureAppearance;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.MessageListenerException;
 import com.liferay.portal.kernel.model.User;
@@ -56,7 +58,8 @@ public class Engine implements MessageListener {
 			long userId = msgData.getLong("userId");
 
 			boolean eSign = msgData.getBoolean("eSign");
-
+			long dossierFileId = msgData.getLong("dossierFileId");
+			
 			if (eSign) {
 				
 				User user = UserLocalServiceUtil.fetchUser(userId);
@@ -127,16 +130,24 @@ public class Engine implements MessageListener {
 					
 					float llx = textLocation.getAnchorX() + offsetX;
 	
-					float urx = llx + signatureImageWidth * imageZoom;
-	
 					float lly = textLocation.getAnchorY() - signatureImageHeight * imageZoom + offsetY;
 	
+					if (textLocation.getAnchorX() > 200) {
+						llx = llx - 100;
+					}
+					if (textLocation.getAnchorY() > 420) {
+						lly = lly - 420;
+					}
+//
 					if (lly < 0) {
 						lly = 0;
 					}
-					
+					if (llx < 0) {
+						llx = 0;
+					}
+					float urx = llx + signatureImageWidth * imageZoom;
 					float ury = lly + signatureImageHeight * imageZoom;
-	
+					
 					_log.info("********************************* llx " + llx);
 	
 					_log.info("********************************* lly " + lly);
@@ -149,8 +160,9 @@ public class Engine implements MessageListener {
 					
 					_log.info("********************************* signatureImageHeight " + signatureImageHeight);
 					
-	//				inHash = signer.computeHash(new Rectangle(llx, lly, urx, ury), 1);
-					inHash = signer.computeHash(new Rectangle(llx, lly, urx, ury), 1);
+//					inHash = signer.computeHash(new Rectangle(0, 0, urx, ury), 1);
+					// TODO # location fixed
+					inHash = signer.computeHash(new Rectangle(llx, lly , urx, ury), 1);
 					fieldName = signer.getSignatureName();
 	
 					signature = Base64.getDecoder().decode("");
@@ -163,6 +175,16 @@ public class Engine implements MessageListener {
 					DLAppLocalServiceUtil.updateFileEntry(userId, dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
 							dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
 							StringPool.BLANK, false, fileSigned, serviceContext);
+					
+					// turnOn DossierFile Sync
+					
+					JSONObject msgDataIn = JSONFactoryUtil.createJSONObject();
+					msgDataIn.put("dossierFileId", dossierFileId);
+					msgDataIn.put("dossierFileSync", eSign);
+					msgDataIn.put("userId", userId);
+					
+					message.put("msgToEngine", msgDataIn);
+					MessageBusUtil.sendMessage("jasper/dossier/in/destination", message);
 					
 //					FileUtil.delete(file);
 //					FileUtil.delete(fileSigned);

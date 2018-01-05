@@ -154,9 +154,8 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				// Get DOSSIER in CLIENT
 				Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierSync.getDossierId());
 
-				// Get the latest ACTION of DOSSIER has been done
-				long dossierActionId = Validator.isNotNull(dossier) ? dossierActionId = dossier.getDossierActionId()
-						: 0l;
+				// Get dossierAction is dossierSync classPK
+				long dossierActionId = dossierSync.getClassPK();
 
 				if (dossierActionId != 0) {
 
@@ -266,11 +265,14 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 			}
 
-			if (dossier != null) {
+			if (dossier != null && Validator.isNotNull(dossier.getDossierNo())) {
 				Map<String, Object> updateDossierNoParams = new LinkedHashMap<>();
-				params.put("dossierno", dossier.getDossierNo());
 
-				JSONObject resSynsDossierNo = rest.callPostAPI(groupId, HttpMethods.POST, "application/json",
+				properties.put("dossierno", dossier.getDossierNo());
+
+				//endPointSynDossierNo = endPointSynDossierNo + HttpUtil.encodeURL(dossier.getDossierNo());
+
+				JSONObject resSynsDossierNo = rest.callPostAPI(groupId, HttpMethods.PUT, "application/json",
 						RESTFulConfiguration.SERVER_PATH_BASE, endPointSynDossierNo, RESTFulConfiguration.SERVER_USER,
 						RESTFulConfiguration.SERVER_PASS, properties, updateDossierNoParams, serviceContext);
 
@@ -279,7 +281,6 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 				}
 			}
-
 		}
 
 		// SyncDossierFile

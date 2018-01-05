@@ -225,7 +225,10 @@
 
 						<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#" hasform="#if(hasForm){# true #}#" >
 
-						<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
+						<#-- <a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
+							<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
+						</a> -->
+						<a href="\\#/${(dossierId)!}/files/${(dossier.dossierTemplateNo)!}/#:id#" target="_blank" class="dossier-component-profile" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 							<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
 						</a>
 
@@ -352,9 +355,9 @@
 </div>  
 
 
-<div id="profileDetail" class="modal fade" role="dialog">
+<#-- <div id="profileDetail" class="modal fade" role="dialog">
 	
-</div>
+</div> -->
 
 <script type="text/javascript">
 
@@ -395,18 +398,16 @@
 			});
 		});
 
-		$(document).off("click",".dossier-component-profile");
-		$(document).on("click",".dossier-component-profile",function(){
-			var partNo = $(this).attr("data-partno");
-			var dossierId = "${(dossierId)!}";
-			var dossierTemplateNo = $("#dossierTemplateNo").val();
-			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
-				$(this).modal("show");
-			});
-			// var urlView = "http://dangkiemlaprap.mt.gov.vn/group/cong-tiep-nhan#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo+"";
+		// $(document).off("click",".dossier-component-profile");
+		// $(document).on("click",".dossier-component-profile",function(){
+		// 	var partNo = $(this).attr("data-partno");
+		// 	var dossierId = "${(dossierId)!}";
+		// 	var dossierTemplateNo = $("#dossierTemplateNo").val();
+		// 	$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
+		// 		$(this).modal("show");
+		// 	});
 			
-			// window.open(urlView,"_blank")
-		});
+		// });
 
 		$(document).off("click",".delete-dossier-file");
 		$(document).on("click",".delete-dossier-file",function(){
@@ -953,7 +954,7 @@
 		data.append('fileTemplateNo', fileTemplateNo);
 		data.append('formData', "");
 		data.append('fileType', "");
-		data.append('isSync', "");
+		data.append('isSync', "true");
 
 		$.ajax({
 			type : 'POST', 
