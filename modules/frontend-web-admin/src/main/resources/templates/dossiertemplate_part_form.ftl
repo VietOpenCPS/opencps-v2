@@ -28,6 +28,7 @@
 				</div>
 			</div>
 		</div>
+		
 		<div class="row MT10">
 			<div class="col-xs-12 col-sm-12">
 				<div class="row">
@@ -137,6 +138,37 @@
 				</div>
 			</div>
 		</div>
+
+		<div class="row MT10">
+			<div class="col-xs-12 col-sm-12">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						Kiểu cấp phép/giấy chứng nhận cấp ra
+					</div>
+				</div>
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<textarea id="typeCode" name="typeCode" class="k-textbox form-control" data-bind="value:typeCode"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row MT10">
+			<div class="col-xs-12 col-sm-12">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						Kiểu hành động của kết quả trả về
+					</div>
+				</div>
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<input id="deliverableAction" name="deliverableAction" class="k-textbox form-control" data-bind="value:deliverableAction"/>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div class="row MT10 text-center">
 			<button id="btn_save_dossier_template_part" class="k-button btn-primary" title="Ghi lại">Ghi lại</button>
 			<button id="btn_cancle_dossier_template_part" class="k-button btn-default" title="Hủy bỏ">Hủy bỏ</button>
@@ -160,7 +192,7 @@
 				<div class="row MB15">
 					<div class="col-xs-12" style="height:450px;width:100%;overflow:auto;">
 						<div id="dossiertemplate-form-alpaca">
-
+							
 						</div>
 					</div>
 				</div>
@@ -250,6 +282,8 @@
 				fileTemplateNo: $("#fileTemplateNo_").val(),
 				required: $('#required').is(':checked'),
 				esign: $('#esign').is(':checked'),
+				typeCode : $("textarea#typeCode").val(),
+				deliverableAction : ($("#deliverableAction").val()) ? $("#deliverableAction").val() : 0
 			},
 			success: function(result) {
 				notification.show({

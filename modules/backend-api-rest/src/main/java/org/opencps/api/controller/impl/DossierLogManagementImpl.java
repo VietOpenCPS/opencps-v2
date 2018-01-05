@@ -148,7 +148,6 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 
 				if (Validator.isNotNull(strDate)) {
 					date = APIDateTimeUtils.convertStringToDate(strDate, "yyyyMMddHHmmss");
-					System.out.println(date);
 				}
 
 				model.put("createDate", date != null

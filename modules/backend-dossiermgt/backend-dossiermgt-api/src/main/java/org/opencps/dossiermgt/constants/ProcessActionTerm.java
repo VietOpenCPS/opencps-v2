@@ -25,5 +25,7 @@ public class ProcessActionTerm {
 	public static final String MAKE_BRIEF_NOTE = "makeBriefNote";
 	public static final String SYNC_ACTION_CODE = "syncActionCode";
 	public static final String ROLLBACKABLE = "rollbackable";
+	public static final String CREATE_DOSSIER_NO = "createDossierNo";
+	public static final String ESIGNATURE = "eSignature";
 
 }
