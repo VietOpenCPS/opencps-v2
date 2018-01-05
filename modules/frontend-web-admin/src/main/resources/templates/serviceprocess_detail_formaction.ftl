@@ -195,6 +195,20 @@
 				</div>
 			</div>
 		</div>
+
+		<div class="row MT10">
+			<div class="col-sm-6">
+				<div class="checkbox"> 
+					<input type="checkbox" id="createDossierNo" name="createDossierNo" data-bind="checked:createDossierNo"> 
+					<label>Sinh mã số tiếp nhận</label> 
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="checkbox"> <input type="checkbox" id="eSignature" name="eSignature" data-bind="checked:eSignature"> 
+					<label>Có ký số điện tử</label> 
+				</div>
+			</div>
+		</div>
 		<div class="row MT10 text-center">
 			<button id="btn_save_service_process_action" class="k-button btn-primary" title="Ghi lại">Ghi lại</button>
 			<button id="btn_cancle_service_process_action" class="k-button btn-default" title="Hủy bỏ">Hủy bỏ</button>

@@ -9,8 +9,10 @@ import java.util.Map;
 
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
@@ -70,23 +72,44 @@ public class AutoFillFormData {
 			ApplicantActions applicantActions = new ApplicantActionsImpl();
 
 			try {
-				String applicantStr = applicantActions.getApplicantByUserId(serviceContext);
+				
+				Registration registration = RegistrationLocalServiceUtil.getLastSubmittingByUser(dossier.getGroupId(), serviceContext.getUserId(), true);
+				
+				if (Validator.isNotNull(registration)) {
 
-				JSONObject applicantJSON = JSONFactoryUtil.createJSONObject(applicantStr);
+					JSONObject applicantJSON = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(registration));
 
-				_subjectName = applicantJSON.getString("applicantName");
-				_subjectId = applicantJSON.getString("applicantId");
-				_address = applicantJSON.getString("address");
-				_cityCode = applicantJSON.getString("cityCode");
-				_cityName = applicantJSON.getString("cityName");
-				_districtCode = applicantJSON.getString("districtCode");
-				_districtName = applicantJSON.getString("districtName");
-				_wardCode = applicantJSON.getString("wardCode");
-				_wardName = applicantJSON.getString("wardName");
-				_contactName = applicantJSON.getString("contactName");
-				_contactTelNo = applicantJSON.getString("contactTelNo");
-				_contactEmail = applicantJSON.getString("contactEmail");
+					_subjectName = applicantJSON.getString("applicantName");
+					_subjectId = applicantJSON.getString("applicantId");
+					_address = applicantJSON.getString("address");
+					_cityCode = applicantJSON.getString("cityCode");
+					_cityName = applicantJSON.getString("cityName");
+					_districtCode = applicantJSON.getString("districtCode");
+					_districtName = applicantJSON.getString("districtName");
+					_wardCode = applicantJSON.getString("wardCode");
+					_wardName = applicantJSON.getString("wardName");
+					_contactName = applicantJSON.getString("contactName");
+					_contactTelNo = applicantJSON.getString("contactTelNo");
+					_contactEmail = applicantJSON.getString("contactEmail");
+				} else {
+					String applicantStr = applicantActions.getApplicantByUserId(serviceContext);
 
+					JSONObject applicantJSON = JSONFactoryUtil.createJSONObject(applicantStr);
+
+					_subjectName = applicantJSON.getString("applicantName");
+					_subjectId = applicantJSON.getString("applicantId");
+					_address = applicantJSON.getString("address");
+					_cityCode = applicantJSON.getString("cityCode");
+					_cityName = applicantJSON.getString("cityName");
+					_districtCode = applicantJSON.getString("districtCode");
+					_districtName = applicantJSON.getString("districtName");
+					_wardCode = applicantJSON.getString("wardCode");
+					_wardName = applicantJSON.getString("wardName");
+					_contactName = applicantJSON.getString("contactName");
+					_contactTelNo = applicantJSON.getString("contactTelNo");
+					_contactEmail = applicantJSON.getString("contactEmail");
+				}
+				
 			} catch (PortalException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
