@@ -140,6 +140,7 @@
 			'${ajax.manage_account}',
 			'efrom.ftl',
 			'${ajax.registrationtemplates}',
+			'${ajax.serverconfigs}',
 		]
 	}).data('kendoTabStrip');
 
