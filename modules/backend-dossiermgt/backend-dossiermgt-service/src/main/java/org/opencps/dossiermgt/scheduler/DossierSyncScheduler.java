@@ -3,7 +3,11 @@ package org.opencps.dossiermgt.scheduler;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.osgi.service.component.annotations.Activate;
@@ -33,11 +37,27 @@ import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SortedArrayList;
 import com.liferay.portal.kernel.util.Validator;
 
 @Component(immediate = true, service = DossierSyncScheduler.class)
 public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 
+	public static void main(String[] args){
+		SortedMap<Integer, String> map = new TreeMap<Integer, String>();
+		
+		map.put(4, "bon");
+		map.put(3, "ba");
+		map.put(1, "mot");
+		map.put(9, "9");
+		map.put(3, "ba.1");
+		map.put(2, "hai");
+		map.put(10, "muoi");
+		
+		for (Map.Entry<Integer, String> entry : map.entrySet()) {
+			System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
+		}
+	}
 	@Override
 	protected void doReceive(Message message) throws Exception {
 
@@ -79,13 +99,25 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 				JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
 
 				// Grouping DossierSync by DossierId and order by SyncMethod
-				HashMap<Long, JSONArray> dossierSyncs = new HashMap<Long, JSONArray>();
-
+				Map<Long, SortedMap<Integer, JSONObject>> dossierSyncs = new TreeMap<Long, SortedMap<Integer, JSONObject>>();
+			
 				for (int i = 0; i < jsArrayData.length(); i++) {
 
-					// TODO add logic for grouping and ordering here
-
+					JSONObject object = jsArrayData.getJSONObject(i);
+					long dossierSyncId = GetterUtil.getLong(object.get("dossierSyncId"));
+					int method = GetterUtil.getInteger(object.get("method"));
+					
+					if(dossierSyncs.containsKey(dossierSyncId)){
+						SortedMap<Integer, JSONObject> temp = dossierSyncs.get(dossierSyncId);
+						temp.put(method, object);
+					}else{
+						SortedMap<Integer, JSONObject> temp = new TreeMap<Integer, JSONObject>();
+						temp.put(method, object);
+						dossierSyncs.put(dossierSyncId, temp);
+					}
 				}
+				
+				//TODO loop dossierSyncs
 
 				for (int i = 0; i < jsArrayData.length(); i++) {
 
