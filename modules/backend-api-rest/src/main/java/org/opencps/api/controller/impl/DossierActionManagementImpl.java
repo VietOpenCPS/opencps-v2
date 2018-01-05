@@ -28,6 +28,7 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -250,7 +251,9 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			actions.assignDossierActionUser(dossierActionId, user.getUserId(), groupId, user.getUserId(), data);
+			JSONObject jsonData = JSONFactoryUtil.createJSONObject(data);
+			
+			actions.assignDossierActionUser(dossierActionId, user.getUserId(), groupId, jsonData.getLong("userAction"), jsonData.getJSONArray("subUsers"));
 			
 			return Response.status(200).build();
 
