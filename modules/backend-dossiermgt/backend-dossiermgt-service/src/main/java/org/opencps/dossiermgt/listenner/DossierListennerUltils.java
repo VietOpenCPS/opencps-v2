@@ -263,8 +263,8 @@ public class DossierListennerUltils {
 
 		for (int i = 0; i < object.names().length(); i++) {
 			String key = object.names().getString(i);
-			String value = (String) object.get(key);
-			sb.append(value);
+			//String value = (String) object.get(key);
+			sb.append(key);
 			sb.append(StringPool.COMMA);
 		}
 
