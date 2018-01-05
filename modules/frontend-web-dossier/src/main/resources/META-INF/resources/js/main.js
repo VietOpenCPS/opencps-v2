@@ -312,8 +312,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				                isKyOk = false;
 				                return;
 				            } else {
-				                var x = plugin().Sign('tGp5xOELB59zprQeqh2ks89BgWE=');
-								console.log(x);
+//				                var x = plugin().Sign('tGp5xOELB59zprQeqh2ks89BgWE=');
+//								console.log(x);
 								isKyOk = true;
 				            }
 							
