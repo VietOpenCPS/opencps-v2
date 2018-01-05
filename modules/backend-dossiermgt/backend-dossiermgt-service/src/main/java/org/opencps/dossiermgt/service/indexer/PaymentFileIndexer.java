@@ -1,10 +1,16 @@
 package org.opencps.dossiermgt.service.indexer;
 
+import java.security.MessageDigest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.dossiermgt.action.keypay.util.HashFunction;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
@@ -23,6 +29,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 
 public class PaymentFileIndexer extends BaseIndexer<PaymentFile> {
 	public static final String CLASS_NAME = PaymentFile.class.getName();
@@ -90,6 +97,33 @@ public class PaymentFileIndexer extends BaseIndexer<PaymentFile> {
 			document.addTextSortable(PaymentFileTerm.SERVICE_NAME, dossier.getServiceName());
 			document.addTextSortable(PaymentFileTerm.DOSSIER_NO, dossier.getDossierNo());
 			document.addNumberSortable(PaymentFileTerm.COUNTER, dossier.getCounter());
+			
+			//binhth index dossierId CTN
+			// TODO
+			
+			MessageDigest md5 = null;
+			
+			byte[] ba = null;
+
+			try {
+				
+				md5 = MessageDigest.getInstance("MD5");
+				
+				ba = md5.digest(dossier.getReferenceUid().getBytes("UTF-8"));
+				
+			} catch (Exception e) {
+			} 
+
+			DateFormat df = new SimpleDateFormat("yy");
+			
+			String formattedDate = df.format(Calendar.getInstance().getTime());
+			
+			String dossierIDCTN = StringPool.BLANK;
+			
+			dossierIDCTN = formattedDate + HashFunction.hexShort(ba);
+			
+			document.addTextSortable(DossierTerm.DOSSIER_ID+"CTN", dossierIDCTN);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
