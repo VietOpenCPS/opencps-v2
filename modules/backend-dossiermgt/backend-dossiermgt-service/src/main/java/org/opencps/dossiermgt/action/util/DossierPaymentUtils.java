@@ -89,7 +89,24 @@ public class DossierPaymentUtils {
 					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId, paymentFile.getPaymentFileId(), pattern, dossierId);
 					
 					epaymentProfileJSON.put("keypayUrl", generatorPayURL);
-					epaymentProfileJSON.put("keypayGoodCode", PaymentUrlGenerator.generatorGoodCode(11));
+					
+					// fill good_code to keypayGoodCode
+					String pattern1 = "good_code=";
+					String pattern2 = "&";
+					
+					String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
+					
+				    Pattern p = Pattern.compile(regexString);
+				    Matcher m = p.matcher(generatorPayURL);
+
+				    if (m.find()) {
+				    	String goodCode = m.group(1);
+				      
+				    	epaymentProfileJSON.put("keypayGoodCode", goodCode);
+				    } else {
+				    	epaymentProfileJSON.put("keypayGoodCode", StringPool.BLANK);
+				    }
+					
 					epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
 					
 					actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(), serviceContext);
