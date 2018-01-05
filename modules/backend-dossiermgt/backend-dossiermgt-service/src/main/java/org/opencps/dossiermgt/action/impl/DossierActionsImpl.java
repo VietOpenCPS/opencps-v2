@@ -369,14 +369,9 @@ public class DossierActionsImpl implements DossierActions {
 											}
 										} else {
 											eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true : false;
-<<<<<<< HEAD
-											
-											formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext);
-=======
 										
 											formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(),
 													dossierId, serviceContext);
->>>>>>> 909bf13d0148ba5e527dc80cfba180e2c14587ab
 											formScript = dossierPart.getFormScript();
 
 											if (returnDossierFileTemplateNos
