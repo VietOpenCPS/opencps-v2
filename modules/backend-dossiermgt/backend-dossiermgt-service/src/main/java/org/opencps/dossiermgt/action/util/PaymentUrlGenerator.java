@@ -27,7 +27,7 @@ import com.liferay.portal.kernel.util.Validator;
 public class PaymentUrlGenerator {
 
 	public static void main(String[] args) {
-
+		System.out.println("PaymentUrlGenerator.main()"+GetterUtil.getBoolean("false"));
 	}
 
 	public static String generatorPayURL(long groupId, long paymentFileId, String pattern,
