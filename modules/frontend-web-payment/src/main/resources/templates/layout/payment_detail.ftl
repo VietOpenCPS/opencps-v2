@@ -12,12 +12,14 @@
 				</v-radio-group>
 		
 			</div>
+			
 			<div class="flex xs3 text-left">
 				<v-btn class="my-0" flat @click.prevent.stop="paymentConfirmSingle(detailModel.index)">
 				<v-icon>done</v-icon>
 				Xác nhận
 				</v-btn>
 			</div>
+			
 			<div class="flex xs3 text-right">
 		
 				<v-btn flat class=" my-0 py-0 btn-border-left" color="grey darken-1" v-on:click.native="detailPage = !detailPage">
@@ -44,7 +46,7 @@
 					</v-flex>
 					
 					<v-flex xs12 >
-						<span class="text-bold">Số phiếu: </span> {{detailModel.referenceUid}}
+						<span class="text-bold">Số phiếu: </span> {{detailModel.keypayGoodCode}}
 					</v-flex>
 					
 					<v-flex xs12 >
