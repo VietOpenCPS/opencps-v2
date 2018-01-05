@@ -34,7 +34,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				alapcaJSRei: {},
 				menu: false,
 				dateFormatted: null,
-				advanced_filter: false
+				advanced_filter: false,
+				alpacaAssignUserId = 0,
+				subUsers: [],
 			},
 			onScroll: 'onScroll',
 			schema: {
@@ -177,6 +179,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								var control = $("#alpacajs_form_"+item.partNo).alpaca("get");
 								var formData = control.getValue();
 								
+								vm.subUsers = formData['subUsers'];
+								vm.alpacaAssignUserId = formData['userAction'];
+									
 								$.ajax({
 									url : "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid+"/formdata",
 									dataType : "json",
@@ -197,24 +202,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										vm.snackbartextdossierViewJX = "Lưu form thất bại!";
 	                      				vm.snackbarerordossierViewJX = true;
 										vm.loadingAlpacajsForm = false;
-									}
-								});
-								
-								$.ajax({
-									url : "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid+"/formdata",
-									dataType : "json",
-									type : "PUT",
-									headers: {
-										"groupId": themeDisplay.getScopeGroupId(),
-										Accept : "application/json"
-									},
-									data : {
-										formdata: JSON.stringify(formData)
-									},
-									success : function(result){
-									},
-									error : function(result){
-										console.log(result);
 									}
 								});
 								
@@ -303,10 +290,19 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/actions';
 
 							var assignUserId = 0;
-
-							if (vm.processAssignUserId.userId > 0) {
+							var subUsers = '';
+							
+							if (vm.alpacaAssignUserId != 0) {
+								
+								assignUserId = vm.alpacaAssignUserId;
+								subUsers = JSON.stringify(vm.subUsers);
+								
+							} else if (vm.processAssignUserId.userId > 0) {
+								
 								assignUserId = vm.processAssignUserId.userId;
+								
 							}
+							
 							
 							$.ajax({
 								url: url,
@@ -317,7 +313,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									"actionCode": item.actionCode,
 									"actionUser": themeDisplay.getUserName(),
 									"actionNote": vm.processActionNote,
-									"assignUserId": assignUserId
+									"assignUserId": assignUserId,
+									"subUsers": subUsers
 								},
 								type: 'POST',
 								dataType: 'json',
