@@ -478,7 +478,7 @@ public class DossierActionsImpl implements DossierActions {
 
 	@Override
 	public DossierAction doAction(long groupId, long dossierId, String referenceUid, String actionCode,
-			long processActionId, String actionUser, String actionNote, long assignUserId, long userId,
+			long processActionId, String actionUser, String actionNote, long assignUserId, long userId, String subUsers,
 			ServiceContext context) throws PortalException {
 
 		// Add DossierAction
@@ -619,8 +619,13 @@ public class DossierActionsImpl implements DossierActions {
 
 			DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
 
-			dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
-
+			if (Validator.isNotNull(subUsers)) {
+				JSONArray subUsersArray = JSONFactoryUtil.createJSONArray(subUsers);
+				dossierActionUser.assignDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId, subUsersArray);
+			} else {
+				dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
+			}
+			
 			dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, DossierStatusConstants.NEW,
 					jsStatus.getString(DossierStatusConstants.NEW), StringPool.BLANK, StringPool.BLANK, context);
 
@@ -652,7 +657,12 @@ public class DossierActionsImpl implements DossierActions {
 
 			DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
 
-			dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
+			if (Validator.isNotNull(subUsers)) {
+				JSONArray subUsersArray = JSONFactoryUtil.createJSONArray(subUsers);
+				dossierActionUser.assignDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId, subUsersArray);
+			} else {
+				dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId);
+			}
 
 			// Set dossierStatus by CUR_STEP
 			dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, curStep.getDossierStatus(),

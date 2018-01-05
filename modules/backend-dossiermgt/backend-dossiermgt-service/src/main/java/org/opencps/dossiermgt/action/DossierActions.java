@@ -57,7 +57,7 @@ public interface DossierActions {
 			throws PortalException;
 
 	public DossierAction doAction(long groupId, long dossierId, String referenceUid, String actionCode,
-			long processActionId, String actionUser, String actionNote, long assignUserId, long userId,
+			long processActionId, String actionUser, String actionNote, long assignUserId, long userId, String subUsers,
 			ServiceContext context) throws PortalException;
 
 	public Dossier markerVisited(long groupId, long dossierId, String referenceUid) throws PortalException;

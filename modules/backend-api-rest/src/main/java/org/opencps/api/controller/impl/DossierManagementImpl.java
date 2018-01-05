@@ -619,7 +619,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response doAction(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
-			ServiceContext serviceContext, String id, DoActionModel input) {
+			ServiceContext serviceContext, String id, DoActionModel input, String subUsers) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		DossierPermission dossierPermission = new DossierPermission();
@@ -634,7 +634,7 @@ public class DossierManagementImpl implements DossierManagement {
 			if (input.getIsSynAction() == 1) {
 				DossierAction dossierAction = actions.doAction(groupId, dossier.getDossierId(),
 						dossier.getReferenceUid(), input.getActionCode(), 0l, input.getActionUser(),
-						input.getActionNote(), input.getAssignUserId(), 0l, serviceContext);
+						input.getActionNote(), input.getAssignUserId(), 0l,  subUsers, serviceContext);
 
 				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossierAction)).build();
 
@@ -656,7 +656,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 				DossierAction dossierAction = actions.doAction(groupId, dossier.getDossierId(),
 						dossier.getReferenceUid(), input.getActionCode(), action.getProcessActionId(),
-						input.getActionUser(), input.getActionNote(), input.getAssignUserId(), user.getUserId(),
+						input.getActionUser(), input.getActionNote(), input.getAssignUserId(), user.getUserId(), subUsers,
 						serviceContext);
 
 				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossierAction)).build();
