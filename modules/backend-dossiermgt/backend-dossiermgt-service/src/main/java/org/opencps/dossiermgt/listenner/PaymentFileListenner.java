@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.listenner;
 
+import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.dossiermgt.action.util.DossierLogUtils;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
@@ -79,6 +80,13 @@ public class PaymentFileListenner extends BaseModelListener<PaymentFile> {
 		serviceContext.setUserId(model.getUserId());
 		
 		try {
+			boolean hasChangedStatus = modelBeforeUpdate.getPaymentStatus() == model.getPaymentStatus();
+			if (hasChangedStatus && model.getPaymentStatus() ==1 ) {
+				notificationType = NotificationType.DOSSIER_07;
+			} else if (hasChangedStatus && model.getPaymentStatus() ==2 ) {
+				notificationType = NotificationType.DOSSIER_08;
+			}
+			
 			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(), content,
 					notificationType, payload, serviceContext);
 		} catch (SystemException | PortalException e) {

@@ -66,6 +66,7 @@ public class ApplicantListenerUtils {
 			String key = object.names().getString(i);
 			//String value = (String) object.get(key);
 			sb.append(key);
+			_log.info("APPLICANT notification key =========" + key);
 			sb.append(StringPool.COMMA);
 		}
 
@@ -78,6 +79,8 @@ public class ApplicantListenerUtils {
 		for (int i = 0; i < object.names().length(); i++) {
 			String key = object.names().getString(i);
 			String value = (String) object.get(key);
+			_log.info("APPLICANT notification key =========" + key);
+			_log.info("APPLICANT notification value =========" + value);
 			sb.append(value);
 			sb.append(StringPool.COMMA);
 		}
