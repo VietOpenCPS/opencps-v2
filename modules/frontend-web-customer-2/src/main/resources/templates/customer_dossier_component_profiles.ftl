@@ -47,13 +47,13 @@
 													<div class="eq-height">
 
 														<div class="col-xs-12 col-sm-9 align-middle">
-															<span class="#if('${index}' === '0'){# active #}# hover-pointer item-file-component" data-pk="#:referenceUid#" data-index="${index}" >
-																#:displayName#
+															<span class="#if('${index}' === '0'){# active #}# hover-pointer item-file-component" data-pk="#:items[i].referenceUid#" data-index="${index}" >
+																#:items[i].displayName#
 															</span>
 														</div>
 
 														<div class="col-xs-12 col-sm-3 align-center">
-															<button class="btn btn-reset btn-delete-component-profile" data-pk="#:id#" eForm="#:eForm#" type="button"><i class="fa fa-trash"></i> Xóa</button>
+															<button class="btn btn-reset btn-delete-component-profile" data-pk="#:items[i].referenceUid#" eForm="#:items[i].eForm#" type="button"><i class="fa fa-trash"></i> Xóa</button>
 														</div>
 													</div>
 												#
@@ -199,10 +199,7 @@
 				},
 				schema : {
 					data : "data",
-					total : "total",
-					model : {
-						id : "referenceUid"
-					}
+					total : "total"
 				},
 				group: { field: "dossierPartNo" },
 				change: function() { 
