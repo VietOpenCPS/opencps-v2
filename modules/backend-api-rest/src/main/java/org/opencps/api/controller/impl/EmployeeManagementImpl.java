@@ -96,7 +96,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			
 			params.put(EmployeeTerm.MONTH, query.getMonth());
 
-			System.out.println("EmployeeManagementImpl.getEmployees()"+params);
+			_log.info("EmployeeManagementImpl.getEmployees()"+params);
 			
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					Boolean.getBoolean(query.getOrder())) };

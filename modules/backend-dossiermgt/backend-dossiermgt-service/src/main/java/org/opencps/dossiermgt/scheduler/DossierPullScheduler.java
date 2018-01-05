@@ -12,6 +12,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.HttpMethod;
 
@@ -521,16 +522,33 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 					} else {
 
-						String requestURL = RESTFulConfiguration.CLIENT_PATH_BASE + "dossiers/" + dossierId
+						String requestURL = "dossiers/" + dossierId
 								+ "/payments/" + fileRef + "/confirm/noattachment";
 
-						String clientAuthString = new String(Base64.getEncoder().encodeToString(
+						/*String clientAuthString = new String(Base64.getEncoder().encodeToString(
 								(RESTFulConfiguration.CLIENT_USER + StringPool.COLON + RESTFulConfiguration.CLIENT_PASS)
-										.getBytes()));
+										.getBytes()));*/
+						
+						InvokeREST callRest = new InvokeREST();
+						
+						HashMap<String, String> properties = new HashMap<String, String>();
 
-						pullPaymentFileNoAttach(requestURL, "UTF-8", groupId, dossierId, clientAuthString, 
+                        Map<String, Object> params = new HashMap<String, Object>();
+                        
+                        params.put("confirmNote", StringPool.BLANK);
+                        params.put("paymentMethod", object.getString("paymentMethod"));
+                        params.put("confirmPayload", object.getString("confirmPayload"));
+						
+                        callRest.callPostAPI(
+                            groupId, HttpMethod.PUT, "application/json",
+                            RESTFulConfiguration.CLIENT_PATH_BASE, requestURL,
+                            RESTFulConfiguration.CLIENT_USER,
+                            RESTFulConfiguration.CLIENT_PASS, properties, params,
+                            context);
+
+						/*pullPaymentFileNoAttach(requestURL, "UTF-8", groupId, dossierId, clientAuthString, 
 								StringPool.BLANK, object.getString("paymentMethod"), object.getString("confirmPayload"),
-								context);
+								context);*/
 
 					}
 
@@ -757,6 +775,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			ServiceContext serviceContext) {
 
 		try {
+		    
 			MultipartUtility multipart = new MultipartUtility(requestURL, charset, desGroupId, authStringEnc,
 					HttpMethod.PUT);
 			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
