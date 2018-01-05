@@ -5,6 +5,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
 import org.opencps.dossiermgt.model.Dossier;
@@ -28,6 +30,26 @@ public class PaymentUrlGenerator {
 
 	public static void main(String[] args) {
 		System.out.println("PaymentUrlGenerator.main()"+GetterUtil.getBoolean("false"));
+		
+		String stringToSearch = "http://google.com/dkms?good_code=123123123123&abc=1";
+		
+		String pattern1 = "good_code=";
+		String pattern2 = "&";
+		
+		String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
+		
+		    Pattern p = Pattern.compile(regexString);   // the pattern to search for
+		    Matcher m = p.matcher(stringToSearch);
+
+		    // if we find a match, get the group 
+		    if (m.find())
+		    {
+		      // we're only looking for one group, so get it
+		      String theGroup = m.group(1);
+		      
+		      System.out.println("PaymentUrlGenerator.main()"+theGroup);
+		    }
+		
 	}
 
 	public static String generatorPayURL(long groupId, long paymentFileId, String pattern,
