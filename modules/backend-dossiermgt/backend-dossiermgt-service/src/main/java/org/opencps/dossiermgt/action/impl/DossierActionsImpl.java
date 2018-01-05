@@ -531,7 +531,7 @@ public class DossierActionsImpl implements DossierActions {
 		}
 		// TODO
 		// Add KYSO fin processAction
-		if (/*processAction.getESignature()*/ 1 == 0) {
+		if (processAction.getESignature()) {
 			
 			// get DossierFile 
 			String fileTemplateNos = processAction.getCreateDossierFiles();
@@ -694,9 +694,8 @@ public class DossierActionsImpl implements DossierActions {
 				// SyncAction
 				int method = 0;
 
-				//TODO: if method = 0 then classPK is dossierActionId
 				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-						isCreateDossier, method, dossierAction.getDossierActionId(), StringPool.BLANK,
+						isCreateDossier, method, dossier.getPrimaryKey(), StringPool.BLANK,
 						serviceProcess.getServerNo());
 
 				// TODO add SYNC for DossierFile and PaymentFile here

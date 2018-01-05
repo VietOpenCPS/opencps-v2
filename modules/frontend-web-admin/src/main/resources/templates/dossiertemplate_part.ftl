@@ -156,6 +156,8 @@
 
 		$(document).on("click", ".btn-edit-dossier-template-part", function(event){
 			event.preventDefault();
+			console.log("Edit template part");
+
 			$("#dossiertemplate_part_container").hide();
 			$("#dossiertemplate_part_form_container").show();
 
@@ -198,7 +200,7 @@
 					sampleData = result.value;
 				}
 			});
-
+			console.log(dataItem);
 			var viewModel = kendo.observable({
 				partNo: dataItem.partNo,
 				partName: dataItem.partName,

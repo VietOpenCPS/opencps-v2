@@ -567,8 +567,6 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		// User user =
 		// userPersistence.findByPrimaryKey(serviceContext.getUserId());
-		System.out.println("GET DOSSIER FILE" + new Date());
-
 		DossierFile dossierFile = dossierFilePersistence.findByDID_REF(dossierId, referenceUid);
 
 		// dossierFileLocalService.getDossierFileByReferenceUid(dossierId,

@@ -123,5 +123,9 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 	public int countByGroupDossierRef(long groupId, String dossierRef) {
 		return dossierSyncPersistence.countByG_ID_DRF(groupId, dossierRef);
 	}
+	
+	public int countByDossierId(long dossierId) {
+	    return dossierSyncPersistence.countByDossierId(dossierId);
+	}
 
 }

@@ -283,7 +283,7 @@
 				required: $('#required').is(':checked'),
 				esign: $('#esign').is(':checked'),
 				typeCode : $("textarea#typeCode").val(),
-				deliverableAction : $("#deliverableAction").val()
+				deliverableAction : ($("#deliverableAction").val()) ? $("#deliverableAction").val() : 0
 			},
 			success: function(result) {
 				notification.show({
