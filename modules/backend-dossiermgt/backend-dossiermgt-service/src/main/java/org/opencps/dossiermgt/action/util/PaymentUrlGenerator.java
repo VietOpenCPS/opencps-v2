@@ -2,12 +2,17 @@ package org.opencps.dossiermgt.action.util;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.opencps.dossiermgt.action.keypay.util.HashFunction;
 import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
@@ -50,8 +55,23 @@ public class PaymentUrlGenerator {
 		      System.out.println("PaymentUrlGenerator.main()"+theGroup);
 		    }
 		
-	}
+	    StringBuffer buf = new StringBuffer();
+		buf.append("6050a7ac-8046-262b-6fa1-165df8dcd890");
 
+		MessageDigest md5 = null;
+		byte[] ba = null;
+		// create the md5 hash and UTF-8 encode it
+		try {
+			md5 = MessageDigest.getInstance("MD5");
+			ba = md5.digest(buf.toString().getBytes("UTF-8"));
+		} catch (Exception e) {
+		} // wont happen
+		DateFormat df = new SimpleDateFormat("yy"); // Just the year, with 2 digits
+		String formattedDate = df.format(Calendar.getInstance().getTime());
+		System.out.println(formattedDate);
+		System.out.println("PaymentUrlGenerator.main()"+ HashFunction.hexShort(ba));
+		    
+	}
 	public static String generatorPayURL(long groupId, long paymentFileId, String pattern,
 			long dossierId) throws IOException {
 

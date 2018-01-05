@@ -16,6 +16,9 @@ public class HashFunction {
 	static final char[] HEX_TABLE = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
 			'E', 'F' };
 
+	static final char[] HEX_TABLE_SHORT = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
+			'E', 'F' };
+	
 	public String hashAllFields(Map fields, String SECURE_SECRET) {
 		// create a list and sort it
 		List fieldNames = new ArrayList(fields.keySet());
@@ -65,5 +68,18 @@ public class HashFunction {
 		}
 		return sb.toString();
 	}
+	
+	public static String hexShort(byte[] input) {
+		// create a StringBuffer 2x the size of the hash array
+		StringBuffer sb = new StringBuffer(3);
 
+		// retrieve the byte array data, convert it to hex
+		// and add it to the StringBuffer
+		for (int i = 0; i < 3; i++) {
+			sb.append(HEX_TABLE[(input[i] >> 4) & 0xf]);
+			sb.append(HEX_TABLE[input[i] & 0xf]);
+		}
+		
+		return sb.toString();
+	}
 }
