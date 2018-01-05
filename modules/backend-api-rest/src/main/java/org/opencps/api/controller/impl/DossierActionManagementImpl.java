@@ -28,6 +28,7 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -241,47 +242,5 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 		return null;
 	}
 
-	@Override
-	public Response assignDossierActionUser(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long dossierActionId, String data) {
-		// TODO Auto-generated method stub
-		DossierActionUser actions = new DossierActionUserImpl();
-
-		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
-			actions.assignDossierActionUser(dossierActionId, user.getUserId(), groupId, user.getUserId(), data);
-			
-			return Response.status(200).build();
-
-		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
-		}
-	}
 
 }

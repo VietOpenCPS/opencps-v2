@@ -578,8 +578,6 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 			}
 
-			System.out.println(sb.toString());
-
 			conn.disconnect();
 
 		} catch (MalformedURLException e) {
@@ -675,8 +673,6 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				sb.append(output);
 
 			}
-
-			System.out.println(sb.toString());
 
 			conn.disconnect();
 

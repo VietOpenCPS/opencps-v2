@@ -129,7 +129,7 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 									dossier.getReferenceUid(), processAction.getActionCode(),
 									processAction.getProcessActionId(), systemUser.getFullName(),
 									processAction.getActionName(), processAction.getAssignUserId(),
-									systemUser.getUserId(), serviceContext);
+									systemUser.getUserId(), StringPool.BLANK, serviceContext);
 						}
 					}
 

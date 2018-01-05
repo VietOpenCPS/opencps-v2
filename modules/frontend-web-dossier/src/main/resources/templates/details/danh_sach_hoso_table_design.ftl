@@ -11,9 +11,9 @@
 			{{ props.item.applicantName }} 
 		</td>
 		<td style="padding: 8px;" class="text-xs-left">
-			{{ props.item.dossierNo }} 
-			<br v-if="props.item.dossierNo">
 			{{ props.item.dossierIdCTN }} 
+			<br v-if="props.item.dossierNo">
+			{{ props.item.dossierNo }} 
 		</td>
 		<td style="padding: 8px;" class="text-xs-left">
 			{{ props.item.submitDate}}
