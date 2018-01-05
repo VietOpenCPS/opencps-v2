@@ -48,7 +48,8 @@ public class AutoFillFormData {
 			String _contactName = StringPool.BLANK;
 			String _contactTelNo = StringPool.BLANK;
 			String _contactEmail = StringPool.BLANK;
-
+			
+			
 			// TODO
 			String _dossierFileNo = StringPool.BLANK;
 			String _dossierFileDate = StringPool.BLANK;
@@ -213,12 +214,11 @@ public class AutoFillFormData {
 					result.put(entry.getKey(), entry.getValue() + "");
 				}
 			}
-
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		return result.toJSONString();
 	}
 
