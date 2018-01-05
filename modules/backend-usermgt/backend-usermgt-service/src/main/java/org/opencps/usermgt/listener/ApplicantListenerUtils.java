@@ -22,9 +22,7 @@ public class ApplicantListenerUtils {
 			
 			Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil
 					.fetchByF_NotificationtemplateByType(groupId, notiType);
-			
-			String body = getEmailBody(notiType, object, groupId);
-			
+			String body = getEmailBody(notificationtemplate, object);
 			String subject = notificationtemplate.getEmailSubject();
 			
 			payload.put("toName", object.get("toName"));
@@ -38,11 +36,9 @@ public class ApplicantListenerUtils {
 		return payload;
 	}
 
-	private static String getEmailBody(String notiType, JSONObject object, long groupId) {
+	private static String getEmailBody(Notificationtemplate notificationtemplate, JSONObject object) {
 
 		try {
-			Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil
-					.fetchByF_NotificationtemplateByType(groupId, notiType);
 
 			String emailBody = notificationtemplate.getEmailBody();
 
@@ -56,6 +52,7 @@ public class ApplicantListenerUtils {
 			return StringUtil.replace(emailBody, oldSubs, newSubs);
 
 		} catch (Exception e) {
+			_log.error(e);
 			return StringPool.BLANK;
 		}
 
@@ -120,7 +117,7 @@ public class ApplicantListenerUtils {
 			sb.append(object.get(ApplicantListenerMessageKeys.PASSWORD));
 			sb.append(StringPool.COMMA);
 		}
-		
+
 		return StringUtil.split(sb.toString(), StringPool.COMMA);
 
 	}

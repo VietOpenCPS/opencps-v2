@@ -95,26 +95,6 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		serviceContext.setCompanyId(model.getCompanyId());
 		serviceContext.setUserId(model.getUserId());
 		
-		try {
-			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(), content,
-					notificationType, payload, serviceContext);
-			
-			// Binhth add message bus to processing KySO file
-			Message message = new Message();
-			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(model.getGroupId(),
-					model.getDossierTemplateNo(), model.getDossierPartNo());
-			
-			JSONObject msgDataESign = JSONFactoryUtil.createJSONObject();
-			msgDataESign.put("userId", model.getUserId());
-			msgDataESign.put("eSign", dossierPart.getESign());
-			msgDataESign.put("fileEntryId", model.getFileEntryId());
-
-			message.put("msgToEngine", msgDataESign);
-			MessageBusUtil.sendMessage("kyso/engine/out/destination", message);
-			
-		} catch (SystemException | PortalException e) {
-			e.printStackTrace();
-		}
 	}
 
 
