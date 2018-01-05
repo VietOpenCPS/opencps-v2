@@ -22,7 +22,7 @@ body .danhSachPaymentTable__class table.table th:nth-child(2) {
   padding: 0;
 }
 body .danhSachPaymentTable__class table.table th:nth-child(3) {
-  width: 240px;
+  width: 150px;
   padding: 0;
 }
 body .danhSachPaymentTable__class table.table th:nth-child(4) {
@@ -39,6 +39,7 @@ body .danhSachPaymentTable__class table.table th:nth-child(6) {
 }
 body .danhSachPaymentTable__class table.table th:nth-child(7) {
   width: 100px;
+  padding: 0 15px;
 }
 body .danhSachPaymentTable__class table.table th:nth-child(8) {
   width: 90px;

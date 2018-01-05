@@ -1,5 +1,8 @@
 package org.opencps.dossiermgt.service.indexer;
 
+import java.security.MessageDigest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,6 +15,7 @@ import javax.portlet.PortletResponse;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.keypay.util.HashFunction;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -227,21 +231,29 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		
 		//binhth index dossierId CTN
 		// TODO
-		List<ServerConfig> configs = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
 		
-		long groupIdCTN = 0;
+		MessageDigest md5 = null;
 		
-		if (Validator.isNotNull(configs) && !configs.isEmpty()) {
-			groupIdCTN = configs.get(0).getGroupId();
-		}
+		byte[] ba = null;
+
+		try {
+			
+			md5 = MessageDigest.getInstance("MD5");
+			
+			ba = md5.digest(object.getReferenceUid().getBytes("UTF-8"));
+			
+		} catch (Exception e) {
+		} 
+
+		DateFormat df = new SimpleDateFormat("yy");
 		
-		Dossier dossierCTN = DossierLocalServiceUtil.getByRef(groupIdCTN, object.getReferenceUid());
-		long dossierIDCTN = 0;
-		if (Validator.isNotNull(dossierCTN)) {
-			dossierIDCTN = dossierCTN.getDossierId();
-		}
-		document.addNumberSortable(DossierTerm.DOSSIER_ID+"CTN", dossierIDCTN);
+		String formattedDate = df.format(Calendar.getInstance().getTime());
+		
+		String dossierIDCTN = StringPool.BLANK;
+		
+		dossierIDCTN = formattedDate + HashFunction.hexShort(ba);
+		
+		document.addTextSortable(DossierTerm.DOSSIER_ID+"CTN", dossierIDCTN);
 		return document;
 	}
 

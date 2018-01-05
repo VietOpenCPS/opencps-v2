@@ -8,11 +8,11 @@
             <div class="background-triangle-big"> Kết quả tìm kiếm</div>
             <div class="layout row wrap header_tools w-100-xs">
             
-              <div class="flex xs8 sm5 solo" jx-bind="paymentMethodSearch">
+              <div class="flex xs8 sm5 solo" jx-bind="paymentMethodSearch" v-show="listgroupFilterselected != 2">
   
               </div>
   
-              <div class="flex xs4 sm2" jx-bind="paymentConfirm">
+              <div class="flex xs4 sm2" jx-bind="paymentConfirm" v-show="listgroupFilterselected != 2">
   
               </div>
   

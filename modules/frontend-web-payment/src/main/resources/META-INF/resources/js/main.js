@@ -231,6 +231,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									success : function(result){
 										vm.snackbartextpaymentViewJX = "Xác nhận thanh toán thành công!";
 										vm.snackbarpaymentViewJX = true;
+										vm.detailPage = false;
 									},
 									error : function(result){
 										vm.snackbartextpaymentViewJX = "Xác nhận thanh toán thất bại!";
@@ -318,6 +319,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								align: 'center',
 								sortable: true,
 								value: 'applicantName'
+							},
+							{
+								text: 'Mã hồ sơ / Số hồ sơ',
+								align: 'center',
+								sortable: false,
+								value: 'dossierId'
 							},
 							{
 								text: 'Thao tác',
