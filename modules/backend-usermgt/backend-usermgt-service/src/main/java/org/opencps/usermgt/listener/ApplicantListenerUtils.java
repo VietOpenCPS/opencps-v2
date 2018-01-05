@@ -42,7 +42,7 @@ public class ApplicantListenerUtils {
 
 			String emailBody = notificationtemplate.getEmailBody();
 
-			object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, notificationtemplate.getGuestUrlPattern());
+			object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, notificationtemplate.getGuestUrlPattern() + object.get(ApplicantListenerMessageKeys.ACTIVATION_LINK));
 			object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, notificationtemplate.getGuestUrlPattern());
 			
 			String [] oldSubs = buildOldSubs(object);
