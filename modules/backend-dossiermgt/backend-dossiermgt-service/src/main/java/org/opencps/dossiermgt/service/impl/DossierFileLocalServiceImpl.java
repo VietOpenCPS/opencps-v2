@@ -909,7 +909,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			DossierFile dossierFile = dossierFilePersistence.fetchByD_RUID(dossierId, referenceUid, false);
 
 			if (dossierFile != null) {
-				throw new DuplicateDossierFileException();
+				throw new DuplicateDossierFileException("dossierId= " + dossierId + "|referenceUid=" + referenceUid);
 			}
 		}
 	}
