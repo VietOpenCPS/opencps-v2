@@ -61,8 +61,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		// Indexer of audit fields
 		document.addNumberSortable(Field.COMPANY_ID, object.getCompanyId());
 		document.addNumberSortable(Field.GROUP_ID, object.getGroupId());
-		document.addDateSortable(Field.MODIFIED_DATE, object.getCreateDate());
-		document.addDateSortable(Field.CREATE_DATE, object.getModifiedDate());
+		document.addDateSortable(Field.CREATE_DATE, object.getCreateDate());
+		document.addDateSortable(Field.MODIFIED_DATE, object.getModifiedDate());
 		document.addNumberSortable(Field.USER_ID, object.getUserId());
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(object.getUserName()));
 		document.addKeywordSortable(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -175,6 +175,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addTextSortable(DossierTerm.WARD_CODE, object.getWardCode());
 		document.addTextSortable(DossierTerm.WARD_NAME, object.getWardName());
 		document.addTextSortable(DossierTerm.CONTACT_NAME, object.getContactName());
+		
+		if(Validator.isNull(object.getContactTelNo())){
+			//Get ContactTelNo from Applicant
+		}
+		
 		document.addTextSortable(DossierTerm.CONTACT_TEL_NO, object.getContactTelNo());
 		document.addTextSortable(DossierTerm.CONTACT_EMAIL, object.getContactEmail());
 		document.addTextSortable(DossierTerm.DOSSIER_TEMPLATE_NO, object.getDossierTemplateNo());

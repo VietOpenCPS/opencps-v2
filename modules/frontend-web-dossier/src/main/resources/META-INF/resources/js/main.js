@@ -35,8 +35,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				menu: false,
 				dateFormatted: null,
 				advanced_filter: false,
-				alpacaAssignUserId = 0,
+				alpacaAssignUserId: 0,
 				subUsers: [],
+				listgroupHoSoFilterselectedIndex: -1
 			},
 			onScroll: 'onScroll',
 			schema: {
@@ -303,42 +304,56 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								
 							}
 							
+							var isKyOk = true;
+							// TODO
+							if(/*!plugin().valid*/ 1 === 0){
+				                alert("Plugin is not working :(");
+				                vm.actionsSubmitLoading = false;
+				                isKyOk = false;
+				                return;
+				            } else {
+//				                var x = plugin().Sign('tGp5xOELB59zprQeqh2ks89BgWE=');
+//								console.log(x);
+								isKyOk = true;
+				            }
 							
-							$.ajax({
-								url: url,
-								headers: {
-									"groupId": themeDisplay.getScopeGroupId()
-								},
-								data: {
-									"actionCode": item.actionCode,
-									"actionUser": themeDisplay.getUserName(),
-									"actionNote": vm.processActionNote,
-									"assignUserId": assignUserId,
-									"subUsers": subUsers
-								},
-								type: 'POST',
-								dataType: 'json',
-								contentType: 'application/x-www-form-urlencoded; charset=utf-8',
-								success: function(data, textStatus, xhr) {
-								
-									vm.snackbartextdossierViewJX = item.actionName + " thành công!";
-									vm.snackbardossierViewJX = true;
+							if (isKyOk) {
+								$.ajax({
+									url: url,
+									headers: {
+										"groupId": themeDisplay.getScopeGroupId()
+									},
+									data: {
+										"actionCode": item.actionCode,
+										"actionUser": themeDisplay.getUserName(),
+										"actionNote": vm.processActionNote,
+										"assignUserId": assignUserId,
+										"subUsers": subUsers
+									},
+									type: 'POST',
+									dataType: 'json',
+									contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+									success: function(data, textStatus, xhr) {
+									
+										vm.snackbartextdossierViewJX = item.actionName + " thành công!";
+										vm.snackbardossierViewJX = true;
 
-									vm._inidanhSachHoSoTable();
-									setTimeout(function(){ 
-										vm._initlistgroupHoSoFilter();
-									}, 1000);
-									vm.detailPage = false;
-									vm.actionsSubmitLoading = false;
-								
-								},
-								error: function(xhr, textStatus, errorThrown) {
-								
-									vm.snackbartextdossierViewJX = item.actionName + " thất bại!";
-                      				vm.snackbarerordossierViewJX = true;
-									vm.actionsSubmitLoading = false;
-								}
-							});
+										vm._inidanhSachHoSoTable();
+										setTimeout(function(){ 
+											vm._initlistgroupHoSoFilter();
+										}, 1000);
+										vm.detailPage = false;
+										vm.actionsSubmitLoading = false;
+									
+									},
+									error: function(xhr, textStatus, errorThrown) {
+									
+										vm.snackbartextdossierViewJX = item.actionName + " thất bại!";
+	                      				vm.snackbarerordossierViewJX = true;
+										vm.actionsSubmitLoading = false;
+									}
+								});
+							}
 							
 							return false; 
                         },
@@ -364,6 +379,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                         },
 						filterAllDossierWithOutStatus: function () {
 							this.stageFilterView = 'danh_sach';
+							this.listgroupHoSoFilterselectedIndex = -1;
 							this.traCuuFilter = false;
 							this.detailRegistPage = false;
 							this._inidanhSachHoSoTable(false);
@@ -499,6 +515,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							vm.listgroupHoSoFilterselected = item.id;
 							vm.danhSachHoSoTablepage = 1;
 							
+							vm.listgroupHoSoFilterselectedIndex = item.index - 1;
+							
+							console.log(item);
 							if ( item.id !== 'tra_cuu' ){
 								vm.stageFilterView = item.id;
 								vm.hoso_title_table = item.title;
@@ -538,6 +557,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                                 var serializable = response.data;
 
 								var indexTree = -1;
+								var index = 0;
                                 for (var key in serializable.data) {
 									
                                     if ( serializable.data[key].level === 0 
@@ -551,7 +571,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										&& serializable.data[key].dossierStatus !== 'paid'
 										&& serializable.data[key].dossierStatus !== 'outstanding'
 										&& serializable.data[key].dossierStatus !== 'presubmitting'
-										&& serializable.data[key].dossierStatus !== 'collecting') {
+										&& serializable.data[key].dossierStatus !== 'collecting'
+										&& serializable.data[key].dossierStatus !== 'waiting'
+										&& serializable.data[key].dossierStatus !== 'paying'
+										&& serializable.data[key].dossierStatus !== 'denied') {
 										serializable.data[key].items = [];
 
 										vm.listgroupHoSoFilterItems.push({
@@ -562,14 +585,16 @@ document.addEventListener('DOMContentLoaded', function (event) {
 											count: serializable.data[key].count,
 											action: 'folder',
 											action_active: 'folder_open',
-											items: []
+											items: [],
+											index: index
 										});
-										
+										index = index + 1;
 									} else {
 										if (vm.listgroupHoSoFilterItems[indexTree]) {
 											if (vm.listgroupHoSoFilterItems[indexTree].level === 0) {
 												vm.listgroupHoSoFilterItems.splice(indexTree, 1);
 												indexTree = indexTree - 1;
+												index = index - 1;
 											}
 										}
 										
@@ -583,7 +608,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 											&& serializable.data[key].dossierStatus !== 'paid'
 											&& serializable.data[key].dossierStatus !== 'outstanding'
 											&& serializable.data[key].dossierStatus !== 'presubmitting'
-											&& serializable.data[key].dossierStatus !== 'collecting') {
+											&& serializable.data[key].dossierStatus !== 'collecting'
+											&& serializable.data[key].dossierStatus !== 'waiting'
+											&& serializable.data[key].dossierStatus !== 'paying'
+											&& serializable.data[key].dossierStatus !== 'denied') {
 
 											vm.listgroupHoSoFilterItems.push({
 												id: serializable.data[key].dossierSubStatus,
@@ -593,9 +621,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 												count: serializable.data[key].count,
 												action: 'folder',
 												action_active: 'folder_open',
-												items: []
+												items: [],
+												index: index
 											});
-											
+											index = index + 1;
 										}
 										
 										/**
@@ -609,6 +638,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										*/
 									}
 									indexTree = indexTree + 1;
+									
                                 }
                                 vm.listgroupHoSoFilterItems.splice(0, 1);
 
@@ -1211,6 +1241,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								keyword: vm.keywordsSearchTraCuuHoSo,
 								start: vm.traCuuHoSoTablepage * 15 - 15,
 								end: vm.traCuuHoSoTablepage * 15,
+								sort: 'modified',
+								order: 'false'
 							};
 							
 							const config_dossiers = {
@@ -1350,7 +1382,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								start: vm.danhSachHoSoTablepage * 15 - 15,
 								end: vm.danhSachHoSoTablepage * 15,
 								status: statusParam,
-								substatus: substatusParam
+								substatus: substatusParam,
+								sort: 'modified',
+								order: 'false'
 							};
 						
 							
@@ -1381,7 +1415,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									vm.danhSachHoSoTableTotal = Math.ceil(serializable.total / 15);
 									
 								}
-
+								
+								if (vm.listgroupHoSoFilterselectedIndex >= 0) {
+									console.log('reindex counting ...');
+									vm.listgroupHoSoFilterItems[vm.listgroupHoSoFilterselectedIndex]['count'] = serializable.total;
+								}
+								
 								vm.xem_them = 'Xem thêm 8+ bản ghi';
 								if (serializable.data.length === 0) {
 									vm.xem_them = 'Tổng số ( ' + serializable.total + ' ) bản ghi'

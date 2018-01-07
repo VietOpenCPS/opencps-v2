@@ -4,63 +4,7 @@
 	
 	<h3 class="detail-header MT5">
 		
-		<#if (notificationTemplate.notificationType)! == "ACTIVITY-01" >
-			Mời tham gia hoạt động
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "ACTIVITY-02" >
-			Cập nhật trạng thái mới của người tham gia hoạt động (xác nhận/không)
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "ACTIVITY-03" >
-			Cập nhật tài liệu/hình ảnh hoạt động
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "ACTIVITY-04" >
-			Lấy ý kiến trong hoạt động
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "ACTIVITY-05" >
-			Cập nhật ý kiến trong hoạt động
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "ACTIVITY-06" >
-			Cập nhật tình trạng công việc (checklist)
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "ACTIVITY-07" >
-			Cập nhật bình luận mới hoạt động
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "ACTIVITY-08" >
-			Nhắc lịch hoạt động đã quá hạn
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "ACTIVITY-09" >
-			Cập nhật thời gian địa điểm hoạt động
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "ACTIVITY-10" >
-			Cập nhật trạng thái mới của hoạt động (status) - theo trạng thái mới của template
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "DOCUMENT-01" >
-			Mời theo dõi văn bản mới
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "DOCUMENT-02" >
-			Bình luận xử lý văn bản
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "DOCUMENT-03" >
-			Lấy ý kiến văn bản
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "DOCUMENT-04" >
-			Cập nhật ý kiến văn bản
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "DOCUMENT-05" >
-			Cập nhật văn bản
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "DOCUMENT-06" >
-			Phê duyệt văn bản
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "GANTTCHART-01" >
-			Mời theo dõi kế hoạch tiến độ
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "GANTTCHART-02" >
-			Nhắc lịch kế hoạch (gantt chart)
-		</#if>
-		<#if (notificationTemplate.notificationType)! == "GANTTCHART-03" >
-			Cập nhật kế hoạch (gantt chart)
-		</#if>
+		${(notificationTemplate.typeName)!}
 
 	</h3>
 
