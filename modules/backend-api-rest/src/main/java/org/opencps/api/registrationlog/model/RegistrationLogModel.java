@@ -12,6 +12,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
+import com.liferay.portal.kernel.search.Sort;
+
 
 /**
  * <p>Java class for RegistrationLogModel complex type.
@@ -171,5 +173,10 @@ public class RegistrationLogModel {
     public void setPayload(String value) {
         this.payload = value;
     }
+
+	public Sort[] getSort() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
