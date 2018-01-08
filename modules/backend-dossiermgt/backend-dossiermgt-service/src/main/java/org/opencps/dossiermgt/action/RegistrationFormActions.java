@@ -1,11 +1,15 @@
 package org.opencps.dossiermgt.action;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.dossiermgt.model.RegistrationForm;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 public interface RegistrationFormActions {
@@ -29,4 +33,7 @@ public interface RegistrationFormActions {
 
 	public RegistrationForm updateRegFormFormData(long groupId, long registrationId, String referenceUid, String formData,
 			ServiceContext serviceContext) throws SystemException, PortalException;
+
+	//TODO: 18
+	public List<JSONObject> getFormDataByFormNo(long groupId, long registrationId, String formNo, String[] splitProperties) throws JSONException;
 }
