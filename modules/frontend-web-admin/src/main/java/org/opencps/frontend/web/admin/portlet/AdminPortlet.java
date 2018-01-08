@@ -124,6 +124,14 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		serviceInfoListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 		serviceInfoListURL.setParameter(
 			"mvcPath", "/templates/serviceinfo.ftl");
+		
+		PortletURL serverConfigsURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		serverConfigsURL.setPortletMode(PortletMode.VIEW);
+		serverConfigsURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		serverConfigsURL.setParameter(
+			"mvcPath", "/templates/serverconfigs.ftl");
 
 		PortletURL serviceInfoFormURL = PortletURLFactoryUtil.create(
 			renderRequest, portletId, themeDisplay.getPlid(),
@@ -288,6 +296,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		urlObject.put("payment_config", paymentConfigtURL.toString());
 		urlObject.put("paymentconfig_form", paymentConfigFormURL.toString());
 		urlObject.put("dictcollection_index", dataMgtURL.toString());
+		urlObject.put("serverconfigs", serverConfigsURL.toString());
 
 		// set object edit
 		long serviceInfoId = ParamUtil.getLong(renderRequest, "serviceInfoId");
