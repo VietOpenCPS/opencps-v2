@@ -1,4 +1,4 @@
-<#if (Request)??>Package Control: 
+<#if (Request)??>
 <#include "init.ftl">
 </#if>
 <div class="row">
