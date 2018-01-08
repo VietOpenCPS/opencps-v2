@@ -21,58 +21,58 @@
 						<ul id="listViewDossierFile"></ul>
 						<#assign index = 0>
 
-					<script type="text/x-kendo-template" id="templateDossierFiles">
-						<div class="accordion" id="accordion1">
+						<script type="text/x-kendo-template" id="templateDossierFiles">
+							<div class="accordion" id="accordion1">
 
-							<div class="accordion-group">
+								<div class="accordion-group">
 
 
-								<div class="accordion-heading">
-									<a class="accordion-toggle dossier-partno-title slide-toggle-lv2" id="partNo#:value#" data-pk="#:value#" data-parent="" href="\\##:value#" aria-expanded="true">
+									<div class="accordion-heading">
+										<a class="accordion-toggle dossier-partno-title slide-toggle-lv2" id="partNo#:value#" data-pk="#:value#" data-parent="" href="\\##:value#" aria-expanded="true">
 
-									</a>
-								</div>
-								#
+										</a>
+									</div>
+									#
 									var collapseIn = "";
 									if(value === "${dossierPartNo}"){ 
-										collapseIn = "in";
-									} else {collapseIn = ""}
+									collapseIn = "in";
+								} else {collapseIn = ""}
 								#
 								<div id="#:value#" class="accordion-body collapse #:collapseIn#" aria-expanded="true">
 
 									<div class="accordion-inner">
 										#
-											for(var i=0; i < items.length; i++){
-												#
-													<div class="eq-height">
-
-														<div class="col-xs-12 col-sm-9 align-middle">
-															<span class="#if('${index}' === '0'){# active #}# hover-pointer item-file-component" data-pk="#:items[i].referenceUid#" data-index="${index}" >
-																#:items[i].displayName#
-															</span>
-														</div>
-
-														<div class="col-xs-12 col-sm-3 align-center">
-															<button class="btn btn-reset btn-delete-component-profile" data-pk="#:items[i].referenceUid#" eForm="#:items[i].eForm#" type="button"><i class="fa fa-trash"></i> Xóa</button>
-														</div>
-													</div>
-												#
-											}
+										for(var i=0; i < items.length; i++){
 										#
-										
-									</div>
+										<div class="eq-height">
 
+											<div class="col-xs-12 col-sm-9 align-middle">
+												<span class="#if('${index}' === '0'){# active #}# hover-pointer item-file-component" data-pk="#:items[i].referenceUid#" data-index="${index}" >
+													#:items[i].displayName#
+												</span>
+											</div>
+
+											<div class="col-xs-12 col-sm-3 align-center">
+												<button class="btn btn-reset btn-delete-component-profile" data-pk="#:items[i].referenceUid#" eForm="#:items[i].eForm#" type="button"><i class="fa fa-trash"></i> Xóa</button>
+											</div>
+										</div>
+										#
+									}
+									#
+									
 								</div>
-							</div>
-							<#assign index = index + 1>
-						</div>
-					</script>
-				</div>
-			</form>
-		</div>
-	</div>
 
-	<div class="col-sm-9" style="height:100vh;background-color: rgba(0,0,0,0.4)">
+							</div>
+						</div>
+						<#assign index = index + 1>
+					</div>
+				</script>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="col-sm-9" style="height:100vh;background-color: rgba(0,0,0,0.4)">
 				<#-- <div id="fileCarousel" class="carousel slide row" data-ride="carousel" data-interval="false"> 
 					<ul class="carousel-inner" id="listViewCarouselDossierFile">
 
@@ -125,7 +125,7 @@
 							dataType : "json",
 							headers : {"groupId": ${groupId}},
 							data : {
-
+								
 							},
 							success:function(result){
 
@@ -278,20 +278,19 @@
 				});
 			}
 
-
+			var fnViewFirst = function(){
+				var data = dataSourceDossierFile.view();
+				for(var i = 0; i < data.length ; i++){
+					if(data[i].dossierPartNo == "${(dossierPartNo)!}"){
+						
+						$("#listViewDossierFile").data("kendoListView").select(i);
+						return ;
+					}
+				}
+				
+			}
 		});
 
-var fnViewFirst = function(){
-	var data = dataSourceDossierFile.view();
-	for(var i = 0; i < data.length ; i++){
-		if(data[i].dossierPartNo == "${(dossierPartNo)!}"){
-			
-			$("#listViewDossierFile").data("kendoListView").select(i);
-			return ;
-		}
-	}
-	
-}
 
 function fileAttachmentUrl ( options) {
 
