@@ -160,7 +160,7 @@
       url: url,
       type: type,
       dataType: "json",
-      // headers: {"groupId": ${groupId}},
+      headers: {"groupId": ${groupId}},
       data: {
         serverNo: $("#serverNo").val(),
         serverName: $("#serverName").val(),
@@ -176,7 +176,7 @@
           url:"${api.server}/serverconfigs/"+h+"/configs",
           type: "PUT",
           dataType: "json",
-          // headers: {"groupId": ${groupId}},
+          headers: {"groupId": ${groupId}},
           async: false,
           data: {
             lastSync: $("#lastSync").val()
