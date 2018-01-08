@@ -125,48 +125,18 @@
 				</div>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row MT10">
 			<div class="col-xs-12 col-sm-6">
-				<div class="service-process-create-dossier-file-form-action-controls">
-					<div class="service-process-create-dossier-file-form-action-entry">
-						<div class="row MT10">
-							<div class="col-xs-12 col-sm-12">Tài liệu tạo mới</div>
-						</div>
-						<div class="row MT5">
-							<div class="col-xs-12 col-sm-10">
-								<select class="form-control" id="createDossierFiles" name="createDossierFiles">
-									<option value=""></option>
-								</select>
-							</div>
-							<div class="col-xs-12 col-sm-2">
-								<button class="btn btn-success btn-add-action-create-dossier-file" type="button">
-									<span class="glyphicon glyphicon-plus"></span>
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
+				<label>Tài liệu tạo mới</label>
+				<select class="form-control" id="createDossierFiles" name="createDossierFiles">
+					<option value=""></option>
+				</select>
 			</div>
 			<div class="col-xs-12 col-sm-6">
-				<div class="service-process-return-dossier-file-form-action-controls">
-					<div class="service-process-return-dossier-file-form-action-entry">
-						<div class="row MT10">
-							<div class="col-xs-12 col-sm-12">Kết quả trả về</div>
-						</div>
-						<div class="row MT5">
-							<div class="col-xs-12 col-sm-10">
-								<select class="form-control" id="returnDossierFiles" name="returnDossierFiles">
-									<option value=""></option>
-								</select>
-							</div>
-							<div class="col-xs-12 col-sm-2">
-								<button class="btn btn-success btn-add-action-return-dossier-file" type="button">
-									<span class="glyphicon glyphicon-plus"></span>
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
+				<label>Kết quả trả về</label>
+				<select class="form-control" id="returnDossierFiles" name="returnDossierFiles">
+					<option value=""></option>
+				</select>
 			</div>
 		</div>
 		<div class="row MT10">
@@ -217,44 +187,6 @@
 </div>
 
 <script type="text/javascript">
-
-	$(document).on('click', '.btn-add-action-return-dossier-file', function(e){
-		e.preventDefault();
-
-		var controlForm = $('.service-process-return-dossier-file-form-action-controls'),
-		currentEntry = $(this).parents('.service-process-return-dossier-file-form-action-entry:first'),
-		newEntry = $(currentEntry.clone()).appendTo(controlForm);
-
-		newEntry.find('select').val('');
-
-		controlForm.find('.service-process-return-dossier-file-form-action-entry:not(:last) .btn-add-action-return-dossier-file')
-		.removeClass('btn-add-action-return-dossier-file').addClass('btn-remove-action-role')
-		.removeClass('btn-success').addClass('btn-danger')
-		.html('<span class="glyphicon glyphicon-minus"></span>');
-	}).on('click', '.btn-remove-action-role', function(e){
-		$(this).parents('.service-process-return-dossier-file-form-action-entry:first').remove();
-		e.preventDefault();
-		return false;
-	});
-
-	$(document).on("click",".btn-add-action-create-dossier-file",function(e){
-		e.preventDefault();
-
-		var controlForm = $('.service-process-create-dossier-file-form-action-controls'),
-		currentEntry = $(this).parents('.service-process-create-dossier-file-form-action-entry:first'),
-		newEntry = $(currentEntry.clone()).appendTo(controlForm);
-
-		newEntry.find('select').val('');
-
-		controlForm.find('.service-process-create-dossier-file-form-action-entry:not(:last) .btn-add-action-create-dossier-file')
-		.removeClass('btn-add-action-create-dossier-file').addClass('btn-remove-action-role-create-dossier-file')
-		.removeClass('btn-success').addClass('btn-danger')
-		.html('<span class="glyphicon glyphicon-minus"></span>');
-	}).on('click', '.btn-remove-action-role-create-dossier-file', function(e){
-		$(this).parents('.service-process-create-dossier-file-form-action-entry:first').remove();
-		e.preventDefault();
-		return false;
-	});
 
 	$("#autoEvent").kendoComboBox({
 		filter: "contains"
@@ -315,7 +247,7 @@
 		noDataTemplate: 'Không có dữ liệu'
 	});
 
-	$("#createDossierFiles").kendoAutoComplete({
+	$("#createDossierFiles").kendoMultiSelect({
 		dataTextField : "partName",
 		dataValueField: "fileTemplateNo",
 		dataSource: {
@@ -343,41 +275,60 @@
 		noDataTemplate: 'Không có dữ liệu'
 	});
 
-	/*$("#dossiertemplates_file_filter").change(function(){
-		var dossierTemplateId = $("#dossiertemplates_file_filter").val();
+	$("#returnDossierFiles").kendoMultiSelect({
+		dataTextField : "partName",
+		dataValueField: "fileTemplateNo",
+		dataSource: {
+			transport : {
+				read : {
+					url : "${api.server}" + "/dossiertemplates/0/parts",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
 
-		$(".service-process-create-dossier-file-form-action-entry:not(:last)").remove();
-		$(".service-process-return-dossier-file-form-action-entry:not(:last)").remove();
+					},
+					error : function(xhr){
 
-		$(".service-process-create-dossier-file-form-action-entry:last").find("select").val("");
-		$(".service-process-return-dossier-file-form-action-entry:last").find("select").val("");
-
-		$(".service-process-create-dossier-file-form-action-entry:last").find("select").empty();
-		$(".service-process-return-dossier-file-form-action-entry:last").find("select").empty();
-
-		$(".service-process-create-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
-		$(".service-process-return-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
-
-		$.ajax({
-			url: "${api.server}" + "/dossiertemplates/" + dossierTemplateId + "/parts",
-			type: "GET",
-			dataType: "json",
-			headers: {"groupId": ${groupId}},
-			async: false,
-			success: function(result) {
-				if (result && result.data && result.data.length > 0){
-					result.data.forEach(function(part){
-						var newOpt = $(".service-process-create-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
-						newOpt.value = part.fileTemplateNo;
-						newOpt.text = part.partName;
-
-						newOpt = $(".service-process-return-dossier-file-form-action-entry select")[0].appendChild(document.createElement('option'));
-						newOpt.value = part.fileTemplateNo;
-						newOpt.text = part.partName;
-					});
+					}
 				}
+			},
+			schema : {
+				total : "total",
+				data : "data"
 			}
-		});
+		},
+		filter: "contains",
+		placeholder: "Nhập từ khóa",
+		noDataTemplate: 'Không có dữ liệu'
+	});
+
+	/*$("#createDossierFiles").kendoAutoComplete({
+		dataTextField : "partName",
+		dataValueField: "fileTemplateNo",
+		dataSource: {
+			transport : {
+				read : {
+					url : "${api.server}" + "/dossiertemplates/0/parts",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
+
+					},
+					error : function(xhr){
+
+					}
+				}
+			},
+			schema : {
+				total : "total",
+				data : "data"
+			}
+		},
+		filter: "contains",
+		placeholder: "Nhập từ khóa",
+		noDataTemplate: 'Không có dữ liệu'
 	});*/
 
 </script>
