@@ -567,8 +567,6 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		// User user =
 		// userPersistence.findByPrimaryKey(serviceContext.getUserId());
-		System.out.println("GET DOSSIER FILE" + new Date());
-
 		DossierFile dossierFile = dossierFilePersistence.findByDID_REF(dossierId, referenceUid);
 
 		// dossierFileLocalService.getDossierFileByReferenceUid(dossierId,
@@ -911,7 +909,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			DossierFile dossierFile = dossierFilePersistence.fetchByD_RUID(dossierId, referenceUid, false);
 
 			if (dossierFile != null) {
-				throw new DuplicateDossierFileException();
+				throw new DuplicateDossierFileException("dossierId= " + dossierId + "|referenceUid=" + referenceUid);
 			}
 		}
 	}

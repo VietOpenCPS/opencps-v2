@@ -41,13 +41,13 @@
 				<span class="text-bold">
 				Mã hồ sơ: 
 				</span>
-				{{ detailModel.dossierNo }}
+				{{ detailModel.dossierIdCTN }}
 			</div>
 			<div class="pb-1">
 				<span class="text-bold">
 				Số hồ sơ: 
 				</span>
-				{{ detailModel.dossierIdCTN }}
+				{{ detailModel.dossierNo }}
 			</div>
 			<div class="pb-1">
 				<span class="text-bold">
@@ -291,6 +291,11 @@
 			
 <script type="text/javascript">
 		
+		function plugin0() {
+            return document.getElementById('plugin0');
+        }
+        var plugin = plugin0;
+            
 		var fnSaveForm = function(id, value){
 			var current = $("#btn-save-formalpaca"+id);
 			var referentUid = current.attr("referenceUid");
