@@ -12,6 +12,7 @@ import org.opencps.dossiermgt.action.util.DossierLogUtils;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierLog;
+import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
@@ -109,6 +110,7 @@ public class DossierListennerUltils {
 
 			switch (notificationType) {
 
+			// TODO: now, only send applicant. To be continue with employee
 			case NotificationType.DOSSIER_01:
 				// TODO: add message key map to notificationType
 				sendToApplicant(applicant, notificationType, messageKey);
@@ -125,7 +127,52 @@ public class DossierListennerUltils {
 			case NotificationType.DOSSIER_05:
 				sendToApplicant(applicant, notificationType, messageKey);
 				break;
+			case NotificationType.DOSSIER_06:
+				// TODO: waiting requirement from BA
+				break;
+			case NotificationType.DOSSIER_07:
+				sendToApplicant(applicant, notificationType, messageKey);
+				break;
+			case NotificationType.DOSSIER_08:
+				sendToApplicant(applicant, notificationType, messageKey);
+				break;
+			case NotificationType.DOSSIER_09:
+				// TODO: waiting requirement from BA
+				break;
+			case NotificationType.DOSSIER_10:
+				// TODO: waiting requirement from BA
+				break;
 
+			default:
+				break;
+
+			}
+
+		} catch (Exception e) {
+			_log.info(e);
+		}
+
+	}
+
+	static void createNotificationQueue(Registration model, boolean isUpdated) {
+
+		try {
+
+			String notificationType = isUpdated ? NotificationType.REGISTRATION_02 : NotificationType.REGISTRATION_01;
+			Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(model.getUserId());
+			JSONObject messageKey = JSONFactoryUtil.createJSONObject();
+			messageKey.put(RegistrationListenerMessageKeys.REGISTRATION_ID, model.getRegistrationId());
+
+			switch (notificationType) {
+
+			// TODO: now, only send applicant. To be continue with employee
+			case NotificationType.REGISTRATION_01:
+				// TODO: add message key map to notificationType
+				sendToApplicant(applicant, notificationType, messageKey);
+				break;
+			case NotificationType.REGISTRATION_02:
+				sendToApplicant(applicant, notificationType, messageKey);
+				break;
 			default:
 				break;
 
@@ -219,9 +266,6 @@ public class DossierListennerUltils {
 
 		try {
 
-			_log.info("notiType" + notiType);
-			_log.info("groupId" + groupId);
-
 			Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil
 					.fetchByF_NotificationtemplateByType(groupId, notiType);
 			String body = getEmailBody(notificationtemplate, object);
@@ -263,8 +307,8 @@ public class DossierListennerUltils {
 
 		for (int i = 0; i < object.names().length(); i++) {
 			String key = object.names().getString(i);
-			String value = (String) object.get(key);
-			sb.append(value);
+			// String value = (String) object.get(key);
+			sb.append(key);
 			sb.append(StringPool.COMMA);
 		}
 

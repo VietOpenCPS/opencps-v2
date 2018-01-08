@@ -1118,9 +1118,10 @@ public class DossierActionsImpl implements DossierActions {
 				 * statistics.put(statistic); }
 				 */
 
-				List<DictItem> dictItems = DictItemLocalServiceUtil
+				/*List<DictItem> dictItems = DictItemLocalServiceUtil
 						.findByF_dictCollectionId_parentItemId(dictCollection.getDictCollectionId(), 0);
-
+				
+				
 				for (DictItem dictItem : dictItems) {
 
 					statusCode = dictItem.getItemCode();
@@ -1171,6 +1172,40 @@ public class DossierActionsImpl implements DossierActions {
 							statistics.put(childStatistic);
 						}
 					}
+				}*/
+				
+				List<DictItem> dictItems = DictItemLocalServiceUtil
+						.findByF_dictCollectionId(dictCollection.getDictCollectionId());
+				
+				for (DictItem dictItem : dictItems) {
+
+					statusCode = StringPool.BLANK;
+					subStatusCode = StringPool.BLANK;
+					
+					if(dictItem.getParentItemId() != 0){
+						subStatusCode = dictItem.getItemCode();
+						DictItem parentDictItem = DictItemLocalServiceUtil.getDictItem(dictItem.getParentItemId());
+						statusCode = parentDictItem.getItemCode();
+					}else{
+						statusCode = dictItem.getItemCode();
+					}
+					params.put(DossierTerm.STATUS, statusCode);
+					params.put(DossierTerm.SUBSTATUS, subStatusCode);
+
+					long count = DossierLocalServiceUtil.countLucene(params, searchContext);
+
+					JSONObject statistic = JSONFactoryUtil.createJSONObject();
+
+					statistic.put("dossierStatus", statusCode);
+					statistic.put("dossierSubStatus", subStatusCode);
+					statistic.put("level", dictItem.getLevel());
+					statistic.put("statusName", dictItem.getItemName());
+					statistic.put("count", count);
+					if(dictItem.getParentItemId() == 0){
+						total += count;
+					}
+					
+					statistics.put(statistic);
 				}
 			}
 

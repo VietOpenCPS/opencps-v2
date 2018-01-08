@@ -982,7 +982,7 @@
 										return this.get('paymentDossier').approveDatetime;
 									}
 								}
-								return "";
+								return "---";
 							},
 							paymentConfirmNote : function(e){
 								if(this.get('paymentDossier')){

@@ -248,7 +248,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					
 					actions.doAction(syncServiceProcess.getGroupId(), desDossierId, desDossier.getReferenceUid(),
 							processAction.getActionCode(), processAction.getProcessActionId(), applicantName,
-							applicantNote, assignedUserId, systemUser.getUserId(), subUsers, serviceContext);
+
+							applicantNote, assignedUserId, systemUser.getUserId(), StringPool.BLANK, serviceContext);
 
 				} catch (Exception e) {
 					_log.info("SyncDossierUnsuccessfuly" + desDossier.getReferenceUid());
@@ -297,7 +298,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 						actions.doAction(syncServiceProcess.getGroupId(), desDossier.getDossierId(),
 								desDossier.getReferenceUid(), processAction.getActionCode(),
 								processAction.getProcessActionId(), applicantName, applicantNote,
-								processAction.getAssignUserId(), systemUser.getUserId(), subUsers, serviceContext);
+
+								processAction.getAssignUserId(), systemUser.getUserId(), StringPool.BLANK, serviceContext);
 
 					} else {
 						desDossier.setSubmitting(true);

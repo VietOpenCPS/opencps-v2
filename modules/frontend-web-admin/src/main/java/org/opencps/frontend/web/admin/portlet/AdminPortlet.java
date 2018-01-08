@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.portlet.ActionRequest;
@@ -23,6 +24,8 @@ import javax.portlet.WindowStateException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.communication.action.impl.NotificationTemplateActions;
+import org.opencps.communication.constants.NotificationMGTConstants;
+import org.opencps.communication.constants.NotificationTemplateTerm;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
@@ -381,6 +384,9 @@ public class AdminPortlet extends FreeMarkerPortlet {
 					userId, groupId, notificationType, serviceContext);
 				JSONObject object = ObjectConverterUtil.objectToJSON(
 					notificationTemplate.getClass(), notificationTemplate);
+				Map<String, String> initTemplates = NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
+				
+				object.put("typeName", initTemplates.get(notificationTemplate.getNotificationType()));
 				renderRequest.setAttribute("notificationTemplate", object);
 
 			}
