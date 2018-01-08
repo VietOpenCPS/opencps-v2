@@ -243,9 +243,12 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 							.fetchBySPI_PRESC_AEV(syncServiceProcess.getServiceProcessId(), StringPool.BLANK, "SUBMIT");
 
 					long assignedUserId = processAction.getAssignUserId();
-
+					
+					String subUsers = StringPool.BLANK;
+					
 					actions.doAction(syncServiceProcess.getGroupId(), desDossierId, desDossier.getReferenceUid(),
 							processAction.getActionCode(), processAction.getProcessActionId(), applicantName,
+
 							applicantNote, assignedUserId, systemUser.getUserId(), StringPool.BLANK, serviceContext);
 
 				} catch (Exception e) {
@@ -288,10 +291,14 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 						// doAction in this case is an Applicant object
 						String applicantNote = object.getString(DossierTerm.APPLICANT_NOTE);
 						String applicantName = object.getString(DossierTerm.APPLICANT_NAME);
-
+						
+						
+						String subUsers = StringPool.BLANK;
+						
 						actions.doAction(syncServiceProcess.getGroupId(), desDossier.getDossierId(),
 								desDossier.getReferenceUid(), processAction.getActionCode(),
 								processAction.getProcessActionId(), applicantName, applicantNote,
+
 								processAction.getAssignUserId(), systemUser.getUserId(), StringPool.BLANK, serviceContext);
 
 					} else {

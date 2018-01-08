@@ -125,6 +125,9 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 								+ "|DossierId = " + dossier.getDossierId() + "|split= " + perConditionStr);
 
 						if (checkPreCondition) {
+							
+							String subUsers = StringPool.BLANK;
+							
 							dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
 									dossier.getReferenceUid(), processAction.getActionCode(),
 									processAction.getProcessActionId(), systemUser.getFullName(),
