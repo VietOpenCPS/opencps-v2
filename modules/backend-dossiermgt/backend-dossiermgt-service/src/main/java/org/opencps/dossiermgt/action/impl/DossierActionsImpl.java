@@ -618,7 +618,9 @@ public class DossierActionsImpl implements DossierActions {
 			// Add DossierActionUser
 
 			DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
-
+			
+			_log.debug("subUsers***"+subUsers);
+			
 			if (Validator.isNotNull(subUsers)) {
 				JSONArray subUsersArray = JSONFactoryUtil.createJSONArray(subUsers);
 				dossierActionUser.assignDossierActionUser(dossierAction.getDossierActionId(), userId, groupId, assignUserId, subUsersArray);
@@ -833,9 +835,9 @@ public class DossierActionsImpl implements DossierActions {
 
 		Dossier dossier = getDossier(groupId, dossierId, refId);
 
-		ProcessAction action = getProcessAction(groupId, dossierId, refId, actionCode, serviceProcessId);
+		//ProcessAction action = getProcessAction(groupId, dossierId, refId, actionCode, serviceProcessId);
 
-		String postStepCode = action.getPostStepCode();
+		//String postStepCode = action.getPostStepCode();
 
 		// ProcessStep step =
 		// ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId,
