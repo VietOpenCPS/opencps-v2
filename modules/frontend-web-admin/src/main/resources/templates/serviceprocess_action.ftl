@@ -202,12 +202,12 @@
 				var controlForm = $('.service-process-create-dossier-file-form-action-controls');
 
 				if (typeof serviceProcessAction.createDossierFiles === 'number'){
-
+					console.log("type number");
 					var currentEntry = $('.service-process-create-dossier-file-form-action-entry:last');
 					currentEntry.find('select').val(serviceProcessAction.createDossierFiles);
 
 				} else if (typeof serviceProcessAction.createDossierFiles === 'string'){
-
+					console.log("type string");
 					var createDossierFileArr = serviceProcessAction.createDossierFiles.split(",");
 
 					var currentEntry = $('.service-process-create-dossier-file-form-action-entry:last');
@@ -228,13 +228,14 @@
 						}
 					}
 				} else if (serviceProcessAction.createDossierFiles){
-
+					console.log("type array");
 					var currentEntry = $('.service-process-create-dossier-file-form-action-entry:last');
 					currentEntry.find('select').val(serviceProcessAction.createDossierFiles[0]);
 
 					for (var i = 1; i < serviceProcessAction.createDossierFiles.length; i++){
 						var fileTemplateNo = serviceProcessAction.createDossierFiles[i];
 						if (fileTemplateNo){
+							console.log(fileTemplateNo);
 							var currentEntry = $('.service-process-create-dossier-file-form-action-entry:last');
 							var newEntry = $(currentEntry.clone()).appendTo(controlForm);
 							newEntry.find('select').val(fileTemplateNo);
