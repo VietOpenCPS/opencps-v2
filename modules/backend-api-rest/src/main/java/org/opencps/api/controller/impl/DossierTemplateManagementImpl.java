@@ -327,6 +327,8 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				} else {
 					throw new Exception("No DossierTemplate was found");
 				}
+			} else {
+				templateNo = StringPool.BLANK;
 			}
 			
 			String partType = query.getPartType();
