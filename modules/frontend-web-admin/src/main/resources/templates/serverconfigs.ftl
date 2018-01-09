@@ -59,7 +59,7 @@
 						url:"${api.server}/serverconfigs",
 						type: "GET",
 						dataType: "json",
-						// headers: {"groupId": ${groupId}},
+						headers: {"groupId": ${groupId}},
 						data: {
 							
 						},
@@ -131,7 +131,7 @@
 						url:"${api.server}/serverconfigs/"+ itemId,
 						type: "DELETE",
 						dataType: "json",
-						// headers: {"groupId": ${groupId}},
+						headers: {"groupId": ${groupId}},
 						success: function(result) {
 							notification.show({
 								message: "Xóa mẫu thành phần hồ sơ thành công!"
@@ -208,7 +208,7 @@
 	      url:"${api.server}/serverconfigs/"+serverconfigId+"/configs",
 	      type: "GET",
 	      dataType: "text",
-	      // headers: {"groupId": ${groupId}},
+	      headers: {"groupId": ${groupId}},
 	      async: false,
 	      success: function(result) {
 	      	lastSync=result;
