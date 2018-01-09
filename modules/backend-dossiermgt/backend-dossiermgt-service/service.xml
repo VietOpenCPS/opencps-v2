@@ -1114,6 +1114,11 @@
             <finder-column name="submitting"></finder-column>
         </finder>
         
+        <finder return-type="Registration" name="G_APPNO_GOVCODE">
+        	<finder-column name="groupId"></finder-column>
+        	<finder-column name="applicantIdNo"></finder-column>
+        	<finder-column name="govAgencyCode"></finder-column>
+        </finder>
 	</entity>
 
 	<entity local-service="true" name="RegistrationLog"
@@ -1187,6 +1192,11 @@
 			<finder-column name="isNew" />
 		</finder>
 		
+		<finder return-type="Collection" name="G_REGID_FORMNO">
+			<finder-column name="groupId" />
+			<finder-column name="registrationId" />
+			<finder-column name="formNo" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DeliverableType"
