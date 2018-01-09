@@ -7,6 +7,7 @@ import org.opencps.dossiermgt.model.RegistrationForm;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.search.Sort;
@@ -35,5 +36,5 @@ public interface RegistrationFormActions {
 			ServiceContext serviceContext) throws SystemException, PortalException;
 
 	//TODO: 18
-	public List<JSONObject> getFormDataByFormNo(long groupId, long registrationId, String formNo, String[] splitProperties) throws JSONException;
+	public JSONArray getFormDataByFormNo(long groupId, long registrationId, String formNo, String[] splitProperties) throws JSONException;
 }
