@@ -199,98 +199,36 @@
 
 				initStepCombobox();
 
-				var controlForm = $('.service-process-create-dossier-file-form-action-controls');
+				
 
 				if (typeof serviceProcessAction.createDossierFiles === 'number'){
 					console.log("type number");
-					var currentEntry = $('.service-process-create-dossier-file-form-action-entry:last');
-					currentEntry.find('select').val(serviceProcessAction.createDossierFiles);
+					$("#createDossierFiles").data("kendoMultiSelect").value(serviceProcessAction.createDossierFiles);
+					
 
 				} else if (typeof serviceProcessAction.createDossierFiles === 'string'){
 					console.log("type string");
 					var createDossierFileArr = serviceProcessAction.createDossierFiles.split(",");
-
-					var currentEntry = $('.service-process-create-dossier-file-form-action-entry:last');
-					currentEntry.find('select').val(createDossierFileArr[0]);
-
-					for (var i = 1; i < createDossierFileArr.length; i++){
-						if (createDossierFileArr[i]){
-							var fileTemplateNo = createDossierFileArr[i];
-							if (fileTemplateNo){
-								var currentEntry = $('.service-process-create-dossier-file-form-action-entry:last');
-								var newEntry = $(currentEntry.clone()).appendTo(controlForm);
-								newEntry.find('select').val(fileTemplateNo);
-								controlForm.find('.service-process-create-dossier-file-form-action-entry:not(:last) .btn-add-action-create-dossier-file')
-								.removeClass('btn-add-action-create-dossier-file').addClass('btn-remove')
-								.removeClass('btn-success').addClass('btn-danger')
-								.html('<span class="glyphicon glyphicon-minus"></span>');
-							}
-						}
-					}
+					$("#createDossierFiles").data("kendoMultiSelect").value(createDossierFileArr);
+					
 				} else if (serviceProcessAction.createDossierFiles){
-					console.log("type array");
-					var currentEntry = $('.service-process-create-dossier-file-form-action-entry:last');
-					currentEntry.find('select').val(serviceProcessAction.createDossierFiles[0]);
-
-					for (var i = 1; i < serviceProcessAction.createDossierFiles.length; i++){
-						var fileTemplateNo = serviceProcessAction.createDossierFiles[i];
-						if (fileTemplateNo){
-							console.log(fileTemplateNo);
-							var currentEntry = $('.service-process-create-dossier-file-form-action-entry:last');
-							var newEntry = $(currentEntry.clone()).appendTo(controlForm);
-							newEntry.find('select').val(fileTemplateNo);
-							controlForm.find('.service-process-create-dossier-file-form-action-entry:not(:last) .btn-add-action-create-dossier-file')
-							.removeClass('btn-add-action-create-dossier-file').addClass('btn-remove')
-							.removeClass('btn-success').addClass('btn-danger')
-							.html('<span class="glyphicon glyphicon-minus"></span>');
-						}
-					}
+					$("#createDossierFiles").data("kendoMultiSelect").value(serviceProcessAction.createDossierFiles);
 				}
 
-				controlForm = $('.service-process-return-dossier-file-form-action-controls');
+				
 
 				if (typeof serviceProcessAction.returnDossierFiles === 'number'){
-					var currentEntry = $('.service-process-return-dossier-file-form-action-entry:last');
-					currentEntry.find('select').val(serviceProcessAction.returnDossierFiles);
+
+					$("#returnDossierFiles").data("kendoMultiSelect").value(serviceProcessAction.returnDossierFiles);
+
 				}  else if (typeof serviceProcessAction.returnDossierFiles === 'string'){
 
 					var returnDossierFileArr = serviceProcessAction.returnDossierFiles.split(",");
 
-					var currentEntry = $('.service-process-return-dossier-file-form-action-entry:last');
-					currentEntry.find('select').val(returnDossierFileArr[0]);
+					$("#returnDossierFiles").data("kendoMultiSelect").value(returnDossierFileArr);
 
-					for (var i = 1; i < returnDossierFileArr.length; i++){
-						if (returnDossierFileArr[i]){
-							var fileTemplateNo = returnDossierFileArr[i];
-							if (fileTemplateNo){
-								var currentEntry = $('.service-process-return-dossier-file-form-action-entry:last');
-								var newEntry = $(currentEntry.clone()).appendTo(controlForm);
-								newEntry.find('select').val(fileTemplateNo);
-								controlForm.find('.service-process-return-dossier-file-form-action-entry:not(:last) .btn-add-action-return-dossier-file')
-								.removeClass('btn-add-action-return-dossier-file').addClass('btn-remove')
-								.removeClass('btn-success').addClass('btn-danger')
-								.html('<span class="glyphicon glyphicon-minus"></span>');
-							}
-						}
-					}
 				} else if (serviceProcessAction.returnDossierFiles){
-					var currentEntry = $('.service-process-return-dossier-file-form-action-entry:last');
-					currentEntry.find('select').val(serviceProcessAction.returnDossierFiles[0]);
-					for (var i = 1; i < serviceProcessAction.returnDossierFiles.length; i++){
-						var fileTemplateNo = serviceProcessAction.returnDossierFiles[i];
-						if (fileTemplateNo){
-							var currentEntry = $('.service-process-return-dossier-file-form-action-entry:last');
-
-							var newEntry = $(currentEntry.clone()).appendTo(controlForm);
-
-							newEntry.find('select').val(fileTemplateNo);
-
-							controlForm.find('.service-process-return-dossier-file-form-action-entry:not(:last) .btn-add-action-return-dossier-file')
-							.removeClass('btn-add-action-return-dossier-file').addClass('btn-remove')
-							.removeClass('btn-success').addClass('btn-danger')
-							.html('<span class="glyphicon glyphicon-minus"></span>');
-						}
-					}
+					$("#returnDossierFiles").data("kendoMultiSelect").value(serviceProcessAction.returnDossierFiles);
 				}
 
 				$("#btn_save_service_process_action").attr("data-pk", $(this).attr("data-pk"));
@@ -499,17 +437,13 @@
 
 			function getCreateDossierFiles(){
 				var createDossierFiles = "";
-				$(".service-process-create-dossier-file-form-action-entry").each(function(){
-					createDossierFiles += $(this).find("select").val() + ",";
-				});
+				createDossierFiles = $("#createDossierFiles").data("kendoMultiSelect").value().join();
 				return createDossierFiles;
 			}
 
 			function getReturnDossierFiles(){
 				var returnDossierFiles = "";
-				$(".service-process-return-dossier-file-form-action-entry").each(function(){
-					returnDossierFiles += $(this).find("select").val() + ",";
-				});
+				returnDossierFiles = $("#returnDossierFiles").data("kendoMultiSelect").value().join();
 				return returnDossierFiles;
 			}
 
@@ -542,11 +476,6 @@
 			}
 
 			function initStepCombobox(){
-				$(".service-process-create-dossier-file-form-action-entry:not(:last)").remove();
-				$(".service-process-return-dossier-file-form-action-entry:not(:last)").remove();
-
-				$(".service-process-create-dossier-file-form-action-entry:last").find("select").val("");
-				$(".service-process-return-dossier-file-form-action-entry:last").find("select").val("");
 
 				$("#preStepCode").kendoComboBox({
 					dataTextField: "stepName",
