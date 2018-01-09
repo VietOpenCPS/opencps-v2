@@ -115,29 +115,33 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 		}
 		Boolean flag = false;
 		List<JSONObject> formDataFilterList = new ArrayList<JSONObject>(); 
-		for (JSONObject jsonObject : formDataList) {
-			Iterator<String> keyForm = jsonObject.keys();
-			List<String> keyFormDataList = new ArrayList<String>();
-			while(keyForm.hasNext()) {
-				String keys = keyForm.next();
-				keyFormDataList.add(keys);
-			}
-			for (String parts : splitProperties) {
-				for (String key : keyFormDataList) {
-					if (Validator.isNotNull(parts) && parts.equals(key)) {
-						flag = true;
-					} else {
-						flag = false;
+		if (splitProperties != null && splitProperties.length > 0) {
+			for (JSONObject jsonObject : formDataList) {
+				Iterator<String> keyForm = jsonObject.keys();
+				List<String> keyFormDataList = new ArrayList<String>();
+				while(keyForm.hasNext()) {
+					String keys = keyForm.next();
+					keyFormDataList.add(keys);
+				}
+				for (String parts : splitProperties) {
+					for (String key : keyFormDataList) {
+						if (Validator.isNotNull(parts) && parts.equals(key)) {
+							flag = true;
+						} else {
+							flag = false;
+						}
 					}
 				}
-			}
-			if (flag) {
-				JSONObject formDataDetail = JSONFactoryUtil.createJSONObject();
-				for (String parts : splitProperties) {
-					formDataDetail.put(parts, jsonObject.get(parts));
+				if (flag) {
+					JSONObject formDataDetail = JSONFactoryUtil.createJSONObject();
+					for (String parts : splitProperties) {
+						formDataDetail.put(parts, jsonObject.get(parts));
+					}
+					formDataFilterList.add(formDataDetail);
 				}
-				formDataFilterList.add(formDataDetail);
 			}
+		} else {
+			return formDataList;
 		}
 		return formDataFilterList;
 	}
