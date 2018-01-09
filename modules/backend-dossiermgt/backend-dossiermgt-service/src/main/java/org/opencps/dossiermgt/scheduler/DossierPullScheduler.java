@@ -229,30 +229,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 						object.getBoolean(DossierTerm.NOTIFICATION), object.getBoolean(DossierTerm.ONLINE),
 						object.getString(DossierTerm.SERVER_NO), serviceContext);
 
-				long desDossierId = desDossier.getPrimaryKey();
 
-				// doAction in this case is an Applicant object
-				String applicantNote = object.getString(DossierTerm.APPLICANT_NOTE);
-				String applicantName = object.getString(DossierTerm.APPLICANT_NAME);
-
-				// Process doAction (with autoEvent = SUBMIT)
-				try {
-					// DossierLocalServiceUtil.syncDossier(desDossier);
-
-					ProcessAction processAction = ProcessActionLocalServiceUtil
-							.fetchBySPI_PRESC_AEV(syncServiceProcess.getServiceProcessId(), StringPool.BLANK, "SUBMIT");
-
-					long assignedUserId = processAction.getAssignUserId();
-
-					actions.doAction(syncServiceProcess.getGroupId(), desDossierId, desDossier.getReferenceUid(),
-							processAction.getActionCode(), processAction.getProcessActionId(), applicantName,
-							applicantNote, assignedUserId, systemUser.getUserId(), StringPool.BLANK, serviceContext);
-
-				} catch (Exception e) {
-					_log.info("SyncDossierUnsuccessfuly" + desDossier.getReferenceUid());
-				}
-
-				// Update DossierFile
 
 			} else {
 
@@ -288,10 +265,14 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 						// doAction in this case is an Applicant object
 						String applicantNote = object.getString(DossierTerm.APPLICANT_NOTE);
 						String applicantName = object.getString(DossierTerm.APPLICANT_NAME);
-
+						
+						
+						String subUsers = StringPool.BLANK;
+						
 						actions.doAction(syncServiceProcess.getGroupId(), desDossier.getDossierId(),
 								desDossier.getReferenceUid(), processAction.getActionCode(),
 								processAction.getProcessActionId(), applicantName, applicantNote,
+
 								processAction.getAssignUserId(), systemUser.getUserId(), StringPool.BLANK, serviceContext);
 
 					} else {
@@ -324,6 +305,32 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			pullPaymentFile(sourceGroupId, dossierId, desDossier.getGroupId(), desDossier.getDossierId(),
 					lsPaymentsFileSync, serviceContext);
 
+			// Process doAction (with autoEvent = SUBMIT)
+			try {
+				// DossierLocalServiceUtil.syncDossier(desDossier);
+				// doAction in this case is an Applicant object
+				String applicantNote = object.getString(DossierTerm.APPLICANT_NOTE);
+				String applicantName = object.getString(DossierTerm.APPLICANT_NAME);
+
+				long desDossierId = desDossier.getPrimaryKey();
+
+				// Update DossierFile
+
+				ProcessAction processAction = ProcessActionLocalServiceUtil
+						.fetchBySPI_PRESC_AEV(syncServiceProcess.getServiceProcessId(), StringPool.BLANK, "SUBMIT");
+
+				long assignedUserId = processAction.getAssignUserId();
+				
+				String subUsers = StringPool.BLANK;
+				
+				actions.doAction(syncServiceProcess.getGroupId(), desDossierId, desDossier.getReferenceUid(),
+						processAction.getActionCode(), processAction.getProcessActionId(), applicantName,
+
+						applicantNote, assignedUserId, systemUser.getUserId(), StringPool.BLANK, serviceContext);
+
+			} catch (Exception e) {
+				_log.info("SyncDossierUnsuccessfuly" + desDossier.getReferenceUid());
+			}
 		}
 
 		// ResetDossier

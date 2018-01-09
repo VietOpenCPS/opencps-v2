@@ -47,6 +47,9 @@
 
 	<bean class="org.opencps.dossiermgt.service.indexer.RegistrationIndexer"
 		id="org.opencps.dossiermgt.service.indexer.RegistrationIndexer" />
+		
+	<bean class="org.opencps.dossiermgt.service.indexer.RegistrationLogIndexer"
+		id="org.opencps.dossiermgt.service.indexer.RegistrationLogIndexer" />
 
 
 	<!-- Listeners -->

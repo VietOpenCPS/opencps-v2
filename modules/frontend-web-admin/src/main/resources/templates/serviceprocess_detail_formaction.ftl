@@ -315,7 +315,35 @@
 		noDataTemplate: 'Không có dữ liệu'
 	});
 
-	$("#dossiertemplates_file_filter").change(function(){
+	$("#createDossierFiles").kendoAutoComplete({
+		dataTextField : "partName",
+		dataValueField: "fileTemplateNo",
+		dataSource: {
+			transport : {
+				read : {
+					url : "${api.server}" + "/dossiertemplates/0/parts",
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
+
+					},
+					error : function(xhr){
+
+					}
+				}
+			},
+			schema : {
+				total : "total",
+				data : "data"
+			}
+		},
+		filter: "contains",
+		placeholder: "Nhập từ khóa",
+		noDataTemplate: 'Không có dữ liệu'
+	});
+
+	/*$("#dossiertemplates_file_filter").change(function(){
 		var dossierTemplateId = $("#dossiertemplates_file_filter").val();
 
 		$(".service-process-create-dossier-file-form-action-entry:not(:last)").remove();
@@ -350,6 +378,6 @@
 				}
 			}
 		});
-	});
+	});*/
 
 </script>

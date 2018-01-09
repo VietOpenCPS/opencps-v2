@@ -6,12 +6,10 @@ import java.util.Date;
 import java.util.List;
 
 
-import org.opencps.api.registration.model.RegistrationDetailModel;
-import org.opencps.api.registration.model.RegistrationDetailResultModel;
-import org.opencps.api.registration.model.RegistrationModel;
 import org.opencps.api.registrationlog.model.RegistrationLogModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.dossiermgt.model.Registration;
+import org.opencps.dossiermgt.constants.DossierLogTerm;
+import org.opencps.dossiermgt.constants.RegistrationLogTerm;
 import org.opencps.dossiermgt.model.RegistrationLog;
 
 import com.liferay.portal.kernel.search.Document;
@@ -28,6 +26,35 @@ public class RegistrationLogUtils {
 
 			RegistrationLogModel model = mappingToRegistrationLogModel(registrationLog);
 
+			outputs.add(model);
+		}
+
+		return outputs;
+	}
+	
+	public static List<RegistrationLogModel> mappingToRegistrationLoggDataListDocument(List<Document> lstregistrationLogs) {
+
+		List<RegistrationLogModel> outputs = new ArrayList<RegistrationLogModel>();
+
+		for (Document document : lstregistrationLogs) {
+
+			RegistrationLogModel model = new RegistrationLogModel();
+			long registrationLogId = GetterUtil.getLong(document.get("entryClassPK"));
+
+			
+			String strDate = document.get(RegistrationLogTerm.CREATE_DATE);
+			
+			Date date = null;
+			
+			if (Validator.isNotNull(strDate)) {
+				date = APIDateTimeUtils.convertStringToDate(strDate, "yyyyMMddHHmmss");
+			}
+			model.setCreateDate(date != null ? APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP): strDate);
+			model.setAuthor(document.get(RegistrationLogTerm.AUTHOR));
+			model.setContent(document.get(RegistrationLogTerm.CONTENT));
+			model.setPayload(document.get(RegistrationLogTerm.PAYLOAD));
+			model.setRegistrationLogId(registrationLogId);
+			
 			outputs.add(model);
 		}
 
