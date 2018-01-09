@@ -17,6 +17,7 @@ import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -104,20 +105,22 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 
 	//18
 	@Override
-	public List<JSONObject> getFormDataByFormNo(long groupId, long registrationId, String formNo, String[] splitProperties) throws JSONException {
+	public JSONArray getFormDataByFormNo(long groupId, long registrationId, String formNo, String[] splitProperties) throws JSONException {
 		// TODO Auto-generated method stub
 		List<RegistrationForm> registrationList = RegistrationFormLocalServiceUtil.getFormDataByFormNo(groupId, 
 				registrationId, formNo);
-		List<JSONObject> formDataList = new ArrayList<JSONObject>();
+//		List<JSONObject> formDataList = new ArrayList<JSONObject>();
+		JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 		for (RegistrationForm reg : registrationList) {
 			String formData = reg.getFormData();
-			formDataList.add(JSONFactoryUtil.createJSONObject(formData));
+			formDataArr.put(JSONFactoryUtil.createJSONObject(formData));
 		}
 		Boolean flag = false;
-		List<JSONObject> formDataFilterList = new ArrayList<JSONObject>(); 
-		if (splitProperties != null && splitProperties.length > 0) {
-			for (JSONObject jsonObject : formDataList) {
-				Iterator<String> keyForm = jsonObject.keys();
+		JSONArray formDataFilterArr = JSONFactoryUtil.createJSONArray();
+		if (splitProperties != null) {
+			for (int i = 0; i < formDataArr.length(); i++) {
+				JSONObject jsonFormData = formDataArr.getJSONObject(i);
+				Iterator<String> keyForm = jsonFormData.keys();
 				List<String> keyFormDataList = new ArrayList<String>();
 				while(keyForm.hasNext()) {
 					String keys = keyForm.next();
@@ -135,15 +138,15 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 				if (flag) {
 					JSONObject formDataDetail = JSONFactoryUtil.createJSONObject();
 					for (String parts : splitProperties) {
-						formDataDetail.put(parts, jsonObject.get(parts));
+						formDataDetail.put(parts, jsonFormData.get(parts));
 					}
-					formDataFilterList.add(formDataDetail);
+					formDataFilterArr.put(formDataDetail);
 				}
 			}
 		} else {
-			return formDataList;
+			return formDataArr;
 		}
-		return formDataFilterList;
+		return formDataFilterArr;
 	}
 
 	//18

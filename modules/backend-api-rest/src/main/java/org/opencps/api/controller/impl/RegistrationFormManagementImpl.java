@@ -30,6 +30,7 @@ import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -222,7 +223,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			
 			RegistrationFormActions actions = new RegistrationFormActionsImpl();
 			
-			List<JSONObject> jsonDataList = actions.getFormDataByFormNo(groupId, registrationId,
+			JSONArray jsonDataList = actions.getFormDataByFormNo(groupId, registrationId,
 					formNo, splitProperties);
 //			final String PROPERTIES = "_properties";
 //			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -243,7 +244,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 //			}
 
 			JSONObject results = JSONFactoryUtil.createJSONObject();
-			results.put("total", jsonDataList.size());
+			results.put("total", jsonDataList.length());
 			results.put("data", jsonDataList);
 //			JSONObject jsonData = null;
 //			if (flag) {
@@ -256,7 +257,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 //			results.setTotal(jsonData.getInt("total"));
 //			results.getData().addAll((List<String>) jsonData.get("data"));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(200).entity(results.toString()).build();
 
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();
