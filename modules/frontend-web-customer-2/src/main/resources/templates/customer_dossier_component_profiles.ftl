@@ -214,41 +214,37 @@
 				dataBound : function(e) {
 					console.log(e);
 					printDossierPartName();
-					fnViewFirst();
 				},
 				change: function(){
-					var data = dataSourceDossierFile.view(),
-					selected = $.map(this.select(), function(item) {
-
-						return data[$(item).index()].id;
-					});
-					console.log(selected);
-					if(selected){
-						var url = "${api.server}/dossiers/${dossierId}/files/"+selected;
-						var urlOut = "cvb";
-						var urlReadFile = fileAttachmentUrl({
-							method : "GET",
-							url : url,
-							async : false,
-							success: function(options){
-								urlOut = options.url;
-								$("#objectView2").html("");
-								$("#objectView2").append('<iframe src="'+urlOut+'" width="100%" style="height:100vh">    </iframe>');
-
-							},
-							error: function(){}
-						});
-
-
-					}
+					
 				}
 			});
 
-
+			$(document).off("click",".item-file-component");
 			$(document).on("click",".item-file-component",function(event){
 				$(".item-file-component").removeClass("text-light-blue");
 				$(this).addClass("text-light-blue");
+				
+				var selected = $(this).attr("data-pk");
+				console.log(selected);
+				if(selected){
+					var url = "${api.server}/dossiers/${dossierId}/files/"+selected;
+					var urlOut = "cvb";
+					var urlReadFile = fileAttachmentUrl({
+						method : "GET",
+						url : url,
+						async : false,
+						success: function(options){
+							urlOut = options.url;
+							$("#objectView2").html("");
+							$("#objectView2").append('<iframe src="'+urlOut+'" width="100%" style="height:100vh">    </iframe>');
 
+						},
+						error: function(){}
+					});
+
+
+				}
 			});
 
 			var printDossierPartName = function() {
@@ -278,17 +274,30 @@
 				});
 			}
 
-			var fnViewFirst = function(){
+			dataSourceDossierFile.fetch(function(){
 				var data = dataSourceDossierFile.view();
 				for(var i = 0; i < data.length ; i++){
-					if(data[i].dossierPartNo == "${(dossierPartNo)!}"){
+					if(data[i].value == "${(dossierPartNo)!}"){
 						
-						$("#listViewDossierFile").data("kendoListView").select(i);
+						var url = "${api.server}/dossiers/${dossierId}/files/"+data[i].items[0].referenceUid;
+						var urlOut = "cvb";
+						var urlReadFile = fileAttachmentUrl({
+							method : "GET",
+							url : url,
+							async : false,
+							success: function(options){
+								urlOut = options.url;
+								$("#objectView2").html("");
+								$("#objectView2").append('<iframe src="'+urlOut+'" width="100%" style="height:100vh">    </iframe>');
+
+							},
+							error: function(){}
+						});
 						return ;
 					}
 				}
-				
-			}
+			});
+			
 		});
 
 
