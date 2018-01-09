@@ -203,9 +203,11 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 
 			Registration regInfo = null;
 			long registrationId = 0;
-			if (Validator.isNotNull(applicantNo) && Validator.isNotNull(agencyNo)) {
-				regInfo = RegistrationLocalServiceUtil.getByApplicantAndAgency(groupId, applicantNo, agencyNo);
-			}
+			//TODO
+			agencyNo = "";
+//			if (Validator.isNotNull(applicantNo) && Validator.isNotNull(agencyNo)) {
+			regInfo = RegistrationLocalServiceUtil.getByApplicantAndAgency(groupId, applicantNo, agencyNo);
+//			}
 			if (regInfo != null) {
 				registrationId = regInfo.getRegistrationId();
 			}
