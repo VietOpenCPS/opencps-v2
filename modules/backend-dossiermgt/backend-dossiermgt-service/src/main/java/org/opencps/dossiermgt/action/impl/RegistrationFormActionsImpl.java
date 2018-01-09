@@ -1,5 +1,8 @@
 package org.opencps.dossiermgt.action.impl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,13 +12,22 @@ import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
+import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationFormActionsImpl implements RegistrationFormActions {
 
@@ -89,4 +101,80 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 
 		return RegistrationFormLocalServiceUtil.updateFormData(groupId, registrationId, referenceUid, formData, serviceContext);
 	}
+
+	//18
+	@Override
+	public List<JSONObject> getFormDataByFormNo(long groupId, long registrationId, String formNo, String[] splitProperties) throws JSONException {
+		// TODO Auto-generated method stub
+		List<RegistrationForm> registrationList = RegistrationFormLocalServiceUtil.getFormDataByFormNo(groupId, 
+				registrationId, formNo);
+		List<JSONObject> formDataList = new ArrayList<JSONObject>();
+		for (RegistrationForm reg : registrationList) {
+			String formData = reg.getFormData();
+			formDataList.add(JSONFactoryUtil.createJSONObject(formData));
+		}
+		Boolean flag = false;
+		List<JSONObject> formDataFilterList = new ArrayList<JSONObject>(); 
+		if (splitProperties != null && splitProperties.length > 0) {
+			for (JSONObject jsonObject : formDataList) {
+				Iterator<String> keyForm = jsonObject.keys();
+				List<String> keyFormDataList = new ArrayList<String>();
+				while(keyForm.hasNext()) {
+					String keys = keyForm.next();
+					keyFormDataList.add(keys);
+				}
+				for (String parts : splitProperties) {
+					for (String key : keyFormDataList) {
+						if (Validator.isNotNull(parts) && parts.equals(key)) {
+							flag = true;
+						} else {
+							flag = false;
+						}
+					}
+				}
+				if (flag) {
+					JSONObject formDataDetail = JSONFactoryUtil.createJSONObject();
+					for (String parts : splitProperties) {
+						formDataDetail.put(parts, jsonObject.get(parts));
+					}
+					formDataFilterList.add(formDataDetail);
+				}
+			}
+		} else {
+			return formDataList;
+		}
+		return formDataFilterList;
+	}
+
+	//18
+//	@Override
+//	public JSONObject getFormDataByFormNo(long companyId, LinkedHashMap<String, Object> params,
+//			Sort[] sorts, int start, int end, ServiceContext serviceContext) {
+//		JSONObject result = JSONFactoryUtil.createJSONObject();
+//
+//		Hits hits = null;
+//
+//		long userId = serviceContext.getUserId();
+//
+//		SearchContext searchContext = new SearchContext();
+//		searchContext.setCompanyId(companyId);
+//
+//		try {
+//
+//			hits = RegistrationFormLocalServiceUtil.searchLucene(userId, params, sorts, start, end, searchContext);
+//
+//			List<Document> test = hits.toList();
+//			result.put("data", test);
+//			
+//
+//			long total = RegistrationFormLocalServiceUtil.countLucense(userId, params, sorts, start, end, searchContext);
+//
+//			result.put("total", total);
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
+//
+//		return result;
+//	}
 }

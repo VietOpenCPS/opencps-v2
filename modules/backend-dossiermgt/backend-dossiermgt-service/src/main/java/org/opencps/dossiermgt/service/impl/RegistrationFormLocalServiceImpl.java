@@ -271,4 +271,11 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		return registrationFormPersistence.update(registrationForm);
 	}
+
+	//18
+	public List<RegistrationForm> getFormDataByFormNo(long groupId, long registrationId, String formNo) {
+		
+//		return registrationFormPersistence.fetchByG_REGID_FORMNO(groupId, registrationId, formNo);
+		return registrationFormPersistence.findByG_REGID_FORMNO(groupId, registrationId, formNo);
+	}
 }
