@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.registration.model.RegistrationInputModel;
+import org.opencps.api.registrationform.model.RegistrationFormInfoModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -98,4 +99,25 @@ public interface RegistrationFormManagement {
 			@FormParam("formScript") String formScript,
 			@FormParam("formReport") String formReport,
 			@FormParam("removed") Boolean removed);
+
+	//18
+	/* Get list dataform by applicantNo, agencyNo and formNo - START */
+	@GET
+	@Path("/registrations/applicant/{applicantNo}/agency/{agencyNo}/forms/{formNo}")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+	@ApiOperation(value = "Get list dataform by applicantNo, agencyNo and formNo")
+	@ApiResponses(value = {
+			@ApiResponse (code = HttpURLConnection.HTTP_OK, message = "Return a list dataform"),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not Found", response = ExceptionModel.class),
+			@ApiResponse (code = HttpURLConnection.HTTP_FORBIDDEN, message = "Accsess denied", response = ExceptionModel.class) })
+	public Response getDataFormByFormNo (@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "id for applicant", required = true) @PathParam("applicantNo") String applicantNo,
+			@ApiParam(value = "id for agency", required = true) @PathParam("agencyNo") String agencyNo,
+			@ApiParam(value = "id for forms", required = true) @PathParam("formNo") String formNo, 
+			@BeanParam RegistrationFormInfoModel search);
+	
+	/* Get list dataform by applicantNo, agencyNo and formNo - END */
 }

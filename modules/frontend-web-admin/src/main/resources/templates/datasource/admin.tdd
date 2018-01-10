@@ -33,7 +33,8 @@
 		"payment_config" : "payment_config.ftl",
 		"create_serviceconfigs" : "create_serviceconfigs.ftl",
 		"employee_index" : "employee/employee_index.ftl",
-		"dictcollection_index" : "datamgt/dictcollection_index.ftl"
+		"dictcollection_index" : "datamgt/dictcollection_index.ftl",
+		"serverconfigs" : "serverconfigs.ftl"
 	},
 	"url":{
 		"adminWorkingUnitPortlet": {
@@ -69,12 +70,18 @@
 		},
 		"adminJobPosPortlet": {
 			"jobpos_list": "jobpos/jobpos_list.ftl?p_p_lifecycle=1",
+			"jobpos_detail": "",
+		},
+		"adminNotificationPortlet":
+		{
+			"notification_template_list": "",
 		}
 	},
 	"portletNamespace" : "abc",
 	"constant" : {
 		type_workingUnit : "cvcvc",
-		"type_dictCollection" : "cc"
+		"type_dictCollection" : "cc",
+		"type_jobPos":"s"
 	},
 	param : {
 		"workingUnit_workingUnitId" : 233
