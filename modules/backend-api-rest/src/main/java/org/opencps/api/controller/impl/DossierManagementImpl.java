@@ -632,6 +632,9 @@ public class DossierManagementImpl implements DossierManagement {
 			Dossier dossier = getDossier(id, groupId);
 
 			if (input.getIsSynAction() == 1) {
+				
+				_log.info(JSONFactoryUtil.looseSerialize(input));
+				
 				DossierAction dossierAction = actions.doAction(groupId, dossier.getDossierId(),
 						dossier.getReferenceUid(), input.getActionCode(), 0l, input.getActionUser(),
 						input.getActionNote(), input.getAssignUserId(), 0l,  subUsers, serviceContext);
@@ -643,6 +646,8 @@ public class DossierManagementImpl implements DossierManagement {
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
 				}
+				
+				_log.debug("Call ");
 
 				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 						dossier.getDossierTemplateNo(), groupId);
@@ -665,7 +670,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		} catch (Exception e) {
 
-			_log.error("Can't doAction with id = " + id, e);
+			_log.error(e);
 
 			ErrorMsg error = new ErrorMsg();
 
@@ -774,9 +779,11 @@ public class DossierManagementImpl implements DossierManagement {
 
 	protected ProcessAction getProcessAction(long groupId, long dossierId, String refId, String actionCode,
 			long serviceProcessId) throws PortalException {
-
+		
+		_log.debug("GET PROCESS ACTION____");
+		
 		ProcessAction action = null;
-
+		
 		try {
 			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
 					serviceProcessId);

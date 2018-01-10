@@ -155,21 +155,27 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierSync.getDossierId());
 
 				// Get the latest ACTION of DOSSIER has been done
-				long dossierActionId = Validator.isNotNull(dossier) ? dossierActionId = dossier.getDossierActionId() : 0l;
+				// long dossierActionId = Validator.isNotNull(dossier) ?
+				// dossierActionId = dossier.getDossierActionId() : 0l;
 
-				if (dossierActionId != 0) {
+				long dossierActionId = dossierSync.getMethod() == 0 ? dossierSync.getClassPK() : 0;
 
-					DossierAction action = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-					if (Validator.isNotNull(action)) {
+				DossierAction action = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+				
+				
+				_log.info("DOSSIER_ACTION_ID===" + dossierActionId);
+				
+				if (Validator.isNotNull(action)) {
 
-						callDossierSync(groupId, dossierSync.getMethod(), action.getSyncActionCode(),
-								action.getActionUser(), action.getActionNote(), 0l, dossier.getReferenceUid(),
-								dossierActionId, id, dossierSync.getDossierId(), dossierSync.getClassPK(),
-								dossierSync.getCreateDossier(), serviceContext);
+					callDossierSync(groupId, dossierSync.getMethod(),
+							Validator.isNotNull(action) ? action.getSyncActionCode() : StringPool.BLANK,
+							Validator.isNotNull(action) ? action.getActionUser() : StringPool.BLANK,
+							Validator.isNotNull(action) ? action.getActionNote() : StringPool.BLANK, 0l,
+							dossier.getReferenceUid(), dossierActionId, id, dossierSync.getDossierId(),
+							dossierSync.getClassPK(), dossierSync.getCreateDossier(), serviceContext);
 
-					} else {
-						throw new NotFoundException("DossierActionNotFound");
-					}
+				} else {
+					throw new NotFoundException("DossierActionNotFound");
 				}
 
 				result = DossierSyncUtils.mappingToSending(dossierSync);
@@ -249,6 +255,12 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			String endPointSynDossierNo = "dossiers/" + refId + "/dossierno";
 
 			Map<String, Object> params = new LinkedHashMap<>();
+			
+			_log.info("actionCode"+actionCode);
+			_log.info("actionUser"+actionUser);
+			_log.info("actionNote"+actionNote);
+			_log.info("assignUserId"+assignUserId);
+			
 			params.put("actionCode", actionCode);
 			params.put("actionUser", actionUser);
 			params.put("actionNote", actionNote);
@@ -270,7 +282,8 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 				properties.put("dossierno", dossier.getDossierNo());
 
-				//endPointSynDossierNo = endPointSynDossierNo + HttpUtil.encodeURL(dossier.getDossierNo());
+				// endPointSynDossierNo = endPointSynDossierNo +
+				// HttpUtil.encodeURL(dossier.getDossierNo());
 
 				JSONObject resSynsDossierNo = rest.callPostAPI(groupId, HttpMethods.PUT, "application/json",
 						RESTFulConfiguration.SERVER_PATH_BASE, endPointSynDossierNo, RESTFulConfiguration.SERVER_USER,
@@ -371,10 +384,10 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 		// Sync paymentStatus
 		if (method == 3) {
-		    DossierSync sync = DossierSyncLocalServiceUtil.getDossierSync(dossierSyncId);
-		    
-			PaymentFile paymentFileClient = PaymentFileLocalServiceUtil.fectPaymentFile(
-			    sync.getDossierId(), sync.getDossierReferenceUid());
+			DossierSync sync = DossierSyncLocalServiceUtil.getDossierSync(dossierSyncId);
+
+			PaymentFile paymentFileClient = PaymentFileLocalServiceUtil.fectPaymentFile(sync.getDossierId(),
+					sync.getDossierReferenceUid());
 			try {
 				File file = File.createTempFile(String.valueOf(System.currentTimeMillis()), StringPool.PERIOD + "tmp");
 
