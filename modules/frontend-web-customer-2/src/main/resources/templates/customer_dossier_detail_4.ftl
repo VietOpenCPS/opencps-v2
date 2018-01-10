@@ -482,7 +482,7 @@
 
 				<p>
 					#if ( createDate!="" && createDate!=null ) {#
-					#= kendo.toString(kendo.parseDate(createDate, 'yyyy-MM-dd'), 'hh:mm - dd/MM/yyyy')#
+					#= kendo.toString(kendo.parseDate(createDate, "yyyy-MM-ddTHH:mm:ss"), "HH:mm - dd/MM/yyyy")#
 					#}#
 				</p>
 
@@ -895,6 +895,13 @@
 								}else {
 									return "";
 								}
+							},
+							submitDate : function(){
+								if(result.submitDate){
+									return kendo.toString(kendo.parseDate(result.submitDate, "yyyy-MM-ddTHH:mm:ss"), "HH:mm - dd/MM/yyyy");
+								}
+
+								return "";
 							},
 							cityCode : result.cityCode,
 							districtCode : result.districtCode,
