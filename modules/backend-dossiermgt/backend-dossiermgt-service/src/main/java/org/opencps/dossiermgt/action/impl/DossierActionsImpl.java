@@ -524,8 +524,13 @@ public class DossierActionsImpl implements DossierActions {
 
 		// Add paymentFile
 		if (Validator.isNotNull(processAction.getPaymentFee())) {
-			DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId, context,
-					serviceProcess.getServerNo());
+			try {
+				DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId, context,
+						serviceProcess.getServerNo());
+			} catch (Exception e) {
+				_log.info("Can not create PaymentFile with pattern \"" + processAction.getPaymentFee() +"\"");
+			}
+			
 		}
 		// TODO
 		// Add KYSO fin processAction
