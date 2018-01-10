@@ -165,18 +165,13 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				
 				_log.info("DOSSIER_ACTION_ID===" + dossierActionId);
 				
-				if (Validator.isNotNull(action)) {
 
-					callDossierSync(groupId, dossierSync.getMethod(),
-							Validator.isNotNull(action) ? action.getSyncActionCode() : StringPool.BLANK,
-							Validator.isNotNull(action) ? action.getActionUser() : StringPool.BLANK,
-							Validator.isNotNull(action) ? action.getActionNote() : StringPool.BLANK, 0l,
-							dossier.getReferenceUid(), dossierActionId, id, dossierSync.getDossierId(),
-							dossierSync.getClassPK(), dossierSync.getCreateDossier(), serviceContext);
-
-				} else {
-					throw new NotFoundException("DossierActionNotFound");
-				}
+				callDossierSync(groupId, dossierSync.getMethod(),
+						Validator.isNotNull(action) ? action.getSyncActionCode() : StringPool.BLANK,
+						Validator.isNotNull(action) ? action.getActionUser() : StringPool.BLANK,
+						Validator.isNotNull(action) ? action.getActionNote() : StringPool.BLANK, 0l,
+						dossier.getReferenceUid(), dossierActionId, id, dossierSync.getDossierId(),
+						dossierSync.getClassPK(), dossierSync.getCreateDossier(), serviceContext);
 
 				result = DossierSyncUtils.mappingToSending(dossierSync);
 
@@ -343,11 +338,12 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 				// Reset isNew
 
-				dossierFile.setIsNew(false);
 				DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 			} else {
 				_log.info(resSynFile.get(RESTFulConfiguration.MESSAGE));
 			}
+
+			dossierFile.setIsNew(false);
 
 		}
 
