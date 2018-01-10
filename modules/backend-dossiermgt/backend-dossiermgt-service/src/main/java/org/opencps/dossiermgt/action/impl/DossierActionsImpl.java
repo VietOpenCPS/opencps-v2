@@ -931,12 +931,15 @@ public class DossierActionsImpl implements DossierActions {
 				
 				_log.info(JSONFactoryUtil.looseSerialize(act));
 
-
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
-
-				String subStepStatus = Validator.isNull(step.getDossierSubStatus()) ? StringPool.BLANK
-						: step.getDossierSubStatus();
-
+				
+				String subStepStatus = StringPool.BLANK;
+				
+				if (Validator.isNotNull(step)) {
+					subStepStatus = Validator.isNull(step.getDossierSubStatus()) ? StringPool.BLANK
+							: step.getDossierSubStatus();
+				}
+				
 				_log.info(JSONFactoryUtil.looseSerialize(step));
 
 				if (Validator.isNull(step)) {
