@@ -303,7 +303,16 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			String endPointSyncDossierFile = "dossiers/" + refId + "/files";
 
 			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFile(classPK);
-
+			
+			
+			_log.info("referenceUid"+dossierFile.getReferenceUid());
+			_log.info("dossierTemplateNo"+dossierFile.getDossierTemplateNo());
+			_log.info("dossierPartNo"+ dossierFile.getDossierPartNo());
+			_log.info("fileTemplateNo"+ dossierFile.getFileTemplateNo());
+			_log.info("displayName"+ dossierFile.getDisplayName());
+			_log.info("isSync"+ StringPool.FALSE);
+			_log.info("formData"+ dossierFile.getFormData());
+			
 			properties.put("referenceUid", dossierFile.getReferenceUid());
 			properties.put("dossierTemplateNo", dossierFile.getDossierTemplateNo());
 			properties.put("dossierPartNo", dossierFile.getDossierPartNo());
@@ -336,6 +345,8 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 				dossierFile.setIsNew(false);
 				DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+			} else {
+				_log.info(resSynFile.get(RESTFulConfiguration.MESSAGE));
 			}
 
 		}
