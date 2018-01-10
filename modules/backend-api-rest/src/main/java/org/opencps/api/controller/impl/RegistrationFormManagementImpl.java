@@ -259,7 +259,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 //			results.setTotal(jsonData.getInt("total"));
 //			results.getData().addAll((List<String>) jsonData.get("data"));
 
-			return Response.status(200).entity(results.toString()).build();
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();
