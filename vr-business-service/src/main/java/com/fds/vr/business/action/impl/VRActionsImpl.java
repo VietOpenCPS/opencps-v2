@@ -200,25 +200,33 @@ public class VRActionsImpl implements VRActions {
 					String resultTD = StringPool.BLANK;
 
 					DossierFile dossierFile = null;
-					
+
 					String formData = StringPool.BLANK;
 
 					if (dossierFileId > 0) {
-						// Update online form
+
 						dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(dossierFileId);
-						
-						if(dossierFile.getFileEntryId() > 0){
-							formData = dossierFile.getFormData();
-						}
+
+					}
+					
+					_log.info("========================== dossierFileId = " + dossierFileId);
+					
+					if (dossierFile != null && dossierFile.getFileEntryId() > 0) {
+						// Update online form
+						formData = dossierFile.getFormData();
+						_log.info("==========================1 " + dossierFile.getFileEntryId());
 					} else {
 						// View online form
+						_log.info("==========================2");
 						if (Validator.isNotNull(fileTemplateNo)) {
 							try {
 								dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
 										fileTemplateNo, false, OrderByComparatorFactoryUtil
 												.create("opencps_dossierFile", "createDate", false));
-								
+
 								formData = dossierFile.getFormData();
+								
+								_log.info("==========================3");
 
 							} catch (Exception e) {
 								_log.error("Not found dossierFile with dossierId " + dossierId + "|fileTemplateNo "
@@ -239,32 +247,27 @@ public class VRActionsImpl implements VRActions {
 
 					if (formDataObject != null) {
 
-						//_log.info("///////////////////////////////////////////// dossierFileId " + dossierFileId);
-						//_log.info("///////////////////////////////////////////// tmpKey " + tmpKey);
-						//_log.info("///////////////////////////////////////////// tmpType " + tmpType);
-
 						if (formDataObject.has(tmpKey)) {
 							value = formDataObject.getString(tmpKey);
-							//_log.info("///////////////////////////////////////////// value " + value);
+
 						}
 
 						if (formDataObject.has(tmpKey + "_text") && (tmpType.equalsIgnoreCase("select")
 								|| tmpType.equalsIgnoreCase("select1") || tmpType.equalsIgnoreCase("select2")
 								|| tmpType.equalsIgnoreCase("select3"))) {
 							value_text = formDataObject.getString(tmpKey + "_text");
-							//_log.info("///////////////////////////////////////////// value_text " + value_text);
+
 						}
 
 						if (dossierFileId > 0 && dossierFile.getFileEntryId() > 0) {
 							// Update online form
 							if (formDataObject.has("bb_" + tmpKey)) {
 								resultTD = formDataObject.getString("bb_" + tmpKey);
-								//_log.info("///////////////////////////////////////////// resultTD " + resultTD);
+
 							}
 
 							if (formDataObject.has("kl_" + tmpKey)) {
 								result = formDataObject.getString("kl_" + tmpKey);
-								//_log.info("///////////////////////////////////////////// result " + result);
 							}
 
 						} else {
@@ -555,7 +558,8 @@ public class VRActionsImpl implements VRActions {
 
 		JSONArray datasource = JSONFactoryUtil.createJSONArray();
 
-		//_log.info("collectionCode" + collectionCode + "groupId" + groupId + "vehicleClass" + vehicleClass);
+		// _log.info("collectionCode" + collectionCode + "groupId" + groupId +
+		// "vehicleClass" + vehicleClass);
 
 		// long dictCollectionId = getDictCollectionId(collectionCode, groupId);
 
@@ -582,7 +586,7 @@ public class VRActionsImpl implements VRActions {
 		} catch (Exception e) {
 			// _log.error(e);
 		}
-		//_log.info("datasource" + datasource.length());
+		// _log.info("datasource" + datasource.length());
 
 		return datasource;
 	}
