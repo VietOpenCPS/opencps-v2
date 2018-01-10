@@ -26,6 +26,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -311,6 +313,11 @@ public class DossierPaymentUtils {
 	public static int _getTotalDossierPayment(Pattern patternName, Matcher matcherName, String pattern, long dossierId,
 			ServiceContext serviceContext) throws JSONException {
 
+		_log.info("patternName"+patternName);
+		_log.info("matcherName"+matcherName);
+		_log.info("pattern"+pattern);
+		_log.info("dossierId"+dossierId);
+		
 		int net = 0;
 
 		patternName = Pattern.compile("#(.*?)@(.*?) ");
@@ -385,6 +392,8 @@ public class DossierPaymentUtils {
 		}
 		return net;
 	}
+	
+	static Log _log = LogFactoryUtil.getLog(DossierPaymentUtils.class);
 
 	public static final String PAY_METHOD_BANK = "bank";
 	public static final String PAY_METHOD_KEYPAY = "keypay";
