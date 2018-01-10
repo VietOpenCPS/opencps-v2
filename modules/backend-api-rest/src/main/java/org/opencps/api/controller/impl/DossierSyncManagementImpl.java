@@ -336,14 +336,15 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				// remove DossierSync
 				DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
 
-				// Reset isNew
 
-				DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 			} else {
 				_log.info(resSynFile.get(RESTFulConfiguration.MESSAGE));
 			}
-
+			
+			// Reset isNew
 			dossierFile.setIsNew(false);
+
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 
 		}
 
