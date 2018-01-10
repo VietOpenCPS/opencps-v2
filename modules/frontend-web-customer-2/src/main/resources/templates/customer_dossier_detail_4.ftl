@@ -18,11 +18,11 @@
 
 				<#if sendReissue?has_content >
 				
-				<a class="btn btn-active" onclick="fnCorrecting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
+				<a class="btn btn-active" id="btn-sendReissue-dossier-header" onclick="fnCorrecting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
 
 				<#elseif sendAdd?has_content >
 
-				<a class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
+				<a class="btn btn-active" id="btn-sendadd-dossier-header" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
 
 				<#else>
 
@@ -558,12 +558,12 @@
 	<#if sendReissue?has_content >
 	
 		<button class="btn btn-active" id="btn-sendReissue-dossier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-		<a class="btn btn-active" onclick="fnCorrecting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
+		<a class="btn btn-active" id="btn-sendReissue-dossier-footer" onclick="fnCorrecting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
 
 	<#elseif sendAdd?has_content >
 	
 		<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-		<a class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
+		<a class="btn btn-active" id="btn-sendadd-dossier-footer" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
 
 	<#elseif dossier.dossierStatus?has_content && dossier.dossierStatus == "waiting" &&            	dossier.submitting?has_content && dossier.submitting != true>
 
@@ -1345,6 +1345,8 @@ var fnCorrecting = function(dossierId){
 						notification.show({
 							message: "Yêu cầu được thực hiện thành công!"
 						}, "success");
+						$("#btn-sendReissue-dossier-header").hide();
+						$("#btn-sendReissue-dossier-footer").hide();
 
 					},
 					error : function(result){
@@ -1402,6 +1404,8 @@ var fnSubmitting = function(dossierId){
 						notification.show({
 							message: "Yêu cầu được thực hiện thành công!"
 						}, "success");
+						$("#btn-sendadd-dossier-header").hide();
+						$("#btn-sendadd-dossier-footer").hide();
 
 					},
 					error : function(result){
@@ -1433,6 +1437,7 @@ $("#btn-submit-dossier").click(function(){
 
 		},
 		success : function(result){
+			$("#btn-submit-dossier").hide();
 			notification.show({
 				message: "Yêu cầu được thực hiện thành công!"
 			}, "success");
