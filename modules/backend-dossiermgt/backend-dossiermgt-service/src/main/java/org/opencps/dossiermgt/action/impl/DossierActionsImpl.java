@@ -954,6 +954,9 @@ public class DossierActionsImpl implements DossierActions {
 			}
 
 		} catch (Exception e) {
+			
+			_log.error(e);
+			
 			throw new NotFoundException("ProcessActionNotFoundException with actionCode= " + actionCode
 					+ "|serviceProcessId= " + serviceProcessId + "|referenceUid= " + refId + "|groupId= " + groupId);
 		}
