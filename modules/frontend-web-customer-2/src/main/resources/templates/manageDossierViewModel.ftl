@@ -32,6 +32,33 @@
 			}
 		});
 	//Source for main listview
+		var dataGetTotal = new kendo.data.DataSource({
+			transport:{
+				read:function(options){
+					$.ajax({
+						// url: "http://localhost:3000/dossiers",
+						url:"${api.server}/dossiers",
+						dataType:"json",
+						type:"GET",
+						data:{
+							status: "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
+						},
+						headers : {"groupId": ${groupId}},
+						success:function(result){
+							options.success(result);
+						},
+						error:function(result){
+							options.error(result)
+						}
+					});
+				}
+			},
+			schema : {
+				data : "data",
+				total : "total"
+			},
+			group: {field: "dossierStatus"},
+		});
 		var optBoxPageSize = function(){
 			var totalItem = parseInt(dataSourceProfile.total());
 			var pSize = 10;
@@ -106,64 +133,108 @@
 			
 		});
 		// Get total dossierStatus
-		var statusDossierItems = ["new","receiving","processing","waiting","paying","done","cancelling","cancelled","expired","all"];
+		// var statusDossierItems = ["new","receiving","processing","waiting","paying","done","cancelling","cancelled","expired","all"];
 		var getTotal = function(){
-			console.log("GET total");
-			$(statusDossierItems).each(function(index,value){
-				getTotalItemDossier(value);
-			})
+			// console.log("GET total");
+			// $(statusDossierItems).each(function(index,value){
+			// 	getTotalItemDossier(value);
+			// })
+			getTotalItemDossier()
 		};
-		var getTotalItemDossier = function(dossierItemStatus){
-			if ((dossierItemStatus == "cancelling")){
-				$.ajax({
-					// url: "http://localhost:3000/dossiers",
-					url:"${api.server}/dossiers",
-					dataType:"json",
-					type:"GET",
-					headers : {"groupId": ${groupId}},
-					data:{
-						state: "cancelling"
-					},
-					success:function(result){
-						$('#profileStatus li[dataPk='+dossierItemStatus+'] .bagde').html(result.total);
-					},
-					error:function(result){
-					}
-				})
-			} else if(dossierItemStatus == "all"){
-				$.ajax({
-					// url: "http://localhost:3000/dossiers",
-					url:"${api.server}/dossiers",
-					dataType:"json",
-					type:"GET",
-					headers : {"groupId": ${groupId}},
-					data:{
-						status:"new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
-					},
-					success:function(result){
-						$('#profileStatus li[dataPk='+dossierItemStatus+'] .bagde').html(result.total);
-					},
-					error:function(result){
-					}
-				})
-			} else {
-				$.ajax({
-					// url: "http://localhost:3000/dossiers",
-					url:"${api.server}/dossiers",
-					dataType:"json",
-					type:"GET",
-					headers : {"groupId": ${groupId}},
-					data:{
-						status : dossierItemStatus
-					},
-					success:function(result){
-						$('#profileStatus li[dataPk='+dossierItemStatus+'] .bagde').html(result.total);
-					},
-					error:function(result){
-					}
-				})
-			}
+		// var getTotalItemDossier = function(dossierItemStatus){
+		// 	if ((dossierItemStatus == "cancelling")){
+		// 		$.ajax({
+		// 			// url: "http://localhost:3000/dossiers",
+		// 			url:"${api.server}/dossiers",
+		// 			dataType:"json",
+		// 			type:"GET",
+		// 			headers : {"groupId": ${groupId}},
+		// 			data:{
+		// 				state: "cancelling"
+		// 			},
+		// 			success:function(result){
+		// 				$('#profileStatus li[dataPk='+dossierItemStatus+'] .bagde').html(result.total);
+		// 			},
+		// 			error:function(result){
+		// 			}
+		// 		})
+		// 	} else if(dossierItemStatus == "all"){
+		// 		$.ajax({
+		// 			// url: "http://localhost:3000/dossiers",
+		// 			url:"${api.server}/dossiers",
+		// 			dataType:"json",
+		// 			type:"GET",
+		// 			headers : {"groupId": ${groupId}},
+		// 			data:{
+		// 				status:"new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
+		// 			},
+		// 			success:function(result){
+		// 				$('#profileStatus li[dataPk='+dossierItemStatus+'] .bagde').html(result.total);
+		// 			},
+		// 			error:function(result){
+		// 			}
+		// 		})
+		// 	} else {
+		// 		$.ajax({
+		// 			// url: "http://localhost:3000/dossiers",
+		// 			url:"${api.server}/dossiers",
+		// 			dataType:"json",
+		// 			type:"GET",
+		// 			headers : {"groupId": ${groupId}},
+		// 			data:{
+		// 				status : dossierItemStatus
+		// 			},
+		// 			success:function(result){
+		// 				$('#profileStatus li[dataPk='+dossierItemStatus+'] .bagde').html(result.total);
+		// 			},
+		// 			error:function(result){
+		// 			}
+		// 		})
+		// 	}
+		// }
+		// -=-=-=-=-=-=-=-=-=-=-=-=-
+		var getTotalItemDossier = function(){
+			$.ajax({
+				// url: "http://localhost:3000/dossiers",
+				url:"${api.server}/dossiers",
+				dataType:"json",
+				type:"GET",
+				headers : {"groupId": ${groupId}},
+				data:{
+					state: "cancelling"
+				},
+				success:function(result){
+					$("#profileStatus li[dataPk='cancelling'] .bagde").html(result.total);
+				},
+				error:function(result){
+				}
+			});
+
+			$.ajax({
+				// url: "http://localhost:3000/dossiers",
+				url:"${api.server}/dossiers",
+				dataType:"json",
+				type:"GET",
+				headers : {"groupId": ${groupId}},
+				data:{
+					status:"new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
+				},
+				success:function(result){
+					$("#profileStatus li[dataPk='all'] .bagde").html(result.total);
+				},
+				error:function(result){
+				}
+			});
+
+			dataGetTotal.fetch(function(){
+			  var view = dataGetTotal.view();
+			  $.each(view, function(index,value){
+					$('#profileStatus li[dataPk='+value.value+'] .bagde').html(value.items.length);
+				});
+			});
+						
 		}
+		// -=-=-=-=-=-=-=-=-=-=-=-=-=
 	// Source for combobox Year, Month
 		var today = new Date();
 	    yyyy = today.getFullYear();

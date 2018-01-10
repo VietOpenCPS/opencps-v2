@@ -18,6 +18,8 @@ import org.opencps.api.controller.impl.ApplicantManagementImpl;
 import org.opencps.api.controller.impl.CommentManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
 import org.opencps.api.controller.impl.DeliverableTypesManagementImpl;
+import org.opencps.api.controller.impl.DeliverablesLogManagementImpl;
+import org.opencps.api.controller.impl.DeliverablesManagementImpl;
 import org.opencps.api.controller.impl.DossierActionManagementImpl;
 import org.opencps.api.controller.impl.DossierFileManagementImpl;
 import org.opencps.api.controller.impl.DossierLogManagementImpl;
@@ -88,6 +90,10 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new FileAttachManagementImpl());
 		singletons.add(new StatisticManagementImpl());
 		singletons.add(new DeliverableTypesManagementImpl());
+		//
+		singletons.add(new DeliverablesManagementImpl());
+		singletons.add(new DeliverablesLogManagementImpl());
+		//
 		singletons.add(new RegistrationTemplatesManagementImpl());
 		singletons.add(new CommentManagementImpl());
 		singletons.add(new RegistrationManagementImpl());

@@ -18,5 +18,14 @@
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
-	
+	<xsd:element name="RegistrationLogSearchModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="start" type="xsd:int" minOccurs="0" />
+				<xsd:element name="end" type="xsd:int" minOccurs="0" />
+				<xsd:element name="sort" type="xsd:string" minOccurs="0" />
+				<xsd:element name="order" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 </xsd:schema>

@@ -501,7 +501,12 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setModifiedDate(new Date());
 		return registrationPersistence.update(model);
 	}
-	
+
+	//18
+	public Registration getByApplicantAndAgency(long groupId, String applicantNo, String agencyNo) {
+		return registrationPersistence.fetchByG_APPNO_GOVCODE(groupId, applicantNo, agencyNo);
+	}
+
 	private static final String _TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	private Log _log = LogFactoryUtil.getLog(RegistrationLocalServiceImpl.class);
