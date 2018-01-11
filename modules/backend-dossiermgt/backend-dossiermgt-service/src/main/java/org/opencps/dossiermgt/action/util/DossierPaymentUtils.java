@@ -410,6 +410,15 @@ public class DossierPaymentUtils {
 
 			String netScript = matcherName.group(1);
 			
+			List<ScriptEngineFactory> factories = manager.getEngineFactories();
+			
+			
+			for (ScriptEngineFactory ft : factories) {
+				_log.info("EXTENTISION____" + ft.getExtensions());
+				_log.info("NAME__" + ft.getEngineName());
+				_log.info("NAMES___" + ft.getNames());
+			}
+			
 			_log.info("NETSCRIPT______"+netScript);
 			
 			try {
