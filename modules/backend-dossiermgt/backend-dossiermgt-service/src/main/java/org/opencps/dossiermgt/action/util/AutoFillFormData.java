@@ -62,6 +62,10 @@ public class AutoFillFormData {
 			
 			String _employee_employeeNo = StringPool.BLANK;
 			String _employee_fullName = StringPool.BLANK;
+			String _applicantName = StringPool.BLANK;
+			String _applicantIdType = StringPool.BLANK;
+			String _applicantIdNo = StringPool.BLANK;
+			String _applicantIdDate = StringPool.BLANK;
 			
 			if (Validator.isNotNull(dossier)) {
 				_receiveDate = Validator.isNotNull(dossier.getReceiveDate())?dossier.getReceiveDate().toGMTString():StringPool.BLANK;
@@ -91,6 +95,11 @@ public class AutoFillFormData {
 					_contactName = applicantJSON.getString("contactName");
 					_contactTelNo = applicantJSON.getString("contactTelNo");
 					_contactEmail = applicantJSON.getString("contactEmail");
+					_applicantName = applicantJSON.getString("applicantName");
+					_applicantIdType = applicantJSON.getString("applicantIdType");
+					_applicantIdNo = applicantJSON.getString("applicantIdNo");
+					_applicantIdDate = applicantJSON.getString("applicantIdDate");
+
 				} else {
 					String applicantStr = applicantActions.getApplicantByUserId(serviceContext);
 
@@ -108,6 +117,11 @@ public class AutoFillFormData {
 					_contactName = applicantJSON.getString("contactName");
 					_contactTelNo = applicantJSON.getString("contactTelNo");
 					_contactEmail = applicantJSON.getString("contactEmail");
+					_applicantName = applicantJSON.getString("applicantName");
+					_applicantIdType = applicantJSON.getString("applicantIdType");
+					_applicantIdNo = applicantJSON.getString("applicantIdNo");
+					_applicantIdDate = applicantJSON.getString("applicantIdDate");
+
 				}
 				
 			} catch (PortalException e1) {
@@ -173,6 +187,14 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _employee_employeeNo);
 					} else if (value.equals("_employee_fullName")) {
 						jsonMap.put(entry.getKey(), _employee_fullName);
+					} else if (value.equals("_applicantName")) {
+						jsonMap.put(entry.getKey(), _applicantName);
+					} else if (value.equals("_applicantIdType")) {
+						jsonMap.put(entry.getKey(), _applicantIdType);
+					} else if (value.equals("_applicantIdNo")) {
+						jsonMap.put(entry.getKey(), _applicantIdNo);
+					} else if (value.equals("_applicantIdDate")) {
+						jsonMap.put(entry.getKey(), _applicantIdDate);
 					}
 
 				} else if (value.startsWith("_") && value.contains(":")) {
@@ -211,6 +233,14 @@ public class AutoFillFormData {
 							resultBinding += ", " + _employee_employeeNo;
 						} else if (value.equals("_employee_fullName")) {
 							resultBinding += ", " + _employee_fullName;
+						} else if (value.equals("_applicantName")) {
+							resultBinding += ", " + _applicantName;
+						} else if (value.equals("_applicantIdType")) {
+							resultBinding += ", " + _applicantIdType;
+						} else if (value.equals("_applicantIdNo")) {
+							resultBinding += ", " + _applicantIdNo;
+						} else if (value.equals("_applicantIdDate")) {
+							resultBinding += ", " + _applicantIdDate;
 						}
 					}
 

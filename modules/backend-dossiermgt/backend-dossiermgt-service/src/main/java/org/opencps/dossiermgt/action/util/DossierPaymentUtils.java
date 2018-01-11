@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
@@ -36,15 +37,47 @@ import com.liferay.portal.kernel.util.Validator;
 
 public class DossierPaymentUtils {
 
-	public static void main(String[] args) {
-		String pattern = "net=100 ship=300 tax=30 bank cash keypay $Thanh toan cho tao cai nay nhe$ $da thanh toan$ $thanh toan di$  $thanh toan di$";
+	public static void main(String[] args) throws ScriptException {
+		String pattern = "bank cash keypay net=[ payment = 100000]   ship=0 tax=0  $Lệ phí đánh giá COP $";
+		new ScriptEngineManager().getEngineByName("js")
+        .eval("print('Hello from Java\\n');");
+     for (ScriptEngineFactory se : new ScriptEngineManager().getEngineFactories()) {
+         System.out.println("se = " + se.getEngineName());
+         System.out.println("se = " + se.getEngineVersion());
+         System.out.println("se = " + se.getLanguageName());
+         System.out.println("se = " + se.getLanguageVersion());
+         System.out.println("se = " + se.getNames());
+         System.out.println("se = " + se.getExtensions());
+     }
+		Pattern patternName = null;
+		Matcher matcherName = null; 
+		
+		ScriptEngineManager manager = new ScriptEngineManager();
 
-		int totalPayment = getTotalPayment(pattern);
+		ScriptEngine engine = manager.getEngineByName("nashorn");
 
-		List<String> messages = getMessagePayment(pattern);
+		patternName = Pattern.compile("net=\\[(.*?)\\]");
+		System.out.println("DossierPaymentUtils.main()" + patternName);
+		matcherName = patternName.matcher(pattern);
 
-		for (String msg : messages) {
-			System.out.println(msg);
+		if (matcherName.find()) {
+
+			manager = new ScriptEngineManager();
+
+			engine = manager.getEngineByExtension("js");
+
+			String netScript = matcherName.group(1);
+			
+			try {
+
+				engine.eval(netScript);
+
+				long net = GetterUtil.getInteger(engine.get("payment"));
+				System.out.println("DossierPaymentUtils.main()"+net);
+			} catch (ScriptException e) {
+				e.printStackTrace();
+			}
+
 		}
 		
 	}
