@@ -528,6 +528,8 @@ public class DossierActionsImpl implements DossierActions {
 				DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId, context,
 						serviceProcess.getServerNo());
 			} catch (Exception e) {
+				
+				_log.error(e);
 				_log.info("Can not create PaymentFile with pattern \"" + processAction.getPaymentFee() +"\"");
 			}
 			
