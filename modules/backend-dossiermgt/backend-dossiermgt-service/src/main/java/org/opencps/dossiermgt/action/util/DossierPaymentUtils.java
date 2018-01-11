@@ -406,7 +406,9 @@ public class DossierPaymentUtils {
 			ScriptEngine engine = manager.getEngineByExtension("js");
 
 			String netScript = matcherName.group(1);
-
+			
+			_log.info("NETSCRIPT______"+netScript);
+			
 			try {
 
 				engine.eval(netScript);
