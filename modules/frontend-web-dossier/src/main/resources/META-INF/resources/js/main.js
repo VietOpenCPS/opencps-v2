@@ -233,19 +233,16 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							//alapcajs Form
 							var url = '/o/rest/v2/registrations/'+vm.detailRegistModel.registrationId+'/forms/' + item.referenceUid +"/formscript";
                             // var url = '/o/frontendwebdossier/json/steps.json';
-                            
+							vm.alapcaJSRei = {};
                             axios.get(url, config).then(function (response) {
                                 var serializable = response.data;
 
     							vm.alapcaJSRei = eval('('+serializable+')');
     							
     							 axios.get('/o/rest/v2/registrations/'+vm.detailRegistModel.registrationId+'/forms/' + item.referenceUid +"/formdata", 
-    									 config).then(function (response) {
-    	                                var serializable = response.data;
-    	    							
-    	                                vm.alapcaJSRei['data'] = serializable;
-    	    							console.log(vm.alapcaJSRei);
-    	    							console.log($("#regist_form_"+item.referenceUid));
+    									 config).then(function (responseFormData) {
+    										 
+    	                                vm.alapcaJSRei['data'] = responseFormData.data;
     	    							$("#regist_form_"+item.referenceUid).alpaca(vm.alapcaJSRei);
     	    							
     	                            })
@@ -694,7 +691,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								},
 								{
 									id: 'tra_cuu_phuong_tien',
-									title: 'Phương tiện sản xuất lắp rap'
+									title: 'Phương tiện sản xuất lắp ráp'
 								},
 								{
 									id: 'tra_cuu_thong_tin_doanh_nghiep',
@@ -1128,7 +1125,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						},
 						registrationPheDuyet: function(registrationState) {
 							var vm = this;
-							vm.$dialog.confirm('Bạn có muốn phe duyệt Hồ sơ Doanh Nghiệp này?', {
+							var defaultMessage = 'Đồng ý phê duyệt hồ sơ doanh nghiệp này?';
+							
+							if (registrationState === 3) {
+								defaultMessage = 'Gửi thông báo yêu cầu bổ sung thông tin doanh nghiệp?';
+							}
+							
+							vm.$dialog.confirm(defaultMessage, {
 								html: true,
 								loader: true,
 								okText: 'Xác nhận',
@@ -1200,7 +1203,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									value: 'stt'
 								},
 								{
-									text: 'Tên thủ tục. tên doanh nghiệp',
+									text: 'Tên thủ tục. Tên doanh nghiệp',
 									align: 'left',
 									sortable: true,
 									value: 'applicantName'

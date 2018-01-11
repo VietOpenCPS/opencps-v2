@@ -6,7 +6,7 @@
 		
 			<div class="flex xs6 solo">
 		
-				<v-radio-group v-model="paymentMethodSearch" row>
+				<v-radio-group v-model="paymentMethodSearch" v-show="listgroupFilterselected != 2" row>
 				<v-radio label="Tiền mặt" value="Nộp trực tiếp"></v-radio>
 				<v-radio label="Chuyển khoản" value="Chuyển khoản"></v-radio>
 				</v-radio-group>
@@ -14,9 +14,9 @@
 			</div>
 			
 			<div class="flex xs3 text-left">
-				<v-btn class="my-0" flat @click.prevent.stop="paymentConfirmSingle(detailModel.index)">
-				<v-icon>done</v-icon>
-				Xác nhận
+				<v-btn class="my-0" flat @click.prevent.stop="paymentConfirmSingle(detailModel.index)"  v-show="listgroupFilterselected != 2">
+					<v-icon>done</v-icon>
+					Xác nhận
 				</v-btn>
 			</div>
 			
