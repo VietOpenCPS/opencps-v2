@@ -419,13 +419,13 @@ public class DossierPaymentUtils {
 
 		if (matcherName.find()) {
 
-			ScriptEngineManager manager = new ScriptEngineManager();
+			ScriptEngineManager manager = new ScriptEngineManager(null);
 
 			ScriptEngine engine = manager.getEngineByExtension("js");
 
 			String netScript = matcherName.group(1);
 
-			List<ScriptEngineFactory> factories = new ScriptEngineManager().getEngineFactories();
+			List<ScriptEngineFactory> factories = new ScriptEngineManager(null).getEngineFactories();
 			
 			if (factories.size() == 0) {
 				_log.info("NULL ME NO ROI");
