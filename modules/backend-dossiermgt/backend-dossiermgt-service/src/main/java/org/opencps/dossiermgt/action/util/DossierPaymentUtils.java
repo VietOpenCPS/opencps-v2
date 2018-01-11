@@ -369,28 +369,29 @@ public class DossierPaymentUtils {
 			jsonObject.put(string.trim(), string.trim());
 
 		}
+		if (listSTR.size() != 0) {
+			String result = AutoFillFormData.sampleDataBinding(jsonObject.toString(), dossierId, serviceContext);
 
-		String result = AutoFillFormData.sampleDataBinding(jsonObject.toString(), dossierId, serviceContext);
+			jsonObject = JSONFactoryUtil.createJSONObject(result);
 
-		jsonObject = JSONFactoryUtil.createJSONObject(result);
+			Map<String, Object> jsonMap = AutoFillFormData.jsonToMap(jsonObject);
 
-		Map<String, Object> jsonMap = AutoFillFormData.jsonToMap(jsonObject);
+			for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
+				String valReplace = StringPool.BLANK;
 
-		for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
-			String valReplace = StringPool.BLANK;
+				if (Validator.isNumber(String.valueOf(entry.getValue()))) {
 
-			if (Validator.isNumber(String.valueOf(entry.getValue()))) {
+					valReplace = String.valueOf(entry.getValue());
 
-				valReplace = String.valueOf(entry.getValue());
+				} else {
 
-			} else {
+					valReplace = "'" + String.valueOf(entry.getValue()) + "'";
 
-				valReplace = "'" + String.valueOf(entry.getValue()) + "'";
-
+				}
+				pattern = pattern.replaceAll(entry.getKey(), valReplace);
 			}
-			pattern = pattern.replaceAll(entry.getKey(), valReplace);
-		}
 
+		}
 		// ScriptEngineManager manager = new ScriptEngineManager();
 
 		// ScriptEngine engine = manager.getEngineByExtension("js");
