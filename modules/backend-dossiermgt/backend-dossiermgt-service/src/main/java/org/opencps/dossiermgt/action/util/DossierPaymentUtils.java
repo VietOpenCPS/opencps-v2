@@ -35,19 +35,43 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierPaymentUtils {
-
+	
 	public static void main(String[] args) {
-		String pattern = "net=100 ship=300 tax=30 bank cash keypay $Thanh toan cho tao cai nay nhe$ $da thanh toan$ $thanh toan di$  $thanh toan di$";
+		  String pattern = "bank cash keypay net=[ payment = 100000]   ship=0 tax=0  $Lệ phí đánh giá COP $";
+		  
+		  Pattern patternName = null;
+		  Matcher matcherName = null; 
+		  
+		  ScriptEngineManager manager = new ScriptEngineManager();
 
-		int totalPayment = getTotalPayment(pattern);
+		  ScriptEngine engine = manager.getEngineByExtension("js");
 
-		List<String> messages = getMessagePayment(pattern);
+		  patternName = Pattern.compile("net=\\[(.*?)\\]");
 
-		for (String msg : messages) {
-			System.out.println(msg);
-		}
-		
-	}
+		  matcherName = patternName.matcher(pattern);
+
+		  if (matcherName.find()) {
+
+		   manager = new ScriptEngineManager();
+
+		   engine = manager.getEngineByExtension("js");
+
+		   String netScript = matcherName.group(1);
+		   
+		   try {
+
+		    engine.eval(netScript);
+
+		    long net = GetterUtil.getInteger(engine.get("payment"));
+		    System.out.println("DossierPaymentUtils.main()"+net);
+		   } catch (ScriptException e) {
+		    e.printStackTrace();
+		   }
+
+		  }
+		  
+		 }
+
 
 	// call processPaymentFile create paymentFile
 	public static void processPaymentFile(String pattern, long groupId, long dossierId, long userId,
@@ -363,9 +387,9 @@ public class DossierPaymentUtils {
 			pattern = pattern.replaceAll(entry.getKey(), valReplace);
 		}
 
-		ScriptEngineManager manager = new ScriptEngineManager();
+		//ScriptEngineManager manager = new ScriptEngineManager();
 
-		ScriptEngine engine = manager.getEngineByExtension("js");
+		//ScriptEngine engine = manager.getEngineByExtension("js");
 
 		patternName = Pattern.compile("net=\\[(.*?)\\]");
 
@@ -373,9 +397,9 @@ public class DossierPaymentUtils {
 
 		if (matcherName.find()) {
 
-			manager = new ScriptEngineManager();
+			ScriptEngineManager manager = new ScriptEngineManager();
 
-			engine = manager.getEngineByExtension("js");
+			ScriptEngine engine = manager.getEngineByExtension("js");
 
 			String netScript = matcherName.group(1);
 
@@ -386,7 +410,7 @@ public class DossierPaymentUtils {
 				net = GetterUtil.getInteger(engine.get("payment"));
 
 			} catch (ScriptException e) {
-
+				_log.error(e);
 			}
 
 		}
