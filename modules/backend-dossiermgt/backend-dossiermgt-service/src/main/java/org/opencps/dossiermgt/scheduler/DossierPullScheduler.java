@@ -348,35 +348,6 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 			}
 
-			/*
-			 * // Process doAction (with autoEvent = SUBMIT) try { //
-			 * DossierLocalServiceUtil.syncDossier(desDossier); // doAction in
-			 * this case is an Applicant object String applicantNote =
-			 * object.getString(DossierTerm.APPLICANT_NOTE); String
-			 * applicantName = object.getString(DossierTerm.APPLICANT_NAME);
-			 * 
-			 * long desDossierId = desDossier.getPrimaryKey();
-			 * 
-			 * // Update DossierFile
-			 * 
-			 * ProcessAction processAction = ProcessActionLocalServiceUtil
-			 * .fetchBySPI_PRESC_AEV(syncServiceProcess.getServiceProcessId(),
-			 * StringPool.BLANK, "SUBMIT");
-			 * 
-			 * long assignedUserId = processAction.getAssignUserId();
-			 * 
-			 * String subUsers = StringPool.BLANK;
-			 * 
-			 * actions.doAction(syncServiceProcess.getGroupId(), desDossierId,
-			 * desDossier.getReferenceUid(), processAction.getActionCode(),
-			 * processAction.getProcessActionId(), applicantName,
-			 * 
-			 * applicantNote, assignedUserId, systemUser.getUserId(),
-			 * StringPool.BLANK, serviceContext);
-			 * 
-			 * } catch (Exception e) { _log.info("SyncDossierUnsuccessfuly" +
-			 * desDossier.getReferenceUid()); }
-			 */
 		}
 
 		// ResetDossier
@@ -575,6 +546,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 						}
 
 					} else {
+						
+						_log.info("PULL PAYMENT FILE" + dossierId + "fileReference" + fileRef);
 
 						String requestURL = "dossiers/" + dossierId + "/payments/" + fileRef + "/confirm/noattachment";
 
@@ -594,6 +567,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 						params.put("confirmNote", StringPool.BLANK);
 						params.put("paymentMethod", object.getString("paymentMethod"));
 						params.put("confirmPayload", object.getString("confirmPayload"));
+						
 
 						callRest.callPostAPI(groupId, HttpMethod.PUT, "application/json",
 								RESTFulConfiguration.CLIENT_PATH_BASE, requestURL, RESTFulConfiguration.CLIENT_USER,
@@ -696,8 +670,9 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 		for (JSONObject ref : lsFileSync) {
 
 			try {
-
 				String fileRef = ref.getString("referenceUid");
+				
+//				DossierFile srcDossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(srcDossierId, fileRef);
 
 				// Get file from SERVER
 				String path = "dossiers/" + srcDossierId + "/files/" + fileRef;
