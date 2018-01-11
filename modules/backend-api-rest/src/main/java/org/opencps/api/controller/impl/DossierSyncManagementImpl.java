@@ -162,6 +162,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 				DossierAction action = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 				
+				long actionPenddingId = Validator.isNotNull(dossier) ? dossier.getDossierActionId() : 0l;
 				
 				_log.info("DOSSIER_ACTION_ID===" + dossierActionId);
 				
@@ -170,7 +171,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 						Validator.isNotNull(action) ? action.getSyncActionCode() : StringPool.BLANK,
 						Validator.isNotNull(action) ? action.getActionUser() : StringPool.BLANK,
 						Validator.isNotNull(action) ? action.getActionNote() : StringPool.BLANK, 0l,
-						dossier.getReferenceUid(), dossierActionId, id, dossierSync.getDossierId(),
+						dossier.getReferenceUid(), actionPenddingId, id, dossierSync.getDossierId(),
 						dossierSync.getClassPK(), dossierSync.getCreateDossier(), serviceContext);
 
 				result = DossierSyncUtils.mappingToSending(dossierSync);
@@ -336,14 +337,15 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				// remove DossierSync
 				DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
 
-				// Reset isNew
 
-				DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 			} else {
 				_log.info(resSynFile.get(RESTFulConfiguration.MESSAGE));
 			}
-
+			
+			// Reset isNew
 			dossierFile.setIsNew(false);
+
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 
 		}
 
