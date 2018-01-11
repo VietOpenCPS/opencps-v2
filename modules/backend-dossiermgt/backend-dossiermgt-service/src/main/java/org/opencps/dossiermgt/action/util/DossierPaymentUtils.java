@@ -57,6 +57,23 @@ public class DossierPaymentUtils {
 
 			engine = manager.getEngineByExtension("js");
 
+			List<ScriptEngineFactory> factories = manager.getEngineFactories();
+
+			for (ScriptEngineFactory ft : factories) {
+				_log.info("EXTENTISION____" + ft.getExtensions());
+				_log.info("NAME__" + ft.getEngineName());
+				_log.info("NAMES___" + ft.getNames());
+			}
+
+			for (ScriptEngineFactory se : new ScriptEngineManager().getEngineFactories()) {
+				System.out.println("se = " + se.getEngineName());
+				System.out.println("se = " + se.getEngineVersion());
+				System.out.println("se = " + se.getLanguageName());
+				System.out.println("se = " + se.getLanguageVersion());
+				System.out.println("se = " + se.getNames());
+				System.out.println("se = " + se.getExtensions());
+			}
+
 			String netScript = matcherName.group(1);
 
 			try {
@@ -78,7 +95,7 @@ public class DossierPaymentUtils {
 			ServiceContext serviceContext, String serverNo) {
 
 		// get total payment amount
-		
+
 		int payment = getTotalPayment(pattern, dossierId, userId, serviceContext);
 
 		// get PaymentFee
@@ -167,8 +184,7 @@ public class DossierPaymentUtils {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static int getTotalPayment(String pattern, long dossierId, long userId, ServiceContext serviceContext)
-			 {
+	public static int getTotalPayment(String pattern, long dossierId, long userId, ServiceContext serviceContext) {
 
 		int total = 0;
 
@@ -353,47 +369,46 @@ public class DossierPaymentUtils {
 
 		matcherName = patternName.matcher(pattern);
 
-/*		List<String> listSTR = new ArrayList<String>();
-
-		while (matcherName.find()) {
-
-			listSTR.add(matcherName.group(0));
-
-		}
-
-		listSTR = new ArrayList<String>(new LinkedHashSet<String>(listSTR));
-
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-		for (String string : listSTR) {
-
-			jsonObject.put(string.trim(), string.trim());
-
-		}
-		if (listSTR.size() != 0) {
-			String result = AutoFillFormData.sampleDataBinding(jsonObject.toString(), dossierId, serviceContext);
-
-			jsonObject = JSONFactoryUtil.createJSONObject(result);
-
-			Map<String, Object> jsonMap = AutoFillFormData.jsonToMap(jsonObject);
-
-			for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
-				String valReplace = StringPool.BLANK;
-
-				if (Validator.isNumber(String.valueOf(entry.getValue()))) {
-
-					valReplace = String.valueOf(entry.getValue());
-
-				} else {
-
-					valReplace = "'" + String.valueOf(entry.getValue()) + "'";
-
-				}
-				pattern = pattern.replaceAll(entry.getKey(), valReplace);
-			}
-
-		}
-*/		
+		/*
+		 * List<String> listSTR = new ArrayList<String>();
+		 * 
+		 * while (matcherName.find()) {
+		 * 
+		 * listSTR.add(matcherName.group(0));
+		 * 
+		 * }
+		 * 
+		 * listSTR = new ArrayList<String>(new LinkedHashSet<String>(listSTR));
+		 * 
+		 * JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+		 * 
+		 * for (String string : listSTR) {
+		 * 
+		 * jsonObject.put(string.trim(), string.trim());
+		 * 
+		 * } if (listSTR.size() != 0) { String result =
+		 * AutoFillFormData.sampleDataBinding(jsonObject.toString(), dossierId,
+		 * serviceContext);
+		 * 
+		 * jsonObject = JSONFactoryUtil.createJSONObject(result);
+		 * 
+		 * Map<String, Object> jsonMap = AutoFillFormData.jsonToMap(jsonObject);
+		 * 
+		 * for (Map.Entry<String, Object> entry : jsonMap.entrySet()) { String
+		 * valReplace = StringPool.BLANK;
+		 * 
+		 * if (Validator.isNumber(String.valueOf(entry.getValue()))) {
+		 * 
+		 * valReplace = String.valueOf(entry.getValue());
+		 * 
+		 * } else {
+		 * 
+		 * valReplace = "'" + String.valueOf(entry.getValue()) + "'";
+		 * 
+		 * } pattern = pattern.replaceAll(entry.getKey(), valReplace); }
+		 * 
+		 * }
+		 */
 		// ScriptEngineManager manager = new ScriptEngineManager();
 
 		// ScriptEngine engine = manager.getEngineByExtension("js");
@@ -409,30 +424,32 @@ public class DossierPaymentUtils {
 			ScriptEngine engine = manager.getEngineByExtension("js");
 
 			String netScript = matcherName.group(1);
+
+			List<ScriptEngineFactory> factories = new ScriptEngineManager().getEngineFactories();
 			
-			List<ScriptEngineFactory> factories = manager.getEngineFactories();
-			
-			
+			if (factories.size() == 0) {
+				_log.info("NULL ME NO ROI");
+			}
+
 			for (ScriptEngineFactory ft : factories) {
 				_log.info("EXTENTISION____" + ft.getExtensions());
 				_log.info("NAME__" + ft.getEngineName());
 				_log.info("NAMES___" + ft.getNames());
 			}
-			
-			_log.info("NETSCRIPT______"+netScript);
-			
+
+			_log.info("NETSCRIPT______" + netScript);
+
 			try {
 
-				_log.info("engine_1"+engine);
-				_log.info("maneger"+manager);
+				_log.info("engine_1" + engine);
+				_log.info("maneger" + manager);
 
 				engine.eval(netScript);
-				_log.info("engine_2"+engine);
+				_log.info("engine_2" + engine);
 
 				net = GetterUtil.getInteger(engine.get("payment"));
-				
-				_log.info("net__________"+net);
 
+				_log.info("net__________" + net);
 
 			} catch (Exception e) {
 				_log.info(e);
