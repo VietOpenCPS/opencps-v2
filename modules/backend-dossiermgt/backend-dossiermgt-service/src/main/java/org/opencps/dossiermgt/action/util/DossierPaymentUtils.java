@@ -414,14 +414,18 @@ public class DossierPaymentUtils {
 			
 			try {
 
+				_log.info("engine_1"+engine);
+				_log.info("maneger"+manager);
+
 				engine.eval(netScript);
+				_log.info("engine_2"+engine);
 
 				net = GetterUtil.getInteger(engine.get("payment"));
 				
 				_log.info("net__________"+net);
 
 
-			} catch (ScriptException e) {
+			} catch (Exception e) {
 				_log.info(e);
 			}
 
