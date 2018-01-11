@@ -209,15 +209,15 @@ public class VRActionsImpl implements VRActions {
 
 					}
 					
-					_log.info("========================== dossierFileId = " + dossierFileId);
+					//_log.info("========================== dossierFileId = " + dossierFileId);
 					
-					if (dossierFile != null && dossierFile.getFileEntryId() > 0) {
+					if (dossierFile != null) {
 						// Update online form
 						formData = dossierFile.getFormData();
-						_log.info("==========================1 " + dossierFile.getFileEntryId());
+						//_log.info("==========================1 " + dossierFile.getFileEntryId());
 					} else {
 						// View online form
-						_log.info("==========================2");
+						//_log.info("==========================2");
 						if (Validator.isNotNull(fileTemplateNo)) {
 							try {
 								dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
@@ -226,7 +226,7 @@ public class VRActionsImpl implements VRActions {
 
 								formData = dossierFile.getFormData();
 								
-								_log.info("==========================3");
+								//_log.info("==========================3");
 
 							} catch (Exception e) {
 								_log.error("Not found dossierFile with dossierId " + dossierId + "|fileTemplateNo "
@@ -259,7 +259,7 @@ public class VRActionsImpl implements VRActions {
 
 						}
 
-						if (dossierFileId > 0 && dossierFile.getFileEntryId() > 0) {
+						if (dossierFileId > 0) {
 							// Update online form
 							if (formDataObject.has("bb_" + tmpKey)) {
 								resultTD = formDataObject.getString("bb_" + tmpKey);
