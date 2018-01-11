@@ -43,9 +43,16 @@
 					
 				<div class="col-sm-9 PL0">
 				
-					<strong id="notificationTitle#:id#" title="#= emailSubject #" 
-						class="btn-block">#= emailSubject #
-					</strong>
+					#if (typeName != "" && typeName != null) {#
+						<strong id="notificationTitle#:id#" title="#= typeName #" 
+							class="btn-block">#= typeName #
+						</strong>
+					#} else {#
+						<strong id="notificationTitle#:id#" title="#= emailSubject #" 
+							class="btn-block">#= emailSubject #
+						</strong>
+					#}#
+					
 					<span id="notificationMsg#:id#" class="btn-block">#= notificationType #</span>
 				
 				</div>

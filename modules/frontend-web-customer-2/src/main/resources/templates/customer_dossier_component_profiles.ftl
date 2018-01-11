@@ -21,58 +21,58 @@
 						<ul id="listViewDossierFile"></ul>
 						<#assign index = 0>
 
-					<script type="text/x-kendo-template" id="templateDossierFiles">
-						<div class="accordion" id="accordion1">
+						<script type="text/x-kendo-template" id="templateDossierFiles">
+							<div class="accordion" id="accordion1">
 
-							<div class="accordion-group">
+								<div class="accordion-group">
 
 
-								<div class="accordion-heading">
-									<a class="accordion-toggle dossier-partno-title slide-toggle-lv2" id="partNo#:value#" data-pk="#:value#" data-parent="" href="\\##:value#" aria-expanded="true">
+									<div class="accordion-heading">
+										<a class="accordion-toggle dossier-partno-title slide-toggle-lv2" id="partNo#:value#" data-pk="#:value#" data-parent="" href="\\##:value#" aria-expanded="true">
 
-									</a>
-								</div>
-								#
+										</a>
+									</div>
+									#
 									var collapseIn = "";
 									if(value === "${dossierPartNo}"){ 
-										collapseIn = "in";
-									} else {collapseIn = ""}
+									collapseIn = "in";
+								} else {collapseIn = ""}
 								#
 								<div id="#:value#" class="accordion-body collapse #:collapseIn#" aria-expanded="true">
 
 									<div class="accordion-inner">
 										#
-											for(var i=0; i < items.length; i++){
-												#
-													<div class="eq-height">
-
-														<div class="col-xs-12 col-sm-9 align-middle">
-															<span class="#if('${index}' === '0'){# active #}# hover-pointer item-file-component" data-pk="#:referenceUid#" data-index="${index}" >
-																#:displayName#
-															</span>
-														</div>
-
-														<div class="col-xs-12 col-sm-3 align-center">
-															<button class="btn btn-reset btn-delete-component-profile" data-pk="#:id#" eForm="#:eForm#" type="button"><i class="fa fa-trash"></i> Xóa</button>
-														</div>
-													</div>
-												#
-											}
+										for(var i=0; i < items.length; i++){
 										#
-										
-									</div>
+										<div class="eq-height">
 
+											<div class="col-xs-12 col-sm-9 align-middle">
+												<span class="#if('${index}' === '0'){# active #}# hover-pointer item-file-component" data-pk="#:items[i].referenceUid#" data-index="${index}" >
+													#:items[i].displayName#
+												</span>
+											</div>
+
+											<div class="col-xs-12 col-sm-3 align-center">
+												<button class="btn btn-reset btn-delete-component-profile" data-pk="#:items[i].referenceUid#" eForm="#:items[i].eForm#" type="button"><i class="fa fa-trash"></i> Xóa</button>
+											</div>
+										</div>
+										#
+									}
+									#
+									
 								</div>
-							</div>
-							<#assign index = index + 1>
-						</div>
-					</script>
-				</div>
-			</form>
-		</div>
-	</div>
 
-	<div class="col-sm-9" style="height:100vh;background-color: rgba(0,0,0,0.4)">
+							</div>
+						</div>
+						<#assign index = index + 1>
+					</div>
+				</script>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="col-sm-9" style="height:100vh;background-color: rgba(0,0,0,0.4)">
 				<#-- <div id="fileCarousel" class="carousel slide row" data-ride="carousel" data-interval="false"> 
 					<ul class="carousel-inner" id="listViewCarouselDossierFile">
 
@@ -125,7 +125,7 @@
 							dataType : "json",
 							headers : {"groupId": ${groupId}},
 							data : {
-
+								
 							},
 							success:function(result){
 
@@ -199,10 +199,7 @@
 				},
 				schema : {
 					data : "data",
-					total : "total",
-					model : {
-						id : "referenceUid"
-					}
+					total : "total"
 				},
 				group: { field: "dossierPartNo" },
 				change: function() { 
@@ -217,41 +214,37 @@
 				dataBound : function(e) {
 					console.log(e);
 					printDossierPartName();
-					fnViewFirst();
 				},
 				change: function(){
-					var data = dataSourceDossierFile.view(),
-					selected = $.map(this.select(), function(item) {
-
-						return data[$(item).index()].id;
-					});
-					console.log(selected);
-					if(selected){
-						var url = "${api.server}/dossiers/${dossierId}/files/"+selected;
-						var urlOut = "cvb";
-						var urlReadFile = fileAttachmentUrl({
-							method : "GET",
-							url : url,
-							async : false,
-							success: function(options){
-								urlOut = options.url;
-								$("#objectView2").html("");
-								$("#objectView2").append('<iframe src="'+urlOut+'" width="100%" style="height:100vh">    </iframe>');
-
-							},
-							error: function(){}
-						});
-
-
-					}
+					
 				}
 			});
 
-
+			$(document).off("click",".item-file-component");
 			$(document).on("click",".item-file-component",function(event){
 				$(".item-file-component").removeClass("text-light-blue");
 				$(this).addClass("text-light-blue");
+				
+				var selected = $(this).attr("data-pk");
+				console.log(selected);
+				if(selected){
+					var url = "${api.server}/dossiers/${dossierId}/files/"+selected;
+					var urlOut = "cvb";
+					var urlReadFile = fileAttachmentUrl({
+						method : "GET",
+						url : url,
+						async : false,
+						success: function(options){
+							urlOut = options.url;
+							$("#objectView2").html("");
+							$("#objectView2").append('<iframe src="'+urlOut+'" width="100%" style="height:100vh">    </iframe>');
 
+						},
+						error: function(){}
+					});
+
+
+				}
 			});
 
 			var printDossierPartName = function() {
@@ -281,20 +274,32 @@
 				});
 			}
 
+			dataSourceDossierFile.fetch(function(){
+				var data = dataSourceDossierFile.view();
+				for(var i = 0; i < data.length ; i++){
+					if(data[i].value == "${(dossierPartNo)!}"){
+						
+						var url = "${api.server}/dossiers/${dossierId}/files/"+data[i].items[0].referenceUid;
+						var urlOut = "cvb";
+						var urlReadFile = fileAttachmentUrl({
+							method : "GET",
+							url : url,
+							async : false,
+							success: function(options){
+								urlOut = options.url;
+								$("#objectView2").html("");
+								$("#objectView2").append('<iframe src="'+urlOut+'" width="100%" style="height:100vh">    </iframe>');
 
+							},
+							error: function(){}
+						});
+						return ;
+					}
+				}
+			});
+			
 		});
 
-var fnViewFirst = function(){
-	var data = dataSourceDossierFile.view();
-	for(var i = 0; i < data.length ; i++){
-		if(data[i].dossierPartNo == "${(dossierPartNo)!}"){
-			
-			$("#listViewDossierFile").data("kendoListView").select(i);
-			return ;
-		}
-	}
-	
-}
 
 function fileAttachmentUrl ( options) {
 

@@ -4,6 +4,7 @@ import java.net.HttpURLConnection;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -18,6 +19,7 @@ import javax.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.opencps.api.registration.model.RegistrationResultsModel;
 import org.opencps.api.registrationlog.model.RegistrationLogModel;
+import org.opencps.api.registrationlog.model.RegistrationLogSearchModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.model.Company;
@@ -58,4 +60,12 @@ public interface RegistrationLogManagement {
 			@ApiParam(value = "Metadata of RegistrationLog") @Multipart("author") String author,
 			@ApiParam(value = "Metadata of RegistrationLog") @Multipart("payload") String payload,
 			@ApiParam(value = "Metadata of RegistrationLog") @Multipart("content") String content);
+
+//search Lucene
+	@GET
+	@Path("/registrations/{id}/log")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	public Response getRegistrationLogs(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company, @Context Locale locale,
+			@Context User user, @Context ServiceContext serviceContext, @PathParam("id") long registrationId, @BeanParam RegistrationLogSearchModel query);
 }
