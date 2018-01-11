@@ -73,7 +73,7 @@
 					<v-flex xs12 sm7 jx-bind="applicantIdDate">
 						<span v-if="themeDisplay.getUserId() != detailRegistModel.userId">
 						
-							{{detailRegistModel.applicantIdDate}}
+							{{detailRegistModel.applicantIdDate | datetime}}
 							
 						</span>
 						<v-menu v-else
@@ -225,7 +225,7 @@
 		<v-icon class="mr-2">done</v-icon>
 		Phê duyệt
 	</v-btn>
-	<v-btn primary class="ml-0 mr-0" v-on:click.native="registrationPheDuyet(3)" v-if="detailRegistModel.registrationState !== 2" >
+	<v-btn primary class="ml-0 mr-0" v-on:click.native="registrationPheDuyet(3)" v-if="detailRegistModel.registrationState !== 3 && detailRegistModel.registrationState !== 2" >
 		<v-icon class="mr-2">undo</v-icon>
 		Yêu cầu chỉnh sửa đăng kí
 	</v-btn>
