@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:complexType name="DeliverableTypesModel">
+		<xsd:sequence>
+			<xsd:element name="deliverableTypeId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="deliverableType" type="xsd:string" minOccurs="0" />
+			<xsd:element name="deliverableName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="codePattern" type="xsd:string" minOccurs="0" />
+			<xsd:element name="counter" type="xsd:long" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="DeliverableTypesResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="DeliverableTypesModel"  minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="DeliverableTypesSearchIdModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="deliverableTypeId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="deliverableType" type="xsd:string" minOccurs="0" />
+				<xsd:element name="deliverableName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="codePattern" type="xsd:string" minOccurs="0" />
+				<xsd:element name="counter" type="xsd:long" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="DeliverableInputModel">
+		<xsd:sequence>
+			<xsd:element name="deliverableType" type="xsd:string" minOccurs="0" />
+			<xsd:element name="deliverableCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="applicantIdNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="applicantName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="subject" type="xsd:string" minOccurs="0" />
+			<xsd:element name="issueDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="expireDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="revalidate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="deliverableState" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="DeliverableTypeDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="deliverableType" type="xsd:string" minOccurs="0" />
+				<xsd:element name="deliverableName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="codePattern" type="xsd:string" minOccurs="0" />
+				<xsd:element name="counter" type="xsd:long" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
