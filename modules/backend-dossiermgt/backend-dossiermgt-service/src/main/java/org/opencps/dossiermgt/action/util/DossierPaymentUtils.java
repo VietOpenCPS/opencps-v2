@@ -75,9 +75,10 @@ public class DossierPaymentUtils {
 
 	// call processPaymentFile create paymentFile
 	public static void processPaymentFile(String pattern, long groupId, long dossierId, long userId,
-			ServiceContext serviceContext, String serverNo) throws JSONException {
+			ServiceContext serviceContext, String serverNo) {
 
 		// get total payment amount
+		
 		int payment = getTotalPayment(pattern, dossierId, userId, serviceContext);
 
 		// get PaymentFee
@@ -167,7 +168,7 @@ public class DossierPaymentUtils {
 	 * @throws JSONException
 	 */
 	public static int getTotalPayment(String pattern, long dossierId, long userId, ServiceContext serviceContext)
-			throws JSONException {
+			 {
 
 		int total = 0;
 
@@ -339,7 +340,7 @@ public class DossierPaymentUtils {
 	}
 
 	public static int _getTotalDossierPayment(Pattern patternName, Matcher matcherName, String pattern, long dossierId,
-			ServiceContext serviceContext) throws JSONException {
+			ServiceContext serviceContext) {
 
 		_log.info("patternName" + patternName);
 		_log.info("matcherName" + matcherName);
@@ -352,7 +353,7 @@ public class DossierPaymentUtils {
 
 		matcherName = patternName.matcher(pattern);
 
-		List<String> listSTR = new ArrayList<String>();
+/*		List<String> listSTR = new ArrayList<String>();
 
 		while (matcherName.find()) {
 
@@ -392,6 +393,7 @@ public class DossierPaymentUtils {
 			}
 
 		}
+*/		
 		// ScriptEngineManager manager = new ScriptEngineManager();
 
 		// ScriptEngine engine = manager.getEngineByExtension("js");
@@ -415,9 +417,12 @@ public class DossierPaymentUtils {
 				engine.eval(netScript);
 
 				net = GetterUtil.getInteger(engine.get("payment"));
+				
+				_log.info("net__________"+net);
+
 
 			} catch (ScriptException e) {
-				_log.error(e);
+				_log.info(e);
 			}
 
 		}
