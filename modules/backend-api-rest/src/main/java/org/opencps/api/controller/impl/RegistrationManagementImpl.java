@@ -72,9 +72,9 @@ import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationManagementImpl implements RegistrationManagement {
 	private static Log _log = LogFactoryUtil.getLog(RegistrationManagementImpl.class);
-	
+
 	private static String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
-	
+
 	@GET
 	@Path("/registrations")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -125,35 +125,36 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	}
 
 	@Override
-	public Response add(HttpHeaders header, ServiceContext serviceContext, RegistrationInputModel input) {
+	public Response add(HttpHeaders header, Company company, ServiceContext serviceContext, RegistrationInputModel input) {
 		RegistrationDetailModel result = null;
+		
+		long companyId = company.getCompanyId();
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			String cityName = "";
 			String districtName = "";
 			String wardName = "";
-			
+
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
-				
+
 			}
 			if (Validator.isNotNull(input.getDistrictCode())) {
 				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
-				
+
 			}
 			if (Validator.isNotNull(input.getWardCode())) {
 				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
-				
+
 			}
 			RegistrationActions action = new RegistrationActionsImpl();
-			
-			
-			Registration registration = action.insert(groupId, input.getApplicantName(), input.getApplicantIdType(),
+
+			Registration registration = action.insert(groupId, companyId, input.getApplicantName(), input.getApplicantIdType(),
 					input.getApplicantIdNo(), input.getApplicantIdDate(), input.getAddress(), input.getCityCode(),
-					cityName, input.getDistrictCode(), districtName, input.getWardCode(),
-					wardName, input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
-					input.getGovAgencyCode(), input.getGovAgencyName(), input.getRegistrationState(),
-					input.getRegistrationClass(), serviceContext);
+					cityName, input.getDistrictCode(), districtName, input.getWardCode(), wardName,
+					input.getContactName(), input.getContactTelNo(), input.getContactEmail(), input.getGovAgencyCode(),
+					input.getGovAgencyName(), input.getRegistrationState(), input.getRegistrationClass(),
+					serviceContext);
 
 			result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
 			return Response.status(200).entity(result).build();
@@ -192,26 +193,25 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			String cityName = "";
 			String districtName = "";
 			String wardName = "";
-			
+
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
-				
+
 			}
 			if (Validator.isNotNull(input.getDistrictCode())) {
 				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
-				
+
 			}
 			if (Validator.isNotNull(input.getWardCode())) {
 				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
-				
+
 			}
 			Registration registration = action.updateRegistration(groupId, registrationId, input.getApplicantName(),
 					input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
-					input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(),
-					districtName, input.getWardCode(), wardName, input.getContactName(),
-					input.getContactTelNo(), input.getContactEmail(), input.getGovAgencyCode(),
-					input.getGovAgencyName(), input.getRegistrationState(), input.getRegistrationClass(),
-					serviceContext);
+					input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
+					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
+					input.getContactEmail(), input.getGovAgencyCode(), input.getGovAgencyName(),
+					input.getRegistrationState(), input.getRegistrationClass(), serviceContext);
 
 			RegistrationDetailModel result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
 
@@ -225,7 +225,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	public Response delete(HttpHeaders header, long id) {
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			
+
 			RegistrationActions action = new RegistrationActionsImpl();
 
 			Registration registration = action.delete(id);
@@ -244,7 +244,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			
+
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 
 			RegistrationFormResultsModel result = new RegistrationFormResultsModel();
@@ -271,6 +271,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			String formNo) {
 		BackendAuth auth = new BackendAuthImpl();
 		RegistrationFormDetailModel result = null;
+		long companyId = company.getCompanyId();
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -279,18 +280,19 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			//long fileEntryId = getfileEntryId(input.getFormData(), input.getFormScript(), input.getFormReport());
-			//TODO: lam lai
+			// long fileEntryId = getfileEntryId(input.getFormData(),
+			// input.getFormScript(), input.getFormReport());
+			// TODO: lam lai
 			String govAgencyCode = "";
-			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil.getRegTempbyFormNoGovCode(
-			    groupId, formNo, govAgencyCode);
+			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
+					.getRegTempbyFormNoGovCode(groupId, formNo, govAgencyCode);
 
 			String referenceUid = UUID.randomUUID().toString();
 
-			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationId, referenceUid,
-			    registrationTemplate.getFormNo(), registrationTemplate.getFormName(),
-			    registrationTemplate.getSampleData(), registrationTemplate.getFormScript(),
-			    registrationTemplate.getFormReport(), 0, true, false, serviceContext);
+			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, companyId,
+					registrationId, referenceUid, registrationTemplate.getFormNo(), registrationTemplate.getFormName(),
+					registrationTemplate.getSampleData(), registrationTemplate.getFormScript(),
+					registrationTemplate.getFormReport(), 0, true, false, serviceContext);
 
 			result = RegistrationFormUtils.mappingToRegistrationFormDetailModel(registrationForm);
 			return Response.status(200).entity(result).build();
@@ -318,8 +320,8 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
 
 			} else {
-			    _log.error(e);
-			    
+				_log.error(e);
+
 				error.setMessage("No Content.");
 				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 				error.setDescription("No Content.");
@@ -362,76 +364,74 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return processException(e);
 		}
 	}
-	
+
 	@Override
-    public Response previewFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-            User user, ServiceContext serviceContext, long registrationId, String referenceUid) {
-        BackendAuth auth = new BackendAuthImpl();
-        try {
+	public Response previewFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long registrationId, String referenceUid) {
+		BackendAuth auth = new BackendAuthImpl();
+		try {
 
-            if (!auth.isAuth(serviceContext)) {
-                throw new UnauthenticationException();
-            }
-            
-            long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-            
-            RegistrationForm registrationForm =
-                RegistrationFormLocalServiceUtil.findFormbyRegidRefid(
-                    groupId, registrationId, referenceUid);
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
 
-            if (registrationForm != null && registrationForm.getFileEntryId() > 0) {
-                FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(registrationForm.getFileEntryId());
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-                File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
+			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId,
+					registrationId, referenceUid);
 
-                ResponseBuilder responseBuilder = Response.ok((Object) file);
+			if (registrationForm != null && registrationForm.getFileEntryId() > 0) {
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(registrationForm.getFileEntryId());
 
-                responseBuilder.header("Content-Disposition",
-                        "attachment; filename=\"" + fileEntry.getFileName() + "\"");
-                responseBuilder.header("Content-Type", fileEntry.getMimeType());
+				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+						true);
 
-                return responseBuilder.build();
-            } else {
-                return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
-            }
-        } catch (Exception e) {
-            return processException(e);
-        }
-    }
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-    @Override
-    public Response submitting(
-        HttpServletRequest request, HttpHeaders header, Company company,
-        Locale locale, User user, ServiceContext serviceContext,
-        long registrationId) {
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+				responseBuilder.header("Content-Type", fileEntry.getMimeType());
 
-        BackendAuth auth = new BackendAuthImpl();
-        try {
+				return responseBuilder.build();
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
 
-            if (!auth.isAuth(serviceContext)) {
-                throw new UnauthenticationException();
-            }
-            
-            Registration registration = RegistrationLocalServiceUtil.updateSubmitting(registrationId, true);
-            
-            return Response.status(200).entity(registration).build();
-        } catch (Exception e) {
-            return processException(e);
-        }
-    }
-    
-    protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
+	@Override
+	public Response submitting(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long registrationId) {
 
-        DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
+		BackendAuth auth = new BackendAuthImpl();
+		try {
 
-        if (Validator.isNotNull(dc)) {
-            DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
 
-            return it.getItemName();
+			Registration registration = RegistrationLocalServiceUtil.updateSubmitting(registrationId, true);
 
-        } else {
-            return StringPool.BLANK;
-        }
+			return Response.status(200).entity(registration).build();
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
 
-    }
+	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
+
+		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
+
+		if (Validator.isNotNull(dc)) {
+			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
+
+			return it.getItemName();
+
+		} else {
+			return StringPool.BLANK;
+		}
+
+	}
 }
