@@ -413,5 +413,4 @@
 		}
 	}
 
-	fnGetStatusSelectTDTK('thiet_bi_kiem_tra_chinh');
 </script>
