@@ -93,45 +93,57 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 					JSONObject content = results.getJSONObject(0);
 
-					ProcessAction processAction = (ProcessAction) content.get("processAction");
 
-					/*
-					 * if (processAction != null) { _log.
-					 * info("///////////////////////////////////////// processAction.getAutoEvent()"
-					 * + processAction.getAutoEvent()); } else { _log.
-					 * info("///////////////////////////////////////// null"); }
-					 */
+					ProcessAction processAction = null;
 
-					if (processAction != null && Validator.isNotNull(processAction.getAutoEvent())
-							&& processAction.getAutoEvent().contentEquals("timmer")) {
-						_log.info("AUTOEVENT_DOSSIER_ID" + dossier.getPrimaryKey());
+					try {
+						processAction = (ProcessAction) content.get("processAction");
 
-						long processActionId = content.getLong("processActionId");
+						if (processAction != null && Validator.isNotNull(processAction.getAutoEvent())
+								&& processAction.getAutoEvent().contentEquals("timmer")) {
 
-						ProcessAction action = ProcessActionLocalServiceUtil.fetchProcessAction(processActionId);
+							_log.info("AUTOEVENT_DOSSIER_ID" + dossier.getPrimaryKey());
 
-						String perConditionStr = StringPool.BLANK;
+							long processActionId = processAction.getPrimaryKey();
 
-						if (Validator.isNotNull(action)) {
-							perConditionStr = action.getPreCondition();
+							if (processActionId != 0) {
+
+								ProcessAction action = ProcessActionLocalServiceUtil
+										.fetchProcessAction(processActionId);
+
+								if (Validator.isNotNull(action)) {
+									String perConditionStr = StringPool.BLANK;
+
+									if (Validator.isNotNull(action)) {
+										perConditionStr = action.getPreCondition();
+									}
+
+									boolean checkPreCondition = DossierMgtUtils.checkPreCondition(
+											StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
+
+									_log.info("============================================= checkPreCondition "
+											+ checkPreCondition + "|DossierId = " + dossier.getDossierId() + "|split= "
+											+ perConditionStr);
+
+									if (checkPreCondition) {
+
+										// String subUsers = StringPool.BLANK;
+
+										dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
+												dossier.getReferenceUid(), processAction.getActionCode(),
+												processAction.getProcessActionId(), systemUser.getFullName(),
+												processAction.getActionName(), processAction.getAssignUserId(),
+												systemUser.getUserId(), StringPool.BLANK, serviceContext);
+									}
+
+								}
+
+							}
+
 						}
 
-						boolean checkPreCondition = DossierMgtUtils
-								.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
-
-						_log.info("============================================= checkPreCondition " + checkPreCondition
-								+ "|DossierId = " + dossier.getDossierId() + "|split= " + perConditionStr);
-
-						if (checkPreCondition) {
-							
-							String subUsers = StringPool.BLANK;
-							
-							dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
-									dossier.getReferenceUid(), processAction.getActionCode(),
-									processAction.getProcessActionId(), systemUser.getFullName(),
-									processAction.getActionName(), processAction.getAssignUserId(),
-									systemUser.getUserId(), StringPool.BLANK, serviceContext);
-						}
+					} catch (Exception e) {
+						// TODO: handle exception
 					}
 
 				}

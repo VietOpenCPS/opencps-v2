@@ -444,6 +444,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setSubmitting(false);
 		dossier.setSubmitDate(null);
 
+		dossierPersistence.update(dossier);
+
+
 		// TODO add reset for DossierFile and PaymentFile (isNew => false)
 
 		// TODO add remove DossierFile out system
@@ -452,12 +455,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		for (DossierFile df : lsDF) {
 			if (df.getIsNew()) {
-				dossierFileLocalService.resetDossierFile(df.getDossierFileId());
+				
+				df.setIsNew(false);
+				
+				dossierFileLocalService.updateDossierFile(df);
 			}
 		}
 
 		List<PaymentFile> lsPF = paymentFileLocalService.getByDossierId(id);
 
+		for (PaymentFile pf : lsPF) {
+			if (pf.getIsNew()) {
+				pf.setIsNew(false);
+				
+				paymentFileLocalService.updatePaymentFile(pf);
+			}
+		}
 		/*
 		 * Indexer<PaymentFile> indexer =
 		 * IndexerRegistryUtil.nullSafeGetIndexer(PaymentFile.class);
@@ -474,7 +487,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		 * indexer.reindex(paymentFile); } catch (SearchException e) {
 		 * e.printStackTrace(); } } }
 		 */
-		dossierPersistence.update(dossier);
 
 		return dossier;
 	}

@@ -17,9 +17,11 @@ package org.opencps.dossiermgt.service.impl;
 import aQute.bnd.annotation.ProviderType;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.opencps.dossiermgt.constants.RegistrationFormTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.base.RegistrationFormLocalServiceBaseImpl;
@@ -31,7 +33,24 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.BooleanQuery;
+import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
@@ -63,9 +82,10 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		return lstRegistrationForm;
 	}
 
-	public RegistrationForm addRegistrationForm(long groupId, long registrationId, String referenceUid, String formNo,
-			String formName, String formData, String formScript, String formReport, long fileEntryId, boolean isNew,
-			boolean removed, ServiceContext serviceContext) throws PortalException {
+	@Indexable(type = IndexableType.REINDEX)
+	public RegistrationForm addRegistrationForm(long groupId, long companyId, long registrationId, String referenceUid,
+			String formNo, String formName, String formData, String formScript, String formReport, long fileEntryId,
+			boolean isNew, boolean removed, ServiceContext serviceContext) throws PortalException {
 		// TODO Add RegistrationForm
 		long userId = serviceContext.getUserId();
 
@@ -80,6 +100,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		RegistrationForm object = registrationFormPersistence.create(registrationFormId);
 
 		/// Add audit fields
+		object.setCompanyId(companyId);
 		object.setGroupId(groupId);
 		object.setCreateDate(now);
 		object.setModifiedDate(now);
@@ -100,13 +121,15 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		return registrationFormPersistence.update(object);
 	}
 	
-	public RegistrationForm updateRegistrationForm(long groupId, long registrationId, String referenceUid, String formNo,
-			String formName, String formData, String formScript, String formReport, long fileEntryId, boolean isNew,
-			boolean removed, ServiceContext serviceContext)throws PortalException {
+	@Indexable(type = IndexableType.REINDEX)
+	public RegistrationForm updateRegistrationForm(long groupId, long registrationId, String referenceUid,
+			String formNo, String formName, String formData, String formScript, String formReport, long fileEntryId,
+			boolean isNew, boolean removed, ServiceContext serviceContext) throws PortalException {
 
 		Date now = new Date();
 
-		RegistrationForm object = registrationFormPersistence.fetchByG_REGID_REFID(groupId, registrationId, referenceUid);
+		RegistrationForm object = registrationFormPersistence.fetchByG_REGID_REFID(groupId, registrationId,
+				referenceUid);
 
 		/// Add audit fields
 		object.setModifiedDate(now);
@@ -126,28 +149,31 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		return registrationFormPersistence.update(object);
 	}
 	
-	public RegistrationForm deleteRegistrationForm(long groupId, long registrationId, String referenceUid) 
-	    throws PortalException {
-		
-		RegistrationForm object = registrationFormPersistence.findByG_REGID_REFID(groupId, registrationId, referenceUid);
-		
+	@Indexable(type = IndexableType.REINDEX)
+	public RegistrationForm deleteRegistrationForm(long groupId, long registrationId, String referenceUid)
+			throws PortalException {
+
+		RegistrationForm object = registrationFormPersistence.findByG_REGID_REFID(groupId, registrationId,
+				referenceUid);
+
 		object.setRemoved(true);
 		object.setIsNew(true);
 		object.setModifiedDate(new Date());
-		
+
 		return registrationFormPersistence.update(object);
 	}
-	
-	public List<RegistrationForm> deleteRegistrationForms(long groupId, long registrationId){
-		
+
+	@Indexable(type = IndexableType.REINDEX)
+	public List<RegistrationForm> deleteRegistrationForms(long groupId, long registrationId) {
+
 		List<RegistrationForm> lstRegistrationForm = registrationFormPersistence.findByG_REGID(groupId, registrationId);
-		
-		for (RegistrationForm registrationForm: lstRegistrationForm){
+
+		for (RegistrationForm registrationForm : lstRegistrationForm) {
 			registrationForm.setRemoved(true);
 			registrationForm.setIsNew(true);
 			registrationFormPersistence.update(registrationForm);
 		}
-		
+
 		return lstRegistrationForm;
 	}
 	
@@ -160,6 +186,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		return registrationFormPersistence.findByG_REGID_ISNEW(registrationId, isNew);
 	}
 	
+	@Indexable(type = IndexableType.REINDEX)
     public RegistrationForm registrationFormSync(
         long groupId, String uuidRegistration, String referenceUid,
         String formNo, String formName, String formData, String formScript,
@@ -246,6 +273,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		return registrationForm;
 	}
 	
+	@Indexable(type = IndexableType.REINDEX)
 	public RegistrationForm updateFormData(long groupId, long registrationId, String referenceUid, String formData,
 			ServiceContext serviceContext) 
 		throws PortalException, SystemException {
@@ -271,6 +299,159 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		return registrationFormPersistence.update(registrationForm);
 	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public RegistrationForm updateIsNew(long groupId, long registrationId, String referenceUid, boolean isNew,
+			ServiceContext serviceContext) throws PortalException, SystemException {
+
+		RegistrationForm registrationForm = registrationFormPersistence.findByG_REGID_REFID(groupId, registrationId,
+				referenceUid);
+
+		registrationForm.setIsNew(isNew);
+
+		return registrationFormPersistence.update(registrationForm);
+	}
+
+	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
+			SearchContext searchContext) throws ParseException, SearchException {
+
+		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+		String groupId = (String) params.get(Field.GROUP_ID);
+
+		Indexer<RegistrationFormTerm> indexer = IndexerRegistryUtil.nullSafeGetIndexer(RegistrationFormTerm.class);
+
+		searchContext.addFullQueryEntryClassName(CLASS_NAME);
+		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setLike(true);
+		searchContext.setStart(start);
+		searchContext.setEnd(end);
+		searchContext.setAndSearch(true);
+		searchContext.setSorts(sorts);
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		if (Validator.isNotNull(keywords)) {
+
+			String[] keyword = keywords.split(StringPool.SPACE);
+
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(RegistrationFormTerm.REGISTRATION_ID);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
+		}
+
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
+
+			query.addFields(Field.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		String referenceUid = GetterUtil.getString(params.get(RegistrationFormTerm.REFERENCE_UID));
+		String registrationId = GetterUtil.getString(params.get(RegistrationFormTerm.REGISTRATION_ID));
+
+		if (Validator.isNotNull(referenceUid)) {
+			MultiMatchQuery query = new MultiMatchQuery(referenceUid);
+
+			query.addFields(RegistrationFormTerm.REFERENCE_UID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(registrationId)) {
+			MultiMatchQuery query = new MultiMatchQuery(registrationId);
+
+			query.addFields(RegistrationFormTerm.REGISTRATION_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
+
+		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+	}
+
+	public long countLucene(LinkedHashMap<String, Object> params, SearchContext searchContext)
+			throws ParseException, SearchException {
+
+		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+		String groupId = (String) params.get(Field.GROUP_ID);
+
+		Indexer<RegistrationFormTerm> indexer = IndexerRegistryUtil.nullSafeGetIndexer(RegistrationFormTerm.class);
+
+		searchContext.addFullQueryEntryClassName(CLASS_NAME);
+		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setLike(true);
+		searchContext.setAndSearch(true);
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		if (Validator.isNotNull(keywords)) {
+
+			String[] keyword = keywords.split(StringPool.SPACE);
+
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(RegistrationFormTerm.REGISTRATION_ID);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
+		}
+
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
+
+			query.addFields(Field.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		String referenceUid = GetterUtil.getString(params.get(RegistrationFormTerm.REFERENCE_UID));
+		String registrationId = GetterUtil.getString(params.get(RegistrationFormTerm.REGISTRATION_ID));
+
+		if (Validator.isNotNull(referenceUid)) {
+			MultiMatchQuery query = new MultiMatchQuery(referenceUid);
+
+			query.addFields(RegistrationFormTerm.REFERENCE_UID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(registrationId)) {
+			MultiMatchQuery query = new MultiMatchQuery(registrationId);
+
+			query.addFields(RegistrationFormTerm.REGISTRATION_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
+
+		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
+	}
+
+	public static final String CLASS_NAME = RegistrationForm.class.getName();
 
 	//18
 	public List<RegistrationForm> getFormDataByFormNo(long groupId, long registrationId, String formNo) {
