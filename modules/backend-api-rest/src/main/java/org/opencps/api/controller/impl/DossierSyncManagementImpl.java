@@ -429,7 +429,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 					// DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 				}
 			} catch (Exception e) {
-				// TODO: handle exception
+				_log.error(e);
 			}
 
 		}
