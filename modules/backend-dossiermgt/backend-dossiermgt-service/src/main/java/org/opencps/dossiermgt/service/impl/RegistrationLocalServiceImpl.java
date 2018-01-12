@@ -14,7 +14,6 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -502,12 +501,20 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		return registrationPersistence.update(model);
 	}
 
-	//18
+	/**
+	 * Get registration of applicant has registrationState in use
+	 * 
+	 */
 	public Registration getByApplicantAndAgency(long groupId, String applicantNo, String agencyNo) {
-		return registrationPersistence.fetchByG_APPNO_GOVCODE(groupId, applicantNo, agencyNo);
+	    List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(
+	        groupId, applicantNo, agencyNo, 2);
+	    
+		if(registrations.size() > 0) {
+		    return registrations.get(0);
+		} else {
+		    return null;
+		}
 	}
-
-	private static final String _TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	private Log _log = LogFactoryUtil.getLog(RegistrationLocalServiceImpl.class);
 }
