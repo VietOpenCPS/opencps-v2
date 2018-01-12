@@ -143,8 +143,6 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 		long sourceGroupId = object.getLong(Field.GROUP_ID);
 		String referenceUid = object.getString(DossierTerm.REFERENCE_UID);
 		
-		// ResetDossier
-		resetDossier(sourceGroupId, referenceUid, true, serviceContext);
 		
 		String serverno = object.getString(DossierTerm.SERVER_NO);
 
@@ -353,6 +351,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 		}
 
+		// ResetDossier
+		resetDossier(sourceGroupId, referenceUid, true, serviceContext);
 
 	}
 
