@@ -18,7 +18,7 @@ public interface RegistrationActions {
 
 	public Registration getDetail(long registrationId) throws PortalException;
 
-	public Registration insert(long groupid, String applicantName, String applicantIdType, String applicantIdNo,
+	public Registration insert(long groupid, long companyId, String applicantName, String applicantIdType, String applicantIdNo,
 			String applicantIdDate, String address, String cityCode, String cityName, String districtCode,
 			String districtName, String wardCode, String wardName, String contactName, String contactTelNo,
 			String contactEmail, String govAgencyCode, String govAgencyName, int registrationState,
