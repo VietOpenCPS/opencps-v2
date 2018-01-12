@@ -992,7 +992,14 @@
 			<order-column name="dossierId" order-by="asc" />
 			<order-column name="method" order-by="asc" />
 		</order>
-
+		
+		<finder return-type="DossierSync" name="F_D_M_CPK_FR">
+			<finder-column name="dossierId"/>
+			<finder-column name="method"/>
+			<finder-column name="classPK"/>
+			<finder-column name="fileReferenceUid"/>
+		</finder>
+		
 		<finder return-type="Collection" name="G_ID">
 			<finder-column name="groupId" />
 		</finder>
@@ -1155,6 +1162,7 @@
 		<column name="registrationFormId" type="long" primary="true" />
 
 		<!-- Audit fields -->
+		<column name="companyId" type="long" />
 		<column name="groupId" type="long" />
 		<column name="userId" type="long" />
 		<column name="createDate" type="Date" />
@@ -1259,17 +1267,21 @@
 		<finder return-type="Deliverable" name="DID">
 			<finder-column name="deliverableId" />
 		</finder>
+		<finder return-type="Deliverable" name="G_DID">
+			<finder-column name="groupId" />
+			<finder-column name="deliverableId" />
+		</finder>
 		<finder return-type="Collection" name="G_ID">
 			<finder-column name="deliverableState" />
 			<finder-column name="govAgencyCode" />
 			<finder-column name="deliverableType" />
 			<finder-column name="applicantIdNo" />
 		</finder>
-		<order>
-			<order-column name="modifiedDate" order-by="asc" />
-			<order-column name="issueDate" order-by="asc" />
-			<order-column name="expireDate" order-by="asc" />
-		</order>
+<!-- 		<order> -->
+<!-- 			<order-column name="modifiedDate" order-by="asc" /> -->
+<!-- 			<order-column name="issueDate" order-by="asc" /> -->
+<!-- 			<order-column name="expireDate" order-by="asc" /> -->
+<!-- 		</order> -->
 	</entity>
 
 	<entity local-service="true" name="DeliverableLog"
@@ -1292,6 +1304,11 @@
 		<column name="deliverableAction" type="int" />
 		<column name="actionDate" type="Date" />
 		<column name="payload" type="String" />
+		
+<!-- 		<finder return-type="DeliverableLog" name="G_DIDL"> -->
+<!-- 			<finder-column name="gropuId" /> -->
+<!-- 			<finder-column name="deliverableId" /> -->
+<!-- 		</finder> -->
 	</entity>
 
 	<entity local-service="true" name="RegistrationTemplates"

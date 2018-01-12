@@ -714,8 +714,11 @@
                              comment.content = comment.content.replace('@' + id, '@' + users[i].fullname);
                              return false; 
                         }
+                        
                     });
+                    
                 });
+                
             }
 			
 			var createdDate = new Date(comment.createDate);

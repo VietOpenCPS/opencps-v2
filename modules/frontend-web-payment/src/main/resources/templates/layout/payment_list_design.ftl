@@ -11,7 +11,7 @@
 		<td style="padding-top: 8px;" class="text-xs-left">{{ props.item.applicantName }}</td>
 		<td style="padding-top: 8px; padding-left: 0px; padding-right: 0px;" class="text-xs-center">
 			{{ props.item.dossierNo }} <br/>
-			{{ props.item.dossierId }}
+			{{ props.item.dossierIdCTN }}
 		</td>
 		<td style="padding-top: 5px;" class="text-xs-right"><v-btn v-on:click.native="toPaymentDetail(props.index)" flat class="mx-0 my-0" color="grey darken-1">Chi tiết <v-icon>forward</v-icon></v-btn></td>
 	</template>

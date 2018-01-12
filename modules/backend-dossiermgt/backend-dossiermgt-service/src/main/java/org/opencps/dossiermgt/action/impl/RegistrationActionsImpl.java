@@ -32,7 +32,7 @@ public class RegistrationActionsImpl implements RegistrationActions {
 	Log _log = LogFactoryUtil.getLog(RegistrationActionsImpl.class);
 
 	@Override
-	public Registration insert(long groupId, String applicantName, String applicantIdType, String applicantIdNo,
+	public Registration insert(long groupId, long companyId, String applicantName, String applicantIdType, String applicantIdNo,
 			String applicantIdDate, String address, String cityCode, String cityName, String districtCode,
 			String districtName, String wardCode, String wardName, String contactName, String contactTelNo,
 			String contactEmail, String govAgencyCode, String govAgencyName, int registrationState,
@@ -40,14 +40,14 @@ public class RegistrationActionsImpl implements RegistrationActions {
 		List<Registration> listRegistration = RegistrationLocalServiceUtil.getRegistrationByGID_UID(groupId,
 				serviceContext.getUserId());
 		if (listRegistration.size() == 0) {
-			return RegistrationLocalServiceUtil.insert(groupId, applicantName, applicantIdType, applicantIdNo,
+			return RegistrationLocalServiceUtil.insert(groupId, companyId, applicantName, applicantIdType, applicantIdNo,
 					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
 					contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, 0, "", serviceContext);
 		} else {
 			Registration registration = listRegistration.get(0);
 			int state = registration.getRegistrationState();
 			if (state == 2) {
-				return RegistrationLocalServiceUtil.insert(groupId, applicantName, applicantIdType, applicantIdNo,
+				return RegistrationLocalServiceUtil.insert(groupId, companyId, applicantName, applicantIdType, applicantIdNo,
 						applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
 						contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, 0, "", serviceContext);
 			} else {

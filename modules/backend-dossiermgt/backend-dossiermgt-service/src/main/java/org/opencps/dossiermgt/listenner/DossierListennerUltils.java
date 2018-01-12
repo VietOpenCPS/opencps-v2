@@ -193,7 +193,6 @@ public class DossierListennerUltils {
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
 			queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
-
 			queue.setCreateDate(now);
 			queue.setModifiedDate(now);
 			queue.setGroupId(model.getGroupId());

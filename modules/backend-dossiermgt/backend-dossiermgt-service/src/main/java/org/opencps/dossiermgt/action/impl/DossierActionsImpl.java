@@ -207,6 +207,7 @@ public class DossierActionsImpl implements DossierActions {
 		if (Validator.isNotNull(referenceUid)) {
 			dossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
 		} else {
+			//
 			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		}
 
@@ -217,7 +218,7 @@ public class DossierActionsImpl implements DossierActions {
 			if (Validator.isNotNull(actionCode)) {
 				dossierAction = getDossierAction(dossier.getDossierId(), actionCode);
 			} else {
-				dossierAction = DossierActionLocalServiceUtil.getDossierAction(dossierActionId);
+				dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 			}
 
 			serviceProcessId = dossierAction != null ? dossierAction.getServiceProcessId() : 0;
@@ -524,8 +525,15 @@ public class DossierActionsImpl implements DossierActions {
 
 		// Add paymentFile
 		if (Validator.isNotNull(processAction.getPaymentFee())) {
-			DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId, context,
-					serviceProcess.getServerNo());
+			try {
+				DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId, context,
+						serviceProcess.getServerNo());
+			} catch (Exception e) {
+				
+				_log.error(e);
+				_log.info("Can not create PaymentFile with pattern \"" + processAction.getPaymentFee() +"\"");
+			}
+			
 		}
 		// TODO
 		// Add KYSO fin processAction
