@@ -89,14 +89,16 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			DeliverableResultModel results = new DeliverableResultModel();
 			
 			// get JSON data deliverable
-			JSONObject jsonData = actions.getListDeliverable(serviceContext.getCompanyId(), params, sorts,
-					search.getStart(), search.getEnd(), serviceContext);
+			JSONObject jsonData = null;
+				jsonData = actions.getListDeliverable(serviceContext.getCompanyId(), params, sorts,
+						search.getStart(), search.getEnd(), serviceContext);
 //			JSONObject result = action.getListDeliverable(state, agency, type, applicant);
+//			results.setTotal(jsonData.getInt("total"));
 			results.setTotal(jsonData.getInt("total"));
 			results.getData()
 					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(200).entity(results).build();
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
 		}
@@ -489,8 +491,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 	//18
 	@Override
 	public Response getDataFormByTypeCode(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String agencyNo, String typeCode,
-			String _properties) {
+			Locale locale, User user, ServiceContext serviceContext, String agencyNo, String typeCode, DeliverableInputModel input) {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -502,36 +503,42 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			String keyword = header.getHeaderString("keyword");
+			String keyword = input.getKeyword();
 
-//			Deliverable deliverableInfo = null;
-//			long registrationId = 0;
-//			if (Validator.isNotNull("") && Validator.isNotNull(agencyNo)) {
-//			regInfo = RegistrationLocalServiceUtil.getByApplicantAndAgency(groupId, "", agencyNo);
-//			regInfo = RegistrationLocalServiceUtil.getByAgency(groupId, agencyNo);
-//			}
-//			if (deliverableInfo != null) {
-//				registrationId = deliverableInfo.getRegistrationId();
-//			}
+			JSONObject keyJson = JSONFactoryUtil.createJSONObject(keyword);
+			
+			String pattern = String.valueOf(keyJson.get("query"));
+			String paramValues = String.valueOf(keyJson.get("values"));
+			String paramTypes = String.valueOf(keyJson.get("type"));
 
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(DeliverableTerm.GOV_AGENCY_CODE, agencyNo);
+			params.put(DeliverableTerm.DELIVERABLE_TYPE, typeCode);
+			params.put("pattern", pattern);
+			params.put("paramValues", paramValues);
+			params.put("paramTypes", paramTypes);
+			
 //			String _properties = search.getProperties();
-//			String _properties = "ten_doanh_nghiep";
-			String[] splitProperties = null;
-			if (Validator.isNotNull(_properties)) {
-				splitProperties = _properties.split(";");
-			}
+//			String[] splitProperties = null;
+//			if (Validator.isNotNull(_properties)) {
+//				splitProperties = _properties.split(";");
+//			}
 			
 			DeliverableActions actions = new DeliverableActionsImpl();
+			DeliverableResultModel results = new DeliverableResultModel();
 			
-			JSONArray jsonDataList = null;
-//			jsonDataList = actions.getFormDataByTypecode(groupId, registrationId,
-//					typeCode, splitProperties);
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true) };
+			// get JSON data deliverable
+			JSONObject jsonData = actions.getFormDataByTypecode(serviceContext.getCompanyId(), params, sorts,
+					-1, -1, serviceContext);
 
-			JSONObject results = JSONFactoryUtil.createJSONObject();
-			results.put("total", jsonDataList.length());
-			results.put("data", jsonDataList);
+			results.setTotal(jsonData.getInt("total"));
+			results.getData()
+					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();
