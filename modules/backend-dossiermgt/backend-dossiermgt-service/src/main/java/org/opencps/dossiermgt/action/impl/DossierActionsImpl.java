@@ -207,6 +207,7 @@ public class DossierActionsImpl implements DossierActions {
 		if (Validator.isNotNull(referenceUid)) {
 			dossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
 		} else {
+			//
 			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		}
 
@@ -217,7 +218,7 @@ public class DossierActionsImpl implements DossierActions {
 			if (Validator.isNotNull(actionCode)) {
 				dossierAction = getDossierAction(dossier.getDossierId(), actionCode);
 			} else {
-				dossierAction = DossierActionLocalServiceUtil.getDossierAction(dossierActionId);
+				dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 			}
 
 			serviceProcessId = dossierAction != null ? dossierAction.getServiceProcessId() : 0;
