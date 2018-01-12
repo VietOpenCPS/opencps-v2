@@ -52,7 +52,7 @@ import com.liferay.portal.kernel.util.StringPool;
 @XmlType(name = "", propOrder = { "referenceUid", "govAgencyCode", "govAgencyName", "applicantName", "applicantIdNo",
 		"paymentFee", "paymentAmount", "paymentNote", "epaymentProfile", "bankInfo", "confirmNote", "paymentMethod",
 		"confirmPayload", "approveDatetime", "accountUserName", "govAgencyTaxNo", "invoiceTemplateNo", "invoiceIssueNo",
-		"invoiceNo" })
+		"invoiceNo", "isSync" })
 @XmlRootElement(name = "PaymentFileInputModel")
 public class PaymentFileInputModel {
 	@DefaultValue(StringPool.BLANK)
@@ -131,6 +131,19 @@ public class PaymentFileInputModel {
 	@FormParam(value = "invoiceNo")
 	protected String invoiceNo;
 	
+	@DefaultValue(StringPool.TRUE)
+	@FormParam(value = "isSync")
+	protected String isSync;
+	
+
+	
+	public String getIsSync() {
+		return isSync;
+	}
+
+	public void setIsSync(String isSync) {
+		this.isSync = isSync;
+	}
 
 	public String getApproveDatetime() {
 		return approveDatetime;

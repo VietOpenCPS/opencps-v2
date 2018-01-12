@@ -439,11 +439,11 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setPaymentMethod(paymentMethod);
 			paymentFile.setConfirmPayload(confirmPayload);
 			paymentFile.setPaymentStatus(2);
+			paymentFile.setIsNew(true);
 		}
 
 		// update dossier
 		
-		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
@@ -451,9 +451,10 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			dossier.setSubmitDate(new Date());
 			dossier.setSubmitting(true);
 
-			dossierPersistence.update(dossier);
+			dossierLocalService.updateDossier(dossier);
+			//dossierPersistence.update(dossier);
 			
-			indexer.reindex(dossier);
+			//indexer.reindex(dossier);
 		} catch (SearchException e) {
 			e.printStackTrace();
 		}
@@ -508,7 +509,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		}
 
 		
-		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
+		//Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
@@ -516,9 +517,9 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			dossier.setSubmitDate(new Date());
 			dossier.setSubmitting(true);
 
-			dossierPersistence.update(dossier);
+			dossierLocalService.updateDossier(dossier);
 			
-			indexer.reindex(dossier);
+			//indexer.reindex(dossier);
 		} catch (SearchException e) {
 			e.printStackTrace();
 		}
