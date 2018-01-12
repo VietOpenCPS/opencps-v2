@@ -1,5 +1,8 @@
 package org.opencps.dossiermgt.service.indexer;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
@@ -13,6 +16,10 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
@@ -60,8 +67,95 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 		document.addTextSortable(RegistrationFormTerm.ISNEW, String.valueOf(object.isIsNew()));
 		document.addTextSortable(RegistrationFormTerm.REMOVED, String.valueOf(object.isRemoved()));
 		
+		// index formData
+        try {
+            JSONObject jsonObject =
+                JSONFactoryUtil.createJSONObject(object.getFormData());
+            
+            List<Object[]> keyValues = new ArrayList<Object[]>();
+            
+            parseJSONObject(keyValues, jsonObject);
+            
+            if (keyValues != null) {
+                for (Object[] keyValue : keyValues) {
+                    _log.info("=========REGISTRATION_FORM_INDEX_FORM_DATA========:" + keyValue[0] + "_" + keyValue[1]);
+                    document.addKeyword(
+                        keyValue[0].toString(), keyValue[1].toString());
+                }
+            }
+        }
+        catch (Exception e) {
+            _log.error(e);
+        }
+
+		
 		return document;
 	}
+	
+    protected List<Object[]> parseJSONObject(
+        List<Object[]> keyValues, JSONObject json) {
+
+        List<Object[]> objects = new ArrayList<Object[]>();
+        try {
+
+            Iterator<String> itr = json.keys();
+            while (itr.hasNext()) {
+                String key = itr.next();
+                Object object = json.get(key);
+                if (object instanceof JSONObject) {
+                    // Tinh chung cho key cha.
+                    Object[] keyValue = new Object[2];
+                    keyValue[0] = key;
+                    keyValue[1] = object.toString();
+                    keyValues.add(keyValue);
+                    parseJSONObject(keyValues, json.getJSONObject(key));
+                }
+                else if (object instanceof JSONArray) {
+                    JSONArray jsonArray = json.getJSONArray(key);
+                    Object[] keyValue = new Object[2];
+                    // Tinh chung cho key cha
+                    keyValue[0] = key;
+                    keyValue[1] = jsonArray.toString();
+                    keyValues.add(keyValue);
+                    parseJSONObject(keyValues, jsonArray);
+                }
+                else {
+                    Object[] keyValue = new Object[2];
+                    keyValue[0] = key;
+                    keyValue[1] = object.toString();
+                    keyValues.add(keyValue);
+                }
+            }
+
+        }
+        catch (JSONException e) {
+            _log.error(e);
+        }
+
+        return objects;
+    }
+
+    protected List<Object[]> parseJSONObject(
+        List<Object[]> keyValues, JSONArray jsonArray)
+        throws JSONException {
+
+        if (jsonArray != null && jsonArray.length() > 0) {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                Object tempObject = jsonArray.get(i);
+                if (tempObject instanceof JSONObject) {
+                    parseJSONObject(keyValues, (JSONObject) tempObject);
+                }
+                else if (tempObject instanceof JSONArray) {
+                    parseJSONObject(keyValues, (JSONArray) tempObject);
+                }
+                else {
+                    // Tinh chung cho key cha.
+                }
+            }
+        }
+
+        return keyValues;
+    }
 
 	@Override
 	protected Summary doGetSummary(Document document, Locale locale, String snippet, PortletRequest portletRequest,
