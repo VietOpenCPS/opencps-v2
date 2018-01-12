@@ -142,7 +142,10 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 		long sourceGroupId = object.getLong(Field.GROUP_ID);
 		String referenceUid = object.getString(DossierTerm.REFERENCE_UID);
-
+		
+		// ResetDossier
+		resetDossier(sourceGroupId, referenceUid, true, serviceContext);
+		
 		String serverno = object.getString(DossierTerm.SERVER_NO);
 
 		List<ServiceProcess> processes = ServiceProcessLocalServiceUtil.getByServerNo(serverno);
@@ -297,7 +300,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 						processAction = ProcessActionLocalServiceUtil.fetchBySPI_PRESC_AEV(
 								syncServiceProcess.getServiceProcessId(), dossierAction.getStepCode(), "SUBMIT");
 
-						_log.info(JSONFactoryUtil.looseSerialize(processAction));
+						//_log.info(JSONFactoryUtil.looseSerialize(processAction));
 
 					} catch (Exception e) {
 						// TODO: handle exception
@@ -350,8 +353,6 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 		}
 
-		// ResetDossier
-		resetDossier(sourceGroupId, referenceUid, true, serviceContext);
 
 	}
 
