@@ -992,7 +992,14 @@
 			<order-column name="dossierId" order-by="asc" />
 			<order-column name="method" order-by="asc" />
 		</order>
-
+		
+		<finder return-type="DossierSync" name="F_D_M_CPK_FR">
+			<finder-column name="dossierId"/>
+			<finder-column name="method"/>
+			<finder-column name="classPK"/>
+			<finder-column name="fileReferenceUid"/>
+		</finder>
+		
 		<finder return-type="Collection" name="G_ID">
 			<finder-column name="groupId" />
 		</finder>

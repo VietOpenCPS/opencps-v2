@@ -20,6 +20,8 @@ import java.util.List;
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.service.base.DossierSyncLocalServiceBaseImpl;
 
+import com.liferay.portal.kernel.util.Validator;
+
 import aQute.bnd.annotation.ProviderType;
 
 /**
@@ -53,27 +55,34 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 	public DossierSync updateDossierSync(long groupId, long userId, long dossierId, String dossierReferenceUid,
 			boolean createDossier, int method, long classPK, String fileReferenceUid, String serverNo) {
 
-		long dossierSyncId = counterLocalService.increment(DossierSync.class.getName());
+		DossierSync dossierSync = null;
 
-		Date now = new Date();
+		dossierSync = dossierSyncPersistence.fetchByF_D_M_CPK_FR(dossierId, method, classPK, fileReferenceUid);
 
-		DossierSync dossierSync = dossierSyncPersistence.create(dossierSyncId);
+		if (Validator.isNull(dossierSync)) {
+			long dossierSyncId = counterLocalService.increment(DossierSync.class.getName());
 
-		dossierSync.setCreateDate(now);
-		dossierSync.setModifiedDate(now);
+			Date now = new Date();
 
-		dossierSync.setGroupId(groupId);
-		dossierSync.setUserId(userId);
+			dossierSync = dossierSyncPersistence.create(dossierSyncId);
 
-		dossierSync.setDossierId(dossierId);
-		dossierSync.setDossierReferenceUid(dossierReferenceUid);
-		dossierSync.setCreateDossier(createDossier);
-		dossierSync.setMethod(method);
-		dossierSync.setClassPK(classPK);
-		dossierSync.setFileReferenceUid(fileReferenceUid);
-		dossierSync.setServerNo(serverNo);
+			dossierSync.setCreateDate(now);
+			dossierSync.setModifiedDate(now);
 
-		dossierSyncPersistence.update(dossierSync);
+			dossierSync.setGroupId(groupId);
+			dossierSync.setUserId(userId);
+
+			dossierSync.setDossierId(dossierId);
+			dossierSync.setDossierReferenceUid(dossierReferenceUid);
+			dossierSync.setCreateDossier(createDossier);
+			dossierSync.setMethod(method);
+			dossierSync.setClassPK(classPK);
+			dossierSync.setFileReferenceUid(fileReferenceUid);
+			dossierSync.setServerNo(serverNo);
+
+			dossierSyncPersistence.update(dossierSync);
+
+		}
 
 		return dossierSync;
 	}
@@ -123,9 +132,9 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 	public int countByGroupDossierRef(long groupId, String dossierRef) {
 		return dossierSyncPersistence.countByG_ID_DRF(groupId, dossierRef);
 	}
-	
+
 	public int countByDossierId(long dossierId) {
-	    return dossierSyncPersistence.countByDossierId(dossierId);
+		return dossierSyncPersistence.countByDossierId(dossierId);
 	}
 
 }
