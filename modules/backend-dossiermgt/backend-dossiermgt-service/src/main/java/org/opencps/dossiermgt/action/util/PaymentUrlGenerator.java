@@ -56,7 +56,7 @@ public class PaymentUrlGenerator {
 		    }
 		
 	    StringBuffer buf = new StringBuffer();
-		buf.append("6050a7ac-8046-262b-6fa1-165df8dcd890");
+		buf.append("");
 
 		MessageDigest md5 = null;
 		byte[] ba = null;

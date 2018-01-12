@@ -34,7 +34,7 @@
 					<i class="fa fa-paper-plane" aria-hidden="true"></i> 
 					Nộp hồ sơ
 				</a>
-				<a href="javascript:;" onclick="funDeleteDossier(${(dossierId)!})">
+				<a href="javascript:;" id="btn-delete-dossier-header" onclick="funDeleteDossier(${(dossierId)!})">
 					<i class="fa fa-trash"></i>
 					Xóa
 				</a>
@@ -84,7 +84,7 @@
 					</div>
 					<div class="content-part collapse" id="collapseDossierI">
 						<div class="row-parts-head MT5">
-
+							
 							<div class="row MT5">
 								<div class="col-sm-2">
 									<label>Họ và tên</label>
@@ -154,7 +154,7 @@
 									</span>
 								</div>
 							</div>
-
+							
 							<div class="row">
 								<div class="col-sm-2">
 									<label>Địa chỉ email</label>
@@ -602,7 +602,10 @@
 				success :  function(result){    
 					console.log("submit dossier success!");
 					$("#btn-submit-dossier").button('reset');
+					$("#btn-submit-dossier").hide();
+					$("#btn-submit-dossier-header").hide();
 					manageDossier.navigate("/taohosomoi/nopthanhcong/${dossierId}"); 
+					
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công!"
 					}, "success");
@@ -638,7 +641,9 @@
 
 					},
 					headers: {"groupId": ${groupId}},
-					success :  function(result){                       
+					success :  function(result){    
+						$("#btn-delete-dossier-header").hide();    
+						$("#btn-delete-dossier").hide();               
 						manageDossier.navigate("/New");
 					},
 					error:function(result){
