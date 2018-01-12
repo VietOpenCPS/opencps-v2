@@ -157,7 +157,9 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String paramValues = String.valueOf(params.get("paramValues"));
 		String paramTypes = String.valueOf(params.get("paramTypes"));
 		//Query elastic
-		LuceneQuery( pattern, paramValues, paramTypes, searchContext);
+		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
+			LuceneQuery( pattern, paramValues, paramTypes, searchContext);
+		}
 
 		// Set value header
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -179,13 +181,15 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		// Add params query
 		int count = 0;
-		for (BooleanQuery boolQuery : _subQueries) {
-			if (count == 0) {
-				booleanQuery.add(boolQuery, BooleanClauseOccur.MUST);
-			} else {
-				booleanQuery.add(boolQuery, _occurs.get(count - 1));
+		if (_subQueries != null && _subQueries.size() > 0) {
+			for (BooleanQuery boolQuery : _subQueries) {
+				if (count == 0) {
+					booleanQuery.add(boolQuery, BooleanClauseOccur.MUST);
+				} else {
+					booleanQuery.add(boolQuery, _occurs.get(count - 1));
+				}
+				count++;
 			}
-			count++;
 		}
 
 		if (Validator.isNotNull(keywords)) {
@@ -276,7 +280,9 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String paramValues = String.valueOf(params.get("paramValues"));
 		String paramTypes = String.valueOf(params.get("paramTypes"));
 		//Query elastic
-		LuceneQuery( pattern, paramValues, paramTypes, searchContext);
+		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
+			LuceneQuery( pattern, paramValues, paramTypes, searchContext);
+		}
 
 		// Set value header
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -295,13 +301,15 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		// Add params query
 		int count = 0;
-		for (BooleanQuery boolQuery : _subQueries) {
-			if (count == 0) {
-				booleanQuery.add(boolQuery, BooleanClauseOccur.MUST);
-			} else {
-				booleanQuery.add(boolQuery, _occurs.get(count - 1));
+		if (_subQueries != null && _subQueries.size() > 0) {
+			for (BooleanQuery boolQuery : _subQueries) {
+				if (count == 0) {
+					booleanQuery.add(boolQuery, BooleanClauseOccur.MUST);
+				} else {
+					booleanQuery.add(boolQuery, _occurs.get(count - 1));
+				}
+				count++;
 			}
-			count++;
 		}
 
 		if (Validator.isNotNull(keywords)) {

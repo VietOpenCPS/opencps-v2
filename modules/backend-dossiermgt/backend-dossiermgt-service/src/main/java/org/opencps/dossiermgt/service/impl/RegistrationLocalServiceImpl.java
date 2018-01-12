@@ -233,6 +233,18 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		Indexer<Registration> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Registration.class);
 
+		// Search elastic
+//		String pattern = "thiet_bi_san_xuat_chinh = ?";
+//		String paramValues = "11111";
+//		String paramTypes = "String";
+		String pattern = String.valueOf(params.get("pattern"));
+		String paramValues = String.valueOf(params.get("paramValues"));
+		String paramTypes = String.valueOf(params.get("paramTypes"));
+		//Query elastic
+		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
+			LuceneQuery( pattern, paramValues, paramTypes, searchContext);
+		}
+
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
 		searchContext.setAttribute("paginationType", "regular");
@@ -248,6 +260,19 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
 		} else {
 			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		// Add params query
+		int count = 0;
+		if (_subQueries != null && _subQueries.size() > 0) {
+			for (BooleanQuery boolQuery : _subQueries) {
+				if (count == 0) {
+					booleanQuery.add(boolQuery, BooleanClauseOccur.MUST);
+				} else {
+					booleanQuery.add(boolQuery, _occurs.get(count - 1));
+				}
+				count++;
+			}
 		}
 
 		if (Validator.isNotNull(groupId)) {
@@ -325,7 +350,9 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		String paramValues = String.valueOf(params.get("paramValues"));
 		String paramTypes = String.valueOf(params.get("paramTypes"));
 		//Query elastic
-		LuceneQuery( pattern, paramValues, paramTypes, searchContext);
+		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
+			LuceneQuery( pattern, paramValues, paramTypes, searchContext);
+		}
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
@@ -343,13 +370,15 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		// Add params query
 		int count = 0;
-		for (BooleanQuery boolQuery : _subQueries) {
-			if (count == 0) {
-				booleanQuery.add(boolQuery, BooleanClauseOccur.MUST);
-			} else {
-				booleanQuery.add(boolQuery, _occurs.get(count - 1));
+		if (_subQueries != null && _subQueries.size() > 0) {
+			for (BooleanQuery boolQuery : _subQueries) {
+				if (count == 0) {
+					booleanQuery.add(boolQuery, BooleanClauseOccur.MUST);
+				} else {
+					booleanQuery.add(boolQuery, _occurs.get(count - 1));
+				}
+				count++;
 			}
-			count++;
 		}
 
 		if (Validator.isNotNull(groupId)) {

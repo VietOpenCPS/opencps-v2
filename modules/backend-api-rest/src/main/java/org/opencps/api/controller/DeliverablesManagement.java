@@ -180,8 +180,8 @@ public interface DeliverablesManagement {
 	/* Get list dataform by agencyNo and typeCode - START */
 	@POST
 	@Path("/deliverables/agency/{agencyNo}/type/{typeCode}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@ApiOperation(value = "Get list dataform by agencyNo and typeCode")
 	@ApiResponses(value = {
 			@ApiResponse (code = HttpURLConnection.HTTP_OK, message = "Return a list dataform"),
