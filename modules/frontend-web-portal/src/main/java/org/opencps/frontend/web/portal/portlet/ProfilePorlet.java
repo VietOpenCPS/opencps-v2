@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package org.opencps.frontend.web.portal.portlet;
 
 import java.io.IOException;
@@ -12,11 +13,15 @@ import javax.portlet.RenderResponse;
 
 import org.opencps.frontend.web.portal.constants.FrontendWebPortalPortletKeys;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.util.UserMgtUtils;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
@@ -24,7 +29,6 @@ import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 /**
  * @author phucnv
  * @date Sep 22, 2017
- *
  */
 @Component(immediate = true, property = {
 	"com.liferay.portlet.css-class-wrapper=portlet-freemarker",
@@ -57,15 +61,35 @@ public class ProfilePorlet extends FreeMarkerPortlet {
 		JSONObject urlObject = JSONFactoryUtil.createJSONObject();
 		JSONObject apiObject = JSONFactoryUtil.createJSONObject();
 
-		Applicant applicant =
-			UserMgtUtils.getApplicant(themeDisplay.getUser().getEmailAddress());
-		
-		JSONObject applicantObj = JSONFactoryUtil.createJSONObject();
-		String jsonObj = JSONFactoryUtil.looseSerialize(applicant);
 		try {
+			Applicant applicant = UserMgtUtils.getApplicant(
+				themeDisplay.getUser().getEmailAddress());
+			
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(
+									themeDisplay.getScopeGroupId(), themeDisplay.getUserId());
+			_log.info("employee===========>"+employee);
+			
+
+			JSONObject applicantObj = JSONFactoryUtil.createJSONObject();
+			String jsonObj = JSONFactoryUtil.looseSerialize(applicant);
 			applicantObj = JSONFactoryUtil.createJSONObject(jsonObj);
+			
+			if(applicantObj != null){
+				renderRequest.setAttribute("applicant", applicantObj);
+				renderRequest.setAttribute("applicantIdType", applicantObj.get("applicantIdType").toString());
+				_log.info("applicantIdType===========>"+applicantObj.get("applicantIdType").toString());
+			}else {
+				JSONObject employeeObj = JSONFactoryUtil.createJSONObject();
+				String employeeStr = JSONFactoryUtil.looseSerialize(employee);
+				employeeObj = JSONFactoryUtil.createJSONObject(employeeStr);
+				_log.info("employee===========>"+employeeObj);
+				renderRequest.setAttribute("employee", employeeObj);
+			}
+			
+			
 		}
 		catch (Exception e) {
+			_log.info(e.getMessage());
 		}
 
 		// api
@@ -73,7 +97,6 @@ public class ProfilePorlet extends FreeMarkerPortlet {
 		apiObject.put(
 			"portletNamespace",
 			themeDisplay.getPortletDisplay().getNamespace());
-		apiObject.put("applicant", applicantObj);
 
 		// set varible
 		renderRequest.setAttribute("ajax", urlObject);
@@ -82,4 +105,6 @@ public class ProfilePorlet extends FreeMarkerPortlet {
 		super.render(renderRequest, renderResponse);
 
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(ProfilePorlet.class);
 }
