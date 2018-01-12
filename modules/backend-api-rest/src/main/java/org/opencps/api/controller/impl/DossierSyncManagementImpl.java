@@ -301,13 +301,6 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFile(classPK);
 			
 			
-			_log.info("referenceUid"+dossierFile.getReferenceUid());
-			_log.info("dossierTemplateNo"+dossierFile.getDossierTemplateNo());
-			_log.info("dossierPartNo"+ dossierFile.getDossierPartNo());
-			_log.info("fileTemplateNo"+ dossierFile.getFileTemplateNo());
-			_log.info("displayName"+ dossierFile.getDisplayName());
-			_log.info("isSync"+ StringPool.FALSE);
-			_log.info("formData"+ dossierFile.getFormData());
 			
 			properties.put("referenceUid", dossierFile.getReferenceUid());
 			properties.put("dossierTemplateNo", dossierFile.getDossierTemplateNo());
@@ -393,10 +386,14 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 		// Sync paymentStatus
 		if (method == 3) {
+			
+			_log.info("SYN_METHOD_3");
+			
 			DossierSync sync = DossierSyncLocalServiceUtil.getDossierSync(dossierSyncId);
 
 			PaymentFile paymentFileClient = PaymentFileLocalServiceUtil.fectPaymentFile(sync.getDossierId(),
 					sync.getDossierReferenceUid());
+			
 			try {
 				File file = File.createTempFile(String.valueOf(System.currentTimeMillis()), StringPool.PERIOD + "tmp");
 
