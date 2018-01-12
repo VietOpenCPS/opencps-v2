@@ -78,13 +78,13 @@ public class DeliverableTypesActionsImpl implements DeliverableTypesActions {
 	public DeliverableType updateDeliverableTypeFormReport(long groupId, long deliverableTypeId, String formReport,
 			ServiceContext serviceContext) throws SystemException, PortalException {
 
-		return DeliverableTypeLocalServiceUtil.updateFormScript(groupId, deliverableTypeId, formReport, serviceContext);
+		return DeliverableTypeLocalServiceUtil.updateFormReport(groupId, deliverableTypeId, formReport, serviceContext);
 	}
 	
 	@Override
 	public DeliverableType updateDeliverableTypeMappingData(long groupId, long deliverableTypeId, String mappingData,
 			ServiceContext serviceContext) throws SystemException, PortalException {
 
-		return DeliverableTypeLocalServiceUtil.updateFormScript(groupId, deliverableTypeId, mappingData, serviceContext);
+		return DeliverableTypeLocalServiceUtil.updateMappingData(groupId, deliverableTypeId, mappingData, serviceContext);
 	}
 }

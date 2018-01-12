@@ -1114,10 +1114,11 @@
             <finder-column name="submitting"></finder-column>
         </finder>
         
-        <finder return-type="Registration" name="G_APPNO_GOVCODE">
+        <finder return-type="Collection" name="G_APPNO_GOVCODE">
         	<finder-column name="groupId"></finder-column>
         	<finder-column name="applicantIdNo"></finder-column>
         	<finder-column name="govAgencyCode"></finder-column>
+        	<finder-column name="registrationState"></finder-column>
         </finder>
 	</entity>
 
