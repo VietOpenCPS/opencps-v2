@@ -414,13 +414,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		}
 	}
 
-	//10
-	@Override
-	public Response getDeliverableAction(Long id, String deliverableAction) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	//11
 	@Override
 	public Response getDeliverableLog(Long id) {
@@ -509,16 +502,17 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			String keyword = header.getHeaderString("keyword");
 
-			Registration regInfo = null;
-			long registrationId = 0;
+//			Deliverable deliverableInfo = null;
+//			long registrationId = 0;
 //			if (Validator.isNotNull("") && Validator.isNotNull(agencyNo)) {
 //			regInfo = RegistrationLocalServiceUtil.getByApplicantAndAgency(groupId, "", agencyNo);
 //			regInfo = RegistrationLocalServiceUtil.getByAgency(groupId, agencyNo);
 //			}
-			if (regInfo != null) {
-				registrationId = regInfo.getRegistrationId();
-			}
+//			if (deliverableInfo != null) {
+//				registrationId = deliverableInfo.getRegistrationId();
+//			}
 
 //			String _properties = search.getProperties();
 //			String _properties = "ten_doanh_nghiep";
@@ -549,5 +543,12 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(404).entity(error).build();
 		}
 
+	}
+
+	@Override
+	public Response getDeliverableAction(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, Long id, String deliverableAction) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
