@@ -38,6 +38,7 @@ import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.impl.PaymentFileLocalServiceImpl;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -483,7 +484,15 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			PaymentFile paymentFile = action.updateFileApproval(groupId, dossierId, referenceUid,
 					input.getApproveDatetime(), input.getAccountUserName(), input.getGovAgencyTaxNo(),
 					input.getInvoiceTemplateNo(), input.getInvoiceIssueNo(), input.getInvoiceNo(), serviceContext);
-
+			
+			if (!GetterUtil.getBoolean(input.getIsSync())) {
+				paymentFile.setIsNew(false);
+				
+				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+			}
+			
+			
+			
 			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 
 			return Response.status(200).entity(result).build();

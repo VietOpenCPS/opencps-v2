@@ -567,7 +567,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 						params.put("confirmNote", StringPool.BLANK);
 						params.put("paymentMethod", object.getString("paymentMethod"));
 						params.put("confirmPayload", object.getString("confirmPayload"));
-						
+						params.put("isSync", StringPool.FALSE);
 
 						callRest.callPostAPI(groupId, HttpMethod.PUT, "application/json",
 								RESTFulConfiguration.CLIENT_PATH_BASE, requestURL, RESTFulConfiguration.CLIENT_USER,
