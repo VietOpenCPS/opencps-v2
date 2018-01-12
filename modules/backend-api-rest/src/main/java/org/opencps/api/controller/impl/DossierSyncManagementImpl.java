@@ -392,7 +392,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			DossierSync sync = DossierSyncLocalServiceUtil.getDossierSync(dossierSyncId);
 
 			PaymentFile paymentFileClient = PaymentFileLocalServiceUtil.fectPaymentFile(sync.getDossierId(),
-					sync.getDossierReferenceUid());
+					sync.getFileReferenceUid());
 			
 			try {
 				File file = File.createTempFile(String.valueOf(System.currentTimeMillis()), StringPool.PERIOD + "tmp");
