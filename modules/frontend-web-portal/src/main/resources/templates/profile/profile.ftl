@@ -361,7 +361,7 @@
 			error : function(xhr){
 				$("#messagePassword").html('<span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message">Mật khẩu hoặc tài khoản không đúng</span></span>');
 			}
-		});
+		});	
 	});
 
 	$("#show_password").click(function(){
