@@ -50,6 +50,9 @@
 		
 	<bean class="org.opencps.dossiermgt.service.indexer.RegistrationLogIndexer"
 		id="org.opencps.dossiermgt.service.indexer.RegistrationLogIndexer" />
+		
+	<bean class="org.opencps.dossiermgt.service.indexer.RegistrationFormIndexer"
+		id="org.opencps.dossiermgt.service.indexer.RegistrationFormIndexer" />
 
 	<bean class="org.opencps.dossiermgt.service.indexer.DeliverableIndexer"
 		id="org.opencps.dossiermgt.service.indexer.DeliverableIndexer" />
