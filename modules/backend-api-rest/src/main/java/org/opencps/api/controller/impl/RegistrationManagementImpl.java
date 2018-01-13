@@ -44,6 +44,7 @@ import org.opencps.dossiermgt.action.RegistrationActions;
 import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.impl.RegistrationActionsImpl;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.RegistrationFormTerm;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
@@ -56,6 +57,7 @@ import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -494,7 +496,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 //			JSONArray jsonDataList = actions.getFormDataByFormNo(groupId, registrationId,
 //					formNo, splitProperties);
 
-			RegistrationResultsModel results = new RegistrationResultsModel();
+			JSONObject results = JSONFactoryUtil.createJSONObject();
 			
 			Sort[] sorts = new Sort[] {
 					SortFactoryUtil.create(Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true) };
@@ -502,11 +504,20 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			JSONObject jsonData = actions.getFormDataByFormNo(serviceContext.getUserId(), serviceContext.getCompanyId(), params, sorts,
 					-1, -1, serviceContext);
 
-			results.setTotal(jsonData.getInt("total"));
-			results.getData()
-					.addAll(RegistrationUtils.mappingToRegistrationResultModel((List<Document>) jsonData.get("data")));
+			//TODO
+			results.put("total", jsonData.getInt("total"));
+//			results.getData()
+//					.addAll(
+			List<Document> docList =(List<Document>) jsonData.get("data");
 
-			return Response.status(200).entity(results).build();
+			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
+			for (Document doc : docList) {
+				String formData = doc.get(RegistrationFormTerm.FORM_DATA);
+				formDataArr.put(JSONFactoryUtil.createJSONObject(formData));
+			}
+			results.put("data", formDataArr);
+			
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();

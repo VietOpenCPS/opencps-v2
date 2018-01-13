@@ -4,16 +4,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.TermQuery;
 import com.liferay.portal.kernel.search.TermQueryFactoryUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -30,57 +33,57 @@ public class LuceneQuery {
 	private List<BooleanClauseOccur> _occurs;
 	private List<Class<?>> _paramTypes;
 
-//	public LuceneQuery(String pattern, List<Object> params,
-//			SearchContext searchContext) {
-//		BooleanQuery query = BooleanQueryFactoryUtil.create(searchContext);
-//		List<String> subPatterns = new ArrayList<String>();
-//		List<String> paramNames = new ArrayList<String>();
-//		List<BooleanClauseOccur> occurs = null;
-//		List<BooleanQuery> subQueries = null;
-//		try {
-//			pattern = LuceneQueryUtil.validPattern(pattern);
-//
-//			if (Validator.isNull(pattern)) {
-//				throw new Exception();
-//			}
-//
-//			LuceneQueryUtil.getSubQueries(pattern, subPatterns);
-//
-//			if (subPatterns != null && !subPatterns.isEmpty()) {
-//				subQueries = LuceneQueryUtil.createBooleanQueries(subPatterns,
-//						params, paramNames, searchContext);
-//
-//				occurs = LuceneQueryUtil.getBooleanClauseOccurs(pattern,
-//						subPatterns);
-//
-//				if (subQueries.size() - 1 != occurs.size()) {
-//					throw new Exception();
-//				}
-//				int count = 0;
-//				for (BooleanQuery booleanQuery : subQueries) {
-//					if (count == 0) {
-//						query.add(booleanQuery, BooleanClauseOccur.MUST);
-//					} else {
-//						query.add(booleanQuery, occurs.get(count - 1));
-//					}
-//
-//					count++;
-//				}
-//			}
-//
-//		} catch (Exception e) {
-//			_log.error(e);
-//		} finally {
-//			this.setOccurs(occurs);
-//			this.setParams(params);
-//			this.setPattern(pattern);
-//			this.setQuery(query);
-//			this.setSubPatterns(subPatterns);
-//			this.setSubQueries(subQueries);
-//			this.setSearchContext(searchContext);
-//			this.setParamNames(paramNames);
-//		}
-//	}
+	public LuceneQuery(String pattern, List<Object> params,
+			SearchContext searchContext) {
+		BooleanQuery query = BooleanQueryFactoryUtil.create(searchContext);
+		List<String> subPatterns = new ArrayList<String>();
+		List<String> paramNames = new ArrayList<String>();
+		List<BooleanClauseOccur> occurs = null;
+		List<BooleanQuery> subQueries = null;
+		try {
+			pattern = LuceneQueryUtil.validPattern(pattern);
+
+			if (Validator.isNull(pattern)) {
+				throw new Exception();
+			}
+
+			LuceneQueryUtil.getSubQueries(pattern, subPatterns);
+
+			if (subPatterns != null && !subPatterns.isEmpty()) {
+				subQueries = LuceneQueryUtil.createBooleanQueries(subPatterns,
+						params, paramNames, searchContext);
+
+				occurs = LuceneQueryUtil.getBooleanClauseOccurs(pattern,
+						subPatterns);
+
+				if (subQueries.size() - 1 != occurs.size()) {
+					throw new Exception();
+				}
+				int count = 0;
+				for (BooleanQuery booleanQuery : subQueries) {
+					if (count == 0) {
+						query.add(booleanQuery, BooleanClauseOccur.MUST);
+					} else {
+						query.add(booleanQuery, occurs.get(count - 1));
+					}
+
+					count++;
+				}
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+		} finally {
+			this.setOccurs(occurs);
+			this.setParams(params);
+			this.setPattern(pattern);
+			this.setQuery(query);
+			this.setSubPatterns(subPatterns);
+			this.setSubQueries(subQueries);
+			this.setSearchContext(searchContext);
+			this.setParamNames(paramNames);
+		}
+	}
 
 
 	public LuceneQuery(String pattern, String paramValues, String paramTypes,
@@ -143,7 +146,7 @@ public class LuceneQuery {
 						clazz = boolean.class;
 						break;
 					case "date":
-//						param = DateTimeUtil
+						param = APIDateTimeUtils.convertStringToDate(arrParamValue[i], APIDateTimeUtils._TIMESTAMP);
 //								.convertStringToDate(arrParamValue[i]);
 						clazz = Date.class;
 						break;
@@ -622,37 +625,37 @@ public class LuceneQuery {
 		this._occurs = occurs;
 	}
 
-//	protected long[] getRolesFromSigninUser(long userId, long groupId) {
-//
-//		List<Role> rolesUsers = new ArrayList<Role>();
-//
-//		List<Role> roleGroups = new ArrayList<Role>();
-//
-//		List<Role> resultRoles = new ArrayList<Role>();
-//
-//		try {
-//			rolesUsers = RoleLocalServiceUtil.getUserRoles(userId);
-//			resultRoles.addAll(rolesUsers);
-//		} catch (SystemException e) {
-//			_log.error(e);
-//		}
-//
-//		try {
-//			roleGroups = RoleLocalServiceUtil
-//					.getUserGroupRoles(userId, groupId);
-//			resultRoles.addAll(roleGroups);
-//		} catch (Exception e) {
-//			_log.error(e);
-//		}
-//
-//		long[] result = new long[resultRoles.size()];
-//
-//		for (int i = 0; i < result.length; i++) {
-//			result[i] = resultRoles.get(i).getRoleId();
-//		}
-//
-//		return result;
-//	}
+	protected long[] getRolesFromSigninUser(long userId, long groupId) {
+
+		List<Role> rolesUsers = new ArrayList<Role>();
+
+		List<Role> roleGroups = new ArrayList<Role>();
+
+		List<Role> resultRoles = new ArrayList<Role>();
+
+		try {
+			rolesUsers = RoleLocalServiceUtil.getUserRoles(userId);
+			resultRoles.addAll(rolesUsers);
+		} catch (SystemException e) {
+			_log.error(e);
+		}
+
+		try {
+			roleGroups = RoleLocalServiceUtil
+					.getUserGroupRoles(userId, groupId);
+			resultRoles.addAll(roleGroups);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		long[] result = new long[resultRoles.size()];
+
+		for (int i = 0; i < result.length; i++) {
+			result[i] = resultRoles.get(i).getRoleId();
+		}
+
+		return result;
+	}
 
 	private Log _log = LogFactoryUtil.getLog(LuceneQuery.class.getName());
 }
