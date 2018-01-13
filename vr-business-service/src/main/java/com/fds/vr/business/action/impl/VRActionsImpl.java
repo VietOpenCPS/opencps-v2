@@ -63,7 +63,6 @@ public class VRActionsImpl implements VRActions {
 
 				List<VRConfigTechSpec> configTechSpecs = VRConfigTechSpecLocalServiceUtil.getByVCSC(vehicleClass,
 						dictItem.getItemCode(), module);
-
 				JSONObject jsonTechSpec = JSONFactoryUtil.createJSONObject();
 
 				jsonTechSpec.put("key", dictItem.getItemCode());
@@ -229,8 +228,7 @@ public class VRActionsImpl implements VRActions {
 								//_log.info("==========================3");
 
 							} catch (Exception e) {
-								_log.error("Not found dossierFile with dossierId " + dossierId + "|fileTemplateNo "
-										+ fileTemplateNo, e);
+								
 							}
 						}
 					}
@@ -241,7 +239,7 @@ public class VRActionsImpl implements VRActions {
 						try {
 							formDataObject = JSONFactoryUtil.createJSONObject(formData);
 						} catch (Exception e) {
-							_log.error("Can not create json object from formData", e);
+							//_log.error("Can not create json object from formData", e);
 						}
 					}
 
@@ -300,7 +298,7 @@ public class VRActionsImpl implements VRActions {
 			returnObj.put("content", techSpecArr);
 
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
 			// returnObj.put("status", HttpsURLConnection.HTTP_OK);
 			// returnObj.put("content", techSpecArr);
 		}
