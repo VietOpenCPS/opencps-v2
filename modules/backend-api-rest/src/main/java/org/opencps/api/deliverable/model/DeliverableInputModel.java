@@ -55,7 +55,8 @@ import javax.xml.bind.annotation.XmlType;
     "expireDate",
     "revalidate",
     "deliverableState",
-    "formData"
+    "formData",
+    "keyword"
 })
 public class DeliverableInputModel {
 
@@ -81,6 +82,8 @@ public class DeliverableInputModel {
     protected String deliverableState;
 	@FormParam(value = "formData")
     protected String formData;
+	@FormParam(value = "keyword")
+    protected String keyword;
 
     /**
      * Gets the value of the deliverableType property.
@@ -344,6 +347,14 @@ public class DeliverableInputModel {
      */
 	public void setFormData(String formData) {
 		this.formData = formData;
+	}
+
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
 	}
 
 }

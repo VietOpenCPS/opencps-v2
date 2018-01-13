@@ -15,16 +15,16 @@ import com.liferay.portal.kernel.service.ServiceContext;
 public interface DeliverableActions {
 	public JSONObject getListDeliverable(String state, String agency, String type, String applicant);
 
-	public void addDeliverable(DeliverableImpl model);
+//	public void addDeliverable(DeliverableImpl model);
 
-	public Deliverable getListDeliverableDetail(Long deliverableId) throws NoSuchDeliverableException;
+//	public Deliverable getListDeliverableDetail(Long deliverableId) throws NoSuchDeliverableException;
 
 	//4
 	public Deliverable updateDeliverable(long groupId, long id, String subject, String issueDate, String expireDate,
 			String revalidate, String deliverableState, String deliverableAction, ServiceContext serviceContext);
 
 	//12
-	public JSONArray getFormDataByTypecode(long groupId, String registrationId, String typeCode, String[] splitProperties);
+//	public JSONArray getFormDataByTypecode(long groupId, String registrationId, String typeCode, String[] splitProperties);
 	
 	//2
 	public Deliverable addDeliverable(long groupId, String deliverableType, String deliverableCode,
@@ -47,5 +47,9 @@ public interface DeliverableActions {
 
 	//7
 	public Deliverable updateFormData(long groupId, long id, String formData, ServiceContext serviceContext) throws NoSuchDeliverableException;
+
+	//
+	public JSONObject getFormDataByTypecode(long companyId, LinkedHashMap<String, Object> params, Sort[] object, int start,
+			int end, ServiceContext serviceContext);
 
 }

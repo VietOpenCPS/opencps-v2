@@ -1,5 +1,7 @@
 package org.opencps.api.controller.impl;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,15 +11,20 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.RegistrationFormManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.DeliverableUtils;
 import org.opencps.api.controller.util.RegistrationFormUtils;
+import org.opencps.api.deliverable.model.DeliverableResultModel;
 import org.opencps.api.registrationform.model.RegistrationFormDetailModel;
 import org.opencps.api.registrationform.model.RegistrationFormInfoModel;
+import org.opencps.api.registrationform.model.RegistrationFormResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.RegistrationFormTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
@@ -31,6 +38,10 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -175,93 +186,5 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 		}
 	}
 
-	//18
-	@Override
-	public Response getDataFormByFormNo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String applicantNo, String agencyNo, String formNo,
-			RegistrationFormInfoModel search) {
-
-		BackendAuth auth = new BackendAuthImpl();
-
-		try {
-
-			// Check user is login
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
-
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
-			Registration regInfo = null;
-			long registrationId = 0;
-			//TODO
-			agencyNo = "";
-//			if (Validator.isNotNull(applicantNo) && Validator.isNotNull(agencyNo)) {
-			regInfo = RegistrationLocalServiceUtil.getByApplicantAndAgency(groupId, applicantNo, agencyNo);
-//			}
-			if (regInfo != null) {
-				registrationId = regInfo.getRegistrationId();
-			}
-//			if (search.getEnd() == 0) {
-//				search.setStart(-1);
-//				search.setEnd(-1);
-//			}
-
-			String _properties = search.getProperties();
-//			String _properties = "ten_doanh_nghiep";
-			String[] splitProperties = null;
-			if (Validator.isNotNull(_properties)) {
-				splitProperties = _properties.split(";");
-			}
-			
-			RegistrationFormActions actions = new RegistrationFormActionsImpl();
-			
-			JSONArray jsonDataList = actions.getFormDataByFormNo(groupId, registrationId,
-					formNo, splitProperties);
-//			final String PROPERTIES = "_properties";
-//			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-//			params.put(PROPERTIES, splitProperties);
-//			params.put(Field.GROUP_ID, String.valueOf(groupId));
-//			params.put(Field.KEYWORD_SEARCH, search.getKeyword());
-//			params.put(RegistrationTerm.APPLICATION_ID_NO, applicantNo);
-//			params.put(RegistrationTerm.GOV_AGENCY_CODE, agencyNo);
-//			params.put(RegistrationFormTerm.FORM_NO, formNo);
-
-			// Default sort by modifiedDate
-//			Sort[] sorts = new Sort[] {
-//					SortFactoryUtil.create(Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true) };
-
-//			if (Validator.isNotNull(search.getSort()) && Validator.isNotNull(search.getOrder())) {
-//				sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_sortable", Sort.STRING_TYPE,
-//						GetterUtil.getBoolean(search.getOrder())) };
-//			}
-
-			JSONObject results = JSONFactoryUtil.createJSONObject();
-			results.put("total", jsonDataList.length());
-			results.put("data", jsonDataList);
-//			JSONObject jsonData = null;
-//			if (flag) {
-				// get JSON data by dossierId
-//				jsonData = actions.getFormDataByFormNo(serviceContext.getCompanyId(), params,
-//						sorts, search.getStart(), search.getEnd(), serviceContext);
-//			}
-
-			// Parse JSONObejct to PaymentFileResultModel Object
-//			results.setTotal(jsonData.getInt("total"));
-//			results.getData().addAll((List<String>) jsonData.get("data"));
-
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
-
-		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
-		}
-
-	}
 
 }

@@ -178,10 +178,10 @@ public interface DeliverablesManagement {
 
 	//12
 	/* Get list dataform by agencyNo and typeCode - START */
-	@GET
+	@POST
 	@Path("/deliverables/agency/{agencyNo}/type/{typeCode}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@ApiOperation(value = "Get list dataform by agencyNo and typeCode")
 	@ApiResponses(value = {
 			@ApiResponse (code = HttpURLConnection.HTTP_OK, message = "Return a list dataform"),
@@ -192,8 +192,7 @@ public interface DeliverablesManagement {
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "id for agency", required = true) @PathParam("agencyNo") String agencyNo,
 			@ApiParam(value = "id for type", required = true) @PathParam("typeCode") String typeCode,
-			@Context String _properties);
-//			@BeanParam DeliverableInfoModel search);
+			@BeanParam DeliverableInputModel search);
 	
 	/* Get list dataform by agencyNo and typeCode - END */
 }

@@ -44,6 +44,7 @@ import org.opencps.dossiermgt.action.RegistrationActions;
 import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.impl.RegistrationActionsImpl;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
+import org.opencps.dossiermgt.constants.RegistrationFormTerm;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
@@ -55,6 +56,7 @@ import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -431,6 +433,89 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 		} else {
 			return StringPool.BLANK;
+		}
+
+	}
+
+	//18
+	@Override
+	public Response getDataFormByFormNo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String applicantNo, String agencyNo, String formNo,
+			String keyword) {
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			// Check user is login
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			Registration regInfo = null;
+			long registrationId = 0;
+			//TODO
+			agencyNo = "";
+//			if (Validator.isNotNull(applicantNo) && Validator.isNotNull(agencyNo)) {
+			regInfo = RegistrationLocalServiceUtil.getByApplicantAndAgency(groupId, applicantNo, agencyNo);
+//			}
+			if (regInfo != null) {
+				registrationId = regInfo.getRegistrationId();
+			}
+//			if (search.getEnd() == 0) {
+//				search.setStart(-1);
+//				search.setEnd(-1);
+//			}
+
+//			String _properties = search.getProperties();
+////			String _properties = "ten_doanh_nghiep";
+//			String[] splitProperties = null;
+//			if (Validator.isNotNull(_properties)) {
+//				splitProperties = _properties.split(";");
+//			}
+			JSONObject keyJson = JSONFactoryUtil.createJSONObject(keyword);
+			
+			String pattern = String.valueOf(keyJson.get("query"));
+			String paramValues = String.valueOf(keyJson.get("values"));
+			String paramTypes = String.valueOf(keyJson.get("type"));
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(RegistrationFormTerm.REGISTRATION_ID, registrationId);
+			params.put(RegistrationFormTerm.FORM_NO, formNo);
+			params.put("pattern", pattern);
+			params.put("paramValues", paramValues);
+			params.put("paramTypes", paramTypes);
+			
+			RegistrationActions actions = new RegistrationActionsImpl();
+			
+//			JSONArray jsonDataList = actions.getFormDataByFormNo(groupId, registrationId,
+//					formNo, splitProperties);
+
+			RegistrationResultsModel results = new RegistrationResultsModel();
+			
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true) };
+			// get JSON data deliverable
+			JSONObject jsonData = actions.getFormDataByFormNo(serviceContext.getUserId(), serviceContext.getCompanyId(), params, sorts,
+					-1, -1, serviceContext);
+
+			results.setTotal(jsonData.getInt("total"));
+			results.getData()
+					.addAll(RegistrationUtils.mappingToRegistrationResultModel((List<Document>) jsonData.get("data")));
+
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(404).entity(error).build();
 		}
 
 	}
