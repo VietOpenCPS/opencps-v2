@@ -472,6 +472,22 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 		// TODO get Dossier by referenceUid if dossierId = 0
 		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
+		
+		
+		Dossier dossier = null;
+
+		if (dossierId != 0) {
+			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			if (Validator.isNull(dossier)) {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
+		} else {
+			dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			
+		}
+		
+		if (Validator.isNotNull(dossier))
+			dossierId = dossier.getDossierId();
 
 		try {
 

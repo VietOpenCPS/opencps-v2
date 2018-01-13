@@ -41,21 +41,6 @@ import com.liferay.portal.kernel.util.Validator;
 @Component(immediate = true, service = DossierSyncScheduler.class)
 public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 
-	public static void main(String[] args){
-		SortedMap<Integer, String> map = new TreeMap<Integer, String>();
-		
-		map.put(4, "bon");
-		map.put(3, "ba");
-		map.put(1, "mot");
-		map.put(9, "9");
-		map.put(3, "ba.1");
-		map.put(2, "hai");
-		map.put(10, "muoi");
-		
-		for (Map.Entry<Integer, String> entry : map.entrySet()) {
-			System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
-		}
-	}
 	@Override
 	protected void doReceive(Message message) throws Exception {
 

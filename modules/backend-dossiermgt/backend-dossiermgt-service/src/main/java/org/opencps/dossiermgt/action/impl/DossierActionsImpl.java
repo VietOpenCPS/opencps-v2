@@ -28,6 +28,7 @@ import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -42,6 +43,8 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalService;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
@@ -735,7 +738,24 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 			}
+			
+			// Add PaymentSync
+			
+			List<PaymentFile> paymentFiles = PaymentFileLocalServiceUtil.getByDossierId(dossierId);
+			List<PaymentFile> syncPaymentFiles = new ArrayList<PaymentFile>();
+			
+			for(PaymentFile pf : paymentFiles) {
+				if (pf.getIsNew()) {
+					syncPaymentFiles.add(pf);
+				}
+			}
+			
+			for (PaymentFile spf : syncPaymentFiles) {
+				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
+						false, 3, spf.getPrimaryKey(), spf.getReferenceUid(),
+						serviceProcess.getServerNo());
 
+			}
 		}
 
 		ProcessStep postStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);

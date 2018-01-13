@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -161,11 +162,10 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				long dossierActionId = dossierSync.getMethod() == 0 ? dossierSync.getClassPK() : 0;
 
 				DossierAction action = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-				
+
 				long actionPenddingId = Validator.isNotNull(dossier) ? dossier.getDossierActionId() : 0l;
-				
+
 				_log.info("DOSSIER_ACTION_ID===" + dossierActionId);
-				
 
 				callDossierSync(groupId, dossierSync.getMethod(),
 						Validator.isNotNull(action) ? action.getSyncActionCode() : StringPool.BLANK,
@@ -251,12 +251,12 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			String endPointSynDossierNo = "dossiers/" + refId + "/dossierno";
 
 			Map<String, Object> params = new LinkedHashMap<>();
-			
-			_log.info("actionCode"+actionCode);
-			_log.info("actionUser"+actionUser);
-			_log.info("actionNote"+actionNote);
-			_log.info("assignUserId"+assignUserId);
-			
+
+			_log.info("actionCode" + actionCode);
+			_log.info("actionUser" + actionUser);
+			_log.info("actionNote" + actionNote);
+			_log.info("assignUserId" + assignUserId);
+
 			params.put("actionCode", actionCode);
 			params.put("actionUser", actionUser);
 			params.put("actionNote", actionNote);
@@ -299,16 +299,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			String endPointSyncDossierFile = "dossiers/" + refId + "/files";
 
 			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFile(classPK);
-			
-			
-			_log.info("referenceUid"+dossierFile.getReferenceUid());
-			_log.info("dossierTemplateNo"+dossierFile.getDossierTemplateNo());
-			_log.info("dossierPartNo"+ dossierFile.getDossierPartNo());
-			_log.info("fileTemplateNo"+ dossierFile.getFileTemplateNo());
-			_log.info("displayName"+ dossierFile.getDisplayName());
-			_log.info("isSync"+ StringPool.FALSE);
-			_log.info("formData"+ dossierFile.getFormData());
-			
+
 			properties.put("referenceUid", dossierFile.getReferenceUid());
 			properties.put("dossierTemplateNo", dossierFile.getDossierTemplateNo());
 			properties.put("dossierPartNo", dossierFile.getDossierPartNo());
@@ -337,11 +328,10 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				// remove DossierSync
 				DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
 
-
 			} else {
 				_log.info(resSynFile.get(RESTFulConfiguration.MESSAGE));
 			}
-			
+
 			// Reset isNew
 			dossierFile.setIsNew(false);
 
@@ -393,10 +383,14 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 		// Sync paymentStatus
 		if (method == 3) {
+
+			_log.info("SYN_METHOD_3");
+
 			DossierSync sync = DossierSyncLocalServiceUtil.getDossierSync(dossierSyncId);
 
 			PaymentFile paymentFileClient = PaymentFileLocalServiceUtil.fectPaymentFile(sync.getDossierId(),
-					sync.getDossierReferenceUid());
+					sync.getFileReferenceUid());
+
 			try {
 				File file = File.createTempFile(String.valueOf(System.currentTimeMillis()), StringPool.PERIOD + "tmp");
 
@@ -406,23 +400,31 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				}
 
 				SimpleDateFormat format = new SimpleDateFormat("DD-MM-YYYY HH:MM:SS");
+				Map<String, Object> params = new LinkedHashMap<>();
 
-				properties.put("approveDatetime", format.format(paymentFileClient.getApproveDatetime()));
-				properties.put("accountUserName", paymentFileClient.getAccountUserName());
-				properties.put("govAgencyTaxNo", paymentFileClient.getGovAgencyTaxNo());
-				properties.put("invoiceTemplateNo", paymentFileClient.getInvoiceTemplateNo());
-				properties.put("invoiceIssueNo", paymentFileClient.getInvoiceIssueNo());
-				properties.put("invoiceNo", paymentFileClient.getInvoiceNo());
+				params.put("approveDatetime", Validator.isNotNull(paymentFileClient.getApproveDatetime())
+						? format.format(paymentFileClient.getApproveDatetime()) : format.format(new Date()));
+				params.put("accountUserName", paymentFileClient.getAccountUserName());
+				params.put("govAgencyTaxNo", paymentFileClient.getGovAgencyTaxNo());
+				params.put("invoiceTemplateNo", paymentFileClient.getInvoiceTemplateNo());
+				params.put("invoiceIssueNo", paymentFileClient.getInvoiceIssueNo());
+				params.put("invoiceNo", paymentFileClient.getInvoiceNo());
+				params.put("isSync", StringPool.FALSE);
 
-				String endPointSynAction = "dossiers/" + dossierId + "/payments/" + paymentFileClient.getReferenceUid()
-						+ "/approval";
+				String endPointSynAction = "dossiers/" + sync.getDossierReferenceUid() + "/payments/" + paymentFileClient.getReferenceUid()
+						+ "/approval/noattachment";
 
-				JSONObject resSynFile = rest.callPostFileAPI(groupId, HttpMethod.PUT, "application/json",
+				JSONObject resSynFile = rest.callPostAPI(groupId, HttpMethod.PUT, "application/json",
 						RESTFulConfiguration.SERVER_PATH_BASE, endPointSynAction, RESTFulConfiguration.SERVER_USER,
-						RESTFulConfiguration.SERVER_PASS, properties, file, serviceContext);
+						RESTFulConfiguration.SERVER_PASS, properties, params, serviceContext);
 
+/*				callPostFileAPI(groupId, HttpMethod.PUT, "application/json", RESTFulConfiguration.SERVER_PATH_BASE,
+						endPointSynAction, RESTFulConfiguration.SERVER_USER, RESTFulConfiguration.SERVER_PASS,
+						properties, file, serviceContext);
+*/
 				if (resSynFile.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
 					// remove DossierSync
+
 					DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
 
 					// Reset isNew
@@ -430,9 +432,12 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 					paymentFileClient.setIsNew(false);
 					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFileClient);
 					// DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+
+				} else {
+					_log.info("Not Approve_" + resSynFile.getString(RESTFulConfiguration.MESSAGE));
 				}
 			} catch (Exception e) {
-				// TODO: handle exception
+				_log.error(e);
 			}
 
 		}
