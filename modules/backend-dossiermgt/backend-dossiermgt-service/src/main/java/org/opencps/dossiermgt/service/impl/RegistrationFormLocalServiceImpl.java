@@ -416,7 +416,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
 
-		Indexer<RegistrationFormTerm> indexer = IndexerRegistryUtil.nullSafeGetIndexer(RegistrationFormTerm.class);
+		Indexer<RegistrationForm> indexer = IndexerRegistryUtil.nullSafeGetIndexer(RegistrationForm.class);
 
 		// Search elastic
 //		String pattern = "thiet_bi_san_xuat_chinh = ?";
