@@ -409,9 +409,9 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				params.put("invoiceTemplateNo", paymentFileClient.getInvoiceTemplateNo());
 				params.put("invoiceIssueNo", paymentFileClient.getInvoiceIssueNo());
 				params.put("invoiceNo", paymentFileClient.getInvoiceNo());
-				params.put("isSync", StringPool.BLANK);
+				params.put("isSync", StringPool.FALSE);
 
-				String endPointSynAction = "dossiers/" + dossierId + "/payments/" + paymentFileClient.getReferenceUid()
+				String endPointSynAction = "dossiers/" + sync.getDossierReferenceUid() + "/payments/" + paymentFileClient.getReferenceUid()
 						+ "/approval/noattachment";
 
 				JSONObject resSynFile = rest.callPostAPI(groupId, HttpMethod.PUT, "application/json",
