@@ -204,11 +204,11 @@ public class RegistrationActionsImpl implements RegistrationActions {
 		
 		try {
 			
-			hits = RegistrationLocalServiceUtil.searchLucene(userId, params, object, start, end, searchContext);
+			hits = RegistrationFormLocalServiceUtil.searchLucene(params, object, start, end, searchContext);
 			
 			result.put("data", hits.toList());
 			
-			long total = RegistrationLocalServiceUtil.countLucense(userId, params, object, start, end, searchContext);
+			long total = RegistrationFormLocalServiceUtil.countLucene(params, searchContext);
 			
 			result.put("total", total);
 			

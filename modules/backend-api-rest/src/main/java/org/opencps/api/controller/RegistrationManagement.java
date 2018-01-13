@@ -115,8 +115,8 @@ public interface RegistrationManagement {
 	/* Get list dataform by applicantNo, agencyNo and formNo - START */
 	@POST
 	@Path("/registrations/applicant/{applicantNo}/agency/{agencyNo}/forms/{formNo}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN, MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
 	@ApiOperation(value = "Get list dataform by applicantNo, agencyNo and formNo")
 	@ApiResponses(value = {
 			@ApiResponse (code = HttpURLConnection.HTTP_OK, message = "Return a list dataform"),

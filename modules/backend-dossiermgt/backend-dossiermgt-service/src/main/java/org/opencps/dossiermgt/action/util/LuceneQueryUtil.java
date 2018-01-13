@@ -102,59 +102,59 @@ public class LuceneQueryUtil {
 	 * @return
 	 */
 
-//	public static BooleanQuery buildQuerySearch(String pattern,
-//			List<Object> params, SearchContext searchContext) {
-//		searchContext
-//				.setEntryClassNames(new String[] { Dossier.class.getName() });
-//
-//		Indexer indexer = IndexerRegistryUtil.getIndexer(Dossier.class
-//				.getName());
-//
-//		searchContext.setSearchEngineId(indexer.getSearchEngineId());
-//
-//		BooleanQuery query = BooleanQueryFactoryUtil.create(searchContext);
-//		List<String> subQueries = new ArrayList<String>();
-//		try {
-//			pattern = validPattern(pattern);
-//
-//			if (Validator.isNull(pattern)) {
-//				throw new Exception();
-//			}
-//			getSubQueries(pattern, subQueries);
-//
-//			if (subQueries != null && !subQueries.isEmpty()) {
-//				List<BooleanQuery> booleanQueries = createBooleanQueries(
-//						subQueries, params, searchContext);
-//
-//				List<BooleanClauseOccur> conditions = getBooleanClauseOccurs(
-//						pattern, subQueries);
-//
-//				if (booleanQueries.size() - 1 != conditions.size()) {
-//					throw new Exception();
-//				}
-//				int count = 0;
-//				for (BooleanQuery booleanQuery : booleanQueries) {
-//					if (count == 0) {
-//						query.add(booleanQuery, BooleanClauseOccur.MUST);
-//					} else {
-//						query.add(booleanQuery, conditions.get(count - 1));
-//					}
-//
-//					count++;
-//				}
-//			}
-//
-//			TermQuery entryClassNameTerm = TermQueryFactoryUtil.create(
-//					searchContext, "entryClassName", Dossier.class.getName());
-//
-//			query.add(entryClassNameTerm, BooleanClauseOccur.MUST);
-//
-//		} catch (Exception e) {
-//			_log.error(e);
-//		}
-//
-//		return query;
-//	}
+	public static BooleanQuery buildQuerySearch(String pattern,
+			List<Object> params, SearchContext searchContext) {
+		searchContext
+				.setEntryClassNames(new String[] { Dossier.class.getName() });
+
+		Indexer indexer = IndexerRegistryUtil.getIndexer(Dossier.class
+				.getName());
+
+		searchContext.setSearchEngineId(indexer.getSearchEngineId());
+
+		BooleanQuery query = BooleanQueryFactoryUtil.create(searchContext);
+		List<String> subQueries = new ArrayList<String>();
+		try {
+			pattern = validPattern(pattern);
+
+			if (Validator.isNull(pattern)) {
+				throw new Exception();
+			}
+			getSubQueries(pattern, subQueries);
+
+			if (subQueries != null && !subQueries.isEmpty()) {
+				List<BooleanQuery> booleanQueries = createBooleanQueries(
+						subQueries, params, searchContext);
+
+				List<BooleanClauseOccur> conditions = getBooleanClauseOccurs(
+						pattern, subQueries);
+
+				if (booleanQueries.size() - 1 != conditions.size()) {
+					throw new Exception();
+				}
+				int count = 0;
+				for (BooleanQuery booleanQuery : booleanQueries) {
+					if (count == 0) {
+						query.add(booleanQuery, BooleanClauseOccur.MUST);
+					} else {
+						query.add(booleanQuery, conditions.get(count - 1));
+					}
+
+					count++;
+				}
+			}
+
+			TermQuery entryClassNameTerm = TermQueryFactoryUtil.create(
+					searchContext, "entryClassName", Dossier.class.getName());
+
+			query.add(entryClassNameTerm, BooleanClauseOccur.MUST);
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return query;
+	}
 
 	/**
 	 * @param subQueries
@@ -163,75 +163,75 @@ public class LuceneQueryUtil {
 	 * @return
 	 * @throws ParseException
 	 */
-//	public static List<BooleanQuery> createBooleanQueries(
-//			List<String> subQueries, List<Object> params,
-//			SearchContext searchContext) throws ParseException {
-//		List<BooleanQuery> booleanQueries = new ArrayList<BooleanQuery>();
-//		if (subQueries != null) {
-//			for (String subQuery : subQueries) {
-//				String[] terms = StringUtil.split(subQuery);
-//				if (terms != null && terms.length > 0) {
-//					BooleanQuery query = BooleanQueryFactoryUtil
-//							.create(searchContext);
-//					for (int t = 0; t < terms.length; t++) {
-//						int paramPossition = subQueries.indexOf(subQuery)
-//								* terms.length + t;
-//						// String term = terms[t].trim().toLowerCase();
-//						String term = terms[t].trim();
-//						String key = StringPool.BLANK;
-//						if (term.contains((StringPool.EQUAL.toLowerCase()))) {
-//							key = term
-//									.substring(
-//											0,
-//											term.indexOf(StringPool.EQUAL
-//													.toLowerCase())).trim();
-//							// addExactTerm(query, key,
-//							// params.get(paramPossition));
-//							TermQuery termQuery = null;
-//
-//							Object tempValue = params.get(paramPossition);
-//
-//							if (tempValue instanceof Long) {
-//								termQuery = TermQueryFactoryUtil.create(
-//										searchContext, key, (long) tempValue);
-//							} else if (tempValue instanceof String) {
-//								termQuery = TermQueryFactoryUtil.create(
-//										searchContext, key,
-//										String.valueOf(tempValue));
-//							}
-//
-//							if (termQuery != null) {
-//								query.add(termQuery, BooleanClauseOccur.MUST);
-//							}
-//
-//						} else if (term.contains(StringPool.LIKE.toLowerCase())) {
-//							key = term
-//									.substring(
-//											0,
-//											term.indexOf(StringPool.LIKE
-//													.toLowerCase())).trim();
-//
-//							query.addTerm(key, params.get(paramPossition)
-//									.toString(), true);
-//
-//						} else if (term.contains(StringPool.BETWEEN
-//								.toLowerCase())) {
-//							key = term.substring(
-//									0,
-//									term.indexOf(StringPool.BETWEEN
-//											.toLowerCase())).trim();
-//							query = addRangeTerm(query, key,
-//									params.get(paramPossition));
-//						}
-//
-//					}
-//
-//					booleanQueries.add(query);
-//				}
-//			}
-//		}
-//		return booleanQueries;
-//	}
+	public static List<BooleanQuery> createBooleanQueries(
+			List<String> subQueries, List<Object> params,
+			SearchContext searchContext) throws ParseException {
+		List<BooleanQuery> booleanQueries = new ArrayList<BooleanQuery>();
+		if (subQueries != null) {
+			for (String subQuery : subQueries) {
+				String[] terms = StringUtil.split(subQuery);
+				if (terms != null && terms.length > 0) {
+					BooleanQuery query = BooleanQueryFactoryUtil
+							.create(searchContext);
+					for (int t = 0; t < terms.length; t++) {
+						int paramPossition = subQueries.indexOf(subQuery)
+								* terms.length + t;
+						// String term = terms[t].trim().toLowerCase();
+						String term = terms[t].trim();
+						String key = StringPool.BLANK;
+						if (term.contains((StringPool.EQUAL.toLowerCase()))) {
+							key = term
+									.substring(
+											0,
+											term.indexOf(StringPool.EQUAL
+													.toLowerCase())).trim();
+							// addExactTerm(query, key,
+							// params.get(paramPossition));
+							TermQuery termQuery = null;
+
+							Object tempValue = params.get(paramPossition);
+
+							if (tempValue instanceof Long) {
+								termQuery = TermQueryFactoryUtil.create(
+										searchContext, key, (long) tempValue);
+							} else if (tempValue instanceof String) {
+								termQuery = TermQueryFactoryUtil.create(
+										searchContext, key,
+										String.valueOf(tempValue));
+							}
+
+							if (termQuery != null) {
+								query.add(termQuery, BooleanClauseOccur.MUST);
+							}
+
+						} else if (term.contains(StringPool.LIKE.toLowerCase())) {
+							key = term
+									.substring(
+											0,
+											term.indexOf(StringPool.LIKE
+													.toLowerCase())).trim();
+
+							query.addTerm(key, params.get(paramPossition)
+									.toString(), true);
+
+						} else if (term.contains(StringPool.BETWEEN
+								.toLowerCase())) {
+							key = term.substring(
+									0,
+									term.indexOf(StringPool.BETWEEN
+											.toLowerCase())).trim();
+							query = addRangeTerm(query, key,
+									params.get(paramPossition));
+						}
+
+					}
+
+					booleanQueries.add(query);
+				}
+			}
+		}
+		return booleanQueries;
+	}
 
 	/**
 	 * @param subQueries
@@ -316,21 +316,10 @@ public class LuceneQueryUtil {
 		return booleanQueries;
 	}
 
-	public static void main(String[] args) {
-		String aaa = "(dossierStatus = ?) [and] (serviceInfoNo = ?) ";
-		List<String> bbbb = new ArrayList<String>();
-		bbbb.add("dossierStatus = ?");
-		bbbb.add("serviceInfoNo = ?");
-		List<BooleanClauseOccur>  ccccccc = getBooleanClauseOccurs(aaa, bbbb);
-		for (BooleanClauseOccur booleanClauseOccur : ccccccc) {
-			System.out.println(booleanClauseOccur);
-		}
-	}
-	
 	public static List<BooleanClauseOccur> getBooleanClauseOccurs(
 			String pattern, List<String> subQueries) {
 		List<BooleanClauseOccur> booleanClauseOccurs = new ArrayList<BooleanClauseOccur>();
-		pattern = pattern.replaceAll(Pattern.quote("("), StringPool.BLANK);
+		pattern = pattern.replaceAll("\\(", StringPool.BLANK);
 
 		pattern = pattern.replaceAll("\\)", StringPool.BLANK);
 
