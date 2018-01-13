@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 $(function(){
 	console.log("--start registration--");
 	$('#registration-jasper-wrapper').hide();
-	
+	var registrationTemplateMultipleObj = fnGetRegistrationTemplate();
 	viewRegistrationModel = kendo.observable({
 
 		// co quan dang ky
@@ -193,8 +193,8 @@ $(function(){
 			$("#registration-forms-listview").getKendoListView().dataSource.read();
 			
 			// thay doi trang thai check
-			$(".registrationsLogItem>span").removeClass("fa fa-check");
-			$('.registrationsLogItem[data-pk='+ registrationModel.registrationId +']>span').addClass('fa fa-check');
+			$(".registrationsLogItem>span").removeClass("fa fa-arrow-right");
+			$('.registrationsLogItem[data-pk='+ registrationModel.registrationId +']>span').addClass('fa fa-arrow-right');
 		
 		},
 			
@@ -248,6 +248,34 @@ $(function(){
 				}
 			}
 		}),
+		registrationTemplateMultiple : registrationTemplateMultipleObj,
+		onChangeAddRegistrationTemplate : function(e){
+			console.log(e);
+			var value = e.data.formNo;
+			console.log(value);
+			var vm = viewRegistrationModel;
+			$.ajax({
+				url : "${api.server}/registrations/"+vm.registrationModel.registrationId+"/forms/"+value,
+				dataType : "json",
+				type : "POST",
+				headers : {"groupId": ${groupId}},
+				data : {
+
+				},
+				success : function(result){
+
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công"
+					}, "success");
+					vm.registrationFormsListView_dataSource.read();
+				},
+				error : function(result){
+					notification.show({
+						message: "Xảy ra lỗi, xin vui lòng thử lại"
+					}, "error");
+				}
+			});
+		},
 		registrationFormsListView_addTemplate: function(e){
 			var vm = this;
 			e.preventDefault();
@@ -426,6 +454,58 @@ $(function(){
 				}, "error");
 			}
 
+		},
+		saveDraftsRegistration : function(){
+			var vm = this;
+		
+			$("#btn-save-registrations").button('loading');
+			var applicantValidator = $("#applicantInfo").kendoValidator().data("kendoValidator");
+
+			if(applicantValidator.validate()){
+				$.ajax({
+					url  : '${api.server}/registrations/' + vm.registrationModel.registrationId, 
+					dataType : "json",
+					type : 'PUT', 
+					headers: {"groupId": ${groupId}},
+					data : {
+
+						applicantName : $("#applicantName").val(),
+						applicantIdType : $("#applicantIdType").val(),
+						applicantIdNo : $("#applicantIdNo").val(),
+						applicantIdDate : kendo.toString($("#applicantIdDate").data("kendoDatePicker").value(), 'dd-MM-yyyy HH:mm:ss'),
+						address : $("#address").val(),
+						cityCode : $("#cityCode").val(),
+						districtCode : $("#districtCode").val(),
+						wardCode : $("#wardCode").val(),
+						contactName : $("#contactName").val(),
+						contactTelNo : $("#contactTelNo").val(),
+						contactEmail : $("#contactEmail").val(),
+						registrationState : 0
+
+					},
+					success :  function(result){ 
+						
+						$("#btn-save-drafts-registrations").button('reset');
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
+						vm.registrationsListView_dataSource.read();
+						//$("#registrationsListView").getKendoListView().dataSource.read();
+					},
+					error:function(xhr){
+						
+						$("#btn-save-registrations").button('reset'); 
+						notification.show({
+							message: "Xảy ra lỗi, xin vui lòng thử lại"
+						}, "error");
+					}	
+				});
+			}else {
+				$("#btn-save-drafts-registrations").button('reset');
+				notification.show({
+					message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi lưu!"
+				}, "error");
+			}
 		},
 		getLinkWindowUrl ( options) {
 
@@ -754,4 +834,30 @@ $(function(){
 	
 });
 
+
+var fnGetRegistrationTemplate = function(){
+	var arrRes = new Array();
+	$.ajax({
+		url : "${api.server}/registrationtemplates",
+		dataType : "json",
+		type : "GET",
+		headers: {"groupId": ${groupId}},
+		data : {
+		},
+		async : false,
+		success : function(result){
+			if(result.data){
+				for (var i = 0; i < result.data.length; i++) {
+					if(result.data[i].multiple){
+						arrRes.push(result.data[i]);
+					}
+				}
+			}
+		},
+		error : function(result){
+			
+		}
+	});
+	return arrRes;
+}
 </script>

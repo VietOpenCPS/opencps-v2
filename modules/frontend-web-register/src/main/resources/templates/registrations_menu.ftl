@@ -58,7 +58,14 @@
 					
 				<div class="col-sm-9 PL0 PT5">
 				
-					<strong class="btn-block">#= applicantName #</strong>
+					<strong class="btn-block">
+						#if(registrationState === 2){#
+							Đã duyệt
+						#}else {#
+							Chờ duyệt
+						#}#
+
+					</strong>
 				
 				</div>
 				
