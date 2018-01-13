@@ -400,24 +400,31 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				}
 
 				SimpleDateFormat format = new SimpleDateFormat("DD-MM-YYYY HH:MM:SS");
+				Map<String, Object> params = new LinkedHashMap<>();
 
-				properties.put("approveDatetime", Validator.isNotNull(paymentFileClient.getApproveDatetime())
+				params.put("approveDatetime", Validator.isNotNull(paymentFileClient.getApproveDatetime())
 						? format.format(paymentFileClient.getApproveDatetime()) : format.format(new Date()));
-				properties.put("accountUserName", paymentFileClient.getAccountUserName());
-				properties.put("govAgencyTaxNo", paymentFileClient.getGovAgencyTaxNo());
-				properties.put("invoiceTemplateNo", paymentFileClient.getInvoiceTemplateNo());
-				properties.put("invoiceIssueNo", paymentFileClient.getInvoiceIssueNo());
-				properties.put("invoiceNo", paymentFileClient.getInvoiceNo());
+				params.put("accountUserName", paymentFileClient.getAccountUserName());
+				params.put("govAgencyTaxNo", paymentFileClient.getGovAgencyTaxNo());
+				params.put("invoiceTemplateNo", paymentFileClient.getInvoiceTemplateNo());
+				params.put("invoiceIssueNo", paymentFileClient.getInvoiceIssueNo());
+				params.put("invoiceNo", paymentFileClient.getInvoiceNo());
+				params.put("isSync", StringPool.BLANK);
 
 				String endPointSynAction = "dossiers/" + dossierId + "/payments/" + paymentFileClient.getReferenceUid()
-						+ "/approval";
+						+ "/approval/noattachment";
 
-				JSONObject resSynFile = rest.callPostFileAPI(groupId, HttpMethod.PUT, "application/json",
+				JSONObject resSynFile = rest.callPostAPI(groupId, HttpMethod.PUT, "application/json",
 						RESTFulConfiguration.SERVER_PATH_BASE, endPointSynAction, RESTFulConfiguration.SERVER_USER,
-						RESTFulConfiguration.SERVER_PASS, properties, file, serviceContext);
+						RESTFulConfiguration.SERVER_PASS, properties, params, serviceContext);
 
+/*				callPostFileAPI(groupId, HttpMethod.PUT, "application/json", RESTFulConfiguration.SERVER_PATH_BASE,
+						endPointSynAction, RESTFulConfiguration.SERVER_USER, RESTFulConfiguration.SERVER_PASS,
+						properties, file, serviceContext);
+*/
 				if (resSynFile.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
 					// remove DossierSync
+
 					DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
 
 					// Reset isNew
@@ -425,6 +432,9 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 					paymentFileClient.setIsNew(false);
 					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFileClient);
 					// DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+
+				} else {
+					_log.info("Not Approve_" + resSynFile.getString(RESTFulConfiguration.MESSAGE));
 				}
 			} catch (Exception e) {
 				_log.error(e);
