@@ -191,7 +191,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 						dossierFileLocalService.addDossierFile(groupId, dossierId, dossierFileUUID, dossierTemplateNo,
 								part.getPartNo(), part.getFileTemplateNo(), part.getPartName(), StringPool.BLANK, 0l,
-								null, StringPool.BLANK, StringPool.FALSE, context);
+								null, StringPool.BLANK, StringPool.TRUE, context);
 					}
 				}
 			}
