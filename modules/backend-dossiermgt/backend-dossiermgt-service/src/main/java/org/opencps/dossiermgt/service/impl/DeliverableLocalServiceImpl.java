@@ -77,6 +77,11 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 	 * org.opencps.dossiermgt.service.DeliverableLocalServiceUtil} to access the
 	 * deliverable local service.
 	 */
+	
+	public Deliverable getByCode(String deliverableCode) {
+		return deliverablePersistence.fetchByFB_DCODE(deliverableCode);
+	}
+	
 	public List<Deliverable> getListDeliverable(String deliverableState, String govAgencyCode, String deliverableType,
 			String applicant) {
 		List<Deliverable> listDeliverable = deliverablePersistence.findByG_ID(deliverableState, govAgencyCode,

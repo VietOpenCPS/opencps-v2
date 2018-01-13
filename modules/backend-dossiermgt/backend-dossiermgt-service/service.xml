@@ -1277,6 +1277,10 @@
 			<finder-column name="deliverableType" />
 			<finder-column name="applicantIdNo" />
 		</finder>
+		
+		<finder return-type="Deliverable" name="FB_DCODE">
+			<finder-column name="deliverableCode"/>
+		</finder>
 <!-- 		<order> -->
 <!-- 			<order-column name="modifiedDate" order-by="asc" /> -->
 <!-- 			<order-column name="issueDate" order-by="asc" /> -->
