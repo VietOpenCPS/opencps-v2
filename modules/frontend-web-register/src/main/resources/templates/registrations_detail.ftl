@@ -239,15 +239,17 @@
 											data-formno="#:formNo#">
 											<i class="fa fa-plus-circle text-light-gray" aria-hidden="true" style="font-size: 150%;"></i>
 										</a>
+
+										<a href="javascript:;"
+												data-bind="events: {
+												click: registrationFormsListView_deleteTemplate
+											}"
+											data-referenceuid="#:referenceUid#" >
+											<i class="fa fa-times text-light-gray" aria-hidden="true" style="font-size: 150%;"></i>
+										</a>
 									#}#
 								
-									<a href="javascript:;"
-										data-bind="events: {
-											click: registrationFormsListView_deleteTemplate
-										}"
-										data-referenceuid="#:referenceUid#" >
-										<i class="fa fa-times text-light-gray" aria-hidden="true" style="font-size: 150%;"></i>
-									</a>
+									
 								#}#
 		
 								<a href="javascript:;" 
@@ -309,13 +311,33 @@
 
 <div class="button-row MT20">
 
-	<button class="btn btn-active" 
-		data-bind="events: {
-			click: saveRegistration}, css: { hidden: registrationModel.registrationState_hidden }"
-		id="btn-save-registrations" type="button" 
-		data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý...">
-		<i class="fa fa-save"></i> Gửi
-	</button>
+		 <div class="dropdown">
+		 	<button class="btn btn-active" 
+			data-bind="events: {
+				click: saveRegistration}, css: { hidden: registrationModel.registrationState_hidden }"
+			id="btn-save-registrations" type="button" 
+			data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý...">
+			<i class="fa fa-save"></i> Gửi
+		</button>
+
+		<button class="btn btn-active" 
+			data-bind="events: {
+				click: saveDraftsRegistration}, css: { hidden: registrationModel.registrationState_hidden }"
+			id="btn-save-drafts-registrations" type="button" 
+			data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý...">
+			<i class="fa fa-save"></i> Lưu nháp
+		</button>
+
+		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"  data-bind="css: { hidden: registrationModel.registrationState_hidden }">Thêm thành phần hồ sơ
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" data-template="registrationTemplateMultipleTemplate" data-bind="source: registrationTemplateMultiple">
+			
+		</ul>
+		<script type="text/x-kendo-template" id="registrationTemplateMultipleTemplate">
+			<li data-formno="#:formNo#" data-bind="click: onChangeAddRegistrationTemplate" class="hover-pointer">#:formName#</li>
+		</script>
+	</div>
 	
 </div>
 
