@@ -66,6 +66,7 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 		document.addTextSortable(RegistrationFormTerm.FORM_NAME, object.getFormName());
 		document.addTextSortable(RegistrationFormTerm.ISNEW, String.valueOf(object.isIsNew()));
 		document.addTextSortable(RegistrationFormTerm.REMOVED, String.valueOf(object.isRemoved()));
+		document.addTextSortable(RegistrationFormTerm.FORM_NO, String.valueOf(object.getFormNo()).toLowerCase());
 		document.addText(RegistrationFormTerm.FORM_DATA, object.getFormData());
 		// index formData
         try {

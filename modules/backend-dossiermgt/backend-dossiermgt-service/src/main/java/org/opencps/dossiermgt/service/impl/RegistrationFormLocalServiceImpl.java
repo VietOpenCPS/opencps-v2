@@ -404,6 +404,15 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		
+		String formNo = GetterUtil.getString(params.get(RegistrationFormTerm.FORM_NO));
+		if (Validator.isNotNull(formNo)) {
+            MultiMatchQuery query = new MultiMatchQuery(formNo.toLowerCase());
+
+            query.addFields(RegistrationFormTerm.FORM_NO);
+
+            booleanQuery.add(query, BooleanClauseOccur.MUST);
+        }
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -497,6 +506,15 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		
+		String formNo = GetterUtil.getString(params.get(RegistrationFormTerm.FORM_NO));
+        if (Validator.isNotNull(formNo)) {
+            MultiMatchQuery query = new MultiMatchQuery(formNo.toLowerCase());
+
+            query.addFields(RegistrationFormTerm.FORM_NO);
+
+            booleanQuery.add(query, BooleanClauseOccur.MUST);
+        }
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
