@@ -47,33 +47,34 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 	@Override
 	public void onAfterCreate(DossierFile model) throws ModelListenerException {
-		_log.info("After Created........... ");
-		String content = "On DossiserFile Created";
-		String notificationType = "File-01";
-		String payload = DossierLogUtils.createPayload(model, null, null);
-
+		_log.info("DossierFileCreate........... ");
+		/*
+		 * String content = "On DossiserFile Created"; String notificationType =
+		 * "File-01"; String payload = DossierLogUtils.createPayload(model,
+		 * null, null);
+		 */
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
 		serviceContext.setUserId(model.getUserId());
-/*		try {
-			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
-					content, notificationType, payload, serviceContext);
-
-			// Binhth add message bus to processing KySO file
-			Message message = new Message();
-			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(model.getGroupId(),
-					model.getDossierTemplateNo(), model.getDossierPartNo());
-
-			JSONObject msgDataESign = JSONFactoryUtil.createJSONObject();
-			msgDataESign.put("userId", model.getUserId());
-			msgDataESign.put("eSign", dossierPart.getESign());
-			msgDataESign.put("fileEntryId", model.getFileEntryId());
-
-			message.put("msgToEngine", msgDataESign);
-			MessageBusUtil.sendMessage("kyso/engine/out/destination", message);
-		} catch (SystemException | PortalException e) {
-			e.printStackTrace();
-		}*/
+		/*
+		 * try { DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(),
+		 * model.getDossierId(), model.getUserName(), content, notificationType,
+		 * payload, serviceContext);
+		 * 
+		 * // Binhth add message bus to processing KySO file Message message =
+		 * new Message(); DossierPart dossierPart =
+		 * DossierPartLocalServiceUtil.fetchByTemplatePartNo(model.getGroupId(),
+		 * model.getDossierTemplateNo(), model.getDossierPartNo());
+		 * 
+		 * JSONObject msgDataESign = JSONFactoryUtil.createJSONObject();
+		 * msgDataESign.put("userId", model.getUserId());
+		 * msgDataESign.put("eSign", dossierPart.getESign());
+		 * msgDataESign.put("fileEntryId", model.getFileEntryId());
+		 * 
+		 * message.put("msgToEngine", msgDataESign);
+		 * MessageBusUtil.sendMessage("kyso/engine/out/destination", message); }
+		 * catch (SystemException | PortalException e) { e.printStackTrace(); }
+		 */
 
 		// update deliverable
 
@@ -82,20 +83,19 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					model.getDossierTemplateNo(), model.getDossierPartNo());
 
 			String deliverableType = dossierPart.getDeliverableType();
-			int deliverableAction = dossierPart.getDeliverableAction();
+			// int deliverableAction = dossierPart.getDeliverableAction();
 
 			String deliverableCode = model.getDeliverableCode();
 
-			Dossier dossier = DossierLocalServiceUtil.getDossier(model.getDossierId());
+			if (Validator.isNotNull(deliverableCode)) {
+				Dossier dossier = DossierLocalServiceUtil.getDossier(model.getDossierId());
 
-			// Exist Deliverable checking
+				// Exist Deliverable checking
 
-			Deliverable dlv = DeliverableLocalServiceUtil.getByCode(deliverableCode);
+				Deliverable dlv = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 
-			DeliverableType dlvType = DeliverableTypeLocalServiceUtil.getByCode(model.getGroupId(), deliverableType);
-
-			if (Validator.isNull(dlv)) {
-				// add deliverable
+				DeliverableType dlvType = DeliverableTypeLocalServiceUtil.getByCode(model.getGroupId(),
+						deliverableType);
 
 				JSONObject formDataContent = JSONFactoryUtil.createJSONObject();
 
@@ -122,20 +122,33 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				String expireDate = StringPool.BLANK;
 				String revalidate = StringPool.BLANK;
 				String deliverableState = "0";
-				
-				if(Validator.isNotNull(formDataContent)) {
+				String formData = StringPool.BLANK;
+
+				if (Validator.isNotNull(formDataContent)) {
 					subject = formDataContent.getString("subject");
 					issueDate = formDataContent.getString("issueDate");
 					expireDate = formDataContent.getString("expireDate");
 					revalidate = formDataContent.getString("revalidate");
+
+					formData = formDataContent.toString();
+					
+					_log.info("FormData........... "+formData);
+
 				}
 
-				dlv = DeliverableLocalServiceUtil.addDeliverable(model.getGroupId(), deliverableType, deliverableCode,
-						dossier.getGovAgencyCode(), dossier.getApplicantIdNo(), dossier.getApplicantName(), subject,
-						issueDate, expireDate, revalidate, deliverableState, serviceContext);
+				if (Validator.isNull(dlv)) {
+					// add deliverable
 
-			} else {
-				// update deliverable
+					dlv = DeliverableLocalServiceUtil.addDeliverable(model.getGroupId(), deliverableType,
+							deliverableCode, dossier.getGovAgencyCode(), dossier.getApplicantIdNo(),
+							dossier.getApplicantName(), subject, issueDate, expireDate, revalidate, deliverableState,
+							serviceContext);
+
+					DeliverableLocalServiceUtil.updateFormData(model.getGroupId(), dlv.getDeliverableId(), formData,
+							serviceContext);
+
+				}
+
 			}
 
 		} catch (Exception e) {
@@ -261,16 +274,19 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 	@Override
 	public void onAfterUpdate(DossierFile model) throws ModelListenerException {
-		String content = "On DossiserFile Update";
-		String notificationType = "";
-		String payload = DossierLogUtils.createPayload(model, null, null);
+		_log.info("Update DossierFile_________-");
 
+		/*
+		 * String content = "On DossiserFile Update"; String notificationType =
+		 * ""; String payload = DossierLogUtils.createPayload(model, null,
+		 * null);
+		 */
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
 		serviceContext.setUserId(model.getUserId());
 
-		//update derliverable
-		
+		// update derliverable
+
 		// update deliverable
 
 		try {
@@ -278,20 +294,20 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					model.getDossierTemplateNo(), model.getDossierPartNo());
 
 			String deliverableType = dossierPart.getDeliverableType();
-			int deliverableAction = dossierPart.getDeliverableAction();
+			// int deliverableAction = dossierPart.getDeliverableAction();
 
 			String deliverableCode = model.getDeliverableCode();
+			_log.info("deliverableCode DossierFile_________-" + deliverableCode);
 
-			Dossier dossier = DossierLocalServiceUtil.getDossier(model.getDossierId());
+			if (Validator.isNotNull(deliverableCode)) {
+				Dossier dossier = DossierLocalServiceUtil.getDossier(model.getDossierId());
 
-			// Exist Deliverable checking
+				// Exist Deliverable checking
 
-			Deliverable dlv = DeliverableLocalServiceUtil.getByCode(deliverableCode);
+				Deliverable dlv = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 
-			DeliverableType dlvType = DeliverableTypeLocalServiceUtil.getByCode(model.getGroupId(), deliverableType);
-
-			if (Validator.isNull(dlv)) {
-				// add deliverable
+				DeliverableType dlvType = DeliverableTypeLocalServiceUtil.getByCode(model.getGroupId(),
+						deliverableType);
 
 				JSONObject formDataContent = JSONFactoryUtil.createJSONObject();
 
@@ -318,26 +334,60 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				String expireDate = StringPool.BLANK;
 				String revalidate = StringPool.BLANK;
 				String deliverableState = "0";
-				
-				if(Validator.isNotNull(formDataContent)) {
+
+				if (Validator.isNotNull(formDataContent)) {
 					subject = formDataContent.getString("subject");
 					issueDate = formDataContent.getString("issueDate");
 					expireDate = formDataContent.getString("expireDate");
 					revalidate = formDataContent.getString("revalidate");
+
+					_log.info("formDataContent DossierFile_________-" + formDataContent.toString());
 				}
 
-				dlv = DeliverableLocalServiceUtil.addDeliverable(model.getGroupId(), deliverableType, deliverableCode,
-						dossier.getGovAgencyCode(), dossier.getApplicantIdNo(), dossier.getApplicantName(), subject,
-						issueDate, expireDate, revalidate, deliverableState, serviceContext);
+				if (Validator.isNull(dlv)) {
+					// add deliverable
+					dlv = DeliverableLocalServiceUtil.addDeliverable(model.getGroupId(), deliverableType,
+							deliverableCode, dossier.getGovAgencyCode(), dossier.getApplicantIdNo(),
+							dossier.getApplicantName(), subject, issueDate, expireDate, revalidate, deliverableState,
+							serviceContext);
 
-			} else {
-				// update deliverable
+				} else {
+					// update deliverable
+
+					try {
+
+						if (Validator.isNotNull(dlvType.getMappingData())) {
+							JSONObject jsMappingData = JSONFactoryUtil.createJSONObject(dlvType.getMappingData());
+
+							JSONObject jsFormData = JSONFactoryUtil.createJSONObject();
+
+							if (Validator.isNotNull(model.getFormData()))
+								jsFormData = JSONFactoryUtil.createJSONObject(model.getFormData());
+
+							formDataContent = mappingContent(jsMappingData, jsFormData, model.getDossierId());
+
+						}
+
+					} catch (Exception e) {
+						_log.error("Parser JSONDATA error_DELIVERABLE");
+					}
+
+					String formData = StringPool.BLANK;
+
+					if (Validator.isNotNull(formDataContent)) {
+						formData = formDataContent.toString();
+
+					}
+
+					DeliverableLocalServiceUtil.updateFormData(model.getGroupId(), dlv.getDeliverableId(), formData,
+							serviceContext);
+				}
+
 			}
 
 		} catch (Exception e) {
 			_log.error(e);
 		}
-
 
 	}
 
