@@ -43,7 +43,7 @@
 			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 			$("#mainType1").hide();
 			$("#mainType2").show();
-			$("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+id+"&${portletNamespace}sendAdd=true",function(result){
+			$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"&${portletNamespace}sendAdd=true",function(result){
 			})
 		});
 		// 
