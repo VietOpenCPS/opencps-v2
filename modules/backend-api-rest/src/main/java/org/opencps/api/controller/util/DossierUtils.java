@@ -27,7 +27,7 @@ public class DossierUtils {
 
 		for (Document doc : docs) {
 			DossierDataModel model = new DossierDataModel();
-			model.setDossierIdCTN(GetterUtil.getInteger(doc.get(DossierTerm.DOSSIER_ID+"CTN")));
+			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID+"CTN"));
 			model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
 			model.setCreateDate(doc.get(Field.CREATE_DATE));

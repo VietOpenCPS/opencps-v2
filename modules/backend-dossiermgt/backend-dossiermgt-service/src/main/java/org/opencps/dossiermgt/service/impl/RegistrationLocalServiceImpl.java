@@ -14,10 +14,11 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.RegistrationFormActions;
@@ -46,9 +47,13 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.TermQuery;
+import com.liferay.portal.kernel.search.TermQueryFactoryUtil;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
@@ -94,6 +99,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setCreateDate(now);
 		model.setModifiedDate(now);
 		model.setUserId(userAction.getUserId());
+		model.setCompanyId(companyId);
 
 		model.setApplicantName(applicantName);
 		model.setApplicantIdType(applicantIdType);
@@ -502,12 +508,21 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		return registrationPersistence.update(model);
 	}
 
-	//18
+	/**
+	 * Get registration of applicant has registrationState in use
+	 * 
+	 */
 	public Registration getByApplicantAndAgency(long groupId, String applicantNo, String agencyNo) {
-		return registrationPersistence.fetchByG_APPNO_GOVCODE(groupId, applicantNo, agencyNo);
+	    List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(
+	        groupId, applicantNo, agencyNo, 2);
+	    
+		if(registrations.size() > 0) {
+		    return registrations.get(0);
+		} else {
+		    return null;
+		}
 	}
 
-	private static final String _TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-
 	private Log _log = LogFactoryUtil.getLog(RegistrationLocalServiceImpl.class);
+
 }

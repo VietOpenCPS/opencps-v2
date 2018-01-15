@@ -421,22 +421,7 @@ error : function(result){
 		}
 	});
 
-	$("#btn-submit-dossier").click(function(){
-		var data = $('#dossierFormSubmiting').serialize();
-		$.ajax({
-			type : 'GET', 
-			url  : '${api.server}/dossiers/${dossierId}/submitting', 
-			data : data,
-			headers : {"groupId": ${groupId}},
-			success :  function(result){                       
 
-			},
-			error : function(result){
-
-			}
-		});
-		console.log("success!");
-	});
 
 	var dataSourceDossiserFileTemplate;
 	var dataSourceDossiserLog;
@@ -886,4 +871,25 @@ var getReferentUidFile = function(dossierId){
 	return referenceUid;
 }
 
+$(document).on("click","#btn-submit-dossier",function(event){
+	var data = $('#dossierFormSubmiting').serialize();
+	$.ajax({
+		type : 'GET', 
+		url  : '${api.server}/dossiers/${dossierId}/submitting', 
+		data : data,
+		headers : 
+		{
+			"groupId": ${groupId},
+			Accept : "application/json"
+
+		},
+		success :  function(result){                       
+
+		},
+		error : function(result){
+
+		}
+	});
+	console.log("success!");
+});
 </script>

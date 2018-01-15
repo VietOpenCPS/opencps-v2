@@ -27,8 +27,6 @@ import org.opencps.dossiermgt.action.impl.DeliverableLogActionsImpl;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableLog;
-import org.opencps.dossiermgt.model.Registration;
-import org.opencps.dossiermgt.model.impl.DeliverableImpl;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -89,14 +87,16 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			DeliverableResultModel results = new DeliverableResultModel();
 			
 			// get JSON data deliverable
-			JSONObject jsonData = actions.getListDeliverable(serviceContext.getCompanyId(), params, sorts,
-					search.getStart(), search.getEnd(), serviceContext);
+			JSONObject jsonData = null;
+				jsonData = actions.getListDeliverable(serviceContext.getCompanyId(), params, sorts,
+						search.getStart(), search.getEnd(), serviceContext);
 //			JSONObject result = action.getListDeliverable(state, agency, type, applicant);
+//			results.setTotal(jsonData.getInt("total"));
 			results.setTotal(jsonData.getInt("total"));
 			results.getData()
 					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(200).entity(results).build();
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
 		}
@@ -299,7 +299,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 	@Override
 	public Response updateFormData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, Long id, DeliverableInputModel input) {
+			User user, ServiceContext serviceContext, Long id, String formdata) {
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -311,7 +311,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			DeliverableActions actions = new DeliverableActionsImpl();
 
-			Deliverable deliverable = actions.updateFormData(groupId, id, input.getFormData(), serviceContext);
+			Deliverable deliverable = actions.updateFormData(groupId, id, formdata, serviceContext);
 
 			String formData = deliverable.getFormData();
 
@@ -490,7 +490,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 	@Override
 	public Response getDataFormByTypeCode(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String agencyNo, String typeCode,
-			String _properties) {
+			String keyword) {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -502,34 +502,53 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			String keyword = header.getHeaderString("keyword");
 
-//			Deliverable deliverableInfo = null;
-//			long registrationId = 0;
-//			if (Validator.isNotNull("") && Validator.isNotNull(agencyNo)) {
-//			regInfo = RegistrationLocalServiceUtil.getByApplicantAndAgency(groupId, "", agencyNo);
-//			regInfo = RegistrationLocalServiceUtil.getByAgency(groupId, agencyNo);
-//			}
-//			if (deliverableInfo != null) {
-//				registrationId = deliverableInfo.getRegistrationId();
-//			}
+			JSONObject keyJson = JSONFactoryUtil.createJSONObject(keyword);
+			
+			String pattern = String.valueOf(keyJson.get("query"));
+			String paramValues = String.valueOf(keyJson.get("values"));
+			String paramTypes = String.valueOf(keyJson.get("type"));
 
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(DeliverableTerm.GOV_AGENCY_CODE, agencyNo);
+			params.put(DeliverableTerm.DELIVERABLE_TYPE, typeCode);
+			params.put("pattern", pattern);
+			params.put("paramValues", paramValues);
+			params.put("paramTypes", paramTypes);
+			
 //			String _properties = search.getProperties();
-//			String _properties = "ten_doanh_nghiep";
-			String[] splitProperties = null;
-			if (Validator.isNotNull(_properties)) {
-				splitProperties = _properties.split(";");
-			}
+//			String[] splitProperties = null;
+//			if (Validator.isNotNull(_properties)) {
+//				splitProperties = _properties.split(";");
+//			}
 			
 			DeliverableActions actions = new DeliverableActionsImpl();
-			
-			JSONArray jsonDataList = null;
-//			jsonDataList = actions.getFormDataByTypecode(groupId, registrationId,
-//					typeCode, splitProperties);
-
+//			DeliverableResultModel results = new DeliverableResultModel();
 			JSONObject results = JSONFactoryUtil.createJSONObject();
-			results.put("total", jsonDataList.length());
-			results.put("data", jsonDataList);
+			
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true) };
+			// get JSON data deliverable
+			JSONObject jsonData = actions.getFormDataByTypecode(serviceContext.getCompanyId(), params, sorts,
+					-1, -1, serviceContext);
+
+//			results.setTotal(jsonData.getInt("total"));
+//			results.getData()
+//					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
+
+			//TODO
+			results.put("total", jsonData.getInt("total"));
+//			results.getData()
+//					.addAll(
+			List<Document> docList =(List<Document>) jsonData.get("data");
+
+			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
+			for (Document doc : docList) {
+				String formData = doc.get(DeliverableTerm.FORM_DATA);
+				formDataArr.put(JSONFactoryUtil.createJSONObject(formData));
+			}
+			results.put("data", formDataArr);
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 

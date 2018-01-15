@@ -15,7 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.opencps.constants.FrontendWebCustomerPortletKeys;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.model.Applicant;
@@ -84,6 +86,20 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 			// TODO: handle exception
 			_log.info(e.getMessage());
 		}
+		
+		try {
+			Registration resObj = RegistrationLocalServiceUtil.getRegistrationByGID_UID(themeDisplay.getScopeGroupId(), themeDisplay.getUserId()).get(0);
+			String registrationStr = JSONFactoryUtil.looseSerialize(resObj);
+			JSONObject registrationObj = JSONFactoryUtil.createJSONObject(registrationStr);
+			if(registrationObj != null){
+				renderRequest.setAttribute("registration", registrationObj);
+			}
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			_log.info(e.getMessage());
+		}
+		
 
 		String dossierPartNo = ParamUtil.getString(renderRequest, "dossierPartNo");
 
@@ -365,6 +381,8 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		customerNotificationPayingURL.setParameter("mvcPath", "/templates/notificationPaying.ftl");
 
 		urlObject.put("notificationPaying", customerNotificationPayingURL);
+		
+		
 
 		return urlObject;
 	}

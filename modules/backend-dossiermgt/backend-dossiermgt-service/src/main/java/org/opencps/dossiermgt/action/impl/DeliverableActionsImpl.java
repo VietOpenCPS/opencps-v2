@@ -41,17 +41,17 @@ public class DeliverableActionsImpl implements DeliverableActions {
 		return result;
 	}
 
-	@Override
-	public void addDeliverable(DeliverableImpl model) {
-		DeliverableLocalServiceUtil.insert(model);
-	}
+//	@Override
+//	public void addDeliverable(DeliverableImpl model) {
+//		DeliverableLocalServiceUtil.insert(model);
+//	}
 
-	@Override
-	public Deliverable getListDeliverableDetail(Long deliverableId) throws NoSuchDeliverableException {
+//	@Override
+//	public Deliverable getListDeliverableDetail(Long deliverableId) throws NoSuchDeliverableException {
 //		Deliverable deliverable = DeliverableLocalServiceUtil.getListDeliverableDetai(deliverableId);
-		Deliverable deliverable = null;
-		return deliverable;
-	}
+//		Deliverable deliverable = null;
+//		return deliverable;
+//	}
 
 //	@Override
 //	public void deleteDeliverable(Long deliverableId) throws PortalException {
@@ -61,50 +61,31 @@ public class DeliverableActionsImpl implements DeliverableActions {
 
 	//12
 	@Override
-	public JSONArray getFormDataByTypecode(long groupId, String registrationId, String typeCode,
-			String[] splitProperties) {
+	public JSONObject getFormDataByTypecode(long groupId, LinkedHashMap<String, Object> params, Sort[] object, int start,
+			int end, ServiceContext serviceContext) {
 		// TODO Auto-generated method stub
-		List<Deliverable> registrationList = new ArrayList<Deliverable>();
-//		List<Deliverable> registrationList = DeliverableLocalServiceUtil.getFormDataByTypeCode(groupId, 
-//				registrationId, typeCode);
-//				List<JSONObject> formDataList = new ArrayList<JSONObject>();
-		JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
-//		for (Deliverable reg : registrationList) {
-//			String formData = reg.getFormData();
-//			formDataArr.put(JSONFactoryUtil.createJSONObject(formData));
-//		}
-		Boolean flag = false;
-		JSONArray formDataFilterArr = JSONFactoryUtil.createJSONArray();
-		if (splitProperties != null) {
-			for (int i = 0; i < formDataArr.length(); i++) {
-				JSONObject jsonFormData = formDataArr.getJSONObject(i);
-				Iterator<String> keyForm = jsonFormData.keys();
-				List<String> keyFormDataList = new ArrayList<String>();
-				while(keyForm.hasNext()) {
-					String keys = keyForm.next();
-					keyFormDataList.add(keys);
-				}
-				for (String parts : splitProperties) {
-					for (String key : keyFormDataList) {
-						if (Validator.isNotNull(parts) && parts.equals(key)) {
-							flag = true;
-						} else {
-							flag = false;
-						}
-					}
-				}
-				if (flag) {
-					JSONObject formDataDetail = JSONFactoryUtil.createJSONObject();
-					for (String parts : splitProperties) {
-						formDataDetail.put(parts, jsonFormData.get(parts));
-					}
-					formDataFilterArr.put(formDataDetail);
-				}
-			}
-		} else {
-			return formDataArr;
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		
+		Hits hits = null;
+		
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(groupId);
+		
+		try {
+			
+			hits = DeliverableLocalServiceUtil.searchLucene(params, object, start, end, searchContext);
+			
+			result.put("data", hits.toList());
+			
+			long total = DeliverableLocalServiceUtil.countLucene(params, searchContext);
+			
+			result.put("total", total);
+			
+		} catch (Exception e) {
+			_log.error(e);
 		}
-		return formDataFilterArr;
+		
+		return result;
 	}
 
 	@Override
@@ -196,4 +177,11 @@ public class DeliverableActionsImpl implements DeliverableActions {
 	public Deliverable updateFormData(long groupId, long id, String formData, ServiceContext serviceContext) throws NoSuchDeliverableException{
 		return DeliverableLocalServiceUtil.updateFormData(groupId, id, formData, serviceContext);
 	}
+
+//	@Override
+//	public JSONArray getFormDataByTypecode(long groupId, String registrationId, String typeCode,
+//			String[] splitProperties) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 }

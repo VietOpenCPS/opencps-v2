@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class DossierActionUserImpl implements DossierActionUser {
 
@@ -101,13 +102,26 @@ public class DossierActionUserImpl implements DossierActionUser {
 
 			assigned = false;
 			model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
-			model.setUserId(subUser.getLong("userId"));
-			model.setDossierActionId(dossierActionId);
-			model.setModerator(0);
-			model.setAssigned(assigned);
-			model.setVisited(false);
-			// Add User
-			DossierActionUserLocalServiceUtil.addDossierActionUser(model);
+			
+			DossierActionUserPK pk = new DossierActionUserPK();
+			
+			pk.setDossierActionId(dossierActionId);
+			pk.setUserId(subUser.getLong("userId"));
+			
+			org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
+			
+			if (Validator.isNull(dau)) {
+				
+				model.setUserId(subUser.getLong("userId"));
+				model.setDossierActionId(dossierActionId);
+				model.setModerator(0);
+				model.setAssigned(assigned);
+				model.setVisited(false);
+				// Add User
+				DossierActionUserLocalServiceUtil.addDossierActionUser(model);
+			}
+			
+
 
 		}
 	}

@@ -169,7 +169,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class DossierDataModel {
 
-	protected Integer dossierIdCTN;
+	protected String dossierIdCTN;
     protected Integer dossierId;
     protected Integer groupId;
     protected Integer userId;
@@ -1792,11 +1792,11 @@ public class DossierDataModel {
         this.online = value;
     }
 
-	public Integer getDossierIdCTN() {
+	public String getDossierIdCTN() {
 		return dossierIdCTN;
 	}
 
-	public void setDossierIdCTN(Integer dossierIdCTN) {
+	public void setDossierIdCTN(String dossierIdCTN) {
 		this.dossierIdCTN = dossierIdCTN;
 	}
 

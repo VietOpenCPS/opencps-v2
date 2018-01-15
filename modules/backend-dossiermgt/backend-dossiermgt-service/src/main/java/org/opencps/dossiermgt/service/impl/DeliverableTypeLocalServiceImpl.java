@@ -47,6 +47,11 @@ import com.liferay.portal.kernel.util.Validator;
  */
 @ProviderType
 public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalServiceBaseImpl {
+	
+	
+	public DeliverableType getByCode(long groupId, String typeCode) {
+		return deliverableTypePersistence.fetchByG_DLT(groupId, typeCode);
+	}
 
 	public DeliverableType addDeliverableType(long groupId, String deliverableName, String deliverableType_,
 			String codePattern, String counter, String formScript, String formReport, String mappingData,

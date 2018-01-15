@@ -14,18 +14,16 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
-import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.exception.NoSuchDeliverableException;
 import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.DeliverableLog;
-import org.opencps.dossiermgt.model.PaymentFile;
-import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.base.DeliverableLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -42,10 +40,13 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.TermQuery;
+import com.liferay.portal.kernel.search.TermQueryFactoryUtil;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
@@ -77,6 +78,11 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 	 * org.opencps.dossiermgt.service.DeliverableLocalServiceUtil} to access the
 	 * deliverable local service.
 	 */
+	
+	public Deliverable getByCode(String deliverableCode) {
+		return deliverablePersistence.fetchByFB_DCODE(deliverableCode);
+	}
+	
 	public List<Deliverable> getListDeliverable(String deliverableState, String govAgencyCode, String deliverableType,
 			String applicant) {
 		List<Deliverable> listDeliverable = deliverablePersistence.findByG_ID(deliverableState, govAgencyCode,
@@ -84,11 +90,11 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		return listDeliverable;
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
-	public void insert(Deliverable model) {
-		model.setDeliverableId(counterLocalService.increment(Deliverable.class.getName()));
-		addDeliverable(model);
-	}
+//	@Indexable(type = IndexableType.REINDEX)
+//	public void insert(Deliverable model) {
+//		model.setDeliverableId(counterLocalService.increment(Deliverable.class.getName()));
+//		addDeliverable(model);
+//	}
 
 //	public Deliverable getListDeliverableDetai(Long id) throws NoSuchDeliverableException {
 //		Deliverable deliverable = deliverablePersistence.findByDID(id);
@@ -147,7 +153,36 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String groupId = (String) params.get(Field.GROUP_ID);
 
 		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
+		
+		// Search elastic
+//		String pattern = "thiet_bi_san_xuat_chinh = ?";
+//		String paramValues = "11111";
+//		String paramTypes = "String";
+		String pattern = String.valueOf(params.get("pattern"));
+		String paramValues = String.valueOf(params.get("paramValues"));
+		String paramTypes = String.valueOf(params.get("paramTypes"));
+		//Query elastic
+//		List<BooleanQuery> _subQueries = null;
+//		List<BooleanClauseOccur> _occurs = null;
+		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
+			LuceneQuery( pattern, paramValues, paramTypes, searchContext);
+//			org.opencps.dossiermgt.action.util.LuceneQuery(pattern, paramValues, paramTypes, searchContext);
+//			org.opencps.dossiermgt.action.util.LuceneQuery queryLucene = new org.opencps.dossiermgt.action.util.LuceneQuery(pattern, paramValues, paramTypes, searchContext);
+//			_subQueries = queryLucene.getSubQueries();
+//			_occurs = queryLucene.getOccurs();
+		} else {
+			this.setOccurs(null);
+			this.setParams(null);
+			this.setPattern(null);
+			this.setQuery(null);
+			this.setSubPatterns(null);
+			this.setSubQueries(null);
+			this.setSearchContext(null);
+			this.setParamNames(null);
+			this.setParamTypes(null);
+		}
 
+		// Set value header
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
 		searchContext.setAttribute("paginationType", "regular");
@@ -163,6 +198,19 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
 		} else {
 			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		// Add params query
+		int count = 0;
+		if (_subQueries != null && _subQueries.size() > 0) {
+			for (BooleanQuery boolQuery : _subQueries) {
+				if (count == 0) {
+					booleanQuery.add(boolQuery, BooleanClauseOccur.MUST);
+				} else {
+					booleanQuery.add(boolQuery, _occurs.get(count - 1));
+				}
+				count++;
+			}
 		}
 
 		if (Validator.isNotNull(keywords)) {
@@ -234,6 +282,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -248,6 +297,31 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
 
+		String pattern = String.valueOf(params.get("pattern"));
+		String paramValues = String.valueOf(params.get("paramValues"));
+		String paramTypes = String.valueOf(params.get("paramTypes"));
+		//Query elastic
+//		List<BooleanQuery> _subQueries = null;
+//		List<BooleanClauseOccur> _occurs = null;
+		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
+			LuceneQuery( pattern, paramValues, paramTypes, searchContext);
+//			org.opencps.dossiermgt.action.util.LuceneQuery(pattern, paramValues, paramTypes, searchContext);
+//			org.opencps.dossiermgt.action.util.LuceneQuery queryLucene = new org.opencps.dossiermgt.action.util.LuceneQuery(pattern, paramValues, paramTypes, searchContext);
+//			_subQueries = queryLucene.getSubQueries();
+//			_occurs = queryLucene.getOccurs();
+		} else {
+			this.setOccurs(null);
+			this.setParams(null);
+			this.setPattern(null);
+			this.setQuery(null);
+			this.setSubPatterns(null);
+			this.setSubQueries(null);
+			this.setSearchContext(null);
+			this.setParamNames(null);
+			this.setParamTypes(null);
+		}
+
+		// Set value header
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
 		searchContext.setAttribute("paginationType", "regular");
@@ -260,6 +334,19 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
 		} else {
 			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		// Add params query
+		int count = 0;
+		if (_subQueries != null && _subQueries.size() > 0) {
+			for (BooleanQuery boolQuery : _subQueries) {
+				if (count == 0) {
+					booleanQuery.add(boolQuery, BooleanClauseOccur.MUST);
+				} else {
+					booleanQuery.add(boolQuery, _occurs.get(count - 1));
+				}
+				count++;
+			}
 		}
 
 		if (Validator.isNotNull(keywords)) {
@@ -386,7 +473,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		long userId = serviceContext.getUserId();
 
 		Date now = new Date();
-		
+
 		Deliverable object = null;
 		object = deliverablePersistence.findByG_DID(groupId, id);
 		
@@ -400,4 +487,470 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		return deliverablePersistence.update(object);
 	}
+	/////////////////////
+	/**
+	 * @param pattern
+	 * @return
+	 */
+	protected static List<String> getSplitIndex(String pattern) {
+		List<String> splitIndexs = new ArrayList<String>();
+		int eliminateParenthesis = 0;
+		int startIndex = 0;
+		int endIndex = 0;
+
+		for (int i = 0; i < pattern.length(); i++) {
+
+			Character c = pattern.charAt(i);
+
+			if (c.toString().equals(StringPool.OPEN_PARENTHESIS)) {
+				eliminateParenthesis += 1;
+			} else if (c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
+				eliminateParenthesis += -1;
+			}
+
+			if (eliminateParenthesis == 1
+					&& c.toString().equals(StringPool.OPEN_PARENTHESIS)) {
+				startIndex = i;
+			}
+
+			if (eliminateParenthesis == 0
+					&& c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
+				endIndex = i;
+
+			}
+
+			if (!splitIndexs.contains(startIndex + StringPool.DASH + endIndex)
+					&& startIndex < endIndex) {
+
+				splitIndexs.add(startIndex + StringPool.DASH + endIndex);
+			}
+		}
+
+		return splitIndexs;
+	}
+
+	/**
+	 * @param pattern
+	 * @param subQueries
+	 * @return
+	 * @throws ParseException
+	 */
+	public static List<String> getSubQueries(String pattern,
+			List<String> subQueries) throws ParseException {
+
+		pattern = validPattern(pattern);
+
+		// if (Validator.isNull(pattern)) {
+		// return null;
+		// }
+
+		List<String> splitIndexs = getSplitIndex(pattern);
+
+		if (splitIndexs != null) {
+			if (splitIndexs.isEmpty()) {
+				subQueries.add(pattern);
+			} else {
+				for (String splitIndex : splitIndexs) {
+
+					int[] splitIndexsTemp = StringUtil.split(splitIndex,
+							StringPool.DASH, 0);
+					String subQuery = pattern.substring(splitIndexsTemp[0],
+							splitIndexsTemp[1] + 1);
+					if (subQuery.contains("[and]") || subQuery.contains("[or]")
+							|| subQuery.contains("[not]")) {
+						getSubQueries(subQuery, subQueries);
+					} else {
+						subQuery = subQuery.replaceAll("\\(", StringPool.BLANK);
+
+						subQuery = subQuery.replaceAll("\\)", StringPool.BLANK);
+
+						subQueries.add(subQuery);
+
+					}
+				}
+			}
+
+		}
+
+		return subQueries;
+	}
+	
+	
+	/**
+	 * @param pattern
+	 * @return
+	 */
+	public static String validPattern(String pattern) {
+		int eliminateParenthesis = 0;
+		int startParenthesisIndex = 0;
+		int endParenthesisIndex = 0;
+		// pattern = pattern.trim().toLowerCase();
+		for (int i = 0; i < pattern.length(); i++) {
+
+			Character c = pattern.charAt(i);
+
+			if (c.toString().equals(StringPool.OPEN_PARENTHESIS)) {
+				eliminateParenthesis += 1;
+			} else if (c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
+				eliminateParenthesis += -1;
+			}
+
+			if (eliminateParenthesis == 1
+					&& c.toString().equals(StringPool.OPEN_PARENTHESIS)) {
+				startParenthesisIndex = i;
+			}
+
+			if (eliminateParenthesis == 0
+					&& c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
+				endParenthesisIndex = i;
+			}
+
+		}
+
+		if (eliminateParenthesis != 0) {
+			return StringPool.BLANK;
+		}
+
+		if (endParenthesisIndex == pattern.length() - 1
+				&& startParenthesisIndex == 0) {
+			pattern = pattern.substring(startParenthesisIndex + 1,
+					endParenthesisIndex);
+
+			pattern = validPattern(pattern);
+
+		}
+
+		return pattern;
+	}
+
+	/////////////
+	public void LuceneQuery(String pattern, String paramValues, String paramTypes,
+			SearchContext searchContext) {
+
+		BooleanQuery query = BooleanQueryFactoryUtil.create(searchContext);
+		List<String> subPatterns = new ArrayList<String>();
+		List<String> paramNames = new ArrayList<String>();
+		List<BooleanClauseOccur> occurs = null;
+		List<BooleanQuery> subQueries = null;
+		List<Object> params = new ArrayList<Object>();
+		List<Class<?>> clazzs = new ArrayList<Class<?>>();
+
+		String[] arrParamValue = Validator.isNotNull(paramValues) ? StringUtil
+				.split(paramValues, StringPool.POUND) : null;
+		String[] arrParamTypes = Validator.isNotNull(paramTypes) ? StringUtil
+				.split(paramTypes) : null;
+
+		if (arrParamValue != null && arrParamTypes != null
+				&& arrParamTypes.length > 0 && arrParamValue.length > 0
+				&& arrParamValue.length == arrParamTypes.length) {
+			try {
+//				pattern = LuceneQueryUtil.validPattern(pattern);
+
+				if (Validator.isNull(pattern)) {
+					throw new Exception();
+				}
+
+				for (int i = 0; i < arrParamValue.length; i++) {
+					String paramType = arrParamTypes[i].toLowerCase();
+					Object param = null;
+					Class<?> clazz = null;
+					switch (paramType) {
+					case "long":
+						param = GetterUtil.getLong(arrParamValue[i]);
+						clazz = long.class;
+						break;
+					case "integer":
+						param = GetterUtil.getInteger(arrParamValue[i]);
+						clazz = int.class;
+						break;
+					case "int":
+						param = GetterUtil.getInteger(arrParamValue[i]);
+						clazz = int.class;
+						break;
+					case "short":
+						param = GetterUtil.getShort(arrParamValue[i]);
+						clazz = short.class;
+						break;
+					case "double":
+						param = GetterUtil.getDouble(arrParamValue[i]);
+						clazz = double.class;
+						break;
+					case "float":
+						param = GetterUtil.getFloat(arrParamValue[i]);
+						clazz = float.class;
+						break;
+					case "boolean":
+						param = GetterUtil.getBoolean(arrParamValue[i]);
+						clazz = boolean.class;
+						break;
+					case "date":
+//						param = DateTimeUtil
+//								.convertStringToDate(arrParamValue[i]);
+						clazz = Date.class;
+						break;
+					case "string":
+						param = GetterUtil.getString(arrParamValue[i]);
+						clazz = String.class;
+						break;
+					case "null":
+						param = null;
+						clazz = null;
+						break;
+					case "":
+						param = null;
+						clazz = null;
+						break;
+					case " ":
+						param = null;
+						clazz = null;
+						break;
+					default:
+						break;
+					}
+
+					params.add(param);
+					clazzs.add(clazz);
+				}
+
+				getSubQueries(pattern, subPatterns);
+
+				if (subPatterns != null && !subPatterns.isEmpty()) {
+					subQueries = createBooleanQueries(
+							subPatterns, params, paramNames, searchContext);
+
+					occurs = getBooleanClauseOccurs(pattern,
+							subPatterns);
+
+					if (subQueries.size() - 1 != occurs.size()) {
+						throw new Exception();
+					}
+					int count = 0;
+					for (BooleanQuery booleanQuery : subQueries) {
+						if (count == 0) {
+							query.add(booleanQuery, BooleanClauseOccur.MUST);
+						} else {
+							query.add(booleanQuery, occurs.get(count - 1));
+						}
+
+						count++;
+					}
+				}
+
+			} catch (Exception e) {
+				try {
+					throw new Exception();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} finally {
+				this.setOccurs(occurs);
+				this.setParams(params);
+				this.setPattern(pattern);
+				this.setQuery(query);
+				this.setSubPatterns(subPatterns);
+				this.setSubQueries(subQueries);
+				this.setSearchContext(searchContext);
+				this.setParamNames(paramNames);
+				this.setParamTypes(clazzs);
+			}
+		} else {
+			//TODO
+		}
+
+	}
+	private SearchContext _searchContext;
+	private String _pattern;
+	private BooleanQuery _query;
+	private List<BooleanQuery> _subQueries;
+	private List<String> _subPatterns;
+	private List<String> _paramNames;
+	private List<Object> _params;
+	private List<BooleanClauseOccur> _occurs;
+	private List<Class<?>> _paramTypes;
+
+	public List<Class<?>> getParamTypes() {
+		return _paramTypes;
+	}
+
+	public void setParamTypes(List<Class<?>> paramTypes) {
+		this._paramTypes = paramTypes;
+	}
+
+	public SearchContext getSearchContext() {
+		return _searchContext;
+	}
+
+	public void setSearchContext(SearchContext searchContext) {
+		this._searchContext = searchContext;
+	}
+
+	public String getPattern() {
+		return _pattern;
+	}
+
+	public void setPattern(String pattern) {
+		this._pattern = pattern;
+	}
+
+	public BooleanQuery getQuery() {
+		return _query;
+	}
+
+	public void setQuery(BooleanQuery query) {
+		this._query = query;
+	}
+
+	public List<BooleanQuery> getSubQueries() {
+		return _subQueries;
+	}
+
+	public void setSubQueries(List<BooleanQuery> subQueries) {
+		this._subQueries = subQueries;
+	}
+
+	public List<String> getSubPatterns() {
+		return _subPatterns;
+	}
+
+	public void setSubPatterns(List<String> subPatterns) {
+		this._subPatterns = subPatterns;
+	}
+
+	public List<String> getParamNames() {
+		return _paramNames;
+	}
+
+	public void setParamNames(List<String> paramNames) {
+		this._paramNames = paramNames;
+	}
+
+	public List<Object> getParams() {
+		return _params;
+	}
+
+	public void setParams(List<Object> params) {
+		this._params = params;
+	}
+
+	public List<BooleanClauseOccur> getOccurs() {
+		return _occurs;
+	}
+
+	public void setOccurs(List<BooleanClauseOccur> occurs) {
+		this._occurs = occurs;
+	}
+	
+	public static List<BooleanClauseOccur> getBooleanClauseOccurs(
+			String pattern, List<String> subQueries) {
+		List<BooleanClauseOccur> booleanClauseOccurs = new ArrayList<BooleanClauseOccur>();
+		pattern = pattern.replaceAll(Pattern.quote("("), StringPool.BLANK);
+
+		pattern = pattern.replaceAll("\\)", StringPool.BLANK);
+
+		pattern = pattern.replaceAll(StringPool.SPACE, StringPool.BLANK);
+		for (String subQuery : subQueries) {
+			subQuery = subQuery.replaceAll(StringPool.SPACE, StringPool.BLANK);
+			pattern = pattern.replace(subQuery, StringPool.BLANK);
+		}
+
+		pattern = pattern.replaceAll("\\]\\[", StringPool.COMMA);
+
+		pattern = pattern.replaceAll("\\[", StringPool.BLANK);
+
+		pattern = pattern.replaceAll("\\]", StringPool.BLANK);
+
+		String[] conditions = StringUtil.split(pattern);
+
+		if (conditions != null && conditions.length > 0) {
+			for (int c = 0; c < conditions.length; c++) {
+				if (conditions[c].equalsIgnoreCase("and")) {
+					booleanClauseOccurs.add(BooleanClauseOccur.MUST);
+				} else if (conditions[c].equalsIgnoreCase("or")) {
+					booleanClauseOccurs.add(BooleanClauseOccur.SHOULD);
+				} else if (conditions[c].equalsIgnoreCase("not")) {
+					booleanClauseOccurs.add(BooleanClauseOccur.MUST_NOT);
+				}
+			}
+		}
+
+		return booleanClauseOccurs;
+	}
+	
+	
+	public static List<BooleanQuery> createBooleanQueries(
+			List<String> subQueries, List<Object> params,
+			List<String> paramNames, SearchContext searchContext)
+			throws ParseException {
+		List<BooleanQuery> booleanQueries = new ArrayList<BooleanQuery>();
+		if (subQueries != null) {
+			for (String subQuery : subQueries) {
+				String[] terms = StringUtil.split(subQuery);
+				if (terms != null && terms.length > 0) {
+					BooleanQuery query = BooleanQueryFactoryUtil
+							.create(searchContext);
+					for (int t = 0; t < terms.length; t++) {
+						int paramPossition = subQueries.indexOf(subQuery)
+								* terms.length + t;
+						// String term = terms[t].trim().toLowerCase();
+						String term = terms[t].trim();
+						String key = StringPool.BLANK;
+						if (term.contains((StringPool.EQUAL.toLowerCase()))) {
+							key = term
+									.substring(
+											0,
+											term.indexOf(StringPool.EQUAL
+													.toLowerCase())).trim();
+							// addExactTerm(query, key,
+							// params.get(paramPossition));
+
+							TermQuery termQuery = null;
+
+							Object tempValue = params.get(paramPossition);
+
+							if (tempValue instanceof Long) {
+								termQuery = TermQueryFactoryUtil.create(
+										searchContext, key, (long) tempValue);
+							} else {
+								termQuery = TermQueryFactoryUtil.create(
+										searchContext, key,
+										String.valueOf(tempValue));
+							}
+
+							if (termQuery != null) {
+								query.add(termQuery, BooleanClauseOccur.MUST);
+							}
+						} else if (term.contains(StringPool.LIKE.toLowerCase())) {
+							key = term
+									.substring(
+											0,
+											term.indexOf(StringPool.LIKE
+													.toLowerCase())).trim();
+
+							query.addTerm(key, params.get(paramPossition)
+									.toString(), true);
+
+						} else if (term.contains(StringPool.BETWEEN
+								.toLowerCase())) {
+							key = term.substring(
+									0,
+									term.indexOf(StringPool.BETWEEN
+											.toLowerCase())).trim();
+//							query = addRangeTerm(query, key,
+//									params.get(paramPossition));
+						}
+
+						if (Validator.isNotNull(key)) {
+							paramNames.add(key);
+						}
+
+					}
+
+					booleanQueries.add(query);
+				}
+			}
+		}
+		return booleanQueries;
+	}
+
  }

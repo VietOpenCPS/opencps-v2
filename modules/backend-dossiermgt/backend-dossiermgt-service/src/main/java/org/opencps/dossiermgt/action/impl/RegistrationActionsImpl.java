@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.action.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.RegistrationLog;
 import org.opencps.dossiermgt.model.impl.RegistrationImpl;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLogLocalServiceUtil;
@@ -17,6 +19,7 @@ import org.opencps.dossiermgt.service.RegistrationLogLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -186,4 +189,33 @@ public class RegistrationActionsImpl implements RegistrationActions {
 //		model.setRegistrationId(registrationId);
 //		return RegistrationLocalServiceUtil.updateRegistration(model);
 //	}
+
+	//18
+	@Override
+	public JSONObject getFormDataByFormNo(long userId, long companyId, LinkedHashMap<String, Object> params, Sort[] object, int start,
+			int end, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		
+		Hits hits = null;
+		_log.info("companyId:"+companyId);
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(companyId);
+		
+		try {
+			
+			hits = RegistrationFormLocalServiceUtil.searchLucene(params, object, start, end, searchContext);
+			
+			result.put("data", hits.toList());
+			
+			long total = RegistrationFormLocalServiceUtil.countLucene(params, searchContext);
+			
+			result.put("total", total);
+			
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		
+		return result;
+	}
 }

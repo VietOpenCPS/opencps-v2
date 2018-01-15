@@ -13,4 +13,5 @@ public class RegistrationFormTerm {
 	public static final String ISNEW = "isNew";
 	public static final String REMOVED = "removed";
 	public static final String VERSION = "version";
+	public static final String FORM_DATA = "formData";
 }

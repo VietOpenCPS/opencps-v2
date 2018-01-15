@@ -41,6 +41,4 @@ public interface RegistrationFormActions {
 	public JSONObject getRegistrationForms(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
 
-	//TODO: 18
-	public JSONArray getFormDataByFormNo(long groupId, long registrationId, String formNo, String[] splitProperties) throws JSONException;
 }

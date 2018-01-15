@@ -20,8 +20,11 @@
 <#assign api = (Request.api)!>
 <#assign ajax = (Request.ajax)!>
 <#assign applicantId = (Request.applicantId)!>
+<#assign applicant = (Request.applicant)!>
+<#assign employee = (Request.employee)!>
 
 <#assign portalURL = (themeDisplay.getPortalURL())!>
+
 </#if>
 
 <!-- popup notification -->
