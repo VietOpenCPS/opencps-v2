@@ -34,7 +34,6 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="expireDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="revalidate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="deliverableState" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="formData" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -55,8 +54,6 @@ import javax.xml.bind.annotation.XmlType;
     "expireDate",
     "revalidate",
     "deliverableState",
-    "formData",
-    "keyword"
 })
 public class DeliverableInputModel {
 
@@ -80,10 +77,6 @@ public class DeliverableInputModel {
     protected String revalidate;
 	@FormParam(value = "deliverableState")
     protected String deliverableState;
-	@FormParam(value = "formData")
-    protected String formData;
-	@FormParam(value = "keyword")
-    protected String keyword;
 
     /**
      * Gets the value of the deliverableType property.
@@ -323,38 +316,6 @@ public class DeliverableInputModel {
      */
 	public void setDeliverableState(String deliverableState) {
 		this.deliverableState = deliverableState;
-	}
-
-    /**
-     * Gets the value of the formData property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-	public String getFormData() {
-		return formData;
-	}
-
-    /**
-     * Sets the value of the formData property.
-     * 
-     * @param formData
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-	public void setFormData(String formData) {
-		this.formData = formData;
-	}
-
-	public String getKeyword() {
-		return keyword;
-	}
-
-	public void setKeyword(String keyword) {
-		this.keyword = keyword;
 	}
 
 }

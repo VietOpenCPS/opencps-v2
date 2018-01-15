@@ -299,7 +299,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 	@Override
 	public Response updateFormData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, Long id, DeliverableInputModel input) {
+			User user, ServiceContext serviceContext, Long id, String formdata) {
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -311,7 +311,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			DeliverableActions actions = new DeliverableActionsImpl();
 
-			Deliverable deliverable = actions.updateFormData(groupId, id, input.getFormData(), serviceContext);
+			Deliverable deliverable = actions.updateFormData(groupId, id, formdata, serviceContext);
 
 			String formData = deliverable.getFormData();
 
@@ -489,7 +489,8 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 	//18
 	@Override
 	public Response getDataFormByTypeCode(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String agencyNo, String typeCode, DeliverableInputModel input) {
+			Locale locale, User user, ServiceContext serviceContext, String agencyNo, String typeCode,
+			String keyword) {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -501,7 +502,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			String keyword = input.getKeyword();
 
 			JSONObject keyJson = JSONFactoryUtil.createJSONObject(keyword);
 			
