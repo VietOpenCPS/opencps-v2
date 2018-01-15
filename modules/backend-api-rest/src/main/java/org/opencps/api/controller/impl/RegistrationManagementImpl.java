@@ -461,7 +461,10 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			//TODO
 			agencyNo = "";
 //			if (Validator.isNotNull(applicantNo) && Validator.isNotNull(agencyNo)) {
-			regInfo = RegistrationLocalServiceUtil.getByApplicantAndAgency(groupId, applicantNo, agencyNo);
+				_log.info("groupId "+groupId);
+				_log.info("applicantNo "+applicantNo);
+				regInfo = RegistrationLocalServiceUtil.getByApplicantAndAgency(groupId, applicantNo, agencyNo);
+				_log.info("id reg "+regInfo.getRegistrationId());
 //			}
 			if (regInfo != null) {
 				registrationId = regInfo.getRegistrationId();
@@ -482,6 +485,10 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			String pattern = String.valueOf(keyJson.get("query"));
 			String paramValues = String.valueOf(keyJson.get("values"));
 			String paramTypes = String.valueOf(keyJson.get("type"));
+			_log.info("keyword "+keyword);
+			_log.info("pattern "+pattern);
+			_log.info("paramValues "+paramValues);
+			_log.info("paramTypes "+paramTypes);
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));

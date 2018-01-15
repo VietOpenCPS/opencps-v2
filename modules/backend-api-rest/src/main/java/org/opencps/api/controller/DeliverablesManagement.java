@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -125,7 +126,7 @@ public interface DeliverablesManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access defined", response = ExceptionModel.class) })
 	public Response updateFormData(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@ApiParam(value = "id of Deliverable", required = true) @PathParam("id") Long id, @BeanParam DeliverableInputModel input);
+			@ApiParam(value = "id of Deliverable", required = true) @PathParam("id") Long id, @FormParam("formdata") String formdata);
 
 	@GET
 	@Path("/deliverables/{id}/formscript")
@@ -192,7 +193,7 @@ public interface DeliverablesManagement {
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "id for agency", required = true) @PathParam("agencyNo") String agencyNo,
 			@ApiParam(value = "id for type", required = true) @PathParam("typeCode") String typeCode,
-			@BeanParam DeliverableInputModel search);
+			@FormParam("keyword") String keyword);
 	
 	/* Get list dataform by agencyNo and typeCode - END */
 }

@@ -32,6 +32,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.User;
@@ -363,6 +365,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		// Add params query
 		int count = 0;
+		
 		if (_subQueries != null && _subQueries.size() > 0) {
 			for (BooleanQuery boolQuery : _subQueries) {
 				if (count == 0) {
@@ -475,6 +478,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		// Add params query
 		int count = 0;
+		_log.info("_subQueries"+_subQueries);
 		if (_subQueries != null && _subQueries.size() > 0) {
 			for (BooleanQuery boolQuery : _subQueries) {
 				if (count == 0) {
@@ -1014,4 +1018,5 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		}
 		return booleanQueries;
 	}
+	private static Log _log = LogFactoryUtil.getLog(RegistrationFormLocalServiceImpl.class);
 }
