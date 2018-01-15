@@ -27,8 +27,6 @@ import org.opencps.dossiermgt.action.impl.DeliverableLogActionsImpl;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableLog;
-import org.opencps.dossiermgt.model.Registration;
-import org.opencps.dossiermgt.model.impl.DeliverableImpl;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -526,7 +524,8 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 //			}
 			
 			DeliverableActions actions = new DeliverableActionsImpl();
-			DeliverableResultModel results = new DeliverableResultModel();
+//			DeliverableResultModel results = new DeliverableResultModel();
+			JSONObject results = JSONFactoryUtil.createJSONObject();
 			
 			Sort[] sorts = new Sort[] {
 					SortFactoryUtil.create(Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true) };
@@ -534,11 +533,24 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			JSONObject jsonData = actions.getFormDataByTypecode(serviceContext.getCompanyId(), params, sorts,
 					-1, -1, serviceContext);
 
-			results.setTotal(jsonData.getInt("total"));
-			results.getData()
-					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
+//			results.setTotal(jsonData.getInt("total"));
+//			results.getData()
+//					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
 
-			return Response.status(200).entity(results).build();
+			//TODO
+			results.put("total", jsonData.getInt("total"));
+//			results.getData()
+//					.addAll(
+			List<Document> docList =(List<Document>) jsonData.get("data");
+
+			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
+			for (Document doc : docList) {
+				String formData = doc.get(DeliverableTerm.FORM_DATA);
+				formDataArr.put(JSONFactoryUtil.createJSONObject(formData));
+			}
+			results.put("data", formDataArr);
+
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();

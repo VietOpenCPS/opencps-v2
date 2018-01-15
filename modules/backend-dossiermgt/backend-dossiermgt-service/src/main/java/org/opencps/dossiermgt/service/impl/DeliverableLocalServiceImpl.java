@@ -162,8 +162,24 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String paramValues = String.valueOf(params.get("paramValues"));
 		String paramTypes = String.valueOf(params.get("paramTypes"));
 		//Query elastic
+//		List<BooleanQuery> _subQueries = null;
+//		List<BooleanClauseOccur> _occurs = null;
 		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
 			LuceneQuery( pattern, paramValues, paramTypes, searchContext);
+//			org.opencps.dossiermgt.action.util.LuceneQuery(pattern, paramValues, paramTypes, searchContext);
+//			org.opencps.dossiermgt.action.util.LuceneQuery queryLucene = new org.opencps.dossiermgt.action.util.LuceneQuery(pattern, paramValues, paramTypes, searchContext);
+//			_subQueries = queryLucene.getSubQueries();
+//			_occurs = queryLucene.getOccurs();
+		} else {
+			this.setOccurs(null);
+			this.setParams(null);
+			this.setPattern(null);
+			this.setQuery(null);
+			this.setSubPatterns(null);
+			this.setSubQueries(null);
+			this.setSearchContext(null);
+			this.setParamNames(null);
+			this.setParamTypes(null);
 		}
 
 		// Set value header
@@ -285,8 +301,24 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String paramValues = String.valueOf(params.get("paramValues"));
 		String paramTypes = String.valueOf(params.get("paramTypes"));
 		//Query elastic
+//		List<BooleanQuery> _subQueries = null;
+//		List<BooleanClauseOccur> _occurs = null;
 		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
 			LuceneQuery( pattern, paramValues, paramTypes, searchContext);
+//			org.opencps.dossiermgt.action.util.LuceneQuery(pattern, paramValues, paramTypes, searchContext);
+//			org.opencps.dossiermgt.action.util.LuceneQuery queryLucene = new org.opencps.dossiermgt.action.util.LuceneQuery(pattern, paramValues, paramTypes, searchContext);
+//			_subQueries = queryLucene.getSubQueries();
+//			_occurs = queryLucene.getOccurs();
+		} else {
+			this.setOccurs(null);
+			this.setParams(null);
+			this.setPattern(null);
+			this.setQuery(null);
+			this.setSubPatterns(null);
+			this.setSubQueries(null);
+			this.setSearchContext(null);
+			this.setParamNames(null);
+			this.setParamTypes(null);
 		}
 
 		// Set value header
@@ -441,7 +473,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		long userId = serviceContext.getUserId();
 
 		Date now = new Date();
-		
+
 		Deliverable object = null;
 		object = deliverablePersistence.findByG_DID(groupId, id);
 		
@@ -456,20 +488,6 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		return deliverablePersistence.update(object);
 	}
 	/////////////////////
-//	public static void main(String[] args) throws ParseException {
-//		String pattern = "(dossierStatus = ?) [and] (serviceInfoNo = ?) [and] (govAgencyCode = ?) [and] (dossierTemplateNo = ?)";
-//		List<String> subQueries = new ArrayList<String>();
-//		List<String> test = getSubQueries(pattern, subQueries);
-//		for (String string : test) {
-//			System.out.println(string);
-//		}
-//		String aaaa= "dossierStatus = ?";
-//		String[] bbbb = StringUtil.split(aaaa);
-//		for (String string : bbbb) {
-//			System.out.println(string);
-//		}
-//		String xxx = StringPool.POUND;
-//	}
 	/**
 	 * @param pattern
 	 * @return
