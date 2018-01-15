@@ -134,8 +134,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					revalidate = formDataContent.getString("revalidate");
 
 					formData = formDataContent.toString();
-					
-					_log.info("FormData........... "+formData);
+
+					_log.info("FormData........... " + formData);
 
 				}
 
@@ -178,35 +178,41 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			String entryKey = entry.getKey();
 
 			String entryValue = GetterUtil.getString(entry.getValue());
-			
-			
+
 			String uEntryValue = StringPool.BLANK;
-			
-			_log.info("EntryKey"+entryValue);
+
+			JSONObject jEntryValue = JSONFactoryUtil.createJSONObject();
+
+			_log.info("EntryKey" + entryValue);
 
 			if (entryValue.startsWith("#") && entryValue.contains("@")) {
-				_log.info("GetElementForm___"+entryValue);
-				
-				//TODO review entryvalue
+				_log.info("GetElementForm___" + entryValue);
+
+				// TODO review entryvalue
 				uEntryValue = getValueElementFormData(srcFormData, entryValue);
+				entry.setValue(uEntryValue);
+
 			}
 
 			if (entryValue.contains(SPEC_DELIVERABLES) || entryValue.contains(SPEC_DOSSIER_FILE_ID)
 					|| entryValue.contains(SPEC_DELIVERABLE_CODE) || entryValue.contains(SPEC_SUBJECT)) {
-				_log.info("SpecialForm"+entryValue);
+				_log.info("SpecialForm" + entryValue);
 
 				uEntryValue = getSpecialValue(entryValue);
+				entry.setValue(uEntryValue);
+
 			}
 
 			if (entryValue.startsWith("#") && !entryValue.contains("@")) {
-				_log.info("GetAllForm"+entryValue);
-				
+				_log.info("GetAllForm" + entryValue);
+
 				entryValue = StringUtil.replaceFirst(entryValue, "#", StringPool.BLANK);
 
-				uEntryValue = getValueFormData(entryValue, dossierId);
-			}
+				jEntryValue = getValueFormData(entryValue, dossierId);
 
-			entry.setValue(uEntryValue);
+				entry.setValue(jEntryValue);
+
+			}
 
 		}
 
@@ -215,25 +221,24 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		return returnOBJ;
 	}
 
-	private String getValueFormData(String fileTemplateNo, long dossierId) {
+	private JSONObject getValueFormData(String fileTemplateNo, long dossierId) {
 		DossierFile dossierFile = null;
-		String formValue = StringPool.BLANK;
-		
+		JSONObject formValue = JSONFactoryUtil.createJSONObject();
+
 		try {
-			_log.info("fileTemplateNo"+fileTemplateNo);
+			_log.info("fileTemplateNo" + fileTemplateNo);
 
 			dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_DPT_First(dossierId, fileTemplateNo, 2,
 					false, new DossierFileComparator(false, "createDate", Date.class));
-			
-			_log.info("dossierFile_____"+Validator.isNotNull(dossierFile));
 
+			_log.info("dossierFile_____" + Validator.isNotNull(dossierFile));
+
+			if (Validator.isNotNull(dossierFile)) {
+				formValue = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
+			}
 
 		} catch (Exception e) {
 			_log.error(e);
-		}
-		
-		if (Validator.isNotNull(dossierFile)) {
-			formValue = dossierFile.getFormData();
 		}
 
 		return formValue;
@@ -344,8 +349,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 						if (Validator.isNotNull(model.getFormData()))
 							jsFormData = JSONFactoryUtil.createJSONObject(model.getFormData());
-						
-						_log.info("FORM_DATA"+jsFormData);
+
+						_log.info("FORM_DATA" + jsFormData);
 
 						formDataContent = mappingContent(jsMappingData, jsFormData, model.getDossierId());
 
