@@ -198,7 +198,7 @@ public class RegistrationActionsImpl implements RegistrationActions {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		
 		Hits hits = null;
-		
+		_log.info("companyId:"+companyId);
 		SearchContext searchContext = new SearchContext();
 		searchContext.setCompanyId(companyId);
 		
