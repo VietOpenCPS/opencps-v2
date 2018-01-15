@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 @Component(immediate = true, service = ModelListener.class)
@@ -185,6 +186,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 			if (entryValue.startsWith("#") && entryValue.contains("@")) {
 				_log.info("GetElementForm___"+entryValue);
+				
+				//TODO review entryvalue
 				uEntryValue = getValueElementFormData(srcFormData, entryValue);
 			}
 
@@ -197,6 +200,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 			if (entryValue.startsWith("#") && !entryValue.contains("@")) {
 				_log.info("GetAllForm"+entryValue);
+				
+				entryValue = StringUtil.replaceFirst(entryValue, "#", StringPool.BLANK);
 
 				uEntryValue = getValueFormData(entryValue, dossierId);
 			}
@@ -213,7 +218,10 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 	private String getValueFormData(String fileTemplateNo, long dossierId) {
 		DossierFile dossierFile = null;
 		String formValue = StringPool.BLANK;
+		
 		try {
+			_log.info("fileTemplateNo"+fileTemplateNo);
+
 			dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_DPT_First(dossierId, fileTemplateNo, 2,
 					false, new DossierFileComparator(false, "createDate", Date.class));
 			
@@ -223,6 +231,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		} catch (Exception e) {
 			_log.error(e);
 		}
+		
 		if (Validator.isNotNull(dossierFile)) {
 			formValue = dossierFile.getFormData();
 		}
