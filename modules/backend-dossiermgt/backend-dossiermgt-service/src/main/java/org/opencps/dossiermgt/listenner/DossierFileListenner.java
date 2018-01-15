@@ -20,8 +20,7 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
-import org.opencps.dossiermgt.service.impl.DeliverableLocalServiceImpl;
-import org.opencps.dossiermgt.service.impl.DossierLocalServiceImpl;
+import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -32,14 +31,13 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
-//@Component(immediate = true, service = ModelListener.class)
+@Component(immediate = true, service = ModelListener.class)
 public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 	@Override
@@ -57,7 +55,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
 		serviceContext.setUserId(model.getUserId());
-		try {
+/*		try {
 			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
 					content, notificationType, payload, serviceContext);
 
@@ -75,7 +73,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			MessageBusUtil.sendMessage("kyso/engine/out/destination", message);
 		} catch (SystemException | PortalException e) {
 			e.printStackTrace();
-		}
+		}*/
 
 		// update deliverable
 
