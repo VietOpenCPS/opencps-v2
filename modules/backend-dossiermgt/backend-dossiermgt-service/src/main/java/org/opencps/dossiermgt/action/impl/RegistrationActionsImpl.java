@@ -192,7 +192,7 @@ public class RegistrationActionsImpl implements RegistrationActions {
 
 	//18
 	@Override
-	public JSONObject getFormDataByFormNo(long userId, long groupId, LinkedHashMap<String, Object> params, Sort[] object, int start,
+	public JSONObject getFormDataByFormNo(long userId, long companyId, LinkedHashMap<String, Object> params, Sort[] object, int start,
 			int end, ServiceContext serviceContext) {
 		// TODO Auto-generated method stub
 		JSONObject result = JSONFactoryUtil.createJSONObject();
@@ -200,7 +200,7 @@ public class RegistrationActionsImpl implements RegistrationActions {
 		Hits hits = null;
 		
 		SearchContext searchContext = new SearchContext();
-		searchContext.setCompanyId(groupId);
+		searchContext.setCompanyId(companyId);
 		
 		try {
 			

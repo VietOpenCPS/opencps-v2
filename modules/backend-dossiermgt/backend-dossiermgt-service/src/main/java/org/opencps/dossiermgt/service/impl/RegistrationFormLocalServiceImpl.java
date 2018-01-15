@@ -385,7 +385,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(RegistrationFormTerm.REGISTRATION_ID);
+				query.addFields(RegistrationFormTerm.REGISTRATION_FORM_ID);
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -401,6 +401,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		}
 		String referenceUid = GetterUtil.getString(params.get(RegistrationFormTerm.REFERENCE_UID));
 		String registrationId = String.valueOf(params.get(RegistrationFormTerm.REGISTRATION_ID));
+		_log.info("registrationId: "+registrationId);
 
 		if (Validator.isNotNull(referenceUid)) {
 			MultiMatchQuery query = new MultiMatchQuery(referenceUid);
@@ -419,6 +420,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		}
 		
 		String formNo = GetterUtil.getString(params.get(RegistrationFormTerm.FORM_NO));
+		_log.info("formNo: "+formNo);
 		if (Validator.isNotNull(formNo)) {
             MultiMatchQuery query = new MultiMatchQuery(formNo.toLowerCase());
 
@@ -437,6 +439,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
+		_log.info("groupId:"+groupId);
 
 		Indexer<RegistrationForm> indexer = IndexerRegistryUtil.nullSafeGetIndexer(RegistrationForm.class);
 
@@ -498,7 +501,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(RegistrationFormTerm.REGISTRATION_ID);
+				query.addFields(RegistrationFormTerm.REGISTRATION_FORM_ID);
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
