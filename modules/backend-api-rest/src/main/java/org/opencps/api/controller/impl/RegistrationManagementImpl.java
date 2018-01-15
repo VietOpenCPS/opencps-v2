@@ -129,7 +129,8 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	}
 
 	@Override
-	public Response add(HttpHeaders header, Company company, ServiceContext serviceContext, RegistrationInputModel input) {
+	public Response add(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, RegistrationInputModel input) {
 		RegistrationDetailModel result = null;
 		
 		long companyId = company.getCompanyId();

@@ -99,6 +99,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setCreateDate(now);
 		model.setModifiedDate(now);
 		model.setUserId(userAction.getUserId());
+		model.setCompanyId(companyId);
 
 		model.setApplicantName(applicantName);
 		model.setApplicantIdType(applicantIdType);
