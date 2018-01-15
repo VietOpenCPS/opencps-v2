@@ -177,7 +177,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 			String entryValue = GetterUtil.getString(entry.getValue());
 			
-			_log.info("EntryKey"+entryKey);
+			_log.info("EntryKey"+entryValue);
 
 			if (entryValue.startsWith("#") && entryValue.contains("@")) {
 				_log.info("GetElementForm___"+entryValue);
@@ -185,14 +185,14 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			}
 
 			if (entryValue.contains(SPEC_DELIVERABLES) || entryValue.contains(SPEC_DOSSIER_FILE_ID)
-					|| entryKey.contains(SPEC_DELIVERABLE_CODE) || entryKey.contains(SPEC_SUBJECT)) {
+					|| entryValue.contains(SPEC_DELIVERABLE_CODE) || entryValue.contains(SPEC_SUBJECT)) {
 				_log.info("SpecialForm"+entryValue);
 
 				entryValue = getSpecialValue(entryValue);
 			}
 
 			if (entryValue.startsWith("#") && !entryValue.contains("@")) {
-				_log.info("SpecialForm"+entryValue);
+				_log.info("GetAllForm"+entryValue);
 
 				entryValue = getValueFormData(entryValue, dossierId);
 			}
