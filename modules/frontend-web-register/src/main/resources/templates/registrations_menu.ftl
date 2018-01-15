@@ -60,9 +60,9 @@
 				
 					<strong class="btn-block">
 						#if(registrationState === 2){#
-							Đã duyệt
+							<span>Đã duyệt (#= kendo.toString(kendo.parseDate(modifiedDate, "yyyy-MM-ddTHH:mm:ss"), "dd/MM/yyyy - HH:mm")#)</span>
 						#}else {#
-							Chờ duyệt
+							<span>Chờ duyệt (#= kendo.toString(kendo.parseDate(modifiedDate, "yyyy-MM-ddTHH:mm:ss"), "dd/MM/yyyy - HH:mm")#)</span>
 						#}#
 
 					</strong>
