@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -174,26 +175,26 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 			String entryKey = entry.getKey();
 
-			String entryValue = StringPool.BLANK;
+			String entryValue = GetterUtil.getString(entry.getValue());
 			
 			_log.info("EntryKey"+entryKey);
 
-			if (entryKey.startsWith("#") && entryKey.contains("@")) {
+			if (entryValue.startsWith("#") && entryValue.contains("@")) {
 				_log.info("GetElementForm___"+entryValue);
-				entryValue = getValueElementFormData(srcFormData, entryKey);
+				entryValue = getValueElementFormData(srcFormData, entryValue);
 			}
 
-			if (entryKey.contains(SPEC_DELIVERABLES) || entryKey.contains(SPEC_DOSSIER_FILE_ID)
+			if (entryValue.contains(SPEC_DELIVERABLES) || entryValue.contains(SPEC_DOSSIER_FILE_ID)
 					|| entryKey.contains(SPEC_DELIVERABLE_CODE) || entryKey.contains(SPEC_SUBJECT)) {
 				_log.info("SpecialForm"+entryValue);
 
-				entryValue = getSpecialValue(entryKey);
+				entryValue = getSpecialValue(entryValue);
 			}
 
-			if (entryKey.startsWith("#") && !entryKey.contains("@")) {
+			if (entryValue.startsWith("#") && !entryValue.contains("@")) {
 				_log.info("SpecialForm"+entryValue);
 
-				entryValue = getValueFormData(entryKey, dossierId);
+				entryValue = getValueFormData(entryValue, dossierId);
 			}
 
 			entry.setValue(entryValue);
