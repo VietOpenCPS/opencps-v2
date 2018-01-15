@@ -332,6 +332,16 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		//Query elastic
 		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
 			LuceneQuery( pattern, paramValues, paramTypes, searchContext);
+		} else {
+			this.setOccurs(null);
+			this.setParams(null);
+			this.setPattern(null);
+			this.setQuery(null);
+			this.setSubPatterns(null);
+			this.setSubQueries(null);
+			this.setSearchContext(null);
+			this.setParamNames(null);
+			this.setParamTypes(null);
 		}
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -387,7 +397,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 		String referenceUid = GetterUtil.getString(params.get(RegistrationFormTerm.REFERENCE_UID));
-		String registrationId = GetterUtil.getString(params.get(RegistrationFormTerm.REGISTRATION_ID));
+		String registrationId = String.valueOf(params.get(RegistrationFormTerm.REGISTRATION_ID));
 
 		if (Validator.isNotNull(referenceUid)) {
 			MultiMatchQuery query = new MultiMatchQuery(referenceUid);
@@ -437,6 +447,16 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		//Query elastic
 		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
 			LuceneQuery( pattern, paramValues, paramTypes, searchContext);
+		} else {
+			this.setOccurs(null);
+			this.setParams(null);
+			this.setPattern(null);
+			this.setQuery(null);
+			this.setSubPatterns(null);
+			this.setSubQueries(null);
+			this.setSearchContext(null);
+			this.setParamNames(null);
+			this.setParamTypes(null);
 		}
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -489,7 +509,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 		String referenceUid = GetterUtil.getString(params.get(RegistrationFormTerm.REFERENCE_UID));
-		String registrationId = GetterUtil.getString(params.get(RegistrationFormTerm.REGISTRATION_ID));
+		String registrationId = String.valueOf(params.get(RegistrationFormTerm.REGISTRATION_ID));
 
 		if (Validator.isNotNull(referenceUid)) {
 			MultiMatchQuery query = new MultiMatchQuery(referenceUid);

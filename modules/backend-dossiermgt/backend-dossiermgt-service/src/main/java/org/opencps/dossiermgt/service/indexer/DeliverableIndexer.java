@@ -82,7 +82,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		document.addTextSortable(DeliverableTerm.APPLICANT_ID_NO, object.getApplicantIdNo());
 		document.addTextSortable(DeliverableTerm.APPLICANT_NAME, object.getApplicantName());
 		document.addTextSortable(DeliverableTerm.SUBJECT, object.getSubject());
-//		document.addTextSortable(DeliverableTerm.FORM_DATA, object.getFormData());
+		document.addTextSortable(DeliverableTerm.FORM_DATA, object.getFormData());
 
 		String formData = object.getFormData();
 		if (Validator.isNotNull(formData)) {
