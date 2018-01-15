@@ -175,6 +175,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			String entryKey = entry.getKey();
 
 			String entryValue = StringPool.BLANK;
+			
+			_log.info("EntryKey"+entryKey);
 
 			if (entryKey.startsWith("#") && entryKey.contains("@")) {
 				_log.info("GetElementForm___"+entryValue);
@@ -328,6 +330,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 						if (Validator.isNotNull(model.getFormData()))
 							jsFormData = JSONFactoryUtil.createJSONObject(model.getFormData());
+						
+						_log.info("FORM_DATA"+jsFormData);
 
 						formDataContent = mappingContent(jsMappingData, jsFormData, model.getDossierId());
 
