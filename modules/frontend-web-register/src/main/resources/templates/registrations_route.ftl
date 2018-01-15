@@ -90,7 +90,8 @@
 						type : "GET",
 						headers : {"groupId": ${groupId}},
 						data : {
-							owner: true
+							owner: true,
+							sort : "modified"
 						},
 						success : function(result){
 							result["data"] = result.total == 0?[]: result["data"];
@@ -392,10 +393,6 @@
 				success : function(result){
 					
 					vm.registrationsListView_dataSource.read();
-					vm.registrationsListView_dataSource.fetch(function(){
-						var registrationsListView = $("#registrationsListView").data("kendoListView");
-						registrationsListView.select(registrationsListView.element.children().last());
-					});
 					
 					//$("#registrationsListView").getKendoListView().dataSource.read();
 				},
@@ -441,7 +438,7 @@
 						notification.show({
 							message: "Yêu cầu được thực hiện thành công"
 						}, "success");
-						vm.registrationsListView_dataSource.read();
+						vm.registrationFormsListView_dataSource.read();
 						//$("#registrationsListView").getKendoListView().dataSource.read();
 					},
 					error:function(xhr){
@@ -494,7 +491,7 @@
 						notification.show({
 							message: "Yêu cầu được thực hiện thành công"
 						}, "success");
-						vm.registrationsListView_dataSource.read();
+						vm.registrationFormsListView_dataSource.read();
 						//$("#registrationsListView").getKendoListView().dataSource.read();
 					},
 					error:function(xhr){
