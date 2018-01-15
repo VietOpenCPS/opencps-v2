@@ -66,6 +66,7 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -185,6 +186,12 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		
 		if (Boolean.parseBoolean(isSync)) {
 			object.setIsNew(true);
+		}
+		
+		String deliverableCode = PwdGenerator.getPassword(10);
+		
+		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
+			object.setDeliverableCode(deliverableCode);
 		}
 
 		return dossierFilePersistence.update(object);
