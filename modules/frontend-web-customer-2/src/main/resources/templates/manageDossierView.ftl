@@ -114,7 +114,12 @@
 				</td>
 
 				<td class="text-center" style="width: 8%">
-						<p title="Mã hồ sơ"><strong>#=dossierId#</strong></p>
+						<p title="Mã hồ sơ">
+							#if(dossierIdCTN){#
+								<strong>#=dossierIdCTN#</strong>
+							#}#
+							
+						</p>
 					
 						<p title="Số hồ sơ">#=dossierNo#</p>
 				</td>
