@@ -171,9 +171,9 @@ public class RegistrationUtils {
 
 			model.setRegistrationId(registrationId);
 			model.setUserId(userId);
-			model.setCreateDate(APIDateTimeUtils.convertDateToString(registration.getCreateDate()));
-			model.setModifiedDate(APIDateTimeUtils.convertDateToString(registration.getModifiedDate()));
-			model.setApplicantIdDate(APIDateTimeUtils.convertDateToString(registration.getApplicantIdDate()));
+			model.setCreateDate(APIDateTimeUtils.convertDateToString(registration.getCreateDate(), APIDateTimeUtils._TIMESTAMP));
+			model.setModifiedDate(APIDateTimeUtils.convertDateToString(registration.getModifiedDate(), APIDateTimeUtils._TIMESTAMP));
+			model.setApplicantIdDate(APIDateTimeUtils.convertDateToString(registration.getApplicantIdDate(), APIDateTimeUtils._TIMESTAMP));
 			model.setApplicantName(registration.getApplicantName());
 			model.setApplicantIdType(registration.getApplicantIdType());
 			model.setApplicantIdNo(registration.getApplicantIdNo());
