@@ -165,7 +165,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 			String entryValue = StringPool.BLANK;
 
-			if (entryKey.contains("@") && !entryKey.startsWith("#")) {
+			if (entryKey.startsWith("#") && entryKey.contains("@")) {
 				entryValue = getValueElementFormData(srcFormData, entryKey);
 			}
 
@@ -174,7 +174,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				entryValue = getSpecialValue(entryKey);
 			}
 
-			if (entryKey.startsWith("#") && entryKey.contains("@")) {
+			if (entryKey.startsWith("#") && !entryKey.contains("@")) {
 				entryValue = getValueFormData(entryKey, dossierId);
 			}
 
