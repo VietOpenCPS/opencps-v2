@@ -47,7 +47,7 @@
 				<span class="text-bold">Trạng thái</span>: <i data-bind="text:dossierStatusText"></i>
 			</div>
 			<div class="col-sm-7">
-				<span class="text-bold">Mã hồ sơ</span>: <span data-bind="text : dossierId"></span>
+				<span class="text-bold">Mã hồ sơ</span>: <span data-bind="text : dossierIdCTN"></span>
 			</div>
 		</div>
 
@@ -1161,7 +1161,13 @@
 
 					var viewModel = kendo.observable({
 
-						dossierId : result.dossierId,
+						dossierIdCTN : function(e){
+							if(result.dossierIdCTN){
+								return result.dossierIdCTN;
+							}
+
+							return "";
+						},
 						serviceName : result.serviceName,
 						govAgencyName : result.govAgencyName,
 

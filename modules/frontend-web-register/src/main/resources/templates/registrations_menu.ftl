@@ -58,21 +58,24 @@
 					
 				<div class="col-sm-9 PL0 PT5">
 				
-					<strong class="btn-block">
+					<div class="btn-block" style="font-size: 12px;">
 						#if(registrationState === 2){#
-							<span>Đã duyệt (#= kendo.toString(kendo.parseDate(modifiedDate, "yyyy-MM-ddTHH:mm:ss"), "dd/MM/yyyy - HH:mm")#)</span>
+							<strong>Đã duyệt</strong> &nbsp; (#= kendo.toString(kendo.parseDate(modifiedDate, "yyyy-MM-ddTHH:mm:ss"), "dd/MM/yyyy HH:mm")#)
+						#}else if(registrationState === 1){#
+							<strong>Chờ duyệt<strong> &nbsp; (#= kendo.toString(kendo.parseDate(modifiedDate, "yyyy-MM-ddTHH:mm:ss"), "dd/MM/yyyy HH:mm")#)
+						#}else if(registrationState === 0){#
+							<strong>Lưu nháp<strong> &nbsp; (#= kendo.toString(kendo.parseDate(modifiedDate, "yyyy-MM-ddTHH:mm:ss"), "dd/MM/yyyy HH:mm")#)
 						#}else {#
-							<span>Chờ duyệt (#= kendo.toString(kendo.parseDate(modifiedDate, "yyyy-MM-ddTHH:mm:ss"), "dd/MM/yyyy - HH:mm")#)</span>
+							<strong>Yêu cầu bổ sung<strong> &nbsp; (#= kendo.toString(kendo.parseDate(modifiedDate, "yyyy-MM-ddTHH:mm:ss"), "dd/MM/yyyy HH:mm")#)
 						#}#
-
-					</strong>
+					</div>
 				
 				</div>
 				
 				# if ( viewRegistrationModel.registrationModel.selected == true ) { #
 					<span class="col-sm-1 PL0 PR0 PT5"></span>
 				#} else { viewRegistrationModel.registrationModel.selected = true;#
-					<span class="col-sm-1 PL0 PR0 fa fa-check PT5"></span>
+					<span class="col-sm-1 PL0 PR0 fa fa-arrow-right PT5"></span>
 				#}#
 			 </li>
 			
