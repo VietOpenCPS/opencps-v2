@@ -177,15 +177,20 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			String entryValue = StringPool.BLANK;
 
 			if (entryKey.startsWith("#") && entryKey.contains("@")) {
+				_log.info("GetElementForm___"+entryValue);
 				entryValue = getValueElementFormData(srcFormData, entryKey);
 			}
 
 			if (entryKey.contains(SPEC_DELIVERABLES) || entryKey.contains(SPEC_DOSSIER_FILE_ID)
 					|| entryKey.contains(SPEC_DELIVERABLE_CODE) || entryKey.contains(SPEC_SUBJECT)) {
+				_log.info("SpecialForm"+entryValue);
+
 				entryValue = getSpecialValue(entryKey);
 			}
 
 			if (entryKey.startsWith("#") && !entryKey.contains("@")) {
+				_log.info("SpecialForm"+entryValue);
+
 				entryValue = getValueFormData(entryKey, dossierId);
 			}
 
@@ -204,6 +209,9 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		try {
 			dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_DPT_First(dossierId, fileTemplateNo, 2,
 					false, new DossierFileComparator(false, "createDate", Date.class));
+			
+			_log.info("dossierFile_____"+Validator.isNotNull(dossierFile));
+
 
 		} catch (Exception e) {
 
@@ -223,7 +231,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			formData.getString(key);
 		}
 
-		return null;
+		return elmValue;
 	}
 
 	private String getSpecialValue(String key) {
