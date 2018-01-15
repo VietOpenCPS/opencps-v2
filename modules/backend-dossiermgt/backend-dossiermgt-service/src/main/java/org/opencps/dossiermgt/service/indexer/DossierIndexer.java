@@ -8,6 +8,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
+import java.util.UUID;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
@@ -256,6 +258,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addTextSortable(DossierTerm.DOSSIER_ID+"CTN", dossierIDCTN);
 		return document;
 	}
+
 
 	private boolean getDossierOverDue(long dossierId) {
 		// TODO add logic here
