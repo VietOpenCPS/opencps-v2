@@ -110,19 +110,8 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
                     keyValue[0] = key;
                     keyValue[1] = valueObject.toString();
                     keyValues.add(keyValue);
-                    parseJSONObject(keyValues, json.getJSONObject(key));
+                    parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
                 } catch(JSONException e) {
-                	// check json array
-                	try {
-//                		JSONArray valueArr = JSONFactoryUtil.createJSONArray(strObject);
-                		JSONArray jsonArray = json.getJSONArray(key);
-                      Object[] keyValue = new Object[2];
-                      // Tinh chung cho key cha
-                      keyValue[0] = key;
-                      keyValue[1] = jsonArray.toString();
-                      keyValues.add(keyValue);
-                      parseJSONObject(keyValues, jsonArray);
-                    } catch(JSONException e1) {
                     	// string
 						Object[] keyValue = new Object[2];
 						keyValue[0] = key;
@@ -178,7 +167,7 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 //                    keyValue[1] = strObject.toString();
 //                    keyValues.add(keyValue);
 //                }
-            }
+//            }
 
         }
         catch (Exception e2) {
@@ -188,6 +177,136 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
         return objects;
     }
 
+    //
+    protected List<Object[]> parseJSONObjectIndex(
+            List<Object[]> keyValues, JSONObject json, String keyJson) {
+
+            List<Object[]> objects = new ArrayList<Object[]>();
+            try {
+
+                Iterator<String> itr = json.keys();
+                while (itr.hasNext()) {
+                    String key = itr.next();
+                    String strObject = String.valueOf(json.get(key));
+                    // check json
+                    try {
+                    	JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
+                    	Object[] keyValue = new Object[2];
+                        keyValue[0] = keyJson +"."+ key;
+                        keyValue[1] = valueObject.toString();
+                        keyValues.add(keyValue);
+                        parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
+                    } catch(JSONException e) {
+                        	// string
+    						Object[] keyValue = new Object[2];
+    						keyValue[0] = keyJson +"."+ key;
+    						keyValue[1] = strObject.toString();
+    						keyValues.add(keyValue);
+                        }
+                    }
+            }
+            catch (Exception e2) {
+                _log.error(e2);
+            }
+
+            return objects;
+        }
+    //
+//    protected List<Object[]> parseJSONObject(
+//            List<Object[]> keyValues, JSONObject json) {
+//
+//            List<Object[]> objects = new ArrayList<Object[]>();
+//            try {
+//
+//                Iterator<String> itr = json.keys();
+//                while (itr.hasNext()) {
+//                    String key = itr.next();
+//                    String strObject = String.valueOf(json.get(key));
+//                    // check json
+//                    try {
+//                    	JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
+//                    	Object[] keyValue = new Object[2];
+//                        keyValue[0] = key;
+//                        keyValue[1] = valueObject.toString();
+//                        keyValues.add(keyValue);
+//                        parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
+//                    } catch(JSONException e) {
+//                    	// check json array
+////                    	try {
+//////                    		JSONArray valueArr = JSONFactoryUtil.createJSONArray(strObject);
+////                    		JSONArray jsonArray = json.getJSONArray(key);
+////                          Object[] keyValue = new Object[2];
+////                          // Tinh chung cho key cha
+////                          keyValue[0] = key;
+////                          keyValue[1] = jsonArray.toString();
+////                          keyValues.add(keyValue);
+////                          parseJSONObject(keyValues, jsonArray);
+////                        } catch(JSONException e1) {
+//                        	// string
+//    						Object[] keyValue = new Object[2];
+//    						keyValue[0] = key;
+//    						keyValue[1] = strObject.toString();
+//    						keyValues.add(keyValue);
+//                        }
+//                    }
+//                    
+//                    
+////                  if (strObject.contains("[{") && strObject.contains("}]")) {
+////                	  JSONArray jsonArray = json.getJSONArray(key);
+////                      Object[] keyValue = new Object[2];
+////                      // Tinh chung cho key cha
+////                      keyValue[0] = key;
+////                      keyValue[1] = jsonArray.toString();
+////                      keyValues.add(keyValue);
+////                      parseJSONObject(keyValues, jsonArray);
+////    			} else if (strObject.contains("{") && strObject.contains("}")) {
+////    				JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
+////    				// Tinh chung cho key cha.
+////                    Object[] keyValue = new Object[2];
+////                    keyValue[0] = key;
+////                    keyValue[1] = valueObject.toString();
+////                    keyValues.add(keyValue);
+////                    parseJSONObject(keyValues, json.getJSONObject(key));
+////    			}else {
+////                        Object[] keyValue = new Object[2];
+////                        keyValue[0] = key;
+////                        keyValue[1] = strObject.toString();
+////                        keyValues.add(keyValue);
+////                    }
+////                    if (valueObject instanceof JSONObject) {
+////                        // Tinh chung cho key cha.
+////                        Object[] keyValue = new Object[2];
+////                        keyValue[0] = key;
+////                        keyValue[1] = valueObject.toString();
+////                        keyValues.add(keyValue);
+////                        parseJSONObject(keyValues, json.getJSONObject(key));
+////                    }
+////                    else if (valueArr instanceof JSONArray) {
+//////                    else if (object.getClass() == JSONArray.class) {
+////                        JSONArray jsonArray = json.getJSONArray(key);
+////                        Object[] keyValue = new Object[2];
+////                        // Tinh chung cho key cha
+////                        keyValue[0] = key;
+////                        keyValue[1] = jsonArray.toString();
+////                        keyValues.add(keyValue);
+////                        parseJSONObject(keyValues, jsonArray);
+////                    }
+////                    else {
+////                        Object[] keyValue = new Object[2];
+////                        keyValue[0] = key;
+////                        keyValue[1] = strObject.toString();
+////                        keyValues.add(keyValue);
+////                    }
+////                }
+//
+//            }
+//            catch (Exception e2) {
+//                _log.error(e2);
+//            }
+//
+//            return objects;
+//        }
+    
     protected List<Object[]> parseJSONObject(
         List<Object[]> keyValues, JSONArray jsonArray)
         throws JSONException {
