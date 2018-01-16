@@ -1,6 +1,7 @@
 package frontend.web.register.portlet;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -65,11 +66,19 @@ public class FrontendWebRegisterPortlet extends FreeMarkerPortlet {
 
 		Applicant applicant =
 			UserMgtUtils.getApplicant(themeDisplay.getUser().getEmailAddress());
+		
+		
+		
 
 		JSONObject applicantObj = JSONFactoryUtil.createJSONObject();
 		String jsonObj = JSONFactoryUtil.looseSerialize(applicant);
 		try {
 			applicantObj = JSONFactoryUtil.createJSONObject(jsonObj);
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+			String applicantIdDate = dateFormat.format(applicant.getApplicantIdDate());
+			_log.info("applicantIdDate =======================> : "+applicantIdDate);
+			_log.info("applicantIdDate_SOURCE =======================> : "+applicant.getApplicantIdDate().toString());
+			applicantObj.put("applicantIdDate", applicantIdDate);
 		}
 		catch (Exception e) {
 		}

@@ -45,7 +45,7 @@
 					
 				</div>
 				<div class="row" id="">
-					<span class="text-bold">Mã hồ sơ</span>: <span data-bind="text : dossierId"></span>
+					<span class="text-bold">Mã hồ sơ</span>: <span data-bind="text : dossierIdCTN"></span>
 				</div>
 			</div>
 			
@@ -872,7 +872,13 @@
 
 						var viewModel = kendo.observable({
 
-							dossierId : result.dossierId,
+							dossierIdCTN : function(e){
+								if(result.dossierIdCTN){
+									return result.dossierIdCTN;
+								}
+
+								return "";
+							},
 							serviceName : result.serviceName,
 							govAgencyName : result.govAgencyName,
 

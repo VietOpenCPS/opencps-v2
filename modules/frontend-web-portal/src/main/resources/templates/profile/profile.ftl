@@ -42,7 +42,7 @@
 								<p>Địa chỉ tổ chức</p>
 							</div>
 							<div class="col-sm-7">
-								<span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Nhập địa chỉ" tabindex="-1" class="" data-bind="text:address"> ${address} </span>
+								<span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Nhập địa chỉ" tabindex="-1" class="" data-bind="text:address"> </span>
 								<!-- <span class="pull-right">
 									<a href="#" id="editAddress" style="float: right"><i class="fa fa-pencil"></i></a>
 								</span> -->

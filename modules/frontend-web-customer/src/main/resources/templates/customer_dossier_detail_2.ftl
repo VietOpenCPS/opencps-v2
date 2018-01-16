@@ -3,6 +3,8 @@
 </#if>
 
 <div id="detailDossier">
+	
+	
 	<div class="box" >
 		<input type="hidden" name="dossierTemplateId" id="dossierTemplateId">
 		<input type="hidden" name="dossierItemId" id="dossierItemId">
@@ -158,7 +160,7 @@
 
 						<div class="actions">
 
-							<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" >
+							<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#">
 								<i class="fa fa-archive" aria-hidden="true"></i>
 							</a>
 
@@ -229,18 +231,6 @@
 </div>
 
 <div class="row-parts-content">
-	<div class="row MB5">
-
-		<div class="col-sm-1">
-			<label>Ghi chú</label>
-		</div>
-		<div class="col-sm-11">
-			<span id="applicantNote" data-pk="1" data-type="textarea" data-toggle="#editApplicantNote" data-original-title="Ghi chú" tabindex="-1" class="" data-bind="text:applicantNote"></span>
-			<span class="pull-right">
-				<a href="javascript:;" id="editApplicantNote" style="float: right"><i class="fa fa-pencil"></i></a>
-			</span>
-		</div>
-	</div>
 
 	<div class="checkbox ML15">
 		<input type="checkbox" data-bind="attr : {viaPostal: viaPostal}" name="viaPostal" id="viaPostal"> <label class="text-normal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
@@ -292,11 +282,39 @@
 		</div>
 
 	</div>
+
+	<div class="row">
+
+		<div class="col-sm-1">
+			<label>Ghi chú</label>
+		</div>
+		<div class="col-sm-11">
+			<span id="applicantNote" data-pk="1" data-type="textarea" data-toggle="#editApplicantNote" data-original-title="Ghi chú" tabindex="-1" class="" data-bind="text:applicantNote"></span>
+			<span class="pull-right">
+				<a href="javascript:;" id="editApplicantNote" style="float: right"><i class="fa fa-pencil"></i></a>
+			</span>
+		</div>
+
+	</div>
 </div>
 </div>
 
 <div class="button-row MT20">
+	<#if resCancelling?has_content >
+
 	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+
+	<#elseif sendAdd?has_content >
+
+	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+
+	<#else>
+
+	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+	
+	</#if>
+
+	
 	<button class="btn btn-active" id="btn-delete-dossier" data-bind="attr : {data-pk : dossierId}"><i class="fa fa-trash"></i> Xóa</button>
 </div>
 </div>
@@ -330,7 +348,9 @@
 		//tai giay to kho luu tru
 		$(".uploadfile-form-repository").unbind().click(function(){
 			var dossierId = "${(dossierId)!}";
-			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_detail_filetemplate}&${portletNamespace}dossierId="+dossierId,function(result){
+			var dossierTemplateNo = $("#dossierTemplateNo").val();
+			var partNo = $(this).attr("part-no");
+			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_detail_filetemplate}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
 				$(this).modal("show");
 			});
 		});
@@ -1414,7 +1434,8 @@
 			});
 		}
 	}
-
+	
+	$(document).off("click",".saveFormAlpaca");
 	$(document).on("click",".saveFormAlpaca",function(event){
 		var id = $(this).attr("data-pk");
 		var referentUidFile = $(this).attr("referenceUid");

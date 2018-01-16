@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.opencps.frontend.web.portal.constants.FrontendWebPortalPortletKeys;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.util.UserMgtUtils;
 import org.osgi.service.component.annotations.Component;
 
@@ -23,6 +24,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -61,6 +63,15 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 		String action = ParamUtil.getString(actionRequest, "action");
 		boolean rememberMe = ParamUtil.getBoolean(actionRequest, "rememberMe");
 		String authType = CompanyConstants.AUTH_TYPE_EA;
+		
+		if (!Validator.isEmailAddress(login)) {
+			
+			Applicant app = ApplicantLocalServiceUtil.fetchByAppId(login);
+			
+			if (Validator.isNotNull(app)) {
+				login = app.getContactEmail();
+			}
+		}
 		
 		Applicant applicant = UserMgtUtils.getApplicant(login);
 
