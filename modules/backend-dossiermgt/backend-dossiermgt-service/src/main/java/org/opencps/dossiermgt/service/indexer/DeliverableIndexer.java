@@ -61,17 +61,10 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
 
 		// add number fields
-		document.addNumber(DeliverableTerm.DELIVERABLE_ID, object.getDeliverableId());
+		document.addNumberSortable(DeliverableTerm.DELIVERABLE_ID, object.getDeliverableId());
 		document.addDateSortable(DeliverableTerm.ISSUE_DATE, object.getIssueDate());
 		document.addDateSortable(DeliverableTerm.EXPIRE_DATE, object.getExpireDate());
 		document.addDateSortable(DeliverableTerm.REVALIDATE, object.getRevalidate());
-
-		// add number fields
-//		document.addNumberSortable(DossierActionTerm.DOSSIER_ID, object.getDossierId());
-//		document.addNumberSortable(DossierActionTerm.SERVICE_PROCESS_ID, object.getServiceProcessId());
-//		document.addNumberSortable(DossierActionTerm.PREVIOUS_ACTION_ID, object.getPreviousActionId());
-//		document.addNumberSortable(DossierActionTerm.ACTION_OVER_DUE, object.getActionOverdue());
-//		document.addNumberSortable(DossierActionTerm.NEXT_ACTION_ID, object.getNextActionId());
 
 		// add text fields
 		document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, object.getDeliverableCode());
@@ -84,6 +77,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		document.addTextSortable(DeliverableTerm.SUBJECT, object.getSubject());
 		document.addTextSortable(DeliverableTerm.FORM_DATA, object.getFormData());
 
+		// add form data detail
 		String formData = object.getFormData();
 		if (Validator.isNotNull(formData)) {
 			List<Object[]> keyValues = new ArrayList<Object[]>();

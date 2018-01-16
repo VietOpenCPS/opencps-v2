@@ -61,15 +61,15 @@ public class DeliverableActionsImpl implements DeliverableActions {
 
 	//12
 	@Override
-	public JSONObject getFormDataByTypecode(long groupId, LinkedHashMap<String, Object> params, Sort[] object, int start,
+	public JSONObject getFormDataByTypecode(long companyId, LinkedHashMap<String, Object> params, Sort[] object, int start,
 			int end, ServiceContext serviceContext) {
 		// TODO Auto-generated method stub
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		
 		Hits hits = null;
-		
+		_log.info("companyId: "+companyId);
 		SearchContext searchContext = new SearchContext();
-		searchContext.setCompanyId(groupId);
+		searchContext.setCompanyId(companyId);
 		
 		try {
 			
@@ -127,7 +127,7 @@ public class DeliverableActionsImpl implements DeliverableActions {
 	}
 
 	@Override
-	public Deliverable getDetailById(Long id, long groupId) throws NoSuchDeliverableException {
+	public Deliverable getDetailById(long id, long groupId) throws NoSuchDeliverableException {
 		return DeliverableLocalServiceUtil.getDeliverableDetail(id, groupId);
 	}
 
@@ -140,9 +140,12 @@ public class DeliverableActionsImpl implements DeliverableActions {
 	}
 
 	@Override
-	public Deliverable deleteById(Long id, long groupId) throws NoSuchDeliverableException {
+	public Deliverable deleteById(long id, long groupId) throws NoSuchDeliverableException {
 		// TODO Auto-generated method stub
-		return DeliverableLocalServiceUtil.deleteDeliverable(groupId, id);
+		Deliverable deliverable = DeliverableLocalServiceUtil.deleteDeliverable(groupId, id);
+		_log.info("deliverable" +deliverable.getDeliverableCode());
+		
+		return deliverable;
 	}
 
 	@Override

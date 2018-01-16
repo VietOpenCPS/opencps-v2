@@ -31,6 +31,8 @@ import org.opencps.dossiermgt.model.DeliverableLog;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -43,6 +45,8 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DeliverablesManagementImpl implements DeliverablesManagement {
+
+	private static Log _log = LogFactoryUtil.getLog(DeliverablesManagementImpl.class);
 
 	@Override
 	public Response getDeliverables(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -210,18 +214,16 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				throw new UnauthenticationException();
 			}
 
+			_log.info("groupId: "+groupId +"*keyword*: "+ id);
 			DeliverableActions actions = new DeliverableActionsImpl();
 			DeliverableModel results = new DeliverableModel();
 
 			Deliverable deliverableInfo = actions.deleteById(id, groupId);
-
-//			if (Validator.isNull(deliverableInfo)) {
-//				serviceInfo = actions.getById(GetterUtil.getLong(id));
-//			}
-
+			_log.info("deliverableInfo: "+ deliverableInfo);
 			if (Validator.isNotNull(deliverableInfo)) {
 				results = DeliverableUtils.mappingToDeliverableDetailModel(deliverableInfo);
 			} else {
+				_log.error("==========");
 				throw new Exception();
 			}
 
@@ -502,7 +504,8 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
+			_log.info("groupId: "+groupId +"*keyword*: "+ keyword);
+			_log.info("agencyNo: "+agencyNo +"*typeCode*: "+ typeCode);
 			JSONObject keyJson = JSONFactoryUtil.createJSONObject(keyword);
 			
 			String pattern = String.valueOf(keyJson.get("query"));
@@ -533,6 +536,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			JSONObject jsonData = actions.getFormDataByTypecode(serviceContext.getCompanyId(), params, sorts,
 					-1, -1, serviceContext);
 
+			_log.info("total: "+jsonData.getInt("total"));
 //			results.setTotal(jsonData.getInt("total"));
 //			results.getData()
 //					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
@@ -546,6 +550,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 			for (Document doc : docList) {
 				String formData = doc.get(DeliverableTerm.FORM_DATA);
+				_log.info("formData: "+formData);
 				formDataArr.put(JSONFactoryUtil.createJSONObject(formData));
 			}
 			results.put("data", formDataArr);
