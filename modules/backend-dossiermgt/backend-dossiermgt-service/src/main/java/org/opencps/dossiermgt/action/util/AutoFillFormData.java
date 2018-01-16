@@ -278,6 +278,8 @@ public class AutoFillFormData {
 							} else {
 								jsonMap.put(entry.getKey(), myCHK.toString());
 							}
+						} else {
+							jsonMap.put(entry.getKey(), "");
 						}
 					} catch (SystemException e) {
 						e.printStackTrace();
