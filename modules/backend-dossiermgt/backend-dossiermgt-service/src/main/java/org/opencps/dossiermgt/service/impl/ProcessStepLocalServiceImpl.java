@@ -79,6 +79,10 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 	 * org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil} to access the
 	 * process step local service.
 	 */
+	
+	public List<ProcessStep> getByStatusAnsSubStatus(String dossierStatus, String dossierSubStatus, long groupId) {
+		return processStepPersistence.findByDST_DSST(dossierStatus, dossierSubStatus, groupId);
+	}
 
 	public List<ProcessStep> getBySC_SPID(String stepCode, long serviceProcessId) throws PortalException {
 		return processStepPersistence.findBySC_SPID(stepCode, serviceProcessId);

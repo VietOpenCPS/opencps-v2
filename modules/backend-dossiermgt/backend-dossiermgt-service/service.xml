@@ -773,6 +773,11 @@
 			<finder-column name="serviceProcessId" />
 		</finder>
 		
+		<finder return-type="Collection" name="DST_DSST">
+			<finder-column name="dossierStatus"/>
+			<finder-column name="dossierSubStatus"/>
+			<finder-column name="groupId"/>
+		</finder>
 
 	</entity>
 

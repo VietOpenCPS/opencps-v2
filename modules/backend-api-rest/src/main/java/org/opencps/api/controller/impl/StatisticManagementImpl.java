@@ -58,7 +58,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 			// params.put("LEVEL", query.getLevel());
 
-			JSONObject jsonData = actions.getDossierTodo(user.getUserId(), company.getCompanyId(), groupId, params,
+/*			JSONObject jsonData = actions.getDossierTodo(user.getUserId(), company.getCompanyId(), groupId, params,
+					null, serviceContext);
+*/
+			JSONObject jsonData = actions.getDossierTodoPermission(user.getUserId(), company.getCompanyId(), groupId, params,
 					null, serviceContext);
 
 			StatisticDossierResults results = new StatisticDossierResults();
