@@ -103,7 +103,12 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
             while (itr.hasNext()) {
                 String key = itr.next();
                 Object object = json.get(key);
-                if (object instanceof JSONObject) {
+//                if (object instanceof JSONObject) {
+                _log.info("classJSONObject"+(object.getClass() == JSONObject.class));
+                _log.info("No classclassJSONObject"+(object instanceof JSONObject));
+                _log.info("classJSONArray"+(object.getClass() == JSONArray.class));
+                _log.info("No classJSONArray"+(object instanceof JSONObject));
+                if (object.getClass() == JSONObject.class) {
                     // Tinh chung cho key cha.
                     Object[] keyValue = new Object[2];
                     keyValue[0] = key;
@@ -111,7 +116,8 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
                     keyValues.add(keyValue);
                     parseJSONObject(keyValues, json.getJSONObject(key));
                 }
-                else if (object instanceof JSONArray) {
+//                else if (object instanceof JSONArray) {
+                else if (object.getClass() == JSONArray.class) {
                     JSONArray jsonArray = json.getJSONArray(key);
                     Object[] keyValue = new Object[2];
                     // Tinh chung cho key cha

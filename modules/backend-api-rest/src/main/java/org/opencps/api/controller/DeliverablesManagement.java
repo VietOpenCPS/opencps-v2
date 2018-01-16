@@ -94,7 +94,6 @@ public interface DeliverablesManagement {
 
 	@DELETE
 	@Path("/deliverables/{id}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Delete deliverable by id")
 	@ApiResponses(value = {
