@@ -26,6 +26,8 @@ import org.opencps.dossiermgt.exception.NoSuchDeliverableException;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.service.base.DeliverableLocalServiceBaseImpl;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
@@ -90,22 +92,6 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		return listDeliverable;
 	}
 
-//	@Indexable(type = IndexableType.REINDEX)
-//	public void insert(Deliverable model) {
-//		model.setDeliverableId(counterLocalService.increment(Deliverable.class.getName()));
-//		addDeliverable(model);
-//	}
-
-//	public Deliverable getListDeliverableDetai(Long id) throws NoSuchDeliverableException {
-//		Deliverable deliverable = deliverablePersistence.findByDID(id);
-//		return deliverable;
-//	}
-
-	//12
-	public List<Deliverable> getFormDataByTypeCode(long groupId, String registrationId, String typeCode) {
-		return null;
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	public Deliverable addDeliverable(long groupId, String deliverableType, String deliverableCode,
 			String govAgencyCode, String applicationIdNo, String applicationName, String subject,
@@ -152,6 +138,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
 
+		_log.info("keywords:" +keywords +"groupId: "+groupId);
 		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
 		
 		// Search elastic
@@ -295,11 +282,13 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
 
+		_log.info("keywords:" +keywords +"groupId: "+groupId);
 		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
 
 		String pattern = String.valueOf(params.get("pattern"));
 		String paramValues = String.valueOf(params.get("paramValues"));
 		String paramTypes = String.valueOf(params.get("paramTypes"));
+		_log.info("pattern:" +pattern +"------paramValues: "+paramValues+"----paramTypes: "+paramTypes);
 		//Query elastic
 //		List<BooleanQuery> _subQueries = null;
 //		List<BooleanClauseOccur> _occurs = null;
@@ -338,6 +327,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		// Add params query
 		int count = 0;
+		_log.info("_subQueries: "+_subQueries);
 		if (_subQueries != null && _subQueries.size() > 0) {
 			for (BooleanQuery boolQuery : _subQueries) {
 				if (count == 0) {
@@ -378,6 +368,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String type = GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_TYPE));
 		String applicant = GetterUtil.getString(params.get(DeliverableTerm.APPLICANT_ID_NO));
 
+		_log.info("state:" +state +"------agency: "+agency+"----type: "+type+ "------applicant "+applicant);
 		if (Validator.isNotNull(state)) {
 			MultiMatchQuery query = new MultiMatchQuery(state);
 
@@ -953,4 +944,5 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		return booleanQueries;
 	}
 
+	private static Log _log = LogFactoryUtil.getLog(DeliverableLocalServiceImpl.class);
  }
