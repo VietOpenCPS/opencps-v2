@@ -1,22 +1,13 @@
 package org.opencps.dossiermgt.action.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.exception.NoSuchDeliverableException;
 import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.RegistrationForm;
-import org.opencps.dossiermgt.model.impl.DeliverableImpl;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
-import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -25,7 +16,6 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DeliverableActionsImpl implements DeliverableActions {
 
@@ -40,24 +30,6 @@ public class DeliverableActionsImpl implements DeliverableActions {
 		result.put("total", listDeliverable.size());
 		return result;
 	}
-
-//	@Override
-//	public void addDeliverable(DeliverableImpl model) {
-//		DeliverableLocalServiceUtil.insert(model);
-//	}
-
-//	@Override
-//	public Deliverable getListDeliverableDetail(Long deliverableId) throws NoSuchDeliverableException {
-//		Deliverable deliverable = DeliverableLocalServiceUtil.getListDeliverableDetai(deliverableId);
-//		Deliverable deliverable = null;
-//		return deliverable;
-//	}
-
-//	@Override
-//	public void deleteDeliverable(Long deliverableId) throws PortalException {
-//		DeliverableLocalServiceUtil.deleteDeliverable(deliverableId);
-//
-//	}
 
 	//12
 	@Override
@@ -181,10 +153,4 @@ public class DeliverableActionsImpl implements DeliverableActions {
 		return DeliverableLocalServiceUtil.updateFormData(groupId, id, formData, serviceContext);
 	}
 
-//	@Override
-//	public JSONArray getFormDataByTypecode(long groupId, String registrationId, String typeCode,
-//			String[] splitProperties) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 }
