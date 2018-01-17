@@ -163,6 +163,7 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
                                 if(registrationClient.getRegistrationState() == 2) {
                                     try {
                                         //Update application info
+                                        _log.info("===REGISTRATION_SYNC_APPLICATION_NO===" + registrationClient.getRegistrationId());
                                         Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(registrationClient.getUserId());
                                         applicant.setContactTelNo(registrationClient.getContactTelNo());
                                         applicant.setContactName(registrationClient.getContactName());
