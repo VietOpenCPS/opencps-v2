@@ -1,34 +1,25 @@
 package org.opencps.dossiermgt.action.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
 import org.opencps.dossiermgt.action.RegistrationFormActions;
-import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationFormActionsImpl implements RegistrationFormActions {
 
@@ -90,6 +81,30 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 					registrationTemplates.getFormReport(), 0, false, false, serviceContext);
 		}
 	}
+	
+	@Override
+	public void cloneRegistrationFormByRegistrationId(long groupId, long registrationId, ServiceContext serviceContext) 
+	    throws PortalException, SystemException {
+        
+	    // get RegistrationForm
+        List<RegistrationForm> registrationForms = RegistrationFormLocalServiceUtil.getFormsbyRegId(
+                groupId, registrationId);
+    
+        // add registrationForm
+        for (RegistrationForm registrationForm : registrationForms) {
+            // create referenceUid
+            if(!registrationForm.getRemoved()) {
+                String referenceUid = UUID.randomUUID().toString();
+        
+                RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationForm.getCompanyId(), 
+                    registrationId, referenceUid,
+                    registrationForm.getFormNo(), registrationForm.getFormName(),
+                    registrationForm.getFormData(), registrationForm.getFormScript(),
+                    registrationForm.getFormReport(), 0, false, false, serviceContext);
+            }
+        }
+    }
+	
 	
 	@Override
 	public List<RegistrationForm> deleteRegistrationForms(long groupId, long registrationId) throws PortalException {

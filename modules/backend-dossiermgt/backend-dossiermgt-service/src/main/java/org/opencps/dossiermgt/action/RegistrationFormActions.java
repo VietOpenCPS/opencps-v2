@@ -41,4 +41,8 @@ public interface RegistrationFormActions {
 	public JSONObject getRegistrationForms(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
 
+    public void cloneRegistrationFormByRegistrationId(
+        long groupId, long registrationId, ServiceContext serviceContext)
+        throws PortalException, SystemException;
+
 }
