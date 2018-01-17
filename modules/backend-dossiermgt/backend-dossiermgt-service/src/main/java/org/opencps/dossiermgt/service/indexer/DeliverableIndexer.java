@@ -221,31 +221,32 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 	protected List<Object[]> parseJSONObject(List<Object[]> keyValues, JSONObject json) {
 
 		List<Object[]> objects = new ArrayList<Object[]>();
-		try {
+//		try {
 
-			Iterator<String> itr = json.keys();
-			while (itr.hasNext()) {
-				String key = itr.next();
-				String strObject = String.valueOf(json.get(key));
-				// check json
-				try {
-					JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
-					Object[] keyValue = new Object[2];
-					keyValue[0] = key;
-					keyValue[1] = valueObject.toString();
-					keyValues.add(keyValue);
-					parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
-				} catch (JSONException e) {
-					// string
-					Object[] keyValue = new Object[2];
-					keyValue[0] = key;
-					keyValue[1] = strObject.toString();
-					keyValues.add(keyValue);
-				}
+		Iterator<String> itr = json.keys();
+		while (itr.hasNext()) {
+			String key = itr.next();
+			String strObject = String.valueOf(json.get(key));
+			// check json
+			try {
+				JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
+				Object[] keyValue = new Object[2];
+				keyValue[0] = key;
+				keyValue[1] = valueObject.toString();
+				keyValues.add(keyValue);
+				parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
+			} catch (JSONException e) {
+				// string
+				_log.info("-----OBJECT NOT TYPE JSON-----");
+				Object[] keyValue = new Object[2];
+				keyValue[0] = key;
+				keyValue[1] = strObject.toString();
+				keyValues.add(keyValue);
 			}
-		} catch (Exception e2) {
-			_log.info("===FORM DATA NOT TYPE JSONOBJECT===");
 		}
+//		} catch (Exception e2) {
+//			_log.info("===FORM DATA NOT TYPE JSONOBJECT===");
+//		}
 
 		return objects;
 	}
@@ -255,31 +256,31 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 
 		List<Object[]> objects = new ArrayList<Object[]>();
 
-		try {
-			Iterator<String> itr = json.keys();
-			while (itr.hasNext()) {
-				String key = itr.next();
-				String strObject = String.valueOf(json.get(key));
-				// check json
-				try {
-					JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
-					Object[] keyValue = new Object[2];
-					keyValue[0] = keyJson + "@" + key;
-					keyValue[1] = valueObject.toString();
-					keyValues.add(keyValue);
-					parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
-				} catch (JSONException e) {
-					// string
-					Object[] keyValue = new Object[2];
-					keyValue[0] = keyJson + "@" + key;
-					keyValue[1] = strObject.toString();
-					keyValues.add(keyValue);
-				}
+//		try {
+		Iterator<String> itr = json.keys();
+		while (itr.hasNext()) {
+			String key = itr.next();
+			String strObject = String.valueOf(json.get(key));
+			// check json
+			try {
+				JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
+				Object[] keyValue = new Object[2];
+				keyValue[0] = keyJson + "@" + key;
+				keyValue[1] = valueObject.toString();
+				keyValues.add(keyValue);
+				parseJSONObjectIndex(keyValues, json.getJSONObject(key), keyValue[0].toString());
+			} catch (JSONException e) {
+				// string
+				_log.info("-----OBJECT NOT TYPE JSON-----");
+				Object[] keyValue = new Object[2];
+				keyValue[0] = keyJson + "@" + key;
+				keyValue[1] = strObject.toString();
+				keyValues.add(keyValue);
 			}
-		} catch (Exception e2) {
-			_log.info("-----OBJECT NOT TYPE JSON-----");
-			;
 		}
+//		} catch (Exception e2) {
+//			_log.info("-----OBJECT NOT TYPE JSON-----");
+//		}
 
 		return objects;
 	}
