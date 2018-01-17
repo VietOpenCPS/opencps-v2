@@ -163,26 +163,28 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
                                 if(registrationClient.getRegistrationState() == 2) {
                                     try {
                                         //Update application info
-                                        _log.info("===REGISTRATION_SYNC_APPLICATION_NO===" + registrationClient.getRegistrationId());
-                                        Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(registrationClient.getUserId());
-                                        applicant.setContactTelNo(registrationClient.getContactTelNo());
-                                        applicant.setContactName(registrationClient.getContactName());
-                                        applicant.setApplicantName(registrationClient.getApplicantName());
-                                        applicant.setApplicantIdType(registrationClient.getApplicantIdType());
-                                        applicant.setApplicantIdNo(registrationClient.getApplicantIdNo());
-                                        applicant.setApplicantIdDate(registrationClient.getApplicantIdDate());
-                                        applicant.setAddress(registrationClient.getAddress());
-                                        applicant.setCityCode(registrationClient.getCityCode());
-                                        applicant.setCityName(registrationClient.getCityName());
-                                        applicant.setDistrictCode(registrationClient.getDistrictCode());
-                                        applicant.setDistrictName(registrationClient.getDistrictName());
-                                        applicant.setWardCode(registrationClient.getWardCode());
-                                        applicant.setWardName(registrationClient.getWardName());
-                                        applicant.setContactEmail(registrationClient.getContactEmail());
+                                        Applicant applicant = ApplicantLocalServiceUtil.fetchByAppId(registrationClient.getApplicantIdNo());
                                         
-                                        ApplicantLocalServiceUtil.updateApplicant(applicant);
-                                        Indexer<Applicant> indexApplicant = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
-                                        indexApplicant.reindex(applicant);
+                                        if(applicant != null) {
+                                            applicant.setContactTelNo(registrationClient.getContactTelNo());
+                                            applicant.setContactName(registrationClient.getContactName());
+                                            applicant.setApplicantName(registrationClient.getApplicantName());
+                                            applicant.setApplicantIdType(registrationClient.getApplicantIdType());
+                                            applicant.setApplicantIdNo(registrationClient.getApplicantIdNo());
+                                            applicant.setApplicantIdDate(registrationClient.getApplicantIdDate());
+                                            applicant.setAddress(registrationClient.getAddress());
+                                            applicant.setCityCode(registrationClient.getCityCode());
+                                            applicant.setCityName(registrationClient.getCityName());
+                                            applicant.setDistrictCode(registrationClient.getDistrictCode());
+                                            applicant.setDistrictName(registrationClient.getDistrictName());
+                                            applicant.setWardCode(registrationClient.getWardCode());
+                                            applicant.setWardName(registrationClient.getWardName());
+                                            applicant.setContactEmail(registrationClient.getContactEmail());
+                                            
+                                            ApplicantLocalServiceUtil.updateApplicant(applicant);
+                                            Indexer<Applicant> indexApplicant = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
+                                            indexApplicant.reindex(applicant);
+                                        }
                                     } catch(Exception e) {
                                         _log.error(e);
                                     }
