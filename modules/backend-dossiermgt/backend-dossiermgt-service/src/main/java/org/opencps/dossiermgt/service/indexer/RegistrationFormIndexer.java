@@ -86,7 +86,7 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
             }
         }
         catch (Exception e) {
-            _log.error(e);
+        	_log.error(e);
         }
 
 		
@@ -117,61 +117,11 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 						keyValue[0] = key;
 						keyValue[1] = strObject.toString();
 						keyValues.add(keyValue);
-                    }
                 }
-                
-                
-//              if (strObject.contains("[{") && strObject.contains("}]")) {
-//            	  JSONArray jsonArray = json.getJSONArray(key);
-//                  Object[] keyValue = new Object[2];
-//                  // Tinh chung cho key cha
-//                  keyValue[0] = key;
-//                  keyValue[1] = jsonArray.toString();
-//                  keyValues.add(keyValue);
-//                  parseJSONObject(keyValues, jsonArray);
-//			} else if (strObject.contains("{") && strObject.contains("}")) {
-//				JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
-//				// Tinh chung cho key cha.
-//                Object[] keyValue = new Object[2];
-//                keyValue[0] = key;
-//                keyValue[1] = valueObject.toString();
-//                keyValues.add(keyValue);
-//                parseJSONObject(keyValues, json.getJSONObject(key));
-//			}else {
-//                    Object[] keyValue = new Object[2];
-//                    keyValue[0] = key;
-//                    keyValue[1] = strObject.toString();
-//                    keyValues.add(keyValue);
-//                }
-//                if (valueObject instanceof JSONObject) {
-//                    // Tinh chung cho key cha.
-//                    Object[] keyValue = new Object[2];
-//                    keyValue[0] = key;
-//                    keyValue[1] = valueObject.toString();
-//                    keyValues.add(keyValue);
-//                    parseJSONObject(keyValues, json.getJSONObject(key));
-//                }
-//                else if (valueArr instanceof JSONArray) {
-////                else if (object.getClass() == JSONArray.class) {
-//                    JSONArray jsonArray = json.getJSONArray(key);
-//                    Object[] keyValue = new Object[2];
-//                    // Tinh chung cho key cha
-//                    keyValue[0] = key;
-//                    keyValue[1] = jsonArray.toString();
-//                    keyValues.add(keyValue);
-//                    parseJSONObject(keyValues, jsonArray);
-//                }
-//                else {
-//                    Object[] keyValue = new Object[2];
-//                    keyValue[0] = key;
-//                    keyValue[1] = strObject.toString();
-//                    keyValues.add(keyValue);
-//                }
-//            }
-
+            }
         }
         catch (Exception e2) {
-            _log.error(e2);
+        	_log.info("===FORM DATA NOT TYPE JSONOBJECT===");
         }
 
         return objects;
@@ -192,21 +142,21 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
                     try {
                     	JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
                     	Object[] keyValue = new Object[2];
-                        keyValue[0] = keyJson +"."+ key;
+                        keyValue[0] = keyJson +"@"+ key;
                         keyValue[1] = valueObject.toString();
                         keyValues.add(keyValue);
                         parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
                     } catch(JSONException e) {
                         	// string
     						Object[] keyValue = new Object[2];
-    						keyValue[0] = keyJson +"."+ key;
+    						keyValue[0] = keyJson +"@"+ key;
     						keyValue[1] = strObject.toString();
     						keyValues.add(keyValue);
                         }
                     }
             }
-            catch (Exception e2) {
-                _log.error(e2);
+            catch (Exception e1) {
+                _log.info("---- OBJECT NOT TYPE JSON-----");
             }
 
             return objects;

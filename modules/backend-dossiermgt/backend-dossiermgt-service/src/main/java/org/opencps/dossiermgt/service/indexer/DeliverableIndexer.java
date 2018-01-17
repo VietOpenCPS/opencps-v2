@@ -173,69 +173,137 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 
 	}
 
-	protected List<Object[]> parseJSONObject(List<Object[]> keyValues,
-			JSONObject json) {
+//	protected List<Object[]> parseJSONObject(List<Object[]> keyValues,
+//			JSONObject json) {
+//		List<Object[]> objects = new ArrayList<Object[]>();
+//		try {
+//
+//			Iterator<String> itr = json.keys();
+//			while (itr.hasNext()) {
+//				String key = itr.next();
+//				Object object = json.get(key);
+//				if (object instanceof JSONObject) {
+//					// Tinh chung cho key cha.
+//					Object[] keyValue = new Object[2];
+//					keyValue[0] = key;
+//					keyValue[1] = object.toString();
+//					keyValues.add(keyValue);
+//					parseJSONObject(keyValues, json.getJSONObject(key));
+//				} else if (object instanceof JSONArray) {
+//					JSONArray jsonArray = json.getJSONArray(key);
+//					Object[] keyValue = new Object[2];
+//					// Tinh chung cho key cha
+//					keyValue[0] = key;
+//					keyValue[1] = jsonArray.toString();
+//					keyValues.add(keyValue);
+//					parseJSONObject(keyValues, jsonArray);
+//				} else {
+//					Object[] keyValue = new Object[2];
+//					keyValue[0] = key;
+//					keyValue[1] = object.toString();
+//					keyValues.add(keyValue);
+//				}
+//			}
+//
+//		} catch (JSONException e) {
+//			_log.error(e);
+//		}
+//
+//		return objects;
+//	}
+
+	/**
+	 * @param keyValues
+	 * @param JSONObject
+	 * @return
+	 * @throws JSONException
+	 */
+	protected List<Object[]> parseJSONObject(List<Object[]> keyValues, JSONObject json) {
+
 		List<Object[]> objects = new ArrayList<Object[]>();
 		try {
 
 			Iterator<String> itr = json.keys();
 			while (itr.hasNext()) {
 				String key = itr.next();
-				Object object = json.get(key);
-				if (object instanceof JSONObject) {
-					// Tinh chung cho key cha.
+				String strObject = String.valueOf(json.get(key));
+				// check json
+				try {
+					JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
 					Object[] keyValue = new Object[2];
 					keyValue[0] = key;
-					keyValue[1] = object.toString();
+					keyValue[1] = valueObject.toString();
 					keyValues.add(keyValue);
-					parseJSONObject(keyValues, json.getJSONObject(key));
-				} else if (object instanceof JSONArray) {
-					JSONArray jsonArray = json.getJSONArray(key);
-					Object[] keyValue = new Object[2];
-					// Tinh chung cho key cha
-					keyValue[0] = key;
-					keyValue[1] = jsonArray.toString();
-					keyValues.add(keyValue);
-					parseJSONObject(keyValues, jsonArray);
-				} else {
+					parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
+				} catch (JSONException e) {
+					// string
 					Object[] keyValue = new Object[2];
 					keyValue[0] = key;
-					keyValue[1] = object.toString();
+					keyValue[1] = strObject.toString();
 					keyValues.add(keyValue);
 				}
 			}
-
-		} catch (JSONException e) {
-			_log.error(e);
+		} catch (Exception e2) {
+			_log.info("===FORM DATA NOT TYPE JSONOBJECT===");
 		}
 
 		return objects;
 	}
 
-	/**
-	 * @param keyValues
-	 * @param jsonArray
-	 * @return
-	 * @throws JSONException
-	 */
-	protected List<Object[]> parseJSONObject(List<Object[]> keyValues,
-			JSONArray jsonArray) throws JSONException {
+	//
+	protected List<Object[]> parseJSONObjectIndex(List<Object[]> keyValues, JSONObject json, String keyJson) {
+
+		List<Object[]> objects = new ArrayList<Object[]>();
+
+		try {
+			Iterator<String> itr = json.keys();
+			while (itr.hasNext()) {
+				String key = itr.next();
+				String strObject = String.valueOf(json.get(key));
+				// check json
+				try {
+					JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
+					Object[] keyValue = new Object[2];
+					keyValue[0] = keyJson + "@" + key;
+					keyValue[1] = valueObject.toString();
+					keyValues.add(keyValue);
+					parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
+				} catch (JSONException e) {
+					// string
+					Object[] keyValue = new Object[2];
+					keyValue[0] = keyJson + "@" + key;
+					keyValue[1] = strObject.toString();
+					keyValues.add(keyValue);
+				}
+			}
+		} catch (Exception e2) {
+			_log.info("-----OBJECT NOT TYPE JSON-----");
+			;
+		}
+
+		return objects;
+	}
+
+	protected List<Object[]> parseJSONObject(List<Object[]> keyValues, JSONArray jsonArray) throws JSONException {
+
 		if (jsonArray != null && jsonArray.length() > 0) {
 			for (int i = 0; i < jsonArray.length(); i++) {
-				Object tempObject = jsonArray.get(i);
-				if (tempObject instanceof JSONObject) {
-					parseJSONObject(keyValues, (JSONObject) tempObject);
-				} else if (tempObject instanceof JSONArray) {
-					parseJSONObject(keyValues, (JSONArray) tempObject);
-				} else {
-					// Tinh chung cho key cha.
+				String tempObject = String.valueOf(jsonArray.get(i));
+				try {
+					JSONObject valueObject = JSONFactoryUtil.createJSONObject(tempObject);
+					parseJSONObject(keyValues, valueObject);
+				} catch (JSONException e) {
+					// check json array
+					try {
+						JSONArray jsonArr = jsonArray.getJSONArray(i);
+						parseJSONObject(keyValues, jsonArr);
+					} catch (JSONException e1) {
+						// Tinh chung cho key cha.
+					}
 				}
 			}
 		}
-
 		return keyValues;
 	}
-	
-	
 	
 }

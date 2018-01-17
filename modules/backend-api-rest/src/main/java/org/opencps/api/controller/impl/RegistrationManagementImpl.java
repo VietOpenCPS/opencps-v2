@@ -514,8 +514,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			//TODO
 			results.put("total", jsonData.getInt("total"));
-//			results.getData()
-//					.addAll(
 			List<Document> docList =(List<Document>) jsonData.get("data");
 
 			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
