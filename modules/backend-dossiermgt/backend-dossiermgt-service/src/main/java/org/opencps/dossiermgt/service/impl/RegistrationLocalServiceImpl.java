@@ -130,8 +130,16 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setSubmitting(false);
 
 		RegistrationFormActions actionForm = new RegistrationFormActionsImpl();
+		List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(
+            groupId, applicantIdNo, govAgencyCode, 2);
+		
+		if(registrations.size() > 0) {
+		    actionForm.addRegistrationFormbaseonRegTemplate(groupId, companyId, registrationId, govAgencyCode, serviceContext);
+		} else {
+		    Registration oldRegistration = registrations.get(0);
+		    actionForm.cloneRegistrationFormByRegistrationId(groupId, oldRegistration.getRegistrationId(), serviceContext);
+		}
 
-		actionForm.addRegistrationFormbaseonRegTemplate(groupId, companyId, registrationId, govAgencyCode, serviceContext);
 
 		return registrationPersistence.update(model);
 	}
