@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
@@ -232,7 +233,9 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 				JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
 				Object[] keyValue = new Object[2];
 				keyValue[0] = key;
-				keyValue[1] = valueObject.toString();
+				String strValue = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+				keyValue[1]= strValue;
+//				keyValue[1] = valueObject.toString();
 				keyValues.add(keyValue);
 				parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
 			} catch (JSONException e) {
@@ -240,7 +243,9 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 				_log.info("-----OBJECT NOT TYPE JSON-----");
 				Object[] keyValue = new Object[2];
 				keyValue[0] = key;
-				keyValue[1] = strObject.toString();
+//				String strValue = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+				keyValue[1]= strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+//				keyValue[1] = strObject.toString();
 				keyValues.add(keyValue);
 			}
 		}
@@ -266,7 +271,9 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 				JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
 				Object[] keyValue = new Object[2];
 				keyValue[0] = keyJson + "@" + key;
-				keyValue[1] = valueObject.toString();
+				String strValue = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+				keyValue[1]= strValue;
+//				keyValue[1] = valueObject.toString();
 				keyValues.add(keyValue);
 				parseJSONObjectIndex(keyValues, json.getJSONObject(key), keyValue[0].toString());
 			} catch (JSONException e) {
@@ -274,7 +281,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 				_log.info("-----OBJECT NOT TYPE JSON-----");
 				Object[] keyValue = new Object[2];
 				keyValue[0] = keyJson + "@" + key;
-				keyValue[1] = strObject.toString();
+				keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 				keyValues.add(keyValue);
 			}
 		}

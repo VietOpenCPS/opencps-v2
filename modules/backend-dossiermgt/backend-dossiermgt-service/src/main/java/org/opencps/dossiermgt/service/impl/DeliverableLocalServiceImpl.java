@@ -643,44 +643,45 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 				for (int i = 0; i < arrParamValue.length; i++) {
 					String paramType = arrParamTypes[i].toLowerCase();
+					String strValueArr = arrParamValue[i].replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 					Object param = null;
 					Class<?> clazz = null;
 					switch (paramType) {
 					case "long":
-						param = GetterUtil.getLong(arrParamValue[i]);
+						param = GetterUtil.getLong(strValueArr);
 						clazz = long.class;
 						break;
 					case "integer":
-						param = GetterUtil.getInteger(arrParamValue[i]);
+						param = GetterUtil.getInteger(strValueArr);
 						clazz = int.class;
 						break;
 					case "int":
-						param = GetterUtil.getInteger(arrParamValue[i]);
+						param = GetterUtil.getInteger(strValueArr);
 						clazz = int.class;
 						break;
 					case "short":
-						param = GetterUtil.getShort(arrParamValue[i]);
+						param = GetterUtil.getShort(strValueArr);
 						clazz = short.class;
 						break;
 					case "double":
-						param = GetterUtil.getDouble(arrParamValue[i]);
+						param = GetterUtil.getDouble(strValueArr);
 						clazz = double.class;
 						break;
 					case "float":
-						param = GetterUtil.getFloat(arrParamValue[i]);
+						param = GetterUtil.getFloat(strValueArr);
 						clazz = float.class;
 						break;
 					case "boolean":
-						param = GetterUtil.getBoolean(arrParamValue[i]);
+						param = GetterUtil.getBoolean(strValueArr);
 						clazz = boolean.class;
 						break;
 					case "date":
 //						param = DateTimeUtil
-//								.convertStringToDate(arrParamValue[i]);
+//								.convertStringToDate(strValueArr);
 						clazz = Date.class;
 						break;
 					case "string":
-						param = GetterUtil.getString(arrParamValue[i]);
+						param = GetterUtil.getString(strValueArr);
 						clazz = String.class;
 						break;
 					case "null":
