@@ -122,7 +122,6 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 				parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
 			} catch (JSONException e) {
 				// string
-				_log.info("===OBJECT NOT TYPE JSONOBJECT===");
 				Object[] keyValue = new Object[2];
 				keyValue[0] = key;
 //				keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");

@@ -87,6 +87,9 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 
 			if (keyValues != null) {
 				for (Object[] keyValue : keyValues) {
+					_log.info("=========DELIVERABLE_INDEX_FORM_DATA========:" + keyValue[0] + "_" + keyValue[1]);
+                    document.addKeyword(
+                        keyValue[0].toString(), keyValue[1].toString());
 					document.addKeyword(keyValue[0].toString(),
 							keyValue[1].toString());
 				}
@@ -244,7 +247,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
 				} catch (JSONException e) {
 					// string
-					_log.info("-----OBJECT NOT TYPE JSON-----");
+//					_log.info("-----OBJECT NOT TYPE JSON-----");
 					Object[] keyValue = new Object[2];
 					keyValue[0] = key;
 //					String strValue = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
@@ -290,7 +293,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					parseJSONObjectIndex(keyValues, json.getJSONObject(key), keyValue[0].toString());
 				} catch (JSONException e) {
 					// string
-					_log.info("-----OBJECT NOT TYPE JSON-----");
+//					_log.info("-----OBJECT NOT TYPE JSON-----");
 					Object[] keyValue = new Object[2];
 					keyValue[0] = keyJson + "@" + key;
 //					keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
