@@ -86,7 +86,7 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
             }
         }
         catch (Exception e) {
-            _log.error(e);
+        	_log.error(e);
         }
 
 		
@@ -155,8 +155,8 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
                         }
                     }
             }
-            catch (Exception e2) {
-                _log.error(e2);
+            catch (Exception e1) {
+                _log.info("---- OBJECT NOT TYPE JSON-----");
             }
 
             return objects;
