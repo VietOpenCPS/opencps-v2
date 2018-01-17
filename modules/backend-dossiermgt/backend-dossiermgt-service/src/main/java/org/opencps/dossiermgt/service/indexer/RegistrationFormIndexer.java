@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties.Convert;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 	public static final String CLASS_NAME = RegistrationForm.class.getName();
@@ -99,7 +100,7 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 	protected List<Object[]> parseJSONObject(List<Object[]> keyValues, JSONObject json) {
 
 		List<Object[]> objects = new ArrayList<Object[]>();
-//		try {
+		try {
 
 		Iterator<String> itr = json.keys();
 		while (itr.hasNext()) {
@@ -110,8 +111,13 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 				JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
 				Object[] keyValue = new Object[2];
 				keyValue[0] = key;
-				String strValue = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
-				keyValue[1]= strValue;
+//				String strValue = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+				if (Validator.isNotNull(valueObject.toString())) {
+					keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+				} else {
+					keyValue[1] = valueObject.toString();
+				}
+//				keyValue[1]= strValue;
 				keyValues.add(keyValue);
 				parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
 			} catch (JSONException e) {
@@ -119,13 +125,18 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 				_log.info("===OBJECT NOT TYPE JSONOBJECT===");
 				Object[] keyValue = new Object[2];
 				keyValue[0] = key;
-				keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+//				keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+				if (Validator.isNotNull(strObject.toString())) {
+					keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+				} else {
+					keyValue[1] = strObject.toString();
+				}
 				keyValues.add(keyValue);
 			}
 		}
-//		} catch (Exception e2) {
-//			_log.info("===OBJECT NOT TYPE JSONOBJECT===");
-//		}
+		} catch (Exception e2) {
+			_log.info("===OBJECT NOT TYPE JSONOBJECT===");
+		}
 
 		return objects;
 	}
@@ -133,34 +144,41 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 	protected List<Object[]> parseJSONObjectIndex(List<Object[]> keyValues, JSONObject json, String keyJson) {
 
 		List<Object[]> objects = new ArrayList<Object[]>();
-//		try {
-
-		Iterator<String> itr = json.keys();
-		while (itr.hasNext()) {
-			String key = itr.next();
-			String strObject = String.valueOf(json.get(key));
-			// check json
-			try {
-				JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
-				Object[] keyValue = new Object[2];
-				keyValue[0] = keyJson + "@" + key;
-				String strValue = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
-				keyValue[1]= strValue;
-//				keyValue[1] = valueObject.toString();
-				keyValues.add(keyValue);
-				parseJSONObjectIndex(keyValues, json.getJSONObject(key), keyValue[0].toString());
-			} catch (JSONException e) {
-				// string
-				_log.info("===OBJECT NOT TYPE JSONOBJECT===");
-				Object[] keyValue = new Object[2];
-				keyValue[0] = keyJson + "@" + key;
-				keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
-				keyValues.add(keyValue);
+		if (json != null) {
+			Iterator<String> itr = json.keys();
+			while (itr.hasNext()) {
+				String key = itr.next();
+				String strObject = String.valueOf(json.get(key));
+				// check json
+				try {
+					JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
+					Object[] keyValue = new Object[2];
+					keyValue[0] = keyJson + "@" + key;
+//					String strValue = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+					if (Validator.isNotNull(valueObject.toString())) {
+						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+					} else {
+						keyValue[1] = valueObject.toString();
+					}
+//					keyValue[1]= strValue;
+//					keyValue[1] = valueObject.toString();
+					keyValues.add(keyValue);
+					parseJSONObjectIndex(keyValues, json.getJSONObject(key), keyValue[0].toString());
+				} catch (JSONException e) {
+					// string
+					_log.info("===OBJECT NOT TYPE JSONOBJECT===");
+					Object[] keyValue = new Object[2];
+					keyValue[0] = keyJson + "@" + key;
+					if (Validator.isNotNull(strObject.toString())) {
+						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+					} else {
+						keyValue[1] = strObject.toString();
+					}
+//					keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+					keyValues.add(keyValue);
+				}
 			}
 		}
-//		} catch (Exception e1) {
-//			_log.info("---- OBJECT NOT TYPE JSON-----");
-//		}
 
 		return objects;
 	}
