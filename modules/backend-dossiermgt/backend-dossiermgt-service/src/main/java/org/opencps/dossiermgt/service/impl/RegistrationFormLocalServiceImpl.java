@@ -721,7 +721,15 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 				for (int i = 0; i < arrParamValue.length; i++) {
 					String paramType = arrParamTypes[i].toLowerCase();
-					String strValueArr = arrParamValue[i].replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+//					String strValueArr = arrParamValue[i].replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+					String strValueArr = StringPool.BLANK;
+					_log.info("arrParamValue[i]: "+arrParamValue[i]);
+					if (Validator.isNotNull(arrParamValue[i])) {
+						strValueArr = arrParamValue[i].toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						_log.info("strValueArr: "+strValueArr);
+					} else {
+						strValueArr = arrParamValue[i];
+					}
 					Object param = null;
 					Class<?> clazz = null;
 					switch (paramType) {
@@ -778,6 +786,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 						break;
 					}
 
+					_log.info("param: "+param);
 					params.add(param);
 					clazzs.add(clazz);
 				}
@@ -810,7 +819,6 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 				try {
 					throw new Exception();
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			} finally {
