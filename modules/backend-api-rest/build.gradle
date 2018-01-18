@@ -35,6 +35,7 @@ dependencies {
 	
 	compileOnly project(":modules:backend-auth")
 	
+	
 }	
 
 sourceSets {
