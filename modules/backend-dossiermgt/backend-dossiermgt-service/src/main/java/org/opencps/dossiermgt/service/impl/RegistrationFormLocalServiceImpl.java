@@ -721,44 +721,53 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 				for (int i = 0; i < arrParamValue.length; i++) {
 					String paramType = arrParamTypes[i].toLowerCase();
+//					String strValueArr = arrParamValue[i].replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+					String strValueArr = StringPool.BLANK;
+					_log.info("arrParamValue[i]: "+arrParamValue[i]);
+					if (Validator.isNotNull(arrParamValue[i])) {
+						strValueArr = splitSpecial(arrParamValue[i].toString().toLowerCase());
+						_log.info("strValueArr: "+strValueArr);
+					} else {
+						strValueArr = arrParamValue[i];
+					}
 					Object param = null;
 					Class<?> clazz = null;
 					switch (paramType) {
 					case "long":
-						param = GetterUtil.getLong(arrParamValue[i]);
+						param = GetterUtil.getLong(strValueArr);
 						clazz = long.class;
 						break;
 					case "integer":
-						param = GetterUtil.getInteger(arrParamValue[i]);
+						param = GetterUtil.getInteger(strValueArr);
 						clazz = int.class;
 						break;
 					case "int":
-						param = GetterUtil.getInteger(arrParamValue[i]);
+						param = GetterUtil.getInteger(strValueArr);
 						clazz = int.class;
 						break;
 					case "short":
-						param = GetterUtil.getShort(arrParamValue[i]);
+						param = GetterUtil.getShort(strValueArr);
 						clazz = short.class;
 						break;
 					case "double":
-						param = GetterUtil.getDouble(arrParamValue[i]);
+						param = GetterUtil.getDouble(strValueArr);
 						clazz = double.class;
 						break;
 					case "float":
-						param = GetterUtil.getFloat(arrParamValue[i]);
+						param = GetterUtil.getFloat(strValueArr);
 						clazz = float.class;
 						break;
 					case "boolean":
-						param = GetterUtil.getBoolean(arrParamValue[i]);
+						param = GetterUtil.getBoolean(strValueArr);
 						clazz = boolean.class;
 						break;
 					case "date":
 //						param = DateTimeUtil
-//								.convertStringToDate(arrParamValue[i]);
+//								.convertStringToDate(strValueArr);
 						clazz = Date.class;
 						break;
 					case "string":
-						param = GetterUtil.getString(arrParamValue[i]);
+						param = GetterUtil.getString(strValueArr);
 						clazz = String.class;
 						break;
 					case "null":
@@ -777,6 +786,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 						break;
 					}
 
+					_log.info("param: "+param);
 					params.add(param);
 					clazzs.add(clazz);
 				}
@@ -809,7 +819,6 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 				try {
 					throw new Exception();
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			} finally {
@@ -1021,5 +1030,27 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		}
 		return booleanQueries;
 	}
+
+	protected String splitSpecial(String value) {
+		String[] charSpecialArr = new String[]{"+", "-", "=", "&&", "||", ">", "<", "!", "(", ")", "{", "}", "[", "]", "^", "~", "?", ":","\\", "/"};
+		String valueSplit = StringPool.BLANK;
+		for (int i = 0; i < charSpecialArr.length; i++) {
+			String specialCharacter = charSpecialArr[i];
+			if (i==0) {
+				if (value.contains(specialCharacter)) {
+					valueSplit = value.replaceAll(Pattern.quote(specialCharacter), StringPool.UNDERLINE);
+				} else {
+					valueSplit = value;
+				}
+			} else {
+				if (value.contains(specialCharacter)) {
+					valueSplit = valueSplit.replaceAll(Pattern.quote(specialCharacter), StringPool.UNDERLINE);
+				}
+			}
+	    }
+		
+		return valueSplit;
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(RegistrationFormLocalServiceImpl.class);
 }

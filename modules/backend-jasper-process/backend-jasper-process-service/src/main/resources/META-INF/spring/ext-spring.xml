@@ -7,10 +7,19 @@
 
 	<!-- Listeners -->
 	<bean id="jasper.listener.engine" class="org.opencps.jasper.message.Engine" />
+	<bean id="jasper.listener.engine.preview" class="org.opencps.jasper.message.EnginePreview" />
 
 	<!-- Destinations -->
 	<bean id="jasper.engine.out.destination" class="com.liferay.portal.kernel.messaging.SerialDestination">
 		<property name="name" value="jasper/engine/out/destination" />
+	</bean>
+	
+	<bean id="jasper.engine.preview.destination" class="com.liferay.portal.kernel.messaging.SynchronousDestination">
+		<property name="name" value="jasper/engine/preview/destination" />
+	</bean>
+	
+	<bean id="jasper.engine.preview.callback" class="com.liferay.portal.kernel.messaging.SynchronousDestination">
+		<property name="name" value="jasper/engine/preview/callback" />
 	</bean>
 
 	<!-- Configurator -->
@@ -23,11 +32,22 @@
 						<ref bean="jasper.listener.engine" />
 					</list>
 				</entry>
+				
+				<entry key="jasper/engine/preview/destination">
+					<list value-type="com.liferay.portal.kernel.messaging.MessageListener">
+						<ref bean="jasper.listener.engine.preview" />
+					</list>
+				</entry>
+				
 			</map>
+			
+			
 		</property>
 		<property name="destinations">
 			<list>
 				<ref bean="jasper.engine.out.destination" />
+				<ref bean="jasper.engine.preview.destination" />
+				<ref bean="jasper.engine.preview.callback" />
 			</list>
 		</property>
 	</bean>

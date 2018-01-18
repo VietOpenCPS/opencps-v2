@@ -65,12 +65,14 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -1279,5 +1281,152 @@ public class DossierActionsImpl implements DossierActions {
 
 		return result;
 	}
+	
+	@Override
+	public JSONObject getDossierTodoPermission(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, ServiceContext serviceContext) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		SearchContext searchContext = new SearchContext();
+
+		searchContext.setCompanyId(companyId);
+
+		String statusCode = StringPool.BLANK;
+
+		String subStatusCode = StringPool.BLANK;
+
+		JSONArray statistics = JSONFactoryUtil.createJSONArray();
+
+		long total = 0;
+
+		try {
+			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
+					groupId);
+			statusCode = GetterUtil.getString(params.get(DossierTerm.STATUS));
+
+			subStatusCode = GetterUtil.getString(params.get(DossierTerm.SUBSTATUS));
+
+			if (Validator.isNotNull(statusCode) || Validator.isNotNull(subStatusCode)) {
+				DictItem dictItem = null;
+				if (Validator.isNotNull(statusCode)) {
+					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(statusCode,
+							dictCollection.getDictCollectionId(), groupId);
+				} else {
+					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(subStatusCode,
+							dictCollection.getDictCollectionId(), groupId);
+				}
+
+				if (dictItem != null) {
+					long count = DossierLocalServiceUtil.countLucene(params, searchContext);
+
+					JSONObject statistic = JSONFactoryUtil.createJSONObject();
+					statistic.put("dossierStatus", statusCode);
+					statistic.put("dossierSubStatus", subStatusCode);
+					statistic.put("level", dictItem.getLevel());
+					statistic.put("statusName", dictItem.getItemName());
+					statistic.put("count", count);
+
+					statistics.put(statistic);
+
+					total = count;
+				}
+
+			} else {
+				List<DictItem> dictItems = DictItemLocalServiceUtil
+						.findByF_dictCollectionId(dictCollection.getDictCollectionId());
+
+				for (DictItem dictItem : dictItems) {
+
+					statusCode = StringPool.BLANK;
+					subStatusCode = StringPool.BLANK;
+
+					if (dictItem.getParentItemId() != 0) {
+						subStatusCode = dictItem.getItemCode();
+						DictItem parentDictItem = DictItemLocalServiceUtil.getDictItem(dictItem.getParentItemId());
+						statusCode = parentDictItem.getItemCode();
+					} else {
+						statusCode = dictItem.getItemCode();
+					}
+					
+					boolean isPermission = checkPermission(statusCode, subStatusCode, groupId, userId);
+					
+					if (isPermission) {
+						params.put(DossierTerm.STATUS, statusCode);
+						params.put(DossierTerm.SUBSTATUS, subStatusCode);
+
+						long count = DossierLocalServiceUtil.countLucene(params, searchContext);
+
+						JSONObject statistic = JSONFactoryUtil.createJSONObject();
+
+						statistic.put("dossierStatus", statusCode);
+						statistic.put("dossierSubStatus", subStatusCode);
+						statistic.put("level", dictItem.getLevel());
+						statistic.put("statusName", dictItem.getItemName());
+						statistic.put("count", count);
+						if (dictItem.getParentItemId() == 0) {
+							total += count;
+						}
+						statistics.put(statistic);
+					}
+					
+				}
+			}
+
+			result.put("data", statistics);
+
+			result.put("total", total);
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return result;
+	}
+	
+	private boolean checkPermission(String status, String subStatus, long groupId, long userId) {
+		boolean isPermission = false;
+		
+		List<ProcessStep> processSteps = new ArrayList<ProcessStep>();
+		
+		processSteps = ProcessStepLocalServiceUtil.getByStatusAnsSubStatus(status, subStatus, groupId);
+		
+		List<Role> roles = new ArrayList<Role>();
+		
+		for (ProcessStep step : processSteps) {
+			List<ProcessStepRole> processStepRoles = new ArrayList<ProcessStepRole>();
+			
+			processStepRoles = ProcessStepRoleLocalServiceUtil.findByP_S_ID(step.getPrimaryKey());
+			
+			for (ProcessStepRole stepRole : processStepRoles) {
+				Role role = null;
+				
+				try {
+					role = RoleLocalServiceUtil.getRole(stepRole.getRoleId());
+					
+					roles.add(role);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+		}
+		//List<User> users = new ArrayList<>();
+
+		for (Role role : roles) {
+			
+			long [] elmUsers = RoleLocalServiceUtil.getUserPrimaryKeys(role.getRoleId());
+			
+			for (long elmUserId : elmUsers) {
+				if (elmUserId == userId) {
+					isPermission = true;
+					
+					break;
+				}
+			}
+		}
+		
+		return isPermission;
+	}
+
 
 }

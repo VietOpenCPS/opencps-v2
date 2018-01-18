@@ -9,4 +9,5 @@ Export-Package: \
 	com.fasterxml.jackson.annotation.*,\
 	io.swagger.annotations,\
 	io.swagger.annotations.*,\
-	com.fasterxml.jackson.dataformat.xml.annotation
+	com.fasterxml.jackson.dataformat.xml.annotation,\
+	org.opencps.dossiermgt.service.comparator
