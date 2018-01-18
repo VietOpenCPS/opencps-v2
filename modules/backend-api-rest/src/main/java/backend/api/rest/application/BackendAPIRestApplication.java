@@ -2,18 +2,23 @@
 package backend.api.rest.application;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 
 import org.opencps.api.context.provider.CompanyContextProvider;
 import org.opencps.api.context.provider.LocaleContextProvider;
 import org.opencps.api.context.provider.ServiceContextProvider;
 import org.opencps.api.context.provider.UserContextProvider;
+import org.opencps.api.controller.ProcessPluginManagement;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
 import org.opencps.api.controller.impl.CommentManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
@@ -36,6 +41,7 @@ import org.opencps.api.controller.impl.NotificationTypeManagementImpl;
 import org.opencps.api.controller.impl.OfficeSiteManagementImpl;
 import org.opencps.api.controller.impl.PaymentConfigManagementImpl;
 import org.opencps.api.controller.impl.PaymentFileManagementImpl;
+import org.opencps.api.controller.impl.ProcessPluginManagementImpl;
 import org.opencps.api.controller.impl.RegistrationFormManagementImpl;
 import org.opencps.api.controller.impl.RegistrationLogManagementImpl;
 import org.opencps.api.controller.impl.RegistrationManagementImpl;
@@ -51,6 +57,10 @@ import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
 import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
 
 @ApplicationPath("/v2")
 @Component(immediate = true, service = Application.class)
@@ -99,6 +109,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new RegistrationManagementImpl());
 		singletons.add(new RegistrationFormManagementImpl());
 		singletons.add(new RegistrationLogManagementImpl());
+		singletons.add(new ProcessPluginManagementImpl());
 		
 		// add service provider
 		singletons.add(_serviceContextProvider);
