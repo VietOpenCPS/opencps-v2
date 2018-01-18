@@ -2,11 +2,13 @@ package org.opencps.dossiermgt.listenner;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.DossierLogUtils;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
@@ -22,7 +24,6 @@ import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.osgi.service.component.annotations.Component;
 
-import com.liferay.osgi.util.StringPlus;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -135,7 +136,6 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 					formData = formDataContent.toString();
 
-					_log.info("FormData........... " + formData);
 
 				}
 
@@ -183,28 +183,22 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 			JSONObject jEntryValue = JSONFactoryUtil.createJSONObject();
 
-			_log.info("EntryKey" + entryValue);
 
 			if (entryValue.startsWith("#") && entryValue.contains("@")) {
-				_log.info("GetElementForm___" + entryValue);
 
-				// TODO review entryvalue
 				uEntryValue = getValueElementFormData(srcFormData, entryValue);
 				entry.setValue(uEntryValue);
 
 			}
 
-			if (entryValue.contains(SPEC_DELIVERABLES) || entryValue.contains(SPEC_DOSSIER_FILE_ID)
-					|| entryValue.contains(SPEC_DELIVERABLE_CODE) || entryValue.contains(SPEC_SUBJECT)) {
-				_log.info("SpecialForm" + entryValue);
+			if (_checkContains(entryValue)) {
 
-				uEntryValue = getSpecialValue(entryValue);
+				uEntryValue = getSpecialValue(entryValue, dossierId);
 				entry.setValue(uEntryValue);
 
 			}
 
 			if (entryValue.startsWith("#") && !entryValue.contains("@")) {
-				_log.info("GetAllForm" + entryValue);
 
 				entryValue = StringUtil.replaceFirst(entryValue, "#", StringPool.BLANK);
 
@@ -221,17 +215,36 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		return returnOBJ;
 	}
 
+	public enum SpecialKey {
+		APPLICANTNAME, APPLICANTIDNO, RECEIVEDATE, DOSSIERIDCNT, DOSSIERNO, SUBMITDATE
+	};
+
+	private boolean _checkContains(String key) {
+		boolean isContain = false;
+
+		EnumMap<SpecialKey, String> map = new EnumMap<SpecialKey, String>(SpecialKey.class);
+
+		map.put(SpecialKey.APPLICANTIDNO, "_applicantName");
+		map.put(SpecialKey.APPLICANTIDNO, "_applicantIdNo");
+		map.put(SpecialKey.DOSSIERIDCNT, "_dossierIdCNT");
+		map.put(SpecialKey.DOSSIERNO, "_dossierNo");
+		map.put(SpecialKey.SUBMITDATE, "_submitDate");
+		map.put(SpecialKey.RECEIVEDATE, "_receiveDate");
+
+		isContain = map.containsKey(key);
+
+		return isContain;
+	}
+
 	private JSONObject getValueFormData(String fileTemplateNo, long dossierId) {
 		DossierFile dossierFile = null;
 		JSONObject formValue = JSONFactoryUtil.createJSONObject();
 
 		try {
-			_log.info("fileTemplateNo" + fileTemplateNo);
 
 			dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_DPT_First(dossierId, fileTemplateNo, 2,
 					false, new DossierFileComparator(false, "createDate", Date.class));
 
-			_log.info("dossierFile_____" + Validator.isNotNull(dossierFile));
 
 			if (Validator.isNotNull(dossierFile)) {
 				formValue = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
@@ -247,16 +260,75 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 	private String getValueElementFormData(JSONObject formData, String key) {
 
 		String elmValue = StringPool.BLANK;
+		
+		String keyJs = stripKey(key);
 
 		if (Validator.isNotNull(elmValue)) {
-			formData.getString(key);
+			elmValue = formData.getString(keyJs);
 		}
 
 		return elmValue;
 	}
+	
+	private String stripKey(String key) {
+		String rtn = StringPool.BLANK;
+		
+		if (Validator.isNotNull(key)) {
+			String [] strArr = StringUtil.split(key, "@");
+			
+			if (strArr.length == 2) {
+				rtn = strArr[0];
+				
+				rtn = StringUtil.replaceFirst(rtn, "#", StringPool.BLANK);
+			}
+		}
+		
+		return rtn;
+	}
 
-	private String getSpecialValue(String key) {
-		return null;
+	private String getSpecialValue(String key, long dossierId) {
+
+		String val = StringPool.BLANK;
+		
+		try {
+			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+
+			if (key.contentEquals("_applicantName")) {
+				val = dossier.getApplicantName();
+			}
+
+			if (key.contentEquals("_applicantIdNo")) {
+				val = dossier.getApplicantIdNo();
+
+			}
+
+			if (key.contentEquals("_dossierIdCTN")) {
+
+			}
+
+			if (key.contentEquals("_dossierNo")) {
+				val = dossier.getDossierNo();
+
+			}
+
+			if (key.contentEquals("_submitDate")) {
+				if (Validator.isNotNull(dossier.getSubmitDate())) {
+					val = APIDateTimeUtils.convertDateToString(dossier.getSubmitDate(), APIDateTimeUtils._NORMAL_PARTTERN);
+
+				}
+
+			}
+			if (key.contentEquals("_receiveDate")) {
+				val = APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN);
+
+			}
+
+		} catch (Exception e) {
+			
+		}
+
+
+		return val;
 	}
 
 	private JSONObject convertToJSON(Map<String, Object> jsonMap) {
@@ -268,11 +340,6 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 		return returnJSO;
 	}
-
-	private static final String SPEC_DOSSIER_FILE_ID = "dossierFileId";
-	private static final String SPEC_DELIVERABLE_CODE = "deliverableCode";
-	private static final String SPEC_DELIVERABLES = "deliverables";
-	private static final String SPEC_SUBJECT = "subject";
 
 	@Override
 	public void onAfterRemove(DossierFile model) throws ModelListenerException {
