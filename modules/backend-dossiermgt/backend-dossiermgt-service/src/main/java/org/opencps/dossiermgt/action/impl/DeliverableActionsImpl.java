@@ -8,6 +8,7 @@ import org.opencps.dossiermgt.exception.NoSuchDeliverableException;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -99,8 +100,8 @@ public class DeliverableActionsImpl implements DeliverableActions {
 	}
 
 	@Override
-	public Deliverable getDetailById(long id, long groupId) throws NoSuchDeliverableException {
-		return DeliverableLocalServiceUtil.getDeliverableDetail(id, groupId);
+	public Deliverable getDetailById(long id) throws NoSuchDeliverableException {
+		return DeliverableLocalServiceUtil.getDeliverableDetail(id);
 	}
 
 	@Override
@@ -112,12 +113,8 @@ public class DeliverableActionsImpl implements DeliverableActions {
 	}
 
 	@Override
-	public Deliverable deleteById(long id, long groupId) throws NoSuchDeliverableException {
-		// TODO Auto-generated method stub
-		Deliverable deliverable = DeliverableLocalServiceUtil.deleteDeliverable(groupId, id);
-		_log.info("deliverable" +deliverable.getDeliverableCode());
-		
-		return deliverable;
+	public Deliverable deleteById(long id) throws PortalException {
+		return DeliverableLocalServiceUtil.deleteDeliverable(id);
 	}
 
 	@Override
