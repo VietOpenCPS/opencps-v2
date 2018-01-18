@@ -90,8 +90,8 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					_log.info("=========DELIVERABLE_INDEX_FORM_DATA========:" + keyValue[0] + "_" + keyValue[1]);
                     document.addKeyword(
                         keyValue[0].toString(), keyValue[1].toString());
-					document.addKeyword(keyValue[0].toString(),
-							keyValue[1].toString());
+					document.addKeyword(keyValue[0].toString().toLowerCase(),
+							keyValue[1].toString().toLowerCase());
 				}
 			}
 		}

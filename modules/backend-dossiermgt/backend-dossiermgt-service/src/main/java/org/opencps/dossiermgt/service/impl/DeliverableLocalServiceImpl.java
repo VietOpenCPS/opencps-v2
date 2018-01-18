@@ -643,7 +643,12 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 				for (int i = 0; i < arrParamValue.length; i++) {
 					String paramType = arrParamTypes[i].toLowerCase();
-					String strValueArr = arrParamValue[i].replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+					String strValueArr = StringPool.BLANK;
+					if (Validator.isNotNull(arrParamValue[i])) {
+						strValueArr = arrParamValue[i].toString().toLowerCase().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+					} else {
+						strValueArr = arrParamValue[i];
+					}
 					Object param = null;
 					Class<?> clazz = null;
 					switch (paramType) {
