@@ -136,15 +136,12 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			SearchContext searchContext) throws ParseException, SearchException {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
-		String groupId = (String) params.get(Field.GROUP_ID);
+//		String groupId = (String) params.get(Field.GROUP_ID);
 
-		_log.info("keywords:" +keywords +"groupId: "+groupId);
+//		_log.info("keywords:" +keywords +"groupId: "+groupId);
 		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
 		
 		// Search elastic
-//		String pattern = "thiet_bi_san_xuat_chinh = ?";
-//		String paramValues = "11111";
-//		String paramTypes = "String";
 		String pattern = String.valueOf(params.get("pattern"));
 		String paramValues = String.valueOf(params.get("paramValues"));
 		String paramTypes = String.valueOf(params.get("paramTypes"));
@@ -153,10 +150,6 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 //		List<BooleanClauseOccur> _occurs = null;
 		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
 			LuceneQuery( pattern, paramValues, paramTypes, searchContext);
-//			org.opencps.dossiermgt.action.util.LuceneQuery(pattern, paramValues, paramTypes, searchContext);
-//			org.opencps.dossiermgt.action.util.LuceneQuery queryLucene = new org.opencps.dossiermgt.action.util.LuceneQuery(pattern, paramValues, paramTypes, searchContext);
-//			_subQueries = queryLucene.getSubQueries();
-//			_occurs = queryLucene.getOccurs();
 		} else {
 			this.setOccurs(null);
 			this.setParams(null);
@@ -215,13 +208,13 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			}
 		}
 
-		if (Validator.isNotNull(groupId)) {
-			MultiMatchQuery query = new MultiMatchQuery(groupId);
-
-			query.addFields(Field.GROUP_ID);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
+//		if (Validator.isNotNull(groupId)) {
+//			MultiMatchQuery query = new MultiMatchQuery(groupId);
+//
+//			query.addFields(Field.GROUP_ID);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
 
 		// Extra fields
 		String state = GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_STATE));
@@ -280,9 +273,9 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			throws ParseException, SearchException {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
-		String groupId = (String) params.get(Field.GROUP_ID);
+//		String groupId = (String) params.get(Field.GROUP_ID);
 
-		_log.info("keywords:" +keywords +"groupId: "+groupId);
+//		_log.info("keywords:" +keywords +"groupId: "+groupId);
 		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
 
 		String pattern = String.valueOf(params.get("pattern"));
@@ -294,10 +287,6 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 //		List<BooleanClauseOccur> _occurs = null;
 		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
 			LuceneQuery( pattern, paramValues, paramTypes, searchContext);
-//			org.opencps.dossiermgt.action.util.LuceneQuery(pattern, paramValues, paramTypes, searchContext);
-//			org.opencps.dossiermgt.action.util.LuceneQuery queryLucene = new org.opencps.dossiermgt.action.util.LuceneQuery(pattern, paramValues, paramTypes, searchContext);
-//			_subQueries = queryLucene.getSubQueries();
-//			_occurs = queryLucene.getOccurs();
 		} else {
 			this.setOccurs(null);
 			this.setParams(null);
@@ -354,13 +343,13 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			}
 		}
 
-		if (Validator.isNotNull(groupId)) {
-			MultiMatchQuery query = new MultiMatchQuery(groupId);
-
-			query.addFields(Field.GROUP_ID);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
+//		if (Validator.isNotNull(groupId)) {
+//			MultiMatchQuery query = new MultiMatchQuery(groupId);
+//
+//			query.addFields(Field.GROUP_ID);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
 
 		// Extra fields
 		String state = GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_STATE));
@@ -408,8 +397,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 	public static final String CLASS_NAME = Deliverable.class.getName();
 
-	public Deliverable getDeliverableDetail(long id, long groupId) throws NoSuchDeliverableException {
-		return deliverablePersistence.fetchByG_DID(groupId, id);
+	public Deliverable getDeliverableDetail(long id) throws NoSuchDeliverableException {
+		return deliverablePersistence.fetchByDID(id);
 	}
 
 	public Deliverable getDetailById(long id) {
@@ -454,8 +443,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 	//5
 	@Indexable(type=IndexableType.DELETE)
-	public Deliverable deleteDeliverable(long groupId, long id) throws NoSuchDeliverableException {
-		return deliverablePersistence.removeByG_DID(groupId, id);
+	public Deliverable deleteDeliverable(long id) throws NoSuchDeliverableException {
+		return deliverablePersistence.remove(id);
 	}
 
 	//7
@@ -645,7 +634,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 					String paramType = arrParamTypes[i].toLowerCase();
 					String strValueArr = StringPool.BLANK;
 					if (Validator.isNotNull(arrParamValue[i])) {
-						strValueArr = arrParamValue[i].toString().toLowerCase().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						strValueArr = splitSpecial(arrParamValue[i].toString().toLowerCase());
 					} else {
 						strValueArr = arrParamValue[i];
 					}
@@ -948,6 +937,27 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			}
 		}
 		return booleanQueries;
+	}
+
+	protected String splitSpecial(String value) {
+		String[] charSpecialArr = new String[]{"+", "-", "=", "&&", "||", ">", "<", "!", "(", ")", "{", "}", "[", "]", "^", "~", "?", ":","\\", "/"};
+		String valueSplit = StringPool.BLANK;
+		for (int i = 0; i < charSpecialArr.length; i++) {
+			String specialCharacter = charSpecialArr[i];
+			if (i==0) {
+				if (value.contains(specialCharacter)) {
+					valueSplit = value.replaceAll(Pattern.quote(specialCharacter), StringPool.UNDERLINE);
+				} else {
+					valueSplit = value;
+				}
+			} else {
+				if (value.contains(specialCharacter)) {
+					valueSplit = valueSplit.replaceAll(Pattern.quote(specialCharacter), StringPool.UNDERLINE);
+				}
+			}
+	    }
+		
+		return valueSplit;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(DeliverableLocalServiceImpl.class);

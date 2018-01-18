@@ -174,7 +174,9 @@ public interface DeliverablesManagement {
 	@Path("/deliverables/{id}/logs")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response getDeliverableLog(@PathParam("id") Long id);
+	public Response getDeliverableLog(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "id of Deliverable", required = true) @PathParam("id") Long id);
 
 	//12
 	/* Get list dataform by agencyNo and typeCode - START */

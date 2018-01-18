@@ -725,7 +725,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 					String strValueArr = StringPool.BLANK;
 					_log.info("arrParamValue[i]: "+arrParamValue[i]);
 					if (Validator.isNotNull(arrParamValue[i])) {
-						strValueArr = arrParamValue[i].toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						strValueArr = splitSpecial(arrParamValue[i].toString().toLowerCase());
 						_log.info("strValueArr: "+strValueArr);
 					} else {
 						strValueArr = arrParamValue[i];
@@ -1030,5 +1030,27 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		}
 		return booleanQueries;
 	}
+
+	protected String splitSpecial(String value) {
+		String[] charSpecialArr = new String[]{"+", "-", "=", "&&", "||", ">", "<", "!", "(", ")", "{", "}", "[", "]", "^", "~", "?", ":","\\", "/"};
+		String valueSplit = StringPool.BLANK;
+		for (int i = 0; i < charSpecialArr.length; i++) {
+			String specialCharacter = charSpecialArr[i];
+			if (i==0) {
+				if (value.contains(specialCharacter)) {
+					valueSplit = value.replaceAll(Pattern.quote(specialCharacter), StringPool.UNDERLINE);
+				} else {
+					valueSplit = value;
+				}
+			} else {
+				if (value.contains(specialCharacter)) {
+					valueSplit = valueSplit.replaceAll(Pattern.quote(specialCharacter), StringPool.UNDERLINE);
+				}
+			}
+	    }
+		
+		return valueSplit;
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(RegistrationFormLocalServiceImpl.class);
 }

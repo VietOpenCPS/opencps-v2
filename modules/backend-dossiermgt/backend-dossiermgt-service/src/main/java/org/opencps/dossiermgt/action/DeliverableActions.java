@@ -29,10 +29,10 @@ public interface DeliverableActions {
 			int end, ServiceContext serviceContext);
 
 	//3, 8, 9
-	public Deliverable getDetailById(long id, long groupId) throws NoSuchDeliverableException;
+	public Deliverable getDetailById(long id) throws NoSuchDeliverableException;
 
 	//5
-	public Deliverable deleteById(long id, long groupId) throws NoSuchDeliverableException;
+	public Deliverable deleteById(long id) throws PortalException;
 
 	//6
 	public JSONObject getFormDataById(long companyId, LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
