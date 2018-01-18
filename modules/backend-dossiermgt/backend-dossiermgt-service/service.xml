@@ -780,6 +780,31 @@
 		</finder>
 
 	</entity>
+	
+	<entity local-service="true" name="ProcessPlugin" remote-service="false"
+		table="opencps_process_plugin" uuid="true">
+
+		<column name="processPluginId" type="long" primary="true" />
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="stepCode" type="String" />
+		<column name="serviceProcessId" type="long" />
+		<column name="pluginName" type="String" />
+		<column name="sequenceNo" type="String" />
+		<column name="pluginForm" type="String" />
+		<column name="sampleData" type="String" />
+
+		<finder return-type="Collection" name="SC_SPID">
+			<finder-column name="stepCode" />
+			<finder-column name="serviceProcessId" />
+		</finder>
+	</entity>
 
 	<entity local-service="true" name="ProcessStepRole"
 		remote-service="false" table="opencps_processsteprole" uuid="true">
