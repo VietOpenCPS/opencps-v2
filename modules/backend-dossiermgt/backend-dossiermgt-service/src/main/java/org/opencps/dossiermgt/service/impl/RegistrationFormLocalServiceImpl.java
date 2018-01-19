@@ -401,7 +401,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		}
 		String referenceUid = GetterUtil.getString(params.get(RegistrationFormTerm.REFERENCE_UID));
 		String registrationId = String.valueOf(params.get(RegistrationFormTerm.REGISTRATION_ID));
-		_log.info("registrationId: "+registrationId);
+//		_log.info("registrationId: "+registrationId);
 
 		if (Validator.isNotNull(referenceUid)) {
 			MultiMatchQuery query = new MultiMatchQuery(referenceUid);
@@ -420,7 +420,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		}
 		
 		String formNo = GetterUtil.getString(params.get(RegistrationFormTerm.FORM_NO));
-		_log.info("formNo: "+formNo);
+//		_log.info("formNo: "+formNo);
 		if (Validator.isNotNull(formNo)) {
             MultiMatchQuery query = new MultiMatchQuery(formNo.toLowerCase());
 
@@ -444,9 +444,6 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		Indexer<RegistrationForm> indexer = IndexerRegistryUtil.nullSafeGetIndexer(RegistrationForm.class);
 
 		// Search elastic
-//		String pattern = "thiet_bi_san_xuat_chinh = ?";
-//		String paramValues = "11111";
-//		String paramTypes = "String";
 		String pattern = String.valueOf(params.get("pattern"));
 		String paramValues = String.valueOf(params.get("paramValues"));
 		String paramTypes = String.valueOf(params.get("paramTypes"));
@@ -552,9 +549,9 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 	//18
 	public List<RegistrationForm> getFormDataByFormNo(long groupId, long registrationId, String formNo) {
-		
-//		return registrationFormPersistence.fetchByG_REGID_FORMNO(groupId, registrationId, formNo);
+
 		return registrationFormPersistence.findByG_REGID_FORMNO(groupId, registrationId, formNo);
+
 	}
 
 	/**
@@ -721,12 +718,11 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 				for (int i = 0; i < arrParamValue.length; i++) {
 					String paramType = arrParamTypes[i].toLowerCase();
-//					String strValueArr = arrParamValue[i].replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 					String strValueArr = StringPool.BLANK;
-					_log.info("arrParamValue[i]: "+arrParamValue[i]);
+//					_log.info("arrParamValue[i]: "+arrParamValue[i]);
 					if (Validator.isNotNull(arrParamValue[i])) {
 						strValueArr = splitSpecial(arrParamValue[i].toString().toLowerCase());
-						_log.info("strValueArr: "+strValueArr);
+//						_log.info("strValueArr: "+strValueArr);
 					} else {
 						strValueArr = arrParamValue[i];
 					}
