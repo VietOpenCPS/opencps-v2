@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -197,7 +198,8 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					Object[] keyValue = new Object[2];
 					keyValue[0] = key;
 					if (Validator.isNotNull(valueObject.toString())) {
-						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
+//						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 					} else {
 						keyValue[1] = valueObject.toString();
 					}
@@ -208,7 +210,8 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					Object[] keyValue = new Object[2];
 					keyValue[0] = key;
 					if (Validator.isNotNull(strObject.toString())) {
-						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+//						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());
 					} else {
 						keyValue[1] = strObject.toString();
 					}
@@ -236,7 +239,8 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					Object[] keyValue = new Object[2];
 					keyValue[0] = keyJson + "@" + key;
 					if (Validator.isNotNull(valueObject.toString())) {
-						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+//						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
 					} else {
 						keyValue[1] = valueObject.toString();
 					}
@@ -247,7 +251,8 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					Object[] keyValue = new Object[2];
 					keyValue[0] = keyJson + "@" + key;
 					if (Validator.isNotNull(strObject.toString())) {
-						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+//						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());
 					} else {
 						keyValue[1] = strObject.toString();
 					}
@@ -259,26 +264,26 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		return objects;
 	}
 
-	protected List<Object[]> parseJSONObject(List<Object[]> keyValues, JSONArray jsonArray) throws JSONException {
-
-		if (jsonArray != null && jsonArray.length() > 0) {
-			for (int i = 0; i < jsonArray.length(); i++) {
-				String tempObject = String.valueOf(jsonArray.get(i));
-				try {
-					JSONObject valueObject = JSONFactoryUtil.createJSONObject(tempObject);
-					parseJSONObject(keyValues, valueObject);
-				} catch (JSONException e) {
-					// check json array
-					try {
-						JSONArray jsonArr = jsonArray.getJSONArray(i);
-						parseJSONObject(keyValues, jsonArr);
-					} catch (JSONException e1) {
-						// Tinh chung cho key cha.
-					}
-				}
-			}
-		}
-		return keyValues;
-	}
+//	protected List<Object[]> parseJSONObject(List<Object[]> keyValues, JSONArray jsonArray) throws JSONException {
+//
+//		if (jsonArray != null && jsonArray.length() > 0) {
+//			for (int i = 0; i < jsonArray.length(); i++) {
+//				String tempObject = String.valueOf(jsonArray.get(i));
+//				try {
+//					JSONObject valueObject = JSONFactoryUtil.createJSONObject(tempObject);
+//					parseJSONObject(keyValues, valueObject);
+//				} catch (JSONException e) {
+//					// check json array
+//					try {
+//						JSONArray jsonArr = jsonArray.getJSONArray(i);
+//						parseJSONObject(keyValues, jsonArr);
+//					} catch (JSONException e1) {
+//						// Tinh chung cho key cha.
+//					}
+//				}
+//			}
+//		}
+//		return keyValues;
+//	}
 	
 }

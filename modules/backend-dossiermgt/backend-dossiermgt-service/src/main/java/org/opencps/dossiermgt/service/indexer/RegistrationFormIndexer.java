@@ -10,6 +10,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 import javax.sound.sampled.AudioFormat.Encoding;
 
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.RegistrationFormTerm;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
@@ -85,7 +86,7 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
                 for (Object[] keyValue : keyValues) {
 //                    _log.info("=========REGISTRATION_FORM_INDEX_FORM_DATA========:" + keyValue[0] + "_" + keyValue[1]);
                     document.addKeyword(
-                        keyValue[0].toString(), keyValue[1].toString());
+                        keyValue[0].toString().toLowerCase(), keyValue[1].toString().toLowerCase());
                 }
             }
         }
@@ -112,7 +113,8 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 				Object[] keyValue = new Object[2];
 				keyValue[0] = key;
 				if (Validator.isNotNull(valueObject.toString())) {
-					keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+					keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
+//					keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 				} else {
 					keyValue[1] = valueObject.toString();
 				}
@@ -123,7 +125,8 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 				Object[] keyValue = new Object[2];
 				keyValue[0] = key;
 				if (Validator.isNotNull(strObject.toString())) {
-					keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+					keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());
+//					keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 				} else {
 					keyValue[1] = strObject.toString();
 				}
@@ -151,7 +154,8 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 					Object[] keyValue = new Object[2];
 					keyValue[0] = keyJson + "@" + key;
 					if (Validator.isNotNull(valueObject.toString())) {
-						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
+//						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 					} else {
 						keyValue[1] = valueObject.toString();
 					}
@@ -162,7 +166,8 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 					Object[] keyValue = new Object[2];
 					keyValue[0] = keyJson + "@" + key;
 					if (Validator.isNotNull(strObject.toString())) {
-						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());
+//						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 					} else {
 						keyValue[1] = strObject.toString();
 					}
@@ -174,32 +179,31 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 		return objects;
 	}
 
-    //
-    protected List<Object[]> parseJSONObject(
-        List<Object[]> keyValues, JSONArray jsonArray)
-        throws JSONException {
-
-        if (jsonArray != null && jsonArray.length() > 0) {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                String tempObject = String.valueOf(jsonArray.get(i));
-                try {
-                	JSONObject valueObject = JSONFactoryUtil.createJSONObject(tempObject);
-                    parseJSONObject(keyValues, valueObject);
-                } catch(JSONException e) {
-                	// check json array
-                	try {
-                		JSONArray jsonArr = jsonArray.getJSONArray(i);
-                      parseJSONObject(keyValues, jsonArr);
-                    } catch(JSONException e1) {
-                    	// string
-                    	// Tinh chung cho key cha.
-                    }
-                }
-            }
-        }
-
-        return keyValues;
-    }
+//    protected List<Object[]> parseJSONObject(
+//        List<Object[]> keyValues, JSONArray jsonArray)
+//        throws JSONException {
+//
+//        if (jsonArray != null && jsonArray.length() > 0) {
+//            for (int i = 0; i < jsonArray.length(); i++) {
+//                String tempObject = String.valueOf(jsonArray.get(i));
+//                try {
+//                	JSONObject valueObject = JSONFactoryUtil.createJSONObject(tempObject);
+//                    parseJSONObject(keyValues, valueObject);
+//                } catch(JSONException e) {
+//                	// check json array
+//                	try {
+//                		JSONArray jsonArr = jsonArray.getJSONArray(i);
+//                      parseJSONObject(keyValues, jsonArr);
+//                    } catch(JSONException e1) {
+//                    	// string
+//                    	// Tinh chung cho key cha.
+//                    }
+//                }
+//            }
+//        }
+//
+//        return keyValues;
+//    }
 
 	@Override
 	protected Summary doGetSummary(Document document, Locale locale, String snippet, PortletRequest portletRequest,
