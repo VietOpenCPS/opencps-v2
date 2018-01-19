@@ -138,7 +138,6 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 //		String groupId = (String) params.get(Field.GROUP_ID);
 
-//		_log.info("keywords:" +keywords +"groupId: "+groupId);
 		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
 		
 		// Search elastic
@@ -275,7 +274,6 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 //		String groupId = (String) params.get(Field.GROUP_ID);
 
-//		_log.info("keywords:" +keywords +"groupId: "+groupId);
 		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
 
 		String pattern = String.valueOf(params.get("pattern"));
@@ -357,7 +355,6 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String type = GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_TYPE));
 		String applicant = GetterUtil.getString(params.get(DeliverableTerm.APPLICANT_ID_NO));
 
-		_log.info("state:" +state +"------agency: "+agency+"----type: "+type+ "------applicant "+applicant);
 		if (Validator.isNotNull(state)) {
 			MultiMatchQuery query = new MultiMatchQuery(state);
 

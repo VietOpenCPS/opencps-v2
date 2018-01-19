@@ -138,18 +138,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 					revalidate, deliverableState, serviceContext);
 
 			DeliverableInputModel result = DeliverableUtils.mappingToDeliverablesModel(deliverable);
-//			DeliverableImpl model = new DeliverableImpl();
-//			model.setDeliverableType(deliverableType);
-//			model.setDeliverableCode(deliverableCode);
-//			model.setGovAgencyCode(govAgencyCode);
-//			model.setApplicantIdNo(applicantIdNo);
-//			model.setApplicantName(applicantName);
-//			model.setSubject(subject);
-//			model.setIssueDate(issueDate);
-//			model.setExpireDate(expireDate);
-//			model.setRevalidate(revalidate);
-//			model.setDeliverableState(String.valueOf(deliverableState));
-//			action.addDeliverable(model);
+
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
@@ -175,10 +164,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			DeliverableModel results = new DeliverableModel();
 
 			Deliverable deliverableInfo = actions.getDetailById(id);
-
-//			if (Validator.isNull(deliverableInfo)) {
-//				serviceInfo = actions.getById(GetterUtil.getLong(id));
-//			}
 
 			if (Validator.isNotNull(deliverableInfo)) {
 				results = DeliverableUtils.mappingToDeliverableDetailModel(deliverableInfo);
@@ -214,16 +199,15 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				throw new UnauthenticationException();
 			}
 
-			_log.info("groupId: "+groupId +"*keyword*: "+ id);
+//			_log.info("groupId: "+groupId +"*keyword*: "+ id);
 			DeliverableActions actions = new DeliverableActionsImpl();
 			DeliverableModel results = new DeliverableModel();
 
 			Deliverable deliverableInfo = actions.deleteById(id);
-			_log.info("deliverableInfo: "+ deliverableInfo);
+//			_log.info("deliverableInfo: "+ deliverableInfo);
 			if (Validator.isNotNull(deliverableInfo)) {
 				results = DeliverableUtils.mappingToDeliverableDetailModel(deliverableInfo);
 			} else {
-				_log.error("==========");
 				throw new Exception();
 			}
 
@@ -239,13 +223,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(404).entity(error).build();
 		}
 		
-		//		try {
-//			DeliverableActions action = new DeliverableActionsImpl();
-//			action.deleteDeliverable(id);
-//			return Response.status(200).entity("Success").build();
-//		} catch (Exception e) {
-//			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
-//		}
 	}
 
 	@Override
@@ -290,13 +267,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(404).entity(error).build();
 		}
 
-//		try {
-//			DeliverableActions action = new DeliverableActionsImpl();
-//			Deliverable deliverable = action.getListDeliverableDetail(id);
-//			return Response.status(200).entity(deliverable.getFormData()).build();
-//		} catch (Exception e) {
-//			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
-//		}
 	}
 
 	@Override
@@ -368,14 +338,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(404).entity(error).build();
 		}
-		
-//		try {
-//			DeliverableActions action = new DeliverableActionsImpl();
-//			Deliverable deliverable = action.getListDeliverableDetail(id);
-//			return Response.status(200).entity(deliverable.getFormScript()).build();
-//		} catch (Exception e) {
-//			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
-//		}
+
 	}
 
 	//9
@@ -484,25 +447,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(404).entity(error).build();
 		}
-//		try {
-//			DeliverableActions action = new DeliverableActionsImpl();
-//			DeliverableImpl model = new DeliverableImpl();
-//			model.setDeliverableId(id);
-//			model.setDeliverableType(deliverableType);
-//			model.setDeliverableCode(deliverableCode);
-//			model.setGovAgencyCode(govAgencyCode);
-//			model.setApplicantIdNo(applicantIdNo);
-//			model.setApplicantName(applicantName);
-//			model.setSubject(subject);
-//			model.setIssueDate(issueDate);
-//			model.setExpireDate(expireDate);
-//			model.setRevalidate(revalidate);
-//			model.setDeliverableState(String.valueOf(deliverableState));
-//			action.updateDeliverable(model);
-//			return Response.status(200).entity("Success").build();
-//		} catch (Exception e) {
-//			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
-//		}
 
 	}
 
@@ -537,13 +481,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			params.put("pattern", pattern);
 			params.put("paramValues", paramValues);
 			params.put("paramTypes", paramTypes);
-			
-//			String _properties = search.getProperties();
-//			String[] splitProperties = null;
-//			if (Validator.isNotNull(_properties)) {
-//				splitProperties = _properties.split(";");
-//			}
-			
+
 			DeliverableActions actions = new DeliverableActionsImpl();
 //			DeliverableResultModel results = new DeliverableResultModel();
 			JSONObject results = JSONFactoryUtil.createJSONObject();
@@ -554,7 +492,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			JSONObject jsonData = actions.getFormDataByTypecode(serviceContext.getCompanyId(), params, sorts,
 					-1, -1, serviceContext);
 
-			_log.info("total: "+jsonData.getInt("total"));
+//			_log.info("total: "+jsonData.getInt("total"));
 //			results.setTotal(jsonData.getInt("total"));
 //			results.getData()
 //					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
