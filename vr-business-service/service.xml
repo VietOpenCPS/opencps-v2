@@ -82,7 +82,993 @@
 		</finder>
 		
 	</entity>
+
+	<entity name="VRVehicleTypeCertificate" local-service="true" table="vr_vehicletypecertificate"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+
+		<!-- Audit fields -->
+		<column name="mtCore" type="long" db-name="mtCore"/>
+		<column name="dossierId" type="long" db-name="dossierId"/>
+		<column name="dossierType" type="String" db-name="dossierType"/>
+		<column name="dossierNo" type="String" db-name="dossierNo"/>
+		<column name="convertassembleId" type="long" db-name="convertassembleId"/>
+		<column name="applicantIdNo" type="long" db-name="applicantIdNo"/>
+		<column name="applicantIdDate" type="Date" db-name="applicantIdDate"/>
+		<column name="applicantName" type="String" db-name="applicantName"/>
+		<column name="applicantAddress" type="String" db-name="applicantAddress"/>
+		<column name="applicantRepresentative" type="String" db-name="applicantRepresentative"/>
+		<column name="applicantRepresentativeTitle" type="String" db-name="applicantRepresentativeTitle"/>
+		<column name="applicantEmail" type="String" db-name="applicantEmail"/>
+		<column name="applicantPhone" type="String" db-name="applicantPhone"/>
+		<column name="applicantFax" type="String" db-name="applicantFax"/>
+		<column name="applicantContactName" type="String" db-name="applicantContactName"/>
+		<column name="applicantContactEmail" type="String" db-name="applicantContactEmail"/>
+		<column name="applicantcontactPhone" type="String" db-name="applicantcontactPhone"/>
+		<column name="manufacturerForeignCode" type="String" db-name="manufacturerForeignCode"/>
+		<column name="manufacturerName" type="String" db-name="manufacturerName"/>
+		<column name="manufacturerAddress" type="String" db-name="manufacturerAddress"/>
+		<column name="manufacturerRepresentative" type="String" db-name="manufacturerRepresentative"/>
+		<column name="manufacturerRepresentativeTitle" type="String" db-name="manufacturerRepresentativeTitle"/>
+		<column name="manufacturerEmail" type="String" db-name="manufacturerEmail"/>
+		<column name="manufacturerPhone" type="String" db-name="manufacturerPhone"/>
+		<column name="manufacturerFax" type="String" db-name="manufacturerFax"/>
+		<column name="productionPlantCode" type="String" db-name="productionPlantCode"/>
+		<column name="productionPlantName" type="String" db-name="productionPlantName"/>
+		<column name="productionPlantAddress" type="String" db-name="productionPlantAddress"/>
+		<column name="productionPlantRepresentative" type="String" db-name="productionPlantRepresentative"/>
+		<column name="productionPlantRepresentativeTitle" type="String" db-name="productionPlantRepresentativeTitle"/>
+		<column name="copReportDate" type="Date" db-name="copReportDate"/>
+		<column name="copReportExpireDate" type="Date" db-name="copReportExpireDate"/>
+		<column name="designerCode" type="String" db-name="designerCode"/>
+		<column name="designerName" type="String" db-name="designerName"/>
+		<column name="designerAddress" type="String" db-name="designerAddress"/>
+		<column name="designerRepresentative" type="String" db-name="designerRepresentative"/>
+		<column name="designerRepresentativeTitle" type="String" db-name="designerRepresentativeTitle"/>
+		<column name="designerEmail" type="String" db-name="designerEmail"/>
+		<column name="designerPhone" type="String" db-name="designerPhone"/>
+		<column name="designerFax" type="String" db-name="designerFax"/>
+		<column name="verificationCertificateNo" type="String" db-name="verificationCertificateNo"/>
+		<column name="verificationCertificateDate" type="Date" db-name="verificationCertificateDate"/>
+		<column name="verificationRefNo" type="String" db-name="verificationRefNo"/>
+		<column name="verificationRefDate" type="Date" db-name="verificationRefDate"/>
+		<column name="typeApprovalCertificateNo" type="String" db-name="typeApprovalCertificateNo"/>
+		<column name="typeApprovalCertificateDate" type="Date" db-name="typeApprovalCertificateDate"/>
+		<column name="designModelCode" type="String" db-name="designModelCode"/>
+		<column name="designModelDescription" type="String" db-name="designModelDescription"/>
+		<column name="designSymbol" type="String" db-name="designSymbol"/>
+		<column name="registeredNumber" type="String" db-name="registeredNumber"/>
+		<column name="inspectorReceiveDate" type="Date" db-name="inspectorReceiveDate"/>
+		<column name="inspectorSubmitDate" type="Date" db-name="inspectorSubmitDate"/>
+		<column name="inspectorendorSementDate" type="Date" db-name="inspectorendorSementDate"/>
+		<column name="inspectorDeadline" type="Date" db-name="inspectorDeadline"/>
+		<column name="inspectorFinishDate" type="Date" db-name="inspectorFinishDate"/>
+		<column name="inspectorCancelDate" type="Date" db-name="inspectorCancelDate"/>
+		<column name="inspectorOrganization" type="String" db-name="inspectorOrganization"/>
+		<column name="inspectorDivision" type="String" db-name="inspectorDivision"/>
+		<column name="inspectorSignName" type="String" db-name="inspectorSignName"/>
+		<column name="inspectorSignTitle" type="String" db-name="inspectorSignTitle"/>
+		<column name="inspectorSignPlace" type="String" db-name="inspectorSignPlace"/>
+		<column name="certificaTeype" type="String" db-name="certificaTeype"/>
+		<column name="referenceCertificateNo" type="String" db-name="referenceCertificateNo"/>
+		<column name="referenceCertificateDate" type="Date" db-name="referenceCertificateDate"/>
+		<column name="certificateRecordNo" type="String" db-name="certificateRecordNo"/>
+		<column name="certificateSignName" type="String" db-name="certificateSignName"/>
+		<column name="certificateSignTitle" type="String" db-name="certificateSignTitle"/>
+		<column name="certificateSignPlace" type="String" db-name="certificateSignPlace"/>
+		<column name="certificateRecordDate" type="Date" db-name="certificateRecordDate"/>
+		<column name="certificateRecordExpireDate" type="Date" db-name="certificateRecordExpireDate"/>
+		<column name="expiredStatus" type="String" db-name="expiredStatus"/>
+		<column name="certificateRecordStatus" type="String" db-name="certificateRecordStatus"/>
+		<column name="digitalIssueStatus" type="String" db-name="digitalIssueStatus"/>
+		<column name="vehicleClass" type="String" db-name="vehicleClass"/>
+		<column name="certifiedVehicleType" type="String" db-name="certifiedVehicleType"/>
+		<column name="certifiedVehicleTypeDescription" type="String" db-name="certifiedVehicleTypeDescription"/>
+		<column name="certifiedTrademark" type="String" db-name="certifiedTrademark"/>
+		<column name="certifiedTrademarkName" type="String" db-name="certifiedTrademarkName"/>
+		<column name="certifiedCommercialName" type="String" db-name="certifiedCommercialName"/>
+		<column name="certifiedModelCode" type="String" db-name="certifiedModelCode"/>
+		<column name="certifiedAssemblyType" type="String" db-name="certifiedAssemblyType"/>
+		<column name="certifiedAssemblyTypeDescription" type="String" db-name="certifiedAssemblyTypeDescription"/>
+		<column name="certifiedVINNo" type="String" db-name="certifiedVINNo"/>
+		<column name="certifiedVINPosition" type="String" db-name="certifiedVINPosition"/>
+		<column name="certifiedFrameNo" type="String" db-name="certifiedFrameNo"/>
+		<column name="certifiedFrameAttachPlace" type="String" db-name="certifiedFrameAttachPlace"/>
+		<column name="certifiedFramePosition" type="String" db-name="certifiedFramePosition"/>
+		<column name="certifiedEngineNo" type="String" db-name="certifiedEngineNo"/>
+		<column name="certifiedEngineAttachPlace" type="String" db-name="certifiedEngineAttachPlace"/>
+		<column name="certifiedEnginePosition" type="String" db-name="certifiedEnginePosition"/>
+		<column name="safetyTestReportNo" type="String" db-name="safetyTestReportNo"/>
+		<column name="safetyTestReportDate" type="Date" db-name="safetyTestReportDate"/>
+		<column name="emissionTestReportNo" type="String" db-name="emissionTestReportNo"/>
+		<column name="emissionTestReportDate" type="Date" db-name="emissionTestReportDate"/>
+		<column name="commonSafetyStandard" type="String" db-name="commonSafetyStandard"/>
+		<column name="emissionStandard" type="String" db-name="emissionStandard"/>
+		<column name="otherTestReportNo" type="String" db-name="otherTestReportNo"/>
+		<column name="otherTestReportDate" type="Date" db-name="otherTestReportDate"/>
+		<column name="sampleFrameNo" type="String" db-name="sampleFrameNo"/>
+		<column name="sampleVINNo" type="String" db-name="sampleVINNo"/>
+		<column name="sampleEngineNo" type="String" db-name="sampleEngineNo"/>
+		<column name="sampleVehicleType" type="String" db-name="sampleVehicleType"/>
+		<column name="sampleVehicleTypeDescription" type="String" db-name="sampleVehicleTypeDescription"/>
+		<column name="sampleTrademark" type="String" db-name="sampleTrademark"/>
+		<column name="sampleTrademarkName" type="String" db-name="sampleTrademarkName"/>
+		<column name="sampleCommercialName" type="String" db-name="sampleCommercialName"/>
+		<column name="sampleModelCode" type="String" db-name="sampleModelCode"/>
+		<column name="customsDeclarationNo" type="String" db-name="customsDeclarationNo"/>
+		<column name="customsDeclarationDate" type="Date" db-name="customsDeclarationDate"/>
+		<column name="productionCountry" type="String" db-name="productionCountry"/>
+		<column name="importerQuantity" type="long" db-name="importerQuantity"/>
+		<column name="inspectionRecordNo" type="String" db-name="inspectionRecordNo"/>
+		<column name="inspectionDate" type="Date" db-name="inspectionDate"/>
+		<column name="inspectionSite" type="String" db-name="inspectionSite"/>
+		<column name="inspectionDistrictCode" type="String" db-name="inspectionDistrictCode"/>
+		<column name="inspectionDistrictName" type="String" db-name="inspectionDistrictName"/>
+		<column name="inspectionProvinceCode" type="String" db-name="inspectionProvinceCode"/>
+		<column name="inspectionProvinceName" type="String" db-name="inspectionProvinceName"/>
+		<column name="corporationId" type="String" db-name="corporationId"/>
+		<column name="inspectorId" type="long" db-name="inspectorId"/>
+		<column name="remarks" type="String" db-name="remarks"/>
+		<column name="inspectionNote" type="String" db-name="inspectionNote"/>
+		<column name="certificateNote" type="String" db-name="certificateNote"/>
+		<column name="module" type="String" db-name="module"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRVehicleSpecification" local-service="true" table="vr_vehiclespecification"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+
+		<!-- Audit fields -->
+		<column name="vehicleCertificateId" type="long" db-name="vehicleCertificateId"/>
+		<column name="specificationCode" type="String" db-name="specificationCode"/>
+		<column name="specificationName" type="String" db-name="specificationName"/>
+		<column name="specificationValue" type="String" db-name="specificationValue"/>
+		<column name="specificationValueDescription" type="String" db-name="specificationValueDescription"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="specificationBasicUnit" type="String" db-name="specificationBasicUnit"/>
+		<column name="specificationStandard" type="String" db-name="specificationStandard"/>
+		<column name="specificationGroup" type="String" db-name="specificationGroup"/>
+		<column name="specificationDataCollectionID" type="String" db-name="specificationDataCollectionID"/>
+		<column name="specificationResult" type="String" db-name="specificationResult"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+<!-- 	<entity name="VRCFGTechnicalSpec" local-service="true" table="vr_cfg_technicalspec" -->
+<!-- 		remote-service="true"> -->
+			<!-- PK fields -->
+<!-- 		<column name="id" type="long" primary="true" db-name="id"/> -->
+
+			<!-- Audit fields -->
+<!-- 		<column name="vehicleClass" type="String" db-name="vehicleClass"/> -->
+<!-- 		<column name="vehicleType" type="String" db-name="vehicleType"/> -->
+<!-- 		<column name="specificationCode" type="String" db-name="specificationCode"/> -->
+<!-- 		<column name="specificationName" type="String" db-name="specificationName"/> -->
+<!-- 		<column name="specificationDisplayName" type="String" db-name="specificationDisplayName"/> -->
+<!-- 		<column name="sequenceNo" type="long" db-name="sequenceNo"/> -->
+<!-- 		<column name="specificationBasicUnit" type="String" db-name="specificationBasicUnit"/> -->
+<!-- 		<column name="specificationStandard" type="String" db-name="specificationStandard"/> -->
+<!-- 		<column name="specificationGroup" type="String" db-name="specificationGroup"/> -->
+<!-- 		<column name="specificationDataCollectionID" type="String" db-name="specificationDataCollectionID"/> -->
+<!-- 		<column name="specificationEntryType" type="String" db-name="specificationEntryType"/> -->
+<!-- 		<column name="specificationEntryPlaceholder" type="String" db-name="specificationEntryPlaceholder"/> -->
+<!-- 		<column name="specificationMandatory" type="long" db-name="specificationMandatory"/> -->
+<!-- 		<column name="module" type="String" db-name="module"/> -->
+<!-- 		<column name="modifyDate" type="Date" db-name="modifyDate"/> -->
+<!-- 		<column name="syncDate" type="Date" db-name="syncDate"/> -->
+<!-- 	</entity> -->
+
+<!-- 	<entity name="VRCFGLimitTechnicalSpec" local-service="true" table="vr_cfg_limit_technicalspec" -->
+<!-- 		remote-service="true"> -->
+		<!-- PK fields -->
+<!-- 		<column name="id" type="long" primary="true" db-name="id"/> -->
+
+		<!-- Audit fields -->
+<!-- 		<column name="vehicleType" type="String" db-name="vehicleType"/> -->
+<!-- 		<column name="vehicleTypeDescription" type="String" db-name="vehicleTypeDescription"/> -->
+<!-- 		<column name="markup_SMRM" type="String" db-name="markup_SMRM"/> -->
+<!-- 		<column name="markup_VKVC" type="String" db-name="markup_VKVC"/> -->
+<!-- 		<column name="searching_drive_config" type="String" db-name="searching_drive_config"/> -->
+<!-- 		<column name="searching_drive_config_desc" type="String" db-name="searching_drive_config_desc"/> -->
+<!-- 		<column name="sequenceNo" type="long" db-name="sequenceNo"/> -->
+<!-- 		<column name="specificationCode" type="String" db-name="specificationCode"/> -->
+<!-- 		<column name="specificationName" type="String" db-name="specificationName"/> -->
+<!-- 		<column name="modifyDate" type="Date" db-name="modifyDate"/> -->
+<!-- 		<column name="syncDate" type="Date" db-name="syncDate"/> -->
+<!-- 	</entity> -->
+
+	<entity name="VRInspectionStandard" local-service="true" table="vr_inspectionstandard"
+	remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
 	
+		<!-- Audit fields -->
+		<column name="vehicleCertificateId" type="long" db-name="vehicleCertificateId"/>
+		<column name="certificateRecordId" type="long" db-name="certificateRecordId"/>
+		<column name="inspectionRecordId" type="long" db-name="inspectionRecordId"/>
+		<column name="module" type="String" db-name="module"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRCertificateProgress" local-service="true" table="vr_certificate_progress"
+	remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+	
+		<!-- Audit fields -->
+		<column name="vehicleCertificateId" type="long" db-name="vehicleCertificateId"/>
+		<column name="corporationId" type="String" db-name="corporationId"/>
+		<column name="inspectorId" type="long" db-name="inspectorId"/>
+		<column name="actionCode" type="String" db-name="actionCode"/>
+		<column name="progressTime" type="Date" db-name="progressTime"/>
+		<column name="remarks" type="String" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRCertificateProgressFile" local-service="true" table="vr_certificate_progress_file"
+	remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+	
+		<!-- Audit fields -->
+		<column name="certificateProgressID" type="long" db-name="certificateProgressID"/>
+		<column name="attachedFileID" type="long" db-name="attachedFileID"/>
+	</entity>
+
+	<entity name="VRVehicleEquipment" local-service="true" table="vr_vehicleequipment"
+	remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+	
+		<!-- Audit fields -->
+		<column name="vehicleCertificateId" type="long" db-name="vehicleCertificateId"/>
+		<column name="certificateRecordId" type="long" db-name="certificateRecordId"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRCFGStandard" local-service="true" table="vr_cfg_standard"
+	remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+	
+		<!-- Audit fields -->
+		<column name="vehicleClass" type="String" db-name="vehicleClass"/>
+		<column name="vehicleType" type="String" db-name="vehicleType"/>
+		<column name="standardCode" type="String" db-name="standardCode"/>
+		<column name="standardName" type="String" db-name="standardName"/>
+		<column name="standardDescription" type="String" db-name="standardDescription"/>
+		<column name="standardExpiredDate" type="Date" db-name="standardExpiredDate"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="standardType" type="String" db-name="standardType"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRCorporationInspector" local-service="true" table="vr_corporation_inspector"
+	remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+	
+		<!-- Audit fields -->
+		<column name="corporationId" type="String" db-name="vehicleClass"/>
+		<column name="inspectorId" type="long" db-name="vehicleType"/>
+		<column name="inspectorName" type="String" db-name="standardCode"/>
+		<column name="inspectorPhone" type="String" db-name="standardName"/>
+		<column name="inspectorEmail" type="String" db-name="standardDescription"/>
+		<column name="contactCode" type="Date" db-name="standardExpiredDate"/>
+		<column name="teamId" type="long" db-name="sequenceNo"/>
+		<column name="markupTeamLeader" type="long" db-name="standardType"/>
+		<column name="markupBoss" type="long" db-name="standardDescription"/>
+		<column name="place" type="String" db-name="standardExpiredDate"/>
+		<column name="title" type="String" db-name="sequenceNo"/>
+		<column name="fileChuKyId" type="long" db-name="standardType"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRCorporationView" local-service="true" table="vr_corporation_view"
+	remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+	
+		<!-- Audit fields -->
+		<column name="corporationId" type="String" db-name="corporationId"/>
+		<column name="corporationName" type="String" db-name="corporationName"/>
+		<column name="inspectorId" type="long" db-name="inspectorId"/>
+		<column name="isLeader" type="long" db-name="isLeader"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRApplicantProfile" local-service="true" table="vr_applicantprofile"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+
+		<!-- Audit fields -->
+		<column name="applicantCode" type="String" db-name="applicantCode"/>
+		<column name="applicantName" type="String" db-name="applicantName"/>
+		<column name="applicantAddress" type="String" db-name="applicantAddress"/>
+		<column name="applicantPhone" type="String" db-name="applicantPhone"/>
+		<column name="applicantEmail" type="String" db-name="applicantEmail"/>
+		<column name="applicantFax" type="String" db-name="applicantFax"/>
+		<column name="applicantRepresentative" type="String" db-name="applicantRepresentative"/>
+		<column name="applicantRepresentativeTitle" type="String" db-name="applicantRepresentativeTitle"/>
+		<column name="applicantContactName" type="String" db-name="applicantContactName"/>
+		<column name="applicantContactEmail" type="String" db-name="applicantContactEmail"/>
+		<column name="applicantContactPhone" type="String" db-name="applicantContactPhone"/>
+		<column name="applicantNationality" type="String" db-name="applicantNationality"/>
+		<column name="markupCorporation" type="String" db-name="markupCorporation"/>
+		<column name="corporationId" type="String" db-name="corporationId"/>
+		<column name="markupDesigner" type="String" db-name="markupDesigner"/>
+		<column name="markupOverseasManufacturer" type="String" db-name="markupOverseasManufacturer"/>
+		<column name="markupDomesticsManufacturer" type="String" db-name="markupDomesticsManufacturer"/>
+		<column name="markupImporter" type="String" db-name="markupImporter"/>
+		<column name="markupComponentXCG" type="String" db-name="markupComponentXCG"/>
+		<column name="markupComponentXMY" type="String" db-name="markupComponentXMY"/>
+		<column name="markupComponentXCD" type="String" db-name="markupComponentXCD"/>
+		<column name="markupComponentXDD" type="String" db-name="markupComponentXDD"/>
+		<column name="markupComponentXCN" type="String" db-name="markupComponentXCN"/>
+		<column name="markupComponentXCH" type="String" db-name="markupComponentXCH"/>
+		<column name="markupXCG" type="String" db-name="markupXCG"/>
+		<column name="markupXMY" type="String" db-name="markupXMY"/>
+		<column name="markupXCD" type="String" db-name="markupXCD"/>
+		<column name="markupXDD" type="String" db-name="markupXDD"/>
+		<column name="markupXCN" type="String" db-name="markupXCN"/>
+		<column name="markupXCH" type="String" db-name="markupXCH"/>
+		<column name="issueTypeXCG" type="String" db-name="issueTypeXCG"/>
+		<column name="issueTypeXMY" type="String" db-name="issueTypeXMY"/>
+		<column name="issueTypeXCD" type="String" db-name="issueTypeXCD"/>
+		<column name="issueTypeXDD" type="String" db-name="issueTypeXDD"/>
+		<column name="issueTypeXCN" type="String" db-name="issueTypeXCN"/>
+		<column name="issueTypeXCH" type="String" db-name="issueTypeXCH"/>
+		
+		<column name="issueTypeDescription" type="Text" db-name="issueTypeDescription"/>
+		
+		<column name="applicantRegion" type="String" db-name="applicantRegion"/>
+		<column name="applicantCeremonyDate" type="String" db-name="applicantCeremonyDate"/>
+		<column name="applicantOperationPeriod" type="String" db-name="applicantOperationPeriod"/>
+		<column name="applicantBusinessType" type="String" db-name="applicantBusinessType"/>
+		<column name="applicantMetadata" type="String" db-name="applicantMetadata"/>
+		<column name="applicantStatus" type="String" db-name="applicantStatus"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRApplicantProfileHistory" local-service="true" table="vr_applicantprofilehistory"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="applicantCode" type="String" db-name="applicantCode"/>
+		<column name="applicantName" type="String" db-name="applicantName"/>
+		<column name="applicantAddress" type="String" db-name="applicantAddress"/>
+		<column name="applicantRepresentative" type="String" db-name="applicantRepresentative"/>
+		<column name="applicantRepresentativeTitle" type="String" db-name="applicantRepresentativeTitle"/>
+		<column name="applicantPhone" type="String" db-name="applicantPhone"/>
+		<column name="applicantEmail" type="String" db-name="applicantEmail"/>
+		<column name="applicantFax" type="String" db-name="applicantFax"/>
+		<column name="applicantContactName" type="String" db-name="applicantContactName"/>
+		<column name="applicantContactEmail" type="String" db-name="applicantContactEmail"/>
+		<column name="applicantContactPhone" type="String" db-name="applicantContactPhone"/>
+		<column name="applicantNationality" type="String" db-name="applicantNationality"/>
+		<column name="applicantRegion" type="String" db-name="applicantRegion"/>
+		<column name="applicantCeremonyDate" type="String" db-name="applicantCeremonyDate"/>
+		<column name="applicantOperationPeriod" type="String" db-name="applicantOperationPeriod"/>
+		<column name="applicantBusinessType" type="String" db-name="applicantBusinessType"/>
+		<column name="applicantMetadata" type="String" db-name="applicantMetadata"/>
+		<column name="applicantStatus" type="String" db-name="applicantStatus"/>
+		<column name="applicantIssueType" type="String" db-name="applicantIssueType"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRProductionPlant" local-service="true" table="vr_productionplant"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="productionPlantCode" type="String" db-name="productionPlantCode"/>
+		<column name="productionPlantName" type="String" db-name="productionPlantName"/>
+		<column name="productionPlantAddress" type="String" db-name="productionPlantAddress"/>
+		<column name="productionPlantStateCode" type="String" db-name="productionPlantStateCode"/>
+		<column name="productionPlantStateName" type="String" db-name="productionPlantStateName"/>
+		<column name="productionPlantProvinceCode" type="String" db-name="productionPlantProvinceCode"/>
+		<column name="productionPlantProvinceName" type="String" db-name="productionPlantProvinceName"/>
+		<column name="productionPlantDistrictCode" type="String" db-name="productionPlantDistrictCode"/>
+		<column name="productionPlantDistrictName" type="String" db-name="productionPlantDistrictName"/>
+		<column name="productionPlantEmail" type="String" db-name="productionPlantEmail"/>
+		<column name="productionPlantPhone" type="String" db-name="productionPlantPhone"/>
+		<column name="productionPlantFax" type="String" db-name="productionPlantFax"/>
+		<column name="productionPlantRepresentative" type="String" db-name="productionPlantRepresentative"/>
+		<column name="productionPlantRepresentativeTitle" type="String" db-name="productionPlantRepresentativeTitle"/>
+		<column name="productionPlantContactName" type="String" db-name="productionPlantContactName"/>
+		<column name="productionPlantContactEmail" type="String" db-name="productionPlantContactEmail"/>
+		<column name="productionPlantContactPhone" type="String" db-name="productionPlantContactPhone"/>
+		<column name="productionPlantType" type="String" db-name="productionPlantType"/>
+		<column name="productionPlantStatus" type="String" db-name="productionPlantStatus"/>
+		
+		<column name="productionPlantEmployeesNote" type="Text" db-name="productionPlantEmployeesNote"/>
+		<column name="productionPlantEquipmentsNote" type="Text" db-name="productionPlantEquipmentsNote"/>
+		<column name="productionPlantProdEquipmentsNote" type="Text" db-name="productionPlantProdEquipmentsNote"/>
+		<column name="applicantProfileId" type="long" db-name="applicantProfileId"/>
+		<column name="latestCOPReportDate" type="Date" db-name="latestCOPReportDate"/>
+		<column name="latestCOPReportResult" type="String" db-name="latestCOPReportResult"/>
+		<column name="nextCOPReportDate" type="Date" db-name="nextCOPReportDate"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRCOPReportRepository" local-service="true" table="vr_copreportrepository"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="applicantProfileId" type="long" db-name="applicantProfileId"/>
+		<column name="applicantName" type="String" db-name="applicantName"/>
+		<column name="applicantAddress" type="String" db-name="applicantAddress"/>
+		<column name="overseasManufacturerId" type="long" db-name="overseasManufacturerId"/>
+		<column name="overseasManufacturerName" type="String" db-name="overseasManufacturerName"/>
+		<column name="overseasManufacturerAddress" type="String" db-name="overseasManufacturerAddress"/>
+		<column name="productionPlantId" type="long" db-name="productionPlantId"/>
+		<column name="productionPlantCode" type="String" db-name="productionPlantCode"/>
+		<column name="productionPlantName" type="String" db-name="productionPlantName"/>
+		<column name="productionPlantAddress" type="String" db-name="productionPlantAddress"/>
+		<column name="copReportNo" type="String" db-name="copReportNo"/>
+		<column name="copReportStatus" type="String" db-name="copReportStatus"/>
+		<column name="copReportType" type="String" db-name="copReportType"/>
+		<column name="copReportMetadata" type="String" db-name="copReportMetadata"/>
+		<column name="copReportSignName" type="String" db-name="copReportSignName"/>
+		<column name="copReportSignTitle" type="String" db-name="copReportSignTitle"/>
+		<column name="copReportSignPlace" type="String" db-name="copReportSignPlace"/>
+		<column name="copReportDate" type="Date" db-name="copReportDate"/>
+		<column name="copReportApprovedDate" type="Date" db-name="copReportApprovedDate"/>
+		<column name="copReportExpiredDate" type="Date" db-name="copReportExpiredDate"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRCOPProductionPlantEmployee" local-service="true" table="vr_copproductionplantemployee"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="copReportRepositoryID" type="long" db-name="copReportRepositoryID"/>
+		<column name="copReportNo" type="String" db-name="copReportNo"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="employeeName" type="String" db-name="employeeName"/>
+		<column name="employeeCertificateNo" type="String" db-name="employeeCertificateNo"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRCOPProductionPlantEquipment" local-service="true" table="vr_copproductionplantequipment"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="copReportRepositoryID" type="long" db-name="copReportRepositoryID"/>
+		<column name="copReportNo" type="String" db-name="copReportNo"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="equipmentCode" type="String" db-name="equipmentCode"/>
+		<column name="equipmentName" type="String" db-name="equipmentName"/>
+		<column name="equipmentType" type="String" db-name="equipmentType"/>
+		<column name="trademark" type="String" db-name="trademark"/>
+		<column name="trademarkName" type="String" db-name="trademarkName"/>
+		<column name="commercialName" type="String" db-name="commercialName"/>
+		<column name="modelCode" type="String" db-name="modelCode"/>
+		<column name="designSymbolNo" type="String" db-name="designSymbolNo"/>
+		<column name="productionCountryCode" type="String" db-name="productionCountryCode"/>
+		<column name="equipmentStatus" type="String" db-name="equipmentStatus"/>
+		<column name="notes" type="String" db-name="notes"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRCOPProdEquipment" local-service="true" table="vr_copprodequipment"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="copReportRepositoryID" type="long" db-name="copReportRepositoryID"/>
+		<column name="copReportNo" type="String" db-name="copReportNo"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="equipmentCode" type="String" db-name="equipmentCode"/>
+		<column name="equipmentName" type="String" db-name="equipmentName"/>
+		<column name="equipmentType" type="String" db-name="equipmentType"/>
+		<column name="trademark" type="String" db-name="trademark"/>
+		<column name="trademarkName" type="String" db-name="trademarkName"/>
+		<column name="commercialName" type="String" db-name="commercialName"/>
+		<column name="modelCode" type="String" db-name="modelCode"/>
+		<column name="designSymbolNo" type="String" db-name="designSymbolNo"/>
+		<column name="productionCountryCode" type="String" db-name="productionCountryCode"/>
+		<column name="equipmentStatus" type="String" db-name="equipmentStatus"/>
+		<column name="notes" type="String" db-name="notes"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRCOPProductType" local-service="true" table="vr_copproducttype"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="copReportRepositoryID" type="long" db-name="copReportRepositoryID"/>
+		<column name="copReportNo" type="String" db-name="copReportNo"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="vehicleClass" type="String" db-name="vehicleClass"/>
+		<column name="vehicleTypeCode" type="String" db-name="vehicleTypeCode"/>
+		<column name="vehicleTypeDescription" type="String" db-name="vehicleTypeDescription"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRCOPProductLine" local-service="true" table="vr_copproductline"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="copReportRepositoryID" type="long" db-name="copReportRepositoryID"/>
+		<column name="copReportNo" type="String" db-name="copReportNo"/>
+		<column name="copProductTypeID" type="long" db-name="copProductTypeID"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="trademark" type="String" db-name="trademark"/>
+		<column name="trademarkName" type="String" db-name="trademarkName"/>
+		<column name="commercialName" type="String" db-name="commercialName"/>
+		<column name="modelCode" type="String" db-name="modelCode"/>
+		<column name="designSymbolNo" type="String" db-name="designSymbolNo"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRCOPReportAttach" local-service="true" table="vr_copreportattach"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="copReportRepositoryID" type="long" db-name="copReportRepositoryID"/>
+		<column name="copReportNo" type="String" db-name="copReportNo"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="attachFileURL" type="String" db-name="attachFileURL"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRCOPProductClassification" local-service="true" table="vr_copproductclassification"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="copReportRepositoryID" type="long" db-name="copReportRepositoryID"/>
+		<column name="copReportNo" type="String" db-name="copReportNo"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="productClassificationCode" type="String" db-name="productClassificationCode"/>
+		<column name="productClassificationDescription" type="String" db-name="productClassificationDescription"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRProductionPlantEmployee" local-service="true" table="vr_productplantemployee"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="productPlantID" type="long" db-name="productPlantID"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="employeeName" type="String" db-name="employeeName"/>
+		<column name="employeeCertificateNo" type="String" db-name="employeeCertificateNo"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRProductionPlantEquipment" local-service="true" table="vr_productionplantequipment"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="productPlantID" type="long" db-name="productPlantID"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="equipmentCode" type="String" db-name="equipmentCode"/>
+		<column name="equipmentName" type="String" db-name="equipmentName"/>
+		<column name="equipmentType" type="String" db-name="equipmentType"/>
+		<column name="trademark" type="String" db-name="trademark"/>
+		<column name="trademarkName" type="String" db-name="trademarkName"/>
+		<column name="commercialName" type="String" db-name="commercialName"/>
+		<column name="modelCode" type="String" db-name="modelCode"/>
+		<column name="designSymbolNo" type="String" db-name="designSymbolNo"/>
+		<column name="productionCountryCode" type="String" db-name="productionCountryCode"/>
+		<column name="equipmentStatus" type="String" db-name="equipmentStatus"/>
+		<column name="notes" type="String" db-name="notes"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRProductionPlantProdEquipment" local-service="true" table="vr_productionplantprodequipment"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="productPlantID" type="long" db-name="productPlantID"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="equipmentCode" type="String" db-name="equipmentCode"/>
+		<column name="equipmentName" type="String" db-name="equipmentName"/>
+		<column name="equipmentType" type="String" db-name="equipmentType"/>
+		<column name="trademark" type="String" db-name="trademark"/>
+		<column name="trademarkName" type="String" db-name="trademarkName"/>
+		<column name="commercialName" type="String" db-name="commercialName"/>
+		<column name="modelCode" type="String" db-name="modelCode"/>
+		<column name="designSymbolNo" type="String" db-name="designSymbolNo"/>
+		<column name="productionCountryCode" type="String" db-name="productionCountryCode"/>
+		<column name="equipmentStatus" type="String" db-name="equipmentStatus"/>
+		<column name="notes" type="String" db-name="notes"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRProductType" local-service="true" table="vr_productiontype"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="productPlantID" type="long" db-name="productPlantID"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="vehicleClass" type="String" db-name="vehicleClass"/>
+		<column name="vehicleTypeCode" type="String" db-name="vehicleTypeCode"/>
+		<column name="vehicleTypeDescription" type="String" db-name="vehicleTypeDescription"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRProductLine" local-service="true" table="vr_productline"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="productPlantID" type="long" db-name="productPlantID"/>
+		<column name="productTypeID" type="long" db-name="productTypeID"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="trademark" type="String" db-name="trademark"/>
+		<column name="trademarkName" type="String" db-name="trademarkName"/>
+		<column name="commercialName" type="String" db-name="commercialName"/>
+		<column name="modelCode" type="String" db-name="modelCode"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRProductClassification" local-service="true" table="vr_productclassification"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="productPlantID" type="long" db-name="productPlantID"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="productClassificationCode" type="String" db-name="productClassificationCode"/>
+		<column name="productClassificationDescription" type="String" db-name="productClassificationDescription"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRInventory" local-service="true" table="vr_inventory"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="yearofPeriod" type="long" db-name="yearofPeriod"/>
+		<column name="previousPeriod" type="String" db-name="previousPeriod"/>
+		<column name="previousPeriodCode" type="String" db-name="previousPeriodCode"/>
+		<column name="bookId" type="long" db-name="bookId"/>
+		<column name="vehicleClass" type="String" db-name="vehicleClass"/>
+		<column name="stampType" type="String" db-name="stampType"/>
+		<column name="stampShortNo" type="String" db-name="stampShortNo"/>
+		<column name="serialStartNo" type="String" db-name="serialStartNo"/>
+		<column name="serialEndNo" type="String" db-name="serialEndNo"/>
+		<column name="totalQuantities" type="long" db-name="totalQuantities"/>
+		<column name="totalInUse" type="long" db-name="totalInUse"/>
+		<column name="totalNotUsed" type="long" db-name="totalNotUsed"/>
+		<column name="remark" type="String" db-name="remark"/>
+		<column name="corporationId" type="String" db-name="corporationId"/>
+		<column name="checkType" type="long" db-name="checkType"/>
+		<column name="checkStatus" type="long" db-name="checkStatus"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRInputSheet" local-service="true" table="vr_inputsheet"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="inputSheetNo" type="String" db-name="inputSheetNo"/>
+		<column name="inputSheetDate" type="Date" db-name="inputSheetDate"/>
+		<column name="originalDocumentNo" type="String" db-name="originalDocumentNo"/>
+		<column name="corporationId" type="String" db-name="corporationId"/>
+		<column name="inputSheetType" type="long" db-name="inputSheetType"/>
+		<column name="maker" type="String" db-name="maker"/>
+		<column name="checker" type="String" db-name="checker"/>
+		<column name="approver" type="String" db-name="approver"/>
+		<column name="deliveryName" type="String" db-name="deliveryName"/>
+		<column name="inventoryName" type="String" db-name="inventoryName"/>
+		<column name="inventoryPlace" type="String" db-name="inventoryPlace"/>
+		<column name="inventoryDate" type="Date" db-name="inventoryDate"/>
+		<column name="bookIDList" type="String" db-name="bookIDList"/>
+		<column name="isApproval" type="long" db-name="isApproval"/>
+		<column name="totalQuantities" type="long" db-name="totalQuantities"/>
+		<column name="totalAmount" type="long" db-name="totalAmount"/>
+		<column name="amountInWords" type="String" db-name="amountInWords"/>
+		<column name="remark" type="String" db-name="remark"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRInputStampbook" local-service="true" table="vr_inputstampbook"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="inputSheetId" type="long" db-name="inputSheetId"/>
+		<column name="bookId" type="long" db-name="bookId"/>
+		<column name="vehicleClass" type="String" db-name="vehicleClass"/>
+		<column name="stampType" type="String" db-name="stampType"/>
+		<column name="stampShortNo" type="String" db-name="stampShortNo"/>
+		<column name="serialStartNo" type="long" db-name="serialStartNo"/>
+		<column name="serialEndNo" type="String" db-name="serialEndNo"/>
+		<column name="subTotalInDocument" type="long" db-name="subTotalInDocument"/>
+		<column name="subTotalQuantities" type="long" db-name="subTotalQuantities"/>
+		<column name="units" type="long" db-name="units"/>
+		<column name="unitPrice" type="long" db-name="unitPrice"/>
+		<column name="totalAmount" type="long" db-name="totalAmount"/>
+		<column name="totalInUse" type="long" db-name="totalInUse"/>
+		<column name="totalNotUsed" type="long" db-name="totalNotUsed"/>
+		<column name="sum1" type="long" db-name="sum1"/>
+		<column name="sum2" type="long" db-name="sum2"/>
+		<column name="sum3" type="long" db-name="sum3"/>
+		<column name="remark" type="String" db-name="remark"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRInputStampbookDetails" local-service="true" table="vr_inputstampbookdetails"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="stampSerialNo" type="String" db-name="stampSerialNo"/>
+		<column name="sequenceNo" type="long" db-name="sequenceNo"/>
+		<column name="dossierId" type="long" db-name="dossierId"/>
+		<column name="certificateId" type="long" db-name="certificateId"/>
+		<column name="certificateNumber" type="String" db-name="certificateNumber"/>
+		<column name="certificateDate" type="Date" db-name="certificateDate"/>
+		<column name="vehicleRecordId" type="long" db-name="vehicleRecordId"/>
+		<column name="frameNo" type="String" db-name="frameNo"/>
+		<column name="___No" type="String" db-name="___No"/>
+		<column name="vINNo" type="String" db-name="vINNo"/>
+		<column name="engineNo" type="String" db-name="engineNo"/>
+		<column name="qrCode" type="String" db-name="qrCode"/>
+		<column name="copies" type="long" db-name="copies"/>
+		<column name="markupFulfill" type="long" db-name="markupFulfill"/>
+		<column name="replacedSerialNo" type="String" db-name="replacedSerialNo"/>
+		<column name="remark" type="String" db-name="remark"/>
+		<column name="inputSheetId" type="long" db-name="inputSheetId"/>
+		<column name="bookId" type="long" db-name="bookId"/>
+		<column name="purchaserId" type="String" db-name="purchaserId"/>
+		<column name="corporationId" type="String" db-name="corporationId"/>
+		<column name="issuingStatus" type="long" db-name="issuingStatus"/>
+		<column name="clearingStatus" type="long" db-name="clearingStatus"/>
+		<column name="stampStatus" type="long" db-name="stampStatus"/>
+		<column name="issuingDate" type="Date" db-name="issuingDate"/>
+		<column name="printingDate" type="Date" db-name="printingDate"/>
+		<column name="noticeofLostDate" type="Date" db-name="noticeofLostDate"/>
+		<column name="noticeofCancelDate" type="Date" db-name="noticeofCancelDate"/>
+		<column name="noticeofReturnDate" type="Date" db-name="noticeofReturnDate"/>
+		<column name="clearingDate" type="Date" db-name="clearingDate"/>
+		<column name="clearingAdvancePaymentID" type="long" db-name="clearingAdvancePaymentID"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VROutputSheet" local-service="true" table="vr_outputsheet"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="outputSheetNo" type="String" db-name="outputSheetNo"/>
+		<column name="outputSheetDate" type="Date" db-name="outputSheetDate"/>
+		<column name="originalDocumentNo" type="String" db-name="originalDocumentNo"/>
+		<column name="supplierCorporationId" type="String" db-name="supplierCorporationId"/>
+		<column name="outputSheetType" type="long" db-name="outputSheetType"/>
+		<column name="maker" type="String" db-name="maker"/>
+		<column name="checker" type="String" db-name="checker"/>
+		<column name="approver" type="String" db-name="approver"/>
+		<column name="receiverName" type="String" db-name="receiverName"/>
+		<column name="receiverPlace" type="String" db-name="receiverPlace"/>
+		<column name="receiverRequest" type="String" db-name="receiverRequest"/>
+		<column name="inventoryName" type="String" db-name="inventoryName"/>
+		<column name="inventoryPlace" type="String" db-name="inventoryPlace"/>
+		<column name="inventoryDate" type="Date" db-name="inventoryDate"/>
+		<column name="dossierId" type="String" db-name="dossierId"/>
+		<column name="issueId" type="long" db-name="issueId"/>
+		<column name="purchaserId" type="String" db-name="purchaserId"/>
+		<column name="purchaserCorporationId" type="String" db-name="purchaserCorporationId"/>
+		<column name="bookIDList" type="String" db-name="bookIDList"/>
+		<column name="isApproval" type="long" db-name="isApproval"/>
+		<column name="totalQuantities" type="long" db-name="totalQuantities"/>
+		<column name="totalAmount" type="long" db-name="totalAmount"/>
+		<column name="amountInWords" type="String" db-name="amountInWords"/>
+		<column name="remark" type="String" db-name="remark"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VROutputSheetDetails" local-service="true" table="vr_outputsheetdetails"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="inputSheetId" type="long" db-name="inputSheetId"/>
+		<column name="outputSheetId" type="long" db-name="outputSheetId"/>
+		<column name="bookId" type="long" db-name="bookId"/>
+		<column name="issueVehicleCertificateId" type="long" db-name="issueVehicleCertificateId"/>
+		<column name="certificateId" type="long" db-name="certificateId"/>
+		<column name="certificateNumber" type="String" db-name="certificateNumber"/>
+		<column name="certificateDate" type="Date" db-name="certificateDate"/>
+		<column name="vehicleClass" type="long" db-name="vehicleClass"/>
+		<column name="stampType" type="String" db-name="stampType"/>
+		<column name="stampShortNo" type="String" db-name="stampShortNo"/>
+		<column name="serialStartNo" type="String" db-name="serialStartNo"/>
+		<column name="serialEndNo" type="String" db-name="serialEndNo"/>
+		<column name="subTotalInDocument" type="long" db-name="subTotalInDocument"/>
+		<column name="subTotalQuantities" type="long" db-name="subTotalQuantities"/>
+		<column name="unitPrice" type="long" db-name="unitPrice"/>
+		<column name="totalAmount" type="long" db-name="totalAmount"/>
+		<column name="totalInUse" type="long" db-name="totalInUse"/>
+		<column name="totalNotUsed" type="long" db-name="totalNotUsed"/>
+		<column name="totalLost" type="long" db-name="totalLost"/>
+		<column name="totalCancelled" type="long" db-name="totalCancelled"/>
+		<column name="totalReturned" type="long" db-name="totalReturned"/>
+		<column name="remark" type="String" db-name="remark"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRClearingStampbook" local-service="true" table="vr_clearingstampbook"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="debitNoteId" type="long" db-name="debitNoteId"/>
+		<column name="inputSheetId" type="long" db-name="inputSheetId"/>
+		<column name="outputSheetId" type="long" db-name="outputSheetId"/>
+		<column name="bookId" type="long" db-name="bookId"/>
+		<column name="certificateId" type="long" db-name="certificateId"/>
+		<column name="certificateNumber" type="String" db-name="certificateNumber"/>
+		<column name="certificateDate" type="Date" db-name="certificateDate"/>
+		<column name="vehicleClass" type="long" db-name="vehicleClass"/>
+		<column name="stampType" type="String" db-name="stampType"/>
+		<column name="stampShortNo" type="String" db-name="stampShortNo"/>
+		<column name="serialStartNo" type="String" db-name="serialStartNo"/>
+		<column name="serialEndNo" type="String" db-name="serialEndNo"/>
+		<column name="subTotalInDocument" type="long" db-name="subTotalInDocument"/>
+		<column name="subTotalQuantities" type="long" db-name="subTotalQuantities"/>
+		<column name="vehiclePrice" type="long" db-name="vehiclePrice"/>
+		<column name="unitPrice" type="long" db-name="unitPrice"/>
+		<column name="totalAmount" type="long" db-name="totalAmount"/>
+		<column name="totalInUse" type="long" db-name="totalInUse"/>
+		<column name="totalNotUsed" type="long" db-name="totalNotUsed"/>
+		<column name="totalLost" type="long" db-name="totalLost"/>
+		<column name="totalCancelled" type="long" db-name="totalCancelled"/>
+		<column name="totalReturned" type="long" db-name="totalReturned"/>
+		<column name="remark" type="String" db-name="remark"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRVehicleRecord" local-service="true" table="vr_vehiclerecord"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="issueVehicleCertificateId" type="long" db-name="issueVehicleCertificateId"/>
+		<column name="dossierId" type="long" db-name="dossierId"/>
+		<column name="applicantProfileId" type="long" db-name="applicantProfileId"/>
+		<column name="applicantName" type="String" db-name="applicantName"/>
+		<column name="applicantAddress" type="String" db-name="applicantAddress"/>
+		<column name="certificateId" type="long" db-name="certificateId"/>
+		<column name="productionNumber" type="String" db-name="productionNumber"/>
+		<column name="productionDate" type="Date" db-name="productionDate"/>
+		<column name="frameNo" type="String" db-name="frameNo"/>
+		<column name="boxNo" type="String" db-name="boxNo"/>
+		<column name="engineNo" type="String" db-name="engineNo"/>
+		<column name="color" type="String" db-name="color"/>
+		<column name="stampShortNo" type="String" db-name="stampShortNo"/>
+		<column name="serialNo" type="String" db-name="serialNo"/>
+		<column name="vehicleRecordStatus" type="long" db-name="vehicleRecordStatus"/>
+		<column name="printingStatus" type="long" db-name="printingStatus"/>
+		<column name="attachedFile" type="long" db-name="attachedFile"/>
+		<column name="signName" type="String" db-name="signName"/>
+		<column name="signTitle" type="String" db-name="signTitle"/>
+		<column name="signPlace" type="String" db-name="signPlace"/>
+		<column name="signDate" type="Date" db-name="signDate"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
+		<column name="syncDate" type="Date" db-name="syncDate"/>
+	</entity>
+
+	<entity name="VRIssue" local-service="true" table="vr_issue"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="dossierId" type="long" db-name="dossierId"/>
+		<column name="stampIssueNo" type="String" db-name="stampIssueNo"/>
+		<column name="appliedDate" type="Date" db-name="appliedDate"/>
+		<column name="approvedDate" type="Date" db-name="approvedDate"/>
+		<column name="vehicleClass" type="String" db-name="vehicleClass"/>
+		<column name="applicantProfileId" type="long" db-name="applicantProfileId"/>
+		<column name="applicantName" type="String" db-name="applicantName"/>
+		<column name="applicantAddress" type="String" db-name="applicantAddress"/>
+		<column name="applicantRepresentative" type="String" db-name="applicantRepresentative"/>
+		<column name="applicantRepresentativeTitle" type="String" db-name="applicantRepresentativeTitle"/>
+		<column name="applicantEmail" type="String" db-name="applicantEmail"/>
+		<column name="applicantPhone" type="String" db-name="applicantPhone"/>
+		<column name="applicantFax" type="String" db-name="applicantFax"/>
+		<column name="applicantContactName" type="String" db-name="applicantContactName"/>
+		<column name="applicantContactEmail" type="String" db-name="applicantContactEmail"/>
+		<column name="applicantContactPhone" type="String" db-name="applicantContactPhone"/>
+		<column name="productionPlantId" type="long" db-name="productionPlantId"/>
+		<column name="productionPlantCode" type="String" db-name="productionPlantCode"/>
+		<column name="productionPlantName" type="String" db-name="productionPlantName"/>
+		<column name="productionPlantAddress" type="String" db-name="productionPlantAddress"/>
+		<column name="remarks" type="String" db-name="remarks"/>
+		<column name="methodOfIssue" type="String" db-name="methodOfIssue"/>
+		<column name="totalInDocument" type="long" db-name="totalInDocument"/>
+		<column name="issueCorporationId" type="String" db-name="issueCorporationId"/>
+		<column name="verifyCorporationId" type="String" db-name="verifyCorporationId"/>
+		<column name="digitalissuestatus" type="String" db-name="digitalissuestatus"/>
+	</entity>
+
+	<entity name="VRIssueVehiclecertificate" local-service="true" table="vr_issue_vehiclecertificate"
+		remote-service="true">
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" db-name="id"/>
+		
+		<!-- Audit fields -->
+		<column name="issueId" type="long" db-name="issueId"/>
+		<column name="dossierId" type="long" db-name="dossierId"/>
+		<column name="certificateId" type="long" db-name="certificateId"/>
+		<column name="vehiclePrice" type="long" db-name="vehiclePrice"/>
+		<column name="totalQuantity" type="long" db-name="totalQuantity"/>
+		<column name="unitPrice" type="long" db-name="unitPrice"/>
+	</entity>
+
 
 	<exceptions>
 		<exception>InvalidInputParam</exception>
