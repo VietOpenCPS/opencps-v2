@@ -43,40 +43,53 @@
 	<xsd:element name="DossierStatisticSearchModel">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="dossierStatisticId" type="xsd:long"
-					minOccurs="0" />
-				<xsd:element name="userId" type="xsd:long" minOccurs="0" />
-				<xsd:element name="createDate" type="xsd:string"
-					minOccurs="0" />
-				<xsd:element name="modifiedDate" type="xsd:string"
-					minOccurs="0" />
 				<xsd:element name="month" type="xsd:int" minOccurs="0" />
 				<xsd:element name="year" type="xsd:int" minOccurs="0" />
-				<xsd:element name="remainingCount" type="xsd:int"
-					minOccurs="0" />
-				<xsd:element name="receivedCount" type="xsd:int"
-					minOccurs="0" />
-				<xsd:element name="onlineCount" type="xsd:int"
-					minOccurs="0" />
-				<xsd:element name="undueCount" type="xsd:int" minOccurs="0" />
-				<xsd:element name="overdueCount" type="xsd:int"
-					minOccurs="0" />
-				<xsd:element name="ontimeCount" type="xsd:int"
-					minOccurs="0" />
-				<xsd:element name="overtimeCount" type="xsd:int"
-					minOccurs="0" />
 				<xsd:element name="govAgencyCode" type="xsd:string"
-					minOccurs="0" />
-				<xsd:element name="govAgencyName" type="xsd:string"
 					minOccurs="0" />
 				<xsd:element name="domainCode" type="xsd:string"
 					minOccurs="0" />
-				<xsd:element name="domainName" type="xsd:string"
-					minOccurs="0" />
 				<xsd:element name="administrationLevel" type="xsd:int"
 					minOccurs="0" />
-				<xsd:element name="reporting" type="xsd:boolean"
-					minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="DossierStatisticInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="month" type="xsd:int" minOccurs="0" />
+				<xsd:element name="year" type="xsd:int" minOccurs="0" />
+				<xsd:element name="remainingCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="receivedCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="onlineCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="undueCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="overdueCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="ontimeCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="overtimeCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="domainCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="domainName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="administrationLevel" type="xsd:int" minOccurs="0" />
+				<xsd:element name="reporting" type="xsd:boolean" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="DossierStatisticDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="month" type="xsd:int" minOccurs="0" />
+				<xsd:element name="year" type="xsd:int" minOccurs="0" />
+				<xsd:element name="remainingCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="receivedCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="onlineCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="undueCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="overdueCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="ontimeCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="overtimeCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="domainCode" type="xsd:string" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>

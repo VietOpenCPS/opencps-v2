@@ -2,7 +2,8 @@ package org.opencps.dossiermgt.action.impl;
 
 import java.util.LinkedHashMap;
 
-import org.opencps.dossiermgt.action.DossierStatistic;
+import org.opencps.dossiermgt.action.DossierStatisticAction;
+import org.opencps.dossiermgt.model.DossierStatistic;
 import org.opencps.dossiermgt.service.DossierStatisticLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -15,7 +16,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-public class DossierStatisticActionImpl implements DossierStatistic {
+public class DossierStatisticActionImpl implements DossierStatisticAction {
 
 	private Log _log = LogFactoryUtil.getLog(DossierStatisticActionImpl.class);
 
@@ -38,8 +39,19 @@ public class DossierStatisticActionImpl implements DossierStatistic {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
-			Sort[] sorts, int start, int end, ServiceContext serviceContext) {
+	public DossierStatistic insertDossierStatistic(long groupId, int month, int year, int remainingCount,
+			int receivedCount, int onlineCount, int undueCount, int overdueCount, int ontimeCount, int overtimeCount,
+			String govAgencyCode, String govAgencyName, String domainCode, String domainName, int administrationLevel,
+			boolean reporting, ServiceContext serviceContext) throws PortalException {
+
+		return DossierStatisticLocalServiceUtil.insert(groupId, month, year, remainingCount, receivedCount, onlineCount,
+				undueCount, overdueCount, ontimeCount, overtimeCount, govAgencyCode, govAgencyName, domainCode,
+				domainName, administrationLevel, reporting, serviceContext);
+	}
+
+	@Override
+	public JSONObject getDossierStatistic(long userId, long companyId, long groupId,
+			LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end, ServiceContext serviceContext) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		Hits hits = null;
@@ -52,7 +64,8 @@ public class DossierStatisticActionImpl implements DossierStatistic {
 			hits = DossierStatisticLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
 			result.put("data", hits.toList());
-			result.put("total", hits.toList().size());
+			long total = DossierStatisticLocalServiceUtil.countLucene(params, searchContext);
+			result.put("total", total);
 
 		} catch (Exception e) {
 			_log.error(e);

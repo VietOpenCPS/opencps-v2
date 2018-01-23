@@ -29,6 +29,7 @@ import org.opencps.api.controller.impl.DossierActionManagementImpl;
 import org.opencps.api.controller.impl.DossierFileManagementImpl;
 import org.opencps.api.controller.impl.DossierLogManagementImpl;
 import org.opencps.api.controller.impl.DossierManagementImpl;
+import org.opencps.api.controller.impl.DossierStatisticManagementImpl;
 import org.opencps.api.controller.impl.DossierSyncManagementImpl;
 import org.opencps.api.controller.impl.DossierTemplateManagementImpl;
 import org.opencps.api.controller.impl.EmployeeManagementImpl;
@@ -110,6 +111,8 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new RegistrationFormManagementImpl());
 		singletons.add(new RegistrationLogManagementImpl());
 		singletons.add(new ProcessPluginManagementImpl());
+		
+		singletons.add(new DossierStatisticManagementImpl());
 		
 		// add service provider
 		singletons.add(_serviceContextProvider);

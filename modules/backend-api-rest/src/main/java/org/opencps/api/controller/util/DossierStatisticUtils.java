@@ -3,11 +3,12 @@ package org.opencps.api.controller.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencps.api.dossierstatistic.model.DossierStatisticDetailModel;
+import org.opencps.api.dossierstatistic.model.DossierStatisticInputModel;
 import org.opencps.api.dossierstatistic.model.DossierStatisticModel;
 import org.opencps.dossiermgt.constants.DossierStatisticTerm;
+import org.opencps.dossiermgt.model.DossierStatistic;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 
 public class DossierStatisticUtils {
@@ -38,6 +39,37 @@ public class DossierStatisticUtils {
 		return data;
 	}
 
-	
-	private static Log _log = LogFactoryUtil.getLog(DossierStatisticUtils.class);
+	public static List<DossierStatisticDetailModel> mappingToDossierStatisticData(
+			List<DossierStatistic> lsDossierStatistic) {
+
+		List<DossierStatisticDetailModel> outputs = new ArrayList<DossierStatisticDetailModel>();
+
+		for (DossierStatistic dossierStatistic : lsDossierStatistic) {
+
+			DossierStatisticDetailModel model = mappingToDossierStatisticModel(dossierStatistic);
+
+			outputs.add(model);
+		}
+
+		return outputs;
+	}
+
+	public static DossierStatisticDetailModel mappingToDossierStatisticModel(DossierStatistic dossierStatistic) {
+
+		DossierStatisticDetailModel model = new DossierStatisticDetailModel();
+
+		model.setMonth(Integer.valueOf(dossierStatistic.getMonth()));
+		model.setYear(Integer.valueOf(dossierStatistic.getYear()));
+		model.setReceivedCount(Integer.valueOf(dossierStatistic.getRemainingCount()));
+		model.setReceivedCount(Integer.valueOf(dossierStatistic.getReceivedCount()));
+		model.setOnlineCount(Integer.valueOf(dossierStatistic.getOnlineCount()));
+		model.setUndueCount(Integer.valueOf(dossierStatistic.getUndueCount()));
+		model.setOverdueCount(Integer.valueOf(dossierStatistic.getOverdueCount()));
+		model.setOntimeCount(Integer.valueOf(dossierStatistic.getOntimeCount()));
+		model.setOvertimeCount(Integer.valueOf(dossierStatistic.getOvertimeCount()));
+		model.setDomainCode(dossierStatistic.getDomainCode());
+
+		return model;
+	}
+
 }
