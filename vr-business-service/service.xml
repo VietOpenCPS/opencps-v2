@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.2.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_6_2_0.dtd">
 <service-builder package-path="com.fds.vr.business" auto-namespace-tables="false">
-	<author>khoavd</author>
+    <author>LamTV</author>
 	<namespace>vrts</namespace>
 
 	<entity name="VRConfigTechSpec" local-service="true" table="vr_cfg_technicalspec"
@@ -119,6 +119,7 @@
 		<column name="productionPlantAddress" type="String" db-name="productionPlantAddress"/>
 		<column name="productionPlantRepresentative" type="String" db-name="productionPlantRepresentative"/>
 		<column name="productionPlantRepresentativeTitle" type="String" db-name="productionPlantRepresentativeTitle"/>
+		<column name="copReportNo" type="String" db-name="copReportNo"/>
 		<column name="copReportDate" type="Date" db-name="copReportDate"/>
 		<column name="copReportExpireDate" type="Date" db-name="copReportExpireDate"/>
 		<column name="designerCode" type="String" db-name="designerCode"/>
@@ -150,7 +151,7 @@
 		<column name="inspectorSignName" type="String" db-name="inspectorSignName"/>
 		<column name="inspectorSignTitle" type="String" db-name="inspectorSignTitle"/>
 		<column name="inspectorSignPlace" type="String" db-name="inspectorSignPlace"/>
-		<column name="certificaTeype" type="String" db-name="certificaTeype"/>
+		<column name="certificateType" type="String" db-name="certificaTeype"/>
 		<column name="referenceCertificateNo" type="String" db-name="referenceCertificateNo"/>
 		<column name="referenceCertificateDate" type="Date" db-name="referenceCertificateDate"/>
 		<column name="certificateRecordNo" type="String" db-name="certificateRecordNo"/>
@@ -428,7 +429,7 @@
 		<column name="issueTypeXCN" type="String" db-name="issueTypeXCN"/>
 		<column name="issueTypeXCH" type="String" db-name="issueTypeXCH"/>
 		
-		<column name="issueTypeDescription" type="Text" db-name="issueTypeDescription"/>
+		<column name="issueTypeDescription" type="String" db-name="issueTypeDescription"/>
 		
 		<column name="applicantRegion" type="String" db-name="applicantRegion"/>
 		<column name="applicantCeremonyDate" type="String" db-name="applicantCeremonyDate"/>
@@ -495,9 +496,9 @@
 		<column name="productionPlantType" type="String" db-name="productionPlantType"/>
 		<column name="productionPlantStatus" type="String" db-name="productionPlantStatus"/>
 		
-		<column name="productionPlantEmployeesNote" type="Text" db-name="productionPlantEmployeesNote"/>
-		<column name="productionPlantEquipmentsNote" type="Text" db-name="productionPlantEquipmentsNote"/>
-		<column name="productionPlantProdEquipmentsNote" type="Text" db-name="productionPlantProdEquipmentsNote"/>
+		<column name="productionPlantEmployeesNote" type="String" db-name="productionPlantEmployeesNote"/>
+		<column name="productionPlantEquipmentsNote" type="String" db-name="productionPlantEquipmentsNote"/>
+		<column name="productionPlantProdEquipmentsNote" type="String" db-name="productionPlantProdEquipmentsNote"/>
 		<column name="applicantProfileId" type="long" db-name="applicantProfileId"/>
 		<column name="latestCOPReportDate" type="Date" db-name="latestCOPReportDate"/>
 		<column name="latestCOPReportResult" type="String" db-name="latestCOPReportResult"/>
