@@ -94,7 +94,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 					results.put("data", dataArr);
 
 
-					return Response.status(200).entity(dataArr).build();
+					return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 				} else {
 					throw new Exception("The dossier wasn't on process");
@@ -171,7 +171,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 						
 						JSONObject result = JSONFactoryUtil.createJSONObject(plugin.getSampleData());
 						
-						return Response.status(200).entity(result).build();
+						return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 					}
 
 				} else {
@@ -242,13 +242,13 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 					
 					
 					if (formData.startsWith("#")) {
-						return Response.status(200).entity(formData).build();
+						return Response.status(200).entity(JSONFactoryUtil.looseSerialize(formData)).build();
 
 					} else {
 						
 						JSONObject result = JSONFactoryUtil.createJSONObject(plugin.getPluginForm());
 						
-						return Response.status(200).entity(result).build();
+						return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 					}
 
 				} else {
