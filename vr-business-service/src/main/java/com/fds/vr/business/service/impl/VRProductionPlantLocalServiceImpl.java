@@ -79,6 +79,7 @@ public class VRProductionPlantLocalServiceImpl
 		object.setProductionPlantEmployeesNote(mapValues.get(""));
 		object.setProductionPlantEquipmentsNote(mapValues.get(""));
 		object.setProductionPlantProdEquipmentsNote(mapValues.get(""));
+		//TODO
 		object.setApplicantProfileId(Long.valueOf(mapValues.get("")));
 //		object.setLatestCOPReportDate(DATEEEEEEE);
 		object.setLatestCOPReportResult(mapValues.get(""));

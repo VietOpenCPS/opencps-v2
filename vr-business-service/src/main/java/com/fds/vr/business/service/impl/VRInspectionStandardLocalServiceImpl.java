@@ -45,7 +45,7 @@ public class VRInspectionStandardLocalServiceImpl
 	 * Never reference this class directly. Always use {@link com.fds.vr.business.service.VRInspectionStandardLocalServiceUtil} to access the vr inspection standard local service.
 	 */
 
-	public VRInspectionStandard updateInspectionStandard(LinkedHashMap<String, String> mapValues) {
+	public VRInspectionStandard updateInspectionStandard(LinkedHashMap<String, String> mapValues, long vrVehicleCertificateId) {
 		
 		Date now = new Date();
 
@@ -57,8 +57,8 @@ public class VRInspectionStandardLocalServiceImpl
 		object.setSyncDate(now);
 
 		// Add other fields
-		//TODO
-		object.setVehicleCertificateId(1111111);
+		object.setVehicleCertificateId(vrVehicleCertificateId);
+		// TODO
 		object.setCertificateRecordId(2222222);
 		object.setInspectionRecordId(333333);
 		//

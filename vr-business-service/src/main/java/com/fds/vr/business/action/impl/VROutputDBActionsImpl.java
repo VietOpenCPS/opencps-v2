@@ -11,6 +11,7 @@ import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 
 import com.fds.vr.business.action.VROutputDBActions;
 import com.fds.vr.business.action.util.ConvertJONObjectUtils;
+import com.fds.vr.business.model.VRVehicleTypeCertificate;
 import com.fds.vr.business.service.VRApplicantProfileLocalServiceUtil;
 import com.fds.vr.business.service.VRInspectionStandardLocalServiceUtil;
 import com.fds.vr.business.service.VRProductionPlantLocalServiceUtil;
@@ -37,12 +38,13 @@ public class VROutputDBActionsImpl implements VROutputDBActions{
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME);
 		String strDate = sdf.format(now);
 //		List<>
-//		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 		Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true) };
 		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(20116);
 		
-		Hits hits = DeliverableLocalServiceUtil.searchLucene(null, sorts, -1, -1, searchContext);
+		Hits hits = DeliverableLocalServiceUtil.searchLucene(params, sorts, -1, -1, searchContext);
 		List<Document> docList = hits.toList();
 		// Add list JSON object
 		List<String> formDataList = new ArrayList<String>();
@@ -64,11 +66,14 @@ public class VROutputDBActionsImpl implements VROutputDBActions{
 
 	private void outputDBAction(LinkedHashMap<String, String> mapValues) {
 		// update table VRVehicleTypeCertificate
-		VRVehicleTypeCertificateLocalServiceUtil.updateVehicleTypeCertificate(mapValues);
+		VRVehicleTypeCertificate vrVehicleTypeCertificate = VRVehicleTypeCertificateLocalServiceUtil.updateVehicleTypeCertificate(mapValues);
+
+		long vrVehicleTypeCertificateId = vrVehicleTypeCertificate.getId();
+
 		//update table VR_VEHICLESPECIFICATION
-		VRVehicleSpecificationLocalServiceUtil.updateVehicleSpecification(mapValues);
+		VRVehicleSpecificationLocalServiceUtil.updateVehicleSpecification(mapValues, vrVehicleTypeCertificateId);
 		// update VR_INSPECTIONSTANDARD
-		VRInspectionStandardLocalServiceUtil.updateInspectionStandard(mapValues);
+		VRInspectionStandardLocalServiceUtil.updateInspectionStandard(mapValues, vrVehicleTypeCertificateId);
 		// update VR_APPLICANTPROFILE
 		VRApplicantProfileLocalServiceUtil.updateApplicantProfile(mapValues);
 		// update VR_PRODUCTIONPLANT

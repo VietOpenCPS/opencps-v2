@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 
 import com.fds.vr.business.model.VRVehicleSpecification;
-import com.fds.vr.business.model.VRVehicleTypeCertificate;
 import com.fds.vr.business.service.base.VRVehicleSpecificationLocalServiceBaseImpl;
 
 /**
@@ -46,7 +45,7 @@ public class VRVehicleSpecificationLocalServiceImpl
 	 * Never reference this class directly. Always use {@link com.fds.vr.business.service.VRVehicleSpecificationLocalServiceUtil} to access the vr vehicle specification local service.
 	 */
 
-	public VRVehicleSpecification updateVehicleSpecification(LinkedHashMap<String, String> mapValues) {
+	public VRVehicleSpecification updateVehicleSpecification(LinkedHashMap<String, String> mapValues, long vrVehicleTypeCertificateId) {
 		
 		Date now = new Date();
 
@@ -59,8 +58,7 @@ public class VRVehicleSpecificationLocalServiceImpl
 
 		// Add other fields
 		//TODO
-		object.setVehicleCertificateId(1111111);
-		
+		object.setVehicleCertificateId(vrVehicleTypeCertificateId);
 		object.setSpecificationCode(mapValues.get(""));
 		object.setSpecificationName(mapValues.get(""));
 		object.setSpecificationValue(mapValues.get(""));

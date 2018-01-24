@@ -6,6 +6,8 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
+import com.fds.vr.business.action.VROutputDBActions;
+import com.fds.vr.business.action.impl.VROutputDBActionsImpl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
@@ -23,8 +25,10 @@ public class TimerSchedule extends BaseSchedulerEntryMessageListener{
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		// TODO Auto-generated method stub
-		_log.info("OutputDB Timer****");
+		_log.info("****OutputDB Timer****");
 
+		VROutputDBActions test = new VROutputDBActionsImpl();
+		boolean test111 = test.processOutputDB();
 		// Get all dossier
 //		List<Dossier> allDossierTimer = new ArrayList<Dossier>();
 
@@ -128,7 +132,7 @@ public class TimerSchedule extends BaseSchedulerEntryMessageListener{
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 1, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 2, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 
