@@ -448,8 +448,11 @@
 				})
 			}		
 		};
+
+
 		var modelMain = kendo.observable({
 			dataSourceProfile : dataSourceProfile,
+
 			// modelPanel: modelPanel,
 			filterKey: modelPanel.eventLookup,
 			changePageSize: function(){
@@ -500,6 +503,91 @@
 				$("#mainType1").toggleClass("col-sm-10","col-sm-12");
 				
 			},
+			searchAdvanced : function(e){
+				var statusDossier = $("li.itemStatus.active").attr("dataPk");
+				dataSourceProfile.read({
+					"status": statusDossier,
+					"serviceName": $("#serviceNameSource").val(),
+					"companyName": $("#companyNameSource").val(),
+					"product": $("#productSource").val(),
+					"brand": $("#brandSource").val()
+				});
+			},
+			serviceNameSource : new kendo.data.DataSource({
+				transport : {
+					read : function(options){
+						$.ajax({
+							url : "${api.server}/serviceinfos",
+							dataType : "json",
+							type : "GET",
+							headers: {"groupId": ${groupId}},
+							success : function(result){
+								options.success(result);
+							},
+							error : function(result){
+								options.error(result);
+							}
+						});
+					}
+				},
+				schema : {
+					data : "data",
+					total : "total",
+					model : {
+
+					}
+				}
+			}),
+			productSource : new kendo.data.DataSource({
+				transport : {
+					read : function(options){
+						$.ajax({
+							url : "${api.server}/dictcollections/VR02/dictitems?sort=sibling",
+							dataType : "json",
+							type : "GET",
+							headers: {"groupId": ${groupId}},
+							success : function(result){
+								options.success(result);
+							},
+							error : function(result){
+								options.error(result);
+							}
+						});
+					}
+				},
+				schema : {
+					data : "data",
+					total : "total",
+					model : {
+
+					}
+				}
+			}),
+			brandSource : new kendo.data.DataSource({
+				transport : {
+					read : function(options){
+						$.ajax({
+							url : "${api.server}/dictcollections/VR03/dictitems?sort=sibling",
+							dataType : "json",
+							type : "GET",
+							headers: {"groupId": ${groupId}},
+							success : function(result){
+								options.success(result);
+							},
+							error : function(result){
+								options.error(result);
+							}
+						});
+					}
+				},
+				schema : {
+					data : "data",
+					total : "total",
+					model : {
+
+					}
+				}
+			}),
 			// isInvestigated: false,
 			// filterInvestigation: function(e){
 			// 	e.preventDefault();

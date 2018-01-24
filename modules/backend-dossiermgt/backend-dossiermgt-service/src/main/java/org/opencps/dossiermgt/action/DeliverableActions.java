@@ -15,17 +15,10 @@ import com.liferay.portal.kernel.service.ServiceContext;
 public interface DeliverableActions {
 	public JSONObject getListDeliverable(String state, String agency, String type, String applicant);
 
-	public void addDeliverable(DeliverableImpl model);
-
-	public Deliverable getListDeliverableDetail(Long deliverableId) throws NoSuchDeliverableException;
-
 	//4
 	public Deliverable updateDeliverable(long groupId, long id, String subject, String issueDate, String expireDate,
 			String revalidate, String deliverableState, String deliverableAction, ServiceContext serviceContext);
 
-	//12
-	public JSONArray getFormDataByTypecode(long groupId, String registrationId, String typeCode, String[] splitProperties);
-	
 	//2
 	public Deliverable addDeliverable(long groupId, String deliverableType, String deliverableCode,
 			String govAgencyCode, String applicantIdNo, String applicantName, String subject, String issueDate,
@@ -36,10 +29,10 @@ public interface DeliverableActions {
 			int end, ServiceContext serviceContext);
 
 	//3, 8, 9
-	public Deliverable getDetailById(Long id, long groupId) throws NoSuchDeliverableException;
+	public Deliverable getDetailById(long id) throws NoSuchDeliverableException;
 
 	//5
-	public Deliverable deleteById(Long id, long groupId) throws NoSuchDeliverableException;
+	public Deliverable deleteById(long id) throws PortalException;
 
 	//6
 	public JSONObject getFormDataById(long companyId, LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
@@ -47,5 +40,9 @@ public interface DeliverableActions {
 
 	//7
 	public Deliverable updateFormData(long groupId, long id, String formData, ServiceContext serviceContext) throws NoSuchDeliverableException;
+
+	//
+	public JSONObject getFormDataByTypecode(long companyId, LinkedHashMap<String, Object> params, Sort[] object, int start,
+			int end, ServiceContext serviceContext);
 
 }

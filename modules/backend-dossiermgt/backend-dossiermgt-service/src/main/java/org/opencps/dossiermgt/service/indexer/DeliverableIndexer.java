@@ -1,18 +1,28 @@
 package org.opencps.dossiermgt.service.indexer;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
@@ -21,6 +31,9 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 	public static final String CLASS_NAME = Deliverable.class.getName();
@@ -50,17 +63,10 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
 
 		// add number fields
-		document.addNumber(DeliverableTerm.DELIVERABLE_ID, object.getDeliverableId());
+		document.addNumberSortable(DeliverableTerm.DELIVERABLE_ID, object.getDeliverableId());
 		document.addDateSortable(DeliverableTerm.ISSUE_DATE, object.getIssueDate());
 		document.addDateSortable(DeliverableTerm.EXPIRE_DATE, object.getExpireDate());
 		document.addDateSortable(DeliverableTerm.REVALIDATE, object.getRevalidate());
-
-		// add number fields
-//		document.addNumberSortable(DossierActionTerm.DOSSIER_ID, object.getDossierId());
-//		document.addNumberSortable(DossierActionTerm.SERVICE_PROCESS_ID, object.getServiceProcessId());
-//		document.addNumberSortable(DossierActionTerm.PREVIOUS_ACTION_ID, object.getPreviousActionId());
-//		document.addNumberSortable(DossierActionTerm.ACTION_OVER_DUE, object.getActionOverdue());
-//		document.addNumberSortable(DossierActionTerm.NEXT_ACTION_ID, object.getNextActionId());
 
 		// add text fields
 		document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, object.getDeliverableCode());
@@ -72,6 +78,25 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		document.addTextSortable(DeliverableTerm.APPLICANT_NAME, object.getApplicantName());
 		document.addTextSortable(DeliverableTerm.SUBJECT, object.getSubject());
 		document.addTextSortable(DeliverableTerm.FORM_DATA, object.getFormData());
+
+		// add form data detail
+		String formData = object.getFormData();
+		if (Validator.isNotNull(formData)) {
+			List<Object[]> keyValues = new ArrayList<Object[]>();
+
+			keyValues = getKeyValues(formData, keyValues);
+
+			if (keyValues != null) {
+				for (Object[] keyValue : keyValues) {
+//					_log.info("=========DELIVERABLE_INDEX_FORM_DATA========:" + keyValue[0] + "_" + keyValue[1]);
+                    document.addKeyword(
+                        keyValue[0].toString(), keyValue[1].toString());
+					document.addKeyword(keyValue[0].toString().toLowerCase(),
+							keyValue[1].toString().toLowerCase());
+				}
+			}
+		}
+
 		document.addTextSortable(DeliverableTerm.FORM_SCRIPT, object.getFormScript());
 		document.addTextSortable(DeliverableTerm.FORM_REPORT, object.getFormReport());
 		document.addTextSortable(DeliverableTerm.DELIVERABLE_STATE, object.getDeliverableState());
@@ -138,4 +163,127 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 
 	Log _log = LogFactoryUtil.getLog(DeliverableIndexer.class);
 
+	protected List<Object[]> getKeyValues(String formData,
+			List<Object[]> keyValues) {
+
+		try {
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(formData);
+			parseJSONObject(keyValues, jsonObject);
+		} catch (Exception e) {
+			_log.info("Can not parse json object from FormData: =>"
+					+ " : Cause " + e.getCause());
+		}
+
+		return keyValues;
+
+	}
+
+	/**
+	 * @param keyValues
+	 * @param JSONObject
+	 * @return
+	 * @throws JSONException
+	 */
+	protected List<Object[]> parseJSONObject(List<Object[]> keyValues, JSONObject json) {
+
+		List<Object[]> objects = new ArrayList<Object[]>();
+		if (json != null) {
+			Iterator<String> itr = json.keys();
+			while (itr.hasNext()) {
+				String key = itr.next();
+				String strObject = String.valueOf(json.get(key));
+				// check json
+				try {
+					JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
+					Object[] keyValue = new Object[2];
+					keyValue[0] = key;
+					if (Validator.isNotNull(valueObject.toString())) {
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
+//						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+					} else {
+						keyValue[1] = valueObject.toString();
+					}
+					keyValues.add(keyValue);
+					parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
+				} catch (JSONException e) {
+					// string
+					Object[] keyValue = new Object[2];
+					keyValue[0] = key;
+					if (Validator.isNotNull(strObject.toString())) {
+//						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());
+					} else {
+						keyValue[1] = strObject.toString();
+					}
+					keyValues.add(keyValue);
+				}
+			}
+		}
+
+		return objects;
+	}
+
+	//
+	protected List<Object[]> parseJSONObjectIndex(List<Object[]> keyValues, JSONObject json, String keyJson) {
+
+		List<Object[]> objects = new ArrayList<Object[]>();
+
+		if (json != null) {
+			Iterator<String> itr = json.keys();
+			while (itr.hasNext()) {
+				String key = itr.next();
+				String strObject = String.valueOf(json.get(key));
+				// check json
+				try {
+					JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
+					Object[] keyValue = new Object[2];
+					keyValue[0] = keyJson + "@" + key;
+					if (Validator.isNotNull(valueObject.toString())) {
+//						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
+					} else {
+						keyValue[1] = valueObject.toString();
+					}
+					keyValues.add(keyValue);
+					parseJSONObjectIndex(keyValues, json.getJSONObject(key), keyValue[0].toString());
+				} catch (JSONException e) {
+					// string
+					Object[] keyValue = new Object[2];
+					keyValue[0] = keyJson + "@" + key;
+					if (Validator.isNotNull(strObject.toString())) {
+//						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());
+					} else {
+						keyValue[1] = strObject.toString();
+					}
+					keyValues.add(keyValue);
+				}
+			}
+		}
+
+		return objects;
+	}
+
+//	protected List<Object[]> parseJSONObject(List<Object[]> keyValues, JSONArray jsonArray) throws JSONException {
+//
+//		if (jsonArray != null && jsonArray.length() > 0) {
+//			for (int i = 0; i < jsonArray.length(); i++) {
+//				String tempObject = String.valueOf(jsonArray.get(i));
+//				try {
+//					JSONObject valueObject = JSONFactoryUtil.createJSONObject(tempObject);
+//					parseJSONObject(keyValues, valueObject);
+//				} catch (JSONException e) {
+//					// check json array
+//					try {
+//						JSONArray jsonArr = jsonArray.getJSONArray(i);
+//						parseJSONObject(keyValues, jsonArr);
+//					} catch (JSONException e1) {
+//						// Tinh chung cho key cha.
+//					}
+//				}
+//			}
+//		}
+//		return keyValues;
+//	}
+	
 }

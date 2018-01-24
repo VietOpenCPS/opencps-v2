@@ -58,7 +58,7 @@ public class RegistrationLogIndexer extends BaseIndexer<RegistrationLog> {
 
 		document.addTextSortable(RegistrationLogTerm.AUTHOR, object.getAuthor());
 		document.addTextSortable(RegistrationLogTerm.CONTENT, object.getContent());
-		document.addTextSortable(RegistrationLogTerm.PAYLOAD, object.getPayload());
+		//document.addTextSortable(RegistrationLogTerm.PAYLOAD, object.getPayload());
 		
 		return document;
 	}

@@ -88,7 +88,7 @@ public class RegistrationLogLocalServiceImpl extends RegistrationLogLocalService
 		registrationLog.setModifiedDate(new Date());
 		registrationLog.setAuthor(author);
 		registrationLog.setContent(content);
-		registrationLog.setPayload(payload);
+		//registrationLog.setPayload(payload);
 		
 		return registrationLogPersistence.update(registrationLog);
 	}

@@ -1,34 +1,25 @@
 package org.opencps.dossiermgt.action.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
 import org.opencps.dossiermgt.action.RegistrationFormActions;
-import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationFormActionsImpl implements RegistrationFormActions {
 
@@ -92,6 +83,30 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 	}
 	
 	@Override
+	public void cloneRegistrationFormByRegistrationId(long groupId, long registrationId, ServiceContext serviceContext) 
+	    throws PortalException, SystemException {
+        
+	    // get RegistrationForm
+        List<RegistrationForm> registrationForms = RegistrationFormLocalServiceUtil.getFormsbyRegId(
+                groupId, registrationId);
+    
+        // add registrationForm
+        for (RegistrationForm registrationForm : registrationForms) {
+            // create referenceUid
+            if(!registrationForm.getRemoved()) {
+                String referenceUid = UUID.randomUUID().toString();
+        
+                RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationForm.getCompanyId(), 
+                    registrationId, referenceUid,
+                    registrationForm.getFormNo(), registrationForm.getFormName(),
+                    registrationForm.getFormData(), registrationForm.getFormScript(),
+                    registrationForm.getFormReport(), 0, false, false, serviceContext);
+            }
+        }
+    }
+	
+	
+	@Override
 	public List<RegistrationForm> deleteRegistrationForms(long groupId, long registrationId) throws PortalException {
 
 		return RegistrationFormLocalServiceUtil.deleteRegistrationForms(groupId, registrationId);
@@ -141,51 +156,6 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 		return result;
 	}
 
-	//18
-	@Override
-	public JSONArray getFormDataByFormNo(long groupId, long registrationId, String formNo, String[] splitProperties) throws JSONException {
-		// TODO Auto-generated method stub
-		List<RegistrationForm> registrationList = RegistrationFormLocalServiceUtil.getFormDataByFormNo(groupId, 
-				registrationId, formNo);
-//		List<JSONObject> formDataList = new ArrayList<JSONObject>();
-		JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
-		for (RegistrationForm reg : registrationList) {
-			String formData = reg.getFormData();
-			formDataArr.put(JSONFactoryUtil.createJSONObject(formData));
-		}
-		Boolean flag = false;
-		JSONArray formDataFilterArr = JSONFactoryUtil.createJSONArray();
-		if (splitProperties != null) {
-			for (int i = 0; i < formDataArr.length(); i++) {
-				JSONObject jsonFormData = formDataArr.getJSONObject(i);
-				Iterator<String> keyForm = jsonFormData.keys();
-				List<String> keyFormDataList = new ArrayList<String>();
-				while(keyForm.hasNext()) {
-					String keys = keyForm.next();
-					keyFormDataList.add(keys);
-				}
-				for (String parts : splitProperties) {
-					for (String key : keyFormDataList) {
-						if (Validator.isNotNull(parts) && parts.equals(key)) {
-							flag = true;
-						} else {
-							flag = false;
-						}
-					}
-				}
-				if (flag) {
-					JSONObject formDataDetail = JSONFactoryUtil.createJSONObject();
-					for (String parts : splitProperties) {
-						formDataDetail.put(parts, jsonFormData.get(parts));
-					}
-					formDataFilterArr.put(formDataDetail);
-				}
-			}
-		} else {
-			return formDataArr;
-		}
-		return formDataFilterArr;
-	}
 
 	//18
 //	@Override

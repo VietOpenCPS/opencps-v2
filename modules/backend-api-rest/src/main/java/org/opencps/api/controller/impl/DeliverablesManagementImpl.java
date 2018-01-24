@@ -27,12 +27,12 @@ import org.opencps.dossiermgt.action.impl.DeliverableLogActionsImpl;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableLog;
-import org.opencps.dossiermgt.model.Registration;
-import org.opencps.dossiermgt.model.impl.DeliverableImpl;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -45,6 +45,8 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DeliverablesManagementImpl implements DeliverablesManagement {
+
+	private static Log _log = LogFactoryUtil.getLog(DeliverablesManagementImpl.class);
 
 	@Override
 	public Response getDeliverables(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -89,14 +91,16 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			DeliverableResultModel results = new DeliverableResultModel();
 			
 			// get JSON data deliverable
-			JSONObject jsonData = actions.getListDeliverable(serviceContext.getCompanyId(), params, sorts,
-					search.getStart(), search.getEnd(), serviceContext);
+			JSONObject jsonData = null;
+				jsonData = actions.getListDeliverable(serviceContext.getCompanyId(), params, sorts,
+						search.getStart(), search.getEnd(), serviceContext);
 //			JSONObject result = action.getListDeliverable(state, agency, type, applicant);
+//			results.setTotal(jsonData.getInt("total"));
 			results.setTotal(jsonData.getInt("total"));
 			results.getData()
 					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(200).entity(results).build();
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
 		}
@@ -134,18 +138,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 					revalidate, deliverableState, serviceContext);
 
 			DeliverableInputModel result = DeliverableUtils.mappingToDeliverablesModel(deliverable);
-//			DeliverableImpl model = new DeliverableImpl();
-//			model.setDeliverableType(deliverableType);
-//			model.setDeliverableCode(deliverableCode);
-//			model.setGovAgencyCode(govAgencyCode);
-//			model.setApplicantIdNo(applicantIdNo);
-//			model.setApplicantName(applicantName);
-//			model.setSubject(subject);
-//			model.setIssueDate(issueDate);
-//			model.setExpireDate(expireDate);
-//			model.setRevalidate(revalidate);
-//			model.setDeliverableState(String.valueOf(deliverableState));
-//			action.addDeliverable(model);
+
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
@@ -170,11 +163,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			DeliverableActions actions = new DeliverableActionsImpl();
 			DeliverableModel results = new DeliverableModel();
 
-			Deliverable deliverableInfo = actions.getDetailById(id, groupId);
-
-//			if (Validator.isNull(deliverableInfo)) {
-//				serviceInfo = actions.getById(GetterUtil.getLong(id));
-//			}
+			Deliverable deliverableInfo = actions.getDetailById(id);
 
 			if (Validator.isNotNull(deliverableInfo)) {
 				results = DeliverableUtils.mappingToDeliverableDetailModel(deliverableInfo);
@@ -210,15 +199,12 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				throw new UnauthenticationException();
 			}
 
+//			_log.info("groupId: "+groupId +"*keyword*: "+ id);
 			DeliverableActions actions = new DeliverableActionsImpl();
 			DeliverableModel results = new DeliverableModel();
 
-			Deliverable deliverableInfo = actions.deleteById(id, groupId);
-
-//			if (Validator.isNull(deliverableInfo)) {
-//				serviceInfo = actions.getById(GetterUtil.getLong(id));
-//			}
-
+			Deliverable deliverableInfo = actions.deleteById(id);
+//			_log.info("deliverableInfo: "+ deliverableInfo);
 			if (Validator.isNotNull(deliverableInfo)) {
 				results = DeliverableUtils.mappingToDeliverableDetailModel(deliverableInfo);
 			} else {
@@ -237,13 +223,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(404).entity(error).build();
 		}
 		
-		//		try {
-//			DeliverableActions action = new DeliverableActionsImpl();
-//			action.deleteDeliverable(id);
-//			return Response.status(200).entity("Success").build();
-//		} catch (Exception e) {
-//			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
-//		}
 	}
 
 	@Override
@@ -288,18 +267,11 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(404).entity(error).build();
 		}
 
-//		try {
-//			DeliverableActions action = new DeliverableActionsImpl();
-//			Deliverable deliverable = action.getListDeliverableDetail(id);
-//			return Response.status(200).entity(deliverable.getFormData()).build();
-//		} catch (Exception e) {
-//			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
-//		}
 	}
 
 	@Override
 	public Response updateFormData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, Long id, DeliverableInputModel input) {
+			User user, ServiceContext serviceContext, Long id, String formdata) {
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -311,7 +283,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			DeliverableActions actions = new DeliverableActionsImpl();
 
-			Deliverable deliverable = actions.updateFormData(groupId, id, input.getFormData(), serviceContext);
+			Deliverable deliverable = actions.updateFormData(groupId, id, formdata, serviceContext);
 
 			String formData = deliverable.getFormData();
 
@@ -347,7 +319,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			DeliverableActions actions = new DeliverableActionsImpl();
 			String results = StringPool.BLANK;
 
-			Deliverable deliverableInfo = actions.getDetailById(id, groupId);
+			Deliverable deliverableInfo = actions.getDetailById(id);
 
 			if (Validator.isNotNull(deliverableInfo)) {
 				results = deliverableInfo.getFormScript();
@@ -366,14 +338,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(404).entity(error).build();
 		}
-		
-//		try {
-//			DeliverableActions action = new DeliverableActionsImpl();
-//			Deliverable deliverable = action.getListDeliverableDetail(id);
-//			return Response.status(200).entity(deliverable.getFormScript()).build();
-//		} catch (Exception e) {
-//			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
-//		}
+
 	}
 
 	//9
@@ -393,7 +358,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			DeliverableActions actions = new DeliverableActionsImpl();
 			String results = StringPool.BLANK;
 
-			Deliverable deliverableInfo = actions.getDetailById(id, groupId);
+			Deliverable deliverableInfo = actions.getDetailById(id);
 
 			if (Validator.isNotNull(deliverableInfo)) {
 				results = deliverableInfo.getFormReport();
@@ -416,13 +381,31 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 	//11
 	@Override
-	public Response getDeliverableLog(Long id) {
+	public Response getDeliverableLog(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext,Long id) {
+		// TODO Add Deliverable Type
+		BackendAuth auth = new BackendAuthImpl();
+
+//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
 		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
 			DeliverableLogActions action = new DeliverableLogActionsImpl();
+
 			DeliverableLog log = action.getDeliverableLog(id);
-			return Response.status(200).entity(log).build();
+
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(log)).build();
 		} catch (Exception e) {
-			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(404).entity(error).build();
 		}
 	}
 
@@ -464,25 +447,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(404).entity(error).build();
 		}
-//		try {
-//			DeliverableActions action = new DeliverableActionsImpl();
-//			DeliverableImpl model = new DeliverableImpl();
-//			model.setDeliverableId(id);
-//			model.setDeliverableType(deliverableType);
-//			model.setDeliverableCode(deliverableCode);
-//			model.setGovAgencyCode(govAgencyCode);
-//			model.setApplicantIdNo(applicantIdNo);
-//			model.setApplicantName(applicantName);
-//			model.setSubject(subject);
-//			model.setIssueDate(issueDate);
-//			model.setExpireDate(expireDate);
-//			model.setRevalidate(revalidate);
-//			model.setDeliverableState(String.valueOf(deliverableState));
-//			action.updateDeliverable(model);
-//			return Response.status(200).entity("Success").build();
-//		} catch (Exception e) {
-//			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
-//		}
 
 	}
 
@@ -490,7 +454,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 	@Override
 	public Response getDataFormByTypeCode(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String agencyNo, String typeCode,
-			String _properties) {
+			String keyword) {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -502,34 +466,50 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			String keyword = header.getHeaderString("keyword");
-
-//			Deliverable deliverableInfo = null;
-//			long registrationId = 0;
-//			if (Validator.isNotNull("") && Validator.isNotNull(agencyNo)) {
-//			regInfo = RegistrationLocalServiceUtil.getByApplicantAndAgency(groupId, "", agencyNo);
-//			regInfo = RegistrationLocalServiceUtil.getByAgency(groupId, agencyNo);
-//			}
-//			if (deliverableInfo != null) {
-//				registrationId = deliverableInfo.getRegistrationId();
-//			}
-
-//			String _properties = search.getProperties();
-//			String _properties = "ten_doanh_nghiep";
-			String[] splitProperties = null;
-			if (Validator.isNotNull(_properties)) {
-				splitProperties = _properties.split(";");
-			}
+			_log.info("groupId: "+groupId +"*keyword*: "+ keyword);
+			_log.info("agencyNo: "+agencyNo +"*typeCode*: "+ typeCode);
+			JSONObject keyJson = JSONFactoryUtil.createJSONObject(keyword);
 			
+			String pattern = String.valueOf(keyJson.get("query"));
+			String paramValues = String.valueOf(keyJson.get("values"));
+			String paramTypes = String.valueOf(keyJson.get("type"));
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(DeliverableTerm.GOV_AGENCY_CODE, agencyNo);
+			params.put(DeliverableTerm.DELIVERABLE_TYPE, typeCode);
+			params.put("pattern", pattern);
+			params.put("paramValues", paramValues);
+			params.put("paramTypes", paramTypes);
+
 			DeliverableActions actions = new DeliverableActionsImpl();
-			
-			JSONArray jsonDataList = null;
-//			jsonDataList = actions.getFormDataByTypecode(groupId, registrationId,
-//					typeCode, splitProperties);
-
+//			DeliverableResultModel results = new DeliverableResultModel();
 			JSONObject results = JSONFactoryUtil.createJSONObject();
-			results.put("total", jsonDataList.length());
-			results.put("data", jsonDataList);
+			
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true) };
+			// get JSON data deliverable
+			JSONObject jsonData = actions.getFormDataByTypecode(serviceContext.getCompanyId(), params, sorts,
+					-1, -1, serviceContext);
+
+//			_log.info("total: "+jsonData.getInt("total"));
+//			results.setTotal(jsonData.getInt("total"));
+//			results.getData()
+//					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
+
+			//TODO
+			results.put("total", jsonData.getInt("total"));
+//			results.getData()
+//					.addAll(
+			List<Document> docList =(List<Document>) jsonData.get("data");
+
+			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
+			for (Document doc : docList) {
+				String formData = doc.get(DeliverableTerm.FORM_DATA);
+				_log.info("formData: "+formData);
+				formDataArr.put(JSONFactoryUtil.createJSONObject(formData));
+			}
+			results.put("data", formDataArr);
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
