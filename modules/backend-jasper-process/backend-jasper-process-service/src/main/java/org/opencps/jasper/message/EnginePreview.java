@@ -43,8 +43,13 @@ public class EnginePreview implements MessageListener {
 					formData, null, file.getCanonicalPath());
 			
 			Message responseMessage = MessageBusUtil.createResponseMessage(message);
+			
+			//JSONObject payload = JSONFactoryUtil.createJSONObject();
+			
+			//payload.put("status", "DONE");
+			//.put("", value)
 
-			responseMessage.setPayload("RECEIVED");
+			responseMessage.setPayload(file.getCanonicalPath());
 			responseMessage.put("fileDes", file.getCanonicalPath());
 			
 			MessageBusUtil.sendMessage(responseMessage.getDestinationName(), responseMessage);

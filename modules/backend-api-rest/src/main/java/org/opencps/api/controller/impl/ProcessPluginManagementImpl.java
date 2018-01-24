@@ -343,7 +343,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 						formData = _getFormData(formReport, dossier.getDossierId());
 					}
 					
-					if (formData.startsWith("#")) {
+					if (formReport.startsWith("#")) {
 						formReport = _getFormScript(formReport, dossier.getDossierId());
 					}
 					
@@ -363,12 +363,12 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 						JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 						
 						if (Validator.isNotNull(previewResponse)) {
-							jsonObject = JSONFactoryUtil.createJSONObject(previewResponse);
+							//jsonObject = JSONFactoryUtil.createJSONObject(previewResponse);
 						}
 						
 						String fileDes = jsonObject.getString("fileDes");
 						
-						File file = new File(fileDes);
+						File file = new File(previewResponse);
 						
 						ResponseBuilder responseBuilder = Response.ok((Object) file);
 
