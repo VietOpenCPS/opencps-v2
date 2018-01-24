@@ -374,7 +374,8 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 						responseBuilder.header("Content-Disposition",
 								"attachment; filename=\"" + file.getName() + "\"");
-						responseBuilder.header("Content-Type", "PDF");
+						responseBuilder.header("Content-Type", "application/pdf");
+						
 
 						return responseBuilder.build();
 
