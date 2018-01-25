@@ -20,10 +20,12 @@ import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.ProcessPlugin;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 
@@ -448,12 +450,20 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 		String formData = StringPool.BLANK;
 		
 		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
+		
 
 		try {
-			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
+			
+			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+			
+			DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(dossier.getGroupId(), fileTemplateNo);
+			
+/*			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
 					fileTemplateNo, false, new DossierFileComparator(false, "createDate", Date.class));
 			
-			formData = dossierFile.getFormReport();
+*/			formData = part.getFormScript();
+			
+			//formData = dossierFile.getFormReport();
 
 		} catch (Exception e) {
 			_log.info("Cant get formdata with fileTemplateNo_"+fileTemplateNo);
