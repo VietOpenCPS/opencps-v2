@@ -262,22 +262,77 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						},
                         changeProcessStep: function (item){
                             var vm = this;
+                            console.log(item);
+                            if(item.type === 1){
+                            	vm.processActionNote = '';
+
+                            	if (item.hasOwnProperty('createFiles') && !(item.createFiles instanceof Array)) {
+                            		var createFilesTemp = item.createFiles;
+                            		item.createFiles = [];
+                            		item.createFiles.push(createFilesTemp);
+                            	}
+
+                            	if (item.autoEvent !== 'submit' && item.autoEvent !== 'timer') {
+                            		vm.stepModel = item;
+                            	} else {
+                            		vm.stepModel = null;
+                            	}
+
+                            	vm.processAssignUserIdItems = item.toUsers;
+                            	
+                            }else {
+
+                            	var urlPluginFormData = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/plugins/'+item.processActionId+'/formdata';
+                            	var urlPluginFormScript = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/plugins/'+item.processActionId+'/formscript';
+                            	var config_plugins = {
+                            		headers: {
+                            			'groupId': themeDisplay.getScopeGroupId()
+                            		},
+                            		dataType : "text"
+                            	};
+
+                            	axios.all([
+                            		axios.get(urlPluginFormScript, config_plugins),
+                            		axios.get(urlPluginFormData, config_plugins)
+                            		]).then( axios.spread(function (urlResponesFormData, urlResponesFormScript) {
+                            			var responseScript = urlResponesFormScript.data;
+                            			var responseData = urlResponesFormData.data;
+
+                            			if(responseScript.startsWith("#") || responseData.startsWith("#")){
+                            				item.plugin = true;
+                            				
+
+                            				var url ="/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/plugins/"+item.processActionId+"/preview" ;
+
+                            				var config_blob =  {
+                            					headers: {
+                            						'groupId': themeDisplay.getScopeGroupId(),
+                            					},
+                            					responseType: 'blob'
+                            				};
+
+                            				axios.get(url, config_blob).then(function (response) {
+                            					var urlblob = window.URL.createObjectURL(response.data);
+                            					item.url = urlblob;
+                            					item.no_pdf = '';
+                            					vm.stepModel = item;
+                            				})
+                            				.catch(function (error) {
+                            					console.log(error);
+                            					item.url = '';
+                            					item.no_pdf = 'Tài liệu đính kèm không tồn tại!';
+                            					vm.stepModel = item;
+                            				});
+
+                            			}
+                            		}))
+                            		.catch(function (error) {
+                            			console.log(error);
+
+                            		});
+                            }
 							
-							vm.processActionNote = '';
-
-							if (item.hasOwnProperty('createFiles') && !(item.createFiles instanceof Array)) {
-								var createFilesTemp = item.createFiles;
-								item.createFiles = [];
-								item.createFiles.push(createFilesTemp);
-							}
-
-							if (item.autoEvent !== 'submit' && item.autoEvent !== 'timer') {
-								vm.stepModel = item;
-							} else {
-								vm.stepModel = null;
-							}
-                            
-                            vm.processAssignUserIdItems = item.toUsers;
+							
 							
                         },
 						postNextActions: function (item){
@@ -334,7 +389,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									
 										vm.snackbartextdossierViewJX = item.actionName + " thành công!";
 										vm.snackbardossierViewJX = true;
-
+										
+										
 										vm._inidanhSachHoSoTable();
 										setTimeout(function(){ 
 											vm._initlistgroupHoSoFilter();
@@ -359,14 +415,47 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							vm.stepLoading = true;
                             
                             var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/nextactions';
+                            var urlPlugin = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/plugins';
                             // var url = '/o/frontendwebdossier/json/steps.json';
                             
-                            axios.get(url, config).then(function (response) {
-                                var serializable = response.data;
+                            axios.all([
+						        axios.get(url, config),
+						        axios.get(urlPlugin, config)
+						      	]).then( axios.spread(function (urlRespones, urlPluginsRespones) {
 
-                                vm.processSteps = serializable.data;
+                                var serializable = urlRespones.data.data;
+                                var serializablePlugins = urlPluginsRespones.data.data;
+                                var serializablePluginsConvert = [];
+
+                                if(serializable){
+                                	for (var i = 0; i < serializable.length; i++) {
+                                		serializable[i].type = 1;
+                                	}
+                                }else {
+                                	serializable = [];
+                                }
+
+                              
+                                if(serializablePlugins){
+                                	for (var i = 0; i < serializablePlugins.length; i++) {
+                                		var plugin = {
+                                			type : 2,
+                                			processActionId : serializablePlugins[i].processPluginId,
+                                			actionName : serializablePlugins[i].pluginName
+                                		};
+                                		serializablePluginsConvert.push(plugin);
+                                	}
+                                }
+                                
+
+                                var nextactions = serializable;
+                                var plugins = serializablePluginsConvert;
+
+
+                                vm.processSteps = $.merge( nextactions, plugins );
 								vm.stepLoading = false;
-                            })
+								console.log(vm.processSteps);
+                            }))
                                 .catch(function (error) {
                                     console.log(error);
 									vm.stepLoading = false;
@@ -544,36 +633,26 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						},
 						_initlistgroupHoSoFilter: function(){
 							var vm = this;
-                            vm.stageFilterView = 'danh_sach';
+							vm.stageFilterView = 'danh_sach';
 
-                            vm.listgroupHoSoFilterItems = [];
+							vm.listgroupHoSoFilterItems = [];
 
-                            var url = '/o/rest/v2/statistics/dossiers/todo';
-                            
-                            axios.get(url, config).then(function (response) {
-                                var serializable = response.data;
+							var url = '/o/rest/v2/statistics/dossiers/todo';
+							
+							axios.get(url, config).then(function (response) {
+								var serializable = response.data;
 
 								var indexTree = -1;
 								var index = 0;
-                                for (var key in serializable.data) {
+								for (var key in serializable.data) {
 									
-                                    if ( serializable.data[key].level === 0 
-										&& serializable.data[key].dossierStatus !== 'system'
-										&& serializable.data[key].dossierStatus !== 'error'
-										&& serializable.data[key].dossierStatus !== 'releasing'
-										&& serializable.data[key].dossierStatus !== 'crosshandover'
-										&& serializable.data[key].dossierStatus !== 'handover'
-										&& serializable.data[key].dossierStatus !== 'ended'
-										&& serializable.data[key].dossierStatus !== 'submitting'
-										&& serializable.data[key].dossierStatus !== 'paid'
-										&& serializable.data[key].dossierStatus !== 'outstanding'
-										&& serializable.data[key].dossierStatus !== 'presubmitting'
-										&& serializable.data[key].dossierStatus !== 'collecting'
-										&& serializable.data[key].dossierStatus !== 'waiting'
-										&& serializable.data[key].dossierStatus !== 'paying'
-										&& serializable.data[key].dossierStatus !== 'denied') {
-										serializable.data[key].items = [];
-
+									if ( serializable.data[key].level === 0) {
+										
+										if (serializable.data[key].dossierStatus === 'cancelling' ||
+											serializable.data[key].dossierStatus === 'cancelled' ||
+											serializable.data[key].dossierStatus === 'processing' ||
+											serializable.data[key].dossierStatus === 'paid') {
+											serializable.data[key].items = [];
 										vm.listgroupHoSoFilterItems.push({
 											id: serializable.data[key].dossierStatus,
 											idSub: serializable.data[key].dossierSubStatus,
@@ -585,66 +664,31 @@ document.addEventListener('DOMContentLoaded', function (event) {
 											items: [],
 											index: index
 										});
-										index = index + 1;
-									} else {
-										if (vm.listgroupHoSoFilterItems[indexTree]) {
-											if (vm.listgroupHoSoFilterItems[indexTree].level === 0) {
-												vm.listgroupHoSoFilterItems.splice(indexTree, 1);
-												indexTree = indexTree - 1;
-												index = index - 1;
-											}
-										}
-										
-										if (serializable.data[key].dossierStatus !== 'system'
-											&& serializable.data[key].dossierStatus !== 'error'
-											&& serializable.data[key].dossierStatus !== 'releasing'
-											&& serializable.data[key].dossierStatus !== 'crosshandover'
-											&& serializable.data[key].dossierStatus !== 'handover'
-											&& serializable.data[key].dossierStatus !== 'ended'
-											&& serializable.data[key].dossierStatus !== 'submitting'
-											&& serializable.data[key].dossierStatus !== 'paid'
-											&& serializable.data[key].dossierStatus !== 'outstanding'
-											&& serializable.data[key].dossierStatus !== 'presubmitting'
-											&& serializable.data[key].dossierStatus !== 'collecting'
-											&& serializable.data[key].dossierStatus !== 'waiting'
-											&& serializable.data[key].dossierStatus !== 'paying'
-											&& serializable.data[key].dossierStatus !== 'denied') {
-
-											vm.listgroupHoSoFilterItems.push({
-												id: serializable.data[key].dossierSubStatus,
-												idSub: serializable.data[key].dossierStatus,
-												title: serializable.data[key].statusName,
-												level: serializable.data[key].level,
-												count: serializable.data[key].count,
-												action: 'folder',
-												action_active: 'folder_open',
-												items: [],
-												index: index
-											});
-											index = index + 1;
-										}
-										
-										/**
-										vm.listgroupHoSoFilterItems[indexTree].items.push({
-											id: serializable.data[key].dossierSubStatus,
-											idSub: serializable.data[key].dossierStatus,
-											title: serializable.data[key].statusName,
-											level: serializable.data[key].level,
-											count: serializable.data[key].count
-										});
-										*/
 									}
-									indexTree = indexTree + 1;
-									
-                                }
-                                vm.listgroupHoSoFilterItems.splice(0, 1);
 
-                            })
-                                .catch(function (error) {
-                                    console.log(error);
-                                    
-                                });
-                            return false; 
+								} else {
+									
+									vm.listgroupHoSoFilterItems.push({
+										id: serializable.data[key].dossierSubStatus,
+										idSub: serializable.data[key].dossierStatus,
+										title: serializable.data[key].statusName,
+										level: serializable.data[key].level,
+										count: serializable.data[key].count,
+										action: 'folder',
+										action_active: 'folder_open',
+										items: [],
+										index: index
+									});
+								}
+								
+							}
+
+						})
+							.catch(function (error) {
+								console.log(error);
+								
+							});
+							return false; 
 						}
 					}
 				},
