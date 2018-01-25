@@ -21,7 +21,7 @@
 
 					</div>
 					
-					<a class="PL5 PR5 hover-pointer" href="#searchAdvancedCollapse" data-toggle="collapse">Nâng cao</a>
+					<#-- <a class="PL5 PR5 hover-pointer" href="#searchAdvancedCollapse" data-toggle="collapse">Nâng cao</a> -->
 
 					<span id="fullScreen" data-bind="events: { click: fullScreen}">
 						<i class="fa fa-expand fs20 toggle-collapse MR10 ML10" aria-hidden="true"></i>
