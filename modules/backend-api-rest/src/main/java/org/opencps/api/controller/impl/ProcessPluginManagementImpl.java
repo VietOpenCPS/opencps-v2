@@ -454,14 +454,24 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 		try {
 			
+			
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+			
+
 			
 			DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(dossier.getGroupId(), fileTemplateNo);
 			
+
 /*			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
 					fileTemplateNo, false, new DossierFileComparator(false, "createDate", Date.class));
 			
-*/			formData = part.getFormScript();
+*/			
+			//JSONObject jsFormScript = JSONFactoryUtil.createJSONObject(part.getFormScript());
+			
+			formData = part.getFormReport();
+
+//			_log.info(formData);
+
 			
 			//formData = dossierFile.getFormReport();
 
