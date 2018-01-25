@@ -24,6 +24,7 @@ import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierInputModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
+import org.opencps.api.dossiermark.model.DossierMarkInputModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.model.Company;
@@ -192,7 +193,7 @@ public interface DossierManagement {
 
 	public Response getContactsDossier(@Context HttpHeaders header, @Context ServiceContext serviceContext,
 			@PathParam("id") Long dossierId, @Context String referenceUid);
-	
+
 	@POST
 	@Path("/{id}/cloning")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -202,7 +203,7 @@ public interface DossierManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
-	
+
 	public Response cloneDossier(@Context HttpHeaders header, @Context ServiceContext serviceContext,
 			@PathParam("id") long dossierId, @Context String referenceUid);
 
@@ -217,8 +218,33 @@ public interface DossierManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 
-	public Response updateDossierNo(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@PathParam("id") String id);
+	public Response updateDossierNo(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") String id);
 
+	@POST
+	@Path("/{id}/marks/{dossierPartNo}")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	public Response addDossierMark(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long dossierId,
+			@PathParam("dossierPartNo") String dossierPartNo, @BeanParam DossierMarkInputModel input);
+
+	@GET
+	@Path("/{id}/marks")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getDossierMarks(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long dossierId);
+
+	@GET
+	@Path("/{id}/marks/{dossierPartNo}")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getDossierMarkbyDossierId(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long dossierId,
+			@PathParam("dossierPartNo") String dossierPartNo);
 }
