@@ -141,8 +141,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			String wardName = "";
 
 			if (Validator.isNotNull(input.getCityCode())) {
-				_log.info("City Code: "+ input.getCityCode());
-				_log.info("groupId: "+ groupId);
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
 
 			}
@@ -430,12 +428,10 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
 
 		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
-		_log.info("DictCollection: "+dc );
 
 		if (Validator.isNotNull(dc)) {
 			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
-			_log.info("DictItem: "+it );
-			_log.info("DictItem getItemName: "+it.getItemName() );
+
 			return it.getItemName();
 
 		} else {

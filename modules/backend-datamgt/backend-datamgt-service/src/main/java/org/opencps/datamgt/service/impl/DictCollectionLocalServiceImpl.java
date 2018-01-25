@@ -312,7 +312,6 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		if (collectionCode.equalsIgnoreCase("ADMINISTRATIVE_REGION")) {
 			groupId = 0;
 		}
-		_log.info("groupId Dict: "+ groupId);
 
 		return dictCollectionPersistence.fetchByF_dictCollectionCode(collectionCode, groupId);
 

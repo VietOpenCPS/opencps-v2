@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.exception.NoSuchDeliverableException;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -138,7 +139,6 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 //		String groupId = (String) params.get(Field.GROUP_ID);
 
-//		_log.info("keywords:" +keywords +"groupId: "+groupId);
 		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
 		
 		// Search elastic
@@ -275,7 +275,6 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 //		String groupId = (String) params.get(Field.GROUP_ID);
 
-//		_log.info("keywords:" +keywords +"groupId: "+groupId);
 		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
 
 		String pattern = String.valueOf(params.get("pattern"));
@@ -357,7 +356,6 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String type = GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_TYPE));
 		String applicant = GetterUtil.getString(params.get(DeliverableTerm.APPLICANT_ID_NO));
 
-		_log.info("state:" +state +"------agency: "+agency+"----type: "+type+ "------applicant "+applicant);
 		if (Validator.isNotNull(state)) {
 			MultiMatchQuery query = new MultiMatchQuery(state);
 
@@ -634,7 +632,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 					String paramType = arrParamTypes[i].toLowerCase();
 					String strValueArr = StringPool.BLANK;
 					if (Validator.isNotNull(arrParamValue[i])) {
-						strValueArr = splitSpecial(arrParamValue[i].toString().toLowerCase());
+						strValueArr = SpecialCharacterUtils.splitSpecial(arrParamValue[i].toString().toLowerCase());
 					} else {
 						strValueArr = arrParamValue[i];
 					}
@@ -937,27 +935,6 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			}
 		}
 		return booleanQueries;
-	}
-
-	protected String splitSpecial(String value) {
-		String[] charSpecialArr = new String[]{"+", "-", "=", "&&", "||", ">", "<", "!", "(", ")", "{", "}", "[", "]", "^", "~", "?", ":","\\", "/"};
-		String valueSplit = StringPool.BLANK;
-		for (int i = 0; i < charSpecialArr.length; i++) {
-			String specialCharacter = charSpecialArr[i];
-			if (i==0) {
-				if (value.contains(specialCharacter)) {
-					valueSplit = value.replaceAll(Pattern.quote(specialCharacter), StringPool.UNDERLINE);
-				} else {
-					valueSplit = value;
-				}
-			} else {
-				if (value.contains(specialCharacter)) {
-					valueSplit = valueSplit.replaceAll(Pattern.quote(specialCharacter), StringPool.UNDERLINE);
-				}
-			}
-	    }
-		
-		return valueSplit;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(DeliverableLocalServiceImpl.class);

@@ -10,6 +10,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 import javax.sound.sampled.AudioFormat.Encoding;
 
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.RegistrationFormTerm;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
@@ -83,9 +84,9 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
             
             if (keyValues != null) {
                 for (Object[] keyValue : keyValues) {
-                    _log.info("=========REGISTRATION_FORM_INDEX_FORM_DATA========:" + keyValue[0] + "_" + keyValue[1]);
+//                    _log.info("=========REGISTRATION_FORM_INDEX_FORM_DATA========:" + keyValue[0] + "_" + keyValue[1]);
                     document.addKeyword(
-                        keyValue[0].toString(), keyValue[1].toString());
+                        keyValue[0].toString().toLowerCase(), keyValue[1].toString().toLowerCase());
                 }
             }
         }
@@ -111,22 +112,21 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 				JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
 				Object[] keyValue = new Object[2];
 				keyValue[0] = key;
-//				String strValue = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 				if (Validator.isNotNull(valueObject.toString())) {
-					keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+					keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
+//					keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 				} else {
 					keyValue[1] = valueObject.toString();
 				}
-//				keyValue[1]= strValue;
 				keyValues.add(keyValue);
 				parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
 			} catch (JSONException e) {
 				// string
 				Object[] keyValue = new Object[2];
 				keyValue[0] = key;
-//				keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 				if (Validator.isNotNull(strObject.toString())) {
-					keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+					keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());
+//					keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 				} else {
 					keyValue[1] = strObject.toString();
 				}
@@ -134,7 +134,7 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 			}
 		}
 		} catch (Exception e2) {
-			_log.info("===OBJECT NOT TYPE JSONOBJECT===");
+			//
 		}
 
 		return objects;
@@ -153,27 +153,24 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 					JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
 					Object[] keyValue = new Object[2];
 					keyValue[0] = keyJson + "@" + key;
-//					String strValue = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 					if (Validator.isNotNull(valueObject.toString())) {
-						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
+//						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 					} else {
 						keyValue[1] = valueObject.toString();
 					}
-//					keyValue[1]= strValue;
-//					keyValue[1] = valueObject.toString();
 					keyValues.add(keyValue);
 					parseJSONObjectIndex(keyValues, json.getJSONObject(key), keyValue[0].toString());
 				} catch (JSONException e) {
 					// string
-					_log.info("===OBJECT NOT TYPE JSONOBJECT===");
 					Object[] keyValue = new Object[2];
 					keyValue[0] = keyJson + "@" + key;
 					if (Validator.isNotNull(strObject.toString())) {
-						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());
+//						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 					} else {
 						keyValue[1] = strObject.toString();
 					}
-//					keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 					keyValues.add(keyValue);
 				}
 			}
@@ -181,137 +178,32 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 
 		return objects;
 	}
-    //
+
 //    protected List<Object[]> parseJSONObject(
-//            List<Object[]> keyValues, JSONObject json) {
+//        List<Object[]> keyValues, JSONArray jsonArray)
+//        throws JSONException {
 //
-//            List<Object[]> objects = new ArrayList<Object[]>();
-//            try {
-//
-//                Iterator<String> itr = json.keys();
-//                while (itr.hasNext()) {
-//                    String key = itr.next();
-//                    String strObject = String.valueOf(json.get(key));
-//                    // check json
-//                    try {
-//                    	JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
-//                    	Object[] keyValue = new Object[2];
-//                        keyValue[0] = key;
-//                        keyValue[1] = valueObject.toString();
-//                        keyValues.add(keyValue);
-//                        parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
-//                    } catch(JSONException e) {
-//                    	// check json array
-////                    	try {
-//////                    		JSONArray valueArr = JSONFactoryUtil.createJSONArray(strObject);
-////                    		JSONArray jsonArray = json.getJSONArray(key);
-////                          Object[] keyValue = new Object[2];
-////                          // Tinh chung cho key cha
-////                          keyValue[0] = key;
-////                          keyValue[1] = jsonArray.toString();
-////                          keyValues.add(keyValue);
-////                          parseJSONObject(keyValues, jsonArray);
-////                        } catch(JSONException e1) {
-//                        	// string
-//    						Object[] keyValue = new Object[2];
-//    						keyValue[0] = key;
-//    						keyValue[1] = strObject.toString();
-//    						keyValues.add(keyValue);
-//                        }
+//        if (jsonArray != null && jsonArray.length() > 0) {
+//            for (int i = 0; i < jsonArray.length(); i++) {
+//                String tempObject = String.valueOf(jsonArray.get(i));
+//                try {
+//                	JSONObject valueObject = JSONFactoryUtil.createJSONObject(tempObject);
+//                    parseJSONObject(keyValues, valueObject);
+//                } catch(JSONException e) {
+//                	// check json array
+//                	try {
+//                		JSONArray jsonArr = jsonArray.getJSONArray(i);
+//                      parseJSONObject(keyValues, jsonArr);
+//                    } catch(JSONException e1) {
+//                    	// string
+//                    	// Tinh chung cho key cha.
 //                    }
-//                    
-//                    
-////                  if (strObject.contains("[{") && strObject.contains("}]")) {
-////                	  JSONArray jsonArray = json.getJSONArray(key);
-////                      Object[] keyValue = new Object[2];
-////                      // Tinh chung cho key cha
-////                      keyValue[0] = key;
-////                      keyValue[1] = jsonArray.toString();
-////                      keyValues.add(keyValue);
-////                      parseJSONObject(keyValues, jsonArray);
-////    			} else if (strObject.contains("{") && strObject.contains("}")) {
-////    				JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
-////    				// Tinh chung cho key cha.
-////                    Object[] keyValue = new Object[2];
-////                    keyValue[0] = key;
-////                    keyValue[1] = valueObject.toString();
-////                    keyValues.add(keyValue);
-////                    parseJSONObject(keyValues, json.getJSONObject(key));
-////    			}else {
-////                        Object[] keyValue = new Object[2];
-////                        keyValue[0] = key;
-////                        keyValue[1] = strObject.toString();
-////                        keyValues.add(keyValue);
-////                    }
-////                    if (valueObject instanceof JSONObject) {
-////                        // Tinh chung cho key cha.
-////                        Object[] keyValue = new Object[2];
-////                        keyValue[0] = key;
-////                        keyValue[1] = valueObject.toString();
-////                        keyValues.add(keyValue);
-////                        parseJSONObject(keyValues, json.getJSONObject(key));
-////                    }
-////                    else if (valueArr instanceof JSONArray) {
-//////                    else if (object.getClass() == JSONArray.class) {
-////                        JSONArray jsonArray = json.getJSONArray(key);
-////                        Object[] keyValue = new Object[2];
-////                        // Tinh chung cho key cha
-////                        keyValue[0] = key;
-////                        keyValue[1] = jsonArray.toString();
-////                        keyValues.add(keyValue);
-////                        parseJSONObject(keyValues, jsonArray);
-////                    }
-////                    else {
-////                        Object[] keyValue = new Object[2];
-////                        keyValue[0] = key;
-////                        keyValue[1] = strObject.toString();
-////                        keyValues.add(keyValue);
-////                    }
-////                }
-//
+//                }
 //            }
-//            catch (Exception e2) {
-//                _log.error(e2);
-//            }
-//
-//            return objects;
 //        }
-    
-    protected List<Object[]> parseJSONObject(
-        List<Object[]> keyValues, JSONArray jsonArray)
-        throws JSONException {
-
-        if (jsonArray != null && jsonArray.length() > 0) {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                String tempObject = String.valueOf(jsonArray.get(i));
-//                if (tempObject instanceof JSONObject) {
-//                    parseJSONObject(keyValues, (JSONObject) tempObject);
-//                }
-//                else if (tempObject instanceof JSONArray) {
-//                    parseJSONObject(keyValues, (JSONArray) tempObject);
-//                }
-//                else {
-//                    // Tinh chung cho key cha.
-//                }
-                try {
-                	JSONObject valueObject = JSONFactoryUtil.createJSONObject(tempObject);
-                    parseJSONObject(keyValues, valueObject);
-                } catch(JSONException e) {
-                	// check json array
-                	try {
-//                		JSONArray valueArr = JSONFactoryUtil.createJSONArray(strObject);
-                		JSONArray jsonArr = jsonArray.getJSONArray(i);
-                      parseJSONObject(keyValues, jsonArr);
-                    } catch(JSONException e1) {
-                    	// string
-                    	// Tinh chung cho key cha.
-                    }
-                }
-            }
-        }
-
-        return keyValues;
-    }
+//
+//        return keyValues;
+//    }
 
 	@Override
 	protected Summary doGetSummary(Document document, Locale locale, String snippet, PortletRequest portletRequest,

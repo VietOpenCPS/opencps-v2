@@ -417,7 +417,6 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 						if (Validator.isNotNull(model.getFormData()))
 							jsFormData = JSONFactoryUtil.createJSONObject(model.getFormData());
 
-						_log.info("FORM_DATA" + jsFormData);
 
 						formDataContent = mappingContent(jsMappingData, jsFormData, model.getDossierId());
 
@@ -439,7 +438,6 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					expireDate = formDataContent.getString("expireDate");
 					revalidate = formDataContent.getString("revalidate");
 
-					_log.info("formDataContent DossierFile_________-" + formDataContent.toString());
 				}
 
 				if (Validator.isNull(dlv)) {

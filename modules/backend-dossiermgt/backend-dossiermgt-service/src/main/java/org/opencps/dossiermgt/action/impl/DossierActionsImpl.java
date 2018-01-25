@@ -388,12 +388,26 @@ public class DossierActionsImpl implements DossierActions {
 											// create Dossier File
 											if (eForm) {
 												DossierFileActions actions = new DossierFileActionsImpl();
-
-												DossierFile dossierFile = actions.addDossierFile(groupId, dossierId,
-														referenceUid, dossier.getDossierTemplateNo(),
-														dossierPart.getPartNo(), fileTemplateNo,
-														dossierPart.getPartName(), StringPool.BLANK, 0L, null,
-														StringPool.BLANK, String.valueOf(false), serviceContext);
+												
+												//check dossierFile contain
+												
+												DossierFile dossierFile = null;
+												
+												try {
+													dossierFile = DossierFileLocalServiceUtil
+															.getDossierFileByDID_FTNO_DPT_First(dossierId,
+																	fileTemplateNo, 2, false, new DossierFileComparator(
+																			false, "createDate", Date.class));
+												} catch (Exception e) {
+													// TODO: handle exception
+												}
+												if (Validator.isNull(dossierFile)) {
+													dossierFile = actions.addDossierFile(groupId, dossierId,
+															referenceUid, dossier.getDossierTemplateNo(),
+															dossierPart.getPartNo(), fileTemplateNo,
+															dossierPart.getPartName(), StringPool.BLANK, 0L, null,
+															StringPool.BLANK, String.valueOf(false), serviceContext);
+												}
 
 												docFileReferenceUid = dossierFile.getReferenceUid();
 
@@ -429,7 +443,7 @@ public class DossierActionsImpl implements DossierActions {
 						results.put(result);
 					}
 				} catch (Exception e) {
-					_log.error("Can not get ProcessStep", e);
+					_log.error(e);
 				}
 			}
 		}

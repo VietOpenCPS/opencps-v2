@@ -65,7 +65,6 @@ public class DeliverableActionsImpl implements DeliverableActions {
 	public Deliverable addDeliverable(long groupId, String deliverableType, String deliverableCode,
 			String govAgencyCode, String applicantIdNo, String applicantName, String subject, String issueDate,
 			String expireDate, String revalidate, String deliverableState, ServiceContext serviceContext) {
-		// TODO Auto-generated method stub
 		return DeliverableLocalServiceUtil.addDeliverable(groupId, deliverableType, deliverableCode,
 				govAgencyCode, applicantIdNo, applicantName, subject, issueDate, expireDate,
 				revalidate, deliverableState, serviceContext);
@@ -74,7 +73,6 @@ public class DeliverableActionsImpl implements DeliverableActions {
 	@Override
 	public JSONObject getListDeliverable(long companyId, LinkedHashMap<String, Object> params, Sort[] sorts, int start,
 			int end, ServiceContext serviceContext) {
-		// TODO Auto-generated method stub
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		
 		Hits hits = null;
@@ -107,7 +105,6 @@ public class DeliverableActionsImpl implements DeliverableActions {
 	@Override
 	public Deliverable updateDeliverable(long groupId, long id, String subject, String issueDate, String expireDate,
 			String revalidate, String deliverableState, String deliverableAction, ServiceContext serviceContext) {
-		// TODO Auto-generated method stub
 		return DeliverableLocalServiceUtil.updateDeliverable(groupId, id, subject, issueDate, expireDate, revalidate,
 				deliverableState, deliverableAction, serviceContext);
 	}
@@ -130,13 +127,9 @@ public class DeliverableActionsImpl implements DeliverableActions {
 		try {
 			
 			hits = DeliverableLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
-			
+
 			result.put("data", hits.toList());
-			
-//			long total = DeliverableLocalServiceUtil.countLucene(params, searchContext);
-//			
-//			result.put("total", total);
-			
+
 		} catch (Exception e) {
 			_log.error(e);
 		}
