@@ -2,7 +2,7 @@
 <#include "init.ftl">
 </#if>
 <#-- main section template -->
-<script type="text/x-kendo-template" id="mainTemplate">
+<script type="text/x-kendo-template" id="mainTemplate_2">
 	<div id="contentMain" class="row panel M0" style="border: none;box-shadow: none">
 		<div class="panel-heading P0">
 			<div class="row PL15 PR15">
@@ -10,7 +10,7 @@
 					<div class="background-triangle-big">
 						<i class="fa fa-file-text"></i>
 					</div>
-					<span class="text-bold" id="statusName" style="text-transform:uppercase;"></span>
+					<span class="text-bold" id="statusName" style="text-transform:uppercase;">TRA CỨU CHỨNG CHỈ</span>
 					<div class="MLA form-inline">
 
 						<input type="text" class="form-control" id="noInput" placeholder="Nhập số chứng chỉ" 
@@ -21,7 +21,7 @@
 
 					</div>
 					
-					<#-- <a class="PL5 PR5 hover-pointer" href="#searchAdvancedCollapse" data-toggle="collapse">Nâng cao</a> -->
+					<a class="PL5 PR5 hover-pointer" href="#searchAdvancedCollapse" data-toggle="collapse">Nâng cao</a>
 
 					<span id="fullScreen" data-bind="events: { click: fullScreen}">
 						<i class="fa fa-expand fs20 toggle-collapse MR10 ML10" aria-hidden="true"></i>
@@ -35,25 +35,26 @@
 		</div>
 		<#--	-->
 		<div id="wrapMain" class="table-responsive">
-			<div class="row collapse" id="searchAdvancedCollapse">
+			<div class="row collapse toggle-hide" id="searchAdvancedCollapse">
 
 				<div class="col-sm-12">
 					<div class="row PL10 PR10 PT10">
+
 						<div class="col-sm-3">
-							<input name="advanced_serviceName_search" id="advanced_serviceName_search"
+							<input name="advanced_deliverableTypes_search" id="advanced_deliverableTypes_search"
 							data-role="combobox"
-							data-placeholder="Chọn thủ tục"
-							data-text-field="serviceName"
-							data-value-field="serviceCode"
+							data-placeholder="Chọn loại chứng chỉ"
+							data-text-field="deliverableName"
+							data-value-field="deliverableType"
 							data-filter="contains"
 							data-bind="
-							source: serviceNameSource
+							source: deliverableTypesSource
 							"
 							>
 						</div>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" name="advanced_companyName_search" id="advanced_companyName_search"
-							 placeholder="Tên doanh nghiệp">
+							placeholder="Tên doanh nghiệp">
 						</div>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" name="advanced_dossierNo_search" id="advanced_dossierNo_search"
@@ -100,7 +101,7 @@
 					<div class="row PL10 PB10 border-bottom ">
 						<div class="col-sm-12">
 							<button class="btn btn-active" data-bind="events: {
-							click: searchAdvanced}">Tìm kiếm</button>
+							click: searchAdvancedDeliverables}">Tìm kiếm</button>
 						</div>
 					</div>
 				</div>
@@ -114,7 +115,7 @@
 							<span>STT</span>
 						</th>
 						<th class="fieldDossier text-center hover-pointer" sort="serviceName" sort-type="desc">
-							<span>Tên thủ tục</span>
+							<span>Tên chứng chỉ</span>
 							<span class="pull-right align-middle PT5 text-light-gray">
 								<i class="fa fa-sort" aria-hidden="true"></i>
 							</span>		
@@ -127,10 +128,7 @@
 							<span class="PR10">Số hồ sơ</span>
 						</th>
 						<th class="fieldDossier text-center hover-pointer" sort="submitDate" sort-type="desc">
-							<strong>Ngày gửi</strong>
-							<span class="pull-right align-middle PT5 text-light-gray">
-								<i class="fa fa-sort" aria-hidden="true"></i>
-							</span></br>
+							<strong>Ngày gửi</strong></br>
 							<strong>Ngày tiếp nhận</strong>
 						</th>
 						<th class="text-center hover-pointer">
@@ -138,10 +136,7 @@
 							<strong>Ngày ký</strong>
 						</th>
 						<th class="text-center hover-pointer">
-							<strong>Nội dung</strong>
-						</th>
-						<th class="text-center hover-pointer">
-							<strong>Ghi chú</strong>
+							<strong>Tên doanh nghiệp</strong>
 						</th>
 						<th class="text-center">
 							<strong>Hành động</strong>
@@ -149,23 +144,23 @@
 					</tr>
 				</thead>
 				<#-- Table body -->
-				<tbody class="" data-role="listview" data-auto-bind="false" data-bind="source: dataSourceProfile, events:{dataBound : changeList}" data-template="proFileTemplate" id="listViewDossier">
+				<tbody class="" data-role="listview" data-auto-bind="true" data-bind="source: dataSourceDeliverables" data-template="deliverableTemplate" id="listViewDeliverable">
 
 				</tbody>
 			</table>
 
 		</div>
-		<div class="footerListProfile row-header col-sm-12 PT20 PR0" style="background: #f6f6f6">
+		<div class="footerListDeliverables row-header col-sm-12 PT20 PR0" style="background: #f6f6f6">
 			<div class="clearfix align-middle" style="float: right">
-				<span class="text-light-gray MR15"><i>Tổng số <span id="totalItem_dossierList" class="red"></span> kết quả được tìm thấy</i></span>
+				<span class="text-light-gray MR15"><i>Tổng số <span id="totalItem_dossierList_Deliverables" class="red"></span> kết quả được tìm thấy</i></span>
 				<span class="show-per-page MT0">Hiển thị
 					<span class="select-wrapper">
-						<select class="ML5" id="itemPpage" data-bind="events:{change: changePageSize}" style="background-color: #ffffff">
+						<select class="ML5" id="itemPpageDeliverables" data-bind="events:{change: changePageSizeDeliverables}" style="background-color: #ffffff">
 
 						</select>
 					</span>
 				</span>
-				<span id="pagerProfile" class="M0 P0" data-role="pager" data-info="false" data-bind="source: dataSourceProfile, events:{change: stylePager}" data-button-count="3" style="background: #ffffff"></span>
+				<span id="pagerDeliverables" class="M0 P0" data-role="pager" data-info="false" data-bind="source: dataSourceDeliverables, events:{change: stylePagerDeliverables}" data-button-count="3" style="background: #ffffff"></span>
 			</div>	
 		</div>
 
@@ -173,100 +168,112 @@
 </script>
 <#-- <#include "notificationPaying.ftl"> -->
 <#-- for listview dossier-->
-<script type="text/x-kendo-template" id="proFileTemplate">
+<script type="text/x-kendo-template" id="deliverableTemplate">
 	<tr class="rowTable">
 		<td class="text-center count" style="width: 1%">
-
+			#:count#
 		</td>
+		
+		#
+		var formData = fnGetFormData(deliverableId);
+		#
 
-		<td class="" style="width: 15%">
+		<td class="" style="width: 18%">
 			<span>
-				<a href="javascript:;" class="link-detail-employee text-hover-blue" data-pk="#=dossierId#" data-bind="events: { click : loadDossierDetail}">
-					#=serviceName#
+				<a href="javascript:;" class="link-detail-employee text-hover-blue"  data-bind="events: { click : loadDeliverableDetail}" #if(formData.ma_ho_so){# data-pk = "#:formData.ma_ho_so#" #}#>
+					#=deliverableName#
 				</a>
 			</span>
 
 		</td>
 
-		<td class="text-center" style="width: 8%">
+		
+
+		<td class="text-center" style="width: 15%">
 			<p title="Mã hồ sơ">
-				#if(dossierIdCTN){#
-				<strong>#=dossierIdCTN#</strong>
+				#if(formData.ma_ho_so){#
+				<strong>#=formData.ma_ho_so#</strong>
 				#}#
 
 			</p>
-
-			<p title="Số hồ sơ">#=dossierNo#</p>
+			
+			<p title="Số hồ sơ">
+				#if(formData.so_ho_so){#
+				<strong>#=formData.so_ho_so#</strong>
+				#}#
+			</p> 
 		</td>
 
-		<td class="text-center" style="width: 8%">
-			#if (submitDate) {#
+		<td class="text-center" style="width: 15%">
 			<p title="Ngày gửi">
-				#:submitDate#
-			</p>
-			#} else {#
-			<p><i title="Ngày gửi" class="text-gray">---</i></p>
-			#}#
+				#if(formData.ngay_gui){#
+				<strong>#=formData.ngay_gui#</strong>
+				#}#
 
-			#if (receiveDate) {#
-			<p title="Ngày tiếp nhận">#:receiveDate#</p>
-			#} else {#
-			<p><i title="Ngày tiếp nhận" class="text-gray">---</i></p>
-			#}#
+			</p>
+			
+			<p title="Ngày tiếp nhận">
+				#if(formData.ngay_tiep_nhan){#
+				<strong>#=formData.ngay_tiep_nhan#</strong>
+				#}#
+			</p> 
 		</td>
 
-		<td class="" style="width: 10%">
+		<td class="text-center" style="width: 15%">
 			<#-- Số chứng chỉ -->
 			<#-- #=briefNote# -->
-		</td>
+			#if(formData.so_chung_chi){#
+			<strong>#=formData.so_chung_chi#</strong>
+			#}#
 
-		<td class="" style="width: 23%">
-			<i class="text-light-gray">#=briefNote#</i>
-		</td>
-
-		<td class="" style="width: 23%">
-			# if(typeof actionNote !== "undefined"){#
-			<i>#:actionNote#</i>
+			#if(formData.ngay_ky_cc){#
+			<strong>#:ngay_ky_cc#</strong>
 			#}#
 		</td>
 
-		<td class="PT0 PR0" style="width: 12%">
+		<td class="text-center" style="width: 20%">
+			# if(applicantName){#
+			<i>#:applicantName#</i>
+			#}#
+		</td>
+
+		<td class="PT0 PR0 text-center" style="width: 15%">
 			<#--	-->
-			<button type="button" class="btn-link no-border PT10 copyProfile" data-pk="#:dossierId#">
+			<!-- <button type="button" class="btn-link no-border PT10 copyProfile" data-pk="">
 				<i class="fa fa-file-o" aria-hidden="true"></i>
 				Sao chép
-			</button>
+			</button> -->
 			<#--	-->
-			#if(dossierStatus == "done"){#
-			<button type="button" class="btn-link no-border PT10 downloadProfile" data-pk="#:dossierId#">
+			#if(deliverableState == "done"){#
+			<button type="button" class="btn-link no-border PT10 downloadProfile" data-pk="">
 				<i class="fa fa-download" aria-hidden="true"/>
 				Tải kết quả
 			</button>
 			<#--  -->
-			<button type="button" class="btn-link no-border PT10 resDone" data-pk="#:dossierId#">
+			<button type="button" class="btn-link no-border PT10 resDone" data-pk="">
 				<i class="fa fa-reply" aria-hidden="true"/>
 				Yêu cầu cấp lại
 			</button>
 			<#--  -->
-			<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
+			<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="">
 				<i class="fa fa-paper-plane" aria-hidden="true"></i>
 				Sửa đổi bổ sung
 			</button>
 			#}#
 			<#--  -->
-			#if(dossierStatus == "waiting"){#
-			<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="#:dossierId#">
+			#if(deliverableState == "waiting"){#
+			<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="">
 				<i class="fa fa-trash-o" aria-hidden="true"></i>
 				Yêu cầu hủy
 			</button></br>
-			<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
+			<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="">
 				<i class="fa fa-paper-plane" aria-hidden="true"></i>
 				Gửi bổ sung
 			</button>
 			#}#
 			<#--  -->
-			#if(dossierStatus == "receiving"){#
-			<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="#:dossierId#">
+			#if(deliverableState == "receiving"){#
+			<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="">
 				<i class="fa fa-trash-o" aria-hidden="true"></i>
 				Yêu cầu hủy
 			</button></br>
@@ -276,4 +283,27 @@
 		</td>
 
 	</tr>
+</script>
+
+<script type="text/javascript">
+	var fnGetFormData = function(deliverableId){
+		var deliverableRes = {};
+		if(deliverableId){
+			$.ajax({
+				url : "${api.server}/deliverables/"+deliverableId+"/formdata",
+				dataType : "json",
+				type : "GET",
+				headers: {"groupId": ${groupId}},
+				async : false,
+				success : function(result){
+					deliverableRes = result;
+				},
+				error : function(result){
+					deliverableRes = {};
+				}
+			});
+		}
+
+		return deliverableRes;
+	}
 </script>
