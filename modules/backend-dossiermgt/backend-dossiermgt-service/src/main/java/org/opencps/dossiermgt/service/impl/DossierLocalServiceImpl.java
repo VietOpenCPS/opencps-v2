@@ -418,8 +418,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setModifiedDate(now);
 
 		dossier.setSubmitting(true);
-		dossier.setSubmitDate(now);
-
+		
+		if (Validator.isNull(dossier.getSubmitDate())) {
+			dossier.setSubmitDate(now);
+		}
+		
 		dossierPersistence.update(dossier);
 
 		return dossier;
@@ -442,7 +445,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setModifiedDate(now);
 		dossier.setSubmitting(false);
-		dossier.setSubmitDate(null);
+		//dossier.setSubmitDate(null);
 
 		dossierPersistence.update(dossier);
 

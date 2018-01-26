@@ -20,10 +20,12 @@ import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.ProcessPlugin;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 
@@ -343,7 +345,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 						formData = _getFormData(formReport, dossier.getDossierId());
 					}
 					
-					if (formData.startsWith("#")) {
+					if (formReport.startsWith("#")) {
 						formReport = _getFormScript(formReport, dossier.getDossierId());
 					}
 					
@@ -363,18 +365,19 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 						JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 						
 						if (Validator.isNotNull(previewResponse)) {
-							jsonObject = JSONFactoryUtil.createJSONObject(previewResponse);
+							//jsonObject = JSONFactoryUtil.createJSONObject(previewResponse);
 						}
 						
 						String fileDes = jsonObject.getString("fileDes");
 						
-						File file = new File(fileDes);
+						File file = new File(previewResponse);
 						
 						ResponseBuilder responseBuilder = Response.ok((Object) file);
 
 						responseBuilder.header("Content-Disposition",
 								"attachment; filename=\"" + file.getName() + "\"");
-						responseBuilder.header("Content-Type", "PDF");
+						responseBuilder.header("Content-Type", "application/pdf");
+						
 
 						return responseBuilder.build();
 
@@ -447,12 +450,30 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 		String formData = StringPool.BLANK;
 		
 		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
+		
 
 		try {
-			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
+			
+			
+			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+			
+
+			
+			DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(dossier.getGroupId(), fileTemplateNo);
+			
+
+/*			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
 					fileTemplateNo, false, new DossierFileComparator(false, "createDate", Date.class));
 			
-			formData = dossierFile.getFormReport();
+*/			
+			//JSONObject jsFormScript = JSONFactoryUtil.createJSONObject(part.getFormScript());
+			
+			formData = part.getFormReport();
+
+//			_log.info(formData);
+
+			
+			//formData = dossierFile.getFormReport();
 
 		} catch (Exception e) {
 			_log.info("Cant get formdata with fileTemplateNo_"+fileTemplateNo);
