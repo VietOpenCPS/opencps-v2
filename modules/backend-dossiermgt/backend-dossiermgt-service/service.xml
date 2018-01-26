@@ -482,6 +482,7 @@
 		<finder return-type="Collection" name="DID_ISN">
 			<finder-column name="dossierId" />
 			<finder-column name="isNew" />
+			<finder-column name="removed"/>
 		</finder>
 		<!-- References -->
 		<finder name="DID_FTNO" return-type="Collection">
