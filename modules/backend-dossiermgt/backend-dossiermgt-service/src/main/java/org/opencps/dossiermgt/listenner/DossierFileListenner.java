@@ -233,7 +233,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		map.put(SpecialKey.SUBMITDATE, "_submitDate");
 		map.put(SpecialKey.RECEIVEDATE, "_receiveDate");
 
-		isContain = map.containsKey(key);
+		isContain = map.containsValue(key);
 
 		return isContain;
 	}
