@@ -186,7 +186,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 	 */
 	protected List<Object[]> parseJSONObject(List<Object[]> keyValues, JSONObject json) {
 
-		List<Object[]> objects = new ArrayList<Object[]>();
+//		List<Object[]> objects = new ArrayList<Object[]>();
 		if (json != null) {
 			Iterator<String> itr = json.keys();
 			while (itr.hasNext()) {
@@ -220,13 +220,13 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 			}
 		}
 
-		return objects;
+		return keyValues;
 	}
 
 	//
 	protected List<Object[]> parseJSONObjectIndex(List<Object[]> keyValues, JSONObject json, String keyJson) {
 
-		List<Object[]> objects = new ArrayList<Object[]>();
+//		List<Object[]> objects = new ArrayList<Object[]>();
 
 		if (json != null) {
 			Iterator<String> itr = json.keys();
@@ -261,7 +261,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 			}
 		}
 
-		return objects;
+		return keyValues;
 	}
 
 //	protected List<Object[]> parseJSONObject(List<Object[]> keyValues, JSONArray jsonArray) throws JSONException {

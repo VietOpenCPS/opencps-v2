@@ -137,7 +137,7 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 			//
 		}
 
-		return objects;
+		return keyValues;
 	}
 
 	protected List<Object[]> parseJSONObjectIndex(List<Object[]> keyValues, JSONObject json, String keyJson) {
@@ -176,7 +176,7 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 			}
 		}
 
-		return objects;
+		return keyValues;
 	}
 
 //    protected List<Object[]> parseJSONObject(
