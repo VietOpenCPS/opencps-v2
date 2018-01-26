@@ -280,10 +280,14 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 						_log.info("deliverableCode Check: "+ deliverableCode);
 						ii += 1;
 						if (ii == 1) {
+							sb.append(StringPool.APOSTROPHE);
 							sb.append(deliverableCode);
+							sb.append(StringPool.APOSTROPHE);
 						} else {
 							sb.append(StringPool.COMMA);
+							sb.append(StringPool.APOSTROPHE);
 							sb.append(deliverableCode);
+							sb.append(StringPool.APOSTROPHE);
 						}
 					}
 				}
