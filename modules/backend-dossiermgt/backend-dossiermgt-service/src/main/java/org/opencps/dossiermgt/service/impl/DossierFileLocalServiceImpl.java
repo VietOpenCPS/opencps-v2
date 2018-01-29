@@ -883,7 +883,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 	}
 
 	public List<DossierFile> getByDossierIdAndIsNew(long dossierId, boolean isNew) {
-		return dossierFilePersistence.findByDID_ISN(dossierId, isNew);
+		return dossierFilePersistence.findByDID_ISN(dossierId, isNew, false);
 	}
 
 	/**

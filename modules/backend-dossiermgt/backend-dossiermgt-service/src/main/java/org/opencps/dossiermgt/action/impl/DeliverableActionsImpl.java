@@ -143,4 +143,10 @@ public class DeliverableActionsImpl implements DeliverableActions {
 		return DeliverableLocalServiceUtil.updateFormData(groupId, id, formData, serviceContext);
 	}
 
+	@Override
+	public List<Deliverable> getDeliverableByState(String strDeliverableCode, String state) {
+
+		return DeliverableLocalServiceUtil.findDeliverableByState(strDeliverableCode, state);
+	}
+
 }

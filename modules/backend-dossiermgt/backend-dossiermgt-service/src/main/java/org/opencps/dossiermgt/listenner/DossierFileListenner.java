@@ -185,13 +185,14 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 
 			if (entryValue.startsWith("#") && entryValue.contains("@")) {
-
+				_log.info("INTO->getElement");
 				uEntryValue = getValueElementFormData(srcFormData, entryValue);
 				entry.setValue(uEntryValue);
 
 			}
 
 			if (_checkContains(entryValue)) {
+				_log.info("INTO->getSpecical");
 
 				uEntryValue = getSpecialValue(entryValue, dossierId);
 				entry.setValue(uEntryValue);
@@ -199,6 +200,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			}
 
 			if (entryValue.startsWith("#") && !entryValue.contains("@")) {
+				_log.info("INTO->getAllForm");
 
 				entryValue = StringUtil.replaceFirst(entryValue, "#", StringPool.BLANK);
 
@@ -224,14 +226,14 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 		EnumMap<SpecialKey, String> map = new EnumMap<SpecialKey, String>(SpecialKey.class);
 
-		map.put(SpecialKey.APPLICANTIDNO, "_applicantName");
+		map.put(SpecialKey.APPLICANTNAME, "_applicantName");
 		map.put(SpecialKey.APPLICANTIDNO, "_applicantIdNo");
 		map.put(SpecialKey.DOSSIERIDCNT, "_dossierIdCNT");
 		map.put(SpecialKey.DOSSIERNO, "_dossierNo");
 		map.put(SpecialKey.SUBMITDATE, "_submitDate");
 		map.put(SpecialKey.RECEIVEDATE, "_receiveDate");
 
-		isContain = map.containsKey(key);
+		isContain = map.containsValue(key);
 
 		return isContain;
 	}
@@ -289,6 +291,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 	private String getSpecialValue(String key, long dossierId) {
 
 		String val = StringPool.BLANK;
+		
+		_log.info("SPECIAL_KEY________"+key);
 		
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
@@ -372,11 +376,6 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 	public void onAfterUpdate(DossierFile model) throws ModelListenerException {
 		_log.info("Update DossierFile_________-");
 
-		/*
-		 * String content = "On DossiserFile Update"; String notificationType =
-		 * ""; String payload = DossierLogUtils.createPayload(model, null,
-		 * null);
-		 */
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
 		serviceContext.setUserId(model.getUserId());
