@@ -79,8 +79,17 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 							QueryUtil.ALL_POS);
 					
 					for (DossierLog log : dossierLogs) {
+						long dossierFileId = 0;
 						
-						long dossierFileId = GetterUtil.getLong(log.getPayload());
+						try {
+							JSONObject payloadFile = JSONFactoryUtil.createJSONObject(log.getPayload());
+							
+							dossierFileId = GetterUtil.getLong(payloadFile.get("dossierFileId"));
+						} catch (Exception e) {
+							
+						}
+						
+						
 						
 						if (dossierFileId != 0) {
 							DossierFile dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(dossierFileId);

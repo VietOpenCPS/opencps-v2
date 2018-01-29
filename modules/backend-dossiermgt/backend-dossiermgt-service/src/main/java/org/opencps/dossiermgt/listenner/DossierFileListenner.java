@@ -59,11 +59,16 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		
 		
 		// Update DossierLog
+		
 
 		try {
 			
+			JSONObject payload = JSONFactoryUtil.createJSONObject();
+			
+			payload.put("dossierFileId", StringUtil.valueOf(model.getDossierFileId()));
+			
 			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
-					StringPool.BLANK, DossierFileListenerMessageKeys.DOSSIER_LOG_CREATE_TYPE,StringUtil.valueOf(model.getDossierFileId()), serviceContext);
+					StringPool.BLANK, DossierFileListenerMessageKeys.DOSSIER_LOG_CREATE_TYPE,payload.toJSONString(), serviceContext);
 
 			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(model.getGroupId(),
 					model.getDossierTemplateNo(), model.getDossierPartNo());
