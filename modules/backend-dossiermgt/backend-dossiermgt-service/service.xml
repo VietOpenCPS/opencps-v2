@@ -545,6 +545,11 @@
 			<finder-column name="notificationType" />
 		</finder>
 
+		<finder return-type="Collection" name="DID_NTYP">
+			<finder-column name="notificationType" />
+			<finder-column name="dossierId" />
+		</finder>
+
 		<!-- References -->
 
 	</entity>
