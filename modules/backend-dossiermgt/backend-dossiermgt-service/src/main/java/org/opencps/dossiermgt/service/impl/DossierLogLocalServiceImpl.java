@@ -14,28 +14,17 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
-import java.io.InputStream;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.constants.DossierLogTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.exception.InvalidDossierStatusException;
-import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierLog;
-import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.service.base.DossierLogLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
@@ -56,7 +45,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the dossier log local service.
@@ -79,6 +69,11 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.DossierLogLocalServiceUtil} to access the dossier log local service.
 	 */
+	
+	public List<DossierLog> getByDossierAndType(long dossierId, String type, int start, int end) throws PortalException {
+		return dossierLogPersistence.findByDID_NTYP(type, dossierId, start, end);
+	}
+	
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierLog addDossierLog(long groupId, long dossierId,  String author,
             String content, String notificationType, String payload, ServiceContext serviceContext) 
