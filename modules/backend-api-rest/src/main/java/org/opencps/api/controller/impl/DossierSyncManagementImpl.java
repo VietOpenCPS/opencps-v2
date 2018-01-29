@@ -252,11 +252,6 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 			Map<String, Object> params = new LinkedHashMap<>();
 
-			_log.info("actionCode" + actionCode);
-			_log.info("actionUser" + actionUser);
-			_log.info("actionNote" + actionNote);
-			_log.info("assignUserId" + assignUserId);
-
 			params.put("actionCode", actionCode);
 			params.put("actionUser", actionUser);
 			params.put("actionNote", actionNote);
@@ -312,11 +307,6 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 			properties.put("fileType", fileEntry.getExtension());
 
-			/*
-			 * File file =
-			 * DLFileEntryLocalServiceUtil.getFile(dossierFile.getFileEntryId(),
-			 * dlFileVersion.getVersion(), false);
-			 */
 			File file = getFile(dossierFile.getFileEntryId());
 
 			// TODO review extention file
@@ -418,10 +408,6 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 						RESTFulConfiguration.SERVER_PATH_BASE, endPointSynAction, RESTFulConfiguration.SERVER_USER,
 						RESTFulConfiguration.SERVER_PASS, properties, params, serviceContext);
 
-/*				callPostFileAPI(groupId, HttpMethod.PUT, "application/json", RESTFulConfiguration.SERVER_PATH_BASE,
-						endPointSynAction, RESTFulConfiguration.SERVER_USER, RESTFulConfiguration.SERVER_PASS,
-						properties, file, serviceContext);
-*/
 				if (resSynFile.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
 					// remove DossierSync
 
