@@ -105,7 +105,7 @@ public class DossierLogActionsImpl implements DossierLogActions {
 				params.put(Field.USER_ID, serviceContext.getUserId());
 			}
 			
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(sort + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create("createDate_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(order)) };
 
 			Hits hits = DossierLogLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
