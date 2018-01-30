@@ -482,6 +482,7 @@
 		<finder return-type="Collection" name="DID_ISN">
 			<finder-column name="dossierId" />
 			<finder-column name="isNew" />
+			<finder-column name="removed"/>
 		</finder>
 		<!-- References -->
 		<finder name="DID_FTNO" return-type="Collection">
@@ -537,13 +538,18 @@
 		<column name="payload" type="String" />
 
 		<!-- Order -->
-
+		
 		<!-- Finder methods -->
 
 		<finder return-type="Collection" name="NotiType">
 			<finder-column name="notificationType" />
 		</finder>
 
+		<finder return-type="Collection" name="DID_NTYP">
+			<finder-column name="notificationType" />
+			<finder-column name="dossierId" />
+		</finder>
+	
 		<!-- References -->
 
 	</entity>

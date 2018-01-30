@@ -466,6 +466,9 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		return deliverablePersistence.update(object);
 	}
 	/////////////////////
+	public List<Deliverable> findDeliverableByState(String strDeliverableCode, String state) {
+		return deliverableFinder.findDeliverableByState(strDeliverableCode, state);
+	}
 	/**
 	 * @param pattern
 	 * @return

@@ -12,22 +12,30 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DossierActionManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.DeliverableUtils;
 import org.opencps.api.controller.util.DossierActionUtils;
+import org.opencps.api.deliverable.model.DeliverableInputModel;
 import org.opencps.api.dossier.model.ListContacts;
 import org.opencps.api.dossieraction.model.DossierActionNextActionResultsModel;
 import org.opencps.api.dossieraction.model.DossierActionResultsModel;
 import org.opencps.api.dossieraction.model.DossierActionSearchModel;
+import org.opencps.auth.api.BackendAuth;
+import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.dossiermgt.action.DossierActionUser;
+import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.DossierActions;
-import org.opencps.dossiermgt.action.impl.DossierActionUserImpl;
+import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -41,6 +49,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 public class DossierActionManagementImpl implements DossierActionManagement {
 
@@ -242,5 +251,104 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 		return null;
 	}
 
+	@Override
+	public Response getByDeliverableState(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, Long id, String state) {
+		// TODO Add Deliverable Type
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.getDossierFilesByDossierId(id);
+//			_log.info("dossier File: "+ dossierFileList.get);
+			StringBuilder sb = new StringBuilder();
+			String deliverableCode = StringPool.BLANK;
+			if (dossierFileList != null && dossierFileList.size() > 0) {
+				int length = dossierFileList.size();
+				_log.info("Size dossier File: "+ length);
+				int ii = 0;
+				for (int i = 0; i < length; i++) {
+					DossierFile dossierFile = dossierFileList.get(i);
+					deliverableCode = dossierFile.getDeliverableCode();
+					_log.info("deliverableCode: "+ deliverableCode);
+					if (Validator.isNotNull(deliverableCode)) {
+						_log.info("deliverableCode Check: "+ deliverableCode);
+						ii += 1;
+						if (ii == 1) {
+							sb.append(StringPool.APOSTROPHE);
+							sb.append(deliverableCode);
+							sb.append(StringPool.APOSTROPHE);
+						} else {
+							sb.append(StringPool.COMMA);
+							sb.append(StringPool.APOSTROPHE);
+							sb.append(deliverableCode);
+							sb.append(StringPool.APOSTROPHE);
+						}
+					}
+				}
+				_log.info("Str Dossier Id: "+ sb.toString());
+			}
+
+			DeliverableActions action = new DeliverableActionsImpl();
+			//
+			//
+			List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), state);
+			_log.info("Str list deliverable: "+ deliverableList);
+			JSONArray results = JSONFactoryUtil.createJSONArray();
+			if (deliverableList != null && deliverableList.size() > 0) {
+//				int lengthDeliver = deliverableList.size();
+				_log.info("Size list deliverable: "+ deliverableList.size());
+				String formData = StringPool.BLANK;
+				for (Deliverable deliverable : deliverableList) {
+					JSONObject formDetail = JSONFactoryUtil.createJSONObject();
+					formData = deliverable.getFormData();
+					_log.info("formData: "+ formData);
+					try {
+						JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
+						formDetail.put("so_chung_chi", jsonData.get("so_chung_chi"));
+						formDetail.put("nguoi_ky_cc", jsonData.get("nguoi_ky_cc"));
+						formDetail.put("ngay_ky_cc", jsonData.get("ngay_ky_cc"));
+						formDetail.put("ten_doanh_nghiep", jsonData.get("ten_doanh_nghiep"));
+						formDetail.put("ma_so_doanh_nghiep", jsonData.get("ma_so_doanh_nghiep"));
+						formDetail.put("ma_ho_so", jsonData.get("ma_ho_so"));
+						formDetail.put("so_ho_so", jsonData.get("so_ho_so"));
+						formDetail.put("ngay_tiep_nhan", jsonData.get("ngay_tiep_nhan"));
+						formDetail.put("ngay_gui", jsonData.get("ngay_gui"));
+						formDetail.put("loai_san_pham", jsonData.get("loai_san_pham"));
+						formDetail.put("nhan_hieu", jsonData.get("nhan_hieu"));
+						formDetail.put("ma_kieu_loai", jsonData.get("ma_kieu_loai"));
+						formDetail.put("ten_thuong_mai", jsonData.get("ten_thuong_mai"));
+
+						String strReport = String.valueOf(jsonData.get("bien_ban"));
+						try {
+							JSONObject jsonReportData = JSONFactoryUtil.createJSONObject(strReport);
+							formDetail.put("bien_ban@hinh_thuc_cap_giay_text", jsonReportData.get("hinh_thuc_cap_giay_text"));
+							formDetail.put("bien_ban@so_bien_ban", jsonReportData.get("so_bien_ban"));
+							formDetail.put("bien_ban@dang_kiem_vien_chinh", jsonReportData.get("dang_kiem_vien_chinh"));
+							results.put(formDetail);
+						} catch (Exception e) {
+							_log.info("================");
+							//-log.error(e);
+						}
+					} catch (Exception e) {
+						_log.info("================");
+						//-log.error(e);
+					}
+					
+				}
+			}
+
+			_log.info("Result: "+ results);
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+		} catch (Exception e) {
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
+		}
+
+	}
 
 }

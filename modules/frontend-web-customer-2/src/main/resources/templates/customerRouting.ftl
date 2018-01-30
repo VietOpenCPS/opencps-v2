@@ -2,7 +2,62 @@
 	<#include "init.ftl">
 </#if>
 <#-- Routing SPA-->
+
+<!-- <div id="confirmSaveForm" style="background-color: #ffffff; color: black" class="MT20">
+	
+</div> -->
 <script type="text/javascript">
+
+	/*var viewConfirmSaveForm = $("#confirmSaveForm");
+    viewConfirmSaveForm.kendoDialog({
+    	width: "400px",
+    	title: "Software Update",
+    	closable: false,
+    	modal: false,
+    	content: "<p>Hãy chắc chắn rằng bạn đã lưu lại thông tin form khai trước khi chuyển thao tác?<p>",
+    	actions: [
+    	{ text: 'Rời khỏi', action : onStay },
+    	{ text: 'Ở lại trang', primary: true, action : onLeave }
+    	]
+    });
+
+	var confirmSaveForm = function(){
+		if($('#mainType2').is(':visible')){
+			var numForm = $("#mainType2 .formAlpacaDN").length;
+			if(numForm > 0){
+				var numBtnSaveForm = $("#mainType2 button.saveFormAlpaca").length;
+				if(numBtnSaveForm > 0){
+					viewConfirmSaveForm.data("kendoDialog").open();
+       	 			$("div.k-widget.k-window").css({"background-color":"#14bef0","color":"#ffffff"})
+				}
+			}
+		}
+		
+	}
+	function onStay(){
+		return ;
+	}
+	function onLeave(){
+
+	}*/
+
+	var checkIsSaveDossier = function(dossierId){
+		var isSave = true;
+		$.ajax({
+			url : "${api.server}/dossiers/"+dossierId,
+			dataType : "json",
+			type : "GET",
+			headers : {"groupId": ${groupId}},
+			async : false,
+			success : function(result){
+				
+			},
+			error : function(result){
+
+			}
+		});
+	}
+
 	var layout = new kendo.Layout("layoutTemplate");
 	var manageDossier = new kendo.Router({
 	    init: function() {

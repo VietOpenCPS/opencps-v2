@@ -142,7 +142,7 @@
 			<v-tabs-item :href="'#tab-dossier-detail-1'">
 			THÀNH PHẦN HỒ SƠ
 			</v-tabs-item>
-			<v-tabs-item :href="'#tab-dossier-detail-2'" @click.prevent.stop="_initchangeProcessStep()">
+			<v-tabs-item :href="'#tab-dossier-detail-2'" @click.prevent.stop="_initchangeProcessStep();">
 			THỤ LÝ HỒ SƠ
 			</v-tabs-item>
 			<v-tabs-item :href="'#tab-dossier-detail-3'" @click.prevent.stop="selectDossierActionTab(detailModel)">
@@ -201,6 +201,14 @@
 				<v-card v-if="stepModel != null">
 					<div v-if="stepModel.pending">
 						Hồ sơ chờ đồng bộ ...
+					</div>
+					<div v-else-if="stepModel.plugin">
+						<div class="flex xs12 sm12 text-center">
+						<object id="dossierPDFViewPlugin" data="" width="100%" height="100%">
+								<iframe :src="stepModel.url" width="100%" height="100%"> </iframe>
+							</object>
+							<div id="dossierPDFViewNotFound" class="text-center">{{ stepModel.no_pdf }}</div>
+						</div>
 					</div>
                     <div v-else>
                     	

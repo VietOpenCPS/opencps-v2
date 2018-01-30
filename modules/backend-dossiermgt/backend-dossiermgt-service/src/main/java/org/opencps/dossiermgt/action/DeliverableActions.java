@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.action;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.dossiermgt.exception.NoSuchDeliverableException;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -45,4 +46,6 @@ public interface DeliverableActions {
 	public JSONObject getFormDataByTypecode(long companyId, LinkedHashMap<String, Object> params, Sort[] object, int start,
 			int end, ServiceContext serviceContext);
 
+	//
+	public List<Deliverable> getDeliverableByState(String strDeliverableCode, String state);
 }
