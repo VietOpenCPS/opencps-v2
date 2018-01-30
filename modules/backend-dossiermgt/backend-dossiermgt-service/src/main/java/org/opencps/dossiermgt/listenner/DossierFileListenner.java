@@ -60,7 +60,6 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		
 		// Update DossierLog
 		
-
 		try {
 			
 			JSONObject payload = JSONFactoryUtil.createJSONObject();
@@ -170,7 +169,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 			if (entryValue.startsWith("#") && entryValue.contains("@")) {
 				_log.info("INTO->getElement");
-				uEntryValue = getValueElementFormData(srcFormData, entryValue);
+				uEntryValue = getValueElementFormData(srcFormData, entryValue, dossierId);
 				entry.setValue(uEntryValue);
 
 			}
@@ -242,14 +241,27 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		return formValue;
 	}
 
-	private String getValueElementFormData(JSONObject formData, String key) {
+	private String getValueElementFormData(JSONObject formData, String key, long dossierId) {
 
 		String elmValue = StringPool.BLANK;
 
 		String keyJs = stripKey(key);
-
-		if (Validator.isNotNull(elmValue)) {
-			elmValue = formData.getString(keyJs);
+		
+		String formTemplate = stripForm(key);
+		
+		List<DossierFile> dfs = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO(dossierId, formTemplate, false);
+		
+		if (Validator.isNotNull(dfs) && dfs.size() != 0) {
+			DossierFile df = dfs.get(0);
+			
+			try {
+				JSONObject jsformData = JSONFactoryUtil.createJSONObject(df.getFormData());
+				
+				elmValue = jsformData.getString(keyJs);
+				
+			} catch (Exception e) {
+				_log.info("File"+formTemplate+"is null or json is not correct");
+			}
 		}
 
 		return elmValue;
@@ -257,7 +269,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 	private String stripKey(String key) {
 		String rtn = StringPool.BLANK;
-
+		
+		
 		if (Validator.isNotNull(key)) {
 			String[] strArr = StringUtil.split(key, "@");
 
@@ -267,6 +280,23 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				rtn = StringUtil.replaceFirst(rtn, "#", StringPool.BLANK);
 			}
 		}
+		_log.info(rtn+"_____"+key);
+
+		return rtn;
+	}
+	
+	private String stripForm(String key) {
+		String rtn = StringPool.BLANK;
+		
+		
+		if (Validator.isNotNull(key)) {
+			String[] strArr = StringUtil.split(key, "@");
+
+			if (strArr.length == 2) {
+				rtn = strArr[1];
+			}
+		}
+		_log.info(rtn+"_____"+key);
 
 		return rtn;
 	}

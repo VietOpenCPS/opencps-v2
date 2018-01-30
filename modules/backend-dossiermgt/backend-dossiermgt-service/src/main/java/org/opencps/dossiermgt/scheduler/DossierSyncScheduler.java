@@ -84,7 +84,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 				// Grouping DossierSync by DossierId and order by SyncMethod
 				Map<Long, SortedMap<Integer, JSONObject>> dossierSyncs = new TreeMap<Long, SortedMap<Integer, JSONObject>>();
 			
-				for (int i = jsArrayData.length() - 1; i >=0; i--) {
+				for (int i = 0; i < jsArrayData.length(); i++) {
 
 					JSONObject object = jsArrayData.getJSONObject(i);
 					long dossierSyncId = GetterUtil.getLong(object.get("dossierSyncId"));
