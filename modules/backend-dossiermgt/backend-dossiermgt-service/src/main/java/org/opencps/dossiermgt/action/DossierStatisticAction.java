@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.action;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.dossiermgt.model.DossierStatistic;
 
@@ -26,4 +27,6 @@ public interface DossierStatisticAction {
 			int onlineCount, int undueCount, int overdueCount, int ontimeCount, int overtimeCount, String govAgencyCode,
 			String govAgencyName, String domainCode, String domainName, int administrationLevel, boolean reporting,
 			ServiceContext serviceContext) throws PortalException;
+
+	public List<DossierStatistic> getDossierStatisticbyYear(long userId, long groupId, int year);
 }

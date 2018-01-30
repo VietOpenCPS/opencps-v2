@@ -50,7 +50,9 @@ public interface DossierStatisticManagement {
 	@Path("/actions/year/{y}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.MULTIPART_FORM_DATA })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response getYears(@PathParam("y") long year);
+	public Response getYears(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@PathParam("y") int year);
 
 	@POST
 	@Path("/dossiers/agency/{code}")

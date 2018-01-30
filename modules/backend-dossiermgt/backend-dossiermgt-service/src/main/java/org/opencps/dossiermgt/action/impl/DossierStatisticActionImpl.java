@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.action.impl;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.dossiermgt.action.DossierStatisticAction;
 import org.opencps.dossiermgt.model.DossierStatistic;
@@ -72,6 +73,11 @@ public class DossierStatisticActionImpl implements DossierStatisticAction {
 		}
 
 		return result;
+	}
+	
+	@Override
+	public List<DossierStatistic> getDossierStatisticbyYear(long userId, long groupId, int year){
+		return DossierStatisticLocalServiceUtil.getDossierStatisticbyYear(groupId, userId, year);
 	}
 
 }

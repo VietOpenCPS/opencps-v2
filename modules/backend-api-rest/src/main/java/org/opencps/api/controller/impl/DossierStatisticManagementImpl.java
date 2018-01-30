@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -17,6 +18,9 @@ import org.opencps.api.dossierstatistic.model.DossierStatisticInputModel;
 import org.opencps.api.dossierstatistic.model.DossierStatisticModel;
 import org.opencps.api.dossierstatistic.model.DossierStatisticResultsModel;
 import org.opencps.api.dossierstatistic.model.DossierStatisticSearchModel;
+import org.opencps.api.dossierstatistic.model.DossierStatisticYearDataModel;
+import org.opencps.api.dossierstatistic.model.DossierStatisticYearModel;
+import org.opencps.api.dossierstatistic.model.DossierStatisticYearResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -24,7 +28,15 @@ import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.action.DossierStatisticAction;
 import org.opencps.dossiermgt.action.impl.DossierStatisticActionImpl;
 import org.opencps.dossiermgt.constants.DossierStatisticTerm;
+import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierStatistic;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -42,9 +54,44 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 	Log _log = LogFactoryUtil.getLog(DossierStatisticManagementImpl.class);
 
 	@Override
-	public Response getYears(long year) {
+	public Response getYears(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, int year) {
 		// TODO Auto-generated method stub
-		return null;
+		DossierStatisticAction actions = new DossierStatisticActionImpl();
+
+		DossierStatisticYearResultsModel results = new DossierStatisticYearResultsModel();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		List<DossierStatisticYearDataModel> lstDossierStatisticYearDataModel = new ArrayList<DossierStatisticYearDataModel>();
+
+		List<Employee> lstEmployee = EmployeeLocalServiceUtil.getLstEmployee(groupId, user.getUserId());
+
+		for (Employee employee : lstEmployee) {
+			
+			DossierStatisticYearDataModel dossierStatisticYearDataModel = new DossierStatisticYearDataModel();
+
+			List<DossierStatistic> lstDossierStatistic = actions.getDossierStatisticbyYear(user.getUserId(), groupId, year);
+
+			EmployeeJobPos employeeJobPos = EmployeeJobPosLocalServiceUtil.getEmployeeJobPosbyGidEmpId(groupId, employee.getEmployeeId());
+
+			WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.getWorkingUnitbyGidandWid(groupId, employeeJobPos.getWorkingUnitId());
+
+			dossierStatisticYearDataModel.setUserId(user.getUserId());
+			dossierStatisticYearDataModel.setUserName(user.getFullName());
+			dossierStatisticYearDataModel.setWorkingRole(employeeJobPos.getJobPostId());
+			dossierStatisticYearDataModel.setWorkingUnitId(employeeJobPos.getWorkingUnitId());
+			dossierStatisticYearDataModel.setWorkingUnitName(workingUnit.getName());
+
+			dossierStatisticYearDataModel.getMonths().addAll(DossierStatisticUtils.mappingDossierStatisticYearModel(lstDossierStatistic));
+			
+			lstDossierStatisticYearDataModel.add(dossierStatisticYearDataModel);
+		}
+		
+		results.setTotal(lstDossierStatisticYearDataModel.size());
+		results.getData().addAll(lstDossierStatisticYearDataModel);
+
+		return Response.status(200).entity(results).build();
 	}
 
 	@Override
@@ -57,7 +104,7 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 	@Override
 	public Response getDossierStatistic(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierStatisticSearchModel search) {
-		DossierStatisticActionImpl actions = new DossierStatisticActionImpl();
+		DossierStatisticAction actions = new DossierStatisticActionImpl();
 
 		DossierStatisticResultsModel results = new DossierStatisticResultsModel();
 

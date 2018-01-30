@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service.impl;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.dossiermgt.constants.DossierStatisticTerm;
 import org.opencps.dossiermgt.model.DossierStatistic;
@@ -253,6 +254,8 @@ public class DossierStatisticLocalServiceImpl extends DossierStatisticLocalServi
 		
 		// Add other fields
 		object.setDossierStatisticId(dossierStatisticId);
+		object.setMonth(month);
+		object.setYear(year);
 		object.setReceivedCount(receivedCount);
 		object.setRemainingCount(remainingCount);
 		object.setOnlineCount(onlineCount);
@@ -268,6 +271,10 @@ public class DossierStatisticLocalServiceImpl extends DossierStatisticLocalServi
 		object.setReporting(reporting);
 		
 		return dossierStatisticPersistence.update(object);
+	}
+	
+	public List<DossierStatistic> getDossierStatisticbyYear(long groupId, long userId, int year){
+		return dossierStatisticPersistence.findByG_UID_Y(groupId, userId, year);
 	}
 	
 	public static final String CLASS_NAME = DossierStatistic.class.getName();

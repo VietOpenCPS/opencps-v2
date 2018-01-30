@@ -581,4 +581,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
 	}
+	
+	public List<Employee> getLstEmployee(long groupId, long userId){
+		return employeePersistence.findByG_UID(groupId, userId);
+	}
 }
