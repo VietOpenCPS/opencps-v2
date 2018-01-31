@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.DossierLogUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.Dossier;
@@ -35,6 +36,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
+import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -303,7 +305,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 		String val = StringPool.BLANK;
 
-		_log.info("SPECIAL_KEY________" + key);
+		//_log.info("SPECIAL_KEY________" + key);
 
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
@@ -318,7 +320,18 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			}
 
 			if (key.contentEquals("_dossierIdCTN")) {
-
+				
+				Document dossierDoc = DossierLocalServiceUtil.getDossierById(dossierId, dossier.getCompanyId());
+				
+				String dossierCTN = StringPool.BLANK;
+				
+				if (Validator.isNotNull(dossierDoc)) {
+					_log.info("DossierIsNotNull_" + dossierId);
+					dossierCTN = dossierDoc.get(DossierTerm.DOSSIER_ID+"CTN");
+				}
+				
+				val = dossierCTN;
+				
 			}
 
 			if (key.contentEquals("_dossierNo")) {
