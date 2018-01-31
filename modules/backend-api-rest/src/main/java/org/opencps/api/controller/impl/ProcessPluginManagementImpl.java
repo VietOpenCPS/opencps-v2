@@ -342,7 +342,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 					String formData = plugin.getSampleData();
 					
 					if (formData.startsWith("#")) {
-						formData = _getFormData(formReport, dossier.getDossierId());
+						formData = _getFormData(formData, dossier.getDossierId());
 					}
 					
 					if (formReport.startsWith("#")) {
