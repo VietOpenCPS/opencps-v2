@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.StringPool;
  *         &lt;element name="agency" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="keyword" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="applicant" type="{http://www.w3.org/2001/XMLSchema}String" minOccurs="0"/>
+ *         &lt;element name="owner" type="{http://www.w3.org/2001/XMLSchema}String" minOccurs="0"/>
  *         &lt;element name="type" type="{http://www.w3.org/2001/XMLSchema}String" minOccurs="0"/>
  *         &lt;element name="start" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
  *         &lt;element name="end" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
@@ -43,6 +44,7 @@ import com.liferay.portal.kernel.util.StringPool;
     "keyword",
     "type",
     "applicant",
+    "owner",
     "start",
     "end",
     "sort",
@@ -60,6 +62,8 @@ public class DeliverableSearchModel {
     private String type;
 	@QueryParam(value = "applicant")
     private String applicant;
+	@QueryParam(value = "owner")
+	private String owner;
 	@QueryParam(value = "start")
 	private int start;
 	@QueryParam(value = "end")
@@ -284,4 +288,29 @@ public class DeliverableSearchModel {
     public void setOrder(String value) {
         this.order = value;
     }
+
+    /**
+     * Gets the value of the owner property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+	public String getOwner() {
+		return owner;
+	}
+
+    /**
+     * Sets the value of the owner property.
+     * 
+     * @param order
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
 }
