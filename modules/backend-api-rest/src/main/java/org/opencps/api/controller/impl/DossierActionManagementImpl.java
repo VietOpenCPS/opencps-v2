@@ -12,9 +12,7 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DossierActionManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
-import org.opencps.api.controller.util.DeliverableUtils;
 import org.opencps.api.controller.util.DossierActionUtils;
-import org.opencps.api.deliverable.model.DeliverableInputModel;
 import org.opencps.api.dossier.model.ListContacts;
 import org.opencps.api.dossieraction.model.DossierActionNextActionResultsModel;
 import org.opencps.api.dossieraction.model.DossierActionResultsModel;
@@ -53,7 +51,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 public class DossierActionManagementImpl implements DossierActionManagement {
 
-	Log _log = LogFactoryUtil.getLog(DataManagementImpl.class);
+	Log _log = LogFactoryUtil.getLog(DossierActionManagementImpl.class);
 
 	@Override
 	public Response getListActions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -270,14 +268,14 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			String deliverableCode = StringPool.BLANK;
 			if (dossierFileList != null && dossierFileList.size() > 0) {
 				int length = dossierFileList.size();
-				_log.info("Size dossier File: "+ length);
+//				_log.info("Size dossier File: "+ length);
 				int ii = 0;
 				for (int i = 0; i < length; i++) {
 					DossierFile dossierFile = dossierFileList.get(i);
 					deliverableCode = dossierFile.getDeliverableCode();
-					_log.info("deliverableCode: "+ deliverableCode);
+//					_log.info("deliverableCode: "+ deliverableCode);
 					if (Validator.isNotNull(deliverableCode)) {
-						_log.info("deliverableCode Check: "+ deliverableCode);
+//						_log.info("deliverableCode Check: "+ deliverableCode);
 						ii += 1;
 						if (ii == 1) {
 							sb.append(StringPool.APOSTROPHE);
@@ -291,23 +289,23 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 						}
 					}
 				}
-				_log.info("Str Dossier Id: "+ sb.toString());
+//				_log.info("Str Dossier Id: "+ sb.toString());
 			}
 
 			DeliverableActions action = new DeliverableActionsImpl();
 			//
 			//
 			List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), state);
-			_log.info("Str list deliverable: "+ deliverableList);
+//			_log.info("Str list deliverable: "+ deliverableList);
 			JSONArray results = JSONFactoryUtil.createJSONArray();
 			if (deliverableList != null && deliverableList.size() > 0) {
 //				int lengthDeliver = deliverableList.size();
-				_log.info("Size list deliverable: "+ deliverableList.size());
+//				_log.info("Size list deliverable: "+ deliverableList.size());
 				String formData = StringPool.BLANK;
 				for (Deliverable deliverable : deliverableList) {
 					JSONObject formDetail = JSONFactoryUtil.createJSONObject();
 					formData = deliverable.getFormData();
-					_log.info("formData: "+ formData);
+//					_log.info("formData: "+ formData);
 					try {
 						JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
 						formDetail.put("so_chung_chi", jsonData.get("so_chung_chi"));
@@ -343,7 +341,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				}
 			}
 
-			_log.info("Result: "+ results);
+//			_log.info("Result: "+ results);
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
