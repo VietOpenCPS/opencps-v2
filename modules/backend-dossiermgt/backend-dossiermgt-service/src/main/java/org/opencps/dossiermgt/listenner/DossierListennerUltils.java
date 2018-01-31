@@ -186,7 +186,7 @@ public class DossierListennerUltils {
 
 	static void sendToApplicant(Applicant model, String notificationType, JSONObject messageKey) {
 
-		try {
+/*		try {
 			long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
 			NotificationQueue queue = null;
 			Date now = new Date();
@@ -218,7 +218,7 @@ public class DossierListennerUltils {
 			NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 		} catch (Exception e) {
 			_log.error(e);
-		}
+		}*/
 
 	}
 
