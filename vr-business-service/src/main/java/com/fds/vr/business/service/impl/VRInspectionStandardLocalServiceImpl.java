@@ -17,6 +17,9 @@ package com.fds.vr.business.service.impl;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.Registration;
+
 import com.fds.vr.business.model.VRInspectionStandard;
 import com.fds.vr.business.service.base.VRInspectionStandardLocalServiceBaseImpl;
 
@@ -45,7 +48,8 @@ public class VRInspectionStandardLocalServiceImpl
 	 * Never reference this class directly. Always use {@link com.fds.vr.business.service.VRInspectionStandardLocalServiceUtil} to access the vr inspection standard local service.
 	 */
 
-	public VRInspectionStandard updateInspectionStandard(LinkedHashMap<String, String> mapValues, long vrVehicleCertificateId) {
+	public VRInspectionStandard updateInspectionStandard(LinkedHashMap<String, String> mapValues,
+			long vrVehicleCertificateId, Date modifiedDate, Registration registration, DossierFile dossierFile) {
 		
 		Date now = new Date();
 
@@ -63,7 +67,7 @@ public class VRInspectionStandardLocalServiceImpl
 		object.setInspectionRecordId(333333);
 		//
 		object.setModule(mapValues.get(""));
-//		object.setModifyDate(DATEEEEEEE);
+		object.setModifyDate(modifiedDate);
 
 		return vrInspectionStandardPersistence.update(object);
 	}

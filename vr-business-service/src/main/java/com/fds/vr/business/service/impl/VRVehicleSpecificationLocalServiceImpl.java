@@ -19,6 +19,9 @@ import aQute.bnd.annotation.ProviderType;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.Registration;
+
 import com.fds.vr.business.model.VRVehicleSpecification;
 import com.fds.vr.business.service.base.VRVehicleSpecificationLocalServiceBaseImpl;
 
@@ -45,7 +48,8 @@ public class VRVehicleSpecificationLocalServiceImpl
 	 * Never reference this class directly. Always use {@link com.fds.vr.business.service.VRVehicleSpecificationLocalServiceUtil} to access the vr vehicle specification local service.
 	 */
 
-	public VRVehicleSpecification updateVehicleSpecification(LinkedHashMap<String, String> mapValues, long vrVehicleTypeCertificateId) {
+	public VRVehicleSpecification updateVehicleSpecification(LinkedHashMap<String, String> mapValues,
+			long vrVehicleTypeCertificateId, Date modifiedDate, Registration registration, DossierFile dossierFile) {
 		
 		Date now = new Date();
 
@@ -70,7 +74,7 @@ public class VRVehicleSpecificationLocalServiceImpl
 		object.setSpecificationGroup(mapValues.get(""));
 		object.setSpecificationDataCollectionID(mapValues.get(""));
 		object.setSpecificationResult(mapValues.get(""));
-//		object.setModifyDate(DATEEEEEEE);
+		object.setModifyDate(modifiedDate);
 
 		return vrVehicleSpecificationPersistence.update(object);
 	}
