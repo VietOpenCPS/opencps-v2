@@ -6,6 +6,7 @@ dependencies {
 	compileOnly project(":modules:vr-business:vr-business-api")
 	
 	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-api")
+	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-service")
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-api")
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-service")
 }
