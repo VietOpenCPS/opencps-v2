@@ -1079,6 +1079,20 @@
 		<column name="tableName" type="String" db-name="tableName"/>
 		<column name="syncDate" type="Date" db-name="syncDate"/>
 	</entity>
+	
+	<entity name="VRReport" local-service="true" table="vr_report"
+		remote-service="false">
+
+		<column name="id" type="long" primary="true" db-name="id"/>
+		<column name="reportCode" type="String" db-name="reportCode"/>
+		<column name="reportName" type="String" db-name="reportName"/>
+		<column name="formReport" type="String" db-name="formReport"/>
+	
+		<!-- Finder -->
+		<finder return-type="VRReport" name="ReportCode">
+			<finder-column name="reportCode"/>
+		</finder>
+	</entity>
 
 	<exceptions>
 		<exception>InvalidInputParam</exception>
