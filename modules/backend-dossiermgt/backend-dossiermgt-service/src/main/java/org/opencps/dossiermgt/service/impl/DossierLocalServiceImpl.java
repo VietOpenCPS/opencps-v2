@@ -874,6 +874,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
 		String state = GetterUtil.getString(params.get(DossierTerm.STATE));
 		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
+		String dossierNo = GetterUtil.getString(params.get(DossierTerm.DOSSIER_NO));
 
 		// String top = GetterUtil.getString(params.get(DossierTerm.TOP));
 
@@ -1073,6 +1074,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			query.addFields(DossierTerm.STEP);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(dossierNo)) {
+
+			String[] keyDossier = dossierNo.split(StringPool.SPACE);
+
+			for (String key : keyDossier) {
+
+				MultiMatchQuery query = new MultiMatchQuery(key);
+
+				query.addFields(
+						new String[] { DossierTerm.DOSSIER_NO, "dossierIdCTN"});
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
