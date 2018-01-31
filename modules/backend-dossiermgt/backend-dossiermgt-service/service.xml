@@ -508,6 +508,9 @@
             <finder-column name="fileEntryId" comparator="&gt;"></finder-column>
             <finder-column name="removed"></finder-column>
         </finder>
+        <finder return-type="DossierFile" name="DE_CODE">
+        	<finder-column name="deliverableCode" />
+        </finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -1162,6 +1165,16 @@
         	<finder-column name="applicantIdNo"></finder-column>
         	<finder-column name="govAgencyCode"></finder-column>
         	<finder-column name="registrationState"></finder-column>
+        </finder>
+        
+        <finder return-type="Collection" name="G_USER_STATE">
+        	<finder-column name="groupId" />
+        	<finder-column name="userId" />
+        	<finder-column name="registrationState" />
+        </finder>
+
+		<finder return-type="Registration" name="REG_APPNO">
+        	<finder-column name="applicantIdNo"></finder-column>
         </finder>
 	</entity>
 

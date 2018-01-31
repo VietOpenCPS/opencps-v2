@@ -964,5 +964,16 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 				fileEntryId, removed, start, end, orderByComparator);
 	}
 
+	/**
+	 * Get dossierFile by deliverable Code using output DB
+	 */
+	public DossierFile getByDeliverableCode(String deliverableCode) {
+		try {
+			return dossierFilePersistence.findByDE_CODE(deliverableCode);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }

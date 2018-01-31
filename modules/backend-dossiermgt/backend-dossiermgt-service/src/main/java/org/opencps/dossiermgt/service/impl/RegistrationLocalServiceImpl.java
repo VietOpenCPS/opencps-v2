@@ -531,6 +531,30 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		}
 	}
 
+	/**
+	 * Get registration form ApplicantIdNo using output DB
+	 * 
+	 */
+	public Registration getByApplicantIdNo(String applicantIdNo) {
+		try {
+			return registrationPersistence.findByREG_APPNO(applicantIdNo);
+
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Get list registrations have state = 2
+	 */
+	public List<Registration> getByRegistrationState(long groupId, long userId, int state) {
+		try {
+			return registrationPersistence.findByG_USER_STATE(groupId, userId, state);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	private Log _log = LogFactoryUtil.getLog(RegistrationLocalServiceImpl.class);
 
 }
