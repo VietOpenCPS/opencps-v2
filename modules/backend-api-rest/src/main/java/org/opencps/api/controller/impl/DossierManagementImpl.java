@@ -117,6 +117,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String submitting = query.getSubmitting();
 			String top = query.getTop();
 			String state = query.getState();
+			String dossierIdNo = query.getDossierNo();
 
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -133,6 +134,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.USER_ID, user.getUserId());
 			params.put("secetKey", query.getSecetKey());
 			params.put(DossierTerm.STATE, state);
+			params.put(DossierTerm.DOSSIER_NO, dossierIdNo);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };

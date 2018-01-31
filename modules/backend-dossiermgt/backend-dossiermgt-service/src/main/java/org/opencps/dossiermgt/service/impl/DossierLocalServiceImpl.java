@@ -918,6 +918,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
 		String state = GetterUtil.getString(params.get(DossierTerm.STATE));
 		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
+		String dossierNo = GetterUtil.getString(params.get(DossierTerm.DOSSIER_NO));
 
 		// String top = GetterUtil.getString(params.get(DossierTerm.TOP));
 
@@ -956,7 +957,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
 				query.addFields(
-						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO });
+						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO, "dossierIdCTN"});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -1119,6 +1120,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+		if (Validator.isNotNull(dossierNo)) {
+
+			String[] keyDossier = dossierNo.split(StringPool.SPACE);
+
+			for (String key : keyDossier) {
+
+				MultiMatchQuery query = new MultiMatchQuery(key);
+
+				query.addFields(
+						new String[] { DossierTerm.DOSSIER_NO, "dossierIdCTN"});
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -1137,6 +1154,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String template = GetterUtil.getString(params.get(DossierTerm.TEMPLATE));
 		String state = GetterUtil.getString(params.get(DossierTerm.STATE));
 		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
+		String dossierNo = GetterUtil.getString(params.get(DossierTerm.DOSSIER_NO));
 
 		// TODO add more logic here
 		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
@@ -1175,7 +1193,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
 				query.addFields(
-						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO });
+						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO, "dossierIdCTN"});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -1336,6 +1354,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			query.addFields(DossierTerm.STEP_CODE);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(dossierNo)) {
+
+			String[] keyDossier = dossierNo.split(StringPool.SPACE);
+
+			for (String key : keyDossier) {
+
+				MultiMatchQuery query = new MultiMatchQuery(key);
+
+				query.addFields(
+						new String[] { DossierTerm.DOSSIER_NO, "dossierIdCTN"});
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
