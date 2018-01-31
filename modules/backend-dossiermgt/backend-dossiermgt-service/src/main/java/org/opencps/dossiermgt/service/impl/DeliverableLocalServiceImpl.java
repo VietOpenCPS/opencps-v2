@@ -225,6 +225,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String deliverableId = String.valueOf(GetterUtil.getLong(params.get(DeliverableTerm.DELIVERABLE_ID)));
 		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
 		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
+		_log.info("owner:"+owner);
+		_log.info("userId:"+userId);
 
 		if (Validator.isNotNull(state)) {
 			MultiMatchQuery query = new MultiMatchQuery(state);
@@ -365,6 +367,10 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String agency = GetterUtil.getString(params.get(DeliverableTerm.GOV_AGENCY_CODE));
 		String type = GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_TYPE));
 		String applicant = GetterUtil.getString(params.get(DeliverableTerm.APPLICANT_ID_NO));
+		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
+		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
+		_log.info("owner:"+owner);
+		_log.info("userId:"+userId);
 
 		if (Validator.isNotNull(state)) {
 			MultiMatchQuery query = new MultiMatchQuery(state);
@@ -394,6 +400,14 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			MultiMatchQuery query = new MultiMatchQuery(applicant);
 
 			query.addFields(DeliverableTerm.APPLICANT_ID_NO);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(owner) && Boolean.parseBoolean(owner.toLowerCase()) && userId > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
+
+			query.addField(DossierTerm.USER_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
