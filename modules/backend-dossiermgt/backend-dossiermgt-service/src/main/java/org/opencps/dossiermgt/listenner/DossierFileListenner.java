@@ -110,7 +110,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				String issueDate = StringPool.BLANK;
 				String expireDate = StringPool.BLANK;
 				String revalidate = StringPool.BLANK;
-				String deliverableState = "0";
+				String deliverableState = "2";
 				String formData = StringPool.BLANK;
 
 				if (Validator.isNotNull(formDataContent)) {
@@ -118,7 +118,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					issueDate = formDataContent.getString("issueDate");
 					expireDate = formDataContent.getString("expireDate");
 					revalidate = formDataContent.getString("revalidate");
-
+					
 					formData = formDataContent.toString();
 
 				}
@@ -153,13 +153,11 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 		// deliverableCode
 
-		//
-
 		Map<String, Object> jsonMap = jsonToMap(mappingSrc);
 
 		for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
 
-			String entryKey = entry.getKey();
+			//String entryKey = entry.getKey();
 
 			String entryValue = GetterUtil.getString(entry.getValue());
 
@@ -168,14 +166,14 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			JSONObject jEntryValue = JSONFactoryUtil.createJSONObject();
 
 			if (entryValue.startsWith("#") && entryValue.contains("@")) {
-				_log.info("INTO->getElement");
+				//_log.info("INTO->getElement");
 				uEntryValue = getValueElementFormData(srcFormData, entryValue, dossierId);
 				entry.setValue(uEntryValue);
 
 			}
 
 			if (_checkContains(entryValue)) {
-				_log.info("INTO->getSpecical");
+				//_log.info("INTO->getSpecical");
 
 				uEntryValue = getSpecialValue(entryValue, dossierId);
 				entry.setValue(uEntryValue);
@@ -183,7 +181,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			}
 
 			if (entryValue.startsWith("#") && !entryValue.contains("@")) {
-				_log.info("INTO->getAllForm");
+				//_log.info("INTO->getAllForm");
 
 				entryValue = StringUtil.replaceFirst(entryValue, "#", StringPool.BLANK);
 
@@ -235,7 +233,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.info("File"+fileTemplateNo+"is null or json is not correct");
 		}
 
 		return formValue;
@@ -280,7 +278,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				rtn = StringUtil.replaceFirst(rtn, "#", StringPool.BLANK);
 			}
 		}
-		_log.info(rtn+"_____"+key);
+		//_log.info(rtn+"_____"+key);
 
 		return rtn;
 	}
@@ -296,7 +294,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				rtn = strArr[1];
 			}
 		}
-		_log.info(rtn+"_____"+key);
+		//_log.info(rtn+"_____"+key);
 
 		return rtn;
 	}
@@ -405,7 +403,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			// int deliverableAction = dossierPart.getDeliverableAction();
 
 			String deliverableCode = model.getDeliverableCode();
-			_log.info("deliverableCode DossierFile_________-" + deliverableCode);
+			//_log.info("deliverableCode DossierFile_________-" + deliverableCode);
 
 			if (Validator.isNotNull(deliverableCode)) {
 				Dossier dossier = DossierLocalServiceUtil.getDossier(model.getDossierId());
@@ -441,7 +439,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				String issueDate = StringPool.BLANK;
 				String expireDate = StringPool.BLANK;
 				String revalidate = StringPool.BLANK;
-				String deliverableState = "0";
+				String deliverableState = "2";
 
 				if (Validator.isNotNull(formDataContent)) {
 					subject = formDataContent.getString("subject");

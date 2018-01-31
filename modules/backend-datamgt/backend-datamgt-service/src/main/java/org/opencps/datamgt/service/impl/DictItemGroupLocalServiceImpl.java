@@ -333,9 +333,9 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 		String groupCode = (String) params.get(DictGroupTerm.GROUP_CODE);
 		String collectionCode = (String) params.get(DictGroupTerm.DICT_COLLECTION_CODE);
 		
-		_log.info(collectionCode);
+		//_log.info(collectionCode);
 		
-		_log.info(groupCode);
+		//_log.info(groupCode);
 
 		Indexer<DictItemGroup> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DictItemGroup.class);
 

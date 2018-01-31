@@ -25,6 +25,7 @@ import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.exception.NoSuchDeliverableException;
 import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.base.DeliverableLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.log.Log;
@@ -110,14 +111,19 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		long deliverableId = counterLocalService.increment(Deliverable.class.getName());
 
 		Deliverable object = deliverablePersistence.create(deliverableId);
+		
+		DeliverableType dlvType = deliverableTypePersistence.fetchByG_DLT(groupId, deliverableType);
 
 		/// Add audit fields
 		object.setGroupId(groupId);
 		object.setCreateDate(now);
 		object.setModifiedDate(now);
 		object.setUserId(userId);
-
+		
 		// Add other fields
+		if (Validator.isNotNull(dlvType)) {
+			object.setDeliverableName(dlvType.getTypeName());
+		}
 		object.setDeliverableId(deliverableId);
 		object.setDeliverableType(deliverableType);
 		object.setDeliverableCode(deliverableCode);
