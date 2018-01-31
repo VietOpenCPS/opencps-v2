@@ -83,8 +83,10 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 			params.put(DossierActionTerm.AUTO, "timmer");
 
 			if (Validator.isNotNull(dossier.getDossierStatus())) {
-
-				JSONArray results = dossierActions.getNextActions(0l, company.getCompanyId(), dossier.getGroupId(),
+				
+				DossierActionsImpl actions = new DossierActionsImpl();
+				
+				JSONArray results = actions.getNextActionTimmer(0l, company.getCompanyId(), dossier.getGroupId(),
 						params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
 				int lenght = results.length();
