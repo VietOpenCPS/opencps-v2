@@ -72,8 +72,8 @@ public class DeliverableActionsImpl implements DeliverableActions {
 	}
 
 	@Override
-	public JSONObject getListDeliverable(long companyId, LinkedHashMap<String, Object> params, Sort[] sorts, int start,
-			int end, ServiceContext serviceContext) {
+	public JSONObject getListDeliverable(long userId, long companyId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		
 		Hits hits = null;
