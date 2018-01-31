@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
 
 public class DeliverableActionsImpl implements DeliverableActions {
 
@@ -145,8 +146,11 @@ public class DeliverableActionsImpl implements DeliverableActions {
 
 	@Override
 	public List<Deliverable> getDeliverableByState(String strDeliverableCode, String state) {
-
-		return DeliverableLocalServiceUtil.findDeliverableByState(strDeliverableCode, state);
+		if (Validator.isNotNull(strDeliverableCode)) {
+			return DeliverableLocalServiceUtil.findDeliverableByState(strDeliverableCode, state);
+		} else {
+			return null;
+		}
 	}
 
 }
