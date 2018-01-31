@@ -881,6 +881,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		booleanQuery = indexer.getFullQuery(searchContext);
 		
+		
 		if (dossierId != 0) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(dossierId));
 
