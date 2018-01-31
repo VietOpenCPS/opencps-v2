@@ -576,4 +576,32 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 		}
 	}
+
+	@Override
+	public Response resetformdataDossierFileFormData(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id, String referenceUid, String formdata) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierFileActions action = new DossierFileActionsImpl();
+
+			DossierFile dossierFile = action.resetDossierFileFormData(groupId, id, referenceUid, formdata,
+					serviceContext);
+
+			DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return processException(e);
+		}
+	}
 }

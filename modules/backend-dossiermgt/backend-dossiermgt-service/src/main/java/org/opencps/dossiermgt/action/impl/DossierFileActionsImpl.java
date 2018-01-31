@@ -13,9 +13,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.opencps.dossiermgt.action.DossierFileActions;
-import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.constants.DossierFileTerm;import org.opencps.dossiermgt.listenner.DossierFileListenner;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -31,6 +34,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 public class DossierFileActionsImpl implements DossierFileActions {
 
@@ -195,6 +199,28 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		zos.close();
 		fos.close();
 		_log.info("Zip file Successfull");
+
+	}
+
+	@Override
+	public DossierFile resetDossierFileFormData(long groupId, long dossierId, String referenceUid, String formData,
+			ServiceContext serviceContext) throws SystemException, PortalException {
+		
+		DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId, referenceUid);
+		
+		//String dossierTemplateNo = StringPool.BLANK;
+		
+		String defaultData = StringPool.BLANK;
+		
+		if (Validator.isNotNull(dossierFile)) {
+			DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(groupId, dossierFile.getFileTemplateNo());
+			
+			defaultData = AutoFillFormData.sampleDataBinding(part.getSampleData(),
+					dossierId, serviceContext);
+		}
+		
+		
+		return DossierFileLocalServiceUtil.updateFormData(groupId, dossierId, referenceUid, defaultData, serviceContext);
 
 	}
 }
