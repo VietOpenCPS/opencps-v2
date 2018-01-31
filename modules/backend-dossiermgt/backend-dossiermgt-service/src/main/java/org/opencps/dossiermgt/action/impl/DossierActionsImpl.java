@@ -43,7 +43,6 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalService;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
@@ -450,6 +449,148 @@ public class DossierActionsImpl implements DossierActions {
 
 		return results;
 	}
+	
+	public JSONArray getNextActionTimmer(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext) throws PortalException {
+
+		JSONArray results = JSONFactoryUtil.createJSONArray();
+
+		List<ProcessAction> lstProcessAction = new ArrayList<ProcessAction>();
+
+		Dossier dossier = null;
+
+		DossierAction dossierAction = null;
+
+		long serviceProcessId = 0;
+
+		String stepCode = StringPool.BLANK;
+
+		String actionCode = GetterUtil.getString(params.get(DossierActionTerm.ACTION_CODE));
+		// TODO filter by Auto
+		String auto = GetterUtil.getString(params.get(DossierActionTerm.AUTO));
+
+		// auto != null ko check role, check dk preCondition = auto or submmit
+
+		String referenceUid = GetterUtil.getString(params.get(DossierTerm.REFERENCE_UID));
+
+		long dossierId = GetterUtil.getLong(params.get(DossierTerm.DOSSIER_ID));
+
+		if (Validator.isNotNull(referenceUid)) {
+			dossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
+		} else {
+			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		}
+
+		if (dossier != null) {
+
+			long dossierActionId = dossier.getDossierActionId();
+
+			if (Validator.isNotNull(actionCode)) {
+				dossierAction = getDossierAction(dossier.getDossierId(), actionCode);
+			} else {
+				dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+			}
+
+			serviceProcessId = dossierAction != null ? dossierAction.getServiceProcessId() : 0;
+
+			stepCode = dossierAction != null ? dossierAction.getStepCode() : StringPool.BLANK;
+
+			boolean pending = dossierAction != null ? dossierAction.getPending() : false;
+
+			if (Validator.isNotNull(stepCode)) {
+
+				try {
+					lstProcessAction = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
+							serviceProcessId, stepCode);
+					for (ProcessAction processAction : lstProcessAction) {
+
+						String[] preConditions = StringUtil.split(processAction.getPreCondition());
+
+						//String createDossierFiles = processAction.getCreateDossierFiles();
+
+						//String returnDossierFiles = processAction.getReturnDossierFiles();
+
+						boolean checkPreCondition = DossierMgtUtils.checkPreCondition(preConditions, dossier);
+
+						if (!checkPreCondition) {
+							continue;
+						}
+
+						JSONObject result = JSONFactoryUtil.createJSONObject();
+
+						String postStepCode = processAction.getPostStepCode();
+
+						if (Validator.isNull(postStepCode)) {
+							continue;
+						}
+
+						ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId,
+								processAction.getServiceProcessId());
+
+						List<ProcessStepRole> lstProcessStepRole = ProcessStepRoleLocalServiceUtil
+								.findByP_S_ID(processStep.getProcessStepId());
+						List<User> lstUser = new ArrayList<User>();
+
+						if (Validator.isNotNull(auto) && (processAction.getAutoEvent().equals("submit")
+								|| processAction.getAutoEvent().equals("timer"))) {
+							// TODO ?
+						} else {
+							// Check roles
+
+							if (lstProcessStepRole == null || lstProcessStepRole.isEmpty()) {
+								// Search in ServiceProcessRole
+								List<ServiceProcessRole> serviceProcessRoles = ServiceProcessRoleLocalServiceUtil
+										.findByS_P_ID(serviceProcessId);
+
+								for (ServiceProcessRole serviceProcessRole : serviceProcessRoles) {
+
+									List<User> users = UserLocalServiceUtil
+											.getRoleUsers(serviceProcessRole.getRoleId());
+
+									if (users != null) {
+										for (User user : users) {
+											HashMap<String, Object> moderator = new HashMap<>();
+											moderator.put("moderator", serviceProcessRole.getModerator());
+											user.setModelAttributes(moderator);
+										}
+
+										lstUser.addAll(users);
+									}
+
+								}
+							} else {
+								for (ProcessStepRole processStepRole : lstProcessStepRole) {
+
+									List<User> users = UserLocalServiceUtil.getRoleUsers(processStepRole.getRoleId());
+
+									if (users != null) {
+										for (User user : users) {
+											HashMap<String, Object> moderator = new HashMap<>();
+											moderator.put("moderator", processStepRole.getModerator());
+											user.setModelAttributes(moderator);
+										}
+
+										lstUser.addAll(users);
+									}
+								}
+							}
+
+						}
+
+						result.put("pending", pending);
+						result.put("processAction", processAction);
+						result.put("lstUser", lstUser);
+
+						results.put(result);
+					}
+				} catch (Exception e) {
+					_log.error(e);
+				}
+			}
+		}
+
+		return results;
+	}
 
 	@Override
 	public JSONObject getDossierActions(long dossierId, long groupId, Boolean owner, int start, int end, String sort,
@@ -767,10 +908,14 @@ public class DossierActionsImpl implements DossierActions {
 			}
 			
 			for (PaymentFile spf : syncPaymentFiles) {
-				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-						false, 3, spf.getPrimaryKey(), spf.getReferenceUid(),
-						serviceProcess.getServerNo());
-
+				//Hard-code
+				
+				if (groupId != 55217) {
+					DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
+							false, 3, spf.getPrimaryKey(), spf.getReferenceUid(),
+							serviceProcess.getServerNo());
+				}
+				
 			}
 		}
 

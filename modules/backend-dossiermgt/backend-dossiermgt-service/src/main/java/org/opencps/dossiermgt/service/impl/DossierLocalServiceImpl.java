@@ -37,11 +37,13 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
+import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
@@ -51,6 +53,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchContextFactory;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
@@ -418,11 +421,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setModifiedDate(now);
 
 		dossier.setSubmitting(true);
-		
+
 		if (Validator.isNull(dossier.getSubmitDate())) {
 			dossier.setSubmitDate(now);
 		}
-		
+
 		dossierPersistence.update(dossier);
 
 		return dossier;
@@ -445,10 +448,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setModifiedDate(now);
 		dossier.setSubmitting(false);
-		//dossier.setSubmitDate(null);
+		// dossier.setSubmitDate(null);
 
 		dossierPersistence.update(dossier);
-
 
 		// TODO add reset for DossierFile and PaymentFile (isNew => false)
 
@@ -458,9 +460,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		for (DossierFile df : lsDF) {
 			if (df.getIsNew()) {
-				
+
 				df.setIsNew(false);
-				
+
 				dossierFileLocalService.updateDossierFile(df);
 			}
 		}
@@ -470,7 +472,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		for (PaymentFile pf : lsPF) {
 			if (pf.getIsNew()) {
 				pf.setIsNew(false);
-				
+
 				paymentFileLocalService.updatePaymentFile(pf);
 			}
 		}
@@ -857,6 +859,48 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String submissionNote, String dossierNo, boolean submitting, String dossierStatus, String dossierSubStatus,
 			String postalAddress, String postalCityCode, String postalTelNo, String serverNo) throws PortalException {
 
+	}
+
+	public Document getDossierById(long dossierId, long companyId) throws PortalException {
+		//Document document = null;
+
+		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
+
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(companyId);
+
+		// SearchContext searchContext =
+		// SearchContextFactory.getInstance(request);
+
+		searchContext.setEnd(QueryUtil.ALL_POS);
+		searchContext.setKeywords(StringPool.BLANK);
+		searchContext.setStart(QueryUtil.ALL_POS);
+		//searchContext.set
+
+		BooleanQuery booleanQuery = null;
+
+		booleanQuery = indexer.getFullQuery(searchContext);
+		
+		if (dossierId != 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(dossierId));
+
+			query.addField(DossierTerm.DOSSIER_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
+
+		Hits hits = IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+		
+		List<Document> documents = hits.toList();
+		
+		if (documents.size() > 0) {
+			return documents.get(0);
+		} else {
+			return null;
+		}
+		
 	}
 
 	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
