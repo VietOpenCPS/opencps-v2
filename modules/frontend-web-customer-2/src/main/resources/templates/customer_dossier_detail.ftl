@@ -34,17 +34,17 @@
 
 			<#if resCancelling?has_content >
 
-			<a href="javascript:;" class="btn btn-active" onclick="fnCancelling(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu hủy</a>
+			<a href="javascript:;" class="" onclick="fnCancelling(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu hủy</a>
 
 			<#elseif sendAdd?has_content >
 			
 			<#assign btnLabel = "Gửi bổ sung">
-		
+
 			<#if dossier.dossierStatus == "done">
-				<#assign btnLabel = "Sửa đổi bổ sung">
+			<#assign btnLabel = "Sửa đổi bổ sung">
 			</#if>
 
-			<a href="javascript:;" class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> ${btnLabel}</a>
+			<a href="javascript:;" class="" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> ${btnLabel}</a>
 
 			<#else>
 
@@ -118,7 +118,7 @@
 							</div>
 
 							<div class="col-sm-2 PT5 text-right">
-								Tỉnh/ Thành phố
+								Tỉnh/ Thành phố <span class="red">(*)</span>
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
@@ -129,7 +129,7 @@
 							</div>
 
 							<div class="col-sm-2 PT5 text-right">
-								Quận/ Huyện
+								Quận/ Huyện <span class="red">(*)</span>
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
@@ -140,7 +140,7 @@
 							</div>
 							
 							<div class="col-sm-2 PT5 text-right">
-								Xã/ Phường
+								Xã/ Phường <span class="red">(*)</span>
 							</div>
 							<div class="col-sm-2 PL0">
 								<div class="form-group"> 
@@ -251,7 +251,7 @@
 					</div>
 					<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# >
 
-						<form id="formPartNo#:id#">
+						<form id="formPartNo#:id#" class="formAlpacaDN">
 
 						</form>
 
@@ -333,11 +333,11 @@
 	<#elseif sendAdd?has_content >
 
 	<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-		<#assign btnLabel = "Gửi bổ sung">
-		
-		<#if dossier.dossierStatus == "done">
-			<#assign btnLabel = "Sửa đổi bổ sung">
-		</#if>
+	<#assign btnLabel = "Gửi bổ sung">
+
+	<#if dossier.dossierStatus == "done">
+	<#assign btnLabel = "Sửa đổi bổ sung">
+	</#if>
 	
 	<a href="javascript:;" class="btn btn-active" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> ${btnLabel}</a>
 	<#else>
@@ -353,6 +353,9 @@
 <div id="uploadFileTemplateDialog" class="modal fade" role="dialog">
 	
 </div>  
+<div id="dialogConfirm">
+	
+</div>
 
 
 <#-- <div id="profileDetail" class="modal fade" role="dialog">
@@ -366,6 +369,27 @@
 	var createActionDossier;
 	var fnBack;
 	var fnNext;
+
+	/*$("#dialogConfirm").kendoDialog({
+		width: "400px",
+		title: "Thông báo",
+		closable: true,
+		modal: false,
+		content: "<p>Bạn chưa lưu lại thông tin, bạn có muốn lưu lại thay đổi trước khi chuyển sang thao tác khác?<p>",
+		actions: [
+		{ text: 'Hủy bỏ' , action : onCloseDialog},
+		{ text: 'Lưu lại', primary: true, action : onSaveInfo }
+		]
+	});
+
+	function onSaveInfo(){
+		funSaveDossier();
+	}
+
+	function onCloseDialog(){
+
+	}*/
+
 	$(function(){
 		
 		$("#step2").addClass("done");
@@ -406,7 +430,7 @@
 		// 	$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
 		// 		$(this).modal("show");
 		// 	});
-			
+
 		// });
 
 		$(document).off("click",".delete-dossier-file");
@@ -570,6 +594,8 @@
 		funSaveDossier = function(){
 		//PUT dossier
 		$("#btn-save-dossier").button('loading');
+		$("#btn-back-dossier").prop("disabled","disabled");
+		$("#btn-submit-dossier").prop("disabled","disabled");
 		var postalValidator = $("#postalInfo").kendoValidator().data("kendoValidator");
 		var applicantValidator = $("#applicantInfo").kendoValidator().data("kendoValidator");
 		var validateDossierTemplate = fnCheckValidTemplate();
@@ -613,6 +639,7 @@
 					if(result.dossierStatus == ''){
 						console.log("------>doActions");  
 						createActionDossier(${dossierId});
+						getTotal();
 					}
 					/*notification.show({
 						message: "Yêu cầu được thực hiện thành công"
@@ -631,6 +658,7 @@
 			notification.show({
 				message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi lưu!"
 			}, "error");
+
 		}
 
 	}
@@ -652,6 +680,8 @@
 				},
 				success : function(result){
 					$("#btn-save-dossier").button('reset');
+					$("#btn-back-dossier").prop("disabled","");
+					$("#btn-submit-dossier").prop("disabled","");
 					console.log("create acion dossier success!");
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
@@ -659,6 +689,8 @@
 				},
 				error : function(result){
 					$("#btn-save-dossier").button('reset');
+					$("#btn-back-dossier").prop("disabled","");
+					$("#btn-submit-dossier").prop("disabled","");
 					notification.show({
 						message: "Xảy ra lỗi, xin vui lòng thử lại"
 					}, "error");
@@ -672,6 +704,7 @@
 		dataTextField : "itemName",
 		dataValueField : "itemCode",
 		noDataTemplate : "Không có dữ liệu",
+		filter : "contains",
 		autoBind : true,
 		dataSource : {
 			transport : {
@@ -719,6 +752,7 @@
 		dataTextField : "itemName",
 		dataValueField : "itemCode",
 		noDataTemplate : "Không có dữ liệu",
+		filter : "contains",
 		dataSource : {
 			transport : {
 				read : function(options){
@@ -766,6 +800,7 @@
 		dataTextField : "itemName",
 		dataValueField : "itemCode",
 		noDataTemplate : "Không có dữ liệu",
+		filter : "contains",
 		dataSource : {
 			transport : {
 				read : function(options){
@@ -804,6 +839,7 @@
 		dataValueField : "itemCode",
 		noDataTemplate : "Không có dữ liệu",
 		autoBind : false,
+		filter : "contains",
 		dataSource : {
 			transport : {
 				read : function(options){
@@ -1357,5 +1393,9 @@ var fnSubmitting = function(dossierId){
 	}
 }
 
+/*$(window).hashchange( function(){
+	var isValid = false;
+	$("#dialogConfirm").data("kendoDialog").open();
+});*/
 
 </script>

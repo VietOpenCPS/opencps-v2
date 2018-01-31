@@ -235,7 +235,7 @@
 						</div>
 						<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# >
 
-							<form id="formPartNo#:id#">
+							<form id="formPartNo#:id#" class="formAlpacaDN">
 
 							</form>
 
@@ -572,7 +572,8 @@
 
 	$("#btn-submit-dossier").click(function(){
 		$("#btn-submit-dossier").button('loading');
-
+		$("#btn-back-dossier").prop("disabled","disabled");
+		$("#btn-delete-dossier").prop("disabled","disabled");
 		funSubmitDossier();
 	});
 
@@ -604,6 +605,8 @@
 					$("#btn-submit-dossier").button('reset');
 					$("#btn-submit-dossier").hide();
 					$("#btn-submit-dossier-header").hide();
+					$("#btn-back-dossier").prop("disabled","");
+					$("#btn-delete-dossier").prop("disabled","");
 					manageDossier.navigate("/taohosomoi/nopthanhcong/${dossierId}"); 
 					
 					notification.show({
@@ -613,6 +616,8 @@
 				},
 				error:function(result){
 					$("#btn-submit-dossier").button('reset');
+					$("#btn-back-dossier").prop("disabled","");
+					$("#btn-delete-dossier").prop("disabled","");
 					notification.show({
 						message: "Có lỗi sảy ra!"
 					}, "error");
@@ -622,6 +627,8 @@
 			
 		}else {
 			$("#btn-submit-dossier").button('reset');
+			$("#btn-back-dossier").prop("disabled","");
+			$("#btn-delete-dossier").prop("disabled","");
 			notification.show({
 				message: "Vui lòng kiểm tra lại các thông tin bắt buộc!"
 			}, "error");

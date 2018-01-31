@@ -52,42 +52,27 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 	@Override
 	public void onAfterCreate(DossierFile model) throws ModelListenerException {
 		_log.info("DossierFileCreate........... ");
-		/*
-		 * String content = "On DossiserFile Created"; String notificationType =
-		 * "File-01"; String payload = DossierLogUtils.createPayload(model,
-		 * null, null);
-		 */
+
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
 		serviceContext.setUserId(model.getUserId());
-		/*
-		 * try { DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(),
-		 * model.getDossierId(), model.getUserName(), content, notificationType,
-		 * payload, serviceContext);
-		 * 
-		 * // Binhth add message bus to processing KySO file Message message =
-		 * new Message(); DossierPart dossierPart =
-		 * DossierPartLocalServiceUtil.fetchByTemplatePartNo(model.getGroupId(),
-		 * model.getDossierTemplateNo(), model.getDossierPartNo());
-		 * 
-		 * JSONObject msgDataESign = JSONFactoryUtil.createJSONObject();
-		 * msgDataESign.put("userId", model.getUserId());
-		 * msgDataESign.put("eSign", dossierPart.getESign());
-		 * msgDataESign.put("fileEntryId", model.getFileEntryId());
-		 * 
-		 * message.put("msgToEngine", msgDataESign);
-		 * MessageBusUtil.sendMessage("kyso/engine/out/destination", message); }
-		 * catch (SystemException | PortalException e) { e.printStackTrace(); }
-		 */
-
-		// update deliverable
-
+		
+		
+		// Update DossierLog
+		
 		try {
+			
+			JSONObject payload = JSONFactoryUtil.createJSONObject();
+			
+			payload.put("dossierFileId", StringUtil.valueOf(model.getDossierFileId()));
+			
+			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
+					StringPool.BLANK, DossierFileListenerMessageKeys.DOSSIER_LOG_CREATE_TYPE,payload.toJSONString(), serviceContext);
+
 			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(model.getGroupId(),
 					model.getDossierTemplateNo(), model.getDossierPartNo());
 
 			String deliverableType = dossierPart.getDeliverableType();
-			// int deliverableAction = dossierPart.getDeliverableAction();
 
 			String deliverableCode = model.getDeliverableCode();
 
@@ -136,7 +121,6 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 					formData = formDataContent.toString();
 
-
 				}
 
 				if (Validator.isNull(dlv)) {
@@ -183,10 +167,9 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 			JSONObject jEntryValue = JSONFactoryUtil.createJSONObject();
 
-
 			if (entryValue.startsWith("#") && entryValue.contains("@")) {
 				_log.info("INTO->getElement");
-				uEntryValue = getValueElementFormData(srcFormData, entryValue);
+				uEntryValue = getValueElementFormData(srcFormData, entryValue, dossierId);
 				entry.setValue(uEntryValue);
 
 			}
@@ -247,7 +230,6 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_DPT_First(dossierId, fileTemplateNo, 2,
 					false, new DossierFileComparator(false, "createDate", Date.class));
 
-
 			if (Validator.isNotNull(dossierFile)) {
 				formValue = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
 			}
@@ -259,41 +241,72 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		return formValue;
 	}
 
-	private String getValueElementFormData(JSONObject formData, String key) {
+	private String getValueElementFormData(JSONObject formData, String key, long dossierId) {
 
 		String elmValue = StringPool.BLANK;
-		
-		String keyJs = stripKey(key);
 
-		if (Validator.isNotNull(elmValue)) {
-			elmValue = formData.getString(keyJs);
+		String keyJs = stripKey(key);
+		
+		String formTemplate = stripForm(key);
+		
+		List<DossierFile> dfs = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO(dossierId, formTemplate, false);
+		
+		if (Validator.isNotNull(dfs) && dfs.size() != 0) {
+			DossierFile df = dfs.get(0);
+			
+			try {
+				JSONObject jsformData = JSONFactoryUtil.createJSONObject(df.getFormData());
+				
+				elmValue = jsformData.getString(keyJs);
+				
+			} catch (Exception e) {
+				_log.info("File"+formTemplate+"is null or json is not correct");
+			}
 		}
 
 		return elmValue;
 	}
-	
+
 	private String stripKey(String key) {
 		String rtn = StringPool.BLANK;
 		
+		
 		if (Validator.isNotNull(key)) {
-			String [] strArr = StringUtil.split(key, "@");
-			
+			String[] strArr = StringUtil.split(key, "@");
+
 			if (strArr.length == 2) {
 				rtn = strArr[0];
-				
+
 				rtn = StringUtil.replaceFirst(rtn, "#", StringPool.BLANK);
 			}
 		}
+		_log.info(rtn+"_____"+key);
+
+		return rtn;
+	}
+	
+	private String stripForm(String key) {
+		String rtn = StringPool.BLANK;
 		
+		
+		if (Validator.isNotNull(key)) {
+			String[] strArr = StringUtil.split(key, "@");
+
+			if (strArr.length == 2) {
+				rtn = strArr[1];
+			}
+		}
+		_log.info(rtn+"_____"+key);
+
 		return rtn;
 	}
 
 	private String getSpecialValue(String key, long dossierId) {
 
 		String val = StringPool.BLANK;
-		
-		_log.info("SPECIAL_KEY________"+key);
-		
+
+		_log.info("SPECIAL_KEY________" + key);
+
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 
@@ -317,7 +330,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 			if (key.contentEquals("_submitDate")) {
 				if (Validator.isNotNull(dossier.getSubmitDate())) {
-					val = APIDateTimeUtils.convertDateToString(dossier.getSubmitDate(), APIDateTimeUtils._NORMAL_PARTTERN);
+					val = APIDateTimeUtils.convertDateToString(dossier.getSubmitDate(),
+							APIDateTimeUtils._NORMAL_PARTTERN);
 
 				}
 
@@ -328,9 +342,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			}
 
 		} catch (Exception e) {
-			
-		}
 
+		}
 
 		return val;
 	}
@@ -415,7 +428,6 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 						if (Validator.isNotNull(model.getFormData()))
 							jsFormData = JSONFactoryUtil.createJSONObject(model.getFormData());
-
 
 						formDataContent = mappingContent(jsMappingData, jsFormData, model.getDossierId());
 

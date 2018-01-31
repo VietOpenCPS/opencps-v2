@@ -18,11 +18,11 @@
 
 				<#if sendReissue?has_content >
 				
-				<a class="btn btn-active" id="btn-sendReissue-dossier-header" onclick="fnCorrecting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
+				<a class="" id="btn-sendReissue-dossier-header" onclick="fnCorrecting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
 
 				<#elseif sendAdd?has_content >
 
-				<a class="btn btn-active" id="btn-sendadd-dossier-header" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
+				<a class="" id="btn-sendadd-dossier-header" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
 
 				<#else>
 
@@ -212,10 +212,12 @@
 									<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#>
 										<i class="fa fa-archive" aria-hidden="true"></i>
 									</a>
-
+									
+									#if("${(dossier.dossierStatus)!}" === "new" || "${(dossier.dossierStatus)!}" === "waiting" || "${(dossier.dossierStatus)!}" === ""){#
 									<label class="MB0 ML10 hover-pointer" for="file#:id#" title="Tải file lên" >
 										<i class="fa fa-upload text-light-blue"></i>
 									</label>
+									#}#
 
 									<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#">
 
@@ -235,18 +237,28 @@
 							#if(hasForm){
 							var dossierFile =  getReferentUidFile(${dossierId},id);
 							console.log(dossierFile);
+							var hiddenState = "pointer-events:none;";
+							if("${(dossier.dossierStatus)!}" === "new" || "${(dossier.dossierStatus)!}" === "waiting" || "${(dossier.dossierStatus)!}" === ""){
+								hiddenState = "";
+							}
+
 							#
 
 							<div class="collapse" id="collapseDossierPart#:id#">
-
+								
+								#if("${(dossier.dossierStatus)!}" === "new" || "${(dossier.dossierStatus)!}" === "waiting" || "${(dossier.dossierStatus)!}" === ""){#
 								<div class="col-xs-12 col-sm-12 text-right">
 									<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
 									type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
 									<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
 								</div>
+								#}#
+								
 
-								<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# id="formPartNo#:id#">
-
+								<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# >
+									<div class="formAlpacaDN" id="formPartNo#:id#" style="#:hiddenState#">
+										
+									</div>
 								</div>
 							</div>
 							
@@ -557,17 +569,17 @@
 	<button class="btn btn-active" id="btn-back-dossier" type="button" onclick="fnBack();"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
 	<#if sendReissue?has_content >
 	
-		<button class="btn btn-active" id="btn-sendReissue-dossier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-		<a class="btn btn-active" id="btn-sendReissue-dossier-footer" onclick="fnCorrecting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
+	<button class="btn btn-active" id="btn-sendReissue-dossier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+	<a class="btn btn-active" id="btn-sendReissue-dossier-footer" onclick="fnCorrecting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
 
 	<#elseif sendAdd?has_content >
 	
-		<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-		<a class="btn btn-active" id="btn-sendadd-dossier-footer" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
+	<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
+	<a class="btn btn-active" id="btn-sendadd-dossier-footer" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
 
 	<#elseif dossier.dossierStatus?has_content && dossier.dossierStatus == "waiting" &&            	dossier.submitting?has_content && dossier.submitting != true>
 
-		<button class="btn btn-active" id="btn-submit-dossier" ><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+	<button class="btn btn-active" id="btn-submit-dossier" ><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 
 	</#if>
 </div>
@@ -1322,52 +1334,50 @@ var fnCorrecting = function(dossierId){
 		$("textarea#applicantNote").focus();
 		return;
 	}
-	if("${(dossier.dossierStatus)!}" == "done"){
-		console.log("run sendReissue!");
-		$.ajax({
-			url : "${api.server}/dossiers/${dossierId}",
-			dataType : "json",
-			type : "PUT",
-			headers: {
-				"groupId": ${groupId},
-				Accept : "application/json"
-			},
-			data : {
-				applicantNote : $("textarea#applicantNote").val()
-			},
-			success : function(result){
-				$.ajax({
-					url : "${api.server}/dossiers/"+dossierId+"/correcting",
-					dataType : "json",
-					type : "GET",
-					headers: {
-						"groupId": ${groupId},
-						Accept : "application/json"
-					},
-					data : {
+	console.log("run sendReissue!");
+	$.ajax({
+		url : "${api.server}/dossiers/${dossierId}",
+		dataType : "json",
+		type : "PUT",
+		headers: {
+			"groupId": ${groupId},
+			Accept : "application/json"
+		},
+		data : {
+			applicantNote : $("textarea#applicantNote").val()
+		},
+		success : function(result){
+			$.ajax({
+				url : "${api.server}/dossiers/"+dossierId+"/correcting",
+				dataType : "json",
+				type : "GET",
+				headers: {
+					"groupId": ${groupId},
+					Accept : "application/json"
+				},
+				data : {
 
-					},
-					success : function(result){
-						notification.show({
-							message: "Yêu cầu được thực hiện thành công!"
-						}, "success");
-						$("#btn-sendReissue-dossier-header").hide();
-						$("#btn-sendReissue-dossier-footer").hide();
+				},
+				success : function(result){
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công!"
+					}, "success");
+					$("#btn-sendReissue-dossier-header").hide();
+					$("#btn-sendReissue-dossier-footer").hide();
 
-					},
-					error : function(result){
-						notification.show({
-							message: "Thực hiện không thành công, xin vui lòng thử lại!"
-						}, "error");
-					}
-				});
-				
-			},
-			error : function(result){
-				
-			}
-		});
-	}
+				},
+				error : function(result){
+					notification.show({
+						message: "Thực hiện không thành công, xin vui lòng thử lại!"
+					}, "error");
+				}
+			});
+
+		},
+		error : function(result){
+
+		}
+	});
 
 	
 }
@@ -1375,62 +1385,61 @@ var fnCorrecting = function(dossierId){
 
 var fnSubmitting = function(dossierId){
 	console.log("----------4" + "${(dossier.dossierStatus)!}");
-	if("${(dossier.dossierStatus)!}" == "done"){
-		console.log("run senadd!");
-		var applicantNote = $("textarea#applicantNote").val();
-		if(applicantNote.trim() == ''){
-			alert('Bạn phải nhập ý kiến trước khi gửi.');
-			$("textarea#applicantNote").focus();
-			return;
-		}
-		$.ajax({
-			url : "${api.server}/dossiers/${dossierId}",
-			dataType : "json",
-			type : "PUT",
-			headers: {
-				"groupId": ${groupId},
-				Accept : "application/json"
-			},
-			data : {
-				applicantNote : $("textarea#applicantNote").val()
-			},
-			success : function(result){
-				$.ajax({
-					url : "${api.server}/dossiers/"+dossierId+"/submitting",
-					dataType : "json",
-					type : "GET",
-					headers: {
-						"groupId": ${groupId},
-						Accept : "application/json"
-					},
-					data : {
-
-					},
-					success : function(result){
-						notification.show({
-							message: "Yêu cầu được thực hiện thành công!"
-						}, "success");
-						$("#btn-sendadd-dossier-header").hide();
-						$("#btn-sendadd-dossier-footer").hide();
-
-					},
-					error : function(result){
-						notification.show({
-							message: "Thực hiện không thành công, xin vui lòng thử lại!"
-						}, "error");
-					}
-				});
-				
-			},
-			error : function(result){
-				
-			}
-		});
+	console.log("run senadd!");
+	var applicantNote = $("textarea#applicantNote").val();
+	if(applicantNote.trim() == ''){
+		alert('Bạn phải nhập ý kiến trước khi gửi.');
+		$("textarea#applicantNote").focus();
+		return;
 	}
+	$.ajax({
+		url : "${api.server}/dossiers/${dossierId}",
+		dataType : "json",
+		type : "PUT",
+		headers: {
+			"groupId": ${groupId},
+			Accept : "application/json"
+		},
+		data : {
+			applicantNote : $("textarea#applicantNote").val()
+		},
+		success : function(result){
+			$.ajax({
+				url : "${api.server}/dossiers/"+dossierId+"/submitting",
+				dataType : "json",
+				type : "GET",
+				headers: {
+					"groupId": ${groupId},
+					Accept : "application/json"
+				},
+				data : {
+
+				},
+				success : function(result){
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công!"
+					}, "success");
+					$("#btn-sendadd-dossier-header").hide();
+					$("#btn-sendadd-dossier-footer").hide();
+
+				},
+				error : function(result){
+					notification.show({
+						message: "Thực hiện không thành công, xin vui lòng thử lại!"
+					}, "error");
+				}
+			});
+
+		},
+		error : function(result){
+
+		}
+	});
 
 }
 
 $("#btn-submit-dossier").click(function(){
+	$("#btn-back-dossier").prop("disabled","disabled");
 	$.ajax({
 		url : "${api.server}/dossiers/${dossierId}/submitting",
 		dataType : "json",
@@ -1444,12 +1453,14 @@ $("#btn-submit-dossier").click(function(){
 		},
 		success : function(result){
 			$("#btn-submit-dossier").hide();
+			$("#btn-back-dossier").prop("disabled","");
 			notification.show({
 				message: "Yêu cầu được thực hiện thành công!"
 			}, "success");
 
 		},
 		error : function(result){
+			$("#btn-back-dossier").prop("disabled","");
 			notification.show({
 				message: "Thực hiện không thành công, xin vui lòng thử lại!"
 			}, "error");

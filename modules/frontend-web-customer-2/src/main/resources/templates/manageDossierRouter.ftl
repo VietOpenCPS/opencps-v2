@@ -5,6 +5,7 @@
 	<script type="text/javascript">
 		var viewPanel = new kendo.View("panelTemplate", {model: modelPanel});
 		var viewMainList = new kendo.View("mainTemplate", {model: modelMain});
+		var viewMainList_2 = new kendo.View("mainTemplate_2", {model: modelMain});
 		// Show màn hình chi tiết hồ sơ
 		manageDossier.route("/(:dossierItemStatus)/dossiers/(:id)", function(dossierItemStatus, id){
 			$("#panel_list").show();
@@ -13,6 +14,7 @@
 			$("#noInput").hide();
 			$("#mainType2").show();
 			$(".filterField").hide();
+			layout.showIn("#main_section", viewMainList);
 			if (dossierItemStatus == "new") {
 				$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+id+"",function(result){
 				})
@@ -29,6 +31,7 @@
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').addClass('active');
 		});
+		
 		// Show
 		manageDossier.route("/dossiers/(:id)/yeucauhuy", function(id){
 			$("#panel_list").show();
@@ -162,10 +165,7 @@
 			$("#noInput").show();
 			$("#mainType2").hide();
 			resetValueFilter();
-			layout.showIn("#main_section", viewMainList);
-			dataSourceProfile.read({
-				"status":"done"
-			});
+			layout.showIn("#main_section", viewMainList_2);
 			$("#profileStatus li").removeClass('active');
 			$('#searchCC').addClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
