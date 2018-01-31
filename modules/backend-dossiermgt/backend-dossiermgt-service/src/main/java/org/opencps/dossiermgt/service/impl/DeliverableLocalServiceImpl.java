@@ -469,6 +469,13 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 	public List<Deliverable> findDeliverableByState(String strDeliverableCode, String state) {
 		return deliverableFinder.findDeliverableByState(strDeliverableCode, state);
 	}
+
+	//Get info Output DB
+	public List<Deliverable> getDeliverableByModifiedDate(String synsDate, String deliverableType,
+			long deliverableState) {
+		return deliverableFinder.findDeliverableByModifiedDate(synsDate, deliverableType, deliverableState);
+	}
+
 	/**
 	 * @param pattern
 	 * @return
