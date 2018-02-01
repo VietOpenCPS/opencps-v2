@@ -211,7 +211,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 		map.put(SpecialKey.APPLICANTNAME, "_applicantName");
 		map.put(SpecialKey.APPLICANTIDNO, "_applicantIdNo");
-		map.put(SpecialKey.DOSSIERIDCNT, "_dossierIdCNT");
+		map.put(SpecialKey.DOSSIERIDCNT, "_dossierIdCTN");
 		map.put(SpecialKey.DOSSIERNO, "_dossierNo");
 		map.put(SpecialKey.SUBMITDATE, "_submitDate");
 		map.put(SpecialKey.RECEIVEDATE, "_receiveDate");
