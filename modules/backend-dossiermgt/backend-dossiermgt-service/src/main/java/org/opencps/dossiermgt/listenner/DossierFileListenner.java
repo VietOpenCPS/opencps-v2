@@ -320,6 +320,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			if (key.contentEquals("_dossierIdCTN")) {
 
 				Document dossierDoc = DossierLocalServiceUtil.getDossierById(dossierId, dossier.getCompanyId());
+				
+				_log.info("DossierIsNull_" + dossierId);
 
 				String dossierCTN = StringPool.BLANK;
 
