@@ -131,7 +131,9 @@ public class DossierPaymentUtils {
 			
 			long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+"paymentFileNo");
 			
-			paymentFile.setInvoiceTemplateNo(Long.toString(counterPaymentFile));
+			String invoiceTemplateNo = String.format("%010d", counterPaymentFile);
+			
+			paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
 			
 			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 			
