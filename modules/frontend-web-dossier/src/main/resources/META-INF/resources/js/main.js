@@ -61,35 +61,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								animation: 'fade'
 							})
 								.then((dialog) => {
-
+									console.log("Run delete");
 									// call API get file by dossierId
-									
-									var urlFiles = "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files";
-									
-									axios.get(urlFiles, config).then(function (response) {
-										var serializable = response.data;
-										var resultsFiles = [];
-										for (var key in serializable.data) {
-											if (serializable.data[key].dossierPartType === 2 && serializable.data[key].dossierPartNo === item.partNo) {
-												resultsFiles.push(serializable.data[key]);
-											}
-										}
 
-										for (var key in resultsFiles) {
-											$.ajax({
-												url : "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+resultsFiles[key].referenceUid,
-												dataType : "json",
-												type : "DELETE",
-												headers: {
-													"groupId": themeDisplay.getScopeGroupId()
-												},
-												success : function(result){
-													item.counter = 0;
-												},
-												error : function(result){
-												}
-											});
-										}
+									var urlFiles = "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid+"/resetformdata";
+									
+
+									axios.put(urlFiles, config).then(function (response) {
+										item.counter = 0;
 										
 									})
 									.catch(function (error) {
@@ -165,6 +144,18 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										vm.snackbartextdossierViewJX = "Lưu form thành công!";
 	                      				vm.snackbardossierViewJX = true;
 										vm.loadingAlpacajsForm = false;
+
+										try{
+											if(!item.hasSubmit){
+												item.counter ++;
+											}else {
+												item.hasSubmit = true;
+											}
+											
+											
+										}catch(e){
+
+										}
 									},
 									error : function(result){
 										vm.snackbartextdossierViewJX = "Lưu form thất bại!";
@@ -179,6 +170,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								
 								var control = $("#alpacajs_form_"+item.partNo).alpaca("get");
 								var formData = control.getValue();
+								
 								
 								vm.subUsers = formData['subUsers'];
 								vm.alpacaAssignUserId = formData['userAction'];
@@ -198,6 +190,18 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										vm.snackbartextdossierViewJX = "Lưu form thành công!";
 	                      				vm.snackbardossierViewJX = true;
 										vm.loadingAlpacajsForm = false;
+
+										try{
+											if(!item.hasSubmit){
+												item.counter ++;
+											}else {
+												item.hasSubmit = true;
+											}
+											
+											
+										}catch(e){
+
+										}
 									},
 									error : function(result){
 										vm.snackbartextdossierViewJX = "Lưu form thất bại!";
@@ -336,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							
                         },
 						postNextActions: function (item){
-							
+							console.log(item);
                             var vm = this;
 							vm.actionsSubmitLoading = true;
 
@@ -355,10 +359,24 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								assignUserId = vm.processAssignUserId.userId;
 								
 							}
+
 							
-							var isKyOk = true;
+							var isKyOk = item.eSignature;
+							console.log("plugin().valid ==============>",plugin().valid);
 							// TODO
-							if(!plugin().valid === 0){
+							if (isKyOk && !plugin().valid) {
+								alert("Plugin is not working :(");
+				                vm.actionsSubmitLoading = false;
+				                isKyOk = false;
+				                return;
+							} else if (!isKyOk) {
+								isKyOk = true;
+							} else {
+								var x = plugin().Sign('tGp5xOELB59zprQeqh2ks89BgWE=');
+								console.log(x);
+								isKyOk = true;
+							}
+							/*if(!plugin().valid === 0){
 				                alert("Plugin is not working :(");
 				                vm.actionsSubmitLoading = false;
 				                isKyOk = false;
@@ -367,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				                var x = plugin().Sign('tGp5xOELB59zprQeqh2ks89BgWE=');
 								console.log(x);
 								isKyOk = true;
-				            }
+				            }*/
 							
 							if (isKyOk) {
 								$.ajax({
@@ -479,7 +497,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							vm.actionsSubmitLoading = true;
 							
 							document.getElementById('inputfile_'+item.dossierPartId).click();
+							try{
+								item.counter ++;
+							}catch(e){
 
+							}
 							setTimeout(function(){ 
 								vm.actionsSubmitLoading = false;
 							}, 4000);
