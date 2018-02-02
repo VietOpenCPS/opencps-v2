@@ -144,7 +144,7 @@ public class BCYSignatureUtil extends SignatureUtil {
 			// tinh kich thuoc cua anh
 
 			int signatureImageWidth = (bufferedImage != null && bufferedImage
-					.getWidth() > 0) ? bufferedImage.getWidth() : 80;
+					.getWidth() > 0) ? bufferedImage.getWidth()/2 : 80;
 
 			int signatureImageHeight = (bufferedImage != null && bufferedImage
 					.getHeight() > 0) ? bufferedImage.getHeight() : 80;

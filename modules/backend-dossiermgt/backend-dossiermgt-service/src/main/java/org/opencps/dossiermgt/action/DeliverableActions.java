@@ -26,8 +26,8 @@ public interface DeliverableActions {
 			String expireDate, String revalidate, String deliverableState, ServiceContext serviceContext);
 
 	//1
-	public JSONObject getListDeliverable(long companyId, LinkedHashMap<String, Object> params, Sort[] sorts, int start,
-			int end, ServiceContext serviceContext);
+	public JSONObject getListDeliverable(long userId, long companyId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext);
 
 	//3, 8, 9
 	public Deliverable getDetailById(long id) throws NoSuchDeliverableException;

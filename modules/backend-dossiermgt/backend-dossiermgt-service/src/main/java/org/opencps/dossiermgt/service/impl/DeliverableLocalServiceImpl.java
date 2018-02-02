@@ -23,8 +23,10 @@ import java.util.regex.Pattern;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.exception.NoSuchDeliverableException;
 import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.base.DeliverableLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.log.Log;
@@ -110,14 +112,19 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		long deliverableId = counterLocalService.increment(Deliverable.class.getName());
 
 		Deliverable object = deliverablePersistence.create(deliverableId);
+		
+		DeliverableType dlvType = deliverableTypePersistence.fetchByG_DLT(groupId, deliverableType);
 
 		/// Add audit fields
 		object.setGroupId(groupId);
 		object.setCreateDate(now);
 		object.setModifiedDate(now);
 		object.setUserId(userId);
-
+		
 		// Add other fields
+		if (Validator.isNotNull(dlvType)) {
+			object.setDeliverableName(dlvType.getTypeName());
+		}
 		object.setDeliverableId(deliverableId);
 		object.setDeliverableType(deliverableType);
 		object.setDeliverableCode(deliverableCode);
@@ -222,6 +229,10 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String type = GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_TYPE));
 		String applicant = GetterUtil.getString(params.get(DeliverableTerm.APPLICANT_ID_NO));
 		String deliverableId = String.valueOf(GetterUtil.getLong(params.get(DeliverableTerm.DELIVERABLE_ID)));
+		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
+		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
+		_log.info("owner:"+owner);
+		_log.info("userId:"+userId);
 
 		if (Validator.isNotNull(state)) {
 			MultiMatchQuery query = new MultiMatchQuery(state);
@@ -262,7 +273,14 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
+
+		if (Validator.isNotNull(owner) && Boolean.parseBoolean(owner.toLowerCase()) && userId > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
+
+			query.addField(DossierTerm.USER_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -355,6 +373,10 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		String agency = GetterUtil.getString(params.get(DeliverableTerm.GOV_AGENCY_CODE));
 		String type = GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_TYPE));
 		String applicant = GetterUtil.getString(params.get(DeliverableTerm.APPLICANT_ID_NO));
+		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
+		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
+		_log.info("owner:"+owner);
+		_log.info("userId:"+userId);
 
 		if (Validator.isNotNull(state)) {
 			MultiMatchQuery query = new MultiMatchQuery(state);
@@ -384,6 +406,14 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			MultiMatchQuery query = new MultiMatchQuery(applicant);
 
 			query.addFields(DeliverableTerm.APPLICANT_ID_NO);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(owner) && Boolean.parseBoolean(owner.toLowerCase()) && userId > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
+
+			query.addField(DossierTerm.USER_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

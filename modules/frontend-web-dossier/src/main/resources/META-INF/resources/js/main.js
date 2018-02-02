@@ -362,14 +362,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							
 							var isKyOk = true;
 							// TODO
-							if(/*!plugin().valid*/ 1 === 0){
+							if(!plugin().valid === 0){
 				                alert("Plugin is not working :(");
 				                vm.actionsSubmitLoading = false;
 				                isKyOk = false;
 				                return;
 				            } else {
-//				                var x = plugin().Sign('tGp5xOELB59zprQeqh2ks89BgWE=');
-//								console.log(x);
+				                var x = plugin().Sign('tGp5xOELB59zprQeqh2ks89BgWE=');
+								console.log(x);
 								isKyOk = true;
 				            }
 							
