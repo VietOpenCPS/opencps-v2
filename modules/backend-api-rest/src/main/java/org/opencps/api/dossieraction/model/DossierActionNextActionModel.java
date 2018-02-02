@@ -57,6 +57,8 @@ import javax.xml.bind.annotation.XmlType;
     "assignUserId",
     "toUsers",
     "createFiles",
+    "createDossierNo",
+    "eSignature",
     "pending"
 })
 public class DossierActionNextActionModel {
@@ -73,6 +75,8 @@ public class DossierActionNextActionModel {
     protected Long assignUserId;
     protected List<DossierActionNextActiontoUser> toUsers;
     protected List<DossierActionNextActioncreateFiles> createFiles;
+    protected Boolean createDossierNo;
+    protected Boolean eSignature;
     
     
     /**
@@ -372,5 +376,53 @@ public class DossierActionNextActionModel {
         }
         return this.createFiles;
     }
+
+    /**
+     * Gets the value of the createDossierNo property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+	public Boolean getCreateDossierNo() {
+		return createDossierNo;
+	}
+
+    /**
+     * Sets the value of the createDossierNo property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+	public void setCreateDossierNo(Boolean createDossierNo) {
+		this.createDossierNo = createDossierNo;
+	}
+
+    /**
+     * Gets the value of the eSignature property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+	public Boolean geteSignature() {
+		return eSignature;
+	}
+
+    /**
+     * Sets the value of the eSignature property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+	public void seteSignature(Boolean eSignature) {
+		this.eSignature = eSignature;
+	}
 
 }
