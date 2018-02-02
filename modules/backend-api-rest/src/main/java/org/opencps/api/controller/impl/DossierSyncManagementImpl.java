@@ -351,6 +351,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			params.put("paymentAmount", paymentFileClient.getPaymentAmount());
 			params.put("paymentNote", paymentFileClient.getPaymentNote());
 			params.put("epaymentProfile", paymentFileClient.getEpaymentProfile());
+			params.put("invoiceTemplateNo", paymentFileClient.getInvoiceTemplateNo());
 			params.put("bankInfo", paymentFileClient.getBankInfo());
 			// TODO update payload
 			params.put("invoicePayload", StringPool.BLANK);

@@ -21,7 +21,9 @@ import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -126,6 +128,13 @@ public class DossierPaymentUtils {
 					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantName(),
 					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, null, paymentConfig.getBankInfo(),
 					serviceContext);
+			
+			long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+"paymentFileNo");
+			
+			paymentFile.setInvoiceTemplateNo(Long.toString(counterPaymentFile));
+			
+			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+			
 			JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
 
 			if (epaymentConfigJSON.has("paymentKeypayDomain")) {
