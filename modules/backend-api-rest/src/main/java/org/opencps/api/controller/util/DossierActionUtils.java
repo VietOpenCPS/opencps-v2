@@ -180,6 +180,8 @@ public class DossierActionUtils {
 				}
 
 				model.getCreateFiles().addAll(outputCreeateFiles);
+				model.setCreateDossierNo(processAction.getCreateDossierNo());
+				model.seteSignature(processAction.getESignature());
 
 				outputs.add(model);
 			}
