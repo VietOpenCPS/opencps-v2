@@ -25,7 +25,6 @@ import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.osgi.service.component.annotations.Component;
 
-import com.liferay.expando.kernel.service.ExpandoValueLocalServiceUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -401,7 +400,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 	public void onAfterUpdate(DossierFile model) throws ModelListenerException {
 		_log.info("Update DossierFile_________-");
 		
-		_log.info("Expando______" + model.getExpandoBridge().getAttribute("isDel"));
+		//_log.info("Expando______" + model.getExpandoBridge().getAttribute("isDel"));
 
 		//ExpandoValueLocalServiceUtil.addValue(classNameId, tableId, columnId, classPK, data);
 		
