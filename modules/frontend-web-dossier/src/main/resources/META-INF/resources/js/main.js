@@ -340,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							
                         },
 						postNextActions: function (item){
-							
+							console.log(item);
                             var vm = this;
 							vm.actionsSubmitLoading = true;
 
@@ -359,10 +359,24 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								assignUserId = vm.processAssignUserId.userId;
 								
 							}
+
 							
-							var isKyOk = true;
+							var isKyOk = item.eSignature;
+							console.log("plugin().valid ==============>",plugin().valid);
 							// TODO
-							if(!plugin().valid === 0){
+							if (isKyOk && !plugin().valid) {
+								alert("Plugin is not working :(");
+				                vm.actionsSubmitLoading = false;
+				                isKyOk = false;
+				                return;
+							} else if (!isKyOk) {
+								isKyOk = true;
+							} else {
+								var x = plugin().Sign('tGp5xOELB59zprQeqh2ks89BgWE=');
+								console.log(x);
+								isKyOk = true;
+							}
+							/*if(!plugin().valid === 0){
 				                alert("Plugin is not working :(");
 				                vm.actionsSubmitLoading = false;
 				                isKyOk = false;
@@ -371,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				                var x = plugin().Sign('tGp5xOELB59zprQeqh2ks89BgWE=');
 								console.log(x);
 								isKyOk = true;
-				            }
+				            }*/
 							
 							if (isKyOk) {
 								$.ajax({
