@@ -674,7 +674,11 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			try {
 				String fileRef = ref.getString("referenceUid");
 				
-//				DossierFile srcDossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(srcDossierId, fileRef);
+				DossierFile srcDossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(srcDossierId, fileRef);
+				
+				srcDossierFile.setIsNew(false);
+				
+				DossierFileLocalServiceUtil.updateDossierFile(srcDossierFile);
 
 				// Get file from SERVER
 				String path = "dossiers/" + srcDossierId + "/files/" + fileRef;
