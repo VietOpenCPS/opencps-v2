@@ -343,6 +343,24 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							console.log(item);
                             var vm = this;
 							vm.actionsSubmitLoading = true;
+							var fileArr = item.createFiles;
+							var idArr = [];
+							// var dossierFileId
+							if (fileArr) {
+								int length = fileArr.length;
+								for (var i = 0; i < length; i++) {
+									var fileDetail = fileArr[i];
+
+									var dossierFileId = fileDetail.dossierFileId;
+									var dossierPartId = fileDetail.dossierPartId;
+									if (dossierFileId && dossierPartId) {
+										var strId = dossierFileId + ',' + dossierPartId;
+										idArr.push(strId);
+									}
+								}
+							}
+
+							console.log(idArr);
 
 							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/actions';
 
@@ -362,19 +380,27 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 							
 							var isKyOk = item.eSignature;
-							console.log("plugin().valid ==============>",plugin().valid);
+							//console.log("plugin().valid ==============>",plugin().valid);
 							// TODO
 							if (isKyOk && !plugin().valid) {
 								alert("Plugin is not working :(");
 				                vm.actionsSubmitLoading = false;
 				                isKyOk = false;
 				                return;
-							} else if (!isKyOk) {
+							/*} else if (!isKyOk) {
+								isKyOk = true;*/
+							} else if(){
+								/*var x = plugin().Sign('tGp5xOELB59zprQeqh2ks89BgWE=');
+								console.log(x);*/
 								isKyOk = true;
-							} else {
-								var x = plugin().Sign('tGp5xOELB59zprQeqh2ks89BgWE=');
-								console.log(x);
-								isKyOk = true;
+							}
+							if (isKyOk) {
+								if (!plugin().valid) {
+									alert("Plugin is not working :(");
+					                vm.actionsSubmitLoading = false;
+					                isKyOk = false;
+					                return;
+								}
 							}
 							/*if(!plugin().valid === 0){
 				                alert("Plugin is not working :(");
@@ -387,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								isKyOk = true;
 				            }*/
 							
-							if (isKyOk) {
+							if (!isKyOk) {
 								$.ajax({
 									url: url,
 									headers: {
@@ -424,10 +450,97 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										vm.actionsSubmitLoading = false;
 									}
 								});
+							} else {
+								if (idArr) {
+									var strIdArr = dossierFileIdArr.join(";");
+									vm.kyDuyetYCGiamDinh(strIdArr);
+								}
 							}
 							
 							return false; 
                         },
+                        kyDuyetYCGiamDinh: function(strIdArr) {
+
+							var vm = this;
+							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/requestsToken';
+							
+							$.ajax({
+								type : 'POST',
+								url : url,
+								async: false,//bat dong bo = fale, dong bo voi client
+								cache : false,
+								data : {
+									// type: 'kyDuyetYCGiamDinh',
+									strIdArr: strIdArr,
+									// strDossierPartId: strDossierPartId
+									/*id : controlRequirementId
+								},*/
+								success : function(data) {
+									var jsonData = JSON.parse(data);
+									var hashComputers = jsonData.hashComputers;
+									var signFieldNames = jsonData.signFieldNames;
+									var fileNames = jsonData.fileNames;
+									var msgs = jsonData.msg;					
+								
+									if(plugin().valid) {
+									
+										for ( var i = 0; i < hashComputers.length; i++) {
+										
+											var hashComputer = hashComputers[i];
+											var code = plugin().Sign(hashComputer);
+											
+											if(code===0 || code===7){			
+												var sign = plugin().Signature;
+												var signFieldName = signFieldNames[i];
+												var fileName = fileNames[i];
+												var msg = msgs[i];
+												if(msg == 'success') {
+													try {
+														vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName);
+													}
+													catch(err) {
+														alert(err.message);
+													}
+												}else{
+													alert(msg);
+												}	
+											}else{
+												alert(plugin().ErrorMessage);
+											}
+										}
+									} else {
+										alert("Plugin is not working");
+									}
+								}
+							});
+						},
+						completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName) {
+							String url = '/o/rest/v2/'+vm.detailModel.dossierId+'/completeSignature';
+							$.ajax({
+								type : 'POST',
+								url : url,
+								async: false,//bat dong bo = fale, dong bo voi client
+								cache : false,
+								data : {
+									// type:'signatureCompleteKyDuyetYCGiamDinh',
+									sign:sign,
+									signFieldName:signFieldName,
+									fileName:fileName
+								},
+								success : function(data) {
+									var jsonData = JSON.parse(data);
+									var msg = jsonData.msg;
+									if(msg == 'success'){
+										
+									} else {
+										alert(msg);
+									}
+								},
+								error: function(){
+									alert('ky so false');
+								}
+							})
+						},
                         _initchangeProcessStep: function (){
                             var vm = this;
 							vm.stepLoading = true;
