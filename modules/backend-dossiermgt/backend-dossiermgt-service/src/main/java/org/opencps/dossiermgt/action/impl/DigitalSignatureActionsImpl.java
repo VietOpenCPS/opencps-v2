@@ -6,7 +6,6 @@ import java.security.cert.Certificate;
 
 import org.opencps.backend.dossiermgt.service.util.ConfigProps;
 import org.opencps.dossiermgt.action.DigitalSignatureActions;
-import org.opencps.dossiermgt.action.util.BCYSignatureUtil;
 import org.opencps.dossiermgt.action.util.CertUtil;
 import org.opencps.dossiermgt.action.util.ImageUtil;
 import org.opencps.dossiermgt.model.DossierFile;
