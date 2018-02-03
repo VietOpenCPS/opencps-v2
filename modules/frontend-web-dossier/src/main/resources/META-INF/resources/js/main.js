@@ -470,7 +470,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								async: false,//bat dong bo = fale, dong bo voi client
 								cache : false,
 								data : {
-									type: 'kyDuyetYCGiamDinh',
+									// type: 'kyDuyetYCGiamDinh',
 									strIdArr: strIdArr,
 									// strDossierPartId: strDossierPartId
 									/*id : controlRequirementId
@@ -522,7 +522,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								async: false,//bat dong bo = fale, dong bo voi client
 								cache : false,
 								data : {
-									type:'signatureCompleteKyDuyetYCGiamDinh',
+									// type:'signatureCompleteKyDuyetYCGiamDinh',
 									sign:sign,
 									signFieldName:signFieldName,
 									fileName:fileName
