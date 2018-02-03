@@ -695,9 +695,10 @@ public class DossierActionsImpl implements DossierActions {
 			}
 			
 		}
+		
 		// TODO
 		// Add KYSO fin processAction
-		if (processAction.getESignature()) {
+/*		if (processAction.getESignature()) {
 
 			// get DossierFile
 			String fileTemplateNos = processAction.getCreateDossierFiles();
@@ -739,7 +740,7 @@ public class DossierActionsImpl implements DossierActions {
 			}
 
 		}
-
+*/
 		boolean isSubmitType = isSubmitType(processAction);
 
 		boolean hasDossierSync = false;
