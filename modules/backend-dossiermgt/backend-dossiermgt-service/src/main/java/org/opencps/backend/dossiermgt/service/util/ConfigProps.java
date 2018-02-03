@@ -8,5 +8,6 @@ public class ConfigProps {
 	public static final String CLIENT_USER = "opencps.dossiersync.client.user";
 	public static final String CLIENT_PASS = "opencps.dossiersync.client.pass";
 	public static final String CLIENT_PATH_BASE = "opencps.dossiersync.client.path.base";
+	public static final String CER_HOME = "cer.home";
 
 }
