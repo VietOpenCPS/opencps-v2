@@ -2,6 +2,8 @@ package org.opencps.dossiermgt.action.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -131,7 +133,13 @@ public class DossierPaymentUtils {
 			
 			long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+"paymentFileNo");
 			
-			String invoiceTemplateNo = String.format("%010d", counterPaymentFile);
+			Calendar cal = Calendar.getInstance();
+			
+			cal.setTime(new Date());
+			
+			int prefix = cal.get(Calendar.YEAR);
+			
+			String invoiceTemplateNo = Integer.toString(prefix) + String.format("%010d", counterPaymentFile);
 			
 			paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
 			
