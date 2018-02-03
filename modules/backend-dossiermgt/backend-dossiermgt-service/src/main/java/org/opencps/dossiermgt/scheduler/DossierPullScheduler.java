@@ -654,7 +654,18 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					JSONObject object = array.getJSONObject(i);
 
 					if (GetterUtil.getBoolean(object.get("isNew"))) {
+						
+						
 						lsFileSync.add(object);
+						
+						long dossierFileId = object.getLong("dossierFileId");
+						
+						if (dossierFileId != 0) {
+							DossierFile file = DossierFileLocalServiceUtil.getDossierFile(object.getLong("dossierFileId"));
+							file.setIsNew(false);
+							DossierFileLocalServiceUtil.updateDossierFile(file);
+						}
+						
 					}
 
 				}
