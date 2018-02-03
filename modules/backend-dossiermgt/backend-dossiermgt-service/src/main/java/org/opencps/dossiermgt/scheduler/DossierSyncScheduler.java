@@ -102,7 +102,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 				
 				//TODO loop dossierSyncs
 				//for (int i = 0; i < jsArrayData.length(); i++)
-				for (int i = jsArrayData.length() -1 ; i >= 0; i--) {
+				for (int i = 0; i < jsArrayData.length(); i++) {
 
 					JSONObject jsonDossierSync = jsArrayData.getJSONObject(i);
 					

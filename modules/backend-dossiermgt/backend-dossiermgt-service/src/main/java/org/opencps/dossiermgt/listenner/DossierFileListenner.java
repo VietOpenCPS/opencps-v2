@@ -67,11 +67,11 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 			payload.put("dossierFileId", StringUtil.valueOf(model.getDossierFileId()));
 
-			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
+/*			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
 					StringPool.BLANK, DossierFileListenerMessageKeys.DOSSIER_LOG_CREATE_TYPE, payload.toJSONString(),
 					serviceContext);
 
-			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(model.getGroupId(),
+*/			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(model.getGroupId(),
 					model.getDossierTemplateNo(), model.getDossierPartNo());
 
 			String deliverableType = dossierPart.getDeliverableType();
@@ -79,7 +79,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			String deliverableCode = model.getDeliverableCode();
 
 			if (Validator.isNotNull(deliverableCode)) {
-				Dossier dossier = DossierLocalServiceUtil.getDossier(model.getDossierId());
+				//Dossier dossier = DossierLocalServiceUtil.getDossier(model.getDossierId());
 
 				// Exist Deliverable checking
 
