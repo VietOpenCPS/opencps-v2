@@ -14,8 +14,8 @@ import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.kyso.action.DigitalSignatureActions;
-import org.opencps.kyso.action.impl.DigitalSignatureActionsImpl;
+import org.opencps.dossiermgt.action.DigitalSignatureActions;
+import org.opencps.dossiermgt.action.impl.DigitalSignatureActionsImpl;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
