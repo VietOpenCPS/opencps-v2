@@ -13,6 +13,7 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 
 import com.liferay.portal.kernel.search.Document;
@@ -100,6 +101,14 @@ public class DossierUtils {
 	public static DossierDetailModel mappingForGetDetail(Dossier input) {
 
 		DossierDetailModel model = new DossierDetailModel();
+		
+		try {
+			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
+			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID+"CTN"));
+		} catch (Exception e) {
+			model.setDossierIdCTN("");
+		}
+		
 
 		model.setDossierId(GetterUtil.getInteger(input.getDossierId()));
 		model.setUserId(GetterUtil.getInteger(input.getUserId()));
