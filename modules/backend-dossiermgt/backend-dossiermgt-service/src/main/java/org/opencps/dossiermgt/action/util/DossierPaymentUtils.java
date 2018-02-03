@@ -2,6 +2,8 @@ package org.opencps.dossiermgt.action.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +23,9 @@ import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -126,6 +130,21 @@ public class DossierPaymentUtils {
 					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantName(),
 					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, null, paymentConfig.getBankInfo(),
 					serviceContext);
+			
+			long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+"paymentFileNo");
+			
+			Calendar cal = Calendar.getInstance();
+			
+			cal.setTime(new Date());
+			
+			int prefix = cal.get(Calendar.YEAR);
+			
+			String invoiceTemplateNo = Integer.toString(prefix) + String.format("%010d", counterPaymentFile);
+			
+			paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
+			
+			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+			
 			JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
 
 			if (epaymentConfigJSON.has("paymentKeypayDomain")) {

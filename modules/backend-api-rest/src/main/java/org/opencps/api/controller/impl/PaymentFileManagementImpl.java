@@ -162,6 +162,10 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					input.getGovAgencyCode(), input.getGovAgencyName(), input.getApplicantName(),
 					input.getApplicantIdNo(), input.getPaymentFee(), input.getPaymentAmount(), input.getPaymentNote(),
 					input.getEpaymentProfile(), input.getBankInfo(), serviceContext);
+			
+			paymentFile.setInvoiceTemplateNo(input.getInvoiceTemplateNo());
+			
+			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 
 			PaymentFileInput = PaymentFileUtils.mappingToPaymentFileInputModel(paymentFile);
 

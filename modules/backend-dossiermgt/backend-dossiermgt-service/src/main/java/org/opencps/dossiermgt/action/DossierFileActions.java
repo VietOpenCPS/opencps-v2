@@ -34,6 +34,9 @@ public interface DossierFileActions {
 
 	public DossierFile updateDossierFileFormData(long groupId, long dossierId, String referenceUid, String formData,
 			ServiceContext serviceContext) throws SystemException, PortalException;
+
+	public DossierFile resetDossierFileFormData(long groupId, long dossierId, String referenceUid, String formData,
+			ServiceContext serviceContext) throws SystemException, PortalException;
 	
 	public void copyFile(String orgFileName, String targetFileName) throws IOException;
 	public void zipDirectory(File dir, String zipDirName) throws IOException;

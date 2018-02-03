@@ -25,6 +25,7 @@ import org.opencps.dossiermgt.action.DeliverableLogActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.DeliverableLogActionsImpl;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableLog;
 
@@ -86,14 +87,20 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			params.put(Field.KEYWORD_SEARCH, search.getKeyword());
 			params.put(DeliverableTerm.DELIVERABLE_TYPE, search.getType());
 			params.put(DeliverableTerm.APPLICANT_ID_NO, search.getApplicant());
+			String owner = search.getOwner();
+			if (Validator.isNotNull(owner)) {
+				params.put(DossierTerm.OWNER, search.getOwner());
+			} else {
+				params.put(DossierTerm.OWNER, String.valueOf(true));
+			}
+			params.put(DossierTerm.USER_ID, user.getUserId());
 			
 			DeliverableActions actions = new DeliverableActionsImpl();
 			DeliverableResultModel results = new DeliverableResultModel();
 			
 			// get JSON data deliverable
-			JSONObject jsonData = null;
-				jsonData = actions.getListDeliverable(serviceContext.getCompanyId(), params, sorts,
-						search.getStart(), search.getEnd(), serviceContext);
+			JSONObject jsonData = actions.getListDeliverable(user.getUserId(), serviceContext.getCompanyId(), params,
+					sorts, search.getStart(), search.getEnd(), serviceContext);
 //			JSONObject result = action.getListDeliverable(state, agency, type, applicant);
 //			results.setTotal(jsonData.getInt("total"));
 			results.setTotal(jsonData.getInt("total"));
