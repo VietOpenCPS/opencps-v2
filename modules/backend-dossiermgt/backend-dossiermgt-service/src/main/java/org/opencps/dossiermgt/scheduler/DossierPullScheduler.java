@@ -304,13 +304,23 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 						// TODO: handle exception
 					}
 
+					// TODO add sync DOSSIERFILE and PAYMENTFILE
+
+					List<JSONObject> lsFileSync = new ArrayList<>();
+
+					// get the list of file of source dossier need to sync
+					getDossierFiles(sourceGroupId, dossierId, lsFileSync);
+
+					pullDossierFiles(desDossier.getGroupId(), desDossier.getDossierId(), lsFileSync, sourceGroupId,
+							dossierId, referenceUid, serviceContext);
+
 					if (Validator.isNotNull(processAction)) {
 						// doAction
 						// doAction in this case is an Applicant object
 						String applicantNote = object.getString(DossierTerm.APPLICANT_NOTE);
 						String applicantName = object.getString(DossierTerm.APPLICANT_NAME);
 
-						String subUsers = StringPool.BLANK;
+						//String subUsers = StringPool.BLANK;
 
 						actions.doAction(syncServiceProcess.getGroupId(), desDossier.getDossierId(),
 								desDossier.getReferenceUid(), processAction.getActionCode(),
@@ -321,21 +331,12 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 					} else {
 						desDossier.setSubmitting(true);
-						desDossier.setSubmitDate(APIDateTimeUtils.convertStringToDate(
+/*						desDossier.setSubmitDate(APIDateTimeUtils.convertStringToDate(
 								object.getString(DossierTerm.SUBMIT_DATE), APIDateTimeUtils._NORMAL_PARTTERN));
-					}
+*/					}
 
 				}
 
-				// TODO add sync DOSSIERFILE and PAYMENTFILE
-
-				List<JSONObject> lsFileSync = new ArrayList<>();
-
-				// get the list of file of source dossier need to sync
-				getDossierFiles(sourceGroupId, dossierId, lsFileSync);
-
-				pullDossierFiles(desDossier.getGroupId(), desDossier.getDossierId(), lsFileSync, sourceGroupId,
-						dossierId, referenceUid, serviceContext);
 
 				// get the list of payment file need to sync
 				List<JSONObject> lsPaymentsFileSync = new ArrayList<>();
