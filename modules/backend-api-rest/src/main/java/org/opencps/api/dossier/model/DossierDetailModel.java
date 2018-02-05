@@ -97,6 +97,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
+    "dossierIdCTN",
     "dossierId",
     "userId",
     "userName",
@@ -163,7 +164,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
-
+	protected String dossierIdCTN;
     protected Integer dossierId;
     protected Integer userId;
     protected String userName;
@@ -228,6 +229,13 @@ public class DossierDetailModel {
     protected String notification;
     protected String online;
 
+    public String getDossierIdCTN() {
+		return dossierIdCTN;
+	}
+
+	public void setDossierIdCTN(String dossierIdCTN) {
+		this.dossierIdCTN = dossierIdCTN;
+	}
     /**
      * Gets the value of the dossierId property.
      * 
