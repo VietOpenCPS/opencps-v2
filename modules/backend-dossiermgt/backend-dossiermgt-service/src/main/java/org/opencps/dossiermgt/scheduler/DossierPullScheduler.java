@@ -163,6 +163,15 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 	private void pullDossier(Company company, JSONObject object, User systemUser) throws PortalException {
 		long dossierId = GetterUtil.getLong(object.get(DossierTerm.DOSSIER_ID));
 
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		
+		
+		if (Validator.isNotNull(dossier)) {
+			dossier.setSubmitting(false);
+			
+			DossierLocalServiceUtil.updateDossier(dossier);
+		}
+		
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(company.getCompanyId());
 		serviceContext.setUserId(object.getLong(DossierTerm.USER_ID));
