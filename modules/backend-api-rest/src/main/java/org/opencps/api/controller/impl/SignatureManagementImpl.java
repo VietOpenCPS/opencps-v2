@@ -40,13 +40,7 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.kyso.utils.BCYSignatureUtil;
-import org.opencps.kyso.utils.CertUtil;
-import org.opencps.kyso.utils.ExtractTextLocations;
-import org.opencps.kyso.utils.ImageUtil;
 
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.PdfSignatureAppearance;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -290,11 +284,11 @@ public class SignatureManagementImpl implements SignatureManagement{
 
 
 		// remove pending in DossierAction
-		int countDossierSync = DossierSyncLocalServiceUtil.countByDossierId(dossierId);
-
-		if (countDossierSync == 0 && clientDossierActionId > 0) {
-			DossierActionLocalServiceUtil.updatePending(clientDossierActionId, false);
-		}
+//		int countDossierSync = DossierSyncLocalServiceUtil.countByDossierId(dossierId);
+//
+//		if (countDossierSync == 0 && clientDossierActionId > 0) {
+//			DossierActionLocalServiceUtil.updatePending(clientDossierActionId, false);
+//		}
 
 	}
 
