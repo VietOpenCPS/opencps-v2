@@ -1,4 +1,4 @@
-package org.opencps.dossiermgt.action;
+package org.opencps.kyso.action;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
