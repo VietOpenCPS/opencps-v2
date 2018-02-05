@@ -146,9 +146,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										vm.loadingAlpacajsForm = false;
 
 										try{
-											if(!item.hasSubmit){
-												item.counter ++;
+											if(item.hasSubmit){
+												
 											}else {
+												
+												item.counter ++;
 												item.hasSubmit = true;
 											}
 											
@@ -192,9 +194,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										vm.loadingAlpacajsForm = false;
 
 										try{
-											if(!item.hasSubmit){
-												item.counter ++;
+											if(item.hasSubmit){
+												
 											}else {
+												
+												item.counter ++;
 												item.hasSubmit = true;
 											}
 											
@@ -497,11 +501,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							vm.actionsSubmitLoading = true;
 							
 							document.getElementById('inputfile_'+item.dossierPartId).click();
-							try{
-								item.counter ++;
-							}catch(e){
-
-							}
 							setTimeout(function(){ 
 								vm.actionsSubmitLoading = false;
 							}, 4000);
