@@ -118,7 +118,18 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject object = array.getJSONObject(i);
-
+				
+				long dossierId = object.getLong(DossierTerm.DOSSIER_ID);
+				
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				
+				
+				if (Validator.isNotNull(dossier)) {
+					dossier.setSubmitting(false);
+					
+					DossierLocalServiceUtil.updateDossier(dossier);
+				}
+				
 				try {
 					pullDossier(company, object, systemUser);
 				} catch (Exception e) {
@@ -313,6 +324,17 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 					pullDossierFiles(desDossier.getGroupId(), desDossier.getDossierId(), lsFileSync, sourceGroupId,
 							dossierId, referenceUid, serviceContext);
+					
+
+					// get the list of payment file need to sync
+					List<JSONObject> lsPaymentsFileSync = new ArrayList<>();
+
+					getPaymentFiles(sourceGroupId, dossierId, lsPaymentsFileSync);
+
+					// Do Pull paymentFile to client
+
+					pullPaymentFile(sourceGroupId, dossierId, desDossier.getGroupId(), desDossier.getDossierId(),
+							lsPaymentsFileSync, serviceContext);
 
 					if (Validator.isNotNull(processAction)) {
 						// doAction
@@ -338,15 +360,6 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				}
 
 
-				// get the list of payment file need to sync
-				List<JSONObject> lsPaymentsFileSync = new ArrayList<>();
-
-				getPaymentFiles(sourceGroupId, dossierId, lsPaymentsFileSync);
-
-				// Do Pull paymentFile to client
-
-				pullPaymentFile(sourceGroupId, dossierId, desDossier.getGroupId(), desDossier.getDossierId(),
-						lsPaymentsFileSync, serviceContext);
 
 			}
 
