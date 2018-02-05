@@ -453,6 +453,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							} else {
 								if (idArr) {
 									var strIdArr = dossierFileIdArr.join(";");
+									console.log(strIdArr);
 									vm.kyDuyetYCGiamDinh(strIdArr);
 								}
 							}
@@ -463,6 +464,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 							var vm = this;
 							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/requestsToken';
+							console.log(vm.detailModel.dossierId);
 							
 							$.ajax({
 								type : 'POST',
@@ -480,7 +482,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									var hashComputers = jsonData.hashComputers;
 									var signFieldNames = jsonData.signFieldNames;
 									var fileNames = jsonData.fileNames;
-									var msgs = jsonData.msg;					
+									var msgs = jsonData.msg;
+									console.log("hashComputers: "+hashComputers);
+									console.log("signFieldNames: "+signFieldNames);
+									console.log("fileNames: "+fileNames);
+									console.log("msgs: "+msgs);			
 								
 									if(plugin().valid) {
 									
@@ -515,7 +521,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							});
 						},
 						completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName) {
-							String url = '/o/rest/v2/'+vm.detailModel.dossierId+'/completeSignature';
+							String url = '/o/rest/v2/signature/'+vm.detailModel.dossierId;
 							$.ajax({
 								type : 'POST',
 								url : url,

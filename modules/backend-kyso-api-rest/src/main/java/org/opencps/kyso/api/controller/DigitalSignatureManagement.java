@@ -1,4 +1,4 @@
-package org.opencps.api.controller;
+package org.opencps.kyso.api.controller;
 
 import java.net.HttpURLConnection;
 import java.util.Locale;
@@ -43,7 +43,7 @@ public interface DigitalSignatureManagement {
 			@Context ServiceContext serviceContext, @PathParam("id") long id, @BeanParam DigitalSignatureInputModel input);
 
 	@POST
-	@Path("/dossiers/{id}/completeSignature")
+	@Path("/dossiers/completeSignature")
 	@ApiOperation(value = "completeSignature")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
