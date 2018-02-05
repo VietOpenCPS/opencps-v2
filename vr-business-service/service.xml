@@ -1106,6 +1106,10 @@
 		<finder return-type="VRTemplateNo" name="P_N">
 			<finder-column name="patternNo"/>
 		</finder>
+		<finder return-type="VRTemplateNo" name="P_N_Y">
+			<finder-column name="patternNo"/>
+			<finder-column name="year"/>
+		</finder>
 	</entity>
 
 	<exceptions>

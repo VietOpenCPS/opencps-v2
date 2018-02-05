@@ -47,4 +47,8 @@ public class VRTemplateNoLocalServiceImpl
 	public VRTemplateNo getByPattern(String patternNo) throws PortalException, SystemException {
 		return vrTemplateNoPersistence.findByP_N(patternNo);
 	}
+	
+	public VRTemplateNo getByPatternYear(String patternNo, int year) throws PortalException, SystemException {
+		return null;
+	}
 }
