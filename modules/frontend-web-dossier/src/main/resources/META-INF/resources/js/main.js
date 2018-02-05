@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							var idArr = [];
 							// var dossierFileId
 							if (fileArr) {
-								int length = fileArr.length;
+								var length = fileArr.length;
 								for (var i = 0; i < length; i++) {
 									var fileDetail = fileArr[i];
 
@@ -382,18 +382,18 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							var isKyOk = item.eSignature;
 							//console.log("plugin().valid ==============>",plugin().valid);
 							// TODO
-							if (isKyOk && !plugin().valid) {
+							/*if (isKyOk && !plugin().valid) {
 								alert("Plugin is not working :(");
 				                vm.actionsSubmitLoading = false;
 				                isKyOk = false;
-				                return;
+				                return;*/
 							/*} else if (!isKyOk) {
 								isKyOk = true;*/
-							} else if(){
+							/*} else if(){*/
 								/*var x = plugin().Sign('tGp5xOELB59zprQeqh2ks89BgWE=');
 								console.log(x);*/
-								isKyOk = true;
-							}
+							/*	isKyOk = true;
+							}*/
 							if (isKyOk) {
 								if (!plugin().valid) {
 									alert("Plugin is not working :(");
@@ -473,10 +473,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								cache : false,
 								data : {
 									// type: 'kyDuyetYCGiamDinh',
-									strIdArr: strIdArr,
+									strIdArr: strIdArr
 									// strDossierPartId: strDossierPartId
-									/*id : controlRequirementId
-								},*/
+									/*id : controlRequirementId*/
+								},
 								success : function(data) {
 									var jsonData = JSON.parse(data);
 									var hashComputers = jsonData.hashComputers;
@@ -502,7 +502,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 												var msg = msgs[i];
 												if(msg == 'success') {
 													try {
-														vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName);
+														/*vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName);*/
 													}
 													catch(err) {
 														alert(err.message);
@@ -520,10 +520,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								}
 							});
 						},
-						completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName) {
+						/*completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName) {
 							String url = '/o/rest/v2/signature/'+vm.detailModel.dossierId;
 							$.ajax({
-								type : 'POST',
+								type : 'PUT',
 								url : url,
 								async: false,//bat dong bo = fale, dong bo voi client
 								cache : false,
@@ -546,7 +546,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									alert('ky so false');
 								}
 							})
-						},
+						},*/
                         _initchangeProcessStep: function (){
                             var vm = this;
 							vm.stepLoading = true;
