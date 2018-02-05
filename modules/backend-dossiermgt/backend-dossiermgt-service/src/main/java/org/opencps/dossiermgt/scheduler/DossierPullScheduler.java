@@ -115,7 +115,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					.createJSONObject(resDossierSearch.getString(RESTFulConfiguration.MESSAGE));
 
 			JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
-
+			
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject object = array.getJSONObject(i);
 				
@@ -129,6 +129,22 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					
 					DossierLocalServiceUtil.updateDossier(dossier);
 				}
+			}
+			
+
+			for (int i = 0; i < array.length(); i++) {
+				JSONObject object = array.getJSONObject(i);
+				
+/*				long dossierId = object.getLong(DossierTerm.DOSSIER_ID);
+				
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				
+				
+				if (Validator.isNotNull(dossier)) {
+					dossier.setSubmitting(false);
+					
+					DossierLocalServiceUtil.updateDossier(dossier);
+				}*/
 				
 				try {
 					pullDossier(company, object, systemUser);
