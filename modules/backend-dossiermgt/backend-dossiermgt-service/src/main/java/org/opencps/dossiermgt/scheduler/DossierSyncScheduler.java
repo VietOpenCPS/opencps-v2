@@ -109,7 +109,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 					
 					try {
 
-						long dossierSyncId = elm.getDossierId();
+						long dossierSyncId = elm.getDossierSyncId();
 
 						String serverConfigDetail = "serverconfigs/" + serverNo;
 
