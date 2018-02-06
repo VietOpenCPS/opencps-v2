@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                         },
 						postNextActions: function (item){
 							console.log(item);
-                            var vm = this;
+                           var vm = this;
 							vm.actionsSubmitLoading = true;
 							var fileArr = item.createFiles;
 							var idArr = [];
@@ -390,13 +390,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								alert("Plugin is not working :(");
 				                vm.actionsSubmitLoading = false;
 				                isKyOk = false;
-				                return;*/
-							/*} else if (!isKyOk) {
-								isKyOk = true;*/
-							/*} else if(){*/
-								/*var x = plugin().Sign('tGp5xOELB59zprQeqh2ks89BgWE=');
-								console.log(x);*/
-							/*	isKyOk = true;
+				                return;
+							} else if (!isKyOk) {
+								isKyOk = true;
+							} else if(){
+								var x = plugin().Sign('tGp5xOELB59zprQeqh2ks89BgWE=');
+								console.log(x);
+								isKyOk = true;
 							}*/
 							if (isKyOk) {
 								if (!plugin().valid) {
@@ -406,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					                return;
 								}
 							}
-							/*if(!plugin().valid === 0){
+						/*	if(!plugin().valid === 0){
 				                alert("Plugin is not working :(");
 				                vm.actionsSubmitLoading = false;
 				                isKyOk = false;
