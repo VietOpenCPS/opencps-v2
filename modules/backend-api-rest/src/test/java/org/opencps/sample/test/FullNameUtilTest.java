@@ -16,7 +16,7 @@ public class FullNameUtilTest {
 	public void testFullNameLength() {
 		int length = _fullNameUtil.fullNameLength();
 
-		Assert.assertEquals(10, length);
+		Assert.assertEquals(20, length);
 	}
 
 	@Test
