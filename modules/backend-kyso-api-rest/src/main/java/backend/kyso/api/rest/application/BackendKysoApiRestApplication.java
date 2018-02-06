@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author GIAHUY
  */
-@ApplicationPath("/v2")
+@ApplicationPath("/v2/signature")
 @Component(immediate = true, service = Application.class)
 public class BackendKysoApiRestApplication extends Application {
 
@@ -26,8 +26,7 @@ public class BackendKysoApiRestApplication extends Application {
 		
 		// add REST endpoints (resources)
 		singletons.add(new DigitalSignatureManagementImpl());
-//		singletons.add(new ServiceInfoManagementImpl());
-	
+
 		return singletons;
 	}
 
