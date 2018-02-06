@@ -62,8 +62,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
@@ -654,6 +652,12 @@ public class DossierActionsImpl implements DossierActions {
 		DossierAction dossierAction = null;
 
 		Dossier dossier = getDossier(groupId, dossierId, referenceUid);
+		
+		String applicantNote = _buildDossierNote(dossier, actionNote);
+		
+		dossier.setApplicantNote(applicantNote);
+		
+		DossierLocalServiceUtil.updateDossier(dossier);
 
 		if (Validator.isNull(dossier)) {
 			throw new NotFoundException("DossierNotFoundException");
@@ -858,8 +862,7 @@ public class DossierActionsImpl implements DossierActions {
 				params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
 				params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
 				params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
-				// SearchContext sc = new SearchContext();
-				// sc.setCompanyId(dossier.getCompanyId());
+
 
 				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
 						dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
@@ -1542,6 +1545,24 @@ public class DossierActionsImpl implements DossierActions {
 		}
 
 		return result;
+	}
+	
+	private String _buildDossierNote(Dossier dossier, String actionNote) {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy hh:MM:ss");
+		
+		StringBuffer sb = new StringBuffer();
+		
+		String oldNote = dossier.getApplicantIdNo();
+		
+		sb.append(oldNote);
+		
+		sb.append("<br>");
+		sb.append("["+ sdf.format(new Date())+"]");
+		sb.append(":");
+		sb.append(actionNote);
+		
+		return sb.toString();
 	}
 	
 	private boolean checkPermission(String status, String subStatus, long groupId, long userId) {
