@@ -2,23 +2,18 @@
 package backend.api.rest.application;
 
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
 
 import org.opencps.api.context.provider.CompanyContextProvider;
 import org.opencps.api.context.provider.LocaleContextProvider;
 import org.opencps.api.context.provider.ServiceContextProvider;
 import org.opencps.api.context.provider.UserContextProvider;
-import org.opencps.api.controller.ProcessPluginManagement;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
 import org.opencps.api.controller.impl.CommentManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
@@ -50,6 +45,7 @@ import org.opencps.api.controller.impl.ServerConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceInfoManagementImpl;
 import org.opencps.api.controller.impl.ServiceProcessManagementImpl;
+import org.opencps.api.controller.impl.SignatureManagementImpl;
 import org.opencps.api.controller.impl.StatisticManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
@@ -57,10 +53,6 @@ import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
 import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
 
 @ApplicationPath("/v2")
 @Component(immediate = true, service = Application.class)
@@ -110,6 +102,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new RegistrationFormManagementImpl());
 		singletons.add(new RegistrationLogManagementImpl());
 		singletons.add(new ProcessPluginManagementImpl());
+		singletons.add(new SignatureManagementImpl());
 		
 		// add service provider
 		singletons.add(_serviceContextProvider);

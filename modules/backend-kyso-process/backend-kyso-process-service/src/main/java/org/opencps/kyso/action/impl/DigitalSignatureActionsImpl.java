@@ -54,6 +54,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 					.createJSONArray();
 
 			String realPath = PropsUtil.get(ConfigProps.CER_HOME)+"/";
+			_log.info("realPath: "+realPath);
 			//==
 //			ActionRequest request = null;
 //			String realPath = ReportUtils.getTemplateReportFilePath(request);
@@ -67,11 +68,15 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 				for (String strId : idSplit) {
 					String[] idArr = strId.split(StringPool.COMMA);
 					DossierPart dossierPart = DossierPartLocalServiceUtil.fetchDossierPart(Long.valueOf(idArr[1]));
+					_log.info("Dossier Part: "+dossierPart);
 					DossierFile dossierFile = null;
 					if (dossierPart != null && dossierPart.getESign()) {
 						dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(Long.valueOf(idArr[0]));
+						_log.info("Dossier File: "+dossierFile);
 						if (dossierFile != null && dossierFile.getFileEntryId() > 0) {
 							long fileEntryId = dossierFile.getFileEntryId();
+							_log.info("fileEntryId: "+fileEntryId);
+//							long fileEntryId = 0;
 
 							DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
 							
@@ -82,9 +87,12 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 							FileUtil.move(fileTemp, file);
 							
 							fullPath = file.getAbsolutePath();
+							_log.info("fullPath: "+fullPath);
 
 							String signImagePath = new File(realPath + emailUser + ".png").getAbsolutePath();
 							String imageBase64 = ImageUtil.getSignatureImageBase64ByPath(signImagePath);
+							_log.info("signImagePath: "+signImagePath);
+							_log.info("imageBase64: "+imageBase64);
 
 							BufferedImage bufferedImage = ImageUtil.getImageByPath(signImagePath);
 
@@ -177,6 +185,13 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 							fileNames.put(dlFileEntry.getFileName());
 							messages.put("success");
 							fullPathOfSignedFiles.put(fullPathSigned);
+							
+							_log.info("hashComputers: "+hashComputers);
+							_log.info("signFieldNames: "+signFieldNames);
+							_log.info("fullPathOfSignedFiles: "+fullPathOfSignedFiles);
+							_log.info("fileNames: "+fileNames);
+							_log.info("messages: "+messages);
+							
 
 							_log.info("===KY XONG YCGIAMDIDNH===: "+ fullPathSigned);
 							
@@ -196,7 +211,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 							
 //							message.put("msgToEngine", msgDataIn);
 //							MessageBusUtil.sendMessage("jasper/dossier/in/destination", message);
-							
+							break;
 						}
 					}
 				}

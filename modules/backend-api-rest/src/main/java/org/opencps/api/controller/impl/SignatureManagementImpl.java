@@ -81,7 +81,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 			String signFieldName = input.getSignFieldName();
 			String fileName = input.getFileName();
 
-			callSignatureSync(groupId, user, id, sign, signFieldName, fileName, serviceContext);
+//			callSignatureSync(groupId, user, id, sign, signFieldName, fileName, serviceContext);
 
 			JSONObject result = null;
 			if(true) {
