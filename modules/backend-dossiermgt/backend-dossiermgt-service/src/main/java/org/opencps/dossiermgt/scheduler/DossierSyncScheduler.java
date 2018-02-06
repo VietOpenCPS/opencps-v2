@@ -44,7 +44,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {
 
-		_log.info("OpenCPS SYNC DOSSIERS IS STARTING : " + APIDateTimeUtils.convertDateToString(new Date()));
+		_log.info("OpenCPS SYNC DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 		ServiceContext serviceContext = new ServiceContext();
@@ -100,17 +100,16 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 					}
 				}
 				
-				//TODO loop dossierSyncs
-				//for (int i = 0; i < jsArrayData.length(); i++)
-				for (int i = jsArrayData.length() -1 ; i >= 0; i--) {
-
-					JSONObject jsonDossierSync = jsArrayData.getJSONObject(i);
+				ArrayList<DossierSyncOrderedModel> origin = DossierSyncUtils.convertToModel(jsArrayData);
+				
+				DossierSyncUtils.orderSync(origin);
+				
+				for (DossierSyncOrderedModel elm : origin) {
+					System.out.println("dossierId_" + elm.getDossierId() + "_method_" + elm.getMethodId());
 					
-					_log.info("Update order sync____" + jsonDossierSync.getString("method"));
-
 					try {
 
-						long dossierSyncId = GetterUtil.getLong(jsonDossierSync.get("dossierSyncId"));
+						long dossierSyncId = elm.getDossierSyncId();
 
 						String serverConfigDetail = "serverconfigs/" + serverNo;
 
@@ -122,8 +121,9 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 						long serverGroupId = getGroupId(resServerDetail);
 
 						String doDossierSyncEnpoint = "dossiersyncs/" + dossierSyncId + "/sending";
-
-						JSONObject resDoDossierSync = rest.callAPI(serverGroupId, HttpMethods.GET, "application/json",
+						
+						//call to rest API sync
+						rest.callAPI(serverGroupId, HttpMethods.GET, "application/json",
 								RESTFulConfiguration.CLIENT_PATH_BASE, doDossierSyncEnpoint,
 								RESTFulConfiguration.CLIENT_USER, RESTFulConfiguration.CLIENT_PASS, properties,
 								serviceContext);
@@ -131,13 +131,13 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 					} catch (Exception e) {
 						//e.printStackTrace();
 						
-						_log.info("Can't Sync DossierId = " + jsonDossierSync.get("dossierSyncId"));
+						_log.info("Can't Sync DossierSyncId = " + elm.getDossierSyncId());
 					}
-
 				}
 
 			}
 		}
+		
 		_log.info("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 
 	}
@@ -169,6 +169,8 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 
 		return lsServer;
 	}
+	
+	
 
 	private long getGroupId(JSONObject response) {
 		long groupId = 0l;

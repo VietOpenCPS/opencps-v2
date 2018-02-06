@@ -1,0 +1,1264 @@
+{
+	"info": {
+		"name": "serviceinfos",
+		"_postman_id": "c71fb764-2f30-c590-6020-5f2123e89ee0",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "{{url}}/serviceinfos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\", \r",
+							"  \"definitions\": {}, \r",
+							"  \"id\": \"http://example.com/example.json\", \r",
+							"  \"properties\": {\r",
+							"    \"data\": {\r",
+							"      \"id\": \"/properties/data\", \r",
+							"      \"items\": {\r",
+							"        \"id\": \"/properties/data/items\", \r",
+							"        \"properties\": {\r",
+							"      \"administrationCode\": {\r",
+							"        \"id\": \"/properties/administrationCode\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"administrationName\": {\r",
+							"        \"id\": \"/properties/administrationName\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"applicantText\": {\r",
+							"        \"id\": \"/properties/applicantText\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"conditionText\": {\r",
+							"        \"id\": \"/properties/conditionText\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"createDate\": {\r",
+							"        \"id\": \"/properties/createDate\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"domainCode\": {\r",
+							"        \"id\": \"/properties/domainCode\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"domainName\": {\r",
+							"        \"id\": \"/properties/domainName\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"dossierText\": {\r",
+							"        \"id\": \"/properties/dossierText\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"durationText\": {\r",
+							"        \"id\": \"/properties/durationText\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"feeText\": {\r",
+							"        \"id\": \"/properties/feeText\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"maxLevel\": {\r",
+							"        \"id\": \"/properties/maxLevel\", \r",
+							"        \"type\": \"integer\"\r",
+							"      }, \r",
+							"      \"methodText\": {\r",
+							"        \"id\": \"/properties/methodText\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"modifiedDate\": {\r",
+							"        \"id\": \"/properties/modifiedDate\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"processText\": {\r",
+							"        \"id\": \"/properties/processText\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"regularText\": {\r",
+							"        \"id\": \"/properties/regularText\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"resultText\": {\r",
+							"        \"id\": \"/properties/resultText\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"serviceCode\": {\r",
+							"        \"id\": \"/properties/serviceCode\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"serviceName\": {\r",
+							"        \"id\": \"/properties/serviceName\", \r",
+							"        \"type\": \"string\"\r",
+							"      }, \r",
+							"      \"serviceinfoId\": {\r",
+							"        \"id\": \"/properties/serviceinfoId\", \r",
+							"        \"type\": \"integer\"\r",
+							"      }\r",
+							"     }, \r",
+							"        \"type\": \"object\"\r",
+							"      }, \r",
+							"      \"type\": \"array\"\r",
+							"    }, \r",
+							"    \"total\": { \r",
+							"      \"type\": \"integer\"\r",
+							"    }\r",
+							"  }, \r",
+							"  \"type\": \"object\"\r",
+							"};\r",
+							"\r",
+							"tests[\"Valid Data schema\"] = tv4.validate(jsonData, schema);\r",
+							"\r",
+							"if(jsonData.total > 0){\r",
+							"  tests[\"Has total \"] = responseBody.has(\"total\");\r",
+							"  tests[\"Has data \"] = responseBody.has(\"data\");\r",
+							"  tests[\"Has serviceinfoId \"] = responseBody.has(\"serviceinfoId\");\r",
+							"  tests[\"Has createDate \"] = responseBody.has(\"createDate\");\r",
+							"  tests[\"Has modifiedDate \"] = responseBody.has(\"modifiedDate\");\r",
+							"  tests[\"Has serviceCode \"] = responseBody.has(\"serviceCode\");\r",
+							"  tests[\"Has serviceName \"] = responseBody.has(\"serviceName\");\r",
+							"  tests[\"Has processText \"] = responseBody.has(\"processText\");\r",
+							"  tests[\"Has methodText \"] = responseBody.has(\"methodText\");\r",
+							"  tests[\"Has dossierText \"] = responseBody.has(\"dossierText\");\r",
+							"  tests[\"Has conditionText \"] = responseBody.has(\"conditionText\");\r",
+							"  tests[\"Has durationText \"] = responseBody.has(\"durationText\");\r",
+							"  tests[\"Has applicantText \"] = responseBody.has(\"applicantText\");\r",
+							"  tests[\"Has resultText \"] = responseBody.has(\"resultText\");\r",
+							"  tests[\"Has regularText \"] = responseBody.has(\"regularText\");\r",
+							"  tests[\"Has feeText \"] = responseBody.has(\"feeText\");\r",
+							"  tests[\"Has administrationCode \"] = responseBody.has(\"administrationCode\");\r",
+							"  tests[\"Has administrationName \"] = responseBody.has(\"administrationName\");\r",
+							"  tests[\"Has domainCode \"] = responseBody.has(\"domainCode\");\r",
+							"  tests[\"Has domainName \"] = responseBody.has(\"domainName\");\r",
+							"  tests[\"Has maxLevel \"] = responseBody.has(\"maxLevel\");\r",
+							"  \r",
+							"  \r",
+							"  \r",
+							"  \r",
+							"}\r",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "groupId",
+						"value": "55217"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{url}}/serviceinfos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"serviceinfos"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "{{url}}/serviceinfos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\", \r",
+							"  \"additionalProperties\": false, \r",
+							"  \"definitions\": {}, \r",
+							"  \"id\": \"http://example.com/example.json\", \r",
+							"  \"properties\": {\r",
+							"    \"administrationCode\": {\r",
+							"      \"id\": \"/properties/administrationCode\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"applicantText\": {\r",
+							"      \"id\": \"/properties/applicantText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"conditionText\": {\r",
+							"      \"id\": \"/properties/conditionText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"domainCode\": {\r",
+							"      \"id\": \"/properties/domainCode\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"dossierText\": {\r",
+							"      \"id\": \"/properties/dossierText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"durationText\": {\r",
+							"      \"id\": \"/properties/durationText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"feeText\": {\r",
+							"      \"id\": \"/properties/feeText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"maxLevel\": {\r",
+							"      \"id\": \"/properties/maxLevel\", \r",
+							"      \"type\": \"integer\"\r",
+							"    }, \r",
+							"    \"methodText\": {\r",
+							"      \"id\": \"/properties/methodText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"processText\": {\r",
+							"      \"id\": \"/properties/processText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"regularText\": {\r",
+							"      \"id\": \"/properties/regularText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"resultText\": {\r",
+							"      \"id\": \"/properties/resultText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"serviceCode\": {\r",
+							"      \"id\": \"/properties/serviceCode\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \r",
+							"    \"serviceName\": {\r",
+							"      \"id\": \"/properties/serviceName\", \r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  }, \r",
+							"  \"type\": \"object\"\r",
+							"};\r",
+							"tests[\"Valid Data schema\"] = tv4.validate(jsonData, schema);\r",
+							"tests[\"Has serviceCode \"] = responseBody.has(\"serviceCode\");\r",
+							"  tests[\"Has serviceName \"] = responseBody.has(\"serviceName\");\r",
+							"  tests[\"Has processText \"] = responseBody.has(\"processText\");\r",
+							"  tests[\"Has methodText \"] = responseBody.has(\"methodText\");\r",
+							"  tests[\"Has dossierText \"] = responseBody.has(\"dossierText\");\r",
+							"  tests[\"Has conditionText \"] = responseBody.has(\"conditionText\");\r",
+							"  tests[\"Has durationText \"] = responseBody.has(\"durationText\");\r",
+							"  tests[\"Has applicantText \"] = responseBody.has(\"applicantText\");\r",
+							"  tests[\"Has resultText \"] = responseBody.has(\"resultText\");\r",
+							"  tests[\"Has regularText \"] = responseBody.has(\"regularText\");\r",
+							"  tests[\"Has feeText \"] = responseBody.has(\"feeText\");\r",
+							"  tests[\"Has administrationCode \"] = responseBody.has(\"administrationCode\");\r",
+							"  tests[\"Has domainCode \"] = responseBody.has(\"domainCode\");\r",
+							"  tests[\"Has maxLevel \"] = responseBody.has(\"maxLevel\");\r",
+							"\r",
+							"\r",
+							"postman.setEnvironmentVariable(\"id\", jsonData[\"serviceinfoId\"]);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "serviceCode",
+							"value": "101",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "serviceName",
+							"value": "Đăng ký thực hiện đề tài nghiên cứu cơ bản trong khoa học tự nhiên",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "processText",
+							"value": "Bộ khoa học Công nghệ",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "methodText",
+							"value": "Theo các bước",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "dossierText",
+							"value": "Qua Bưu điệnTrụ sở cơ quan hành chính",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "conditionText",
+							"value": "acb",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "durationText",
+							"value": "acb",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "applicantText",
+							"value": "abc",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "resultText",
+							"value": "abc",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "regularText",
+							"value": "abc",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "feeText",
+							"value": "abc",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "administrationCode",
+							"value": "123",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "domainCode",
+							"value": "bc",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "maxLevel",
+							"value": "4",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/serviceinfos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"serviceinfos"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "{{url}}/serviceinfos/{{id}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var schema = ",
+							"",
+							"{",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\", ",
+							"  \"additionalProperties\": false, ",
+							"  \"definitions\": {}, ",
+							"  \"id\": \"http://example.com/example.json\", ",
+							"  \"properties\": {",
+							"    \"administrationCode\": {",
+							"      \"id\": \"/properties/administrationCode\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"administrationName\": {",
+							"      \"id\": \"/properties/administrationName\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"applicantText\": {",
+							"      \"id\": \"/properties/applicantText\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"conditionText\": {",
+							"      \"id\": \"/properties/conditionText\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"createDate\": {",
+							"      \"id\": \"/properties/createDate\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"domainCode\": {",
+							"      \"id\": \"/properties/domainCode\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"domainName\": {",
+							"      \"id\": \"/properties/domainName\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"dossierText\": {",
+							"      \"id\": \"/properties/dossierText\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"durationText\": {",
+							"      \"id\": \"/properties/durationText\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"feeText\": {",
+							"      \"id\": \"/properties/feeText\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"fileTemplates\": {",
+							"      \"additionalItems\": false, ",
+							"      \"id\": \"/properties/fileTemplates\", ",
+							"      \"items\": {",
+							"        \"id\": \"/properties/fileTemplates/items/0\"",
+							"      }, ",
+							"      \"type\": \"array\"",
+							"    }, ",
+							"    \"maxLevel\": {",
+							"      \"id\": \"/properties/maxLevel\", ",
+							"      \"type\": \"integer\"",
+							"    }, ",
+							"    \"methodText\": {",
+							"      \"id\": \"/properties/methodText\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"modifiedDate\": {",
+							"      \"id\": \"/properties/modifiedDate\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"processText\": {",
+							"      \"id\": \"/properties/processText\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"regularText\": {",
+							"      \"id\": \"/properties/regularText\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"resultText\": {",
+							"      \"id\": \"/properties/resultText\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"serviceCode\": {",
+							"      \"id\": \"/properties/serviceCode\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"serviceName\": {",
+							"      \"id\": \"/properties/serviceName\", ",
+							"      \"type\": \"string\"",
+							"    }, ",
+							"    \"serviceinfoId\": {",
+							"      \"id\": \"/properties/serviceinfoId\", ",
+							"      \"type\": \"integer\"",
+							"    }",
+							"  }, ",
+							"  \"type\": \"object\"",
+							"};",
+							"tests[\"Valid Data schema\"] = tv4.validate(jsonData, schema);",
+							"\ttests[\"Has serviceinfoId \"] = responseBody.has(\"serviceinfoId\");",
+							"\ttests[\"Has createDate \"] = responseBody.has(\"createDate\");",
+							"\ttests[\"Has modifiedDate \"] = responseBody.has(\"modifiedDate\");",
+							"\ttests[\"Has serviceCode \"] = responseBody.has(\"serviceCode\");",
+							"\ttests[\"Has serviceName \"] = responseBody.has(\"serviceName\");",
+							"\ttests[\"Has processText \"] = responseBody.has(\"processText\");",
+							"\ttests[\"Has methodText \"] = responseBody.has(\"methodText\");",
+							"\ttests[\"Has dossierText \"] = responseBody.has(\"dossierText\");",
+							"\ttests[\"Has conditionText \"] = responseBody.has(\"conditionText\");",
+							"\ttests[\"Has durationText \"] = responseBody.has(\"durationText\");",
+							"\ttests[\"Has applicantText \"] = responseBody.has(\"applicantText\");",
+							"\ttests[\"Has resultText \"] = responseBody.has(\"resultText\");",
+							"\ttests[\"Has regularText \"] = responseBody.has(\"regularText\");",
+							"\ttests[\"Has feeText \"] = responseBody.has(\"feeText\");",
+							"\ttests[\"Has administrationCode \"] = responseBody.has(\"administrationCode\");",
+							"\ttests[\"Has administrationName \"] = responseBody.has(\"administrationName\");",
+							"\ttests[\"Has domainCode \"] = responseBody.has(\"domainCode\");",
+							"\ttests[\"Has domainName \"] = responseBody.has(\"domainName\");",
+							"\ttests[\"Has maxLevel \"] = responseBody.has(\"maxLevel\");",
+							"\ttests[\"Has fileTemplates \"] = responseBody.has(\"fileTemplates\");",
+							"\ttests[\"Has fileTemplateNo \"] = responseBody.has(\"fileTemplateNo\");",
+							"\ttests[\"Has templateName \"] = responseBody.has(\"templateName\");",
+							"\ttests[\"Has fileType \"] = responseBody.has(\"fileType\");",
+							"\ttests[\"Has fileSize \"] = responseBody.has(\"fileSize\");",
+							"\t",
+							"",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{url}}/serviceinfos/{{id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"serviceinfos",
+						"{{id}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "{{url}}/serviceinfos/{{id}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\", \r",
+							"  \"additionalProperties\": false, \r",
+							"  \"definitions\": {}, \r",
+							"  \"id\": \"http://example.com/example.json\", \r",
+							"  \"properties\": {\r",
+							"    \"administrationCode\": {\r",
+							"      \"id\": \"/properties/administrationCode\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"applicantText\": {\r",
+							"      \"id\": \"/properties/applicantText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"conditionText\": {\r",
+							"      \"id\": \"/properties/conditionText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"domainCode\": {\r",
+							"      \"id\": \"/properties/domainCode\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"dossierText\": {\r",
+							"      \"id\": \"/properties/dossierText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"durationText\": {\r",
+							"      \"id\": \"/properties/durationText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"feeText\": {\r",
+							"      \"id\": \"/properties/feeText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"maxLevel\": {\r",
+							"      \"id\": \"/properties/maxLevel\", \r",
+							"      \"type\": \"integer\"\r",
+							"    }, \r",
+							"    \"methodText\": {\r",
+							"      \"id\": \"/properties/methodText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"processText\": {\r",
+							"      \"id\": \"/properties/processText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"regularText\": {\r",
+							"      \"id\": \"/properties/regularText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"resultText\": {\r",
+							"      \"id\": \"/properties/resultText\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"serviceCode\": {\r",
+							"      \"id\": \"/properties/serviceCode\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \r",
+							"    \"serviceName\": {\r",
+							"      \"id\": \"/properties/serviceName\", \r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  }, \r",
+							"  \"type\": \"object\"\r",
+							"};\r",
+							"tests[\"Valid Data schema\"] = tv4.validate(jsonData, schema);\r",
+							"tests[\"Has serviceCode \"] = responseBody.has(\"serviceCode\");\r",
+							"\ttests[\"Has serviceName \"] = responseBody.has(\"serviceName\");\r",
+							"\ttests[\"Has processText \"] = responseBody.has(\"processText\");\r",
+							"\ttests[\"Has methodText \"] = responseBody.has(\"methodText\");\r",
+							"\ttests[\"Has dossierText \"] = responseBody.has(\"dossierText\");\r",
+							"\ttests[\"Has conditionText \"] = responseBody.has(\"conditionText\");\r",
+							"\ttests[\"Has durationText \"] = responseBody.has(\"durationText\");\r",
+							"\ttests[\"Has applicantText \"] = responseBody.has(\"applicantText\");\r",
+							"\ttests[\"Has resultText \"] = responseBody.has(\"resultText\");\r",
+							"\ttests[\"Has regularText \"] = responseBody.has(\"regularText\");\r",
+							"\ttests[\"Has feeText \"] = responseBody.has(\"feeText\");\r",
+							"\ttests[\"Has administrationCode \"] = responseBody.has(\"administrationCode\");\r",
+							"\ttests[\"Has domainCode \"] = responseBody.has(\"domainCode\");\r",
+							"\ttests[\"Has maxLevel \"] = responseBody.has(\"maxLevel\");"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "test@liferay.com",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "test",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic dGVzdEBsaWZlcmF5LmNvbTp0ZXN0"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "serviceCode",
+							"value": "123",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "serviceName",
+							"value": "Đăng ký thực hiện đề tài nghiên cứu cơ bản trong khoa học tự nhiên",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "processText",
+							"value": "Bộ khoa học Công nghệ",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "methodText",
+							"value": "Theo các bước",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "dossierText",
+							"value": "Qua Bưu điệnTrụ sở cơ quan hành chính",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "conditionText",
+							"value": "dsad",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "durationText",
+							"value": "rew",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "applicantText",
+							"value": "rew",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "resultText",
+							"value": "rew",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "regularText",
+							"value": "rew",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "feeText",
+							"value": "rew",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "administrationCode",
+							"value": "eee",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "domainCode",
+							"value": "eee",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "maxLevel",
+							"value": "3",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "public ",
+							"value": "true",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "active",
+							"value": "true",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/serviceinfos/1401",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"serviceinfos",
+						"1401"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "{{url}}/serviceinfos/{{id}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 204\"] = responseCode.code === 204;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{url}}/serviceinfos/{{id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"serviceinfos",
+						"{{id}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "{{url}}/serviceinfos/{{id}}/filetemplates",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\", \r",
+							"  \"definitions\": {}, \r",
+							"  \"id\": \"http://example.com/example.json\", \r",
+							"  \"properties\": {\r",
+							"    \"data\": {\r",
+							"      \"id\": \"/properties/data\", \r",
+							"      \"items\": {\r",
+							"        \"id\": \"/properties/data/items\", \r",
+							"        \"properties\": {\r",
+							"\t\t\t\"fileSize\": {\r",
+							"      \"id\": \"/properties/fileSize\", \r",
+							"      \"type\": \"integer\"\r",
+							"    }, \r",
+							"    \"fileTemplateNo\": {\r",
+							"      \"id\": \"/properties/fileTemplateNo\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"fileType\": {\r",
+							"      \"id\": \"/properties/fileType\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"templateName\": {\r",
+							"      \"id\": \"/properties/templateName\", \r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  \r",
+							"\t }, \r",
+							"        \"type\": \"object\"\r",
+							"      }, \r",
+							"      \"type\": \"array\"\r",
+							"    }, \r",
+							"    \"total\": { \r",
+							"      \"type\": \"integer\"\r",
+							"    }\r",
+							"  }, \r",
+							"  \"type\": \"object\"\r",
+							"};\r",
+							"\r",
+							"tests[\"Valid Data schema\"] = tv4.validate(jsonData, schema);\r",
+							"\r",
+							"if(jsonData.total > 0){\r",
+							"\ttests[\"Has total \"] = responseBody.has(\"total\");\r",
+							"\ttests[\"Has data \"] = responseBody.has(\"data\");\r",
+							"\ttests[\"Has fileTemplateNo \"] = responseBody.has(\"fileTemplateNo\");\r",
+							"\ttests[\"Has templateName \"] = responseBody.has(\"templateName\");\r",
+							"\ttests[\"Has fileType \"] = responseBody.has(\"fileType\");\r",
+							"\ttests[\"Has fileSize \"] = responseBody.has(\"fileSize\");\r",
+							"}\r",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{url}}/serviceinfos/{{id}}/filetemplates",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"serviceinfos",
+						"{{id}}",
+						"filetemplates"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "{{url}}/serviceinfos/{{id}}/filetemplates",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\", \r",
+							"  \"definitions\": {}, \r",
+							"  \"id\": \"http://example.com/example.json\", \r",
+							"  \"properties\": {\r",
+							"    \"fileSize\": {\r",
+							"      \"id\": \"/properties/fileSize\", \r",
+							"      \"type\": \"integer\"\r",
+							"    }, \r",
+							"    \"fileTemplateNo\": {\r",
+							"      \"id\": \"/properties/fileTemplateNo\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"fileType\": {\r",
+							"      \"id\": \"/properties/fileType\", \r",
+							"      \"type\": \"string\"\r",
+							"    }, \r",
+							"    \"templateName\": {\r",
+							"      \"id\": \"/properties/templateName\", \r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  }, \r",
+							"  \"type\": \"object\"\r",
+							"};\r",
+							"tests[\"Valid Data schema\"] = tv4.validate(jsonData, schema);\r",
+							"tests[\"Has fileTemplateNo \"] = responseBody.has(\"fileTemplateNo\");\r",
+							"\ttests[\"Has templateName \"] = responseBody.has(\"templateName\");\r",
+							"\ttests[\"Has fileType \"] = responseBody.has(\"fileType\");\r",
+							"\ttests[\"Has fileSize \"] = responseBody.has(\"fileSize\");\r",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "fileTemplateNo",
+							"value": "1",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "templateName",
+							"value": "Bản trích lục giấy khai sinh",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "fileType",
+							"value": "",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "fileSize",
+							"value": "",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/serviceinfos/{{id}}/filetemplates",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"serviceinfos",
+						"{{id}}",
+						"filetemplates"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "{{url}}/serviceinfos/statistics/agencies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"var schema = \r",
+							"\r",
+							"{\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\", \r",
+							"  \"definitions\": {}, \r",
+							"  \"id\": \"http://example.com/example.json\", \r",
+							"  \"properties\": {\r",
+							"    \"data\": {\r",
+							"      \"id\": \"/properties/data\", \r",
+							"      \"items\": {\r",
+							"        \"id\": \"/properties/data/items\", \r",
+							"        \"properties\": {\r",
+							"          \"administrationCode\": {\r",
+							"            \"id\": \"/properties/data/items/properties/administrationCode\", \r",
+							"            \"type\": \"string\"\r",
+							"          }, \r",
+							"          \"administrationName\": {\r",
+							"            \"id\": \"/properties/data/items/properties/administrationName\", \r",
+							"            \"type\": \"string\"\r",
+							"          }, \r",
+							"          \"count\": {\r",
+							"            \"id\": \"/properties/data/items/properties/count\", \r",
+							"            \"type\": \"integer\"\r",
+							"          }\r",
+							"        }, \r",
+							"        \"type\": \"object\"\r",
+							"      }, \r",
+							"      \"type\": \"array\"\r",
+							"    }, \r",
+							"    \"total\": {\r",
+							"      \"id\": \"/properties/total\", \r",
+							"      \"type\": \"integer\"\r",
+							"    }\r",
+							"  }, \r",
+							"  \"type\": \"object\"\r",
+							"};\r",
+							"tests[\"Valid Data schema\"] = tv4.validate(jsonData, schema);\r",
+							"\r",
+							"if(jsonData.total > 0){\r",
+							"  tests[\"Has total \"] = responseBody.has(\"total\");\r",
+							"  tests[\"Has data \"] = responseBody.has(\"data\");\r",
+							"  tests[\"Has administrationCode \"] = responseBody.has(\"administrationCode\");\r",
+							"  tests[\"Has administrationName \"] = responseBody.has(\"administrationName\");\r",
+							"  tests[\"Has count \"] = responseBody.has(\"count\");\r",
+							" \r",
+							" \r",
+							"  \r",
+							"  \r",
+							"  \r",
+							"}\r",
+							"\r",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{url}}/serviceinfos/statistics/agencies",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"serviceinfos",
+						"statistics",
+						"agencies"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "{{url}}/serviceinfos/statistics/domains",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"var schema = \r",
+							"\r",
+							"{\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\", \r",
+							"  \"definitions\": {}, \r",
+							"  \"id\": \"http://example.com/example.json\", \r",
+							"  \"properties\": {\r",
+							"    \"data\": {\r",
+							"      \"id\": \"/properties/data\", \r",
+							"      \"items\": {\r",
+							"        \"id\": \"/properties/data/items\", \r",
+							"        \"properties\": {\r",
+							"          \"count\": {\r",
+							"            \"id\": \"/properties/data/items/properties/count\", \r",
+							"            \"type\": \"integer\"\r",
+							"          }, \r",
+							"          \"domainCode\": {\r",
+							"            \"id\": \"/properties/data/items/properties/domainCode\", \r",
+							"            \"type\": \"string\"\r",
+							"          }, \r",
+							"          \"domainName\": {\r",
+							"            \"id\": \"/properties/data/items/properties/domainName\", \r",
+							"            \"type\": \"string\"\r",
+							"          }\r",
+							"        }, \r",
+							"        \"type\": \"object\"\r",
+							"      }, \r",
+							"      \"type\": \"array\"\r",
+							"    }, \r",
+							"    \"total\": {\r",
+							"      \"id\": \"/properties/total\", \r",
+							"      \"type\": \"integer\"\r",
+							"    }\r",
+							"  }, \r",
+							"  \"type\": \"object\"\r",
+							"};\r",
+							"tests[\"Valid Data schema\"] = tv4.validate(jsonData, schema);\r",
+							"\r",
+							"if(jsonData.total > 0){\r",
+							"  tests[\"Has total \"] = responseBody.has(\"total\");\r",
+							"  tests[\"Has data \"] = responseBody.has(\"data\");\r",
+							"  tests[\"Has domainCode \"] = responseBody.has(\"domainCode\");\r",
+							"  tests[\"Has domainName \"] = responseBody.has(\"domainName\");\r",
+							"  tests[\"Has count \"] = responseBody.has(\"count\");\r",
+							" \r",
+							" \r",
+							"  \r",
+							"  \r",
+							"  \r",
+							"}\r",
+							"\r",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{url}}/serviceinfos/statistics/domains",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"serviceinfos",
+						"statistics",
+						"domains"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "{{url}}/serviceinfos/statistics/levels",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"var schema = \r",
+							"\r",
+							"\r",
+							"\r",
+							"{\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\", \r",
+							"  \"definitions\": {}, \r",
+							"  \"id\": \"http://example.com/example.json\", \r",
+							"  \"properties\": {\r",
+							"    \"data\": {\r",
+							"      \"id\": \"/properties/data\", \r",
+							"      \"items\": {\r",
+							"        \"id\": \"/properties/data/items\", \r",
+							"        \"properties\": {\r",
+							"          \"count\": {\r",
+							"            \"id\": \"/properties/data/items/properties/count\", \r",
+							"            \"type\": \"integer\"\r",
+							"          }, \r",
+							"          \"level\": {\r",
+							"            \"id\": \"/properties/data/items/properties/level\", \r",
+							"            \"type\": \"integer\"\r",
+							"          }, \r",
+							"          \"levelName\": {\r",
+							"            \"id\": \"/properties/data/items/properties/levelName\", \r",
+							"            \"type\": \"string\"\r",
+							"          }\r",
+							"        }, \r",
+							"        \"type\": \"object\"\r",
+							"      }, \r",
+							"      \"type\": \"array\"\r",
+							"    }, \r",
+							"    \"total\": {\r",
+							"      \"id\": \"/properties/total\", \r",
+							"      \"type\": \"integer\"\r",
+							"    }\r",
+							"  }, \r",
+							"  \"type\": \"object\"\r",
+							"};\r",
+							"tests[\"Valid Data schema\"] = tv4.validate(jsonData, schema);\r",
+							"\r",
+							"if(jsonData.total > 0){\r",
+							"  tests[\"Has total \"] = responseBody.has(\"total\");\r",
+							"  tests[\"Has data \"] = responseBody.has(\"data\");\r",
+							"  tests[\"Has level \"] = responseBody.has(\"level\");\r",
+							"  tests[\"Has levelName \"] = responseBody.has(\"levelName\");\r",
+							"  tests[\"Has count \"] = responseBody.has(\"count\");\r",
+							" \r",
+							" \r",
+							"  \r",
+							"  \r",
+							"  \r",
+							"}\r",
+							"\r",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{url}}/serviceinfos/statistics/levels",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"serviceinfos",
+						"statistics",
+						"levels"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

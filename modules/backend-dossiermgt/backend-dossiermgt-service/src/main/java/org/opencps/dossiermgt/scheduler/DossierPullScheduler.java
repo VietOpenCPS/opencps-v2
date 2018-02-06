@@ -115,10 +115,37 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					.createJSONObject(resDossierSearch.getString(RESTFulConfiguration.MESSAGE));
 
 			JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+			
+			for (int i = 0; i < array.length(); i++) {
+				JSONObject object = array.getJSONObject(i);
+				
+				long dossierId = object.getLong(DossierTerm.DOSSIER_ID);
+				
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				
+				
+				if (Validator.isNotNull(dossier)) {
+					dossier.setSubmitting(false);
+					
+					DossierLocalServiceUtil.updateDossier(dossier);
+				}
+			}
+			
 
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject object = array.getJSONObject(i);
-
+				
+/*				long dossierId = object.getLong(DossierTerm.DOSSIER_ID);
+				
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				
+				
+				if (Validator.isNotNull(dossier)) {
+					dossier.setSubmitting(false);
+					
+					DossierLocalServiceUtil.updateDossier(dossier);
+				}*/
+				
 				try {
 					pullDossier(company, object, systemUser);
 				} catch (Exception e) {
@@ -136,6 +163,15 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 	private void pullDossier(Company company, JSONObject object, User systemUser) throws PortalException {
 		long dossierId = GetterUtil.getLong(object.get(DossierTerm.DOSSIER_ID));
 
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		
+		
+		if (Validator.isNotNull(dossier)) {
+			dossier.setSubmitting(false);
+			
+			DossierLocalServiceUtil.updateDossier(dossier);
+		}
+		
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(company.getCompanyId());
 		serviceContext.setUserId(object.getLong(DossierTerm.USER_ID));
@@ -313,6 +349,17 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 					pullDossierFiles(desDossier.getGroupId(), desDossier.getDossierId(), lsFileSync, sourceGroupId,
 							dossierId, referenceUid, serviceContext);
+					
+
+					// get the list of payment file need to sync
+					List<JSONObject> lsPaymentsFileSync = new ArrayList<>();
+
+					getPaymentFiles(sourceGroupId, dossierId, lsPaymentsFileSync);
+
+					// Do Pull paymentFile to client
+
+					pullPaymentFile(sourceGroupId, dossierId, desDossier.getGroupId(), desDossier.getDossierId(),
+							lsPaymentsFileSync, serviceContext);
 
 					if (Validator.isNotNull(processAction)) {
 						// doAction
@@ -338,15 +385,6 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				}
 
 
-				// get the list of payment file need to sync
-				List<JSONObject> lsPaymentsFileSync = new ArrayList<>();
-
-				getPaymentFiles(sourceGroupId, dossierId, lsPaymentsFileSync);
-
-				// Do Pull paymentFile to client
-
-				pullPaymentFile(sourceGroupId, dossierId, desDossier.getGroupId(), desDossier.getDossierId(),
-						lsPaymentsFileSync, serviceContext);
 
 			}
 
@@ -654,7 +692,18 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					JSONObject object = array.getJSONObject(i);
 
 					if (GetterUtil.getBoolean(object.get("isNew"))) {
+						
+						
 						lsFileSync.add(object);
+						
+						long dossierFileId = object.getLong("dossierFileId");
+						
+						if (dossierFileId != 0) {
+							DossierFile file = DossierFileLocalServiceUtil.getDossierFile(object.getLong("dossierFileId"));
+							file.setIsNew(false);
+							DossierFileLocalServiceUtil.updateDossierFile(file);
+						}
+						
 					}
 
 				}
@@ -674,7 +723,11 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			try {
 				String fileRef = ref.getString("referenceUid");
 				
-//				DossierFile srcDossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(srcDossierId, fileRef);
+				DossierFile srcDossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(srcDossierId, fileRef);
+				
+				srcDossierFile.setIsNew(false);
+				
+				DossierFileLocalServiceUtil.updateDossierFile(srcDossierFile);
 
 				// Get file from SERVER
 				String path = "dossiers/" + srcDossierId + "/files/" + fileRef;

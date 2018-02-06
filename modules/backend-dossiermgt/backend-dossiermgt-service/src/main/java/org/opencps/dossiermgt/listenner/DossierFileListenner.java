@@ -79,7 +79,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			String deliverableCode = model.getDeliverableCode();
 
 			if (Validator.isNotNull(deliverableCode)) {
-				Dossier dossier = DossierLocalServiceUtil.getDossier(model.getDossierId());
+				//Dossier dossier = DossierLocalServiceUtil.getDossier(model.getDossierId());
 
 				// Exist Deliverable checking
 
