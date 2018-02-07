@@ -1,12 +1,5 @@
 Bundle-Name: backend-kyso-api-rest
 Bundle-SymbolicName: backend.kyso.api.rest
-Bundle-Version: 2.0.0
+Bundle-Version: 1.0.0
 Liferay-Configuration-Path: /configuration
 Include-Resource: configuration=src/main/resources/configuration
-Export-Package: \
-	com.fasterxml.jackson.annotation,\
-	com.fasterxml.jackson.annotation.*,\
-	io.swagger.annotations,\
-	io.swagger.annotations.*,\
-	com.fasterxml.jackson.dataformat.xml.annotation,\
-	org.opencps.dossiermgt.service.comparator

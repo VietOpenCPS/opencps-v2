@@ -44,7 +44,7 @@ public interface DigitalSignatureManagement {
 			@BeanParam DigitalSignatureInputModel input);
 
 	@POST
-	@Path("{id}/completeSignature")
+	@Path("/{id}/completeSignature")
 	@ApiOperation(value = "completeSignature")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
