@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			'groupId': themeDisplay.getScopeGroupId()
 		}
 	};
-
+		
 		var dossierViewJX = new VueJX({
 			el: 'dossierViewJX',
 			pk: 1,
@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				advanced_filter: false,
 				alpacaAssignUserId: 0,
 				subUsers: [],
+				currentCounter : 0,
+				currentCounterTemp : 0,
 				listgroupHoSoFilterselectedIndex: -1
 			},
 			onScroll: 'onScroll',
@@ -308,7 +310,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
                             			if(responseScript.startsWith("#") || responseData.startsWith("#")){
                             				item.plugin = true;
-                            				
 
                             				var url ="/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/plugins/"+item.processActionId+"/preview" ;
 
@@ -438,7 +439,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										vm.snackbartextdossierViewJX = item.actionName + " thành công!";
 										vm.snackbardossierViewJX = true;
 										
-										
 										vm._inidanhSachHoSoTable();
 										setTimeout(function(){ 
 											vm._initlistgroupHoSoFilter();
@@ -456,7 +456,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								});
 							} else {
 								if (idArr) {
-									var strIdArr = dossierFileIdArr.join(";");
+									var strIdArr = idArr.join(";");
 									console.log(strIdArr);
 									vm.kyDuyetYCGiamDinh(strIdArr);
 								}
@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                         kyDuyetYCGiamDinh: function(strIdArr) {
 
 							var vm = this;
-							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/requestsToken';
+							var url = '/o/rest/v2/digitalSignature/'+vm.detailModel.dossierId+'/hashComputed';
 							console.log(vm.detailModel.dossierId);
 							
 							$.ajax({
@@ -491,9 +491,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									console.log("signFieldNames: "+signFieldNames);
 									console.log("fileNames: "+fileNames);
 									console.log("msgs: "+msgs);			
-								
+									vm.actionsSubmitLoading = false;
 									if(plugin().valid) {
-									
+										
 										for ( var i = 0; i < hashComputers.length; i++) {
 										
 											var hashComputer = hashComputers[i];
@@ -521,6 +521,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									} else {
 										alert("Plugin is not working");
 									}
+								},
+								error : function(result){
+									vm.actionsSubmitLoading = false;
 								}
 							});
 						},
@@ -736,6 +739,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					"events": {
 						groupHoSoFilter: function(item){
 							var vm = this;
+							vm._initlistgroupHoSoFilter();
 							vm.detailPage = false;
 							vm.detailRegistPage = false;
 							vm.listgroupHoSoFilterselected = item.id;
@@ -757,6 +761,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								
 							} 
 							
+
+
 							if (item.id == 'tra_cuu_hoso') {
 								vm._initraCuuHoSoTable(false);
 							} else if (item.id == 'tra_cuu_phuong_tien') {
@@ -2178,4 +2184,15 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		});
 
 		dossierViewJX._builder('dossierViewJX');
+
+		/*window.onload = function(event){
+			var vm = dossierViewJX;
+			setInterval(function(){
+
+				vm._initlistgroupHoSoFilter();
+				vm._inidanhSachHoSoTable();
+
+
+			}, 10000);
+		}*/
 	});
