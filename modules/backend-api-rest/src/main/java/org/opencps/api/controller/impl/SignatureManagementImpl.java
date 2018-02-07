@@ -81,17 +81,31 @@ public class SignatureManagementImpl implements SignatureManagement{
 			String signFieldName = input.getSignFieldName();
 			String fileName = input.getFileName();
 
-//			callSignatureSync(groupId, user, id, sign, signFieldName, fileName, serviceContext);
+			callSignatureSync(groupId, user, id, sign, signFieldName, fileName, serviceContext);
 
+			String fullPath = "";
+			long fileEntryId = 0;
 			JSONObject result = null;
-			if(true) {
-
 //				result = DossierSyncUtils.mappingToSending(dossierSync);
 			result = JSONFactoryUtil.createJSONObject();
+			
+//			long fileEntryId = msgData.getLong("fileEntryId");
+//
+//			long userId = msgData.getLong("userId");
 
-			} else {
-				throw new NotFoundException("NotFoundDossierSync");
-			}
+//			boolean eSign = msgData.getBoolean("eSign");
+
+//			long dossierFileId = msgData.getLong("dossierFileId");
+			String msg = "success";
+			File fileSigned = new File(fullPath.replace(".pdf", ".signed.pdf"));
+			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
+			
+//			ServiceContext serviceContext = new ServiceContext();
+
+			DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
+					dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
+					StringPool.BLANK, false, fileSigned, serviceContext);
+
 
 			return Response.status(200).entity(result).build();
 
@@ -289,6 +303,107 @@ public class SignatureManagementImpl implements SignatureManagement{
 //		if (countDossierSync == 0 && clientDossierActionId > 0) {
 //			DossierActionLocalServiceUtil.updatePending(clientDossierActionId, false);
 //		}
+
+	}
+
+	@Override
+	public Response getHashComputedBySignature(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, Long id, DigitalSignatureInputModel input) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			String strIdArr = input.getStrIdArr();
+			_log.info("array Id: "+strIdArr);
+
+			String[] idSplit = strIdArr.split(StringPool.SEMICOLON);
+			_log.info("idSplit Id: "+idSplit);
+
+			JSONObject hashComputed = null;
+			for (String strId : idSplit) {
+				String[] idArr = strId.split(StringPool.COMMA);
+				DossierPart dossierPart = DossierPartLocalServiceUtil.fetchDossierPart(Long.valueOf(idArr[1]));
+				_log.info("Dossier Part: "+dossierPart);
+				DossierFile dossierFile = null;
+				if (dossierPart != null && dossierPart.getESign()) {
+					dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(Long.valueOf(idArr[0]));
+					_log.info("Dossier File: "+dossierFile);
+					if (dossierFile != null && dossierFile.getFileEntryId() > 0) {
+						long fileEntryId = dossierFile.getFileEntryId();
+						_log.info("fileEntryId: "+fileEntryId);
+
+						hashComputed = callHashComputedSync(groupId, user, fileEntryId, serviceContext);
+						_log.info("hashComputed: "+hashComputed);
+						break;
+					}
+				}
+			}
+
+			String message = hashComputed.getString(RESTFulConfiguration.MESSAGE);
+			_log.info("message: "+message);
+			
+//			JSONObject result = null;
+//			result = JSONFactoryUtil.createJSONObject();
+
+			return Response.status(200).entity(message).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					error.setMessage("Internal Server Error");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+
+				}
+			}
+		}
+	}
+
+	private JSONObject callHashComputedSync(long groupId, User user, long fileEntryId, ServiceContext serviceContext) throws PortalException {
+
+		InvokeREST rest = new InvokeREST();
+
+		HashMap<String, String> properties = new HashMap<String, String>();
+
+		// Call initDossier to SERVER
+		String httpMethod = HttpMethods.POST;
+
+		String endPoint = "signature/requestsToken";
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("fileEntryId", fileEntryId);
+		params.put("emailUser", user.getEmailAddress());
+
+		JSONObject resPostHashComputed = rest.callPostAPI(groupId, httpMethod, "application/json",
+				RESTFulConfiguration.SERVER_PATH_BASE, endPoint, RESTFulConfiguration.SERVER_USER,
+				RESTFulConfiguration.SERVER_PASS, properties, params, serviceContext);
+
+		return resPostHashComputed;
 
 	}
 
