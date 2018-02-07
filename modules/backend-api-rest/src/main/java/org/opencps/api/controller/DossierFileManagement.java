@@ -324,7 +324,6 @@ public interface DossierFileManagement {
 	
 	@DELETE
 	@Path("/{id}/files/{fileTemplateNo}/all")
-	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "update DossierFile")
 	@ApiResponses(value = { @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns"),
