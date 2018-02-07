@@ -1553,7 +1553,7 @@ public class DossierActionsImpl implements DossierActions {
 		
 		StringBuffer sb = new StringBuffer();
 		
-		String oldNote = dossier.getApplicantIdNo();
+		String oldNote = dossier.getApplicantNote();
 		
 		sb.append(oldNote);
 		
