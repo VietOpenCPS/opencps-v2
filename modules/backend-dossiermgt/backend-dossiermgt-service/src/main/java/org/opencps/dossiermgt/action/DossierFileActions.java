@@ -27,7 +27,10 @@ public interface DossierFileActions {
 		throws SystemException, PortalException;
 
 	public DossierFile deleteDossierFile(long groupId, long dossierId, String referenceUid, ServiceContext serviceContext) 
-		throws PortalException;
+			throws PortalException;
+
+	public void deleteAllDossierFile(long groupId, long dossierId, String fileTemplateNo, ServiceContext serviceContext) 
+			throws PortalException;
 
 	public JSONObject getDossierFiles(long groupId, String keyword, String template, Integer type, Boolean owner,
 			Boolean original, int start, int end, String sort, String order, ServiceContext serviceContext);

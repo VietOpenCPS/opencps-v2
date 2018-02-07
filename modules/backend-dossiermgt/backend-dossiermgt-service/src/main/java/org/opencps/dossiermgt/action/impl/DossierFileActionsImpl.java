@@ -209,7 +209,6 @@ public class DossierFileActionsImpl implements DossierFileActions {
 	public DossierFile resetDossierFileFormData(long groupId, long dossierId, String referenceUid, String formData,
 			ServiceContext serviceContext) throws SystemException, PortalException {
 		
-
 		DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId, referenceUid);
 		
 		if (dossierFile.isEForm()) {
@@ -248,6 +247,18 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		}
 
 		return dossierFile;
+
+	}
+
+	@Override
+	public void deleteAllDossierFile(long groupId, long dossierId, String fileTemplateNo,
+			ServiceContext serviceContext) throws PortalException {
+		
+		List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO(dossierId, fileTemplateNo, false);
+		
+		for (DossierFile file : lsDossierFile) {
+			DossierFileLocalServiceUtil.removeDossierFile(dossierId, file.getReferenceUid(), serviceContext);
+		}
 
 	}
 }

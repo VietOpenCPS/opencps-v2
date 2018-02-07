@@ -579,7 +579,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 	@Override
 	public Response resetformdataDossierFileFormData(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long id, String referenceUid, String formdata) {
+			Locale locale, User user, ServiceContext serviceContext, long id, String referenceUid, String formdata, String fileTemplateNo) {
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));

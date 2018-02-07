@@ -29,7 +29,6 @@ import org.opencps.api.dossierfile.model.DossierFileSearchModel;
 import org.opencps.api.dossierfile.model.DossierFileSearchResultsModel;
 import org.opencps.exception.model.ExceptionModel;
 
-import com.liferay.osgi.util.service.Reference;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -321,7 +320,8 @@ public interface DossierFileManagement {
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
 			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid,
-			@ApiParam(value = "formdata of dossierfile", required = true) @FormParam("formdata") String formdata);
+			@ApiParam(value = "formdata of dossierfile", required = true) @FormParam("formdata") String formdata,
+			@FormParam("fileTemplateNo") String fileTemplateNo);
 
 	@DELETE
 	@Path("/{id}/files/{referenceUid}")
