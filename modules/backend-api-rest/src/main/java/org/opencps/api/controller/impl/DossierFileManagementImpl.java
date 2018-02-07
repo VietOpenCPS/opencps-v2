@@ -634,6 +634,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(JSONFactoryUtil.serialize(result)).build();
 
 		} catch (Exception e) {
+			_log.info("DOSSIER_LOG_"+e);
 			
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 			
