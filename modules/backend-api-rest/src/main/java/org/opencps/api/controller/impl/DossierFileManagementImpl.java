@@ -34,6 +34,7 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -579,7 +580,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 	@Override
 	public Response resetformdataDossierFileFormData(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long id, String referenceUid, String formdata, String fileTemplateNo) {
+			Locale locale, User user, ServiceContext serviceContext, long id, String referenceUid, String formdata) {
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -604,4 +605,43 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return processException(e);
 		}
 	}
+
+	@Override
+	public Response removeAllDossierFileFormData(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id, String referenceUid,
+			String fileTemplateNo) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierFileActions action = new DossierFileActionsImpl();
+
+			action.deleteAllDossierFile(groupId, id, fileTemplateNo, serviceContext);
+
+			//DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
+			
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			
+			result.put("status", "success");
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			
+			result.put("status", "error");
+
+			return Response.status(500).entity(result).build();
+		}
+	}
+
+
 }

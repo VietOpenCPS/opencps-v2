@@ -211,7 +211,6 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		
 		DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId, referenceUid);
 		
-		if (dossierFile.isEForm()) {
 				
 	
 			// String dossierTemplateNo = StringPool.BLANK;
@@ -240,11 +239,7 @@ public class DossierFileActionsImpl implements DossierFileActions {
 				
 				DeliverableLocalServiceUtil.deleteDeliverable(deliverable);
 			}
-		} else {
-			dossierFile.setRemoved(true);
-			
-			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
-		}
+
 
 		return dossierFile;
 
