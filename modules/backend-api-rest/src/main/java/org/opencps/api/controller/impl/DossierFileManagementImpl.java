@@ -631,7 +631,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			
 			result.put("status", "success");
 
-			return Response.status(200).entity(result).build();
+			return Response.status(200).entity(JSONFactoryUtil.serialize(result)).build();
 
 		} catch (Exception e) {
 			_log.info("DOSSIER_LOG_"+e);
@@ -640,7 +640,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			
 			result.put("status", "error");
 
-			return Response.status(500).entity(result).build();
+			return Response.status(500).entity(JSONFactoryUtil.serialize(result)).build();
 		}
 	}
 
