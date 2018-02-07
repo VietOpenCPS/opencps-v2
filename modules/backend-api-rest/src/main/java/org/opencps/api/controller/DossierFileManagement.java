@@ -335,7 +335,6 @@ public interface DossierFileManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
-			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid,
 			@ApiParam(value = "fileTemplateNo of dossierfile", required = true) @FormParam("fileTemplateNo") String fileTemplateNo);
 
 

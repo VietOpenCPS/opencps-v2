@@ -608,7 +608,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 	@Override
 	public Response removeAllDossierFileFormData(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long id, String referenceUid,
+			Locale locale, User user, ServiceContext serviceContext, long id,
 			String fileTemplateNo) {
 		
 		BackendAuth auth = new BackendAuthImpl();
@@ -631,7 +631,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			
 			result.put("status", "success");
 
-			return Response.status(200).entity(result).build();
+			return Response.status(200).entity(JSONFactoryUtil.serialize(result)).build();
 
 		} catch (Exception e) {
 			
@@ -639,7 +639,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			
 			result.put("status", "error");
 
-			return Response.status(500).entity(result).build();
+			return Response.status(500).entity(JSONFactoryUtil.serialize(result)).build();
 		}
 	}
 
