@@ -251,7 +251,10 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		
 		List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO(dossierId, fileTemplateNo, false);
 		
+		_log.info("SIZE_DOSSIER_REMOVE_"+lsDossierFile.size());
+		
 		for (DossierFile file : lsDossierFile) {
+			
 			DossierFileLocalServiceUtil.removeDossierFile(dossierId, file.getReferenceUid(), serviceContext);
 		}
 
