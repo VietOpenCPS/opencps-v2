@@ -249,7 +249,9 @@ public class DossierFileActionsImpl implements DossierFileActions {
 	public void deleteAllDossierFile(long groupId, long dossierId, String fileTemplateNo,
 			ServiceContext serviceContext) throws PortalException {
 		
-		List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO(dossierId, fileTemplateNo, false);
+		//List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO(dossierId, fileTemplateNo, false);
+		
+		List<DossierFile> lsDossierFile =  DossierFileLocalServiceUtil.getDossierFileByDID_DPNO(dossierId, fileTemplateNo, false);
 		
 		_log.info("SIZE_DOSSIER_REMOVE_"+lsDossierFile.size());
 		
