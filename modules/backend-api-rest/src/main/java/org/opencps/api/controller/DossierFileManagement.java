@@ -324,7 +324,6 @@ public interface DossierFileManagement {
 	
 	@DELETE
 	@Path("/{id}/files/{fileTemplateNo}/all")
-	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "update DossierFile")
 	@ApiResponses(value = { @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns"),
@@ -335,7 +334,7 @@ public interface DossierFileManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
-			@ApiParam(value = "fileTemplateNo of dossierfile", required = true) @FormParam("fileTemplateNo") String fileTemplateNo);
+			@ApiParam(value = "fileTemplateNo of dossierfile", required = true) @PathParam("fileTemplateNo") String fileTemplateNo);
 
 
 	@DELETE

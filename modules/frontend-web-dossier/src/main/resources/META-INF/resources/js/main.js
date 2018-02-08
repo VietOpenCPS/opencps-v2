@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			'groupId': themeDisplay.getScopeGroupId()
 		}
 	};
-
+		
 		var dossierViewJX = new VueJX({
 			el: 'dossierViewJX',
 			pk: 1,
@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				advanced_filter: false,
 				alpacaAssignUserId: 0,
 				subUsers: [],
+				currentCounter : 0,
+				currentCounterTemp : 0,
 				listgroupHoSoFilterselectedIndex: -1
 			},
 			onScroll: 'onScroll',
@@ -308,7 +310,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
                             			if(responseScript.startsWith("#") || responseData.startsWith("#")){
                             				item.plugin = true;
-                            				
 
                             				var url ="/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/plugins/"+item.processActionId+"/preview" ;
 
@@ -438,7 +439,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										vm.snackbartextdossierViewJX = item.actionName + " thành công!";
 										vm.snackbardossierViewJX = true;
 										
-										
 										vm._inidanhSachHoSoTable();
 										setTimeout(function(){ 
 											vm._initlistgroupHoSoFilter();
@@ -456,7 +456,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								});
 							} else {
 								if (idArr) {
-									var strIdArr = dossierFileIdArr.join(";");
+									var strIdArr = idArr.join(";");
 									console.log(strIdArr);
 									vm.kyDuyetYCGiamDinh(strIdArr);
 								}
@@ -467,33 +467,35 @@ document.addEventListener('DOMContentLoaded', function (event) {
                         kyDuyetYCGiamDinh: function(strIdArr) {
 
 							var vm = this;
-							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/requestsToken';
+							var url = '/o/rest/v2/digitalSignature/'+vm.detailModel.dossierId+'/hashComputed';
 							console.log(vm.detailModel.dossierId);
 							
 							$.ajax({
 								type : 'POST',
 								url : url,
 								async: false,//bat dong bo = fale, dong bo voi client
-								cache : false,
+								dataType: 'json',
 								data : {
 									// type: 'kyDuyetYCGiamDinh',
 									strIdArr: strIdArr
 									// strDossierPartId: strDossierPartId
 									/*id : controlRequirementId*/
 								},
-								success : function(data) {
-									var jsonData = JSON.parse(data);
+								success : function(result) {
+									console.log(result);
+									var jsonData = JSON.parse(result);
 									var hashComputers = jsonData.hashComputers;
 									var signFieldNames = jsonData.signFieldNames;
 									var fileNames = jsonData.fileNames;
 									var msgs = jsonData.msg;
+									var fileEntryId = jsonData.fileEntryId;
 									console.log("hashComputers: "+hashComputers);
 									console.log("signFieldNames: "+signFieldNames);
 									console.log("fileNames: "+fileNames);
 									console.log("msgs: "+msgs);			
-								
+									vm.actionsSubmitLoading = false;
 									if(plugin().valid) {
-									
+										
 										for ( var i = 0; i < hashComputers.length; i++) {
 										
 											var hashComputer = hashComputers[i];
@@ -503,10 +505,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 												var sign = plugin().Signature;
 												var signFieldName = signFieldNames[i];
 												var fileName = fileNames[i];
+												console.log("sign: "+sign);
+												console.log("signFieldName: "+signFieldName);
+												console.log("fileName: "+fileName);
 												var msg = msgs[i];
 												if(msg == 'success') {
 													try {
-														/*vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName);*/
+														vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName, fileEntryId);
 													}
 													catch(err) {
 														alert(err.message);
@@ -521,27 +526,32 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									} else {
 										alert("Plugin is not working");
 									}
+								},
+								error : function(result){
+									vm.actionsSubmitLoading = false;
 								}
 							});
 						},
-						/*completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName) {
-							String url = '/o/rest/v2/signature/'+vm.detailModel.dossierId;
+						completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName, fileEntryId) {
+							String url = '/o/rest/v2/digitalSignature/'+vm.detailModel.dossierId+'/dossierFile';
 							$.ajax({
 								type : 'PUT',
 								url : url,
 								async: false,//bat dong bo = fale, dong bo voi client
-								cache : false,
+								dataType : 'json',
 								data : {
 									// type:'signatureCompleteKyDuyetYCGiamDinh',
-									sign:sign,
-									signFieldName:signFieldName,
-									fileName:fileName
+									sign: sign,
+									signFieldName: signFieldName,
+									fileName: fileName,
+									fileEntryId: fileEntryId
 								},
-								success : function(data) {
-									var jsonData = JSON.parse(data);
+								success : function(result) {
+									console.log(result);
+									var jsonData = JSON.parse(result);
 									var msg = jsonData.msg;
 									if(msg == 'success'){
-										
+										alert('ký số thành công!');
 									} else {
 										alert(msg);
 									}
@@ -550,7 +560,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									alert('ky so false');
 								}
 							})
-						},*/
+						},
                         _initchangeProcessStep: function (){
                             var vm = this;
 							vm.stepLoading = true;
@@ -736,6 +746,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					"events": {
 						groupHoSoFilter: function(item){
 							var vm = this;
+							vm._initlistgroupHoSoFilter();
 							vm.detailPage = false;
 							vm.detailRegistPage = false;
 							vm.listgroupHoSoFilterselected = item.id;
@@ -757,6 +768,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								
 							} 
 							
+
+
 							if (item.id == 'tra_cuu_hoso') {
 								vm._initraCuuHoSoTable(false);
 							} else if (item.id == 'tra_cuu_phuong_tien') {
@@ -2178,4 +2191,15 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		});
 
 		dossierViewJX._builder('dossierViewJX');
+
+		/*window.onload = function(event){
+			var vm = dossierViewJX;
+			setInterval(function(){
+
+				vm._initlistgroupHoSoFilter();
+				vm._inidanhSachHoSoTable();
+
+
+			}, 10000);
+		}*/
 	});

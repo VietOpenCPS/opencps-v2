@@ -48,13 +48,13 @@ public class DigitalSignatureManagementImpl implements DigitalSignatureManagemen
 					.replaceAll(StringPool.OPEN_BRACKET, StringPool.BLANK).split(StringPool.SEMICOLON);
 			_log.info("idSplit Id: "+idSplit);
 			
-			JSONObject results = action.createHashSignature(user, id, idSplit);
+//			JSONObject results = action.createHashSignature(user, id, idSplit);
 //			Deliverable deliverable = action.addDeliverable(groupId, deliverableType, deliverableCode, 
 //					govAgencyCode, applicantIdNo, applicantName, subject, issueDate, expireDate,
 //					revalidate, deliverableState, serviceContext);
 //
 //			DeliverableInputModel result = DeliverableUtils.mappingToDeliverablesModel(deliverable);
-//			JSONObject results = JSONFactoryUtil.createJSONObject();
+			JSONObject results = JSONFactoryUtil.createJSONObject();
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 

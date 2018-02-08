@@ -39,8 +39,8 @@ import javax.xml.bind.annotation.XmlType;
  "sign",
  "signFieldName",
  "fileName",
- "strIdArr",
- "fileEntryId"
+ "fileEntryId",
+ "emailUser"
 })
 public class DigitalSignatureInputModel {
 
@@ -50,10 +50,10 @@ public class DigitalSignatureInputModel {
 	protected String signFieldName;
 	@FormParam(value = "fileName")
 	protected String fileName;
-	@FormParam(value = "strIdArr")
-	protected String strIdArr;
 	@FormParam(value = "fileEntryId")
 	protected String fileEntryId;
+	@FormParam(value = "emailUser")
+	protected String emailUser;
 
 	 /**
 	  * Gets the value of the deliverableType property.
@@ -127,20 +127,20 @@ public class DigitalSignatureInputModel {
 		this.fileName = fileName;
 	}
 
-	public String getStrIdArr() {
-		return strIdArr;
-	}
-
-	public void setStrIdArr(String strIdArr) {
-		this.strIdArr = strIdArr;
-	}
-
 	public String getFileEntryId() {
 		return fileEntryId;
 	}
 
 	public void setFileEntryId(String fileEntryId) {
 		this.fileEntryId = fileEntryId;
+	}
+
+	public String getEmailUser() {
+		return emailUser;
+	}
+
+	public void setEmailUser(String emailUser) {
+		this.emailUser = emailUser;
 	}
 
 }
