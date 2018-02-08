@@ -474,19 +474,21 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								type : 'POST',
 								url : url,
 								async: false,//bat dong bo = fale, dong bo voi client
-								cache : false,
+								dataType: 'json',
 								data : {
 									// type: 'kyDuyetYCGiamDinh',
 									strIdArr: strIdArr
 									// strDossierPartId: strDossierPartId
 									/*id : controlRequirementId*/
 								},
-								success : function(data) {
-									var jsonData = JSON.parse(data);
+								success : function(result) {
+									console.log(result);
+									var jsonData = JSON.parse(result);
 									var hashComputers = jsonData.hashComputers;
 									var signFieldNames = jsonData.signFieldNames;
 									var fileNames = jsonData.fileNames;
 									var msgs = jsonData.msg;
+									var fileEntryId = jsonData.fileEntryId;
 									console.log("hashComputers: "+hashComputers);
 									console.log("signFieldNames: "+signFieldNames);
 									console.log("fileNames: "+fileNames);
@@ -503,10 +505,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 												var sign = plugin().Signature;
 												var signFieldName = signFieldNames[i];
 												var fileName = fileNames[i];
+												console.log("sign: "+sign);
+												console.log("signFieldName: "+signFieldName);
+												console.log("fileName: "+fileName);
 												var msg = msgs[i];
 												if(msg == 'success') {
 													try {
-														/*vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName);*/
+														vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName, fileEntryId);
 													}
 													catch(err) {
 														alert(err.message);
@@ -527,24 +532,26 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								}
 							});
 						},
-						/*completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName) {
-							String url = '/o/rest/v2/signature/'+vm.detailModel.dossierId;
+						completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName, fileEntryId) {
+							String url = '/o/rest/v2/digitalSignature/'+vm.detailModel.dossierId+'/dossierFile';
 							$.ajax({
 								type : 'PUT',
 								url : url,
 								async: false,//bat dong bo = fale, dong bo voi client
-								cache : false,
+								dataType : 'json',
 								data : {
 									// type:'signatureCompleteKyDuyetYCGiamDinh',
-									sign:sign,
-									signFieldName:signFieldName,
-									fileName:fileName
+									sign: sign,
+									signFieldName: signFieldName,
+									fileName: fileName,
+									fileEntryId: fileEntryId
 								},
-								success : function(data) {
-									var jsonData = JSON.parse(data);
+								success : function(result) {
+									console.log(result);
+									var jsonData = JSON.parse(result);
 									var msg = jsonData.msg;
 									if(msg == 'success'){
-										
+										alert('ký số thành công!');
 									} else {
 										alert(msg);
 									}
@@ -553,7 +560,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									alert('ky so false');
 								}
 							})
-						},*/
+						},
                         _initchangeProcessStep: function (){
                             var vm = this;
 							vm.stepLoading = true;
