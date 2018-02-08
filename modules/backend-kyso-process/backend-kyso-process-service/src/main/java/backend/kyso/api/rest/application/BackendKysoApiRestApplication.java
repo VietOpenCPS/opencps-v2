@@ -76,7 +76,7 @@ public class BackendKysoApiRestApplication extends Application {
 //				JSONObject results = JSONFactoryUtil.createJSONObject();
 				_log.info("results : "+results);
 
-				return Response.status(200).entity(results).build();
+				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 			} catch (Exception e) {
 //				ErrorMsg error = new ErrorMsg();
