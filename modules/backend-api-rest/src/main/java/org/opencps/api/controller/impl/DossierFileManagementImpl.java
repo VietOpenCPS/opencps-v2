@@ -620,7 +620,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
+			
+			//Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			
 			DossierFileActions action = new DossierFileActionsImpl();
 
 			action.deleteAllDossierFile(groupId, id, fileTemplateNo, serviceContext);
@@ -639,6 +641,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 			
 			result.put("status", "error");
+			result.put("message", "error");
 
 			return Response.status(500).entity(JSONFactoryUtil.serialize(result)).build();
 		}
