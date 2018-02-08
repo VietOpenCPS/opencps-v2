@@ -193,6 +193,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 			jsonFeed.put("fileNames", fileNames);
 			jsonFeed.put("msg", messages);
 			jsonFeed.put("fullPathSigned", fullPathOfSignedFiles);
+			jsonFeed.put("fileEntryId", fileEntryId);
 			_log.info("=====CHECK END kyDuyetYCGiamDinh=====" + jsonFeed.toString());
 
 			return jsonFeed;
@@ -227,8 +228,8 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 				fullPath = realPath + fileName + ".pdf";
 				_log.info("fullPath: "+fullPath.toString());
 				
-				File fileSigned = new File(fullPath.replace(".pdf", ".signed.pdf"));
-				_log.info("fileSigned: "+fileSigned.toString());
+//				File fileSigned = new File(fullPath.replace(".pdf", ".signed.pdf"));
+//				_log.info("fileSigned: "+fileSigned.toString());
 
 //				ServiceContext serviceContext = new ServiceContext();
 
@@ -236,7 +237,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 //				DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
 //						dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
 //						StringPool.BLANK, false, fileSigned, serviceContext);
-
+				jsonFeed.put("fullPath", fullPath);
 				jsonFeed.put("msg", "success");
 //				log.info("===signatureCompleteKyDuyetYCGiamDinh===success");
 			} catch (Exception e) {

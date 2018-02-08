@@ -23,6 +23,7 @@ import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -63,31 +64,27 @@ public class SignatureManagementImpl implements SignatureManagement{
 			_log.info("signFieldName: "+signFieldName);
 			_log.info("fileName: "+fileName);
 
-			callSignatureSync(groupId, user, id, sign, signFieldName, fileName, serviceContext);
+			JSONObject signatureCompleted = callSignatureSync(groupId, user, id, sign, signFieldName, fileName, serviceContext);
 
-			String fullPath = "";
-			long fileEntryId = 0;
-			JSONObject result = null;
-//				result = DossierSyncUtils.mappingToSending(dossierSync);
-			result = JSONFactoryUtil.createJSONObject();
-			
-//			long fileEntryId = msgData.getLong("fileEntryId");
-//
-//			long userId = msgData.getLong("userId");
+			JSONObject result = JSONFactoryUtil.createJSONObject();
 
-//			boolean eSign = msgData.getBoolean("eSign");
+			if (signatureCompleted.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
+				long fileEntryId = Long.valueOf(input.getFileEntryId());
+				_log.info("fileEntryId: "+fileEntryId);
+				String message = signatureCompleted.getString(RESTFulConfiguration.MESSAGE);
+				_log.info("message: "+message);
+				JSONObject jsonData = JSONFactoryUtil.createJSONObject(message);
+				_log.info("jsonData: "+jsonData.toJSONString());
+				String fullPath = String.valueOf(jsonData.get("fullPath"));
+				_log.info("fullPath: "+fullPath);
+				File fileSigned = new File(fullPath.replace(".pdf", ".signed.pdf"));
+				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
 
-//			long dossierFileId = msgData.getLong("dossierFileId");
-			String msg = "success";
-			File fileSigned = new File(fullPath.replace(".pdf", ".signed.pdf"));
-			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
-			
-//			ServiceContext serviceContext = new ServiceContext();
-
-			DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
-					dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
-					StringPool.BLANK, false, fileSigned, serviceContext);
-
+				DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
+						dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
+						StringPool.BLANK, false, fileSigned, serviceContext);
+				result.put("msg", "success");
+			}
 
 			return Response.status(200).entity(result).build();
 

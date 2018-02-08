@@ -488,6 +488,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									var signFieldNames = jsonData.signFieldNames;
 									var fileNames = jsonData.fileNames;
 									var msgs = jsonData.msg;
+									var fileEntryId = jsonData.fileEntryId;
 									console.log("hashComputers: "+hashComputers);
 									console.log("signFieldNames: "+signFieldNames);
 									console.log("fileNames: "+fileNames);
@@ -510,7 +511,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 												var msg = msgs[i];
 												if(msg == 'success') {
 													try {
-														vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName);
+														vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName, fileEntryId);
 													}
 													catch(err) {
 														alert(err.message);
@@ -531,7 +532,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								}
 							});
 						},
-						completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName) {
+						completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName, fileEntryId) {
 							String url = '/o/rest/v2/digitalSignature/'+vm.detailModel.dossierId+'/dossierFile';
 							$.ajax({
 								type : 'PUT',
@@ -540,9 +541,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								dataType : 'json',
 								data : {
 									// type:'signatureCompleteKyDuyetYCGiamDinh',
-									sign:sign,
-									signFieldName:signFieldName,
-									fileName:fileName
+									sign: sign,
+									signFieldName: signFieldName,
+									fileName: fileName,
+									fileEntryId: fileEntryId
 								},
 								success : function(result) {
 									console.log(result);
