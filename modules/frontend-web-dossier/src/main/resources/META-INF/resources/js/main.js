@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									
                                 });
                             return false; 
-							
+								
 						},
                         changeProcessStep: function (item){
                             var vm = this;
@@ -483,12 +483,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								},
 								success : function(result) {
 									console.log(result);
-									var jsonData = JSON.parse(result);
-									var hashComputers = jsonData.hashComputers;
-									var signFieldNames = jsonData.signFieldNames;
-									var fileNames = jsonData.fileNames;
-									var msgs = jsonData.msg;
-									var fileEntryId = jsonData.fileEntryId;
+									/*var jsonData = JSON.parse(result);*/
+									var hashComputers = result.hashComputers;
+									var signFieldNames = result.signFieldNames;
+									var fileNames = result.fileNames;
+									var msgs = result.msg;
+									var fileEntryId = result.fileEntryId;
 									console.log("hashComputers: "+hashComputers);
 									console.log("signFieldNames: "+signFieldNames);
 									console.log("fileNames: "+fileNames);
@@ -514,7 +514,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 														vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName, fileEntryId);
 													}
 													catch(err) {
-														alert(err.message);
+														console.log(err);
 													}
 												}else{
 													alert(msg);
@@ -533,7 +533,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							});
 						},
 						completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName, fileEntryId) {
-							String url = '/o/rest/v2/digitalSignature/'+vm.detailModel.dossierId+'/dossierFile';
+							var vm = this;
+							var url = '/o/rest/v2/digitalSignature/'+vm.detailModel.dossierId+'/dossierFile';
 							$.ajax({
 								type : 'PUT',
 								url : url,
@@ -548,10 +549,19 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								},
 								success : function(result) {
 									console.log(result);
-									var jsonData = JSON.parse(result);
-									var msg = jsonData.msg;
+									/*var jsonData = JSON.parse(result);*/
+									var msg = result.msg;
 									if(msg == 'success'){
 										alert('ký số thành công!');
+										/*vm.snackbardossierViewJX = true;*/
+										
+										vm._inidanhSachHoSoTable();
+										setTimeout(function(){ 
+											vm._initlistgroupHoSoFilter();
+										}, 1000);
+
+										vm.detailPage = false;
+										vm.actionsSubmitLoading = false;
 									} else {
 										alert(msg);
 									}
