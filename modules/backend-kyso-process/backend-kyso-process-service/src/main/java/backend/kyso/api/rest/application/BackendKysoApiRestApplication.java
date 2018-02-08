@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -57,24 +58,25 @@ public class BackendKysoApiRestApplication extends Application {
 
 	@POST
 	@Path("/requestsToken")
-	@ApiOperation(value = "requestsToken")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response getByTokens(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @BeanParam DigitalSignatureInputModel input) {
+	public Response getByTokens(@Context HttpHeaders header, @BeanParam DigitalSignatureInputModel input) {
 
+		_log.info("START: =========");
 			try {
 
 				DigitalSignatureActions action = new DigitalSignatureActionsImpl();
 
-				String emailUser = user.getEmailAddress();
+				String emailUser = input.getEmailUser();
+				long fileEntryId = Long.valueOf(input.getFileEntryId());
 				_log.info("emailUser Id: "+emailUser);
-				long fileEntryId = 0;
+				_log.info("fileEntryId Id: "+fileEntryId);
 				
 				JSONObject results = action.createHashSignature(emailUser, fileEntryId);
+//				JSONObject results = JSONFactoryUtil.createJSONObject();
+				_log.info("results : "+results);
 
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+				return Response.status(200).entity(results).build();
 
 			} catch (Exception e) {
 //				ErrorMsg error = new ErrorMsg();
@@ -111,32 +113,23 @@ public class BackendKysoApiRestApplication extends Application {
 	@ApiOperation(value = "completeSignature")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response completeSignature(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id,
+	public Response completeSignature(@Context HttpHeaders header,
 			@BeanParam DigitalSignatureInputModel input) {
-		// TODO Add Deliverable Type
-//		BackendAuth auth = new BackendAuthImpl();
 
-//				long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
-//			if (!auth.isAuth(serviceContext)) {
-//				throw new UnauthenticationException();
-//			}
-
-//			DigitalSignatureActions action = new DigitalSignatureActionsImpl();
+			
+			DigitalSignatureActions action = new DigitalSignatureActionsImpl();
 
 			String sign = input.getSign();
 			String signFieldName = input.getSignFieldName();
 			String fileName = input.getFileName();
-//			JSONObject reCsults = action.completeSignature(user, id, sign, signFieldName, fileName);
-//					Deliverable deliverable = action.addDeliverable(groupId, deliverableType, deliverableCode, 
-//							govAgencyCode, applicantIdNo, applicantName, subject, issueDate, expireDate,
-//							revalidate, deliverableState, serviceContext);
-//
-//					DeliverableInputModel result = DeliverableUtils.mappingToDeliverablesModel(deliverable);
 			JSONObject results = JSONFactoryUtil.createJSONObject();
+			if (Validator.isNotNull(sign) && Validator.isNotNull(signFieldName) && Validator.isNotNull(fileName)) {
+				results = action.completeSignature(sign, signFieldName, fileName);
+			}
+//			JSONObject results = JSONFactoryUtil.createJSONObject();
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 

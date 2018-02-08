@@ -64,6 +64,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
 				
 				File fileTemp = FileUtil.createTempFile(dlFileEntry.getContentStream());
+				_log.info("fileTemp URL: "+fileTemp.getAbsolutePath());
 				
 				File file = new File(realPath + dlFileEntry.getFileName());
 				
@@ -200,36 +201,34 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 	}
 
 	@Override
-	public JSONObject completeSignature(User user, long id, String sign, String signFieldName, String fileName) {
+	public JSONObject completeSignature(String sign, String signFieldName, String fileName) {
 
-//		String sign = ParamUtil.getString(request, "sign");
-//		String signFieldName = ParamUtil.getString(request, "signFieldName");
-//		String fileName = ParamUtil.getString(request, "fileName");
-		
 		JSONObject jsonFeed = JSONFactoryUtil.createJSONObject();
 		
 		if (Validator.isNotNull(sign) && Validator.isNotNull(fileName)) {
 			byte[] signature = Base64.decode(sign);
 
 			String realPath = PropsUtil.get(ConfigProps.CER_HOME)+"/";
-//			String realPath = ReportUtils.getTemplateReportFilePath(request);
-//			String fullPath = StringPool.BLANK;
+			String fullPath = StringPool.BLANK;
 
-//			String realExportPath = realPath + "/export/";
 			try {
 				fileName = fileName.substring(0,
 						fileName.lastIndexOf(StringPool.PERIOD));
+				_log.info("fileName: "+fileName);
 				
 				ServerSigner signer = new ServerSigner(realPath
 						+ fileName + ".pdf", null);
 
 				signer.completeSign(signature, signFieldName);
 
-//				String signedFile = signer.getSignedFile();
+				String signedFile = signer.getSignedFile();
+				_log.info("signedFile: "+signedFile.toString());
 
-//				fullPath = realPath + fileName + ".pdf";
+				fullPath = realPath + fileName + ".pdf";
+				_log.info("fullPath: "+fullPath.toString());
 				
-//				File fileSigned = new File(fullPath.replace(".pdf", ".signed.pdf"));
+				File fileSigned = new File(fullPath.replace(".pdf", ".signed.pdf"));
+				_log.info("fileSigned: "+fileSigned.toString());
 
 //				ServiceContext serviceContext = new ServiceContext();
 
