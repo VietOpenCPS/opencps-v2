@@ -263,15 +263,17 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		
 		for (DossierFile file : lsDossierFile) {
 			
-			DossierFileLocalServiceUtil.removeDossierFile(dossierId, file.getReferenceUid(), serviceContext);
+			//DossierFileLocalServiceUtil.removeDossierFile(dossierId, file.getReferenceUid(), serviceContext);
+			
+			file.setRemoved(true);
 			
 			//set isNew = true
 			if (!dossier.getDossierStatus().equals(DossierStatusConstants.NEW)) {
 				
 				file.setIsNew(true);
 				
-				DossierFileLocalServiceUtil.updateDossierFile(file);
 			}
+			DossierFileLocalServiceUtil.updateDossierFile(file);
 			
 		}
 
