@@ -17,13 +17,16 @@ import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -46,76 +49,73 @@ public class SignatureManagementImpl implements SignatureManagement{
 
 	@Override
 	public Response updateDossierFileBySignature(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, Long id, DigitalSignatureInputModel input) {
+			Locale locale, User user, ServiceContext serviceContext, Long id, DigitalSignatureInputModel input) throws PortalException {
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long dossierId = Long.valueOf(id);
 
-		try {
+		if (!auth.isAuth(serviceContext)) {
+			throw new UnauthenticationException();
+		}
 
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
+		String sign = input.getSign();
+		String signFieldName = input.getSignFieldName();
+		String fileName = input.getFileName();
+		_log.info("sign: "+sign);
+		_log.info("signFieldName: "+signFieldName);
+		_log.info("fileName: "+fileName);
+		String actionCode = input.getActionCode();
+		String actionUser = input.getActionUser();
+		String actionNote = input.getActionNote();
+		long assignUserId = Long.valueOf(input.getAssignUserId());
+		String subUsers = input.getSubUsers();
+		_log.info("actionCode: "+actionCode);
+		_log.info("actionUser: "+actionUser);
+		_log.info("actionNote: "+actionNote);
+		_log.info("assignUserId: "+assignUserId);
+		_log.info("subUsers: "+subUsers);
 
-			String sign = input.getSign();
-			String signFieldName = input.getSignFieldName();
-			String fileName = input.getFileName();
-			_log.info("sign: "+sign);
-			_log.info("signFieldName: "+signFieldName);
-			_log.info("fileName: "+fileName);
+		JSONObject signatureCompleted = callSignatureSync(groupId, user, id, sign, signFieldName, fileName, serviceContext);
 
-			JSONObject signatureCompleted = callSignatureSync(groupId, user, id, sign, signFieldName, fileName, serviceContext);
+		JSONObject result = JSONFactoryUtil.createJSONObject();
 
-			JSONObject result = JSONFactoryUtil.createJSONObject();
+		if (signatureCompleted.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
+			long fileEntryId = Long.valueOf(input.getFileEntryId());
+			_log.info("fileEntryId: "+fileEntryId);
+			String message = signatureCompleted.getString(RESTFulConfiguration.MESSAGE);
+			_log.info("message: "+message);
+			JSONObject jsonData = JSONFactoryUtil.createJSONObject(message);
+			_log.info("jsonData: "+jsonData.toJSONString());
+			String fullPath = String.valueOf(jsonData.get("fullPath"));
+			_log.info("fullPath: "+fullPath);
+			File fileSigned = new File(fullPath.replace(".pdf", ".signed.pdf"));
+			_log.info("fileSigned Path: "+fileSigned.getAbsolutePath());
+			_log.info("fileSigned Name: "+fileSigned.getName());
+			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
+			_log.info("dlFileEntry: "+dlFileEntry.getClassName());
+			_log.info("dlFileEntry: "+dlFileEntry.getFileName());
 
-			if (signatureCompleted.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
-				long fileEntryId = Long.valueOf(input.getFileEntryId());
-				_log.info("fileEntryId: "+fileEntryId);
-				String message = signatureCompleted.getString(RESTFulConfiguration.MESSAGE);
-				_log.info("message: "+message);
-				JSONObject jsonData = JSONFactoryUtil.createJSONObject(message);
-				_log.info("jsonData: "+jsonData.toJSONString());
-				String fullPath = String.valueOf(jsonData.get("fullPath"));
-				_log.info("fullPath: "+fullPath);
-				File fileSigned = new File(fullPath.replace(".pdf", ".signed.pdf"));
-				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
-
-				DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
-						dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
-						StringPool.BLANK, false, fileSigned, serviceContext);
+			DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
+					dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
+					StringPool.BLANK, false, fileSigned, serviceContext);
+			//Next action
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			if (dossier != null) {
+				_log.info("dossierId: "+dossier.getDossierId());
+				_log.info("ReferenceId: "+dossier.getReferenceUid());
+				DossierActions dossierAction = new DossierActionsImpl();
+				dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
+						0l, actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
+						serviceContext);
+				// Process success
 				result.put("msg", "success");
 			}
 
-			return Response.status(200).entity(result).build();
-
-		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
 		}
+
+		return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+
 	}
 
 	private JSONObject callSignatureSync(long groupId, User user, long id, String sign, String signFieldName, String fileName,
@@ -141,144 +141,6 @@ public class SignatureManagementImpl implements SignatureManagement{
 					RESTFulConfiguration.SERVER_PASS, properties, params, serviceContext);
 
 			return resPostDossier;
-//		}
-
-		// SyncAction
-
-//		if (method == 0) {
-//			String endPointSynAction = "dossiers/" + refId + "/actions";
-//
-//			String endPointSynDossierNo = "dossiers/" + refId + "/dossierno";
-//
-//			Map<String, Object> params = new LinkedHashMap<>();
-//
-//			params.put("actionCode", actionCode);
-//			params.put("actionUser", actionUser);
-//			params.put("actionNote", actionNote);
-//			params.put("assignUserId", assignUserId);
-//			params.put("isSynAction", 1);
-//
-//			JSONObject resSynsActions = rest.callPostAPI(groupId, HttpMethods.POST, "application/json",
-//					RESTFulConfiguration.SERVER_PATH_BASE, endPointSynAction, RESTFulConfiguration.SERVER_USER,
-//					RESTFulConfiguration.SERVER_PASS, properties, params, serviceContext);
-//
-//			if (resSynsActions.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
-//				// remove DossierSync
-//				DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
-//
-//			}
-//
-//			if (dossier != null && Validator.isNotNull(dossier.getDossierNo())) {
-//				Map<String, Object> updateDossierNoParams = new LinkedHashMap<>();
-//
-//				properties.put("dossierno", dossier.getDossierNo());
-//
-//				// endPointSynDossierNo = endPointSynDossierNo +
-//				// HttpUtil.encodeURL(dossier.getDossierNo());
-//
-//				JSONObject resSynsDossierNo = rest.callPostAPI(groupId, HttpMethods.PUT, "application/json",
-//						RESTFulConfiguration.SERVER_PATH_BASE, endPointSynDossierNo, RESTFulConfiguration.SERVER_USER,
-//						RESTFulConfiguration.SERVER_PASS, properties, updateDossierNoParams, serviceContext);
-//
-//				if (resSynsDossierNo.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
-//					// TODO ?
-//
-//				}
-//			}
-//		}
-
-		// SyncDossierFile
-//		if (method == 1) {
-//
-//			// TODO add case update file
-//			String endPointSyncDossierFile = "dossiers/" + refId + "/files";
-//
-//			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFile(classPK);
-//
-//			properties.put("referenceUid", dossierFile.getReferenceUid());
-//			properties.put("dossierTemplateNo", dossierFile.getDossierTemplateNo());
-//			properties.put("dossierPartNo", dossierFile.getDossierPartNo());
-//			properties.put("fileTemplateNo", dossierFile.getFileTemplateNo());
-//			properties.put("displayName", dossierFile.getDisplayName());
-//			properties.put("isSync", StringPool.FALSE);
-//			properties.put("formData", dossierFile.getFormData());
-//
-//			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
-//
-//			properties.put("fileType", fileEntry.getExtension());
-//
-//			File file = getFile(dossierFile.getFileEntryId());
-//
-//			// TODO review extention file
-//			JSONObject resSynFile = rest.callPostFileAPI(groupId, HttpMethods.POST, "application/json",
-//					RESTFulConfiguration.SERVER_PATH_BASE, endPointSyncDossierFile, RESTFulConfiguration.SERVER_USER,
-//					RESTFulConfiguration.SERVER_PASS, properties, file, serviceContext);
-//
-//			if (resSynFile.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
-//				// remove DossierSync
-//				DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
-//
-//			} else {
-//				_log.info(resSynFile.get(RESTFulConfiguration.MESSAGE));
-//			}
-//
-//			// Reset isNew
-//			dossierFile.setIsNew(false);
-//
-//			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
-//
-//		}
-
-		// SyncPaymentFile and paymentfile status
-
-		// Sync paymentFile
-//		if (method == 2) {
-//
-//			DossierSync sync = DossierSyncLocalServiceUtil.getDossierSync(dossierSyncId);
-//
-//			String endPointSynAction = "dossiers/" + sync.getDossierReferenceUid() + "/payments";
-//
-//			PaymentFile paymentFileClient = PaymentFileLocalServiceUtil.fectPaymentFile(sync.getDossierId(),
-//					sync.getFileReferenceUid());
-//
-//			Map<String, Object> params = new LinkedHashMap<>();
-//			params.put("referenceUid", paymentFileClient.getReferenceUid());
-//			params.put("govAgencyCode", paymentFileClient.getGovAgencyCode());
-//			params.put("govAgencyName", paymentFileClient.getGovAgencyName());
-//			params.put("applicantName", StringPool.BLANK);
-//			params.put("applicantIdNo", StringPool.BLANK);
-//			params.put("paymentFee", paymentFileClient.getPaymentFee());
-//			params.put("paymentAmount", paymentFileClient.getPaymentAmount());
-//			params.put("paymentNote", paymentFileClient.getPaymentNote());
-//			params.put("epaymentProfile", paymentFileClient.getEpaymentProfile());
-//			params.put("invoiceTemplateNo", paymentFileClient.getInvoiceTemplateNo());
-//			params.put("bankInfo", paymentFileClient.getBankInfo());
-//			// TODO update payload
-//			params.put("invoicePayload", StringPool.BLANK);
-//
-//			JSONObject resSynFile = rest.callPostAPI(groupId, HttpMethods.POST, "application/json",
-//					RESTFulConfiguration.SERVER_PATH_BASE, endPointSynAction, RESTFulConfiguration.SERVER_USER,
-//					RESTFulConfiguration.SERVER_PASS, properties, params, serviceContext);
-//
-//			if (resSynFile.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
-//				// remove DossierSync
-//				DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
-//
-//				// Reset isNew
-//
-//				paymentFileClient.setIsNew(false);
-//				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFileClient);
-//				// DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
-//			}
-//		}
-
-
-		// remove pending in DossierAction
-//		int countDossierSync = DossierSyncLocalServiceUtil.countByDossierId(dossierId);
-//
-//		if (countDossierSync == 0 && clientDossierActionId > 0) {
-//			DossierActionLocalServiceUtil.updatePending(clientDossierActionId, false);
-//		}
 
 	}
 
