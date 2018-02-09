@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									
                                 });
                             return false; 
-							
+								
 						},
                         changeProcessStep: function (item){
                             var vm = this;
@@ -456,15 +456,22 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								});
 							} else {
 								if (idArr) {
+									var paramObj = {};
+									paramObj.actionCode = item.actionCode;
+									paramObj.actionUser = themeDisplay.getUserName();
+									paramObj.actionNote = vm.processActionNote;
+									paramObj.assignUserId = assignUserId;
+									paramObj.subUsers = subUsers;
+
 									var strIdArr = idArr.join(";");
 									console.log(strIdArr);
-									vm.kyDuyetYCGiamDinh(strIdArr);
+									vm.kyDuyetYCGiamDinh(strIdArr,paramObj);
 								}
 							}
 							
 							return false; 
                         },
-                        kyDuyetYCGiamDinh: function(strIdArr) {
+                        kyDuyetYCGiamDinh: function(strIdArr,paramObj) {
 
 							var vm = this;
 							var url = '/o/rest/v2/digitalSignature/'+vm.detailModel.dossierId+'/hashComputed';
@@ -483,12 +490,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								},
 								success : function(result) {
 									console.log(result);
-									var jsonData = JSON.parse(result);
-									var hashComputers = jsonData.hashComputers;
-									var signFieldNames = jsonData.signFieldNames;
-									var fileNames = jsonData.fileNames;
-									var msgs = jsonData.msg;
-									var fileEntryId = jsonData.fileEntryId;
+									/*var jsonData = JSON.parse(result);*/
+									var hashComputers = result.hashComputers;
+									var signFieldNames = result.signFieldNames;
+									var fileNames = result.fileNames;
+									var msgs = result.msg;
+									var fileEntryId = result.fileEntryId;
 									console.log("hashComputers: "+hashComputers);
 									console.log("signFieldNames: "+signFieldNames);
 									console.log("fileNames: "+fileNames);
@@ -511,10 +518,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 												var msg = msgs[i];
 												if(msg == 'success') {
 													try {
-														vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName, fileEntryId);
+														vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName, fileEntryId, paramObj);
 													}
 													catch(err) {
-														alert(err.message);
+														console.log(err);
 													}
 												}else{
 													alert(msg);
@@ -532,26 +539,43 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								}
 							});
 						},
-						completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName, fileEntryId) {
-							String url = '/o/rest/v2/digitalSignature/'+vm.detailModel.dossierId+'/dossierFile';
+						completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName, fileEntryId,paramObj) {
+							var vm = this;
+							var url = '/o/rest/v2/digitalSignature/'+vm.detailModel.dossierId+'/dossierFile';
 							$.ajax({
 								type : 'PUT',
 								url : url,
 								async: false,//bat dong bo = fale, dong bo voi client
 								dataType : 'json',
-								data : {
-									// type:'signatureCompleteKyDuyetYCGiamDinh',
-									sign: sign,
-									signFieldName: signFieldName,
-									fileName: fileName,
-									fileEntryId: fileEntryId
+								headers: {
+										"groupId": themeDisplay.getScopeGroupId()
+									},
+								data: {
+									"actionCode": paramObj.actionCode,
+									"actionUser": paramObj.actionUser,
+									"actionNote": paramObj.actionNote,
+									"assignUserId": paramObj.assignUserId,
+									"subUsers": paramObj.subUsers,
+									"sign": sign,
+									"signFieldName": signFieldName,
+									"fileName": fileName,
+									"fileEntryId": fileEntryId
 								},
 								success : function(result) {
 									console.log(result);
-									var jsonData = JSON.parse(result);
-									var msg = jsonData.msg;
+									/*var jsonData = JSON.parse(result);*/
+									var msg = result.msg;
 									if(msg == 'success'){
 										alert('ký số thành công!');
+										/*vm.snackbardossierViewJX = true;*/
+										
+										vm._inidanhSachHoSoTable();
+										setTimeout(function(){ 
+											vm._initlistgroupHoSoFilter();
+										}, 1000);
+
+										vm.detailPage = false;
+										vm.actionsSubmitLoading = false;
 									} else {
 										alert(msg);
 									}
@@ -1635,6 +1659,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>"));
 									}
 								});
+								console.log(vm.danhSachHoSoTableItems);
 							})
 								.catch(function (error) {
 									console.log(error);
