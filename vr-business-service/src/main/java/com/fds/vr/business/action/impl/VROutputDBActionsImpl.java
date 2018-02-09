@@ -14,7 +14,6 @@ import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 
 import com.fds.vr.business.action.VROutputDBActions;
 import com.fds.vr.business.action.util.ConvertJONObjectUtils;
-import com.fds.vr.business.model.VRSyncDate;
 import com.fds.vr.business.model.VRVehicleTypeCertificate;
 import com.fds.vr.business.service.VRSyncDateLocalServiceUtil;
 import com.fds.vr.business.service.VRVehicleTypeCertificateLocalServiceUtil;
@@ -34,14 +33,9 @@ public class VROutputDBActionsImpl implements VROutputDBActions{
 	@Override
 	public boolean processOutputDB() throws ParseException, SearchException, JSONException {
 
-		Date syncDate = null;
-		try {
-			syncDate = VRSyncDateLocalServiceUtil.getSyncDate();
-		} catch (Exception e) {
-			_log.error(e);
-		}
-		
-		_log.info("synsDate: "+syncDate);
+		Date syncDate = VRSyncDateLocalServiceUtil.getSyncDate();
+
+//		_log.info("synsDate: "+syncDate);
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME);
 		String strSyncDate = sdf.format(syncDate);
 
