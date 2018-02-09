@@ -99,17 +99,19 @@ public class SignatureManagementImpl implements SignatureManagement{
 			DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
 					dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
 					StringPool.BLANK, false, fileSigned, serviceContext);
-			//Nextaction
+			//Next action
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-			_log.info("dossierId: "+dossier.getDossierId());
-			_log.info("ReferenceId: "+dossier.getReferenceUid());
+			if (dossier != null) {
+				_log.info("dossierId: "+dossier.getDossierId());
+				_log.info("ReferenceId: "+dossier.getReferenceUid());
+				DossierActions dossierAction = new DossierActionsImpl();
+				dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
+						0l, actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
+						serviceContext);
+				// Process success
+				result.put("msg", "success");
+			}
 
-			DossierActions dossierAction = new DossierActionsImpl();
-			dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
-					0l, actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
-					serviceContext);
-			
-			result.put("msg", "success");
 		}
 
 		return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
