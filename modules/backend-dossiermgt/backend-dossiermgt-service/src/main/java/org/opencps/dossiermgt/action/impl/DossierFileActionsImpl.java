@@ -253,25 +253,27 @@ public class DossierFileActionsImpl implements DossierFileActions {
 			ServiceContext serviceContext) throws PortalException {
 		
 		//List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO(dossierId, fileTemplateNo, false);
-		//_log.info("DOSSIERID_"+dossierId+"_FILETEMPLATENO_"+fileTemplateNo);
+		_log.info("DOSSIERID_"+dossierId+"_FILETEMPLATENO_"+fileTemplateNo);
 
 		List<DossierFile> lsDossierFile =  DossierFileLocalServiceUtil.getDossierFileByDID_FTN(dossierId, fileTemplateNo);
 		
 		Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 		
-		//_log.info("SIZE_DOSSIER_REMOVE_"+lsDossierFile.size());
+		_log.info("SIZE_DOSSIER_REMOVE_"+lsDossierFile.size());
 		
 		for (DossierFile file : lsDossierFile) {
 			
-			DossierFileLocalServiceUtil.removeDossierFile(dossierId, file.getReferenceUid(), serviceContext);
+			//DossierFileLocalServiceUtil.removeDossierFile(dossierId, file.getReferenceUid(), serviceContext);
+			
+			file.setRemoved(true);
 			
 			//set isNew = true
 			if (!dossier.getDossierStatus().equals(DossierStatusConstants.NEW)) {
 				
 				file.setIsNew(true);
 				
-				DossierFileLocalServiceUtil.updateDossierFile(file);
 			}
+			DossierFileLocalServiceUtil.updateDossierFile(file);
 			
 		}
 
