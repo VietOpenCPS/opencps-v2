@@ -456,15 +456,22 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								});
 							} else {
 								if (idArr) {
+									var paramObj = {};
+									paramObj.actionCode = item.actionCode;
+									paramObj.actionUser = themeDisplay.getUserName();
+									paramObj.actionNote = vm.processActionNote;
+									paramObj.assignUserId = assignUserId;
+									paramObj.subUsers = subUsers;
+
 									var strIdArr = idArr.join(";");
 									console.log(strIdArr);
-									vm.kyDuyetYCGiamDinh(strIdArr);
+									vm.kyDuyetYCGiamDinh(strIdArr,paramObj);
 								}
 							}
 							
 							return false; 
                         },
-                        kyDuyetYCGiamDinh: function(strIdArr) {
+                        kyDuyetYCGiamDinh: function(strIdArr,paramObj) {
 
 							var vm = this;
 							var url = '/o/rest/v2/digitalSignature/'+vm.detailModel.dossierId+'/hashComputed';
@@ -511,7 +518,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 												var msg = msgs[i];
 												if(msg == 'success') {
 													try {
-														vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName, fileEntryId);
+														vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName, fileEntryId, paramObj);
 													}
 													catch(err) {
 														console.log(err);
@@ -532,7 +539,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								}
 							});
 						},
-						completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName, fileEntryId) {
+						completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName, fileEntryId,paramObj) {
 							var vm = this;
 							var url = '/o/rest/v2/digitalSignature/'+vm.detailModel.dossierId+'/dossierFile';
 							$.ajax({
@@ -540,12 +547,19 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								url : url,
 								async: false,//bat dong bo = fale, dong bo voi client
 								dataType : 'json',
-								data : {
-									// type:'signatureCompleteKyDuyetYCGiamDinh',
-									sign: sign,
-									signFieldName: signFieldName,
-									fileName: fileName,
-									fileEntryId: fileEntryId
+								headers: {
+										"groupId": themeDisplay.getScopeGroupId()
+									},
+								data: {
+									"actionCode": paramObj.actionCode,
+									"actionUser": paramObj.actionUser,
+									"actionNote": paramObj.actionNote,
+									"assignUserId": paramObj.assignUserId,
+									"subUsers": paramObj.subUsers,
+									"sign": sign,
+									"signFieldName": signFieldName,
+									"fileName": fileName,
+									"fileEntryId": fileEntryId
 								},
 								success : function(result) {
 									console.log(result);
@@ -1645,6 +1659,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>"));
 									}
 								});
+								console.log(vm.danhSachHoSoTableItems);
 							})
 								.catch(function (error) {
 									console.log(error);
