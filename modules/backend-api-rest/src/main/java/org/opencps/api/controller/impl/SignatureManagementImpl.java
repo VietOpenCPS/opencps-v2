@@ -168,16 +168,16 @@ public class SignatureManagementImpl implements SignatureManagement{
 			for (String strId : idSplit) {
 				String[] idArr = strId.split(StringPool.COMMA);
 				DossierPart dossierPart = DossierPartLocalServiceUtil.fetchDossierPart(Long.valueOf(idArr[1]));
-//				_log.info("Dossier Part: "+dossierPart);
+				_log.info("Dossier Part: "+dossierPart);
 				DossierFile dossierFile = null;
 				if (dossierPart != null && dossierPart.getESign()) {
 					dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(Long.valueOf(idArr[0]));
-//					_log.info("Dossier File: "+dossierFile);
+					_log.info("Dossier File: "+dossierFile);
 					if (dossierFile != null && dossierFile.getFileEntryId() > 0) {
 						long fileEntryId = dossierFile.getFileEntryId();
 						_log.info("fileEntryId: "+fileEntryId);
 
-						hashComputed = callHashComputedSync(groupId, user, fileEntryId, serviceContext);
+						hashComputed = callHashComputedSync(groupId, user, fileEntryId, input.getActionCode(), serviceContext);
 						_log.info("hashComputed: "+hashComputed);
 						break;
 					}
@@ -222,7 +222,8 @@ public class SignatureManagementImpl implements SignatureManagement{
 		}
 	}
 
-	private JSONObject callHashComputedSync(long groupId, User user, long fileEntryId, ServiceContext serviceContext) throws PortalException {
+	private JSONObject callHashComputedSync(long groupId, User user, long fileEntryId, String actionCode,
+			ServiceContext serviceContext) throws PortalException {
 
 		InvokeREST rest = new InvokeREST();
 
@@ -236,6 +237,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("fileEntryId", fileEntryId);
 		params.put("emailUser", user.getEmailAddress());
+		params.put("typeSignature", Integer.valueOf(actionCode));
 
 		JSONObject resPostHashComputed = rest.callPostAPI(groupId, httpMethod, "application/json",
 				RESTFulConfiguration.SERVER_PATH_BASE, endPoint, RESTFulConfiguration.SERVER_USER,

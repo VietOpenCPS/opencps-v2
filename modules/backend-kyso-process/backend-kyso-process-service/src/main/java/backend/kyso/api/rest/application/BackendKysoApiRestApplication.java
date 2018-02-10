@@ -2,17 +2,14 @@ package backend.kyso.api.rest.application;
 
 import java.net.HttpURLConnection;
 import java.util.Collections;
-import java.util.Locale;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
@@ -29,11 +26,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import io.swagger.annotations.ApiOperation;
@@ -49,7 +41,6 @@ public class BackendKysoApiRestApplication extends Application {
 
 	public Set<Object> getSingletons() {
 //		Set<Object> singletons = new HashSet<Object>();
-//		
 //		// add REST endpoints (resources)
 //		singletons.add(new DigitalSignatureManagementImpl());
 //		return singletons;
@@ -69,10 +60,12 @@ public class BackendKysoApiRestApplication extends Application {
 
 				String emailUser = input.getEmailUser();
 				long fileEntryId = Long.valueOf(input.getFileEntryId());
+				int typeSignature = input.getTypeSignature();
 				_log.info("emailUser Id: "+emailUser);
 				_log.info("fileEntryId Id: "+fileEntryId);
+				_log.info("typeSignature: "+typeSignature);
 				
-				JSONObject results = action.createHashSignature(emailUser, fileEntryId);
+				JSONObject results = action.createHashSignature(emailUser, fileEntryId, typeSignature);
 //				JSONObject results = JSONFactoryUtil.createJSONObject();
 				_log.info("results : "+results);
 

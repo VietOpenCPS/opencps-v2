@@ -46,7 +46,6 @@ import javax.xml.bind.annotation.XmlType;
  "actionNote",
  "assignUserId",
  "subUsers"
- 
 })
 public class DigitalSignatureInputModel {
 
@@ -70,7 +69,6 @@ public class DigitalSignatureInputModel {
 	protected String assignUserId;
 	@FormParam(value = "subUsers")
 	protected String subUsers;
-
 	 /**
 	  * Gets the value of the deliverableType property.
 	  * 
