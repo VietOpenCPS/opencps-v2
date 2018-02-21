@@ -17,7 +17,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
-import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.exception.PortalException;

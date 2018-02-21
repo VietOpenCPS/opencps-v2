@@ -164,7 +164,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 15, urx + 90, ury), 1);
 					_log.info("inHash_Kyso: "+inHash);
 				} else if (typeSignature == TYPE_DONGDAU) {
-					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 65, urx + 90, ury-30), 1);
+					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 125, urx + 90, ury-115), 1);
 					_log.info("inHash_Dongdau: "+realPath);
 				}
 //				inHash = signer.computeHash(new Rectangle(llx + 10, lly - 15, urx + 90, ury), 1);
@@ -252,6 +252,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 				fullPath = realPath + fileName + ".pdf";
 				_log.info("fullPath: "+fullPath.toString());
 				
+				jsonFeed.put("signedFile", signedFile);
 				jsonFeed.put("fullPath", fullPath);
 				jsonFeed.put("msg", "success");
 			} catch (Exception e) {

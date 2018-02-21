@@ -483,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								dataType: 'json',
 								data : {
 									// type: 'kyDuyetYCGiamDinh',
-									strIdAr: strIdArr,
+									strIdArr: strIdArr,
 									actionCode: paramObj.actionCode
 									// strDossierPartId: strDossierPartId
 									/*id : controlRequirementId*/
