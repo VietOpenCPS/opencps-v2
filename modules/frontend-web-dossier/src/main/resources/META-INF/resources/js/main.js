@@ -469,7 +469,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								}
 							}
 							
-							return false; 
                         },
                         kyDuyetYCGiamDinh: function(strIdArr,paramObj) {
 
