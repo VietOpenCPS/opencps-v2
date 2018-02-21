@@ -40,7 +40,8 @@ import javax.xml.bind.annotation.XmlType;
  "signFieldName",
  "fileName",
  "fileEntryId",
- "emailUser"
+ "emailUser",
+ "typeSignature"
 })
 public class DigitalSignatureInputModel {
 
@@ -54,6 +55,8 @@ public class DigitalSignatureInputModel {
 	protected String fileEntryId;
 	@FormParam(value = "emailUser")
 	protected String emailUser;
+	@FormParam(value = "typeSignature")
+	protected int typeSignature;
 
 	 /**
 	  * Gets the value of the deliverableType property.
@@ -141,6 +144,14 @@ public class DigitalSignatureInputModel {
 
 	public void setEmailUser(String emailUser) {
 		this.emailUser = emailUser;
+	}
+
+	public int getTypeSignature() {
+		return typeSignature;
+	}
+
+	public void setTypeSignature(int typeSignature) {
+		this.typeSignature = typeSignature;
 	}
 
 }

@@ -32,9 +32,11 @@ import vgca.svrsigner.ServerSigner;
 public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 
 	private static Log _log = LogFactoryUtil.getLog(DigitalSignatureActionsImpl.class);
+	private static final int TYPE_KYSO = 1135;
+	private static final int TYPE_DONGDAU = 1137;
 
 	@Override
-	public JSONObject createHashSignature(String email, long fileEntryId) {
+	public JSONObject createHashSignature(String email, long fileEntryId, int typeSignature) {
 			byte[] inHash = null;
 			String fieldName = StringPool.BLANK;
 			String fullPathSigned = StringPool.BLANK;
@@ -49,17 +51,22 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 			JSONArray fullPathOfSignedFiles = JSONFactoryUtil.getJSONFactory()
 					.createJSONArray();
 
+//			if (typeSignature == TYPE_KYSO) {
 			String realPath = PropsUtil.get(ConfigProps.CER_HOME)+"/";
-			_log.info("realPath: "+realPath);
+			_log.info("realPath_Kyso: "+realPath);
+//			} else {
+//				realPath = PropsUtil.get(ConfigProps.CER_HOME)+"/condau/";
+//				_log.info("realPath_Dongdau: "+realPath);
+//			}
 			//==
 //			ActionRequest request = null;
 //			String realPath = ReportUtils.getTemplateReportFilePath(request);
 			String fullPath = StringPool.BLANK;
 
 			try {
-				float offsetX = 1;
-				float imageZoom = 1;
-				float offsetY = 1;
+//				float offsetX = 1;
+//				float imageZoom = 1;
+//				float offsetY = 1;
 
 				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
 				
@@ -73,9 +80,17 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 				fullPath = file.getAbsolutePath();
 				_log.info("fullPath: "+fullPath);
 
-				String signImagePath = new File(realPath + email + ".png").getAbsolutePath();
+				String signImagePath = StringPool.BLANK;
+				if (typeSignature == TYPE_KYSO) {
+					signImagePath = new File(realPath + email + ".png").getAbsolutePath();
+					_log.info("signImagePath_Kyso: "+realPath);
+				} else if (typeSignature == TYPE_DONGDAU){
+					signImagePath = PropsUtil.get(ConfigProps.CER_HOME)+"/condau/nguyenadmin.png";
+					_log.info("signImagePath_Dongdau: "+realPath);
+				}
+//				String signImagePath = new File(realPath + email + ".png").getAbsolutePath();
 				String imageBase64 = ImageUtil.getSignatureImageBase64ByPath(signImagePath);
-				_log.info("signImagePath: "+signImagePath);
+//				_log.info("signImagePath: "+signImagePath);
 				_log.info("imageBase64: "+imageBase64);
 
 				BufferedImage bufferedImage = ImageUtil.getImageByPath(signImagePath);
@@ -100,50 +115,59 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 
 				// tinh kich thuoc cua anh
 
-				int signatureImageWidth = (bufferedImage != null && bufferedImage.getWidth() > 0)
-						? bufferedImage.getWidth() : 80;
-
-				int signatureImageHeight = (bufferedImage != null && bufferedImage.getHeight() > 0)
-						? bufferedImage.getHeight() : 80;
-				
-				float llx = textLocation.getAnchorX() + offsetX;
-
-				float lly = textLocation.getAnchorY() - signatureImageHeight * imageZoom + offsetY;
-
-				if (textLocation.getAnchorX() > 200) {
-					llx = llx - 100;
-				}
-				if (textLocation.getAnchorY() > 420) {
-					lly = lly - 420;
-				}
-
-				if (lly < 0) {
-					lly = 0;
-				}
-				if (llx < 0) {
-					llx = 0;
-				}
-				float urx = llx + signatureImageWidth * imageZoom;
-				float ury = lly + signatureImageHeight * imageZoom;
+//				int signatureImageWidth = (bufferedImage != null && bufferedImage.getWidth() > 0)
+//						? bufferedImage.getWidth()/2 : 80;
+//
+//				int signatureImageHeight = (bufferedImage != null && bufferedImage.getHeight() > 0)
+//						? bufferedImage.getHeight() : 80;
+//				
+//				float llx = textLocation.getAnchorX() + offsetX;
+//
+//				float lly = textLocation.getAnchorY() - signatureImageHeight * imageZoom + offsetY;
+//
+//				if (textLocation.getAnchorX() > 200) {
+//					llx = llx - 100;
+//				}
+//				if (textLocation.getAnchorY() > 420) {
+//					lly = lly - 420;
+//				}
+//
+//				if (lly < 0) {
+//					lly = 0;
+//				}
+//				if (llx < 0) {
+//					llx = 0;
+//				}
+//				float urx = llx + signatureImageWidth * imageZoom;
+//				float ury = lly + signatureImageHeight * imageZoom;
 				// tinh kich thuoc cua anh
-//				int signatureImageWidth = (bufferedImage != null && bufferedImage
-//						.getWidth() > 0) ? bufferedImage.getWidth() : 80;
-//				int signatureImageHeight = (bufferedImage != null && bufferedImage
-//						.getHeight() > 0) ? bufferedImage
-//						.getHeight() : 80;
-//				float llx = textLocation.getAnchorX();
-//				float urx = llx + signatureImageWidth / 3;
+				int signatureImageWidth = (bufferedImage != null && bufferedImage
+						.getWidth() > 0) ? bufferedImage.getWidth() : 80;
+				int signatureImageHeight = (bufferedImage != null && bufferedImage
+						.getHeight() > 0) ? bufferedImage
+						.getHeight() : 80;
+				float llx = textLocation.getAnchorX();
+				float urx = llx + signatureImageWidth / 3;
 
-//				float lly = textLocation.getPageURY()
-//						- textLocation.getAnchorY()
-//						- signatureImageHeight / 3;
+				float lly = textLocation.getPageURY()
+						- textLocation.getAnchorY()
+						- signatureImageHeight / 3;
 
-//							float ury = lly + signatureImageHeight / 3;
+				float ury = lly + signatureImageHeight / 3;
 
-				inHash = signer.computeHash(new Rectangle(llx, lly , urx, ury), 1);
-//							inHash = signer.computeHash(
-//									new Rectangle(llx + 20, lly - 105,
-//											urx + 94, ury - 70), 1);
+//				inHash = signer.computeHash(new Rectangle(llx, lly , urx, ury), 1);
+//				inHash = signer.computeHash(
+//						new Rectangle(llx + 20, lly - 105,
+//								urx + 94, ury - 70), 1);
+//				inHash = signer.computeHash(new Rectangle(llx + 22, lly - 145, urx + 94, ury - 70), 1);
+				if (typeSignature == TYPE_KYSO) {
+					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 15, urx + 90, ury), 1);
+					_log.info("inHash_Kyso: "+inHash);
+				} else if (typeSignature == TYPE_DONGDAU) {
+					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 65, urx + 90, ury-30), 1);
+					_log.info("inHash_Dongdau: "+realPath);
+				}
+//				inHash = signer.computeHash(new Rectangle(llx + 10, lly - 15, urx + 90, ury), 1);
 				_log.info("********************************* llx " + llx);
 
 				_log.info("********************************* lly " + lly);
@@ -228,18 +252,8 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 				fullPath = realPath + fileName + ".pdf";
 				_log.info("fullPath: "+fullPath.toString());
 				
-//				File fileSigned = new File(fullPath.replace(".pdf", ".signed.pdf"));
-//				_log.info("fileSigned: "+fileSigned.toString());
-
-//				ServiceContext serviceContext = new ServiceContext();
-
-				
-//				DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
-//						dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
-//						StringPool.BLANK, false, fileSigned, serviceContext);
 				jsonFeed.put("fullPath", fullPath);
 				jsonFeed.put("msg", "success");
-//				log.info("===signatureCompleteKyDuyetYCGiamDinh===success");
 			} catch (Exception e) {
 				_log.error(e);
 				jsonFeed.put("msg", "error");

@@ -468,7 +468,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									vm.kyDuyetYCGiamDinh(strIdArr,paramObj);
 								}
 							}
-							
+
                         },
                         kyDuyetYCGiamDinh: function(strIdArr,paramObj) {
 
@@ -483,7 +483,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								dataType: 'json',
 								data : {
 									// type: 'kyDuyetYCGiamDinh',
-									strIdArr: strIdArr
+									strIdAr: strIdArr,
+									actionCode: paramObj.actionCode
 									// strDossierPartId: strDossierPartId
 									/*id : controlRequirementId*/
 								},
@@ -550,15 +551,15 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										"groupId": themeDisplay.getScopeGroupId()
 									},
 								data: {
-									"actionCode": paramObj.actionCode,
-									"actionUser": paramObj.actionUser,
-									"actionNote": paramObj.actionNote,
-									"assignUserId": paramObj.assignUserId,
-									"subUsers": paramObj.subUsers,
-									"sign": sign,
-									"signFieldName": signFieldName,
-									"fileName": fileName,
-									"fileEntryId": fileEntryId
+									actionCode: paramObj.actionCode,
+									actionUser: paramObj.actionUser,
+									actionNote: paramObj.actionNote,
+									assignUserId: paramObj.assignUserId,
+									subUsers: paramObj.subUsers,
+									sign: sign,
+									signFieldName: signFieldName,
+									fileName: fileName,
+									fileEntryId: fileEntryId
 								},
 								success : function(result) {
 									console.log(result);

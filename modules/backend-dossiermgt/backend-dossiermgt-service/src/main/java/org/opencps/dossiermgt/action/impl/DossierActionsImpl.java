@@ -640,6 +640,7 @@ public class DossierActionsImpl implements DossierActions {
 			long processActionId, String actionUser, String actionNote, long assignUserId, long userId, String subUsers,
 			ServiceContext context) throws PortalException {
 
+		_log.info("STRART DO ACTION ==========");
 		// Add DossierAction
 
 		// Update DossierStatus
@@ -930,7 +931,7 @@ public class DossierActionsImpl implements DossierActions {
 		if (Validator.isNotNull(dossierBriefNote)) {
 			DossierLocalServiceUtil.updateDossierBriefNote(dossierId, dossierBriefNote);
 		}
-
+		_log.info("END DO ACTION ==========");
 		return dossierAction;
 	}
 

@@ -17,8 +17,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
+import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.exception.model.ExceptionModel;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -58,5 +60,5 @@ public interface SignatureManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
 	public Response updateDossierFileBySignature(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext, 
-			@ApiParam(value = "id of dossier", required = true) @PathParam("id") Long id, @BeanParam DigitalSignatureInputModel input);
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") Long id, @BeanParam DigitalSignatureInputModel input) throws PortalException;
 }
