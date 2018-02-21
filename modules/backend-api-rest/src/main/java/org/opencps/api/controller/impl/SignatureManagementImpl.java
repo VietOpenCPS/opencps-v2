@@ -89,11 +89,11 @@ public class SignatureManagementImpl implements SignatureManagement{
 			_log.info("jsonData: "+jsonData.toJSONString());
 			String fullPath = String.valueOf(jsonData.get("fullPath"));
 			_log.info("fullPath: "+fullPath);
-			File fileSigned = new File(fullPath.replace(".pdf", ".signed.pdf"));
+			String signedFilePath = jsonData.getString("signedFile");
+			File fileSigned = new File(signedFilePath);
 			_log.info("fileSigned Path: "+fileSigned.getAbsolutePath());
 			_log.info("fileSigned Name: "+fileSigned.getName());
 			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
-			_log.info("dlFileEntry: "+dlFileEntry.getClassName());
 			_log.info("dlFileEntry: "+dlFileEntry.getFileName());
 
 			DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
@@ -168,11 +168,11 @@ public class SignatureManagementImpl implements SignatureManagement{
 			for (String strId : idSplit) {
 				String[] idArr = strId.split(StringPool.COMMA);
 				DossierPart dossierPart = DossierPartLocalServiceUtil.fetchDossierPart(Long.valueOf(idArr[1]));
-				_log.info("Dossier Part: "+dossierPart);
+//				_log.info("Dossier Part: "+dossierPart);
 				DossierFile dossierFile = null;
 				if (dossierPart != null && dossierPart.getESign()) {
 					dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(Long.valueOf(idArr[0]));
-					_log.info("Dossier File: "+dossierFile);
+//					_log.info("Dossier File: "+dossierFile);
 					if (dossierFile != null && dossierFile.getFileEntryId() > 0) {
 						long fileEntryId = dossierFile.getFileEntryId();
 						_log.info("fileEntryId: "+fileEntryId);
