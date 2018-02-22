@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -59,8 +58,6 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 //				_log.info("realPath_Dongdau: "+realPath);
 //			}
 			//==
-//			ActionRequest request = null;
-//			String realPath = ReportUtils.getTemplateReportFilePath(request);
 			String fullPath = StringPool.BLANK;
 
 			try {
@@ -91,7 +88,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 //				String signImagePath = new File(realPath + email + ".png").getAbsolutePath();
 				String imageBase64 = ImageUtil.getSignatureImageBase64ByPath(signImagePath);
 //				_log.info("signImagePath: "+signImagePath);
-				_log.info("imageBase64: "+imageBase64);
+//				_log.info("imageBase64: "+imageBase64);
 
 				BufferedImage bufferedImage = ImageUtil.getImageByPath(signImagePath);
 
@@ -164,8 +161,8 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 15, urx + 90, ury), 1);
 					_log.info("inHash_Kyso: "+inHash);
 				} else if (typeSignature == TYPE_DONGDAU) {
-					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 65, urx + 90, ury-30), 1);
-					_log.info("inHash_Dongdau: "+realPath);
+					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 115, urx + 90, ury-95), 1);
+					_log.info("inHash_Dongdau: "+inHash);
 				}
 //				inHash = signer.computeHash(new Rectangle(llx + 10, lly - 15, urx + 90, ury), 1);
 				_log.info("********************************* llx " + llx);
@@ -252,6 +249,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 				fullPath = realPath + fileName + ".pdf";
 				_log.info("fullPath: "+fullPath.toString());
 				
+				jsonFeed.put("signedFile", signedFile);
 				jsonFeed.put("fullPath", fullPath);
 				jsonFeed.put("msg", "success");
 			} catch (Exception e) {
