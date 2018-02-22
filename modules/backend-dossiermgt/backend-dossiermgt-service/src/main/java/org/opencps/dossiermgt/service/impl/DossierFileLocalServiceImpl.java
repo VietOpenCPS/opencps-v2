@@ -44,6 +44,8 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.User;
@@ -100,7 +102,9 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 	 * org.opencps.dossiermgt.service.DossierFileLocalServiceUtil} to access the
 	 * dossier file local service.
 	 */
-
+	
+	Log _log = LogFactoryUtil.getLog(DossierFileLocalServiceImpl.class);
+	
 	/**
 	 * POST /dossiers/{id|referenceUid}/files
 	 */
@@ -111,8 +115,12 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			throws PortalException, SystemException {
 
 		long userId = serviceContext.getUserId();
+		
+		_log.info("****Start add file at:" + new Date());
 
 		validateAddDossierFile(groupId, dossierId, referenceUid, dossierTemplateNo, dossierPartNo, fileTemplateNo);
+		
+		_log.info("****End validator file at:" + new Date());
 
 		DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(groupId, dossierTemplateNo, dossierPartNo);
 
@@ -128,6 +136,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		} catch (Exception e) {
 			throw new SystemException(e);
 		}
+		_log.info("****End uploadFile file at:" + new Date());
 
 		Date now = new Date();
 
@@ -175,11 +184,13 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		if (Validator.isNotNull(dossierPart.getFormReport())) {
 			object.setFormReport(dossierPart.getFormReport());
 		}
+		_log.info("****Start autofill file at:" + new Date());
 
 		if (Validator.isNotNull(dossierPart.getSampleData())) {
 			object.setFormData(
 					AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext));
 		}
+		_log.info("****End autofill file at:" + new Date());
 
 		object.setDisplayName(displayName);
 		object.setOriginal(true);
