@@ -921,7 +921,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		// TODO add more logic here
 
-		dossierPersistence.findByPrimaryKey(dossierId);
+		//dossierPersistence.findByPrimaryKey(dossierId);
 
 		if (Validator.isNotNull(referenceUid)) {
 			DossierFile dossierFile = dossierFilePersistence.fetchByD_RUID(dossierId, referenceUid, false);
