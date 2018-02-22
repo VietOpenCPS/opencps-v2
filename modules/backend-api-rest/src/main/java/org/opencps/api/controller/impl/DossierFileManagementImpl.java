@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -145,18 +146,29 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			DataHandler dataHandler = file.getDataHandler();
 
 			DossierFileActions action = new DossierFileActionsImpl();
+			
+			
+			_log.info("__Start add file at:" + new Date());
 
 			DossierFile dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid,
 					dossierTemplateNo, dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
 					dataHandler.getInputStream(), fileType, isSync, serviceContext);
 			
+			_log.info("__End add file at:" + new Date());
+			
 			if(Validator.isNotNull(formData)) {
 				dossierFile.setFormData(formData);
 			}
 			
+			_log.info("__Start update dossier file at:" + new Date());
+
 			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 
+			_log.info("__End update dossier file at:" + new Date());
+
 			DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
+			
+			_log.info("__End bind to dossierFile" + new Date());
 
 			return Response.status(200).entity(result).build();
 
