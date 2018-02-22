@@ -40,7 +40,7 @@ public class DeliverableFinderImpl extends DeliverableFinderBaseImpl
 		        q.addEntity("opencps_deliverable", DeliverableImpl.class);
 
 		        deliverableList = q.list();
-		        _log.info("SQL list deliverable: "+ deliverableList);
+//		        _log.info("SQL list deliverable: "+ deliverableList);
 		    }
 		    catch (Exception e) {
 		        try {
@@ -80,7 +80,7 @@ public class DeliverableFinderImpl extends DeliverableFinderBaseImpl
 		        q.setLong("deliverableState", deliverableState);
 
 		        deliverableList = q.list();
-		        _log.info("SQL list deliverable: "+ deliverableList);
+//		        _log.info("SQL list deliverable: "+ deliverableList);
 		    }
 		    catch (Exception e) {
 		        try {

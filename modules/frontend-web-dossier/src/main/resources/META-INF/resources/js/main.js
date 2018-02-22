@@ -464,13 +464,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									paramObj.subUsers = subUsers;
 
 									var strIdArr = idArr.join(";");
+									var actionName = item.actionName;
 									console.log(strIdArr);
-									vm.kyDuyetYCGiamDinh(strIdArr,paramObj);
+									vm.kyDuyetYCGiamDinh(strIdArr,paramObj, actionName);
 								}
 							}
 
                         },
-                        kyDuyetYCGiamDinh: function(strIdArr,paramObj) {
+                        kyDuyetYCGiamDinh: function(strIdArr,paramObj, actionName) {
 
 							var vm = this;
 							var url = '/o/rest/v2/digitalSignature/'+vm.detailModel.dossierId+'/hashComputed';
@@ -518,7 +519,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 												var msg = msgs[i];
 												if(msg == 'success') {
 													try {
-														vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName, fileEntryId, paramObj);
+														vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName, fileEntryId, paramObj, actionName);
 													}
 													catch(err) {
 														console.log(err);
@@ -539,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								}
 							});
 						},
-						completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName, fileEntryId,paramObj) {
+						completeKyDuyetYCGiamDinh: function(sign, signFieldName, fileName, fileEntryId,paramObj, actionName) {
 							var vm = this;
 							var url = '/o/rest/v2/digitalSignature/'+vm.detailModel.dossierId+'/dossierFile';
 							$.ajax({
@@ -566,8 +567,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									/*var jsonData = JSON.parse(result);*/
 									var msg = result.msg;
 									if(msg == 'success'){
-										alert('ký số thành công!');
-										/*vm.snackbardossierViewJX = true;*/
+//										alert('ký số thành công!');
+										vm.snackbartextdossierViewJX = actionName + " thành công!";
+										vm.snackbardossierViewJX = true;
 										
 										vm._inidanhSachHoSoTable();
 										setTimeout(function(){ 

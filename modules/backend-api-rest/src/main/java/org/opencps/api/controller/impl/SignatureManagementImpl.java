@@ -84,21 +84,36 @@ public class SignatureManagementImpl implements SignatureManagement{
 			long fileEntryId = Long.valueOf(input.getFileEntryId());
 			_log.info("fileEntryId: "+fileEntryId);
 			String message = signatureCompleted.getString(RESTFulConfiguration.MESSAGE);
-			_log.info("message: "+message);
+//			_log.info("message: "+message);
 			JSONObject jsonData = JSONFactoryUtil.createJSONObject(message);
-			_log.info("jsonData: "+jsonData.toJSONString());
-			String fullPath = String.valueOf(jsonData.get("fullPath"));
-			_log.info("fullPath: "+fullPath);
+//			_log.info("jsonData: "+jsonData.toJSONString());
+//			String fullPath = String.valueOf(jsonData.get("fullPath"));
+//			_log.info("fullPath: "+fullPath);
 			String signedFilePath = jsonData.getString("signedFile");
 			File fileSigned = new File(signedFilePath);
-			_log.info("fileSigned Path: "+fileSigned.getAbsolutePath());
-			_log.info("fileSigned Name: "+fileSigned.getName());
+//			_log.info("TEST long file: "+fileSigned.length());
+//			_log.info("TEST file sign: "+fileSigned.lastModified());
+//			long modifiedLong = fileSigned.lastModified();
+//			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+//			_log.info("TEST file modifiedDate: "+sdf.format(modifiedLong));
+//			_log.info("fileSigned Path: "+fileSigned.getAbsolutePath());
+//			_log.info("fileSigned Name: "+fileSigned.getName());
 			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
-			_log.info("dlFileEntry: "+dlFileEntry.getFileName());
+//			_log.info("dlFileEntry: "+dlFileEntry.getFileName());
 
+//			_log.info("user.getUserId(): "+user.getUserId());
+//			_log.info("dlFileEntry.getFileEntryId(): "+dlFileEntry.getFileEntryId());
+//			_log.info("dlFileEntry.getTitle(): "+dlFileEntry.getTitle());
+//			_log.info("dlFileEntry.getMimeType(): "+dlFileEntry.getMimeType());
+//			_log.info("dlFileEntry.getTitle(): "+dlFileEntry.getTitle());
+//			_log.info("dlFileEntry.getDescription(): "+dlFileEntry.getDescription());
+//			serviceContext = new ServiceContext();
+//			serviceContext.setAddGroupPermissions(true);
+//			serviceContext.setAddGuestPermissions(true);
 			DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
 					dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
-					StringPool.BLANK, false, fileSigned, serviceContext);
+					StringPool.BLANK, true, fileSigned, serviceContext);
+			
 			//Next action
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 			if (dossier != null) {
@@ -159,10 +174,10 @@ public class SignatureManagementImpl implements SignatureManagement{
 			}
 
 			String strIdArr = input.getStrIdArr();
-			_log.info("array Id: "+strIdArr);
+//			_log.info("array Id: "+strIdArr);
 
 			String[] idSplit = strIdArr.split(StringPool.SEMICOLON);
-			_log.info("idSplit Id: "+idSplit);
+//			_log.info("idSplit Id: "+idSplit);
 
 			JSONObject hashComputed = null;
 			for (String strId : idSplit) {
@@ -186,9 +201,6 @@ public class SignatureManagementImpl implements SignatureManagement{
 
 			JSONObject results = JSONFactoryUtil.createJSONObject(hashComputed.getString(RESTFulConfiguration.MESSAGE));
 			_log.info("results: "+results);
-			
-//			JSONObject result = null;
-//			result = JSONFactoryUtil.createJSONObject();
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
