@@ -924,8 +924,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		//dossierPersistence.findByPrimaryKey(dossierId);
 
 		if (Validator.isNotNull(referenceUid)) {
-			DossierFile dossierFile = dossierFilePersistence.fetchByD_RUID(dossierId, referenceUid, false);
-
+			//DossierFile dossierFile = dossierFilePersistence.fetchByD_RUID(dossierId, referenceUid, false);
+			DossierFile dossierFile = null;
 			if (dossierFile != null) {
 				throw new DuplicateDossierFileException("dossierId= " + dossierId + "|referenceUid=" + referenceUid);
 			}
