@@ -1424,7 +1424,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									value: 'stt'
 								},
 								{
-									text: 'Tên thủ tục. Tên doanh nghiệp',
+									text: 'Tên chứng chỉ',
 									align: 'left',
 									sortable: true,
 									value: 'applicantName'
@@ -1448,13 +1448,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									value: 'action'
 								},
 								{
-									text: 'Nội dung',
+									text: 'Tên doanh nghiệp',
 									align: 'left',
 									sortable: false,
 									value: 'action'
 								},
 								{
-									text: 'Ghi chú',
+									text: 'Hành động',
 									align: 'left',
 									sortable: true,
 									value: 'lastActionNote'
@@ -1477,7 +1477,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								
 							};
 
-							var url = '/o/rest/v2/dossiers';
+							var url = '/o/rest/v2/deliverables';
 							
 							axios.get(url, config_dossiers).then(function (response) {
 								var serializable = response.data;
@@ -1510,6 +1510,32 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									vm.traCuuHoSoTableItems = [];
 									
 								});
+
+
+							var resData = vm.traCuuHoSoTableItems;
+							if(resData){
+								for (var i = 0; i < resData.length; i++) {
+									$.ajax({
+										url : "${api.server}/deliverables/"+resData[i].deliverableId+"/formdata",
+										dataType : "json",
+										type : "GET",
+										headers: {"groupId": ${groupId}},
+										success : function(result){
+											$("#ma_ho_so"+resData[i].deliverableId).html(result.ma_ho_so);
+											$("#so_ho_so"+resData[i].deliverableId).html(result.so_ho_so);
+											$("#ngay_gui"+resData[i].deliverableId).html(result.ngay_gui);
+											$("#ngay_tiep_nhan"+resData[i].deliverableId).html(result.ngay_tiep_nhan);
+											$("#so_chung_chi"+resData[i].deliverableId).html(result.so_chung_chi);
+											$("#ngay_ky_cc"+resData[i].deliverableId).html(result.ngay_ky_cc);
+										},
+										error : function(result){
+											
+										}
+									});
+								}
+							}
+
+
 							return false; 
 						},
 						_paggingTraCuuHoSoTable: function() {
