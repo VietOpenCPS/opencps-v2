@@ -714,6 +714,7 @@ public class DossierActionsImpl implements DossierActions {
 				DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId,
 						context, serviceProcess.getServerNo());
 			} catch (Exception e) {
+<<<<<<< HEAD
 
 				_log.error(e);
 				_log.info("Can not create PaymentFile with pattern \"" + processAction.getPaymentFee() + "\"");
@@ -721,6 +722,15 @@ public class DossierActionsImpl implements DossierActions {
 
 		}
 
+=======
+				
+				_log.error(e);
+				_log.info("Can not create PaymentFile with pattern \"" + processAction.getPaymentFee() +"\"");
+			}
+			
+		}
+		
+>>>>>>> 77a700e2903a7fa47bab8d16bcea1458643a2dc4
 		boolean isSubmitType = isSubmitType(processAction);
 
 		boolean hasDossierSync = false;
@@ -872,6 +882,12 @@ public class DossierActionsImpl implements DossierActions {
 
 				// SyncDossierFile
 				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getByDossierIdAndIsNew(dossierId, true);
+				
+				//check return file
+				List<String> returnDossierFileTemplateNos = ListUtil
+						.toList(StringUtil.split(processAction.getReturnDossierFiles()));
+				
+				_log.info("__return dossierFiles"+processAction.getReturnDossierFiles());
 
 				// check return file
 				List<String> returnDossierFileTemplateNos = ListUtil
@@ -880,8 +896,29 @@ public class DossierActionsImpl implements DossierActions {
 				_log.info("__return dossierFiles" + processAction.getReturnDossierFiles());
 
 				for (DossierFile dosserFile : lsDossierFile) {
+					
+					_log.info("&&&StartUpdateDossierFile"+ new Date());
+					
+					dosserFile.setIsNew(false);
+					
+					DossierFileLocalServiceUtil.updateDossierFile(dosserFile);
+					
+					_log.info("&&&EndUpdateDossierFile"+ new Date());
 
+<<<<<<< HEAD
 					_log.info("&&&StartUpdateDossierFile" + new Date());
+=======
+					_log.info("__dossierPart"+processAction.getReturnDossierFiles());
+
+					if (returnDossierFileTemplateNos.contains(dosserFile.getDossierPartNo())) {
+						DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
+								false, 1, dosserFile.getDossierFileId(), dosserFile.getReferenceUid(),
+								serviceProcess.getServerNo());
+						
+					}
+					
+				}
+>>>>>>> 77a700e2903a7fa47bab8d16bcea1458643a2dc4
 
 					dosserFile.setIsNew(false);
 
@@ -1555,11 +1592,19 @@ public class DossierActionsImpl implements DossierActions {
 		sb.append(oldNote);
 		if (Validator.isNotNull(actionNote)) {
 			sb.append("<br>");
+<<<<<<< HEAD
 			sb.append("[" + sdf.format(new Date()) + "]");
 			sb.append(":");
 			sb.append(actionNote);
 		}
 
+=======
+			sb.append("["+ sdf.format(new Date())+"]");
+			sb.append(":");
+			sb.append(actionNote);
+		}
+		
+>>>>>>> 77a700e2903a7fa47bab8d16bcea1458643a2dc4
 		return sb.toString();
 	}
 
