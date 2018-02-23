@@ -111,8 +111,10 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 			for (Document doc : docList) {
 				String formData = doc.get(DeliverableTerm.FORM_DATA);
+				JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
+				formJson.put("ten_chung_chi", doc.get(DeliverableTerm.DELIVERABLE_NAME));
 //				_log.info("formData: "+formData);
-				formDataArr.put(JSONFactoryUtil.createJSONObject(formData));
+				formDataArr.put(formJson);
 			}
 			results.put("data", formDataArr);
 
