@@ -197,14 +197,18 @@ public class DossierActionsImpl implements DossierActions {
 		String stepCode = StringPool.BLANK;
 
 		String actionCode = GetterUtil.getString(params.get(DossierActionTerm.ACTION_CODE));
+		_log.info("actionCode =: "+actionCode);
 		// TODO filter by Auto
 		String auto = GetterUtil.getString(params.get(DossierActionTerm.AUTO));
+		_log.info("auto =: "+auto);
 
 		// auto != null ko check role, check dk preCondition = auto or submmit
 
 		String referenceUid = GetterUtil.getString(params.get(DossierTerm.REFERENCE_UID));
+		_log.info("referenceUid =: "+referenceUid);
 
 		long dossierId = GetterUtil.getLong(params.get(DossierTerm.DOSSIER_ID));
+		_log.info("dossierId =: "+dossierId);
 
 		if (Validator.isNotNull(referenceUid)) {
 			dossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
@@ -399,11 +403,14 @@ public class DossierActionsImpl implements DossierActions {
 													// TODO: handle exception
 												}
 												if (Validator.isNull(dossierFile)) {
+													
 													dossierFile = actions.addDossierFile(groupId, dossierId,
 															referenceUid, dossier.getDossierTemplateNo(),
 															dossierPart.getPartNo(), fileTemplateNo,
 															dossierPart.getPartName(), StringPool.BLANK, 0L, null,
 															StringPool.BLANK, String.valueOf(false), serviceContext);
+//													SimpleDate
+													_log.info("dossierFile create:"+dossierFile.getDossierPartNo() +"Timer create :"+new Date());
 												}
 
 												docFileReferenceUid = dossierFile.getReferenceUid();
@@ -653,8 +660,10 @@ public class DossierActionsImpl implements DossierActions {
 		DossierAction dossierAction = null;
 
 		Dossier dossier = getDossier(groupId, dossierId, referenceUid);
+		_log.info("dossier: "+dossier);
 		
 		String applicantNote = _buildDossierNote(dossier, actionNote);
+		_log.info("applicantNote: "+applicantNote);
 		
 		dossier.setApplicantNote(applicantNote);
 		
@@ -667,6 +676,9 @@ public class DossierActionsImpl implements DossierActions {
 		ProcessOption option = null;
 
 		try {
+			_log.info("dossier.getServiceCode(): "+dossier.getServiceCode());
+			_log.info("dossier.getGovAgencyCode(): "+dossier.getGovAgencyCode());
+			_log.info("dossier.getDossierTemplateNo(): "+dossier.getDossierTemplateNo());
 			option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 					dossier.getDossierTemplateNo(), groupId);
 		} catch (Exception e) {
@@ -674,6 +686,7 @@ public class DossierActionsImpl implements DossierActions {
 		}
 
 		long serviceProcessId = option.getServiceProcessId();
+		_log.info("serviceProcessId: "+serviceProcessId);
 
 		ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 
@@ -682,6 +695,9 @@ public class DossierActionsImpl implements DossierActions {
 		if (processActionId != 0) {
 			_log.info("PROCESS_ACTION");
 			processAction = ProcessActionLocalServiceUtil.getProcessAction(processActionId);
+			if (processAction != null) {
+				_log.info("SYNC action: "+processAction.getSyncActionCode());
+			}
 		} else {
 			_log.info("PROCESS_ACTION_BY_CODE");
 
@@ -822,8 +838,10 @@ public class DossierActionsImpl implements DossierActions {
 
 			// String syncActionCode = processAction.getSyncActionCode();
 
+			_log.info("curStep.getDossierStatus(): "+curStep.getDossierStatus());
 			getDossierStatus(jsStatus, groupId, DOSSIER_SATUS_DC_CODE, curStep.getDossierStatus());
 
+			_log.info("curStep.getDossierSubStatus(): "+curStep.getDossierSubStatus());
 			getDossierStatus(jsStatus, groupId, DOSSIER_SATUS_DC_CODE, curStep.getDossierSubStatus());
 
 			// update reference dossier
@@ -841,10 +859,12 @@ public class DossierActionsImpl implements DossierActions {
 			DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
 
 			if (Validator.isNotNull(subUsers)) {
+				_log.info("PROCESS subUsers != null");
 				JSONArray subUsersArray = JSONFactoryUtil.createJSONArray(subUsers);
 				dossierActionUser.assignDossierActionUser(dossierAction.getDossierActionId(), userId, groupId,
 						assignUserId, subUsersArray);
 			} else {
+				_log.info("PROCESS subUsers == null");
 				dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId,
 						assignUserId);
 			}
@@ -858,6 +878,7 @@ public class DossierActionsImpl implements DossierActions {
 					&& (curStep.getDossierStatus().contentEquals(DossierStatusConstants.PAYING)
 							|| (curStep.getDossierStatus().contentEquals(DossierStatusConstants.PROCESSING)))) {
 
+				_log.info("PROCESS getDossierStatus == PAYING or PROCESSING");
 				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 				params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
 				params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
@@ -874,15 +895,17 @@ public class DossierActionsImpl implements DossierActions {
 			}
 
 			// update nextActionId
+			_log.info("prvAction:" +prvAction);
 			if (Validator.isNotNull(prvAction)) {
 				DossierActionLocalServiceUtil.updateNextActionId(prvAction.getDossierActionId(),
 						dossierAction.getDossierActionId());
 			}
 
+			_log.info("hasDossierSync:" +hasDossierSync);
 			if (hasDossierSync) {
 				// SyncAction
 				int method = 0;
-
+				_log.info("PROCESS update Dossier Sync:" +hasDossierSync);
 				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
 						isCreateDossier, method, dossierAction.getPrimaryKey(), StringPool.BLANK,
 						serviceProcess.getServerNo());
@@ -890,14 +913,17 @@ public class DossierActionsImpl implements DossierActions {
 				// TODO add SYNC for DossierFile and PaymentFile here
 
 				// SyncDossierFile
-				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getByDossierIdAndIsNew(dossierId, true);
+				//TODO: Fix process mark digital 
+//				if (Validator.isNotNull(actionCode) && !actionCode.equals("1137")) {
+					List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getByDossierIdAndIsNew(dossierId, true);
 
-				for (DossierFile dosserFile : lsDossierFile) {
+					for (DossierFile dosserFile : lsDossierFile) {
 
-					DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-							false, 1, dosserFile.getDossierFileId(), dosserFile.getReferenceUid(),
-							serviceProcess.getServerNo());
-				}
+						DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
+								false, 1, dosserFile.getDossierFileId(), dosserFile.getReferenceUid(),
+								serviceProcess.getServerNo());
+					}
+//				}
 
 			}
 			
@@ -914,7 +940,7 @@ public class DossierActionsImpl implements DossierActions {
 			
 			for (PaymentFile spf : syncPaymentFiles) {
 				//Hard-code
-				
+				_log.info("PROCESS PaymentFile START");
 				if (groupId != 55217) {
 					DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
 							false, 3, spf.getPrimaryKey(), spf.getReferenceUid(),
