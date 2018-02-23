@@ -461,7 +461,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 	@Override
 	public Response getDataFormByTypeCode(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String agencyNo, String typeCode,
-			String keyword) {
+			String keyword, DeliverableSearchModel search) {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -470,6 +470,13 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			// Check user is login
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
+			}
+			
+			_log.info("start: "+search.getStart());
+			_log.info("End: "+search.getEnd());
+			if (search.getEnd() == 0) {
+				search.setStart(-1);
+				search.setEnd(-1);
 			}
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -497,7 +504,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 					SortFactoryUtil.create(Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true) };
 			// get JSON data deliverable
 			JSONObject jsonData = actions.getFormDataByTypecode(serviceContext.getCompanyId(), params, sorts,
-					-1, -1, serviceContext);
+					search.getStart(), search.getEnd(), serviceContext);
 
 //			_log.info("total: "+jsonData.getInt("total"));
 //			results.setTotal(jsonData.getInt("total"));
