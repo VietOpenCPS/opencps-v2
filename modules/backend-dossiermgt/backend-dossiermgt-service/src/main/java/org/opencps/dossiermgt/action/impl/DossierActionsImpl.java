@@ -700,51 +700,6 @@ public class DossierActionsImpl implements DossierActions {
 			
 		}
 		
-		// TODO
-		// Add KYSO fin processAction
-/*		if (processAction.getESignature()) {
-
-			// get DossierFile
-			String fileTemplateNos = processAction.getCreateDossierFiles();
-
-			if (Validator.isNotNull(fileTemplateNos)) {
-				String[] fileTemplateNoArray = fileTemplateNos.split(StringPool.COMMA);
-
-				for (String fileTemplateNo : fileTemplateNoArray) {
-
-					List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_DPT(dossierId,
-							fileTemplateNo, 2, false);
-
-					for (DossierFile dossierFile : dossierFiles) {
-
-						// GetDossierPart to find eSign
-						DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(
-								dossierFile.getGroupId(), dossierFile.getDossierTemplateNo(),
-								dossierFile.getDossierPartNo());
-
-						// if dossierPart.getESign() == true send message to
-						// KYSO process
-						if (dossierPart.getESign()) {
-							// Binhth add message bus to processing KySO file
-							Message message = new Message();
-
-							JSONObject msgDataESign = JSONFactoryUtil.createJSONObject();
-							msgDataESign.put("dossierFileId", dossierFile.getDossierFileId());
-							msgDataESign.put("userId", dossierFile.getUserId());
-							msgDataESign.put("eSign", dossierPart.getESign());
-							msgDataESign.put("fileEntryId", dossierFile.getFileEntryId());
-
-							message.put("msgToEngine", msgDataESign);
-							MessageBusUtil.sendMessage("kyso/engine/out/destination", message);
-						}
-
-					}
-
-				}
-			}
-
-		}
-*/
 		boolean isSubmitType = isSubmitType(processAction);
 
 		boolean hasDossierSync = false;
@@ -890,12 +845,32 @@ public class DossierActionsImpl implements DossierActions {
 
 				// SyncDossierFile
 				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getByDossierIdAndIsNew(dossierId, true);
+				
+				//check return file
+				List<String> returnDossierFileTemplateNos = ListUtil
+						.toList(StringUtil.split(processAction.getReturnDossierFiles()));
+				
+				_log.info("__return dossierFiles"+processAction.getReturnDossierFiles());
 
 				for (DossierFile dosserFile : lsDossierFile) {
+					
+					_log.info("&&&StartUpdateDossierFile"+ new Date());
+					
+					dosserFile.setIsNew(false);
+					
+					DossierFileLocalServiceUtil.updateDossierFile(dosserFile);
+					
+					_log.info("&&&EndUpdateDossierFile"+ new Date());
 
-					DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-							false, 1, dosserFile.getDossierFileId(), dosserFile.getReferenceUid(),
-							serviceProcess.getServerNo());
+					_log.info("__dossierPart"+processAction.getReturnDossierFiles());
+
+					if (returnDossierFileTemplateNos.contains(dosserFile.getDossierPartNo())) {
+						DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
+								false, 1, dosserFile.getDossierFileId(), dosserFile.getReferenceUid(),
+								serviceProcess.getServerNo());
+						
+					}
+					
 				}
 
 			}
@@ -1556,11 +1531,12 @@ public class DossierActionsImpl implements DossierActions {
 		String oldNote = dossier.getApplicantNote();
 		
 		sb.append(oldNote);
-		
-		sb.append("<br>");
-		sb.append("["+ sdf.format(new Date())+"]");
-		sb.append(":");
-		sb.append(actionNote);
+		if (Validator.isNotNull(actionNote)) {
+			sb.append("<br>");
+			sb.append("["+ sdf.format(new Date())+"]");
+			sb.append(":");
+			sb.append(actionNote);
+		}
 		
 		return sb.toString();
 	}
