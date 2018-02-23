@@ -553,6 +553,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									},
 								data: {
 									actionCode: paramObj.actionCode,
+									actionName: actionName,
 									actionUser: paramObj.actionUser,
 									actionNote: paramObj.actionNote,
 									assignUserId: paramObj.assignUserId,
