@@ -96,16 +96,25 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			params.put(DossierTerm.USER_ID, user.getUserId());
 			
 			DeliverableActions actions = new DeliverableActionsImpl();
-			DeliverableResultModel results = new DeliverableResultModel();
+			JSONObject results = JSONFactoryUtil.createJSONObject();
 			
 			// get JSON data deliverable
 			JSONObject jsonData = actions.getListDeliverable(user.getUserId(), serviceContext.getCompanyId(), params,
 					sorts, search.getStart(), search.getEnd(), serviceContext);
 //			JSONObject result = action.getListDeliverable(state, agency, type, applicant);
 //			results.setTotal(jsonData.getInt("total"));
-			results.setTotal(jsonData.getInt("total"));
-			results.getData()
-					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
+			results.put("total", jsonData.getInt("total"));
+//			results.getData()
+//					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
+			List<Document> docList =(List<Document>) jsonData.get("data");
+
+			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
+			for (Document doc : docList) {
+				String formData = doc.get(DeliverableTerm.FORM_DATA);
+//				_log.info("formData: "+formData);
+				formDataArr.put(JSONFactoryUtil.createJSONObject(formData));
+			}
+			results.put("data", formDataArr);
 
 			return Response.status(200).entity(results).build();
 		} catch (Exception e) {
@@ -461,7 +470,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 	@Override
 	public Response getDataFormByTypeCode(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String agencyNo, String typeCode,
-			String keyword, DeliverableSearchModel search) {
+			String keyword, String start, String end) {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -472,11 +481,11 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				throw new UnauthenticationException();
 			}
 			
-			_log.info("start: "+search.getStart());
-			_log.info("End: "+search.getEnd());
-			if (search.getEnd() == 0) {
-				search.setStart(-1);
-				search.setEnd(-1);
+			int startSearch = -1;
+			int endSearch = -1;
+			if (Validator.isNotNull(end) && !end.equals("0")) {
+				startSearch = Integer.parseInt(start);
+				endSearch = Integer.parseInt(end);
 			}
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -504,7 +513,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 					SortFactoryUtil.create(Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true) };
 			// get JSON data deliverable
 			JSONObject jsonData = actions.getFormDataByTypecode(serviceContext.getCompanyId(), params, sorts,
-					search.getStart(), search.getEnd(), serviceContext);
+					startSearch, endSearch, serviceContext);
 
 //			_log.info("total: "+jsonData.getInt("total"));
 //			results.setTotal(jsonData.getInt("total"));
@@ -520,7 +529,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 			for (Document doc : docList) {
 				String formData = doc.get(DeliverableTerm.FORM_DATA);
-				_log.info("formData: "+formData);
+//				_log.info("formData: "+formData);
 				formDataArr.put(JSONFactoryUtil.createJSONObject(formData));
 			}
 			results.put("data", formDataArr);
