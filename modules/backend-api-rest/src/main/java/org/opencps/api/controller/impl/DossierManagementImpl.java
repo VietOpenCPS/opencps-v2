@@ -649,7 +649,7 @@ public class DossierManagementImpl implements DossierManagement {
 					throw new UnauthenticationException();
 				}
 				
-				_log.debug("Call ");
+				_log.info("Call ===========");
 
 				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 						dossier.getDossierTemplateNo(), groupId);
@@ -661,6 +661,9 @@ public class DossierManagementImpl implements DossierManagement {
 				// user.getUserId(), dossier, option.getServiceProcessId(),
 				// action);
 
+				_log.info("input.getActionCode(): " + input.getActionCode());
+				_log.info("action.getProcessActionId(): "+ action.getProcessActionId());
+				_log.info("input.getActionUser(): "+input.getActionUser());
 				DossierAction dossierAction = actions.doAction(groupId, dossier.getDossierId(),
 						dossier.getReferenceUid(), input.getActionCode(), action.getProcessActionId(),
 						input.getActionUser(), input.getActionNote(), input.getAssignUserId(), user.getUserId(), subUsers,
