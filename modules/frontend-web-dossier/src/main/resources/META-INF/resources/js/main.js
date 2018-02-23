@@ -39,7 +39,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				subUsers: [],
 				currentCounter : 0,
 				currentCounterTemp : 0,
-				listgroupHoSoFilterselectedIndex: -1
+				listgroupHoSoFilterselectedIndex: -1,
+				advancedFilterServiceInfo : {}, 
+				advancedFilterLoaiSanPham : {},
+				advancedFilterNhanHieu : {}
 			},
 			onScroll: 'onScroll',
 			schema: {
@@ -1462,83 +1465,190 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									value: 'lastActionNote'
 								}
 							];
-							
+
+							var url = '/o/rest/v2/deliverables';
+							var method = "GET";
+
 							var paramsBuilder = {
-								keyword: vm.keywordsSearchTraCuuHoSo,
+								
 								start: vm.traCuuHoSoTablepage * 15 - 15,
 								end: vm.traCuuHoSoTablepage * 15,
 								sort: 'modified',
 								order: 'false'
 							};
-							
-							const config_dossiers = {
-								params: paramsBuilder,
+							var loai_chung_chi = vm.advancedFilterServiceInfo.deliverableType;
+							try{
+								if(vm.advanced_filter){
+
+									
+									var ten_doanh_nghiep = vm.advanced_filter_applicantName;
+									var so_ho_so = vm.advanced_filter_dossierIdCTN;
+									var so_chung_chi = vm.advanced_filter_dossierNo;
+									var loai_san_pham = vm.advancedFilterLoaiSanPham.itemCode;
+									var nhan_hieu = vm.advancedFilterNhanHieu.itemCode;
+									var ten_thuong_mai = vm.advanced_filter_tenThuongMai;
+									var ma_kieu_loai = vm.advanced_filter_maKieuLoai;
+
+									if(!loai_chung_chi && !ten_doanh_nghiep && !so_ho_so && !so_chung_chi && !loai_san_pham && !nhan_hieu && 
+										!ten_thuong_mai && !ma_kieu_loai){
+										paramsBuilder.keyword = vm.keywordsSearchTraCuuHoSo;
+									}else {
+										var queryKey = '"query": "';
+										var queryValue = '"values": "';
+										var queryType = '"type": "';
+
+										var queryKeyArr = new Array();
+										var queryValueArr = new Array();
+										var queryTypeArr = new Array();
+
+										if(ten_doanh_nghiep){
+
+											queryKeyArr.push('(ten_doanh_nghiep like ?)');
+											queryValueArr.push('*'+ten_doanh_nghiep+'*');
+											queryTypeArr.push('String');
+
+										}
+
+										if(so_ho_so){
+
+											queryKeyArr.push('(so_ho_so = ?)');
+											queryValueArr.push(so_ho_so);
+											queryTypeArr.push('String');
+										}
+
+										if(so_chung_chi){
+
+											queryKeyArr.push('(so_chung_chi = ?)');
+											queryValueArr.push(so_chung_chi);
+											queryTypeArr.push('String');
+										}
+
+										if(loai_san_pham){
+
+											queryKeyArr.push('(loai_san_pham = ?)');
+											queryValueArr.push(loai_san_pham);
+											queryTypeArr.push('String');
+										}
+
+										if(nhan_hieu){
+
+											queryKeyArr.push('(nhan_hieu = ?)');
+											queryValueArr.push(nhan_hieu);
+											queryTypeArr.push('String');
+										}
+
+										if(ten_thuong_mai){
+
+											queryKeyArr.push('(ten_thuong_mai like ?)');
+											queryValueArr.push('*'+ten_thuong_mai + '*');
+											queryTypeArr.push('String');
+										}
+
+										if(ma_kieu_loai){
+
+											queryKeyArr.push('(ma_kieu_loai like ?)');
+											queryValueArr.push('*'+ma_kieu_loai + '*');
+											queryTypeArr.push('String');
+										}
+
+										var query = '{ "query": "' + queryKeyArr.join(" [and] ") + '", "values": " ' + queryValueArr.join("#") + '", "type": " ' + queryTypeArr.join(",") + '"}';
+										paramsBuilder.keyword = query;
+										url = "/o/rest/v2/deliverables/agency/BGTVTCDKVN/type/"+loai_chung_chi;
+										method = "POST";
+										
+
+									}
+									
+							}else {
+								paramsBuilder.keyword = vm.keywordsSearchTraCuuHoSo;
+							}
+						}catch(e){
+							url = "/o/rest/v2/deliverables";
+							method = "GET";
+						}
+
+						if(method === "POST"){
+							if(!loai_chung_chi){
+								vm.snackbartextdossierViewJX = "Bạn phải chọn loại chứng chỉ trước khi tìm kiếm";
+								vm.snackbarerordossierViewJX = true;
+							}
+						}
+
+							$.ajax({
+								url : url,
+								type : method,
+								dataType : "json",
 								headers: {
 									'groupId': themeDisplay.getScopeGroupId(),
-								}
-								
-							};
+								},
+								data : paramsBuilder,
+								success : function(result){
+									var serializable = result;
 
-							var url = '/o/rest/v2/deliverables';
-							
-							axios.get(url, config_dossiers).then(function (response) {
-								var serializable = response.data;
-
-								if (append) {
-									vm.traCuuHoSoTableItems.push.apply(vm.traCuuHoSoTableItems, serializable.data);
-								} else {
-									vm.traCuuHoSoTableItems = serializable.data;
-									
-									vm.traCuuHoSoTableTotal = Math.ceil(serializable.total / 15);
-								}
-
-								vm.xem_them = 'Xem thêm 8+ bản ghi';
-								if (serializable.data.length === 0) {
-									vm.xem_them = 'Tổng số ( ' + serializable.total + ' ) bản ghi'
-								}
-								vm.viewmore = false;
-								
-								// temp fix header
-								$('.danhSachHoSoTable__class th[role="columnheader"]').each(function( index ) {
-									if ($( this ).attr('aria-label').indexOf("Activate") > 0) {
-										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>") + ' <i aria-hidden="true" class="material-icons icon">arrow_upward</i>');
+									if (append) {
+										vm.traCuuHoSoTableItems.push.apply(vm.traCuuHoSoTableItems, serializable.data);
 									} else {
-										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>"));
+										vm.traCuuHoSoTableItems = serializable.data;
+
+										vm.traCuuHoSoTableTotal = Math.ceil(serializable.total / 15);
 									}
-								});
-							})
-								.catch(function (error) {
-									console.log(error);
-									vm.traCuuHoSoTableItems = [];
-									
-								});
 
+									vm.xem_them = 'Xem thêm 8+ bản ghi';
+									if (!serializable.data || serializable.data.length === 0) {
+										vm.xem_them = 'Tổng số ( ' + serializable.total + ' ) bản ghi'
+									}
+									vm.viewmore = false;
 
-							var resData = vm.traCuuHoSoTableItems;
-							if(resData){
-								for (var i = 0; i < resData.length; i++) {
-									$.ajax({
-										url : "${api.server}/deliverables/"+resData[i].deliverableId+"/formdata",
-										dataType : "json",
-										type : "GET",
-										headers: {"groupId": ${groupId}},
-										success : function(result){
-											$("#ma_ho_so"+resData[i].deliverableId).html(result.ma_ho_so);
-											$("#so_ho_so"+resData[i].deliverableId).html(result.so_ho_so);
-											$("#ngay_gui"+resData[i].deliverableId).html(result.ngay_gui);
-											$("#ngay_tiep_nhan"+resData[i].deliverableId).html(result.ngay_tiep_nhan);
-											$("#so_chung_chi"+resData[i].deliverableId).html(result.so_chung_chi);
-											$("#ngay_ky_cc"+resData[i].deliverableId).html(result.ngay_ky_cc);
-										},
-										error : function(result){
-											
+									// temp fix header
+									$('.danhSachHoSoTable__class th[role="columnheader"]').each(function( index ) {
+										if ($( this ).attr('aria-label').indexOf("Activate") > 0) {
+											$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>") + ' <i aria-hidden="true" class="material-icons icon">arrow_upward</i>');
+										} else {
+											$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>"));
 										}
 									});
+
+									/*var resData = serializable.data;
+									if(resData){
+										for (var i = 0; i < resData.length; i++) {
+											var deliverableId = resData[i].deliverableId;
+											console.log("deliverableId======",deliverableId);
+											if(deliverableId){
+												$.ajax({
+													url : "/o/rest/v2/deliverables/"+deliverableId+"/formdata",
+													dataType : "json",
+													type : "GET",
+													headers: {"groupId": themeDisplay.getScopeGroupId()},
+													async : false,
+													success : function(result){
+														$("#ma_ho_so"+deliverableId).html(result.ma_ho_so);
+														$("#so_ho_so"+deliverableId).html(result.so_ho_so);
+														$("#ngay_gui"+deliverableId).html(result.ngay_gui);
+														$("#ngay_tiep_nhan"+deliverableId).html(result.ngay_tiep_nhan);
+														$("#so_chung_chi"+deliverableId).html(result.so_chung_chi);
+														$("#ngay_ky_cc"+deliverableId).html(result.ngay_ky_cc);
+													},
+													error : function(result){
+
+													}
+												});
+											}
+
+										}
+									}*/
+								},
+								error : function(result){
+									console.log(result);
+									vm.traCuuHoSoTableItems = [];
 								}
-							}
+							});
 
 
 							return false; 
+						},
+						advanced_filter_btn_click : function(){
+							var vm = this;
+							vm._initraCuuHoSoTable(false);
 						},
 						_paggingTraCuuHoSoTable: function() {
 							
@@ -2128,18 +2238,32 @@ document.addEventListener('DOMContentLoaded', function (event) {
                     'name': 'advanced_filter_serviceInfo',
                     "type": "select",
                     'cssClass': 'no-wrap',
-                    "item_text": "serviceName",
-					"item_value": "serviceCode",
-                    'label': 'Lựa chọn thủ tục hành chính',
+                    "item_text": "deliverableName",
+					"item_value": "deliverableType",
+                    'label': 'Lựa chọn loại chứng chỉ',
 					"hide_selected": true,
 					"combobox": true,
 					"loading": false,
 					"no_data_text": "Lua chon selected",
 					"items": [],
+					"onChange": "_filterAdvancedServiceInfoOnchange($event)",
                     'events': {
                     	_initAdvanced_filter_serviceInfo: function () {
                     		var vm = this;
-                    		vm.advanced_filter_serviceInfoItems = vm.serviceInfoFilterItems;
+                    		var url = "/o/rest/v2/deliverabletypes";
+							axios.get(url, config).then(function (response) {
+    								var serializable = response.data;
+    								vm.advanced_filter_serviceInfoItems = serializable.data;
+    								console.log(vm.advanced_filter_serviceInfoItems);
+    							})
+								.catch(function (error) {
+									console.log(error);
+									
+								});
+                    	},
+                    	_filterAdvancedServiceInfoOnchange : function(data){
+                    		var vm = this;
+                    		vm.advancedFilterServiceInfo = data;
                     	}
                     }
                 },
@@ -2174,12 +2298,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					"loading": false,
 					"no_data_text": "Lua chon selected",
 					"items": [],
+					"onChange": "_filterAdvancedLoaiSanPhamOnchange($event)",
                     'events': {
                     	_initAdvanced_filter_loaiSanPham: function () {
                     		var vm = this;
                     		if (vm.advanced_filter_loaiSanPhamItems.length <= 0) {
 
-    							var url = '/o/rest/v2/dictcollections/VR03/dictitems?sort=sibling';
+    							var url = '/o/rest/v2/dictcollections/VR02/dictitems?sort=sibling';
     							
     							axios.get(url, config).then(function (response) {
     								var serializable = response.data;
@@ -2192,6 +2317,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								});
                     		}
                     		return false; 
+                    	},
+                    	_filterAdvancedLoaiSanPhamOnchange : function(data){
+                    		var vm = this;
+                    		vm.advancedFilterLoaiSanPham = data;
                     	}
                     }
                 },
@@ -2208,12 +2337,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					"loading": false,
 					"no_data_text": "Lua chon selected",
 					"items": [],
+					"onChange": "_filterAdvancedNhanHieuOnchange($event)",
                     'events': {
                     	_initAdvanced_filter_nhanHieu: function () {
                     		var vm = this;
                     		if (vm.advanced_filter_nhanHieuItems.length <= 0) {
 
-    							var url = '/o/rest/v2/dictcollections/VR02/dictitems?sort=sibling';
+    							var url = '/o/rest/v2/dictcollections/VR03/dictitems?sort=sibling';
     							
     							axios.get(url, config).then(function (response) {
     								var serializable = response.data;
@@ -2225,6 +2355,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								});
                     		}
                     		return false; 
+                    	},
+                    	_filterAdvancedNhanHieuOnchange : function(data){
+                    		var vm = this;
+                    		vm.advancedFilterNhanHieu = data;
                     	}
                     }
                 },
