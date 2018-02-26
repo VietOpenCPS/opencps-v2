@@ -100,7 +100,7 @@ public class DossierActionsImpl implements DossierActions {
 		searchContext.setCompanyId(companyId);
 
 		try {
-
+			
 			hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
 			result.put("data", hits.toList());

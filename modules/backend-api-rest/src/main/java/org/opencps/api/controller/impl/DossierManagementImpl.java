@@ -999,8 +999,9 @@ public class DossierManagementImpl implements DossierManagement {
 	@Override
 	public Response getDossierByCertificateNumber(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String certificateNumber) {
-		
+		_log.info("START*********1");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		_log.info("groupId: "+groupId);
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 
@@ -1011,11 +1012,12 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-
+			
+			_log.info("certificateNumber: "+certificateNumber);
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(DossierTerm.DOSSIER_ID + "CTN", certificateNumber);
 
-			Sort[] sorts = new Sort[] { };
+			Sort[] sorts = new Sort[] {SortFactoryUtil.create("modifiedDate" + "_sortable", Sort.STRING_TYPE, false) };
 
 			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					-1, -1, serviceContext);
