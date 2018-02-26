@@ -384,7 +384,7 @@ public interface DossierFileManagement {
 			@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
 
 	@GET
-	@Path("/deliverableCode")
+	@Path("/file/{deliverableCode}")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "deliverableCode")
 	@ApiResponses(value = { @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "deliverableCode"),
