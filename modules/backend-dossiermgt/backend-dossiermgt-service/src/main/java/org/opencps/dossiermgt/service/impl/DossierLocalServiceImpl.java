@@ -920,6 +920,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String state = GetterUtil.getString(params.get(DossierTerm.STATE));
 		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
 		String dossierNo = GetterUtil.getString(params.get(DossierTerm.DOSSIER_NO));
+		// Get by certificate number
+		String certificateNo = (String) params.get(DossierTerm.DOSSIER_ID + "CTN");
 
 		// String top = GetterUtil.getString(params.get(DossierTerm.TOP));
 
@@ -1135,6 +1137,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 			}
+		}
+
+		if (Validator.isNotNull(certificateNo)) {
+			MultiMatchQuery query = new MultiMatchQuery(certificateNo);
+
+			query.addFields(DossierTerm.DOSSIER_ID + "CTN");
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
