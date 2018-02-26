@@ -113,6 +113,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				String formData = doc.get(DeliverableTerm.FORM_DATA);
 				JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
 				formJson.put("ten_chung_chi", doc.get(DeliverableTerm.DELIVERABLE_NAME));
+				formJson.put("deliverableCode", doc.get(DeliverableTerm.DELIVERABLE_CODE));
 //				_log.info("formData: "+formData);
 				formDataArr.put(formJson);
 			}
@@ -531,6 +532,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				String formData = doc.get(DeliverableTerm.FORM_DATA);
 				JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
 				formJson.put("ten_chung_chi", doc.get(DeliverableTerm.DELIVERABLE_NAME));
+				formJson.put("deliverableCode", doc.get(DeliverableTerm.DELIVERABLE_CODE));
 //				_log.info("formData: "+formData);
 				formDataArr.put(formJson);
 			}

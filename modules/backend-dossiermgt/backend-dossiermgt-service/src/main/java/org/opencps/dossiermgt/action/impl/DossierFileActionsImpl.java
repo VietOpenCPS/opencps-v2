@@ -278,4 +278,11 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		}
 
 	}
+
+	// Get dossierFile by deliverableCode
+	@Override
+	public DossierFile getDossierFileByDeliverableCode(long groupId, String deliverableCode) {
+
+		return DossierFileLocalServiceUtil.getByDeliverableCode(deliverableCode);
+	}
 }
