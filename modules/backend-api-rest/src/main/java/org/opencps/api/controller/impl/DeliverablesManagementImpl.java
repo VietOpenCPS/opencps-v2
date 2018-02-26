@@ -87,12 +87,12 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			params.put(Field.KEYWORD_SEARCH, search.getKeyword());
 			params.put(DeliverableTerm.DELIVERABLE_TYPE, search.getType());
 			params.put(DeliverableTerm.APPLICANT_ID_NO, search.getApplicant());
-			String owner = search.getOwner();
-			if (Validator.isNotNull(owner)) {
-				params.put(DossierTerm.OWNER, search.getOwner());
-			} else {
-				params.put(DossierTerm.OWNER, String.valueOf(true));
-			}
+//			String owner = search.getOwner();
+//			if (Validator.isNotNull(owner)) {
+//				params.put(DossierTerm.OWNER, search.getOwner());
+//			} else {
+//				params.put(DossierTerm.OWNER, String.valueOf(true));
+//			}
 			params.put(DossierTerm.USER_ID, user.getUserId());
 			
 			DeliverableActions actions = new DeliverableActionsImpl();

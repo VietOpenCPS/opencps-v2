@@ -45,7 +45,8 @@ import javax.xml.bind.annotation.XmlType;
  "actionUser",
  "actionNote",
  "assignUserId",
- "subUsers"
+ "subUsers",
+ "postStepCode"
 })
 public class DigitalSignatureInputModel {
 
@@ -69,6 +70,8 @@ public class DigitalSignatureInputModel {
 	protected String assignUserId;
 	@FormParam(value = "subUsers")
 	protected String subUsers;
+	@FormParam(value = "postStepCode")
+	protected String postStepCode;
 	 /**
 	  * Gets the value of the deliverableType property.
 	  * 
@@ -195,6 +198,14 @@ public class DigitalSignatureInputModel {
 
 	public void setSubUsers(String subUsers) {
 		this.subUsers = subUsers;
+	}
+
+	public String getPostStepCode() {
+		return postStepCode;
+	}
+
+	public void setPostStepCode(String postStepCode) {
+		this.postStepCode = postStepCode;
 	}
 
 }
