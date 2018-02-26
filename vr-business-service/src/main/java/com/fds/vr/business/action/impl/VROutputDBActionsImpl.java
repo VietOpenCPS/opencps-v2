@@ -41,7 +41,7 @@ public class VROutputDBActionsImpl implements VROutputDBActions{
 
 		List<Deliverable> deliverableList = DeliverableLocalServiceUtil.getDeliverableByModifiedDate(strSyncDate,
 				"GCN_TDTK_XCG", 2);
-		_log.info("deliverableList: "+deliverableList);
+//		_log.info("deliverableList: "+deliverableList);
 
 		if (deliverableList != null && deliverableList.size() > 0) {
 //			List<String> formDataList = new ArrayList<String>();
@@ -60,8 +60,8 @@ public class VROutputDBActionsImpl implements VROutputDBActions{
 					dossierFile = DossierFileLocalServiceUtil.getByDeliverableCode(deliverableCode);
 				}
 
-				_log.info("registration: "+registration);
-				_log.info("dossierFile: "+dossierFile);
+//				_log.info("registration: "+registration);
+//				_log.info("dossierFile: "+dossierFile);
 				formData = deliverable.getFormData();
 				modifiedDate = deliverable.getModifiedDate();
 				if (Validator.isNotNull(formData)) {
