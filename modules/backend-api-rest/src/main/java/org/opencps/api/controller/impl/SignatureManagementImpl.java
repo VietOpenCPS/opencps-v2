@@ -59,6 +59,8 @@ import com.liferay.portal.kernel.util.Validator;
 public class SignatureManagementImpl implements SignatureManagement{
 
 	Log _log = LogFactoryUtil.getLog(SignatureManagementImpl.class.getName());
+	private static final String TYPE_KYSO = "1135, 1158, 1160";
+	private static final String TYPE_DONGDAU = "1137, 1162";
 
 	@Override
 	public Response updateDossierFileBySignature(HttpServletRequest request, HttpHeaders header, Company company,
@@ -137,16 +139,24 @@ public class SignatureManagementImpl implements SignatureManagement{
 				_log.info("actionNote: "+actionNote);
 				_log.info("assignUserId: "+assignUserId);
 				_log.info("subUsers: "+subUsers);
-				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
-						dossier.getDossierTemplateNo(), groupId);
-
-				ProcessAction action = getProcessAction(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
-						input.getActionCode(), option.getServiceProcessId());
-
 				DossierActions dossierAction = new DossierActionsImpl();
-				dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
-						action.getProcessActionId(), actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
-						serviceContext);
+				if (TYPE_KYSO.contains(actionCode)) {
+					dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
+							0L, actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
+							serviceContext);
+				} else if(TYPE_DONGDAU.contains(actionCode)) {
+					ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
+							dossier.getDossierTemplateNo(), groupId);
+
+					ProcessAction action = getProcessAction(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
+							input.getActionCode(), option.getServiceProcessId());
+
+					dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
+							action.getProcessActionId(), actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
+							serviceContext);
+				} else {
+					//TODO
+				}
 //				dossierAction.doAction(groupId, dossierId,
 //						dossier.getReferenceUid(), input.getActionCode(), action.getProcessActionId(),
 //						input.getActionUser(), input.getActionNote(), input.getAssignUserId(), user.getUserId(), subUsers,
@@ -190,7 +200,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 	@Override
 	public Response getHashComputedBySignature(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, Long id, DigitalSignatureInputModel input) {
-		
+		_log.info("START*************");
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -202,7 +212,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 			}
 
 			String strIdArr = input.getStrIdArr();
-//			_log.info("array Id: "+strIdArr);
+			_log.info("array Id: "+strIdArr);
 
 			String[] idSplit = strIdArr.split(StringPool.SEMICOLON);
 //			_log.info("idSplit Id: "+idSplit);
@@ -220,7 +230,8 @@ public class SignatureManagementImpl implements SignatureManagement{
 						long fileEntryId = dossierFile.getFileEntryId();
 						_log.info("fileEntryId: "+fileEntryId);
 
-						hashComputed = callHashComputedSync(groupId, user, fileEntryId, input.getActionCode(), serviceContext);
+						hashComputed = callHashComputedSync(groupId, user, fileEntryId, input.getActionCode(),
+								input.getPostStepCode(), serviceContext);
 						_log.info("hashComputed: "+hashComputed);
 						break;
 					}
@@ -263,7 +274,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 	}
 
 	private JSONObject callHashComputedSync(long groupId, User user, long fileEntryId, String actionCode,
-			ServiceContext serviceContext) throws PortalException {
+			String postStepCode, ServiceContext serviceContext) throws PortalException {
 
 		InvokeREST rest = new InvokeREST();
 
@@ -277,7 +288,8 @@ public class SignatureManagementImpl implements SignatureManagement{
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("fileEntryId", fileEntryId);
 		params.put("emailUser", user.getEmailAddress());
-		params.put("typeSignature", Integer.valueOf(actionCode));
+		params.put("typeSignature", actionCode);
+		params.put("postStepCode", postStepCode);
 
 		JSONObject resPostHashComputed = rest.callPostAPI(groupId, httpMethod, "application/json",
 				RESTFulConfiguration.SERVER_PATH_BASE, endPoint, RESTFulConfiguration.SERVER_USER,

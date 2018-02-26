@@ -465,6 +465,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									paramObj.actionNote = vm.processActionNote;
 									paramObj.assignUserId = assignUserId;
 									paramObj.subUsers = subUsers;
+									paramObj.postStepCode = item.postStepCode;
 
 									var strIdArr = idArr.join(";");
 									var actionName = item.actionName;
@@ -488,7 +489,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								data : {
 									// type: 'kyDuyetYCGiamDinh',
 									strIdArr: strIdArr,
-									actionCode: paramObj.actionCode
+									actionCode: paramObj.actionCode,
+									postStepCode: paramObj.postStepCode
 									// strDossierPartId: strDossierPartId
 									/*id : controlRequirementId*/
 								},
@@ -559,6 +561,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									actionUser: paramObj.actionUser,
 									actionNote: paramObj.actionNote,
 									assignUserId: paramObj.assignUserId,
+									postStepCode: paramObj.postStepCode,
 									subUsers: paramObj.subUsers,
 									sign: sign,
 									signFieldName: signFieldName,
