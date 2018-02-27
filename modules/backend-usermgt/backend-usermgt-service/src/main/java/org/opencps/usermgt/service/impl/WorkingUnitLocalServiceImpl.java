@@ -487,4 +487,8 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 			throw new NotFoundException();
 		}
 	}
+	
+	public WorkingUnit getWorkingUnitbyGidandWid(long groupId, long workingUnitId){
+		return workingUnitPersistence.fetchByF_WID(groupId, workingUnitId);
+	}
 }

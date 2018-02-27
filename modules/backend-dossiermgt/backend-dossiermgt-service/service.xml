@@ -1103,7 +1103,11 @@
 		<!-- Order -->
 
 		<!-- Filter -->
-
+        <finder return-type="Collection" name="G_UID_Y">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="userId"></finder-column>
+            <finder-column name="year"></finder-column>
+        </finder>
 
 	</entity>
 
