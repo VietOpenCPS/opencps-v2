@@ -13,11 +13,11 @@
 					<span class="text-bold" id="statusName" style="text-transform:uppercase;">TRA CỨU CHỨNG CHỈ</span>
 					<div class="MLA form-inline">
 
-						<input type="text" class="form-control" id="noInput" placeholder="Nhập số chứng chỉ" 
-						data-bind="events: { keyup: filterInvestigationNo}" >
+						<input type="text" class="form-control input-sm" id="noInputDelivable" placeholder="Nhập số chứng chỉ" 
+						data-bind="events: { keyup: filterDelivableNo}" >
 
-						<input type="text" class="form-control" id="keyInput" placeholder="Nhập từ khóa"
-						data-bind="events: { keyup: filterKey}" style="width: 290px;">
+						<input type="text" class="form-control input-sm" id="keyInputDelivable" placeholder="Nhập từ khóa"
+						data-bind="events: { keyup: filterDelivableKey}" style="width: 290px;">
 
 					</div>
 					
@@ -173,15 +173,13 @@
 		<td class="text-center count" style="width: 1%">
 			#:count#
 		</td>
-		
-		#
-		var formData = fnGetFormData(deliverableId);
-		#
 
 		<td class="" style="width: 18%">
 			<span>
-				<a href="javascript:;" class="link-detail-employee text-hover-blue"  data-bind="events: { click : loadDeliverableDetail}" #if(formData.ma_ho_so){# data-pk = "#:formData.ma_ho_so#" #}#>
-					#=deliverableName#
+				<a href="javascript:;" class="link-detail-employee text-hover-blue"  data-bind="events: { click : loadDeliverableDetail}" #if(ma_ho_so){# data-pk = "#:ma_ho_so#" #}#>
+					#if(jQuery.type(ten_chung_chi) !== "undefined"){#
+						#=ten_chung_chi#
+					#}#
 				</a>
 			</span>
 
@@ -191,30 +189,30 @@
 
 		<td class="text-center" style="width: 15%">
 			<p title="Mã hồ sơ">
-				#if(formData.ma_ho_so){#
-				<strong>#=formData.ma_ho_so#</strong>
+				#if(ma_ho_so){#
+				<strong>#=ma_ho_so#</strong>
 				#}#
 
 			</p>
 			
 			<p title="Số hồ sơ">
-				#if(formData.so_ho_so){#
-				<strong>#=formData.so_ho_so#</strong>
+				#if(so_ho_so){#
+				<strong>#=so_ho_so#</strong>
 				#}#
 			</p> 
 		</td>
 
 		<td class="text-center" style="width: 15%">
 			<p title="Ngày gửi">
-				#if(formData.ngay_gui){#
-				<strong>#=formData.ngay_gui#</strong>
+				#if(ngay_gui){#
+				<strong>#=ngay_gui#</strong>
 				#}#
 
 			</p>
 			
 			<p title="Ngày tiếp nhận">
-				#if(formData.ngay_tiep_nhan){#
-				<strong>#=formData.ngay_tiep_nhan#</strong>
+				#if(ngay_tiep_nhan){#
+				<strong>#=ngay_tiep_nhan#</strong>
 				#}#
 			</p> 
 		</td>
@@ -222,45 +220,47 @@
 		<td class="text-center" style="width: 15%">
 			<#-- Số chứng chỉ -->
 			<#-- #=briefNote# -->
-			#if(formData.so_chung_chi){#
-			<strong>#=formData.so_chung_chi#</strong>
+			#if(so_chung_chi){#
+			<strong>#=so_chung_chi#</strong>
 			#}#
 
-			#if(formData.ngay_ky_cc){#
+			#if(ngay_ky_cc){#
 			<strong>#:ngay_ky_cc#</strong>
 			#}#
 		</td>
 
 		<td class="text-center" style="width: 20%">
-			# if(applicantName){#
-			<i>#:applicantName#</i>
+			# if(ten_doanh_nghiep){#
+			<i>#:ten_doanh_nghiep#</i>
 			#}#
 		</td>
 
 		<td class="PT0 PR0 text-center" style="width: 15%">
+
+			<a href="javascript:;" data-bind="events: { click : viewDeliverableFile}" data-pk = "#:deliverableCode#">Xem chứng chỉ</a>
 			<#--	-->
 			<!-- <button type="button" class="btn-link no-border PT10 copyProfile" data-pk="">
 				<i class="fa fa-file-o" aria-hidden="true"></i>
 				Sao chép
 			</button> -->
 			<#--	-->
-			#if(deliverableState == "done"){#
+			<#-- #if(deliverableState == "done"){#
 			<button type="button" class="btn-link no-border PT10 downloadProfile" data-pk="">
 				<i class="fa fa-download" aria-hidden="true"/>
 				Tải kết quả
 			</button>
-			<#--  -->
+			
 			<button type="button" class="btn-link no-border PT10 resDone" data-pk="">
 				<i class="fa fa-reply" aria-hidden="true"/>
 				Yêu cầu cấp lại
 			</button>
-			<#--  -->
+			
 			<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="">
 				<i class="fa fa-paper-plane" aria-hidden="true"></i>
 				Sửa đổi bổ sung
 			</button>
 			#}#
-			<#--  -->
+			
 			#if(deliverableState == "waiting"){#
 			<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="">
 				<i class="fa fa-trash-o" aria-hidden="true"></i>
@@ -271,14 +271,14 @@
 				Gửi bổ sung
 			</button>
 			#}#
-			<#--  -->
+			
 			#if(deliverableState == "receiving"){#
 			<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="">
 				<i class="fa fa-trash-o" aria-hidden="true"></i>
 				Yêu cầu hủy
 			</button></br>
-
-			#}#
+			
+			#}# -->
 
 		</td>
 

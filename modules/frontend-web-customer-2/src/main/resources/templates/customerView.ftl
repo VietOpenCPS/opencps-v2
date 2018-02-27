@@ -4,6 +4,9 @@
 <#------------- Phần VIEW --------------->
 	<#-- WRAPPER ELEMENT -->
 	<div id="appManagerDossier" style="font-size:13px"></div>
+	<div id="confirmSaveForm" style="background-color: #ffffff; color: black" class="MT20">
+	
+	</div>
 
 	<#-- layout template -->
 	<script type="text/x-kendo-template" id="layoutTemplate">

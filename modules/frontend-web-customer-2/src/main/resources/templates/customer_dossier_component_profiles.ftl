@@ -46,15 +46,15 @@
 										#
 										<div class="eq-height">
 
-											<div class="col-xs-12 col-sm-9 align-middle">
+											<div class="col-xs-12 col-sm-12 align-middle">
 												<span class="#if('${index}' === '0'){# active #}# hover-pointer item-file-component" data-pk="#:items[i].referenceUid#" data-index="${index}" >
 													#:items[i].displayName#
 												</span>
 											</div>
 
-											<div class="col-xs-12 col-sm-3 align-center">
+											<#-- <div class="col-xs-12 col-sm-3 align-center">
 												<button class="btn btn-reset btn-delete-component-profile" data-pk="#:items[i].referenceUid#" eForm="#:items[i].eForm#" type="button"><i class="fa fa-trash"></i> Xóa</button>
-											</div>
+											</div> -->
 										</div>
 										#
 									}
@@ -129,8 +129,8 @@
 							},
 							success:function(result){
 
-								dataSourceDossierFile.pushDestroy(result);
-
+								dataSourceDossierFile.read();
+								
 								notification.show({
 									message: "Xóa thành công!"
 								}, "success");
@@ -182,13 +182,17 @@
 							dataType : "json",
 							headers : {"groupId": ${groupId}},
 							success : function (result) {
-								options.success(result);
 								if(!result.data){
 
 									notification.show({
 										message: "Bạn chưa tải file lên, Vui lòng tải lên để xem"
 									}, "error");
 
+								}else {
+									result.data = $.grep(result.data, function( value, index ) {
+										return (value.dossierPartType === 1);
+									});
+									options.success(result);
 								}
 							},
 							error : function (result) {
