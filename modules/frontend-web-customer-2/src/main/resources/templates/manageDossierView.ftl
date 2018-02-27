@@ -215,9 +215,11 @@
 			#}#
 		</td>
 
-		<td class="" style="width: 10%">
+		<td class="text-center" style="width: 10%">
 			<#-- Số chứng chỉ -->
 			<#-- #=briefNote# -->
+			<p id="so_cc#:id#" title="Số chứng chỉ">---</p>
+			<p id="ngayki_cc#:id#" title="Ngày ký chứng chỉ">---</p>
 		</td>
 
 		<td class="" style="width: 23%">

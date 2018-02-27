@@ -68,6 +68,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		try {
 			applicantObj = JSONFactoryUtil.createJSONObject(jsonObj);
 		} catch (Exception e) {
+			
 		}
 
 		String dossierTemplateId = ParamUtil.getString(renderRequest, "dossierTemplateId");
@@ -88,12 +89,13 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		}
 		
 		try {
-			Registration resObj = RegistrationLocalServiceUtil.getRegistrationByGID_UID(themeDisplay.getScopeGroupId(), themeDisplay.getUserId()).get(0);
-			String registrationStr = JSONFactoryUtil.looseSerialize(resObj);
+			Registration registration = RegistrationLocalServiceUtil.getByRegistrationState(themeDisplay.getScopeGroupId(), themeDisplay.getUserId(), 2).get(0);
+			String registrationStr = JSONFactoryUtil.looseSerialize(registration);
 			JSONObject registrationObj = JSONFactoryUtil.createJSONObject(registrationStr);
 			if(registrationObj != null){
 				renderRequest.setAttribute("registration", registrationObj);
 			}
+			
 		}
 		catch (Exception e) {
 			// TODO Auto-generated catch block
