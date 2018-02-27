@@ -31,14 +31,14 @@ import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -53,7 +53,6 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchContextFactory;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
@@ -94,7 +93,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	 * org.opencps.dossiermgt.service.DossierLocalServiceUtil} to access the
 	 * dossier local service.
 	 */
-
+	protected Log _log = LogFactoryUtil.getLog(DossierLocalServiceImpl.class);
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier syncDossier(Dossier dossier) throws PortalException {
 
@@ -920,6 +919,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String state = GetterUtil.getString(params.get(DossierTerm.STATE));
 		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
 		String dossierNo = GetterUtil.getString(params.get(DossierTerm.DOSSIER_NO));
+		// Get by certificate number
+		String certificateNo = (String) params.get(DossierTerm.DOSSIER_ID + "CTN");
 
 		// String top = GetterUtil.getString(params.get(DossierTerm.TOP));
 
@@ -1137,8 +1138,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+		if (Validator.isNotNull(certificateNo)) {
+			MultiMatchQuery query = new MultiMatchQuery(certificateNo);
+
+			query.addFields(DossierTerm.DOSSIER_ID + "CTN");
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
+		_log.info("Search end");
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}
 
@@ -1156,6 +1166,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String state = GetterUtil.getString(params.get(DossierTerm.STATE));
 		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
 		String dossierNo = GetterUtil.getString(params.get(DossierTerm.DOSSIER_NO));
+		// Get by certificate number
+		String certificateNo = (String) params.get(DossierTerm.DOSSIER_ID + "CTN");
 
 		// TODO add more logic here
 		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
@@ -1371,6 +1383,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 			}
+		}
+
+		if (Validator.isNotNull(certificateNo)) {
+			MultiMatchQuery query = new MultiMatchQuery(certificateNo);
+
+			query.addFields(DossierTerm.DOSSIER_ID + "CTN");
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);

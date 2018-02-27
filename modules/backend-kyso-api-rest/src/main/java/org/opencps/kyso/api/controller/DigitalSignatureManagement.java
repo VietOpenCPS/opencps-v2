@@ -1,4 +1,4 @@
-package org.opencps.api.controller;
+package org.opencps.kyso.api.controller;
 
 import java.net.HttpURLConnection;
 import java.util.Locale;
@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiResponses;
 public interface DigitalSignatureManagement {
 
 	@POST
-	@Path("/dossiers/{id}/requestsToken")
+	@Path("/{id}/requestsToken")
 	@ApiOperation(value = "requestsToken")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -40,10 +40,11 @@ public interface DigitalSignatureManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
 	public Response getByTokens(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id, @BeanParam DigitalSignatureInputModel input);
+			@Context ServiceContext serviceContext, @PathParam("id") long id,
+			@BeanParam DigitalSignatureInputModel input);
 
 	@POST
-	@Path("/dossiers/{id}/completeSignature")
+	@Path("/{id}/completeSignature")
 	@ApiOperation(value = "completeSignature")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -54,6 +55,7 @@ public interface DigitalSignatureManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
 	public Response completeSignature(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id, @BeanParam DigitalSignatureInputModel input);
+			@Context ServiceContext serviceContext, @PathParam("id") long id,
+			@BeanParam DigitalSignatureInputModel input);
 
 }

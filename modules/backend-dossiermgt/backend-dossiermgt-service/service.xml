@@ -456,6 +456,12 @@
 		</order>
 
 		<!-- Finder methods -->
+		
+		<finder return-type="Collection" name="DID_FTN">
+			<finder-column name="dossierId" />
+			<finder-column name="fileTemplateNo" />
+		</finder>
+		
 
 		<finder return-type="Collection" name="DossierId">
 			<finder-column name="dossierId" />

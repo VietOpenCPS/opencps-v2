@@ -23,6 +23,7 @@ import org.opencps.datamgt.constants.HolidayTerm;
 import org.opencps.datamgt.exception.NoSuchDictItemException;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.model.DictItemGroup;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.base.DictItemLocalServiceBaseImpl;
 
@@ -367,10 +368,19 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 			throw new UnauthorizationException();
 		}
 		DictItem dictItem = dictItemPersistence.fetchByF_dictItemCode(itemCode, groupId);
-
+		
+		List<DictItemGroup> lsDictItem = dictItemGroupPersistence.findByF_dictItemId(groupId, dictItem.getPrimaryKey());
+		
+		_log.info("DictItemGroupSize_" + dictItem.getPrimaryKey() + "_" + groupId + "_" + lsDictItem.size());
+		
 		try {
 
 			dictItem = dictItemLocalService.deleteDictItem(dictItem.getDictItemId());
+			
+			//remove DictItem
+			for (DictItemGroup dig : lsDictItem) {
+				dictItemGroupPersistence.remove(dig);
+			}
 
 		} catch (NoSuchDictItemException e) {
 			throw new NotFoundException();

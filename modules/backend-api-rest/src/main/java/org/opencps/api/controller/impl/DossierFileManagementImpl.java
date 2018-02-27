@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -34,6 +35,7 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -144,18 +146,29 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			DataHandler dataHandler = file.getDataHandler();
 
 			DossierFileActions action = new DossierFileActionsImpl();
+			
+			
+			_log.info("__Start add file at:" + new Date());
 
 			DossierFile dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid,
 					dossierTemplateNo, dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
 					dataHandler.getInputStream(), fileType, isSync, serviceContext);
 			
+			_log.info("__End add file at:" + new Date());
+			
 			if(Validator.isNotNull(formData)) {
 				dossierFile.setFormData(formData);
 			}
 			
+			_log.info("__Start update dossier file at:" + new Date());
+
 			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 
+			_log.info("__End update dossier file at:" + new Date());
+
 			DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
+			
+			_log.info("__End bind to dossierFile" + new Date());
 
 			return Response.status(200).entity(result).build();
 
@@ -604,4 +617,80 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return processException(e);
 		}
 	}
+
+	@Override
+	public Response removeAllDossierFileFormData(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id,
+			String fileTemplateNo) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			//Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			
+			DossierFileActions action = new DossierFileActionsImpl();
+
+			action.deleteAllDossierFile(groupId, id, fileTemplateNo, serviceContext);
+
+			//DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
+			
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			
+			result.put("status", "success");
+
+			return Response.status(200).entity(JSONFactoryUtil.serialize(result)).build();
+
+		} catch (Exception e) {
+			_log.info("DOSSIER_LOG_"+e);
+			
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			
+			result.put("status", "error");
+			result.put("message", "error");
+
+			return Response.status(500).entity(JSONFactoryUtil.serialize(result)).build();
+		}
+	}
+
+	@Override
+	public Response getDossierFileByDeliverableCode(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String deliverableCode) {
+
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		try {
+			if(!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierFileActions actions = new DossierFileActionsImpl();
+
+			DossierFile dossierFile = null;
+			if (Validator.isNotNull(deliverableCode)) {
+				dossierFile = actions.getDossierFileByDeliverableCode(groupId, deliverableCode);
+			}
+
+			JSONObject results = JSONFactoryUtil.createJSONObject();
+			if (dossierFile != null) {
+				results.put("dossierId", dossierFile.getDossierId());
+				results.put("referenceUid", dossierFile.getReferenceUid());
+			}
+
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return processException(e);
+		}
+
+	}
+
 }

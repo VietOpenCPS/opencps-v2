@@ -1,0 +1,5 @@
+Bundle-Name: backend-kyso-api-rest
+Bundle-SymbolicName: backend.kyso.api.rest
+Bundle-Version: 1.0.0
+Liferay-Configuration-Path: /configuration
+Include-Resource: configuration=src/main/resources/configuration

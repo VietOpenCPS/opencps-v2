@@ -39,7 +39,14 @@ import javax.xml.bind.annotation.XmlType;
  "sign",
  "signFieldName",
  "fileName",
- "strIdArr"
+ "strIdArr",
+ "fileEntryId",
+ "actionCode",
+ "actionUser",
+ "actionNote",
+ "assignUserId",
+ "subUsers",
+ "postStepCode"
 })
 public class DigitalSignatureInputModel {
 
@@ -51,7 +58,20 @@ public class DigitalSignatureInputModel {
 	protected String fileName;
 	@FormParam(value = "strIdArr")
 	protected String strIdArr;
-
+	@FormParam(value = "fileEntryId")
+	protected String fileEntryId;
+	@FormParam(value = "actionCode")
+	protected String actionCode;
+	@FormParam(value = "actionUser")
+	protected String actionUser;
+	@FormParam(value = "actionNote")
+	protected String actionNote;
+	@FormParam(value = "assignUserId")
+	protected String assignUserId;
+	@FormParam(value = "subUsers")
+	protected String subUsers;
+	@FormParam(value = "postStepCode")
+	protected String postStepCode;
 	 /**
 	  * Gets the value of the deliverableType property.
 	  * 
@@ -130,6 +150,62 @@ public class DigitalSignatureInputModel {
 
 	public void setStrIdArr(String strIdArr) {
 		this.strIdArr = strIdArr;
+	}
+
+	public String getFileEntryId() {
+		return fileEntryId;
+	}
+
+	public void setFileEntryId(String fileEntryId) {
+		this.fileEntryId = fileEntryId;
+	}
+
+	public String getActionCode() {
+		return actionCode;
+	}
+
+	public void setActionCode(String actionCode) {
+		this.actionCode = actionCode;
+	}
+
+	public String getActionUser() {
+		return actionUser;
+	}
+
+	public void setActionUser(String actionUser) {
+		this.actionUser = actionUser;
+	}
+
+	public String getActionNote() {
+		return actionNote;
+	}
+
+	public void setActionNote(String actionNote) {
+		this.actionNote = actionNote;
+	}
+
+	public String getAssignUserId() {
+		return assignUserId;
+	}
+
+	public void setAssignUserId(String assignUserId) {
+		this.assignUserId = assignUserId;
+	}
+
+	public String getSubUsers() {
+		return subUsers;
+	}
+
+	public void setSubUsers(String subUsers) {
+		this.subUsers = subUsers;
+	}
+
+	public String getPostStepCode() {
+		return postStepCode;
+	}
+
+	public void setPostStepCode(String postStepCode) {
+		this.postStepCode = postStepCode;
 	}
 
 }
