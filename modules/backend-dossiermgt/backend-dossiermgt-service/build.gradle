@@ -15,7 +15,15 @@ dependencies {
 	compileOnly project(":modules:backend-auth")
 	
 	testCompile group: "junit", name: "junit", version: "4.12"
-}	
+	
+	compileOnly name: 'VNPostNGSPSDK'
+	compileOnly name: 'gson-2.8.0'
+}
+repositories {
+	flatDir {
+		dirs 'lib'
+	}
+}
 
 buildService {
 	apiDir = "../backend-dossiermgt-api/src/main/java"

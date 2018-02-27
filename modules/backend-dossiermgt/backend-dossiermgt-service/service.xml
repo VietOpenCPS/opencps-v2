@@ -179,8 +179,8 @@
 		<column name="required" type="boolean" />
 		<column name="fileTemplateNo" type="String" />
 		<column name="eSign" type="boolean" />
-		<column name="deliverableType" type="String"/>
-		<column name="deliverableAction" type="int"/>
+		<column name="deliverableType" type="String" />
+		<column name="deliverableAction" type="int" />
 		<!-- Order -->
 
 		<!-- Finder methods -->
@@ -397,14 +397,14 @@
 		</finder>
 
 		<!-- References -->
-        <finder name="G_C_GAC_SC_DTNO_NOTDS" return-type="Collection">
-            <finder-column name="groupId"></finder-column>
-            <finder-column name="companyId"></finder-column>
-            <finder-column name="govAgencyCode"></finder-column>
-            <finder-column name="serviceCode"></finder-column>
-            <finder-column name="dossierTemplateNo"></finder-column>
-            <finder-column name="dossierStatus" comparator="!="></finder-column>
-        </finder>
+		<finder name="G_C_GAC_SC_DTNO_NOTDS" return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="companyId"></finder-column>
+			<finder-column name="govAgencyCode"></finder-column>
+			<finder-column name="serviceCode"></finder-column>
+			<finder-column name="dossierTemplateNo"></finder-column>
+			<finder-column name="dossierStatus" comparator="!="></finder-column>
+		</finder>
 
 	</entity>
 
@@ -447,7 +447,7 @@
 		<column name="formScript" type="String" />
 		<column name="formReport" type="String" />
 		<column name="formSchema" type="String" />
-		<column name="deliverableCode" type="String"/>
+		<column name="deliverableCode" type="String" />
 
 		<!-- Order -->
 
@@ -488,7 +488,7 @@
 		<finder return-type="Collection" name="DID_ISN">
 			<finder-column name="dossierId" />
 			<finder-column name="isNew" />
-			<finder-column name="removed"/>
+			<finder-column name="removed" />
 		</finder>
 		<!-- References -->
 		<finder name="DID_FTNO" return-type="Collection">
@@ -507,16 +507,16 @@
 			<finder-column name="dossierPartType"></finder-column>
 			<finder-column name="removed"></finder-column>
 		</finder>
-        <finder name="DID_FTNO_DPT_NOT_NULL_FID" return-type="Collection">
-            <finder-column name="dossierId"></finder-column>
-            <finder-column name="fileTemplateNo"></finder-column>
-            <finder-column name="dossierPartType"></finder-column>
-            <finder-column name="fileEntryId" comparator="&gt;"></finder-column>
-            <finder-column name="removed"></finder-column>
-        </finder>
-        <finder return-type="DossierFile" name="DE_CODE">
-        	<finder-column name="deliverableCode" />
-        </finder>
+		<finder name="DID_FTNO_DPT_NOT_NULL_FID" return-type="Collection">
+			<finder-column name="dossierId"></finder-column>
+			<finder-column name="fileTemplateNo"></finder-column>
+			<finder-column name="dossierPartType"></finder-column>
+			<finder-column name="fileEntryId" comparator="&gt;"></finder-column>
+			<finder-column name="removed"></finder-column>
+		</finder>
+		<finder return-type="DossierFile" name="DE_CODE">
+			<finder-column name="deliverableCode" />
+		</finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -547,7 +547,7 @@
 		<column name="payload" type="String" />
 
 		<!-- Order -->
-		
+
 		<!-- Finder methods -->
 
 		<finder return-type="Collection" name="NotiType">
@@ -558,7 +558,7 @@
 			<finder-column name="notificationType" />
 			<finder-column name="dossierId" />
 		</finder>
-	
+
 		<!-- References -->
 
 	</entity>
@@ -621,15 +621,15 @@
 			<finder-column name="referenceUid" />
 		</finder>
 		<!-- References -->
-		
+
 		<finder return-type="Collection" name="ISN_GID">
 			<finder-column name="groupId" />
 			<finder-column name="isNew" />
 		</finder>
-        <finder name="DossierId" return-type="Collection">
-            <finder-column name="dossierId"></finder-column>
-        </finder>
-		
+		<finder name="DossierId" return-type="Collection">
+			<finder-column name="dossierId"></finder-column>
+		</finder>
+
 
 	</entity>
 
@@ -782,22 +782,22 @@
 			<finder-column name="groupId" />
 			<finder-column name="serviceProcessId" />
 		</finder>
-		
+
 		<finder return-type="Collection" name="SC_SPID">
 			<finder-column name="stepCode" />
 			<finder-column name="serviceProcessId" />
 		</finder>
-		
+
 		<finder return-type="Collection" name="DST_DSST">
-			<finder-column name="dossierStatus"/>
-			<finder-column name="dossierSubStatus"/>
-			<finder-column name="groupId"/>
+			<finder-column name="dossierStatus" />
+			<finder-column name="dossierSubStatus" />
+			<finder-column name="groupId" />
 		</finder>
 
 	</entity>
-	
-	<entity local-service="true" name="ProcessPlugin" remote-service="false"
-		table="opencps_process_plugin" uuid="true">
+
+	<entity local-service="true" name="ProcessPlugin"
+		remote-service="false" table="opencps_process_plugin" uuid="true">
 
 		<column name="processPluginId" type="long" primary="true" />
 		<!-- Audit fields -->
@@ -863,9 +863,9 @@
 		<column name="makeBriefNote" type="String" />
 		<column name="syncActionCode" type="String" />
 		<column name="rollbackable" type="boolean" />
-		<column name="createDossierNo" type="boolean"/>
-		<column name="eSignature" type="boolean"/>
-		
+		<column name="createDossierNo" type="boolean" />
+		<column name="eSignature" type="boolean" />
+
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
 		</finder>
@@ -1037,14 +1037,14 @@
 			<order-column name="dossierId" order-by="asc" />
 			<order-column name="method" order-by="asc" />
 		</order>
-		
+
 		<finder return-type="DossierSync" name="F_D_M_CPK_FR">
-			<finder-column name="dossierId"/>
-			<finder-column name="method"/>
-			<finder-column name="classPK"/>
-			<finder-column name="fileReferenceUid"/>
+			<finder-column name="dossierId" />
+			<finder-column name="method" />
+			<finder-column name="classPK" />
+			<finder-column name="fileReferenceUid" />
 		</finder>
-		
+
 		<finder return-type="Collection" name="G_ID">
 			<finder-column name="groupId" />
 		</finder>
@@ -1062,7 +1062,7 @@
 		<finder return-type="Collection" name="SRV_NO">
 			<finder-column name="serverNo" />
 		</finder>
-		
+
 		<finder return-type="Collection" name="DossierId">
 			<finder-column name="dossierId" />
 		</finder>
@@ -1142,46 +1142,46 @@
 		<!-- Order -->
 
 		<!-- Filter -->
-        <order by="desc">
-            <order-column name="modifiedDate" order-by="desc"></order-column>
-        </order>
-        
+		<order by="desc">
+			<order-column name="modifiedDate" order-by="desc"></order-column>
+		</order>
+
 		<finder return-type="Collection" name="F_submitting">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="submitting"></finder-column>
 		</finder>
-        <finder name="GID_UID" return-type="Collection">
-            <finder-column name="groupId"></finder-column>
-            <finder-column name="userId"></finder-column>
-        </finder>
-        
-        <finder return-type="Registration" name="G_REGID" >
-            <finder-column name="groupId"></finder-column>
-            <finder-column name="registrationId"></finder-column>
-        </finder>
-		
+		<finder name="GID_UID" return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="userId"></finder-column>
+		</finder>
+
+		<finder return-type="Registration" name="G_REGID">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="registrationId"></finder-column>
+		</finder>
+
 		<finder name="F_USERID_SUBMITTING" return-type="Collection">
 			<finder-column name="groupId"></finder-column>
-            <finder-column name="userId"></finder-column>
-            <finder-column name="submitting"></finder-column>
-        </finder>
-        
-        <finder return-type="Collection" name="G_APPNO_GOVCODE">
-        	<finder-column name="groupId"></finder-column>
-        	<finder-column name="applicantIdNo"></finder-column>
-        	<finder-column name="govAgencyCode"></finder-column>
-        	<finder-column name="registrationState"></finder-column>
-        </finder>
-        
-        <finder return-type="Collection" name="G_USER_STATE">
-        	<finder-column name="groupId" />
-        	<finder-column name="userId" />
-        	<finder-column name="registrationState" />
-        </finder>
+			<finder-column name="userId"></finder-column>
+			<finder-column name="submitting"></finder-column>
+		</finder>
+
+		<finder return-type="Collection" name="G_APPNO_GOVCODE">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="applicantIdNo"></finder-column>
+			<finder-column name="govAgencyCode"></finder-column>
+			<finder-column name="registrationState"></finder-column>
+		</finder>
+
+		<finder return-type="Collection" name="G_USER_STATE">
+			<finder-column name="groupId" />
+			<finder-column name="userId" />
+			<finder-column name="registrationState" />
+		</finder>
 
 		<finder return-type="Registration" name="REG_APPNO">
-        	<finder-column name="applicantIdNo"></finder-column>
-        </finder>
+			<finder-column name="applicantIdNo"></finder-column>
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="RegistrationLog"
@@ -1251,12 +1251,12 @@
 			<finder-column name="registrationId" />
 			<finder-column name="referenceUid" />
 		</finder>
-		
+
 		<finder return-type="Collection" name="G_REGID_ISNEW">
 			<finder-column name="registrationId" />
 			<finder-column name="isNew" />
 		</finder>
-		
+
 		<finder return-type="Collection" name="G_REGID_FORMNO">
 			<finder-column name="groupId" />
 			<finder-column name="registrationId" />
@@ -1334,15 +1334,15 @@
 			<finder-column name="deliverableType" />
 			<finder-column name="applicantIdNo" />
 		</finder>
-		
+
 		<finder return-type="Deliverable" name="FB_DCODE">
-			<finder-column name="deliverableCode"/>
+			<finder-column name="deliverableCode" />
 		</finder>
-<!-- 		<order> -->
-<!-- 			<order-column name="modifiedDate" order-by="asc" /> -->
-<!-- 			<order-column name="issueDate" order-by="asc" /> -->
-<!-- 			<order-column name="expireDate" order-by="asc" /> -->
-<!-- 		</order> -->
+		<!-- <order> -->
+		<!-- <order-column name="modifiedDate" order-by="asc" /> -->
+		<!-- <order-column name="issueDate" order-by="asc" /> -->
+		<!-- <order-column name="expireDate" order-by="asc" /> -->
+		<!-- </order> -->
 	</entity>
 
 	<entity local-service="true" name="DeliverableLog"
@@ -1365,11 +1365,11 @@
 		<column name="deliverableAction" type="int" />
 		<column name="actionDate" type="Date" />
 		<column name="payload" type="String" />
-		
-<!-- 		<finder return-type="DeliverableLog" name="G_DIDL"> -->
-<!-- 			<finder-column name="gropuId" /> -->
-<!-- 			<finder-column name="deliverableId" /> -->
-<!-- 		</finder> -->
+
+		<!-- <finder return-type="DeliverableLog" name="G_DIDL"> -->
+		<!-- <finder-column name="gropuId" /> -->
+		<!-- <finder-column name="deliverableId" /> -->
+		<!-- </finder> -->
 	</entity>
 
 	<entity local-service="true" name="RegistrationTemplates"
@@ -1400,25 +1400,50 @@
 			<finder-column name="groupId" />
 			<finder-column name="registrationTemplateId" />
 		</finder>
-		
+
 		<finder return-type="Collection" name="FNO">
 			<finder-column name="groupId" />
 			<finder-column name="formNo" />
 		</finder>
-		
+
 		<finder return-type="Collection" name="GOVCODE">
 			<finder-column name="groupId" />
 			<finder-column name="govAgencyCode" />
 		</finder>
-		
+
 		<finder return-type="RegistrationTemplates" name="GOVCODE_FORMNO">
 			<finder-column name="groupId" />
 			<finder-column name="formNo" />
 			<finder-column name="govAgencyCode" />
 		</finder>
-		
+
 		<finder return-type="Collection" name="GROUPID">
 			<finder-column name="groupId" />
+		</finder>
+	</entity>
+
+	<entity local-service="true" name="DossierVnpost"
+		remote-service="false" table="opencps_dossiervnpost" uuid="true">
+
+		<column name="dossierVnpostId" type="long" primary="true" />
+		<column name="fullName" type="String" />
+		<column name="phoneNumber" type="String" />
+		<column name="deliverAddress" type="String" />
+		<column name="cityCode" type="String" />
+		<column name="cityName" type="String" />
+		<column name="districtCode" type="String" />
+		<column name="districtName" type="String" />
+		<column name="wardCode" type="String" />
+		<column name="wardName" type="String" />
+		<column name="dossierId" type="long" />
+		<column name="groupId" type="long" />
+		
+		<finder return-type="DossierVnpost" name="DVID">
+			<finder-column name="dossierVnpostId" />
+		</finder>
+		
+		<finder return-type="Collection" name="DID">
+			<finder-column name="dossierId" />
 		</finder>
 	</entity>
 
