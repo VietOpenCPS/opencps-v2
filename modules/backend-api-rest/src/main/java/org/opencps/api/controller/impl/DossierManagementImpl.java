@@ -995,4 +995,70 @@ public class DossierManagementImpl implements DossierManagement {
 
 	Log _log = LogFactoryUtil.getLog(DossierManagementImpl.class);
 
+	// Get dossier by certificate Number
+	@Override
+	public Response getDossierByCertificateNumber(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String certificateNumber) {
+		_log.info("START*********1");
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		_log.info("groupId: "+groupId);
+		BackendAuth auth = new BackendAuthImpl();
+		DossierActions actions = new DossierActionsImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			
+			_log.info("certificateNumber: "+certificateNumber);
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(DossierTerm.DOSSIER_ID + "CTN", certificateNumber);
+
+			Sort[] sorts = new Sort[] {SortFactoryUtil.create("modifiedDate" + "_sortable", Sort.STRING_TYPE, false) };
+
+			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
+					-1, -1, serviceContext);
+
+			JSONObject results = JSONFactoryUtil.createJSONObject();
+
+			Document data = ((List<Document>) jsonData.get("data")).get(0);
+			results.put("dossierId", data.get(DossierTerm.DOSSIER_ID));
+
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+	
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+	
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+	
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+	
+				} else {
+	
+					error.setMessage("Internal Server Error");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+	
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+	
+				}
+			}
+	
+		}
+
+	}
+
 }

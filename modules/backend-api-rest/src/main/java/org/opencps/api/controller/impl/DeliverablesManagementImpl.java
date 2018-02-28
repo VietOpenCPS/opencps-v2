@@ -87,12 +87,12 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			params.put(Field.KEYWORD_SEARCH, search.getKeyword());
 			params.put(DeliverableTerm.DELIVERABLE_TYPE, search.getType());
 			params.put(DeliverableTerm.APPLICANT_ID_NO, search.getApplicant());
-			String owner = search.getOwner();
-			if (Validator.isNotNull(owner)) {
-				params.put(DossierTerm.OWNER, search.getOwner());
-			} else {
-				params.put(DossierTerm.OWNER, String.valueOf(true));
-			}
+//			String owner = search.getOwner();
+//			if (Validator.isNotNull(owner)) {
+//				params.put(DossierTerm.OWNER, search.getOwner());
+//			} else {
+//				params.put(DossierTerm.OWNER, String.valueOf(true));
+//			}
 			params.put(DossierTerm.USER_ID, user.getUserId());
 			
 			DeliverableActions actions = new DeliverableActionsImpl();
@@ -113,6 +113,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				String formData = doc.get(DeliverableTerm.FORM_DATA);
 				JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
 				formJson.put("ten_chung_chi", doc.get(DeliverableTerm.DELIVERABLE_NAME));
+				formJson.put("deliverableCode", doc.get(DeliverableTerm.DELIVERABLE_CODE));
 //				_log.info("formData: "+formData);
 				formDataArr.put(formJson);
 			}
@@ -524,15 +525,16 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			//TODO
 			results.put("total", jsonData.getInt("total"));
-//			results.getData()
-//					.addAll(
 			List<Document> docList =(List<Document>) jsonData.get("data");
 
 			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 			for (Document doc : docList) {
 				String formData = doc.get(DeliverableTerm.FORM_DATA);
+				JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
+				formJson.put("ten_chung_chi", doc.get(DeliverableTerm.DELIVERABLE_NAME));
+				formJson.put("deliverableCode", doc.get(DeliverableTerm.DELIVERABLE_CODE));
 //				_log.info("formData: "+formData);
-				formDataArr.put(JSONFactoryUtil.createJSONObject(formData));
+				formDataArr.put(formJson);
 			}
 			results.put("data", formDataArr);
 

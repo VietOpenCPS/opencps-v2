@@ -60,12 +60,13 @@ public class BackendKysoApiRestApplication extends Application {
 
 				String emailUser = input.getEmailUser();
 				long fileEntryId = Long.valueOf(input.getFileEntryId());
-				int typeSignature = input.getTypeSignature();
+				String typeSignature = input.getTypeSignature();
+				String postStepCode = input.getPostStepCode();
 				_log.info("emailUser Id: "+emailUser);
 				_log.info("fileEntryId Id: "+fileEntryId);
 				_log.info("typeSignature: "+typeSignature);
 				
-				JSONObject results = action.createHashSignature(emailUser, fileEntryId, typeSignature);
+				JSONObject results = action.createHashSignature(emailUser, fileEntryId, typeSignature, postStepCode);
 //				JSONObject results = JSONFactoryUtil.createJSONObject();
 				_log.info("results : "+results);
 

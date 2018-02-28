@@ -31,11 +31,13 @@ import vgca.svrsigner.ServerSigner;
 public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 
 	private static Log _log = LogFactoryUtil.getLog(DigitalSignatureActionsImpl.class);
-	private static final int TYPE_KYSO = 1135;
-	private static final int TYPE_DONGDAU = 1137;
+	private static final String TYPE_KYSO = "1135, 1158, 1160";
+	private static final String TYPE_DONGDAU = "1137, 1160, 1162";
+	private static final String STEPCODE_KYSO = "300, 301";
+	private static final String STEPCODE_DONGDAU = "400";
 
 	@Override
-	public JSONObject createHashSignature(String email, long fileEntryId, int typeSignature) {
+	public JSONObject createHashSignature(String email, long fileEntryId, String typeSignature, String postStepCode) {
 			byte[] inHash = null;
 			String fieldName = StringPool.BLANK;
 			String fullPathSigned = StringPool.BLANK;
@@ -78,10 +80,12 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 				_log.info("fullPath: "+fullPath);
 
 				String signImagePath = StringPool.BLANK;
-				if (typeSignature == TYPE_KYSO) {
+				_log.info("====***typeSignature+===: "+typeSignature);
+				_log.info("====***postStepCode+===: "+postStepCode);
+				if (TYPE_KYSO.contains(typeSignature) && STEPCODE_KYSO.contains(postStepCode)) {
 					signImagePath = new File(realPath + email + ".png").getAbsolutePath();
 					_log.info("signImagePath_Kyso: "+realPath);
-				} else if (typeSignature == TYPE_DONGDAU){
+				} else if (TYPE_DONGDAU.contains(typeSignature) && STEPCODE_DONGDAU.equals(postStepCode)){
 					signImagePath = PropsUtil.get(ConfigProps.CER_HOME)+"/condau/nguyenadmin.png";
 					_log.info("signImagePath_Dongdau: "+realPath);
 				}
@@ -157,10 +161,10 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 //						new Rectangle(llx + 20, lly - 105,
 //								urx + 94, ury - 70), 1);
 //				inHash = signer.computeHash(new Rectangle(llx + 22, lly - 145, urx + 94, ury - 70), 1);
-				if (typeSignature == TYPE_KYSO) {
+				if (TYPE_KYSO.contains(typeSignature) && STEPCODE_KYSO.contains(postStepCode)) {
 					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 15, urx + 90, ury), 1);
 					_log.info("inHash_Kyso: "+inHash);
-				} else if (typeSignature == TYPE_DONGDAU) {
+				} else if (TYPE_DONGDAU.contains(typeSignature) && STEPCODE_DONGDAU.equals(postStepCode)) {
 					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 115, urx + 90, ury-95), 1);
 					_log.info("inHash_Dongdau: "+inHash);
 				}

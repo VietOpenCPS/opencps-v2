@@ -659,5 +659,38 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		}
 	}
 
+	@Override
+	public Response getDossierFileByDeliverableCode(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String deliverableCode) {
+
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		try {
+			if(!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierFileActions actions = new DossierFileActionsImpl();
+
+			DossierFile dossierFile = null;
+			if (Validator.isNotNull(deliverableCode)) {
+				dossierFile = actions.getDossierFileByDeliverableCode(groupId, deliverableCode);
+			}
+
+			JSONObject results = JSONFactoryUtil.createJSONObject();
+			if (dossierFile != null) {
+				results.put("dossierId", dossierFile.getDossierId());
+				results.put("referenceUid", dossierFile.getReferenceUid());
+			}
+
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return processException(e);
+		}
+
+	}
 
 }
