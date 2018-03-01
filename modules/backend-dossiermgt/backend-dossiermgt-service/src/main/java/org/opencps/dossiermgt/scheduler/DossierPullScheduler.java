@@ -768,6 +768,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					conn.setRequestProperty("groupId", String.valueOf(srcGroupId));
 
 					int responseCode = conn.getResponseCode();
+					_log.info("responseCode: "+responseCode);
 
 					if (responseCode != 200) {
 
