@@ -1148,7 +1148,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
-		_log.info("Search end");
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}
 
