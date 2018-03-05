@@ -47,6 +47,9 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -231,11 +234,13 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 			Dossier desDossier = DossierLocalServiceUtil.getByRef(syncServiceProcess.getGroupId(),
 					object.getString(DossierTerm.REFERENCE_UID));
+			long userId = systemUser.getUserId();
+			_log.info("userId: "+userId);
 
-			_log.info("desDossier: "+desDossier);
 			if (Validator.isNull(desDossier)) {
 				// Create DOSSIER
 
+				_log.info("CREATE DOSSIER PULL");
 				long desGroupId = syncServiceProcess.getGroupId();
 
 				desDossier = DossierLocalServiceUtil.updateDossier(desGroupId, 0l, referenceUid,
@@ -272,7 +277,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				getDossierFiles(sourceGroupId, dossierId, lsFileSync);
 
 				_log.info("START pull dossier File1: ");
-				pullDossierFiles(desDossier.getGroupId(), desDossier.getDossierId(), lsFileSync, sourceGroupId,
+				pullDossierFiles(userId, desDossier.getGroupId(), desDossier.getDossierId(), lsFileSync, sourceGroupId,
 						dossierId, referenceUid, serviceContext);
 
 				// get the list of payment file need to sync
@@ -348,7 +353,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					getDossierFiles(sourceGroupId, dossierId, lsFileSync);
 
 					_log.info("START pull dossier File2: ");
-					pullDossierFiles(desDossier.getGroupId(), desDossier.getDossierId(), lsFileSync, sourceGroupId,
+					pullDossierFiles(userId, desDossier.getGroupId(), desDossier.getDossierId(), lsFileSync, sourceGroupId,
 							dossierId, referenceUid, serviceContext);
 
 					// get the list of payment file need to sync
@@ -716,8 +721,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 		}
 	}
 
-	private void pullDossierFiles(long desGroupId, long dossierId, List<JSONObject> lsFileSync, long srcGroupId,
-			long srcDossierId, String dossierRef, ServiceContext serviceContext) {
+	private void pullDossierFiles(long userId, long desGroupId, long dossierId, List<JSONObject> lsFileSync, long srcGroupId,
+			long srcDossierId, String dossierRef, ServiceContext serviceContext) throws PortalException {
 
 		for (JSONObject ref : lsFileSync) {
 			String fileRef = ref.getString("referenceUid");
@@ -840,6 +845,31 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 							pullFormData(desGroupId, fileRef, dossierTemplateNo, dossierId, formData, part,
 									serviceContext);
+							
+							//TODO: Write file upload sync
+							InputStream is = conn.getInputStream();
+
+							File tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()),
+									StringPool.PERIOD + ref.getString("fileType"));
+
+							FileOutputStream outStream = new FileOutputStream(tempFile);
+
+							int bytesRead = -1;
+							byte[] buffer = new byte[BUFFER_SIZE];
+							while ((bytesRead = is.read(buffer)) != -1) {
+								outStream.write(buffer, 0, bytesRead);
+							}
+
+							outStream.close();
+							is.close();
+							// Update file entry
+							_log.info("START UPDATE FILE ENTRY");
+							DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(dossierFile.getFileEntryId());
+
+							DLAppLocalServiceUtil.updateFileEntry(userId, dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
+									dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
+									StringPool.BLANK, true, tempFile, serviceContext);
+							_log.info("END UPDATE FILE ENTRY");
 						}
 
 					}
@@ -933,14 +963,9 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			JSONObject object = JSONFactoryUtil.createJSONObject();
 
 			List<String> response = multipart.finish();
-			if (response != null && response.size() > 0) {
-				for (int i = 0; i < response.size(); i++) {
-					_log.info("response no"+i+": "+response.get(i));
-				}
-			}
 
-			// updateFormData(desGroupId, response, dossierId, formData,
-			// serviceContext);
+//			 updateFormData(desGroupId, response, dossierId, formData,
+//			 serviceContext);
 
 			// DossierPart part =
 			// DossierPartLocalServiceUtil.getByFileTemplateNo(desGroupId,
