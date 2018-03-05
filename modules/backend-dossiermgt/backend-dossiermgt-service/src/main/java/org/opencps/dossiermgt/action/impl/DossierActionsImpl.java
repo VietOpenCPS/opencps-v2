@@ -800,11 +800,7 @@ public class DossierActionsImpl implements DossierActions {
 			_log.info("curStep.getDossierStatus(): " + curStep.getDossierStatus());
 			getDossierStatus(jsStatus, groupId, DOSSIER_SATUS_DC_CODE, curStep.getDossierStatus());
 
-			_log.info("curStep.getDossierSubStatus(): " + curStep.getDossierSubStatus());
-			getDossierStatus(jsStatus, groupId, DOSSIER_SATUS_DC_CODE, curStep.getDossierSubStatus());
-
 			// update reference dossier
-
 			DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
 
 			dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId, serviceProcessId,
@@ -890,8 +886,10 @@ public class DossierActionsImpl implements DossierActions {
 					_log.info("&&&EndUpdateDossierFile"+ new Date());
 
 					_log.info("__dossierPart"+processAction.getReturnDossierFiles());
+					_log.info("__dossierPart"+dosserFile.getFileTemplateNo());
 
-					if (returnDossierFileTemplateNos.contains(dosserFile.getDossierPartNo())) {
+					if (returnDossierFileTemplateNos.contains(dosserFile.getFileTemplateNo())) {
+						_log.info("START SYNC DOSSIER FILE");
 						DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
 								false, 1, dosserFile.getDossierFileId(), dosserFile.getReferenceUid(),
 								serviceProcess.getServerNo());

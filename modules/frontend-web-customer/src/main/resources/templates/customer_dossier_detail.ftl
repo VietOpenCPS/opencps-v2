@@ -840,8 +840,8 @@
 		data.append('dossierTemplateNo', dossierTemplateNo);
 		data.append('fileTemplateNo', fileTemplateNo);
 		data.append('formData', "");
-		data.append('isSync', "true");
 		data.append('fileType', "");
+		data.append('isSync', "true");
 
 		$.ajax({
 			type : 'POST', 
