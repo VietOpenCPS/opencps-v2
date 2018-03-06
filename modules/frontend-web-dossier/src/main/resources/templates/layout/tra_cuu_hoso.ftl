@@ -55,7 +55,7 @@
 		</div>
 		<v-layout wrap>
 			<v-flex xs12>
-			 	<v-btn color="primary" class="mx-0 my-0 mt-2">Tìm kiếm</v-btn>
+			 	<v-btn color="primary" class="mx-0 my-0 mt-2" v-on:click.native.prevent="advanced_filter_btn_click">Tìm kiếm</v-btn>
 			</v-flex>
 		</v-layout>
 	</div>

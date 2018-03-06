@@ -10,17 +10,17 @@
   </div>
 
   <div class="panel-body">
-
+    
     <div class="row">
       <h3 class="text-center">NỘP HỒ SƠ THÀNH CÔNG</h3>
-      <p class="text-center">Mã hồ sơ đã nộp: <span class="text-light-blue" data-bind="text:dossierId"></span> ${(dossierId)!}<span class="text-bold" style="color: green;"></span> </p> 
+      <p class="text-center">Mã hồ sơ đã nộp: <span class="text-light-blue" data-bind="text:dossierIdCTN"></span><span class="text-bold" style="color: green;"></span> </p> 
     </div>
 
     <div class="row">
       <div class="col-xs-12 col-sm-12">
         <p><i class="fa fa-book" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;<span class="text-bold">THÔNG TIN HỒ SƠ ĐÃ NỘP</span></p>
       </div>
-      <ul class="col-sm-12 MB15" id="infoDossierFiled" data-template="dossier_template" data-bind="source: dossierTemplateParts">
+      <ul class="col-sm-12 MB15" id="infoDossierFiled">
 
       </ul>
       <script type="text/x-kendo-template" id="dossier_template">
@@ -40,7 +40,7 @@
         <span></p>
         </div>
       </div>
-
+      
       <div class="row" id="viaPostal" data-bind="value: viaPostal">
         <div class="col-sm-12">
 
@@ -75,7 +75,6 @@
           headers : {"groupId": ${groupId}},
           success : function(result){
             console.log("success");
-            var dossierTemplateParts = funGetDossierTemplate(result.dossierTemplateNo);
 
             var viewModel = kendo.observable({
               serviceName : result.serviceName,
@@ -98,6 +97,7 @@
                   });
                 }
               },
+              dossierIdCTN : result.dossierIdCTN,
               postalAddress : result.postalAddress,
               viaPostal : function(e){
                 console.log("viaPostal");
@@ -105,12 +105,13 @@
                 if(result.viaPostal < 2){
                   $("#viaPostal").remove();
                 }
-              },
-              dossierTemplateParts : dossierTemplateParts
+              }
 
             });
 
             kendo.bind($("#completedDossierForm"), viewModel);
+
+            genDossierPartSent(result.dossierTemplateNo);
           },
           error : function(result){
 
@@ -124,14 +125,14 @@
 
     $("#btn-completed-submiting-dossier").click(function(){
 
-      manageDossier.navigate("/New");
+      manageDossier.navigate("/new");
 
       $("#mainType1").show();
       $("#mainType2").hide();       
 
     });
 
-    var funGetDossierTemplate = function(dossierTemplateId){
+    /*var funGetDossierTemplate = function(dossierTemplateId){
       var dossierTemplates =  new Array();
       if(dossierTemplateId){
         $.ajax({
@@ -154,6 +155,60 @@
         });
       }
       return dossierTemplates;
+    }*/
+
+    var genDossierPartSent = function(dossierTemplateId){
+      var dossierTemplates =  new Array();
+      if(dossierTemplateId){
+        $.ajax({
+          url : "${api.server}/dossiertemplates/"+dossierTemplateId,
+          dataType : "json",
+          type : "GET",
+          headers: {"groupId": ${groupId}},
+          async : false,
+          success : function(result){
+            if(result){
+              dossierTemplates = result.dossierParts;
+              dossierTemplates = $.grep( dossierTemplates, function( item, i ) {
+                return item.partType === 1;
+              });
+            }
+          },
+          error : function(result){
+
+          }
+        });
+      }
+
+      var dossierFiles =  new Array();
+      $.ajax({
+        url : "${api.server}/dossiers/${dossierId}/files",
+        dataType : "json",
+        type : "GET",
+        headers: {"groupId": ${groupId}},
+        async : false,
+        success : function(result){
+          if(result.data){
+            for (var i = 0; i < result.data.length; i++) {
+              for (var j = 0; j < dossierTemplates.length; j++) {
+                if(result.data[i].dossierPartNo === dossierTemplates[j].partNo){
+
+
+                  $("#infoDossierFiled").append("<li class='ML15'>- <span' role='option'>"+dossierTemplates[j].partName+"</span> <br></li>");
+
+                  dossierFiles.push(dossierTemplates[j]);
+                }
+              }
+            }
+          }
+        },
+        error : function(result){
+
+        }
+      });
+
     }
+
+    
 
   </script>
