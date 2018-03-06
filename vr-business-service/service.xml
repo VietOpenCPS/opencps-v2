@@ -1094,6 +1094,24 @@
 		</finder>
 	</entity>
 
+	<entity name="VRTemplateNo" local-service="true" table="vr_templateno"
+		remote-service="false">
+		
+		<column name="id" type="long" primary="true" db-name="id"/>
+		<column name="patternNo" type="String"/>
+		<column name="year" type="int"/>
+		<column name="initNumber" type="int"/>
+	
+		<!-- Finder -->
+		<finder return-type="VRTemplateNo" name="P_N">
+			<finder-column name="patternNo"/>
+		</finder>
+		<finder return-type="VRTemplateNo" name="P_N_Y">
+			<finder-column name="patternNo"/>
+			<finder-column name="year"/>
+		</finder>
+	</entity>
+
 	<exceptions>
 		<exception>InvalidInputParam</exception>
 		<exception>OutOfScopeData</exception>
