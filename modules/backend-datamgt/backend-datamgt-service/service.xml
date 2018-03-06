@@ -194,6 +194,7 @@
 
 		<column name="dictGroupId" type="long" />
 		<column name="dictItemId" type="long" />
+		<column name="dictGroupName" type= "String" />
 
 		<!-- Order -->
 		<order by="asc">
