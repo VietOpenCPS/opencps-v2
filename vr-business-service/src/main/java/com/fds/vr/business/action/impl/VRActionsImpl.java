@@ -574,11 +574,12 @@ public class VRActionsImpl implements VRActions {
 				JSONObject diObject = JSONFactoryUtil.createJSONObject();
 
 				DictItem dictItem = DictItemLocalServiceUtil.getDictItem(dg.getDictItemId());
+				if (dictItem != null && Validator.isNotNull(dg.getDictGroupName())) {
+					diObject.put("value", dictItem.getItemCode());
+					diObject.put("text", dictItem.getItemName());
+					datasource.put(diObject);
+				}
 
-				diObject.put("value", dictItem.getItemCode());
-				diObject.put("text", dictItem.getItemName());
-
-				datasource.put(diObject);
 			}
 
 		} catch (Exception e) {

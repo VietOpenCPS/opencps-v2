@@ -14,8 +14,8 @@
 
 package com.fds.vr.business.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
@@ -26,6 +26,8 @@ import com.fds.vr.business.model.VRVehicleTypeCertificate;
 import com.fds.vr.business.service.base.VRVehicleTypeCertificateLocalServiceBaseImpl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the vr vehicle type certificate local service.
@@ -51,6 +53,7 @@ public class VRVehicleTypeCertificateLocalServiceImpl
 	 */
 
 	private Log _log = LogFactoryUtil.getLog(VRVehicleTypeCertificateLocalServiceImpl.class);
+	private final String PATTERN_DATE = "dd-MM-yyyy HH:mm:ss";
 
 	public VRVehicleTypeCertificate updateVehicleTypeCertificate(LinkedHashMap<String, String> mapValues,
 			Date modifiedDate, Registration registration, DossierFile dossierFile) {
@@ -89,8 +92,12 @@ public class VRVehicleTypeCertificateLocalServiceImpl
 //		object.setApplicantContactEmail(mapValues.get(""));
 //		object.setApplicantcontactPhone(mapValues.get(""));
 //		object.setManufacturerForeignCode(mapValues.get(""));
+		
+		object.setManufacturerName(mapValues.get("bien_ban@bb_XCG01001"));
+		object.setManufacturerAddress(mapValues.get("bien_ban@bb_XCG01002"));
 //		object.setManufacturerName(mapValues.get(""));
 //		object.setManufacturerAddress(mapValues.get(""));
+
 //		object.setManufacturerRepresentative(mapValues.get(""));
 //		object.setManufacturerRepresentativeTitle(mapValues.get(""));
 //		object.setManufacturerEmail(mapValues.get(""));
@@ -101,57 +108,59 @@ public class VRVehicleTypeCertificateLocalServiceImpl
 //		object.setProductionPlantAddress(mapValues.get(""));
 //		object.setProductionPlantRepresentative(mapValues.get(""));
 //		object.setProductionPlantRepresentativeTitle(mapValues.get(""));
-//		//copreportno
 //		object.setCopReportNo(mapValues.get(""));
-////		object.setCopReportDate(DATEEEEEEE);
-////		object.setCopReportExpireDate(DATEEEEEEE);
-//		object.setDesignerCode(mapValues.get(""));
-//		object.setDesignerName(mapValues.get(""));
-//		object.setDesignerAddress(mapValues.get(""));
-//		object.setDesignerRepresentative(mapValues.get(""));
+//		object.setCopReportDate(DATEEEEEEE);
+//		object.setCopReportExpireDate(DATEEEEEEE);
+
+		object.setDesignerCode(registration.getApplicantIdNo().toString());
+		object.setDesignerName(mapValues.get("bien_ban@bb_ten_co_so_thiet_ke"));
+		object.setDesignerAddress(mapValues.get("bien_ban@bb_dia_chi_co_so_thiet_ke"));
+		object.setDesignerRepresentative(mapValues.get("bien_ban@bb_XCG01003"));
 //		object.setDesignerRepresentativeTitle(mapValues.get(""));
-//		object.setDesignerEmail(mapValues.get(""));
-//		object.setDesignerPhone(mapValues.get(""));
+		
+		object.setDesignerEmail(mapValues.get("bien_ban@bb_XCG01006"));
+		object.setDesignerPhone(mapValues.get("bien_ban@bb_XCG01005"));
 //		object.setDesignerFax(mapValues.get(""));
-//		object.setVerificationCertificateNo(mapValues.get(""));
-////		object.setVerificationCertificateDate(DATEEEEEEE);
-//		object.setVerificationRefNo(mapValues.get(""));
+		object.setVerificationCertificateNo(mapValues.get("chung_chi@so_bien_ban"));
+		object.setVerificationCertificateDate(parseStringToDate(mapValues.get("chung_chi@ngay_ket_thuc_tham_dinh")));
+		object.setVerificationRefNo(mapValues.get("bien_ban@bb_XCG01020"));
 ////		object.setVerificationRefDate(DATEEEEE);
 //		object.setTypeApprovalCertificateNo(mapValues.get(""));
 ////		object.setTypeApprovalCertificateDate(DATEEEEEEEE);
-//		object.setDesignModelCode(mapValues.get(""));
-//		object.setDesignModelDescription(mapValues.get(""));
-//		object.setDesignSymbol(mapValues.get(""));
+		object.setDesignModelCode(mapValues.get("bien_ban@loai_hinh_thiet_ke"));
+		object.setDesignModelDescription(mapValues.get("bien_ban@loai_hinh_thiet_ke_text"));
+		object.setDesignSymbol(mapValues.get("bien_ban@bb_XCG01026"));
 //		object.setRegisteredNumber(mapValues.get(""));
-////		object.setInspectorReceiveDate(mapValues.get(""));
-////		object.setInspectorSubmitDate(mapValues.get(""));
-////		object.setInspectorendorSementDate(DATE     );
-////		object.setInspectorDeadline(DATEEEEEEEE);
-////		object.setInspectorFinishDate(DATEEEEEEE);
-////		object.setInspectorCancelDate(DATEEEEEEEE);
+//		object.setInspectorReceiveDate(mapValues.get(""));
+//		object.setInspectorSubmitDate(mapValues.get(""));
+//		object.setInspectorendorSementDate(DATE     );
+//		object.setInspectorDeadline(DATEEEEEEEE);
+//		object.setInspectorFinishDate(DATEEEEEEE);
+//		object.setInspectorCancelDate(DATEEEEEEEE);
 //		object.setInspectorOrganization(mapValues.get(""));
 //		object.setInspectorDivision(mapValues.get(""));
 //		object.setInspectorSignName(mapValues.get(""));
 //		object.setInspectorSignTitle(mapValues.get(""));
 //		object.setInspectorSignPlace(mapValues.get(""));
-//		object.setCertificateType(mapValues.get(""));
-//		object.setReferenceCertificateNo(mapValues.get(""));
-////		object.setReferenceCertificateDate(DATEEEEEEEE);
-//		object.setCertificateRecordNo(mapValues.get(""));
-//		object.setCertificateSignName(mapValues.get(""));
-//		object.setCertificateSignTitle(mapValues.get(""));
-//		object.setCertificateSignPlace(mapValues.get(""));
-////		object.setCertificateRecordDate(DATEEEEEEE);
-////		object.setCertificateRecordExpireDate(DATEEEEEEEE);
-//		object.setExpiredStatus(mapValues.get(""));
-//		object.setCertificateRecordStatus(mapValues.get(""));
-//		object.setDigitalIssueStatus(mapValues.get(""));
+		object.setCertificateType(mapValues.get("de_xuat_cap_chung_chi"));
+		object.setReferenceCertificateNo(mapValues.get("bien_ban@XCG01022"));
+//		object.setReferenceCertificateDate(DATEEEEEEEE);
+		object.setCertificateRecordNo(mapValues.get("chung_chi@so_chung_chi"));
+		object.setCertificateSignName(mapValues.get("chung_chi@nguoi_ky_cc_text"));
+		object.setCertificateSignTitle(mapValues.get("chung_chi@chuc_danh_ky"));
+		object.setCertificateSignPlace(mapValues.get("chung_chi@dia_diem_ky"));
+		object.setCertificateRecordDate(parseStringToDate(mapValues.get("chung_chi@ngay_cap_cc")));
+//		object.setCertificateRecordExpireDate(DATEEEEEEEE);
+		object.setExpiredStatus("1");
+		object.setCertificateRecordStatus("3");
+		object.setDigitalIssueStatus("1");
 //		object.setVehicleClass(mapValues.get(""));
-//		object.setCertifiedVehicleType(mapValues.get(""));
-//		object.setCertifiedVehicleTypeDescription(mapValues.get(""));
-//		object.setCertifiedTrademark(mapValues.get(""));
-//		object.setCertifiedCommercialName(mapValues.get(""));
-//		object.setCertifiedModelCode(mapValues.get(""));
+		object.setCertifiedVehicleType(mapValues.get("chung_chi@bb_XCG01050"));
+		object.setCertifiedVehicleTypeDescription(mapValues.get("chung_chi@bb_XCG01050_text"));
+		object.setCertifiedTrademark(mapValues.get("chung_chi@bb_XCG01051"));
+		object.setCertifiedTrademarkName(mapValues.get("chung_chi@bb_XCG01051_text"));
+		object.setCertifiedCommercialName(mapValues.get("chung_chi@bb_XCG01052"));
+		object.setCertifiedModelCode(mapValues.get("chung_chi@bb_XCG01052"));
 //		object.setCertifiedAssemblyType(mapValues.get(""));
 //		object.setCertifiedAssemblyTypeDescription(mapValues.get(""));
 //		object.setCertifiedVINNo(mapValues.get(""));
@@ -199,5 +208,18 @@ public class VRVehicleTypeCertificateLocalServiceImpl
 //		object.setModifyDate(modifiedDate);
 
 		return vrVehicleTypeCertificatePersistence.update(object);
+	}
+
+private Date parseStringToDate(String strDate) {
+		
+		try {
+			SimpleDateFormat df = new SimpleDateFormat(PATTERN_DATE);
+			return df.parse(strDate);
+		}
+		catch (ParseException e) {
+			_log.error(e);
+			return null;
+		}
+		
 	}
 }
