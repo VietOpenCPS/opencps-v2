@@ -421,7 +421,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setSubmitting(true);
 
-		if (Validator.isNull(dossier.getSubmitDate())) {
+/*		if (Validator.isNull(dossier.getSubmitDate())) {
+			dossier.setSubmitDate(now);
+		}
+*/
+		if (Validator.isNull(dossier.getDossierStatus().contentEquals(DossierStatusConstants.NEW))) {
 			dossier.setSubmitDate(now);
 		}
 
