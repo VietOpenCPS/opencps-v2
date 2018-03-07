@@ -475,22 +475,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				paymentFileLocalService.updatePaymentFile(pf);
 			}
 		}
-		/*
-		 * Indexer<PaymentFile> indexer =
-		 * IndexerRegistryUtil.nullSafeGetIndexer(PaymentFile.class);
-		 * 
-		 * for (PaymentFile pf : lsPF) { if (pf.getIsNew()) {
-		 * 
-		 * try { PaymentFile paymentFile =
-		 * PaymentFileLocalServiceUtil.getPaymentFile(pf.getPrimaryKey());
-		 * 
-		 * paymentFile.setIsNew(false);
-		 * 
-		 * paymentFilePersistence.update(paymentFile);
-		 * 
-		 * indexer.reindex(paymentFile); } catch (SearchException e) {
-		 * e.printStackTrace(); } } }
-		 */
 
 		return dossier;
 	}
