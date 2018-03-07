@@ -40,6 +40,8 @@ public class DictItemGroupTerm {
 	
 	public static final String DICT_ITEM_ID = "dictItemId";
 	
+	public static final String DICT_GROUP_NAME = "dictGroupName";
+	
 	public static final String ITEM_CODE = "itemCode";
 	
 	public static final String ITEM_NAME = "itemName";
@@ -68,6 +70,8 @@ public class DictItemGroupTerm {
 	public static final String DICT_GROUP_ID_SORTABLE = "dictGroupId_sortable";
 	
 	public static final String DICT_ITEM_ID_SORTABLE = "dictItemId_sortable";
+	
+	public static final String DICT_GROUP_NAME_SORTABLE = "dictGroupName_sortable";
 	
 	public static final String ITEM_CODE_SORTABLE = "itemCode_sortable";
 	

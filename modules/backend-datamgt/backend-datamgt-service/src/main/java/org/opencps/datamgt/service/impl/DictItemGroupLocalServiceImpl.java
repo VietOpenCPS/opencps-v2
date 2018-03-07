@@ -105,8 +105,8 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public DictItemGroup addDictItemGroup(long userId, long groupId, long dictGroupId, long dictItemId,
-			ServiceContext serviceContext) throws DuplicateCategoryException, UnauthenticationException,
-			UnauthorizationException, NoSuchUserException {
+			String groupCode, ServiceContext serviceContext) throws DuplicateCategoryException,
+			UnauthenticationException, UnauthorizationException, NoSuchUserException {
 
 		DictItemGroup dictItemColl = dictItemGroupPersistence.fetchByF_dictItemId_dictGroupId(groupId, dictGroupId,
 				dictItemId);
@@ -154,6 +154,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 		// Other fields
 		dictItemGroup.setDictGroupId(dictGroupId);
 		dictItemGroup.setDictItemId(dictItemId);
+		dictItemGroup.setDictGroupName(groupCode);
 
 		dictItemGroup.setExpandoBridgeAttributes(serviceContext);
 
