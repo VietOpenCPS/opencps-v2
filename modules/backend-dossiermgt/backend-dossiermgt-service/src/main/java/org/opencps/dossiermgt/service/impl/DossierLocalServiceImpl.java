@@ -421,7 +421,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setSubmitting(true);
 
-		if (Validator.isNull(dossier.getSubmitDate())) {
+/*		if (Validator.isNull(dossier.getSubmitDate())) {
+			dossier.setSubmitDate(now);
+		}
+*/
+		if (Validator.isNull(dossier.getDossierStatus().contentEquals(DossierStatusConstants.NEW))) {
 			dossier.setSubmitDate(now);
 		}
 
@@ -475,22 +479,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				paymentFileLocalService.updatePaymentFile(pf);
 			}
 		}
-		/*
-		 * Indexer<PaymentFile> indexer =
-		 * IndexerRegistryUtil.nullSafeGetIndexer(PaymentFile.class);
-		 * 
-		 * for (PaymentFile pf : lsPF) { if (pf.getIsNew()) {
-		 * 
-		 * try { PaymentFile paymentFile =
-		 * PaymentFileLocalServiceUtil.getPaymentFile(pf.getPrimaryKey());
-		 * 
-		 * paymentFile.setIsNew(false);
-		 * 
-		 * paymentFilePersistence.update(paymentFile);
-		 * 
-		 * indexer.reindex(paymentFile); } catch (SearchException e) {
-		 * e.printStackTrace(); } } }
-		 */
 
 		return dossier;
 	}
@@ -518,10 +506,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setDossierSubStatus(subStatus);
 		dossier.setDossierSubStatusText(subStatusText);
 
-		if (status.equalsIgnoreCase(DossierStatusConstants.RECEIVING)) {
+/*		if (status.equalsIgnoreCase(DossierStatusConstants.RECEIVING)) {
 			dossier.setReceiveDate(now);
 		}
-
+*/
 		if (status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
 			dossier.setReleaseDate(now);
 		}
