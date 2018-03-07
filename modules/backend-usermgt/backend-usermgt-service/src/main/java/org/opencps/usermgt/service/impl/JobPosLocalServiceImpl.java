@@ -199,7 +199,8 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		jobPos.setLeader(leader);
 
 		if(Validator.isNotNull(role)){
-			RoleLocalServiceUtil.addGroupRole(groupId, role.getRoleId());
+			//TODO: user_group
+//			RoleLocalServiceUtil.addGroupRole(groupId, role.getRoleId());
 
 			jobPos.setMappingRoleId(role.getRoleId());
 		}

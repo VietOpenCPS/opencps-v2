@@ -665,7 +665,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		
+		_log.info("********START *********");
 		try {
 			if(!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
@@ -675,7 +675,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			DossierFile dossierFile = null;
 			if (Validator.isNotNull(deliverableCode)) {
+				_log.info("********START GET DOSSIERFILE*********"+ new Date().getTime());
 				dossierFile = actions.getDossierFileByDeliverableCode(groupId, deliverableCode);
+				_log.info("********END GET DOSSIERFILE *********"+ new Date().getTime());
 			}
 
 			JSONObject results = JSONFactoryUtil.createJSONObject();
@@ -684,6 +686,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				results.put("referenceUid", dossierFile.getReferenceUid());
 			}
 
+			_log.info("********END *********");
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
