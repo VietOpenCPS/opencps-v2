@@ -18,6 +18,7 @@
 				</div>
 			</div>
 		</div>
+		
 		<div class="col-xs-12 col-sm-12">
 			<ul id ="dossier_template_list_view" class="ul-with-border ul-with-border-style-2"></ul>
 			<div id="dossier_template_pager" class="k-pager-wrap"></div>
@@ -49,6 +50,7 @@
 
 <script type="text/javascript">
 	(function($){
+
 		var dossierTemplateDataSource = new kendo.data.DataSource({
 			transport: {
 				read: function(options) {
@@ -174,9 +176,15 @@
 
 				$("#dossiertemplate_part_container").show();
 				$("#dossiertemplate_part_form_container").hide();
-				console.log("dossierTemplateId---------------");
-				console.log(dataItem.id);
+
+				console.log("dossierTemplateId---------------",dataItem.id);
 				onSelectDossiertemplate(dataItem.id);
+				try{
+					$("#dossier_template_part_listview").getKendoListView().dataSource.page(1);
+				}catch(e){
+					
+				}
+				
 			}
 		});
 
@@ -187,10 +195,9 @@
 		var onSelectDossiertemplate = function(id){
 			if(id){
 				console.log("load parts 2");
-				$("#dossier_template_part_listview").getKendoListView().dataSource.read({
+				dossierTemplatePartDataSource.read({
 					dossierTemplateId: id
 				});
-				console.log("load parts 3");
 			}
 		}
 

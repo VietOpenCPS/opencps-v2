@@ -19,6 +19,7 @@
 			<b>Hành động</b>
 		</div>
 	</li> 
+
 </ul>
 <ul class='mimic-table' id="serviceConfigOptionListView">
 
@@ -446,6 +447,8 @@
 		}
 	});
 
+
+
 	$("#instructionNote").summernote({
 		height : 150,
 		toolbar: [
@@ -472,5 +475,6 @@
 		['insert', ['link', 'picture' , 'video']]
 		]
 	});
+
 
 </script>
