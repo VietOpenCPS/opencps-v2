@@ -842,6 +842,10 @@ public class DossierActionsImpl implements DossierActions {
 
 				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
 						dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
+				
+				// Cap nhat ngay tiep nhan khi duoc cap so
+				
+				dossier.setReceiveDate(new Date());
 
 				dossier.setDossierNo(dossierRef);
 				// To index
