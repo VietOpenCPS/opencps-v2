@@ -153,6 +153,7 @@
 				</div>
 			</div>
 		</div>
+		
 		<div class="row MT10">
 			<div class="col-xs-12 col-sm-12">
 				<div class="row">
@@ -267,7 +268,14 @@
 			},
 			schema : {
 				total : "total",
-				data : "data"
+				data : "data",
+				model : {
+					fields : {
+						partName : {
+							type : "string"
+						}
+					}
+				}
 			}
 		},
 		filter: "contains",
@@ -295,7 +303,14 @@
 			},
 			schema : {
 				total : "total",
-				data : "data"
+				data : "data",
+				model : {
+					fields : {
+						partName : {
+							type : "string"
+						}
+					}
+				}
 			}
 		},
 		filter: "contains",
