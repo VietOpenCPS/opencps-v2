@@ -518,10 +518,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setDossierSubStatus(subStatus);
 		dossier.setDossierSubStatusText(subStatusText);
 
-		if (status.equalsIgnoreCase(DossierStatusConstants.RECEIVING)) {
+/*		if (status.equalsIgnoreCase(DossierStatusConstants.RECEIVING)) {
 			dossier.setReceiveDate(now);
 		}
-
+*/
 		if (status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
 			dossier.setReleaseDate(now);
 		}
