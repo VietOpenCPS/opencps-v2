@@ -1463,7 +1463,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								},
 								{
 									text: 'Hành động',
-									align: 'left',
+									align: 'center',
 									sortable: true,
 									value: 'lastActionNote'
 								}
@@ -1487,8 +1487,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									var ten_doanh_nghiep = vm.advanced_filter_applicantName;
 									var so_ho_so = vm.advanced_filter_dossierIdCTN;
 									var so_chung_chi = vm.advanced_filter_dossierNo;
-									var loai_san_pham = vm.advancedFilterLoaiSanPham.itemCode;
-									var nhan_hieu = vm.advancedFilterNhanHieu.itemCode;
+									var loai_san_pham = vm.advancedFilterLoaiSanPham.itemName;
+									var nhan_hieu = vm.advancedFilterNhanHieu.itemName;
 									var ten_thuong_mai = vm.advanced_filter_tenThuongMai;
 									var ma_kieu_loai = vm.advanced_filter_maKieuLoai;
 
@@ -1647,6 +1647,78 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							});
 
 
+							return false; 
+						},
+						toViewDelivableFile : function(item){
+							var deliverableCode = item.deliverableCode;
+							if(deliverableCode){
+								var url = "/o/rest/v2/dossiers/file/"+deliverableCode;
+
+								const config_blob = {
+									headers: {
+										'groupId': themeDisplay.getScopeGroupId(),
+									},
+									responseType: 'blob'
+								};
+								axios.get(url, config).then(function (response) {
+
+									var result = response.data;
+									var urlGetFile = "/o/rest/v2/dossiers/"+result.dossierId+"/files/"+result.referenceUid;
+
+									axios.get(urlGetFile, config_blob).then(function (response) {
+										var url = window.URL.createObjectURL(response.data);
+										console.log("url===========>",url);
+										window.open(url , '_blank');
+									})
+									.catch(function (error) {
+										console.log(error);
+
+									});
+
+								})
+								.catch(function (error) {
+									console.log(error);
+									
+								});
+								
+							}
+							return false;
+						},
+						toDetailHoSoDelivable: function (item) {
+							
+							var vm = this;
+							vm.stepModel = null;
+							// call DetailAPI.
+							var ma_ho_so = item.ma_ho_so;
+							var urlDossierId = '/o/rest/v2/dossiers/number/'+ma_ho_so;
+							
+							axios.get(urlDossierId, config).then(function (response) {
+								var serializable = response.data;
+
+								var url = '/o/rest/v2/dossiers/'+serializable.dossierId;
+
+								axios.get(url, config).then(function (response) {
+									var serializable = response.data;
+
+									vm.detailModel = serializable;
+									vm.detailPage = true;
+									window.scrollBy(0, -99999);
+
+									vm._inilistDocumentIn(vm.detailModel);
+									vm._inilistDocumentOut(vm.detailModel);
+
+								})
+								.catch(function (error) {
+									console.log(error);
+									
+								});
+
+							})
+							.catch(function (error) {
+								console.log(error);
+
+							});
+							
 							return false; 
 						},
 						advanced_filter_btn_click : function(){
@@ -1826,6 +1898,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								window.scrollBy(0, -99999);
 								
 								vm._inilistDocumentIn(vm.detailModel);
+								vm._inilistDocumentOut(vm.detailModel);
 
 							})
 								.catch(function (error) {
@@ -1965,7 +2038,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'id': 'listDocumentOut',
 					'name': 'listDocumentOut',
 					'type': 'listview',
-					'template': 'list_document_in_template',
+					'template': 'list_document_out_template',
 					'events': {
 						downloadReferenceFile: function (item) {
 							// call DownloadFile.
@@ -1989,6 +2062,62 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									
 								});
 							return false; 
+						},
+						_inilistDocumentOut: function (item) {
+							var vm = this;
+//							vm.listDocumentInItems = [];
+//							vm.listDocumentOutItems = [];
+							
+							var url = "/o/rest/v2/dossiertemplates/"+item.dossierTemplateNo;
+							var urlFiles = "/o/rest/v2/dossiers/"+item.dossierId+"/files";
+							
+							axios.all([
+						        axios.get(url, config),
+						        axios.get(urlFiles, config)
+						      ])
+							  .then(axios.spread(function (urlRespones, urlFilesRespones) {
+							    // Both requests are now complete
+								  vm.dossierFiles = urlFilesRespones.data.data;
+								  
+								  var serializable = urlRespones.data;
+									
+								  var listIn = [], listOut = [], listAll = [];
+								  
+								  for(var key in serializable.dossierParts){
+										
+									var countData = 0;
+									for(var keyFile in vm.dossierFiles){
+										
+										if ( vm.dossierFiles[keyFile].dossierPartNo === serializable.dossierParts[key].partNo ) {
+											countData = countData + 1;
+											serializable.dossierParts[key].referenceUid = vm.dossierFiles[keyFile].referenceUid;
+											serializable.dossierParts[key].fileEntryId = vm.dossierFiles[keyFile].fileEntryId;
+											serializable.dossierParts[key].displayName = vm.dossierFiles[keyFile].displayName;
+										
+										}
+										
+									}
+									
+									serializable.dossierParts[key].counter = countData;
+									
+									if ( serializable.dossierParts[key].partType === 2 ) {
+										if(serializable.dossierParts[key].partNo === "KQ6"){
+											listOut.push(serializable.dossierParts[key]);
+										}
+										
+									} 
+									
+								}
+								
+								vm.listDocumentOutItems = listOut;
+								
+								return Promise.reject();
+								
+							  })).catch(function (error) {
+									console.log(error);
+									
+								});
+							return false;
 						}
 					}
 				},

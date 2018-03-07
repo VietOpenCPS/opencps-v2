@@ -66,7 +66,15 @@
 							},
 							success: function(result) {
 								console.log("Success Loadddd");
-								options.success(result);
+								if(result.data){
+									options.success(result);
+								}else {
+									options.success({
+										total : 0,
+										data : []
+									});
+								}
+								
 
 								/*dossierTemplatePartDataSource.sort({ field: "partNo", dir: "asc" });*/
 							}
