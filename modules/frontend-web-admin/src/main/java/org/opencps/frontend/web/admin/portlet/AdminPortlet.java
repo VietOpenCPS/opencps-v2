@@ -1603,16 +1603,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			String groupCodes = ParamUtil.getString(actionRequest, "groupCode");
 
 			String metaData = ParamUtil.getString(actionRequest, "metaData");
-			
-			_log.info("==================saveDictItem===================");
-			_log.info("itemCode====================="+itemCode);
-			_log.info("itemName====================="+itemName);
-			_log.info("itemNameEN====================="+itemNameEN);
-			_log.info("itemCodeOld====================="+itemCodeOld);
-			_log.info("collectionCode====================="+collectionCode);
-			_log.info("itemDescription====================="+itemDescription);
-			_log.info("parentItemCode====================="+parentItemCode);
-			_log.info("groupCodes====================="+groupCodes);
 
 			DictCollectionActions dictCollectionActions =
 				new DictCollectionActions();
@@ -1636,22 +1626,16 @@ public class AdminPortlet extends FreeMarkerPortlet {
 						userId, groupId, serviceContext, collectionCode,
 						itemCode, metaData);
 					
-					_log.info("dictItem====================="+dictItem);
-					
 				}
 				else {
 					dictItem = dictCollectionActions.addDictItems(
 						userId, groupId, collectionCode, parentItemCode, itemCode,
 						itemName, itemNameEN, itemDescription,
 						String.valueOf(sibling), 0, metaData, serviceContext);
-					_log.info("dictItem====================="+dictItem);
 				}
-				
-				_log.info("==========================================");
 
-				groupCodes = dictCollectionActions.updateDictItemGroup(
-					userId, groupId, dictItem.getDictItemId(), groupCodes,
-					serviceContext);
+			groupCodes = dictCollectionActions.updateDictItemGroup(userId, groupId, dictItem.getDictItemId(),
+					groupCodes, collectionCode, serviceContext);
 
 				result.put(
 					"createDate", DateTimeUtils.convertDateToString(

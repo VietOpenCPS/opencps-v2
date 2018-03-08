@@ -522,20 +522,23 @@ public class DictCollectionActions implements DictcollectionInterface {
 		UnauthorizationException, DuplicateCategoryException {
 
 		DictItemGroup dictItemGroup = null;
+		DictGroup dictGroup = null;
+		DictItem dictItem = null;
 
 		DictCollection dictCollection =
 			DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(
 				code, groupId);
 
-		DictGroup dictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(
-			groupCode, groupId);
-
-		DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(
-			itemCode, dictCollection.getDictCollectionId(), groupId);
+		if (dictCollection != null) {
+			dictGroup = DictGroupLocalServiceUtil.getByGC_GI_DCI(
+				groupCode, groupId, dictCollection.getDictCollectionId());
+			dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(
+				itemCode, dictCollection.getDictCollectionId(), groupId);
+		}
 
 		dictItemGroup = DictItemGroupLocalServiceUtil.addDictItemGroup(
 			userId, groupId, dictGroup.getDictGroupId(),
-			dictItem.getDictItemId(), serviceContext);
+			dictItem.getDictItemId(), groupCode, serviceContext);
 
 		return dictItemGroup;
 	}
@@ -856,7 +859,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 	public String updateDictItemGroup(
 		long userId, long groupId, long dictItemId, String groupCodes,
-		ServiceContext serviceContext)
+		String collectionCode, ServiceContext serviceContext)
 		throws NoSuchUserException, UnauthenticationException,
 		UnauthorizationException, DuplicateCategoryException {
 
@@ -881,28 +884,25 @@ public class DictCollectionActions implements DictcollectionInterface {
 		if (Validator.isNotNull(groupCodes)) {
 			String[] arrGroupCode = StringUtil.split(groupCodes);
 			if (arrGroupCode != null && arrGroupCode.length > 0) {
-				DictItem dictCollection =
-					DictItemLocalServiceUtil.fetchDictItem(dictItemId);
-				long dictCollectionId = 0;
-				if (dictCollection != null) {
-					dictCollectionId = dictCollection.getDictCollectionId();
-				}
 				for (int i = 0; i < arrGroupCode.length; i++) {
 					if (Validator.isNotNull(arrGroupCode[i])) {
 						try {
+							DictCollection dictCollection =
+								DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(
+									collectionCode, groupId);
 							DictGroup dictGroup =
-								// DictGroupLocalServiceUtil.fetchByF_DictGroupCode(
-								// arrGroupCode[i], groupId);
 								DictGroupLocalServiceUtil.getByGC_GI_DCI(
-									arrGroupCode[i], groupId, dictCollectionId);
+									arrGroupCode[i], groupId,
+									dictCollection.getDictCollectionId());
 
 							DictItemGroupLocalServiceUtil.addDictItemGroup(
 								userId, groupId, dictGroup.getDictGroupId(),
-								dictItemId, serviceContext);
+								dictItemId, arrGroupCode[i], serviceContext);
 							groupCodeList.add(arrGroupCode[i]);
 						}
 						catch (Exception e) {
 							continue;
+
 						}
 					}
 

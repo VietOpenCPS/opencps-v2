@@ -814,6 +814,7 @@
 		<column name="sequenceNo" type="String" />
 		<column name="pluginForm" type="String" />
 		<column name="sampleData" type="String" />
+		<column name="autoRun" type="boolean" />
 
 		<finder return-type="Collection" name="SC_SPID">
 			<finder-column name="stepCode" />
@@ -835,6 +836,42 @@
 		</finder>
 
 	</entity>
+	
+	<entity local-service="true" name="DossierRequest"
+		remote-service="false" table="opencps_dossierrequest" uuid="true">
+
+		<column name="dossierRequestId" type="long" primary="true" />
+
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="moderator" type="boolean" />
+		<column name="condition" type="String" />
+
+		<column name="dossierId" type="long" />
+		<column name="referenceUid" type="String" />
+		<column name="requestType" type="String" />
+		<column name="comment" type="String" />
+		<column name="isNew" type="boolean" />
+
+		<finder return-type="Collection" name="D_">
+			<finder-column name="dossierId" />
+		</finder>
+
+		<finder return-type="Collection" name="D_RT">
+			<finder-column name="dossierId" />
+			<finder-column name="requestType" />
+		</finder>
+
+		<finder return-type="Collection" name="IS_NEW">
+			<finder-column name="isNew" />
+		</finder>
+	</entity>
+	
 	<entity local-service="true" name="ProcessAction"
 		remote-service="false" table="opencps_processaction" uuid="true">
 
@@ -865,6 +902,7 @@
 		<column name="rollbackable" type="boolean" />
 		<column name="createDossierNo" type="boolean"/>
 		<column name="eSignature" type="boolean"/>
+		<column name="configNote" type="String"/>
 		
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
