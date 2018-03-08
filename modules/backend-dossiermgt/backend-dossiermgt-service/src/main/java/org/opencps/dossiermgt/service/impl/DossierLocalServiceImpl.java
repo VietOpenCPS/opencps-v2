@@ -425,7 +425,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setSubmitDate(now);
 		}
 */
-		if (Validator.isNull(dossier.getDossierStatus().contentEquals(DossierStatusConstants.NEW))) {
+		if (dossier.getDossierStatus().contentEquals(DossierStatusConstants.NEW)) {
 			dossier.setSubmitDate(now);
 		}
 
