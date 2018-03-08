@@ -6,6 +6,7 @@
 		var viewPanel = new kendo.View("panelTemplate", {model: modelPanel});
 		var viewMainList = new kendo.View("mainTemplate", {model: modelMain});
 		var viewMainList_2 = new kendo.View("mainTemplate_2", {model: modelMain});
+		var statusRouteTem = "";
 		// Show màn hình chi tiết hồ sơ
 		manageDossier.route("/(:dossierItemStatus)/dossiers/(:id)", function(dossierItemStatus, id){
 			$("#panel_list").show();
@@ -25,6 +26,8 @@
 				$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"",function(result){
 				})
 			};
+
+			statusRouteTem = dossierItemStatus;
 			$('#searchCC').removeClass('active');
 			$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
