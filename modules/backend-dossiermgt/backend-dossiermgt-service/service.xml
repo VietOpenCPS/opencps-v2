@@ -902,6 +902,7 @@
 		<column name="rollbackable" type="boolean" />
 		<column name="createDossierNo" type="boolean"/>
 		<column name="eSignature" type="boolean"/>
+		<column name="configNote" type="String"/>
 		
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
