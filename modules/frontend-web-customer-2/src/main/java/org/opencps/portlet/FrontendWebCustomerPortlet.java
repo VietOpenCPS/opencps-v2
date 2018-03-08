@@ -90,6 +90,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		
 		try {
 			Registration registration = RegistrationLocalServiceUtil.getByRegistrationState(themeDisplay.getScopeGroupId(), themeDisplay.getUserId(), 2).get(0);
+			registration.setAddress(registration.getAddress().trim());
 			String registrationStr = JSONFactoryUtil.looseSerialize(registration);
 			JSONObject registrationObj = JSONFactoryUtil.createJSONObject(registrationStr);
 			if(registrationObj != null){
@@ -168,16 +169,16 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		dossierReceiving.put("text", "Hồ sơ chờ tiếp nhận");
 		dossierReceiving.put("value", "receiving");
 		dossierStatus.add(dossierReceiving);
+		
+		JSONObject dossierWaiting = JSONFactoryUtil.createJSONObject();
+		dossierWaiting.put("text", "Hồ sơ chờ bổ sung");
+		dossierWaiting.put("value", "waiting");
+		dossierStatus.add(dossierWaiting);
 
 		JSONObject dossierProcessed = JSONFactoryUtil.createJSONObject();
 		dossierProcessed.put("text", "Hồ sơ đã tiếp nhận");
 		dossierProcessed.put("value", "processing");
 		dossierStatus.add(dossierProcessed);
-
-		JSONObject dossierWaiting = JSONFactoryUtil.createJSONObject();
-		dossierWaiting.put("text", "Hồ sơ chờ bổ sung");
-		dossierWaiting.put("value", "waiting");
-		dossierStatus.add(dossierWaiting);
 
 		JSONObject dossierPaying = JSONFactoryUtil.createJSONObject();
 		dossierPaying.put("text", "Hồ sơ chờ thanh toán");

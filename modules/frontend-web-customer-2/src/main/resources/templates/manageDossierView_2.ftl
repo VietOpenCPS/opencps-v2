@@ -18,7 +18,6 @@
 
 						<input type="text" class="form-control input-sm" id="keyInputDelivable" placeholder="Nhập từ khóa"
 						data-bind="events: { keyup: filterDelivableKey}" style="width: 290px;">
-
 					</div>
 					
 					<a class="PL5 PR5 hover-pointer" href="#searchAdvancedCollapse" data-toggle="collapse">Nâng cao</a>
@@ -237,7 +236,7 @@
 
 		<td class="PT0 PR0 text-center" style="width: 15%">
 
-			<a href="javascript:;" data-bind="events: { click : viewDeliverableFile}" data-pk = "#:deliverableCode#">Xem chứng chỉ</a>
+			<a href="javascript:;" data-bind="events: { click : viewDeliverableFile}" data-pk = "#:deliverableCode#" class="text-hover-blue">Xem CC</a>
 			<#--	-->
 			<!-- <button type="button" class="btn-link no-border PT10 copyProfile" data-pk="">
 				<i class="fa fa-file-o" aria-hidden="true"></i>

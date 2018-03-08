@@ -1,8 +1,29 @@
 <#if (Request)??>
 	<#include "init.ftl">
 </#if>
+	
+	<div id="confirm" name="confirm">
+		
+	</div>
 	<script type="text/javascript">
 	// Source for panel list
+
+	var fnConfirm = function(title, message, okText, cancelText, okCallBack, cancelCallBack){
+
+		var cf = $("#confirm").kendoDialog({
+            width: "400px",
+            title: title,
+            closable: true,
+            modal: false,
+            content: "<p>"+message+"?<p>",
+            actions: [
+                { text: cancelText, action: cancelCallBack },
+                { text: okText, primary: true, action: okCallBack }
+            ]
+        }).data("kendoDialog");
+
+		return cf;
+	};
 
 		var currentStateBage = 0;
 		var currentStateBageFlag = 0;
@@ -265,7 +286,17 @@
 		var loadSoCC = function(){
 			try {
 				var data = dataSourceProfile.view();
-				for (var i = 0; i < data.length; i++) {
+				var curPage = dataSourceProfile.page();
+				var total = dataSourceProfile.total();
+
+				var start = (curPage - 1) * 15;
+				var end = start + 15;
+
+				if(end > total){
+					end = total;
+				}
+
+				for (var i = start; i < end; i++) {
 					var dossierId = data[i].dossierId;
 					if(dossierId){
 						$.ajax({
@@ -284,6 +315,7 @@
 					}
 					
 				}
+
 			}catch(e){
 				return;
 			}
@@ -465,6 +497,9 @@
 					options.success({url : url, status : xhttp.status});
 				} else if (xhttp.readyState === 4 && xhttp.status !== 200) {
 					options.error(xhttp.status);
+					notification.show({
+						message: "Không tìm thấy dữ liệu!"
+					}, "error");
 				}
 
 			};
@@ -589,6 +624,8 @@ var fnConvertArrFile = function(arrFile){
 									var cf = confirm("Bạn vừa thay đổi dữ liệu form bạn có muốn lưu lại!");
 									if(cf){
 										$(".saveFormAlpaca[data-pk="+isChange.partNo+"]").trigger("click");
+									}else {
+										manageDossier.navigate("/"+id);
 									}
 								}else {
 									manageDossier.navigate("/"+id);
@@ -780,23 +817,54 @@ var fnConvertArrFile = function(arrFile){
 			},
 			viewDeliverableFile : function(e){
 				e.preventDefault();
-				var deliverableCode = $(this).attr("data-pk");
-				var url = "/o/rest/v2/dossierfiles/file/"+deliverableCode;
-				var urlReadFile = fileAttachmentUrl({
-					method : "GET",
-					url : url,
-					async : false,
-					success: function(options){
-						urlOut = options.url;
-						window.open(urlOut , '_blank');
 
+				var btn = e.currentTarget;
+				var deliverableCode = $(btn).attr("data-pk");
+				var url = "/o/rest/v2/dossiers/file/"+deliverableCode;
+
+				$.ajax({
+					url : url,
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
+						if(result.dossierId && result.referenceUid){
+
+							var urlGetFile = "/o/rest/v2/dossiers/"+result.dossierId+"/files/"+result.referenceUid;
+							var urlReadFile = fileAttachmentUrl({
+								method : "GET",
+								url : urlGetFile,
+								async : false,
+								success: function(options){
+
+									urlOut = options.url;
+									window.open(urlOut , '_blank');
+
+								},
+								error: function(){
+
+								}
+							});
+						}
+
+						
 					},
-					error: function(){}
+					error : function(result){
+
+					}
 				});
+				
 			},
 			stylePager: function(e){
 				e.preventDefault();
 				$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});
+				console.log("eeeeeeeee",e);
+				try{
+					console.log("eeeeeeeee",e);
+					loadSoCC();
+				}catch(e){
+					console.log(e);
+				}
 			},
 			stylePagerDeliverables : function(e){
 				e.preventDefault();

@@ -165,7 +165,7 @@
 						</select>
 					</span>
 				</span>
-				<span id="pagerProfile" class="M0 P0" data-role="pager" data-info="false" data-bind="source: dataSourceProfile, events:{change: stylePager}" data-button-count="3" style="background: #ffffff"></span>
+				<span id="pagerProfile" class="M0 P0" data-role="pager" data-info="false" data-bind="source: dataSourceProfile, events:{change: stylePager}" data-button-count="3" style="background: #ffffff" data-auto-bind="false"></span>
 			</div>	
 		</div>
 
@@ -207,12 +207,15 @@
 			#} else {#
 			<p><i title="Ngày gửi" class="text-gray">---</i></p>
 			#}#
-
-			#if (receiveDate) {#
-			<p title="Ngày tiếp nhận">#:receiveDate#</p>
-			#} else {#
-			<p><i title="Ngày tiếp nhận" class="text-gray">---</i></p>
-			#}#
+			
+			#if(dossierNo){
+				if(receiveDate){#
+					<p title="Ngày tiếp nhận">#:receiveDate#</p>
+				#}else{#
+					<p><i title="Ngày tiếp nhận" class="text-gray">---</i></p>
+				#}
+			}#
+			
 		</td>
 
 		<td class="text-center" style="width: 10%">
