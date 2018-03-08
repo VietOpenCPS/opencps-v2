@@ -23,7 +23,6 @@ import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
-import org.opencps.dossiermgt.service.ProcessActionLocalService;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 
 import com.liferay.portal.kernel.model.Role;
@@ -329,6 +328,7 @@ public class ServiceProcessUtils {
 		
 		model.setCreateDossierNo(action.getCreateDossierNo());
 		model.seteSignature(action.getESignature());
+		model.setConfigNote(action.getConfigNote());
 		
 		return model;
 	}
