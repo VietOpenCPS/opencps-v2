@@ -358,6 +358,9 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 					message.put("formReport", formReport);
 
 					message.put("formData", formData);
+					
+					_log.info("formREPORT"+ formReport);
+					_log.info("formDATA"+ formData);
 
 					message.setResponseId(String.valueOf(dossier.getPrimaryKeyObj()));
 					message.setResponseDestinationName("jasper/engine/preview/callback");
