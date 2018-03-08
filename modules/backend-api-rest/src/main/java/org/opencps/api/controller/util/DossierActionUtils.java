@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.opencps.api.dossier.model.ActionExecutedModel;
 import org.opencps.api.dossier.model.ListContacts;
-import org.opencps.api.dossier.model.UserModel;
 import org.opencps.api.dossieraction.model.DossierActionNextActionModel;
 import org.opencps.api.dossieraction.model.DossierActionNextActioncreateFiles;
 import org.opencps.api.dossieraction.model.DossierActionNextActiontoUser;
@@ -15,11 +14,7 @@ import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.ProcessAction;
-import org.opencps.dossiermgt.model.ProcessStep;
-import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
-import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONArray;
@@ -46,53 +41,18 @@ public class DossierActionUtils {
 
 	public static DossierActionNextActionModel mappingToDoActionModel(ProcessAction processAction) {
 
-		long[] userIds;
 
-		List<UserModel> userModels;
-		UserModel userModel;
-		if (processAction == null) {
-			return null;
-		}
 
 		DossierActionNextActionModel model = new DossierActionNextActionModel();
 
-		// model.setProcessActionId((int) processAction.getProcessActionId());
 		model.setActionCode(processAction.getActionCode());
 		model.setActionName(processAction.getActionName());
-		// model.setPreStepCode(Integer.parseInt(processAction.getPreStepCode()));
 		model.setPostStepCode(processAction.getPostStepCode());
 		model.setAutoEvent(processAction.getAutoEvent());
-		// model.setPreCondition_0020(processAction.getPreCondition());
-		// .setAllowAssignUser("" + (processAction.getAllowAssignUser()));
 		model.setAssignUserId((processAction.getAssignUserId()));
 
-		ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(processAction.getPostStepCode(),
-				processAction.getGroupId(), processAction.getServiceProcessId());
 
-		List<ProcessStepRole> processStepRoles = ProcessStepRoleLocalServiceUtil
-				.findByP_S_ID(processStep.getProcessStepId());
 
-		// for (ProcessStepRole processStepRole : processStepRoles)
-		//
-		// {
-		// userModels = new ArrayList<UserModel>();
-		//
-		// userIds =
-		// UserLocalServiceUtil.getRoleUserIds(processStepRole.getRoleId());
-		//
-		// for (int i = 0; i < userIds.length; i++) {
-		// userModel = new UserModel();
-		// User user = UserLocalServiceUtil.fetchUser(userIds[i]);
-		//
-		// userModel.setModerator(Boolean.toString(processStepRole.getModerator()));
-		// userModel.setUserId((int) user.getUserId());
-		// userModel.setUserName(user.getFirstName());
-		// userModels.add(userModel);
-		//
-		// }
-		// model.getToUsers().addAll(userModels);
-		//
-		// }
 		return model;
 
 	}
@@ -128,7 +88,8 @@ public class DossierActionUtils {
 				model.setAllowAssignUser(processAction.getAllowAssignUser());
 				model.setPending(pending);
 				model.setAssignUserId(assignUserId);
-
+				model.setConfigNote(processAction.getConfigNote());
+				
 				List<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
 
 				for (User user : lstUser) {
@@ -182,7 +143,6 @@ public class DossierActionUtils {
 				model.getCreateFiles().addAll(outputCreeateFiles);
 				model.setCreateDossierNo(processAction.getCreateDossierNo());
 				model.seteSignature(processAction.getESignature());
-
 				outputs.add(model);
 			}
 		}
