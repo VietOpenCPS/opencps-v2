@@ -72,7 +72,8 @@ import javax.xml.bind.annotation.XmlType;
     "preStepName",
     "postStepName",
     "createDossierNo",
-    "eSignature"
+    "eSignature",
+    "configNote"
 })
 public class ProcessActionDataModel {
 
@@ -98,8 +99,17 @@ public class ProcessActionDataModel {
 
     protected boolean createDossierNo;
     protected boolean eSignature;
+    protected String configNote;
 
-    public boolean isCreateDossierNo() {
+    public String getConfigNote() {
+		return configNote;
+	}
+
+	public void setConfigNote(String configNote) {
+		this.configNote = configNote;
+	}
+
+	public boolean isCreateDossierNo() {
 		return createDossierNo;
 	}
 

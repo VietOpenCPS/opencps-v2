@@ -1,8 +1,30 @@
 <#if (Request)??>
 	<#include "init.ftl">
 </#if>
+	
+	<div id="confirm" name="confirm">
+		
+	</div>
 	<script type="text/javascript">
 	// Source for panel list
+
+	var fnConfirm = function(title, message, okText, cancelText, okCallBack, cancelCallBack){
+
+		var cf = $("#confirm").kendoDialog({
+            width: "400px",
+            title: title,
+            closable: true,
+            modal: false,
+            content: "<p>"+message+"?<p>",
+            actions: [
+                { text: cancelText, action: cancelCallBack },
+                { text: okText, primary: true, action: okCallBack }
+            ]
+        }).data("kendoDialog");
+
+		return cf;
+	};
+
 		var currentStateBage = 0;
 		var currentStateBageFlag = 0;
 		var dataGovAgency = new kendo.data.DataSource({
@@ -19,6 +41,7 @@
 				total:"total"
 			}
 		});
+		
 		var dataServiceInfo = new kendo.data.DataSource({
 			transport:{
 				read:{
@@ -33,6 +56,25 @@
 				total:"total"
 			}
 		});
+
+		var fnCheckIsChangeForm = function(){
+			try{
+				if (arrIsChangeForm) {
+					for (var i = 0; i < arrIsChangeForm.length; i++) {
+						if(!arrIsChangeForm[i].isSave){
+							return arrIsChangeForm[i];
+						}
+					}
+				}
+
+
+			}catch(e){
+				return  null;
+			}
+			return null;
+		}
+
+		var fnBind
 	//Source for main listview
 		var dataGetTotal = new kendo.data.DataSource({
 			transport:{
@@ -159,34 +201,44 @@
 		var dataSourceDeliverables = new kendo.data.DataSource({
 			transport:{
 				read:function(options){
-					if(options.data.keyword){
+					if(options.data.typeSearch === "advanced"){
+						options.data.applicant = "${(applicant.applicantIdNo)!}";
 						console.log("has keyword");
 						var deliverableTypes = $("#advanced_deliverableTypes_search").val();
-						$.ajax({
-							
-							url : "${api.server}/deliverables/agency/BGTVTCDKVN/type/"+deliverableTypes,
-							dataType : "json",
-							type : "POST",
-							headers : {"groupId": ${groupId}},
-							data : options.data,
-							success : function(result){
+						if(!deliverableTypes){
+							notification.show({
+								message: "Bạn phải chọn loại chứng chỉ trước khi tìm kiếm!"
+							}, "success");
+							options.error();
+							return;
+						}else {
+							$.ajax({
 
-								if (result.total!=0) {
-									var indexItem = 0;
-									$(result.data).each(function(index, value){
-										indexItem += 1;
-										value.count = indexItem;
-									});
-								};
-								options.success(result);
-								
-								optBoxPageSizeDeliverables();
-								
-							},
-							error:function(result){
-								options.error(result);
-							}
-						});
+								url : "${api.server}/deliverables/agency/BGTVTCDKVN/type/"+deliverableTypes,
+								dataType : "json",
+								type : "POST",
+								headers : {"groupId": ${groupId}},
+								data : options.data,
+								success : function(result){
+
+									if (result.total!=0) {
+										var indexItem = 0;
+										$(result.data).each(function(index, value){
+											indexItem += 1;
+											value.count = indexItem;
+										});
+									};
+									options.success(result);
+
+									optBoxPageSizeDeliverables();
+
+								},
+								error:function(result){
+									options.error(result);
+								}
+							});
+						}
+						
 					}else {
 						$.ajax({
 
@@ -194,6 +246,9 @@
 							dataType:"json",
 							type:"GET",
 							headers : {"groupId": ${groupId}},
+							data : {
+								applicant : "${(applicant.applicantIdNo)!}"
+							},
 							success:function(result){
 
 								if (result.total!=0) {
@@ -227,6 +282,45 @@
 			}
 			
 		});
+
+		var loadSoCC = function(){
+			try {
+				var data = dataSourceProfile.view();
+				var curPage = dataSourceProfile.page();
+				var total = dataSourceProfile.total();
+
+				var start = (curPage - 1) * 15;
+				var end = start + 15;
+
+				if(end > total){
+					end = total;
+				}
+
+				for (var i = start; i < end; i++) {
+					var dossierId = data[i].dossierId;
+					if(dossierId){
+						$.ajax({
+							url : "${api.server}/dossiers/"+dossierId+"/deliverableState/"+"1",
+							dataType : "json",
+							type : "GET",
+							headers: {"groupId": ${groupId}},
+							success : function(result){
+								$("#so_cc"+dossierId).text(result.so_chung_chi);
+								$("#ngayki_cc"+dossierId).text(result.ngay_ky_cc);
+							},
+							error : function(result){
+
+							}
+						});
+					}
+					
+				}
+
+			}catch(e){
+				return;
+			}
+			return;
+		}
 		// Get total dossierStatus
 		// var statusDossierItems = ["new","receiving","processing","waiting","paying","done","cancelling","cancelled","expired","all"];
 		var getTotal = function(){
@@ -335,11 +429,13 @@
 			  var view = dataGetTotal.view();
 			  $.each(view, function(index,value){
 					$('#profileStatus li[dataPk='+value.value+'] .bagde').html(value.items.length);
-					if(dossierStatus === value.value){
-			  			currentStateBageFlag = value.items.length;
-			  		}else if(dossierStatus !== "all"){
-			  			currentStateBageFlag = 0;
-			  		}
+					if(dossierStatus !== "all"){
+						if(dossierStatus === value.value){
+							currentStateBageFlag = value.items.length;
+						}
+					}else {
+						currentStateBageFlag = 0;
+					}
 				});
 			});
 						
@@ -372,6 +468,82 @@
 			$("#serviceInfo").data("kendoComboBox").text("");
 		};
 
+		function fileAttachmentUrl ( options) {
+
+
+			var xhttp = new XMLHttpRequest();
+			var a,filename;
+			var data = {};
+
+			xhttp.onreadystatechange = function() {
+
+				if (xhttp.readyState === 4 && xhttp.status === 200) {
+
+
+					var disposition = xhttp.getResponseHeader('Content-Disposition');
+					if (disposition && disposition.indexOf('attachment') !== -1) {
+						var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+						var matches = filenameRegex.exec(disposition);
+						if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+					}
+
+
+					a = document.createElement('a');
+					a.href = window.URL.createObjectURL(xhttp.response);
+
+					var url = window.URL.createObjectURL(xhttp.response);
+
+
+					options.success({url : url, status : xhttp.status});
+				} else if (xhttp.readyState === 4 && xhttp.status !== 200) {
+					options.error(xhttp.status);
+					notification.show({
+						message: "Không tìm thấy dữ liệu!"
+					}, "error");
+				}
+
+			};
+
+
+			xhttp.open(options.method, options.url);
+			xhttp.setRequestHeader("Content-Type", "application/json");
+
+			if (options.hasOwnProperty("headers")){
+				Object.keys( options.headers ).map(function(objectKey, index) {
+					var value = options.headers[objectKey];
+					xhttp.setRequestHeader(objectKey, value);
+				});
+			}
+
+
+			if (options.hasOwnProperty("responseType")){
+				xhttp.responseType = options.responseType;
+			} else {
+				xhttp.responseType = 'blob';
+			}
+
+
+			if (options.hasOwnProperty("data")){
+				data = options.data;
+			}
+
+
+			xhttp.send(data);
+
+		};
+
+var fnConvertArrFile = function(arrFile){
+	var arrConvert = new Object();
+	if(arrFile){
+		var flag = 0;
+		for (var i = 0; i < arrFile.length; i++) {
+			if(flag !== arrFile[i]){
+				var obj = new Object()
+			}
+		}
+	}
+}
+
 		var modelPanel = kendo.observable({
 			dataServiceInfo: dataServiceInfo,
 			eventLookup : function(e){
@@ -381,21 +553,21 @@
 			    if (statusDossier == "all") {
 						dataSourceProfile.read({
 							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo": $("#serviceInfo").val(),
+							"service": $("#serviceInfo").val(),
 							"keyword": $("#keyInput").val(),
 							"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
 						})
 			    } else if(statusDossier == "cancelling"){
 			    	dataSourceProfile.read({
 							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo": $("#serviceInfo").val(),
+							"service": $("#serviceInfo").val(),
 							"keyword": $("#keyInput").val(),
 							"state": "cancelling"
 						})
 			    } 
 			    else {
 						dataSourceProfile.read({
-							"serviceInfo": $("#serviceInfo").val(),
+							"service": $("#serviceInfo").val(),
 							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
 							"keyword": $("#keyInput").val(),
 							"status": statusDossier
@@ -409,7 +581,7 @@
 				if (statusDossier == "all") {
 						dataSourceProfile.read({
 							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo": $("#serviceInfo").val(),
+							"service": $("#serviceInfo").val(),
 							"keyword": $("#keyInput").val(),
 							"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
 						})
@@ -417,14 +589,14 @@
 			    else if(statusDossier == "cancelling"){
 			    	dataSourceProfile.read({
 							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo": $("#serviceInfo").val(),
+							"service": $("#serviceInfo").val(),
 							"keyword": $("#keyInput").val(),
 							"state": "cancelling"
 						})
 			    }
 			    	else {
 						dataSourceProfile.read({
-							"serviceInfo": $("#serviceInfo").val(),
+							"service": $("#serviceInfo").val(),
 							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
 							"keyword": $("#keyInput").val(),
 							"status": statusDossier
@@ -442,7 +614,39 @@
 				//
 				// dataSourceProfile.sort({ field: "submitDate", dir: "desc" }); 
 				var id = $(e.currentTarget).attr("dataPk");
-				manageDossier.navigate("/"+id);
+				try{
+
+					if($("#mainType2").is(":visible")){
+						if($("button.saveFormAlpaca").length > 0){
+							if(arrIsChangeForm){
+								var isChange = fnCheckIsChangeForm();
+								if(isChange){
+									var cf = confirm("Bạn vừa thay đổi dữ liệu form bạn có muốn lưu lại!");
+									if(cf){
+										$(".saveFormAlpaca[data-pk="+isChange.partNo+"]").trigger("click");
+									}else {
+										manageDossier.navigate("/"+id);
+									}
+								}else {
+									manageDossier.navigate("/"+id);
+								}
+							}else {
+								manageDossier.navigate("/"+id);
+							}
+						}else {
+							manageDossier.navigate("/"+id);
+						}
+					}else {
+						manageDossier.navigate("/"+id);
+					} 
+
+					console.log(arrIsChangeForm);
+					
+				}catch(e){
+
+				}
+
+				
 				// modelMain.set("isInvestigated", false);
 				// modelMain.set("visibleHeader", $(".itemStatus.active .dossierStatus").text());
 			},
@@ -546,17 +750,21 @@
 			});
 		};
 		var counter = function(){
-			if ($("#listViewDossier").data("kendoListView").dataSource.total()!=0) {
-				var count = $("#listViewDossier").data("kendoListView").dataSource.currentRangeStart();
-				var countLast = $("#listViewDossier").data("kendoListView").dataSource.view().length+count;
-				var arrCount = [];
-				for (var i = count; i < countLast; i++) {
-					arrCount.push(i+1)
-				};
-				$(".count").each(function(index,value){
-					$(value).html(arrCount[index])
-				})
-			}		
+			try {
+				if ($("#listViewDossier").data("kendoListView").dataSource.total()!=0) {
+					var count = $("#listViewDossier").data("kendoListView").dataSource.currentRangeStart();
+					var countLast = $("#listViewDossier").data("kendoListView").dataSource.view().length+count;
+					var arrCount = [];
+					for (var i = count; i < countLast; i++) {
+						arrCount.push(i+1)
+					};
+					$(".count").each(function(index,value){
+						$(value).html(arrCount[index])
+					})
+				}		
+			}catch(e){
+				return;
+			}
 		};
 
 
@@ -591,13 +799,72 @@
 				
 				var btn = e.currentTarget;
 				var dataPK = $(btn).attr('data-pk');
-				//
-				manageDossier.navigate("/done/dossiers/"+dataPK);
 
+				$.ajax({
+					method : "GET",
+					url : "${api.server}/dossiers/number/headers"+dataPK,
+					dataType : "json",
+					headers: {"groupId": ${groupId}},
+					success: function(result){
+						var dossierId = result.dossierId;
+						manageDossier.navigate("/done/dossiers/"+dossierId);
+					},
+					error: function(result){
+
+					}
+				});	
+
+			},
+			viewDeliverableFile : function(e){
+				e.preventDefault();
+
+				var btn = e.currentTarget;
+				var deliverableCode = $(btn).attr("data-pk");
+				var url = "/o/rest/v2/dossiers/file/"+deliverableCode;
+
+				$.ajax({
+					url : url,
+					dataType : "json",
+					type : "GET",
+					headers: {"groupId": ${groupId}},
+					success : function(result){
+						if(result.dossierId && result.referenceUid){
+
+							var urlGetFile = "/o/rest/v2/dossiers/"+result.dossierId+"/files/"+result.referenceUid;
+							var urlReadFile = fileAttachmentUrl({
+								method : "GET",
+								url : urlGetFile,
+								async : false,
+								success: function(options){
+
+									urlOut = options.url;
+									window.open(urlOut , '_blank');
+
+								},
+								error: function(){
+
+								}
+							});
+						}
+
+						
+					},
+					error : function(result){
+
+					}
+				});
+				
 			},
 			stylePager: function(e){
 				e.preventDefault();
 				$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});
+				console.log("eeeeeeeee",e);
+				try{
+					console.log("eeeeeeeee",e);
+					loadSoCC();
+				}catch(e){
+					console.log(e);
+				}
 			},
 			stylePagerDeliverables : function(e){
 				e.preventDefault();
@@ -612,8 +879,13 @@
 				sendAdd();
 				counter();
 				resDone();
+
 				$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});
 				$("th").css("vertical-align","top");
+
+
+				loadSoCC();
+
 			},
 			filterInvestigationNo : function(e){
 				e.preventDefault();
@@ -622,6 +894,36 @@
 					"status": "done"
 				})
 			    
+			},
+			filterDelivableNo : function(e){
+				/*var so_chung_chi = $("#noInputDelivable").val();
+				var keyword = $("#keyInputDelivable").val();
+
+
+				var queryKeyArr = new Array();
+				var queryValueArr = new Array();
+				var queryTypeArr = new Array();
+
+				if(so_chung_chi){
+
+					queryKeyArr.push('(so_chung_chi = ?)');
+					queryValueArr.push('*'+so_chung_chi+'*');
+					queryTypeArr.push('String');
+
+				}
+
+				dataSourceDeliverables.read({
+					keyword : keyword,
+					typeSearch : "advanced"
+				});*/
+
+			},
+			filterDelivableKey : function(e){
+				e.preventDefault();
+				var keyword = $("#keyInputDelivable").val();
+				dataSourceDeliverables.read({
+					keyword : keyword
+				});
 			},
 			fullScreen: function(e){
 				e.preventDefault();
@@ -651,8 +953,8 @@
 				var ten_doanh_nghiep = $("#advanced_companyName_search").val();
 				var so_ho_so = $("#advanced_dossierNo_search").val();
 				var so_chung_chi = $("#advanced_certificateNo_search").val();
-				var loai_san_pham = $("#advanced_product_search").val();
-				var nhan_hieu = $("#advanced_brand_search").val();
+				var loai_san_pham = $("#advanced_product_search").data('kendoComboBox').text();
+				var nhan_hieu = $("#advanced_brand_search").data('kendoComboBox').text();
 				var ten_thuong_mai = $("#advanced_tradenames_search").val();
 				var ma_kieu_loai = $("#advanced_typeNo_search").val();
 
@@ -663,59 +965,69 @@
 					return ;
 				}
 
-				var queryKey = '"query": "';
-				var queryValue = '"values": "';
-				var queryType = '"type": "';
+				var queryKeyArr = new Array();
+				var queryValueArr = new Array();
+				var queryTypeArr = new Array();
+
 				if(ten_doanh_nghiep){
-					queryKey += '(ten_doanh_nghiep like ?) ';
-					queryValue += '*'+ten_doanh_nghiep+'*';
-					queryType += 'String';
+
+					queryKeyArr.push('(ten_doanh_nghiep like ?)');
+					queryValueArr.push('*'+ten_doanh_nghiep+'*');
+					queryTypeArr.push('String');
+
 				}
 
 				if(so_ho_so){
-					queryKey += '[and] (so_ho_so = ?) ';
-					queryValue += '#'+so_ho_so;
-					queryType += ',String';
+
+					queryKeyArr.push('(so_ho_so = ?)');
+					queryValueArr.push(so_ho_so);
+					queryTypeArr.push('String');
 				}
 
 				if(so_chung_chi){
-					queryKey += '[and] (so_chung_chi = ?) ';
-					queryValue += '#'+so_chung_chi;
-					queryType += ',String';
+
+					queryKeyArr.push('(so_chung_chi = ?)');
+					queryValueArr.push(so_chung_chi);
+					queryTypeArr.push('String');
 				}
 
 				if(loai_san_pham){
-					queryKey += '[and] (loai_san_pham = ?) ';
-					queryValue += '#'+loai_san_pham;
-					queryType += ',String';
+
+					queryKeyArr.push('(loai_san_pham = ?)');
+					queryValueArr.push(loai_san_pham);
+					queryTypeArr.push('String');
 				}
 
 				if(nhan_hieu){
-					queryKey += '[and] (nhan_hieu = ?) ';
-					queryValue += '#'+nhan_hieu;
-					queryType += ',String';
+
+					queryKeyArr.push('(nhan_hieu = ?)');
+					queryValueArr.push(nhan_hieu);
+					queryTypeArr.push('String');
 				}
 
 				if(ten_thuong_mai){
-					queryKey += '[and] (ten_thuong_mai like ?) ';
-					queryValue += '#*'+ten_thuong_mai + '*';
-					queryType += ',String';
+
+					queryKeyArr.push('(ten_thuong_mai like ?)');
+					queryValueArr.push('*'+ten_thuong_mai + '*');
+					queryTypeArr.push('String');
 				}
 
 				if(ma_kieu_loai){
-					queryKey += '[and] (ma_kieu_loai like ?) ';
-					queryValue += '#*'+ma_kieu_loai + '*"';
-					queryType += ',String';
+
+					queryKeyArr.push('(ma_kieu_loai like ?)');
+					queryValueArr.push('*'+ma_kieu_loai + '*');
+					queryTypeArr.push('String');
 				}
 
-				var query = '{' + queryKey + '", ' + queryValue + '", ' + queryType + '"}';
+				var query = '{ "query": "' + queryKeyArr.join(" [and] ") + '", "values": "' + queryValueArr.join("#") + '", "type": "' + queryTypeArr.join(",") + '"}';
 
 				/*var query = '{"query": "(ten_doanh_nghiep like ?) [and] (so_ho_so = ?) [and] (so_chung_chi = ?) [and] (loai_san_pham = ?) [and] (nhan_hieu = ?) [and] (ten_thuong_mai like ?) [and] (ma_kieu_loai like ?)", "values": "*'+ten_doanh_nghiep+"*#"+so_ho_so+"#"+so_chung_chi+"#"+loai_san_pham+"#"+nhan_hieu+"#*"+ten_thuong_mai+"*#*"+ma_kieu_loai+'*", "type": "String,String,String,String,String,String,String"}';*/
 
 				console.log(query);
 
 				dataSourceDeliverables.read({
-					keyword : query
+					keyword : query,
+					typeSearch : "advanced"
 				});
 			},
 			deliverableTypesSource : new kendo.data.DataSource({
@@ -815,30 +1127,27 @@
 
 			//refrest lai danh sach ho so dang dc active
 			var dossierStatus = $("#profileStatus > li.itemStatus.active").attr("dataPK");
-			console.log("=======================FIRST===========================");
-			console.log("currentStateBage============",currentStateBage);
-			console.log("currentStateBageFlag============",currentStateBageFlag);
 
 			if(currentStateBage !== currentStateBageFlag){
 				console.log("Run!!!!!!!!!!!!!!!!!!!!!");
 				if (dossierStatus == "all") {
 					dataSourceProfile.read({
 						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-						"serviceInfo":$("#serviceInfo").val(),
+						"service":$("#serviceInfo").val(),
 						"govAgencyCode":$("#govAgency").val(),
 						"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
 					});
 				} else if (dossierStatus == "cancelling") {
 					dataSourceProfile.read({
 						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-						"serviceInfo":$("#serviceInfo").val(),
+						"service":$("#serviceInfo").val(),
 						"govAgencyCode":$("#govAgency").val(),
 						"state":"cancelling"
 					});
 				}else {
 					dataSourceProfile.read({
 						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-						"serviceInfo":$("#serviceInfo").val(),
+						"service":$("#serviceInfo").val(),
 						"govAgencyCode":$("#govAgency").val(),
 						"status":dossierStatus
 					});
@@ -846,12 +1155,10 @@
 				currentStateBage = currentStateBageFlag;
 			} 
 
-			console.log("=======================LAST===========================");
-			console.log("currentStateBage============",currentStateBage);
-			console.log("currentStateBageFlag============",currentStateBageFlag);
-			console.log("==================================================");
-
 		}, 10000);
+
+		var viewConfirmSaveForm = $("#confirmSaveForm");
+
 	</script>
 
 

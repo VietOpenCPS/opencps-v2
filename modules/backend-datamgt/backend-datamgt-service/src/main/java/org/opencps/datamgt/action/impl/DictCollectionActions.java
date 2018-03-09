@@ -445,16 +445,19 @@ public class DictCollectionActions implements DictcollectionInterface {
 			String itemCode, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException {
 		DictItemGroup dictItemGroup = null;
+		DictGroup dictGroup = null;
+		DictItem dictItem = null;
 
 		DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
 
-		DictGroup dictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
-
-		DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode,
-				dictCollection.getDictCollectionId(), groupId);
+		if (dictCollection != null) {
+			dictGroup = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, dictCollection.getDictCollectionId());
+			dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode,
+					dictCollection.getDictCollectionId(), groupId);
+		}
 
 		dictItemGroup = DictItemGroupLocalServiceUtil.addDictItemGroup(userId, groupId, dictGroup.getDictGroupId(),
-				dictItem.getDictItemId(), serviceContext);
+				dictItem.getDictItemId(), groupCode, serviceContext);
 
 		return dictItemGroup;
 	}
@@ -710,10 +713,8 @@ public class DictCollectionActions implements DictcollectionInterface {
 		return dictItem;
 	}
 	
-	public String updateDictItemGroup(
-			long userId, long groupId, long dictItemId, String groupCodes,
-			ServiceContext serviceContext)
-			throws NoSuchUserException, UnauthenticationException,
+	public String updateDictItemGroup(long userId, long groupId, long dictItemId, String groupCodes,
+			String collectionCode, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException {
 
 			// Remove all dictItemGroup
@@ -740,13 +741,14 @@ public class DictCollectionActions implements DictcollectionInterface {
 					for (int i = 0; i < arrGroupCode.length; i++) {
 						if (Validator.isNotNull(arrGroupCode[i])) {
 							try {
-								DictGroup dictGroup =
-									DictGroupLocalServiceUtil.fetchByF_DictGroupCode(
-										arrGroupCode[i], groupId);
+								DictCollection dictCollection = DictCollectionLocalServiceUtil
+										.fetchByF_dictCollectionCode(collectionCode, groupId);
+								DictGroup dictGroup = DictGroupLocalServiceUtil.getByGC_GI_DCI(arrGroupCode[i], groupId,
+										dictCollection.getDictCollectionId());
 
 								DictItemGroupLocalServiceUtil.addDictItemGroup(
 									userId, groupId, dictGroup.getDictGroupId(),
-									dictItemId, serviceContext);
+									dictItemId, arrGroupCode[i], serviceContext);
 								groupCodeList.add(arrGroupCode[i]);
 							}
 							catch (Exception e) {

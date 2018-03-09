@@ -220,7 +220,7 @@
 									<div class="col-sm-12">
 										<button class="btn btn-sm btn-border-color MR10 text-light-blue" id="dossier-payment-online" data-bind="attr : {data-pk : referenceUid}">Thanh toán trực tuyến</button> 
 										<button class="btn btn-sm btn-border-color MR10 text-light-blue" data-bind="attr : {data-pk : referenceUid}" id="dossier-payment-confirm">Thông báo đã nộp chuyển khoản</button>
-										<button class="btn btn-sm btn-border-color text-light-blue" onclick="">Xem phiếu thanh toán</button>
+										<button class="btn btn-sm btn-border-color text-light-blue" onclick="" id="dossier-payment-viewpdf" data-bind="attr : {data-pk : referenceUid}">Xem phiếu thanh toán</button>
 									</div>
 								</div>
 
@@ -392,17 +392,17 @@
 						},
 						paymentStatus : function(e){
 							if(this.get('paymentDossier')){
-                if(this.get('paymentDossier').paymentStatus === 0){
-                  return "Chờ nộp";
-                }else if(this.get('paymentDossier').paymentStatus === 1){
-                  return "Báo đã nộp";
-                }else if(this.get('paymentDossier').paymentStatus === 2){
-                  return "Hoàn thành";
-                }else {
-                  return "Không hợp lệ";
-                }
-              }
-              return "";
+								if(this.get('paymentDossier').paymentStatus === 0){
+									return "Chờ nộp";
+								}else if(this.get('paymentDossier').paymentStatus === 1){
+									return "Báo đã nộp";
+								}else if(this.get('paymentDossier').paymentStatus === 2){
+									return "Hoàn thành";
+								}else {
+									return "Không hợp lệ";
+								}
+							}
+							return "";
 						},
 						paymentApproveDatetime : function(e){
 							if(this.get('paymentDossier').approveDatetime){
@@ -505,6 +505,30 @@
 					notification.show({
 						message: "Thực hiện không thành công, xin vui lòng thử lại"
 					}, "error");
+				}
+
+			});
+		}
+	});
+
+	$("#dossier-payment-viewpdf").click(function(){
+		var referenceUid = $(this).attr("data-pk");
+		if(referenceUid){
+			$.ajax({
+				url : "${api.server}/dossiers/43601/payments/ddd25e45-0144-b226-ef2b-a1d09a7a24de/invoicefile",
+				dataType : "json",
+				type : "GET",
+				headers : {"groupId": ${groupId}},
+				responseType: 'blob',
+				data : {
+
+				},
+				success : function(result){
+					var urlblob = window.URL.createObjectURL(response);
+					window.open(urlblob, '_blank');
+				},
+				error :  function(result){
+					
 				}
 
 			});

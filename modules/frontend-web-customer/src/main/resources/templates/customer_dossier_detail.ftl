@@ -38,10 +38,16 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="dossier-parts">
-				<div class="head-part align-middle">
-					<div class="background-triangle-small">I</div> <span class="text-uppercase">Thông tin chủ hồ sơ</span>
+				<div class="head-part align-middle" data-toggle="collapse" data-target="#collapseDossierI">
+					<div class="background-triangle-small">I</div> 
+					<div class="col-sm-12 PL0">
+						
+						<span class="text-uppercase hover-pointer">Thông tin chủ hồ sơ</span>
+						<i class="fa fa-angle-down pull-right hover-pointer" aria-hidden="true"></i>
+					</div>
+					
 				</div>
-				<div class="content-part">
+				<div class="content-part" id="collapseDossierI" class="collapse">
 					<div class="row-parts-head MT5">
 						<div class="row MT5">
 							
@@ -233,7 +239,7 @@
 	<div class="checkbox ML15">
 		<input type="checkbox" id="viaPostal" name="viaPostal" data-bind="attr : {viaPostal : viaPostal}"> <label class="text-normal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
 	</div>
-
+	
 	<div class="row MB20">
 		<div class="col-xs-12 col-sm-7">
 			<label>Địa chỉ nhận kết quả</label>
@@ -258,9 +264,11 @@
 	<button class="btn btn-active" id="btn-submit-dossier">Lưu <i class="fa fa-save"></i></button>
 	<#-- <button class="btn btn-active" id="btn-submit-dossier"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 	<button class="btn btn-active"><i class="fa fa-trash"></i> Xóa</button> -->
+	
 </div>
 
 <div id="uploadFileTemplateDialog" class="modal fade" role="dialog">
+	
 </div>
 
 
@@ -272,9 +280,9 @@
 	var funSaveDossier;
 	$(function(){
 
-		var fnBindDossierTemplClick = function(){
 		//upload file click
-		$(".dossier-file").unbind().change(function(){
+		$(document).off("change",".dossier-file");
+		$(document).on("change",".dossier-file",function(){
 			console.log("change");
 
 			var partNo = $(this).attr("part-no");
@@ -287,21 +295,23 @@
 			console.log($(this)[0].files[0]);
 
 			funUploadFile($(this),partNo,dossierTemplateNo+"",fileTemplateNo,hasform);
-			$(this).val("");
+			
 		});
-
+		
 		//tai giay to kho luu tru
-		$(".uploadfile-form-repository").unbind().click(function(){
+		$(document).off("click",".uploadfile-form-repository");
+		$(document).on("click",".uploadfile-form-repository",function(){
 			var dossierId = "${(dossierId)!}";
 			var dossierTemplateNo = $("#dossierTemplateNo").val();
 			var partNo = $(this).attr("part-no");
-			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_detail_filetemplate}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo"+dossierTemplateNo,function(result){
+			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_detail_filetemplate}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
 				$(this).modal("show");
 			});
 		});
 
 		//xem file tai len theo tp ho so
-		$(".dossier-component-profile").unbind().click(function() {
+		$(document).off("click",".dossier-component-profile");
+		$(document).on("click",".dossier-component-profile",function() {
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
 			var dossierTemplateId = "${(dossierTemplateId)!}";
@@ -310,7 +320,8 @@
 			});
 		});
 
-		$(".delete-dossier-file").unbind().click(function(event){
+		$(document).off("click",".delete-dossier-file");
+		$(document).on("click",".delete-dossier-file",function(event){
 
 			var dossierId  = "${dossierId}";
 			var dataPartNo = $(this).attr("data-partno");
@@ -358,7 +369,6 @@
 				}
 			}
 		});
-	}
 
 	$("#btn-view-extendguide").click(function(){
 		if($("#extend-guide").attr("status")==="none"){
@@ -441,7 +451,6 @@
 		},
 		dataBound : function(){
 			indexDossiserPart = 0;
-			fnBindDossierTemplClick();
 		}
 	});
 
@@ -830,8 +839,9 @@
 		data.append('referenceUid', "");
 		data.append('dossierTemplateNo', dossierTemplateNo);
 		data.append('fileTemplateNo', fileTemplateNo);
+		data.append('formData', "");
 		data.append('fileType', "");
-		data.append('isSync', "");
+		data.append('isSync', "true");
 
 		$.ajax({
 			type : 'POST', 
@@ -841,7 +851,6 @@
 			processData: false,
 			contentType: false,
 			cache: false,
-			async : false,
 			success :  function(result){ 
 				var fileLength = $(file)[0].files.length;
 
@@ -861,6 +870,7 @@
 				if(!hasForm){
 					$("#validPart"+partNo).val("1");
 				}
+
 
 			},
 			error:function(result){
@@ -929,7 +939,7 @@ $(function(){
 		$("#mainType1").hide();
 		$("#mainType2").show();
 		$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+dossierId,function(result){
-
+			
 		});
 	});
 });
@@ -1007,14 +1017,17 @@ var fnSaveForm = function(id, value){
 	}
 }
 
+$(document).off("click",".saveFormAlpaca");
 $(document).on("click",".saveFormAlpaca",function(event){
 	var id = $(this).attr("data-pk");
 	var referentUidFile = $(this).attr("referenceUid");
+
 	console.log(id);
 	console.log("ccc");
-	console.log($("#formPartNo"+id+ " .formDataAlternative").val());
+
 	var formType = $("#formPartNo"+id+" .formType").val();
 	var value ;
+
 	if(formType !== "dklr"){
 		value = $("#formPartNo"+id).alpaca('get').getValue();
 
@@ -1028,7 +1041,7 @@ $(document).on("click",".saveFormAlpaca",function(event){
 		console.log(referentUidFile);
 		console.log(value);
 
-		if(errorMessage.length === '' && referentUidFile){
+		if(errorMessage === '' && referentUidFile){
 			$.ajax({
 				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
 				dataType : "json",
@@ -1046,6 +1059,7 @@ $(document).on("click",".saveFormAlpaca",function(event){
 					}, "success");
 					console.log($("#validPart"+id));
 					$("#validPart"+id).val("1");
+
 				},
 				error : function(result){
 					notification.show({
@@ -1058,13 +1072,7 @@ $(document).on("click",".saveFormAlpaca",function(event){
 				message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi ghi lại!"
 			}, "error");
 		}
-	}else {
-		value = $("#formPartNo"+id+ " .formDataAlternative").val();
 	}
-
-	
-	
-
 });
 
 </script>

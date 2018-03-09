@@ -74,7 +74,7 @@
 
 		<!-- Order -->
 		<order by="asc">
-			<order-column name="treeIndex" />
+			<order-column name="sibling" />
 		</order>
 
 		<!-- Finder -->
@@ -194,6 +194,7 @@
 
 		<column name="dictGroupId" type="long" />
 		<column name="dictItemId" type="long" />
+		<column name="dictGroupName" type= "String" />
 
 		<!-- Order -->
 		<order by="asc">
