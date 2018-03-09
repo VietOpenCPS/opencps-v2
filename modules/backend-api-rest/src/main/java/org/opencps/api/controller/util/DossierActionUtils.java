@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class DossierActionUtils {
 
@@ -88,7 +89,14 @@ public class DossierActionUtils {
 				model.setAllowAssignUser(processAction.getAllowAssignUser());
 				model.setPending(pending);
 				model.setAssignUserId(assignUserId);
-				model.setConfigNote(processAction.getConfigNote());
+				
+				if (Validator.isNull(processAction.getConfigNote())) {
+					model.setConfigNote("opencps");
+
+				} else {
+					model.setConfigNote(processAction.getConfigNote() );
+				}
+				
 				
 				List<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
 
