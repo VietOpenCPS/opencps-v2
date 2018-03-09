@@ -31,6 +31,7 @@ import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ProcessPlugin;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -46,6 +47,7 @@ import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -77,6 +79,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import backend.auth.api.exception.NotFoundException;
 
@@ -100,7 +103,7 @@ public class DossierActionsImpl implements DossierActions {
 		searchContext.setCompanyId(companyId);
 
 		try {
-			
+
 			hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
 			result.put("data", hits.toList());
@@ -845,9 +848,9 @@ public class DossierActionsImpl implements DossierActions {
 
 				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
 						dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
-				
+
 				// Cap nhat ngay tiep nhan khi duoc cap so
-				
+
 				dossier.setReceiveDate(new Date());
 
 				dossier.setDossierNo(dossierRef);
@@ -875,7 +878,7 @@ public class DossierActionsImpl implements DossierActions {
 
 				// SyncDossierFile
 				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getByDossierIdAndIsNew(dossierId, true);
-				
+
 				// check return file
 				List<String> returnDossierFileTemplateNos = ListUtil
 						.toList(StringUtil.split(processAction.getReturnDossierFiles()));
@@ -883,26 +886,26 @@ public class DossierActionsImpl implements DossierActions {
 				_log.info("__return dossierFiles" + processAction.getReturnDossierFiles());
 
 				for (DossierFile dosserFile : lsDossierFile) {
-					
-					_log.info("&&&StartUpdateDossierFile"+ new Date());
-					
-					dosserFile.setIsNew(false);
-					
-					DossierFileLocalServiceUtil.updateDossierFile(dosserFile);
-					
-					_log.info("&&&EndUpdateDossierFile"+ new Date());
 
-					_log.info("__dossierPart"+processAction.getReturnDossierFiles());
-					_log.info("__dossierPart"+dosserFile.getFileTemplateNo());
+					_log.info("&&&StartUpdateDossierFile" + new Date());
+
+					dosserFile.setIsNew(false);
+
+					DossierFileLocalServiceUtil.updateDossierFile(dosserFile);
+
+					_log.info("&&&EndUpdateDossierFile" + new Date());
+
+					_log.info("__dossierPart" + processAction.getReturnDossierFiles());
+					_log.info("__dossierPart" + dosserFile.getFileTemplateNo());
 
 					if (returnDossierFileTemplateNos.contains(dosserFile.getFileTemplateNo())) {
 						_log.info("START SYNC DOSSIER FILE");
-						DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-								false, 1, dosserFile.getDossierFileId(), dosserFile.getReferenceUid(),
-								serviceProcess.getServerNo());
-						
+						DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId,
+								dossier.getReferenceUid(), false, 1, dosserFile.getDossierFileId(),
+								dosserFile.getReferenceUid(), serviceProcess.getServerNo());
+
 					}
-					
+
 				}
 
 			}
@@ -936,8 +939,81 @@ public class DossierActionsImpl implements DossierActions {
 		if (Validator.isNotNull(dossierBriefNote)) {
 			DossierLocalServiceUtil.updateDossierBriefNote(dossierId, dossierBriefNote);
 		}
+
+		// do plugin auto
+
+		// 1. get current Step
+		// 2. get all plugins of this step
+		// 3. get plugin has autoRun
+		// 4. Create update formData
+
+		_log.info("IN_CURRENT_STEP:" + curStep.getStepCode() + curStep.getStepName());
+
+		List<ProcessPlugin> plugins = ProcessPluginLocalServiceUtil.getProcessPlugins(serviceProcessId,
+				curStep.getStepCode());
+
+		_log.info("WE_HAVE_PLUGINS:" + plugins.size());
+
+		List<ProcessPlugin> autoPlugins = new ArrayList<ProcessPlugin>();
+
+		for (ProcessPlugin plg : plugins) {
+			if (plg.getAutoRun()) {
+				autoPlugins.add(plg);
+			}
+		}
+
+		_log.info("AND_HAVE_AUTO_RUN_PLUGINS:" + autoPlugins.size());
+
+		for (ProcessPlugin plg : autoPlugins) {
+			// do create file
+			String fileTemplateNo = plg.getPluginForm();
+			
+			_doAutoRun(groupId, fileTemplateNo, dossierId, dossier.getDossierTemplateNo());
+		}
+
 		_log.info("END DO ACTION ==========");
 		return dossierAction;
+	}
+
+	private void _doAutoRun(long groupId, String fileTemplateNo, long dossierId,
+			String dossierTemplateNo) {
+
+		String formData = StringPool.BLANK;
+
+		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		try {
+			// Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+
+			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
+					fileTemplateNo, false, new DossierFileComparator(false, "createDate", Date.class));
+
+			DossierPart dossierPart = DossierPartLocalServiceUtil.getByFileTemplateNo(groupId, fileTemplateNo);
+
+			formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext);
+
+			if (Validator.isNull(dossierFile)) {
+
+				DossierFileActions actions = new DossierFileActionsImpl();
+
+				dossierFile = actions.addDossierFile(groupId, dossierId, PortalUUIDUtil.generate(), dossierTemplateNo,
+						dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(), StringPool.BLANK, 0L, null,
+						StringPool.BLANK, String.valueOf(false), serviceContext);
+			}
+			
+			dossierFile.setFormData(formData);
+			//dossierFile.setFormSchema(dossierPart.);
+			dossierFile.setFormReport(dossierPart.getFormReport());
+			//dossierFile.setFormScript();
+			
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+
+		} catch (Exception e) {
+			_log.info("Cant get formdata with fileTemplateNo_" + fileTemplateNo);
+		}
+
 	}
 
 	@Override
