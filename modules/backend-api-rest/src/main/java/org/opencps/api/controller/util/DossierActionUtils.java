@@ -90,15 +90,8 @@ public class DossierActionUtils {
 				model.setPending(pending);
 				model.setAssignUserId(assignUserId);
 				
-				if (Validator.isNull(processAction.getConfigNote())) {
-					model.setConfigNote("opencps");
-
-				} else {
-					model.setConfigNote(processAction.getConfigNote() );
-				}
-				
-				
-				List<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
+				model.setConfigNote(processAction.getConfigNote() );
+				<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
 
 				for (User user : lstUser) {
 					DossierActionNextActiontoUser modelUser = new DossierActionNextActiontoUser();
