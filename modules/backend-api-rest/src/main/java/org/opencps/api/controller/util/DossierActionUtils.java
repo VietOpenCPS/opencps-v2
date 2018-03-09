@@ -91,7 +91,8 @@ public class DossierActionUtils {
 				model.setAssignUserId(assignUserId);
 				
 				model.setConfigNote(processAction.getConfigNote() );
-				<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
+				
+				List<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
 
 				for (User user : lstUser) {
 					DossierActionNextActiontoUser modelUser = new DossierActionNextActiontoUser();
