@@ -664,7 +664,7 @@ public class DossierActionsImpl implements DossierActions {
 		DossierAction dossierAction = null;
 
 		Dossier dossier = getDossier(groupId, dossierId, referenceUid);
-		_log.info("dossier: " + dossier);
+//		_log.info("dossier: " + dossier);
 
 		String applicantNote = _buildDossierNote(dossier, actionNote);
 		_log.info("applicantNote: " + applicantNote);
@@ -706,6 +706,9 @@ public class DossierActionsImpl implements DossierActions {
 			_log.info("PROCESS_ACTION_BY_CODE");
 
 			processAction = getProcessAction(groupId, dossierId, referenceUid, actionCode, serviceProcessId);
+			if (processAction != null) {
+				_log.info("processAction: "+processAction.getActionCode());
+			}
 		}
 
 		// Add paymentFile
