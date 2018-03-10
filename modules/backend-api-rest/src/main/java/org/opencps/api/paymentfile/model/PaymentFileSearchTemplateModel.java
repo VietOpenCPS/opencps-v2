@@ -134,8 +134,17 @@ public class PaymentFileSearchTemplateModel {
 	protected String invoiceNo;
 	protected String invoiceFileType;
 	protected Long invoiceFileSize;
+	public String getBriefNote() {
+		return briefNote;
+	}
 
-    /**
+	public void setBriefNote(String briefNote) {
+		this.briefNote = briefNote;
+	}
+
+	protected String briefNote;
+
+	/**
      * Gets the value of the serviceInfoId property.
      * 
      * @return
