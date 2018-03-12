@@ -163,8 +163,7 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 	private String _getUserActionName(String perConditionStr, long dossierId, String defaultName) {
 		String userActionName = StringPool.BLANK;
 		
-		if (perConditionStr.contains("payok")) {
-			
+
 			List<PaymentFile> paymentFiles = PaymentFileLocalServiceUtil.getByDossierId(dossierId);
 			
 			if (paymentFiles.size() > 0) {
@@ -181,9 +180,7 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 				}
 			}
 			
-		} else {
-			userActionName = defaultName;
-		}
+
 		
 		return userActionName;
 	}
