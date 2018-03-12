@@ -35,7 +35,7 @@ public class RegistrationUtils {
                 
                 createDate = APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP);
             }
-            model.setCreateDate(doc.get(Field.CREATE_DATE));
+            model.setCreateDate(createDate);
 			
             String modifiedDate = doc.get(Field.MODIFIED_DATE);
             if (Validator.isNotNull(modifiedDate)) {

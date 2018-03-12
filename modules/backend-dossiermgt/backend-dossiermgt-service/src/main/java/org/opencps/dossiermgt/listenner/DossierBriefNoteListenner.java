@@ -103,7 +103,8 @@ public class DossierBriefNoteListenner extends BaseModelListener<DossierFile> {
 		try {
 			long dossierId = model.getDossierId();
 			long groupId = model.getGroupId();
-	
+			_log.info("groupId: " + groupId);
+			_log.info("dossierId: " + dossierId);
 			ProcessOption option = null;
 			Dossier dossier = null;
 
@@ -126,8 +127,10 @@ public class DossierBriefNoteListenner extends BaseModelListener<DossierFile> {
 				if (processStepList != null && processStepList.size() > 0) {
 					for (ProcessStep processStep : processStepList) {
 						String briefNoteStep = processStep.getBriefNote();
+						_log.info("briefNoteStep: " + briefNoteStep);
 						if (Validator.isNotNull(briefNote)) {
 							briefNote = DossierContentGenerator.getBriefNote(groupId, dossierId, briefNoteStep);
+							_log.info("briefNote: " + briefNote);
 							break;
 						}
 					}
