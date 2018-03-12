@@ -97,7 +97,8 @@ import javax.xml.bind.annotation.XmlType;
 		"invoiceIssueNo",
 		"invoiceNo",
 		"invoiceFileType",
-		"invoiceFileSize"
+		"invoiceFileSize",
+		"briefNote"
 })
 public class PaymentFileSearchTemplateModel {
 

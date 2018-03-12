@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import org.opencps.datamgt.model.DictCollection;
@@ -669,7 +670,7 @@ public class DossierActionsImpl implements DossierActions {
 		Dossier dossier = getDossier(groupId, dossierId, referenceUid);
 //		_log.info("dossier: " + dossier);
 
-		String applicantNote = _buildDossierNote(dossier, actionNote);
+		String applicantNote = _buildDossierNote(dossier, actionNote, groupId);
 		_log.info("applicantNote: " + applicantNote);
 
 		dossier.setApplicantNote(applicantNote);
@@ -1629,23 +1630,48 @@ public class DossierActionsImpl implements DossierActions {
 		return result;
 	}
 
-	private String _buildDossierNote(Dossier dossier, String actionNote) {
+	private String _buildDossierNote(Dossier dossier, String actionNote, long groupId) {
 
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy hh:MM:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		String defaultTimezone = TimeZone.getDefault().getID();
+		sdf.setTimeZone(TimeZone.getTimeZone(defaultTimezone));
+		Date date = new Date();
+//		String strDate = sdf.format(date);
+//		_log.info("strDate: "+strDate);
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		String oldNote = dossier.getApplicantNote();
 
-		sb.append(oldNote);
-		if (Validator.isNotNull(actionNote)) {
+		if (Validator.isNotNull(oldNote) && oldNote.contains("<br>")) {
+			if (Validator.isNotNull(actionNote)) {
+				if (groupId != 55217) {
+					sb.append(oldNote);
+					sb.append("<br>");
+					sb.append("[" + sdf.format(date) + "]");
+					sb.append(": ");
+					sb.append(actionNote);
+				} else {
+					sb.append("[" + sdf.format(date) + "]");
+					sb.append(": ");
+					sb.append(actionNote);
+				}
+			}
+		} else if (Validator.isNotNull(actionNote)) {
 			sb.append("<br>");
-			sb.append("[" + sdf.format(new Date()) + "]");
-			sb.append(":");
+			sb.append("[" + sdf.format(date) + "]");
+			sb.append(": ");
 			sb.append(actionNote);
 		}
+//		sb.append(oldNote);
+//		if (Validator.isNotNull(actionNote)) {
+//			sb.append("<br>");
+//			sb.append("[" + sdf.format(dateConvert) + "]");
+//			sb.append(":");
+//			sb.append(actionNote);
+//		}
+			return sb.toString();
 
-		return sb.toString();
 	}
 
 	private boolean checkPermission(String status, String subStatus, long groupId, long userId) {
