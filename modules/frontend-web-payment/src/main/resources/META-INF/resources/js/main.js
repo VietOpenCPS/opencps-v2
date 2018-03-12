@@ -45,11 +45,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 					},
 					_initlistgroupFilter: function () {
+						var vm = this;
 						this.listgroupFilterItems = [
 							{
 								action: 'folder',
 								action_active: 'folder_open',
-								id: '1',
+								id: '0,1',
 								title: 'Xác nhận thanh toán',
 								active: true
 							},
@@ -66,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								title: 'Đã cấp hoá đơn điện tử'
 							}
 						];
-
+						vm.listgroupFilterselected = '0,1';
 					}
 				}
 			},
@@ -359,6 +360,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								start: vm.paymentListpage * 15 - 15,
 								end: vm.paymentListpage * 15,
 						};
+
 						
 						if (vm.listgroupFilterselected === 4){
 							// TODO
