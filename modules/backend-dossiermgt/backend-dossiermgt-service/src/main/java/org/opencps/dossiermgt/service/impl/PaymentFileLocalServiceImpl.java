@@ -545,12 +545,18 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		if (paymentFile != null) {
 
+			long userId = serviceContext.getUserId();
+
 			Date now = new Date();
 
 			paymentFile.setModifiedDate(now);
+			paymentFile.setUserId(userId);
 			// Parse String to Date
-			SimpleDateFormat format = new SimpleDateFormat("DD-MM-YYYY HH:MM:SS");
-			Date dateApproved = format.parse(approveDatetime);
+			Date dateApproved = null;
+			if (Validator.isNotNull(approveDatetime)) {
+				SimpleDateFormat format = new SimpleDateFormat("DD-MM-YYYY HH:MM:SS");
+				dateApproved = format.parse(approveDatetime);
+			}
 			paymentFile.setApproveDatetime(dateApproved);
 			paymentFile.setAccountUserName(accountUserName);
 			paymentFile.setGovAgencyTaxNo(govAgencyTaxNo);
