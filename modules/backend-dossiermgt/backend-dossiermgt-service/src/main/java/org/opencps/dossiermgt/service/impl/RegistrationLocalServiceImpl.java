@@ -157,7 +157,11 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		Registration model = registrationPersistence.fetchByPrimaryKey(registrationId);
 
 		model.setModifiedDate(now);
-		model.setSubmitting(true);
+		if (registrationState == 0) {
+			model.setSubmitting(false);
+		} else {
+			model.setSubmitting(true);
+		}
 		
 		if (Validator.isNotNull(applicantIdDate)) {
 			try {
