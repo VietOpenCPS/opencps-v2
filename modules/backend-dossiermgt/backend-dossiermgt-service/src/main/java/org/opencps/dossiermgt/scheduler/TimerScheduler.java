@@ -10,8 +10,10 @@ import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -128,12 +130,14 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 											+ perConditionStr);
 
 									if (checkPreCondition) {
+										
+										String userActionName = _getUserActionName(perConditionStr, dossier.getDossierId(), systemUser.getFullName());
 
 										// String subUsers = StringPool.BLANK;
 
 										dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
 												dossier.getReferenceUid(), processAction.getActionCode(),
-												processAction.getProcessActionId(), systemUser.getFullName(),
+												processAction.getProcessActionId(), userActionName,
 												processAction.getActionName(), processAction.getAssignUserId(),
 												systemUser.getUserId(), StringPool.BLANK, serviceContext);
 									}
@@ -154,6 +158,34 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 		}
 
+	}
+	
+	private String _getUserActionName(String perConditionStr, long dossierId, String defaultName) {
+		String userActionName = StringPool.BLANK;
+		
+		if (perConditionStr.contains("payok")) {
+			
+			List<PaymentFile> paymentFiles = PaymentFileLocalServiceUtil.getByDossierId(dossierId);
+			
+			if (paymentFiles.size() > 0) {
+				PaymentFile paymentFile = paymentFiles.get(0);
+				
+				long userId = paymentFile.getUserId();
+				
+				try {
+					userActionName = UserLocalServiceUtil.getUser(userId).getFullName();
+				} catch (Exception e) {
+					_log.info("DEFAULT_NAME");
+					
+					userActionName = defaultName;
+				}
+			}
+			
+		} else {
+			userActionName = defaultName;
+		}
+		
+		return userActionName;
 	}
 
 	@Activate
