@@ -22,7 +22,7 @@
 			
 			<div class="flex xs3 text-right">
 		
-				<v-btn flat class=" my-0 py-0 btn-border-left" color="grey darken-1" v-on:click.native="detailPage = !detailPage">
+				<v-btn flat class=" my-0 py-0 btn-border-left" color="grey darken-1" v-on:click.native="backToList()">
 					<v-icon class="mr-2">undo</v-icon>
 				Quay lại
 				</v-btn>
@@ -46,19 +46,23 @@
 					</v-flex>
 					
 					<v-flex xs12 >
-						<span class="text-bold">Số phiếu: </span> {{detailModel.keypayGoodCode}}
+						<span class="text-bold">Số phiếu: </span> {{detailModel.invoiceTemplateNo}}
 					</v-flex>
 					
 					<v-flex xs12 >
-						<span class="text-bold">Ngày lập phiếu: </span> {{detailModel.createDate | date}}
+						<span class="text-bold">Ngày lập phiếu: </span> {{detailModel.createDate }}
 					</v-flex>
 					
 				</v-layout>
 			
-			<div style="display: none;">
+			<div style="" v-if="detailModel.hasFile">
 				<object id="objectView2" data="" width="100%" height="100%">
 				<!--TODO: append iframe-->
+
 				</object>
+			</div>
+			<div v-else>
+				<div id="paymentPDFViewNotFound" class="text-center">Không tìm thấy file</div>
 			</div>
 		</div>
 	</div>
