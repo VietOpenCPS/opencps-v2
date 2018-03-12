@@ -213,8 +213,11 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				
 				Date submitDate = new Date();
 				
+				String strSubmitDate = object.getString(DossierTerm.SUBMIT_DATE);
+				_log.info("strSubmitDate: "+strSubmitDate);
 				try {
-					sdf.parse(object.getString(DossierTerm.SUBMIT_DATE));
+					submitDate = sdf.parse(object.getString(DossierTerm.SUBMIT_DATE));
+					_log.info("submitDate: "+submitDate);
 
 				} catch (Exception e) {
 					_log.info("SUBMITDATE_NOT_VALID");

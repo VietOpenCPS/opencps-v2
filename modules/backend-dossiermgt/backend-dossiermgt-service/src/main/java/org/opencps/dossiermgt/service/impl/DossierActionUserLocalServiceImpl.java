@@ -46,4 +46,8 @@ public class DossierActionUserLocalServiceImpl
 	public List<DossierActionUser> getListUser(long dossierActionId) {
 		return dossierActionUserPersistence.findByDID(dossierActionId);
 	}
+
+	public DossierActionUser getByDossierAndUser(long dossierActionId, long userId) {
+		return dossierActionUserPersistence.fetchByDID_UID(dossierActionId, userId);
+	}
 }
