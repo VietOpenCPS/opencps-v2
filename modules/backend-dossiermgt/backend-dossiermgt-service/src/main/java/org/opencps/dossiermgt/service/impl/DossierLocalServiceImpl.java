@@ -403,6 +403,130 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
+	public Dossier updateDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
+			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
+			String applicantIdType, String applicantIdNo, Date applicantIdDate, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String dossierNote,
+			String submissionNote, String applicantNote, String briefNote, String dossierNo, boolean submitting,
+			Date correctingDate, String dossierStatus, String dossierStatusText, String dossierSubStatus,
+			String dossierSubStatusText, long folderId, long dossierActionId, int viaPostal, String postalAddress,
+			String postalCityCode, String postalCityName, String postalTelNo, String password, boolean notification,
+			boolean online, String serverNo, Date submitDate, ServiceContext context) throws PortalException {
+
+		Date now = new Date();
+
+		long userId = context.getUserId();
+
+		User auditUser = userPersistence.fetchByPrimaryKey(userId);
+
+		validateUpdateDossier(groupId, dossierId, referenceUid, serviceCode, govAgencyCode, address, cityCode,
+				districtCode, wardCode, contactName, contactTelNo, contactEmail, dossierTemplateNo, dossierNote,
+				submissionNote, dossierNo, submitting, dossierStatusText, dossierSubStatusText, postalAddress,
+				postalCityCode, postalTelNo, serverNo);
+
+		Dossier dossier = null;
+
+		if (dossierId == 0) {
+			dossierId = counterLocalService.increment(Dossier.class.getName());
+
+			dossier = dossierPersistence.create(dossierId);
+
+			dossier.setCreateDate(now);
+			dossier.setModifiedDate(now);
+			dossier.setCompanyId(context.getCompanyId());
+			dossier.setGroupId(groupId);
+			dossier.setUserId(userId);
+			if (Validator.isNotNull(auditUser))
+				dossier.setUserName(auditUser.getFullName());
+
+			// Add extent fields
+			dossier.setReferenceUid(referenceUid);
+			dossier.setCounter(counter);
+			dossier.setServiceCode(serviceCode);
+			dossier.setServiceName(serviceName);
+			dossier.setGovAgencyCode(govAgencyCode);
+			dossier.setGovAgencyName(govAgencyName);
+			dossier.setDossierTemplateNo(dossierTemplateNo);
+
+			DossierTemplate dt = dossierTemplatePersistence.findByG_DT_TPLNO(groupId, dossierTemplateNo);
+
+			if (Validator.isNotNull(dt)) {
+				dossier.setDossierTemplateName(dt.getTemplateName());
+			}
+
+			dossier.setApplicantName(applicantName);
+			dossier.setApplicantIdType(applicantIdType);
+			dossier.setApplicantIdNo(applicantIdNo);
+			dossier.setApplicantIdDate(applicantIdDate);
+			dossier.setDossierNo(dossierNo);
+			dossier.setApplicantNote(applicantNote);
+			dossier.setBriefNote(briefNote);
+
+			dossier.setDossierStatus(dossierStatus);
+			dossier.setDossierStatusText(dossierStatusText);
+			dossier.setDossierSubStatus(dossierSubStatus);
+			dossier.setDossierSubStatusText(dossierSubStatusText);
+
+			dossier.setAddress(address);
+			dossier.setCityCode(cityCode);
+			dossier.setCityName(cityName);
+			dossier.setDistrictCode(districtCode);
+			dossier.setDistrictName(districtName);
+			dossier.setWardCode(wardCode);
+			dossier.setWardName(wardName);
+			dossier.setContactName(contactName);
+			dossier.setContactEmail(contactEmail);
+
+			dossier.setFolderId(folderId);
+			dossier.setDossierActionId(dossierActionId);
+			dossier.setViaPostal(viaPostal);
+			dossier.setPostalAddress(postalAddress);
+			dossier.setPostalCityCode(postalCityCode);
+			dossier.setPostalCityName(postalCityName);
+			dossier.setPostalTelNo(postalTelNo);
+			dossier.setPassword(password);
+			dossier.setNotification(notification);
+			dossier.setOnline(online);
+			dossier.setServerNo(serverNo);
+			dossier.setSubmitDate(submitDate);
+
+		} else {
+
+			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
+
+			dossier.setModifiedDate(now);
+
+			dossier.setApplicantName(applicantName);
+			dossier.setApplicantIdType(applicantIdType);
+			dossier.setApplicantIdNo(applicantIdNo);
+			dossier.setApplicantIdDate(applicantIdDate);
+			dossier.setAddress(address);
+			dossier.setCityCode(cityCode);
+			dossier.setCityName(cityName);
+			dossier.setDistrictCode(districtCode);
+			dossier.setDistrictName(districtName);
+			dossier.setWardCode(wardCode);
+			dossier.setWardName(wardName);
+			dossier.setContactName(contactName);
+			dossier.setContactEmail(contactEmail);
+			dossier.setViaPostal(viaPostal);
+			dossier.setPostalAddress(postalAddress);
+			dossier.setPostalCityCode(postalCityCode);
+			dossier.setPostalCityName(postalCityName);
+			dossier.setPostalTelNo(postalTelNo);
+			dossier.setApplicantNote(applicantNote);
+			dossier.setNotification(notification);
+
+		}
+
+		dossierPersistence.update(dossier);
+
+		return dossier;
+	}
+
+
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier submitting(long groupId, long id, String refId, ServiceContext context) throws PortalException {
 
 		validateSubmitting(groupId, id, refId);

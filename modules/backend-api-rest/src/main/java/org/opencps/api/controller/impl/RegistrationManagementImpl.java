@@ -218,7 +218,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 					input.getContactEmail(), input.getGovAgencyCode(), input.getGovAgencyName(),
 					input.getRegistrationState(), input.getRegistrationClass(), serviceContext);
 
-			RegistrationDetailModel result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
+			RegistrationDetailResultModel result = RegistrationUtils.mappingToRegistrationDetailResultModel(registration);
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {

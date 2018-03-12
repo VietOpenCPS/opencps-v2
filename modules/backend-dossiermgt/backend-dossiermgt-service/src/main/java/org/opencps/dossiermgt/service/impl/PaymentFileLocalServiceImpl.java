@@ -438,7 +438,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setConfirmNote(confirmNote);
 			paymentFile.setPaymentMethod(paymentMethod);
 			paymentFile.setConfirmPayload(confirmPayload);
-			paymentFile.setPaymentStatus(2);
+			paymentFile.setPaymentStatus(1);
 			paymentFile.setIsNew(true);
 		}
 

@@ -299,11 +299,12 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			
 			if (dossierFile.getRemoved()) {
 				
+			} else {
+				
 			}
 			
 			// TODO add case update file
 			String endPointSyncDossierFile = "dossiers/" + refId + "/files";
-
 
 			properties.put("referenceUid", dossierFile.getReferenceUid());
 			properties.put("dossierTemplateNo", dossierFile.getDossierTemplateNo());

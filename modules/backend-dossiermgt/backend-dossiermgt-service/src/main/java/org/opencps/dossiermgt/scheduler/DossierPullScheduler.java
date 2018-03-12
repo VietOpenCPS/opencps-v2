@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -118,40 +119,9 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					.createJSONObject(resDossierSearch.getString(RESTFulConfiguration.MESSAGE));
 
 			JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
-			/*
+
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject object = array.getJSONObject(i);
-
-				long dossierId = object.getLong(DossierTerm.DOSSIER_ID);
-
-				Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-
-				if (Validator.isNotNull(dossier)) {
-					
-					//TODO: review
-					
-					dossier.setSubmitting(false);
-
-					DossierLocalServiceUtil.updateDossier(dossier);
-				}
-			}
-*/
-			for (int i = 0; i < array.length(); i++) {
-				JSONObject object = array.getJSONObject(i);
-
-				/*
-				 * long dossierId = object.getLong(DossierTerm.DOSSIER_ID);
-				 * 
-				 * Dossier dossier =
-				 * DossierLocalServiceUtil.fetchDossier(dossierId);
-				 * 
-				 * 
-				 * if (Validator.isNotNull(dossier)) {
-				 * dossier.setSubmitting(false);
-				 * 
-				 * DossierLocalServiceUtil.updateDossier(dossier); }
-				 */
-
 				try {
 					pullDossier(company, object, systemUser);
 				} catch (Exception e) {
@@ -169,13 +139,6 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 	private void pullDossier(Company company, JSONObject object, User systemUser) throws PortalException {
 		long dossierId = GetterUtil.getLong(object.get(DossierTerm.DOSSIER_ID));
 
-/*		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-
-		if (Validator.isNotNull(dossier)) {
-			dossier.setSubmitting(false);
-
-			DossierLocalServiceUtil.updateDossier(dossier);
-		}*/
 
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(company.getCompanyId());
@@ -245,7 +208,21 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 				_log.info("CREATE DOSSIER PULL");
 				long desGroupId = syncServiceProcess.getGroupId();
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+				
+				Date submitDate = new Date();
+				
+				String strSubmitDate = object.getString(DossierTerm.SUBMIT_DATE);
+				_log.info("strSubmitDate: "+strSubmitDate);
+				try {
+					submitDate = sdf.parse(object.getString(DossierTerm.SUBMIT_DATE));
+					_log.info("submitDate: "+submitDate);
 
+				} catch (Exception e) {
+					_log.info("SUBMITDATE_NOT_VALID");
+				}
+				
 				desDossier = DossierLocalServiceUtil.updateDossier(desGroupId, 0l, referenceUid,
 						object.getInt(DossierTerm.COUNTER), object.getString(DossierTerm.SERVICE_CODE),
 						object.getString(DossierTerm.SERVICE_NAME), govAgencyCode,
@@ -270,8 +247,9 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 						object.getString(DossierTerm.POSTAL_CITY_CODE), object.getString(DossierTerm.POSTAL_CITY_NAME),
 						object.getString(DossierTerm.POSTAL_TEL_NO), object.getString(DossierTerm.PASSWORD),
 						object.getBoolean(DossierTerm.NOTIFICATION), object.getBoolean(DossierTerm.ONLINE),
-						object.getString(DossierTerm.SERVER_NO), serviceContext);
-
+						object.getString(DossierTerm.SERVER_NO),submitDate, serviceContext);
+				
+				
 				// TODO add sync DOSSIERFILE and PAYMENTFILE
 
 				List<JSONObject> lsFileSync = new ArrayList<>();

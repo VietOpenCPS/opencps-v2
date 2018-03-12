@@ -106,7 +106,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 			new String[] { String.class.getName() },
 			DictItemModelImpl.UUID_COLUMN_BITMASK |
-			DictItemModelImpl.TREEINDEX_COLUMN_BITMASK);
+			DictItemModelImpl.SIBLING_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_UUID = new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
 			DictItemModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
@@ -905,7 +905,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			new String[] { String.class.getName(), Long.class.getName() },
 			DictItemModelImpl.UUID_COLUMN_BITMASK |
 			DictItemModelImpl.COMPANYID_COLUMN_BITMASK |
-			DictItemModelImpl.TREEINDEX_COLUMN_BITMASK);
+			DictItemModelImpl.SIBLING_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_UUID_C = new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
 			DictItemModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
@@ -1491,7 +1491,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 			"findByF_dictCollectionId", new String[] { Long.class.getName() },
 			DictItemModelImpl.DICTCOLLECTIONID_COLUMN_BITMASK |
-			DictItemModelImpl.TREEINDEX_COLUMN_BITMASK);
+			DictItemModelImpl.SIBLING_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_F_DICTCOLLECTIONID = new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
 			DictItemModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
@@ -2272,7 +2272,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			new String[] { Long.class.getName(), Long.class.getName() },
 			DictItemModelImpl.DICTCOLLECTIONID_COLUMN_BITMASK |
 			DictItemModelImpl.GROUPID_COLUMN_BITMASK |
-			DictItemModelImpl.TREEINDEX_COLUMN_BITMASK);
+			DictItemModelImpl.SIBLING_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_F_DICTITEMBYGROUP = new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
 			DictItemModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
@@ -3126,7 +3126,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByF_parentItemId",
 			new String[] { Long.class.getName() },
 			DictItemModelImpl.PARENTITEMID_COLUMN_BITMASK |
-			DictItemModelImpl.TREEINDEX_COLUMN_BITMASK);
+			DictItemModelImpl.SIBLING_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_F_PARENTITEMID = new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
 			DictItemModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_parentItemId",
@@ -3647,7 +3647,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			DictItemModelImpl.DICTCOLLECTIONID_COLUMN_BITMASK |
 			DictItemModelImpl.PARENTITEMID_COLUMN_BITMASK |
 			DictItemModelImpl.LEVEL_COLUMN_BITMASK |
-			DictItemModelImpl.TREEINDEX_COLUMN_BITMASK);
+			DictItemModelImpl.SIBLING_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_F_PARENTITEMID_LEVEL = new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
 			DictItemModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
@@ -5174,7 +5174,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			new String[] { Long.class.getName(), Long.class.getName() },
 			DictItemModelImpl.DICTCOLLECTIONID_COLUMN_BITMASK |
 			DictItemModelImpl.PARENTITEMID_COLUMN_BITMASK |
-			DictItemModelImpl.TREEINDEX_COLUMN_BITMASK);
+			DictItemModelImpl.SIBLING_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_F_DICTCOLLECTIONID_PARENTITEMID =
 		new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
 			DictItemModelImpl.FINDER_CACHE_ENABLED, Long.class,

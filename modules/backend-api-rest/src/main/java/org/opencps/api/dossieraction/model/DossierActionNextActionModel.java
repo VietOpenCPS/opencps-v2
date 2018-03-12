@@ -59,7 +59,8 @@ import javax.xml.bind.annotation.XmlType;
     "createFiles",
     "createDossierNo",
     "eSignature",
-    "pending"
+    "pending",
+    "configNote"
 })
 public class DossierActionNextActionModel {
 
@@ -77,7 +78,15 @@ public class DossierActionNextActionModel {
     protected List<DossierActionNextActioncreateFiles> createFiles;
     protected Boolean createDossierNo;
     protected Boolean eSignature;
-    
+    public String getConfigNote() {
+		return configNote;
+	}
+
+	public void setConfigNote(String configNote) {
+		this.configNote = configNote;
+	}
+
+	protected String configNote;
     
     /**
      * Gets the value of the pending property.
