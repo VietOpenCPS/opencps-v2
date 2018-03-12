@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							{
 								action: 'folder',
 								action_active: 'folder_open',
-								id: '0',
+								id: '1',
 								title: 'Xác nhận thanh toán',
 								active: true
 							},
