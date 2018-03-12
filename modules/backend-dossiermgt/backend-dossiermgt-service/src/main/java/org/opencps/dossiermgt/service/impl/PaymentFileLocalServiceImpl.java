@@ -185,11 +185,19 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		}
 
 		if (Validator.isNotNull(status)) {
-			MultiMatchQuery query = new MultiMatchQuery(status);
+			String[] sliptStatus = status.split(StringPool.COMMA);
+			for (String strStatus : sliptStatus) {
+				if (Validator.isNotNull(strStatus)) {
 
-			query.addFields(PaymentFileTerm.PAYMENT_STATUS);
+					MultiMatchQuery query = new MultiMatchQuery(strStatus);
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+					query.addFields(PaymentFileTerm.PAYMENT_STATUS);
+					booleanQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+			}
+			// MultiMatchQuery query = new MultiMatchQuery(status);
+			// query.addFields(PaymentFileTerm.PAYMENT_STATUS);
+			// booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(isNew) && Boolean.parseBoolean(isNew)) {
