@@ -359,8 +359,6 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 					message.put("formData", formData);
 					
-					_log.info("formREPORT"+ formReport);
-					_log.info("formDATA"+ formData);
 
 					message.setResponseId(String.valueOf(dossier.getPrimaryKeyObj()));
 					message.setResponseDestinationName("jasper/engine/preview/callback");
@@ -435,7 +433,9 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 	private String _getFormData(long groupId, String fileTemplateNo, long dossierId, boolean autoRun,
 			String dossierTemplateNo) {
-
+		
+		_log.info("CHAY VAO PhAN GET_ FORMDATA");
+		
 		String formData = StringPool.BLANK;
 
 		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
@@ -450,25 +450,29 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 			DossierFileActions actions = new DossierFileActionsImpl();
 
+			DossierPart dossierPart = DossierPartLocalServiceUtil.getByFileTemplateNo(groupId, fileTemplateNo);
+
+			formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext);
+
 			if (Validator.isNull(dossierFile)) {
-				DossierPart dossierPart = DossierPartLocalServiceUtil.getByFileTemplateNo(groupId, fileTemplateNo);
-
-				formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext);
-
+				
+				_log.info("DOSSIER_FILE_NULL");
+				
 				if (autoRun) {
 					// create DossierFile
-
 
 					dossierFile = actions.addDossierFile(groupId, dossierId, PortalUUIDUtil.generate(), dossierTemplateNo,
 							dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(), StringPool.BLANK, 0L,
 							null, StringPool.BLANK, String.valueOf(false), serviceContext);
+					
+					_log.info("UPDATED DOSSIERFILE");
 					
 					actions.updateDossierFileFormData(groupId, dossierId, dossierFile.getReferenceUid(), formData, serviceContext);
 
 				}
 
 			} else {
-				formData = dossierFile.getFormData();
+				//formData = dossierFile.getFormData();
 				
 				actions.updateDossierFileFormData(groupId, dossierId, dossierFile.getReferenceUid(), formData, serviceContext);
 
