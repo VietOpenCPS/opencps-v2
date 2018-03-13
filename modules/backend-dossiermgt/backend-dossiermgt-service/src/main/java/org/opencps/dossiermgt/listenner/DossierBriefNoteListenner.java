@@ -103,22 +103,22 @@ public class DossierBriefNoteListenner extends BaseModelListener<DossierFile> {
 		try {
 			long dossierId = model.getDossierId();
 			long groupId = model.getGroupId();
-			_log.info("groupId: " + groupId);
-			_log.info("dossierId: " + dossierId);
+//			_log.info("groupId: " + groupId);
+//			_log.info("dossierId: " + dossierId);
 			ProcessOption option = null;
 			Dossier dossier = null;
 
 			if (Validator.isNotNull(dossierId)) {
 				dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 			}
-			_log.info("dossier.getServiceCode(): " + dossier.getServiceCode());
-			_log.info("dossier.getGovAgencyCode(): " + dossier.getGovAgencyCode());
-			_log.info("dossier.getDossierTemplateNo(): " + dossier.getDossierTemplateNo());
+//			_log.info("dossier.getServiceCode(): " + dossier.getServiceCode());
+//			_log.info("dossier.getGovAgencyCode(): " + dossier.getGovAgencyCode());
+//			_log.info("dossier.getDossierTemplateNo(): " + dossier.getDossierTemplateNo());
 			option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 					dossier.getDossierTemplateNo(), groupId);
 
 			long serviceProcessId = option.getServiceProcessId();
-			_log.info("serviceProcessId: " + serviceProcessId);
+//			_log.info("serviceProcessId: " + serviceProcessId);
 			
 			String briefNote = StringPool.BLANK;
 			if (Validator.isNotNull(serviceProcessId)) {
@@ -127,10 +127,10 @@ public class DossierBriefNoteListenner extends BaseModelListener<DossierFile> {
 				if (processStepList != null && processStepList.size() > 0) {
 					for (ProcessStep processStep : processStepList) {
 						String briefNoteStep = processStep.getBriefNote();
-						_log.info("briefNoteStep: " + briefNoteStep);
-						if (Validator.isNotNull(briefNote)) {
+//						_log.info("briefNoteStep: " + briefNoteStep);
+						if (Validator.isNotNull(briefNoteStep)) {
 							briefNote = DossierContentGenerator.getBriefNote(groupId, dossierId, briefNoteStep);
-							_log.info("briefNote: " + briefNote);
+//							_log.info("briefNote: " + briefNote);
 							break;
 						}
 					}
