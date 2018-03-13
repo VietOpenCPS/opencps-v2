@@ -967,7 +967,10 @@ public class DossierActionsImpl implements DossierActions {
 
 		for (ProcessPlugin plg : autoPlugins) {
 			// do create file
-			String fileTemplateNo = plg.getPluginForm();
+			String fileTemplateNo = plg.getSampleData();
+			
+			fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
+
 			
 			_doAutoRun(groupId, fileTemplateNo, dossierId, dossier.getDossierTemplateNo());
 		}
