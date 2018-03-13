@@ -972,7 +972,7 @@ public class DossierActionsImpl implements DossierActions {
 			fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
 
 			
-			_doAutoRun(groupId, fileTemplateNo, dossierId, dossier.getDossierTemplateNo());
+			_doAutoRun(groupId, fileTemplateNo, dossierId, dossier.getDossierTemplateNo(), context);
 		}
 
 		_log.info("END DO ACTION ==========");
@@ -980,13 +980,12 @@ public class DossierActionsImpl implements DossierActions {
 	}
 
 	private void _doAutoRun(long groupId, String fileTemplateNo, long dossierId,
-			String dossierTemplateNo) {
+			String dossierTemplateNo, ServiceContext context) {
 
 		String formData = StringPool.BLANK;
 
 		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
 
-		ServiceContext serviceContext = new ServiceContext();
 
 		try {
 			// Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
@@ -996,7 +995,7 @@ public class DossierActionsImpl implements DossierActions {
 
 			DossierPart dossierPart = DossierPartLocalServiceUtil.getByFileTemplateNo(groupId, fileTemplateNo);
 
-			formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext);
+			formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, context);
 
 			if (Validator.isNull(dossierFile)) {
 
@@ -1004,14 +1003,13 @@ public class DossierActionsImpl implements DossierActions {
 
 				dossierFile = actions.addDossierFile(groupId, dossierId, PortalUUIDUtil.generate(), dossierTemplateNo,
 						dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(), StringPool.BLANK, 0L, null,
-						StringPool.BLANK, String.valueOf(false), serviceContext);
+						StringPool.BLANK, String.valueOf(false), context);
 			}
 			
-
 			
 			DossierFileActions actions = new DossierFileActionsImpl();
 
-			actions.updateDossierFileFormData(groupId, dossierId, dossierFile.getReferenceUid(), formData, serviceContext);
+			actions.updateDossierFileFormData(groupId, dossierId, dossierFile.getReferenceUid(), formData, context);
 
 		} catch (Exception e) {
 			_log.info("Cant get formdata with fileTemplateNo_" + fileTemplateNo);
