@@ -441,6 +441,9 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
 
 		ServiceContext serviceContext = new ServiceContext();
+		
+		//TODO need review again
+		serviceContext.setUserId(20164);
 
 		try {
 			// Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);

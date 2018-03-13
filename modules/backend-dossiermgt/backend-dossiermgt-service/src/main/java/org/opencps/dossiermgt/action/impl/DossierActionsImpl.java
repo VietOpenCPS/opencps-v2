@@ -1004,12 +1004,11 @@ public class DossierActionsImpl implements DossierActions {
 						StringPool.BLANK, String.valueOf(false), serviceContext);
 			}
 			
-			dossierFile.setFormData(formData);
-			//dossierFile.setFormSchema(dossierPart.);
-			dossierFile.setFormReport(dossierPart.getFormReport());
-			//dossierFile.setFormScript();
+
 			
-			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+			DossierFileActions actions = new DossierFileActionsImpl();
+
+			actions.updateDossierFileFormData(groupId, dossierId, dossierFile.getReferenceUid(), formData, serviceContext);
 
 		} catch (Exception e) {
 			_log.info("Cant get formdata with fileTemplateNo_" + fileTemplateNo);
