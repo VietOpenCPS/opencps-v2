@@ -448,6 +448,8 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
 					fileTemplateNo, false, new DossierFileComparator(false, "createDate", Date.class));
 
+			DossierFileActions actions = new DossierFileActionsImpl();
+
 			if (Validator.isNull(dossierFile)) {
 				DossierPart dossierPart = DossierPartLocalServiceUtil.getByFileTemplateNo(groupId, fileTemplateNo);
 
@@ -456,7 +458,6 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 				if (autoRun) {
 					// create DossierFile
 
-					DossierFileActions actions = new DossierFileActionsImpl();
 
 					dossierFile = actions.addDossierFile(groupId, dossierId, PortalUUIDUtil.generate(), dossierTemplateNo,
 							dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(), StringPool.BLANK, 0L,
@@ -468,6 +469,9 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 			} else {
 				formData = dossierFile.getFormData();
+				
+				actions.updateDossierFileFormData(groupId, dossierId, dossierFile.getReferenceUid(), formData, serviceContext);
+
 			}
 
 		} catch (Exception e) {
