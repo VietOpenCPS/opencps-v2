@@ -76,7 +76,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 	private final String baseUrl = "http://localhost:8080/o/rest/v2/";
 	private final String username = "test@liferay.com";
 	private final String password = "test";
-	private final String serectKey = "OPENCPSV2";
+	//private final String serectKey = "OPENCPSV2";
 
 	@Override
 	public Response getDossierSyncs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,

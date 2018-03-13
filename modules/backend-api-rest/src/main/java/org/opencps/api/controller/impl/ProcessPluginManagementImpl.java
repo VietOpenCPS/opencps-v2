@@ -458,9 +458,11 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 					DossierFileActions actions = new DossierFileActionsImpl();
 
-					actions.addDossierFile(groupId, dossierId, PortalUUIDUtil.generate(), dossierTemplateNo,
+					dossierFile = actions.addDossierFile(groupId, dossierId, PortalUUIDUtil.generate(), dossierTemplateNo,
 							dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(), StringPool.BLANK, 0L,
 							null, StringPool.BLANK, String.valueOf(false), serviceContext);
+					
+					actions.updateDossierFileFormData(groupId, dossierId, dossierFile.getReferenceUid(), formData, serviceContext);
 
 				}
 
