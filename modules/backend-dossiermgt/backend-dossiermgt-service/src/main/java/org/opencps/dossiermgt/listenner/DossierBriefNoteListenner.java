@@ -29,61 +29,6 @@ import com.liferay.portal.kernel.util.Validator;
 public class DossierBriefNoteListenner extends BaseModelListener<DossierFile> {
 
 	@Override
-	public void onBeforeCreate(DossierFile model) throws ModelListenerException {
-		_log.info("Before Created........... ==> " + model.getDossierFileId());
-	}
-
-	@Override
-	public void onAfterCreate(DossierFile model) throws ModelListenerException {
-		_log.info("Create DossierBriefNote........... ");
-
-		ServiceContext serviceContext = new ServiceContext();
-		serviceContext.setCompanyId(model.getCompanyId());
-		serviceContext.setUserId(model.getUserId());
-		
-		try {
-			long dossierId = model.getDossierId();
-			long groupId = model.getGroupId();
-	
-			ProcessOption option = null;
-			Dossier dossier = null;
-
-			if (Validator.isNotNull(dossierId)) {
-				dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-			}
-			_log.info("dossier.getServiceCode(): " + dossier.getServiceCode());
-			_log.info("dossier.getGovAgencyCode(): " + dossier.getGovAgencyCode());
-			_log.info("dossier.getDossierTemplateNo(): " + dossier.getDossierTemplateNo());
-			option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
-					dossier.getDossierTemplateNo(), groupId);
-
-			long serviceProcessId = option.getServiceProcessId();
-			_log.info("serviceProcessId: " + serviceProcessId);
-			
-			String briefNote = StringPool.BLANK;
-			if (Validator.isNotNull(serviceProcessId)) {
-				List<ProcessStep> processStepList = ProcessStepLocalServiceUtil
-						.getProcessStepbyServiceProcessId(serviceProcessId);
-				if (processStepList != null && processStepList.size() > 0) {
-					for (ProcessStep processStep : processStepList) {
-						String briefNoteStep = processStep.getBriefNote();
-						if (Validator.isNotNull(briefNote)) {
-							briefNote = DossierContentGenerator.getBriefNote(groupId, dossierId, briefNoteStep);
-							break;
-						}
-					}
-				}
-			}
-	
-			if (Validator.isNotNull(briefNote)) {
-				DossierLocalServiceUtil.updateDossierBriefNote(dossierId, briefNote);
-			}
-		} catch (PortalException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
 	public void onBeforeUpdate(DossierFile model) throws ModelListenerException {
 		try {
 			modelBeforeUpdate = DossierFileLocalServiceUtil.fetchDossierFile(model.getPrimaryKey());
