@@ -152,4 +152,12 @@ public interface EmployeeManagement {
 			@DefaultValue(StringPool.BLANK) @PathParam("employeeNo") String employeeNo, 
 			@DefaultValue(StringPool.BLANK) @PathParam("email") String email);
 
+	// Get employee follow inspectors
+	@GET
+	@Path("/role/{roleId}")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getEmployeesByRole(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("roleId") long roleId, @BeanParam DataSearchModel query);
 }
