@@ -30,6 +30,8 @@ import org.opencps.dossiermgt.service.base.PaymentFileLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -433,6 +435,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 	}
 
+	Log _log = LogFactoryUtil.getLog(PaymentFileLocalServiceImpl.class.getName());
 	/**
 	 * update payment File Confirm
 	 * 
@@ -445,6 +448,9 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			throws PortalException, SystemException {
 
 		PaymentFile paymentFile = paymentFilePersistence.fetchByD_RUID(dossierId, referenceUid);
+		
+		_log.info("paymentMethod: "+paymentMethod);
+		_log.info("confirmPayload: "+confirmPayload);
 
 		if (paymentFile != null) {
 
@@ -454,7 +460,11 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setConfirmNote(confirmNote);
 			paymentFile.setPaymentMethod(paymentMethod);
 			paymentFile.setConfirmPayload(confirmPayload);
-			paymentFile.setPaymentStatus(1);
+			if (Validator.isNotNull(paymentMethod) && paymentMethod.equals("N\u1ED9p online")) {
+				paymentFile.setPaymentStatus(2);
+			} else {
+				paymentFile.setPaymentStatus(1);
+			}
 			paymentFile.setIsNew(true);
 		}
 
