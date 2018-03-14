@@ -22,7 +22,6 @@ import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -74,97 +73,88 @@ public class SignatureManagementImpl implements SignatureManagement{
 			throw new UnauthenticationException();
 		}
 
-		String sign = input.getSign();
-		String signFieldName = input.getSignFieldName();
-		String fileName = input.getFileName();
-		_log.info("sign: "+sign);
-		_log.info("signFieldName: "+signFieldName);
-		_log.info("fileName: "+fileName);
-		String actionCode = input.getActionCode();
-		String actionUser = input.getActionUser();
-		String actionNote = input.getActionNote();
-		long assignUserId = Long.valueOf(input.getAssignUserId());
-		String subUsers = input.getSubUsers();
-		_log.info("actionCode: "+actionCode);
-		_log.info("actionUser: "+actionUser);
-		_log.info("actionNote: "+actionNote);
-		_log.info("assignUserId: "+assignUserId);
-		_log.info("subUsers: "+subUsers);
-
-		JSONObject signatureCompleted = callSignatureSync(groupId, user, id, sign, signFieldName, fileName, serviceContext);
-
+		long fileEntryId = Long.valueOf(input.getFileEntryId());
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-
-		if (signatureCompleted.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
-			long fileEntryId = Long.valueOf(input.getFileEntryId());
-			_log.info("fileEntryId: "+fileEntryId);
-			String message = signatureCompleted.getString(RESTFulConfiguration.MESSAGE);
-//			_log.info("message: "+message);
-			JSONObject jsonData = JSONFactoryUtil.createJSONObject(message);
-//			_log.info("jsonData: "+jsonData.toJSONString());
-//			String fullPath = String.valueOf(jsonData.get("fullPath"));
-//			_log.info("fullPath: "+fullPath);
-			String signedFilePath = jsonData.getString("signedFile");
-			File fileSigned = new File(signedFilePath);
-//			_log.info("TEST long file: "+fileSigned.length());
-//			_log.info("TEST file sign: "+fileSigned.lastModified());
-//			long modifiedLong = fileSigned.lastModified();
-//			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-//			_log.info("TEST file modifiedDate: "+sdf.format(modifiedLong));
-//			_log.info("fileSigned Path: "+fileSigned.getAbsolutePath());
-//			_log.info("fileSigned Name: "+fileSigned.getName());
-			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
-//			_log.info("dlFileEntry: "+dlFileEntry.getFileName());
-
-//			_log.info("user.getUserId(): "+user.getUserId());
-//			_log.info("dlFileEntry.getFileEntryId(): "+dlFileEntry.getFileEntryId());
-//			_log.info("dlFileEntry.getTitle(): "+dlFileEntry.getTitle());
-//			_log.info("dlFileEntry.getMimeType(): "+dlFileEntry.getMimeType());
-//			_log.info("dlFileEntry.getTitle(): "+dlFileEntry.getTitle());
-//			_log.info("dlFileEntry.getDescription(): "+dlFileEntry.getDescription());
-//			serviceContext = new ServiceContext();
-//			serviceContext.setAddGroupPermissions(true);
-//			serviceContext.setAddGuestPermissions(true);
-			DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
-					dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
-					StringPool.BLANK, true, fileSigned, serviceContext);
+		if (fileEntryId > 0) {
+			String sign = input.getSign();
+			String signFieldName = input.getSignFieldName();
+			String fileName = input.getFileName();
+//			_log.info("sign: "+sign);
+//			_log.info("signFieldName: "+signFieldName);
+//			_log.info("fileName: "+fileName);
+			String actionCode = input.getActionCode();
+			String actionUser = input.getActionUser();
+			String actionNote = input.getActionNote();
+			long assignUserId = Long.valueOf(input.getAssignUserId());
+			String subUsers = input.getSubUsers();
+//			_log.info("actionCode: "+actionCode);
+//			_log.info("actionUser: "+actionUser);
+//			_log.info("actionNote: "+actionNote);
+//			_log.info("assignUserId: "+assignUserId);
+//			_log.info("subUsers: "+subUsers);
+	
+			JSONObject signatureCompleted = callSignatureSync(groupId, user, id, sign, signFieldName, fileName,
+					serviceContext);
+	
+			if (signatureCompleted.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
+	//			long fileEntryId = Long.valueOf(input.getFileEntryId());
+				_log.info("fileEntryId: "+fileEntryId);
+				String message = signatureCompleted.getString(RESTFulConfiguration.MESSAGE);
+	//			_log.info("message: "+message);
+				JSONObject jsonData = JSONFactoryUtil.createJSONObject(message);
+	//			_log.info("jsonData: "+jsonData.toJSONString());
+	//			String fullPath = String.valueOf(jsonData.get("fullPath"));
+	//			_log.info("fullPath: "+fullPath);
+				String signedFilePath = jsonData.getString("signedFile");
+				File fileSigned = new File(signedFilePath);
+	//			_log.info("TEST long file: "+fileSigned.length());
+	//			_log.info("TEST file sign: "+fileSigned.lastModified());
+	//			long modifiedLong = fileSigned.lastModified();
+	//			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+	//			_log.info("TEST file modifiedDate: "+sdf.format(modifiedLong));
+	//			_log.info("fileSigned Path: "+fileSigned.getAbsolutePath());
+	//			_log.info("fileSigned Name: "+fileSigned.getName());
+				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
+	//			_log.info("dlFileEntry: "+dlFileEntry.getFileName());
+	
+				DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
+						dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
+						StringPool.BLANK, true, fileSigned, serviceContext);
 			
-			//Next action
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-			if (dossier != null) {
-				_log.info("dossierId: "+dossier.getDossierId());
-				_log.info("ReferenceId: "+dossier.getReferenceUid());
-				_log.info("actionCode: "+actionCode);
-				_log.info("actionUser: "+actionUser);
-				_log.info("actionNote: "+actionNote);
-				_log.info("assignUserId: "+assignUserId);
-				_log.info("subUsers: "+subUsers);
-				DossierActions dossierAction = new DossierActionsImpl();
-				if (TYPE_KYSO.contains(actionCode)) {
-					dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
-							0L, actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
-							serviceContext);
-				} else if(TYPE_DONGDAU.contains(actionCode)) {
-					ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
-							dossier.getDossierTemplateNo(), groupId);
-
-					ProcessAction action = getProcessAction(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
-							input.getActionCode(), option.getServiceProcessId());
-
-					dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
-							action.getProcessActionId(), actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
-							serviceContext);
-				} else {
-					//TODO
+				//Next action
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				if (dossier != null) {
+//					_log.info("dossierId: "+dossier.getDossierId());
+//					_log.info("ReferenceId: "+dossier.getReferenceUid());
+//					_log.info("actionCode: "+actionCode);
+//					_log.info("actionUser: "+actionUser);
+//					_log.info("actionNote: "+actionNote);
+//					_log.info("assignUserId: "+assignUserId);
+//					_log.info("subUsers: "+subUsers);
+					DossierActions dossierAction = new DossierActionsImpl();
+					if (TYPE_KYSO.contains(actionCode)) {
+						dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
+								0L, actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
+								serviceContext);
+					} else if(TYPE_DONGDAU.contains(actionCode)) {
+						ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
+								dossier.getDossierTemplateNo(), groupId);
+	
+						ProcessAction action = getProcessAction(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
+								input.getActionCode(), option.getServiceProcessId());
+	
+						dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
+								action.getProcessActionId(), actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
+								serviceContext);
+					} else {
+						//TODO
+					}
+					// Process success
+					result.put("msg", "success");
 				}
-//				dossierAction.doAction(groupId, dossierId,
-//						dossier.getReferenceUid(), input.getActionCode(), action.getProcessActionId(),
-//						input.getActionUser(), input.getActionNote(), input.getAssignUserId(), user.getUserId(), subUsers,
-//						serviceContext);
-				// Process success
-				result.put("msg", "success");
 			}
-
+		} else {
+			result.put("msg", "fileEntryId");
 		}
 
 		return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
@@ -212,12 +202,13 @@ public class SignatureManagementImpl implements SignatureManagement{
 			}
 
 			String strIdArr = input.getStrIdArr();
-			_log.info("array Id: "+strIdArr);
+//			_log.info("array Id: "+strIdArr);
 
 			String[] idSplit = strIdArr.split(StringPool.SEMICOLON);
 //			_log.info("idSplit Id: "+idSplit);
 
 			JSONObject hashComputed = null;
+			JSONObject results = null;
 			for (String strId : idSplit) {
 				String[] idArr = strId.split(StringPool.COMMA);
 				DossierPart dossierPart = DossierPartLocalServiceUtil.fetchDossierPart(Long.valueOf(idArr[1]));
@@ -228,18 +219,23 @@ public class SignatureManagementImpl implements SignatureManagement{
 //					_log.info("Dossier File: "+dossierFile);
 					if (dossierFile != null && dossierFile.getFileEntryId() > 0) {
 						long fileEntryId = dossierFile.getFileEntryId();
-						_log.info("fileEntryId: "+fileEntryId);
+//						_log.info("fileEntryId: "+fileEntryId);
 
 						hashComputed = callHashComputedSync(groupId, user, fileEntryId, input.getActionCode(),
 								input.getPostStepCode(), serviceContext);
-						_log.info("hashComputed: "+hashComputed);
-						break;
+//						_log.info("hashComputed: "+hashComputed);
+						results = JSONFactoryUtil.createJSONObject(hashComputed.getString(RESTFulConfiguration.MESSAGE));
+//						_log.info("results: "+results);
+					} else {
+						results = JSONFactoryUtil.createJSONObject();
+						results.put("msg", "fileEntryId");
 					}
+					break;
 				}
 			}
 
-			JSONObject results = JSONFactoryUtil.createJSONObject(hashComputed.getString(RESTFulConfiguration.MESSAGE));
-			_log.info("results: "+results);
+//			results = JSONFactoryUtil.createJSONObject(hashComputed.getString(RESTFulConfiguration.MESSAGE));
+//			_log.info("results: "+results);
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
