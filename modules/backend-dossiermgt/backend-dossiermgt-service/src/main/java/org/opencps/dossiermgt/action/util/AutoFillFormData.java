@@ -130,17 +130,18 @@ public class AutoFillFormData {
 				e1.printStackTrace();
 			}
 			
-			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), serviceContext.getUserId());
-			//JSONObject employeeJSON = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(employee));
+			try {
+				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), serviceContext.getUserId());
+				JSONObject employeeJSON = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(employee));
 
-/*				_employee_employeeNo = employeeJSON.getString("_employee_employeeNo");
-			_employee_fullName = employeeJSON.getString("_employee_fullName");
-			_employee_title = employeeJSON.getString("_employee_title");
-*/
-			_employee_employeeNo = employee.getEmployeeNo();
-			_employee_fullName = employee.getFullName();
-			_employee_title = employee.getTitle();
-			
+				_employee_employeeNo = employeeJSON.getString("_employee_employeeNo");
+				_employee_fullName = employeeJSON.getString("_employee_fullName");
+				_employee_title = employeeJSON.getString("_employee_title");
+				
+			} catch (Exception e) {
+				
+			}
+
 			// process sampleData
 			if (Validator.isNull(sampleData)) {
 				sampleData = "{}";
