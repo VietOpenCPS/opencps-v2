@@ -275,11 +275,11 @@ public class RegistrationUtils {
 							String xuongSX = formJson.getString("ten_xuong_san_xuat");
 							if (Validator.isNotNull(xuongSX)) {
 								xuongSXJson.put("ten_xuong_san_xuat", xuongSX);
+								data.put(xuongSXJson);
 							}
 						} catch (Exception e) {
 							// TODO: handle exception
 						}
-						data.put(xuongSXJson);
 					}
 				}
 			}
