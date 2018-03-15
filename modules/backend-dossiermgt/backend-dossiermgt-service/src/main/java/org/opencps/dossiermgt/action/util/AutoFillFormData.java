@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.action.util;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -67,6 +68,11 @@ public class AutoFillFormData {
 			String _applicantIdType = StringPool.BLANK;
 			String _applicantIdNo = StringPool.BLANK;
 			String _applicantIdDate = StringPool.BLANK;
+			String _curDate = StringPool.BLANK;
+			
+			SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			
+			_curDate = sfd.format(new Date());
 			
 			if (Validator.isNotNull(dossier)) {
 				_receiveDate = Validator.isNotNull(dossier.getReceiveDate())?dossier.getReceiveDate().toGMTString():StringPool.BLANK;
@@ -197,6 +203,8 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _applicantIdNo);
 					} else if (value.equals("_applicantIdDate")) {
 						jsonMap.put(entry.getKey(), _applicantIdDate);
+					}else if (value.equals("_curDate")) {
+						jsonMap.put(entry.getKey(), _curDate);
 					}
 
 				} else if (value.startsWith("_") && value.contains(":")) {
@@ -245,6 +253,8 @@ public class AutoFillFormData {
 							resultBinding += ", " + _applicantIdNo;
 						} else if (value.equals("_applicantIdDate")) {
 							resultBinding += ", " + _applicantIdDate;
+						} else if (value.equals("_curDate")) {
+							resultBinding += ", " + _curDate;
 						}
 					}
 
