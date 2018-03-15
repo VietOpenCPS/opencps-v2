@@ -87,7 +87,7 @@ public class DictItemListener extends BaseModelListener<DictItem> {
 
 			for (DictItemGroup dictItemGroup : listGroups) {
 
-				DictItemGroupLocalServiceUtil.deleteDictItemGroupNoneAuthen(dictItemGroup.getDictGroupId(),
+				DictItemGroupLocalServiceUtil.deleteDictItemGroupNoneAuthen(dictItemGroup.getDictItemGroupId(),
 						serviceContext);
 			}
 

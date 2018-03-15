@@ -45,11 +45,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 					},
 					_initlistgroupFilter: function () {
+						var vm = this;
 						this.listgroupFilterItems = [
 							{
 								action: 'folder',
 								action_active: 'folder_open',
-								id: '0',
+								id: '0,1',
 								title: 'Xác nhận thanh toán',
 								active: true
 							},
@@ -66,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								title: 'Đã cấp hoá đơn điện tử'
 							}
 						];
-
+						vm.listgroupFilterselected = '0,1';
 					}
 				}
 			},
@@ -148,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										if (currentItem != null && currentItemSelected != null
 											&& currentItem.dossierId === currentItemSelected.dossierId) {
 
-											var url = '/o/rest/v2/dossiers/' + vm.paymentListselected[j].dossierId + '/payments/' + vm.paymentListselected[j].referenceUid + '/confirm/noattachment';
+											var url = '/o/rest/v2/dossiers/' + vm.paymentListselected[j].dossierId + '/payments/' + vm.paymentListselected[j].referenceUid + '/approval/noattachment';
 										
 											
 											$.ajax({
@@ -157,9 +158,16 @@ document.addEventListener('DOMContentLoaded', function (event) {
 													"groupId": themeDisplay.getScopeGroupId()
 												},
 												data : {
-													confirmNote: vm.paymentListItems[j].confirmNote,
+													confirmNote: vm.paymentListselected[j].confirmNote,
 													paymentMethod: vm.paymentMethodSearch,
-													confirmPayload: ''
+													confirmPayload: '',
+													approveDatetime : vm.paymentListselected[j].approveDatetime,
+													accountUserName : vm.paymentListselected[j].accountUserName,
+													govAgencyTaxNo : vm.paymentListselected[j].govAgencyTaxNo,
+													invoiceTemplateNo : vm.paymentListselected[j].invoiceTemplateNo,
+													invoiceIssueNo : vm.paymentListselected[j].invoiceIssueNo,
+													invoiceNo : vm.paymentListselected[j].invoiceNo,
+													isSync : "true"
 												},
 												type : "PUT",
 												dataType: 'json',
@@ -211,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						})
 							.then((dialog) => {
 
-								var url = '/o/rest/v2/dossiers/' + vm.paymentListItems[index].dossierId + '/payments/' + vm.paymentListItems[index].referenceUid + '/confirm/noattachment';
+								var url = '/o/rest/v2/dossiers/' + vm.paymentListItems[index].dossierId + '/payments/' + vm.paymentListItems[index].referenceUid + '/approval/noattachment';
 								
 								/* TODO: confirmPayload tam thoi khong truyen len*/
 
@@ -223,7 +231,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									data : {
 										confirmNote: vm.paymentListItems[index].confirmNote,
 										paymentMethod: vm.paymentMethodSearch,
-										confirmPayload: ''
+										confirmPayload: '',
+										approveDatetime : vm.paymentListItems[index].approveDatetime,
+										accountUserName : vm.paymentListItems[index].accountUserName,
+										govAgencyTaxNo : vm.paymentListItems[index].govAgencyTaxNo,
+										invoiceTemplateNo : vm.paymentListItems[index].invoiceTemplateNo,
+										invoiceIssueNo : vm.paymentListItems[index].invoiceIssueNo,
+										invoiceNo : vm.paymentListItems[index].invoiceNo,
+										isSync : "true"
 									},
 									type : "PUT",
 									dataType: 'json',
@@ -297,6 +312,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								value: 'stt'
 							},
 							{
+								text: 'Tên thủ tục',
+								align: 'left',
+								sortable: true,
+								value: 'serviceName'
+							},
+							{
 								text: 'Số phiếu tính tiền',
 								align: 'left',
 								sortable: true,
@@ -327,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								value: 'dossierId'
 							},
 							{
-								text: 'Thao tác',
+								text: 'Thông tin sản phẩm',
 								align: 'center',
 								sortable: false,
 								value: 'action'
@@ -339,6 +360,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								start: vm.paymentListpage * 15 - 15,
 								end: vm.paymentListpage * 15,
 						};
+
 						
 						if (vm.listgroupFilterselected === 4){
 							// TODO
@@ -359,12 +381,29 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 						axios.get(url, config).then(function (response) {
 							var serializable = response.data;
+							var data = serializable.data;
+							if (data) {
+								for (var i = 0; i < data.length; i++) {
 
+									data[i].createDate = vm.parseDateUtc(data[i].createDate);
+									data[i].modifiedDate = vm.parseDateUtc(data[i].modifiedDate);
+									var referenceUid = data[i].referenceUid;
+									var refs = referenceUid.split("-");
+									var referenceUidKey = refs[refs.length-1];
+									data[i].referenceUidKey = referenceUidKey.toUpperCase();
+									
+								}
+								
+							}
+							
 							if (append) {
-								vm.paymentListItems.push.apply(vm.paymentListItems, serializable.data);
+								vm.paymentListItems.push.apply(vm.paymentListItems, data);
+
 							} else {
-								vm.paymentListItems = serializable.data;
+								
 								vm.paymentListTotal = Math.ceil(serializable.total / 15);
+								vm.paymentListItems = data;
+								
 							}
 
 							vm.xem_them = 'Xem thêm 15+ bản ghi';
@@ -379,6 +418,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								vm.viewmore = false;
 							});
 
+					},
+					parseDateUtc : function(date){
+						return moment(String(date)).utc().format('MM/DD/YYYY HH:mm:ss');
 					},
 					_paggingPaymentList: function() {
 						
@@ -396,9 +438,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 						vm.detailModel = vm.paymentListItems[index];
 						vm.detailModel.index = index;
+
+						console.log("detail================",vm.detailModel);
 						
 						// TODO: call API lay file
-						var url ="/o/rest/v2/employees/1401/photo" ;
+						var url ="/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/payments/"+vm.detailModel.referenceUid+"/invoicefile" ;
 						vm._showFile({
 							config : {
 								headers: {'groupId': themeDisplay.getScopeGroupId()},
@@ -410,18 +454,25 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						window.scrollBy(0, -99999);
 					},
 					_showFile: function (options) {
-						
+						var vm = this;
 						axios.get(options.url, options.config).then(function (response) {
-							
+							vm.detailModel.hasFile = true;
 							var url = window.URL.createObjectURL(response.data);
 							var iFrame = document.getElementById("objectView2");
 							
 							iFrame.innerHTML = '<iframe src="'+url+'" width="100%" height="100%"> </iframe>';
 						})
 							.catch(function (error) {
+								vm.detailModel.hasFile = false;
 								console.log(error);
 							});
 						
+					},
+					backToList : function(){
+						var vm = this;
+						vm.detailPage = !vm.detailPage;
+						vm._inipaymentList();
+
 					},
 					paggingPaymentList: function(){
 						this.start = this.start + 15;

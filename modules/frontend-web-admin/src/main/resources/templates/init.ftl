@@ -22,7 +22,6 @@
 <#assign currentURL = themeDisplay.getURLCurrent() />
 <#assign request = themeDisplay.getRequest() />
 <#assign portalURL = (themeDisplay.getPortalURL())!>
-
 <#assign url = (Request.url)!>
 <#assign api = (Request.api)!>
 <#assign constant = (Request.constant)!>

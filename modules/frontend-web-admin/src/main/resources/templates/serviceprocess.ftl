@@ -65,7 +65,17 @@
 						order: true
 					},
 					success: function(result) {
-						options.success(result);
+						if(result.data){
+							options.success(result);
+						}else {
+							options.success({
+								"data" : [],
+								"total" : 0
+							});
+						}
+					},
+					error : function(result){
+						options.error(result);
 					}
 				});
 			},
@@ -167,7 +177,18 @@
 				$("#serviceprocess_action_container").show();
 				$("#serviceprocess_detail_formaction_container").hide();
 
+				try{
+					$("#service_process_step_listview").data("kendoListView").dataSource.page(1);
+				}catch(e){
+
+				}
 				$("#service_process_step_listview").data("kendoListView").dataSource.read({serviceProcessId: dataItem.id});
+				
+				try{
+					$("#service_process_action_listview").data("kendoListView").dataSource.page(1);
+				}catch(e){
+
+				}
 				$("#service_process_action_listview").data("kendoListView").dataSource.read({serviceProcessId: dataItem.id});
 
 				$.ajax({

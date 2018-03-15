@@ -231,20 +231,21 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 	@Override
 	public PaymentFile updateFileApproval(long groupId, long id, String referenceUid, String approveDatetime,
 			String accountUserName, String govAgencyTaxNo, String invoiceTemplateNo, String invoiceIssueNo,
-			String invoiceNo, ServiceContext serviceContext)
+			String invoiceNo, boolean isSync, ServiceContext serviceContext)
 			throws SystemException, PortalException, java.text.ParseException {
 
 		PaymentFile paymentFile = PaymentFileLocalServiceUtil.updateFileApproval(groupId, id, referenceUid,
 				approveDatetime, accountUserName, govAgencyTaxNo, invoiceTemplateNo, invoiceIssueNo, invoiceNo,
 				serviceContext);
 
+		if (!isSync) {
 		// Add PaymentFileSync
-
 		Dossier dossier = DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
 		// TODO review serverNo on this
 		DossierSyncLocalServiceUtil.updateDossierSync(groupId, serviceContext.getUserId(), paymentFile.getDossierId(),
 				dossier.getReferenceUid(), false, 3, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(),
 				StringPool.BLANK);
+		}
 
 		return paymentFile;
 	}

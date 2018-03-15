@@ -76,7 +76,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 	private final String baseUrl = "http://localhost:8080/o/rest/v2/";
 	private final String username = "test@liferay.com";
 	private final String password = "test";
-	private final String serectKey = "OPENCPSV2";
+	//private final String serectKey = "OPENCPSV2";
 
 	@Override
 	public Response getDossierSyncs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -289,11 +289,22 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 		// SyncDossierFile
 		if (method == 1) {
-
+			
+			// Need check some case:
+			// 1. Add new file
+			// 2. Remove new file
+			// 3. Update file
+			
+			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFile(classPK);
+			
+			if (dossierFile.getRemoved()) {
+				
+			} else {
+				
+			}
+			
 			// TODO add case update file
 			String endPointSyncDossierFile = "dossiers/" + refId + "/files";
-
-			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFile(classPK);
 
 			properties.put("referenceUid", dossierFile.getReferenceUid());
 			properties.put("dossierTemplateNo", dossierFile.getDossierTemplateNo());
@@ -436,6 +447,24 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			DossierActionLocalServiceUtil.updatePending(clientDossierActionId, false);
 		}
 
+	}
+	
+	private void syncDossierFile(long dossierFileId) throws PortalException {
+		
+		try {
+			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFile(dossierFileId);
+			//in case add 
+			
+			//in case update
+			
+			//in case remove, check remove flag
+			
+		} catch (Exception e) {
+			if (e instanceof PortalException) {
+				throw new PortalException("Can not get file with dossierFileId = " + dossierFileId);
+			}
+		}
+		
 	}
 
 	protected Dossier getDossier(String id, long groupId) throws PortalException {

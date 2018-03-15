@@ -621,6 +621,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		message.put("msgToEngine", msgData);
 		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
 
+		_log.info("SEND TO CREATED FILE MODEL");
+		
 		return dossierFilePersistence.update(dossierFile);
 	}
 

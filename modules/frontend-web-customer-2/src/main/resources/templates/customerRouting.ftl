@@ -1,45 +1,9 @@
 <#if (Request)??>
-	<#include "init.ftl">
+<#include "init.ftl">
 </#if>
 <#-- Routing SPA-->
 
-<!-- <div id="confirmSaveForm" style="background-color: #ffffff; color: black" class="MT20">
-	
-</div> -->
 <script type="text/javascript">
-
-	/*var viewConfirmSaveForm = $("#confirmSaveForm");
-    viewConfirmSaveForm.kendoDialog({
-    	width: "400px",
-    	title: "Software Update",
-    	closable: false,
-    	modal: false,
-    	content: "<p>Hãy chắc chắn rằng bạn đã lưu lại thông tin form khai trước khi chuyển thao tác?<p>",
-    	actions: [
-    	{ text: 'Rời khỏi', action : onStay },
-    	{ text: 'Ở lại trang', primary: true, action : onLeave }
-    	]
-    });
-
-	var confirmSaveForm = function(){
-		if($('#mainType2').is(':visible')){
-			var numForm = $("#mainType2 .formAlpacaDN").length;
-			if(numForm > 0){
-				var numBtnSaveForm = $("#mainType2 button.saveFormAlpaca").length;
-				if(numBtnSaveForm > 0){
-					viewConfirmSaveForm.data("kendoDialog").open();
-       	 			$("div.k-widget.k-window").css({"background-color":"#14bef0","color":"#ffffff"})
-				}
-			}
-		}
-		
-	}
-	function onStay(){
-		return ;
-	}
-	function onLeave(){
-
-	}*/
 
 	var checkIsSaveDossier = function(dossierId){
 		var isSave = true;
@@ -60,11 +24,11 @@
 
 	var layout = new kendo.Layout("layoutTemplate");
 	var manageDossier = new kendo.Router({
-	    init: function() {
-	        layout.render("#appManagerDossier");
-	        layout.showIn("#panel_list", viewPanel);
-		    layout.showIn("#main_section", viewMainList);
-	    }
+		init: function() {
+			layout.render("#appManagerDossier");
+			layout.showIn("#panel_list", viewPanel);
+			layout.showIn("#main_section", viewMainList);
+		}
 	});
 	// Show màn hình start
 	manageDossier.route("/", function() {
@@ -96,38 +60,38 @@
 	});
 	// Show màn hình thông báo chi tiết
 	manageDossier.route("/thongbao", function(){
-        $("#mainType1").hide();
-        $(".filterField").hide();
-        $("#noInput").hide();
-        $("#mainType2").show();
-        $("#mainType2").load("${ajax.notification}",function(result){
+		$("#mainType1").hide();
+		$(".filterField").hide();
+		$("#noInput").hide();
+		$("#mainType2").show();
+		$("#mainType2").load("${ajax.notification}",function(result){
         	// dataSourceNotify2.read();
         });
-        $('#searchCC').removeClass('active');
-        $("#profileStatus li").removeClass('active');
-        $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
+		$('#searchCC').removeClass('active');
+		$("#profileStatus li").removeClass('active');
+		$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
         // $(".itemStatus").css("pointer-events","auto");
     });
-    manageDossier.route("/taohosomoi/chuanbihoso/(:dossierId)", function(dossierId){
-    	$("#panel_list").show();
+	manageDossier.route("/taohosomoi/chuanbihoso/(:dossierId)", function(dossierId){
+		$("#panel_list").show();
 		$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
-	    $("#mainType1").hide();
-	    $("#noInput").hide();
-	    $("#mainType2").show();
-	    $("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+dossierId,function(result){
+		$("#mainType1").hide();
+		$("#noInput").hide();
+		$("#mainType2").show();
+		$("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+dossierId,function(result){
 
-	    });
-	  });
-	  manageDossier.route("/taohosomoi/nophoso/(:dossierId)", function(dossierId){
-	  		$("#panel_list").show();
-			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
-			$("#mainType1").hide();
-			$("#noInput").hide();
-			$("#mainType2").show();
-			$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+dossierId,function(result){
-
-			});
 		});
+	});
+	manageDossier.route("/taohosomoi/nophoso/(:dossierId)", function(dossierId){
+		$("#panel_list").show();
+		$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
+		$("#mainType1").hide();
+		$("#noInput").hide();
+		$("#mainType2").show();
+		$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+dossierId,function(result){
+
+		});
+	});
 </script>
 <#-- Include Router Component -->
 <#include "manageDossierRouter.ftl">
@@ -142,21 +106,21 @@
     	getTotal();
     	// 
     	var sortItem;
-		var sortType;
-		var sortFieldDossier = function(selected){
-			sortItem = $(selected).attr("sort");
-			sortType = $(selected).attr("sort-type");
+    	var sortType;
+    	var sortFieldDossier = function(selected){
+    		sortItem = $(selected).attr("sort");
+    		sortType = $(selected).attr("sort-type");
 			// 
 			if (sortType == "desc") {
-    			dataSourceProfile.sort({ field: sortItem, dir: "desc" });
-    			$(selected).attr("sort-type","asc")
-    		} else {
-    			dataSourceProfile.sort({ field: sortItem, dir: "asc" });
-    			$(selected).attr("sort-type","desc")
-    		}
+				dataSourceProfile.sort({ field: sortItem, dir: "desc" });
+				$(selected).attr("sort-type","asc")
+			} else {
+				dataSourceProfile.sort({ field: sortItem, dir: "asc" });
+				$(selected).attr("sort-type","desc")
+			}
 		};
-	  	$(".fieldDossier").click(function(){
-	  		sortFieldDossier(this);
+		$(".fieldDossier").click(function(){
+			sortFieldDossier(this);
 	  		// $(this).children(".icon-sort").children().toggle();
 	  		$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});	
 	  	});
