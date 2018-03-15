@@ -1,11 +1,11 @@
 /*----- Base CSS -----*/
 @import url(font-awesome.min.css);              /* Font Icons */
 @import url(animate.css);                       /* Animate css */
-@import url(support-class.css);                 /* Support css */
+@import url(slick.css);
+@import url(slick-theme.css);
+@import url(support-class.css);                /* Support css */
 
 @import url(base-style.css);                    /* Style header, footer, navbar */
-
-
 
 /*----- Components -----*/
 @import url(apaca.min.css);                     /* CSS for apaca form */
