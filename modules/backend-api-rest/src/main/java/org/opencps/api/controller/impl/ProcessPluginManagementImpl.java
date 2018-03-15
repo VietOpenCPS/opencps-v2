@@ -473,7 +473,6 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 				if (Validator.isNull(dossierFile)) {
 
-
 					if (autoRun) {
 						// create DossierFile
 
