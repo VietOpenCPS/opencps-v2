@@ -536,4 +536,47 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 		}
 
 	}
+
+	@Override
+	public Response getFormDataByReferenceUid(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String stage, String agency, String owner,
+			String registrationClass, String submitting, String keyword, String sort) {
+		BackendAuth auth = new BackendAuthImpl();
+		RegistrationActions actions = new RegistrationActionsImpl();
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(Field.KEYWORD_SEARCH, keyword);
+			params.put(RegistrationTerm.REGISTRATIONSTATE, stage);
+			params.put(RegistrationTerm.GOV_AGENCY_CODE, agency);
+			params.put(RegistrationTerm.OWNER, owner);
+			params.put(RegistrationTerm.REGISTRATION_CLASS, registrationClass);
+			params.put(RegistrationTerm.SUBMITTING, submitting);
+
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(sort + "_sortable", Sort.STRING_TYPE, true) };
+
+			JSONObject jsonData = actions.getRegistrations(serviceContext.getUserId(), serviceContext.getCompanyId(),
+					groupId, params, sorts, -1, -1, serviceContext);
+
+			JSONObject results = JSONFactoryUtil.createJSONObject();
+			
+			JSONArray JsonArr = RegistrationUtils.mappingFormData((List<Document>) jsonData.get("data"));
+			//
+			results.put("total",JsonArr.length());
+
+			results.put("data", JsonArr);
+
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(JsonArr)).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
 }
