@@ -62,6 +62,7 @@ public class AutoFillFormData {
 			
 			String _employee_employeeNo = StringPool.BLANK;
 			String _employee_fullName = StringPool.BLANK;
+			String _employee_title = StringPool.BLANK;
 			String _applicantName = StringPool.BLANK;
 			String _applicantIdType = StringPool.BLANK;
 			String _applicantIdNo = StringPool.BLANK;
@@ -129,18 +130,16 @@ public class AutoFillFormData {
 				e1.printStackTrace();
 			}
 			
-			try {
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), serviceContext.getUserId());
+			//JSONObject employeeJSON = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(employee));
 
-				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), serviceContext.getUserId());
-				JSONObject employeeJSON = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(employee));
-
-				_employee_employeeNo = employeeJSON.getString("_employee_employeeNo");
-				_employee_fullName = employeeJSON.getString("_employee_fullName");
-
-			} catch (PortalException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+/*				_employee_employeeNo = employeeJSON.getString("_employee_employeeNo");
+			_employee_fullName = employeeJSON.getString("_employee_fullName");
+			_employee_title = employeeJSON.getString("_employee_title");
+*/
+			_employee_employeeNo = employee.getEmployeeNo();
+			_employee_fullName = employee.getFullName();
+			_employee_title = employee.getTitle();
 			
 			// process sampleData
 			if (Validator.isNull(sampleData)) {
@@ -187,6 +186,8 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _employee_employeeNo);
 					} else if (value.equals("_employee_fullName")) {
 						jsonMap.put(entry.getKey(), _employee_fullName);
+					}else if (value.equals("_employee_title")) {
+						jsonMap.put(entry.getKey(), _employee_title);
 					} else if (value.equals("_applicantName")) {
 						jsonMap.put(entry.getKey(), _applicantName);
 					} else if (value.equals("_applicantIdType")) {
@@ -233,6 +234,8 @@ public class AutoFillFormData {
 							resultBinding += ", " + _employee_employeeNo;
 						} else if (value.equals("_employee_fullName")) {
 							resultBinding += ", " + _employee_fullName;
+						}else if (value.equals("_employee_title")) {
+							resultBinding += ", " + _employee_title;
 						} else if (value.equals("_applicantName")) {
 							resultBinding += ", " + _applicantName;
 						} else if (value.equals("_applicantIdType")) {
@@ -297,7 +300,6 @@ public class AutoFillFormData {
 				}
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
