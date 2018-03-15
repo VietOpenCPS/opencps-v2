@@ -462,6 +462,9 @@
 			<finder-column name="fileTemplateNo" />
 		</finder>
 		
+		<finder return-type="Collection" name="DID_">
+			<finder-column name="dossierId" />
+		</finder>
 
 		<finder return-type="Collection" name="DossierId">
 			<finder-column name="dossierId" />
