@@ -573,7 +573,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			results.put("data", JsonArr);
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(JsonArr)).build();
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
 			return processException(e);
