@@ -24,7 +24,8 @@
 	 
 	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.min.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/bootstrap.min.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/custom.js?t=101"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/slick.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/custom.js"></script>
 	
 	<script>
         window.define = window.__define;

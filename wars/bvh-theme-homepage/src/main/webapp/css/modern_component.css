@@ -743,7 +743,7 @@ input[type="text"]:focus, input[type="password"]:focus {
 }
 
 .box, .box-s2, .box-s3 {
-  border: 1px solid #ddd;
+  /*border: 1px solid #ddd;*/
   background-color: white;
   overflow: hidden;
   border-radius: 2px;
