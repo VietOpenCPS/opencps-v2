@@ -10,6 +10,8 @@ package org.opencps.api.serviceprocess.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -73,7 +75,8 @@ import javax.xml.bind.annotation.XmlType;
     "postStepName",
     "createDossierNo",
     "eSignature",
-    "configNote"
+    "configNote",
+    "dossierTemplateNo"
 })
 public class ProcessActionDataModel {
 
@@ -100,6 +103,15 @@ public class ProcessActionDataModel {
     protected boolean createDossierNo;
     protected boolean eSignature;
     protected String configNote;
+	protected String dossierTemplateNo;
+
+	public String getDossierTemplateNo() {
+		return dossierTemplateNo;
+	}
+
+	public void setDossierTemplateNo(String dossierTemplateNo) {
+		this.dossierTemplateNo = dossierTemplateNo;
+	}
 
     public String getConfigNote() {
 		return configNote;
