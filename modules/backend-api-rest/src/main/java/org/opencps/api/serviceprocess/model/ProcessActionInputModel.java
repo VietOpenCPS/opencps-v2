@@ -71,7 +71,8 @@ import javax.xml.bind.annotation.XmlType;
     "rollbackable",
     "createDossierNo",
     "eSignature",
-    "configNote"
+    "configNote",
+    "dossierTemplateNo"
 })
 @XmlRootElement(name = "ProcessActionInputModel")
 public class ProcessActionInputModel {
@@ -113,10 +114,20 @@ public class ProcessActionInputModel {
     protected boolean createDossierNo;
 	@FormParam("eSignature")
     protected boolean eSignature;
+	@FormParam("dossierTemplateNo")
+	protected String dossierTemplateNo;
 	
 	@FormParam("configNote")
 	protected String configNote;
 	
+	public String getDossierTemplateNo() {
+		return dossierTemplateNo;
+	}
+
+	public void setDossierTemplateNo(String dossierTemplateNo) {
+		this.dossierTemplateNo = dossierTemplateNo;
+	}
+
 	public String getConfigNote() {
 		return configNote;
 	}
