@@ -803,7 +803,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 							is.close();
 
 							String requestURL = RESTFulConfiguration.CLIENT_PATH_BASE + "dossiers/" + dossierId
-									+ "/all/files";
+									+ "/files";
 
 							String clientAuthString = new String(
 									Base64.getEncoder().encodeToString((RESTFulConfiguration.CLIENT_USER
