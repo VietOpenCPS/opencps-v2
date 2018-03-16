@@ -140,7 +140,11 @@ public class AutoFillFormData {
 			
 			try {
 				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), serviceContext.getUserId());
+				
+				_log.info("GET EMPLOYEE ID ____" + serviceContext.getUserId());
+				
 				JSONObject employeeJSON = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(employee));
+				
 				_log.info("GET EMPLOYEE ____");
 
 				_log.info(employeeJSON);
