@@ -657,7 +657,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			HashMap<String, String> properties = new HashMap<String, String>();
 			properties.put("Content-Type", "application/x-www-form-urlencoded");
 
-			String path = "dossiers/" + dossierId + "/files";
+			String path = "dossiers/" + dossierId + "/all/files";
 
 			ServiceContext serviceContext = new ServiceContext();
 
@@ -803,7 +803,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 							is.close();
 
 							String requestURL = RESTFulConfiguration.CLIENT_PATH_BASE + "dossiers/" + dossierId
-									+ "/files";
+									+ "/all/files";
 
 							String clientAuthString = new String(
 									Base64.getEncoder().encodeToString((RESTFulConfiguration.CLIENT_USER
