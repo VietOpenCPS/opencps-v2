@@ -714,12 +714,14 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			if (isRemoved) {
 				
 				//remove file in CLIENT
-				
+				_log.info("referenceUid" + fileRef);
+				_log.info("dossierId" + dossierId);
+				_log.info("srcDossierId" + srcDossierId);
 				DossierFile file = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId, fileRef);
-				
-				file.setRemoved(true);
-				
-				DossierFileLocalServiceUtil.updateDossierFile(file);
+				if (file != null) {
+					file.setRemoved(true);
+					DossierFileLocalServiceUtil.updateDossierFile(file);
+				}
 
 			} else {
 
