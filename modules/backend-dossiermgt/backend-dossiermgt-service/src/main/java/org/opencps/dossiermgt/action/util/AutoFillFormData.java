@@ -142,14 +142,15 @@ public class AutoFillFormData {
 				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), serviceContext.getUserId());
 				JSONObject employeeJSON = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(employee));
 				
-				System.out.println(employeeJSON);
+				_log.info(employeeJSON);
 				
 				_employee_employeeNo = employeeJSON.getString("employeeNo");
 				_employee_fullName = employeeJSON.getString("fullName");
 				_employee_title = employeeJSON.getString("title");
 				
 			} catch (Exception e) {
-				
+				_log.info("NOT FOUN EMPLOYEE" + serviceContext.getUserId());
+				_log.error(e);
 			}
 
 			// process sampleData
@@ -373,5 +374,5 @@ public class AutoFillFormData {
 		return list;
 	}
 	
-	public Log _log = LogFactoryUtil.getLog(AutoFillFormData.class);
+	private static final Log _log = LogFactoryUtil.getLog(AutoFillFormData.class);
 }
