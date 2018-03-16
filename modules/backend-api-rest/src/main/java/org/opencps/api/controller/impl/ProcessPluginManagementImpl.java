@@ -443,10 +443,12 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 	private String _getFormData(long groupId, String fileTemplateNo, long dossierId, boolean autoRun,
 			String dossierTemplateNo, boolean original, ServiceContext context) {
 
+		_log.info("RUN TO GET FORM DATA");
+
 		String formData = StringPool.BLANK;
 
 		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
-
+		
 		try {
 			// Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 
