@@ -328,13 +328,15 @@
 * All rights reserved.
 * MIT license
 */
-@import url(font-awesome.min.css?t=1521097227908);
-@import url(animate.css?t=1521097227908);
-@import url(support-class.css?t=1521097227908);
-@import url(base-style.css?t=1521097227908);
-@import url(apaca.min.css?t=1521097227908);
-@import url(modern_component.css?t=1521097227908);
-@import url(custom-style.css?t=1521097227908);
+@import url(font-awesome.min.css?t=1521108149807);
+@import url(animate.css?t=1521108149807);
+@import url(slick.css?t=1521108149807);
+@import url(slick-theme.css?t=1521108149807);
+@import url(support-class.css?t=1521108149807);
+@import url(base-style.css?t=1521108149807);
+@import url(apaca.min.css?t=1521108149807);
+@import url(modern_component.css?t=1521108149807);
+@import url(custom-style.css?t=1521108149807);
 .loading-animation, .loadingmask-message .loadingmask-message-content {
   animation: loading-animation 1.7s infinite ease;
   border-radius: 50%;

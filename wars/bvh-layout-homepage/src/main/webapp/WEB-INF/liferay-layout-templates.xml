@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE layout-templates PUBLIC "-//Liferay//DTD Layout Templates 7.0.0//EN" "http://www.liferay.com/dtd/liferay-layout-templates_7_0_0.dtd">
+
+<layout-templates>
+	<custom>
+		<layout-template id="bvh-layout-homepage" name="bvh-layout-homepage">
+			<template-path>/bvh-layout-homepage.tpl</template-path>
+			<thumbnail-path>/bvh-layout-homepage.png</thumbnail-path>
+		</layout-template>
+	</custom>
+</layout-templates>
