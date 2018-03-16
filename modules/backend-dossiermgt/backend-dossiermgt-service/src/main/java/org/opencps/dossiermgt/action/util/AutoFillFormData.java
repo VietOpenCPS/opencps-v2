@@ -26,6 +26,8 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -60,7 +62,7 @@ public class AutoFillFormData {
 			String _dossierFileDate = StringPool.BLANK;
 			String _receiveDate = StringPool.BLANK;
 			String _dossierNo = StringPool.BLANK;
-			
+
 			String _employee_employeeNo = StringPool.BLANK;
 			String _employee_fullName = StringPool.BLANK;
 			String _employee_title = StringPool.BLANK;
@@ -139,10 +141,12 @@ public class AutoFillFormData {
 			try {
 				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), serviceContext.getUserId());
 				JSONObject employeeJSON = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(employee));
-
-				_employee_employeeNo = employeeJSON.getString("_employee_employeeNo");
-				_employee_fullName = employeeJSON.getString("_employee_fullName");
-				_employee_title = employeeJSON.getString("_employee_title");
+				
+				System.out.println(employeeJSON);
+				
+				_employee_employeeNo = employeeJSON.getString("employeeNo");
+				_employee_fullName = employeeJSON.getString("fullName");
+				_employee_title = employeeJSON.getString("title");
 				
 			} catch (Exception e) {
 				
@@ -368,4 +372,6 @@ public class AutoFillFormData {
 		}
 		return list;
 	}
+	
+	public Log _log = LogFactoryUtil.getLog(AutoFillFormData.class);
 }
