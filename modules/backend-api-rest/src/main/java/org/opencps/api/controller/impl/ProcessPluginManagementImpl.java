@@ -461,7 +461,9 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 			DossierPart dossierPart = DossierPartLocalServiceUtil.getByFileTemplateNo(groupId, fileTemplateNo);
 
 			formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext);
-
+			
+			_log.info(formData);
+			
 			if (original) {
 				
 				if (Validator.isNotNull(dossierFile)) {
