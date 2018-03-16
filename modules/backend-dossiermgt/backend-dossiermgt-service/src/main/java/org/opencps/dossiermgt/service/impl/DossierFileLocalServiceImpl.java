@@ -693,8 +693,14 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 	}
 
 	public List<DossierFile> getDossierFilesByDossierId(long dossierId) {
-	//return dossierFilePersistence.findByDossierId(dossierId, false);
-		
+
+		return dossierFilePersistence.findByDossierId(dossierId, false);
+
+	}
+
+	// Get all dossierFile by dossierId
+	public List<DossierFile> getAllDossierFile(long dossierId) {
+
 		return dossierFilePersistence.findByDID_(dossierId);
 
 	}
