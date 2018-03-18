@@ -203,12 +203,12 @@ body section#main-content {
 body .dvcbvh {
 	margin: -20px -15px;
 }
-body .portlet .portlet-content {
+.hide-title .portlet .portlet-content {
 	border: 0;
 	background-color: transparent;
 	padding: 0;
 }
-body .portlet-title-text {
+.hide-title .portlet-title-text {
 	display: none;
 }
 body .control-menu + div {

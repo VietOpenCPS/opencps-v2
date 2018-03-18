@@ -696,18 +696,21 @@ section#main-content .dropdown .dropdown-menu li {
 
 
 /*---------- Row 2 ----------*/
-
+.hide-title .portlet {
+	border: 0 !important;
+}
 
 
 /*---------- Row 3 ----------*/
 .dvcbvh .portlet {
-	/*border: 1px solid #ccc;*/
+	border: 1px solid #ccc;
     margin-top: 15px;
 }
+
 .dvcbvh .portlet .portlet-content {
 	padding: 0;
 }
-.dvcbvh .portlet-title {
+.dvcbvh .portlet-title-text {
 	font-size: 16px;
 	color: #0054a6;
 	font-style: italic;
@@ -717,6 +720,8 @@ section#main-content .dropdown .dropdown-menu li {
 	border-bottom: 5px solid #0054a6;
 	text-transform: none;
 	border-width: 0 0 5px;
+	max-width: 100%;
+	width: 100%;
 }
 .dvcbvh .portlet-title:before {
 	display: none;
