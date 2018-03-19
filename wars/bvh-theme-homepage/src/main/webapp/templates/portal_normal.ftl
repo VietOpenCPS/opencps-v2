@@ -58,7 +58,7 @@
 
 <div class="mWrapper">
 	<header id="banner">		
-		<div class="container align-middle">
+		<div class="container align-middle hide-title">
 			<div class="logo align-middle">
 				<a href="${site_default_url}">
 					<img src="${themeDisplay.getPathThemeRoot()}/images/logo.png">

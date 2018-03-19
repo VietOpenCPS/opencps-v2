@@ -624,11 +624,12 @@ section#main-content .dropdown .dropdown-menu li {
 	width: 100%;
 }
 .tracuu .search-wrapper input {
-    height: 50px;
+	height: 55px;
     background-color: rgba(255,255,255,0.8);
     border: 1px solid #d5d4d1;
     border-radius: 50px;
-    padding: 0 55px 0 20px;
+    padding: 0 70px 0 30px;
+    min-width: 330px;
 }
 .tracuu input[type="text"]::-webkit-input-placeholder {font-style: italic;}
 .tracuu input[type="text"]:-moz-placeholder {font-style: italic; opacity: 1;}
