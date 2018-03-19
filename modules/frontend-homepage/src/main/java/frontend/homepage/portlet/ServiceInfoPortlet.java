@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"com.liferay.portlet.display-category=Homepage Service",
 		"com.liferay.portlet.instanceable=true",
-		"javax.portlet.display-name=Service Info Portlet",
+		"javax.portlet.display-name=Dịch vụ công trực tuyến mức độ 1 và 2",
 		"javax.portlet.init-param.template-path=/",
 		"javax.portlet.init-param.view-template=/templates/serviceInfo.ftl",
 		"javax.portlet.name=" + FrontendHomepagePortletKeys.ServiceInfoPortlet,

@@ -26,6 +26,9 @@
 	<script src="${themeDisplay.getPathThemeRoot()}/js/bootstrap.min.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/slick.min.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/custom.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/kendo.ui.core.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/kendo.messages.en-US.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/kendo.culture.vi-VN.js"></script>
 	
 	<script>
         window.define = window.__define;
