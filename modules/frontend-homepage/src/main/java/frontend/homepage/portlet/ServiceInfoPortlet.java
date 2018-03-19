@@ -22,16 +22,16 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"com.liferay.portlet.display-category=Homepage Service",
 		"com.liferay.portlet.instanceable=true",
-		"javax.portlet.display-name=Service Config Portlet",
+		"javax.portlet.display-name=Service Info Portlet",
 		"javax.portlet.init-param.template-path=/",
-		"javax.portlet.init-param.view-template=/templates/serviceConfig.ftl",
-		"javax.portlet.name=" + FrontendHomepagePortletKeys.ServiceConfigPortlet,
+		"javax.portlet.init-param.view-template=/templates/serviceInfo.ftl",
+		"javax.portlet.name=" + FrontendHomepagePortletKeys.ServiceInfoPortlet,
 		"javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=power-user,user"
 	},
 	service = Portlet.class
 )
-public class ServiceConfigPortlet extends FreeMarkerPortlet {
+public class ServiceInfoPortlet extends FreeMarkerPortlet {
 	@Override
 	public void render(RenderRequest renderRequest, RenderResponse renderResponse)
 			throws IOException, PortletException {

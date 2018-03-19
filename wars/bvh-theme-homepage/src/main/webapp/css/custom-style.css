@@ -712,6 +712,7 @@ section#main-content .dropdown .dropdown-menu li {
 }
 .dvcbvh .portlet-title-text {
 	font-size: 16px;
+	font-weight: bold;
 	color: #0054a6;
 	font-style: italic;
 	margin: 0;
