@@ -49,9 +49,9 @@
           </div>
           <div class="col-sm-12 ML15">
             <span class="text-bold">Trụ sở <span data-bind="text:govAgencyName"></span> tại:</span> <br>
-            <p class="text-bold">Địa chỉ: </span data-bind="">18 Phạm Hùng, Mỹ Đình, Cầu Giấy, Hà Nội <span></p>
+            <p class="text-bold">Địa chỉ: </span data-bind="">Số 20, ngõ 2, Hoa Lư, Q. Hai Bà Trưng, TP. Hà Nội. <span></p>
             <p class="text-bold">Số điện thoại: 
-            </span data-bind="">024 3768 4715
+            </span data-bind="">0243.9745845
             <span></p>
             </div>
           </div>
@@ -67,13 +67,13 @@
 
           <div class="row">
             <div class="col-xs-12 col-sm-12">
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1862.045975567435!2d105.77856847236761!3d21.029006502002556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313454b3af0b245b%3A0xf077a1441bab33e5!2sVietnam+Register!5e0!3m2!1sen!2s!4v1512740611618" width="100%" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d658.4104238706212!2d105.84726679420625!3d21.01139691136932!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab8bd0fca22d%3A0x53bef0efc1f88a95!2zTeG6oW5nIHRow7RuZyB0aW4gdsSDbiBow7NhIC0gQuG7mSBWxINuIGjDs2EgLSBUaOG7gyB0aGFvIHbDoCBEdSBs4buLY2g!5e0!3m2!1svi!2s!4v1520507161468" width="100%" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
             </div>
           </div>
 
           <div class="row">
             <div class="col-xs-12 col-sm-12">
-              <button class="btn btn-active" id="btn-completed-submiting-dossier">Hoàn tất việc nộp hồ sơ trực tuyến và quay lại danh sách hồ sơ</button>
+              <button class="btn btn-active" id="btn-completed-submiting-dossier">Quay lại danh sách</button>
             </div>
           </div>
         </div>

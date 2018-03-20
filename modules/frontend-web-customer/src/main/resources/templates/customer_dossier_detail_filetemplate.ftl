@@ -14,6 +14,7 @@
 							<span class="text-bold">Kho lưu trữ</span> <i class="fa fa-times pull-right hover-pointer" aria-hidden="true" data-dismiss="modal" style="font-size: 150%;"></i>
 						</div>
 					</div>
+
 					<div class="row">
 						<form action="" id="fileArchiveForm">
 							<div class="col-sm-12 PT10">
@@ -27,14 +28,14 @@
 								</ul>
 								<script type="text/x-kendo-template" id="dossierFileArchiveTemp">
 									<li>
-										<div>
-											<input class="cbxDossierFile MR5 " data-pk="#:id#" type="checkbox"><label class="dossierFileItem">#:displayName#</label> 
+										<div class="">
+											<input class=" MR5 cbxDossierFile" data-pk="#:id#" dossierfile-id="#:dossierFileId#" type="checkbox"><label class="dossierFileItem">#:displayName#</label> 
 										</div> 
 									</li>
 								</script>
 							</div>
 							<div class="col-sm-12">
-								<button class="btn btn-active" id="btnChoiseFileArchive">Chọn</button>
+								<button class="btn btn-active" id="btnChoiseFileArchive" type="button">Chọn</button>
 							</div>
 						</form>
 					</div>
@@ -186,7 +187,7 @@
 			var arrChecked=new Array();
 			$(".cbxDossierFile").each(function(){
 				if($(this).prop('checked')){
-					arrChecked.push($(this).attr("data-pk"));
+					arrChecked.push($(this).attr("dossierfile-id"));
 				}
 			});
 
@@ -194,11 +195,32 @@
 				var dossierPartNo = "${(dossierPartNo)!}";
 				var dossierTemplateNo = "${(dossierTemplateNo)!}";
 				var dossierId = "${(dossierId)!}";
+				var countSuccess = 0;
 				for (var i = 0; i < arrChecked.length; i++) {
 					var fileId = arrChecked[i];
-					fnCopyFile(fileId, dossierPartNo, dossierTemplateNo, dossierId);
+					var isSucess = fnCopyFile(fileId, dossierPartNo, dossierTemplateNo, dossierId);
+					if(isSucess){
+						countSuccess ++;
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công!"
+						}, "success");
+					}else {
+						notification.show({
+							message: "Sảy ra lỗi!"
+						}, "error");
+					}
 
 				}
+
+				
+				var currentFileNumber = $(".dossier-component-profile").filter("[data-partno="+dossierPartNo+"]").attr("data-number");
+
+				var totalFile = countSuccess + parseInt(currentFileNumber, 0);
+
+				$(".dossier-component-profile").filter("[data-partno="+dossierPartNo+"]").html('<span class="number-in-circle" >'+totalFile+'</span>');
+
+				$(".dossier-component-profile").filter("[data-partno="+dossierPartNo+"]").attr("data-number",totalFile);
+
 			}
 			
 		});
@@ -210,6 +232,7 @@
 				dataType : "json",
 				type : "POST",
 				headers: {"groupId": ${groupId}},
+				async : false,
 				data : {
 					dossierTemplateNo : dossierTemplateNo,
 					dossierPartNo : dossierPartNo,

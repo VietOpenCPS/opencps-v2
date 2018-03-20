@@ -765,6 +765,7 @@
 							if(result.dossierNote){
 								return result.dossierNote;
 							}
+							return "";
 						},
 						viaPostal : function(){
 							if(result.viaPostal === 2){
