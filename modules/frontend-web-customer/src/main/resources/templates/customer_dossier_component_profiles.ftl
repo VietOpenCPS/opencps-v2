@@ -132,6 +132,14 @@
 								message: "Xóa thành công!"
 							}, "success");
 
+							/*var currentFileNumber = $(".dossier-component-profile").filter("[data-partno="+dossierPartNo+"]").attr("data-number");
+
+							var totalFile = countSuccess + parseInt(currentFileNumber, 0);
+
+							$(".dossier-component-profile").filter("[data-partno="+dossierPartNo+"]").html('<span class="number-in-circle" >'+totalFile+'</span>');
+
+							$(".dossier-component-profile").filter("[data-partno="+dossierPartNo+"]").attr("data-number",totalFile);*/
+
 						},
 						error:function(result){
 							notification.show({
@@ -270,7 +278,7 @@
 
 
 
-	function fileAttachmentUrl ( options) {
+function fileAttachmentUrl ( options) {
 
   // Use XMLHttpRequest instead of Jquery $ajax
   var xhttp = new XMLHttpRequest();

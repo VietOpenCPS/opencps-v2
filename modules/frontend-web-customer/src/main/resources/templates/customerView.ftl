@@ -10,9 +10,9 @@
 		<div id="panel_list" class="col-sm-2 PL0"></div>
 		
 		<div id="mainType1" class="col-sm-10 P0" >
-			<div id="main_section" class="col-sm-9 P0" style="background: #ffffff;">
+			<div id="main_section" class="col-sm-12 P0" style="background: #ffffff;">
 			</div>
-			<div id="sidebar_list" class="col-sm-3 PR0"></div>
+			<!-- <div id="sidebar_list" class="col-sm-3 PR0"></div> -->
 		</div>
 
 		<div id="mainType2" class="col-sm-10 P0"></div>

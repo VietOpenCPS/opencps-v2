@@ -9,6 +9,7 @@ import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.WindowStateException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -23,6 +24,9 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
@@ -53,10 +57,15 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+		HttpServletRequest httpRequest = PortalUtil.getHttpServletRequest(renderRequest);
 
 		Applicant applicant =
 			UserMgtUtils.getApplicant(themeDisplay.getUser().getEmailAddress());
-
+		
+		String serviceConfigId = PortalUtil.getOriginalServletRequest(httpRequest).getParameter("serviceConfigId");
+		
+		String dossierUUid = ParamUtil.getString(renderRequest, "dossierUUid");
+		String paymentFileUUid = ParamUtil.getString(renderRequest, "paymentFileUUid");
 		JSONObject applicantObj = JSONFactoryUtil.createJSONObject();
 		String jsonObj = JSONFactoryUtil.looseSerialize(applicant);
 		try {
@@ -67,14 +76,15 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 
 		String dossierTemplateId =
 			ParamUtil.getString(renderRequest, "dossierTemplateId");
-		
-		//get variable dossier
+
+		// get variable dossier
 		String dossierId = ParamUtil.getString(renderRequest, "dossierId");
 		try {
 			Dossier dossier =
 				DossierLocalServiceUtil.getDossier(Long.parseLong(dossierId));
 			String dossierStr = JSONFactoryUtil.looseSerialize(dossier);
-			JSONObject dossierObj = JSONFactoryUtil.createJSONObject(dossierStr);
+			JSONObject dossierObj =
+				JSONFactoryUtil.createJSONObject(dossierStr);
 			if (dossierObj != null) {
 				renderRequest.setAttribute("dossier", dossierObj);
 			}
@@ -88,12 +98,19 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		String dossierPartNo =
 			ParamUtil.getString(renderRequest, "dossierPartNo");
 		System.out.println("dossierPartNo:" + dossierPartNo);
-		
+
 		String dossierTemplateNo =
-						ParamUtil.getString(renderRequest, "dossierTemplateNo");
+			ParamUtil.getString(renderRequest, "dossierTemplateNo");
+		String govAgencyCode =
+						ParamUtil.getString(renderRequest, "govAgencyCode");
+		
 
 		// apiObject.put("applicant", applicantObj);
+		String trans_id = ParamUtil.getString(renderRequest, "trans_id");
+		String good_code = ParamUtil.getString(renderRequest, "good_code");
 
+		JSONObject paymentObject = generatePaymentObject(
+			dossierUUid, paymentFileUUid, trans_id, good_code);
 		// set varible
 		renderRequest.setAttribute(
 			"ajax", generateURLJsonObject(renderResponse));
@@ -103,9 +120,29 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute("dossierId", dossierId);
 		renderRequest.setAttribute("dossierPartNo", dossierPartNo);
 		renderRequest.setAttribute("dossierTemplateNo", dossierTemplateNo);
+		renderRequest.setAttribute("RequestParameters", paymentObject);
+		renderRequest.setAttribute("govAgencyCode", govAgencyCode);
+		renderRequest.setAttribute("serviceConfigId", serviceConfigId);
 
 		super.render(renderRequest, renderResponse);
 
+	}
+
+	private JSONObject generatePaymentObject(
+		String dossierUUid, String paymentFileUUid, String trans_id,
+		String good_code) {
+
+		JSONObject paymentObject = JSONFactoryUtil.createJSONObject();
+
+		paymentObject.put("dossierUUid", dossierUUid);
+		paymentObject.put("paymentFileUUid", paymentFileUUid);
+		paymentObject.put(
+			"trans_id",
+			Validator.isNotNull(trans_id) ? trans_id : StringPool.BLANK);
+		paymentObject.put(
+			"good_code",
+			Validator.isNotNull(good_code) ? good_code : StringPool.BLANK);
+		return paymentObject;
 	}
 
 	private JSONObject generateURLJsonObject(RenderResponse renderResponse)
@@ -119,7 +156,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 			"mvcPath", "/templates/customer_dossier_detail_2.ftl");
 
 		urlObject.put("customer_dossier_detail_2", customerDossierDetail2URL);
-		
+
 		PortletURL customerDossierDetail_3 = renderResponse.createRenderURL();
 		customerDossierDetail_3.setWindowState(LiferayWindowState.EXCLUSIVE);
 		customerDossierDetail_3.setParameter(
@@ -287,6 +324,25 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		urlObject.put(
 			"customer_dossier_component_profiles",
 			customerDossierComponentProfilesURL);
+
+		PortletURL customerDossierWaitPayingURL =
+			renderResponse.createRenderURL();
+		customerDossierWaitPayingURL.setWindowState(
+			LiferayWindowState.EXCLUSIVE);
+		customerDossierWaitPayingURL.setParameter(
+			"mvcPath", "/templates/customer_dossier_waitpaying.ftl");
+
+		urlObject.put(
+			"customer_dossier_waitpaying", customerDossierWaitPayingURL);
+
+		PortletURL customerNotificationPayingURL =
+			renderResponse.createRenderURL();
+		customerNotificationPayingURL.setWindowState(
+			LiferayWindowState.EXCLUSIVE);
+		customerNotificationPayingURL.setParameter(
+			"mvcPath", "/templates/notificationPaying.ftl");
+
+		urlObject.put("notificationPaying", customerNotificationPayingURL);
 
 		return urlObject;
 	}

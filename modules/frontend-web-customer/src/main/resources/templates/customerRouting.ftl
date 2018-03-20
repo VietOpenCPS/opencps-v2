@@ -9,7 +9,7 @@
 	        layout.render("#appManagerDossier");
 	        layout.showIn("#panel_list", viewPanel);
 		    layout.showIn("#main_section", viewMainList);
-		    layout.showIn("#sidebar_list", viewSidebar);
+		    /*layout.showIn("#sidebar_list", viewSidebar);*/
 	    }
 	});
 	manageDossier.route("/", function() {
