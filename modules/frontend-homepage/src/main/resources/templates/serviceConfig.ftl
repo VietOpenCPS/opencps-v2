@@ -27,7 +27,7 @@
 						dataType: 'json',
 						type: 'GET',
 						headers: {
-							'groupId': '${(groupId)!}',
+							'groupId': 55217,
 						},
 						success: function(result){
 							console.log("OK");

@@ -1,7 +1,7 @@
 <#if (Request)??>
 <#include "init.ftl">
 </#if>
-
+<#include "serviceinfo_router.ftl">
 <div class="row">
   <div class="col-xs-12 col-sm-3">
     <div>
@@ -330,10 +330,11 @@
     $(document).on("click",".item-serviceinfo",function(event){
       var id=$(this).attr("data-pk");
       console.log(id);
-      $("#serviceinfo-right-content").load("${ajax.serviceinfo_detail}",function(result){
-        console.log(id);
-        pullDataDetail(id);
-      });
+      // $("#serviceinfo-right-content").load("${ajax.serviceinfo_detail}",function(result){
+      //   console.log(id);
+      //   pullDataDetail(id);
+      // });
+      serviceInfoRouter.navigate("/"+id);
     });
 
     $(document).on("click",".btn-revert",function(){
