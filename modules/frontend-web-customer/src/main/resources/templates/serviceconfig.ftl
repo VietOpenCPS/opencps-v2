@@ -197,16 +197,5 @@
     }*/
 
   });
-
-$(function(){
-  manageDossier.route("/taohosomoi/chuanbihoso/(:dossierId)", function(dossierId){
-    $("#mainType1").hide();
-    $("#mainType2").show();
-
-    $("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+dossierId,function(result){
-
-    });
-  });
-});
 </script>
 
