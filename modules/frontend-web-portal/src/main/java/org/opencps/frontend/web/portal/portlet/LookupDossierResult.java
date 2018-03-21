@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
@@ -74,10 +75,14 @@ public class LookupDossierResult extends FreeMarkerPortlet {
 		apiObject.put(
 			"portletNamespace",
 			themeDisplay.getPortletDisplay().getNamespace());
-
+		
+		// get variable request
+		String keyword = ParamUtil.getString(renderRequest, "keyword");
+		
 		// set varible
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("api", apiObject);
+		renderRequest.setAttribute("keyword", keyword);
 
 		super.render(renderRequest, renderResponse);
 

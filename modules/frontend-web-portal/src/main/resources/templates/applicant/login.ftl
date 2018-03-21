@@ -32,6 +32,7 @@
 		
 	</form>
 </div>
+
 <div class="visible-xs visible-sm">
 	<a href="#">Đăng nhập</a>
 </div>
