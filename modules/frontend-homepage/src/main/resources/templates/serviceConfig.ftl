@@ -1,7 +1,7 @@
 <#if (Request)??>
 <#include "init.ftl">
 </#if>
-<div class="dvc34">
+<div class="dvc34" style="width:100%">
 	<div class="panel-vanhoa">
 		<div class="title">Văn hóa</div>
 		<div id="scList"></div>
@@ -10,7 +10,7 @@
 				<div class="sub-title">#= record++ #. #=value#</div>
 				<ul>
 					# for (var i = 0; i < items.length; i++) { #
-					<li><a href="">#= items[i].serviceName #</a></li>
+					<li><a href="/group/cong-tiep-nhan/quan-ly-ho-so?serviceConfigId=#=items[i].serviceConfigId#">#= items[i].serviceName #</a></li>
         			# } #
 				</ul>
 			</div>
@@ -23,14 +23,13 @@
 			transport: {
 				read : function(options){
 					$.ajax({
-						url: "http://103.21.148.29/o/rest/v2/serviceconfigs",
+						url: "${(api)!}/serviceconfigs",
 						dataType: 'json',
 						type: 'GET',
 						headers: {
-							'groupId': '${(groupId)!}',
+							'groupId': '55217',
 						},
 						success: function(result){
-							console.log("OK");
 							options.success(result)
 						}
 					})

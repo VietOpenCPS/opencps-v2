@@ -1,10 +1,5 @@
 package frontend.homepage.portlet;
 
-import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
-import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
-
-import frontend.homepage.constants.FrontendHomepagePortletKeys;
-
 import java.io.IOException;
 
 import javax.portlet.Portlet;
@@ -13,6 +8,10 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
+
+import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
+
+import frontend.homepage.constants.FrontendHomepagePortletKeys;
 
 /**
  * @author admin
@@ -35,6 +34,7 @@ public class ServiceConfigPortlet extends FreeMarkerPortlet {
 	@Override
 	public void render(RenderRequest renderRequest, RenderResponse renderResponse)
 			throws IOException, PortletException {
+		renderRequest.setAttribute("api", "http://103.21.148.29/o/rest/v2");
 		super.render(renderRequest, renderResponse);
 	}
 }
