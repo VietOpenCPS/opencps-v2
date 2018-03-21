@@ -13,7 +13,7 @@
 
     <div class="row">
       <h3 class="text-center">NỘP HỒ SƠ THÀNH CÔNG</h3>
-      <p class="text-center">Mã hồ sơ đã nộp: <span class="text-light-blue" data-bind="text:dossierId"></span> ${(dossierId)!}<span class="text-bold" style="color: green;"></span> </p> 
+      <p class="text-center">Mã hồ sơ đã nộp: <span class="text-light-blue" data-bind="text:dossierIdCTN"></span><span class="text-bold" style="color: green;"></span> </p> 
     </div>
 
     <div class="row">
@@ -95,6 +95,7 @@
                 var viewModel = kendo.observable({
                   serviceName : result.serviceName,
                   govAgencyName : result.govAgencyName,
+                  dossierIdCTN : result.dossierIdCTN,
                   govAgencyAddress : function(){
                     var govAgencyCode = result.govAgencyCode;
                     var govAgencyAddress = "";
@@ -139,7 +140,7 @@
 
         $("#btn-completed-submiting-dossier").click(function(){
 
-          manageDossier.navigate("/New");
+          manageDossier.navigate("/new");
 
           $("#mainType1").show();
           $("#mainType2").hide();       

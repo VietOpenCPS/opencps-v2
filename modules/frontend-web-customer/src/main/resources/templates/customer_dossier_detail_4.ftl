@@ -396,7 +396,7 @@
 								<div class="form-group"> 
 									<label class="control-label">Ghi chú kèm theo</label> 
 									<textarea class="form-control" rows="2" id="confirmNote" name="confirmNote" data-bind="text:confirmNote">
-
+											
 									</textarea> 
 								</div>
 							</div> 

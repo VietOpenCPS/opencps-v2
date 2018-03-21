@@ -501,7 +501,6 @@
 					$("#choiseProcessForDossier").modal("hide");
 
 					manageDossier.navigate("/taohosomoi/chuanbihoso/"+result.dossierId);
-
 				},
 				error : function(result){
 				}

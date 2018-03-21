@@ -51,6 +51,22 @@
 			$(".itemStatus").css("pointer-events","auto");
 		});
 
+		manageDossier.route("/taohosomoi/chuanbihoso/(:dossierId)", function(dossierId){
+			$("#mainType1").hide();
+			$("#mainType2").show();
+			$("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+dossierId,function(result){
+
+			});
+		});
+		
+		manageDossier.route("/taohosomoi/nophoso/(:dossierId)", function(dossierId){
+			$("#mainType1").hide();
+			$("#mainType2").show();
+			$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+dossierId,function(result){
+
+			});
+		});
+
 		manageDossier.route("/(:id)", function(id) {
 			$("#mainType1").show();
 			$(".filterField").show();
