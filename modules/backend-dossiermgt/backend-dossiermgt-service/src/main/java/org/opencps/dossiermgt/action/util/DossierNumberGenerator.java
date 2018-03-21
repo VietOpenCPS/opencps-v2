@@ -355,7 +355,7 @@ public class DossierNumberGenerator {
 				}
 
 
-				certNumber = String.format("%05d", _counterNumber) + StringPool.FORWARD_SLASH + pattern + StringPool.FORWARD_SLASH + shortCurYear ; 
+				certNumber = String.format("%7d", _counterNumber); 
 				
 			} else {
 				certNumber = "0";
