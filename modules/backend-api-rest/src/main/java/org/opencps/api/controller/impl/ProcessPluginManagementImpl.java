@@ -358,7 +358,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 					if (formCode.startsWith("#")) {
 						formData = _getFormData(groupId, formCode, dossier.getDossierId(), autoRun,
-								dossier.getDossierTemplateNo(), original);
+								dossier.getDossierTemplateNo(), original, serviceContext);
 
 						formReport = _getFormScript(formCode, dossier.getDossierId());
 					}
@@ -441,17 +441,14 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 	}
 
 	private String _getFormData(long groupId, String fileTemplateNo, long dossierId, boolean autoRun,
-			String dossierTemplateNo, boolean original) {
+			String dossierTemplateNo, boolean original, ServiceContext context) {
+
+		_log.info("RUN TO GET FORM DATA");
 
 		String formData = StringPool.BLANK;
 
 		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
-
-		ServiceContext serviceContext = new ServiceContext();
-
-		// TODO need review again
-		serviceContext.setUserId(20164);
-
+		
 		try {
 			// Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 
@@ -460,8 +457,10 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 			DossierPart dossierPart = DossierPartLocalServiceUtil.getByFileTemplateNo(groupId, fileTemplateNo);
 
-			formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext);
-
+			formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, context);
+			
+			_log.info(formData);
+			
 			if (original) {
 				
 				if (Validator.isNotNull(dossierFile)) {
@@ -473,18 +472,17 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 				if (Validator.isNull(dossierFile)) {
 
-
 					if (autoRun) {
 						// create DossierFile
 
 						dossierFile = actions.addDossierFile(groupId, dossierId, PortalUUIDUtil.generate(),
 								dossierTemplateNo, dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(),
-								StringPool.BLANK, 0L, null, StringPool.BLANK, String.valueOf(false), serviceContext);
+								StringPool.BLANK, 0L, null, StringPool.BLANK, String.valueOf(false), context);
 
 						_log.info("UPDATED DOSSIERFILE");
 
 						actions.updateDossierFileFormData(groupId, dossierId, dossierFile.getReferenceUid(), formData,
-								serviceContext);
+								context);
 
 					} else {
 						// add temp File
@@ -495,7 +493,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 					// formData = dossierFile.getFormData();
 
 					actions.updateDossierFileFormData(groupId, dossierId, dossierFile.getReferenceUid(), formData,
-							serviceContext);
+							context);
 
 				}
 			}
@@ -593,7 +591,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 					if (formCode.startsWith("#")) {
 						formData = _getFormData(groupId, formCode, dossier.getDossierId(), autoRun,
-								dossier.getDossierTemplateNo(), original);
+								dossier.getDossierTemplateNo(), original, serviceContext);
 
 						formReport = _getFormHtml(formCode, dossier.getDossierId());
 					}

@@ -105,6 +105,10 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 	
 	Log _log = LogFactoryUtil.getLog(DossierFileLocalServiceImpl.class);
 	
+	public DossierFile getByRefAndGroupId(long groupId, String referenceUid) throws PortalException {
+		return dossierFilePersistence.fetchByGID_REF(groupId, referenceUid);
+	}
+	
 	/**
 	 * POST /dossiers/{id|referenceUid}/files
 	 */
@@ -646,6 +650,9 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		dossierFile.setModifiedDate(now);
 		dossierFile.setRemoved(true);
 		dossierFile.setUserName(user.getFullName());
+		
+		//set submitting = true
+		dossierFile.setIsNew(true);
 
 		return dossierFileLocalService.updateDossierFile(dossierFile);
 	}
@@ -686,7 +693,16 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 	}
 
 	public List<DossierFile> getDossierFilesByDossierId(long dossierId) {
+
 		return dossierFilePersistence.findByDossierId(dossierId, false);
+
+	}
+
+	// Get all dossierFile by dossierId
+	public List<DossierFile> getAllDossierFile(long dossierId) {
+
+		return dossierFilePersistence.findByDID_(dossierId);
+
 	}
 
 	public List<DossierFile> getDossierFilesByD_DP(long dossierId, int dossierPartType) {

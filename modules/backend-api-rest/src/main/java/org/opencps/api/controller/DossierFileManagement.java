@@ -396,4 +396,19 @@ public interface DossierFileManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "deliverable Code", required = true) @PathParam("deliverableCode") String deliverableCode);
+	
+	// Get all dossierFile by dossierID
+	@GET
+	@Path("/{id}/all/files")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "getDossierFilesByDossierId", response = DossierFileResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list", response = DossierFileResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response getAllDossierFilesByDossierId(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id);
 }

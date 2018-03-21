@@ -462,6 +462,9 @@
 			<finder-column name="fileTemplateNo" />
 		</finder>
 		
+		<finder return-type="Collection" name="DID_">
+			<finder-column name="dossierId" />
+		</finder>
 
 		<finder return-type="Collection" name="DossierId">
 			<finder-column name="dossierId" />
@@ -516,6 +519,10 @@
         </finder>
         <finder return-type="DossierFile" name="DE_CODE">
         	<finder-column name="deliverableCode" />
+        </finder>
+        <finder return-type="DossierFile" name="GID_REF">
+        	<finder-column name="groupId" />
+        	<finder-column name="referenceUid" />
         </finder>
 	</entity>
 
@@ -903,6 +910,7 @@
 		<column name="createDossierNo" type="boolean"/>
 		<column name="eSignature" type="boolean"/>
 		<column name="configNote" type="String"/>
+		<column name="dossierTemplateNo" type="String"/>
 		
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />

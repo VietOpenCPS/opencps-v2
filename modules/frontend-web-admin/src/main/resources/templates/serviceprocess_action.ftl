@@ -21,10 +21,10 @@
 						<b>Tên thao tác</b>
 					</div>
 					<div class="col-sm-2 text-center">
-						<b>Bước thực hiện thao tác</b>
+						<b class="hover-pointer" id="sortPreStepCode" sort="preStepCode" sort-type="asc">Bước thực hiện thao tác </b> <i class="fa fa-sort text-light-gray" aria-hidden="true"></i>
 					</div>
 					<div class="col-sm-2 text-center">
-						<b>Bước sau</b>
+						<b class="hover-pointer" id="sortPostStepCode" sort="postStepCode" sort-type="asc">Bước sau </b><i class="fa fa-sort text-light-gray" aria-hidden="true"></i>
 					</div>
 					<div class="col-sm-2 text-center">
 						<b>Hành động</b>
@@ -87,6 +87,7 @@
 								success: function(result) {
 									if(result.data){
 										options.success(result);
+										serviceProcessActionDataSource.sort({ field: "preStepCode", dir: "asc" });
 									}else {
 										options.success({
 											"data" : [],
@@ -165,6 +166,28 @@
 				},
 			});
 
+			var sortFieldProcessAction = function(selected){
+				var sortItem = $(selected).attr("sort");
+				var sortType = $(selected).attr("sort-type");
+
+				if (sortType == "desc") {
+					serviceProcessActionDataSource.sort({ field: sortItem, dir: "desc" });
+					$(selected).attr("sort-type","asc");
+				} else {
+					serviceProcessActionDataSource.sort({ field: sortItem, dir: "asc" });
+					$(selected).attr("sort-type","desc");
+				}
+			};
+
+			$("#sortPreStepCode").click(function(){
+				sortFieldProcessAction(this);
+			});
+
+			$("#sortPostStepCode").click(function(){
+				sortFieldProcessAction(this);
+			});
+			
+
 			$("#service_process_action_bager").kendoPager({
 				dataSource: serviceProcessActionDataSource,
 				buttonCount: 3,
@@ -183,6 +206,8 @@
 
 				var serviceProcessAction = serviceProcessActionDataSource.get(($(this).attr("data-pk")));
 
+				console.log("serviceProcessAction==============",serviceProcessAction);
+
 				var viewModel = kendo.observable({
 					actionCode: serviceProcessAction.actionCode,
 					actionName: serviceProcessAction.actionName,
@@ -198,7 +223,9 @@
 					rollbackable: serviceProcessAction.rollbackable,
 					dossiertemplatesFileFilter: "",
 					createDossierNo : serviceProcessAction.createDossierNo,
-					eSignature : serviceProcessAction.eSignature
+					eSignature : serviceProcessAction.eSignature,
+					configNote : serviceProcessAction.configNote,
+					dossiertemplatesFileFilter : serviceProcessAction.dossierTemplateNo
 
 				});
 
@@ -207,7 +234,7 @@
 				initStepCombobox();
 
 				
-
+				console.log("serviceProcessAction.createDossierFiles==============",serviceProcessAction.createDossierFiles);
 				if (typeof serviceProcessAction.createDossierFiles === 'number'){
 					console.log("type number");
 					$("#createDossierFiles").data("kendoMultiSelect").value(serviceProcessAction.createDossierFiles);
@@ -220,9 +247,12 @@
 					
 				} else if (serviceProcessAction.createDossierFiles){
 					$("#createDossierFiles").data("kendoMultiSelect").value(serviceProcessAction.createDossierFiles);
+				}else {
+					$("#createDossierFiles").data("kendoMultiSelect").value("");
 				}
 
 				
+				console.log("serviceProcessAction.returnDossierFiles==============",serviceProcessAction.returnDossierFiles);
 
 				if (typeof serviceProcessAction.returnDossierFiles === 'number'){
 
@@ -236,6 +266,8 @@
 
 				} else if (serviceProcessAction.returnDossierFiles){
 					$("#returnDossierFiles").data("kendoMultiSelect").value(serviceProcessAction.returnDossierFiles);
+				}else {
+					$("#returnDossierFiles").data("kendoMultiSelect").value("");
 				}
 
 				$("#btn_save_service_process_action").attr("data-pk", $(this).attr("data-pk"));
@@ -270,7 +302,10 @@
 					rollbackable: "",
 					dossiertemplatesFileFilter: "",
 					createDossierNo : "",
-					eSignature : ""
+					eSignature : "",
+					configNote : "",
+					dossiertemplatesFileFilter : ""
+					/*configNote : '{  "cancelButton": "Quay lại", "requiredNote": false,    "confirmButton": "Đồng ý",    "titleNote": "Nhập ý kiến chỉ đạo",    "displayNote": false}'*/
 				});
 
 				initStepCombobox();
@@ -320,7 +355,9 @@
 							syncActionCode: $("#syncActionCode").val(),
 							rollbackable: $("#rollbackable").prop("checked"),
 							createDossierNo : $("#createDossierNo").prop("checked"),
-							eSignature : $("#eSignature").prop("checked")
+							eSignature : $("#eSignature").prop("checked"),
+							configNote : $("textarea#configNote").val(),
+							dossierTemplateNo : $("#dossiertemplates_file_filter").val()
 						},
 						success: function(result) {
 							notification.show({
@@ -390,7 +427,9 @@
 							syncActionCode: $("#syncActionCode").val(),
 							rollbackable: $("#rollbackable").prop("checked"),
 							createDossierNo : $("#createDossierNo").prop("checked"),
-							eSignature : $("#eSignature").prop("checked")
+							eSignature : $("#eSignature").prop("checked"),
+							configNote : $("textarea#configNote").val(),
+							dossierTemplateNo : $("#dossiertemplates_file_filter").val()
 						},
 						success: function(result) {
 							notification.show({
@@ -419,7 +458,8 @@
 								"syncActionCode": $("#syncActionCode").val(),
 								"rollbackable": $("#rollbackable").prop("checked"),
 								"createDossierNo" : $("#createDossierNo").prop("checked"),
-								"eSignature" : $("#eSignature").prop("checked")
+								"eSignature" : $("#eSignature").prop("checked"),
+								"configNote" : $("textarea#configNote").val()
 							});
 
 							

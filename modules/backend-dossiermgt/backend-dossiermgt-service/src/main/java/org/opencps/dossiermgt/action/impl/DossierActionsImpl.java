@@ -1646,12 +1646,13 @@ public class DossierActionsImpl implements DossierActions {
 		if (Validator.isNotNull(oldNote) && oldNote.contains("<br>")) {
 			if (Validator.isNotNull(actionNote)) {
 				if (groupId != 55217) {
-					sb.append(oldNote);
 					sb.append("<br>");
 					sb.append("[" + sdf.format(date) + "]");
 					sb.append(": ");
 					sb.append(actionNote);
+					sb.append(oldNote);
 				} else {
+					sb.append("<br>");
 					sb.append("[" + sdf.format(date) + "]");
 					sb.append(": ");
 					sb.append(actionNote);

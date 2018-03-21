@@ -4,6 +4,7 @@
 
 <div class="">
 	<form id="serviceprocesses_detail_form_action" name="fm" method="post">
+		<input type="hidden" name="dossiertemplateTmp" id="dossiertemplateTmp" data-bind="value:dossiertemplatesFileFilter">
 		<div class="row">
 			<div class="col-xs-12 col-sm-5">
 				<div class="row">
@@ -67,10 +68,11 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
 						Bước thực hiện thao tác
+						
 					</div>
 				</div>
 				<div class="row MT5">
-					<div class="col-xs-12 col-sm-12">
+					<div class="col-xs-12 col-sm-12" >
 						<input id="preStepCode" name="preStepCode" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" data-bind="value: preStepCode"/>
 					</div>
 				</div>
@@ -80,6 +82,7 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
 						Bước sau thực hiện thao tác
+						
 					</div>
 				</div>
 				<div class="row MT5">
@@ -168,6 +171,21 @@
 		</div>
 
 		<div class="row MT10">
+			<div class="col-sm-12">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						Cấu hình panel nhập ý kiến
+					</div>
+				</div>
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<textarea class="form-control" name="configNote" id="configNote" data-bind="value: configNote" rows="7"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row MT10">
 			<div class="col-sm-6">
 				<div class="checkbox"> 
 					<input type="checkbox" id="createDossierNo" name="createDossierNo" data-bind="checked:createDossierNo"> 
@@ -244,7 +262,18 @@
 				total : "total"
 			}
 		},
+		change: function(e) {
+			var value = this.value();
+			$('#createDossierFiles').data('kendoMultiSelect').value("");
+			$('#createDossierFiles').data('kendoMultiSelect').dataSource.read({
+				id : value
+			});
 
+			$('#returnDossierFiles').data('kendoMultiSelect').value("");
+			$('#returnDossierFiles').data('kendoMultiSelect').dataSource.read({
+				id : value
+			});
+		},
 		noDataTemplate: 'Không có dữ liệu'
 	});
 
@@ -253,17 +282,37 @@
 		dataValueField: "fileTemplateNo",
 		dataSource: {
 			transport : {
-				read : {
-					url : "${api.server}" + "/dossiertemplates/0/parts",
-					dataType : "json",
-					type : "GET",
-					headers: {"groupId": ${groupId}},
-					success : function(result){
-
-					},
-					error : function(xhr){
-
+				read : function(options){
+					var id = 0;
+					if(options.data.id){
+						var id = options.data.id;
+						
+					}else {
+						id = $("#dossiertemplateTmp").val();
+						
 					}
+
+					$.ajax({
+						url : "${api.server}" + "/dossiertemplates/"+id+"/parts",
+						dataType : "json",
+						type : "GET",
+						headers: {"groupId": ${groupId}},
+						success : function(result){
+							if(result.data){
+								options.success(result);
+							}else {
+								options.success({
+									"total" : 0,
+									"data" : []
+								});
+							}
+
+						},
+						error : function(xhr){
+							options.error(xhr);
+						}
+					});
+					
 				}
 			},
 			schema : {
@@ -282,23 +331,43 @@
 		placeholder: "Nhập từ khóa",
 		noDataTemplate: 'Không có dữ liệu'
 	});
-
+	
 	$("#returnDossierFiles").kendoMultiSelect({
 		dataTextField : "partName",
 		dataValueField: "fileTemplateNo",
 		dataSource: {
 			transport : {
-				read : {
-					url : "${api.server}" + "/dossiertemplates/0/parts",
-					dataType : "json",
-					type : "GET",
-					headers: {"groupId": ${groupId}},
-					success : function(result){
-
-					},
-					error : function(xhr){
-
+				read : function(options){
+					var id = 0;
+					if(options.data.id){
+						var id = options.data.id;
+						
+					}else {
+						id = $("#dossiertemplateTmp").val();
+						
 					}
+
+					$.ajax({
+						url : "${api.server}" + "/dossiertemplates/"+id+"/parts",
+						dataType : "json",
+						type : "GET",
+						headers: {"groupId": ${groupId}},
+						success : function(result){
+							if(result.data){
+								options.success(result);
+							}else {
+								options.success({
+									"total" : 0,
+									"data" : []
+								});
+							}
+
+						},
+						error : function(xhr){
+							options.error(xhr);
+						}
+					});
+					
 				}
 			},
 			schema : {

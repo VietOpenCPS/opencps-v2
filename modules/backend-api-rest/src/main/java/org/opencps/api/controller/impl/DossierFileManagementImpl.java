@@ -696,4 +696,30 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 	}
 
+	@Override
+	public Response getAllDossierFilesByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id) {
+		DossierFileResultsModel results = new DossierFileResultsModel();
+
+		// TODO: check user is loged or password for access dossier file
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getAllDossierFile(id);
+
+			results.setTotal(dossierFiles.size());
+			results.getData().addAll(DossierFileUtils.mappingToDossierFileData(dossierFiles));
+
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+
 }

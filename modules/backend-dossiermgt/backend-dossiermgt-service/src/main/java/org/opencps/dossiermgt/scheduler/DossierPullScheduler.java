@@ -657,7 +657,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			HashMap<String, String> properties = new HashMap<String, String>();
 			properties.put("Content-Type", "application/x-www-form-urlencoded");
 
-			String path = "dossiers/" + dossierId + "/files";
+			String path = "dossiers/" + dossierId + "/all/files";
 
 			ServiceContext serviceContext = new ServiceContext();
 
@@ -714,12 +714,14 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			if (isRemoved) {
 				
 				//remove file in CLIENT
-				
-				DossierFile file = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(srcDossierId, fileRef);
-				
-				file.setRemoved(true);
-				
-				DossierFileLocalServiceUtil.updateDossierFile(file);
+				_log.info("referenceUid" + fileRef);
+				_log.info("dossierId" + dossierId);
+				_log.info("srcDossierId" + srcDossierId);
+				DossierFile file = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId, fileRef);
+				if (file != null) {
+					file.setRemoved(true);
+					DossierFileLocalServiceUtil.updateDossierFile(file);
+				}
 
 			} else {
 
