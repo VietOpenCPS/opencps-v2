@@ -9,13 +9,21 @@ import org.opencps.api.registration.model.RegistrationDetailModel;
 import org.opencps.api.registration.model.RegistrationDetailResultModel;
 import org.opencps.api.registration.model.RegistrationModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.RegistrationFormActions;
+import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
+import org.opencps.dossiermgt.model.RegistrationForm;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationUtils {
@@ -246,4 +254,36 @@ public class RegistrationUtils {
 
 	}
 
+	public static JSONArray mappingFormData(List<Document> documents) throws PortalException {
+		JSONArray data = JSONFactoryUtil.createJSONArray();
+
+		for (Document doc : documents) {
+			long registrationId = GetterUtil.getLong(doc.get(RegistrationTerm.REGISTRATION_ID));
+			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
+			JSONObject xuongSXJson = JSONFactoryUtil.createJSONObject();
+			if (Validator.isNotNull(registrationId) && registrationId > 0) {
+				RegistrationFormActions action = new RegistrationFormActionsImpl();
+				List<RegistrationForm> registrationFormList = action.getFormbyRegId(groupId, registrationId);
+
+				if (registrationFormList != null && registrationFormList.size() > 0) {
+					String formData = StringPool.BLANK;
+
+					for (RegistrationForm regForm : registrationFormList) {
+						formData = regForm.getFormData();
+						try {
+							JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
+							String xuongSX = formJson.getString("ten_xuong_san_xuat");
+							if (Validator.isNotNull(xuongSX)) {
+								xuongSXJson.put("ten_xuong_san_xuat", xuongSX);
+								data.put(xuongSXJson);
+							}
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
+					}
+				}
+			}
+		}
+		return data;
+	}
 }

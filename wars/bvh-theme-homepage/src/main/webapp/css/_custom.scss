@@ -7,15 +7,15 @@
 
 @import url(base-style.css);                    /* Style header, footer, navbar */
 
+/*----- Components -----*/
+@import url(apaca.min.css);                     /* CSS for apaca form */
+@import url(modern_component.css);              /* Components style css */
+@import url(custom-style.css);                  /* Custom style for non-components */             
+
 /*KendoUI css*/
 @import url(kendo.default.min.css);                 
 @import url(kendo.common.core.min.css);           
 @import url(kendo.common.min.css);                  
 @import url(kendo.material.min.css);             
 @import url(kendo.silver.min.css);               
-@import url(kendo-override.css);    
-
-/*----- Components -----*/
-@import url(apaca.min.css);                     /* CSS for apaca form */
-@import url(modern_component.css);              /* Components style css */
-@import url(custom-style.css);                  /* Custom style for non-components */             
+@import url(kendo-override.css);

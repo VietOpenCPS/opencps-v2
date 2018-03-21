@@ -259,7 +259,7 @@ public class ServiceProcessUtils {
 				model.setConfigNote(doc.get(ProcessActionTerm.CONFIG_NOTE));
 
 			}
-			
+			model.setDossierTemplateNo(doc.get("dossierTemplateNo"));
 			
 			outputs.add(model);
 		}

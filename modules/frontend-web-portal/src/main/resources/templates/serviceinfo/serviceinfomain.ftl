@@ -95,7 +95,7 @@
     </div>
   </div>
   <div class="col-xs-12 col-sm-9" id="serviceinfo-right-content">
-    <#include "serviceinfomain_list.ftl">
+   <#--  <#include "serviceinfomain_list.ftl"> -->
   </div>
 </div>
 
@@ -118,6 +118,8 @@
     </div>
   </div>
 </div>
+
+<#include "serviceinfo_router.ftl">
 
 <script type="text/javascript">
   var initServiceinfo;
@@ -330,10 +332,12 @@
     $(document).on("click",".item-serviceinfo",function(event){
       var id=$(this).attr("data-pk");
       console.log(id);
-      $("#serviceinfo-right-content").load("${ajax.serviceinfo_detail}",function(result){
+      /*$("#serviceinfo-right-content").load("${ajax.serviceinfo_detail}",function(result){
         console.log(id);
         pullDataDetail(id);
-      });
+      });*/
+
+      serviceInfoRouter.navigate("/"+id);
     });
 
     $(document).on("click",".btn-revert",function(){
