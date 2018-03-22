@@ -170,11 +170,11 @@ public class DossierActionsImpl implements DossierActions {
 						groupId);
 
 				DictItem dictItem = null;
-				if (Validator.isNotNull(statusCode)) {
-					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(statusCode,
+				if (Validator.isNotNull(subStatusCode)) {
+					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(subStatusCode,
 							dictCollection.getDictCollectionId(), groupId);
 				} else {
-					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(subStatusCode,
+					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(statusCode,
 							dictCollection.getDictCollectionId(), groupId);
 				}
 
@@ -201,23 +201,21 @@ public class DossierActionsImpl implements DossierActions {
 					params.put(DossierTerm.FOLLOW, String.valueOf(false));
 
 					hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
-					result.put("data", hits.toList());
-
-					total = DossierLocalServiceUtil.countLucene(params, searchContext);
-					result.put("total", total);
-					_log.info("54"+total);
-					_log.info("55"+hits.toList());
-
+					if (hits != null && hits.getLength() > 0) {
+						result.put("data", hits.toList());
+						total = DossierLocalServiceUtil.countLucene(params, searchContext);
+						result.put("total", total);
+					}
 				}
 			} else {
 				
 				hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-				result.put("data", hits.toList());
-
-				long total = DossierLocalServiceUtil.countLucene(params, searchContext);
-
-				result.put("total", total);
+				if (hits != null && hits.getLength() > 0) {
+					result.put("data", hits.toList());
+					long total = DossierLocalServiceUtil.countLucene(params, searchContext);
+					result.put("total", total);
+				}
 //				DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
 //						groupId);
 //				List<DictItem> dictItems = DictItemLocalServiceUtil
@@ -2051,14 +2049,13 @@ public class DossierActionsImpl implements DossierActions {
 						JSONObject statistic = JSONFactoryUtil.createJSONObject();
 
 						if (Validator.isNotNull(specialStatus) && Boolean.parseBoolean(specialStatus)) {
-							long count = 0;
 							// Add params
 							params.put(DossierTerm.STATUS, statusCode);
 							params.put(DossierTerm.SUBSTATUS, subStatusCode);
 							params.put(DossierTerm.DOSSIER_ACTION_ID, sb.toString());
 							params.put(DossierTerm.FOLLOW, String.valueOf(false));
 
-							count = DossierLocalServiceUtil.countLucene(params, searchContext);
+							long count = DossierLocalServiceUtil.countLucene(params, searchContext);
 							_log.info("count: " + count);
 
 							statistic.put("dossierStatus", statusCode);
@@ -2066,7 +2063,7 @@ public class DossierActionsImpl implements DossierActions {
 							statistic.put("level", dictItem.getLevel());
 							statistic.put("statusName", dictItem.getItemName());
 							statistic.put("count", count);
-							if (dictItem.getParentItemId() == 0) {
+							if (dictItem.getParentItemId() != 0) {
 								total += count;
 							}
 							statistics.put(statistic);
@@ -2082,7 +2079,7 @@ public class DossierActionsImpl implements DossierActions {
 							statistic.put("level", dictItem.getLevel());
 							statistic.put("statusName", dictItem.getItemName());
 							statistic.put("count", count);
-							if (dictItem.getParentItemId() == 0) {
+							if (dictItem.getParentItemId() != 0) {
 								total += count;
 							}
 							statistics.put(statistic);
