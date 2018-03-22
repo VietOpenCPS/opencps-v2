@@ -42,7 +42,7 @@ public interface RegistrationFormActions {
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
 
     public void cloneRegistrationFormByRegistrationId(
-        long groupId, long registrationId, ServiceContext serviceContext)
+        long groupId, long oldRegistrationId, long newRegistrationId, ServiceContext serviceContext)
         throws PortalException, SystemException;
 
 }

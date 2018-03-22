@@ -80,4 +80,7 @@ public interface DossierActions {
 	
 	public JSONObject getDossierTodoPermission(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, ServiceContext serviceContext);
+
+	public JSONObject getDossierTodoPermissionTest(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, ServiceContext serviceContext);
 }

@@ -105,6 +105,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		long registrationFormId = counterLocalService.increment(RegistrationForm.class.getName());
 
+		_log.info("registrationFormId: "+registrationFormId);
 		RegistrationForm object = registrationFormPersistence.create(registrationFormId);
 
 		/// Add audit fields
