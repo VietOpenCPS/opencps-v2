@@ -334,4 +334,29 @@ public interface DataManagement {
 			@ApiParam(value = "itemCode of DictItemthat need to be deleted meatadata", required = true) @PathParam("itemCode") String itemCode,
 			@ApiParam(value = "metadata of DictItem that need to deleted", required = true) @PathParam("key") String key,
 			@ApiParam(value = "metadata of DictItem that need to deleted", required = true) String body);
+
+	@POST
+	@Path("/{code}/dictitems/{itemCode}")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Update DictItem by DictItemCode", response = DictItemModel.class, notes = "Update DictItem by DictItemCode")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Return DictItem that was updated", response = DictItemModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized"),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found"),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server problems") })
+	public Response updateOrCreateNewDictItemByItemCode(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "code of DictCollection of DictItem that need to be updated", required = true) @PathParam("code") String code,
+			@ApiParam(value = "itemCode of DictItem that need to be updated or created", required = true) @PathParam("itemCode") String itemCode,
+			@BeanParam DictItemInputModel input);
+	@POST
+	@Path("/{code}")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response updateOrCreateNewDictCollection(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "code that need to be created or updated", required = true) @PathParam("code") String code,			
+			@BeanParam DictCollectionInputModel input);
+	
 }

@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+
+<service-builder auto-namespace-tables="false"
+	package-path="org.opencps.synchronization">
+	<author>trungdk</author>
+	<namespace>Synchronization</namespace>
+	<entity local-service="true" name="PushDictItem" table="opencps_pushdictitem" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="pushDictItemId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="collectionCode" type="String" />
+		<column name="itemCode" type="String" />
+		<column name="itemName" type="String" />
+		<column name="itemNameEN" type="String" />
+		<column name="itemDescription" type="String" />
+		<column name="parentItemCode" type="String" />
+		<column name="sibling" type="String" />
+
+		<column name="method" type="String"/>
+		
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="modifiedDate" />
+		</order>
+	</entity>
+	<entity local-service="true" name="PushCollection" table="opencps_pushcollection" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="pushCollectionId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="collectionCode" type="String" />
+		<column name="collectionName" type="String" />
+		<column name="collectionNameEN" type="String" />
+		<column name="description" type="String" />
+
+		<column name="method" type="String"/>
+		
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="modifiedDate" />
+		</order>
+	</entity>	
+</service-builder>

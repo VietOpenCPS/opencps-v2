@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="org.opencps.synchronization.model.PushCollection">
+		<field name="uuid" type="String" />
+		<field name="pushCollectionId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="collectionCode" type="String" />
+		<field name="collectionName" type="String" />
+		<field name="collectionNameEN" type="String" />
+		<field name="description" type="String" />
+		<field name="method" type="String" />
+	</model>
+	<model name="org.opencps.synchronization.model.PushDictItem">
+		<field name="uuid" type="String" />
+		<field name="pushDictItemId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="collectionCode" type="String" />
+		<field name="itemCode" type="String" />
+		<field name="itemName" type="String" />
+		<field name="itemNameEN" type="String" />
+		<field name="itemDescription" type="String" />
+		<field name="parentItemCode" type="String" />
+		<field name="sibling" type="String" />
+		<field name="method" type="String" />
+	</model>
+</model-hints>

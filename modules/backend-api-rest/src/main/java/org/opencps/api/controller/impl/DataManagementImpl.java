@@ -26,6 +26,8 @@ import org.opencps.api.datamgt.model.Groups;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.constants.DictGroupTerm;
@@ -35,6 +37,11 @@ import org.opencps.datamgt.model.DictGroup;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.model.DictItemGroup;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.synchronization.action.PushCollectionInterface;
+import org.opencps.synchronization.action.PushDictItemInterface;
+import org.opencps.synchronization.action.impl.PushCollectionActions;
+import org.opencps.synchronization.action.impl.PushDictItemActions;
+import org.opencps.synchronization.constants.SyncServerTerm;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -52,7 +59,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 
@@ -138,7 +144,8 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, DictCollectionInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictCollectionModel dictCollectionModel = new DictCollectionModel();
-
+		PushCollectionInterface pushCollectionUtil = new PushCollectionActions();
+		
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -147,6 +154,34 @@ public class DataManagementImpl implements DataManagement {
 					input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(),
 					input.getDescription(), serviceContext);
 
+			try {
+				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				
+				for (ServerConfig sc : lstServers) {
+					String configs = sc.getConfigs();
+					if (Validator.isNotNull(configs)) {
+						try {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+							if (configObj.has(SyncServerTerm.SERVER_TYPE) 
+									&& configObj.getString(SyncServerTerm.SERVER_TYPE).equals(SyncServerTerm.SYNC_SERVER_TYPE)
+									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_URL)) {
+								if (groupId == sc.getGroupId()) {
+									pushCollectionUtil.addPushCollection(user.getUserId(), groupId, input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(), input.getDescription(), SyncServerTerm.METHOD_CREATE, serviceContext);											
+								}
+							}
+						}
+						catch (Exception e) {
+							_log.error(e);
+						}
+					}
+				}
+			}
+			catch (Exception e) {
+				_log.error(e);
+			}
+			
 			// return json object after update
 			dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
 
@@ -215,7 +250,8 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, String code, DictCollectionInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictCollectionModel dictCollectionModel = new DictCollectionModel();
-
+		PushCollectionInterface pushCollectionUtil = new PushCollectionActions();
+		
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -224,6 +260,34 @@ public class DataManagementImpl implements DataManagement {
 					input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(),
 					input.getDescription(), serviceContext);
 
+			try {
+				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				
+				for (ServerConfig sc : lstServers) {
+					String configs = sc.getConfigs();
+					if (Validator.isNotNull(configs)) {
+						try {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+							if (configObj.has(SyncServerTerm.SERVER_TYPE) 
+									&& configObj.getString(SyncServerTerm.SERVER_TYPE).equals(SyncServerTerm.SYNC_SERVER_TYPE)
+									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_URL)) {
+								if (groupId == sc.getGroupId()) {
+									pushCollectionUtil.addPushCollection(user.getUserId(), groupId, code, input.getCollectionName(), input.getCollectionNameEN(), input.getDescription(), SyncServerTerm.METHOD_UPDATE, serviceContext);											
+								}
+							}
+						}
+						catch (Exception e) {
+							_log.error(e);
+						}
+					}
+				}
+			}
+			catch (Exception e) {
+				_log.error(e);
+			}
+			
 			dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
 
 			return Response.status(200).entity(dictCollectionModel).build();
@@ -277,14 +341,46 @@ public class DataManagementImpl implements DataManagement {
 	public Response deleteDictCollection(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String code) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+		PushCollectionInterface pushCollectionUtil = new PushCollectionActions();
+		
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
+			DictCollection dictCollection = dictItemDataUtil.getDictCollectionDetail(code, groupId);
+			
 			boolean flag = dictItemDataUtil.deleteDictCollection(code, groupId, serviceContext);
 
 			if (flag) {
 
+				try {
+					List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+					
+					for (ServerConfig sc : lstServers) {
+						String configs = sc.getConfigs();
+						if (Validator.isNotNull(configs)) {
+							try {
+								JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+								if (configObj.has(SyncServerTerm.SERVER_TYPE) 
+										&& configObj.getString(SyncServerTerm.SERVER_TYPE).equals(SyncServerTerm.SYNC_SERVER_TYPE)
+										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+										&& configObj.has(SyncServerTerm.SERVER_URL)) {
+									if (groupId == sc.getGroupId()) {
+										pushCollectionUtil.addPushCollection(user.getUserId(), groupId, dictCollection.getCollectionCode(), dictCollection.getCollectionName(), dictCollection.getCollectionNameEN(), dictCollection.getDescription(), SyncServerTerm.METHOD_DELETE, serviceContext);											
+									}
+								}
+							}
+							catch (Exception e) {
+								_log.error(e);
+							}
+						}
+					}
+				}
+				catch (Exception e) {
+					_log.error(e);
+				}
+				
 				return Response.status(200).build();
 
 			} else {
@@ -984,6 +1080,7 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, String code, DictItemInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictItemModel dictItemModel = new DictItemModel();
+		PushDictItemInterface pushDictItemUtil = new PushDictItemActions();
 
 		try {
 
@@ -994,6 +1091,35 @@ public class DataManagementImpl implements DataManagement {
 					input.getItemDescription(), input.getSibling(), input.getLevel(), input.getMetaData(),
 					serviceContext);
 
+			try {
+				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				DictItem item = dictItemDataUtil.getDictItemByItemCode(code, input.getItemCode(), groupId, serviceContext);
+				
+				for (ServerConfig sc : lstServers) {
+					String configs = sc.getConfigs();
+					if (Validator.isNotNull(configs)) {
+						try {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+							if (configObj.has(SyncServerTerm.SERVER_TYPE) 
+									&& configObj.getString(SyncServerTerm.SERVER_TYPE).equals(SyncServerTerm.SYNC_SERVER_TYPE)
+									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_URL)) {
+								if (groupId == sc.getGroupId()) {
+									pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, code, input.getItemCode(), item.getItemName(), item.getItemNameEN(), item.getItemDescription(), input.getParentItemCode(), item.getSibling(), SyncServerTerm.METHOD_CREATE, serviceContext);											
+								}
+							}
+						}
+						catch (Exception e) {
+							_log.error(e);
+						}
+					}
+				}
+			}
+			catch (Exception e) {
+				_log.error(e);
+			}
+			
 			// return json object after update
 			dictItemModel = DataManagementUtils.mapperDictItemModel(dictItem, dictItemDataUtil, user.getUserId(),
 					company.getCompanyId(), groupId, serviceContext);
@@ -1093,15 +1219,38 @@ public class DataManagementImpl implements DataManagement {
 			DictItemInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictItemModel dictItemModel = new DictItemModel();
-
+		PushDictItemInterface pushDictItemUtil = new PushDictItemActions();
+		
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
+						
 			DictItem ett = dictItemDataUtil.updateDictItemByItemCode(user.getUserId(), groupId, serviceContext, code,
 					itemCode, input.getItemCode(), input.getItemName(), input.getItemNameEN(), input.getItemDescription(),
 					input.getSibling(), input.getParentItemCode());
 
+			List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			for (ServerConfig sc : lstServers) {
+				String configs = sc.getConfigs();
+				if (Validator.isNotNull(configs)) {
+					try {
+						JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+						if (configObj.has(SyncServerTerm.SERVER_TYPE) 
+								&& configObj.getString(SyncServerTerm.SERVER_TYPE).equals(SyncServerTerm.SYNC_SERVER_TYPE)
+								&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+								&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+								&& configObj.has(SyncServerTerm.SERVER_URL)) {
+							if (groupId == sc.getGroupId()) {
+								pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, code, itemCode, input.getItemName(), input.getItemNameEN(), input.getItemDescription(), input.getParentItemCode(), input.getSibling(), SyncServerTerm.METHOD_UPDATE, serviceContext);											
+							}
+						}
+					}
+					catch (Exception e) {
+						_log.error(e);
+					}
+				}
+			}
+						
 			if (Validator.isNull(ett)) {
 
 				ErrorMsg error = new ErrorMsg();
@@ -1184,6 +1333,8 @@ public class DataManagementImpl implements DataManagement {
 	public Response dateletDictItemByItemCode(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+		PushDictItemInterface pushDictItemUtil = new PushDictItemActions();
+		
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -1201,9 +1352,37 @@ public class DataManagementImpl implements DataManagement {
 				return Response.status(404).entity(error).build();
 
 			} else {
+				DictItem item = dictItemDataUtil.getDictItemByItemCode(code, itemCode, groupId, serviceContext);
 
 				DictItemLocalServiceUtil.deleteDictItem(groupId, itemCode, serviceContext);
 
+				try {
+					List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+					
+					for (ServerConfig sc : lstServers) {
+						String configs = sc.getConfigs();
+						if (Validator.isNotNull(configs)) {
+							try {
+								JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+								if (configObj.has(SyncServerTerm.SERVER_TYPE) 
+										&& configObj.getString(SyncServerTerm.SERVER_TYPE).equals(SyncServerTerm.SYNC_SERVER_TYPE)
+										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+										&& configObj.has(SyncServerTerm.SERVER_URL)) {
+									if (groupId == sc.getGroupId()) {
+										pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, code, itemCode, item.getItemName(), item.getItemNameEN(), item.getItemDescription(), "", item.getSibling(), SyncServerTerm.METHOD_DELETE, serviceContext);											
+									}
+								}
+							}
+							catch (Exception e) {
+								_log.error(e);
+							}
+						}
+					}
+				}
+				catch (Exception e) {
+					_log.error(e);
+				}
 				return Response.status(200).build();
 
 			}
@@ -1423,4 +1602,263 @@ public class DataManagementImpl implements DataManagement {
 		}
 	}
 
+	@Override
+	public Response updateOrCreateNewDictItemByItemCode(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode,
+			DictItemInputModel input) {
+		// TODO Auto-generated method stub
+		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+		DictItemModel dictItemModel = new DictItemModel();
+		PushDictItemInterface pushDictItemUtil = new PushDictItemActions();
+		
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+						
+			DictItem oldEtt = null;
+			
+			try {
+				oldEtt = dictItemDataUtil.getDictItemByItemCode(code, itemCode, groupId, serviceContext);
+			}
+			catch (Exception e) {
+				
+			}
+			
+			DictItem ett = null;
+						
+			int flag = 1;
+			
+			if (oldEtt != null) {
+				ett = dictItemDataUtil.updateDictItemByItemCode(user.getUserId(), groupId, serviceContext, code,
+						itemCode, input.getItemCode(), input.getItemName(), input.getItemNameEN(), input.getItemDescription(),
+						input.getSibling(), input.getParentItemCode());	
+				flag = 2;
+			}
+			else {
+				ett = dictItemDataUtil.addDictItems(user.getUserId(), groupId, code, input.getParentItemCode(), itemCode, input.getItemName(), input.getItemNameEN(), input.getItemDescription(), input.getSibling(), input.getLevel(), input.getMetaData(), serviceContext);
+				flag = 1;
+			}
+			
+			List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			for (ServerConfig sc : lstServers) {
+				String configs = sc.getConfigs();
+				if (Validator.isNotNull(configs)) {
+					try {
+						JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+						if (configObj.has(SyncServerTerm.SERVER_TYPE) 
+								&& configObj.getString(SyncServerTerm.SERVER_TYPE).equals(SyncServerTerm.SYNC_SERVER_TYPE)
+								&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+								&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+								&& configObj.has(SyncServerTerm.SERVER_URL)) {
+							if (groupId == sc.getGroupId()) {
+								if (flag == 1) {
+									pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, code, itemCode, input.getItemName(), input.getItemNameEN(), input.getItemDescription(), input.getParentItemCode(), input.getSibling(), SyncServerTerm.METHOD_CREATE, serviceContext);																				
+								}
+								else {
+									pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, code, itemCode, input.getItemName(), input.getItemNameEN(), input.getItemDescription(), input.getParentItemCode(), input.getSibling(), SyncServerTerm.METHOD_UPDATE, serviceContext);																													
+								}
+							}
+						}
+					}
+					catch (Exception e) {
+						_log.error(e);
+					}
+				}
+			}
+			
+			if (Validator.isNull(ett)) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("not found!");
+				error.setCode(404);
+				error.setDescription("not found!");
+
+				return Response.status(404).entity(error).build();
+
+			} else {
+
+				// return json object after update
+				dictItemModel = DataManagementUtils.mapperDictItemModel(ett, dictItemDataUtil, user.getUserId(),
+						company.getCompanyId(), groupId, serviceContext);
+
+				return Response.status(200).entity(dictItemModel).build();
+
+			}
+
+		} catch (Exception e) {
+			_log.info(e);
+			if (e instanceof UnauthenticationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+
+			}
+
+			if (e instanceof UnauthorizationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			}
+
+			if (e instanceof NoSuchUserException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+			
+			if (e instanceof DuplicateCategoryException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+			
+			return Response.status(500).build();
+		}	
+	}
+
+	@Override
+	public Response updateOrCreateNewDictCollection(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String code, DictCollectionInputModel input) {
+		// TODO Auto-generated method stub
+		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+		DictCollectionModel dictCollectionModel = new DictCollectionModel();
+		PushCollectionInterface pushCollectionUtil = new PushCollectionActions();
+		
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			DictCollection oldDictCollection = null;
+			
+			try {
+				oldDictCollection = dictItemDataUtil.getDictCollectionDetail(code, groupId);
+			}
+			catch (Exception e) {
+				_log.error(e);
+			}
+			DictCollection dictCollection = null;
+			int flag = 1;
+			
+			if (oldDictCollection != null) {
+				dictCollection = dictItemDataUtil.updateDictCollection(user.getUserId(), groupId, code,
+						input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(),
+						input.getDescription(), serviceContext);	
+				flag = 2;
+			}
+			else {
+				dictCollection = dictItemDataUtil.addDictCollection(user.getUserId(), groupId, code,
+						input.getCollectionName(), input.getCollectionNameEN(),
+						input.getDescription(), serviceContext);	
+				flag = 1;
+			}
+
+			try {
+				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				
+				for (ServerConfig sc : lstServers) {
+					String configs = sc.getConfigs();
+					if (Validator.isNotNull(configs)) {
+						try {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+							if (configObj.has(SyncServerTerm.SERVER_TYPE) 
+									&& configObj.getString(SyncServerTerm.SERVER_TYPE).equals(SyncServerTerm.SYNC_SERVER_TYPE)
+									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_URL)) {
+								if (groupId == sc.getGroupId()) {
+									if (flag == 1) {
+										pushCollectionUtil.addPushCollection(user.getUserId(), groupId, input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(), input.getDescription(), SyncServerTerm.METHOD_CREATE, serviceContext);																					
+									}
+									else {
+										pushCollectionUtil.addPushCollection(user.getUserId(), groupId, input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(), input.getDescription(), SyncServerTerm.METHOD_UPDATE, serviceContext);																					
+									}
+								}
+							}
+						}
+						catch (Exception e) {
+							_log.error(e);
+						}
+					}
+				}
+			}
+			catch (Exception e) {
+				_log.error(e);
+			}
+			
+			dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
+
+			return Response.status(200).entity(dictCollectionModel).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			if (e instanceof UnauthenticationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+
+			}
+
+			if (e instanceof UnauthorizationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			}
+
+			if (e instanceof NoSuchUserException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+
+			return Response.status(500).build();
+		}	
+	}	
 }

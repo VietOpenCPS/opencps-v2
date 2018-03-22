@@ -1,0 +1,10 @@
+Bundle-Name: backend-synchronization-api
+Bundle-SymbolicName: backend.synchronization.api
+Bundle-Version: 1.0.0
+Export-Package: \
+	org.opencps.synchronization.exception,\
+	org.opencps.synchronization.model,\
+	org.opencps.synchronization.service,\
+	org.opencps.synchronization.service.persistence,\
+	org.opencps.synchronization.constants
+-includeresource: META-INF/service.xml=../backend-synchronization-service/service.xml
