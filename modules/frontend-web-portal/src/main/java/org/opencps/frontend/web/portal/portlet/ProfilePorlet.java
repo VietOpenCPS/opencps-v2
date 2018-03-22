@@ -67,6 +67,7 @@ public class ProfilePorlet extends FreeMarkerPortlet {
 			
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(
 									themeDisplay.getScopeGroupId(), themeDisplay.getUserId());
+			
 			_log.info("employee===========>"+employee);
 			
 
@@ -91,6 +92,8 @@ public class ProfilePorlet extends FreeMarkerPortlet {
 		catch (Exception e) {
 			_log.info(e.getMessage());
 		}
+		
+		long userId = themeDisplay.getUser().getUserId();
 
 		// api
 		apiObject.put("server", themeDisplay.getPortalURL() + "/o/rest/v2");
@@ -101,6 +104,7 @@ public class ProfilePorlet extends FreeMarkerPortlet {
 		// set varible
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("api", apiObject);
+		renderRequest.setAttribute("userId", userId);
 
 		super.render(renderRequest, renderResponse);
 
