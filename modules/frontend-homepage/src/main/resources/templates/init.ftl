@@ -11,6 +11,7 @@
 	
 	<@portlet["defineObjects"] />
 	
+	<#assign api = (Request.api)!>
 	<#assign groupId = themeDisplay.getScopeGroupId() />
 	<#assign userId = themeDisplay.getUserId() />
 	<#assign currentURL = themeDisplay.getURLCurrent() />
