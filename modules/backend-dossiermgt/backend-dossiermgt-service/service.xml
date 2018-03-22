@@ -1474,6 +1474,29 @@
 		</finder>
 	</entity>
 
+	<entity local-service="true" name="DossierRequest"
+		remote-service="false" table="opencps_dossierrequest" uuid="true">
+
+		<column name="dossierRequestId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="dossierId" type="long" />
+		<column name="referenceUid" type="String" />
+		<column name="requestType" type="String" />
+		<column name="comment" type="String" />
+		<column name="isNew" type="int" />
+
+	</entity>
+
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>DuplicateServiceCode</exception>
