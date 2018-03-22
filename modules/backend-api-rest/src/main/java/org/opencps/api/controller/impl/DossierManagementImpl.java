@@ -213,6 +213,153 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	@Override
+	public Response getDossiersTest(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, DossierSearchModel query) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		DossierPermission dossierPermission = new DossierPermission();
+		DossierActions actions = new DossierActionsImpl();
+
+		try {
+
+			_log.info("1");
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			_log.info("2");
+			boolean isCitizen = dossierPermission.isCitizen(user.getUserId());
+
+			_log.info("3");
+			dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
+
+			if (query.getEnd() == 0) {
+
+				query.setStart(-1);
+
+				query.setEnd(-1);
+
+			}
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
+
+			String status = query.getStatus();
+			String substatus = query.getSubstatus();
+			String agency = query.getAgency();
+			String service = query.getService();
+			String template = query.getTemplate();
+			int year = query.getYear();
+			int month = query.getMonth();
+			String owner = query.getOwner();
+			// If user is citizen then default owner true
+			if (isCitizen) {
+				owner = String.valueOf(true);
+			}
+			String follow = query.getFollow();
+			String step = query.getStep();
+			String submitting = query.getSubmitting();
+			String top = query.getTop();
+			String state = query.getState();
+			String dossierIdNo = query.getDossierNo();
+
+			params.put(DossierTerm.STATUS, status);
+			params.put(DossierTerm.SUBSTATUS, substatus);
+			params.put(DossierTerm.AGENCY, agency);
+			params.put(DossierTerm.SERVICE, service);
+			params.put(DossierTerm.TEMPLATE, template);
+			params.put(DossierTerm.YEAR, year);
+			params.put(DossierTerm.MONTH, month);
+			params.put(DossierTerm.STEP, step);
+			params.put(DossierTerm.OWNER, owner);
+			params.put(DossierTerm.SUBMITTING, submitting);
+			params.put(DossierTerm.FOLLOW, follow);
+			params.put(DossierTerm.TOP, top);
+			params.put(DossierTerm.USER_ID, user.getUserId());
+			params.put("secetKey", query.getSecetKey());
+			params.put(DossierTerm.STATE, state);
+			params.put(DossierTerm.DOSSIER_NO, dossierIdNo);
+
+			_log.info("4");
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+					GetterUtil.getBoolean(query.getOrder())) };
+
+			if (Validator.isNotNull(top)) {
+				switch (top) {
+				case "receive":
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.RECEIVE_DATE_TIMESTAMP + "_sortable",
+							Sort.LONG_TYPE, false) };
+					break;
+				case "overdue":
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.DUE_DATE_TIMESTAMP + "_sortable",
+							Sort.LONG_TYPE, false) };
+					break;
+				case "release":
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.RELEASE_DATE_TIMESTAMP + "_sortable",
+							Sort.LONG_TYPE, false) };
+					break;
+				case "cancelling":
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CANCELLING_DATE_TIMESTAMP + "_sortable",
+							Sort.LONG_TYPE, false) };
+					break;
+				case "corecting":
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CORRECTING_DATE_TIMESTAMP + "_sortable",
+							Sort.LONG_TYPE, false) };
+					break;
+				default:
+					break;
+				}
+
+			}
+			_log.info("5");
+			JSONObject jsonData = actions.getDossiersTest(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
+					query.getStart(), query.getEnd(), serviceContext);
+
+			_log.info("6");
+			DossierResultsModel results = new DossierResultsModel();
+
+			results.setTotal(jsonData.getInt("total"));
+
+			_log.info("7");
+			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+
+			_log.info("8");
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					error.setMessage("Internal Server Error");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+
+				}
+			}
+		}
+
+	}
+	@Override
 	public Response addDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierInputModel input) {
 
@@ -283,7 +430,7 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new NotFoundException("Cant add DOSSIER");
 			}
 
-			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier);
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
 
@@ -335,7 +482,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 				dossierPermission.checkPassword(dossier, password);
 
-				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier);
+				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
 				return Response.status(200).entity(result).build();
 
@@ -351,7 +498,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 				dossierPermission.hasGetDetailDossier(groupId, user.getUserId(), dossier, option.getServiceProcessId());
 
-				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier);
+				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
 				return Response.status(200).entity(result).build();
 
@@ -459,7 +606,7 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalTelNo(), online,
 					true, input.getApplicantNote(), serviceContext);
 
-			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier);
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
 
@@ -515,7 +662,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Dossier removeDossier = actions.removeDossier(groupId, dossier.getDossierId(), dossier.getReferenceUid());
 
-			DossierDetailModel result = DossierUtils.mappingForGetDetail(removeDossier);
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(removeDossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
 
@@ -572,7 +719,7 @@ public class DossierManagementImpl implements DossierManagement {
 			Dossier cancellingDossier = actions.cancelDossier(groupId, dossier.getDossierId(),
 					dossier.getReferenceUid(), serviceContext);
 
-			DossierDetailModel result = DossierUtils.mappingForGetDetail(cancellingDossier);
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(cancellingDossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
 
@@ -630,7 +777,7 @@ public class DossierManagementImpl implements DossierManagement {
 			Dossier correctingDossier = actions.correctDossier(groupId, dossier.getDossierId(),
 					dossier.getReferenceUid(), serviceContext);
 
-			DossierDetailModel result = DossierUtils.mappingForGetDetail(correctingDossier);
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(correctingDossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
 
@@ -688,7 +835,7 @@ public class DossierManagementImpl implements DossierManagement {
 			Dossier submittedDossier = actions.submitDossier(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
 					serviceContext);
 
-			DossierDetailModel result = DossierUtils.mappingForGetDetail(submittedDossier);
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(submittedDossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
 
@@ -740,7 +887,7 @@ public class DossierManagementImpl implements DossierManagement {
 			Dossier dossierResetted = actions.resetDossier(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
 					serviceContext);
 
-			return Response.status(200).entity(DossierUtils.mappingForGetDetail(dossierResetted)).build();
+			return Response.status(200).entity(DossierUtils.mappingForGetDetail(dossierResetted, user.getUserId())).build();
 
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();
@@ -1030,8 +1177,8 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	@Override
-	public Response cloneDossier(HttpHeaders header, ServiceContext serviceContext, long dossierId,
-			String referenceUid) {
+	public Response cloneDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long dossierId, String referenceUid) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		BackendAuth auth = new BackendAuthImpl();
@@ -1045,7 +1192,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Dossier dossier = actions.cloneDossier(groupId, dossierId, serviceContext);
 
-			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier);
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
 
