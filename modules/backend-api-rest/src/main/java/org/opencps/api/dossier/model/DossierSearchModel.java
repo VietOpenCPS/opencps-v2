@@ -8,6 +8,7 @@
 
 package org.opencps.api.dossier.model;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -111,6 +112,7 @@ public class DossierSearchModel {
 	@QueryParam(value = "top")
     protected String top;
 	@QueryParam(value = "secetKey")
+	@DefaultValue(value = "")
     protected String secetKey;
 	@QueryParam(value = "state")
     protected String state;
