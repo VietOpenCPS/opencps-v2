@@ -106,49 +106,109 @@
       Mức độ #: maxLevel #
     </div>
     <div class="col-sm-2 text-center">
-      #if((typeof  serviceConfigs !== 'undefined') ){#
-      <div class="dropdown">
-        <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-right">
-          #
+      #if((typeof  serviceConfigs !== 'undefined') ){
           var govAgencyCode = "";
           var govAgencyName = "";
           var serviceInstruction = "";
           var serviceLevel = "";
           var serviceUrl = "";
+          var serviceLevel3 = [];
+          var serviceLevel2 = [];
           if ( serviceConfigs[1]) {
-          for(var i=0; i< serviceConfigs.length;i++){
-          govAgencyCode =  serviceConfigs[i].govAgencyCode;
-          govAgencyName =  serviceConfigs[i].govAgencyName;
-          serviceInstruction =  serviceConfigs[i].serviceInstruction;
-          serviceLevel =  serviceConfigs[i].serviceLevel;
-          serviceUrl =  serviceConfigs[i].serviceUrl;
-          console.log(govAgencyName);
-          if(serviceLevel>=3){
-          #
-          <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
-          #}else {#
-          <li><a class="showInstruction" href="javascript:;" serviceInstruction="#:serviceInstruction#">
-            #:govAgencyName#</a></li>
-            #}
+            for(var i=0; i< serviceConfigs.length;i++){
+              <#-- govAgencyCode =  serviceConfigs[i].govAgencyCode;
+              govAgencyName =  serviceConfigs[i].govAgencyName;
+              serviceInstruction =  serviceConfigs[i].serviceInstruction;
+              serviceLevel =  serviceConfigs[i].serviceLevel;
+              serviceUrl =  serviceConfigs[i].serviceUrl;
+              console.log(serviceLevel);
+              console.log(serviceLevel>=3); -->
+              if(serviceConfigs[i].serviceLevel>=3){
+                serviceLevel3.push(serviceConfigs[i])
+              } else {
+               serviceLevel2.push(serviceConfigs[i])
+              }
+            }
+            if(serviceLevel3.length > 0)
+            {
+              #
+                 <div class="dropdown">
+                    <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                      #
+                      if(serviceLevel2.length > 0)
+                      {
+                        for(var j=0; j< serviceLevel2.length;j++){
+                          #
+                            <li><a class="showInstruction" href="javascript:;" serviceInstruction="#:serviceInstruction#">
+                              #:serviceLevel2[j].govAgencyName#</a></li>
+                          #
+                        }
+                      }
+                      for(var j=0; j< serviceLevel3.length;j++){
+                        #
+                        <li><a href="#:serviceUrl#">#:serviceLevel3[j].govAgencyName#</a></li>
+                        #
+                      }
+                      #
+                    </ul>
+                  </div>
+              #
+            } else if(serviceLevel2.length > 0){
+                #
+                  <div class="dropdown">
+                    <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Xem hướng dân
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                      #
+                      for(var j=0; j< serviceLevel2.length;j++){
+                          #
+                            <li><a class="showInstruction" href="javascript:;" serviceInstruction="#:serviceInstruction#">
+                              #:serviceLevel2[j].govAgencyName#</a></li>
+                          #
+                        }
+                      #
+                    </ul>
+                  </div>
+                #            
+            }
+          } 
+          else {
+              govAgencyCode =  serviceConfigs.govAgencyCode;
+              govAgencyName =  serviceConfigs.govAgencyName;
+              serviceInstruction =  serviceConfigs.serviceInstruction;
+              serviceLevel =  serviceConfigs.serviceLevel;
+              serviceUrl =  serviceConfigs.serviceUrl;
+              if(serviceLevel>=3){
+                #
+                 <div class="dropdown">
+                  <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-right">
+                      <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
+                  </ul>
+                  </div>
+                #
+              } else {
+                #
+                  <div class="dropdown">
+                  <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Xem hướng dân
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-right">
+                      <li><a class="showInstruction" href="javascript:;" serviceInstruction="#:serviceInstruction#">
+              #:govAgencyName#</a></li>
+                  </ul>
+                  </div>
+                #
+              }
           }
-        } else {
-        govAgencyCode =  serviceConfigs.govAgencyCode;
-        govAgencyName =  serviceConfigs.govAgencyName;
-        serviceInstruction =  serviceConfigs.serviceInstruction;
-        serviceLevel =  serviceConfigs.serviceLevel;
-        serviceUrl =  serviceConfigs.serviceUrl;
-        console.log(govAgencyName);
-          if(serviceLevel>=3){
-        
-        #
-        <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
-        #} }#
-      </ul>
-    </div>
-    #}#
+      }#
+
   <#-- #if(true){#
   <button class="btn btn-small btn-active">Nộp hồ sơ</button>
   #}# -->
