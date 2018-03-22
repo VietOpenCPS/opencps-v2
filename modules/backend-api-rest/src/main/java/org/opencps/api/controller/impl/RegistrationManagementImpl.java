@@ -131,11 +131,14 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	@Override
 	public Response add(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, RegistrationInputModel input) {
+		_log.info("START");
 		RegistrationDetailModel result = null;
 		
 		long companyId = company.getCompanyId();
+		_log.info("companyId: "+companyId);
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			_log.info("groupId: "+groupId);
 			String cityName = "";
 			String districtName = "";
 			String wardName = "";
@@ -152,6 +155,10 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 
 			}
+			_log.info("cityName: "+cityName);
+			_log.info("districtName: "+districtName);
+			_log.info("wardName: "+wardName);
+
 			RegistrationActions action = new RegistrationActionsImpl();
 
 			Registration registration = action.insert(groupId, companyId, input.getApplicantName(), input.getApplicantIdType(),
