@@ -76,6 +76,8 @@ public class LookupDossierResult extends FreeMarkerPortlet {
 			themeDisplay.getPortletDisplay().getNamespace());
 
 		// set varible
+		String secretKey = renderRequest.getParameter("secretKey");
+		renderRequest.setAttribute("secretKey", secretKey);
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("api", apiObject);
 
