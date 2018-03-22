@@ -42,6 +42,7 @@ public class RegistrationActionsImpl implements RegistrationActions {
 			String registrationClass, ServiceContext serviceContext) throws SystemException, PortalException {
 		List<Registration> listRegistration = RegistrationLocalServiceUtil.getRegistrationByGID_UID(groupId,
 				serviceContext.getUserId());
+		_log.info("listRegistration: "+listRegistration.size());
 		if (listRegistration.size() == 0) {
 			return RegistrationLocalServiceUtil.insert(groupId, companyId, applicantName, applicantIdType, applicantIdNo,
 					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
@@ -49,6 +50,8 @@ public class RegistrationActionsImpl implements RegistrationActions {
 		} else {
 			Registration registration = listRegistration.get(0);
 			int state = registration.getRegistrationState();
+			_log.info("registration: "+registration.getRegistrationId());
+			_log.info("state: "+state);
 			if (state == 2) {
 				return RegistrationLocalServiceUtil.insert(groupId, companyId, applicantName, applicantIdType, applicantIdNo,
 						applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,

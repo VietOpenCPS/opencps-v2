@@ -1,5 +1,7 @@
 package org.opencps.dossiermgt.action.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -7,15 +9,21 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.ws.rs.core.Response;
+
 import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 
+import com.liferay.counter.kernel.model.Counter;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -41,7 +49,24 @@ public class DossierNumberGenerator {
 			String seriNumberPattern, LinkedHashMap<String, Object> params, SearchContext... searchContext)
 			throws ParseException, SearchException {
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		
+		String serviceProcessCode = StringPool.BLANK;
+		
+		try {
+			ProcessOption processOption = ProcessOptionLocalServiceUtil.getProcessOption(processOtionId); 
+			
+			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceProcess(processOption.getServiceProcessId());
+			
+			serviceProcessCode = serviceProcess.getProcessNo();
+			
+			_log.info("SERVICECODE____"+serviceProcessCode);
+			
+		} catch (Exception e) {
+			_log.info("SERVICECODE____ERROR");
 
+		}
+		
+		
 		String dossierNumber = StringPool.BLANK;
 
 		if (dossier != null) {
@@ -73,12 +98,12 @@ public class DossierNumberGenerator {
 
 					if (r.toString().equals(codePattern)) {
 
-						String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
-
-						String number = String.valueOf(CounterLocalServiceUtil.increment(key, 1));
+						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
+						
+						String number = countByInit(serviceProcessCode, dossierId);
 
 						_log.info("//////////////////////////////////////////////////////////// " + number
-								+ "|processOtionId= " + processOtionId);
+								+ "|processOtionId= " + number);
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
 
@@ -242,6 +267,110 @@ public class DossierNumberGenerator {
 		return DossierLocalServiceUtil.countByUserId(userId, groupId) + 1;
 	}
 
+	private static String countByInit(String pattern, long dossierid) {
+		
+		String certNumber;
+
+		try {
+
+			long _counterNumber = 0;
+
+			Calendar cal = Calendar.getInstance();
+
+			cal.setTime(new Date());
+
+			//int curYear = cal.get(Calendar.YEAR);
+			
+			DateFormat df = new SimpleDateFormat("yyyy");
+			DateFormat sdf = new SimpleDateFormat("yy");
+			
+			String curYear = df.format(cal.getTime());
+			String shortCurYear = sdf.format(cal.getTime());
+
+			String certConfigId = PRE_FIX_CERT + pattern + StringPool.AT + curYear;
+			
+			_log.info("___certConfigId" + certConfigId);
+
+			String certConfigCurrId = PRE_FIX_CERT_CURR + pattern + StringPool.AT + curYear;
+			
+			_log.info("___certConfigCurrId" + certConfigCurrId);
+
+			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigId);
+
+			String elmCertId = PRE_FIX_CERT_ELM + pattern + StringPool.AT + curYear + StringPool.AT + dossierid;
+
+			//Counter counter = CounterLocalServiceUtil.fetchCounter(certId);
+
+			if (Validator.isNotNull(counterConfig)) {
+				// create counter config
+
+				Counter currCounter = CounterLocalServiceUtil.fetchCounter(certConfigCurrId);
+
+				if (Validator.isNull(currCounter)) {
+					_log.info("COUTER_CURR_CONFIG_IS_NULL");
+
+					currCounter = CounterLocalServiceUtil.createCounter(certConfigCurrId);
+
+					currCounter.setCurrentId(counterConfig.getCurrentId());
+
+					_counterNumber = counterConfig.getCurrentId() ;
+
+					CounterLocalServiceUtil.updateCounter(currCounter);
+					
+					//Create elmCounter
+					Counter elmCounter = CounterLocalServiceUtil.createCounter(elmCertId);
+					
+					elmCounter.setCurrentId(_counterNumber);
+					
+					CounterLocalServiceUtil.updateCounter(elmCounter);
+					
+				} else {
+					_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
+
+					//check counter for element
+					Counter elmCounter = CounterLocalServiceUtil.fetchCounter(elmCertId);
+					
+					if (Validator.isNotNull(elmCounter)) {
+						_log.info("ELM_COUTER_CONFIG_IS_NOT_NULL");
+
+						_counterNumber = elmCounter.getCurrentId();
+					} else {
+						//create elm Counter 
+						_log.info("ELM_COUTER_CONFIG_IS_NULL");
+						elmCounter = CounterLocalServiceUtil.createCounter(elmCertId);
+						
+						//increment CurrentCounter 
+						
+						currCounter.setCurrentId(currCounter.getCurrentId()+1);
+						CounterLocalServiceUtil.updateCounter(currCounter);
+						
+						
+						_counterNumber = currCounter.getCurrentId();
+						
+						elmCounter.setCurrentId(_counterNumber);
+						
+						CounterLocalServiceUtil.updateCounter(elmCounter);
+					}
+					
+				}
+
+
+				certNumber = String.format("%7d", _counterNumber); 
+				
+			} else {
+				certNumber = "0";
+			}
+
+
+		} catch (Exception e) {
+			
+			certNumber = "0";
+		}
+		
+		return certNumber;
+
+	}
+	
 	public static String generatePassword(String pattern, int length) {
 		String password = StringPool.BLANK;
 
@@ -250,6 +379,10 @@ public class DossierNumberGenerator {
 
 		return password;
 	}
+
+	public static final String PRE_FIX_CERT = "DKLR_CERT@";
+	public static final String PRE_FIX_CERT_CURR = "DKLR_CERT_CURR@";
+	public static final String PRE_FIX_CERT_ELM = "DKLR_CERT_ELM@";
 
 	private static Log _log = LogFactoryUtil.getLog(DossierNumberGenerator.class.getName());
 }
