@@ -14,9 +14,11 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
@@ -243,7 +245,7 @@ public class DossierUtils {
 	
 	static Log _log = LogFactoryUtil.getLog(DossierUtils.class);
 
-	public static DossierDetailModel mappingForGetDetail(Dossier input) {
+	public static DossierDetailModel mappingForGetDetail(Dossier input, long userId) {
 
 		DossierDetailModel model = new DossierDetailModel();
 		
@@ -340,6 +342,13 @@ public class DossierUtils {
 
 			model.setStepInstruction(step.getStepInstruction());
 
+			// Check permission process dossier
+			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(input.getDossierActionId(), userId);
+			if (dau != null) {
+				model.setSpecialNo(dau.getModerator());
+			} else {
+				model.setSpecialNo(0);
+			}
 		}
 
 		model.setVisited(getVisisted(input.getPrimaryKey()));
