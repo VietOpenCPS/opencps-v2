@@ -233,6 +233,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 			_log.info("3");
 			dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
+			
+			_log.info("31"+ query.getEnd());
 
 			if (query.getEnd() == 0) {
 
