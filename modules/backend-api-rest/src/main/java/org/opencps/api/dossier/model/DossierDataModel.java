@@ -165,7 +165,8 @@ import javax.xml.bind.annotation.XmlType;
     "online",
     "dossierOverdue",
     "hasPassword",
-    "serverNo"
+    "serverNo",
+    "dossierActionId"
 })
 public class DossierDataModel {
 
@@ -238,6 +239,7 @@ public class DossierDataModel {
 	protected String dossierOverdue;
 	protected String hasPassword;
 	protected String serverNo;
+	protected Integer dossierActionId;
 
     public String getDossierTemplateName() {
 		return dossierTemplateName;
@@ -1798,6 +1800,30 @@ public class DossierDataModel {
 
 	public void setDossierIdCTN(String dossierIdCTN) {
 		this.dossierIdCTN = dossierIdCTN;
+	}
+
+    /**
+     * Gets the value of the online property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+    public Integer getDossierActionId() {
+		return dossierActionId;
+	}
+
+    /**
+     * Sets the value of the online property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+	public void setDossierActionId(Integer dossierActionId) {
+		this.dossierActionId = dossierActionId;
 	}
 
 }

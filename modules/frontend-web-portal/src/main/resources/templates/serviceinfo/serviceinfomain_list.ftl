@@ -141,9 +141,11 @@
         serviceLevel =  serviceConfigs.serviceLevel;
         serviceUrl =  serviceConfigs.serviceUrl;
         console.log(govAgencyName);
+          if(serviceLevel>=3){
+        
         #
         <li><a href="#:serviceUrl#">#:govAgencyName#</a></li>
-        #}#
+        #} }#
       </ul>
     </div>
     #}#

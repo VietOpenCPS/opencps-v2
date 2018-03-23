@@ -71,6 +71,7 @@
 			<xsd:element name="pending" type="xsd:string" minOccurs="0" />
 			<xsd:element name="online" type="xsd:string" minOccurs="0" />
 			<xsd:element name="hasPassword" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierActionId" type="xsd:int" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -175,6 +176,7 @@
 				<xsd:element name="applicantNote" type="xsd:string" minOccurs="0" />
 				<xsd:element name="notification" type="xsd:string" minOccurs="0" />
 				<xsd:element name="online" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierActionId" type="xsd:int" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
