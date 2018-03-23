@@ -41,6 +41,10 @@
 		<finder return-type="Collection" name="F_dictCollectionByGroup">
 			<finder-column name="groupId"></finder-column>
 		</finder>
+        <finder name="F_dictCollectionNewerThan" return-type="Collection">
+            <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
+            <finder-column name="groupId"></finder-column>
+        </finder>
 	</entity>
 
 	<entity name="DictItem" uuid="true" local-service="true"
@@ -122,6 +126,10 @@
         <finder name="F_dictCollectionId_parentItemId" return-type="Collection">
             <finder-column name="dictCollectionId"></finder-column>
             <finder-column name="parentItemId"></finder-column>
+        </finder>
+        <finder name="F_dictItemNewerThan" return-type="Collection">
+            <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
+            <finder-column name="groupId"></finder-column>
         </finder>
 	</entity>
 
