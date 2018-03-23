@@ -328,12 +328,16 @@ public class DossierManagementImpl implements DossierManagement {
 				_log.info("7");
 				List<Document> docs = (List<Document>) jsonData.get("data");
 				if (docs != null && docs.size() > 0) {
-					// Process paging
-					if (query.getEnd() == -1) {
+					if (Validator.isNotNull(status) || Validator.isNotNull(substatus)) {
 						results.getData().addAll(DossierUtils.mappingForGetList(docs));
 					} else {
-						_log.info("669999");
-						results.getData().addAll(DossierUtils.mappingForGetListPaging(docs, query.getStart(), query.getEnd()));
+						// Process paging
+						if (query.getEnd() == -1) {
+							results.getData().addAll(DossierUtils.mappingForGetList(docs));
+						} else {
+							_log.info("669999");
+							results.getData().addAll(DossierUtils.mappingForGetListPaging(docs, query.getStart(), query.getEnd()));
+						}
 					}
 				}
 			} else {
