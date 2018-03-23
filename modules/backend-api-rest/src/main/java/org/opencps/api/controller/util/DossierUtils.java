@@ -38,7 +38,7 @@ import com.liferay.portal.kernel.util.Validator;
 public class DossierUtils {
 
 	public static List<DossierDataModel> mappingForGetList(List<Document> docs) {
-		List<DossierDataModel> ouputs = new ArrayList<>();
+		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
 
 		for (Document doc : docs) {
 			DossierDataModel model = new DossierDataModel();
@@ -77,6 +77,8 @@ public class DossierUtils {
 			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
 			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
+			model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));
+			model.setCorrectingDate(doc.get(DossierTerm.CORRECTING_DATE));
 			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
 			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
 			model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
@@ -139,30 +141,31 @@ public class DossierUtils {
 			}
 
 			DeliverableActions action = new DeliverableActionsImpl();
-
-			List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), "2");
-			
-			if (deliverableList != null && deliverableList.size() > 0) {
-//				int lengthDeliver = deliverableList.size();
-//				_log.info("Size list deliverable: "+ lengthDeliver);
-				String formData = StringPool.BLANK;
-				List<CertNumberModel> certNumberList = new ArrayList<CertNumberModel>();
-				for (Deliverable deliverable : deliverableList) {
-					CertNumberModel certNumberDetail = new CertNumberModel();
-					formData = deliverable.getFormData();
-//					_log.info("formData: "+ formData);
-					try {
-						JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
-						String certNo = String.valueOf(jsonData.get("so_chung_chi"));
-						String certDate = String.valueOf(jsonData.get("ngay_ky_cc"));
-						certNumberDetail.setCertNo(certNo);
-						certNumberDetail.setCertDate(certDate);
-						certNumberList.add(certNumberDetail);
-					} catch (Exception e) {
-						// TODO:
+			if (Validator.isNotNull(sb.toString())) {
+				List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), "2");
+				
+				if (deliverableList != null && deliverableList.size() > 0) {
+	//				int lengthDeliver = deliverableList.size();
+	//				_log.info("Size list deliverable: "+ lengthDeliver);
+					String formData = StringPool.BLANK;
+					List<CertNumberModel> certNumberList = new ArrayList<CertNumberModel>();
+					for (Deliverable deliverable : deliverableList) {
+						CertNumberModel certNumberDetail = new CertNumberModel();
+						formData = deliverable.getFormData();
+	//					_log.info("formData: "+ formData);
+						try {
+							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
+							String certNo = String.valueOf(jsonData.get("so_chung_chi"));
+							String certDate = String.valueOf(jsonData.get("ngay_ky_cc"));
+							certNumberDetail.setCertNo(certNo);
+							certNumberDetail.setCertDate(certDate);
+							certNumberList.add(certNumberDetail);
+						} catch (Exception e) {
+							// TODO:
+						}
 					}
+					model.getCertNumber().addAll(certNumberList);
 				}
-				model.getCertNumber().addAll(certNumberList);
 			}
 
 			ouputs.add(model);
@@ -173,11 +176,19 @@ public class DossierUtils {
 
 	//TODO: Process get list Paging
 	public static List<DossierDataModel> mappingForGetListPaging(List<Document> docs, int start, int end) {
-		List<DossierDataModel> ouputs = new ArrayList<>();
-
-		for (int i = start; i < end; i++) {
+		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
+		int lengthDossier = docs.size();
+		int endPage = 0;
+		if (lengthDossier < end) {
+			endPage = lengthDossier;
+		} else {
+			endPage = end;
+		}
+		for (int i = start; i < endPage; i++) {
 			Document doc = docs.get(i);
+			_log.info("i: "+i);
 			DossierDataModel model = new DossierDataModel();
+			
 			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID+"CTN"));
 			model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
@@ -213,6 +224,8 @@ public class DossierUtils {
 			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
 			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
+			model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));
+			model.setCorrectingDate(doc.get(DossierTerm.CORRECTING_DATE));
 			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
 			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
 			model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
@@ -253,7 +266,7 @@ public class DossierUtils {
 //				_log.info("Size dossier File: "+ length);
 				int jj = 0;
 				for (int j = 0; j < length; j++) {
-					DossierFile dossierFile = dossierFileList.get(i);
+					DossierFile dossierFile = dossierFileList.get(j);
 					deliverableCode = dossierFile.getDeliverableCode();
 //					_log.info("deliverableCode: "+ deliverableCode);
 					if (Validator.isNotNull(deliverableCode)) {
@@ -275,35 +288,35 @@ public class DossierUtils {
 			}
 
 			DeliverableActions action = new DeliverableActionsImpl();
-
-			List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), "2");
-			
-			if (deliverableList != null && deliverableList.size() > 0) {
-//				int lengthDeliver = deliverableList.size();
-//				_log.info("Size list deliverable: "+ lengthDeliver);
-				String formData = StringPool.BLANK;
-				List<CertNumberModel> certNumberList = new ArrayList<CertNumberModel>();
-				for (Deliverable deliverable : deliverableList) {
-					CertNumberModel certNumberDetail = new CertNumberModel();
-					formData = deliverable.getFormData();
-//					_log.info("formData: "+ formData);
-					try {
-						JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
-						String certNo = String.valueOf(jsonData.get("so_chung_chi"));
-						String certDate = String.valueOf(jsonData.get("ngay_ky_cc"));
-						certNumberDetail.setCertNo(certNo);
-						certNumberDetail.setCertDate(certDate);
-						certNumberList.add(certNumberDetail);
-					} catch (Exception e) {
-						// TODO:
+			if (Validator.isNotNull(sb.toString())) {
+				List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), "2");
+				
+				if (deliverableList != null && deliverableList.size() > 0) {
+	//				int lengthDeliver = deliverableList.size();
+	//				_log.info("Size list deliverable: "+ lengthDeliver);
+					String formData = StringPool.BLANK;
+					List<CertNumberModel> certNumberList = new ArrayList<CertNumberModel>();
+					for (Deliverable deliverable : deliverableList) {
+						CertNumberModel certNumberDetail = new CertNumberModel();
+						formData = deliverable.getFormData();
+	//					_log.info("formData: "+ formData);
+						try {
+							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
+							String certNo = String.valueOf(jsonData.get("so_chung_chi"));
+							String certDate = String.valueOf(jsonData.get("ngay_ky_cc"));
+							certNumberDetail.setCertNo(certNo);
+							certNumberDetail.setCertDate(certDate);
+							certNumberList.add(certNumberDetail);
+						} catch (Exception e) {
+							// TODO:
+						}
 					}
+					model.getCertNumber().addAll(certNumberList);
 				}
-				model.getCertNumber().addAll(certNumberList);
 			}
-
 			ouputs.add(model);
 		}
-
+		_log.info("ouputs: "+ouputs.size());
 		return ouputs;
 	}
 
