@@ -60,9 +60,27 @@ public class VRActionsImpl implements VRActions {
 			for (DictItemGroup dg : danhSachNhomThongSoKTChiTiet) {
 
 				DictItem dictItem = DictItemLocalServiceUtil.getDictItem(dg.getDictItemId());
-
-				List<VRConfigTechSpec> configTechSpecs = VRConfigTechSpecLocalServiceUtil.getByVCSC(vehicleClass,
-						dictItem.getItemCode(), module);
+				_log.info("Dict Item Id: "+dg.getDictItemId());
+				_log.info("dictItem: "+dictItem);
+				_log.info("vehicleClass: "+vehicleClass+"_");
+				_log.info("dictItem:_"+dictItem.getItemCode()+"_");
+				_log.info("module: "+module);
+				
+				List<VRConfigTechSpec> configTechSpecs = new ArrayList<>();
+				
+				try {
+					configTechSpecs = VRConfigTechSpecLocalServiceUtil.getByVCSC_(vehicleClass,
+							dictItem.getItemCode(), module);
+				} catch (Exception e) {
+					
+					_log.info(e);
+					
+					_log.info("SvehicleClass: "+vehicleClass+"_");
+					_log.info("SdictItem:_"+dictItem.getItemCode()+"_");
+					_log.info("Smodule: "+module);
+				}
+				
+				
 				JSONObject jsonTechSpec = JSONFactoryUtil.createJSONObject();
 
 				jsonTechSpec.put("key", dictItem.getItemCode());
@@ -212,7 +230,30 @@ public class VRActionsImpl implements VRActions {
 					
 					if (dossierFile != null) {
 						// Update online form
-						formData = dossierFile.getFormData();
+						
+						if (dossierFile.getFileEntryId() == 0) {
+							//get as case dossierFile is null
+							
+							if (Validator.isNotNull(fileTemplateNo)) {
+								try {
+									dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
+											fileTemplateNo, false, OrderByComparatorFactoryUtil
+													.create("opencps_dossierFile", "createDate", false));
+
+									formData = dossierFile.getFormData();
+									
+									//_log.info("==========================3");
+
+								} catch (Exception e) {
+									
+								}
+							}
+						} else {
+							
+							formData = dossierFile.getFormData();
+							
+						}
+						
 						//_log.info("==========================1 " + dossierFile.getFileEntryId());
 					} else {
 						// View online form

@@ -54,6 +54,12 @@
 			<finder-column name="module"/>
 		</finder>
 
+		<finder return-type="Collection" name="VC_SC_MD_">
+			<finder-column name="vehicleClass"/>
+			<finder-column name="specCategory"/>
+			<finder-column name="module"/>
+		</finder>
+
 	</entity>
 	
 	<entity name="VRLimitConfigTechSpec" local-service="true" table="vr_cfg_limit_technicalspec"

@@ -78,4 +78,10 @@ public class VRConfigTechSpecLocalServiceImpl
 		return vrConfigTechSpecPersistence.findByVC_SC_MD(vehicleClass,
 				specCategory, module);
 	}
+	
+	public List<VRConfigTechSpec> getByVCSC_(String vehicleClass,
+			String specCategory, String module) throws PortalException, SystemException {
+		return vrConfigTechSpecPersistence.findByVC_SC_MD(vehicleClass,
+				specCategory, module);
+	}
 }
