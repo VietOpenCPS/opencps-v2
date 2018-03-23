@@ -2002,11 +2002,11 @@ public class DossierActionsImpl implements DossierActions {
 					String metaData = dictItem.getMetaData();
 					String specialStatus = StringPool.BLANK;
 					if (Validator.isNotNull(metaData)) {
-						_log.info("metaData: " +metaData);
+//						_log.info("metaData: " +metaData);
 						try {
 							JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
 							specialStatus = metaJson.getString("specialStatus");
-							_log.info("specialStatus: " +specialStatus);
+//							_log.info("specialStatus: " +specialStatus);
 							
 						} catch (Exception e) {
 							// TODO: handle exception
@@ -2018,21 +2018,21 @@ public class DossierActionsImpl implements DossierActions {
 					// Get info status of dossier
 					if (dictItem.getParentItemId() != 0) {
 						subStatusCode = dictItem.getItemCode();
-						_log.info("subStatusCode: " +subStatusCode);
+//						_log.info("subStatusCode: " +subStatusCode);
 						DictItem parentDictItem = DictItemLocalServiceUtil.getDictItem(dictItem.getParentItemId());
 						statusCode = parentDictItem.getItemCode();
-						_log.info("statusCode: " +statusCode);
+//						_log.info("statusCode: " +statusCode);
 					} else {
 						statusCode = dictItem.getItemCode();
-						_log.info("statusCode: " +statusCode);
+//						_log.info("statusCode: " +statusCode);
 					}
 					//Check permission user login
 					boolean isPermission = checkPermission(statusCode, subStatusCode, groupId, userId);
 
 					if (isPermission) {
-						_log.info("isPermission: " +isPermission);
-						_log.info("userId: " +userId);
-						_log.info("strdossierActionId: " +sb.toString());
+//						_log.info("isPermission: " +isPermission);
+//						_log.info("userId: " +userId);
+//						_log.info("strdossierActionId: " +sb.toString());
 
 						JSONObject statistic = JSONFactoryUtil.createJSONObject();
 
@@ -2044,7 +2044,7 @@ public class DossierActionsImpl implements DossierActions {
 							params.put(DossierTerm.FOLLOW, String.valueOf(false));
 
 							long count = DossierLocalServiceUtil.countLucene(params, searchContext);
-							_log.info("count: " + count);
+//							_log.info("count: " + count);
 
 							statistic.put("dossierStatus", statusCode);
 							statistic.put("dossierSubStatus", subStatusCode);
