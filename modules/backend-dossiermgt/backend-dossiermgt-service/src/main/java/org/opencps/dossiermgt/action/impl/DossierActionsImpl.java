@@ -910,6 +910,18 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 			}
+			
+			String preCondition = processAction.getPreCondition();
+			
+			//case reject_cancelling
+			
+			if (preCondition.contentEquals("reject_cancelling")) {
+				//flag-off
+				
+				Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+				
+				sourceDossier.setCancellingDate(null);
+			}
 
 			// Add PaymentSync
 
