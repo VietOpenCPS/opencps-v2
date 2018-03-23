@@ -321,10 +321,17 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.info("6");
 			DossierResultsModel results = new DossierResultsModel();
 
-			results.setTotal(jsonData.getInt("total"));
-
-			_log.info("7");
-			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+			if (jsonData != null && jsonData.length() > 0) {
+				results.setTotal(jsonData.getInt("total"));
+				_log.info("7");
+				List<Document> docs = (List<Document>) jsonData.get("data");
+				if (docs != null && docs.size() > 0) {
+					results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+				}
+			} else {
+				results.setTotal(0);
+			}
+			
 
 			_log.info("8");
 			return Response.status(200).entity(results).build();
