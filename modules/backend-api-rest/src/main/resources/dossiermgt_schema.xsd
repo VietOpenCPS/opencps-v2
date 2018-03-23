@@ -71,7 +71,8 @@
 			<xsd:element name="pending" type="xsd:string" minOccurs="0" />
 			<xsd:element name="online" type="xsd:string" minOccurs="0" />
 			<xsd:element name="hasPassword" type="xsd:string" minOccurs="0" />
-			<xsd:element name="dossierActionId" type="xsd:int" minOccurs="0" />
+			<xsd:element name="certNumber" type="CertNumberModel" minOccurs="0" maxOccurs="unbounded"/>
+			
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -83,8 +84,14 @@
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
-	
-	
+
+		<xsd:complexType name="CertNumberModel">
+		<xsd:sequence>
+			<xsd:element name="certNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="certDate" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+
 	<xsd:element name="DossierInputModel">
 		<xsd:complexType>
 			<xsd:sequence>

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.api.dossier.model.CertNumberModel;
 import org.opencps.api.dossier.model.DossierDataModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -104,7 +105,66 @@ public class DossierUtils {
 			model.setPostalCityCode(doc.get(DossierTerm.POSTAL_CITY_CODE));
 			model.setPostalCityName(doc.get(DossierTerm.POSTAL_CITY_NAME));
 			model.setPostalTelNo(doc.get(DossierTerm.POSTAL_TEL_NO));
+
+			//TODO: Get info cert Number
+			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil
+					.getDossierFilesByDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
 			
+			StringBuilder sb = new StringBuilder();
+			String deliverableCode = StringPool.BLANK;
+			if (dossierFileList != null && dossierFileList.size() > 0) {
+				int length = dossierFileList.size();
+//				_log.info("Size dossier File: "+ length);
+				int ii = 0;
+				for (int i = 0; i < length; i++) {
+					DossierFile dossierFile = dossierFileList.get(i);
+					deliverableCode = dossierFile.getDeliverableCode();
+//					_log.info("deliverableCode: "+ deliverableCode);
+					if (Validator.isNotNull(deliverableCode)) {
+//						_log.info("deliverableCode Check: "+ deliverableCode);
+						ii += 1;
+						if (ii == 1) {
+							sb.append(StringPool.APOSTROPHE);
+							sb.append(deliverableCode);
+							sb.append(StringPool.APOSTROPHE);
+						} else {
+							sb.append(StringPool.COMMA);
+							sb.append(StringPool.APOSTROPHE);
+							sb.append(deliverableCode);
+							sb.append(StringPool.APOSTROPHE);
+						}
+					}
+				}
+//				_log.info("Str Dossier Id: "+ sb.toString());
+			}
+
+			DeliverableActions action = new DeliverableActionsImpl();
+
+			List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), "2");
+			
+			if (deliverableList != null && deliverableList.size() > 0) {
+//				int lengthDeliver = deliverableList.size();
+//				_log.info("Size list deliverable: "+ lengthDeliver);
+				String formData = StringPool.BLANK;
+				List<CertNumberModel> certNumberList = new ArrayList<CertNumberModel>();
+				for (Deliverable deliverable : deliverableList) {
+					CertNumberModel certNumberDetail = new CertNumberModel();
+					formData = deliverable.getFormData();
+//					_log.info("formData: "+ formData);
+					try {
+						JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
+						String certNo = String.valueOf(jsonData.get("so_chung_chi"));
+						String certDate = String.valueOf(jsonData.get("ngay_ky_cc"));
+						certNumberDetail.setCertNo(certNo);
+						certNumberDetail.setCertDate(certDate);
+						certNumberList.add(certNumberDetail);
+					} catch (Exception e) {
+						// TODO:
+					}
+				}
+				model.getCertNumber().addAll(certNumberList);
+			}
+
 			ouputs.add(model);
 		}
 
