@@ -264,7 +264,7 @@ public class DossierActionsImpl implements DossierActions {
 								params.put(DossierTerm.DOSSIER_ACTION_ID, sb.toString());
 								params.put(DossierTerm.FOLLOW, String.valueOf(false));
 	
-								hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
+								hits = DossierLocalServiceUtil.searchLucene(params, sorts, -1, -1, searchContext);
 	
 								if (hits != null && hits.getLength() > 0) {
 									allDocsList.addAll(hits.toList());
@@ -281,7 +281,7 @@ public class DossierActionsImpl implements DossierActions {
 								params.put(DossierTerm.SUBSTATUS, subStatusCode);
 								params.put(DossierTerm.FOLLOW, String.valueOf(false));
 	
-								hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
+								hits = DossierLocalServiceUtil.searchLucene(params, sorts, -1, -1, searchContext);
 								
 								if (hits != null && hits.getLength() > 0) {
 									allDocsList.addAll(hits.toList());
