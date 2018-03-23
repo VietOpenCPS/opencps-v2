@@ -172,7 +172,7 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 					
 					params.put(PushDictItemTerm.META_DATA, pitem.getMetaData());
 									
-					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
+					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.PUT, "application/json",
 							rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
 							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 					

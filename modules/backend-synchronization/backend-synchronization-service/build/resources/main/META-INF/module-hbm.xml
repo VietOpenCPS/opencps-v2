@@ -19,6 +19,7 @@
 		<property name="collectionName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="collectionNameEN" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="description" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="dataForm" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="method" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.synchronization.model.impl.PushDictItemImpl" table="opencps_pushdictitem">
@@ -40,5 +41,6 @@
 		<property name="parentItemCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="sibling" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="method" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="metaData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 </hibernate-mapping>

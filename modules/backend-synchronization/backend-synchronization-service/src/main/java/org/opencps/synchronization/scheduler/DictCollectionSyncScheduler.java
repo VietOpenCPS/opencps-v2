@@ -156,7 +156,7 @@ public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListen
 					
 					params.put(PushCollectionTerm.DATA_FORM, pcollection.getDataForm());
 									
-					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
+					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.PUT, "application/json",
 							rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
 							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 					
