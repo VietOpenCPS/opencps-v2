@@ -13,4 +13,5 @@ public class PushCollectionTerm {
 	public static final String COLLECTION_NAME_EN = "collectionNameEN";
 	public static final String DESCRIPTION = "description";
 	public static final String METHOD = "method";	
+	public static final String DATA_FORM = "dataForm";
 }

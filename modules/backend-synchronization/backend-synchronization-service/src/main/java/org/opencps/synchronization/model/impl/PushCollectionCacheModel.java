@@ -66,7 +66,7 @@ public class PushCollectionCacheModel implements CacheModel<PushCollection>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -92,6 +92,8 @@ public class PushCollectionCacheModel implements CacheModel<PushCollection>,
 		sb.append(collectionNameEN);
 		sb.append(", description=");
 		sb.append(description);
+		sb.append(", dataForm=");
+		sb.append(dataForm);
 		sb.append(", method=");
 		sb.append(method);
 		sb.append("}");
@@ -164,6 +166,13 @@ public class PushCollectionCacheModel implements CacheModel<PushCollection>,
 			pushCollectionImpl.setDescription(description);
 		}
 
+		if (dataForm == null) {
+			pushCollectionImpl.setDataForm(StringPool.BLANK);
+		}
+		else {
+			pushCollectionImpl.setDataForm(dataForm);
+		}
+
 		if (method == null) {
 			pushCollectionImpl.setMethod(StringPool.BLANK);
 		}
@@ -194,6 +203,7 @@ public class PushCollectionCacheModel implements CacheModel<PushCollection>,
 		collectionName = objectInput.readUTF();
 		collectionNameEN = objectInput.readUTF();
 		description = objectInput.readUTF();
+		dataForm = objectInput.readUTF();
 		method = objectInput.readUTF();
 	}
 
@@ -253,6 +263,13 @@ public class PushCollectionCacheModel implements CacheModel<PushCollection>,
 			objectOutput.writeUTF(description);
 		}
 
+		if (dataForm == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(dataForm);
+		}
+
 		if (method == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
 		}
@@ -273,5 +290,6 @@ public class PushCollectionCacheModel implements CacheModel<PushCollection>,
 	public String collectionName;
 	public String collectionNameEN;
 	public String description;
+	public String dataForm;
 	public String method;
 }

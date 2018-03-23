@@ -65,6 +65,7 @@ public class PushCollectionLocalServiceImpl
 			String collectionNameEN,
 			String description,
 			String method,
+			String dataForm,
 			ServiceContext serviceContext) throws UnauthenticationException,
 			UnauthorizationException, NoSuchUserException, SystemException {
 	
@@ -108,6 +109,7 @@ public class PushCollectionLocalServiceImpl
 		pushCollection.setCollectionNameEN(collectionNameEN);
 		pushCollection.setDescription(description);
 		pushCollection.setMethod(method);
+		pushCollection.setDataForm(dataForm);
 		
 		return pushCollectionPersistence.update(pushCollection);
 	}
@@ -122,6 +124,7 @@ public class PushCollectionLocalServiceImpl
 			String collectionNameEN,
 			String description,
 			String method,
+			String dataForm,
 			ServiceContext serviceContext) throws UnauthenticationException,
 			UnauthorizationException, NoSuchUserException, NoSuchPushCollectionException, SystemException {
 		// authen
@@ -161,6 +164,7 @@ public class PushCollectionLocalServiceImpl
 		pushCollection.setCollectionNameEN(collectionNameEN);
 		pushCollection.setDescription(description);
 		pushCollection.setMethod(method);
+		pushCollection.setDataForm(dataForm);
 		
 		return pushCollectionPersistence.update(pushCollection);		
 	}	
@@ -196,4 +200,9 @@ public class PushCollectionLocalServiceImpl
 	public List<PushCollection> findAll(int start, int end) {
 		return pushCollectionPersistence.findAll(start, end);
 	}	
+	
+	@Override
+	public PushCollection findByCollectionCode_Method(long groupId, String collectionCode, String method) throws NoSuchPushCollectionException {
+		return pushCollectionPersistence.findByF_collectionCode_Method(groupId, collectionCode, method);
+	}
 }

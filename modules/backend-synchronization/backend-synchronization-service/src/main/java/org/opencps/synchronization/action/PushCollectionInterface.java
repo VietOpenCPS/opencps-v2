@@ -18,6 +18,7 @@ public interface PushCollectionInterface {
 			String collectionNameEN,
 			String description,
 			String method,
+			String dataForm,
 			ServiceContext serviceContext) throws NoSuchUserException,
 			UnauthenticationException, UnauthorizationException, NoSuchPushCollectionException;
 	
@@ -28,6 +29,7 @@ public interface PushCollectionInterface {
 			String collectionNameEN,
 			String description,
 			String method,
+			String dataForm,
 			ServiceContext serviceContext)
 			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException, NoSuchPushCollectionException;
 	

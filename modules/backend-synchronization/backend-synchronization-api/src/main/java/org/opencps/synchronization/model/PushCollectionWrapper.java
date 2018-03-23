@@ -72,6 +72,7 @@ public class PushCollectionWrapper implements PushCollection,
 		attributes.put("collectionName", getCollectionName());
 		attributes.put("collectionNameEN", getCollectionNameEN());
 		attributes.put("description", getDescription());
+		attributes.put("dataForm", getDataForm());
 		attributes.put("method", getMethod());
 
 		return attributes;
@@ -149,6 +150,12 @@ public class PushCollectionWrapper implements PushCollection,
 
 		if (description != null) {
 			setDescription(description);
+		}
+
+		String dataForm = (String)attributes.get("dataForm");
+
+		if (dataForm != null) {
+			setDataForm(dataForm);
 		}
 
 		String method = (String)attributes.get("method");
@@ -241,6 +248,16 @@ public class PushCollectionWrapper implements PushCollection,
 	@Override
 	public java.lang.String getCollectionNameEN() {
 		return _pushCollection.getCollectionNameEN();
+	}
+
+	/**
+	* Returns the data form of this push collection.
+	*
+	* @return the data form of this push collection
+	*/
+	@Override
+	public java.lang.String getDataForm() {
+		return _pushCollection.getDataForm();
 	}
 
 	/**
@@ -431,6 +448,16 @@ public class PushCollectionWrapper implements PushCollection,
 	@Override
 	public void setCreateDate(Date createDate) {
 		_pushCollection.setCreateDate(createDate);
+	}
+
+	/**
+	* Sets the data form of this push collection.
+	*
+	* @param dataForm the data form of this push collection
+	*/
+	@Override
+	public void setDataForm(java.lang.String dataForm) {
+		_pushCollection.setDataForm(dataForm);
 	}
 
 	/**

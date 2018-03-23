@@ -211,7 +211,8 @@ public interface PushCollectionLocalService extends BaseLocalService,
 	public PushCollection addPushCollection(long userId, long groupId,
 		java.lang.String collectionCode, java.lang.String collectionName,
 		java.lang.String collectionNameEN, java.lang.String description,
-		java.lang.String method, ServiceContext serviceContext)
+		java.lang.String method, java.lang.String dataForm,
+		ServiceContext serviceContext)
 		throws NoSuchUserException, SystemException, UnauthenticationException,
 			UnauthorizationException;
 
@@ -271,6 +272,10 @@ public interface PushCollectionLocalService extends BaseLocalService,
 	public PushCollection fetchPushCollectionByUuidAndGroupId(
 		java.lang.String uuid, long groupId);
 
+	public PushCollection findByCollectionCode_Method(long groupId,
+		java.lang.String collectionCode, java.lang.String method)
+		throws NoSuchPushCollectionException;
+
 	/**
 	* Returns the push collection with the primary key.
 	*
@@ -298,7 +303,7 @@ public interface PushCollectionLocalService extends BaseLocalService,
 		long pushCollectionId, java.lang.String collectionCode,
 		java.lang.String collectionName, java.lang.String collectionNameEN,
 		java.lang.String description, java.lang.String method,
-		ServiceContext serviceContext)
+		java.lang.String dataForm, ServiceContext serviceContext)
 		throws NoSuchUserException, SystemException, UnauthenticationException,
 			UnauthorizationException, NoSuchPushCollectionException;
 

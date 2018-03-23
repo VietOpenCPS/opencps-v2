@@ -507,6 +507,86 @@ public class PushCollectionUtil {
 	}
 
 	/**
+	* Returns the push collection where groupId = &#63; and collectionCode = &#63; and method = &#63; or throws a {@link NoSuchPushCollectionException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param collectionCode the collection code
+	* @param method the method
+	* @return the matching push collection
+	* @throws NoSuchPushCollectionException if a matching push collection could not be found
+	*/
+	public static PushCollection findByF_collectionCode_Method(long groupId,
+		java.lang.String collectionCode, java.lang.String method)
+		throws org.opencps.synchronization.exception.NoSuchPushCollectionException {
+		return getPersistence()
+				   .findByF_collectionCode_Method(groupId, collectionCode,
+			method);
+	}
+
+	/**
+	* Returns the push collection where groupId = &#63; and collectionCode = &#63; and method = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param collectionCode the collection code
+	* @param method the method
+	* @return the matching push collection, or <code>null</code> if a matching push collection could not be found
+	*/
+	public static PushCollection fetchByF_collectionCode_Method(long groupId,
+		java.lang.String collectionCode, java.lang.String method) {
+		return getPersistence()
+				   .fetchByF_collectionCode_Method(groupId, collectionCode,
+			method);
+	}
+
+	/**
+	* Returns the push collection where groupId = &#63; and collectionCode = &#63; and method = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param collectionCode the collection code
+	* @param method the method
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching push collection, or <code>null</code> if a matching push collection could not be found
+	*/
+	public static PushCollection fetchByF_collectionCode_Method(long groupId,
+		java.lang.String collectionCode, java.lang.String method,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_collectionCode_Method(groupId, collectionCode,
+			method, retrieveFromCache);
+	}
+
+	/**
+	* Removes the push collection where groupId = &#63; and collectionCode = &#63; and method = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param collectionCode the collection code
+	* @param method the method
+	* @return the push collection that was removed
+	*/
+	public static PushCollection removeByF_collectionCode_Method(long groupId,
+		java.lang.String collectionCode, java.lang.String method)
+		throws org.opencps.synchronization.exception.NoSuchPushCollectionException {
+		return getPersistence()
+				   .removeByF_collectionCode_Method(groupId, collectionCode,
+			method);
+	}
+
+	/**
+	* Returns the number of push collections where groupId = &#63; and collectionCode = &#63; and method = &#63;.
+	*
+	* @param groupId the group ID
+	* @param collectionCode the collection code
+	* @param method the method
+	* @return the number of matching push collections
+	*/
+	public static int countByF_collectionCode_Method(long groupId,
+		java.lang.String collectionCode, java.lang.String method) {
+		return getPersistence()
+				   .countByF_collectionCode_Method(groupId, collectionCode,
+			method);
+	}
+
+	/**
 	* Caches the push collection in the entity cache if it is enabled.
 	*
 	* @param pushCollection the push collection

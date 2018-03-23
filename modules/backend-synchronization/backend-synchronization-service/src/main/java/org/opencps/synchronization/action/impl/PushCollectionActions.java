@@ -22,20 +22,23 @@ public class PushCollectionActions implements PushCollectionInterface {
 
 	@Override
 	public PushCollection addPushCollection(long userId, long groupId, String collectionCode, String collectionName,
-			String collectionNameEN, String description, String method, ServiceContext serviceContext)
+			String collectionNameEN, String description, String method, 
+			String dataForm,
+			ServiceContext serviceContext)
 			throws NoSuchUserException, UnauthenticationException, UnauthorizationException,
 			NoSuchPushCollectionException {
 		// TODO Auto-generated method stub
-		return PushCollectionLocalServiceUtil.addPushCollection(userId, groupId, collectionCode, collectionName, collectionNameEN, description, method, serviceContext);
+		return PushCollectionLocalServiceUtil.addPushCollection(userId, groupId, collectionCode, collectionName, collectionNameEN, description, method, dataForm, serviceContext);
 	}
 
 	@Override
 	public PushCollection updatePushCollection(long userId, long groupId, long pushCollectionId, String collectionCode,
 			String collectionName, String collectionNameEN, String description, String method,
+			String dataForm,
 			ServiceContext serviceContext) throws NoSuchUserException, NotFoundException, UnauthenticationException,
 			UnauthorizationException, NoSuchPushCollectionException {
 		// TODO Auto-generated method stub
-		return PushCollectionLocalServiceUtil.updatePushCollection(userId, groupId, pushCollectionId, collectionCode, collectionName, collectionNameEN, description, method, serviceContext);
+		return PushCollectionLocalServiceUtil.updatePushCollection(userId, groupId, pushCollectionId, collectionCode, collectionName, collectionNameEN, description, method, dataForm, serviceContext);
 	}
 
 	@Override

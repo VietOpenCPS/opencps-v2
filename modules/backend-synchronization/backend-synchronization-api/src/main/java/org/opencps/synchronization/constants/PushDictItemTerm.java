@@ -16,4 +16,5 @@ public class PushDictItemTerm {
 	public static final String PARENT_ITEM_CODE = "parentItemCode";	
 	public static final String SIBLING = "sibling";
 	public static final String METHOD = "method";	
+	public static final String META_DATA = "metaData";
 }

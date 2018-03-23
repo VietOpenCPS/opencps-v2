@@ -81,6 +81,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 			{ "collectionName", Types.VARCHAR },
 			{ "collectionNameEN", Types.VARCHAR },
 			{ "description", Types.VARCHAR },
+			{ "dataForm", Types.VARCHAR },
 			{ "method", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
@@ -98,10 +99,11 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 		TABLE_COLUMNS_MAP.put("collectionName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("collectionNameEN", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("dataForm", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("method", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_pushcollection (uuid_ VARCHAR(75) null,pushCollectionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,collectionCode VARCHAR(75) null,collectionName VARCHAR(75) null,collectionNameEN VARCHAR(75) null,description VARCHAR(75) null,method VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_pushcollection (uuid_ VARCHAR(75) null,pushCollectionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,collectionCode VARCHAR(75) null,collectionName VARCHAR(75) null,collectionNameEN VARCHAR(75) null,description VARCHAR(75) null,dataForm VARCHAR(75) null,method VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_pushcollection";
 	public static final String ORDER_BY_JPQL = " ORDER BY pushCollection.modifiedDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_pushcollection.modifiedDate ASC";
@@ -117,10 +119,12 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(backend.synchronization.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.synchronization.model.PushCollection"),
 			true);
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-	public static final long GROUPID_COLUMN_BITMASK = 2L;
-	public static final long UUID_COLUMN_BITMASK = 4L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 8L;
+	public static final long COLLECTIONCODE_COLUMN_BITMASK = 1L;
+	public static final long COMPANYID_COLUMN_BITMASK = 2L;
+	public static final long GROUPID_COLUMN_BITMASK = 4L;
+	public static final long METHOD_COLUMN_BITMASK = 8L;
+	public static final long UUID_COLUMN_BITMASK = 16L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 32L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(backend.synchronization.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.synchronization.model.PushCollection"));
 
@@ -173,6 +177,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 		attributes.put("collectionName", getCollectionName());
 		attributes.put("collectionNameEN", getCollectionNameEN());
 		attributes.put("description", getDescription());
+		attributes.put("dataForm", getDataForm());
 		attributes.put("method", getMethod());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
@@ -253,6 +258,12 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 
 		if (description != null) {
 			setDescription(description);
+		}
+
+		String dataForm = (String)attributes.get("dataForm");
+
+		if (dataForm != null) {
+			setDataForm(dataForm);
 		}
 
 		String method = (String)attributes.get("method");
@@ -420,7 +431,17 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 
 	@Override
 	public void setCollectionCode(String collectionCode) {
+		_columnBitmask |= COLLECTIONCODE_COLUMN_BITMASK;
+
+		if (_originalCollectionCode == null) {
+			_originalCollectionCode = _collectionCode;
+		}
+
 		_collectionCode = collectionCode;
+	}
+
+	public String getOriginalCollectionCode() {
+		return GetterUtil.getString(_originalCollectionCode);
 	}
 
 	@Override
@@ -469,6 +490,21 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 	}
 
 	@Override
+	public String getDataForm() {
+		if (_dataForm == null) {
+			return StringPool.BLANK;
+		}
+		else {
+			return _dataForm;
+		}
+	}
+
+	@Override
+	public void setDataForm(String dataForm) {
+		_dataForm = dataForm;
+	}
+
+	@Override
 	public String getMethod() {
 		if (_method == null) {
 			return StringPool.BLANK;
@@ -480,7 +516,17 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 
 	@Override
 	public void setMethod(String method) {
+		_columnBitmask |= METHOD_COLUMN_BITMASK;
+
+		if (_originalMethod == null) {
+			_originalMethod = _method;
+		}
+
 		_method = method;
+	}
+
+	public String getOriginalMethod() {
+		return GetterUtil.getString(_originalMethod);
 	}
 
 	@Override
@@ -532,6 +578,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 		pushCollectionImpl.setCollectionName(getCollectionName());
 		pushCollectionImpl.setCollectionNameEN(getCollectionNameEN());
 		pushCollectionImpl.setDescription(getDescription());
+		pushCollectionImpl.setDataForm(getDataForm());
 		pushCollectionImpl.setMethod(getMethod());
 
 		pushCollectionImpl.resetOriginalValues();
@@ -605,6 +652,10 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 		pushCollectionModelImpl._setOriginalCompanyId = false;
 
 		pushCollectionModelImpl._setModifiedDate = false;
+
+		pushCollectionModelImpl._originalCollectionCode = pushCollectionModelImpl._collectionCode;
+
+		pushCollectionModelImpl._originalMethod = pushCollectionModelImpl._method;
 
 		pushCollectionModelImpl._columnBitmask = 0;
 	}
@@ -687,6 +738,14 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 			pushCollectionCacheModel.description = null;
 		}
 
+		pushCollectionCacheModel.dataForm = getDataForm();
+
+		String dataForm = pushCollectionCacheModel.dataForm;
+
+		if ((dataForm != null) && (dataForm.length() == 0)) {
+			pushCollectionCacheModel.dataForm = null;
+		}
+
 		pushCollectionCacheModel.method = getMethod();
 
 		String method = pushCollectionCacheModel.method;
@@ -700,7 +759,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -726,6 +785,8 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 		sb.append(getCollectionNameEN());
 		sb.append(", description=");
 		sb.append(getDescription());
+		sb.append(", dataForm=");
+		sb.append(getDataForm());
 		sb.append(", method=");
 		sb.append(getMethod());
 		sb.append("}");
@@ -735,7 +796,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(46);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.synchronization.model.PushCollection");
@@ -790,6 +851,10 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 		sb.append(getDescription());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>dataForm</column-name><column-value><![CDATA[");
+		sb.append(getDataForm());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>method</column-name><column-value><![CDATA[");
 		sb.append(getMethod());
 		sb.append("]]></column-value></column>");
@@ -818,10 +883,13 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private String _collectionCode;
+	private String _originalCollectionCode;
 	private String _collectionName;
 	private String _collectionNameEN;
 	private String _description;
+	private String _dataForm;
 	private String _method;
+	private String _originalMethod;
 	private long _columnBitmask;
 	private PushCollection _escapedModel;
 }

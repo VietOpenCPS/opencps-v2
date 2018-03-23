@@ -84,7 +84,8 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 			{ "itemDescription", Types.VARCHAR },
 			{ "parentItemCode", Types.VARCHAR },
 			{ "sibling", Types.VARCHAR },
-			{ "method", Types.VARCHAR }
+			{ "method", Types.VARCHAR },
+			{ "metaData", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -105,9 +106,10 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 		TABLE_COLUMNS_MAP.put("parentItemCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("sibling", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("method", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("metaData", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_pushdictitem (uuid_ VARCHAR(75) null,pushDictItemId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,collectionCode VARCHAR(75) null,itemCode VARCHAR(75) null,itemName VARCHAR(75) null,itemNameEN VARCHAR(75) null,itemDescription VARCHAR(75) null,parentItemCode VARCHAR(75) null,sibling VARCHAR(75) null,method VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_pushdictitem (uuid_ VARCHAR(75) null,pushDictItemId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,collectionCode VARCHAR(75) null,itemCode VARCHAR(75) null,itemName VARCHAR(75) null,itemNameEN VARCHAR(75) null,itemDescription VARCHAR(75) null,parentItemCode VARCHAR(75) null,sibling VARCHAR(75) null,method VARCHAR(75) null,metaData VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_pushdictitem";
 	public static final String ORDER_BY_JPQL = " ORDER BY pushDictItem.modifiedDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_pushdictitem.modifiedDate ASC";
@@ -123,10 +125,13 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(backend.synchronization.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.synchronization.model.PushDictItem"),
 			true);
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-	public static final long GROUPID_COLUMN_BITMASK = 2L;
-	public static final long UUID_COLUMN_BITMASK = 4L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 8L;
+	public static final long COLLECTIONCODE_COLUMN_BITMASK = 1L;
+	public static final long COMPANYID_COLUMN_BITMASK = 2L;
+	public static final long GROUPID_COLUMN_BITMASK = 4L;
+	public static final long ITEMCODE_COLUMN_BITMASK = 8L;
+	public static final long METHOD_COLUMN_BITMASK = 16L;
+	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(backend.synchronization.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.synchronization.model.PushDictItem"));
 
@@ -183,6 +188,7 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 		attributes.put("parentItemCode", getParentItemCode());
 		attributes.put("sibling", getSibling());
 		attributes.put("method", getMethod());
+		attributes.put("metaData", getMetaData());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -286,6 +292,12 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 
 		if (method != null) {
 			setMethod(method);
+		}
+
+		String metaData = (String)attributes.get("metaData");
+
+		if (metaData != null) {
+			setMetaData(metaData);
 		}
 	}
 
@@ -447,7 +459,17 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 
 	@Override
 	public void setCollectionCode(String collectionCode) {
+		_columnBitmask |= COLLECTIONCODE_COLUMN_BITMASK;
+
+		if (_originalCollectionCode == null) {
+			_originalCollectionCode = _collectionCode;
+		}
+
 		_collectionCode = collectionCode;
+	}
+
+	public String getOriginalCollectionCode() {
+		return GetterUtil.getString(_originalCollectionCode);
 	}
 
 	@Override
@@ -462,7 +484,17 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 
 	@Override
 	public void setItemCode(String itemCode) {
+		_columnBitmask |= ITEMCODE_COLUMN_BITMASK;
+
+		if (_originalItemCode == null) {
+			_originalItemCode = _itemCode;
+		}
+
 		_itemCode = itemCode;
+	}
+
+	public String getOriginalItemCode() {
+		return GetterUtil.getString(_originalItemCode);
 	}
 
 	@Override
@@ -552,7 +584,32 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 
 	@Override
 	public void setMethod(String method) {
+		_columnBitmask |= METHOD_COLUMN_BITMASK;
+
+		if (_originalMethod == null) {
+			_originalMethod = _method;
+		}
+
 		_method = method;
+	}
+
+	public String getOriginalMethod() {
+		return GetterUtil.getString(_originalMethod);
+	}
+
+	@Override
+	public String getMetaData() {
+		if (_metaData == null) {
+			return StringPool.BLANK;
+		}
+		else {
+			return _metaData;
+		}
+	}
+
+	@Override
+	public void setMetaData(String metaData) {
+		_metaData = metaData;
 	}
 
 	@Override
@@ -608,6 +665,7 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 		pushDictItemImpl.setParentItemCode(getParentItemCode());
 		pushDictItemImpl.setSibling(getSibling());
 		pushDictItemImpl.setMethod(getMethod());
+		pushDictItemImpl.setMetaData(getMetaData());
 
 		pushDictItemImpl.resetOriginalValues();
 
@@ -680,6 +738,12 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 		pushDictItemModelImpl._setOriginalCompanyId = false;
 
 		pushDictItemModelImpl._setModifiedDate = false;
+
+		pushDictItemModelImpl._originalCollectionCode = pushDictItemModelImpl._collectionCode;
+
+		pushDictItemModelImpl._originalItemCode = pushDictItemModelImpl._itemCode;
+
+		pushDictItemModelImpl._originalMethod = pushDictItemModelImpl._method;
 
 		pushDictItemModelImpl._columnBitmask = 0;
 	}
@@ -794,12 +858,20 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 			pushDictItemCacheModel.method = null;
 		}
 
+		pushDictItemCacheModel.metaData = getMetaData();
+
+		String metaData = pushDictItemCacheModel.metaData;
+
+		if ((metaData != null) && (metaData.length() == 0)) {
+			pushDictItemCacheModel.metaData = null;
+		}
+
 		return pushDictItemCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(35);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -833,6 +905,8 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 		sb.append(getSibling());
 		sb.append(", method=");
 		sb.append(getMethod());
+		sb.append(", metaData=");
+		sb.append(getMetaData());
 		sb.append("}");
 
 		return sb.toString();
@@ -840,7 +914,7 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(52);
+		StringBundler sb = new StringBundler(55);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.synchronization.model.PushDictItem");
@@ -910,6 +984,10 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 			"<column><column-name>method</column-name><column-value><![CDATA[");
 		sb.append(getMethod());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>metaData</column-name><column-value><![CDATA[");
+		sb.append(getMetaData());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -935,13 +1013,17 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private String _collectionCode;
+	private String _originalCollectionCode;
 	private String _itemCode;
+	private String _originalItemCode;
 	private String _itemName;
 	private String _itemNameEN;
 	private String _itemDescription;
 	private String _parentItemCode;
 	private String _sibling;
 	private String _method;
+	private String _originalMethod;
+	private String _metaData;
 	private long _columnBitmask;
 	private PushDictItem _escapedModel;
 }

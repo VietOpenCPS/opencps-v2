@@ -330,6 +330,21 @@ public interface PushDictItemModel extends BaseModel<PushDictItem>, GroupedModel
 	 */
 	public void setMethod(String method);
 
+	/**
+	 * Returns the meta data of this push dict item.
+	 *
+	 * @return the meta data of this push dict item
+	 */
+	@AutoEscape
+	public String getMetaData();
+
+	/**
+	 * Sets the meta data of this push dict item.
+	 *
+	 * @param metaData the meta data of this push dict item
+	 */
+	public void setMetaData(String metaData);
+
 	@Override
 	public boolean isNew();
 

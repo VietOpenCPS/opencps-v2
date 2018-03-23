@@ -213,7 +213,7 @@ public interface PushDictItemLocalService extends BaseLocalService,
 		java.lang.String itemName, java.lang.String itemNameEN,
 		java.lang.String itemDescription, java.lang.String parentItemCode,
 		java.lang.String sibling, java.lang.String method,
-		ServiceContext serviceContext)
+		java.lang.String metaData, ServiceContext serviceContext)
 		throws NoSuchUserException, SystemException, UnauthenticationException,
 			UnauthorizationException;
 
@@ -273,6 +273,10 @@ public interface PushDictItemLocalService extends BaseLocalService,
 	public PushDictItem fetchPushDictItemByUuidAndGroupId(
 		java.lang.String uuid, long groupId);
 
+	public PushDictItem findByCollectionCode_ItemCode_Method(long groupId,
+		java.lang.String collectionCode, java.lang.String itemCode,
+		java.lang.String method) throws NoSuchPushDictItemException;
+
 	/**
 	* Returns the push dict item with the primary key.
 	*
@@ -301,7 +305,8 @@ public interface PushDictItemLocalService extends BaseLocalService,
 		java.lang.String itemCode, java.lang.String itemName,
 		java.lang.String itemNameEN, java.lang.String itemDescription,
 		java.lang.String parentItemCode, java.lang.String sibling,
-		java.lang.String method, ServiceContext serviceContext)
+		java.lang.String method, java.lang.String metaData,
+		ServiceContext serviceContext)
 		throws NoSuchUserException, SystemException, UnauthenticationException,
 			UnauthorizationException, NoSuchPushDictItemException;
 

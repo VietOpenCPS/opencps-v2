@@ -16,6 +16,7 @@ public interface PushDictItemInterface {
 			String itemCode,
 			String itemName, String itemNameEn, String itemDescription, String parentItemCode, String sibling, 
 			String method,
+			String metaData,
 			ServiceContext serviceContext) throws NoSuchUserException,
 			UnauthenticationException, UnauthorizationException, NoSuchPushDictItemException;
 	
@@ -26,6 +27,7 @@ public interface PushDictItemInterface {
 			String itemName, String itemNameEn, String itemDescription, String parentItemCode, 
 			String sibling, 
 			String method,
+			String metaData,
 			ServiceContext serviceContext)
 			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException, NoSuchPushDictItemException;
 	

@@ -372,6 +372,73 @@ public interface PushDictItemPersistence extends BasePersistence<PushDictItem> {
 	public int countByUuid_C(java.lang.String uuid, long companyId);
 
 	/**
+	* Returns the push dict item where groupId = &#63; and collectionCode = &#63; and itemCode = &#63; and method = &#63; or throws a {@link NoSuchPushDictItemException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param collectionCode the collection code
+	* @param itemCode the item code
+	* @param method the method
+	* @return the matching push dict item
+	* @throws NoSuchPushDictItemException if a matching push dict item could not be found
+	*/
+	public PushDictItem findByF_collectionCode_itemCode_Method(long groupId,
+		java.lang.String collectionCode, java.lang.String itemCode,
+		java.lang.String method) throws NoSuchPushDictItemException;
+
+	/**
+	* Returns the push dict item where groupId = &#63; and collectionCode = &#63; and itemCode = &#63; and method = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param collectionCode the collection code
+	* @param itemCode the item code
+	* @param method the method
+	* @return the matching push dict item, or <code>null</code> if a matching push dict item could not be found
+	*/
+	public PushDictItem fetchByF_collectionCode_itemCode_Method(long groupId,
+		java.lang.String collectionCode, java.lang.String itemCode,
+		java.lang.String method);
+
+	/**
+	* Returns the push dict item where groupId = &#63; and collectionCode = &#63; and itemCode = &#63; and method = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param collectionCode the collection code
+	* @param itemCode the item code
+	* @param method the method
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching push dict item, or <code>null</code> if a matching push dict item could not be found
+	*/
+	public PushDictItem fetchByF_collectionCode_itemCode_Method(long groupId,
+		java.lang.String collectionCode, java.lang.String itemCode,
+		java.lang.String method, boolean retrieveFromCache);
+
+	/**
+	* Removes the push dict item where groupId = &#63; and collectionCode = &#63; and itemCode = &#63; and method = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param collectionCode the collection code
+	* @param itemCode the item code
+	* @param method the method
+	* @return the push dict item that was removed
+	*/
+	public PushDictItem removeByF_collectionCode_itemCode_Method(long groupId,
+		java.lang.String collectionCode, java.lang.String itemCode,
+		java.lang.String method) throws NoSuchPushDictItemException;
+
+	/**
+	* Returns the number of push dict items where groupId = &#63; and collectionCode = &#63; and itemCode = &#63; and method = &#63;.
+	*
+	* @param groupId the group ID
+	* @param collectionCode the collection code
+	* @param itemCode the item code
+	* @param method the method
+	* @return the number of matching push dict items
+	*/
+	public int countByF_collectionCode_itemCode_Method(long groupId,
+		java.lang.String collectionCode, java.lang.String itemCode,
+		java.lang.String method);
+
+	/**
 	* Caches the push dict item in the entity cache if it is enabled.
 	*
 	* @param pushDictItem the push dict item

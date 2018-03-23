@@ -1,8 +1,10 @@
 package org.opencps.synchronization.scheduler;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalService;
 import org.opencps.synchronization.constants.PushCollectionTerm;
@@ -40,7 +42,7 @@ import com.liferay.portal.kernel.util.Validator;
 public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		_log.info("-------SYNC DICT COLLECTION-------");
+		_log.info("PUSH DICT COLLECTION IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
 		
 		try {
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
@@ -72,11 +74,12 @@ public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListen
 		}
 		catch (Exception e) {
 			_log.error(e);
-		}		
+		}	
+		_log.info("PUSH DICT COLLECTION HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 	}
 	
 	private void synchronizeCollection(List<PushCollection> lstSyncDicts, ServerConfig serverConfig, JSONObject configObj) {
-		_log.info("----SYNC DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + "-------");
+		_log.info("PUSH DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " IS STARING " + APIDateTimeUtils.convertDateToString(new Date()));
 		InvokeREST rest = new InvokeREST();
 		
 		HashMap<String, String> properties = new HashMap<String, String>();
@@ -145,11 +148,28 @@ public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListen
 						_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());
 					}														
 				}
+				else if (pcollection.getMethod().equals(SyncServerTerm.METHOD_UPDATE_DATAFORM)) {
+					putDictCollectionRestUrl.setLength(0);
+					putDictCollectionRestUrl.append(dictCollectionEndPoint);
+					putDictCollectionRestUrl.append("/" + pcollection.getCollectionCode());
+					putDictCollectionRestUrl.append("/dataform");
+					
+					params.put(PushCollectionTerm.DATA_FORM, pcollection.getDataForm());
+									
+					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
+							rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+					
+					if (resDictItem.getInt(RESTFulConfiguration.STATUS) == 200) {
+						_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());
+					}									
+				}
 			}
 		}
 		catch (Exception e) {
 			_log.error(e);
 		}
+		_log.info("PUSH DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 	}
 	
 	@Activate

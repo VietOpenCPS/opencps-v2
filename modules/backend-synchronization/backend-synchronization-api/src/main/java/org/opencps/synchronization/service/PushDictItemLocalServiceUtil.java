@@ -221,7 +221,7 @@ public class PushDictItemLocalServiceUtil {
 		java.lang.String itemCode, java.lang.String itemName,
 		java.lang.String itemNameEN, java.lang.String itemDescription,
 		java.lang.String parentItemCode, java.lang.String sibling,
-		java.lang.String method,
+		java.lang.String method, java.lang.String metaData,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.NoSuchUserException,
 			com.liferay.portal.kernel.exception.SystemException,
@@ -230,7 +230,7 @@ public class PushDictItemLocalServiceUtil {
 		return getService()
 				   .addPushDictItem(userId, groupId, collectionCode, itemCode,
 			itemName, itemNameEN, itemDescription, parentItemCode, sibling,
-			method, serviceContext);
+			method, metaData, serviceContext);
 	}
 
 	/**
@@ -305,6 +305,15 @@ public class PushDictItemLocalServiceUtil {
 		return getService().fetchPushDictItemByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static org.opencps.synchronization.model.PushDictItem findByCollectionCode_ItemCode_Method(
+		long groupId, java.lang.String collectionCode,
+		java.lang.String itemCode, java.lang.String method)
+		throws org.opencps.synchronization.exception.NoSuchPushDictItemException {
+		return getService()
+				   .findByCollectionCode_ItemCode_Method(groupId,
+			collectionCode, itemCode, method);
+	}
+
 	/**
 	* Returns the push dict item with the primary key.
 	*
@@ -338,6 +347,7 @@ public class PushDictItemLocalServiceUtil {
 		java.lang.String itemName, java.lang.String itemNameEN,
 		java.lang.String itemDescription, java.lang.String parentItemCode,
 		java.lang.String sibling, java.lang.String method,
+		java.lang.String metaData,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.NoSuchUserException,
 			com.liferay.portal.kernel.exception.SystemException,
@@ -347,7 +357,7 @@ public class PushDictItemLocalServiceUtil {
 		return getService()
 				   .updatePushDictItem(userId, groupId, pushDictItemId,
 			collectionCode, itemCode, itemName, itemNameEN, itemDescription,
-			parentItemCode, sibling, method, serviceContext);
+			parentItemCode, sibling, method, metaData, serviceContext);
 	}
 
 	/**

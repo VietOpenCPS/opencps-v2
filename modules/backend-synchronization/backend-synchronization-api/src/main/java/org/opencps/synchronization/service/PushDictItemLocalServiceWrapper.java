@@ -232,7 +232,7 @@ public class PushDictItemLocalServiceWrapper implements PushDictItemLocalService
 		java.lang.String itemCode, java.lang.String itemName,
 		java.lang.String itemNameEN, java.lang.String itemDescription,
 		java.lang.String parentItemCode, java.lang.String sibling,
-		java.lang.String method,
+		java.lang.String method, java.lang.String metaData,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.NoSuchUserException,
 			com.liferay.portal.kernel.exception.SystemException,
@@ -240,7 +240,7 @@ public class PushDictItemLocalServiceWrapper implements PushDictItemLocalService
 			org.opencps.auth.api.exception.UnauthorizationException {
 		return _pushDictItemLocalService.addPushDictItem(userId, groupId,
 			collectionCode, itemCode, itemName, itemNameEN, itemDescription,
-			parentItemCode, sibling, method, serviceContext);
+			parentItemCode, sibling, method, metaData, serviceContext);
 	}
 
 	/**
@@ -324,6 +324,15 @@ public class PushDictItemLocalServiceWrapper implements PushDictItemLocalService
 			groupId);
 	}
 
+	@Override
+	public org.opencps.synchronization.model.PushDictItem findByCollectionCode_ItemCode_Method(
+		long groupId, java.lang.String collectionCode,
+		java.lang.String itemCode, java.lang.String method)
+		throws org.opencps.synchronization.exception.NoSuchPushDictItemException {
+		return _pushDictItemLocalService.findByCollectionCode_ItemCode_Method(groupId,
+			collectionCode, itemCode, method);
+	}
+
 	/**
 	* Returns the push dict item with the primary key.
 	*
@@ -361,6 +370,7 @@ public class PushDictItemLocalServiceWrapper implements PushDictItemLocalService
 		java.lang.String itemName, java.lang.String itemNameEN,
 		java.lang.String itemDescription, java.lang.String parentItemCode,
 		java.lang.String sibling, java.lang.String method,
+		java.lang.String metaData,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.NoSuchUserException,
 			com.liferay.portal.kernel.exception.SystemException,
@@ -369,7 +379,8 @@ public class PushDictItemLocalServiceWrapper implements PushDictItemLocalService
 			org.opencps.synchronization.exception.NoSuchPushDictItemException {
 		return _pushDictItemLocalService.updatePushDictItem(userId, groupId,
 			pushDictItemId, collectionCode, itemCode, itemName, itemNameEN,
-			itemDescription, parentItemCode, sibling, method, serviceContext);
+			itemDescription, parentItemCode, sibling, method, metaData,
+			serviceContext);
 	}
 
 	/**

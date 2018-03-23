@@ -34,11 +34,18 @@
 		<column name="sibling" type="String" />
 
 		<column name="method" type="String"/>
+		<column name="metaData" type="String"/>
 		
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="modifiedDate" />
 		</order>
+        <finder name="F_collectionCode_itemCode_Method" return-type="PushDictItem">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="collectionCode"></finder-column>
+            <finder-column name="itemCode"></finder-column>
+            <finder-column name="method"></finder-column>
+        </finder>
 	</entity>
 	<entity local-service="true" name="PushCollection" table="opencps_pushcollection" remote-service="false" uuid="true">
 
@@ -64,12 +71,18 @@
 		<column name="collectionName" type="String" />
 		<column name="collectionNameEN" type="String" />
 		<column name="description" type="String" />
-
+		<column name="dataForm" type="String" />
+	
 		<column name="method" type="String"/>
 		
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="modifiedDate" />
 		</order>
+        <finder name="F_collectionCode_Method" return-type="PushCollection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="collectionCode"></finder-column>
+            <finder-column name="method"></finder-column>
+        </finder>
 	</entity>	
 </service-builder>

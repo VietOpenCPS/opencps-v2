@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -1484,6 +1485,344 @@ public class PushCollectionPersistenceImpl extends BasePersistenceImpl<PushColle
 	private static final String _FINDER_COLUMN_UUID_C_UUID_2 = "pushCollection.uuid = ? AND ";
 	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(pushCollection.uuid IS NULL OR pushCollection.uuid = '') AND ";
 	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 = "pushCollection.companyId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_COLLECTIONCODE_METHOD = new FinderPath(PushCollectionModelImpl.ENTITY_CACHE_ENABLED,
+			PushCollectionModelImpl.FINDER_CACHE_ENABLED,
+			PushCollectionImpl.class, FINDER_CLASS_NAME_ENTITY,
+			"fetchByF_collectionCode_Method",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			},
+			PushCollectionModelImpl.GROUPID_COLUMN_BITMASK |
+			PushCollectionModelImpl.COLLECTIONCODE_COLUMN_BITMASK |
+			PushCollectionModelImpl.METHOD_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_COLLECTIONCODE_METHOD = new FinderPath(PushCollectionModelImpl.ENTITY_CACHE_ENABLED,
+			PushCollectionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByF_collectionCode_Method",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			});
+
+	/**
+	 * Returns the push collection where groupId = &#63; and collectionCode = &#63; and method = &#63; or throws a {@link NoSuchPushCollectionException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param collectionCode the collection code
+	 * @param method the method
+	 * @return the matching push collection
+	 * @throws NoSuchPushCollectionException if a matching push collection could not be found
+	 */
+	@Override
+	public PushCollection findByF_collectionCode_Method(long groupId,
+		String collectionCode, String method)
+		throws NoSuchPushCollectionException {
+		PushCollection pushCollection = fetchByF_collectionCode_Method(groupId,
+				collectionCode, method);
+
+		if (pushCollection == null) {
+			StringBundler msg = new StringBundler(8);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", collectionCode=");
+			msg.append(collectionCode);
+
+			msg.append(", method=");
+			msg.append(method);
+
+			msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchPushCollectionException(msg.toString());
+		}
+
+		return pushCollection;
+	}
+
+	/**
+	 * Returns the push collection where groupId = &#63; and collectionCode = &#63; and method = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param collectionCode the collection code
+	 * @param method the method
+	 * @return the matching push collection, or <code>null</code> if a matching push collection could not be found
+	 */
+	@Override
+	public PushCollection fetchByF_collectionCode_Method(long groupId,
+		String collectionCode, String method) {
+		return fetchByF_collectionCode_Method(groupId, collectionCode, method,
+			true);
+	}
+
+	/**
+	 * Returns the push collection where groupId = &#63; and collectionCode = &#63; and method = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param collectionCode the collection code
+	 * @param method the method
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching push collection, or <code>null</code> if a matching push collection could not be found
+	 */
+	@Override
+	public PushCollection fetchByF_collectionCode_Method(long groupId,
+		String collectionCode, String method, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, collectionCode, method };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_COLLECTIONCODE_METHOD,
+					finderArgs, this);
+		}
+
+		if (result instanceof PushCollection) {
+			PushCollection pushCollection = (PushCollection)result;
+
+			if ((groupId != pushCollection.getGroupId()) ||
+					!Objects.equals(collectionCode,
+						pushCollection.getCollectionCode()) ||
+					!Objects.equals(method, pushCollection.getMethod())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_SELECT_PUSHCOLLECTION_WHERE);
+
+			query.append(_FINDER_COLUMN_F_COLLECTIONCODE_METHOD_GROUPID_2);
+
+			boolean bindCollectionCode = false;
+
+			if (collectionCode == null) {
+				query.append(_FINDER_COLUMN_F_COLLECTIONCODE_METHOD_COLLECTIONCODE_1);
+			}
+			else if (collectionCode.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_F_COLLECTIONCODE_METHOD_COLLECTIONCODE_3);
+			}
+			else {
+				bindCollectionCode = true;
+
+				query.append(_FINDER_COLUMN_F_COLLECTIONCODE_METHOD_COLLECTIONCODE_2);
+			}
+
+			boolean bindMethod = false;
+
+			if (method == null) {
+				query.append(_FINDER_COLUMN_F_COLLECTIONCODE_METHOD_METHOD_1);
+			}
+			else if (method.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_F_COLLECTIONCODE_METHOD_METHOD_3);
+			}
+			else {
+				bindMethod = true;
+
+				query.append(_FINDER_COLUMN_F_COLLECTIONCODE_METHOD_METHOD_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindCollectionCode) {
+					qPos.add(collectionCode);
+				}
+
+				if (bindMethod) {
+					qPos.add(method);
+				}
+
+				List<PushCollection> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_COLLECTIONCODE_METHOD,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"PushCollectionPersistenceImpl.fetchByF_collectionCode_Method(long, String, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					PushCollection pushCollection = list.get(0);
+
+					result = pushCollection;
+
+					cacheResult(pushCollection);
+
+					if ((pushCollection.getGroupId() != groupId) ||
+							(pushCollection.getCollectionCode() == null) ||
+							!pushCollection.getCollectionCode()
+											   .equals(collectionCode) ||
+							(pushCollection.getMethod() == null) ||
+							!pushCollection.getMethod().equals(method)) {
+						finderCache.putResult(FINDER_PATH_FETCH_BY_F_COLLECTIONCODE_METHOD,
+							finderArgs, pushCollection);
+					}
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_COLLECTIONCODE_METHOD,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (PushCollection)result;
+		}
+	}
+
+	/**
+	 * Removes the push collection where groupId = &#63; and collectionCode = &#63; and method = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param collectionCode the collection code
+	 * @param method the method
+	 * @return the push collection that was removed
+	 */
+	@Override
+	public PushCollection removeByF_collectionCode_Method(long groupId,
+		String collectionCode, String method)
+		throws NoSuchPushCollectionException {
+		PushCollection pushCollection = findByF_collectionCode_Method(groupId,
+				collectionCode, method);
+
+		return remove(pushCollection);
+	}
+
+	/**
+	 * Returns the number of push collections where groupId = &#63; and collectionCode = &#63; and method = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param collectionCode the collection code
+	 * @param method the method
+	 * @return the number of matching push collections
+	 */
+	@Override
+	public int countByF_collectionCode_Method(long groupId,
+		String collectionCode, String method) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_COLLECTIONCODE_METHOD;
+
+		Object[] finderArgs = new Object[] { groupId, collectionCode, method };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_PUSHCOLLECTION_WHERE);
+
+			query.append(_FINDER_COLUMN_F_COLLECTIONCODE_METHOD_GROUPID_2);
+
+			boolean bindCollectionCode = false;
+
+			if (collectionCode == null) {
+				query.append(_FINDER_COLUMN_F_COLLECTIONCODE_METHOD_COLLECTIONCODE_1);
+			}
+			else if (collectionCode.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_F_COLLECTIONCODE_METHOD_COLLECTIONCODE_3);
+			}
+			else {
+				bindCollectionCode = true;
+
+				query.append(_FINDER_COLUMN_F_COLLECTIONCODE_METHOD_COLLECTIONCODE_2);
+			}
+
+			boolean bindMethod = false;
+
+			if (method == null) {
+				query.append(_FINDER_COLUMN_F_COLLECTIONCODE_METHOD_METHOD_1);
+			}
+			else if (method.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_F_COLLECTIONCODE_METHOD_METHOD_3);
+			}
+			else {
+				bindMethod = true;
+
+				query.append(_FINDER_COLUMN_F_COLLECTIONCODE_METHOD_METHOD_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindCollectionCode) {
+					qPos.add(collectionCode);
+				}
+
+				if (bindMethod) {
+					qPos.add(method);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_COLLECTIONCODE_METHOD_GROUPID_2 =
+		"pushCollection.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_COLLECTIONCODE_METHOD_COLLECTIONCODE_1 =
+		"pushCollection.collectionCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_COLLECTIONCODE_METHOD_COLLECTIONCODE_2 =
+		"pushCollection.collectionCode = ? AND ";
+	private static final String _FINDER_COLUMN_F_COLLECTIONCODE_METHOD_COLLECTIONCODE_3 =
+		"(pushCollection.collectionCode IS NULL OR pushCollection.collectionCode = '') AND ";
+	private static final String _FINDER_COLUMN_F_COLLECTIONCODE_METHOD_METHOD_1 = "pushCollection.method IS NULL";
+	private static final String _FINDER_COLUMN_F_COLLECTIONCODE_METHOD_METHOD_2 = "pushCollection.method = ?";
+	private static final String _FINDER_COLUMN_F_COLLECTIONCODE_METHOD_METHOD_3 = "(pushCollection.method IS NULL OR pushCollection.method = '')";
 
 	public PushCollectionPersistenceImpl() {
 		setModelClass(PushCollection.class);
@@ -1503,6 +1842,12 @@ public class PushCollectionPersistenceImpl extends BasePersistenceImpl<PushColle
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
 			new Object[] { pushCollection.getUuid(), pushCollection.getGroupId() },
 			pushCollection);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_COLLECTIONCODE_METHOD,
+			new Object[] {
+				pushCollection.getGroupId(), pushCollection.getCollectionCode(),
+				pushCollection.getMethod()
+			}, pushCollection);
 
 		pushCollection.resetOriginalValues();
 	}
@@ -1585,6 +1930,17 @@ public class PushCollectionPersistenceImpl extends BasePersistenceImpl<PushColle
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
 			pushCollectionModelImpl, false);
+
+		args = new Object[] {
+				pushCollectionModelImpl.getGroupId(),
+				pushCollectionModelImpl.getCollectionCode(),
+				pushCollectionModelImpl.getMethod()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_COLLECTIONCODE_METHOD,
+			args, Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_COLLECTIONCODE_METHOD,
+			args, pushCollectionModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -1608,6 +1964,33 @@ public class PushCollectionPersistenceImpl extends BasePersistenceImpl<PushColle
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					pushCollectionModelImpl.getGroupId(),
+					pushCollectionModelImpl.getCollectionCode(),
+					pushCollectionModelImpl.getMethod()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_COLLECTIONCODE_METHOD,
+				args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_COLLECTIONCODE_METHOD,
+				args);
+		}
+
+		if ((pushCollectionModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_COLLECTIONCODE_METHOD.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					pushCollectionModelImpl.getOriginalGroupId(),
+					pushCollectionModelImpl.getOriginalCollectionCode(),
+					pushCollectionModelImpl.getOriginalMethod()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_COLLECTIONCODE_METHOD,
+				args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_COLLECTIONCODE_METHOD,
+				args);
 		}
 	}
 
@@ -1856,6 +2239,7 @@ public class PushCollectionPersistenceImpl extends BasePersistenceImpl<PushColle
 		pushCollectionImpl.setCollectionName(pushCollection.getCollectionName());
 		pushCollectionImpl.setCollectionNameEN(pushCollection.getCollectionNameEN());
 		pushCollectionImpl.setDescription(pushCollection.getDescription());
+		pushCollectionImpl.setDataForm(pushCollection.getDataForm());
 		pushCollectionImpl.setMethod(pushCollection.getMethod());
 
 		return pushCollectionImpl;

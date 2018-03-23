@@ -76,6 +76,7 @@ public class PushDictItemWrapper implements PushDictItem,
 		attributes.put("parentItemCode", getParentItemCode());
 		attributes.put("sibling", getSibling());
 		attributes.put("method", getMethod());
+		attributes.put("metaData", getMetaData());
 
 		return attributes;
 	}
@@ -176,6 +177,12 @@ public class PushDictItemWrapper implements PushDictItem,
 
 		if (method != null) {
 			setMethod(method);
+		}
+
+		String metaData = (String)attributes.get("metaData");
+
+		if (metaData != null) {
+			setMetaData(metaData);
 		}
 	}
 
@@ -282,6 +289,16 @@ public class PushDictItemWrapper implements PushDictItem,
 	@Override
 	public java.lang.String getItemNameEN() {
 		return _pushDictItem.getItemNameEN();
+	}
+
+	/**
+	* Returns the meta data of this push dict item.
+	*
+	* @return the meta data of this push dict item
+	*/
+	@Override
+	public java.lang.String getMetaData() {
+		return _pushDictItem.getMetaData();
 	}
 
 	/**
@@ -528,6 +545,16 @@ public class PushDictItemWrapper implements PushDictItem,
 	@Override
 	public void setItemNameEN(java.lang.String itemNameEN) {
 		_pushDictItem.setItemNameEN(itemNameEN);
+	}
+
+	/**
+	* Sets the meta data of this push dict item.
+	*
+	* @param metaData the meta data of this push dict item
+	*/
+	@Override
+	public void setMetaData(java.lang.String metaData) {
+		_pushDictItem.setMetaData(metaData);
 	}
 
 	/**

@@ -11,6 +11,7 @@ create table opencps_pushcollection (
 	collectionName VARCHAR(75) null,
 	collectionNameEN VARCHAR(75) null,
 	description VARCHAR(75) null,
+	dataForm VARCHAR(75) null,
 	method VARCHAR(75) null
 );
 
@@ -30,5 +31,6 @@ create table opencps_pushdictitem (
 	itemDescription VARCHAR(75) null,
 	parentItemCode VARCHAR(75) null,
 	sibling VARCHAR(75) null,
-	method VARCHAR(75) null
+	method VARCHAR(75) null,
+	metaData VARCHAR(75) null
 );

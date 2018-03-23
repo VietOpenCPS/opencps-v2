@@ -24,10 +24,11 @@ public class PushDictItemActions implements PushDictItemInterface {
 	public PushDictItem addPushDictItem(long userId, long groupId, String collectionCode, String itemCode,
 			String itemName, String itemNameEn, String itemDescription, String parentItemCode, String sibling,
 			String method,
+			String metaData,
 			ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, NoSuchPushDictItemException {
 		// TODO Auto-generated method stub		
-		return PushDictItemLocalServiceUtil.addPushDictItem(userId, groupId, collectionCode, itemCode, itemName, itemNameEn, itemDescription, parentItemCode, sibling, method, serviceContext);
+		return PushDictItemLocalServiceUtil.addPushDictItem(userId, groupId, collectionCode, itemCode, itemName, itemNameEn, itemDescription, parentItemCode, sibling, method, metaData, serviceContext);
 	}
 
 	@Override
@@ -35,10 +36,11 @@ public class PushDictItemActions implements PushDictItemInterface {
 			String itemCode, String itemName, String itemNameEn, String itemDescription, String parentItemCode,
 			String sibling, 
 			String method,
+			String metaData,
 			ServiceContext serviceContext) throws NoSuchUserException, NotFoundException,
 			UnauthenticationException, UnauthorizationException, NoSuchPushDictItemException {
 		// TODO Auto-generated method stub
-		return PushDictItemLocalServiceUtil.updatePushDictItem(userId, groupId, pushDictItemId, collectionCode, itemCode, itemName, itemNameEn, itemDescription, parentItemCode, sibling, method, serviceContext);
+		return PushDictItemLocalServiceUtil.updatePushDictItem(userId, groupId, pushDictItemId, collectionCode, itemCode, itemName, itemNameEn, itemDescription, parentItemCode, sibling, method, metaData, serviceContext);
 	}
 
 	@Override

@@ -45,6 +45,7 @@ public class PushCollectionSoap implements Serializable {
 		soapModel.setCollectionName(model.getCollectionName());
 		soapModel.setCollectionNameEN(model.getCollectionNameEN());
 		soapModel.setDescription(model.getDescription());
+		soapModel.setDataForm(model.getDataForm());
 		soapModel.setMethod(model.getMethod());
 
 		return soapModel;
@@ -194,6 +195,14 @@ public class PushCollectionSoap implements Serializable {
 		_description = description;
 	}
 
+	public String getDataForm() {
+		return _dataForm;
+	}
+
+	public void setDataForm(String dataForm) {
+		_dataForm = dataForm;
+	}
+
 	public String getMethod() {
 		return _method;
 	}
@@ -214,5 +223,6 @@ public class PushCollectionSoap implements Serializable {
 	private String _collectionName;
 	private String _collectionNameEN;
 	private String _description;
+	private String _dataForm;
 	private String _method;
 }

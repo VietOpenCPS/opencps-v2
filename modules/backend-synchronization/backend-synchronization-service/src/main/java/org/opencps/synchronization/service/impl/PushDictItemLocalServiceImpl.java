@@ -68,6 +68,7 @@ public class PushDictItemLocalServiceImpl
 			String parentItemCode, 
 			String sibling,
 			String method,
+			String metaData,
 			ServiceContext serviceContext) throws UnauthenticationException,
 			UnauthorizationException, NoSuchUserException, SystemException {
 	
@@ -114,6 +115,7 @@ public class PushDictItemLocalServiceImpl
 		pushDictItem.setParentItemCode(parentItemCode);
 		pushDictItem.setSibling(sibling);
 		pushDictItem.setMethod(method);
+		pushDictItem.setMetaData(metaData);
 		
 		return pushDictItemPersistence.update(pushDictItem);
 	}
@@ -130,6 +132,7 @@ public class PushDictItemLocalServiceImpl
 			String parentItemCode, 
 			String sibling,
 			String method,
+			String metaData,
 			ServiceContext serviceContext) throws UnauthenticationException,
 			UnauthorizationException, NoSuchUserException, NoSuchPushDictItemException, SystemException {
 		// authen
@@ -172,6 +175,7 @@ public class PushDictItemLocalServiceImpl
 		pushDictItem.setParentItemCode(parentItemCode);
 		pushDictItem.setSibling(sibling);
 		pushDictItem.setMethod(method);
+		pushDictItem.setMetaData(metaData);
 		
 		return pushDictItemPersistence.update(pushDictItem);		
 	}	
@@ -206,5 +210,10 @@ public class PushDictItemLocalServiceImpl
 	@Override
 	public List<PushDictItem> findAll(int start, int end) {
 		return pushDictItemPersistence.findAll(start, end);
+	}
+	
+	@Override
+	public PushDictItem findByCollectionCode_ItemCode_Method(long groupId, String collectionCode, String itemCode, String method) throws NoSuchPushDictItemException {
+		return pushDictItemPersistence.findByF_collectionCode_itemCode_Method(groupId, collectionCode, itemCode, method);
 	}
 }

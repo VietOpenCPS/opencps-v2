@@ -66,7 +66,7 @@ public class PushDictItemCacheModel implements CacheModel<PushDictItem>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(35);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -100,6 +100,8 @@ public class PushDictItemCacheModel implements CacheModel<PushDictItem>,
 		sb.append(sibling);
 		sb.append(", method=");
 		sb.append(method);
+		sb.append(", metaData=");
+		sb.append(metaData);
 		sb.append("}");
 
 		return sb.toString();
@@ -198,6 +200,13 @@ public class PushDictItemCacheModel implements CacheModel<PushDictItem>,
 			pushDictItemImpl.setMethod(method);
 		}
 
+		if (metaData == null) {
+			pushDictItemImpl.setMetaData(StringPool.BLANK);
+		}
+		else {
+			pushDictItemImpl.setMetaData(metaData);
+		}
+
 		pushDictItemImpl.resetOriginalValues();
 
 		return pushDictItemImpl;
@@ -225,6 +234,7 @@ public class PushDictItemCacheModel implements CacheModel<PushDictItem>,
 		parentItemCode = objectInput.readUTF();
 		sibling = objectInput.readUTF();
 		method = objectInput.readUTF();
+		metaData = objectInput.readUTF();
 	}
 
 	@Override
@@ -310,6 +320,13 @@ public class PushDictItemCacheModel implements CacheModel<PushDictItem>,
 		else {
 			objectOutput.writeUTF(method);
 		}
+
+		if (metaData == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(metaData);
+		}
 	}
 
 	public String uuid;
@@ -328,4 +345,5 @@ public class PushDictItemCacheModel implements CacheModel<PushDictItem>,
 	public String parentItemCode;
 	public String sibling;
 	public String method;
+	public String metaData;
 }

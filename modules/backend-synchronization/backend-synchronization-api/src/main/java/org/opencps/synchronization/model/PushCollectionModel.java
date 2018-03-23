@@ -271,6 +271,21 @@ public interface PushCollectionModel extends BaseModel<PushCollection>,
 	public void setDescription(String description);
 
 	/**
+	 * Returns the data form of this push collection.
+	 *
+	 * @return the data form of this push collection
+	 */
+	@AutoEscape
+	public String getDataForm();
+
+	/**
+	 * Sets the data form of this push collection.
+	 *
+	 * @param dataForm the data form of this push collection
+	 */
+	public void setDataForm(String dataForm);
+
+	/**
 	 * Returns the method of this push collection.
 	 *
 	 * @return the method of this push collection

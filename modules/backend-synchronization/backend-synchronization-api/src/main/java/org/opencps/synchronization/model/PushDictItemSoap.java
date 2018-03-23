@@ -49,6 +49,7 @@ public class PushDictItemSoap implements Serializable {
 		soapModel.setParentItemCode(model.getParentItemCode());
 		soapModel.setSibling(model.getSibling());
 		soapModel.setMethod(model.getMethod());
+		soapModel.setMetaData(model.getMetaData());
 
 		return soapModel;
 	}
@@ -229,6 +230,14 @@ public class PushDictItemSoap implements Serializable {
 		_method = method;
 	}
 
+	public String getMetaData() {
+		return _metaData;
+	}
+
+	public void setMetaData(String metaData) {
+		_metaData = metaData;
+	}
+
 	private String _uuid;
 	private long _pushDictItemId;
 	private long _groupId;
@@ -245,4 +254,5 @@ public class PushDictItemSoap implements Serializable {
 	private String _parentItemCode;
 	private String _sibling;
 	private String _method;
+	private String _metaData;
 }

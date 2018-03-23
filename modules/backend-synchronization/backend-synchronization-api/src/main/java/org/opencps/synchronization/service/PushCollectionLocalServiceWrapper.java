@@ -232,6 +232,7 @@ public class PushCollectionLocalServiceWrapper
 		long userId, long groupId, java.lang.String collectionCode,
 		java.lang.String collectionName, java.lang.String collectionNameEN,
 		java.lang.String description, java.lang.String method,
+		java.lang.String dataForm,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.NoSuchUserException,
 			com.liferay.portal.kernel.exception.SystemException,
@@ -239,7 +240,7 @@ public class PushCollectionLocalServiceWrapper
 			org.opencps.auth.api.exception.UnauthorizationException {
 		return _pushCollectionLocalService.addPushCollection(userId, groupId,
 			collectionCode, collectionName, collectionNameEN, description,
-			method, serviceContext);
+			method, dataForm, serviceContext);
 	}
 
 	/**
@@ -323,6 +324,14 @@ public class PushCollectionLocalServiceWrapper
 			groupId);
 	}
 
+	@Override
+	public org.opencps.synchronization.model.PushCollection findByCollectionCode_Method(
+		long groupId, java.lang.String collectionCode, java.lang.String method)
+		throws org.opencps.synchronization.exception.NoSuchPushCollectionException {
+		return _pushCollectionLocalService.findByCollectionCode_Method(groupId,
+			collectionCode, method);
+	}
+
 	/**
 	* Returns the push collection with the primary key.
 	*
@@ -358,7 +367,7 @@ public class PushCollectionLocalServiceWrapper
 		long userId, long groupId, long pushCollectionId,
 		java.lang.String collectionCode, java.lang.String collectionName,
 		java.lang.String collectionNameEN, java.lang.String description,
-		java.lang.String method,
+		java.lang.String method, java.lang.String dataForm,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.NoSuchUserException,
 			com.liferay.portal.kernel.exception.SystemException,
@@ -367,7 +376,7 @@ public class PushCollectionLocalServiceWrapper
 			org.opencps.synchronization.exception.NoSuchPushCollectionException {
 		return _pushCollectionLocalService.updatePushCollection(userId,
 			groupId, pushCollectionId, collectionCode, collectionName,
-			collectionNameEN, description, method, serviceContext);
+			collectionNameEN, description, method, dataForm, serviceContext);
 	}
 
 	/**

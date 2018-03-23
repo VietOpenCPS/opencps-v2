@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -168,7 +169,7 @@ public class DataManagementImpl implements DataManagement {
 									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
 									&& configObj.has(SyncServerTerm.SERVER_URL)) {
 								if (groupId == sc.getGroupId()) {
-									pushCollectionUtil.addPushCollection(user.getUserId(), groupId, input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(), input.getDescription(), SyncServerTerm.METHOD_CREATE, serviceContext);											
+									pushCollectionUtil.addPushCollection(user.getUserId(), groupId, input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(), input.getDescription(), SyncServerTerm.METHOD_CREATE, "", serviceContext);											
 								}
 							}
 						}
@@ -274,7 +275,7 @@ public class DataManagementImpl implements DataManagement {
 									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
 									&& configObj.has(SyncServerTerm.SERVER_URL)) {
 								if (groupId == sc.getGroupId()) {
-									pushCollectionUtil.addPushCollection(user.getUserId(), groupId, code, input.getCollectionName(), input.getCollectionNameEN(), input.getDescription(), SyncServerTerm.METHOD_UPDATE, serviceContext);											
+									pushCollectionUtil.addPushCollection(user.getUserId(), groupId, code, input.getCollectionName(), input.getCollectionNameEN(), input.getDescription(), SyncServerTerm.METHOD_UPDATE, "", serviceContext);											
 								}
 							}
 						}
@@ -367,7 +368,7 @@ public class DataManagementImpl implements DataManagement {
 										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
 										&& configObj.has(SyncServerTerm.SERVER_URL)) {
 									if (groupId == sc.getGroupId()) {
-										pushCollectionUtil.addPushCollection(user.getUserId(), groupId, dictCollection.getCollectionCode(), dictCollection.getCollectionName(), dictCollection.getCollectionNameEN(), dictCollection.getDescription(), SyncServerTerm.METHOD_DELETE, serviceContext);											
+										pushCollectionUtil.addPushCollection(user.getUserId(), groupId, dictCollection.getCollectionCode(), dictCollection.getCollectionName(), dictCollection.getCollectionNameEN(), dictCollection.getDescription(), SyncServerTerm.METHOD_DELETE, "", serviceContext);											
 									}
 								}
 							}
@@ -482,7 +483,8 @@ public class DataManagementImpl implements DataManagement {
 	public Response addDataForm(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String code, String dataform) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-
+		PushCollectionInterface pushCollectionUtil = new PushCollectionActions();
+		
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -490,6 +492,44 @@ public class DataManagementImpl implements DataManagement {
 			DictCollection dictCollection = dictItemDataUtil.addDataForm(user.getUserId(), groupId, code, dataform,
 					serviceContext);
 
+			try {
+				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				
+				for (ServerConfig sc : lstServers) {
+					String configs = sc.getConfigs();
+					if (Validator.isNotNull(configs)) {
+						try {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+							if (configObj.has(SyncServerTerm.SERVER_TYPE) 
+									&& configObj.getString(SyncServerTerm.SERVER_TYPE).equals(SyncServerTerm.SYNC_SERVER_TYPE)
+									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_URL)) {
+								if (groupId == sc.getGroupId()) {
+									pushCollectionUtil.addPushCollection(
+											sc.getUserId(), 
+											groupId, 
+											dictCollection.getCollectionCode(), 
+											dictCollection.getCollectionName(), 
+											dictCollection.getCollectionNameEN(), 
+											dictCollection.getDescription(), 
+											SyncServerTerm.METHOD_UPDATE_DATAFORM, 
+											dataform,
+											serviceContext);
+							
+								}
+							}
+						}
+						catch (Exception e) {
+							_log.error(e);
+						}
+					}
+				}
+			}
+			catch (Exception e) {
+				_log.error(e);
+			}
+			
 			return Response.status(200).entity(dictCollection.getDataForm()).build();
 
 		} catch (Exception e) {
@@ -1106,7 +1146,7 @@ public class DataManagementImpl implements DataManagement {
 									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
 									&& configObj.has(SyncServerTerm.SERVER_URL)) {
 								if (groupId == sc.getGroupId()) {
-									pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, code, input.getItemCode(), item.getItemName(), item.getItemNameEN(), item.getItemDescription(), input.getParentItemCode(), item.getSibling(), SyncServerTerm.METHOD_CREATE, serviceContext);											
+									pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, code, input.getItemCode(), item.getItemName(), item.getItemNameEN(), item.getItemDescription(), input.getParentItemCode(), item.getSibling(), SyncServerTerm.METHOD_CREATE, "", serviceContext);											
 								}
 							}
 						}
@@ -1241,7 +1281,7 @@ public class DataManagementImpl implements DataManagement {
 								&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
 								&& configObj.has(SyncServerTerm.SERVER_URL)) {
 							if (groupId == sc.getGroupId()) {
-								pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, code, itemCode, input.getItemName(), input.getItemNameEN(), input.getItemDescription(), input.getParentItemCode(), input.getSibling(), SyncServerTerm.METHOD_UPDATE, serviceContext);											
+								pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, code, itemCode, input.getItemName(), input.getItemNameEN(), input.getItemDescription(), input.getParentItemCode(), input.getSibling(), SyncServerTerm.METHOD_UPDATE, "", serviceContext);											
 							}
 						}
 					}
@@ -1370,7 +1410,7 @@ public class DataManagementImpl implements DataManagement {
 										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
 										&& configObj.has(SyncServerTerm.SERVER_URL)) {
 									if (groupId == sc.getGroupId()) {
-										pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, code, itemCode, item.getItemName(), item.getItemNameEN(), item.getItemDescription(), "", item.getSibling(), SyncServerTerm.METHOD_DELETE, serviceContext);											
+										pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, code, itemCode, item.getItemName(), item.getItemNameEN(), item.getItemDescription(), "", item.getSibling(), SyncServerTerm.METHOD_DELETE, "", serviceContext);											
 									}
 								}
 							}
@@ -1533,7 +1573,8 @@ public class DataManagementImpl implements DataManagement {
 			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode,
 			DictItemInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-
+		PushDictItemInterface pushDictItemUtil = new PushDictItemActions();
+		
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -1541,6 +1582,54 @@ public class DataManagementImpl implements DataManagement {
 			DictItem ett = dictItemDataUtil.updateMetaDataByItemCode(user.getUserId(), groupId, serviceContext, code,
 					itemCode, input.getMetaData());
 
+			DictItem parentEtt = null;
+			try {
+				parentEtt = DictItemLocalServiceUtil.fetchDictItem(ett.getParentItemId());
+			}
+			catch (Exception e) {
+				
+			}
+			try {
+				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				String parentItemCode = (Validator.isNotNull(parentEtt) ? parentEtt.getItemCode() : null);
+				for (ServerConfig sc : lstServers) {
+					String configs = sc.getConfigs();
+					if (Validator.isNotNull(configs)) {
+						try {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+							if (configObj.has(SyncServerTerm.SERVER_TYPE) 
+									&& configObj.getString(SyncServerTerm.SERVER_TYPE).equals(SyncServerTerm.SYNC_SERVER_TYPE)
+									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_URL)) {
+								if (groupId == sc.getGroupId()) {
+									pushDictItemUtil.addPushDictItem(
+											sc.getUserId(), 
+											groupId, 
+											code, 
+											itemCode, 
+											ett.getItemName(), 
+											ett.getItemNameEN(), 
+											ett.getItemDescription(), 
+											parentItemCode, 
+											ett.getSibling(), 
+											SyncServerTerm.METHOD_UPDATE_METADATA, 
+											input.getMetaData(), 
+											serviceContext);
+							
+								}
+							}
+						}
+						catch (Exception e) {
+							_log.error(e);
+						}
+					}
+				}
+			}
+			catch (Exception e) {
+				_log.error(e);
+			}
+			
 			if (Validator.isNull(ett)) {
 
 				ErrorMsg error = new ErrorMsg();
@@ -1652,10 +1741,10 @@ public class DataManagementImpl implements DataManagement {
 								&& configObj.has(SyncServerTerm.SERVER_URL)) {
 							if (groupId == sc.getGroupId()) {
 								if (flag == 1) {
-									pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, code, itemCode, input.getItemName(), input.getItemNameEN(), input.getItemDescription(), input.getParentItemCode(), input.getSibling(), SyncServerTerm.METHOD_CREATE, serviceContext);																				
+									pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, code, itemCode, input.getItemName(), input.getItemNameEN(), input.getItemDescription(), input.getParentItemCode(), input.getSibling(), SyncServerTerm.METHOD_CREATE, "", serviceContext);																				
 								}
 								else {
-									pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, code, itemCode, input.getItemName(), input.getItemNameEN(), input.getItemDescription(), input.getParentItemCode(), input.getSibling(), SyncServerTerm.METHOD_UPDATE, serviceContext);																													
+									pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, code, itemCode, input.getItemName(), input.getItemNameEN(), input.getItemDescription(), input.getParentItemCode(), input.getSibling(), SyncServerTerm.METHOD_UPDATE, "", serviceContext);																													
 								}
 							}
 						}
@@ -1795,10 +1884,10 @@ public class DataManagementImpl implements DataManagement {
 									&& configObj.has(SyncServerTerm.SERVER_URL)) {
 								if (groupId == sc.getGroupId()) {
 									if (flag == 1) {
-										pushCollectionUtil.addPushCollection(user.getUserId(), groupId, input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(), input.getDescription(), SyncServerTerm.METHOD_CREATE, serviceContext);																					
+										pushCollectionUtil.addPushCollection(user.getUserId(), groupId, input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(), input.getDescription(), SyncServerTerm.METHOD_CREATE, "", serviceContext);																					
 									}
 									else {
-										pushCollectionUtil.addPushCollection(user.getUserId(), groupId, input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(), input.getDescription(), SyncServerTerm.METHOD_UPDATE, serviceContext);																					
+										pushCollectionUtil.addPushCollection(user.getUserId(), groupId, input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(), input.getDescription(), SyncServerTerm.METHOD_UPDATE, "", serviceContext);																					
 									}
 								}
 							}
@@ -1859,6 +1948,97 @@ public class DataManagementImpl implements DataManagement {
 			}
 
 			return Response.status(500).build();
+		}	
+	}
+
+	@Override
+	public Response getSyncDictCollections(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext,
+			org.opencps.api.datamgtsync.model.DataSearchModel query) {
+		// TODO Auto-generated method stub
+		int start = QueryUtil.ALL_POS;
+		int end = QueryUtil.ALL_POS;
+		
+		if (Validator.isNotNull(query.getStart())) {
+			start = Integer.valueOf(query.getStart());
+		}
+		
+		if (Validator.isNotNull(query.getEnd())) {
+			end = Integer.valueOf(query.getEnd());
+		}
+		try {
+			Date date = new Date(query.getLastSync());
+			
+			org.opencps.api.datamgtsync.model.DictCollectionResults result = new org.opencps.api.datamgtsync.model.DictCollectionResults();
+			
+			DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			List<DictCollection> lstCollections = dictItemDataUtil.getListDictCollectionsOlderThanDate(user.getUserId(), company.getCompanyId(), groupId, date, start, end, serviceContext);
+			
+			long total = dictItemDataUtil.countDictCollectionsOlderThanDate(user.getUserId(), company.getCompanyId(), groupId, date, start, end, serviceContext);
+			
+			result.setTotal(total);
+			
+			result.getDictCollectionModel().addAll(DataManagementUtils.mapperDictCollectionList(lstCollections));
+			
+			return Response.status(200).entity(result).build();
+		}
+		catch (Exception e) {
+			_log.error("@GET: " + e);
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(404).entity(error).build();			
+		}
+	}
+
+	@Override
+	public Response getSyncDictItems(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, org.opencps.api.datamgtsync.model.DataSearchModel query) {
+		// TODO Auto-generated method stub
+		int start = QueryUtil.ALL_POS;
+		int end = QueryUtil.ALL_POS;
+		
+		if (Validator.isNotNull(query.getStart())) {
+			start = Integer.valueOf(query.getStart());
+		}
+		
+		if (Validator.isNotNull(query.getEnd())) {
+			end = Integer.valueOf(query.getEnd());
+		}
+		try {
+			Date date = new Date(query.getLastSync());
+			
+			org.opencps.api.datamgtsync.model.DictItemResults result = new org.opencps.api.datamgtsync.model.DictItemResults();
+			
+			DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			List<DictItem> lstItems = dictItemDataUtil.getListDictItemsOlderThanDate(user.getUserId(), company.getCompanyId(), groupId, date, start, end, serviceContext);
+			
+			long total = dictItemDataUtil.countDictItemsOlderThanDate(user.getUserId(), company.getCompanyId(), groupId, date, start, end, serviceContext);
+			
+			result.setTotal(total);
+			
+			result.getDictItemModel().addAll(DataManagementUtils.mapperDictItemList(lstItems));
+			
+			return Response.status(200).entity(result).build();
+		}
+		catch (Exception e) {
+			_log.error("@GET: " + e);
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(404).entity(error).build();			
 		}	
 	}	
 }
