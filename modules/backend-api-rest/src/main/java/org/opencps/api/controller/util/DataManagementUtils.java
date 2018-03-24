@@ -21,6 +21,7 @@ import org.opencps.datamgt.model.DictGroup;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.model.DictItemGroup;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -414,6 +415,35 @@ public class DataManagementUtils {
 				}
 				if (Validator.isNotNull(dg.getModifiedDate())) {
 					model.setModifiedDate(dg.getModifiedDate().getTime());				
+				}
+				
+				results.add(model);
+			}
+			catch (Exception e) {
+				
+			}
+		}
+		return results;
+	}	
+	public static List<org.opencps.api.datamgtsync.model.DictItemGroupModel> mapperDictItemGroupList(List<DictItemGroup> lstDictItemGroups) {		
+		List<org.opencps.api.datamgtsync.model.DictItemGroupModel> results = new ArrayList<>();
+		
+		for (DictItemGroup dig : lstDictItemGroups) {
+			org.opencps.api.datamgtsync.model.DictItemGroupModel model = new org.opencps.api.datamgtsync.model.DictItemGroupModel();
+			try {
+				DictGroup group = DictGroupLocalServiceUtil.fetchDictGroup(dig.getDictGroupId());
+				DictCollection collection = DictCollectionLocalServiceUtil.fetchDictCollection(group.getDictCollectionId());
+				DictItem item = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+				
+				model.setCollectionCode(collection.getCollectionCode());
+				model.setGroupCode(group.getGroupCode());
+				model.setItemCode(item.getItemCode());
+				
+				if (Validator.isNotNull(dig.getCreateDate())) {
+					model.setCreateDate(dig.getCreateDate().getTime());				
+				}
+				if (Validator.isNotNull(dig.getModifiedDate())) {
+					model.setModifiedDate(dig.getModifiedDate().getTime());				
 				}
 				
 				results.add(model);

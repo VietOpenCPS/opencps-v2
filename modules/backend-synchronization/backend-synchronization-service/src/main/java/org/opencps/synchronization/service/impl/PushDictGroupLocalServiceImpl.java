@@ -210,4 +210,8 @@ public class PushDictGroupLocalServiceImpl
 	public PushDictGroup findByCollectionCode_GroupCode_Method(long groupId, String collectionCode, String groupCode, String method) throws NoSuchPushDictGroupException {
 		return pushDictGroupPersistence.findByF_collectionCode_groupCode_Method(groupId, collectionCode, groupCode, method);
 	}	
+	@Override
+	public PushDictGroup findByCollectionCode_GroupCode_ItemCode_Method(long groupId, String collectionCode, String groupCode, String itemCode, String method) throws NoSuchPushDictGroupException {
+		return pushDictGroupPersistence.findByF_collectionCode_groupCode_itemCode_Method(groupId, collectionCode, groupCode, itemCode, method);
+	}		
 }

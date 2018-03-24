@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -2282,5 +2283,51 @@ public class DataManagementImpl implements DataManagement {
 
 			return Response.status(500).build();
 		}
+	}
+
+	@Override
+	public Response getSyncDictgroupsDictItems(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String code, String groupCode,
+			org.opencps.api.datamgtsync.model.DataSearchModel query) {
+		// TODO Auto-generated method stub
+		int start = QueryUtil.ALL_POS;
+		int end = QueryUtil.ALL_POS;
+		
+		if (Validator.isNotNull(query.getStart())) {
+			start = Integer.valueOf(query.getStart());
+		}
+		
+		if (Validator.isNotNull(query.getEnd())) {
+			end = Integer.valueOf(query.getEnd());
+		}
+		try {
+			Date date = new Date(query.getLastSync());
+			
+			org.opencps.api.datamgtsync.model.DictItemGroupResults result = new org.opencps.api.datamgtsync.model.DictItemGroupResults();
+			
+			DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			List<DictItemGroup> lstItems = dictItemDataUtil.getListDictItemGroupsOlderThanDate(user.getUserId(), company.getCompanyId(), groupId, date, start, end, serviceContext);
+			
+			long total = dictItemDataUtil.countDictItemGroupsOlderThanDate(user.getUserId(), company.getCompanyId(), groupId, date, start, end, serviceContext);
+			
+			result.setTotal(total);
+			
+			result.getDictItemGroupModel().addAll(DataManagementUtils.mapperDictItemGroupList(lstItems));
+			
+			return Response.status(200).entity(result).build();
+		}
+		catch (Exception e) {
+			_log.error("@GET: " + e);
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(404).entity(error).build();			
+		}	
 	}	
 }

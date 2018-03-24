@@ -304,6 +304,16 @@ public class PushDictGroupLocalServiceUtil {
 		return getService().fetchPushDictGroupByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static org.opencps.synchronization.model.PushDictGroup findByCollectionCode_GroupCode_ItemCode_Method(
+		long groupId, java.lang.String collectionCode,
+		java.lang.String groupCode, java.lang.String itemCode,
+		java.lang.String method)
+		throws org.opencps.synchronization.exception.NoSuchPushDictGroupException {
+		return getService()
+				   .findByCollectionCode_GroupCode_ItemCode_Method(groupId,
+			collectionCode, groupCode, itemCode, method);
+	}
+
 	public static org.opencps.synchronization.model.PushDictGroup findByCollectionCode_GroupCode_Method(
 		long groupId, java.lang.String collectionCode,
 		java.lang.String groupCode, java.lang.String method)

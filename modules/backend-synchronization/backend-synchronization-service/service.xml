@@ -125,5 +125,12 @@
             <finder-column name="groupCode"></finder-column>
             <finder-column name="method"></finder-column>
         </finder>
+        <finder name="F_collectionCode_groupCode_itemCode_Method" return-type="PushDictGroup">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="collectionCode"></finder-column>            
+            <finder-column name="groupCode"></finder-column>
+            <finder-column name="itemCode"></finder-column>            
+            <finder-column name="method"></finder-column>
+        </finder>
 	</entity>	
 </service-builder>

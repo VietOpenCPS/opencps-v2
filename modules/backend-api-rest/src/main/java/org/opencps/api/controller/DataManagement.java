@@ -384,6 +384,15 @@ public interface DataManagement {
 			@BeanParam org.opencps.api.datamgtsync.model.DataSearchModel query);
 	
 	@GET
+	@Path("/all/dictgroups/all/dictitems/sync")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getSyncDictgroupsDictItems(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@PathParam("code") String code, @PathParam("groupCode") String groupCode,
+			@BeanParam org.opencps.api.datamgtsync.model.DataSearchModel query);
+	
+	@GET
 	@Path("/all/dictgroups/sync")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

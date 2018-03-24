@@ -595,6 +595,105 @@ public class PushDictGroupUtil {
 	}
 
 	/**
+	* Returns the push dict group where groupId = &#63; and collectionCode = &#63; and groupCode = &#63; and itemCode = &#63; and method = &#63; or throws a {@link NoSuchPushDictGroupException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param collectionCode the collection code
+	* @param groupCode the group code
+	* @param itemCode the item code
+	* @param method the method
+	* @return the matching push dict group
+	* @throws NoSuchPushDictGroupException if a matching push dict group could not be found
+	*/
+	public static PushDictGroup findByF_collectionCode_groupCode_itemCode_Method(
+		long groupId, java.lang.String collectionCode,
+		java.lang.String groupCode, java.lang.String itemCode,
+		java.lang.String method)
+		throws org.opencps.synchronization.exception.NoSuchPushDictGroupException {
+		return getPersistence()
+				   .findByF_collectionCode_groupCode_itemCode_Method(groupId,
+			collectionCode, groupCode, itemCode, method);
+	}
+
+	/**
+	* Returns the push dict group where groupId = &#63; and collectionCode = &#63; and groupCode = &#63; and itemCode = &#63; and method = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param collectionCode the collection code
+	* @param groupCode the group code
+	* @param itemCode the item code
+	* @param method the method
+	* @return the matching push dict group, or <code>null</code> if a matching push dict group could not be found
+	*/
+	public static PushDictGroup fetchByF_collectionCode_groupCode_itemCode_Method(
+		long groupId, java.lang.String collectionCode,
+		java.lang.String groupCode, java.lang.String itemCode,
+		java.lang.String method) {
+		return getPersistence()
+				   .fetchByF_collectionCode_groupCode_itemCode_Method(groupId,
+			collectionCode, groupCode, itemCode, method);
+	}
+
+	/**
+	* Returns the push dict group where groupId = &#63; and collectionCode = &#63; and groupCode = &#63; and itemCode = &#63; and method = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param collectionCode the collection code
+	* @param groupCode the group code
+	* @param itemCode the item code
+	* @param method the method
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching push dict group, or <code>null</code> if a matching push dict group could not be found
+	*/
+	public static PushDictGroup fetchByF_collectionCode_groupCode_itemCode_Method(
+		long groupId, java.lang.String collectionCode,
+		java.lang.String groupCode, java.lang.String itemCode,
+		java.lang.String method, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_collectionCode_groupCode_itemCode_Method(groupId,
+			collectionCode, groupCode, itemCode, method, retrieveFromCache);
+	}
+
+	/**
+	* Removes the push dict group where groupId = &#63; and collectionCode = &#63; and groupCode = &#63; and itemCode = &#63; and method = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param collectionCode the collection code
+	* @param groupCode the group code
+	* @param itemCode the item code
+	* @param method the method
+	* @return the push dict group that was removed
+	*/
+	public static PushDictGroup removeByF_collectionCode_groupCode_itemCode_Method(
+		long groupId, java.lang.String collectionCode,
+		java.lang.String groupCode, java.lang.String itemCode,
+		java.lang.String method)
+		throws org.opencps.synchronization.exception.NoSuchPushDictGroupException {
+		return getPersistence()
+				   .removeByF_collectionCode_groupCode_itemCode_Method(groupId,
+			collectionCode, groupCode, itemCode, method);
+	}
+
+	/**
+	* Returns the number of push dict groups where groupId = &#63; and collectionCode = &#63; and groupCode = &#63; and itemCode = &#63; and method = &#63;.
+	*
+	* @param groupId the group ID
+	* @param collectionCode the collection code
+	* @param groupCode the group code
+	* @param itemCode the item code
+	* @param method the method
+	* @return the number of matching push dict groups
+	*/
+	public static int countByF_collectionCode_groupCode_itemCode_Method(
+		long groupId, java.lang.String collectionCode,
+		java.lang.String groupCode, java.lang.String itemCode,
+		java.lang.String method) {
+		return getPersistence()
+				   .countByF_collectionCode_groupCode_itemCode_Method(groupId,
+			collectionCode, groupCode, itemCode, method);
+	}
+
+	/**
 	* Caches the push dict group in the entity cache if it is enabled.
 	*
 	* @param pushDictGroup the push dict group

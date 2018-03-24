@@ -272,6 +272,11 @@ public interface PushDictGroupLocalService extends BaseLocalService,
 	public PushDictGroup fetchPushDictGroupByUuidAndGroupId(
 		java.lang.String uuid, long groupId);
 
+	public PushDictGroup findByCollectionCode_GroupCode_ItemCode_Method(
+		long groupId, java.lang.String collectionCode,
+		java.lang.String groupCode, java.lang.String itemCode,
+		java.lang.String method) throws NoSuchPushDictGroupException;
+
 	public PushDictGroup findByCollectionCode_GroupCode_Method(long groupId,
 		java.lang.String collectionCode, java.lang.String groupCode,
 		java.lang.String method) throws NoSuchPushDictGroupException;

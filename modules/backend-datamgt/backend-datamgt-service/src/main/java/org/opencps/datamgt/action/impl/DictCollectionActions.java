@@ -1057,4 +1057,18 @@ public class DictCollectionActions implements DictcollectionInterface {
 		return DictGroupLocalServiceUtil.countOlderThanDate(date, groupId);
 	}
 
+	@Override
+	public List<DictItemGroup> getListDictItemGroupsOlderThanDate(long userId, long companyId, long groupId, Date date,
+			int start, int end, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		return DictItemGroupLocalServiceUtil.findOlderThanDate(date, groupId, start, end);
+	}
+
+	@Override
+	public long countDictItemGroupsOlderThanDate(long userId, long companyId, long groupId, Date date, int start,
+			int end, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		return DictItemGroupLocalServiceUtil.countOlderThanDate(date, groupId);
+	}
+
 }

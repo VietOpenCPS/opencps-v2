@@ -125,9 +125,10 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 	public static final long COMPANYID_COLUMN_BITMASK = 2L;
 	public static final long GROUPCODE_COLUMN_BITMASK = 4L;
 	public static final long GROUPID_COLUMN_BITMASK = 8L;
-	public static final long METHOD_COLUMN_BITMASK = 16L;
-	public static final long UUID_COLUMN_BITMASK = 32L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 64L;
+	public static final long ITEMCODE_COLUMN_BITMASK = 16L;
+	public static final long METHOD_COLUMN_BITMASK = 32L;
+	public static final long UUID_COLUMN_BITMASK = 64L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 128L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(backend.synchronization.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.synchronization.model.PushDictGroup"));
 
@@ -536,7 +537,17 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 
 	@Override
 	public void setItemCode(String itemCode) {
+		_columnBitmask |= ITEMCODE_COLUMN_BITMASK;
+
+		if (_originalItemCode == null) {
+			_originalItemCode = _itemCode;
+		}
+
 		_itemCode = itemCode;
+	}
+
+	public String getOriginalItemCode() {
+		return GetterUtil.getString(_originalItemCode);
 	}
 
 	@Override
@@ -692,6 +703,8 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 		pushDictGroupModelImpl._originalCollectionCode = pushDictGroupModelImpl._collectionCode;
 
 		pushDictGroupModelImpl._originalGroupCode = pushDictGroupModelImpl._groupCode;
+
+		pushDictGroupModelImpl._originalItemCode = pushDictGroupModelImpl._itemCode;
 
 		pushDictGroupModelImpl._originalMethod = pushDictGroupModelImpl._method;
 
@@ -942,6 +955,7 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 	private String _groupNameEN;
 	private String _groupDescription;
 	private String _itemCode;
+	private String _originalItemCode;
 	private String _method;
 	private String _originalMethod;
 	private long _columnBitmask;

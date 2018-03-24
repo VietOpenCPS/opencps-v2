@@ -75,15 +75,16 @@ Require-Capability: osgi.extender;filter:="(&(osgi.extender=osgi.compo
  service.DictCollectionLocalService)";effective:=active,osgi.service;f
  ilter:="(objectClass=org.opencps.datamgt.service.DictGroupLocalServic
  e)";effective:=active,osgi.service;filter:="(objectClass=org.opencps.
- datamgt.service.DictItemLocalService)";effective:=active,osgi.service
- ;filter:="(objectClass=org.opencps.synchronization.service.PushCollec
- tionLocalService)";effective:=active,osgi.service;filter:="(objectCla
- ss=org.opencps.synchronization.service.PushDictGroupLocalService)";ef
- fective:=active,osgi.service;filter:="(objectClass=org.opencps.synchr
- onization.service.PushDictItemLocalService)";effective:=active,lifera
- y.extender;filter:="(&(liferay.extender=spring.extender)(version>=2.0
- )(!(version>=3.0)))",osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8)
- )"
+ datamgt.service.DictItemGroupLocalService)";effective:=active,osgi.se
+ rvice;filter:="(objectClass=org.opencps.datamgt.service.DictItemLocal
+ Service)";effective:=active,osgi.service;filter:="(objectClass=org.op
+ encps.synchronization.service.PushCollectionLocalService)";effective:
+ =active,osgi.service;filter:="(objectClass=org.opencps.synchronizatio
+ n.service.PushDictGroupLocalService)";effective:=active,osgi.service;
+ filter:="(objectClass=org.opencps.synchronization.service.PushDictIte
+ mLocalService)";effective:=active,liferay.extender;filter:="(&(lifera
+ y.extender=spring.extender)(version>=2.0)(!(version>=3.0)))",osgi.ee;
+ filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 Service-Component: OSGI-INF/org.opencps.synchronization.scheduler.Data
  PullScheduler.xml,OSGI-INF/org.opencps.synchronization.scheduler.Dict
  CollectionSyncScheduler.xml,OSGI-INF/org.opencps.synchronization.sche
