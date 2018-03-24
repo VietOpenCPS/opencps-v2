@@ -31,7 +31,7 @@ public class DeliverableFinderImpl extends DeliverableFinderBaseImpl
 		    String sql = "SELECT * FROM opencps_deliverable WHERE"
 		    				+ " deliverableCode IN ("+strDeliverableCode+") AND"
 		    				+ " deliverableState IN ("+state+")";
-		    _log.info("SQL: "+ sql);
+//		    _log.info("SQL: "+ sql);
 		    try {
 		        session = openSession();
 

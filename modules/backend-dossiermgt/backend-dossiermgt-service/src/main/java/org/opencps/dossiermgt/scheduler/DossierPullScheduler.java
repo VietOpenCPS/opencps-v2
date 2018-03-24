@@ -295,9 +295,14 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				}
 
 			} else {
+				
+				_log.error("UPDATE_____IN_CASE_HAS_DES_DOSSIER___________");
 
+				
 				if (Validator.isNotNull(object.getString(DossierTerm.CANCELLING_DATE))) {
 					// Update cancellingDate
+					
+					_log.error("UPDATE____CANCELLING_DATE");
 					desDossier.setCancellingDate(APIDateTimeUtils.convertStringToDate(
 							object.getString(DossierTerm.CANCELLING_DATE), APIDateTimeUtils._NORMAL_PARTTERN));
 				}
@@ -307,6 +312,10 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					desDossier.setCorrecttingDate(APIDateTimeUtils.convertStringToDate(
 							object.getString(DossierTerm.CORRECTING_DATE), APIDateTimeUtils._NORMAL_PARTTERN));
 				}
+				
+				//Update dossier
+				
+				DossierLocalServiceUtil.updateDossier(desDossier);
 
 				// the resubmit case
 				if (object.getBoolean(DossierTerm.SUBMITTING, false)) {

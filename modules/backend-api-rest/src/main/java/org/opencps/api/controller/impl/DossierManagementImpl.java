@@ -233,6 +233,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 			_log.info("3");
 			dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
+			
+			_log.info("31"+ query.getEnd());
 
 			if (query.getEnd() == 0) {
 
@@ -321,10 +323,27 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.info("6");
 			DossierResultsModel results = new DossierResultsModel();
 
-			results.setTotal(jsonData.getInt("total"));
-
-			_log.info("7");
-			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+			if (jsonData != null && jsonData.length() > 0) {
+				results.setTotal(jsonData.getInt("total"));
+				_log.info("7");
+				List<Document> docs = (List<Document>) jsonData.get("data");
+				if (docs != null && docs.size() > 0) {
+					if (Validator.isNotNull(status) || Validator.isNotNull(substatus)) {
+						results.getData().addAll(DossierUtils.mappingForGetList(docs));
+					} else {
+						// Process paging
+						if (query.getEnd() == -1) {
+							results.getData().addAll(DossierUtils.mappingForGetList(docs));
+						} else {
+							_log.info("669999");
+							results.getData().addAll(DossierUtils.mappingForGetListPaging(docs, query.getStart(), query.getEnd()));
+						}
+					}
+				}
+			} else {
+				results.setTotal(0);
+			}
+			
 
 			_log.info("8");
 			return Response.status(200).entity(results).build();
