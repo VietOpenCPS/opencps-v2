@@ -312,6 +312,10 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					desDossier.setCorrecttingDate(APIDateTimeUtils.convertStringToDate(
 							object.getString(DossierTerm.CORRECTING_DATE), APIDateTimeUtils._NORMAL_PARTTERN));
 				}
+				
+				//Update dossier
+				
+				DossierLocalServiceUtil.updateDossier(desDossier);
 
 				// the resubmit case
 				if (object.getBoolean(DossierTerm.SUBMITTING, false)) {
