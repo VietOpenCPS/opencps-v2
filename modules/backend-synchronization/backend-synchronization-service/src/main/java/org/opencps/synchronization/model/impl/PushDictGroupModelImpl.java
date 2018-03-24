@@ -77,6 +77,7 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 			{ "userName", Types.VARCHAR },
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
+			{ "serverNo", Types.VARCHAR },
 			{ "collectionCode", Types.VARCHAR },
 			{ "groupCode", Types.VARCHAR },
 			{ "groupName", Types.VARCHAR },
@@ -96,6 +97,7 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("serverNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("collectionCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("groupCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("groupName", Types.VARCHAR);
@@ -105,7 +107,7 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 		TABLE_COLUMNS_MAP.put("method", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_pushdictgroup (uuid_ VARCHAR(75) null,pushDictGroupId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,collectionCode VARCHAR(75) null,groupCode VARCHAR(75) null,groupName VARCHAR(75) null,groupNameEN VARCHAR(75) null,groupDescription TEXT null,itemCode VARCHAR(75) null,method VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_pushdictgroup (uuid_ VARCHAR(75) null,pushDictGroupId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,serverNo VARCHAR(75) null,collectionCode VARCHAR(75) null,groupCode VARCHAR(75) null,groupName VARCHAR(75) null,groupNameEN VARCHAR(75) null,groupDescription TEXT null,itemCode VARCHAR(75) null,method VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_pushdictgroup";
 	public static final String ORDER_BY_JPQL = " ORDER BY pushDictGroup.modifiedDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_pushdictgroup.modifiedDate ASC";
@@ -127,8 +129,9 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 	public static final long GROUPID_COLUMN_BITMASK = 8L;
 	public static final long ITEMCODE_COLUMN_BITMASK = 16L;
 	public static final long METHOD_COLUMN_BITMASK = 32L;
-	public static final long UUID_COLUMN_BITMASK = 64L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 128L;
+	public static final long SERVERNO_COLUMN_BITMASK = 64L;
+	public static final long UUID_COLUMN_BITMASK = 128L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 256L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(backend.synchronization.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.synchronization.model.PushDictGroup"));
 
@@ -177,6 +180,7 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("serverNo", getServerNo());
 		attributes.put("collectionCode", getCollectionCode());
 		attributes.put("groupCode", getGroupCode());
 		attributes.put("groupName", getGroupName());
@@ -239,6 +243,12 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 
 		if (modifiedDate != null) {
 			setModifiedDate(modifiedDate);
+		}
+
+		String serverNo = (String)attributes.get("serverNo");
+
+		if (serverNo != null) {
+			setServerNo(serverNo);
 		}
 
 		String collectionCode = (String)attributes.get("collectionCode");
@@ -431,6 +441,31 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 	}
 
 	@Override
+	public String getServerNo() {
+		if (_serverNo == null) {
+			return StringPool.BLANK;
+		}
+		else {
+			return _serverNo;
+		}
+	}
+
+	@Override
+	public void setServerNo(String serverNo) {
+		_columnBitmask |= SERVERNO_COLUMN_BITMASK;
+
+		if (_originalServerNo == null) {
+			_originalServerNo = _serverNo;
+		}
+
+		_serverNo = serverNo;
+	}
+
+	public String getOriginalServerNo() {
+		return GetterUtil.getString(_originalServerNo);
+	}
+
+	@Override
 	public String getCollectionCode() {
 		if (_collectionCode == null) {
 			return StringPool.BLANK;
@@ -620,6 +655,7 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 		pushDictGroupImpl.setUserName(getUserName());
 		pushDictGroupImpl.setCreateDate(getCreateDate());
 		pushDictGroupImpl.setModifiedDate(getModifiedDate());
+		pushDictGroupImpl.setServerNo(getServerNo());
 		pushDictGroupImpl.setCollectionCode(getCollectionCode());
 		pushDictGroupImpl.setGroupCode(getGroupCode());
 		pushDictGroupImpl.setGroupName(getGroupName());
@@ -700,6 +736,8 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 
 		pushDictGroupModelImpl._setModifiedDate = false;
 
+		pushDictGroupModelImpl._originalServerNo = pushDictGroupModelImpl._serverNo;
+
 		pushDictGroupModelImpl._originalCollectionCode = pushDictGroupModelImpl._collectionCode;
 
 		pushDictGroupModelImpl._originalGroupCode = pushDictGroupModelImpl._groupCode;
@@ -755,6 +793,14 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 		}
 		else {
 			pushDictGroupCacheModel.modifiedDate = Long.MIN_VALUE;
+		}
+
+		pushDictGroupCacheModel.serverNo = getServerNo();
+
+		String serverNo = pushDictGroupCacheModel.serverNo;
+
+		if ((serverNo != null) && (serverNo.length() == 0)) {
+			pushDictGroupCacheModel.serverNo = null;
 		}
 
 		pushDictGroupCacheModel.collectionCode = getCollectionCode();
@@ -818,7 +864,7 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -836,6 +882,8 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 		sb.append(getCreateDate());
 		sb.append(", modifiedDate=");
 		sb.append(getModifiedDate());
+		sb.append(", serverNo=");
+		sb.append(getServerNo());
 		sb.append(", collectionCode=");
 		sb.append(getCollectionCode());
 		sb.append(", groupCode=");
@@ -857,7 +905,7 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(49);
+		StringBundler sb = new StringBundler(52);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.synchronization.model.PushDictGroup");
@@ -894,6 +942,10 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 		sb.append(
 			"<column><column-name>modifiedDate</column-name><column-value><![CDATA[");
 		sb.append(getModifiedDate());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>serverNo</column-name><column-value><![CDATA[");
+		sb.append(getServerNo());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>collectionCode</column-name><column-value><![CDATA[");
@@ -947,6 +999,8 @@ public class PushDictGroupModelImpl extends BaseModelImpl<PushDictGroup>
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
+	private String _serverNo;
+	private String _originalServerNo;
 	private String _collectionCode;
 	private String _originalCollectionCode;
 	private String _groupCode;

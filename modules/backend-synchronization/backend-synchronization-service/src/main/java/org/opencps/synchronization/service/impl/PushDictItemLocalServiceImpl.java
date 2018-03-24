@@ -61,6 +61,7 @@ public class PushDictItemLocalServiceImpl
 	public PushDictItem addPushDictItem(
 			long userId, 
 			long groupId, 
+			String serverNo,
 			String collectionCode,
 			String itemCode, String itemName,
 			String itemNameEN, 
@@ -107,6 +108,7 @@ public class PushDictItemLocalServiceImpl
 		pushDictItem.setCreateDate(serviceContext.getCreateDate(now));
 		pushDictItem.setModifiedDate(serviceContext.getCreateDate(now));
 
+		pushDictItem.setServerNo(serverNo);
 		pushDictItem.setCollectionCode(collectionCode);
 		pushDictItem.setItemCode(itemCode);
 		pushDictItem.setItemName(itemName);
@@ -125,6 +127,7 @@ public class PushDictItemLocalServiceImpl
 			long userId, 
 			long groupId, 
 			long pushDictItemId,
+			String serverNo,
 			String collectionCode,
 			String itemCode, String itemName,
 			String itemNameEN, 
@@ -167,6 +170,7 @@ public class PushDictItemLocalServiceImpl
 		pushDictItem.setCreateDate(serviceContext.getCreateDate(now));
 		pushDictItem.setModifiedDate(serviceContext.getCreateDate(now));
 
+		pushDictItem.setServerNo(serverNo);
 		pushDictItem.setCollectionCode(collectionCode);
 		pushDictItem.setItemCode(itemCode);
 		pushDictItem.setItemName(itemName);
@@ -215,5 +219,10 @@ public class PushDictItemLocalServiceImpl
 	@Override
 	public PushDictItem findByCollectionCode_ItemCode_Method(long groupId, String collectionCode, String itemCode, String method) throws NoSuchPushDictItemException {
 		return pushDictItemPersistence.findByF_collectionCode_itemCode_Method(groupId, collectionCode, itemCode, method);
+	}
+
+	@Override
+	public List<PushDictItem> findByGroupId_ServerNo(long groupId, String serverNo, int start, int end) {
+		return pushDictItemPersistence.findByF_groupId_serverNo(groupId, serverNo, start, end);
 	}
 }

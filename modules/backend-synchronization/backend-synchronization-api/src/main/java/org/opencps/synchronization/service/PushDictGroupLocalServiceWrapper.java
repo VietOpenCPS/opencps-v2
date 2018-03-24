@@ -151,6 +151,13 @@ public class PushDictGroupLocalServiceWrapper
 		return _pushDictGroupLocalService.findAll(start, end);
 	}
 
+	@Override
+	public java.util.List<org.opencps.synchronization.model.PushDictGroup> findByGroupId_ServerNo(
+		long groupId, java.lang.String serverNo, int start, int end) {
+		return _pushDictGroupLocalService.findByGroupId_ServerNo(groupId,
+			serverNo, start, end);
+	}
+
 	/**
 	* Returns a range of all the push dict groups.
 	*
@@ -229,17 +236,18 @@ public class PushDictGroupLocalServiceWrapper
 
 	@Override
 	public org.opencps.synchronization.model.PushDictGroup addPushDictGroup(
-		long userId, long groupId, java.lang.String collectionCode,
-		java.lang.String groupCode, java.lang.String groupName,
-		java.lang.String groupNameEN, java.lang.String groupDescription,
-		java.lang.String itemCode, java.lang.String method,
+		long userId, long groupId, java.lang.String serverNo,
+		java.lang.String collectionCode, java.lang.String groupCode,
+		java.lang.String groupName, java.lang.String groupNameEN,
+		java.lang.String groupDescription, java.lang.String itemCode,
+		java.lang.String method,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.NoSuchUserException,
 			com.liferay.portal.kernel.exception.SystemException,
 			org.opencps.auth.api.exception.UnauthenticationException,
 			org.opencps.auth.api.exception.UnauthorizationException {
 		return _pushDictGroupLocalService.addPushDictGroup(userId, groupId,
-			collectionCode, groupCode, groupName, groupNameEN,
+			serverNo, collectionCode, groupCode, groupName, groupNameEN,
 			groupDescription, itemCode, method, serviceContext);
 	}
 
@@ -376,10 +384,10 @@ public class PushDictGroupLocalServiceWrapper
 	@Override
 	public org.opencps.synchronization.model.PushDictGroup updatePushDictGroup(
 		long userId, long groupId, long pushDictGroupId,
-		java.lang.String collectionCode, java.lang.String groupCode,
-		java.lang.String groupName, java.lang.String groupNameEN,
-		java.lang.String groupDescription, java.lang.String itemCode,
-		java.lang.String method,
+		java.lang.String serverNo, java.lang.String collectionCode,
+		java.lang.String groupCode, java.lang.String groupName,
+		java.lang.String groupNameEN, java.lang.String groupDescription,
+		java.lang.String itemCode, java.lang.String method,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.NoSuchUserException,
 			com.liferay.portal.kernel.exception.SystemException,
@@ -387,8 +395,8 @@ public class PushDictGroupLocalServiceWrapper
 			org.opencps.auth.api.exception.UnauthorizationException,
 			org.opencps.synchronization.exception.NoSuchPushDictGroupException {
 		return _pushDictGroupLocalService.updatePushDictGroup(userId, groupId,
-			pushDictGroupId, collectionCode, groupCode, groupName, groupNameEN,
-			groupDescription, itemCode, method, serviceContext);
+			pushDictGroupId, serverNo, collectionCode, groupCode, groupName,
+			groupNameEN, groupDescription, itemCode, method, serviceContext);
 	}
 
 	/**

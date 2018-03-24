@@ -593,6 +593,193 @@ public class PushDictItemUtil {
 	}
 
 	/**
+	* Returns all the push dict items where groupId = &#63; and serverNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @return the matching push dict items
+	*/
+	public static List<PushDictItem> findByF_groupId_serverNo(long groupId,
+		java.lang.String serverNo) {
+		return getPersistence().findByF_groupId_serverNo(groupId, serverNo);
+	}
+
+	/**
+	* Returns a range of all the push dict items where groupId = &#63; and serverNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PushDictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param start the lower bound of the range of push dict items
+	* @param end the upper bound of the range of push dict items (not inclusive)
+	* @return the range of matching push dict items
+	*/
+	public static List<PushDictItem> findByF_groupId_serverNo(long groupId,
+		java.lang.String serverNo, int start, int end) {
+		return getPersistence()
+				   .findByF_groupId_serverNo(groupId, serverNo, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the push dict items where groupId = &#63; and serverNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PushDictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param start the lower bound of the range of push dict items
+	* @param end the upper bound of the range of push dict items (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching push dict items
+	*/
+	public static List<PushDictItem> findByF_groupId_serverNo(long groupId,
+		java.lang.String serverNo, int start, int end,
+		OrderByComparator<PushDictItem> orderByComparator) {
+		return getPersistence()
+				   .findByF_groupId_serverNo(groupId, serverNo, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the push dict items where groupId = &#63; and serverNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PushDictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param start the lower bound of the range of push dict items
+	* @param end the upper bound of the range of push dict items (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching push dict items
+	*/
+	public static List<PushDictItem> findByF_groupId_serverNo(long groupId,
+		java.lang.String serverNo, int start, int end,
+		OrderByComparator<PushDictItem> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_groupId_serverNo(groupId, serverNo, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first push dict item in the ordered set where groupId = &#63; and serverNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching push dict item
+	* @throws NoSuchPushDictItemException if a matching push dict item could not be found
+	*/
+	public static PushDictItem findByF_groupId_serverNo_First(long groupId,
+		java.lang.String serverNo,
+		OrderByComparator<PushDictItem> orderByComparator)
+		throws org.opencps.synchronization.exception.NoSuchPushDictItemException {
+		return getPersistence()
+				   .findByF_groupId_serverNo_First(groupId, serverNo,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first push dict item in the ordered set where groupId = &#63; and serverNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching push dict item, or <code>null</code> if a matching push dict item could not be found
+	*/
+	public static PushDictItem fetchByF_groupId_serverNo_First(long groupId,
+		java.lang.String serverNo,
+		OrderByComparator<PushDictItem> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_groupId_serverNo_First(groupId, serverNo,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last push dict item in the ordered set where groupId = &#63; and serverNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching push dict item
+	* @throws NoSuchPushDictItemException if a matching push dict item could not be found
+	*/
+	public static PushDictItem findByF_groupId_serverNo_Last(long groupId,
+		java.lang.String serverNo,
+		OrderByComparator<PushDictItem> orderByComparator)
+		throws org.opencps.synchronization.exception.NoSuchPushDictItemException {
+		return getPersistence()
+				   .findByF_groupId_serverNo_Last(groupId, serverNo,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last push dict item in the ordered set where groupId = &#63; and serverNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching push dict item, or <code>null</code> if a matching push dict item could not be found
+	*/
+	public static PushDictItem fetchByF_groupId_serverNo_Last(long groupId,
+		java.lang.String serverNo,
+		OrderByComparator<PushDictItem> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_groupId_serverNo_Last(groupId, serverNo,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the push dict items before and after the current push dict item in the ordered set where groupId = &#63; and serverNo = &#63;.
+	*
+	* @param pushDictItemId the primary key of the current push dict item
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next push dict item
+	* @throws NoSuchPushDictItemException if a push dict item with the primary key could not be found
+	*/
+	public static PushDictItem[] findByF_groupId_serverNo_PrevAndNext(
+		long pushDictItemId, long groupId, java.lang.String serverNo,
+		OrderByComparator<PushDictItem> orderByComparator)
+		throws org.opencps.synchronization.exception.NoSuchPushDictItemException {
+		return getPersistence()
+				   .findByF_groupId_serverNo_PrevAndNext(pushDictItemId,
+			groupId, serverNo, orderByComparator);
+	}
+
+	/**
+	* Removes all the push dict items where groupId = &#63; and serverNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	*/
+	public static void removeByF_groupId_serverNo(long groupId,
+		java.lang.String serverNo) {
+		getPersistence().removeByF_groupId_serverNo(groupId, serverNo);
+	}
+
+	/**
+	* Returns the number of push dict items where groupId = &#63; and serverNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @return the number of matching push dict items
+	*/
+	public static int countByF_groupId_serverNo(long groupId,
+		java.lang.String serverNo) {
+		return getPersistence().countByF_groupId_serverNo(groupId, serverNo);
+	}
+
+	/**
 	* Caches the push dict item in the entity cache if it is enabled.
 	*
 	* @param pushDictItem the push dict item

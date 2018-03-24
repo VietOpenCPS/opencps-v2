@@ -68,6 +68,7 @@ public class PushDictGroupWrapper implements PushDictGroup,
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("serverNo", getServerNo());
 		attributes.put("collectionCode", getCollectionCode());
 		attributes.put("groupCode", getGroupCode());
 		attributes.put("groupName", getGroupName());
@@ -127,6 +128,12 @@ public class PushDictGroupWrapper implements PushDictGroup,
 
 		if (modifiedDate != null) {
 			setModifiedDate(modifiedDate);
+		}
+
+		String serverNo = (String)attributes.get("serverNo");
+
+		if (serverNo != null) {
+			setServerNo(serverNo);
 		}
 
 		String collectionCode = (String)attributes.get("collectionCode");
@@ -295,6 +302,16 @@ public class PushDictGroupWrapper implements PushDictGroup,
 	@Override
 	public java.lang.String getMethod() {
 		return _pushDictGroup.getMethod();
+	}
+
+	/**
+	* Returns the server no of this push dict group.
+	*
+	* @return the server no of this push dict group
+	*/
+	@Override
+	public java.lang.String getServerNo() {
+		return _pushDictGroup.getServerNo();
 	}
 
 	/**
@@ -571,6 +588,16 @@ public class PushDictGroupWrapper implements PushDictGroup,
 	@Override
 	public void setPushDictGroupId(long pushDictGroupId) {
 		_pushDictGroup.setPushDictGroupId(pushDictGroupId);
+	}
+
+	/**
+	* Sets the server no of this push dict group.
+	*
+	* @param serverNo the server no of this push dict group
+	*/
+	@Override
+	public void setServerNo(java.lang.String serverNo) {
+		_pushDictGroup.setServerNo(serverNo);
 	}
 
 	/**

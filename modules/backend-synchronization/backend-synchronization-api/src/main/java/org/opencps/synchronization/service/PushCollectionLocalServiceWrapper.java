@@ -151,6 +151,13 @@ public class PushCollectionLocalServiceWrapper
 		return _pushCollectionLocalService.findAll(start, end);
 	}
 
+	@Override
+	public java.util.List<org.opencps.synchronization.model.PushCollection> findByGroupId_ServerNo(
+		long groupId, java.lang.String serverNo, int start, int end) {
+		return _pushCollectionLocalService.findByGroupId_ServerNo(groupId,
+			serverNo, start, end);
+	}
+
 	/**
 	* Returns a range of all the push collections.
 	*
@@ -229,18 +236,18 @@ public class PushCollectionLocalServiceWrapper
 
 	@Override
 	public org.opencps.synchronization.model.PushCollection addPushCollection(
-		long userId, long groupId, java.lang.String collectionCode,
-		java.lang.String collectionName, java.lang.String collectionNameEN,
-		java.lang.String description, java.lang.String method,
-		java.lang.String dataForm,
+		long userId, long groupId, java.lang.String serverNo,
+		java.lang.String collectionCode, java.lang.String collectionName,
+		java.lang.String collectionNameEN, java.lang.String description,
+		java.lang.String method, java.lang.String dataForm,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.NoSuchUserException,
 			com.liferay.portal.kernel.exception.SystemException,
 			org.opencps.auth.api.exception.UnauthenticationException,
 			org.opencps.auth.api.exception.UnauthorizationException {
 		return _pushCollectionLocalService.addPushCollection(userId, groupId,
-			collectionCode, collectionName, collectionNameEN, description,
-			method, dataForm, serviceContext);
+			serverNo, collectionCode, collectionName, collectionNameEN,
+			description, method, dataForm, serviceContext);
 	}
 
 	/**
@@ -365,9 +372,10 @@ public class PushCollectionLocalServiceWrapper
 	@Override
 	public org.opencps.synchronization.model.PushCollection updatePushCollection(
 		long userId, long groupId, long pushCollectionId,
-		java.lang.String collectionCode, java.lang.String collectionName,
-		java.lang.String collectionNameEN, java.lang.String description,
-		java.lang.String method, java.lang.String dataForm,
+		java.lang.String serverNo, java.lang.String collectionCode,
+		java.lang.String collectionName, java.lang.String collectionNameEN,
+		java.lang.String description, java.lang.String method,
+		java.lang.String dataForm,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.NoSuchUserException,
 			com.liferay.portal.kernel.exception.SystemException,
@@ -375,8 +383,9 @@ public class PushCollectionLocalServiceWrapper
 			org.opencps.auth.api.exception.UnauthorizationException,
 			org.opencps.synchronization.exception.NoSuchPushCollectionException {
 		return _pushCollectionLocalService.updatePushCollection(userId,
-			groupId, pushCollectionId, collectionCode, collectionName,
-			collectionNameEN, description, method, dataForm, serviceContext);
+			groupId, pushCollectionId, serverNo, collectionCode,
+			collectionName, collectionNameEN, description, method, dataForm,
+			serviceContext);
 	}
 
 	/**

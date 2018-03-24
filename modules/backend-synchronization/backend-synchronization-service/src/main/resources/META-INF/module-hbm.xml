@@ -16,6 +16,7 @@
 		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="serverNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="collectionCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="collectionName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="collectionNameEN" type="com.liferay.portal.dao.orm.hibernate.StringType" />
@@ -34,6 +35,7 @@
 		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="serverNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="collectionCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="groupCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="groupName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
@@ -53,6 +55,7 @@
 		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="serverNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="collectionCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="itemCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="itemName" type="com.liferay.portal.dao.orm.hibernate.StringType" />

@@ -176,17 +176,19 @@ public class DataManagementUtils {
 
 		try {
 
-			ett.setDictCollectionId(dictCollection.getDictCollectionId());
-			ett.setCollectionCode(dictCollection.getCollectionCode());
-			ett.setCollectionName(dictCollection.getCollectionName());
-			ett.setCollectionNameEN(dictCollection.getCollectionNameEN());
-			ett.setDescription(dictCollection.getDescription());
-			ett.setCreateDate(Validator.isNotNull(dictCollection.getCreateDate())
-					? APIDateTimeUtils.convertDateToString(dictCollection.getCreateDate(), APIDateTimeUtils._TIMESTAMP)
-					: StringPool.BLANK);
-			ett.setModifiedDate(
-					Validator.isNotNull(dictCollection.getModifiedDate()) ? APIDateTimeUtils.convertDateToString(
-							dictCollection.getModifiedDate(), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+			if (ett != null) {
+				ett.setDictCollectionId(dictCollection.getDictCollectionId());
+				ett.setCollectionCode(dictCollection.getCollectionCode());
+				ett.setCollectionName(dictCollection.getCollectionName());
+				ett.setCollectionNameEN(dictCollection.getCollectionNameEN());
+				ett.setDescription(dictCollection.getDescription());
+				ett.setCreateDate(Validator.isNotNull(dictCollection.getCreateDate())
+						? APIDateTimeUtils.convertDateToString(dictCollection.getCreateDate(), APIDateTimeUtils._TIMESTAMP)
+						: StringPool.BLANK);
+				ett.setModifiedDate(
+						Validator.isNotNull(dictCollection.getModifiedDate()) ? APIDateTimeUtils.convertDateToString(
+								dictCollection.getModifiedDate(), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);				
+			}
 
 		} catch (Exception e) {
 			_log.error(e);

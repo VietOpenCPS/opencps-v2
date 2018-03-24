@@ -150,6 +150,9 @@ public interface PushDictGroupLocalService extends BaseLocalService,
 
 	public List<PushDictGroup> findAll(int start, int end);
 
+	public List<PushDictGroup> findByGroupId_ServerNo(long groupId,
+		java.lang.String serverNo, int start, int end);
+
 	/**
 	* Returns a range of all the push dict groups.
 	*
@@ -209,10 +212,11 @@ public interface PushDictGroupLocalService extends BaseLocalService,
 		Projection projection);
 
 	public PushDictGroup addPushDictGroup(long userId, long groupId,
-		java.lang.String collectionCode, java.lang.String groupCode,
-		java.lang.String groupName, java.lang.String groupNameEN,
-		java.lang.String groupDescription, java.lang.String itemCode,
-		java.lang.String method, ServiceContext serviceContext)
+		java.lang.String serverNo, java.lang.String collectionCode,
+		java.lang.String groupCode, java.lang.String groupName,
+		java.lang.String groupNameEN, java.lang.String groupDescription,
+		java.lang.String itemCode, java.lang.String method,
+		ServiceContext serviceContext)
 		throws NoSuchUserException, SystemException, UnauthenticationException,
 			UnauthorizationException;
 
@@ -305,11 +309,11 @@ public interface PushDictGroupLocalService extends BaseLocalService,
 		java.lang.String uuid, long groupId) throws PortalException;
 
 	public PushDictGroup updatePushDictGroup(long userId, long groupId,
-		long pushDictGroupId, java.lang.String collectionCode,
-		java.lang.String groupCode, java.lang.String groupName,
-		java.lang.String groupNameEN, java.lang.String groupDescription,
-		java.lang.String itemCode, java.lang.String method,
-		ServiceContext serviceContext)
+		long pushDictGroupId, java.lang.String serverNo,
+		java.lang.String collectionCode, java.lang.String groupCode,
+		java.lang.String groupName, java.lang.String groupNameEN,
+		java.lang.String groupDescription, java.lang.String itemCode,
+		java.lang.String method, ServiceContext serviceContext)
 		throws NoSuchUserException, SystemException, UnauthenticationException,
 			UnauthorizationException, NoSuchPushDictGroupException;
 

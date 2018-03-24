@@ -56,7 +56,6 @@ import com.liferay.portal.kernel.util.Validator;
 public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		_log.info("PULL DICTIONARY DATA IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
 		try {	
 			List<ServerConfig> lstServers = _serverConfigLocalService.getServerConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
@@ -74,7 +73,9 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 								&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
 								&& configObj.has(SyncServerTerm.SERVER_URL)
 								&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)
+								&& (configObj.has(SyncServerTerm.PULL) && configObj.getBoolean(SyncServerTerm.PULL))
 								) {
+							_log.info("PULL DICTIONARY DATA FROM SERVER " + sc.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
 							Date pullDictCollectionDate = pullDictCollection(sc, configObj);
 							Date pullDictItemDate = pullDictItem(sc, configObj);
 							Date pullDictGroupDate = pullDictGroup(sc, configObj);
@@ -94,6 +95,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 								sc.setLastSync(maxModifiedDate);
 								_serverConfigLocalService.updateLastSync(sc.getServerConfigId(), maxModifiedDate, serviceContext);
 							}
+							_log.info("PULL DICTIONARY DATA FROM SERVER " + sc.getServerName() + " HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));		
 						}
 					}
 					catch (Exception e) {
@@ -103,11 +105,10 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 		}
 		catch (Exception e) {
 		}
-		_log.info("PULL DICTIONARY DATA HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));		
 	}
 	
 	private Date pullDictCollection(ServerConfig serverConfig, JSONObject configObj) {
-		_log.info("PULL DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
+//		_log.info("PULL DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
 		Date maxModifiedDate = new Date(0);
 		
 		try {
@@ -199,13 +200,13 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 		catch (Exception e) {
 		}
 		
-		_log.info("PULL DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));
+//		_log.info("PULL DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));
 		
 		return maxModifiedDate;
 	}
 	
 	private Date pullDictGroup(ServerConfig serverConfig, JSONObject configObj) {
-		_log.info("PULL DICT GROUP FROM SERVER " + serverConfig.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
+//		_log.info("PULL DICT GROUP FROM SERVER " + serverConfig.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
 		Date maxModifiedDate = new Date(0);
 		
 		try {
@@ -312,13 +313,13 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 		catch (Exception e) {
 		}
 		
-		_log.info("PULL DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));
+//		_log.info("PULL DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));
 		
 		return maxModifiedDate;
 	}
 	
 	private Date pullDictItemGroup(ServerConfig serverConfig, JSONObject configObj) {
-		_log.info("PULL DICT ITEM GROUP FROM SERVER " + serverConfig.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
+//		_log.info("PULL DICT ITEM GROUP FROM SERVER " + serverConfig.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
 		Date maxModifiedDate = new Date(0);
 		
 		try {
@@ -419,13 +420,13 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 		catch (Exception e) {
 		}
 		
-		_log.info("PULL DICT ITEM GROUP FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));
+//		_log.info("PULL DICT ITEM GROUP FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));
 		
 		return maxModifiedDate;
 	}
 
 	private Date pullDictItem(ServerConfig serverConfig, JSONObject configObj) {
-		_log.info("PULL DICT ITEM FROM SERVER " + serverConfig.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
+//		_log.info("PULL DICT ITEM FROM SERVER " + serverConfig.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
 		Date maxModifiedDate = new Date(0);
 		
 		try {
@@ -551,7 +552,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 		catch (Exception e) {
 		}
 		
-		_log.info("PULL DICT ITEM FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));
+//		_log.info("PULL DICT ITEM FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));
 		
 		return maxModifiedDate;
 	}	

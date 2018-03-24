@@ -229,7 +229,7 @@
 			<finder-column name="dictItemId"></finder-column>
 		</finder>
         <finder name="F_newerThan" return-type="Collection">
-            <finder-column name="modifiedDate"></finder-column>
+            <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
             <finder-column name="groupId"></finder-column>
         </finder>
 		

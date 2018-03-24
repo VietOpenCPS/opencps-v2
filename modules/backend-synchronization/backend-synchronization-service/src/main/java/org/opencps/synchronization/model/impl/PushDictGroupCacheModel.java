@@ -66,7 +66,7 @@ public class PushDictGroupCacheModel implements CacheModel<PushDictGroup>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -84,6 +84,8 @@ public class PushDictGroupCacheModel implements CacheModel<PushDictGroup>,
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
+		sb.append(", serverNo=");
+		sb.append(serverNo);
 		sb.append(", collectionCode=");
 		sb.append(collectionCode);
 		sb.append(", groupCode=");
@@ -138,6 +140,13 @@ public class PushDictGroupCacheModel implements CacheModel<PushDictGroup>,
 		}
 		else {
 			pushDictGroupImpl.setModifiedDate(new Date(modifiedDate));
+		}
+
+		if (serverNo == null) {
+			pushDictGroupImpl.setServerNo(StringPool.BLANK);
+		}
+		else {
+			pushDictGroupImpl.setServerNo(serverNo);
 		}
 
 		if (collectionCode == null) {
@@ -208,6 +217,7 @@ public class PushDictGroupCacheModel implements CacheModel<PushDictGroup>,
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+		serverNo = objectInput.readUTF();
 		collectionCode = objectInput.readUTF();
 		groupCode = objectInput.readUTF();
 		groupName = objectInput.readUTF();
@@ -244,6 +254,13 @@ public class PushDictGroupCacheModel implements CacheModel<PushDictGroup>,
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
+		if (serverNo == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(serverNo);
+		}
 
 		if (collectionCode == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
@@ -303,6 +320,7 @@ public class PushDictGroupCacheModel implements CacheModel<PushDictGroup>,
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
+	public String serverNo;
 	public String collectionCode;
 	public String groupCode;
 	public String groupName;

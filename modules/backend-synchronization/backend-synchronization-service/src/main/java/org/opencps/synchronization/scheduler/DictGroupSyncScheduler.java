@@ -42,14 +42,13 @@ import com.liferay.portal.kernel.util.Validator;
 public class DictGroupSyncScheduler extends BaseSchedulerEntryMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		_log.info("PUSH DICT GROUP IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
+//		_log.info("PUSH DICT GROUP IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
 		
 		try {
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 			ServiceContext serviceContext = new ServiceContext();
 			serviceContext.setCompanyId(company.getCompanyId());
 					
-			List<PushDictGroup> lstSyncDicts = _pushDictGroupLocalService.findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 			List<ServerConfig> lstServers = _serverConfigLocalService.getServerConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 						
 			for (ServerConfig sc : lstServers) {
@@ -62,7 +61,10 @@ public class DictGroupSyncScheduler extends BaseSchedulerEntryMessageListener {
 								&& configObj.has(SyncServerTerm.SERVER_USERNAME)
 								&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
 								&& configObj.has(SyncServerTerm.SERVER_URL)
-								&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+								&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)
+								&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))
+								) {
+							List<PushDictGroup> lstSyncDicts = _pushDictGroupLocalService.findByGroupId_ServerNo(sc.getGroupId(), sc.getServerNo(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 							synchronizeGroup(lstSyncDicts, sc, configObj);
 						}
 					}
@@ -75,11 +77,10 @@ public class DictGroupSyncScheduler extends BaseSchedulerEntryMessageListener {
 		catch (Exception e) {
 			_log.error(e);
 		}	
-		_log.info("PUSH DICT GROUP HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));				
+//		_log.info("PUSH DICT GROUP HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));				
 	}
 	
 	private void synchronizeGroup(List<PushDictGroup> lstSyncDicts, ServerConfig serverConfig, JSONObject configObj) {
-		_log.info("PUSH DICT GROUP FROM SERVER " + serverConfig.getServerName() + " IS STARING " + APIDateTimeUtils.convertDateToString(new Date()));
 		InvokeREST rest = new InvokeREST();
 		
 		HashMap<String, String> properties = new HashMap<String, String>();
@@ -99,7 +100,8 @@ public class DictGroupSyncScheduler extends BaseSchedulerEntryMessageListener {
 			serviceContext.setCompanyId(company.getCompanyId());
 			
 			for (PushDictGroup pgroup : lstSyncDicts) {
-				if (pgroup.getMethod().equals(SyncServerTerm.METHOD_CREATE)) {
+				if (pgroup.getGroupId() != configObj.getLong(SyncServerTerm.SERVER_GROUP_ID) && pgroup.getMethod().equals(SyncServerTerm.METHOD_CREATE)) {
+					_log.info("PUSH DICT GROUP FROM SERVER " + serverConfig.getServerName() + " IS STARING " + APIDateTimeUtils.convertDateToString(new Date()));
 					putDictGroupRestUrl.setLength(0);
 					putDictGroupRestUrl.append(dictCollectionEndPoint);
 					putDictGroupRestUrl.append("/" + pgroup.getCollectionCode());
@@ -114,17 +116,20 @@ public class DictGroupSyncScheduler extends BaseSchedulerEntryMessageListener {
 							rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
 							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 					
-					if (resDictGroup.getInt(RESTFulConfiguration.STATUS) == 200) {
+					if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
 						_pushDictGroupLocalService.deletePushDictGroup(pgroup.getPushDictGroupId());
 					}													
+					_log.info("PUSH DICT GROUP FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
-				else if (pgroup.getMethod().equals(SyncServerTerm.METHOD_UPDATE)) {
+				else if (pgroup.getGroupId() != configObj.getLong(SyncServerTerm.SERVER_GROUP_ID) && pgroup.getMethod().equals(SyncServerTerm.METHOD_UPDATE)) {
+					_log.info("PUSH DICT GROUP FROM SERVER " + serverConfig.getServerName() + " IS STARING " + APIDateTimeUtils.convertDateToString(new Date()));
 					putDictGroupRestUrl.setLength(0);
 					putDictGroupRestUrl.append(dictCollectionEndPoint);
 					putDictGroupRestUrl.append("/" + pgroup.getCollectionCode());
 					putDictGroupRestUrl.append("/dictgroups");
 					putDictGroupRestUrl.append("/" + pgroup.getGroupCode());
 					
+					params.put(PushDictGroupTerm.MODIFIED_DATE, pgroup.getModifiedDate().getTime());
 					params.put(PushDictGroupTerm.GROUP_NAME, pgroup.getGroupName());
 					params.put(PushDictGroupTerm.GROUP_NAME_EN, pgroup.getGroupNameEN());
 					params.put(PushDictGroupTerm.GROUP_DESCRIPTION, pgroup.getGroupDescription());
@@ -133,11 +138,13 @@ public class DictGroupSyncScheduler extends BaseSchedulerEntryMessageListener {
 							rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
 							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 					
-					if (resDictGroup.getInt(RESTFulConfiguration.STATUS) == 200) {
+					if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
 						_pushDictGroupLocalService.deletePushDictGroup(pgroup.getPushDictGroupId());
 					}									
+					_log.info("PUSH DICT GROUP FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
 				else if (pgroup.getMethod().equals(SyncServerTerm.METHOD_DELETE)) {
+					_log.info("PUSH DICT GROUP FROM SERVER " + serverConfig.getServerName() + " IS STARING " + APIDateTimeUtils.convertDateToString(new Date()));
 					putDictGroupRestUrl.setLength(0);
 					putDictGroupRestUrl.append(dictCollectionEndPoint);
 					putDictGroupRestUrl.append("/" + pgroup.getCollectionCode());
@@ -148,11 +155,13 @@ public class DictGroupSyncScheduler extends BaseSchedulerEntryMessageListener {
 							rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
 							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 					
-					if (resDictGroup.getInt(RESTFulConfiguration.STATUS) == 200) {
+					if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
 						_pushDictGroupLocalService.deletePushDictGroup(pgroup.getPushDictGroupId());
 					}														
+					_log.info("PUSH DICT GROUP FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
-				else if (pgroup.getMethod().equals(SyncServerTerm.METHOD_ADD_TO_GROUP)) {
+				else if (pgroup.getGroupId() != configObj.getLong(SyncServerTerm.SERVER_GROUP_ID) && pgroup.getMethod().equals(SyncServerTerm.METHOD_ADD_TO_GROUP)) {
+					_log.info("PUSH DICT GROUP FROM SERVER " + serverConfig.getServerName() + " IS STARING " + APIDateTimeUtils.convertDateToString(new Date()));
 					putDictGroupRestUrl.setLength(0);
 					putDictGroupRestUrl.append(dictCollectionEndPoint);
 					putDictGroupRestUrl.append("/" + pgroup.getCollectionCode());
@@ -166,11 +175,13 @@ public class DictGroupSyncScheduler extends BaseSchedulerEntryMessageListener {
 							rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
 							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 					
-					if (resDictGroup.getInt(RESTFulConfiguration.STATUS) == 200) {
+					if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
 						_pushDictGroupLocalService.deletePushDictGroup(pgroup.getPushDictGroupId());
 					}														
+					_log.info("PUSH DICT GROUP FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
-				else if (pgroup.getMethod().equals(SyncServerTerm.METHOD_REMOVE_FROM_GROUP)) {
+				else if (pgroup.getGroupId() != configObj.getLong(SyncServerTerm.SERVER_GROUP_ID) && pgroup.getMethod().equals(SyncServerTerm.METHOD_REMOVE_FROM_GROUP)) {
+					_log.info("PUSH DICT GROUP FROM SERVER " + serverConfig.getServerName() + " IS STARING " + APIDateTimeUtils.convertDateToString(new Date()));
 					putDictGroupRestUrl.setLength(0);
 					putDictGroupRestUrl.append(dictCollectionEndPoint);
 					putDictGroupRestUrl.append("/" + pgroup.getCollectionCode());
@@ -182,24 +193,24 @@ public class DictGroupSyncScheduler extends BaseSchedulerEntryMessageListener {
 					JSONObject resDictGroup = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.DELETE, "application/json",
 							rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
 							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
-					
-					if (resDictGroup.getInt(RESTFulConfiguration.STATUS) == 200) {
+										
+					if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
 						_pushDictGroupLocalService.deletePushDictGroup(pgroup.getPushDictGroupId());
 					}														
+					_log.info("PUSH DICT GROUP FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
 			}
 		}
 		catch (Exception e) {
 			_log.error(e);
 		}
-		_log.info("PUSH DICT GROUP FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 	}
 	
 	@Activate
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 45, TimeUnit.SECOND));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 1, TimeUnit.SECOND));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

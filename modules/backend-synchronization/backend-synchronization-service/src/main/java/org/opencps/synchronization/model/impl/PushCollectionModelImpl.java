@@ -77,6 +77,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 			{ "userName", Types.VARCHAR },
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
+			{ "serverNo", Types.VARCHAR },
 			{ "collectionCode", Types.VARCHAR },
 			{ "collectionName", Types.VARCHAR },
 			{ "collectionNameEN", Types.VARCHAR },
@@ -95,6 +96,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("serverNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("collectionCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("collectionName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("collectionNameEN", Types.VARCHAR);
@@ -103,7 +105,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 		TABLE_COLUMNS_MAP.put("method", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_pushcollection (uuid_ VARCHAR(75) null,pushCollectionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,collectionCode VARCHAR(75) null,collectionName VARCHAR(75) null,collectionNameEN VARCHAR(75) null,description TEXT null,dataForm TEXT null,method VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_pushcollection (uuid_ VARCHAR(75) null,pushCollectionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,serverNo VARCHAR(75) null,collectionCode VARCHAR(75) null,collectionName VARCHAR(75) null,collectionNameEN VARCHAR(75) null,description TEXT null,dataForm TEXT null,method VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_pushcollection";
 	public static final String ORDER_BY_JPQL = " ORDER BY pushCollection.modifiedDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_pushcollection.modifiedDate ASC";
@@ -123,8 +125,9 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 	public static final long COMPANYID_COLUMN_BITMASK = 2L;
 	public static final long GROUPID_COLUMN_BITMASK = 4L;
 	public static final long METHOD_COLUMN_BITMASK = 8L;
-	public static final long UUID_COLUMN_BITMASK = 16L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 32L;
+	public static final long SERVERNO_COLUMN_BITMASK = 16L;
+	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(backend.synchronization.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.synchronization.model.PushCollection"));
 
@@ -173,6 +176,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("serverNo", getServerNo());
 		attributes.put("collectionCode", getCollectionCode());
 		attributes.put("collectionName", getCollectionName());
 		attributes.put("collectionNameEN", getCollectionNameEN());
@@ -234,6 +238,12 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 
 		if (modifiedDate != null) {
 			setModifiedDate(modifiedDate);
+		}
+
+		String serverNo = (String)attributes.get("serverNo");
+
+		if (serverNo != null) {
+			setServerNo(serverNo);
 		}
 
 		String collectionCode = (String)attributes.get("collectionCode");
@@ -420,6 +430,31 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 	}
 
 	@Override
+	public String getServerNo() {
+		if (_serverNo == null) {
+			return StringPool.BLANK;
+		}
+		else {
+			return _serverNo;
+		}
+	}
+
+	@Override
+	public void setServerNo(String serverNo) {
+		_columnBitmask |= SERVERNO_COLUMN_BITMASK;
+
+		if (_originalServerNo == null) {
+			_originalServerNo = _serverNo;
+		}
+
+		_serverNo = serverNo;
+	}
+
+	public String getOriginalServerNo() {
+		return GetterUtil.getString(_originalServerNo);
+	}
+
+	@Override
 	public String getCollectionCode() {
 		if (_collectionCode == null) {
 			return StringPool.BLANK;
@@ -574,6 +609,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 		pushCollectionImpl.setUserName(getUserName());
 		pushCollectionImpl.setCreateDate(getCreateDate());
 		pushCollectionImpl.setModifiedDate(getModifiedDate());
+		pushCollectionImpl.setServerNo(getServerNo());
 		pushCollectionImpl.setCollectionCode(getCollectionCode());
 		pushCollectionImpl.setCollectionName(getCollectionName());
 		pushCollectionImpl.setCollectionNameEN(getCollectionNameEN());
@@ -653,6 +689,8 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 
 		pushCollectionModelImpl._setModifiedDate = false;
 
+		pushCollectionModelImpl._originalServerNo = pushCollectionModelImpl._serverNo;
+
 		pushCollectionModelImpl._originalCollectionCode = pushCollectionModelImpl._collectionCode;
 
 		pushCollectionModelImpl._originalMethod = pushCollectionModelImpl._method;
@@ -704,6 +742,14 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 		}
 		else {
 			pushCollectionCacheModel.modifiedDate = Long.MIN_VALUE;
+		}
+
+		pushCollectionCacheModel.serverNo = getServerNo();
+
+		String serverNo = pushCollectionCacheModel.serverNo;
+
+		if ((serverNo != null) && (serverNo.length() == 0)) {
+			pushCollectionCacheModel.serverNo = null;
 		}
 
 		pushCollectionCacheModel.collectionCode = getCollectionCode();
@@ -759,7 +805,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(29);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -777,6 +823,8 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 		sb.append(getCreateDate());
 		sb.append(", modifiedDate=");
 		sb.append(getModifiedDate());
+		sb.append(", serverNo=");
+		sb.append(getServerNo());
 		sb.append(", collectionCode=");
 		sb.append(getCollectionCode());
 		sb.append(", collectionName=");
@@ -796,7 +844,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(46);
+		StringBundler sb = new StringBundler(49);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.synchronization.model.PushCollection");
@@ -833,6 +881,10 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 		sb.append(
 			"<column><column-name>modifiedDate</column-name><column-value><![CDATA[");
 		sb.append(getModifiedDate());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>serverNo</column-name><column-value><![CDATA[");
+		sb.append(getServerNo());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>collectionCode</column-name><column-value><![CDATA[");
@@ -882,6 +934,8 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
+	private String _serverNo;
+	private String _originalServerNo;
 	private String _collectionCode;
 	private String _originalCollectionCode;
 	private String _collectionName;

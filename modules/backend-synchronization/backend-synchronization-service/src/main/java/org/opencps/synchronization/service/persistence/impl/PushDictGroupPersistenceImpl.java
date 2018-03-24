@@ -2342,6 +2342,603 @@ public class PushDictGroupPersistenceImpl extends BasePersistenceImpl<PushDictGr
 		"pushDictGroup.method = ?";
 	private static final String _FINDER_COLUMN_F_COLLECTIONCODE_GROUPCODE_ITEMCODE_METHOD_METHOD_3 =
 		"(pushDictGroup.method IS NULL OR pushDictGroup.method = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GROUPID_SERVERNO =
+		new FinderPath(PushDictGroupModelImpl.ENTITY_CACHE_ENABLED,
+			PushDictGroupModelImpl.FINDER_CACHE_ENABLED,
+			PushDictGroupImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByF_groupId_serverNo",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GROUPID_SERVERNO =
+		new FinderPath(PushDictGroupModelImpl.ENTITY_CACHE_ENABLED,
+			PushDictGroupModelImpl.FINDER_CACHE_ENABLED,
+			PushDictGroupImpl.class, FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByF_groupId_serverNo",
+			new String[] { Long.class.getName(), String.class.getName() },
+			PushDictGroupModelImpl.GROUPID_COLUMN_BITMASK |
+			PushDictGroupModelImpl.SERVERNO_COLUMN_BITMASK |
+			PushDictGroupModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GROUPID_SERVERNO = new FinderPath(PushDictGroupModelImpl.ENTITY_CACHE_ENABLED,
+			PushDictGroupModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByF_groupId_serverNo",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns all the push dict groups where groupId = &#63; and serverNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 * @return the matching push dict groups
+	 */
+	@Override
+	public List<PushDictGroup> findByF_groupId_serverNo(long groupId,
+		String serverNo) {
+		return findByF_groupId_serverNo(groupId, serverNo, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the push dict groups where groupId = &#63; and serverNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PushDictGroupModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 * @param start the lower bound of the range of push dict groups
+	 * @param end the upper bound of the range of push dict groups (not inclusive)
+	 * @return the range of matching push dict groups
+	 */
+	@Override
+	public List<PushDictGroup> findByF_groupId_serverNo(long groupId,
+		String serverNo, int start, int end) {
+		return findByF_groupId_serverNo(groupId, serverNo, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the push dict groups where groupId = &#63; and serverNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PushDictGroupModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 * @param start the lower bound of the range of push dict groups
+	 * @param end the upper bound of the range of push dict groups (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching push dict groups
+	 */
+	@Override
+	public List<PushDictGroup> findByF_groupId_serverNo(long groupId,
+		String serverNo, int start, int end,
+		OrderByComparator<PushDictGroup> orderByComparator) {
+		return findByF_groupId_serverNo(groupId, serverNo, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the push dict groups where groupId = &#63; and serverNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PushDictGroupModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 * @param start the lower bound of the range of push dict groups
+	 * @param end the upper bound of the range of push dict groups (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching push dict groups
+	 */
+	@Override
+	public List<PushDictGroup> findByF_groupId_serverNo(long groupId,
+		String serverNo, int start, int end,
+		OrderByComparator<PushDictGroup> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GROUPID_SERVERNO;
+			finderArgs = new Object[] { groupId, serverNo };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GROUPID_SERVERNO;
+			finderArgs = new Object[] {
+					groupId, serverNo,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<PushDictGroup> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<PushDictGroup>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PushDictGroup pushDictGroup : list) {
+					if ((groupId != pushDictGroup.getGroupId()) ||
+							!Objects.equals(serverNo,
+								pushDictGroup.getServerNo())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_PUSHDICTGROUP_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GROUPID_SERVERNO_GROUPID_2);
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_F_GROUPID_SERVERNO_SERVERNO_1);
+			}
+			else if (serverNo.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_F_GROUPID_SERVERNO_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_F_GROUPID_SERVERNO_SERVERNO_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(PushDictGroupModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				if (!pagination) {
+					list = (List<PushDictGroup>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<PushDictGroup>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first push dict group in the ordered set where groupId = &#63; and serverNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching push dict group
+	 * @throws NoSuchPushDictGroupException if a matching push dict group could not be found
+	 */
+	@Override
+	public PushDictGroup findByF_groupId_serverNo_First(long groupId,
+		String serverNo, OrderByComparator<PushDictGroup> orderByComparator)
+		throws NoSuchPushDictGroupException {
+		PushDictGroup pushDictGroup = fetchByF_groupId_serverNo_First(groupId,
+				serverNo, orderByComparator);
+
+		if (pushDictGroup != null) {
+			return pushDictGroup;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", serverNo=");
+		msg.append(serverNo);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchPushDictGroupException(msg.toString());
+	}
+
+	/**
+	 * Returns the first push dict group in the ordered set where groupId = &#63; and serverNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching push dict group, or <code>null</code> if a matching push dict group could not be found
+	 */
+	@Override
+	public PushDictGroup fetchByF_groupId_serverNo_First(long groupId,
+		String serverNo, OrderByComparator<PushDictGroup> orderByComparator) {
+		List<PushDictGroup> list = findByF_groupId_serverNo(groupId, serverNo,
+				0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last push dict group in the ordered set where groupId = &#63; and serverNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching push dict group
+	 * @throws NoSuchPushDictGroupException if a matching push dict group could not be found
+	 */
+	@Override
+	public PushDictGroup findByF_groupId_serverNo_Last(long groupId,
+		String serverNo, OrderByComparator<PushDictGroup> orderByComparator)
+		throws NoSuchPushDictGroupException {
+		PushDictGroup pushDictGroup = fetchByF_groupId_serverNo_Last(groupId,
+				serverNo, orderByComparator);
+
+		if (pushDictGroup != null) {
+			return pushDictGroup;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", serverNo=");
+		msg.append(serverNo);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchPushDictGroupException(msg.toString());
+	}
+
+	/**
+	 * Returns the last push dict group in the ordered set where groupId = &#63; and serverNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching push dict group, or <code>null</code> if a matching push dict group could not be found
+	 */
+	@Override
+	public PushDictGroup fetchByF_groupId_serverNo_Last(long groupId,
+		String serverNo, OrderByComparator<PushDictGroup> orderByComparator) {
+		int count = countByF_groupId_serverNo(groupId, serverNo);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PushDictGroup> list = findByF_groupId_serverNo(groupId, serverNo,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the push dict groups before and after the current push dict group in the ordered set where groupId = &#63; and serverNo = &#63;.
+	 *
+	 * @param pushDictGroupId the primary key of the current push dict group
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next push dict group
+	 * @throws NoSuchPushDictGroupException if a push dict group with the primary key could not be found
+	 */
+	@Override
+	public PushDictGroup[] findByF_groupId_serverNo_PrevAndNext(
+		long pushDictGroupId, long groupId, String serverNo,
+		OrderByComparator<PushDictGroup> orderByComparator)
+		throws NoSuchPushDictGroupException {
+		PushDictGroup pushDictGroup = findByPrimaryKey(pushDictGroupId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PushDictGroup[] array = new PushDictGroupImpl[3];
+
+			array[0] = getByF_groupId_serverNo_PrevAndNext(session,
+					pushDictGroup, groupId, serverNo, orderByComparator, true);
+
+			array[1] = pushDictGroup;
+
+			array[2] = getByF_groupId_serverNo_PrevAndNext(session,
+					pushDictGroup, groupId, serverNo, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PushDictGroup getByF_groupId_serverNo_PrevAndNext(
+		Session session, PushDictGroup pushDictGroup, long groupId,
+		String serverNo, OrderByComparator<PushDictGroup> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_PUSHDICTGROUP_WHERE);
+
+		query.append(_FINDER_COLUMN_F_GROUPID_SERVERNO_GROUPID_2);
+
+		boolean bindServerNo = false;
+
+		if (serverNo == null) {
+			query.append(_FINDER_COLUMN_F_GROUPID_SERVERNO_SERVERNO_1);
+		}
+		else if (serverNo.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_F_GROUPID_SERVERNO_SERVERNO_3);
+		}
+		else {
+			bindServerNo = true;
+
+			query.append(_FINDER_COLUMN_F_GROUPID_SERVERNO_SERVERNO_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(PushDictGroupModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (bindServerNo) {
+			qPos.add(serverNo);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(pushDictGroup);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<PushDictGroup> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the push dict groups where groupId = &#63; and serverNo = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 */
+	@Override
+	public void removeByF_groupId_serverNo(long groupId, String serverNo) {
+		for (PushDictGroup pushDictGroup : findByF_groupId_serverNo(groupId,
+				serverNo, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(pushDictGroup);
+		}
+	}
+
+	/**
+	 * Returns the number of push dict groups where groupId = &#63; and serverNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 * @return the number of matching push dict groups
+	 */
+	@Override
+	public int countByF_groupId_serverNo(long groupId, String serverNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GROUPID_SERVERNO;
+
+		Object[] finderArgs = new Object[] { groupId, serverNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_PUSHDICTGROUP_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GROUPID_SERVERNO_GROUPID_2);
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_F_GROUPID_SERVERNO_SERVERNO_1);
+			}
+			else if (serverNo.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_F_GROUPID_SERVERNO_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_F_GROUPID_SERVERNO_SERVERNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GROUPID_SERVERNO_GROUPID_2 = "pushDictGroup.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GROUPID_SERVERNO_SERVERNO_1 = "pushDictGroup.serverNo IS NULL";
+	private static final String _FINDER_COLUMN_F_GROUPID_SERVERNO_SERVERNO_2 = "pushDictGroup.serverNo = ?";
+	private static final String _FINDER_COLUMN_F_GROUPID_SERVERNO_SERVERNO_3 = "(pushDictGroup.serverNo IS NULL OR pushDictGroup.serverNo = '')";
 
 	public PushDictGroupPersistenceImpl() {
 		setModelClass(PushDictGroup.class);
@@ -2775,6 +3372,29 @@ public class PushDictGroupPersistenceImpl extends BasePersistenceImpl<PushDictGr
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
 					args);
 			}
+
+			if ((pushDictGroupModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GROUPID_SERVERNO.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						pushDictGroupModelImpl.getOriginalGroupId(),
+						pushDictGroupModelImpl.getOriginalServerNo()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GROUPID_SERVERNO,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GROUPID_SERVERNO,
+					args);
+
+				args = new Object[] {
+						pushDictGroupModelImpl.getGroupId(),
+						pushDictGroupModelImpl.getServerNo()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GROUPID_SERVERNO,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GROUPID_SERVERNO,
+					args);
+			}
 		}
 
 		entityCache.putResult(PushDictGroupModelImpl.ENTITY_CACHE_ENABLED,
@@ -2807,6 +3427,7 @@ public class PushDictGroupPersistenceImpl extends BasePersistenceImpl<PushDictGr
 		pushDictGroupImpl.setUserName(pushDictGroup.getUserName());
 		pushDictGroupImpl.setCreateDate(pushDictGroup.getCreateDate());
 		pushDictGroupImpl.setModifiedDate(pushDictGroup.getModifiedDate());
+		pushDictGroupImpl.setServerNo(pushDictGroup.getServerNo());
 		pushDictGroupImpl.setCollectionCode(pushDictGroup.getCollectionCode());
 		pushDictGroupImpl.setGroupCode(pushDictGroup.getGroupCode());
 		pushDictGroupImpl.setGroupName(pushDictGroup.getGroupName());

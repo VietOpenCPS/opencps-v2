@@ -150,6 +150,9 @@ public interface PushCollectionLocalService extends BaseLocalService,
 
 	public List<PushCollection> findAll(int start, int end);
 
+	public List<PushCollection> findByGroupId_ServerNo(long groupId,
+		java.lang.String serverNo, int start, int end);
+
 	/**
 	* Returns a range of all the push collections.
 	*
@@ -209,10 +212,10 @@ public interface PushCollectionLocalService extends BaseLocalService,
 		Projection projection);
 
 	public PushCollection addPushCollection(long userId, long groupId,
-		java.lang.String collectionCode, java.lang.String collectionName,
-		java.lang.String collectionNameEN, java.lang.String description,
-		java.lang.String method, java.lang.String dataForm,
-		ServiceContext serviceContext)
+		java.lang.String serverNo, java.lang.String collectionCode,
+		java.lang.String collectionName, java.lang.String collectionNameEN,
+		java.lang.String description, java.lang.String method,
+		java.lang.String dataForm, ServiceContext serviceContext)
 		throws NoSuchUserException, SystemException, UnauthenticationException,
 			UnauthorizationException;
 
@@ -300,10 +303,11 @@ public interface PushCollectionLocalService extends BaseLocalService,
 		java.lang.String uuid, long groupId) throws PortalException;
 
 	public PushCollection updatePushCollection(long userId, long groupId,
-		long pushCollectionId, java.lang.String collectionCode,
-		java.lang.String collectionName, java.lang.String collectionNameEN,
-		java.lang.String description, java.lang.String method,
-		java.lang.String dataForm, ServiceContext serviceContext)
+		long pushCollectionId, java.lang.String serverNo,
+		java.lang.String collectionCode, java.lang.String collectionName,
+		java.lang.String collectionNameEN, java.lang.String description,
+		java.lang.String method, java.lang.String dataForm,
+		ServiceContext serviceContext)
 		throws NoSuchUserException, SystemException, UnauthenticationException,
 			UnauthorizationException, NoSuchPushCollectionException;
 

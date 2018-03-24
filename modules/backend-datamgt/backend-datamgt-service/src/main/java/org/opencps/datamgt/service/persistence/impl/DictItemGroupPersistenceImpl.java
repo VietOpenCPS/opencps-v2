@@ -2863,22 +2863,14 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 			Integer.class.getName(), Integer.class.getName(),
 				OrderByComparator.class.getName()
 			});
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_NEWERTHAN =
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_NEWERTHAN =
 		new FinderPath(DictItemGroupModelImpl.ENTITY_CACHE_ENABLED,
-			DictItemGroupModelImpl.FINDER_CACHE_ENABLED,
-			DictItemGroupImpl.class, FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-			"findByF_newerThan",
-			new String[] { Date.class.getName(), Long.class.getName() },
-			DictItemGroupModelImpl.MODIFIEDDATE_COLUMN_BITMASK |
-			DictItemGroupModelImpl.GROUPID_COLUMN_BITMASK |
-			DictItemGroupModelImpl.DICTGROUPID_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_F_NEWERTHAN = new FinderPath(DictItemGroupModelImpl.ENTITY_CACHE_ENABLED,
 			DictItemGroupModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_newerThan",
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByF_newerThan",
 			new String[] { Date.class.getName(), Long.class.getName() });
 
 	/**
-	 * Returns all the dict item groups where modifiedDate = &#63; and groupId = &#63;.
+	 * Returns all the dict item groups where modifiedDate &ge; &#63; and groupId = &#63;.
 	 *
 	 * @param modifiedDate the modified date
 	 * @param groupId the group ID
@@ -2891,7 +2883,7 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 	}
 
 	/**
-	 * Returns a range of all the dict item groups where modifiedDate = &#63; and groupId = &#63;.
+	 * Returns a range of all the dict item groups where modifiedDate &ge; &#63; and groupId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemGroupModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
@@ -2910,7 +2902,7 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 	}
 
 	/**
-	 * Returns an ordered range of all the dict item groups where modifiedDate = &#63; and groupId = &#63;.
+	 * Returns an ordered range of all the dict item groups where modifiedDate &ge; &#63; and groupId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemGroupModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
@@ -2932,7 +2924,7 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 	}
 
 	/**
-	 * Returns an ordered range of all the dict item groups where modifiedDate = &#63; and groupId = &#63;.
+	 * Returns an ordered range of all the dict item groups where modifiedDate &ge; &#63; and groupId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemGroupModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
@@ -2955,20 +2947,12 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
-		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
-			pagination = false;
-			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_NEWERTHAN;
-			finderArgs = new Object[] { modifiedDate, groupId };
-		}
-		else {
-			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_NEWERTHAN;
-			finderArgs = new Object[] {
-					modifiedDate, groupId,
-					
-					start, end, orderByComparator
-				};
-		}
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_NEWERTHAN;
+		finderArgs = new Object[] {
+				modifiedDate, groupId,
+				
+				start, end, orderByComparator
+			};
 
 		List<DictItemGroup> list = null;
 
@@ -2978,8 +2962,8 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 
 			if ((list != null) && !list.isEmpty()) {
 				for (DictItemGroup dictItemGroup : list) {
-					if (!Objects.equals(modifiedDate,
-								dictItemGroup.getModifiedDate()) ||
+					if ((modifiedDate.getTime() > dictItemGroup.getModifiedDate()
+																   .getTime()) ||
 							(groupId != dictItemGroup.getGroupId())) {
 						list = null;
 
@@ -3072,7 +3056,7 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 	}
 
 	/**
-	 * Returns the first dict item group in the ordered set where modifiedDate = &#63; and groupId = &#63;.
+	 * Returns the first dict item group in the ordered set where modifiedDate &ge; &#63; and groupId = &#63;.
 	 *
 	 * @param modifiedDate the modified date
 	 * @param groupId the group ID
@@ -3107,7 +3091,7 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 	}
 
 	/**
-	 * Returns the first dict item group in the ordered set where modifiedDate = &#63; and groupId = &#63;.
+	 * Returns the first dict item group in the ordered set where modifiedDate &ge; &#63; and groupId = &#63;.
 	 *
 	 * @param modifiedDate the modified date
 	 * @param groupId the group ID
@@ -3128,7 +3112,7 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 	}
 
 	/**
-	 * Returns the last dict item group in the ordered set where modifiedDate = &#63; and groupId = &#63;.
+	 * Returns the last dict item group in the ordered set where modifiedDate &ge; &#63; and groupId = &#63;.
 	 *
 	 * @param modifiedDate the modified date
 	 * @param groupId the group ID
@@ -3163,7 +3147,7 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 	}
 
 	/**
-	 * Returns the last dict item group in the ordered set where modifiedDate = &#63; and groupId = &#63;.
+	 * Returns the last dict item group in the ordered set where modifiedDate &ge; &#63; and groupId = &#63;.
 	 *
 	 * @param modifiedDate the modified date
 	 * @param groupId the group ID
@@ -3190,7 +3174,7 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 	}
 
 	/**
-	 * Returns the dict item groups before and after the current dict item group in the ordered set where modifiedDate = &#63; and groupId = &#63;.
+	 * Returns the dict item groups before and after the current dict item group in the ordered set where modifiedDate &ge; &#63; and groupId = &#63;.
 	 *
 	 * @param dictItemGroupId the primary key of the current dict item group
 	 * @param modifiedDate the modified date
@@ -3353,7 +3337,7 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 	}
 
 	/**
-	 * Removes all the dict item groups where modifiedDate = &#63; and groupId = &#63; from the database.
+	 * Removes all the dict item groups where modifiedDate &ge; &#63; and groupId = &#63; from the database.
 	 *
 	 * @param modifiedDate the modified date
 	 * @param groupId the group ID
@@ -3367,7 +3351,7 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 	}
 
 	/**
-	 * Returns the number of dict item groups where modifiedDate = &#63; and groupId = &#63;.
+	 * Returns the number of dict item groups where modifiedDate &ge; &#63; and groupId = &#63;.
 	 *
 	 * @param modifiedDate the modified date
 	 * @param groupId the group ID
@@ -3375,7 +3359,7 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 	 */
 	@Override
 	public int countByF_newerThan(Date modifiedDate, long groupId) {
-		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_NEWERTHAN;
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_NEWERTHAN;
 
 		Object[] finderArgs = new Object[] { modifiedDate, groupId };
 
@@ -3434,7 +3418,7 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 	}
 
 	private static final String _FINDER_COLUMN_F_NEWERTHAN_MODIFIEDDATE_1 = "dictItemGroup.modifiedDate IS NULL AND ";
-	private static final String _FINDER_COLUMN_F_NEWERTHAN_MODIFIEDDATE_2 = "dictItemGroup.modifiedDate = ? AND ";
+	private static final String _FINDER_COLUMN_F_NEWERTHAN_MODIFIEDDATE_2 = "dictItemGroup.modifiedDate >= ? AND ";
 	private static final String _FINDER_COLUMN_F_NEWERTHAN_GROUPID_2 = "dictItemGroup.groupId = ?";
 
 	public DictItemGroupPersistenceImpl() {
@@ -3857,27 +3841,6 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_DICTITEMID, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DICTITEMID,
-					args);
-			}
-
-			if ((dictItemGroupModelImpl.getColumnBitmask() &
-					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_NEWERTHAN.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						dictItemGroupModelImpl.getOriginalModifiedDate(),
-						dictItemGroupModelImpl.getOriginalGroupId()
-					};
-
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_NEWERTHAN, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_NEWERTHAN,
-					args);
-
-				args = new Object[] {
-						dictItemGroupModelImpl.getModifiedDate(),
-						dictItemGroupModelImpl.getGroupId()
-					};
-
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_NEWERTHAN, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_NEWERTHAN,
 					args);
 			}
 		}

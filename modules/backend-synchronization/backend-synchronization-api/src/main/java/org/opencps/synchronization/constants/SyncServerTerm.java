@@ -20,4 +20,11 @@ public class SyncServerTerm {
 	public static final int SERVER_INACTIVE = 0;
 	public static final int SERVER_ONLINE = 1;
 	public static final int SERVER_OFFLINE = 2;
+	
+	public static final int STATUS_DUPLICATE = 409;
+	public static final int STATUS_NOT_FOUND = 404;
+	public static final int STATUS_OK = 200;
+	
+	public static final String PULL = "isPull";
+	public static final String PUSH = "isPush";
 }

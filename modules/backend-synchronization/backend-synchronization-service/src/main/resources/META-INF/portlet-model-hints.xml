@@ -10,6 +10,7 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
+		<field name="serverNo" type="String" />
 		<field name="collectionCode" type="String" />
 		<field name="collectionName" type="String" />
 		<field name="collectionNameEN" type="String" />
@@ -30,6 +31,7 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
+		<field name="serverNo" type="String" />
 		<field name="collectionCode" type="String" />
 		<field name="groupCode" type="String" />
 		<field name="groupName" type="String" />
@@ -49,6 +51,7 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
+		<field name="serverNo" type="String" />
 		<field name="collectionCode" type="String" />
 		<field name="itemCode" type="String" />
 		<field name="itemName" type="String" />

@@ -41,6 +41,7 @@ public class PushDictGroupSoap implements Serializable {
 		soapModel.setUserName(model.getUserName());
 		soapModel.setCreateDate(model.getCreateDate());
 		soapModel.setModifiedDate(model.getModifiedDate());
+		soapModel.setServerNo(model.getServerNo());
 		soapModel.setCollectionCode(model.getCollectionCode());
 		soapModel.setGroupCode(model.getGroupCode());
 		soapModel.setGroupName(model.getGroupName());
@@ -164,6 +165,14 @@ public class PushDictGroupSoap implements Serializable {
 		_modifiedDate = modifiedDate;
 	}
 
+	public String getServerNo() {
+		return _serverNo;
+	}
+
+	public void setServerNo(String serverNo) {
+		_serverNo = serverNo;
+	}
+
 	public String getCollectionCode() {
 		return _collectionCode;
 	}
@@ -228,6 +237,7 @@ public class PushDictGroupSoap implements Serializable {
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
+	private String _serverNo;
 	private String _collectionCode;
 	private String _groupCode;
 	private String _groupName;

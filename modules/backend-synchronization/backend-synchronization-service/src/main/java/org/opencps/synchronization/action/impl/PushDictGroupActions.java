@@ -21,25 +21,30 @@ public class PushDictGroupActions implements PushDictGroupInterface {
 	}
 
 	@Override
-	public PushDictGroup addPushDictGroup(long userId, long groupId, String collectionCode, String groupCode,
+	public PushDictGroup addPushDictGroup(long userId, long groupId, 
+			String serverNo,
+			String collectionCode, String groupCode,
 			String groupName, String groupNameEN, String groupDescription, 
 			String itemCode,
 			String method, ServiceContext serviceContext)
 			throws NoSuchUserException, UnauthenticationException, UnauthorizationException,
 			NoSuchPushDictGroupException {
 		// TODO Auto-generated method stub
-		return PushDictGroupLocalServiceUtil.addPushDictGroup(userId, groupId, collectionCode, groupCode, groupName, groupNameEN, groupDescription, itemCode, method, serviceContext);
+		return PushDictGroupLocalServiceUtil.addPushDictGroup(userId, groupId, serverNo, collectionCode, groupCode, groupName, groupNameEN, groupDescription, itemCode, method, serviceContext);
 	}
 
 	@Override
-	public PushDictGroup updatePushDictGroup(long userId, long groupId, long pushDictGroupId, String collectionCode,
+	public PushDictGroup updatePushDictGroup(long userId, long groupId, 
+			long pushDictGroupId, 
+			String serverNo,
+			String collectionCode,
 			String groupCode, String groupName, String groupNameEN, String groupDescription,
 			String itemCode,
 			String method,
 			ServiceContext serviceContext) throws NoSuchUserException, NotFoundException, UnauthenticationException,
 			UnauthorizationException, NoSuchPushDictGroupException {
 		// TODO Auto-generated method stub
-		return PushDictGroupLocalServiceUtil.updatePushDictGroup(userId, groupId, pushDictGroupId, collectionCode, groupCode, groupName, groupNameEN, groupDescription, itemCode, method, serviceContext);
+		return PushDictGroupLocalServiceUtil.updatePushDictGroup(userId, groupId, pushDictGroupId, serverNo, collectionCode, groupCode, groupName, groupNameEN, groupDescription, itemCode, method, serviceContext);
 	}
 
 	@Override

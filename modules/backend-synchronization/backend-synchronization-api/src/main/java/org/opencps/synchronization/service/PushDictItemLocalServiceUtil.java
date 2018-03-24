@@ -146,6 +146,11 @@ public class PushDictItemLocalServiceUtil {
 		return getService().findAll(start, end);
 	}
 
+	public static java.util.List<org.opencps.synchronization.model.PushDictItem> findByGroupId_ServerNo(
+		long groupId, java.lang.String serverNo, int start, int end) {
+		return getService().findByGroupId_ServerNo(groupId, serverNo, start, end);
+	}
+
 	/**
 	* Returns a range of all the push dict items.
 	*
@@ -217,20 +222,21 @@ public class PushDictItemLocalServiceUtil {
 	}
 
 	public static org.opencps.synchronization.model.PushDictItem addPushDictItem(
-		long userId, long groupId, java.lang.String collectionCode,
-		java.lang.String itemCode, java.lang.String itemName,
-		java.lang.String itemNameEN, java.lang.String itemDescription,
-		java.lang.String parentItemCode, java.lang.String sibling,
-		java.lang.String method, java.lang.String metaData,
+		long userId, long groupId, java.lang.String serverNo,
+		java.lang.String collectionCode, java.lang.String itemCode,
+		java.lang.String itemName, java.lang.String itemNameEN,
+		java.lang.String itemDescription, java.lang.String parentItemCode,
+		java.lang.String sibling, java.lang.String method,
+		java.lang.String metaData,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.NoSuchUserException,
 			com.liferay.portal.kernel.exception.SystemException,
 			org.opencps.auth.api.exception.UnauthenticationException,
 			org.opencps.auth.api.exception.UnauthorizationException {
 		return getService()
-				   .addPushDictItem(userId, groupId, collectionCode, itemCode,
-			itemName, itemNameEN, itemDescription, parentItemCode, sibling,
-			method, metaData, serviceContext);
+				   .addPushDictItem(userId, groupId, serverNo, collectionCode,
+			itemCode, itemName, itemNameEN, itemDescription, parentItemCode,
+			sibling, method, metaData, serviceContext);
 	}
 
 	/**
@@ -343,11 +349,11 @@ public class PushDictItemLocalServiceUtil {
 
 	public static org.opencps.synchronization.model.PushDictItem updatePushDictItem(
 		long userId, long groupId, long pushDictItemId,
-		java.lang.String collectionCode, java.lang.String itemCode,
-		java.lang.String itemName, java.lang.String itemNameEN,
-		java.lang.String itemDescription, java.lang.String parentItemCode,
-		java.lang.String sibling, java.lang.String method,
-		java.lang.String metaData,
+		java.lang.String serverNo, java.lang.String collectionCode,
+		java.lang.String itemCode, java.lang.String itemName,
+		java.lang.String itemNameEN, java.lang.String itemDescription,
+		java.lang.String parentItemCode, java.lang.String sibling,
+		java.lang.String method, java.lang.String metaData,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.NoSuchUserException,
 			com.liferay.portal.kernel.exception.SystemException,
@@ -356,8 +362,9 @@ public class PushDictItemLocalServiceUtil {
 			org.opencps.synchronization.exception.NoSuchPushDictItemException {
 		return getService()
 				   .updatePushDictItem(userId, groupId, pushDictItemId,
-			collectionCode, itemCode, itemName, itemNameEN, itemDescription,
-			parentItemCode, sibling, method, metaData, serviceContext);
+			serverNo, collectionCode, itemCode, itemName, itemNameEN,
+			itemDescription, parentItemCode, sibling, method, metaData,
+			serviceContext);
 	}
 
 	/**

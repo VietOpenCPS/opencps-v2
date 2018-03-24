@@ -61,6 +61,7 @@ public class PushDictGroupLocalServiceImpl
 	public PushDictGroup addPushDictGroup(
 			long userId, 
 			long groupId, 
+			String serverNo,
 			String collectionCode,
 			String groupCode,
 			String groupName,
@@ -106,6 +107,7 @@ public class PushDictGroupLocalServiceImpl
 		pushDictGroup.setCreateDate(serviceContext.getCreateDate(now));
 		pushDictGroup.setModifiedDate(serviceContext.getCreateDate(now));
 
+		pushDictGroup.setServerNo(serverNo);
 		pushDictGroup.setCollectionCode(collectionCode);
 		pushDictGroup.setGroupCode(groupCode);
 		pushDictGroup.setGroupName(groupName);
@@ -122,6 +124,7 @@ public class PushDictGroupLocalServiceImpl
 			long userId, 
 			long groupId, 
 			long pushDictGroupId,
+			String serverNo,
 			String collectionCode,
 			String groupCode,
 			String groupName,
@@ -163,6 +166,7 @@ public class PushDictGroupLocalServiceImpl
 		pushDictGroup.setCreateDate(serviceContext.getCreateDate(now));
 		pushDictGroup.setModifiedDate(serviceContext.getCreateDate(now));
 
+		pushDictGroup.setServerNo(serverNo);
 		pushDictGroup.setCollectionCode(collectionCode);
 		pushDictGroup.setGroupCode(groupCode);
 		pushDictGroup.setGroupName(groupName);
@@ -213,5 +217,9 @@ public class PushDictGroupLocalServiceImpl
 	@Override
 	public PushDictGroup findByCollectionCode_GroupCode_ItemCode_Method(long groupId, String collectionCode, String groupCode, String itemCode, String method) throws NoSuchPushDictGroupException {
 		return pushDictGroupPersistence.findByF_collectionCode_groupCode_itemCode_Method(groupId, collectionCode, groupCode, itemCode, method);
+	}		
+	@Override
+	public List<PushDictGroup> findByGroupId_ServerNo(long groupId, String serverNo, int start, int end) {
+		return pushDictGroupPersistence.findByF_groupId_serverNo(groupId, serverNo, start, end);
 	}		
 }

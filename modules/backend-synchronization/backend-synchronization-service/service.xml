@@ -25,6 +25,8 @@
 
 		<!-- Other fields -->
 
+		<column name="serverNo" type="String" />
+
 		<column name="collectionCode" type="String" />
 		<column name="itemCode" type="String" />
 		<column name="itemName" type="String" />
@@ -45,6 +47,10 @@
             <finder-column name="collectionCode"></finder-column>
             <finder-column name="itemCode"></finder-column>
             <finder-column name="method"></finder-column>
+        </finder>
+        <finder name="F_groupId_serverNo" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="serverNo"></finder-column>
         </finder>
 	</entity>
 	<entity local-service="true" name="PushCollection" table="opencps_pushcollection" remote-service="false" uuid="true">
@@ -67,6 +73,8 @@
 
 		<!-- Other fields -->
 
+		<column name="serverNo" type="String" />
+
 		<column name="collectionCode" type="String" />
 		<column name="collectionName" type="String" />
 		<column name="collectionNameEN" type="String" />
@@ -83,6 +91,10 @@
             <finder-column name="groupId"></finder-column>
             <finder-column name="collectionCode"></finder-column>
             <finder-column name="method"></finder-column>
+        </finder>
+        <finder name="F_groupId_serverNo" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="serverNo"></finder-column>
         </finder>
 	</entity>	
 	<entity local-service="true" name="PushDictGroup" table="opencps_pushdictgroup" remote-service="false" uuid="true">
@@ -104,6 +116,8 @@
 		<column name="modifiedDate" type="Date" />
 
 		<!-- Other fields -->
+
+		<column name="serverNo" type="String" />		
 
 		<column name="collectionCode" type="String" />		
 		<column name="groupCode" type="String" />
@@ -131,6 +145,10 @@
             <finder-column name="groupCode"></finder-column>
             <finder-column name="itemCode"></finder-column>            
             <finder-column name="method"></finder-column>
+        </finder>
+        <finder name="F_groupId_serverNo" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="serverNo"></finder-column>            
         </finder>
 	</entity>	
 </service-builder>
