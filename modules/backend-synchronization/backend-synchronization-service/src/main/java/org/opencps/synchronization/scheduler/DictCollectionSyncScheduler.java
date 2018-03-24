@@ -109,11 +109,11 @@ public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListen
 					params.put(PushCollectionTerm.COLLECTION_NAME_EN, pcollection.getCollectionNameEN());
 					params.put(PushCollectionTerm.DESCRIPTION, pcollection.getDescription());
 									
-					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
+					JSONObject resDictCollection = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
 							rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
 							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 					
-					if (resDictItem.getInt(RESTFulConfiguration.STATUS) == 200) {
+					if (resDictCollection.getInt(RESTFulConfiguration.STATUS) == 200) {
 						_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());
 					}													
 				}

@@ -101,4 +101,8 @@ public interface DictcollectionInterface {
 			int start, int end, ServiceContext serviceContext);	
 	public long countDictCollectionsOlderThanDate(long userId, long companyId, long groupId, Date date, int start, int end, ServiceContext serviceContext);
 	public long countDictItemsOlderThanDate(long userId, long companyId, long groupId, Date date, int start, int end, ServiceContext serviceContext);
+
+	public JSONObject getDictGroupsOlderThanDate(long userId, long companyId, long groupId, Date date, int start, int end, ServiceContext serviceContext);
+	public List<DictGroup> getListDictGroupsOlderThanDate(long userId, long companyId, long groupId, Date date, int start, int end, ServiceContext serviceContext);
+	public long countDictGroupsOlderThanDate(long userId, long companyId, long groupId, Date date, int start, int end, ServiceContext serviceContext);
 }

@@ -109,7 +109,7 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 		TABLE_COLUMNS_MAP.put("metaData", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_pushdictitem (uuid_ VARCHAR(75) null,pushDictItemId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,collectionCode VARCHAR(75) null,itemCode VARCHAR(75) null,itemName VARCHAR(75) null,itemNameEN VARCHAR(75) null,itemDescription VARCHAR(75) null,parentItemCode VARCHAR(75) null,sibling VARCHAR(75) null,method VARCHAR(75) null,metaData VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_pushdictitem (uuid_ VARCHAR(75) null,pushDictItemId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,collectionCode VARCHAR(75) null,itemCode VARCHAR(75) null,itemName VARCHAR(75) null,itemNameEN VARCHAR(75) null,itemDescription TEXT null,parentItemCode VARCHAR(75) null,sibling VARCHAR(75) null,method VARCHAR(75) null,metaData TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_pushdictitem";
 	public static final String ORDER_BY_JPQL = " ORDER BY pushDictItem.modifiedDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_pushdictitem.modifiedDate ASC";

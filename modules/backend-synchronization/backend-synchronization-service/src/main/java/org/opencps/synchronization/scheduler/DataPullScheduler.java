@@ -10,13 +10,17 @@ import org.opencps.communication.service.ServerConfigLocalService;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictGroup;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalService;
+import org.opencps.datamgt.service.DictGroupLocalService;
 import org.opencps.datamgt.service.DictItemLocalService;
 import org.opencps.synchronization.constants.SyncServerTerm;
 import org.opencps.synchronization.model.PushCollection;
+import org.opencps.synchronization.model.PushDictGroup;
 import org.opencps.synchronization.model.PushDictItem;
 import org.opencps.synchronization.service.PushCollectionLocalService;
+import org.opencps.synchronization.service.PushDictGroupLocalService;
 import org.opencps.synchronization.service.PushDictItemLocalService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -71,9 +75,13 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 								) {
 							Date pullDictCollectionDate = pullDictCollection(sc, configObj);
 							Date pullDictItemDate = pullDictItem(sc, configObj);
+							Date pullDictGroupDate = pullDictGroup(sc, configObj);
 							Date maxModifiedDate = pullDictCollectionDate;
 							if (maxModifiedDate.compareTo(pullDictItemDate) < 0) {
 								maxModifiedDate = pullDictItemDate;
+							}
+							if (maxModifiedDate.compareTo(pullDictGroupDate) < 0) {
+								maxModifiedDate = pullDictGroupDate;
 							}
 							serviceContext.setUserId(sc.getUserId());
 							if (Validator.isNull(sc.getLastSync()) || (sc.getLastSync().compareTo(maxModifiedDate) < 0)) {
@@ -175,6 +183,119 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 							oldCollection.setCollectionNameEN(collectionNameEN);
 							oldCollection.setDescription(description);
 							_dictCollectionLocalService.updateDictCollection(oldCollection);							
+						}
+					}					
+				}
+				catch (Exception e) {
+				}
+			}			
+		}
+		catch (Exception e) {
+		}
+		
+		_log.info("PULL DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));
+		
+		return maxModifiedDate;
+	}
+	
+	private Date pullDictGroup(ServerConfig serverConfig, JSONObject configObj) {
+		_log.info("PULL DICT GROUP FROM SERVER " + serverConfig.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
+		Date maxModifiedDate = new Date(0);
+		
+		try {
+			InvokeREST rest = new InvokeREST();
+			HashMap<String, String> properties = new HashMap<String, String>();
+			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+			ServiceContext serviceContext = new ServiceContext();
+			serviceContext.setCompanyId(company.getCompanyId());
+				
+			String dataEndpoint = "/all/dictgroups/sync";
+			if (Validator.isNotNull(serverConfig.getLastSync())) {
+				dataEndpoint += "?lastSync=" + serverConfig.getLastSync().getTime();
+			}
+			
+			JSONObject resDictCollection = rest.callAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.GET, "application/json",
+					configObj.getString(SyncServerTerm.SERVER_URL), dataEndpoint, configObj.getString(SyncServerTerm.SERVER_USERNAME),
+					configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, serviceContext);
+			
+			JSONObject jsData = JSONFactoryUtil
+					.createJSONObject(resDictCollection.getString(RESTFulConfiguration.MESSAGE));
+
+			JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+			for (int i = 0; i < jsArrayData.length(); i++) {
+				JSONObject object = jsArrayData.getJSONObject(i);
+	
+				String collectionCode = object.getString("collectionCode");
+				long modifiedDateTime = object.getLong("modifiedDate");
+				long createDateTime = object.getLong("createDate");
+				String groupCode = object.getString("groupCode");
+				String groupName= object.getString("groupName");
+				String groupNameEN = object.getString("groupNameEN");
+				String groupDescription = object.getString("groupDescription");
+				
+				serviceContext.setUserId(serverConfig.getUserId());
+				serviceContext.setScopeGroupId(serverConfig.getGroupId());
+				serviceContext.setSignedIn(true);
+				
+				if (object.getLong("modifiedDate") > maxModifiedDate.getTime()) {
+					maxModifiedDate.setTime(object.getLong("modifiedDate"));
+				}
+				DictGroup oldGroup = null;
+				
+				try {
+					oldGroup = _dictGroupLocalService.fetchByF_DictGroupCode(groupCode, serverConfig.getGroupId());
+				}
+				catch (Exception e) {
+				}
+				
+				DictCollection collection = null;
+				try {
+					collection = _dictCollectionLocalService.fetchByF_dictCollectionCode(collectionCode, serverConfig.getGroupId());
+				}
+				catch (Exception e) {
+					
+				}
+				try {
+					if (oldGroup == null) {
+						PushDictGroup foundDeleteDictGroup = null;
+						try {
+							foundDeleteDictGroup = _pushDictGroupLocalService.findByCollectionCode_GroupCode_Method(serverConfig.getGroupId(), collectionCode, groupCode, SyncServerTerm.METHOD_DELETE);
+						}
+						catch (Exception e) {
+							
+						}
+						
+						if (foundDeleteDictGroup == null) {
+							if (collection != null) {
+								DictGroup newDictGroup = _dictGroupLocalService.addDictGroup(
+										serverConfig.getUserId(), 
+										serverConfig.getGroupId(), 
+										collection.getDictCollectionId(), 
+										groupCode, 
+										groupName, 
+										groupNameEN, 
+										groupDescription, 
+										serviceContext);
+									
+								newDictGroup.setModifiedDate(new Date(modifiedDateTime));
+								newDictGroup.setCreateDate(new Date(createDateTime));
+								_dictGroupLocalService.updateDictGroup(newDictGroup);															
+							}
+						}
+					}
+					else {
+						Date modifiedDate = new Date(modifiedDateTime);
+						if (modifiedDate.compareTo(oldGroup.getModifiedDate()) > 0) {
+							oldGroup.setModifiedDate(new Date(modifiedDateTime));
+							oldGroup.setCreateDate(new Date(createDateTime));
+							oldGroup.setGroupCode(groupCode);
+							oldGroup.setGroupName(groupName);
+							oldGroup.setGroupNameEN(groupNameEN);
+							oldGroup.setGroupDescription(groupDescription);
+							if (collection != null) {
+								oldGroup.setDictCollectionId(collection.getDictCollectionId());
+							}
+							_dictGroupLocalService.updateDictGroup(oldGroup);							
 						}
 					}					
 				}
@@ -355,6 +476,9 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 	private DictCollectionLocalService _dictCollectionLocalService;
 	
 	@Reference
+	private DictGroupLocalService _dictGroupLocalService;
+	
+	@Reference
 	private ServerConfigLocalService _serverConfigLocalService;
 	
 	@Reference
@@ -362,6 +486,9 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 	
 	@Reference
 	private PushDictItemLocalService _pushDictItemLocalService;
+	
+	@Reference
+	private PushDictGroupLocalService _pushDictGroupLocalService;
 	
 	private SchedulerEngineHelper _schedulerEngineHelper;
 

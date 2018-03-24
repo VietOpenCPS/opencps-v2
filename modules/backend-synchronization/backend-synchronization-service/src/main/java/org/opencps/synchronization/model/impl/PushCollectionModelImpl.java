@@ -103,7 +103,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 		TABLE_COLUMNS_MAP.put("method", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_pushcollection (uuid_ VARCHAR(75) null,pushCollectionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,collectionCode VARCHAR(75) null,collectionName VARCHAR(75) null,collectionNameEN VARCHAR(75) null,description VARCHAR(75) null,dataForm VARCHAR(75) null,method VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_pushcollection (uuid_ VARCHAR(75) null,pushCollectionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,collectionCode VARCHAR(75) null,collectionName VARCHAR(75) null,collectionNameEN VARCHAR(75) null,description TEXT null,dataForm TEXT null,method VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_pushcollection";
 	public static final String ORDER_BY_JPQL = " ORDER BY pushCollection.modifiedDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_pushcollection.modifiedDate ASC";

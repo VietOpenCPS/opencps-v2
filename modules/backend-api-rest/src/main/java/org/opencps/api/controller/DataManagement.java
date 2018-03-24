@@ -359,6 +359,14 @@ public interface DataManagement {
 			@ApiParam(value = "code that need to be created or updated", required = true) @PathParam("code") String code,			
 			@BeanParam DictCollectionInputModel input);
 
+	@POST
+	@Path("/{code}/dictgroups/{groupCode}")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response updateOrCreateNewDictgroups(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@PathParam("code") String code, @PathParam("groupCode") String groupCode, @BeanParam DictGroupInputModel input);
+
 	@GET
 	@Path("/sync")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
@@ -375,4 +383,11 @@ public interface DataManagement {
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@BeanParam org.opencps.api.datamgtsync.model.DataSearchModel query);
 	
+	@GET
+	@Path("/all/dictgroups/sync")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getSyncDictGroups(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@BeanParam org.opencps.api.datamgtsync.model.DataSearchModel query);
 }

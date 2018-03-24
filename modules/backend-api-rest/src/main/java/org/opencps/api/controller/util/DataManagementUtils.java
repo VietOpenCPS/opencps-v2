@@ -393,6 +393,38 @@ public class DataManagementUtils {
 		}
 		return results;
 	}	
+
+	public static List<org.opencps.api.datamgtsync.model.DictGroupModel> mapperDictGroupList(List<DictGroup> lstGroups) {		
+		List<org.opencps.api.datamgtsync.model.DictGroupModel> results = new ArrayList<>();
+		
+		for (DictGroup dg : lstGroups) {
+			org.opencps.api.datamgtsync.model.DictGroupModel model = new org.opencps.api.datamgtsync.model.DictGroupModel();
+			try {
+				DictCollection collection = DictCollectionLocalServiceUtil.fetchDictCollection(dg.getDictCollectionId());
+
+				model.setCollectionCode(collection.getCollectionCode());
+				
+				model.setGroupCode(dg.getGroupCode());
+				model.setGroupName(dg.getGroupName());
+				model.setGroupNameEN(dg.getGroupNameEN());
+				model.setGroupDescription(dg.getGroupDescription());
+				
+				if (Validator.isNotNull(dg.getCreateDate())) {
+					model.setCreateDate(dg.getCreateDate().getTime());				
+				}
+				if (Validator.isNotNull(dg.getModifiedDate())) {
+					model.setModifiedDate(dg.getModifiedDate().getTime());				
+				}
+				
+				results.add(model);
+			}
+			catch (Exception e) {
+				
+			}
+		}
+		return results;
+	}	
+	
 	public static Log _log = LogFactoryUtil.getLog(DataManagementUtils.class);
 
 }

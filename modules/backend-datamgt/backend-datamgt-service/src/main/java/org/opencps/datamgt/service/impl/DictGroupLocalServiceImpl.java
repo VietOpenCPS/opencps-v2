@@ -18,9 +18,12 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.datamgt.constants.DictCollectionTerm;
 import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.exception.NoSuchDictGroupException;
+import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictGroup;
+import org.opencps.datamgt.model.impl.DictCollectionImpl;
 import org.opencps.datamgt.service.base.DictGroupLocalServiceBaseImpl;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
@@ -43,6 +46,8 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MatchQuery.Operator;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -517,6 +522,18 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 	
 	public DictGroup getByGC_GI_DCI(String groupCode, long groupId, long dictCollectionId) {
 		return dictGroupPersistence.fetchByGC_GI_DCI(groupCode, groupId, dictCollectionId);
+	}
+	
+	@Override
+	public List<DictGroup> findOlderThanDate(Date date, long groupId, int start, int end) {
+		OrderByComparator<DictGroup> comparator = OrderByComparatorFactoryUtil.create(DictCollectionImpl.TABLE_NAME, DictCollectionTerm.MODIFIED_DATE, true);
+		
+		return dictGroupPersistence.findByF_dictGroupNewerThan(date, groupId, start, end, comparator);
+	}
+	
+	@Override
+	public long countOlderThanDate(Date date, long groupId) {
+		return dictGroupPersistence.countByF_dictGroupNewerThan(date, groupId);
 	}
 	
 }

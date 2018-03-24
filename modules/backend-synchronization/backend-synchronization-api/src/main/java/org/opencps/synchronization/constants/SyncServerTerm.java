@@ -14,6 +14,9 @@ public class SyncServerTerm {
 	public static final String METHOD_UPDATE_DATAFORM = "update_dataform";
 	public static final String METHOD_UPDATE_METADATA = "update_metadata";
 	
+	public static final String METHOD_ADD_TO_GROUP = "add_to_group";
+	public static final String METHOD_REMOVE_FROM_GROUP = "remove_from_group";
+	
 	public static final int SERVER_INACTIVE = 0;
 	public static final int SERVER_ONLINE = 1;
 	public static final int SERVER_OFFLINE = 2;
