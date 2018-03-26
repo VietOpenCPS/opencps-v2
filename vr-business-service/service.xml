@@ -104,123 +104,123 @@
 		<column name="applicantIdDate" type="Date" db-name="applicantIdDate"/>
 		<column name="applicantName" type="String" db-name="applicantName"/>
 		<column name="applicantAddress" type="String" db-name="applicantAddress"/>
-<!-- 		<column name="applicantRepresentative" type="String" db-name="applicantRepresentative"/> -->
-<!-- 		<column name="applicantRepresentativeTitle" type="String" db-name="applicantRepresentativeTitle"/> -->
-<!-- 		<column name="applicantEmail" type="String" db-name="applicantEmail"/> -->
-<!-- 		<column name="applicantPhone" type="String" db-name="applicantPhone"/> -->
-<!-- 		<column name="applicantFax" type="String" db-name="applicantFax"/> -->
-<!-- 		<column name="applicantContactName" type="String" db-name="applicantContactName"/> -->
-<!-- 		<column name="applicantContactEmail" type="String" db-name="applicantContactEmail"/> -->
-<!-- 		<column name="applicantcontactPhone" type="String" db-name="applicantcontactPhone"/> -->
-<!-- 		<column name="manufacturerForeignCode" type="String" db-name="manufacturerForeignCode"/> -->
-<!-- 		<column name="manufacturerName" type="String" db-name="manufacturerName"/> -->
-<!-- 		<column name="manufacturerAddress" type="String" db-name="manufacturerAddress"/> -->
-<!-- 		<column name="manufacturerRepresentative" type="String" db-name="manufacturerRepresentative"/> -->
-<!-- 		<column name="manufacturerRepresentativeTitle" type="String" db-name="manufacturerRepresentativeTitle"/> -->
-<!-- 		<column name="manufacturerEmail" type="String" db-name="manufacturerEmail"/> -->
-<!-- 		<column name="manufacturerPhone" type="String" db-name="manufacturerPhone"/> -->
-<!-- 		<column name="manufacturerFax" type="String" db-name="manufacturerFax"/> -->
-<!-- 		<column name="productionPlantCode" type="String" db-name="productionPlantCode"/> -->
-<!-- 		<column name="productionPlantName" type="String" db-name="productionPlantName"/> -->
-<!-- 		<column name="productionPlantAddress" type="String" db-name="productionPlantAddress"/> -->
-<!-- 		<column name="productionPlantRepresentative" type="String" db-name="productionPlantRepresentative"/> -->
-<!-- 		<column name="productionPlantRepresentativeTitle" type="String" db-name="productionPlantRepresentativeTitle"/> -->
-<!-- 		<column name="copReportNo" type="String" db-name="copReportNo"/> -->
-<!-- 		<column name="copReportDate" type="Date" db-name="copReportDate"/> -->
-<!-- 		<column name="copReportExpireDate" type="Date" db-name="copReportExpireDate"/> -->
-<!-- 		<column name="designerCode" type="String" db-name="designerCode"/> -->
-<!-- 		<column name="designerName" type="String" db-name="designerName"/> -->
-<!-- 		<column name="designerAddress" type="String" db-name="designerAddress"/> -->
-<!-- 		<column name="designerRepresentative" type="String" db-name="designerRepresentative"/> -->
-<!-- 		<column name="designerRepresentativeTitle" type="String" db-name="designerRepresentativeTitle"/> -->
-<!-- 		<column name="designerEmail" type="String" db-name="designerEmail"/> -->
-<!-- 		<column name="designerPhone" type="String" db-name="designerPhone"/> -->
-<!-- 		<column name="designerFax" type="String" db-name="designerFax"/> -->
-<!-- 		<column name="verificationCertificateNo" type="String" db-name="verificationCertificateNo"/> -->
-<!-- 		<column name="verificationCertificateDate" type="Date" db-name="verificationCertificateDate"/> -->
-<!-- 		<column name="verificationRefNo" type="String" db-name="verificationRefNo"/> -->
-<!-- 		<column name="verificationRefDate" type="Date" db-name="verificationRefDate"/> -->
-<!-- 		<column name="typeApprovalCertificateNo" type="String" db-name="typeApprovalCertificateNo"/> -->
-<!-- 		<column name="typeApprovalCertificateDate" type="Date" db-name="typeApprovalCertificateDate"/> -->
-<!-- 		<column name="designModelCode" type="String" db-name="designModelCode"/> -->
-<!-- 		<column name="designModelDescription" type="String" db-name="designModelDescription"/> -->
-<!-- 		<column name="designSymbol" type="String" db-name="designSymbol"/> -->
-<!-- 		<column name="registeredNumber" type="String" db-name="registeredNumber"/> -->
-<!-- 		<column name="inspectorReceiveDate" type="Date" db-name="inspectorReceiveDate"/> -->
-<!-- 		<column name="inspectorSubmitDate" type="Date" db-name="inspectorSubmitDate"/> -->
-<!-- 		<column name="inspectorendorSementDate" type="Date" db-name="inspectorendorSementDate"/> -->
-<!-- 		<column name="inspectorDeadline" type="Date" db-name="inspectorDeadline"/> -->
-<!-- 		<column name="inspectorFinishDate" type="Date" db-name="inspectorFinishDate"/> -->
-<!-- 		<column name="inspectorCancelDate" type="Date" db-name="inspectorCancelDate"/> -->
-<!-- 		<column name="inspectorOrganization" type="String" db-name="inspectorOrganization"/> -->
-<!-- 		<column name="inspectorDivision" type="String" db-name="inspectorDivision"/> -->
-<!-- 		<column name="inspectorSignName" type="String" db-name="inspectorSignName"/> -->
-<!-- 		<column name="inspectorSignTitle" type="String" db-name="inspectorSignTitle"/> -->
-<!-- 		<column name="inspectorSignPlace" type="String" db-name="inspectorSignPlace"/> -->
-<!-- 		<column name="certificateType" type="String" db-name="certificaTeype"/> -->
-<!-- 		<column name="referenceCertificateNo" type="String" db-name="referenceCertificateNo"/> -->
-<!-- 		<column name="referenceCertificateDate" type="Date" db-name="referenceCertificateDate"/> -->
-<!-- 		<column name="certificateRecordNo" type="String" db-name="certificateRecordNo"/> -->
-<!-- 		<column name="certificateSignName" type="String" db-name="certificateSignName"/> -->
-<!-- 		<column name="certificateSignTitle" type="String" db-name="certificateSignTitle"/> -->
-<!-- 		<column name="certificateSignPlace" type="String" db-name="certificateSignPlace"/> -->
-<!-- 		<column name="certificateRecordDate" type="Date" db-name="certificateRecordDate"/> -->
-<!-- 		<column name="certificateRecordExpireDate" type="Date" db-name="certificateRecordExpireDate"/> -->
-<!-- 		<column name="expiredStatus" type="String" db-name="expiredStatus"/> -->
-<!-- 		<column name="certificateRecordStatus" type="String" db-name="certificateRecordStatus"/> -->
-<!-- 		<column name="digitalIssueStatus" type="String" db-name="digitalIssueStatus"/> -->
-<!-- 		<column name="vehicleClass" type="String" db-name="vehicleClass"/> -->
-<!-- 		<column name="certifiedVehicleType" type="String" db-name="certifiedVehicleType"/> -->
-<!-- 		<column name="certifiedVehicleTypeDescription" type="String" db-name="certifiedVehicleTypeDescription"/> -->
-<!-- 		<column name="certifiedTrademark" type="String" db-name="certifiedTrademark"/> -->
-<!-- 		<column name="certifiedTrademarkName" type="String" db-name="certifiedTrademarkName"/> -->
-<!-- 		<column name="certifiedCommercialName" type="String" db-name="certifiedCommercialName"/> -->
-<!-- 		<column name="certifiedModelCode" type="String" db-name="certifiedModelCode"/> -->
-<!-- 		<column name="certifiedAssemblyType" type="String" db-name="certifiedAssemblyType"/> -->
-<!-- 		<column name="certifiedAssemblyTypeDescription" type="String" db-name="certifiedAssemblyTypeDescription"/> -->
-<!-- 		<column name="certifiedVINNo" type="String" db-name="certifiedVINNo"/> -->
-<!-- 		<column name="certifiedVINPosition" type="String" db-name="certifiedVINPosition"/> -->
-<!-- 		<column name="certifiedFrameNo" type="String" db-name="certifiedFrameNo"/> -->
-<!-- 		<column name="certifiedFrameAttachPlace" type="String" db-name="certifiedFrameAttachPlace"/> -->
-<!-- 		<column name="certifiedFramePosition" type="String" db-name="certifiedFramePosition"/> -->
-<!-- 		<column name="certifiedEngineNo" type="String" db-name="certifiedEngineNo"/> -->
-<!-- 		<column name="certifiedEngineAttachPlace" type="String" db-name="certifiedEngineAttachPlace"/> -->
-<!-- 		<column name="certifiedEnginePosition" type="String" db-name="certifiedEnginePosition"/> -->
-<!-- 		<column name="safetyTestReportNo" type="String" db-name="safetyTestReportNo"/> -->
-<!-- 		<column name="safetyTestReportDate" type="Date" db-name="safetyTestReportDate"/> -->
-<!-- 		<column name="emissionTestReportNo" type="String" db-name="emissionTestReportNo"/> -->
-<!-- 		<column name="emissionTestReportDate" type="Date" db-name="emissionTestReportDate"/> -->
-<!-- 		<column name="commonSafetyStandard" type="String" db-name="commonSafetyStandard"/> -->
-<!-- 		<column name="emissionStandard" type="String" db-name="emissionStandard"/> -->
-<!-- 		<column name="otherTestReportNo" type="String" db-name="otherTestReportNo"/> -->
-<!-- 		<column name="otherTestReportDate" type="Date" db-name="otherTestReportDate"/> -->
-<!-- 		<column name="sampleFrameNo" type="String" db-name="sampleFrameNo"/> -->
-<!-- 		<column name="sampleVINNo" type="String" db-name="sampleVINNo"/> -->
-<!-- 		<column name="sampleEngineNo" type="String" db-name="sampleEngineNo"/> -->
-<!-- 		<column name="sampleVehicleType" type="String" db-name="sampleVehicleType"/> -->
-<!-- 		<column name="sampleVehicleTypeDescription" type="String" db-name="sampleVehicleTypeDescription"/> -->
-<!-- 		<column name="sampleTrademark" type="String" db-name="sampleTrademark"/> -->
-<!-- 		<column name="sampleTrademarkName" type="String" db-name="sampleTrademarkName"/> -->
-<!-- 		<column name="sampleCommercialName" type="String" db-name="sampleCommercialName"/> -->
-<!-- 		<column name="sampleModelCode" type="String" db-name="sampleModelCode"/> -->
-<!-- 		<column name="customsDeclarationNo" type="String" db-name="customsDeclarationNo"/> -->
-<!-- 		<column name="customsDeclarationDate" type="Date" db-name="customsDeclarationDate"/> -->
-<!-- 		<column name="productionCountry" type="String" db-name="productionCountry"/> -->
-<!-- 		<column name="importerQuantity" type="long" db-name="importerQuantity"/> -->
-<!-- 		<column name="inspectionRecordNo" type="String" db-name="inspectionRecordNo"/> -->
-<!-- 		<column name="inspectionDate" type="Date" db-name="inspectionDate"/> -->
-<!-- 		<column name="inspectionSite" type="String" db-name="inspectionSite"/> -->
-<!-- 		<column name="inspectionDistrictCode" type="String" db-name="inspectionDistrictCode"/> -->
-<!-- 		<column name="inspectionDistrictName" type="String" db-name="inspectionDistrictName"/> -->
-<!-- 		<column name="inspectionProvinceCode" type="String" db-name="inspectionProvinceCode"/> -->
-<!-- 		<column name="inspectionProvinceName" type="String" db-name="inspectionProvinceName"/> -->
-<!-- 		<column name="corporationId" type="String" db-name="corporationId"/> -->
-<!-- 		<column name="inspectorId" type="long" db-name="inspectorId"/> -->
-<!-- 		<column name="remarks" type="String" db-name="remarks"/> -->
-<!-- 		<column name="inspectionNote" type="String" db-name="inspectionNote"/> -->
-<!-- 		<column name="certificateNote" type="String" db-name="certificateNote"/> -->
-<!-- 		<column name="module" type="String" db-name="module"/> -->
-<!-- 		<column name="modifyDate" type="Date" db-name="modifyDate"/> -->
+		<column name="applicantRepresentative" type="String" db-name="applicantRepresentative"/>
+		<column name="applicantRepresentativeTitle" type="String" db-name="applicantRepresentativeTitle"/>
+		<column name="applicantEmail" type="String" db-name="applicantEmail"/>
+		<column name="applicantPhone" type="String" db-name="applicantPhone"/>
+		<column name="applicantFax" type="String" db-name="applicantFax"/>
+		<column name="applicantContactName" type="String" db-name="applicantContactName"/>
+		<column name="applicantContactEmail" type="String" db-name="applicantContactEmail"/>
+		<column name="applicantcontactPhone" type="String" db-name="applicantcontactPhone"/>
+		<column name="manufacturerForeignCode" type="String" db-name="manufacturerForeignCode"/>
+		<column name="manufacturerName" type="String" db-name="manufacturerName"/>
+		<column name="manufacturerAddress" type="String" db-name="manufacturerAddress"/>
+		<column name="manufacturerRepresentative" type="String" db-name="manufacturerRepresentative"/>
+		<column name="manufacturerRepresentativeTitle" type="String" db-name="manufacturerRepresentativeTitle"/>
+		<column name="manufacturerEmail" type="String" db-name="manufacturerEmail"/>
+		<column name="manufacturerPhone" type="String" db-name="manufacturerPhone"/>
+		<column name="manufacturerFax" type="String" db-name="manufacturerFax"/>
+		<column name="productionPlantCode" type="String" db-name="productionPlantCode"/>
+		<column name="productionPlantName" type="String" db-name="productionPlantName"/>
+		<column name="productionPlantAddress" type="String" db-name="productionPlantAddress"/>
+		<column name="productionPlantRepresentative" type="String" db-name="productionPlantRepresentative"/>
+		<column name="productionPlantRepresentativeTitle" type="String" db-name="productionPlantRepresentativeTitle"/>
+		<column name="copReportNo" type="String" db-name="copReportNo"/>
+		<column name="copReportDate" type="Date" db-name="copReportDate"/>
+		<column name="copReportExpireDate" type="Date" db-name="copReportExpireDate"/>
+		<column name="designerCode" type="String" db-name="designerCode"/>
+		<column name="designerName" type="String" db-name="designerName"/>
+		<column name="designerAddress" type="String" db-name="designerAddress"/>
+		<column name="designerRepresentative" type="String" db-name="designerRepresentative"/>
+		<column name="designerRepresentativeTitle" type="String" db-name="designerRepresentativeTitle"/>
+		<column name="designerEmail" type="String" db-name="designerEmail"/>
+		<column name="designerPhone" type="String" db-name="designerPhone"/>
+		<column name="designerFax" type="String" db-name="designerFax"/>
+		<column name="verificationCertificateNo" type="String" db-name="verificationCertificateNo"/>
+		<column name="verificationCertificateDate" type="Date" db-name="verificationCertificateDate"/>
+		<column name="verificationRefNo" type="String" db-name="verificationRefNo"/>
+		<column name="verificationRefDate" type="Date" db-name="verificationRefDate"/>
+		<column name="typeApprovalCertificateNo" type="String" db-name="typeApprovalCertificateNo"/>
+		<column name="typeApprovalCertificateDate" type="Date" db-name="typeApprovalCertificateDate"/>
+		<column name="designModelCode" type="String" db-name="designModelCode"/>
+		<column name="designModelDescription" type="String" db-name="designModelDescription"/>
+		<column name="designSymbol" type="String" db-name="designSymbol"/>
+		<column name="registeredNumber" type="String" db-name="registeredNumber"/>
+		<column name="inspectorReceiveDate" type="Date" db-name="inspectorReceiveDate"/>
+		<column name="inspectorSubmitDate" type="Date" db-name="inspectorSubmitDate"/>
+		<column name="inspectorendorSementDate" type="Date" db-name="inspectorendorSementDate"/>
+		<column name="inspectorDeadline" type="Date" db-name="inspectorDeadline"/>
+		<column name="inspectorFinishDate" type="Date" db-name="inspectorFinishDate"/>
+		<column name="inspectorCancelDate" type="Date" db-name="inspectorCancelDate"/>
+		<column name="inspectorOrganization" type="String" db-name="inspectorOrganization"/>
+		<column name="inspectorDivision" type="String" db-name="inspectorDivision"/>
+		<column name="inspectorSignName" type="String" db-name="inspectorSignName"/>
+		<column name="inspectorSignTitle" type="String" db-name="inspectorSignTitle"/>
+		<column name="inspectorSignPlace" type="String" db-name="inspectorSignPlace"/>
+		<column name="certificateType" type="String" db-name="certificaTeype"/>
+		<column name="referenceCertificateNo" type="String" db-name="referenceCertificateNo"/>
+		<column name="referenceCertificateDate" type="Date" db-name="referenceCertificateDate"/>
+		<column name="certificateRecordNo" type="String" db-name="certificateRecordNo"/>
+		<column name="certificateSignName" type="String" db-name="certificateSignName"/>
+		<column name="certificateSignTitle" type="String" db-name="certificateSignTitle"/>
+		<column name="certificateSignPlace" type="String" db-name="certificateSignPlace"/>
+		<column name="certificateRecordDate" type="Date" db-name="certificateRecordDate"/>
+		<column name="certificateRecordExpireDate" type="Date" db-name="certificateRecordExpireDate"/>
+		<column name="expiredStatus" type="String" db-name="expiredStatus"/>
+		<column name="certificateRecordStatus" type="String" db-name="certificateRecordStatus"/>
+		<column name="digitalIssueStatus" type="String" db-name="digitalIssueStatus"/>
+		<column name="vehicleClass" type="String" db-name="vehicleClass"/>
+		<column name="certifiedVehicleType" type="String" db-name="certifiedVehicleType"/>
+		<column name="certifiedVehicleTypeDescription" type="String" db-name="certifiedVehicleTypeDescription"/>
+		<column name="certifiedTrademark" type="String" db-name="certifiedTrademark"/>
+		<column name="certifiedTrademarkName" type="String" db-name="certifiedTrademarkName"/>
+		<column name="certifiedCommercialName" type="String" db-name="certifiedCommercialName"/>
+		<column name="certifiedModelCode" type="String" db-name="certifiedModelCode"/>
+		<column name="certifiedAssemblyType" type="String" db-name="certifiedAssemblyType"/>
+		<column name="certifiedAssemblyTypeDescription" type="String" db-name="certifiedAssemblyTypeDescription"/>
+		<column name="certifiedVINNo" type="String" db-name="certifiedVINNo"/>
+		<column name="certifiedVINPosition" type="String" db-name="certifiedVINPosition"/>
+		<column name="certifiedFrameNo" type="String" db-name="certifiedFrameNo"/>
+		<column name="certifiedFrameAttachPlace" type="String" db-name="certifiedFrameAttachPlace"/>
+		<column name="certifiedFramePosition" type="String" db-name="certifiedFramePosition"/>
+		<column name="certifiedEngineNo" type="String" db-name="certifiedEngineNo"/>
+		<column name="certifiedEngineAttachPlace" type="String" db-name="certifiedEngineAttachPlace"/>
+		<column name="certifiedEnginePosition" type="String" db-name="certifiedEnginePosition"/>
+		<column name="safetyTestReportNo" type="String" db-name="safetyTestReportNo"/>
+		<column name="safetyTestReportDate" type="Date" db-name="safetyTestReportDate"/>
+		<column name="emissionTestReportNo" type="String" db-name="emissionTestReportNo"/>
+		<column name="emissionTestReportDate" type="Date" db-name="emissionTestReportDate"/>
+		<column name="commonSafetyStandard" type="String" db-name="commonSafetyStandard"/>
+		<column name="emissionStandard" type="String" db-name="emissionStandard"/>
+		<column name="otherTestReportNo" type="String" db-name="otherTestReportNo"/>
+		<column name="otherTestReportDate" type="Date" db-name="otherTestReportDate"/>
+		<column name="sampleFrameNo" type="String" db-name="sampleFrameNo"/>
+		<column name="sampleVINNo" type="String" db-name="sampleVINNo"/>
+		<column name="sampleEngineNo" type="String" db-name="sampleEngineNo"/>
+		<column name="sampleVehicleType" type="String" db-name="sampleVehicleType"/>
+		<column name="sampleVehicleTypeDescription" type="String" db-name="sampleVehicleTypeDescription"/>
+		<column name="sampleTrademark" type="String" db-name="sampleTrademark"/>
+		<column name="sampleTrademarkName" type="String" db-name="sampleTrademarkName"/>
+		<column name="sampleCommercialName" type="String" db-name="sampleCommercialName"/>
+		<column name="sampleModelCode" type="String" db-name="sampleModelCode"/>
+		<column name="customsDeclarationNo" type="String" db-name="customsDeclarationNo"/>
+		<column name="customsDeclarationDate" type="Date" db-name="customsDeclarationDate"/>
+		<column name="productionCountry" type="String" db-name="productionCountry"/>
+		<column name="importerQuantity" type="long" db-name="importerQuantity"/>
+		<column name="inspectionRecordNo" type="String" db-name="inspectionRecordNo"/>
+		<column name="inspectionDate" type="Date" db-name="inspectionDate"/>
+		<column name="inspectionSite" type="String" db-name="inspectionSite"/>
+		<column name="inspectionDistrictCode" type="String" db-name="inspectionDistrictCode"/>
+		<column name="inspectionDistrictName" type="String" db-name="inspectionDistrictName"/>
+		<column name="inspectionProvinceCode" type="String" db-name="inspectionProvinceCode"/>
+		<column name="inspectionProvinceName" type="String" db-name="inspectionProvinceName"/>
+		<column name="corporationId" type="String" db-name="corporationId"/>
+		<column name="inspectorId" type="long" db-name="inspectorId"/>
+		<column name="remarks" type="String" db-name="remarks"/>
+		<column name="inspectionNote" type="String" db-name="inspectionNote"/>
+		<column name="certificateNote" type="String" db-name="certificateNote"/>
+		<column name="module" type="String" db-name="module"/>
+		<column name="modifyDate" type="Date" db-name="modifyDate"/>
 		<column name="syncDate" type="Date" db-name="syncDate"/>
 	</entity>
 

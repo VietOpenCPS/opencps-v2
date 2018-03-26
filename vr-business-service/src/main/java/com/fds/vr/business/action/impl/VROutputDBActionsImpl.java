@@ -59,8 +59,8 @@ public class VROutputDBActionsImpl implements VROutputDBActions{
 					dossierFile = DossierFileLocalServiceUtil.getByDeliverableCode(deliverableCode);
 				}
 
-				_log.info("registration: "+registration);
-				_log.info("dossierFile: "+dossierFile);
+//				_log.info("registration: "+registration);
+//				_log.info("dossierFile: "+dossierFile);
 				formData = deliverable.getFormData();
 				modifiedDate = deliverable.getModifiedDate();
 				if (Validator.isNotNull(formData)) {
