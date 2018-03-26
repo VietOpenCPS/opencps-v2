@@ -99,6 +99,11 @@ gradle-local.properties
 **/backend-kyso-process-api/**/service/
 **/backend-kyso-process-api/**/service/persistence/
 
+**/backend-synchronization-api/**/model/
+**/backend-synchronization-api/**/exception/
+**/backend-synchronization-api/**/service/
+**/backend-synchronization-api/**/service/persistence/
+
 **/**/ServiceProps.java
 
 **/vr-business/**

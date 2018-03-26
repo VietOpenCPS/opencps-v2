@@ -67,42 +67,78 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 	public void addRegistrationFormbaseonRegTemplate(long groupId, long companyId, long registrationId, String govAgencyCode,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 		// get lstRegistrationTemplate
+//		List<RegistrationTemplates> lstRegistrationTemplate = RegistrationTemplatesLocalServiceUtil
+//				.getRegistrationTemplatesbyGOVCODE(groupId, govAgencyCode);
+		//TODO: Fix govAgencyCode = null
 		List<RegistrationTemplates> lstRegistrationTemplate = RegistrationTemplatesLocalServiceUtil
-				.getRegistrationTemplatesbyGOVCODE(groupId, govAgencyCode);
+				.getRegistrationTemplatesbyGroupId(groupId);
 
 		// add registrationForm
-		for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
-			// create referenceUid
-			String referenceUid = UUID.randomUUID().toString();
+		if (lstRegistrationTemplate != null && lstRegistrationTemplate.size() > 0) {
+			for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
+				// create referenceUid
+				String referenceUid = UUID.randomUUID().toString();
 
-			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, companyId, registrationId, referenceUid,
-					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
-					registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
-					registrationTemplates.getFormReport(), 0, false, false, serviceContext);
+				RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, companyId, registrationId, referenceUid,
+						registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
+						registrationTemplates.getSampleData(), registrationTemplates.getFormScript(),
+						registrationTemplates.getFormReport(), 0, false, false, serviceContext);
+			}
 		}
 	}
 	
 	@Override
-	public void cloneRegistrationFormByRegistrationId(long groupId, long registrationId, ServiceContext serviceContext) 
+	public void cloneRegistrationFormByRegistrationId(long groupId, long oldRegistrationId, long newRegistrationId, ServiceContext serviceContext) 
 	    throws PortalException, SystemException {
         
 	    // get RegistrationForm
         List<RegistrationForm> registrationForms = RegistrationFormLocalServiceUtil.getFormsbyRegId(
-                groupId, registrationId);
-    
-        // add registrationForm
-        for (RegistrationForm registrationForm : registrationForms) {
-            // create referenceUid
-            if(!registrationForm.getRemoved()) {
-                String referenceUid = UUID.randomUUID().toString();
+                groupId, oldRegistrationId);
         
-                RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationForm.getCompanyId(), 
-                    registrationId, referenceUid,
-                    registrationForm.getFormNo(), registrationForm.getFormName(),
-                    registrationForm.getFormData(), registrationForm.getFormScript(),
-                    registrationForm.getFormReport(), 0, false, false, serviceContext);
-            }
+        List<RegistrationTemplates> lstRegistrationTemplate = RegistrationTemplatesLocalServiceUtil
+				.getRegistrationTemplatesbyGroupId(groupId);
+
+        // add registrationForm
+        if (registrationForms != null && registrationForms.size() > 0) {
+	        for (RegistrationForm registrationForm : registrationForms) {
+	            if(!registrationForm.getRemoved()) {
+	            	if (lstRegistrationTemplate != null && lstRegistrationTemplate.size() > 0) {
+		                for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
+		        			// create referenceUid
+		        			String referenceUid = UUID.randomUUID().toString();
+		        			_log.info("referenceUid: "+referenceUid);
+		
+		        			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationForm.getCompanyId(), newRegistrationId, referenceUid,
+		        					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
+		        					registrationForm.getFormData(), registrationTemplates.getFormScript(),
+		        					registrationTemplates.getFormReport(), 0, false, false, serviceContext);
+		        		}
+	            	}
+	            }
+	        }
         }
+
+        // add test registrationForm
+//        if (registrationForms != null && registrationForms.size() > 0) {
+//        	int lenthRegForm = registrationForms.size();
+//	        for (int i = 0 ; i < lenthRegForm; i++) {
+//	        	RegistrationForm regForm = registrationForms.get(i);
+//	            if(!regForm.getRemoved()) {
+//	            	if (lstRegistrationTemplate != null && lstRegistrationTemplate.size() > 0) {
+//		                for (RegistrationTemplates registrationTemplates : lstRegistrationTemplate) {
+//		        			// create referenceUid
+//		        			String referenceUid = UUID.randomUUID().toString();
+//		        			_log.info("referenceUid: "+referenceUid);
+//		
+//		        			RegistrationFormLocalServiceUtil.addRegistrationForm(groupId, registrationForm.getCompanyId(), newRegistrationId, referenceUid,
+//		        					registrationTemplates.getFormNo(), registrationTemplates.getFormName(),
+//		        					registrationForm.getFormData(), registrationTemplates.getFormScript(),
+//		        					registrationTemplates.getFormReport(), 0, false, false, serviceContext);
+//		        		}
+//	            	}
+//	            }
+//	        }
+//        }
     }
 	
 	

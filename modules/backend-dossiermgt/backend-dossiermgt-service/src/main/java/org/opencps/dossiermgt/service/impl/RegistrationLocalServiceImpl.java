@@ -137,7 +137,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		    actionForm.addRegistrationFormbaseonRegTemplate(groupId, companyId, registrationId, govAgencyCode, serviceContext);
 		} else {
 		    Registration oldRegistration = registrations.get(0);
-		    actionForm.cloneRegistrationFormByRegistrationId(groupId, oldRegistration.getRegistrationId(), serviceContext);
+		    actionForm.cloneRegistrationFormByRegistrationId(groupId, oldRegistration.getRegistrationId(), registrationId, serviceContext);
 		}
 
 

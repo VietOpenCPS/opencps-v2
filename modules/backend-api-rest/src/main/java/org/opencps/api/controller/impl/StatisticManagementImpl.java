@@ -105,4 +105,74 @@ public class StatisticManagementImpl implements StatisticManagement {
 		}
 	}
 
+	@Override
+	public Response getDossierTodoTest(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, StatisticDossierSearchModel query) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		DossierActions actions = new DossierActionsImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(DossierTerm.STATUS, query.getDossierStatus());
+			params.put(DossierTerm.SUBSTATUS, query.getDossierSubStatus());
+			params.put(Field.USER_ID, String.valueOf(user.getUserId()));
+			params.put(DossierTerm.FOLLOW, String.valueOf(true));
+
+			// params.put("LEVEL", query.getLevel());
+
+/*			JSONObject jsonData = actions.getDossierTodo(user.getUserId(), company.getCompanyId(), groupId, params,
+					null, serviceContext);
+*/
+			JSONObject jsonData = actions.getDossierTodoPermissionTest(user.getUserId(), company.getCompanyId(), groupId, params,
+					null, serviceContext);
+
+			StatisticDossierResults results = new StatisticDossierResults();
+
+			results.setTotal(jsonData.getInt("total"));
+
+			results.getStatisticDossierModel()
+					.addAll(StatisticUtils.mapperStatisticDossierList(jsonData.getJSONArray("data")));
+
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					error.setMessage("Internal Server Error");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+
+				}
+			}
+		}
+	}
 }
