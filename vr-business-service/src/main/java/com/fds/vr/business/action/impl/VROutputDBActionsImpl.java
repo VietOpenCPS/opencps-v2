@@ -41,7 +41,6 @@ public class VROutputDBActionsImpl implements VROutputDBActions{
 
 		List<Deliverable> deliverableList = DeliverableLocalServiceUtil.getDeliverableByModifiedDate(strSyncDate,
 				"GCN_TDTK_XCG", 2);
-		_log.info("deliverableList: "+deliverableList);
 
 		if (deliverableList != null && deliverableList.size() > 0) {
 //			List<String> formDataList = new ArrayList<String>();
