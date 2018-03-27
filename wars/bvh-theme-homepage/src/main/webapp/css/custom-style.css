@@ -652,7 +652,7 @@ section#main-content .dropdown .dropdown-menu li {
 .tracuu .text {
 	font-size: 18px;
 	color: #00497f;
-	max-width: 445px;
+	max-width: 500px;
     margin: 10px auto 0;
 	text-shadow: -1px -1px 0 white, 
 	             1px -1px 0 white, 
@@ -671,13 +671,16 @@ section#main-content .dropdown .dropdown-menu li {
     text-align: center;
     font-weight: bold;
 }
+.img-gallery{
+	width: 95%;
+}
 .img-gallery img {
     width: 100%;
 }
 .img-gallery .box {
     width: calc((100% - 10px) / 2);
     float: left;
-    height: 105px;
+    height: 75px;
     background-color: rgba(0,84,166,0.9);
     margin-bottom: 10px;
     text-align: center;
