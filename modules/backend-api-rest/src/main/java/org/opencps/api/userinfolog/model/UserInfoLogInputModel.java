@@ -6,7 +6,7 @@
 //
 
 
-package org.opencps.api.userlog.model;
+package org.opencps.api.userinfolog.model;
 
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -46,8 +46,8 @@ import javax.xml.bind.annotation.XmlType;
  "dossierNo"
 
 })
-@XmlRootElement(name = "UserLogInputModel")
-public class UserLogInputModel {
+@XmlRootElement(name = "UserInfoLogInputModel")
+public class UserInfoLogInputModel {
 	
 	@FormParam(value = "service")
 	protected String service;

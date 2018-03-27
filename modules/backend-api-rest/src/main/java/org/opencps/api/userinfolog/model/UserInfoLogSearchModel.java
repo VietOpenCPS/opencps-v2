@@ -6,7 +6,7 @@
 //
 
 
-package org.opencps.api.userlog.model;
+package org.opencps.api.userinfolog.model;
 
 import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -45,8 +45,8 @@ import javax.xml.bind.annotation.XmlType;
     "end",
     "order"
 })
-@XmlRootElement(name = "UserLogSearchModel")
-public class UserLogSearchModel {
+@XmlRootElement(name = "UserInfoLogSearchModel")
+public class UserInfoLogSearchModel {
 	@QueryParam(value = "keyword")
     protected String keyword;
 	@QueryParam(value = "start")

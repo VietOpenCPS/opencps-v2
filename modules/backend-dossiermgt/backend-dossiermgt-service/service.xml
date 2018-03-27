@@ -201,6 +201,14 @@
 			<finder-column name="fileTemplateNo" />
 		</finder>
 
+		<finder return-type="DossierPart" name="TP_NO_PART_ESIGN">
+			<finder-column name="groupId" />
+			<finder-column name="templateNo" />
+			<finder-column name="partNo" />
+			<finder-column name="partType" />
+			<finder-column name="eSign" />
+		</finder>
+
 		<!-- References -->
 
 	</entity>
@@ -1494,6 +1502,17 @@
 		<column name="requestType" type="String" />
 		<column name="comment" type="String" />
 		<column name="isNew" type="int" />
+
+	</entity>
+
+	<entity local-service="true" name="UserInfoLog"
+		remote-service="false" table="opencps_userinfolog" uuid="true">
+
+		<column name="userLogId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="userId" type="long" />
+		<column name="payload" type="String" />
 
 	</entity>
 
