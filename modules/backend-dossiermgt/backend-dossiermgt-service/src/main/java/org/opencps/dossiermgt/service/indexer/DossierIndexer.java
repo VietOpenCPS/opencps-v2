@@ -287,8 +287,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								String certDate = String.valueOf(jsonData.get("ngay_ky_cc"));
 								_log.info("certNo: "+certNo);
 								_log.info("certDate: "+certDate);
-								document.addTextSortable("so_chung_chi", certNo);
-								document.addTextSortable("ngay_ky_cc", certDate);
+								if (Validator.isNotNull(certNo) && Validator.isNotNull(certDate)) {
+									document.addTextSortable("so_chung_chi", certNo);
+									document.addTextSortable("ngay_ky_cc", certDate);
+								}
 								break;
 							} catch (Exception e) {
 								// TODO:
