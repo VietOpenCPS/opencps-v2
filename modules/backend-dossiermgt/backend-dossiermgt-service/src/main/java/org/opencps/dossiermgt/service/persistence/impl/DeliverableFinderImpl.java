@@ -70,7 +70,7 @@ public class DeliverableFinderImpl extends DeliverableFinderBaseImpl
 		        session = openSession();
 
 		        Query q = session.createQuery("FROM Deliverable deli WHERE"
-		        		+ " deli.modifiedDate > :syncDate AND"
+		        		+ " deli.modifiedDate >= :syncDate AND"
 		        		+ " deli.deliverableType =:deliverableType AND"
 		        		+ " deli.deliverableState =:deliverableState"
 		        		+ " ORDER BY modifiedDate ASC LIMIT 20");
