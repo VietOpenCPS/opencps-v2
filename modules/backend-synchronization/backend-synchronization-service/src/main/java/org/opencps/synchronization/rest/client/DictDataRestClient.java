@@ -17,6 +17,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.opencps.synchronization.constants.SyncServerTerm;
 import org.opencps.synchronization.rest.model.DictCollectionModel;
+import org.opencps.synchronization.rest.model.DictItemModel;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -111,4 +112,51 @@ public class DictDataRestClient {
 		
 		return result;
 	}
+	
+	public DictItemModel getItemDetail(String code, String itemCode) {
+		DictItemModel result = null;
+		
+		try {
+			CredentialsProvider provider = new BasicCredentialsProvider();
+			UsernamePasswordCredentials credentials
+			 = new UsernamePasswordCredentials(username, password);
+			provider.setCredentials(AuthScope.ANY, credentials);
+			  
+			CloseableHttpClient httpClient = HttpClientBuilder.create()
+			  .setDefaultCredentialsProvider(provider)
+			  .build();
+			HttpGet getRequest = new HttpGet(baseUrl + DICT_COLLLECTIONS_BASE_PATH + "/" + URLEncoder.encode(code, StandardCharsets.UTF_8.toString()) + "/" + URLEncoder.encode(itemCode, StandardCharsets.UTF_8.toString()));
+ 			
+			HttpResponse getqueryresponse = httpClient.execute(getRequest);
+						
+			if (getqueryresponse.getStatusLine().getStatusCode() == SyncServerTerm.STATUS_OK) {
+				BufferedReader br = new BufferedReader(new InputStreamReader((getqueryresponse.getEntity().getContent())));
+				String output = "";
+				StringBuilder jsonStr = new StringBuilder();
+				
+				while ((output = br.readLine()) != null) {
+					jsonStr.append(output);
+				}
+
+				JSONObject obj = JSONFactoryUtil.createJSONObject(jsonStr.toString());
+
+				httpClient.close();	
+				
+				result = DictItemModel.fromJSONObject(obj);
+			}
+		} catch (MalformedURLException e) {
+
+			e.printStackTrace();
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}			
+		
+		return result;
+	}	
 }
