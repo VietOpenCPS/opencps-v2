@@ -2,13 +2,17 @@
 package org.opencps.datamgt.action.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.constants.DataMGTConstants;
+import org.opencps.datamgt.constants.DictCollectionTerm;
+import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.constants.DictItemGroupTerm;
+import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.exception.NoSuchDictItemException;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictGroup;
@@ -23,6 +27,7 @@ import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -911,6 +916,159 @@ public class DictCollectionActions implements DictcollectionInterface {
 		}
 
 		return StringUtil.merge(groupCodeList);
+	}
+
+	@Override
+	public JSONObject getDictCollectionsOlderThanDate(long userId, long companyId, long groupId, Date date, int start,
+			int end, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		List<DictCollection> lstCollections = DictCollectionLocalServiceUtil.findOlderThanDate(date, groupId, start,
+				end);
+
+		JSONArray collectionArr = JSONFactoryUtil.createJSONArray();
+		for (DictCollection dc : lstCollections) {
+			JSONObject obj = JSONFactoryUtil.createJSONObject();
+			obj.put(DictCollectionTerm.COLLECTION_CODE, dc.getCollectionCode());
+			obj.put(DictCollectionTerm.COLLECTION_NAME, dc.getCollectionName());
+			obj.put(DictCollectionTerm.COLLECTION_NAME_EN, dc.getCollectionNameEN());
+			obj.put(DictCollectionTerm.DESCRIPTION, dc.getDescription());
+			obj.put(DictCollectionTerm.CREATE_DATE, dc.getCreateDate());
+			obj.put(DictCollectionTerm.MODIFIED_DATE, dc.getModifiedDate());
+
+			collectionArr.put(obj);
+		}
+		result.put("data", collectionArr);
+
+		long total = DictCollectionLocalServiceUtil.countOlderThanDate(date, groupId);
+
+		result.put("total", total);
+
+		return result;	
+	}
+
+	@Override
+	public JSONObject getDictItemsOlderThanDate(long userId, long companyId, long groupId, Date date, int start,
+			int end, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		List<DictItem> lstDictItems = DictItemLocalServiceUtil.findByOlderThanDate(date, groupId, start, end);
+
+		JSONArray collectionArr = JSONFactoryUtil.createJSONArray();
+		for (DictItem dc : lstDictItems) {
+			JSONObject obj = JSONFactoryUtil.createJSONObject();
+			obj.put(DictItemTerm.CREATE_DATE, dc.getCreateDate());
+			obj.put(DictItemTerm.MODIFIED_DATE, dc.getModifiedDate());
+			obj.put(DictItemTerm.ITEM_CODE, dc.getItemCode());
+			obj.put(DictItemTerm.ITEM_NAME, dc.getItemName());
+			obj.put(DictItemTerm.ITEM_NAME_EN, dc.getItemNameEN());
+			obj.put(DictItemTerm.ITEM_DESCRIPTION, dc.getItemDescription());
+			
+			collectionArr.put(obj);
+		}
+		result.put("data", collectionArr);
+
+		long total = DictItemLocalServiceUtil.countByOlderThanDate(date, groupId);
+
+		result.put("total", total);
+
+		return result;		
+	}
+
+	@Override
+	public List<DictCollection> getListDictCollectionsOlderThanDate(long userId, long companyId, long groupId,
+			Date date, int start, int end, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		return DictCollectionLocalServiceUtil.findOlderThanDate(date, groupId, start, end);
+	}
+
+	@Override
+	public List<DictItem> getListDictItemsOlderThanDate(long userId, long companyId, long groupId, Date date, int start,
+			int end, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		return DictItemLocalServiceUtil.findByOlderThanDate(date, groupId, start, end);
+	}
+
+	@Override
+	public long countDictCollectionsOlderThanDate(long userId, long companyId, long groupId, Date date, int start,
+			int end, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		return DictCollectionLocalServiceUtil.countOlderThanDate(date, groupId);
+	}
+
+	@Override
+	public long countDictItemsOlderThanDate(long userId, long companyId, long groupId, Date date, int start, int end,
+			ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		return DictItemLocalServiceUtil.countByOlderThanDate(date, groupId);
+	}
+
+	@Override
+	public JSONObject getDictGroupsOlderThanDate(long userId, long companyId, long groupId, Date date, int start,
+			int end, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		List<DictGroup> lstGroups = DictGroupLocalServiceUtil.findOlderThanDate(date, groupId, start, end);
+
+		JSONArray groupArr = JSONFactoryUtil.createJSONArray();
+		for (DictGroup dg : lstGroups) {
+			JSONObject obj = JSONFactoryUtil.createJSONObject();
+
+			String collectionCode = null;
+			
+			try {
+				DictCollection collection = DictCollectionLocalServiceUtil.fetchDictCollection(dg.getDictCollectionId());
+				collectionCode = collection.getCollectionCode();
+			}
+			catch (Exception e) {
+				
+			}
+			obj.put(DictGroupTerm.DICT_COLLECTION_CODE, collectionCode);
+			obj.put(DictGroupTerm.GROUP_CODE, dg.getGroupCode());
+			obj.put(DictGroupTerm.GROUP_NAME, dg.getGroupName());
+			obj.put(DictGroupTerm.GROUP_NAME_EN, dg.getGroupNameEN());
+			obj.put(DictGroupTerm.GROUP_DESCRIPTION, dg.getGroupDescription());
+			
+			groupArr.put(obj);
+		}
+		result.put("data", groupArr);
+
+		long total = DictGroupLocalServiceUtil.countOlderThanDate(date, groupId);
+
+		result.put("total", total);
+
+		return result;	
+	}
+
+	@Override
+	public List<DictGroup> getListDictGroupsOlderThanDate(long userId, long companyId, long groupId, Date date, int start,
+			int end, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		return DictGroupLocalServiceUtil.findOlderThanDate(date, groupId, start, end);
+	}
+
+	@Override
+	public long countDictGroupsOlderThanDate(long userId, long companyId, long groupId, Date date, int start, int end,
+			ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		return DictGroupLocalServiceUtil.countOlderThanDate(date, groupId);
+	}
+
+	@Override
+	public List<DictItemGroup> getListDictItemGroupsOlderThanDate(long userId, long companyId, long groupId, Date date,
+			int start, int end, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		return DictItemGroupLocalServiceUtil.findOlderThanDate(date, groupId, start, end);
+	}
+
+	@Override
+	public long countDictItemGroupsOlderThanDate(long userId, long companyId, long groupId, Date date, int start,
+			int end, ServiceContext serviceContext) {
+		// TODO Auto-generated method stub
+		return DictItemGroupLocalServiceUtil.countOlderThanDate(date, groupId);
 	}
 
 }

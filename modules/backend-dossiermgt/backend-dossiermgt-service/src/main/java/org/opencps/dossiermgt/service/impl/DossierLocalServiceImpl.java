@@ -1042,6 +1042,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		int year = GetterUtil.getInteger(params.get(DossierTerm.YEAR));
 		int month = GetterUtil.getInteger(params.get(DossierTerm.MONTH));
 		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
+		//TODO
+		String strDossierActionId = GetterUtil.getString(params.get(DossierTerm.DOSSIER_ACTION_ID));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1256,6 +1258,29 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			query.addFields(DossierTerm.DOSSIER_ID + "CTN");
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(strDossierActionId)) {
+			String[] sliptDossierActionId = StringUtil.split(strDossierActionId);
+			if (sliptDossierActionId != null && sliptDossierActionId.length > 0) {
+			BooleanQuery subQuery = new BooleanQueryImpl();
+				for (String dossierActionId : sliptDossierActionId) {
+					if (Validator.isNotNull(dossierActionId)) {
+	
+						MultiMatchQuery query = new MultiMatchQuery(dossierActionId);
+	
+						query.addFields(DossierTerm.DOSSIER_ACTION_ID);
+						subQuery.add(query, BooleanClauseOccur.SHOULD);
+					}
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(strDossierActionId);
+
+				query.addFields(DossierTerm.DOSSIER_ACTION_ID);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);

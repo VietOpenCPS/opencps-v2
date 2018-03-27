@@ -10,6 +10,7 @@ import org.opencps.api.datamgt.model.DictGroupItemModel;
 import org.opencps.api.datamgt.model.DictItemModel;
 import org.opencps.api.datamgt.model.Groups;
 import org.opencps.api.datamgt.model.ParentItem;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.constants.DictCollectionTerm;
 import org.opencps.datamgt.constants.DictGroupTerm;
@@ -19,6 +20,8 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictGroup;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.model.DictItemGroup;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -31,8 +34,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
-
-import org.opencps.auth.utils.APIDateTimeUtils;
 
 public class DataManagementUtils {
 
@@ -175,17 +176,19 @@ public class DataManagementUtils {
 
 		try {
 
-			ett.setDictCollectionId(dictCollection.getDictCollectionId());
-			ett.setCollectionCode(dictCollection.getCollectionCode());
-			ett.setCollectionName(dictCollection.getCollectionName());
-			ett.setCollectionNameEN(dictCollection.getCollectionNameEN());
-			ett.setDescription(dictCollection.getDescription());
-			ett.setCreateDate(Validator.isNotNull(dictCollection.getCreateDate())
-					? APIDateTimeUtils.convertDateToString(dictCollection.getCreateDate(), APIDateTimeUtils._TIMESTAMP)
-					: StringPool.BLANK);
-			ett.setModifiedDate(
-					Validator.isNotNull(dictCollection.getModifiedDate()) ? APIDateTimeUtils.convertDateToString(
-							dictCollection.getModifiedDate(), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+			if (ett != null) {
+				ett.setDictCollectionId(dictCollection.getDictCollectionId());
+				ett.setCollectionCode(dictCollection.getCollectionCode());
+				ett.setCollectionName(dictCollection.getCollectionName());
+				ett.setCollectionNameEN(dictCollection.getCollectionNameEN());
+				ett.setDescription(dictCollection.getDescription());
+				ett.setCreateDate(Validator.isNotNull(dictCollection.getCreateDate())
+						? APIDateTimeUtils.convertDateToString(dictCollection.getCreateDate(), APIDateTimeUtils._TIMESTAMP)
+						: StringPool.BLANK);
+				ett.setModifiedDate(
+						Validator.isNotNull(dictCollection.getModifiedDate()) ? APIDateTimeUtils.convertDateToString(
+								dictCollection.getModifiedDate(), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);				
+			}
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -330,6 +333,130 @@ public class DataManagementUtils {
 		return ett;
 	}
 
+	public static List<org.opencps.api.datamgtsync.model.DictCollectionModel> mapperDictCollectionList(List<DictCollection> lstCollections) {		
+		List<org.opencps.api.datamgtsync.model.DictCollectionModel> results = new ArrayList<>();
+		
+		for (DictCollection dc : lstCollections) {
+			org.opencps.api.datamgtsync.model.DictCollectionModel model = new org.opencps.api.datamgtsync.model.DictCollectionModel();
+			model.setCollectionCode(dc.getCollectionCode());
+			model.setCollectionName(dc.getCollectionName());
+			model.setCollectionNameEN(dc.getCollectionNameEN());
+			model.setDataForm(dc.getDataForm());
+			model.setDescription(dc.getDescription());
+			if (Validator.isNotNull(dc.getCreateDate())) {
+				model.setCreateDate(dc.getCreateDate().getTime());				
+			}
+			if (Validator.isNotNull(dc.getModifiedDate())) {
+				model.setModifiedDate(dc.getModifiedDate().getTime());				
+			}
+			
+			results.add(model);
+		}
+		return results;
+	}
+	public static List<org.opencps.api.datamgtsync.model.DictItemModel> mapperDictItemList(List<DictItem> lstItems) {		
+		List<org.opencps.api.datamgtsync.model.DictItemModel> results = new ArrayList<>();
+		
+		for (DictItem dc : lstItems) {
+			org.opencps.api.datamgtsync.model.DictItemModel model = new org.opencps.api.datamgtsync.model.DictItemModel();
+			try {
+				DictCollection collection = DictCollectionLocalServiceUtil.fetchDictCollection(dc.getDictCollectionId());
+				DictItem parentItem = null;
+				try {
+					parentItem = DictItemLocalServiceUtil.fetchDictItem(dc.getParentItemId());
+				}
+				catch (Exception e) {
+					
+				}
+				model.setDictCollectionCode(collection.getCollectionCode());
+				model.setItemCode(dc.getItemCode());
+				model.setItemDescription(dc.getItemDescription());
+				model.setItemName(dc.getItemName());
+				model.setLevel(dc.getLevel());
+				model.setMetaData(dc.getMetaData());
+				model.setSibling(dc.getSibling());
+				model.setItemNameEN(dc.getItemNameEN());
+				if (Validator.isNotNull(parentItem)) {
+					model.setParentItemCode(parentItem.getItemCode());					
+				}
+				model.setTreeIndex(dc.getTreeIndex());
+				
+				if (Validator.isNotNull(dc.getCreateDate())) {
+					model.setCreateDate(dc.getCreateDate().getTime());				
+				}
+				if (Validator.isNotNull(dc.getModifiedDate())) {
+					model.setModifiedDate(dc.getModifiedDate().getTime());				
+				}
+				
+				results.add(model);
+			}
+			catch (Exception e) {
+				
+			}
+		}
+		return results;
+	}	
+
+	public static List<org.opencps.api.datamgtsync.model.DictGroupModel> mapperDictGroupList(List<DictGroup> lstGroups) {		
+		List<org.opencps.api.datamgtsync.model.DictGroupModel> results = new ArrayList<>();
+		
+		for (DictGroup dg : lstGroups) {
+			org.opencps.api.datamgtsync.model.DictGroupModel model = new org.opencps.api.datamgtsync.model.DictGroupModel();
+			try {
+				DictCollection collection = DictCollectionLocalServiceUtil.fetchDictCollection(dg.getDictCollectionId());
+
+				model.setCollectionCode(collection.getCollectionCode());
+				
+				model.setGroupCode(dg.getGroupCode());
+				model.setGroupName(dg.getGroupName());
+				model.setGroupNameEN(dg.getGroupNameEN());
+				model.setGroupDescription(dg.getGroupDescription());
+				
+				if (Validator.isNotNull(dg.getCreateDate())) {
+					model.setCreateDate(dg.getCreateDate().getTime());				
+				}
+				if (Validator.isNotNull(dg.getModifiedDate())) {
+					model.setModifiedDate(dg.getModifiedDate().getTime());				
+				}
+				
+				results.add(model);
+			}
+			catch (Exception e) {
+				
+			}
+		}
+		return results;
+	}	
+	public static List<org.opencps.api.datamgtsync.model.DictItemGroupModel> mapperDictItemGroupList(List<DictItemGroup> lstDictItemGroups) {		
+		List<org.opencps.api.datamgtsync.model.DictItemGroupModel> results = new ArrayList<>();
+		
+		for (DictItemGroup dig : lstDictItemGroups) {
+			org.opencps.api.datamgtsync.model.DictItemGroupModel model = new org.opencps.api.datamgtsync.model.DictItemGroupModel();
+			try {
+				DictGroup group = DictGroupLocalServiceUtil.fetchDictGroup(dig.getDictGroupId());
+				DictCollection collection = DictCollectionLocalServiceUtil.fetchDictCollection(group.getDictCollectionId());
+				DictItem item = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+				
+				model.setCollectionCode(collection.getCollectionCode());
+				model.setGroupCode(group.getGroupCode());
+				model.setItemCode(item.getItemCode());
+				
+				if (Validator.isNotNull(dig.getCreateDate())) {
+					model.setCreateDate(dig.getCreateDate().getTime());				
+				}
+				if (Validator.isNotNull(dig.getModifiedDate())) {
+					model.setModifiedDate(dig.getModifiedDate().getTime());				
+				}
+				
+				results.add(model);
+			}
+			catch (Exception e) {
+				
+			}
+		}
+		return results;
+	}	
+	
 	public static Log _log = LogFactoryUtil.getLog(DataManagementUtils.class);
 
 }

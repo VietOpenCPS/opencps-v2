@@ -18,18 +18,21 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.NotFoundException;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.auth.api.keys.ModelNameKeys;
 import org.opencps.datamgt.constants.DictItemTerm;
-import org.opencps.datamgt.constants.HolidayTerm;
 import org.opencps.datamgt.exception.NoSuchDictItemException;
-import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.model.DictItemGroup;
+import org.opencps.datamgt.model.impl.DictItemImpl;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.base.DictItemLocalServiceBaseImpl;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
-import com.liferay.document.library.kernel.model.DLFileEntry;
-import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -53,23 +56,17 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.TermQuery;
-import com.liferay.portal.kernel.search.generic.MatchQuery.Operator;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.TermQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.auth.api.keys.ModelNameKeys;
 
 /**
  * The implementation of the dict item local service.
@@ -791,5 +788,15 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 				treeIndex + StringPool.PERIOD + StringPool.PERCENT, QueryUtil.ALL_POS, QueryUtil.ALL_POS, comparator);
 	}
 
+	@Override
+	public List<DictItem> findByOlderThanDate(Date date, long groupId, int start, int end) {
+		OrderByComparator<DictItem> comparator = OrderByComparatorFactoryUtil.create(DictItemImpl.TABLE_NAME, DictItemTerm.MODIFIED_DATE, true);
+		return dictItemPersistence.findByF_dictItemNewerThan(date, groupId, start, end, comparator);
+	}
+	
+	@Override
+	public long countByOlderThanDate(Date date, long groupId) {
+		return dictItemPersistence.countByF_dictItemNewerThan(date, groupId);
+	}
 	private static final Log _log = LogFactoryUtil.getLog(DictItemLocalServiceImpl.class);
 }

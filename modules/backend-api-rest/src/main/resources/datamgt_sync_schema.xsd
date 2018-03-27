@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<xsd:element name="DictCollectionModel">
+		<xsd:complexType>
+			<xsd:sequence>
+
+				<xsd:element name="createDate" type="xsd:long" />
+				<xsd:element name="modifiedDate" type="xsd:long" />
+
+				<!-- Other fields -->
+
+				<xsd:element name="collectionCode" type="xsd:string" />
+				<xsd:element name="collectionName" type="xsd:string" />
+				<xsd:element name="collectionNameEN" type="xsd:string" />
+				<xsd:element name="description" type="xsd:string" />
+				<xsd:element name="dataForm" type="xsd:string" />				
+
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="DictGroupModel">
+		<xsd:complexType>
+			<xsd:sequence>
+
+				<xsd:element name="createDate" type="xsd:long" />
+				<xsd:element name="modifiedDate" type="xsd:long" />
+
+				<!-- Other fields -->
+
+				<xsd:element name="collectionCode" type="xsd:string" />
+				<xsd:element name="groupCode" type="xsd:string" />
+				<xsd:element name="groupName" type="xsd:string" />
+				<xsd:element name="groupNameEN" type="xsd:string" />
+				<xsd:element name="groupDescription" type="xsd:string" />
+
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="DictItemGroupModel">
+		<xsd:complexType>
+			<xsd:sequence>
+
+				<xsd:element name="createDate" type="xsd:long" />
+				<xsd:element name="modifiedDate" type="xsd:long" />
+
+				<!-- Other fields -->
+
+				<xsd:element name="collectionCode" type="xsd:string" />
+				<xsd:element name="groupCode" type="xsd:string" />
+				<xsd:element name="itemCode" type="xsd:string" />
+
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="DictCollectionResults">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:long" />
+				<xsd:element ref="DictCollectionModel" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="DictGroupResults">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:long" />
+				<xsd:element ref="DictGroupModel" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="DictItemGroupResults">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:long" />
+				<xsd:element ref="DictItemGroupModel" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="DictItemModel">
+		<xsd:complexType>
+			<xsd:sequence>
+
+				<xsd:element name="createDate" type="xsd:long" />
+				<xsd:element name="modifiedDate" type="xsd:long" />
+
+				<!-- Other fields -->
+
+				<xsd:element name="dictCollectionCode" type="xsd:string" />
+				<xsd:element name="itemCode" type="xsd:string" />
+				<xsd:element name="itemName" type="xsd:string" />
+				<xsd:element name="itemNameEN" type="xsd:string" />
+				<xsd:element name="itemDescription" type="xsd:string" />
+				<xsd:element name="parentItemCode" type="xsd:string" />
+				<xsd:element name="treeIndex" type="xsd:string" />
+				<xsd:element name="sibling" type="xsd:string" />
+				<xsd:element name="level" type="xsd:int" />
+				<xsd:element name="metaData" type="xsd:string" />
+
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="DataSearchModel">
+		<xsd:complexType>
+			<xsd:sequence>
+
+				<xsd:element name="lastSync" type="xsd:long" />
+				<xsd:element name="start" type="xsd:int" minOccurs="0" />
+				<xsd:element name="end" type="xsd:int" minOccurs="0" />
+
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="DictItemResults">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:long" />
+				<xsd:element ref="DictItemModel" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

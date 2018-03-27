@@ -376,14 +376,15 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 						String previewResponse = (String) MessageBusUtil
 								.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
 
-						//JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+						// JSONObject jsonObject =
+						// JSONFactoryUtil.createJSONObject();
 
 						if (Validator.isNotNull(previewResponse)) {
 							// jsonObject =
 							// JSONFactoryUtil.createJSONObject(previewResponse);
 						}
 
-						//String fileDes = jsonObject.getString("fileDes");
+						// String fileDes = jsonObject.getString("fileDes");
 
 						File file = new File(previewResponse);
 
@@ -448,7 +449,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 		String formData = StringPool.BLANK;
 
 		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
-		
+
 		try {
 			// Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 
@@ -458,15 +459,15 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 			DossierPart dossierPart = DossierPartLocalServiceUtil.getByFileTemplateNo(groupId, fileTemplateNo);
 
 			formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, context);
-			
+
 			_log.info(formData);
-			
+
 			if (original) {
-				
+
 				if (Validator.isNotNull(dossierFile)) {
 					formData = dossierFile.getFormData();
-				} 
-				
+				}
+
 			} else {
 				DossierFileActions actions = new DossierFileActionsImpl();
 
@@ -585,7 +586,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 					if (splipPluginForms.length == 3 && splipPluginForms[2].contentEquals("original")) {
 						original = true;
 					}
-					
+
 					String formData = StringPool.BLANK;
 					String formReport = StringPool.BLANK;
 
@@ -598,6 +599,27 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 					JSONObject result = JSONFactoryUtil.createJSONObject();
 
+					String fileTemplateNo = StringUtil.replaceFirst(formCode, "#", StringPool.BLANK);
+
+					DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(
+							dossier.getDossierId(), fileTemplateNo, false,
+							new DossierFileComparator(false, "createDate", Date.class));
+
+					DossierPart dossierPart = DossierPartLocalServiceUtil.getByFileTemplateNo(groupId, fileTemplateNo);
+
+					long dossierFileId = 0;
+					String partNo = StringPool.BLANK;
+
+					if (Validator.isNotNull(dossierFile)) {
+						dossierFileId = dossierFile.getDossierFileId();
+					}
+					
+					if (Validator.isNotNull(dossierPart)) {
+						partNo = dossierPart.getPartNo();
+					}
+					
+					result.put("partNo", partNo);
+					result.put("dossierFileId", dossierFileId);
 					result.put("formReport", formReport);
 					result.put("formData", formData);
 
