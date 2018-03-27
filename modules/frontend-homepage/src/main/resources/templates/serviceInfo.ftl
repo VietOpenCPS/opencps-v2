@@ -66,7 +66,7 @@
 			</td>
 			<td>#=domainName#</td>
 			<td>
-				#=govAgencyName#
+				#=administrationName#
 			</td>
 		</tr>
 	</script>
@@ -88,40 +88,42 @@
 							for (var i = 0; i < result.data.length; i++) {
 								if(result.data[i].domainCode != "" && result.data[i].domainName != "")
 								{
-									domainList[result.data[i].domainCode] = result.data[i].domainName
-								}
-								var serviceConfig = result.data[i].serviceConfigs;
-								result.data[i].govAgencyName = "";
-								result.data[i].govAgencyCode = "";
-								if((typeof serviceConfig) == "undefined")
-								{
+									domainList[result.data[i].domainCode] = result.data[i].domainName;
+									govList[result.data[i].administrationCode] =  result.data[i].administrationName;
 
 								}
-								else if(serviceConfig.length == undefined){
-									result.data[i].govAgencyName = result.data[i].govAgencyName + serviceConfig.govAgencyName;
-									result.data[i].govAgencyCode = result.data[i].govAgencyCode + serviceConfig.govAgencyCode;
-									if(serviceConfig.govAgencyCode != "" && serviceConfig.govAgencyName != "")
-									{
-										govList[serviceConfig.govAgencyCode] =  serviceConfig.govAgencyName;
-									}
-								}else {
-									for (var j = 0; j < serviceConfig.length; j++)
-									{
-										if(serviceConfig.govAgencyCode != "" && serviceConfig.govAgencyName != "")
-										{
-											govList[serviceConfig[j].govAgencyCode] =  serviceConfig[j].govAgencyName;
-										}
-										if(j == (serviceConfig.length - 1))
-										{
-											result.data[i].govAgencyName = result.data[i].govAgencyName + serviceConfig[j].govAgencyName;
-											result.data[i].govAgencyCode = result.data[i].govAgencyCode + serviceConfig[j].govAgencyCode;
-										}
-										else {
-											result.data[i].govAgencyName = result.data[i].govAgencyName + serviceConfig[j].govAgencyName + ", ";
-											result.data[i].govAgencyCode = result.data[i].govAgencyCode + serviceConfig[j].govAgencyCode  + ", ";
-										}
-									}
-								}
+								var serviceConfig = result.data[i].serviceConfigs;
+								// result.data[i].govAgencyName = "";
+								// result.data[i].govAgencyCode = "";
+								// if((typeof serviceConfig) == "undefined")
+								// {
+
+								// }
+								// else if(serviceConfig.length == undefined){
+								// 	result.data[i].govAgencyName = result.data[i].govAgencyName + serviceConfig.govAgencyName;
+								// 	result.data[i].govAgencyCode = result.data[i].govAgencyCode + serviceConfig.govAgencyCode;
+								// 	if(serviceConfig.govAgencyCode != "" && serviceConfig.govAgencyName != "")
+								// 	{
+								// 		govList[serviceConfig.govAgencyCode] =  serviceConfig.govAgencyName;
+								// 	}
+								// }else {
+								// 	for (var j = 0; j < serviceConfig.length; j++)
+								// 	{
+								// 		if(serviceConfig.govAgencyCode != "" && serviceConfig.govAgencyName != "")
+								// 		{
+								// 			govList[serviceConfig[j].govAgencyCode] =  serviceConfig[j].govAgencyName;
+								// 		}
+								// 		if(j == (serviceConfig.length - 1))
+								// 		{
+								// 			result.data[i].govAgencyName = result.data[i].govAgencyName + serviceConfig[j].govAgencyName;
+								// 			result.data[i].govAgencyCode = result.data[i].govAgencyCode + serviceConfig[j].govAgencyCode;
+								// 		}
+								// 		else {
+								// 			result.data[i].govAgencyName = result.data[i].govAgencyName + serviceConfig[j].govAgencyName + ", ";
+								// 			result.data[i].govAgencyCode = result.data[i].govAgencyCode + serviceConfig[j].govAgencyCode  + ", ";
+								// 		}
+								// 	}
+								// }
 							}
 							options.success(result)
 							if(parseInt($("#slPageSize").val()) > parseInt(dataSourceSI.total())){
@@ -209,7 +211,7 @@ function filterDatasource(){
 	var govAgencyCode = $("#govAgencyCode").val();
 	var domainCode = $("#domainCode").val();
 	var serviceName = $("#serviceName").val();
-	var filterAdName = {field: "govAgencyCode",operator: "contains",value: govAgencyCode};
+	var filterAdName = {field: "administrationCode",operator: "contains",value: govAgencyCode};
 	var filterDName = {field: "domainCode",operator: "eq",value: domainCode};
 	var filterSName = {field: "serviceName",operator: "contains",value: serviceName}
 	var filters = [];
