@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -67,8 +66,6 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
-
-import io.swagger.annotations.ApiParam;
 
 public class DataManagementImpl implements DataManagement {
 
@@ -398,7 +395,6 @@ public class DataManagementImpl implements DataManagement {
 										&& (configObj.has(SyncServerTerm.PUSH)
 												&& configObj.getBoolean(SyncServerTerm.PUSH))) {
 									if (groupId == sc.getGroupId()) {
-										_log.info("Push to server");
 										pushCollectionUtil.addPushCollection(user.getUserId(), groupId,
 												sc.getServerNo(),
 												dictCollection.getCollectionCode(), dictCollection.getCollectionName(),
@@ -2001,7 +1997,7 @@ public class DataManagementImpl implements DataManagement {
 					flag = 2;
 				}
 				else {
-					throw new NoSuchUserException();
+					throw new DuplicateCategoryException();
 				}
 			} else {
 				ett = dictItemDataUtil.addDictItems(user.getUserId(), groupId, code, input.getParentItemCode(),
@@ -2158,7 +2154,7 @@ public class DataManagementImpl implements DataManagement {
 					flag = 2;
 				}
 				else {
-					throw new NoSuchUserException();
+					throw new DuplicateCategoryException();
 				}
 			} else {
 				dictCollection = dictItemDataUtil.addDictCollection(user.getUserId(), groupId, code,
@@ -2426,7 +2422,7 @@ public class DataManagementImpl implements DataManagement {
 					flag = 2;
 				}
 				else {
-					throw new NoSuchUserException();
+					throw new DuplicateCategoryException();
 				}
 			} else {
 				dictGroup = dictItemDataUtil.addDictgroups(user.getUserId(), groupId, code, groupCode,
