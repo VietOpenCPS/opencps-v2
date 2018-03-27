@@ -33,6 +33,7 @@ import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierRequest;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -41,6 +42,7 @@ import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierRequestLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
@@ -65,8 +67,13 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 public class DossierManagementImpl implements DossierManagement {
+
+	public static final String RT_CANCELLING = "cancelling";
+	public static final String RT_CORRECTING = "correcting";
+	public static final String RT_SUBMITTING = "submitting";
 
 	@Override
 	public Response getDossiers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -233,8 +240,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 			_log.info("3");
 			dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
-			
-			_log.info("31"+ query.getEnd());
+
+			_log.info("31" + query.getEnd());
 
 			if (query.getEnd() == 0) {
 
@@ -317,8 +324,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 			}
 			_log.info("5");
-			JSONObject jsonData = actions.getDossiersTest(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
-					query.getStart(), query.getEnd(), serviceContext);
+			JSONObject jsonData = actions.getDossiersTest(user.getUserId(), company.getCompanyId(), groupId, params,
+					sorts, query.getStart(), query.getEnd(), serviceContext);
 
 			_log.info("6");
 			DossierResultsModel results = new DossierResultsModel();
@@ -333,7 +340,6 @@ public class DossierManagementImpl implements DossierManagement {
 			} else {
 				results.setTotal(0);
 			}
-			
 
 			_log.info("8");
 			return Response.status(200).entity(results).build();
@@ -368,6 +374,7 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 
 	}
+
 	@Override
 	public Response addDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierInputModel input) {
@@ -896,7 +903,8 @@ public class DossierManagementImpl implements DossierManagement {
 			Dossier dossierResetted = actions.resetDossier(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
 					serviceContext);
 
-			return Response.status(200).entity(DossierUtils.mappingForGetDetail(dossierResetted, user.getUserId())).build();
+			return Response.status(200).entity(DossierUtils.mappingForGetDetail(dossierResetted, user.getUserId()))
+					.build();
 
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();
@@ -1370,6 +1378,79 @@ public class DossierManagementImpl implements DossierManagement {
 
 		}
 
+	}
+
+	@Override
+	public Response cancellingRequestDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, String body) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		DossierActions actions = new DossierActionsImpl();
+
+		DossierPermission dossierPermission = new DossierPermission();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			// 1. Update cancellingDate in dossier
+
+			Dossier dossier = getDossier(id, groupId);
+
+			Dossier cancellingDossier = actions.cancelDossier(groupId, dossier.getDossierId(),
+					dossier.getReferenceUid(), serviceContext);
+
+			// 2. update requestDossier
+			
+			String referenceUid = PortalUUIDUtil.generate();
+
+			DossierRequestLocalServiceUtil.updateDossierRequest(0, dossier.getDossierId(), referenceUid,
+					RT_CANCELLING, body, 1, serviceContext);
+
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(cancellingDossier, user.getUserId());
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					error.setMessage("Internal Server Error");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+
+				}
+			}
+		}
+
+	}
+
+	@Override
+	public Response correctingRequestDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, String body) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
