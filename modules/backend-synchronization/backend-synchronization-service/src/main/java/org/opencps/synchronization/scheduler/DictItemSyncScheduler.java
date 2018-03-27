@@ -10,6 +10,7 @@ import org.opencps.communication.service.ServerConfigLocalService;
 import org.opencps.synchronization.constants.PushDictItemTerm;
 import org.opencps.synchronization.constants.SyncServerTerm;
 import org.opencps.synchronization.model.PushDictItem;
+import org.opencps.synchronization.rest.client.DictDataRestClient;
 import org.opencps.synchronization.service.PushDictItemLocalService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -94,12 +95,22 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 			rootApiUrl = rootApiUrl.substring(0, rootApiUrl.length() - 2);
 		}
 		
+		DictDataRestClient restClient = DictDataRestClient.fromJSONObject(configObj);
+		
 		try {
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 			ServiceContext serviceContext = new ServiceContext();
 			serviceContext.setCompanyId(company.getCompanyId());
 			
 			for (PushDictItem pitem : lstSyncDicts) {
+				boolean isFound = false;
+				
+				if (restClient != null) {
+					if (restClient.getItemDetail(pitem.getCollectionCode(), pitem.getCollectionCode()) != null) {
+						isFound = true;
+					}
+				}
+	
 				if (pitem.getGroupId() != configObj.getLong(SyncServerTerm.SERVER_GROUP_ID) && pitem.getMethod().equals(SyncServerTerm.METHOD_CREATE)) {
 					_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
 					putDictItemRestUrl.setLength(0);
@@ -116,13 +127,18 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 					params.put(PushDictItemTerm.PARENT_ITEM_CODE, pitem.getParentItemCode());
 					params.put(PushDictItemTerm.SIBLING, pitem.getSibling());
 									
-					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
-							rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
-					
-					if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
-						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
-					}													
+					if (isFound) {
+						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
+								rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+						
+						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
+							_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
+						}																			
+					}
+					else {
+						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());						
+					}
 					_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
 				else if (pitem.getGroupId() != configObj.getLong(SyncServerTerm.SERVER_GROUP_ID) && pitem.getMethod().equals(SyncServerTerm.METHOD_UPDATE)) {
@@ -141,14 +157,19 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 					params.put(PushDictItemTerm.ITEM_DESCRIPTION, pitem.getItemDescription());
 					params.put(PushDictItemTerm.PARENT_ITEM_CODE, pitem.getParentItemCode());
 					params.put(PushDictItemTerm.SIBLING, pitem.getSibling());
-									
-					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
-							rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
-					
-					if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
-						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
-					}									
+								
+					if (isFound) {
+						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
+								rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+						
+						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
+							_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
+						}															
+					}
+					else {
+						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());						
+					}
 					_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
 				else if (pitem.getMethod().equals(SyncServerTerm.METHOD_DELETE)) {
@@ -159,14 +180,19 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 					putDictItemRestUrl.append(pitem.getCollectionCode());
 					putDictItemRestUrl.append("/dictitems");
 					putDictItemRestUrl.append("/" + pitem.getItemCode());
-														
-					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.DELETE, "application/json",
-							rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
-					
-					if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
-						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
-					}														
+											
+					if (isFound) {
+						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.DELETE, "application/json",
+								rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+						
+						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
+							_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
+						}																				
+					}
+					else {
+						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());						
+					}
 					_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
 				else if (pitem.getGroupId() != configObj.getLong(SyncServerTerm.SERVER_GROUP_ID) && pitem.getMethod().equals(SyncServerTerm.METHOD_UPDATE_METADATA)) {
@@ -181,13 +207,18 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 					
 					params.put(PushDictItemTerm.META_DATA, pitem.getMetaData());
 									
-					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.PUT, "application/json",
-							rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
-					
-					if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
-						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
-					}									
+					if (isFound) {
+						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.PUT, "application/json",
+								rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+						
+						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
+							_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
+						}															
+					}
+					else {
+						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());						
+					}
 					_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
 			}
