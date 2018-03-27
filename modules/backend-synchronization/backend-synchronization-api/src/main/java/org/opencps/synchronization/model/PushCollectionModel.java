@@ -211,6 +211,21 @@ public interface PushCollectionModel extends BaseModel<PushCollection>,
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
+	 * Returns the server no of this push collection.
+	 *
+	 * @return the server no of this push collection
+	 */
+	@AutoEscape
+	public String getServerNo();
+
+	/**
+	 * Sets the server no of this push collection.
+	 *
+	 * @param serverNo the server no of this push collection
+	 */
+	public void setServerNo(String serverNo);
+
+	/**
 	 * Returns the collection code of this push collection.
 	 *
 	 * @return the collection code of this push collection

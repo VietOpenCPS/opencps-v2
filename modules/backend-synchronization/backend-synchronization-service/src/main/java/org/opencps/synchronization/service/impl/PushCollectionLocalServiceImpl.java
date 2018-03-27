@@ -60,6 +60,7 @@ public class PushCollectionLocalServiceImpl
 	public PushCollection addPushCollection(
 			long userId, 
 			long groupId, 
+			String serverNo,
 			String collectionCode,
 			String collectionName,
 			String collectionNameEN,
@@ -104,6 +105,7 @@ public class PushCollectionLocalServiceImpl
 		pushCollection.setCreateDate(serviceContext.getCreateDate(now));
 		pushCollection.setModifiedDate(serviceContext.getCreateDate(now));
 
+		pushCollection.setServerNo(serverNo);
 		pushCollection.setCollectionCode(collectionCode);
 		pushCollection.setCollectionName(collectionName);
 		pushCollection.setCollectionNameEN(collectionNameEN);
@@ -119,6 +121,7 @@ public class PushCollectionLocalServiceImpl
 			long userId, 
 			long groupId, 
 			long pushCollectionId,
+			String serverNo,
 			String collectionCode,
 			String collectionName,
 			String collectionNameEN,
@@ -159,6 +162,7 @@ public class PushCollectionLocalServiceImpl
 		pushCollection.setCreateDate(serviceContext.getCreateDate(now));
 		pushCollection.setModifiedDate(serviceContext.getCreateDate(now));
 
+		pushCollection.setServerNo(serverNo);
 		pushCollection.setCollectionCode(collectionCode);
 		pushCollection.setCollectionName(collectionName);
 		pushCollection.setCollectionNameEN(collectionNameEN);
@@ -205,4 +209,9 @@ public class PushCollectionLocalServiceImpl
 	public PushCollection findByCollectionCode_Method(long groupId, String collectionCode, String method) throws NoSuchPushCollectionException {
 		return pushCollectionPersistence.findByF_collectionCode_Method(groupId, collectionCode, method);
 	}
+	
+	@Override
+	public List<PushCollection> findByGroupId_ServerNo(long groupId, String serverNo, int start, int end) {
+		return pushCollectionPersistence.findByF_groupId_serverNo(groupId, serverNo, start, end);
+	}	
 }

@@ -9,3 +9,9 @@ Export-Package: \
 	org.opencps.synchronization.action,\
 	org.opencps.synchronization.model.impl,\
 	org.opencps.synchronization.action
+Include-Resource:\
+	@httpclient-4.5.5.jar,\
+	@httpmime-4.5.5.jar,\
+	@httpcore-4.4.1.jar,\
+	@commons-io-2.0.1.jar,\
+	@commons-codec-1.9.jar	

@@ -41,6 +41,7 @@ public class PushDictItemSoap implements Serializable {
 		soapModel.setUserName(model.getUserName());
 		soapModel.setCreateDate(model.getCreateDate());
 		soapModel.setModifiedDate(model.getModifiedDate());
+		soapModel.setServerNo(model.getServerNo());
 		soapModel.setCollectionCode(model.getCollectionCode());
 		soapModel.setItemCode(model.getItemCode());
 		soapModel.setItemName(model.getItemName());
@@ -166,6 +167,14 @@ public class PushDictItemSoap implements Serializable {
 		_modifiedDate = modifiedDate;
 	}
 
+	public String getServerNo() {
+		return _serverNo;
+	}
+
+	public void setServerNo(String serverNo) {
+		_serverNo = serverNo;
+	}
+
 	public String getCollectionCode() {
 		return _collectionCode;
 	}
@@ -246,6 +255,7 @@ public class PushDictItemSoap implements Serializable {
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
+	private String _serverNo;
 	private String _collectionCode;
 	private String _itemCode;
 	private String _itemName;

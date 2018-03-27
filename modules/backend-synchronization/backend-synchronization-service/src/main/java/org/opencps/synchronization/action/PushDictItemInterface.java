@@ -12,7 +12,9 @@ import com.liferay.portal.kernel.service.ServiceContext;
 
 public interface PushDictItemInterface {
 	public PushDictItem fetchPublishDictItem(long pushDictItemId);
-	public PushDictItem addPushDictItem(long userId, long groupId, String collectionCode,
+	public PushDictItem addPushDictItem(long userId, long groupId, 
+			String serverNo,
+			String collectionCode,
 			String itemCode,
 			String itemName, String itemNameEn, String itemDescription, String parentItemCode, String sibling, 
 			String method,
@@ -22,6 +24,7 @@ public interface PushDictItemInterface {
 	
 	public PushDictItem updatePushDictItem(long userId, long groupId, 
 			long pushDictItemId,
+			String serverNo,
 			String collectionCode,
 			String itemCode,
 			String itemName, String itemNameEn, String itemDescription, String parentItemCode, 

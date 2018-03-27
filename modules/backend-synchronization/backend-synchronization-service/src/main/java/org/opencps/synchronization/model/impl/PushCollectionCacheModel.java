@@ -66,7 +66,7 @@ public class PushCollectionCacheModel implements CacheModel<PushCollection>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(29);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -84,6 +84,8 @@ public class PushCollectionCacheModel implements CacheModel<PushCollection>,
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
+		sb.append(", serverNo=");
+		sb.append(serverNo);
 		sb.append(", collectionCode=");
 		sb.append(collectionCode);
 		sb.append(", collectionName=");
@@ -136,6 +138,13 @@ public class PushCollectionCacheModel implements CacheModel<PushCollection>,
 		}
 		else {
 			pushCollectionImpl.setModifiedDate(new Date(modifiedDate));
+		}
+
+		if (serverNo == null) {
+			pushCollectionImpl.setServerNo(StringPool.BLANK);
+		}
+		else {
+			pushCollectionImpl.setServerNo(serverNo);
 		}
 
 		if (collectionCode == null) {
@@ -199,6 +208,7 @@ public class PushCollectionCacheModel implements CacheModel<PushCollection>,
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+		serverNo = objectInput.readUTF();
 		collectionCode = objectInput.readUTF();
 		collectionName = objectInput.readUTF();
 		collectionNameEN = objectInput.readUTF();
@@ -234,6 +244,13 @@ public class PushCollectionCacheModel implements CacheModel<PushCollection>,
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
+		if (serverNo == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(serverNo);
+		}
 
 		if (collectionCode == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
@@ -286,6 +303,7 @@ public class PushCollectionCacheModel implements CacheModel<PushCollection>,
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
+	public String serverNo;
 	public String collectionCode;
 	public String collectionName;
 	public String collectionNameEN;
