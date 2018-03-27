@@ -1398,6 +1398,11 @@
 		<finder return-type="Deliverable" name="FB_DCODE">
 			<finder-column name="deliverableCode"/>
 		</finder>
+
+		<finder return-type="Deliverable" name="FB_DCODE_STATE">
+			<finder-column name="deliverableCode"/>
+			<finder-column name="deliverableState"/>
+		</finder>
 <!-- 		<order> -->
 <!-- 			<order-column name="modifiedDate" order-by="asc" /> -->
 <!-- 			<order-column name="issueDate" order-by="asc" /> -->
