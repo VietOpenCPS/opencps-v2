@@ -550,12 +550,21 @@
 			return serviceProcess;
 		}
 
-
-		//Find by dossierNo from homepage
+		//Find by keyword from homepage
 		$( window ).load(function() {
 		  	var url = new URL(window.location.href);
-			var dossierNo = url.searchParams.get("dossierNo");
-			console.log("dossierNo = " + dossierNo);
+			var keyword = url.searchParams.get("keyword");
+			console.log("keyword = " + keyword);
+			if(keyword !== undefined){
+				dataSourceProfile.read({
+					"serviceInfo": "",
+					"govAgencyCode": "",
+					"year": "",
+					"month": "",
+					"keyword": keyword,
+					"status": ""
+				})
+			}
 		});
 	</script>
 		

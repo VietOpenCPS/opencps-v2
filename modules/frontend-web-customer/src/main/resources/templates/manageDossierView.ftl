@@ -47,7 +47,7 @@
 					<div class="row-blue align-middle">
 						<div class="order-number">#:count#</div>
 						<div class="dossier-number" data-toggle="tooltip" title="Mã hồ sơ"><span class="red">\\#</span> #:dossierId#</div>
-						<div class="receive-number"><span class="text-normal">Mã tiếp nhận:</span> #:dossierNo#</div>
+						<div class="receive-number"><span class="text-normal">Mã tiếp nhận hồ sơ:</span> #:dossierNo#</div>
 						#
 							var label="label-info";
 							switch(dossierStatus) {
@@ -259,3 +259,5 @@
 			<span class="text-light-gray">#:createDate#</span>
 		</li>
 	</script>
+
+	
