@@ -18,8 +18,8 @@ import javax.ws.rs.core.Response;
 
 import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
 import org.opencps.api.statistic.model.StatisticDossierSearchModel;
-import org.opencps.api.userlog.model.UserLogInputModel;
-import org.opencps.api.userlog.model.UserLogSearchModel;
+import org.opencps.api.userinfolog.model.UserInfoLogInputModel;
+import org.opencps.api.userinfolog.model.UserInfoLogSearchModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.model.Company;
@@ -30,15 +30,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@Path("/userlogs")
-@Api(value = "/userlogs", tags = "/userlogs")
-public interface UserLogManagement {
+@Path("/userInfologs")
+@Api(value = "/userInfologs", tags = "/userInfologs")
+public interface UserInfoLogManagement {
 
 	@GET
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getUserLogs(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @BeanParam UserLogSearchModel query);
+			@Context ServiceContext serviceContext, @BeanParam UserInfoLogSearchModel query);
 
 	@POST
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
@@ -50,5 +50,5 @@ public interface UserLogManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
 	public Response addUserLog(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext, 
-			@BeanParam UserLogInputModel input);
+			@BeanParam UserInfoLogInputModel input);
 }
