@@ -179,6 +179,10 @@
 			<finder-column name="dictCollectionId"/>
 			<finder-column name="groupId"/>
 		</finder>
+        <finder name="F_dictGroupNewerThan" return-type="Collection">
+            <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
+            <finder-column name="groupId"></finder-column>
+        </finder>
 		
 	</entity>
 	
@@ -224,6 +228,10 @@
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="dictItemId"></finder-column>
 		</finder>
+        <finder name="F_newerThan" return-type="Collection">
+            <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
+            <finder-column name="groupId"></finder-column>
+        </finder>
 		
 	</entity>
 	

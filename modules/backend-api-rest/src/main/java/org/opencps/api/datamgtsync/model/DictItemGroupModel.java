@@ -28,10 +28,8 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="createDate" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="modifiedDate" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="collectionCode" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="collectionName" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="collectionNameEN" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="dataForm" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="groupCode" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="itemCode" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -45,26 +43,20 @@ import javax.xml.bind.annotation.XmlType;
     "createDate",
     "modifiedDate",
     "collectionCode",
-    "collectionName",
-    "collectionNameEN",
-    "description",
-    "dataForm"
+    "groupCode",
+    "itemCode"
 })
-@XmlRootElement(name = "DictCollectionModel")
-public class DictCollectionModel {
+@XmlRootElement(name = "DictItemGroupModel")
+public class DictItemGroupModel {
 
     protected long createDate;
     protected long modifiedDate;
     @XmlElement(required = true)
     protected String collectionCode;
     @XmlElement(required = true)
-    protected String collectionName;
+    protected String groupCode;
     @XmlElement(required = true)
-    protected String collectionNameEN;
-    @XmlElement(required = true)
-    protected String description;
-    @XmlElement(required = true)
-    protected String dataForm;
+    protected String itemCode;
 
     /**
      * Gets the value of the createDate property.
@@ -123,99 +115,51 @@ public class DictCollectionModel {
     }
 
     /**
-     * Gets the value of the collectionName property.
+     * Gets the value of the groupCode property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getCollectionName() {
-        return collectionName;
+    public String getGroupCode() {
+        return groupCode;
     }
 
     /**
-     * Sets the value of the collectionName property.
+     * Sets the value of the groupCode property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setCollectionName(String value) {
-        this.collectionName = value;
+    public void setGroupCode(String value) {
+        this.groupCode = value;
     }
 
     /**
-     * Gets the value of the collectionNameEN property.
+     * Gets the value of the itemCode property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getCollectionNameEN() {
-        return collectionNameEN;
+    public String getItemCode() {
+        return itemCode;
     }
 
     /**
-     * Sets the value of the collectionNameEN property.
+     * Sets the value of the itemCode property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setCollectionNameEN(String value) {
-        this.collectionNameEN = value;
-    }
-
-    /**
-     * Gets the value of the description property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Sets the value of the description property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDescription(String value) {
-        this.description = value;
-    }
-
-    /**
-     * Gets the value of the dataForm property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDataForm() {
-        return dataForm;
-    }
-
-    /**
-     * Sets the value of the dataForm property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDataForm(String value) {
-        this.dataForm = value;
+    public void setItemCode(String value) {
+        this.itemCode = value;
     }
 
 }

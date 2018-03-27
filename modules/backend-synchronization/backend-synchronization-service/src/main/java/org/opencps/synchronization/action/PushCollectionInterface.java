@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 public interface PushCollectionInterface {
 	public PushCollection fetchPublishDictItem(long pushCollectionId);
 	public PushCollection addPushCollection(long userId, long groupId, 
+			String serverNo,
 			String collectionCode,
 			String collectionName,
 			String collectionNameEN,
@@ -24,6 +25,7 @@ public interface PushCollectionInterface {
 	
 	public PushCollection updatePushCollection(long userId, long groupId, 
 			long pushCollectionId,
+			String serverNo,
 			String collectionCode,
 			String collectionName,
 			String collectionNameEN,

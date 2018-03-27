@@ -28,10 +28,10 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="createDate" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="modifiedDate" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="collectionCode" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="collectionName" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="collectionNameEN" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="dataForm" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="groupCode" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="groupName" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="groupNameEN" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="groupDescription" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -45,26 +45,26 @@ import javax.xml.bind.annotation.XmlType;
     "createDate",
     "modifiedDate",
     "collectionCode",
-    "collectionName",
-    "collectionNameEN",
-    "description",
-    "dataForm"
+    "groupCode",
+    "groupName",
+    "groupNameEN",
+    "groupDescription"
 })
-@XmlRootElement(name = "DictCollectionModel")
-public class DictCollectionModel {
+@XmlRootElement(name = "DictGroupModel")
+public class DictGroupModel {
 
     protected long createDate;
     protected long modifiedDate;
     @XmlElement(required = true)
     protected String collectionCode;
     @XmlElement(required = true)
-    protected String collectionName;
+    protected String groupCode;
     @XmlElement(required = true)
-    protected String collectionNameEN;
+    protected String groupName;
     @XmlElement(required = true)
-    protected String description;
+    protected String groupNameEN;
     @XmlElement(required = true)
-    protected String dataForm;
+    protected String groupDescription;
 
     /**
      * Gets the value of the createDate property.
@@ -123,99 +123,99 @@ public class DictCollectionModel {
     }
 
     /**
-     * Gets the value of the collectionName property.
+     * Gets the value of the groupCode property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getCollectionName() {
-        return collectionName;
+    public String getGroupCode() {
+        return groupCode;
     }
 
     /**
-     * Sets the value of the collectionName property.
+     * Sets the value of the groupCode property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setCollectionName(String value) {
-        this.collectionName = value;
+    public void setGroupCode(String value) {
+        this.groupCode = value;
     }
 
     /**
-     * Gets the value of the collectionNameEN property.
+     * Gets the value of the groupName property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getCollectionNameEN() {
-        return collectionNameEN;
+    public String getGroupName() {
+        return groupName;
     }
 
     /**
-     * Sets the value of the collectionNameEN property.
+     * Sets the value of the groupName property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setCollectionNameEN(String value) {
-        this.collectionNameEN = value;
+    public void setGroupName(String value) {
+        this.groupName = value;
     }
 
     /**
-     * Gets the value of the description property.
+     * Gets the value of the groupNameEN property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getDescription() {
-        return description;
+    public String getGroupNameEN() {
+        return groupNameEN;
     }
 
     /**
-     * Sets the value of the description property.
+     * Sets the value of the groupNameEN property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setDescription(String value) {
-        this.description = value;
+    public void setGroupNameEN(String value) {
+        this.groupNameEN = value;
     }
 
     /**
-     * Gets the value of the dataForm property.
+     * Gets the value of the groupDescription property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getDataForm() {
-        return dataForm;
+    public String getGroupDescription() {
+        return groupDescription;
     }
 
     /**
-     * Sets the value of the dataForm property.
+     * Sets the value of the groupDescription property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setDataForm(String value) {
-        this.dataForm = value;
+    public void setGroupDescription(String value) {
+        this.groupDescription = value;
     }
 
 }

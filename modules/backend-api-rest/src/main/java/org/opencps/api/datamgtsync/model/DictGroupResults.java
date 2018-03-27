@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="total" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element ref="{}DictItemModel" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element ref="{}DictGroupModel" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -40,14 +40,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "total",
-    "dictItemModel"
+    "dictGroupModel"
 })
 @XmlRootElement(name = "data")
-public class DictItemResults {
+public class DictGroupResults {
 
     protected long total;
     @XmlElement(name = "data")
-    protected List<DictItemModel> dictItemModel;
+    protected List<DictGroupModel> dictGroupModel;
 
     /**
      * Gets the value of the total property.
@@ -66,32 +66,32 @@ public class DictItemResults {
     }
 
     /**
-     * Gets the value of the dictItemModel property.
+     * Gets the value of the dictGroupModel property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the dictItemModel property.
+     * This is why there is not a <CODE>set</CODE> method for the dictGroupModel property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getDictItemModel().add(newItem);
+     *    getDictGroupModel().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link DictItemModel }
+     * {@link DictGroupModel }
      * 
      * 
      */
-    public List<DictItemModel> getDictItemModel() {
-        if (dictItemModel == null) {
-            dictItemModel = new ArrayList<DictItemModel>();
+    public List<DictGroupModel> getDictGroupModel() {
+        if (dictGroupModel == null) {
+            dictGroupModel = new ArrayList<DictGroupModel>();
         }
-        return this.dictItemModel;
+        return this.dictGroupModel;
     }
 
 }
