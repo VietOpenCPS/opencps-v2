@@ -26,5 +26,12 @@
 	<#assign applicant = (Request.applicant)!>
 	<#assign dossierTemplateId = (Request.dossierTemplateId)!>
 	<#assign dossierId = (Request.dossierId)!>
+	<#assign dossier = (Request.dossier)!>
 	<#assign dossierPartNo = (Request.dossierPartNo)!>
+	<#assign dossierTemplateNo = (Request.dossierTemplateNo)!>
+	<#assign RequestParameters = (Request.RequestParameters)!>
+	<#assign govAgencyCode = (Request.govAgencyCode)!>
+	<#assign serviceConfigId = (Request.serviceConfigId)!>
+	
+	
 </#if>

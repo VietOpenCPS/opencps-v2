@@ -18,7 +18,7 @@
 						<i class="fa fa-university" aria-hidden="true"></i> #:govAgencyName #
 					</a>
 				</div>
-				<div id=#:'a'+govAgencyCode# class="accordion-body collapse in">
+				<div id=#:'a'+govAgencyCode# class="accordion-body parrent collapse in">
 					<div class="accordion-inner">
 						<div class="accordion" id=#:'acc2'+govAgencyCode#>
 							#for (var i = 0; i < domains.length; i ++) { #
@@ -221,9 +221,19 @@
 					var id = $(this).attr("data-pk");
 					fnGenServiceProcess(id, $(this));
 				});
+				fnMapUrlGovAgencyCode();
 			}
 		});
 
 	});
+
+	var fnMapUrlGovAgencyCode = function(){
+		var govAgencyCode = "${(govAgencyCode)!}";
+
+		if(govAgencyCode){
+			$("div[class='accordion-body parrent collapse in']").not($("#a"+govAgencyCode)).addClass("toggle-hide");
+		}
+	}
+
 </script>
 

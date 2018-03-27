@@ -23,6 +23,7 @@ import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.exception.NoSuchDictCollectionException;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.model.impl.DictCollectionImpl;
 import org.opencps.datamgt.service.base.DictCollectionLocalServiceBaseImpl;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
@@ -49,6 +50,8 @@ import com.liferay.portal.kernel.search.generic.MatchQuery.Operator;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.TermQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -551,5 +554,17 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
+	}
+	
+	@Override
+	public List<DictCollection> findOlderThanDate(Date date, long groupId, int start, int end) {
+		OrderByComparator<DictCollection> comparator = OrderByComparatorFactoryUtil.create(DictCollectionImpl.TABLE_NAME, DictCollectionTerm.MODIFIED_DATE, true);
+		
+		return dictCollectionPersistence.findByF_dictCollectionNewerThan(date, groupId, start, end, comparator);
+	}
+	
+	@Override
+	public long countOlderThanDate(Date date, long groupId) {
+		return dictCollectionPersistence.countByF_dictCollectionNewerThan(date, groupId);
 	}
 }

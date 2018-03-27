@@ -113,6 +113,10 @@ public class PaymentFileUtils {
 			}
 			model.setConfirmFileEntryId(GetterUtil.getLong(doc.get(PaymentFileTerm.CONFIRM_FILE_ENTRY_ID)));
 			
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(GetterUtil.getLong(doc.get(PaymentFileTerm.DOSSIER_ID)));
+			
+			model.setBriefNote(dossier.getBriefNote());
+			
 			results.add(model);
 		}
 
@@ -221,6 +225,10 @@ public class PaymentFileUtils {
 			model.setConfirmFileType(StringPool.BLANK);
 			model.setConfirmFileSize(0L);
 		}
+
+		//Dossier dossier = DossierLocalServiceUtil.fetchDossier(GetterUtil.getLong(doc.get(PaymentFileTerm.DOSSIER_ID)));
+		
+		model.setBriefNote(dossier.getBriefNote());
 
 		return model;
 	}
@@ -342,7 +350,12 @@ public class PaymentFileUtils {
 				model.setInvoiceFileSize(0L);
 			}
 
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(GetterUtil.getLong(doc.get(PaymentFileTerm.DOSSIER_ID)));
+			
+			model.setBriefNote(dossier.getBriefNote());
+
 			results.add(model);
+
 		}
 
 		return results;

@@ -8,6 +8,9 @@
 
 package org.opencps.api.dossier.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -87,6 +90,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="applicantNote" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="notification" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="online" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="certNumber" type="{}CertNumberModel" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -165,7 +169,8 @@ import javax.xml.bind.annotation.XmlType;
     "online",
     "dossierOverdue",
     "hasPassword",
-    "serverNo"
+    "serverNo",
+    "certNumber"
 })
 public class DossierDataModel {
 
@@ -238,6 +243,7 @@ public class DossierDataModel {
 	protected String dossierOverdue;
 	protected String hasPassword;
 	protected String serverNo;
+	protected List<CertNumberModel> certNumber;
 
     public String getDossierTemplateName() {
 		return dossierTemplateName;
@@ -1798,6 +1804,35 @@ public class DossierDataModel {
 
 	public void setDossierIdCTN(String dossierIdCTN) {
 		this.dossierIdCTN = dossierIdCTN;
+	}
+
+    /**
+     * Gets the value of the data property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the data property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getCertNumber().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link DossierDataModel }
+     * 
+     * 
+     */
+	public List<CertNumberModel> getCertNumber() {
+		if (certNumber == null) {
+			certNumber = new ArrayList<CertNumberModel>();
+        }
+        return this.certNumber;
 	}
 
 }

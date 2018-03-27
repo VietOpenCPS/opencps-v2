@@ -463,6 +463,92 @@
 				$(e.currentTarget).children().toggle();
 			}
 		});
+
+		window.onload = function(e){
+			var serviceConfigId = "${(serviceConfigId)!}";
+			if(serviceConfigId){
+				var serviceProcess = fnGetServiceProcess(serviceConfigId);
+				var serviceConfig = fnGetServiceConfig(serviceConfigId);
+
+				fnCreateDossier(serviceProcess.templateNo, serviceConfig.serviceCode, serviceConfig.govAgencyCode);
+			}
+		}
+
+		var fnCreateDossier = function(dossierTemplateNo,serviceCode,govAgencyCode){
+			$.ajax({
+				url : "${api.server}/dossiers",
+				dataType : "json",
+				type : "POST",
+				data : {
+					referenceUid : "",
+					serviceCode : serviceCode,
+					govAgencyCode : govAgencyCode,
+					dossierTemplateNo : dossierTemplateNo,
+					applicantName : "${(applicant.applicantName)!}",
+					applicantIdType : "${(applicant.applicantIdType)!}",
+					applicantIdNo : "${(applicant.applicantIdNo)!}",
+					applicantIdDate : "01/01/2017 00:00:00",
+					address : "${(applicant.address)!}",
+					cityCode : "${(applicant.cityCode)!}",
+					districtCode : "${(applicant.districtCode)!}",
+					wardCode : "${(applicant.wardCode)!}",
+					contactName : "${(applicant.contactName)!}",
+					contactTelNo : "${(applicant.contactTelNo)!}",
+					contactEmail : "${(applicant.contactEmail)!}"
+				},
+				headers : {"groupId": ${groupId}},
+				success : function(result){
+					$("#choiseProcessForDossier").modal("hide");
+
+					manageDossier.navigate("/taohosomoi/chuanbihoso/"+result.dossierId);
+				},
+				error : function(result){
+				}
+
+			});
+		};
+
+		var fnGetServiceConfig = function(serviceConfigId){
+			var serviceConfig = {};
+			$.ajax({
+				url : "${api.server}/serviceconfigs/"+serviceConfigId,
+				type : "GET",
+				dataType : "json",
+				headers : {"groupId": ${groupId}},
+				async : false,
+				success : function(result){
+					serviceConfig = result;
+				},
+				error : function(result){
+					serviceConfig = {};
+				}
+			});
+			return serviceConfig;
+		}
+
+		var fnGetServiceProcess = function(serviceConfigId){
+			var serviceProcess = {};
+			$.ajax({
+				url : "${api.server}/serviceconfigs/"+serviceConfigId+"/processes",
+				type : "GET",
+				dataType : "json",
+				headers : {"groupId": ${groupId}},
+				async : false,
+				success : function(result){
+					if(result.data){
+						serviceProcess = result.data[0];
+					}else {
+						serviceProcess = {};
+					}
+					
+				},
+				error : function(result){
+					serviceProcess = {};
+				}
+			});
+
+			return serviceProcess;
+		}
 	</script>
 		
 

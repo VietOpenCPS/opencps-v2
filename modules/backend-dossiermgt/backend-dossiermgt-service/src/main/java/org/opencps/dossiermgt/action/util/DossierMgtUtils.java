@@ -58,6 +58,10 @@ public class DossierMgtUtils {
 				result = result && checkCancelling(dossier);
 				break;
 
+			case "reject_cancelling":
+				result = result && checkCancelling(dossier);
+				break;
+
 			case "correcting":
 				result = result && checkCorrecting(dossier);
 				break;
@@ -85,14 +89,14 @@ public class DossierMgtUtils {
 	}
 
 	private static boolean checkCancelling(Dossier dossier) {
-		if (dossier.getCancellingDate() != null && dossier.getDossierStatus() == "cancelling") {
+		if (dossier.getCancellingDate() != null) {
 			return true;
 		}
 		return false;
 	}
 
 	private static boolean checkCorrecting(Dossier dossier) {
-		if (dossier.getCorrecttingDate() != null && dossier.getDossierStatus() == "correcting") {
+		if (dossier.getCorrecttingDate() != null) {
 			return true;
 		}
 

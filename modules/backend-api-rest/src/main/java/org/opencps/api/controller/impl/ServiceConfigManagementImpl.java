@@ -44,11 +44,14 @@ import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.indexer.RegistrationIndexer;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -709,6 +712,8 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 	}
 
+	Log _log = LogFactoryUtil.getLog(ServiceConfigManagementImpl.class);
+
 	@Override
 	public Response getServiceConfigsByDomain(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, ServiceInfoSearchModel query) {
@@ -749,6 +754,8 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 			for (DictItem domainItem : domainItems) {
 
+//				_log.info("domainItem: "+domainItem.getDictItemId());
+//				_log.info("DOMAIN_CODE: "+domainItem.getItemCode());
 				LinkedHashMap<String, Object> paramsDomain = new LinkedHashMap<String, Object>();
 
 				paramsDomain.put(Field.GROUP_ID, String.valueOf(groupId));
@@ -761,6 +768,8 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				if (countDomain != 0) {
 
+//					_log.info("domainId: "+domainItem.getPrimaryKey());
+//					_log.info("domainName: "+domainItem.getItemName());
 					domain.put("domainId", domainItem.getPrimaryKey());
 					domain.put("domainName", domainItem.getItemName());
 				
@@ -778,12 +787,18 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 						String govAgencyCode = GetterUtil.getString(doc.get(ServiceConfigTerm.GOVAGENCY_CODE));
 						String govAgencyName = GetterUtil.getString(doc.get(ServiceConfigTerm.GOVAGENCY_NAME));
+//						_log.info("govAgencyCode: "+govAgencyCode);
+//						_log.info("govAgencyName: "+govAgencyName);
 						
-						if(keys.contains(domainItem.getItemCode() + StringPool.DASH + govAgencyCode)){
+//						if(keys.contains(domainItem.getItemCode() + StringPool.DASH + govAgencyCode)){
+//							continue;
+//						}
+						if(keys.contains(doc.get(ServiceConfigTerm.SERVICE_CODE) + StringPool.DASH + govAgencyCode)){
 							continue;
 						}
 						
-						keys.add(domainItem.getItemCode() + StringPool.DASH + govAgencyCode);
+//						keys.add(domainItem.getItemCode() + StringPool.DASH + govAgencyCode);
+						keys.add(doc.get(ServiceConfigTerm.SERVICE_CODE) + StringPool.DASH + govAgencyCode);
 						
 						JSONObject govAgency = JSONFactoryUtil.createJSONObject();
 						
@@ -792,10 +807,12 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 						paramsDomain.put(ServiceConfigTerm.SERVICE_CODE, doc.get(ServiceConfigTerm.SERVICE_CODE));
 						
 						paramsDomain.put(ServiceConfigTerm.GOVAGENCY_CODE, govAgencyCode);
+//						_log.info("SERVICE_CODE: "+doc.get(ServiceConfigTerm.SERVICE_CODE));
 						
 						List<Document> serviceConfigByInfo = ServiceConfigLocalServiceUtil
 								.searchLucene(paramsDomain, sorts, query.getStart(), query.getEnd(), searchContext)
 								.toList();
+//						_log.info("serviceConfigByInfo: "+serviceConfigByInfo.size());
 						
 						for (Document serDoc : serviceConfigByInfo) {
 							JSONObject configElm = JSONFactoryUtil.createJSONObject();

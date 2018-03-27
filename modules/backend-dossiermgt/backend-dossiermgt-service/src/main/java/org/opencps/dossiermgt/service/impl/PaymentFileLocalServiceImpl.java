@@ -30,6 +30,8 @@ import org.opencps.dossiermgt.service.base.PaymentFileLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -46,6 +48,7 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -185,11 +188,26 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		}
 
 		if (Validator.isNotNull(status)) {
-			MultiMatchQuery query = new MultiMatchQuery(status);
+			String[] sliptStatus = status.split(StringPool.COMMA);
+			if (sliptStatus != null && sliptStatus.length > 0) {
+			BooleanQuery subQuery = new BooleanQueryImpl();
+				for (String strStatus : sliptStatus) {
+					if (Validator.isNotNull(strStatus)) {
+	
+						MultiMatchQuery query = new MultiMatchQuery(strStatus);
+	
+						query.addFields(PaymentFileTerm.PAYMENT_STATUS);
+						subQuery.add(query, BooleanClauseOccur.SHOULD);
+					}
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(status);
 
-			query.addFields(PaymentFileTerm.PAYMENT_STATUS);
+				query.addFields(PaymentFileTerm.PAYMENT_STATUS);
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		if (Validator.isNotNull(isNew) && Boolean.parseBoolean(isNew)) {
@@ -417,6 +435,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 	}
 
+	Log _log = LogFactoryUtil.getLog(PaymentFileLocalServiceImpl.class.getName());
 	/**
 	 * update payment File Confirm
 	 * 
@@ -429,6 +448,9 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			throws PortalException, SystemException {
 
 		PaymentFile paymentFile = paymentFilePersistence.fetchByD_RUID(dossierId, referenceUid);
+		
+		_log.info("paymentMethod: "+paymentMethod);
+		_log.info("confirmPayload: "+confirmPayload);
 
 		if (paymentFile != null) {
 
@@ -438,7 +460,11 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setConfirmNote(confirmNote);
 			paymentFile.setPaymentMethod(paymentMethod);
 			paymentFile.setConfirmPayload(confirmPayload);
-			paymentFile.setPaymentStatus(2);
+			if (Validator.isNotNull(paymentMethod) && paymentMethod.equals("N\u1ED9p online")) {
+				paymentFile.setPaymentStatus(2);
+			} else {
+				paymentFile.setPaymentStatus(1);
+			}
 			paymentFile.setIsNew(true);
 		}
 
@@ -545,18 +571,25 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		if (paymentFile != null) {
 
+			long userId = serviceContext.getUserId();
+
 			Date now = new Date();
 
 			paymentFile.setModifiedDate(now);
+			paymentFile.setUserId(userId);
 			// Parse String to Date
-			SimpleDateFormat format = new SimpleDateFormat("DD-MM-YYYY HH:MM:SS");
-			Date dateApproved = format.parse(approveDatetime);
+			Date dateApproved = null;
+			if (Validator.isNotNull(approveDatetime)) {
+				SimpleDateFormat format = new SimpleDateFormat("DD-MM-YYYY HH:MM:SS");
+				dateApproved = format.parse(approveDatetime);
+			}
 			paymentFile.setApproveDatetime(dateApproved);
 			paymentFile.setAccountUserName(accountUserName);
 			paymentFile.setGovAgencyTaxNo(govAgencyTaxNo);
 			paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
 			paymentFile.setInvoiceIssueNo(invoiceIssueNo);
 			paymentFile.setInvoiceNo(invoiceNo);
+			paymentFile.setPaymentStatus(2);
 			
 			paymentFile.setIsNew(true);
 

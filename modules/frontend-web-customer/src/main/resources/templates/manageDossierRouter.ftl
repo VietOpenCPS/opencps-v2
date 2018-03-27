@@ -11,12 +11,15 @@
 			$("#mainType1").hide();
 			$("#mainType2").show();
 			$(".filterField").hide();
-			if (dossierItemStatus == "new") {
+			if (dossierItemStatus === "new") {
 				$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+id+"",function(result){
-				})
-			} else {
+				});
+			} else if(dossierItemStatus === "paying"){
+				$("#mainType2").load("${ajax.customer_dossier_waitpaying}&${portletNamespace}dossierId="+id+"",function(result){
+				});
+			}else {
 				$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"",function(result){
-				})
+				});
 			};
 		    $(".itemStatus").css("pointer-events","auto");
 			$("#profileStatus li").removeClass('active');
@@ -36,18 +39,66 @@
 			$(".itemStatus").css("pointer-events","auto");
 		});
 
+		manageDossier.route("/taohosomoi/(:id)", function(id){
+			$("#mainType1").hide();
+			$(".filterField").hide();
+			$("#mainType2").show();
+			$("#mainType2").load("${ajax.serviceconfig}&${portletNamespace}govAgencyCode="+id+"",function(result){
+				});
+
+			$("#profileStatus li").removeClass('active');
+			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
+			$(".itemStatus").css("pointer-events","auto");
+		});
+
+		manageDossier.route("/taohosomoi/chuanbihoso/(:dossierId)", function(dossierId){
+			$("#mainType1").hide();
+			$("#mainType2").show();
+			$("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+dossierId,function(result){
+
+			});
+		});
+		
+		manageDossier.route("/taohosomoi/nophoso/(:dossierId)", function(dossierId){
+			$("#mainType1").hide();
+			$("#mainType2").show();
+			$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+dossierId,function(result){
+
+			});
+		});
+
 		manageDossier.route("/(:id)", function(id) {
 			$("#mainType1").show();
 			$(".filterField").show();
 			$("#mainType2").hide();
-			layout.showIn("#main_section", viewMainList);       
-			dataSourceProfile.read({
-				"serviceInfo":$("#serviceInfo").val(),
-				"govAgencyCode":$("#govAgency").val(),
-				"year":$("#year").val(),
-				"month":$("#month").val(),
-				"status":id
-			});
+			layout.showIn("#main_section", viewMainList);
+			if(id === "receiving"){
+				dataSourceProfile.read({
+					"serviceInfo":$("#serviceInfo").val(),
+					"govAgencyCode":$("#govAgency").val(),
+					"year":$("#year").val(),
+					"month":$("#month").val(),
+					"status":"receiving,releasing,processing"
+				});
+			}else if (id === "done") {
+				dataSourceProfile.read({
+					"serviceInfo":$("#serviceInfo").val(),
+					"govAgencyCode":$("#govAgency").val(),
+					"year":$("#year").val(),
+					"month":$("#month").val(),
+					"status":"done,cancelled,denied,ended"
+				});
+			}else {
+				dataSourceProfile.read({
+					"serviceInfo":$("#serviceInfo").val(),
+					"govAgencyCode":$("#govAgency").val(),
+					"year":$("#year").val(),
+					"month":$("#month").val(),
+					"status":id
+				});
+			}
+
+			
 			$(".itemStatus").css("pointer-events","auto");
 			$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
@@ -70,6 +121,7 @@
         $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
         $(".itemStatus").css("pointer-events","auto");
       });
+      
       manageDossier.route("/taohosomoi/doman", function(){
         $("#mainType1").hide();
         $(".filterField").hide();
@@ -83,6 +135,18 @@
         $("#profileStatus li").removeClass('active');
         $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
         $(".itemStatus").css("pointer-events","auto");
+      });
+
+      manageDossier.route("/keyPay/(:id)/(:refUid)", function(id,refUid,params){
+      	$("#panel_list").show();
+      	$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
+      	$("#mainType1").hide();
+      	$("#mainType2").show();
+      	$(".filterField").hide();
+      	$("#mainType2").load("${ajax.notificationPaying}&${portletNamespace}dossierUUid="+id+"&${portletNamespace}paymentFileUUid="+refUid+"&${portletNamespace}trans_id="+params.trans_id+"&${portletNamespace}good_code="+params.good_code,function(result){
+      	});
+      	
+      	
       });
 	</script>
 

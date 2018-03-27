@@ -269,6 +269,14 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		registrationTemplatesURL.setParameter(
 			"mvcPath", "/templates/registrationtemplates.ftl");
 		
+		PortletURL certNumberURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+		certNumberURL.setPortletMode(PortletMode.VIEW);
+		certNumberURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		certNumberURL.setParameter(
+			"mvcPath", "/templates/certNumber.ftl");
+		
 		
 		urlObject.put("registrationtemplates", registrationTemplatesURL.toString());
 		urlObject.put("serviceinfo_list", serviceInfoListURL.toString());
@@ -297,7 +305,8 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		urlObject.put("paymentconfig_form", paymentConfigFormURL.toString());
 		urlObject.put("dictcollection_index", dataMgtURL.toString());
 		urlObject.put("serverconfigs", serverConfigsURL.toString());
-
+		urlObject.put("certnumber", certNumberURL.toString());
+		
 		// set object edit
 		long serviceInfoId = ParamUtil.getLong(renderRequest, "serviceInfoId");
 		if (serviceInfoId > 0) {
@@ -611,7 +620,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		LinkedHashMap<String, Object> params =
 			new LinkedHashMap<String, Object>();
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-
 		params.put("groupId", String.valueOf(dictItem.getGroupId()));
 		params.put(
 			DictItemGroupTerm.DICT_ITEM_ID,
@@ -621,6 +629,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			dictItem.getUserId(), dictItem.getCompanyId(),
 			dictItem.getGroupId(), params, new Sort[] {}, QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS, serviceContext);
+
 		try {
 
 			// TODO template commented
@@ -638,7 +647,8 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 			_log.error(e);
 		}
-
+		
+		_log.info("Dict_GROUP =====================>"+String.join(",", result));
 		return String.join(",", result);
 
 	}
@@ -1624,9 +1634,8 @@ public class AdminPortlet extends FreeMarkerPortlet {
 						String.valueOf(sibling), 0, metaData, serviceContext);
 				}
 
-				groupCodes = dictCollectionActions.updateDictItemGroup(
-					userId, groupId, dictItem.getDictItemId(), groupCodes,
-					serviceContext);
+			groupCodes = dictCollectionActions.updateDictItemGroup(userId, groupId, dictItem.getDictItemId(),
+					groupCodes, collectionCode, serviceContext);
 
 				result.put(
 					"createDate", DateTimeUtils.convertDateToString(

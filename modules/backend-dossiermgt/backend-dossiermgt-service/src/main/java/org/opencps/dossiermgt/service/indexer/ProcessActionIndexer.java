@@ -78,6 +78,8 @@ public class ProcessActionIndexer extends BaseIndexer<ProcessAction> {
 
 		document.addTextSortable(ProcessActionTerm.CREATE_DOSSIER_NO, Boolean.toString(object.getCreateDossierNo()));
 		document.addTextSortable(ProcessActionTerm.ESIGNATURE, Boolean.toString(object.getESignature()));
+		document.addTextSortable(ProcessActionTerm.CONFIG_NOTE, object.getConfigNote());
+		document.addTextSortable("dossierTemplateNo", object.getDossierTemplateNo());
 
 		return document;
 

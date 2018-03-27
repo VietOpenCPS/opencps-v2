@@ -69,6 +69,7 @@ public class DictItemGroupIndexer extends BaseIndexer<DictItemGroup> {
 		document.addNumberSortable(DictItemGroupTerm.DICT_ITEM_GROUP_ID, dictItemGroup.getDictItemGroupId());
 		document.addNumberSortable(DictItemGroupTerm.DICT_GROUP_ID, dictItemGroup.getDictGroupId());
 		document.addNumberSortable(DictItemGroupTerm.DICT_ITEM_ID, dictItemGroup.getDictItemId());
+		document.addTextSortable(DictItemGroupTerm.DICT_GROUP_NAME, dictItemGroup.getDictGroupName());
 		
 		DictGroup dictGroup = DictGroupLocalServiceUtil.fetchDictGroup(dictItemGroup.getDictGroupId());
 		

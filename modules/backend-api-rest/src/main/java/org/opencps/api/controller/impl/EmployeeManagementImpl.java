@@ -40,6 +40,7 @@ import org.opencps.usermgt.utils.DateTimeUtils;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -50,6 +51,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -916,4 +918,67 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 		}
 	}
 
+	@Override
+	public Response getEmployeesByRole(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long roleId, DataSearchModel query) {
+			EmployeeInterface actions = new EmployeeActions();
+			EmployeeResults result = new EmployeeResults();
+			try {
+
+				long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+				
+				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
+				StringBuilder strUserIdList = new StringBuilder();
+				if (users != null && users.size() > 0) {
+					int length = users.size();
+					for (int i = 0; i < length; i++) {
+						User userDetail = users.get(i);
+						long userId = userDetail.getUserId();
+						if (Validator.isNotNull(userId) && userId > 0) {
+							if (i == length - 1) {
+								strUserIdList.append(userId);
+							} else {
+								strUserIdList.append(userId);
+								strUserIdList.append(StringPool.COMMA);
+							}
+						}
+					}
+				}
+
+				if (query.getEnd() == 0) {
+
+					query.setStart(-1);
+
+					query.setEnd(-1);
+
+				}
+
+				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+				params.put("groupId", String.valueOf(groupId));
+				params.put("keywords", query.getKeywords());
+				params.put("userIdList", strUserIdList.toString());
+
+				Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+						Boolean.getBoolean(query.getOrder())) };
+
+				JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
+						query.getStart(), query.getEnd(), serviceContext);
+
+				result.setTotal(jsonData.getLong("total"));
+				result.getEmployeeModel().addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get("data")));
+
+				return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(404).entity(error).build();
+		}
+	}
 }

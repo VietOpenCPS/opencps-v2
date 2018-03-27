@@ -1043,7 +1043,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					GetterUtil.getLong(input.getAssignUserId()), GetterUtil.getBoolean(input.getRequestPayment()),
 					input.getPaymentFee(), input.getCreateDossierFiles(), input.getReturnDossierFiles(),
 					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
-					input.isCreateDossierNo(), input.iseSignature(), serviceContext);
+					input.isCreateDossierNo(), input.iseSignature(), input.getConfigNote(),
+					input.getDossierTemplateNo(), serviceContext);
 
 			results = ServiceProcessUtils.mappingToActionPOST(processAction);
 
@@ -1098,7 +1099,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					GetterUtil.getLong(input.getAssignUserId()), GetterUtil.getBoolean(input.getRequestPayment()),
 					input.getPaymentFee(), input.getCreateDossierFiles(), input.getReturnDossierFiles(),
 					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
-					input.isCreateDossierNo(), input.iseSignature(), serviceContext);
+					input.isCreateDossierNo(), input.iseSignature(), input.getConfigNote(),
+					input.getDossierTemplateNo(), serviceContext);
 
 
 			results = ServiceProcessUtils.mappingToActionPOST(processAction);

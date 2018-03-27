@@ -27,5 +27,6 @@ public class ProcessActionTerm {
 	public static final String ROLLBACKABLE = "rollbackable";
 	public static final String CREATE_DOSSIER_NO = "createDossierNo";
 	public static final String ESIGNATURE = "eSignature";
+	public static final String CONFIG_NOTE = "configNote";
 
 }

@@ -76,7 +76,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 	private final String baseUrl = "http://localhost:8080/o/rest/v2/";
 	private final String username = "test@liferay.com";
 	private final String password = "test";
-	private final String serectKey = "OPENCPSV2";
+	//private final String serectKey = "OPENCPSV2";
 
 	@Override
 	public Response getDossierSyncs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -289,38 +289,62 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 		// SyncDossierFile
 		if (method == 1) {
-
-			// TODO add case update file
-			String endPointSyncDossierFile = "dossiers/" + refId + "/files";
-
+			
+			// Need check some case:
+			// 1. Add new file
+			// 2. Remove new file
+			// 3. Update file
+			
 			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFile(classPK);
-
-			properties.put("referenceUid", dossierFile.getReferenceUid());
-			properties.put("dossierTemplateNo", dossierFile.getDossierTemplateNo());
-			properties.put("dossierPartNo", dossierFile.getDossierPartNo());
-			properties.put("fileTemplateNo", dossierFile.getFileTemplateNo());
-			properties.put("displayName", dossierFile.getDisplayName());
-			properties.put("isSync", StringPool.FALSE);
-			properties.put("formData", dossierFile.getFormData());
-
-			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
-
-			properties.put("fileType", fileEntry.getExtension());
-
-			File file = getFile(dossierFile.getFileEntryId());
-
-			// TODO review extention file
-			JSONObject resSynFile = rest.callPostFileAPI(groupId, HttpMethods.POST, "application/json",
-					RESTFulConfiguration.SERVER_PATH_BASE, endPointSyncDossierFile, RESTFulConfiguration.SERVER_USER,
-					RESTFulConfiguration.SERVER_PASS, properties, file, serviceContext);
-
-			if (resSynFile.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
-				// remove DossierSync
+			
+			if (dossierFile.getRemoved()) {
+				
+				//remove file in server
+				long serverGroupId = 55217l;
+				
+				DossierFile dossierServerFile = DossierFileLocalServiceUtil.getByRefAndGroupId(serverGroupId, dossierFile.getReferenceUid());
+				
+				dossierServerFile.setRemoved(true);
+				
+				//update dossierFile
+				DossierFileLocalServiceUtil.updateDossierFile(dossierServerFile);
+				
+				//remove dossierSync
 				DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
 
 			} else {
-				_log.info(resSynFile.get(RESTFulConfiguration.MESSAGE));
+				// TODO add case update file
+				String endPointSyncDossierFile = "dossiers/" + refId + "/files";
+
+				properties.put("referenceUid", dossierFile.getReferenceUid());
+				properties.put("dossierTemplateNo", dossierFile.getDossierTemplateNo());
+				properties.put("dossierPartNo", dossierFile.getDossierPartNo());
+				properties.put("fileTemplateNo", dossierFile.getFileTemplateNo());
+				properties.put("displayName", dossierFile.getDisplayName());
+				properties.put("isSync", StringPool.FALSE);
+				properties.put("formData", dossierFile.getFormData());
+
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
+
+				properties.put("fileType", fileEntry.getExtension());
+
+				File file = getFile(dossierFile.getFileEntryId());
+
+				// TODO review extention file
+				JSONObject resSynFile = rest.callPostFileAPI(groupId, HttpMethods.POST, "application/json",
+						RESTFulConfiguration.SERVER_PATH_BASE, endPointSyncDossierFile, RESTFulConfiguration.SERVER_USER,
+						RESTFulConfiguration.SERVER_PASS, properties, file, serviceContext);
+
+				if (resSynFile.getInt(RESTFulConfiguration.STATUS) == HttpURLConnection.HTTP_OK) {
+					// remove DossierSync
+					DossierSyncLocalServiceUtil.deleteDossierSync(dossierSyncId);
+
+				} else {
+					_log.info(resSynFile.get(RESTFulConfiguration.MESSAGE));
+				}
+
 			}
+			
 
 			// Reset isNew
 			dossierFile.setIsNew(false);
@@ -436,6 +460,24 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			DossierActionLocalServiceUtil.updatePending(clientDossierActionId, false);
 		}
 
+	}
+	
+	private void syncDossierFile(long dossierFileId) throws PortalException {
+		
+		try {
+			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFile(dossierFileId);
+			//in case add 
+			
+			//in case update
+			
+			//in case remove, check remove flag
+			
+		} catch (Exception e) {
+			if (e instanceof PortalException) {
+				throw new PortalException("Can not get file with dossierFileId = " + dossierFileId);
+			}
+		}
+		
 	}
 
 	protected Dossier getDossier(String id, long groupId) throws PortalException {

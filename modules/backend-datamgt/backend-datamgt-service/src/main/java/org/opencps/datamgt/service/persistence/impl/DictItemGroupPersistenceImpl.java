@@ -3307,6 +3307,7 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 		dictItemGroupImpl.setModifiedDate(dictItemGroup.getModifiedDate());
 		dictItemGroupImpl.setDictGroupId(dictItemGroup.getDictGroupId());
 		dictItemGroupImpl.setDictItemId(dictItemGroup.getDictItemId());
+		dictItemGroupImpl.setDictGroupName(dictItemGroup.getDictGroupName());
 
 		return dictItemGroupImpl;
 	}

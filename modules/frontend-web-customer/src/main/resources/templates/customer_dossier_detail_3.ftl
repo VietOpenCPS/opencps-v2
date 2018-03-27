@@ -14,7 +14,7 @@
 			</a>
 		</div>
 	</div>
-
+	
 	<div class="dossier-general-info P15 MB30">
 		<p>Thông tin chung hồ sơ</p>
 		<div class="col-sm-4">

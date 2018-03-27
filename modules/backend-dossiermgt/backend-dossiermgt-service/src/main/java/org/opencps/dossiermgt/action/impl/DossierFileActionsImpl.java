@@ -15,11 +15,14 @@ import java.util.zip.ZipOutputStream;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -249,11 +252,37 @@ public class DossierFileActionsImpl implements DossierFileActions {
 	public void deleteAllDossierFile(long groupId, long dossierId, String fileTemplateNo,
 			ServiceContext serviceContext) throws PortalException {
 		
-		List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO(dossierId, fileTemplateNo, false);
+		//List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO(dossierId, fileTemplateNo, false);
+		_log.info("DOSSIERID_"+dossierId+"_FILETEMPLATENO_"+fileTemplateNo);
+
+		List<DossierFile> lsDossierFile =  DossierFileLocalServiceUtil.getDossierFileByDID_FTN(dossierId, fileTemplateNo);
+		
+		Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+		
+		_log.info("SIZE_DOSSIER_REMOVE_"+lsDossierFile.size());
 		
 		for (DossierFile file : lsDossierFile) {
-			DossierFileLocalServiceUtil.removeDossierFile(dossierId, file.getReferenceUid(), serviceContext);
+			
+			//DossierFileLocalServiceUtil.removeDossierFile(dossierId, file.getReferenceUid(), serviceContext);
+			
+			file.setRemoved(true);
+			
+			//set isNew = true
+			if (!dossier.getDossierStatus().equals(DossierStatusConstants.NEW)) {
+				
+				file.setIsNew(true);
+				
+			}
+			DossierFileLocalServiceUtil.updateDossierFile(file);
+			
 		}
 
+	}
+
+	// Get dossierFile by deliverableCode
+	@Override
+	public DossierFile getDossierFileByDeliverableCode(long groupId, String deliverableCode) {
+
+		return DossierFileLocalServiceUtil.getByDeliverableCode(deliverableCode);
 	}
 }

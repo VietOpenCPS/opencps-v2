@@ -43,5 +43,7 @@ public interface DossierFileActions {
 	
 	public void copyFile(String orgFileName, String targetFileName) throws IOException;
 	public void zipDirectory(File dir, String zipDirName) throws IOException;
+
+	public DossierFile getDossierFileByDeliverableCode(long groupId, String deliverableCode);
 	
 }

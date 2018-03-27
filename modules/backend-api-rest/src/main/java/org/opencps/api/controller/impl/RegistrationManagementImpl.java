@@ -131,11 +131,14 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	@Override
 	public Response add(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, RegistrationInputModel input) {
+		_log.info("START");
 		RegistrationDetailModel result = null;
 		
 		long companyId = company.getCompanyId();
+		_log.info("companyId: "+companyId);
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			_log.info("groupId: "+groupId);
 			String cityName = "";
 			String districtName = "";
 			String wardName = "";
@@ -152,6 +155,10 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 
 			}
+			_log.info("cityName: "+cityName);
+			_log.info("districtName: "+districtName);
+			_log.info("wardName: "+wardName);
+
 			RegistrationActions action = new RegistrationActionsImpl();
 
 			Registration registration = action.insert(groupId, companyId, input.getApplicantName(), input.getApplicantIdType(),
@@ -218,7 +225,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 					input.getContactEmail(), input.getGovAgencyCode(), input.getGovAgencyName(),
 					input.getRegistrationState(), input.getRegistrationClass(), serviceContext);
 
-			RegistrationDetailModel result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
+			RegistrationDetailResultModel result = RegistrationUtils.mappingToRegistrationDetailResultModel(registration);
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
@@ -535,5 +542,48 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(404).entity(error).build();
 		}
 
+	}
+
+	@Override
+	public Response getFormDataByReferenceUid(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String stage, String agency, String owner,
+			String registrationClass, String submitting, String keyword, String sort) {
+		BackendAuth auth = new BackendAuthImpl();
+		RegistrationActions actions = new RegistrationActionsImpl();
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(Field.KEYWORD_SEARCH, keyword);
+			params.put(RegistrationTerm.REGISTRATIONSTATE, stage);
+			params.put(RegistrationTerm.GOV_AGENCY_CODE, agency);
+			params.put(RegistrationTerm.OWNER, owner);
+			params.put(RegistrationTerm.REGISTRATION_CLASS, registrationClass);
+			params.put(RegistrationTerm.SUBMITTING, submitting);
+
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(sort + "_sortable", Sort.STRING_TYPE, true) };
+
+			JSONObject jsonData = actions.getRegistrations(serviceContext.getUserId(), serviceContext.getCompanyId(),
+					groupId, params, sorts, -1, -1, serviceContext);
+
+			JSONObject results = JSONFactoryUtil.createJSONObject();
+			
+			JSONArray JsonArr = RegistrationUtils.mappingFormData((List<Document>) jsonData.get("data"));
+			//
+			results.put("total",JsonArr.length());
+
+			results.put("data", JsonArr);
+
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
 	}
 }

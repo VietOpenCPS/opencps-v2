@@ -94,12 +94,12 @@
 		event.stopImmediatePropagation();
 		
 		var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn muốn xóa chức vụ này ?', $(event.currentTarget) );
+
+		var employeeJobPosId = $(this).attr('data-pk');
 	
 		confirmWindown.then(function(confirmed){
 		
 			if(confirmed){
-
-				var employeeJobPosId = $(this).attr('data-pk');
 		
 				$.ajax({
 				

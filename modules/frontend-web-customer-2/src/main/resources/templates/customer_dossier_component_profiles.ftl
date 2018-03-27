@@ -46,7 +46,7 @@
 										#
 										<div class="eq-height">
 
-											<div class="col-xs-12 col-sm-9 align-middle">
+											<div class="col-xs-12 col-sm-12 align-middle">
 												<span class="#if('${index}' === '0'){# active #}# hover-pointer item-file-component" data-pk="#:items[i].referenceUid#" data-index="${index}" >
 													#:items[i].displayName#
 												</span>
@@ -113,61 +113,73 @@
 			$(document).off("click",".btn-delete-component-profile");
 			$(document).on("click",".btn-delete-component-profile",function(event){
 
-				var id=$(this).attr("data-pk");
-				var eForm = $(this).attr("eForm");
-				var cf = confirm("Bạn có muốn xóa tệp tin này!");
-				if(cf){
-					if (eForm == "false") {
-						console.log("eForm false");
-						$.ajax({
-							url : "${api.server}/dossiers/${dossierId}/files/"+id,
-							type : "DELETE",
-							dataType : "json",
-							headers : {"groupId": ${groupId}},
-							data : {
-								
-							},
-							success:function(result){
+				if(navigator.onLine){
+					var id=$(this).attr("data-pk");
+					var eForm = $(this).attr("eForm");
+					var cf = confirm("Bạn có muốn xóa tệp tin này!");
+					if(cf){
+						if (eForm == "false") {
+							console.log("eForm false");
+							if(navigator.onLine){
+								$.ajax({
+									url : "${api.server}/dossiers/${dossierId}/files/"+id,
+									type : "DELETE",
+									dataType : "json",
+									headers : {"groupId": ${groupId}},
+									data : {
 
-								dataSourceDossierFile.pushDestroy(result);
+									},
+									success:function(result){
 
-								notification.show({
-									message: "Xóa thành công!"
-								}, "success");
+										dataSourceDossierFile.read();
 
-							},
-							error:function(result){
-								notification.show({
-									message: "Xẩy ra lỗi, vui lòng thử lại"
-								}, "error");
+										notification.show({
+											message: "Xóa thành công!"
+										}, "success");
+
+									},
+									error:function(result){
+										if(navigator.onLine){
+											notification.show({
+												message: "Xẩy ra lỗi, vui lòng thử lại"
+											}, "error");
+										}
+									}
+
+								});
 							}
+						}else {
+							console.log("eForm true");
+							if(navigator.onLine){
+								$.ajax({
+									url : "${api.server}/dossiers/${dossierId}/files/"+id+"/formdata",
+									type : "PUT",
+									dataType : "json",
+									headers : {"groupId": ${groupId}},
+									data : {
+										formdata: JSON.stringify({})
+									},
+									success:function(result){
 
-						});
-					}else {
-						console.log("eForm true");
-						$.ajax({
-							url : "${api.server}/dossiers/${dossierId}/files/"+id+"/formdata",
-							type : "PUT",
-							dataType : "json",
-							headers : {"groupId": ${groupId}},
-							data : {
-								formdata: JSON.stringify({})
-							},
-							success:function(result){
+										notification.show({
+											message: "Xóa thành công!"
+										}, "success");
 
-								notification.show({
-									message: "Xóa thành công!"
-								}, "success");
+									},
+									error:function(result){
+										if(navigator.onLine){
+											notification.show({
+												message: "Xẩy ra lỗi, vui lòng thử lại"
+											}, "error");
+										}
+									}
 
-							},
-							error:function(result){
-								notification.show({
-									message: "Xẩy ra lỗi, vui lòng thử lại"
-								}, "error");
+								});
 							}
-
-						});
+						}
 					}
+				}else {
+					alert("Không có kết nối internet, vui lòng kiểm tra kết nối của bạn!");
 				}
 
 				console.log(id);
@@ -182,13 +194,17 @@
 							dataType : "json",
 							headers : {"groupId": ${groupId}},
 							success : function (result) {
-								options.success(result);
 								if(!result.data){
 
 									notification.show({
 										message: "Bạn chưa tải file lên, Vui lòng tải lên để xem"
 									}, "error");
 
+								}else {
+									result.data = $.grep(result.data, function( value, index ) {
+										return (value.dossierPartType === 1);
+									});
+									options.success(result);
 								}
 							},
 							error : function (result) {

@@ -133,11 +133,11 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(
             groupId, applicantIdNo, govAgencyCode, 2);
 		
-		if(registrations.size() > 0) {
+		if(registrations.size() == 0) {
 		    actionForm.addRegistrationFormbaseonRegTemplate(groupId, companyId, registrationId, govAgencyCode, serviceContext);
 		} else {
 		    Registration oldRegistration = registrations.get(0);
-		    actionForm.cloneRegistrationFormByRegistrationId(groupId, oldRegistration.getRegistrationId(), serviceContext);
+		    actionForm.cloneRegistrationFormByRegistrationId(groupId, oldRegistration.getRegistrationId(), registrationId, serviceContext);
 		}
 
 
@@ -157,7 +157,11 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		Registration model = registrationPersistence.fetchByPrimaryKey(registrationId);
 
 		model.setModifiedDate(now);
-		model.setSubmitting(true);
+		if (registrationState == 0) {
+			model.setSubmitting(false);
+		} else {
+			model.setSubmitting(true);
+		}
 		
 		if (Validator.isNotNull(applicantIdDate)) {
 			try {

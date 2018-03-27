@@ -160,7 +160,8 @@ import javax.xml.bind.annotation.XmlType;
     "pending",
     "applicantNote",
     "notification",
-    "online"
+    "online",
+    "specialNo"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -228,8 +229,9 @@ public class DossierDetailModel {
     protected String applicantNote;
     protected String notification;
     protected String online;
+    protected Integer specialNo;
 
-    public String getDossierIdCTN() {
+	public String getDossierIdCTN() {
 		return dossierIdCTN;
 	}
 
@@ -1747,5 +1749,29 @@ public class DossierDetailModel {
     public void setOnline(String value) {
         this.online = value;
     }
+
+    /**
+     * Gets the value of the online property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+	public Integer getSpecialNo() {
+		return specialNo;
+	}
+
+	   /**
+     * Sets the value of the online property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+	public void setSpecialNo(Integer specialNo) {
+		this.specialNo = specialNo;
+	}
 
 }
