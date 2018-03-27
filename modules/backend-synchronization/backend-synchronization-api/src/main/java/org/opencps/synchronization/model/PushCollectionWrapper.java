@@ -68,6 +68,7 @@ public class PushCollectionWrapper implements PushCollection,
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("serverNo", getServerNo());
 		attributes.put("collectionCode", getCollectionCode());
 		attributes.put("collectionName", getCollectionName());
 		attributes.put("collectionNameEN", getCollectionNameEN());
@@ -126,6 +127,12 @@ public class PushCollectionWrapper implements PushCollection,
 
 		if (modifiedDate != null) {
 			setModifiedDate(modifiedDate);
+		}
+
+		String serverNo = (String)attributes.get("serverNo");
+
+		if (serverNo != null) {
+			setServerNo(serverNo);
 		}
 
 		String collectionCode = (String)attributes.get("collectionCode");
@@ -278,6 +285,16 @@ public class PushCollectionWrapper implements PushCollection,
 	@Override
 	public java.lang.String getMethod() {
 		return _pushCollection.getMethod();
+	}
+
+	/**
+	* Returns the server no of this push collection.
+	*
+	* @return the server no of this push collection
+	*/
+	@Override
+	public java.lang.String getServerNo() {
+		return _pushCollection.getServerNo();
 	}
 
 	/**
@@ -544,6 +561,16 @@ public class PushCollectionWrapper implements PushCollection,
 	@Override
 	public void setPushCollectionId(long pushCollectionId) {
 		_pushCollection.setPushCollectionId(pushCollectionId);
+	}
+
+	/**
+	* Sets the server no of this push collection.
+	*
+	* @param serverNo the server no of this push collection
+	*/
+	@Override
+	public void setServerNo(java.lang.String serverNo) {
+		_pushCollection.setServerNo(serverNo);
 	}
 
 	/**

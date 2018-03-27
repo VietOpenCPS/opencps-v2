@@ -18,12 +18,18 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.NotFoundException;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.datamgt.constants.DictCollectionTerm;
 import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.constants.DictItemGroupTerm;
-import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.exception.NoSuchDictItemGroupException;
 import org.opencps.datamgt.model.DictItemGroup;
-import org.opencps.datamgt.model.DictItemGroup;
+import org.opencps.datamgt.model.impl.DictItemGroupImpl;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.base.DictItemGroupLocalServiceBaseImpl;
 
@@ -46,21 +52,13 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.TermQuery;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
-import com.liferay.portal.kernel.search.generic.TermQueryImpl;
-import com.liferay.portal.kernel.search.generic.MatchQuery.Operator;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.auth.api.keys.ModelNameKeys;
 
 /**
  * The implementation of the dict item group local service.
@@ -556,6 +554,18 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
+	}
+	
+	@Override
+	public List<DictItemGroup> findOlderThanDate(Date date, long groupId, int start, int end) {
+		OrderByComparator<DictItemGroup> comparator = OrderByComparatorFactoryUtil.create(DictItemGroupImpl.TABLE_NAME, DictCollectionTerm.MODIFIED_DATE, true);
+		
+		return dictItemGroupPersistence.findByF_newerThan(date, groupId, start, end, comparator);
+	}
+	
+	@Override
+	public long countOlderThanDate(Date date, long groupId) {
+		return dictItemGroupPersistence.countByF_newerThan(date, groupId);
 	}
 	
 	Log _log = LogFactoryUtil.getLog(DictItemGroupLocalServiceUtil.class);

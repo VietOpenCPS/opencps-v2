@@ -51,6 +51,7 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 import org.opencps.synchronization.model.PushDictItem;
 import org.opencps.synchronization.service.PushDictItemLocalService;
 import org.opencps.synchronization.service.persistence.PushCollectionPersistence;
+import org.opencps.synchronization.service.persistence.PushDictGroupPersistence;
 import org.opencps.synchronization.service.persistence.PushDictItemPersistence;
 
 import java.io.Serializable;
@@ -470,6 +471,44 @@ public abstract class PushDictItemLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the push dict group local service.
+	 *
+	 * @return the push dict group local service
+	 */
+	public org.opencps.synchronization.service.PushDictGroupLocalService getPushDictGroupLocalService() {
+		return pushDictGroupLocalService;
+	}
+
+	/**
+	 * Sets the push dict group local service.
+	 *
+	 * @param pushDictGroupLocalService the push dict group local service
+	 */
+	public void setPushDictGroupLocalService(
+		org.opencps.synchronization.service.PushDictGroupLocalService pushDictGroupLocalService) {
+		this.pushDictGroupLocalService = pushDictGroupLocalService;
+	}
+
+	/**
+	 * Returns the push dict group persistence.
+	 *
+	 * @return the push dict group persistence
+	 */
+	public PushDictGroupPersistence getPushDictGroupPersistence() {
+		return pushDictGroupPersistence;
+	}
+
+	/**
+	 * Sets the push dict group persistence.
+	 *
+	 * @param pushDictGroupPersistence the push dict group persistence
+	 */
+	public void setPushDictGroupPersistence(
+		PushDictGroupPersistence pushDictGroupPersistence) {
+		this.pushDictGroupPersistence = pushDictGroupPersistence;
+	}
+
+	/**
 	 * Returns the push dict item local service.
 	 *
 	 * @return the push dict item local service
@@ -676,6 +715,10 @@ public abstract class PushDictItemLocalServiceBaseImpl
 	protected org.opencps.synchronization.service.PushCollectionLocalService pushCollectionLocalService;
 	@BeanReference(type = PushCollectionPersistence.class)
 	protected PushCollectionPersistence pushCollectionPersistence;
+	@BeanReference(type = org.opencps.synchronization.service.PushDictGroupLocalService.class)
+	protected org.opencps.synchronization.service.PushDictGroupLocalService pushDictGroupLocalService;
+	@BeanReference(type = PushDictGroupPersistence.class)
+	protected PushDictGroupPersistence pushDictGroupPersistence;
 	@BeanReference(type = PushDictItemLocalService.class)
 	protected PushDictItemLocalService pushDictItemLocalService;
 	@BeanReference(type = PushDictItemPersistence.class)

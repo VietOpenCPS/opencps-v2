@@ -3,6 +3,7 @@
 
 <hibernate-mapping auto-import="false" default-lazy="false">
 	<import class="org.opencps.synchronization.model.PushCollection" />
+	<import class="org.opencps.synchronization.model.PushDictGroup" />
 	<import class="org.opencps.synchronization.model.PushDictItem" />
 	<class name="org.opencps.synchronization.model.impl.PushCollectionImpl" table="opencps_pushcollection">
 		<id name="pushCollectionId" type="long">
@@ -15,11 +16,32 @@
 		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="serverNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="collectionCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="collectionName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="collectionNameEN" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="description" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="dataForm" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="method" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="org.opencps.synchronization.model.impl.PushDictGroupImpl" table="opencps_pushdictgroup">
+		<id name="pushDictGroupId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="serverNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="collectionCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="groupCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="groupName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="groupNameEN" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="groupDescription" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="itemCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="method" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.synchronization.model.impl.PushDictItemImpl" table="opencps_pushdictitem">
@@ -33,6 +55,7 @@
 		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="serverNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="collectionCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="itemCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="itemName" type="com.liferay.portal.dao.orm.hibernate.StringType" />

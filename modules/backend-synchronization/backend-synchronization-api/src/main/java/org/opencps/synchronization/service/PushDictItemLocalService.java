@@ -150,6 +150,9 @@ public interface PushDictItemLocalService extends BaseLocalService,
 
 	public List<PushDictItem> findAll(int start, int end);
 
+	public List<PushDictItem> findByGroupId_ServerNo(long groupId,
+		java.lang.String serverNo, int start, int end);
+
 	/**
 	* Returns a range of all the push dict items.
 	*
@@ -209,11 +212,12 @@ public interface PushDictItemLocalService extends BaseLocalService,
 		Projection projection);
 
 	public PushDictItem addPushDictItem(long userId, long groupId,
-		java.lang.String collectionCode, java.lang.String itemCode,
-		java.lang.String itemName, java.lang.String itemNameEN,
-		java.lang.String itemDescription, java.lang.String parentItemCode,
-		java.lang.String sibling, java.lang.String method,
-		java.lang.String metaData, ServiceContext serviceContext)
+		java.lang.String serverNo, java.lang.String collectionCode,
+		java.lang.String itemCode, java.lang.String itemName,
+		java.lang.String itemNameEN, java.lang.String itemDescription,
+		java.lang.String parentItemCode, java.lang.String sibling,
+		java.lang.String method, java.lang.String metaData,
+		ServiceContext serviceContext)
 		throws NoSuchUserException, SystemException, UnauthenticationException,
 			UnauthorizationException;
 
@@ -301,12 +305,12 @@ public interface PushDictItemLocalService extends BaseLocalService,
 		long groupId) throws PortalException;
 
 	public PushDictItem updatePushDictItem(long userId, long groupId,
-		long pushDictItemId, java.lang.String collectionCode,
-		java.lang.String itemCode, java.lang.String itemName,
-		java.lang.String itemNameEN, java.lang.String itemDescription,
-		java.lang.String parentItemCode, java.lang.String sibling,
-		java.lang.String method, java.lang.String metaData,
-		ServiceContext serviceContext)
+		long pushDictItemId, java.lang.String serverNo,
+		java.lang.String collectionCode, java.lang.String itemCode,
+		java.lang.String itemName, java.lang.String itemNameEN,
+		java.lang.String itemDescription, java.lang.String parentItemCode,
+		java.lang.String sibling, java.lang.String method,
+		java.lang.String metaData, ServiceContext serviceContext)
 		throws NoSuchUserException, SystemException, UnauthenticationException,
 			UnauthorizationException, NoSuchPushDictItemException;
 

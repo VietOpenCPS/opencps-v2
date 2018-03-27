@@ -66,7 +66,7 @@ public class PushDictItemCacheModel implements CacheModel<PushDictItem>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(35);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -84,6 +84,8 @@ public class PushDictItemCacheModel implements CacheModel<PushDictItem>,
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
+		sb.append(", serverNo=");
+		sb.append(serverNo);
 		sb.append(", collectionCode=");
 		sb.append(collectionCode);
 		sb.append(", itemCode=");
@@ -142,6 +144,13 @@ public class PushDictItemCacheModel implements CacheModel<PushDictItem>,
 		}
 		else {
 			pushDictItemImpl.setModifiedDate(new Date(modifiedDate));
+		}
+
+		if (serverNo == null) {
+			pushDictItemImpl.setServerNo(StringPool.BLANK);
+		}
+		else {
+			pushDictItemImpl.setServerNo(serverNo);
 		}
 
 		if (collectionCode == null) {
@@ -226,6 +235,7 @@ public class PushDictItemCacheModel implements CacheModel<PushDictItem>,
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+		serverNo = objectInput.readUTF();
 		collectionCode = objectInput.readUTF();
 		itemCode = objectInput.readUTF();
 		itemName = objectInput.readUTF();
@@ -264,6 +274,13 @@ public class PushDictItemCacheModel implements CacheModel<PushDictItem>,
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
+		if (serverNo == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(serverNo);
+		}
 
 		if (collectionCode == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
@@ -337,6 +354,7 @@ public class PushDictItemCacheModel implements CacheModel<PushDictItem>,
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
+	public String serverNo;
 	public String collectionCode;
 	public String itemCode;
 	public String itemName;

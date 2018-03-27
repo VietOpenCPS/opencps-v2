@@ -121,7 +121,8 @@ public interface DataManagement {
 	public Response addDataForm(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "code that need to be get detail", required = true) @PathParam("code") String code,
-			@ApiParam(value = "alpace string of dataform", required = true) @FormParam("dataform") String dataform);
+			@ApiParam(value = "alpace string of dataform", required = true) @FormParam("dataform") String dataform,
+			@ApiParam(value = "time of updated value when synchronize", required = false) @FormParam("modifiedDate") long modifiedDateTime);
 	
 	@GET
 	@Path("/{code}/dictgroups")
@@ -153,6 +154,7 @@ public interface DataManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response deleteDictgroups(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@PathParam("code") String code,
 			@PathParam("groupCode") String groupCode);
 	
 	@GET
@@ -349,7 +351,8 @@ public interface DataManagement {
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "code of DictCollection of DictItem that need to be updated", required = true) @PathParam("code") String code,
 			@ApiParam(value = "itemCode of DictItem that need to be updated or created", required = true) @PathParam("itemCode") String itemCode,
-			@BeanParam DictItemInputModel input);
+			@BeanParam DictItemInputModel input,
+			@ApiParam(value = "time of updated value when synchronize", required = false) @FormParam("modifiedDate") long modifiedDateTime);
 	@POST
 	@Path("/{code}")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
@@ -357,11 +360,20 @@ public interface DataManagement {
 	public Response updateOrCreateNewDictCollection(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "code that need to be created or updated", required = true) @PathParam("code") String code,			
-			@BeanParam DictCollectionInputModel input);
+			@BeanParam DictCollectionInputModel input,
+			@ApiParam(value = "time of updated value when synchronize", required = false) @FormParam("modifiedDate") long modifiedDateTime);
+
+	@POST
+	@Path("/{code}/dictgroups/{groupCode}")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response updateOrCreateNewDictgroups(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@PathParam("code") String code, @PathParam("groupCode") String groupCode, @BeanParam DictGroupInputModel input,
+			@ApiParam(value = "time of updated value when synchronize", required = false) @FormParam("modifiedDate") long modifiedDateTime);
 
 	@GET
 	@Path("/sync")
-	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getSyncDictCollections(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
@@ -369,10 +381,22 @@ public interface DataManagement {
 
 	@GET
 	@Path("/all/dictitems/sync")
-	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getSyncDictItems(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@BeanParam org.opencps.api.datamgtsync.model.DataSearchModel query);
 	
+	@GET
+	@Path("/all/dictgroups/all/dictitems/sync")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getSyncDictgroupsDictItems(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@BeanParam org.opencps.api.datamgtsync.model.DataSearchModel query);
+	
+	@GET
+	@Path("/all/dictgroups/sync")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getSyncDictGroups(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@BeanParam org.opencps.api.datamgtsync.model.DataSearchModel query);
 }

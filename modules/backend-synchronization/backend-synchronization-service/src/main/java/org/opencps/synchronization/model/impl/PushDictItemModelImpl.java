@@ -77,6 +77,7 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 			{ "userName", Types.VARCHAR },
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
+			{ "serverNo", Types.VARCHAR },
 			{ "collectionCode", Types.VARCHAR },
 			{ "itemCode", Types.VARCHAR },
 			{ "itemName", Types.VARCHAR },
@@ -98,6 +99,7 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("serverNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("collectionCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("itemCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("itemName", Types.VARCHAR);
@@ -109,7 +111,7 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 		TABLE_COLUMNS_MAP.put("metaData", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_pushdictitem (uuid_ VARCHAR(75) null,pushDictItemId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,collectionCode VARCHAR(75) null,itemCode VARCHAR(75) null,itemName VARCHAR(75) null,itemNameEN VARCHAR(75) null,itemDescription VARCHAR(75) null,parentItemCode VARCHAR(75) null,sibling VARCHAR(75) null,method VARCHAR(75) null,metaData VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_pushdictitem (uuid_ VARCHAR(75) null,pushDictItemId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,serverNo VARCHAR(75) null,collectionCode VARCHAR(75) null,itemCode VARCHAR(75) null,itemName VARCHAR(75) null,itemNameEN VARCHAR(75) null,itemDescription TEXT null,parentItemCode VARCHAR(75) null,sibling VARCHAR(75) null,method VARCHAR(75) null,metaData TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_pushdictitem";
 	public static final String ORDER_BY_JPQL = " ORDER BY pushDictItem.modifiedDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_pushdictitem.modifiedDate ASC";
@@ -130,8 +132,9 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 	public static final long GROUPID_COLUMN_BITMASK = 4L;
 	public static final long ITEMCODE_COLUMN_BITMASK = 8L;
 	public static final long METHOD_COLUMN_BITMASK = 16L;
-	public static final long UUID_COLUMN_BITMASK = 32L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 64L;
+	public static final long SERVERNO_COLUMN_BITMASK = 32L;
+	public static final long UUID_COLUMN_BITMASK = 64L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 128L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(backend.synchronization.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.synchronization.model.PushDictItem"));
 
@@ -180,6 +183,7 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("serverNo", getServerNo());
 		attributes.put("collectionCode", getCollectionCode());
 		attributes.put("itemCode", getItemCode());
 		attributes.put("itemName", getItemName());
@@ -244,6 +248,12 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 
 		if (modifiedDate != null) {
 			setModifiedDate(modifiedDate);
+		}
+
+		String serverNo = (String)attributes.get("serverNo");
+
+		if (serverNo != null) {
+			setServerNo(serverNo);
 		}
 
 		String collectionCode = (String)attributes.get("collectionCode");
@@ -445,6 +455,31 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 		_columnBitmask = -1L;
 
 		_modifiedDate = modifiedDate;
+	}
+
+	@Override
+	public String getServerNo() {
+		if (_serverNo == null) {
+			return StringPool.BLANK;
+		}
+		else {
+			return _serverNo;
+		}
+	}
+
+	@Override
+	public void setServerNo(String serverNo) {
+		_columnBitmask |= SERVERNO_COLUMN_BITMASK;
+
+		if (_originalServerNo == null) {
+			_originalServerNo = _serverNo;
+		}
+
+		_serverNo = serverNo;
+	}
+
+	public String getOriginalServerNo() {
+		return GetterUtil.getString(_originalServerNo);
 	}
 
 	@Override
@@ -657,6 +692,7 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 		pushDictItemImpl.setUserName(getUserName());
 		pushDictItemImpl.setCreateDate(getCreateDate());
 		pushDictItemImpl.setModifiedDate(getModifiedDate());
+		pushDictItemImpl.setServerNo(getServerNo());
 		pushDictItemImpl.setCollectionCode(getCollectionCode());
 		pushDictItemImpl.setItemCode(getItemCode());
 		pushDictItemImpl.setItemName(getItemName());
@@ -739,6 +775,8 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 
 		pushDictItemModelImpl._setModifiedDate = false;
 
+		pushDictItemModelImpl._originalServerNo = pushDictItemModelImpl._serverNo;
+
 		pushDictItemModelImpl._originalCollectionCode = pushDictItemModelImpl._collectionCode;
 
 		pushDictItemModelImpl._originalItemCode = pushDictItemModelImpl._itemCode;
@@ -792,6 +830,14 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 		}
 		else {
 			pushDictItemCacheModel.modifiedDate = Long.MIN_VALUE;
+		}
+
+		pushDictItemCacheModel.serverNo = getServerNo();
+
+		String serverNo = pushDictItemCacheModel.serverNo;
+
+		if ((serverNo != null) && (serverNo.length() == 0)) {
+			pushDictItemCacheModel.serverNo = null;
 		}
 
 		pushDictItemCacheModel.collectionCode = getCollectionCode();
@@ -871,7 +917,7 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(35);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -889,6 +935,8 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 		sb.append(getCreateDate());
 		sb.append(", modifiedDate=");
 		sb.append(getModifiedDate());
+		sb.append(", serverNo=");
+		sb.append(getServerNo());
 		sb.append(", collectionCode=");
 		sb.append(getCollectionCode());
 		sb.append(", itemCode=");
@@ -914,7 +962,7 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(55);
+		StringBundler sb = new StringBundler(58);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.synchronization.model.PushDictItem");
@@ -951,6 +999,10 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 		sb.append(
 			"<column><column-name>modifiedDate</column-name><column-value><![CDATA[");
 		sb.append(getModifiedDate());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>serverNo</column-name><column-value><![CDATA[");
+		sb.append(getServerNo());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>collectionCode</column-name><column-value><![CDATA[");
@@ -1012,6 +1064,8 @@ public class PushDictItemModelImpl extends BaseModelImpl<PushDictItem>
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
+	private String _serverNo;
+	private String _originalServerNo;
 	private String _collectionCode;
 	private String _originalCollectionCode;
 	private String _itemCode;

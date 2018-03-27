@@ -10,6 +10,7 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
+		<field name="serverNo" type="String" />
 		<field name="collectionCode" type="String" />
 		<field name="collectionName" type="String" />
 		<field name="collectionNameEN" type="String" />
@@ -21,6 +22,26 @@
 		</field>
 		<field name="method" type="String" />
 	</model>
+	<model name="org.opencps.synchronization.model.PushDictGroup">
+		<field name="uuid" type="String" />
+		<field name="pushDictGroupId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="serverNo" type="String" />
+		<field name="collectionCode" type="String" />
+		<field name="groupCode" type="String" />
+		<field name="groupName" type="String" />
+		<field name="groupNameEN" type="String" />
+		<field name="groupDescription" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
+		<field name="itemCode" type="String" />
+		<field name="method" type="String" />
+	</model>
 	<model name="org.opencps.synchronization.model.PushDictItem">
 		<field name="uuid" type="String" />
 		<field name="pushDictItemId" type="long" />
@@ -30,6 +51,7 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
+		<field name="serverNo" type="String" />
 		<field name="collectionCode" type="String" />
 		<field name="itemCode" type="String" />
 		<field name="itemName" type="String" />

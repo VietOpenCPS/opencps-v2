@@ -211,6 +211,21 @@ public interface PushDictItemModel extends BaseModel<PushDictItem>, GroupedModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
+	 * Returns the server no of this push dict item.
+	 *
+	 * @return the server no of this push dict item
+	 */
+	@AutoEscape
+	public String getServerNo();
+
+	/**
+	 * Sets the server no of this push dict item.
+	 *
+	 * @param serverNo the server no of this push dict item
+	 */
+	public void setServerNo(String serverNo);
+
+	/**
 	 * Returns the collection code of this push dict item.
 	 *
 	 * @return the collection code of this push dict item

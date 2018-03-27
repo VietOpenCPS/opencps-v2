@@ -68,6 +68,7 @@ public class PushDictItemWrapper implements PushDictItem,
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("serverNo", getServerNo());
 		attributes.put("collectionCode", getCollectionCode());
 		attributes.put("itemCode", getItemCode());
 		attributes.put("itemName", getItemName());
@@ -129,6 +130,12 @@ public class PushDictItemWrapper implements PushDictItem,
 
 		if (modifiedDate != null) {
 			setModifiedDate(modifiedDate);
+		}
+
+		String serverNo = (String)attributes.get("serverNo");
+
+		if (serverNo != null) {
+			setServerNo(serverNo);
 		}
 
 		String collectionCode = (String)attributes.get("collectionCode");
@@ -319,6 +326,16 @@ public class PushDictItemWrapper implements PushDictItem,
 	@Override
 	public java.lang.String getParentItemCode() {
 		return _pushDictItem.getParentItemCode();
+	}
+
+	/**
+	* Returns the server no of this push dict item.
+	*
+	* @return the server no of this push dict item
+	*/
+	@Override
+	public java.lang.String getServerNo() {
+		return _pushDictItem.getServerNo();
 	}
 
 	/**
@@ -615,6 +632,16 @@ public class PushDictItemWrapper implements PushDictItem,
 	@Override
 	public void setPushDictItemId(long pushDictItemId) {
 		_pushDictItem.setPushDictItemId(pushDictItemId);
+	}
+
+	/**
+	* Sets the server no of this push dict item.
+	*
+	* @param serverNo the server no of this push dict item
+	*/
+	@Override
+	public void setServerNo(java.lang.String serverNo) {
+		_pushDictItem.setServerNo(serverNo);
 	}
 
 	/**
