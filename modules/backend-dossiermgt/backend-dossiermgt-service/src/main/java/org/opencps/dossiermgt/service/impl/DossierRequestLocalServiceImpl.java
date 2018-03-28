@@ -80,7 +80,7 @@ public class DossierRequestLocalServiceImpl extends DossierRequestLocalServiceBa
 		
 		DossierRequest dossierRequest = null;
 		
-		if (dossierRequestId != 0) {
+		if (dossierRequestId == 0) {
 			dossierRequest = dossierRequestPersistence.fetchByPrimaryKey(dossierRequestId);
 //			Audit fields
 			dossierRequest.setGroupId(context.getScopeGroupId());
