@@ -1410,6 +1410,8 @@ public class DossierManagementImpl implements DossierManagement {
 			// 1. Update cancellingDate in dossier
 
 			Dossier dossier = getDossier(id, groupId);
+			
+			serviceContext.setScopeGroupId(groupId);
 
 			Dossier cancellingDossier = actions.cancelDossier(groupId, dossier.getDossierId(),
 					dossier.getReferenceUid(), serviceContext);
