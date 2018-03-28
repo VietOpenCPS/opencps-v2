@@ -69,7 +69,7 @@ public class DossierRequestListener extends BaseModelListener<DossierRequest>{
 
 			// payloads.put(payload);
 
-			serviceContext.setCompanyId(0l);
+			serviceContext.setCompanyId(20116l);
 			serviceContext.setUserId(userId);
 
 			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
