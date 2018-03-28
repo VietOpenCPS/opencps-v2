@@ -80,8 +80,20 @@ public class DossierRequestLocalServiceImpl extends DossierRequestLocalServiceBa
 		
 		DossierRequest dossierRequest = null;
 		
-		if (dossierRequestId == 0) {
+		if (dossierRequestId != 0) {
 			dossierRequest = dossierRequestPersistence.fetchByPrimaryKey(dossierRequestId);
+
+			dossierRequest.setModifiedDate(now);
+			dossierRequest.setUserId(userId);
+			dossierRequest.setUserName(userName);
+			
+			dossierRequest.setComment(comment);
+			dossierRequest.setIsNew(isNew);
+			
+		} else {
+			dossierRequestId = counterLocalService.increment(DossierRequest.class.getName());
+			
+			dossierRequest = dossierRequestPersistence.create(dossierRequestId);
 //			Audit fields
 			dossierRequest.setGroupId(context.getScopeGroupId());
 			dossierRequest.setCreateDate(now);
@@ -95,19 +107,7 @@ public class DossierRequestLocalServiceImpl extends DossierRequestLocalServiceBa
 			dossierRequest.setRequestType(requestType);
 			dossierRequest.setComment(comment);
 			dossierRequest.setIsNew(isNew);
-			
-			
-		} else {
-			dossierRequestId = counterLocalService.increment(DossierRequest.class.getName());
-			
-			dossierRequest = dossierRequestPersistence.create(dossierRequestId);
-			
-			dossierRequest.setModifiedDate(now);
-			dossierRequest.setUserId(userId);
-			dossierRequest.setUserName(userName);
-			
-			dossierRequest.setComment(comment);
-			dossierRequest.setIsNew(isNew);
+
 			
 		}
 		
