@@ -62,10 +62,7 @@ public class DossierRequestListener extends BaseModelListener<DossierRequest>{
 			JSONArray files = JSONFactoryUtil.createJSONArray();
 			
 			
-			payload.put("jobPosName", "TEST");
-			payload.put("stepName", StringPool.BLANK);
-			payload.put("stepInstruction", StringPool.BLANK);
-			payload.put("files", files);
+			payload.put("stepName", "type_"+model.getRequestType());
 
 			// payloads.put(payload);
 
