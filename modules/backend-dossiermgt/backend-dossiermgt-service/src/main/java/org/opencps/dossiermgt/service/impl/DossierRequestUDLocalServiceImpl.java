@@ -101,7 +101,6 @@ public class DossierRequestUDLocalServiceImpl
 			dossierRequest.setComment(comment);
 			dossierRequest.setIsNew(isNew);
 
-			
 		}
 		
 		dossierRequestUDPersistence.update(dossierRequest);
