@@ -1517,8 +1517,12 @@
 
 		<!-- Audit fields -->
 		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
 		<column name="payload" type="String" />
 
+		<order>
+			<order-column name="createDate" order-by="desc" />
+		</order>
 	</entity>
 
 	<exceptions>
