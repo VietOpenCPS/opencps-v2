@@ -1,6 +1,6 @@
 package org.opencps.dossiermgt.listenner;
 
-import org.opencps.dossiermgt.model.DossierRequest;
+import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
@@ -23,9 +23,9 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 @Component(immediate = true, service = ModelListener.class)
-public class DossierRequestListener extends BaseModelListener<DossierRequest>{
+public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 	@Override
-	public void onAfterCreate(DossierRequest model) throws ModelListenerException {
+	public void onAfterCreate(DossierRequestUD model) throws ModelListenerException {
 		
 		ServiceContext serviceContext = new ServiceContext();
 
