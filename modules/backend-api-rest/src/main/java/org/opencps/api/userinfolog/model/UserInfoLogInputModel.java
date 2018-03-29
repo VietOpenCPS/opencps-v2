@@ -45,13 +45,13 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "UserInfoLogInputModel")
 public class UserInfoLogInputModel {
-	
+
 	@FormParam(value = "serviceInfo")
 	protected String serviceInfo;
 
 	@FormParam(value = "applicant")
 	protected String applicant;
-	
+
 	@FormParam(value = "dossierNo")
 	protected String dossierNo;
 
