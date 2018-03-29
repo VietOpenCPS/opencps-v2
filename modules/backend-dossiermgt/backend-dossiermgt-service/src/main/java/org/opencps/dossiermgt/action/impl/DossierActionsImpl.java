@@ -1180,6 +1180,20 @@ public class DossierActionsImpl implements DossierActions {
 
 				// To index
 				DossierLocalServiceUtil.syncDossier(dossier);
+				
+				
+				String refUid = PortalUUIDUtil.generate();
+
+				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "reject_submit",
+						actionNote, 0, context);
+
+				// in SERVER
+				
+				context.setScopeGroupId(sourceDossier.getGroupId());
+				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid, "reject_submit",
+						actionNote, 0, context);
+				
+				context.setScopeGroupId(dossier.getGroupId());
 
 			}
 
@@ -1200,6 +1214,21 @@ public class DossierActionsImpl implements DossierActions {
 
 				// To index
 				DossierLocalServiceUtil.syncDossier(dossier);
+				
+				
+				String refUid = PortalUUIDUtil.generate();
+
+				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "reject_correcting",
+						actionNote, 0, context);
+
+				// in SERVER
+				
+				context.setScopeGroupId(sourceDossier.getGroupId());
+				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid, "reject_correcting",
+						actionNote, 0, context);
+				
+				context.setScopeGroupId(dossier.getGroupId());
+
 
 			}
 
