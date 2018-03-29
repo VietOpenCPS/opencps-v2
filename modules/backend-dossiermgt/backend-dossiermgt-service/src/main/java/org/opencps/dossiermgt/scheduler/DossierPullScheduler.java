@@ -392,7 +392,11 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 	private void synDossierRequest(long srcDossierId, long desDossierId, ServiceContext context) {
 
 		try {
+			
+			_log.info("****RUN SYN DOSSIER REQUEST****");
+			
 			List<DossierRequest> dossierRequests = DossierRequestLocalServiceUtil.getDossierRequest(srcDossierId, 1);
+			_log.info("****RUN SYN DOSSIER REQUEST**** 1" +dossierRequests.size() + " " + srcDossierId );
 
 			for (DossierRequest dr : dossierRequests) {
 
