@@ -24,6 +24,7 @@ import org.opencps.dossiermgt.model.DossierRequest;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierRequestLocalServiceBaseImpl;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.User;
@@ -118,10 +119,21 @@ public class DossierRequestLocalServiceImpl extends DossierRequestLocalServiceBa
 	}
 	
 	public List<DossierRequest> getDossierRequest(long dossierId, int isNew) throws PortalException, SystemException {
+		//TODO dont know why can use finder in service.xml file
 		
-		List<DossierRequest> dossierRequestList = new ArrayList<DossierRequest>();
+		//This is temporary function
 		
-		return null;
+		List<DossierRequest> all = dossierRequestPersistence.findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		
+		List<DossierRequest> ok = new ArrayList<DossierRequest>();
+		
+		for (DossierRequest dr : all) {
+			if (dr.getDossierId() == dossierId && dr.getIsNew() == isNew) {
+				ok.add(dr);
+			}
+		}
+		
+		return ok;
 	}
 
 }
