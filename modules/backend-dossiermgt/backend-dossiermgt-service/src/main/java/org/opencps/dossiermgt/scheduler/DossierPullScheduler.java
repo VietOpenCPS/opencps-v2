@@ -356,7 +356,10 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					pullPaymentFile(sourceGroupId, dossierId, desDossier.getGroupId(), desDossier.getDossierId(),
 							lsPaymentsFileSync, serviceContext);
 					
-					synDossierRequest(dossierId, desDossier.getGroupId(), serviceContext);
+					serviceContext.setCompanyId(desDossier.getCompanyId());
+					serviceContext.setScopeGroupId(desDossier.getGroupId());
+					
+					synDossierRequest(dossierId, desDossier.getDossierId(), serviceContext);
 
 					if (Validator.isNotNull(processAction)) {
 						// doAction
@@ -404,9 +407,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 				DossierRequestUDLocalServiceUtil.updateDossierRequestUD(dr);
 				
-				String refUUID = PortalUUIDUtil.generate();
-				
-				DossierRequestUDLocalServiceUtil.updateDossierRequest(0l, desDossierId, refUUID,
+				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, desDossierId, dr.getReferenceUid(),
 						dr.getRequestType(), dr.getComment(), 0, context);
 
 			}
@@ -1042,7 +1043,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 	}
 
-	public void pullRequestDossier(long dossierId, long desDossierId) {
+	public void pullRequestDossiers(long dossierId, long desDossierId) {
 		// TODO need update use API not use LocalService
 
 		try {
