@@ -28,7 +28,7 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.DossierRequest;
+import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -38,7 +38,7 @@ import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierRequestLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
@@ -395,18 +395,18 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			
 			_log.info("****RUN SYN DOSSIER REQUEST****" +  srcDossierId );
 			
-			List<DossierRequest> dossierRequests = DossierRequestLocalServiceUtil.getDossierRequest(srcDossierId, 1);
+			List<DossierRequestUD> dossierRequests = DossierRequestUDLocalServiceUtil.getDossierRequest(srcDossierId, 1);
 			_log.info("****RUN SYN DOSSIER REQUEST**** 1" +dossierRequests.size() + " " + srcDossierId );
 
-			for (DossierRequest dr : dossierRequests) {
+			for (DossierRequestUD dr : dossierRequests) {
 
 				dr.setIsNew(0);
 
-				DossierRequestLocalServiceUtil.updateDossierRequest(dr);
+				DossierRequestUDLocalServiceUtil.updateDossierRequestUD(dr);
 				
 				String refUUID = PortalUUIDUtil.generate();
 				
-				DossierRequestLocalServiceUtil.updateDossierRequest(0l, desDossierId, refUUID,
+				DossierRequestUDLocalServiceUtil.updateDossierRequest(0l, desDossierId, refUUID,
 						dr.getRequestType(), dr.getComment(), 0, context);
 
 			}
@@ -1046,17 +1046,17 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 		// TODO need update use API not use LocalService
 
 		try {
-			List<DossierRequest> lsDossierRequest = DossierRequestLocalServiceUtil.getDossierRequest(dossierId, 1);
+			List<DossierRequestUD> lsDossierRequest = DossierRequestUDLocalServiceUtil.getDossierRequest(dossierId, 1);
 
 			ServiceContext context = new ServiceContext();
 
 			context.setUserId(0);
 			context.setScopeGroupId(55301);
 
-			for (DossierRequest dr : lsDossierRequest) {
+			for (DossierRequestUD dr : lsDossierRequest) {
 				// update to client
 
-				DossierRequestLocalServiceUtil.updateDossierRequest(0, desDossierId, dr.getReferenceUid(),
+				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, desDossierId, dr.getReferenceUid(),
 						dr.getRequestType(), dr.getComment(), 0, context);
 			}
 
