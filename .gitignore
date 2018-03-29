@@ -55,6 +55,7 @@ themes/
 **/.web_bundle_build
 .gradle
 .idea
+.metadata
 /bundles
 /plugins-sdk/**/classes
 /plugins-sdk/**/ivy.xml.MD5

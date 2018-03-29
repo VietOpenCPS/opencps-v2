@@ -10,6 +10,7 @@ import org.opencps.communication.service.ServerConfigLocalService;
 import org.opencps.synchronization.constants.PushDictItemTerm;
 import org.opencps.synchronization.constants.SyncServerTerm;
 import org.opencps.synchronization.model.PushDictItem;
+import org.opencps.synchronization.rest.client.DictDataRestClient;
 import org.opencps.synchronization.service.PushDictItemLocalService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -38,18 +39,17 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-//@Component(immediate = true, service = DictItemSyncScheduler.class)
+@Component(immediate = true, service = DictItemSyncScheduler.class)
 public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		_log.info("PUSH DICT ITEM IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
+//		_log.info("PUSH DICT ITEM IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
 		
 		try {
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 			ServiceContext serviceContext = new ServiceContext();
 			serviceContext.setCompanyId(company.getCompanyId());
 					
-			List<PushDictItem> lstSyncDicts = _pushDictItemLocalService.findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 			List<ServerConfig> lstServers = _serverConfigLocalService.getServerConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 						
 			for (ServerConfig sc : lstServers) {
@@ -62,7 +62,10 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 								&& configObj.has(SyncServerTerm.SERVER_USERNAME)
 								&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
 								&& configObj.has(SyncServerTerm.SERVER_URL)
-								&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+								&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)
+								&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))
+								) {
+							List<PushDictItem> lstSyncDicts = _pushDictItemLocalService.findByGroupId_ServerNo(sc.getGroupId(), sc.getServerNo(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 							synchronizeDictItem(lstSyncDicts, sc, configObj);
 						}
 					}
@@ -75,11 +78,10 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 		catch (Exception e) {
 			_log.error(e);
 		}
-		_log.info("PUSH DICT ITEM HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
+//		_log.info("PUSH DICT ITEM HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 	}
 	
 	private void synchronizeDictItem(List<PushDictItem> lstSyncDicts, ServerConfig serverConfig, JSONObject configObj) {
-		_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
 		InvokeREST rest = new InvokeREST();
 		
 		HashMap<String, String> properties = new HashMap<String, String>();
@@ -93,36 +95,24 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 			rootApiUrl = rootApiUrl.substring(0, rootApiUrl.length() - 2);
 		}
 		
+		DictDataRestClient restClient = DictDataRestClient.fromJSONObject(configObj);
+		
 		try {
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 			ServiceContext serviceContext = new ServiceContext();
 			serviceContext.setCompanyId(company.getCompanyId());
 			
 			for (PushDictItem pitem : lstSyncDicts) {
-				if (pitem.getMethod().equals(SyncServerTerm.METHOD_CREATE)) {
-					putDictItemRestUrl.setLength(0);
-					putDictItemRestUrl.append(dictCollectionEndPoint);
-					putDictItemRestUrl.append("/");
-					putDictItemRestUrl.append(pitem.getCollectionCode());
-					putDictItemRestUrl.append("/dictitems");
-					putDictItemRestUrl.append("/" + pitem.getItemCode());
-					
-					params.put(PushDictItemTerm.COLLECTION_CODE, pitem.getCollectionCode());
-					params.put(PushDictItemTerm.ITEM_NAME, pitem.getItemName());
-					params.put(PushDictItemTerm.ITEM_NAME_EN, pitem.getItemNameEN());
-					params.put(PushDictItemTerm.ITEM_DESCRIPTION, pitem.getItemDescription());
-					params.put(PushDictItemTerm.PARENT_ITEM_CODE, pitem.getParentItemCode());
-					params.put(PushDictItemTerm.SIBLING, pitem.getSibling());
-									
-					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
-							rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
-					
-					if (resDictItem.getInt(RESTFulConfiguration.STATUS) == 200) {
-						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
-					}													
+				boolean isFound = false;
+				
+				if (restClient != null) {
+					if (restClient.getItemDetail(pitem.getCollectionCode(), pitem.getCollectionCode()) != null) {
+						isFound = true;
+					}
 				}
-				else if (pitem.getMethod().equals(SyncServerTerm.METHOD_UPDATE)) {
+	
+				if (pitem.getGroupId() != configObj.getLong(SyncServerTerm.SERVER_GROUP_ID) && pitem.getMethod().equals(SyncServerTerm.METHOD_CREATE)) {
+					_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
 					putDictItemRestUrl.setLength(0);
 					putDictItemRestUrl.append(dictCollectionEndPoint);
 					putDictItemRestUrl.append("/");
@@ -137,31 +127,76 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 					params.put(PushDictItemTerm.PARENT_ITEM_CODE, pitem.getParentItemCode());
 					params.put(PushDictItemTerm.SIBLING, pitem.getSibling());
 									
-					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
-							rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+					if (isFound) {
+						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
+								rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+						
+						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
+							_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
+						}																			
+					}
+					else {
+						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());						
+					}
+					_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
+				}
+				else if (pitem.getGroupId() != configObj.getLong(SyncServerTerm.SERVER_GROUP_ID) && pitem.getMethod().equals(SyncServerTerm.METHOD_UPDATE)) {
+					_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
+					putDictItemRestUrl.setLength(0);
+					putDictItemRestUrl.append(dictCollectionEndPoint);
+					putDictItemRestUrl.append("/");
+					putDictItemRestUrl.append(pitem.getCollectionCode());
+					putDictItemRestUrl.append("/dictitems");
+					putDictItemRestUrl.append("/" + pitem.getItemCode());
 					
-					if (resDictItem.getInt(RESTFulConfiguration.STATUS) == 200) {
-						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
-					}									
+					params.put(PushDictItemTerm.MODIFIED_DATE, pitem.getModifiedDate().getTime());
+					params.put(PushDictItemTerm.COLLECTION_CODE, pitem.getCollectionCode());
+					params.put(PushDictItemTerm.ITEM_NAME, pitem.getItemName());
+					params.put(PushDictItemTerm.ITEM_NAME_EN, pitem.getItemNameEN());
+					params.put(PushDictItemTerm.ITEM_DESCRIPTION, pitem.getItemDescription());
+					params.put(PushDictItemTerm.PARENT_ITEM_CODE, pitem.getParentItemCode());
+					params.put(PushDictItemTerm.SIBLING, pitem.getSibling());
+								
+					if (isFound) {
+						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
+								rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+						
+						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
+							_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
+						}															
+					}
+					else {
+						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());						
+					}
+					_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
 				else if (pitem.getMethod().equals(SyncServerTerm.METHOD_DELETE)) {
+					_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
 					putDictItemRestUrl.setLength(0);
 					putDictItemRestUrl.append(dictCollectionEndPoint);
 					putDictItemRestUrl.append("/");
 					putDictItemRestUrl.append(pitem.getCollectionCode());
 					putDictItemRestUrl.append("/dictitems");
 					putDictItemRestUrl.append("/" + pitem.getItemCode());
-														
-					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.DELETE, "application/json",
-							rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
-					
-					if (resDictItem.getInt(RESTFulConfiguration.STATUS) == 200) {
-						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
-					}														
+											
+					if (isFound) {
+						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.DELETE, "application/json",
+								rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+						
+						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
+							_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
+						}																				
+					}
+					else {
+						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());						
+					}
+					_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
-				else if (pitem.getMethod().equals(SyncServerTerm.METHOD_UPDATE_METADATA)) {
+				else if (pitem.getGroupId() != configObj.getLong(SyncServerTerm.SERVER_GROUP_ID) && pitem.getMethod().equals(SyncServerTerm.METHOD_UPDATE_METADATA)) {
+					_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
 					putDictItemRestUrl.setLength(0);
 					putDictItemRestUrl.append(dictCollectionEndPoint);
 					putDictItemRestUrl.append("/");
@@ -172,27 +207,32 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 					
 					params.put(PushDictItemTerm.META_DATA, pitem.getMetaData());
 									
-					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.PUT, "application/json",
-							rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
-					
-					if (resDictItem.getInt(RESTFulConfiguration.STATUS) == 200) {
-						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
-					}									
+					if (isFound) {
+						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.PUT, "application/json",
+								rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+						
+						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
+							_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
+						}															
+					}
+					else {
+						_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());						
+					}
+					_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
 			}
 		}
 		catch (Exception e) {
 			_log.error(e);
 		}
-		_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 	}
 	
 	@Activate
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 45, TimeUnit.SECOND));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 1, TimeUnit.SECOND));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

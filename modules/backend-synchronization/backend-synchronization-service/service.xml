@@ -25,6 +25,8 @@
 
 		<!-- Other fields -->
 
+		<column name="serverNo" type="String" />
+
 		<column name="collectionCode" type="String" />
 		<column name="itemCode" type="String" />
 		<column name="itemName" type="String" />
@@ -45,6 +47,10 @@
             <finder-column name="collectionCode"></finder-column>
             <finder-column name="itemCode"></finder-column>
             <finder-column name="method"></finder-column>
+        </finder>
+        <finder name="F_groupId_serverNo" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="serverNo"></finder-column>
         </finder>
 	</entity>
 	<entity local-service="true" name="PushCollection" table="opencps_pushcollection" remote-service="false" uuid="true">
@@ -67,6 +73,8 @@
 
 		<!-- Other fields -->
 
+		<column name="serverNo" type="String" />
+
 		<column name="collectionCode" type="String" />
 		<column name="collectionName" type="String" />
 		<column name="collectionNameEN" type="String" />
@@ -83,6 +91,64 @@
             <finder-column name="groupId"></finder-column>
             <finder-column name="collectionCode"></finder-column>
             <finder-column name="method"></finder-column>
+        </finder>
+        <finder name="F_groupId_serverNo" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="serverNo"></finder-column>
+        </finder>
+	</entity>	
+	<entity local-service="true" name="PushDictGroup" table="opencps_pushdictgroup" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="pushDictGroupId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="serverNo" type="String" />		
+
+		<column name="collectionCode" type="String" />		
+		<column name="groupCode" type="String" />
+		<column name="groupName" type="String" />
+		<column name="groupNameEN" type="String" />
+		<column name="groupDescription" type="String" />
+			
+		<column name="itemCode" type="String" />
+			
+		<column name="method" type="String"/>
+		
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="modifiedDate" />
+		</order>
+        <finder name="F_collectionCode_groupCode_Method" return-type="PushDictGroup">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="collectionCode"></finder-column>            
+            <finder-column name="groupCode"></finder-column>
+            <finder-column name="method"></finder-column>
+        </finder>
+        <finder name="F_collectionCode_groupCode_itemCode_Method" return-type="PushDictGroup">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="collectionCode"></finder-column>            
+            <finder-column name="groupCode"></finder-column>
+            <finder-column name="itemCode"></finder-column>            
+            <finder-column name="method"></finder-column>
+        </finder>
+        <finder name="F_groupId_serverNo" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="serverNo"></finder-column>            
         </finder>
 	</entity>	
 </service-builder>

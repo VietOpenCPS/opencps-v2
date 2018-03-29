@@ -8,6 +8,10 @@ import org.opencps.api.dossier.model.CertNumberModel;
 import org.opencps.api.dossier.model.DossierDataModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
@@ -74,7 +78,11 @@ public class DossierUtils {
 			model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
 			model.setBriefNote(doc.get(DossierTerm.BRIEF_NOTE));
 			model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
-			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+			
+			if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
+				Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));				
+			}
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
 			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
 			model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));
@@ -552,11 +560,45 @@ public class DossierUtils {
 			model.setStepInstruction(step.getStepInstruction());
 
 			// Check permission process dossier
-			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(input.getDossierActionId(), userId);
-			if (dau != null) {
-				model.setSpecialNo(dau.getModerator());
-			} else {
-				model.setSpecialNo(0);
+			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
+					input.getGroupId());
+			String statusCode = input.getDossierStatus();
+			String subStatusCode = input.getDossierSubStatus();
+			if (Validator.isNotNull(statusCode) || Validator.isNotNull(subStatusCode)) {
+				DictItem dictItem = null;
+				if (Validator.isNotNull(subStatusCode)) {
+					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(subStatusCode,
+							dictCollection.getDictCollectionId(), input.getGroupId());
+				} else {
+					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(statusCode,
+							dictCollection.getDictCollectionId(), input.getGroupId());
+				}
+				if (dictItem != null) {
+					_log.info("53");
+					String metaData = dictItem.getMetaData();
+					String specialStatus = StringPool.BLANK;
+					if (Validator.isNotNull(metaData)) {
+						_log.info("metaData: " +metaData);
+						try {
+							JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
+							specialStatus = metaJson.getString("specialStatus");
+							_log.info("specialStatus: " +specialStatus);
+							
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
+					}
+					if (Validator.isNotNull(specialStatus) && Boolean.parseBoolean(specialStatus)) {
+						DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(input.getDossierActionId(), userId);
+						if (dau != null) {
+							model.setSpecialNo(dau.getModerator());
+						} else {
+							model.setSpecialNo(0);
+						}
+					} else {
+						model.setSpecialNo(1);
+					}
+				}
 			}
 		}
 

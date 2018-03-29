@@ -8,29 +8,33 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
-import java.util.UUID;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.communication.model.ServerConfig;
-import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
@@ -75,8 +79,12 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				APIDateTimeUtils.convertDateToString(object.getApplicantIdDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		document.addTextSortable(DossierTerm.SUBMIT_DATE,
 				APIDateTimeUtils.convertDateToString(object.getSubmitDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-		document.addTextSortable(DossierTerm.RECEIVE_DATE,
-				APIDateTimeUtils.convertDateToString(object.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+//		document.addTextSortable(DossierTerm.RECEIVE_DATE,
+//				APIDateTimeUtils.convertDateToString(object.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		
+		document.addDateSortable(DossierTerm.RECEIVE_DATE,
+				object.getReceiveDate());
+		
 		document.addTextSortable(DossierTerm.DUE_DATE,
 				APIDateTimeUtils.convertDateToString(object.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		document.addTextSortable(DossierTerm.RELEASE_DATE,
@@ -256,6 +264,49 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		dossierIDCTN = formattedDate + HashFunction.hexShort(ba);
 		
 		document.addTextSortable(DossierTerm.DOSSIER_ID+"CTN", dossierIDCTN);
+
+		// Get info cert Number
+		List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.getAllDossierFile(dossierId);
+		if (dossierFileList != null && dossierFileList.size() > 0) {
+			String templateNo = StringPool.BLANK;
+			String partNo = StringPool.BLANK;
+			int partType = 2;
+			boolean eSign = true;
+			String deliverableCode = StringPool.BLANK;
+			for (DossierFile dossierFile : dossierFileList) {
+				templateNo = dossierFile.getDossierTemplateNo();
+				partNo = dossierFile.getDossierPartNo();
+				DossierPart dossierPart = DossierPartLocalServiceUtil.getByPartTypeEsign (object.getGroupId(), templateNo,
+						partNo, partType, eSign);
+				if (dossierPart != null) {
+					deliverableCode = dossierFile.getDeliverableCode();
+					if (Validator.isNotNull(deliverableCode)) {
+						Deliverable deli = DeliverableLocalServiceUtil.getByCodeAndState(deliverableCode, "2");
+						if (deli != null) {
+							String formData = StringPool.BLANK;
+							formData = deli.getFormData();
+							try {
+								JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
+								String certNo = String.valueOf(jsonData.get("so_chung_chi"));
+								String certDateStr = String.valueOf(jsonData.get("ngay_ky_cc"));
+								String certDateTimeStamp = certDateStr + " 00:00:00";
+								Date certDate = APIDateTimeUtils.convertStringToDate(certDateTimeStamp, APIDateTimeUtils._NORMAL_PARTTERN);
+								_log.info("certNo: "+certNo);
+								_log.info("certDate: "+certDate);
+								if (Validator.isNotNull(certNo) && Validator.isNotNull(certDate)) {
+									document.addTextSortable("so_chung_chi", certNo);
+									document.addDateSortable("ngay_ky_cc", certDate);
+								}
+								break;
+							} catch (Exception e) {
+								// TODO:
+							}
+						}
+					}
+				}
+			}
+		}
+
 		return document;
 	}
 

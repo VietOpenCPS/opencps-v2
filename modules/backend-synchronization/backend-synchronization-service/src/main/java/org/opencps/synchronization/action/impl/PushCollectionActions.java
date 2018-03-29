@@ -21,24 +21,29 @@ public class PushCollectionActions implements PushCollectionInterface {
 	}
 
 	@Override
-	public PushCollection addPushCollection(long userId, long groupId, String collectionCode, String collectionName,
+	public PushCollection addPushCollection(long userId, long groupId, 
+			String serverNo,
+			String collectionCode, String collectionName,
 			String collectionNameEN, String description, String method, 
 			String dataForm,
 			ServiceContext serviceContext)
 			throws NoSuchUserException, UnauthenticationException, UnauthorizationException,
 			NoSuchPushCollectionException {
 		// TODO Auto-generated method stub
-		return PushCollectionLocalServiceUtil.addPushCollection(userId, groupId, collectionCode, collectionName, collectionNameEN, description, method, dataForm, serviceContext);
+		return PushCollectionLocalServiceUtil.addPushCollection(userId, groupId, serverNo, collectionCode, collectionName, collectionNameEN, description, method, dataForm, serviceContext);
 	}
 
 	@Override
-	public PushCollection updatePushCollection(long userId, long groupId, long pushCollectionId, String collectionCode,
+	public PushCollection updatePushCollection(long userId, long groupId, 
+			long pushCollectionId, 
+			String serverNo,
+			String collectionCode,
 			String collectionName, String collectionNameEN, String description, String method,
 			String dataForm,
 			ServiceContext serviceContext) throws NoSuchUserException, NotFoundException, UnauthenticationException,
 			UnauthorizationException, NoSuchPushCollectionException {
 		// TODO Auto-generated method stub
-		return PushCollectionLocalServiceUtil.updatePushCollection(userId, groupId, pushCollectionId, collectionCode, collectionName, collectionNameEN, description, method, dataForm, serviceContext);
+		return PushCollectionLocalServiceUtil.updatePushCollection(userId, groupId, pushCollectionId, serverNo, collectionCode, collectionName, collectionNameEN, description, method, dataForm, serviceContext);
 	}
 
 	@Override

@@ -21,18 +21,22 @@ public class PushDictItemActions implements PushDictItemInterface {
 	}
 
 	@Override
-	public PushDictItem addPushDictItem(long userId, long groupId, String collectionCode, String itemCode,
+	public PushDictItem addPushDictItem(long userId, long groupId, 
+			String serverNo,
+			String collectionCode, String itemCode,
 			String itemName, String itemNameEn, String itemDescription, String parentItemCode, String sibling,
 			String method,
 			String metaData,
 			ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, NoSuchPushDictItemException {
 		// TODO Auto-generated method stub		
-		return PushDictItemLocalServiceUtil.addPushDictItem(userId, groupId, collectionCode, itemCode, itemName, itemNameEn, itemDescription, parentItemCode, sibling, method, metaData, serviceContext);
+		return PushDictItemLocalServiceUtil.addPushDictItem(userId, groupId, serverNo, collectionCode, itemCode, itemName, itemNameEn, itemDescription, parentItemCode, sibling, method, metaData, serviceContext);
 	}
 
 	@Override
-	public PushDictItem updatePushDictItem(long userId, long groupId, long pushDictItemId, String collectionCode,
+	public PushDictItem updatePushDictItem(long userId, long groupId, long pushDictItemId, 
+			String serverNo,
+			String collectionCode,
 			String itemCode, String itemName, String itemNameEn, String itemDescription, String parentItemCode,
 			String sibling, 
 			String method,
@@ -40,7 +44,7 @@ public class PushDictItemActions implements PushDictItemInterface {
 			ServiceContext serviceContext) throws NoSuchUserException, NotFoundException,
 			UnauthenticationException, UnauthorizationException, NoSuchPushDictItemException {
 		// TODO Auto-generated method stub
-		return PushDictItemLocalServiceUtil.updatePushDictItem(userId, groupId, pushDictItemId, collectionCode, itemCode, itemName, itemNameEn, itemDescription, parentItemCode, sibling, method, metaData, serviceContext);
+		return PushDictItemLocalServiceUtil.updatePushDictItem(userId, groupId, pushDictItemId, serverNo, collectionCode, itemCode, itemName, itemNameEn, itemDescription, parentItemCode, sibling, method, metaData, serviceContext);
 	}
 
 	@Override

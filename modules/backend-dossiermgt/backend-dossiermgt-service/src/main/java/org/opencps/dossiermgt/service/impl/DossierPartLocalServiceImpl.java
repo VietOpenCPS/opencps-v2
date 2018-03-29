@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.exception.HasExsistException;
+import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.service.base.DossierPartLocalServiceBaseImpl;
 
@@ -564,6 +565,15 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		}
 
 		// TODO add more logic here
+	}
+
+	public DossierPart getByPartTypeEsign(long groupId, String templateNo,
+			String partNo, int partType, boolean eSign) {
+		try {
+			return dossierPartPersistence.findByTP_NO_PART_ESIGN(groupId, templateNo, partNo, partType, eSign);
+		} catch (NoSuchDossierPartException e) {
+			return null;
+		}
 	}
 
 	public static final String CLASS_NAME = DossierPart.class.getName();

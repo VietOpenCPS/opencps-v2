@@ -140,6 +140,18 @@ public class DossierActionsImpl implements DossierActions {
 
 			String subStatusCode = GetterUtil.getString(params.get(DossierTerm.SUBSTATUS));
 
+			if (Validator.isNotNull(statusCode) && statusCode.indexOf(StringPool.COMMA) != -1) {
+				hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
+
+				result.put("data", hits.toList());
+
+				long total = DossierLocalServiceUtil.countLucene(params, searchContext);
+
+				result.put("total", total);
+				
+				return result;
+			}
+
 			// Get list dossierActionId
 			List<DossierActionUser> dauList = DossierActionUserLocalServiceUtil.getListUserByUserId(userId);
 			long dossierActionId = 0;
@@ -171,7 +183,6 @@ public class DossierActionsImpl implements DossierActions {
 			// Get list dossier follow status Code
 			if (Validator.isNotNull(statusCode) || Validator.isNotNull(subStatusCode)) {
 				_log.info("52"+sb.toString());
-				
 
 				DictItem dictItem = null;
 				if (Validator.isNotNull(subStatusCode)) {
@@ -284,11 +295,13 @@ public class DossierActionsImpl implements DossierActions {
 								hits = DossierLocalServiceUtil.searchLucene(params, sorts, -1, -1, searchContext);
 								
 								if (hits != null && hits.getLength() > 0) {
-									allDocsList.addAll(hits.toList());
-									_log.info("SizeList2: " + hits.toList().size());
+//									allDocsList.addAll(hits.toList());
+//									_log.info("SizeList2: " + hits.toList().size());
 									long count = DossierLocalServiceUtil.countLucene(params, searchContext);
 									_log.info("count: " + count);
 									if (dictItem.getParentItemId() != 0) {
+										allDocsList.addAll(hits.toList());
+										_log.info("SizeList2: " + hits.toList().size());
 										total += count;
 									}
 								}
@@ -1103,12 +1116,24 @@ public class DossierActionsImpl implements DossierActions {
 			
 			//case reject_cancelling
 			
+			_log.info("REJECT_CANCELLING....");
+			
 			if (preCondition.contentEquals("reject_cancelling")) {
 				//flag-off
-				
+				_log.info("DO REJECT_CANCELLING....");
+
 				Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
-				
+				_log.info("DO REJECT_CANCELLING.... FIND RESOURCE");
+
 				sourceDossier.setCancellingDate(null);
+				
+				DossierLocalServiceUtil.updateDossier(sourceDossier);
+				
+				dossier.setCancellingDate(null);
+				
+				// To index
+				DossierLocalServiceUtil.syncDossier(dossier);
+
 			}
 
 			// Add PaymentSync

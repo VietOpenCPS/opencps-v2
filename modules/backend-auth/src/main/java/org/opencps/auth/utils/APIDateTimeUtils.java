@@ -21,7 +21,26 @@ public class APIDateTimeUtils {
 	public static final String _TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	
 	public static final String _NORMAL_PARTTERN = "dd/MM/yyyy HH:mm:ss";
+	
+	public static final String _LUCENE_PATTERN = "yyyyMMddHHmmss";
 
+	public static String convertNormalDateToLuceneDate(String normal) {
+		if (Validator.isNull(normal)) {
+			return StringPool.BLANK;
+		}
+		String[] splitD = normal.split("/");
+		if (splitD.length != 3 ||
+				splitD[1].length() > 2 ||
+				splitD[0].length() > 2) {
+			return StringPool.BLANK;
+		}
+		String year = splitD[2];
+		String month = (splitD[1].length() == 1) ? "0" + splitD[1] : splitD[1];
+		String day = (splitD[0].length() == 1) ? "0" + splitD[0] : splitD[0];
+		
+		return year + month + day;
+	}
+	
 	public static String convertDateToString(Date date) {
 		return convertDateToString(date, _NORMAL_PARTTERN);
 	}
