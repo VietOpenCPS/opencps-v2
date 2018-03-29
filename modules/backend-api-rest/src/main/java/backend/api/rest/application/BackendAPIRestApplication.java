@@ -47,6 +47,7 @@ import org.opencps.api.controller.impl.ServiceInfoManagementImpl;
 import org.opencps.api.controller.impl.ServiceProcessManagementImpl;
 import org.opencps.api.controller.impl.SignatureManagementImpl;
 import org.opencps.api.controller.impl.StatisticManagementImpl;
+import org.opencps.api.controller.impl.UserInfoLogManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
@@ -103,6 +104,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new RegistrationLogManagementImpl());
 		singletons.add(new ProcessPluginManagementImpl());
 		singletons.add(new SignatureManagementImpl());
+		singletons.add(new UserInfoLogManagementImpl());
 		
 		// add service provider
 		singletons.add(_serviceContextProvider);
