@@ -111,66 +111,68 @@ public class DossierUtils {
 			model.setPostalCityCode(doc.get(DossierTerm.POSTAL_CITY_CODE));
 			model.setPostalCityName(doc.get(DossierTerm.POSTAL_CITY_NAME));
 			model.setPostalTelNo(doc.get(DossierTerm.POSTAL_TEL_NO));
+			model.setCertNo(doc.get("so_chung_chi"));
+			model.setCertDate(doc.get("ngay_ky_cc"));
 
 			//TODO: Get info cert Number
-			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil
-					.getDossierFilesByDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
-			
-			StringBuilder sb = new StringBuilder();
-			String deliverableCode = StringPool.BLANK;
-			if (dossierFileList != null && dossierFileList.size() > 0) {
-				int length = dossierFileList.size();
+//			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil
+//					.getDossierFilesByDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+//			
+//			StringBuilder sb = new StringBuilder();
+//			String deliverableCode = StringPool.BLANK;
+//			if (dossierFileList != null && dossierFileList.size() > 0) {
+//				int length = dossierFileList.size();
 //				_log.info("Size dossier File: "+ length);
-				int ii = 0;
-				for (int i = 0; i < length; i++) {
-					DossierFile dossierFile = dossierFileList.get(i);
-					deliverableCode = dossierFile.getDeliverableCode();
-//					_log.info("deliverableCode: "+ deliverableCode);
-					if (Validator.isNotNull(deliverableCode)) {
-//						_log.info("deliverableCode Check: "+ deliverableCode);
-						ii += 1;
-						if (ii == 1) {
-							sb.append(StringPool.APOSTROPHE);
-							sb.append(deliverableCode);
-							sb.append(StringPool.APOSTROPHE);
-						} else {
-							sb.append(StringPool.COMMA);
-							sb.append(StringPool.APOSTROPHE);
-							sb.append(deliverableCode);
-							sb.append(StringPool.APOSTROPHE);
-						}
-					}
-				}
-//				_log.info("Str Dossier Id: "+ sb.toString());
-			}
+//				int ii = 0;
+//				for (int i = 0; i < length; i++) {
+//					DossierFile dossierFile = dossierFileList.get(i);
+//					deliverableCode = dossierFile.getDeliverableCode();
+////					_log.info("deliverableCode: "+ deliverableCode);
+//					if (Validator.isNotNull(deliverableCode)) {
+////						_log.info("deliverableCode Check: "+ deliverableCode);
+//						ii += 1;
+//						if (ii == 1) {
+//							sb.append(StringPool.APOSTROPHE);
+//							sb.append(deliverableCode);
+//							sb.append(StringPool.APOSTROPHE);
+//						} else {
+//							sb.append(StringPool.COMMA);
+//							sb.append(StringPool.APOSTROPHE);
+//							sb.append(deliverableCode);
+//							sb.append(StringPool.APOSTROPHE);
+//						}
+//					}
+//				}
+////				_log.info("Str Dossier Id: "+ sb.toString());
+//			}
 
-			DeliverableActions action = new DeliverableActionsImpl();
-			if (Validator.isNotNull(sb.toString())) {
-				List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), "2");
-				
-				if (deliverableList != null && deliverableList.size() > 0) {
-	//				int lengthDeliver = deliverableList.size();
-	//				_log.info("Size list deliverable: "+ lengthDeliver);
-					String formData = StringPool.BLANK;
-					List<CertNumberModel> certNumberList = new ArrayList<CertNumberModel>();
-					for (Deliverable deliverable : deliverableList) {
-						CertNumberModel certNumberDetail = new CertNumberModel();
-						formData = deliverable.getFormData();
-	//					_log.info("formData: "+ formData);
-						try {
-							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
-							String certNo = String.valueOf(jsonData.get("so_chung_chi"));
-							String certDate = String.valueOf(jsonData.get("ngay_ky_cc"));
-							certNumberDetail.setCertNo(certNo);
-							certNumberDetail.setCertDate(certDate);
-							certNumberList.add(certNumberDetail);
-						} catch (Exception e) {
-							// TODO:
-						}
-					}
-					model.getCertNumber().addAll(certNumberList);
-				}
-			}
+//			DeliverableActions action = new DeliverableActionsImpl();
+//			if (Validator.isNotNull(sb.toString())) {
+//				List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), "2");
+//				
+//				if (deliverableList != null && deliverableList.size() > 0) {
+//	//				int lengthDeliver = deliverableList.size();
+//	//				_log.info("Size list deliverable: "+ lengthDeliver);
+//					String formData = StringPool.BLANK;
+//					List<CertNumberModel> certNumberList = new ArrayList<CertNumberModel>();
+//					for (Deliverable deliverable : deliverableList) {
+//						CertNumberModel certNumberDetail = new CertNumberModel();
+//						formData = deliverable.getFormData();
+//	//					_log.info("formData: "+ formData);
+//						try {
+//							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
+//							String certNo = String.valueOf(jsonData.get("so_chung_chi"));
+//							String certDate = String.valueOf(jsonData.get("ngay_ky_cc"));
+//							certNumberDetail.setCertNo(certNo);
+//							certNumberDetail.setCertDate(certDate);
+//							certNumberList.add(certNumberDetail);
+//						} catch (Exception e) {
+//							// TODO:
+//						}
+//					}
+//					model.getCertNumber().addAll(certNumberList);
+//				}
+//			}
 
 			ouputs.add(model);
 		}
@@ -258,204 +260,74 @@ public class DossierUtils {
 			model.setPostalCityCode(doc.get(DossierTerm.POSTAL_CITY_CODE));
 			model.setPostalCityName(doc.get(DossierTerm.POSTAL_CITY_NAME));
 			model.setPostalTelNo(doc.get(DossierTerm.POSTAL_TEL_NO));
+			model.setCertNo(doc.get("so_chung_chi"));
+			model.setCertDate(doc.get("ngay_ky_cc"));
 
 			//TODO: Get info cert Number
-			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil
-					.getDossierFilesByDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+//			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil
+//					.getDossierFilesByDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
 			
-			StringBuilder sb = new StringBuilder();
-			String deliverableCode = StringPool.BLANK;
-			if (dossierFileList != null && dossierFileList.size() > 0) {
-				int length = dossierFileList.size();
-//				_log.info("Size dossier File: "+ length);
-				int jj = 0;
-				for (int j = 0; j < length; j++) {
-					DossierFile dossierFile = dossierFileList.get(j);
-					deliverableCode = dossierFile.getDeliverableCode();
-//					_log.info("deliverableCode: "+ deliverableCode);
-					if (Validator.isNotNull(deliverableCode)) {
-//						_log.info("deliverableCode Check: "+ deliverableCode);
-						jj += 1;
-						if (jj == 1) {
-							sb.append(StringPool.APOSTROPHE);
-							sb.append(deliverableCode);
-							sb.append(StringPool.APOSTROPHE);
-						} else {
-							sb.append(StringPool.COMMA);
-							sb.append(StringPool.APOSTROPHE);
-							sb.append(deliverableCode);
-							sb.append(StringPool.APOSTROPHE);
-						}
-					}
-				}
-//				_log.info("Str Dossier Id: "+ sb.toString());
-			}
+//			StringBuilder sb = new StringBuilder();
+//			String deliverableCode = StringPool.BLANK;
+//			if (dossierFileList != null && dossierFileList.size() > 0) {
+//				int length = dossierFileList.size();
+////				_log.info("Size dossier File: "+ length);
+//				int jj = 0;
+//				for (int j = 0; j < length; j++) {
+//					DossierFile dossierFile = dossierFileList.get(j);
+//					deliverableCode = dossierFile.getDeliverableCode();
+////					_log.info("deliverableCode: "+ deliverableCode);
+//					if (Validator.isNotNull(deliverableCode)) {
+////						_log.info("deliverableCode Check: "+ deliverableCode);
+//						jj += 1;
+//						if (jj == 1) {
+//							sb.append(StringPool.APOSTROPHE);
+//							sb.append(deliverableCode);
+//							sb.append(StringPool.APOSTROPHE);
+//						} else {
+//							sb.append(StringPool.COMMA);
+//							sb.append(StringPool.APOSTROPHE);
+//							sb.append(deliverableCode);
+//							sb.append(StringPool.APOSTROPHE);
+//						}
+//					}
+//				}
+////				_log.info("Str Dossier Id: "+ sb.toString());
+//			}
 
-			DeliverableActions action = new DeliverableActionsImpl();
-			if (Validator.isNotNull(sb.toString())) {
-				List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), "2");
-				
-				if (deliverableList != null && deliverableList.size() > 0) {
-	//				int lengthDeliver = deliverableList.size();
-	//				_log.info("Size list deliverable: "+ lengthDeliver);
-					String formData = StringPool.BLANK;
-					List<CertNumberModel> certNumberList = new ArrayList<CertNumberModel>();
-					for (Deliverable deliverable : deliverableList) {
-						CertNumberModel certNumberDetail = new CertNumberModel();
-						formData = deliverable.getFormData();
-	//					_log.info("formData: "+ formData);
-						try {
-							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
-							String certNo = String.valueOf(jsonData.get("so_chung_chi"));
-							String certDate = String.valueOf(jsonData.get("ngay_ky_cc"));
-							certNumberDetail.setCertNo(certNo);
-							certNumberDetail.setCertDate(certDate);
-							certNumberList.add(certNumberDetail);
-						} catch (Exception e) {
-							// TODO:
-						}
-					}
-					model.getCertNumber().addAll(certNumberList);
-				}
-			}
+//			DeliverableActions action = new DeliverableActionsImpl();
+//			if (Validator.isNotNull(sb.toString())) {
+//				List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), "2");
+//				
+//				if (deliverableList != null && deliverableList.size() > 0) {
+//	//				int lengthDeliver = deliverableList.size();
+//	//				_log.info("Size list deliverable: "+ lengthDeliver);
+//					String formData = StringPool.BLANK;
+//					List<CertNumberModel> certNumberList = new ArrayList<CertNumberModel>();
+//					for (Deliverable deliverable : deliverableList) {
+//						CertNumberModel certNumberDetail = new CertNumberModel();
+//						formData = deliverable.getFormData();
+//	//					_log.info("formData: "+ formData);
+//						try {
+//							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
+//							String certNo = String.valueOf(jsonData.get("so_chung_chi"));
+//							String certDate = String.valueOf(jsonData.get("ngay_ky_cc"));
+//							certNumberDetail.setCertNo(certNo);
+//							certNumberDetail.setCertDate(certDate);
+//							certNumberList.add(certNumberDetail);
+//						} catch (Exception e) {
+//							// TODO:
+//						}
+//					}
+//					model.getCertNumber().addAll(certNumberList);
+//				}
+//			}
 			ouputs.add(model);
 		}
 		_log.info("ouputs: "+ouputs.size());
 		return ouputs;
 	}
 
-	//TODO:
-	public static JSONArray mappingForGetJSON(List<Document> docs) {
-		JSONArray ouputs = JSONFactoryUtil.createJSONArray();
-
-		for (Document doc : docs) {
-			JSONObject models = JSONFactoryUtil.createJSONObject();
-			models.put(DossierTerm.DOSSIER_ID+"CTN", doc.get(DossierTerm.DOSSIER_ID+"CTN"));
-			models.put(DossierTerm.DOSSIER_ID, GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
-			models.put(Field.GROUP_ID, GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
-			models.put(Field.CREATE_DATE, doc.get(Field.CREATE_DATE));
-			models.put(Field.MODIFIED_DATE, doc.get(Field.MODIFIED_DATE));
-			models.put(DossierTerm.REFERENCE_UID, doc.get(DossierTerm.REFERENCE_UID));
-			models.put(DossierTerm.COUNTER, doc.get(DossierTerm.COUNTER));
-			models.put(DossierTerm.SERVICE_CODE, doc.get(DossierTerm.SERVICE_CODE));
-			models.put(DossierTerm.SERVICE_NAME, doc.get(DossierTerm.SERVICE_NAME));
-			models.put(DossierTerm.GOV_AGENCY_CODE, doc.get(DossierTerm.GOV_AGENCY_CODE));
-			models.put(DossierTerm.GOV_AGENCY_NAME, doc.get(DossierTerm.GOV_AGENCY_NAME));
-			models.put(DossierTerm.APPLICANT_NAME, doc.get(DossierTerm.APPLICANT_NAME));
-			models.put(DossierTerm.APPLICANT_NOTE, doc.get(DossierTerm.APPLICANT_NOTE));
-			models.put(DossierTerm.APPLICANT_ID_TYPE, doc.get(DossierTerm.APPLICANT_ID_TYPE));
-			models.put(DossierTerm.APPLICANT_ID_NO, doc.get(DossierTerm.APPLICANT_ID_NO));
-			models.put(DossierTerm.APPLICANT_ID_DATE, doc.get(DossierTerm.APPLICANT_ID_DATE));
-			models.put(DossierTerm.ADDRESS, doc.get(DossierTerm.ADDRESS));
-			models.put(DossierTerm.CITY_CODE, doc.get(DossierTerm.CITY_CODE));
-			models.put(DossierTerm.CITY_NAME, doc.get(DossierTerm.CITY_NAME));
-			models.put(DossierTerm.DISTRICT_CODE, doc.get(DossierTerm.DISTRICT_CODE));
-			models.put(DossierTerm.DISTRICT_NAME, doc.get(DossierTerm.DISTRICT_NAME));
-			models.put(DossierTerm.WARD_CODE, doc.get(DossierTerm.WARD_CODE));
-			models.put(DossierTerm.WARD_NAME, doc.get(DossierTerm.WARD_NAME));
-			models.put(DossierTerm.CONTACT_NAME, doc.get(DossierTerm.CONTACT_NAME));
-			models.put(DossierTerm.CONTACT_TEL_NO, doc.get(DossierTerm.CONTACT_TEL_NO));
-			models.put(DossierTerm.CONTACT_EMAIL, doc.get(DossierTerm.CONTACT_EMAIL));
-			models.put(DossierTerm.DOSSIER_NOTE, doc.get(DossierTerm.DOSSIER_NOTE));
-			models.put(DossierTerm.SUBMISSION_NOTE, doc.get(DossierTerm.SUBMISSION_NOTE));
-			models.put(DossierTerm.BRIEF_NOTE, doc.get(DossierTerm.BRIEF_NOTE));
-			models.put(DossierTerm.DOSSIER_NO, doc.get(DossierTerm.DOSSIER_NO));
-			models.put(DossierTerm.SUBMIT_DATE, doc.get(DossierTerm.SUBMIT_DATE));
-			models.put(DossierTerm.RECEIVE_DATE, doc.get(DossierTerm.RECEIVE_DATE));
-			models.put(DossierTerm.DUE_DATE, doc.get(DossierTerm.DUE_DATE));
-			models.put(DossierTerm.FINISH_DATE, doc.get(DossierTerm.FINISH_DATE));
-			models.put(DossierTerm.DOSSIER_STATUS, doc.get(DossierTerm.DOSSIER_STATUS));
-			models.put(DossierTerm.DOSSIER_STATUS_TEXT, doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
-			models.put(DossierTerm.DOSSIER_SUB_STATUS, doc.get(DossierTerm.DOSSIER_SUB_STATUS));
-			models.put(DossierTerm.DOSSIER_SUB_STATUS_TEXT, doc.get(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
-			models.put(DossierTerm.DOSSIER_OVER_DUE, doc.get(DossierTerm.DOSSIER_OVER_DUE));
-			models.put(DossierTerm.SUBMITTING, doc.get(DossierTerm.SUBMITTING));
-			models.put("permission", getPermission(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
-			models.put(DossierTerm.LAST_ACTION_DATE, doc.get(DossierTerm.LAST_ACTION_DATE));
-			models.put(DossierTerm.LAST_ACTION_CODE, doc.get(DossierTerm.LAST_ACTION_CODE));
-			models.put(DossierTerm.LAST_ACTION_NAME, doc.get(DossierTerm.LAST_ACTION_NAME));
-			models.put(DossierTerm.LAST_ACTION_USER, doc.get(DossierTerm.LAST_ACTION_USER));
-			models.put(DossierTerm.LAST_ACTION_NOTE, doc.get(DossierTerm.LAST_ACTION_NOTE));
-			models.put(DossierTerm.STEP_CODE, doc.get(DossierTerm.STEP_CODE));
-			models.put(DossierTerm.STEP_NAME, doc.get(DossierTerm.STEP_NAME));
-			models.put(DossierTerm.STEP_DUE_DATE, doc.get(DossierTerm.STEP_DUE_DATE));
-			models.put(DossierTerm.STEP_OVER_DUE, doc.get(DossierTerm.STEP_OVER_DUE));
-			models.put("visited", getVisisted(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
-			models.put("pending", getPendding(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
-			models.put(DossierTerm.ONLINE, doc.get(DossierTerm.ONLINE));
-			models.put(DossierTerm.PASSWORD, doc.get(DossierTerm.PASSWORD));
-			models.put(DossierTerm.DOSSIER_TEMPLATE_NO, doc.get(DossierTerm.DOSSIER_TEMPLATE_NO));
-			models.put(DossierTerm.SERVER_NO, doc.get(DossierTerm.SERVER_NO));
-			models.put(DossierTerm.VIA_POSTAL, doc.get(DossierTerm.VIA_POSTAL));
-			models.put(DossierTerm.POSTAL_ADDRESS, doc.get(DossierTerm.POSTAL_ADDRESS));
-			models.put(DossierTerm.POSTAL_CITY_CODE, doc.get(DossierTerm.POSTAL_CITY_CODE));
-			models.put(DossierTerm.POSTAL_CITY_NAME, doc.get(DossierTerm.POSTAL_CITY_NAME));
-			models.put(DossierTerm.POSTAL_TEL_NO, doc.get(DossierTerm.POSTAL_TEL_NO));
-
-			//TODO: Get info cert Number
-			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil
-					.getDossierFilesByDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
-			
-			StringBuilder sb = new StringBuilder();
-			String deliverableCode = StringPool.BLANK;
-			if (dossierFileList != null && dossierFileList.size() > 0) {
-				int length = dossierFileList.size();
-//				_log.info("Size dossier File: "+ length);
-				int ii = 0;
-				for (int i = 0; i < length; i++) {
-					DossierFile dossierFile = dossierFileList.get(i);
-					deliverableCode = dossierFile.getDeliverableCode();
-//					_log.info("deliverableCode: "+ deliverableCode);
-					if (Validator.isNotNull(deliverableCode)) {
-//						_log.info("deliverableCode Check: "+ deliverableCode);
-						ii += 1;
-						if (ii == 1) {
-							sb.append(StringPool.APOSTROPHE);
-							sb.append(deliverableCode);
-							sb.append(StringPool.APOSTROPHE);
-						} else {
-							sb.append(StringPool.COMMA);
-							sb.append(StringPool.APOSTROPHE);
-							sb.append(deliverableCode);
-							sb.append(StringPool.APOSTROPHE);
-						}
-					}
-				}
-//				_log.info("Str Dossier Id: "+ sb.toString());
-			}
-
-			DeliverableActions action = new DeliverableActionsImpl();
-
-			List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), "2");
-			
-			if (deliverableList != null && deliverableList.size() > 0) {
-//				int lengthDeliver = deliverableList.size();
-//				_log.info("Size list deliverable: "+ lengthDeliver);
-				String formData = StringPool.BLANK;
-				JSONArray certNumberArr = JSONFactoryUtil.createJSONArray();
-				for (Deliverable deliverable : deliverableList) {
-					JSONObject certNumberDetail = JSONFactoryUtil.createJSONObject();
-					formData = deliverable.getFormData();
-//					_log.info("formData: "+ formData);
-					try {
-						JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
-						certNumberDetail.put("so_chung_chi", jsonData.get("so_chung_chi"));
-						certNumberDetail.put("ngay_ky_cc", jsonData.get("ngay_ky_cc"));
-						certNumberArr.put(certNumberDetail);
-					} catch (Exception e) {
-						//-log.error(e);
-						// TODO:
-					}
-//					
-				}
-				models.put("certNumber", certNumberArr);
-			}
-			ouputs.put(models);
-		}
-
-		return ouputs;
-	}
-	
 	static Log _log = LogFactoryUtil.getLog(DossierUtils.class);
 
 	public static DossierDetailModel mappingForGetDetail(Dossier input, long userId) {
