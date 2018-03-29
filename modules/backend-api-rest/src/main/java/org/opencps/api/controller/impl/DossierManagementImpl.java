@@ -22,6 +22,7 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -33,7 +34,6 @@ import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierRequest;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -129,6 +129,14 @@ public class DossierManagementImpl implements DossierManagement {
 			String top = query.getTop();
 			String state = query.getState();
 			String dossierIdNo = query.getDossierNo();
+			String soChungChi = query.getSoChungChi();
+			String fromReceiveDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromReceiveDate());
+			
+			String toReceiveDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToReceiveDate());
+
+			String fromCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getTuNgayKyCc());
+
+			String toCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getDenNgayKyCc());
 
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -146,6 +154,11 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put("secetKey", query.getSecetKey());
 			params.put(DossierTerm.STATE, state);
 			params.put(DossierTerm.DOSSIER_NO, dossierIdNo);
+			params.put(DossierTerm.CERT_NO, soChungChi);
+			params.put(DossierTerm.FROM_RECEIVEDATE, fromReceiveDate);
+			params.put(DossierTerm.TO_RECEIVEDATE, toReceiveDate);
+			params.put(DossierTerm.FROM_CERT_DATE, fromCertDate);
+			params.put(DossierTerm.TO_CERT_DATE, toCertDate);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
