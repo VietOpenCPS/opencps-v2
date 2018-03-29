@@ -1126,12 +1126,24 @@ public class DossierActionsImpl implements DossierActions {
 			
 			//case reject_cancelling
 			
+			_log.info("REJECT_CANCELLING....");
+			
 			if (preCondition.contentEquals("reject_cancelling")) {
 				//flag-off
-				
+				_log.info("DO REJECT_CANCELLING....");
+
 				Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
-				
+				_log.info("DO REJECT_CANCELLING.... FIND RESOURCE");
+
 				sourceDossier.setCancellingDate(null);
+				
+				DossierLocalServiceUtil.updateDossier(sourceDossier);
+				
+				dossier.setCancellingDate(null);
+				
+				// To index
+				DossierLocalServiceUtil.syncDossier(dossier);
+
 			}
 
 			// Add PaymentSync

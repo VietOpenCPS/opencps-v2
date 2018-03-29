@@ -50,7 +50,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 	public void onAfterUpdate(Dossier model) throws ModelListenerException {
 		_log.info("Dossiser UpDate.....");
 		
-		//case application has request to cancel Dossier
+/*		//case application has request to cancel Dossier
 		if (Validator.isNull(modelBeforeUpdate.getCancellingDate()) && Validator.isNotNull(model.getCancellingDate())) {
 			//update dossier log
 			_log.info("UPDATE DOSSIER LOG.....");
@@ -109,7 +109,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 			
 		}
 		
-	
+	*/
 	}
 
 	@Override

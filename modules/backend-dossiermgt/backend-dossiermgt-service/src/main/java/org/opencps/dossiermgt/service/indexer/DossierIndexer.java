@@ -79,8 +79,12 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				APIDateTimeUtils.convertDateToString(object.getApplicantIdDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		document.addTextSortable(DossierTerm.SUBMIT_DATE,
 				APIDateTimeUtils.convertDateToString(object.getSubmitDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-		document.addTextSortable(DossierTerm.RECEIVE_DATE,
-				APIDateTimeUtils.convertDateToString(object.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+//		document.addTextSortable(DossierTerm.RECEIVE_DATE,
+//				APIDateTimeUtils.convertDateToString(object.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		
+		document.addDateSortable(DossierTerm.RECEIVE_DATE,
+				object.getReceiveDate());
+		
 		document.addTextSortable(DossierTerm.DUE_DATE,
 				APIDateTimeUtils.convertDateToString(object.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		document.addTextSortable(DossierTerm.RELEASE_DATE,
@@ -284,12 +288,14 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 							try {
 								JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
 								String certNo = String.valueOf(jsonData.get("so_chung_chi"));
-								String certDate = String.valueOf(jsonData.get("ngay_ky_cc"));
+								String certDateStr = String.valueOf(jsonData.get("ngay_ky_cc"));
+								String certDateTimeStamp = certDateStr + " 00:00:00";
+								Date certDate = APIDateTimeUtils.convertStringToDate(certDateTimeStamp, APIDateTimeUtils._NORMAL_PARTTERN);
 								_log.info("certNo: "+certNo);
 								_log.info("certDate: "+certDate);
 								if (Validator.isNotNull(certNo) && Validator.isNotNull(certDate)) {
 									document.addTextSortable("so_chung_chi", certNo);
-									document.addTextSortable("ngay_ky_cc", certDate);
+									document.addDateSortable("ngay_ky_cc", certDate);
 								}
 								break;
 							} catch (Exception e) {
