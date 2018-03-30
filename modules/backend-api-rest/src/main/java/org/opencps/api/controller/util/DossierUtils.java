@@ -257,8 +257,14 @@ public class DossierUtils {
 			model.setPostalCityCode(doc.get(DossierTerm.POSTAL_CITY_CODE));
 			model.setPostalCityName(doc.get(DossierTerm.POSTAL_CITY_NAME));
 			model.setPostalTelNo(doc.get(DossierTerm.POSTAL_TEL_NO));
-			model.setCertNo(doc.get("so_chung_chi"));
-			model.setCertDate(doc.get("ngay_ky_cc"));
+			
+			String certNo = doc.get("so_chung_chi");
+			String certDate = doc.get("ngay_ky_cc");
+			if (Validator.isNotNull(certNo) && Validator.isNotNull(certDate)) {
+				Date tempDate = APIDateTimeUtils.convertStringToDate(certDate, APIDateTimeUtils._LUCENE_PATTERN);
+				model.setCertDate(APIDateTimeUtils.convertDateToString(tempDate, APIDateTimeUtils._NORMAL_PARTTERN));
+				model.setCertNo(doc.get("so_chung_chi"));
+			}
 
 			ouputs.add(model);
 		}
