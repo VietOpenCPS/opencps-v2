@@ -1437,6 +1437,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String certNo = GetterUtil.getString(params.get(DossierTerm.CERT_NO));
 		String fromCertDate = GetterUtil.getString(params.get(DossierTerm.FROM_CERT_DATE));
 		String toCertDate = GetterUtil.getString(params.get(DossierTerm.TO_CERT_DATE));
+		String fromSubmitDate = GetterUtil.getString(params.get(DossierTerm.FROM_SUBMIT_DATE));
+		String toSubmitDate = GetterUtil.getString(params.get(DossierTerm.TO_SUBMIT_DATE));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1740,6 +1742,37 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 						true);
 
 					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);								
+			}
+		}
+
+		String fromSubmitDateFilter = fromSubmitDate + "000000";
+		String toSubmitDateFilter = toSubmitDate + "235959";
+
+		if (Validator.isNotNull(fromSubmitDate)) {
+			if (Validator.isNotNull(toSubmitDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+					DossierTerm.SUBMIT_DATE, fromSubmitDateFilter, toSubmitDateFilter, true,
+					true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);				
+			}
+			else {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.SUBMIT_DATE, fromSubmitDateFilter, toSubmitDateFilter, 
+						true,
+						false);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);								
+			}
+		}
+		else {
+			if (Validator.isNotNull(toSubmitDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.RECEIVE_DATE, fromSubmitDateFilter, toSubmitDateFilter, 
+						false,
+						true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
 		}
 		
