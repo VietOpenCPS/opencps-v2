@@ -79,8 +79,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		// add number fields
 		document.addTextSortable(DossierTerm.APPLICANT_ID_DATE,
 				APIDateTimeUtils.convertDateToString(object.getApplicantIdDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-		document.addTextSortable(DossierTerm.SUBMIT_DATE,
-				APIDateTimeUtils.convertDateToString(object.getSubmitDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		document.addDateSortable(DossierTerm.SUBMIT_DATE,
+				object.getReceiveDate());
+//		document.addTextSortable(DossierTerm.SUBMIT_DATE,
+//				APIDateTimeUtils.convertDateToString(object.getSubmitDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 //		document.addTextSortable(DossierTerm.RECEIVE_DATE,
 //				APIDateTimeUtils.convertDateToString(object.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		

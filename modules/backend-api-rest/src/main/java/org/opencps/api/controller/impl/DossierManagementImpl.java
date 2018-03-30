@@ -147,6 +147,10 @@ public class DossierManagementImpl implements DossierManagement {
 			String fromCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getTuNgayKyCc());
 
 			String toCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getDenNgayKyCc());
+			
+			String dossierIdCTN = query.getDossierIdCTN();
+			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
+			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
 
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -169,6 +173,9 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TO_RECEIVEDATE, toReceiveDate);
 			params.put(DossierTerm.FROM_CERT_DATE, fromCertDate);
 			params.put(DossierTerm.TO_CERT_DATE, toCertDate);
+			params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
+			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
+			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
