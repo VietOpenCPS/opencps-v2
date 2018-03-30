@@ -300,7 +300,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								}
 								break;
 							} catch (Exception e) {
-								// TODO:
+								_log.info(e);
 							}
 						}
 					}
