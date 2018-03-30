@@ -25,12 +25,9 @@ import javax.xml.bind.annotation.XmlType;
 *   &lt;complexContent>
 *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
 *       &lt;sequence>
-*         &lt;element name="serviceInfoId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
-*         &lt;element name="serviceCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
-*         &lt;element name="serviceName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
-*         &lt;element name="processText" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
-*         &lt;element name="methodText" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
-*         &lt;element name="dossierText" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+*         &lt;element name="serviceInfo" type="{http://www.w3.org/2001/XMLSchema}String" minOccurs="0"/>
+*         &lt;element name="applicant" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+*         &lt;element name="dossierNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
 *       &lt;/sequence>
 *     &lt;/restriction>
 *   &lt;/complexContent>
@@ -41,38 +38,22 @@ import javax.xml.bind.annotation.XmlType;
 */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
- "service",
- "ownerDossier",
+ "serviceInfo",
+ "applicant",
  "dossierNo"
 
 })
 @XmlRootElement(name = "UserInfoLogInputModel")
 public class UserInfoLogInputModel {
-	
-	@FormParam(value = "service")
-	protected String service;
 
-	@FormParam(value = "ownerDossier")
-	protected String ownerDossier;
-	
+	@FormParam(value = "serviceInfo")
+	protected String serviceInfo;
+
+	@FormParam(value = "applicant")
+	protected String applicant;
+
 	@FormParam(value = "dossierNo")
 	protected String dossierNo;
-
-	public String getService() {
-		return service;
-	}
-
-	public void setService(String service) {
-		this.service = service;
-	}
-
-	public String getOwnerDossier() {
-		return ownerDossier;
-	}
-
-	public void setOwnerDossier(String ownerDossier) {
-		this.ownerDossier = ownerDossier;
-	}
 
 	public String getDossierNo() {
 		return dossierNo;
@@ -80,6 +61,22 @@ public class UserInfoLogInputModel {
 
 	public void setDossierNo(String dossierNo) {
 		this.dossierNo = dossierNo;
+	}
+
+	public String getServiceInfo() {
+		return serviceInfo;
+	}
+
+	public void setServiceInfo(String serviceInfo) {
+		this.serviceInfo = serviceInfo;
+	}
+
+	public String getApplicant() {
+		return applicant;
+	}
+
+	public void setApplicant(String applicant) {
+		this.applicant = applicant;
 	}
 
 }

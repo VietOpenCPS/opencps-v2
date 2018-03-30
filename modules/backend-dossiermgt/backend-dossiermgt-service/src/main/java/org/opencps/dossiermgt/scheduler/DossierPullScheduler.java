@@ -28,7 +28,7 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.DossierRequest;
+import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -38,7 +38,7 @@ import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierRequestLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
@@ -304,6 +304,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					_log.error("UPDATE____CANCELLING_DATE");
 					desDossier.setCancellingDate(APIDateTimeUtils.convertStringToDate(
 							object.getString(DossierTerm.CANCELLING_DATE), APIDateTimeUtils._NORMAL_PARTTERN));
+
 				}
 
 				if (Validator.isNotNull(object.getString(DossierTerm.CORRECTING_DATE))) {
@@ -354,6 +355,11 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 					pullPaymentFile(sourceGroupId, dossierId, desDossier.getGroupId(), desDossier.getDossierId(),
 							lsPaymentsFileSync, serviceContext);
+					
+					serviceContext.setCompanyId(desDossier.getCompanyId());
+					serviceContext.setScopeGroupId(desDossier.getGroupId());
+					
+					synDossierRequest(dossierId, desDossier.getDossierId(), serviceContext);
 
 					if (Validator.isNotNull(processAction)) {
 						// doAction
@@ -372,12 +378,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 					} else {
 						desDossier.setSubmitting(true);
-						/*
-						 * desDossier.setSubmitDate(APIDateTimeUtils.
-						 * convertStringToDate(
-						 * object.getString(DossierTerm.SUBMIT_DATE),
-						 * APIDateTimeUtils._NORMAL_PARTTERN));
-						 */ }
+
+					}
 
 				}
 
@@ -388,6 +390,31 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 		// ResetDossier
 		resetDossier(sourceGroupId, referenceUid, true, serviceContext);
 
+	}
+
+	private void synDossierRequest(long srcDossierId, long desDossierId, ServiceContext context) {
+
+		try {
+			
+			_log.info("****RUN SYN DOSSIER REQUEST****" +  srcDossierId );
+			
+			List<DossierRequestUD> dossierRequests = DossierRequestUDLocalServiceUtil.getDossierRequest(srcDossierId, 1);
+			_log.info("****RUN SYN DOSSIER REQUEST**** 1" +dossierRequests.size() + " " + srcDossierId );
+
+			for (DossierRequestUD dr : dossierRequests) {
+
+				dr.setIsNew(0);
+
+				DossierRequestUDLocalServiceUtil.updateDossierRequestUD(dr);
+				
+				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, desDossierId, dr.getReferenceUid(),
+						dr.getRequestType(), dr.getComment(), 0, context);
+
+			}
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	private void getPaymentFiles(long srcGroupId, long srcDossierId, List<JSONObject> lsPaymentsFileSync) {
@@ -953,8 +980,14 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			multipart.addFormField("isSync", StringPool.BLANK);
 			multipart.addFormField("formData", formData);
 
+			_log.info("START update FORMDATA*****referenceUid"+fileRef);
+			_log.info("START update FORMDATA*****dossierTemplateNo"+dossierTemplateNo);
+			_log.info("START update FORMDATA*****dossierPartNo"+dossierPartNo);
+			_log.info("START update FORMDATA*****fileTemplateNo"+fileTemplateNo);
+			_log.info("START update FORMDATA*****displayName"+displayName);
+			_log.info("START update FORMDATA*****formData"+formData);
 
-
+			multipart.finish();
 			resetDossier(desGroupId, dossierRef, false, serviceContext);
 
 		} catch (Exception e) {
@@ -1018,21 +1051,21 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 	}
 
-	public void pullRequestDossier(long dossierId, long desDossierId) {
+	public void pullRequestDossiers(long dossierId, long desDossierId) {
 		// TODO need update use API not use LocalService
 
 		try {
-			List<DossierRequest> lsDossierRequest = DossierRequestLocalServiceUtil.getDossierRequest(dossierId, 1);
-			
+			List<DossierRequestUD> lsDossierRequest = DossierRequestUDLocalServiceUtil.getDossierRequest(dossierId, 1);
+
 			ServiceContext context = new ServiceContext();
-			
+
 			context.setUserId(0);
 			context.setScopeGroupId(55301);
-			
-			for (DossierRequest dr : lsDossierRequest) {
+
+			for (DossierRequestUD dr : lsDossierRequest) {
 				// update to client
-				
-				DossierRequestLocalServiceUtil.updateDossierRequest(0, desDossierId, dr.getReferenceUid(),
+
+				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, desDossierId, dr.getReferenceUid(),
 						dr.getRequestType(), dr.getComment(), 0, context);
 			}
 

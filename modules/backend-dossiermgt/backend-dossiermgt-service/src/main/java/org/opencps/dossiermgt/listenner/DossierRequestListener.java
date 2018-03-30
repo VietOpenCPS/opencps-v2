@@ -1,6 +1,6 @@
 package org.opencps.dossiermgt.listenner;
 
-import org.opencps.dossiermgt.model.DossierRequest;
+import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
@@ -23,9 +23,9 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 @Component(immediate = true, service = ModelListener.class)
-public class DossierRequestListener extends BaseModelListener<DossierRequest>{
+public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 	@Override
-	public void onAfterCreate(DossierRequest model) throws ModelListenerException {
+	public void onAfterCreate(DossierRequestUD model) throws ModelListenerException {
 		
 		ServiceContext serviceContext = new ServiceContext();
 
@@ -62,14 +62,11 @@ public class DossierRequestListener extends BaseModelListener<DossierRequest>{
 			JSONArray files = JSONFactoryUtil.createJSONArray();
 			
 			
-			payload.put("jobPosName", "TEST");
-			payload.put("stepName", StringPool.BLANK);
-			payload.put("stepInstruction", StringPool.BLANK);
-			payload.put("files", files);
+			payload.put("stepName", "type_"+model.getRequestType());
 
 			// payloads.put(payload);
 
-			serviceContext.setCompanyId(0l);
+			serviceContext.setCompanyId(20116l);
 			serviceContext.setUserId(userId);
 
 			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
