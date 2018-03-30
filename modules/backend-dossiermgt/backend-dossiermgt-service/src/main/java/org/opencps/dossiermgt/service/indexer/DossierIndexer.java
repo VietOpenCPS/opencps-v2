@@ -300,7 +300,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								}
 								break;
 							} catch (Exception e) {
-								_log.info(e);
+								_log.error(e);
 							}
 						}
 					}
@@ -308,7 +308,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			}
 		}
 		}catch(Exception e) {
-			_log.info(e);
+			_log.error(e);
 		}
 
 		return document;
