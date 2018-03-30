@@ -1056,7 +1056,7 @@ public class DossierActionsImpl implements DossierActions {
 
 				dossier.setReceiveDate(new Date());
 
-				dossier.setDossierNo(dossierRef);
+				dossier.setDossierNo(dossierRef.trim());
 				// To index
 				DossierLocalServiceUtil.syncDossier(dossier);
 			}
