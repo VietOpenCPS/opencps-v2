@@ -971,6 +971,12 @@
 			<finder-column name="groupId" />
 			<finder-column name="autoEvent" />
 		</finder>
+		
+		<finder return-type="ProcessAction" name="SPID_AC_AN">
+			<finder-column name="serviceProcessId" />
+			<finder-column name="actionCode" />
+			<finder-column name="actionName" />
+		</finder>
 
 	</entity>
 

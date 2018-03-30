@@ -1491,10 +1491,6 @@ public class DossierActionsImpl implements DossierActions {
 		try {
 			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
 					serviceProcessId);
-
-			_log.info("actionCode" + actionCode);
-			_log.info("serviceProcessId" + serviceProcessId);
-
 			Dossier dossier = getDossier(groupId, dossierId, refId);
 
 			String dossierStatus = dossier.getDossierStatus();
@@ -1502,18 +1498,10 @@ public class DossierActionsImpl implements DossierActions {
 			String dossierSubStatus = Validator.isNull(dossier.getDossierSubStatus()) ? StringPool.BLANK
 					: dossier.getDossierSubStatus();
 
-			_log.info("GROUPID_" + groupId);
-			_log.info("dossierId" + dossierId);
-			_log.info("refId" + refId);
-			_log.info("DOSSIER_STATUS_" + dossierStatus);
-			_log.info("DOSSIER_SUB_STATUS_" + dossierSubStatus);
-			_log.info("ACTION_SIZE" + actions.size());
-
 			for (ProcessAction act : actions) {
 
 				String preStepCode = act.getPreStepCode();
 
-				_log.info(JSONFactoryUtil.looseSerialize(act));
 
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
 
@@ -1524,7 +1512,6 @@ public class DossierActionsImpl implements DossierActions {
 							: step.getDossierSubStatus();
 				}
 
-				_log.info(JSONFactoryUtil.looseSerialize(step));
 
 				if (Validator.isNull(step)) {
 					action = act;

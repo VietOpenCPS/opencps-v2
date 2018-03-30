@@ -407,6 +407,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 				DossierRequestUDLocalServiceUtil.updateDossierRequestUD(dr);
 				
+				context.setUserId(dr.getUserId());
+				
 				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, desDossierId, dr.getReferenceUid(),
 						dr.getRequestType(), dr.getComment(), 0, context);
 
