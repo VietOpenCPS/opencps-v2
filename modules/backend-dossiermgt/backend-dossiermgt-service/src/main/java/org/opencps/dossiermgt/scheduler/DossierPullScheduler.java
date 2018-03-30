@@ -980,6 +980,14 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			multipart.addFormField("isSync", StringPool.BLANK);
 			multipart.addFormField("formData", formData);
 
+			_log.info("START update FORMDATA*****referenceUid"+fileRef);
+			_log.info("START update FORMDATA*****dossierTemplateNo"+dossierTemplateNo);
+			_log.info("START update FORMDATA*****dossierPartNo"+dossierPartNo);
+			_log.info("START update FORMDATA*****fileTemplateNo"+fileTemplateNo);
+			_log.info("START update FORMDATA*****displayName"+displayName);
+			_log.info("START update FORMDATA*****formData"+formData);
+
+			
 			resetDossier(desGroupId, dossierRef, false, serviceContext);
 
 		} catch (Exception e) {
