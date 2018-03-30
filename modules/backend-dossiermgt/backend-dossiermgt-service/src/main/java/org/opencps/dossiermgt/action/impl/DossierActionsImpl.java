@@ -192,7 +192,7 @@ public class DossierActionsImpl implements DossierActions {
 
 			// Get list dossier follow status Code
 			if (Validator.isNotNull(statusCode) || Validator.isNotNull(subStatusCode)) {
-				_log.info("52" + sb.toString());
+//				_log.info("52" + sb.toString());
 
 				DictItem dictItem = null;
 				if (Validator.isNotNull(subStatusCode)) {
