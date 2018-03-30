@@ -21,7 +21,7 @@
 		<div class="dossier-general-info P15 MB30">
 			<div class="col-sm-4">
 				<div class="row MB5">
-					<span class="text-bold">Số hồ sơ</span>: <span data-bind="text:dossierNo"></span>
+					<span class="text-bold">Tình trạng</span>: <i data-bind="text:dossierStatusText" class="red"></i>
 				</div>
 				<#-- <div class="row" id="">
 					<a href="javascript:;" class="text-blue text-underline">
@@ -30,17 +30,19 @@
 				</div> -->
 			</div>
 			<div class="col-sm-4 text-center">
-				<div class="row MB5" id="">
-					<span class="text-bold">Thời gian gửi</span>: <span data-bind="text:confirmDatetime"></span>
-				</div>
+
 				<div class="row" id="">
-					<span class="text-bold">Mã hồ sơ</span>: <span data-bind="text : dossierId"></span>
+					<span>Số hồ sơ (Mã tiếp nhận)</span>: <span data-bind="text:dossierNo" class="text-bold"></span>
+					
+				</div>
+				<div class="row">
+					<span>Mã hồ sơ</span>: <span data-bind="text : dossierIdCTN" class="text-bold"></span>
 				</div>
 			</div>
 			
 			<div class="col-sm-4 text-center">
 				<div class="row MB5" id="">
-					<span class="text-bold">Tình trạng</span>: <span data-bind="text:dossierStatusText"></span>
+					<span>Thời gian gửi</span>: <span data-bind="text:submitDate" class="text-bold"></span>
 				</div>
 				
 			</div>
@@ -220,7 +222,7 @@
 									<div class="col-sm-12">
 										<button class="btn btn-sm btn-border-color MR10 text-light-blue" id="dossier-payment-online" data-bind="attr : {data-pk : referenceUid}">Thanh toán trực tuyến</button> 
 										<button class="btn btn-sm btn-border-color MR10 text-light-blue" data-bind="attr : {data-pk : referenceUid}" id="dossier-payment-confirm">Thông báo đã nộp chuyển khoản</button>
-										<button class="btn btn-sm btn-border-color text-light-blue" onclick="" id="dossier-payment-viewpdf" data-bind="attr : {data-pk : referenceUid}">Xem phiếu thanh toán</button>
+										<button class="btn btn-sm btn-border-color text-light-blue" id="dossier-payment-viewpdf" data-bind="attr : {data-pk : referenceUid}">Xem phiếu thanh toán</button>
 									</div>
 								</div>
 
@@ -348,7 +350,8 @@
 						stepInstruction : result.stepInstruction,
 						dossierStatus : result.dossierStatus,
 						paymentDossier : payment,
-
+						submitDate : result.submitDate,
+						dossierIdCTN : result.dossierIdCTN,
 						contactName: result.contactName,
 						cityName:result.cityName,
 						districtName:result.districtName,
@@ -393,12 +396,16 @@
 						paymentStatus : function(e){
 							if(this.get('paymentDossier')){
 								if(this.get('paymentDossier').paymentStatus === 0){
+									$("#dossier-payment-confirm").prop("disabled",false);
 									return "Chờ nộp";
 								}else if(this.get('paymentDossier').paymentStatus === 1){
+									$("#dossier-payment-confirm").prop("disabled",true);
 									return "Báo đã nộp";
 								}else if(this.get('paymentDossier').paymentStatus === 2){
+									$("#dossier-payment-confirm").prop("disabled",false);
 									return "Hoàn thành";
 								}else {
+									$("#dossier-payment-confirm").prop("disabled",false);
 									return "Không hợp lệ";
 								}
 							}
@@ -500,6 +507,7 @@
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
+					$("#dossier-payment-confirm").prop("disabled",true);
 				},
 				error :  function(result){
 					notification.show({
@@ -515,7 +523,7 @@
 		var referenceUid = $(this).attr("data-pk");
 		if(referenceUid){
 			$.ajax({
-				url : "${api.server}/dossiers/43601/payments/ddd25e45-0144-b226-ef2b-a1d09a7a24de/invoicefile",
+				url : "${api.server}/dossiers/${dossierId}/payments/"+referenceUid+"/invoicefile",
 				dataType : "json",
 				type : "GET",
 				headers : {"groupId": ${groupId}},
