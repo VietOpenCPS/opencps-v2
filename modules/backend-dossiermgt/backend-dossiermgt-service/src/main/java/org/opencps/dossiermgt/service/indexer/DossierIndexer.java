@@ -15,6 +15,7 @@ import javax.portlet.PortletResponse;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
@@ -198,7 +199,14 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addTextSortable(DossierTerm.SUBMISSION_NOTE, object.getSubmissionNote());
 		document.addTextSortable(DossierTerm.APPLICANT_NOTE, object.getApplicantNote());
 		document.addTextSortable(DossierTerm.BRIEF_NOTE, object.getBriefNote());
-		document.addTextSortable(DossierTerm.DOSSIER_NO, object.getDossierNo());
+		// Search follow dossierNo
+		String dossierNo = object.getDossierNo();
+		String dossierNoSearch = StringPool.BLANK;
+		document.addTextSortable(DossierTerm.DOSSIER_NO, dossierNo);
+		if (Validator.isNotNull(dossierNo)) {
+			dossierNoSearch = SpecialCharacterUtils.splitSpecial(dossierNo);
+			document.addTextSortable(DossierTerm.DOSSIER_NO_SEARCH, dossierNoSearch);
+		}
 		document.addTextSortable(DossierTerm.SUBMITTING, Boolean.toString(object.getSubmitting()));
 
 		document.addTextSortable(DossierTerm.DOSSIER_STATUS, object.getDossierStatus());
@@ -297,6 +305,9 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								if (Validator.isNotNull(certNo) && Validator.isNotNull(certDate)) {
 									document.addTextSortable("so_chung_chi", certNo);
 									document.addDateSortable("ngay_ky_cc", certDate);
+									// Search follow so_chung_chi
+									String certNoSearch = SpecialCharacterUtils.splitSpecial(certNo);
+									document.addTextSortable(DossierTerm.CERT_NO_SEARCH, certNoSearch);
 								}
 								break;
 							} catch (Exception e) {

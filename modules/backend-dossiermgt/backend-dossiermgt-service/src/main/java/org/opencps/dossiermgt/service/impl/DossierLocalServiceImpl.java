@@ -1081,7 +1081,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
 				query.addFields(
-						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO, "dossierIdCTN"});
+						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -1253,7 +1253,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				MultiMatchQuery query = new MultiMatchQuery(key);
 
 				query.addFields(
-						new String[] { DossierTerm.DOSSIER_NO, "dossierIdCTN"});
+						new String[] { DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -1318,14 +1318,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 						false,
 						true);
 
-					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);								
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
 		}
 		
 		if (Validator.isNotNull(certNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(certNo));
 
-			query.addField(DossierTerm.CERT_NO);
+			query.addField(DossierTerm.CERT_NO_SEARCH);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -1430,7 +1430,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
 				query.addFields(
-						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO, "dossierIdCTN"});
+						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -1602,7 +1602,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				MultiMatchQuery query = new MultiMatchQuery(key);
 
 				query.addFields(
-						new String[] { DossierTerm.DOSSIER_NO, "dossierIdCTN"});
+						new String[] { DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -1674,7 +1674,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (Validator.isNotNull(certNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(certNo));
 
-			query.addField(DossierTerm.CERT_NO);
+			query.addField(DossierTerm.CERT_NO_SEARCH);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
