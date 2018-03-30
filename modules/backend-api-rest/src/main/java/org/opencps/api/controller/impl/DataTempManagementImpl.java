@@ -20,6 +20,7 @@ import org.opencps.api.datatempmgt.model.DictGroupItemTempResults;
 import org.opencps.api.datatempmgt.model.DictGroupTempInputModel;
 import org.opencps.api.datatempmgt.model.DictGroupTempModel;
 import org.opencps.api.datatempmgt.model.DictGroupTempResults;
+import org.opencps.api.datatempmgt.model.DictItemTempDetailModel;
 import org.opencps.api.datatempmgt.model.DictItemTempInputModel;
 import org.opencps.api.datatempmgt.model.DictItemTempResults;
 import org.opencps.auth.api.exception.NotFoundException;
@@ -34,6 +35,7 @@ import org.opencps.synchronization.constants.DictItemTempTerm;
 import org.opencps.synchronization.model.DictCollectionTemp;
 import org.opencps.synchronization.model.DictGroupTemp;
 import org.opencps.synchronization.model.DictItemGroupTemp;
+import org.opencps.synchronization.model.DictItemTemp;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -62,16 +64,15 @@ public class DataTempManagementImpl implements DataTempManagement {
 		DictCollectionTempInterface dictItemDataUtil = new DictCollectionActions();
 		
 		DictCollectionTempResults result = new DictCollectionTempResults();
-
+				
 		try {
-
-			if (query.getEnd() == 0) {
+			if (Validator.isNull(query.getEnd())) {
 				query.setStart(-1);
 
 				query.setEnd(-1);
 
 			}
-
+			
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -764,7 +765,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 					serviceContext);
 
 			result.setTotal(jsonData.getLong("total"));
-			result.getDictGroupItemModel()
+			result.getDictGroupItemTempModel()
 					.addAll(DataTempManagementUtils.mapperDictGroupItemTempModelList((List<Document>) jsonData.get("data")));
 
 			return Response.status(200).entity(result).build();
@@ -1003,7 +1004,90 @@ public class DataTempManagementImpl implements DataTempManagement {
 	public Response addDictItems(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String code, DictItemTempInputModel input) {
 		// TODO Auto-generated method stub
-		return null;
+		DictCollectionTempInterface dictItemDataUtil = new DictCollectionActions();
+		DictItemTempDetailModel dictItemModel = new DictItemTempDetailModel();
+
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			DictItemTemp dictItem = dictItemDataUtil.addDictItemsTemp(
+					user.getUserId(), 
+					groupId, 
+					code,
+					input.getParentItemCode(), 
+					input.getItemCode(), 
+					input.getItemName(), 
+					input.getItemNameEN(),
+					input.getItemDescription(), 
+					String.valueOf(input.getSibling()), 
+					input.getLevel(), 
+					input.getMetaData(),
+					input.getStatus(),	
+					serviceContext);
+
+			// return json object after update
+			dictItemModel = DataTempManagementUtils.mapperDictItemTempModel(dictItem, dictItemDataUtil, user.getUserId(),
+					company.getCompanyId(), groupId, serviceContext);
+
+			return Response.status(200).entity(dictItemModel).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			if (e instanceof UnauthenticationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+
+			}
+
+			if (e instanceof UnauthorizationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			}
+
+			if (e instanceof NoSuchUserException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+
+			if (e instanceof DuplicateCategoryException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+
+			return Response.status(500).build();
+		}
 	}
 
 	@Override

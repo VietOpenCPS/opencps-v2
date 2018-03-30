@@ -1,16 +1,21 @@
 package org.opencps.api.controller.util;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.api.datatempmgt.model.DictCollectionTempModel;
 import org.opencps.api.datatempmgt.model.DictGroupItemTempModel;
 import org.opencps.api.datatempmgt.model.DictGroupTempModel;
+import org.opencps.api.datatempmgt.model.DictItemTempDetailModel;
 import org.opencps.api.datatempmgt.model.DictItemTempModel;
 import org.opencps.api.datatempmgt.model.ParentItemModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.constants.DictGroupTerm;
+import org.opencps.datamgt.constants.DictItemGroupTerm;
+import org.opencps.synchronization.action.DictCollectionTempInterface;
 import org.opencps.synchronization.constants.DictCollectionTempTerm;
+import org.opencps.synchronization.constants.DictGroupTempTerm;
 import org.opencps.synchronization.constants.DictItemGroupTempTerm;
 import org.opencps.synchronization.constants.DictItemTempTerm;
 import org.opencps.synchronization.model.DictCollectionTemp;
@@ -19,9 +24,13 @@ import org.opencps.synchronization.model.DictItemGroupTemp;
 import org.opencps.synchronization.model.DictItemTemp;
 import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -235,6 +244,78 @@ public class DataTempManagementUtils {
 
 		return results;
 	}	
+	
+	public static DictItemTempDetailModel mapperDictItemTempModel(DictItemTemp dictItem, DictCollectionTempInterface dictItemDataUtil,
+			long userId, long companyId, long groupId, ServiceContext serviceContext) {
+
+		DictItemTempDetailModel ett = new DictItemTempDetailModel();
+
+		try {
+
+			ett.setDictItemId(dictItem.getDictItemId());
+			ett.setItemCode(dictItem.getItemCode());
+			ett.setItemDescription(dictItem.getItemDescription());
+			ett.setItemName(dictItem.getItemName());
+			ett.setItemNameEN(dictItem.getItemNameEN());
+			ett.setTreeIndex(dictItem.getTreeIndex());
+			ett.setSibling(GetterUtil.get(dictItem.getSibling(), 1));
+			ett.setLevel(dictItem.getLevel());
+			ett.setCreateDate(Validator.isNotNull(dictItem.getCreateDate())
+					? APIDateTimeUtils.convertDateToString(dictItem.getCreateDate(), APIDateTimeUtils._TIMESTAMP)
+					: StringPool.BLANK);
+			ett.setModifiedDate(Validator.isNotNull(dictItem.getModifiedDate())
+					? APIDateTimeUtils.convertDateToString(dictItem.getModifiedDate(), APIDateTimeUtils._TIMESTAMP)
+					: StringPool.BLANK);
+
+			DictItemTemp parentItem = DictItemTempLocalServiceUtil.fetchDictItemTemp(dictItem.getParentItemId());
+
+			ParentItemModel parentItemModel = new ParentItemModel();
+
+			if (Validator.isNotNull(parentItem)) {
+				parentItemModel.setItemCode(parentItem.getItemCode());
+				parentItemModel.setItemName(parentItem.getItemName());
+				parentItemModel.setItemNameEN(parentItem.getItemNameEN());
+			}
+
+			ett.getParentItemModel().add(parentItemModel);
+			
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			params.put("groupId", String.valueOf(groupId));
+			params.put(DictItemGroupTerm.DICT_ITEM_ID, String.valueOf(dictItem.getDictItemId()));
+
+			JSONObject jsonData = dictItemDataUtil.getDictItemsGroupTemp(userId, companyId, groupId, params, new Sort[] {},
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
+
+			List<DictGroupTempModel> listGroup = new ArrayList<>();
+
+			try {
+
+				DictGroupTempModel ettGroup = null;
+
+				for (Document document : (List<Document>) jsonData.get("data")) {
+
+					ettGroup = new DictGroupTempModel();
+
+					ettGroup.setGroupCode(document.get(DictGroupTempTerm.GROUP_CODE));
+					ettGroup.setGroupName(document.get(DictGroupTempTerm.GROUP_NAME));
+					ettGroup.setGroupNameEN(document.get(DictGroupTempTerm.GROUP_NAME_EN));
+					ettGroup.setGroupDescription(document.get(DictGroupTempTerm.GROUP_DESCRIPTION));
+
+					listGroup.add(ettGroup);
+				}
+
+			} catch (Exception e) {
+				_log.error(e);
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return ett;
+	}
+	
 	public static Log _log = LogFactoryUtil.getLog(DataTempManagementUtils.class);
 
 }

@@ -1,7 +1,6 @@
 
 package org.opencps.frontend.web.admin.portlet;
 
-import java.io.Console;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -25,7 +24,6 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.communication.action.impl.NotificationTemplateActions;
 import org.opencps.communication.constants.NotificationMGTConstants;
-import org.opencps.communication.constants.NotificationTemplateTerm;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
@@ -1261,62 +1259,209 @@ public class AdminPortlet extends FreeMarkerPortlet {
 				dictCollectionCreateDictCollectionURL);
 
 			PortletURL dictCollectionCreateDictItemURL =
+					renderResponse.createRenderURL();
+				dictCollectionCreateDictItemURL.setParameter(
+					"mvcPath",
+					"/templates/datamgt/dictcollection_create_dictitem.ftl");
+				dictCollectionCreateDictItemURL.setWindowState(
+					LiferayWindowState.EXCLUSIVE);
+
+				adminDataMgtPortlet.put(
+					"dictcollection_create_dictitem",
+					dictCollectionCreateDictItemURL);
+
+				PortletURL dictCollectionCreateInfoURL =
+					renderResponse.createRenderURL();
+				dictCollectionCreateInfoURL.setParameter(
+					"mvcPath",
+					"/templates/datamgt/dictcollection_create_dictgroup.ftl");
+				dictCollectionCreateInfoURL.setWindowState(
+					LiferayWindowState.EXCLUSIVE);
+
+				adminDataMgtPortlet.put(
+					"dictcollection_create_dictgroup", dictCollectionCreateInfoURL);
+
+				PortletURL saveDictItemURL = renderResponse.createActionURL();
+
+				saveDictItemURL.setParameter(
+					ActionRequest.ACTION_NAME, "saveDictItem");
+				saveDictItemURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+				adminDataMgtPortlet.put(
+					"dictcollection_dictitem_edit_action", saveDictItemURL);
+
+				PortletURL documentTypeListURL = renderResponse.createRenderURL();
+				documentTypeListURL.setParameter(
+					"mvcPath", "/templates/html/document_type_list.ftl");
+				documentTypeListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+				adminDataMgtPortlet.put("document_type_list", documentTypeListURL);
+
+				PortletURL documentTypeDetailURL = renderResponse.createRenderURL();
+				documentTypeDetailURL.setParameter(
+					"mvcPath", "/templates/html/document_type_detail.ftl");
+				documentTypeDetailURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+				adminDataMgtPortlet.put(
+					"document_type_detail", documentTypeDetailURL);
+
+				PortletURL documentTypeCreateURL = renderResponse.createRenderURL();
+				documentTypeCreateURL.setParameter(
+					"mvcPath", "/templates/html/document_type_create.ftl");
+				documentTypeCreateURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+				adminDataMgtPortlet.put(
+					"document_type_create", documentTypeCreateURL);
+
+				portletURLs.put("adminDataMgtPortlet", adminDataMgtPortlet);
+			
+			///////////////////// FrontendWebDataTempPortlet
+			JSONObject adminDataTempMgtPortlet = JSONFactoryUtil.createJSONObject();
+			PortletURL activityTypeTempListURL = renderResponse.createRenderURL();
+			activityTypeTempListURL.setParameter(
+				"mvcPath", "/templates/html/activity_type_list.ftl");
+			activityTypeTempListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+			adminDataTempMgtPortlet.put("activity_type_list", activityTypeTempListURL);
+
+			PortletURL activityTypeTempDetailURL = renderResponse.createRenderURL();
+			activityTypeTempDetailURL.setParameter(
+				"mvcPath", "/templates/html/activity_type_detail.ftl");
+			activityTypeTempDetailURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+			adminDataTempMgtPortlet.put(
+				"activity_type_detail", activityTypeTempDetailURL);
+
+			PortletURL activityTypeTempCreateURL = renderResponse.createRenderURL();
+			activityTypeCreateURL.setParameter(
+				"mvcPath", "/templates/html/activity_type_create.ftl");
+			activityTypeTempCreateURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+			adminDataTempMgtPortlet.put(
+				"activity_type_create", activityTypeTempCreateURL);
+
+			PortletURL dictCollectionTempListURL = renderResponse.createRenderURL();
+			dictCollectionListURL.setParameter(
+				"mvcPath", "/templates/datatempmgt/dictcollectiontemp_list.ftl");
+			dictCollectionTempListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+			adminDataTempMgtPortlet.put(
+				"dictcollection_list", dictCollectionTempListURL);
+
+			PortletURL dictCollectionTempDetailURL =
 				renderResponse.createRenderURL();
-			dictCollectionCreateDictItemURL.setParameter(
-				"mvcPath",
-				"/templates/datamgt/dictcollection_create_dictitem.ftl");
-			dictCollectionCreateDictItemURL.setWindowState(
+			dictCollectionTempDetailURL.setParameter(
+				"mvcPath", "/templates/datatempmgt/dictcollectiontemp_detail.ftl");
+			dictCollectionTempDetailURL.setWindowState(
 				LiferayWindowState.EXCLUSIVE);
 
-			adminDataMgtPortlet.put(
-				"dictcollection_create_dictitem",
-				dictCollectionCreateDictItemURL);
+			adminDataTempMgtPortlet.put(
+				"dictcollection_detail", dictCollectionTempDetailURL);
 
-			PortletURL dictCollectionCreateInfoURL =
+			PortletURL dictCollectionTempInfoURL = renderResponse.createRenderURL();
+			dictCollectionTempInfoURL.setParameter(
+				"mvcPath", "/templates/datatempmgt/dictcollectiontemp_detail_info.ftl");
+			dictCollectionInfoURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+			adminDataTempMgtPortlet.put(
+				"dictcollection_detail_info", dictCollectionTempInfoURL);
+
+			PortletURL dictCollectionTempDetailDictItemURL =
 				renderResponse.createRenderURL();
-			dictCollectionCreateInfoURL.setParameter(
+			dictCollectionTempDetailDictItemURL.setParameter(
 				"mvcPath",
-				"/templates/datamgt/dictcollection_create_dictgroup.ftl");
-			dictCollectionCreateInfoURL.setWindowState(
+				"/templates/datatempmgt/dictcollectiontemp_detail_dictitem.ftl");
+			dictCollectionTempDetailDictItemURL.setWindowState(
 				LiferayWindowState.EXCLUSIVE);
 
-			adminDataMgtPortlet.put(
-				"dictcollection_create_dictgroup", dictCollectionCreateInfoURL);
+			adminDataTempMgtPortlet.put(
+				"dictcollection_detail_dictitem",
+				dictCollectionTempDetailDictItemURL);
 
-			PortletURL saveDictItemURL = renderResponse.createActionURL();
+			PortletURL dictCollectionTempDetailFormTemplateURL =
+				renderResponse.createRenderURL();
+			dictCollectionTempDetailFormTemplateURL.setParameter(
+				"mvcPath",
+				"/templates/datatempmgt/dictcollectiontemp_detail_formtemplate.ftl");
+			dictCollectionTempDetailFormTemplateURL.setWindowState(
+				LiferayWindowState.EXCLUSIVE);
 
-			saveDictItemURL.setParameter(
-				ActionRequest.ACTION_NAME, "saveDictItem");
-			saveDictItemURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+			adminDataTempMgtPortlet.put(
+				"dictcollection_detail_formtemplate",
+				dictCollectionTempDetailFormTemplateURL);
 
-			adminDataMgtPortlet.put(
-				"dictcollection_dictitem_edit_action", saveDictItemURL);
+			PortletURL dictCollectionTempCreateDictCollectionURL =
+				renderResponse.createRenderURL();
+			dictCollectionTempCreateDictCollectionURL.setParameter(
+				"mvcPath",
+				"/templates/datatempmgt/dictcollectiontemp_create_dictcollection.ftl");
+			dictCollectionTempCreateDictCollectionURL.setWindowState(
+				LiferayWindowState.EXCLUSIVE);
 
-			PortletURL documentTypeListURL = renderResponse.createRenderURL();
-			documentTypeListURL.setParameter(
-				"mvcPath", "/templates/html/document_type_list.ftl");
-			documentTypeListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+			adminDataTempMgtPortlet.put(
+				"dictcollection_create_dictcollection",
+				dictCollectionTempCreateDictCollectionURL);
+			
+			PortletURL dictCollectionTempCreateDictItemURL =
+					renderResponse.createRenderURL();
+				dictCollectionTempCreateDictItemURL.setParameter(
+					"mvcPath",
+					"/templates/datatempmgt/dictcollectiontemp_create_dictitem.ftl");
+				dictCollectionTempCreateDictItemURL.setWindowState(
+					LiferayWindowState.EXCLUSIVE);
 
-			adminDataMgtPortlet.put("document_type_list", documentTypeListURL);
+				adminDataTempMgtPortlet.put(
+					"dictcollection_create_dictitem",
+					dictCollectionTempCreateDictItemURL);
 
-			PortletURL documentTypeDetailURL = renderResponse.createRenderURL();
-			documentTypeDetailURL.setParameter(
-				"mvcPath", "/templates/html/document_type_detail.ftl");
-			documentTypeDetailURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+				PortletURL dictCollectionTempCreateInfoURL =
+					renderResponse.createRenderURL();
+				dictCollectionTempCreateInfoURL.setParameter(
+					"mvcPath",
+					"/templates/datatempmgt/dictcollectiontemp_create_dictgroup.ftl");
+				dictCollectionTempCreateInfoURL.setWindowState(
+					LiferayWindowState.EXCLUSIVE);
 
-			adminDataMgtPortlet.put(
-				"document_type_detail", documentTypeDetailURL);
+				adminDataTempMgtPortlet.put(
+					"dictcollection_create_dictgroup", dictCollectionTempCreateInfoURL);
 
-			PortletURL documentTypeCreateURL = renderResponse.createRenderURL();
-			documentTypeCreateURL.setParameter(
-				"mvcPath", "/templates/html/document_type_create.ftl");
-			documentTypeCreateURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+				PortletURL saveDictItemTempURL = renderResponse.createActionURL();
 
-			adminDataMgtPortlet.put(
-				"document_type_create", documentTypeCreateURL);
+				saveDictItemTempURL.setParameter(
+					ActionRequest.ACTION_NAME, "saveDictItem");
+				saveDictItemTempURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
-			portletURLs.put("adminDataMgtPortlet", adminDataMgtPortlet);
+				adminDataTempMgtPortlet.put(
+					"dictcollection_dictitem_edit_action", saveDictItemTempURL);
 
+				PortletURL documentTypeTempListURL = renderResponse.createRenderURL();
+				documentTypeTempListURL.setParameter(
+					"mvcPath", "/templates/html/document_type_list.ftl");
+				documentTypeTempListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+				adminDataTempMgtPortlet.put("document_type_list", documentTypeTempListURL);
+
+				PortletURL documentTypeTempDetailURL = renderResponse.createRenderURL();
+				documentTypeDetailURL.setParameter(
+					"mvcPath", "/templates/html/document_type_detail.ftl");
+				documentTypeTempDetailURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+				adminDataTempMgtPortlet.put(
+					"document_type_detail", documentTypeTempDetailURL);
+
+				PortletURL documentTypeTempCreateURL = renderResponse.createRenderURL();
+				documentTypeCreateURL.setParameter(
+					"mvcPath", "/templates/html/document_type_create.ftl");
+				documentTypeTempCreateURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+				adminDataTempMgtPortlet.put(
+					"document_type_create", documentTypeCreateURL);
+
+				portletURLs.put("adminDataTempMgtPortlet", adminDataTempMgtPortlet);
+			
+			///////////////////// FrontendWebDateTempPortlet
+			
+			
 			// Label url
 
 			JSONObject adminLabelPortlet = JSONFactoryUtil.createJSONObject();
