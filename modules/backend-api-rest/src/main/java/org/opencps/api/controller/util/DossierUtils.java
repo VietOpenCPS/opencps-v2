@@ -81,6 +81,8 @@ public class DossierUtils {
 			if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
 				Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
 				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));				
+			} else {
+				model.setSubmitDate(doc.get(DossierTerm.RECEIVE_DATE));
 			}
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
 			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
