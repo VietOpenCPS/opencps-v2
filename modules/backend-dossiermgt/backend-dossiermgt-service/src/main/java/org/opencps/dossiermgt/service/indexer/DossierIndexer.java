@@ -64,6 +64,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 	protected Document doGetDocument(Dossier object) throws Exception {
 		Document document = getBaseModelDocument(CLASS_NAME, object);
 
+		try{
 		// Indexer of audit fields
 		document.addNumberSortable(Field.COMPANY_ID, object.getCompanyId());
 		document.addNumberSortable(Field.GROUP_ID, object.getGroupId());
@@ -305,6 +306,9 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					}
 				}
 			}
+		}
+		}catch(Exception e) {
+			_log.info(e);
 		}
 
 		return document;
