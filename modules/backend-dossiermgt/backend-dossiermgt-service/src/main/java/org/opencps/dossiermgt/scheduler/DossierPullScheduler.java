@@ -987,7 +987,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			_log.info("START update FORMDATA*****displayName"+displayName);
 			_log.info("START update FORMDATA*****formData"+formData);
 
-			
+			multipart.finish();
 			resetDossier(desGroupId, dossierRef, false, serviceContext);
 
 		} catch (Exception e) {
