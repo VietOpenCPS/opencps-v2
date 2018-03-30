@@ -852,8 +852,8 @@
 
 	</entity>
 	
-	<entity local-service="true" name="DossierRequest"
-		remote-service="false" table="opencps_dossierrequest" uuid="true">
+	<entity local-service="true" name="DossierRequestUD"
+		remote-service="false" table="opencps_dossierrequests" uuid="true">
 
 		<column name="dossierRequestId" type="long" primary="true" />
 
@@ -864,14 +864,11 @@
 		<column name="createDate" type="Date" />
 		<column name="modifiedDate" type="Date" />
 
-		<column name="moderator" type="boolean" />
-		<column name="condition" type="String" />
-
 		<column name="dossierId" type="long" />
 		<column name="referenceUid" type="String" />
 		<column name="requestType" type="String" />
 		<column name="comment" type="String" />
-		<column name="isNew" type="boolean" />
+		<column name="isNew" type="int" />
 
 		<finder return-type="Collection" name="D_">
 			<finder-column name="dossierId" />
@@ -883,6 +880,11 @@
 		</finder>
 
 		<finder return-type="Collection" name="IS_NEW">
+			<finder-column name="isNew" />
+		</finder>
+		
+		<finder return-type="Collection" name="DID_IN">
+			<finder-column name="dossierId" />
 			<finder-column name="isNew" />
 		</finder>
 	</entity>
@@ -1487,29 +1489,6 @@
 		</finder>
 	</entity>
 
-	<entity local-service="true" name="DossierRequest"
-		remote-service="false" table="opencps_dossierrequest" uuid="true">
-
-		<column name="dossierRequestId" type="long" primary="true" />
-
-		<!-- Audit fields -->
-
-		<column name="groupId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-
-		<column name="dossierId" type="long" />
-		<column name="referenceUid" type="String" />
-		<column name="requestType" type="String" />
-		<column name="comment" type="String" />
-		<column name="isNew" type="int" />
-
-	</entity>
-
 	<entity local-service="true" name="UserInfoLog"
 		remote-service="false" table="opencps_userinfolog" uuid="true">
 
@@ -1517,8 +1496,12 @@
 
 		<!-- Audit fields -->
 		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
 		<column name="payload" type="String" />
 
+		<order>
+			<order-column name="createDate" order-by="desc" />
+		</order>
 	</entity>
 
 	<exceptions>

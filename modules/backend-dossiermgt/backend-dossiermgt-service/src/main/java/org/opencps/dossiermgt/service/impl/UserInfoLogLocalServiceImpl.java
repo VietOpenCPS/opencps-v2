@@ -14,9 +14,18 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
+import java.util.Date;
 
+import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.model.UserInfoLog;
 import org.opencps.dossiermgt.service.base.UserInfoLogLocalServiceBaseImpl;
+
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the user info log local service.
@@ -39,4 +48,20 @@ public class UserInfoLogLocalServiceImpl extends UserInfoLogLocalServiceBaseImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.UserInfoLogLocalServiceUtil} to access the user info log local service.
 	 */
+
+	public UserInfoLog addUserInfoLog(long userId, JSONObject jsonData, ServiceContext serviceContext) {
+
+		Date now = new Date();
+
+		long userInfoLogId = counterLocalService.increment(UserInfoLog.class.getName());
+
+		UserInfoLog userInfoLog = userInfoLogPersistence.create(userInfoLogId);
+
+		userInfoLog.setCreateDate(now);
+		userInfoLog.setUserId(userId);
+		userInfoLog.setPayload(jsonData.toJSONString());
+
+		return userInfoLogPersistence.update(userInfoLog);
+
+	}
 }

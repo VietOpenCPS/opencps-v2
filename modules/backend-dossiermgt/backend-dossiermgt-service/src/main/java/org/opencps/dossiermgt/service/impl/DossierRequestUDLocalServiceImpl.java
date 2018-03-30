@@ -14,15 +14,11 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.opencps.dossiermgt.model.DossierRequest;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.base.DossierRequestLocalServiceBaseImpl;
+import org.opencps.dossiermgt.model.DossierRequestUD;
+import org.opencps.dossiermgt.service.base.DossierRequestUDLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -31,35 +27,32 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+import aQute.bnd.annotation.ProviderType;
+
 /**
- * The implementation of the dossier request local service.
+ * The implementation of the dossier request ud local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are
- * added, rerun ServiceBuilder to copy their definitions into the
- * {@link org.opencps.dossiermgt.service.DossierRequestLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.DossierRequestUDLocalService} interface.
  *
  * <p>
- * This is a local service. Methods of this service will not have security
- * checks based on the propagated JAAS credentials because this service can only
- * be accessed from within the same VM.
+ * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
  * </p>
  *
  * @author huymq
- * @see DossierRequestLocalServiceBaseImpl
- * @see org.opencps.dossiermgt.service.DossierRequestLocalServiceUtil
+ * @see DossierRequestUDLocalServiceBaseImpl
+ * @see org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil
  */
 @ProviderType
-public class DossierRequestLocalServiceImpl extends DossierRequestLocalServiceBaseImpl {
+public class DossierRequestUDLocalServiceImpl
+	extends DossierRequestUDLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link
-	 * org.opencps.dossiermgt.service.DossierRequestLocalServiceUtil} to access
-	 * the dossier request local service.
+	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil} to access the dossier request ud local service.
 	 */
-
-	public DossierRequest updateDossierRequest(long dossierRequestId, long dossierId, String referenceUid,
+	
+	public DossierRequestUD updateDossierRequest(long dossierRequestId, long dossierId, String referenceUid,
 			String requestType, String comment, int isNew, ServiceContext context)
 			throws PortalException, SystemException {
 		
@@ -78,10 +71,10 @@ public class DossierRequestLocalServiceImpl extends DossierRequestLocalServiceBa
 			}
 		}
 		
-		DossierRequest dossierRequest = null;
+		DossierRequestUD dossierRequest = null;
 		
 		if (dossierRequestId != 0) {
-			dossierRequest = dossierRequestPersistence.fetchByPrimaryKey(dossierRequestId);
+			dossierRequest = dossierRequestUDPersistence.fetchByPrimaryKey(dossierRequestId);
 
 			dossierRequest.setModifiedDate(now);
 			dossierRequest.setUserId(userId);
@@ -91,9 +84,9 @@ public class DossierRequestLocalServiceImpl extends DossierRequestLocalServiceBa
 			dossierRequest.setIsNew(isNew);
 			
 		} else {
-			dossierRequestId = counterLocalService.increment(DossierRequest.class.getName());
+			dossierRequestId = counterLocalService.increment(DossierRequestUD.class.getName());
 			
-			dossierRequest = dossierRequestPersistence.create(dossierRequestId);
+			dossierRequest = dossierRequestUDPersistence.create(dossierRequestId);
 //			Audit fields
 			dossierRequest.setGroupId(context.getScopeGroupId());
 			dossierRequest.setCreateDate(now);
@@ -108,20 +101,20 @@ public class DossierRequestLocalServiceImpl extends DossierRequestLocalServiceBa
 			dossierRequest.setComment(comment);
 			dossierRequest.setIsNew(isNew);
 
-			
 		}
 		
-		dossierRequestPersistence.update(dossierRequest);
+		dossierRequestUDPersistence.update(dossierRequest);
 		
 		return dossierRequest;
 		
 	}
 	
-	public List<DossierRequest> getDossierRequest(long dossierId, int isNew) throws PortalException, SystemException {
+	public List<DossierRequestUD> getDossierRequest(long dossierId, int isNew) throws PortalException, SystemException {
+		//TODO dont know why can use finder in service.xml file
 		
-		List<DossierRequest> dossierRequestList = new ArrayList<DossierRequest>();
+		//This is temporary function
 		
-		return null;
+		return dossierRequestUDPersistence.findByDID_IN(dossierId, isNew);
 	}
 
 }
