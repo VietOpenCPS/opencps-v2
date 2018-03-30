@@ -189,7 +189,7 @@ public class DossierUtils {
 		}
 		for (int i = start; i < endPage; i++) {
 			Document doc = docs.get(i);
-			_log.info("i: "+i);
+//			_log.info("i: "+i);
 			DossierDataModel model = new DossierDataModel();
 			
 			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID+"CTN"));
@@ -260,68 +260,9 @@ public class DossierUtils {
 			model.setCertNo(doc.get("so_chung_chi"));
 			model.setCertDate(doc.get("ngay_ky_cc"));
 
-			//TODO: Get info cert Number
-//			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil
-//					.getDossierFilesByDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
-			
-//			StringBuilder sb = new StringBuilder();
-//			String deliverableCode = StringPool.BLANK;
-//			if (dossierFileList != null && dossierFileList.size() > 0) {
-//				int length = dossierFileList.size();
-////				_log.info("Size dossier File: "+ length);
-//				int jj = 0;
-//				for (int j = 0; j < length; j++) {
-//					DossierFile dossierFile = dossierFileList.get(j);
-//					deliverableCode = dossierFile.getDeliverableCode();
-////					_log.info("deliverableCode: "+ deliverableCode);
-//					if (Validator.isNotNull(deliverableCode)) {
-////						_log.info("deliverableCode Check: "+ deliverableCode);
-//						jj += 1;
-//						if (jj == 1) {
-//							sb.append(StringPool.APOSTROPHE);
-//							sb.append(deliverableCode);
-//							sb.append(StringPool.APOSTROPHE);
-//						} else {
-//							sb.append(StringPool.COMMA);
-//							sb.append(StringPool.APOSTROPHE);
-//							sb.append(deliverableCode);
-//							sb.append(StringPool.APOSTROPHE);
-//						}
-//					}
-//				}
-////				_log.info("Str Dossier Id: "+ sb.toString());
-//			}
-
-//			DeliverableActions action = new DeliverableActionsImpl();
-//			if (Validator.isNotNull(sb.toString())) {
-//				List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), "2");
-//				
-//				if (deliverableList != null && deliverableList.size() > 0) {
-//	//				int lengthDeliver = deliverableList.size();
-//	//				_log.info("Size list deliverable: "+ lengthDeliver);
-//					String formData = StringPool.BLANK;
-//					List<CertNumberModel> certNumberList = new ArrayList<CertNumberModel>();
-//					for (Deliverable deliverable : deliverableList) {
-//						CertNumberModel certNumberDetail = new CertNumberModel();
-//						formData = deliverable.getFormData();
-//	//					_log.info("formData: "+ formData);
-//						try {
-//							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
-//							String certNo = String.valueOf(jsonData.get("so_chung_chi"));
-//							String certDate = String.valueOf(jsonData.get("ngay_ky_cc"));
-//							certNumberDetail.setCertNo(certNo);
-//							certNumberDetail.setCertDate(certDate);
-//							certNumberList.add(certNumberDetail);
-//						} catch (Exception e) {
-//							// TODO:
-//						}
-//					}
-//					model.getCertNumber().addAll(certNumberList);
-//				}
-//			}
 			ouputs.add(model);
 		}
-		_log.info("ouputs: "+ouputs.size());
+//		_log.info("ouputs: "+ouputs.size());
 		return ouputs;
 	}
 

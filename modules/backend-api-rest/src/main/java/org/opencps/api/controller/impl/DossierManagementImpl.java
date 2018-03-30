@@ -243,18 +243,18 @@ public class DossierManagementImpl implements DossierManagement {
 
 		try {
 
-			_log.info("1");
+//			_log.info("1");
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
 
-			_log.info("2");
+//			_log.info("2");
 			boolean isCitizen = dossierPermission.isCitizen(user.getUserId());
 
-			_log.info("3");
+//			_log.info("3");
 			dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
 
-			_log.info("31" + query.getEnd());
+//			_log.info("31" + query.getEnd());
 
 			if (query.getEnd() == 0) {
 
@@ -305,7 +305,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.STATE, state);
 			params.put(DossierTerm.DOSSIER_NO, dossierIdNo);
 
-			_log.info("4");
+//			_log.info("4");
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
@@ -336,16 +336,16 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 
 			}
-			_log.info("5");
+//			_log.info("5");
 			JSONObject jsonData = actions.getDossiersTest(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			_log.info("6");
+//			_log.info("6");
 			DossierResultsModel results = new DossierResultsModel();
 
 			if (jsonData != null && jsonData.length() > 0) {
 				results.setTotal(jsonData.getInt("total"));
-				_log.info("7");
+//				_log.info("7");
 				List<Document> docs = (List<Document>) jsonData.get("data");
 				if (docs != null && docs.size() > 0) {
 					if (Validator.isNotNull(status) || Validator.isNotNull(substatus)) {
@@ -364,7 +364,7 @@ public class DossierManagementImpl implements DossierManagement {
 				results.setTotal(0);
 			}
 
-			_log.info("8");
+//			_log.info("8");
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {

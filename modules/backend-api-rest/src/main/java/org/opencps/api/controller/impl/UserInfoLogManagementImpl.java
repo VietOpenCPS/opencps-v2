@@ -17,8 +17,11 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.UserInfoLogActions;
 import org.opencps.dossiermgt.action.impl.UserInfoLogActionsImpl;
 import org.opencps.dossiermgt.model.UserInfoLog;
+import org.slf4j.LoggerFactory;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -42,7 +45,7 @@ public class UserInfoLogManagementImpl implements UserInfoLogManagement{
 			List<UserInfoLog> userInfoList = uilAction.getUserInfoLog(userId, serviceContext);
 			UserInfoLog userInfo = userInfoList.get(0);
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(userInfo.getPayload())).build();
+			return Response.status(200).entity(userInfo.getPayload()).build();
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
 		}
@@ -69,7 +72,7 @@ public class UserInfoLogManagementImpl implements UserInfoLogManagement{
 			UserInfoLog userInfo = uilAction.addUserInfoLog(userId, serviceInfo, applicant, 
 					dossierNo, serviceContext);
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(userInfo.getPayload())).build();
+			return Response.status(200).entity(userInfo.getPayload()).build();
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
 		}
