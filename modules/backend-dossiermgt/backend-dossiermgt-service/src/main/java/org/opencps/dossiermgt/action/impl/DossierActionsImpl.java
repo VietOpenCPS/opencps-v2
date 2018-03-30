@@ -1817,107 +1817,107 @@ public class DossierActionsImpl implements DossierActions {
 		return result;
 	}
 
-	@Override
-	public JSONObject getDossierTodoPermission(long userId, long companyId, long groupId,
-			LinkedHashMap<String, Object> params, Sort[] sorts, ServiceContext serviceContext) {
-
-		JSONObject result = JSONFactoryUtil.createJSONObject();
-
-		SearchContext searchContext = new SearchContext();
-
-		searchContext.setCompanyId(companyId);
-
-		String statusCode = StringPool.BLANK;
-
-		String subStatusCode = StringPool.BLANK;
-
-		JSONArray statistics = JSONFactoryUtil.createJSONArray();
-
-		long total = 0;
-
-		try {
-			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
-					groupId);
-			statusCode = GetterUtil.getString(params.get(DossierTerm.STATUS));
-
-			subStatusCode = GetterUtil.getString(params.get(DossierTerm.SUBSTATUS));
-
-			if (Validator.isNotNull(statusCode) || Validator.isNotNull(subStatusCode)) {
-				DictItem dictItem = null;
-				if (Validator.isNotNull(statusCode)) {
-					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(statusCode,
-							dictCollection.getDictCollectionId(), groupId);
-				} else {
-					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(subStatusCode,
-							dictCollection.getDictCollectionId(), groupId);
-				}
-
-				if (dictItem != null) {
-					long count = DossierLocalServiceUtil.countLucene(params, searchContext);
-
-					JSONObject statistic = JSONFactoryUtil.createJSONObject();
-					statistic.put("dossierStatus", statusCode);
-					statistic.put("dossierSubStatus", subStatusCode);
-					statistic.put("level", dictItem.getLevel());
-					statistic.put("statusName", dictItem.getItemName());
-					statistic.put("count", count);
-
-					statistics.put(statistic);
-
-					total = count;
-				}
-
-			} else {
-				List<DictItem> dictItems = DictItemLocalServiceUtil
-						.findByF_dictCollectionId(dictCollection.getDictCollectionId());
-
-				for (DictItem dictItem : dictItems) {
-
-					statusCode = StringPool.BLANK;
-					subStatusCode = StringPool.BLANK;
-
-					if (dictItem.getParentItemId() != 0) {
-						subStatusCode = dictItem.getItemCode();
-						DictItem parentDictItem = DictItemLocalServiceUtil.getDictItem(dictItem.getParentItemId());
-						statusCode = parentDictItem.getItemCode();
-					} else {
-						statusCode = dictItem.getItemCode();
-					}
-
-					boolean isPermission = checkPermission(statusCode, subStatusCode, groupId, userId);
-
-					if (isPermission) {
-						params.put(DossierTerm.STATUS, statusCode);
-						params.put(DossierTerm.SUBSTATUS, subStatusCode);
-
-						long count = DossierLocalServiceUtil.countLucene(params, searchContext);
-
-						JSONObject statistic = JSONFactoryUtil.createJSONObject();
-
-						statistic.put("dossierStatus", statusCode);
-						statistic.put("dossierSubStatus", subStatusCode);
-						statistic.put("level", dictItem.getLevel());
-						statistic.put("statusName", dictItem.getItemName());
-						statistic.put("count", count);
-						if (dictItem.getParentItemId() == 0) {
-							total += count;
-						}
-						statistics.put(statistic);
-					}
-
-				}
-			}
-
-			result.put("data", statistics);
-
-			result.put("total", total);
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
-
-		return result;
-	}
+//	@Override
+//	public JSONObject getDossierTodoPermission(long userId, long companyId, long groupId,
+//			LinkedHashMap<String, Object> params, Sort[] sorts, ServiceContext serviceContext) {
+//
+//		JSONObject result = JSONFactoryUtil.createJSONObject();
+//
+//		SearchContext searchContext = new SearchContext();
+//
+//		searchContext.setCompanyId(companyId);
+//
+//		String statusCode = StringPool.BLANK;
+//
+//		String subStatusCode = StringPool.BLANK;
+//
+//		JSONArray statistics = JSONFactoryUtil.createJSONArray();
+//
+//		long total = 0;
+//
+//		try {
+//			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
+//					groupId);
+//			statusCode = GetterUtil.getString(params.get(DossierTerm.STATUS));
+//
+//			subStatusCode = GetterUtil.getString(params.get(DossierTerm.SUBSTATUS));
+//
+//			if (Validator.isNotNull(statusCode) || Validator.isNotNull(subStatusCode)) {
+//				DictItem dictItem = null;
+//				if (Validator.isNotNull(statusCode)) {
+//					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(statusCode,
+//							dictCollection.getDictCollectionId(), groupId);
+//				} else {
+//					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(subStatusCode,
+//							dictCollection.getDictCollectionId(), groupId);
+//				}
+//
+//				if (dictItem != null) {
+//					long count = DossierLocalServiceUtil.countLucene(params, searchContext);
+//
+//					JSONObject statistic = JSONFactoryUtil.createJSONObject();
+//					statistic.put("dossierStatus", statusCode);
+//					statistic.put("dossierSubStatus", subStatusCode);
+//					statistic.put("level", dictItem.getLevel());
+//					statistic.put("statusName", dictItem.getItemName());
+//					statistic.put("count", count);
+//
+//					statistics.put(statistic);
+//
+//					total = count;
+//				}
+//
+//			} else {
+//				List<DictItem> dictItems = DictItemLocalServiceUtil
+//						.findByF_dictCollectionId(dictCollection.getDictCollectionId());
+//
+//				for (DictItem dictItem : dictItems) {
+//
+//					statusCode = StringPool.BLANK;
+//					subStatusCode = StringPool.BLANK;
+//
+//					if (dictItem.getParentItemId() != 0) {
+//						subStatusCode = dictItem.getItemCode();
+//						DictItem parentDictItem = DictItemLocalServiceUtil.getDictItem(dictItem.getParentItemId());
+//						statusCode = parentDictItem.getItemCode();
+//					} else {
+//						statusCode = dictItem.getItemCode();
+//					}
+//
+//					boolean isPermission = checkPermission(statusCode, subStatusCode, groupId, userId);
+//
+//					if (isPermission) {
+//						params.put(DossierTerm.STATUS, statusCode);
+//						params.put(DossierTerm.SUBSTATUS, subStatusCode);
+//
+//						long count = DossierLocalServiceUtil.countLucene(params, searchContext);
+//
+//						JSONObject statistic = JSONFactoryUtil.createJSONObject();
+//
+//						statistic.put("dossierStatus", statusCode);
+//						statistic.put("dossierSubStatus", subStatusCode);
+//						statistic.put("level", dictItem.getLevel());
+//						statistic.put("statusName", dictItem.getItemName());
+//						statistic.put("count", count);
+//						if (dictItem.getParentItemId() == 0) {
+//							total += count;
+//						}
+//						statistics.put(statistic);
+//					}
+//
+//				}
+//			}
+//
+//			result.put("data", statistics);
+//
+//			result.put("total", total);
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
+//
+//		return result;
+//	}
 
 	private String _buildDossierNote(Dossier dossier, String actionNote, long groupId) {
 
@@ -2008,9 +2008,8 @@ public class DossierActionsImpl implements DossierActions {
 		return isPermission;
 	}
 
-	// TODO:
 	@Override
-	public JSONObject getDossierTodoPermissionTest(long userId, long companyId, long groupId,
+	public JSONObject getDossierTodoPermission(long userId, long companyId, long groupId,
 			LinkedHashMap<String, Object> params, Sort[] sorts, ServiceContext serviceContext) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();

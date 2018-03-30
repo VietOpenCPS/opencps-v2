@@ -189,7 +189,7 @@ public class DossierUtils {
 		}
 		for (int i = start; i < endPage; i++) {
 			Document doc = docs.get(i);
-			_log.info("i: "+i);
+//			_log.info("i: "+i);
 			DossierDataModel model = new DossierDataModel();
 			
 			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID+"CTN"));
@@ -262,7 +262,7 @@ public class DossierUtils {
 
 			ouputs.add(model);
 		}
-		_log.info("ouputs: "+ouputs.size());
+//		_log.info("ouputs: "+ouputs.size());
 		return ouputs;
 	}
 
