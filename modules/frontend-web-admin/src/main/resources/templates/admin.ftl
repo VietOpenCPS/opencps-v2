@@ -13,6 +13,14 @@
 				</div>
 				<div class="col-sm-9 PL10 P0">Dữ liệu danh mục</div>
 			</li>
+			<li class="clearfix k-state-active" >
+				<div class="col-sm-2 clearfix ">
+					<a href="javascript:;" >
+						<i class="fa fa-gg" aria-hidden="true"></i>
+					</a>
+				</div>
+				<div class="col-sm-9 PL10 P0">Dữ liệu danh mục đồng bộ</div>
+			</li>
 			<li class="clearfix" >
 				<div class="col-sm-2 clearfix ">
 					<a href="javascript:;" >
@@ -143,6 +151,7 @@
 		tabPosition: "left",
 		contentUrls: [
 			'${ajax.dictcollection_index}',
+			'${ajax.dictcollectiontemp_index}',
 			'${ajax.serviceinfo_list}',
 			'${url.adminWorkingUnitPortlet.working_unit_list}',
 			'${url.adminJobPosPortlet.jobpos_list}',

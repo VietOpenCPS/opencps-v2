@@ -1,0 +1,240 @@
+package org.opencps.api.controller.util;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.opencps.api.datatempmgt.model.DictCollectionTempModel;
+import org.opencps.api.datatempmgt.model.DictGroupItemTempModel;
+import org.opencps.api.datatempmgt.model.DictGroupTempModel;
+import org.opencps.api.datatempmgt.model.DictItemTempModel;
+import org.opencps.api.datatempmgt.model.ParentItemModel;
+import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.datamgt.constants.DictGroupTerm;
+import org.opencps.synchronization.constants.DictCollectionTempTerm;
+import org.opencps.synchronization.constants.DictItemGroupTempTerm;
+import org.opencps.synchronization.constants.DictItemTempTerm;
+import org.opencps.synchronization.model.DictCollectionTemp;
+import org.opencps.synchronization.model.DictGroupTemp;
+import org.opencps.synchronization.model.DictItemGroupTemp;
+import org.opencps.synchronization.model.DictItemTemp;
+import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
+
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
+
+public class DataTempManagementUtils {
+
+	public static List<DictCollectionTempModel> mapperDictCollectionTempModelList(List<Document> listDocument) {
+
+		List<DictCollectionTempModel> results = new ArrayList<>();
+
+		try {
+
+			DictCollectionTempModel ett = null;
+
+			for (Document document : listDocument) {
+				ett = new DictCollectionTempModel();
+
+				ett.setCompanyId(Long.valueOf(document.get(DictCollectionTempTerm.COMPANY_ID)));
+				ett.setGroupId(Long.valueOf(document.get(DictCollectionTempTerm.GROUP_ID)));
+				ett.setUserId(Long.valueOf(document.get(DictCollectionTempTerm.USER_ID)));
+				
+				ett.setDictCollectionId(Long.valueOf(document.get(DictCollectionTempTerm.DICT_COLLECTION_ID)));
+				ett.setCollectionCode(document.get(DictCollectionTempTerm.COLLECTION_CODE));
+				ett.setCollectionName(document.get(DictCollectionTempTerm.COLLECTION_NAME));
+				ett.setCollectionNameEN(document.get(DictCollectionTempTerm.COLLECTION_NAME_EN));
+				ett.setDescription(document.get(DictCollectionTempTerm.DESCRIPTION));
+				ett.setStatus(GetterUtil.getInteger(document.get(DictCollectionTempTerm.STATUS)));
+				ett.setMustSync(GetterUtil.getInteger(document.get(DictCollectionTempTerm.MUST_SYNC)));
+				
+				results.add(ett);
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return results;
+	}
+	
+	public static DictCollectionTempModel mapperDictCollectionTempModel(DictCollectionTemp dictCollection) {
+
+		DictCollectionTempModel ett = new DictCollectionTempModel();
+
+		try {
+
+			if (ett != null) {
+				ett.setDictCollectionId(dictCollection.getDictCollectionId());
+				ett.setCompanyId(dictCollection.getCompanyId());
+				ett.setGroupId(dictCollection.getGroupId());
+				ett.setUserId(dictCollection.getUserId());
+				
+				ett.setCollectionCode(dictCollection.getCollectionCode());
+				ett.setCollectionName(dictCollection.getCollectionName());
+				ett.setCollectionNameEN(dictCollection.getCollectionNameEN());
+				ett.setDescription(dictCollection.getDescription());
+				ett.setCreateDate(Validator.isNotNull(dictCollection.getCreateDate())
+						? APIDateTimeUtils.convertDateToString(dictCollection.getCreateDate(), APIDateTimeUtils._TIMESTAMP)
+						: StringPool.BLANK);
+				ett.setModifiedDate(
+						Validator.isNotNull(dictCollection.getModifiedDate()) ? APIDateTimeUtils.convertDateToString(
+								dictCollection.getModifiedDate(), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);				
+				ett.setStatus(dictCollection.getStatus());
+				ett.setMustSync(dictCollection.getMustSync());
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return ett;
+	}
+	
+	public static List<DictGroupTempModel> mapperGroupsList(List<Document> listDocument) {
+
+		List<DictGroupTempModel> results = new ArrayList<>();
+
+		try {
+
+			DictGroupTempModel ett = null;
+
+			for (Document document : listDocument) {
+				ett = new DictGroupTempModel();
+
+				ett.setGroupCode(document.get(DictGroupTerm.GROUP_CODE));
+				ett.setGroupName(document.get(DictGroupTerm.GROUP_NAME));
+				ett.setGroupNameEN(document.get(DictGroupTerm.GROUP_NAME_EN));
+				ett.setGroupDescription(document.get(DictGroupTerm.GROUP_DESCRIPTION));
+
+				results.add(ett);
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return results;
+	}
+	
+	public static DictGroupTempModel mapperGroups(DictGroupTemp dictGroup) {
+
+		DictGroupTempModel ett = new DictGroupTempModel();
+
+		try {
+
+			ett.setGroupCode(dictGroup.getGroupCode());
+			ett.setGroupName(dictGroup.getGroupName());
+			ett.setGroupNameEN(dictGroup.getGroupNameEN());
+			ett.setGroupDescription(dictGroup.getGroupDescription());
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return ett;
+	}	
+	
+	public static List<DictGroupItemTempModel> mapperDictGroupItemTempModelList(List<Document> listDocument) {
+
+		List<DictGroupItemTempModel> results = new ArrayList<>();
+
+		try {
+
+			DictGroupItemTempModel ett = null;
+
+			for (Document document : listDocument) {
+				ett = new DictGroupItemTempModel();
+
+				ett.setDictItemId(Long.valueOf(document.get(DictItemGroupTempTerm.DICT_ITEM_ID)));
+				ett.setItemCode(document.get(DictItemGroupTempTerm.ITEM_CODE));
+				ett.setItemName(document.get(DictItemGroupTempTerm.ITEM_NAME));
+				ett.setItemNameEN(document.get(DictItemGroupTempTerm.ITEM_NAME_EN));
+				ett.setItemDescription(document.get(DictItemGroupTempTerm.ITEM_DESCRIPTION));
+
+				results.add(ett);
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return results;
+	}
+	
+	public static DictGroupItemTempModel mapperDictGroupItemTempModel(DictItemGroupTemp dictItemGroup) {
+
+		DictGroupItemTempModel ett = new DictGroupItemTempModel();
+
+		try {
+
+			long dictItemId = dictItemGroup.getDictItemId();
+
+			DictItemTemp dictItem = DictItemTempLocalServiceUtil.fetchDictItemTemp(dictItemId);
+
+			ett.setDictItemId(dictItemId);
+			ett.setItemCode(dictItem.getItemCode());
+			ett.setItemName(dictItem.getItemName());
+			ett.setItemNameEN(dictItem.getItemNameEN());
+			ett.setItemDescription(String.valueOf(dictItem.getItemDescription()));
+			
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return ett;
+	}
+	
+	public static List<DictItemTempModel> mapperDictItemTempModelList(List<Document> listDocument) {
+
+		List<DictItemTempModel> results = new ArrayList<>();
+
+		try {
+
+			DictItemTempModel ett = null;
+
+			for (Document document : listDocument) {
+				ett = new DictItemTempModel();
+
+				ett.setDictItemId(Long.valueOf(document.get("entryClassPK")));
+				ett.setItemCode(document.get(DictItemTempTerm.ITEM_CODE));
+				ett.setItemName(document.get(DictItemTempTerm.ITEM_NAME));
+				ett.setItemDescription(document.get(DictItemTempTerm.ITEM_DESCRIPTION));
+				ett.setLevel(Integer.valueOf(document.get(DictItemTempTerm.LEVEL)));
+				ett.setSibling(Integer.valueOf(document.get(DictItemTempTerm.LEVEL)));
+				ett.setTreeIndex(document.get(DictItemTempTerm.TREE_INDEX));
+
+				ett.setCreateDate(Validator.isNotNull(document.get(DictItemTempTerm.CREATE_DATE)) ? APIDateTimeUtils
+						.convertDateToString(document.getDate(DictItemTempTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
+						: StringPool.BLANK);
+				ett.setModifiedDate(
+						Validator.isNotNull(document.get("modified")) ? APIDateTimeUtils.convertDateToString(
+								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+
+				DictItemTemp parentItem = DictItemTempLocalServiceUtil
+						.fetchDictItemTemp(Long.valueOf(document.get(DictItemTempTerm.PARENT_ITEM_ID)));
+
+				ParentItemModel parentItemModel = new ParentItemModel();
+
+				if (Validator.isNotNull(parentItem)) {
+
+					parentItemModel.setItemCode(parentItem.getItemCode());
+					parentItemModel.setItemName(parentItem.getItemName());
+					parentItemModel.setItemNameEN(parentItem.getItemNameEN());
+
+				}
+
+				results.add(ett);
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return results;
+	}	
+	public static Log _log = LogFactoryUtil.getLog(DataTempManagementUtils.class);
+
+}

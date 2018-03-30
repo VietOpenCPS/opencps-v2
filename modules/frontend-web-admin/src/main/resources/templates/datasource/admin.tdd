@@ -60,6 +60,24 @@
 
 			"dictcollection_dictitem_edit_action": "dictCollectionDictitemEditActionURL"
 		},
+		"adminDataTempMgtPortlet" : {
+			"dictcollection_list": "datatempmgt/dictcollection_list.ftl?p_p_lifecycle=1",
+			"dictcollection_detail": "datatempmgt/dictcollection_detail.ftl?p_p_lifecycle=1",
+
+			"dictcollection_detail_info": "datatempmgt/dictcollection_detail_info.ftl?p_p_lifecycle=1",
+
+			"dictcollection_detail_dictitem": "datatempmgt/dictcollection_detail_dictitem.ftl?p_p_lifecycle=1",
+
+			"dictcollection_detail_formtemplate": "datatempmgt/dictcollection_detail_formtemplate.ftl?p_p_lifecycle=1",
+
+			"dictcollection_create_dictcollection": "datatempmgt/dictcollection_create_dictcollection.ftl?p_p_lifecycle=1",
+			
+			"dictcollection_create_dictitem": "datatempmgt/dictcollection_create_dictitem.ftl?p_p_lifecycle=1",
+
+			"dictcollection_create_dictgroup": "datatempmgt/dictcollection_create_dictgroup.ftl?p_p_lifecycle=1",
+
+			"dictcollection_dictitem_edit_action": "dictCollectionDictitemEditActionURL"
+		},
 		"employeePortlet": {
 			"employee_list": "employee/employee_list.ftl?p_p_lifecycle=1",
             "employee_birthdate": "employee/employee_birthdate.ftl?p_p_lifecycle=1",

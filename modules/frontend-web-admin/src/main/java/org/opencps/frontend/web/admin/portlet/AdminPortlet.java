@@ -261,6 +261,14 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		dataMgtURL.setParameter(
 			"mvcPath", "/templates/datamgt/dictcollection_index.ftl");
 		
+		PortletURL dataTempMgtURL = PortletURLFactoryUtil.create(
+				renderRequest, portletId, themeDisplay.getPlid(),
+				PortletRequest.RENDER_PHASE);
+		dataTempMgtURL.setPortletMode(PortletMode.VIEW);
+		dataTempMgtURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		dataTempMgtURL.setParameter(
+				"mvcPath", "/templates/datatempmgt/dictcollectiontemp_index.ftl");
+
 		PortletURL registrationTemplatesURL = PortletURLFactoryUtil.create(
 			renderRequest, portletId, themeDisplay.getPlid(),
 			PortletRequest.RENDER_PHASE);
@@ -304,6 +312,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		urlObject.put("payment_config", paymentConfigtURL.toString());
 		urlObject.put("paymentconfig_form", paymentConfigFormURL.toString());
 		urlObject.put("dictcollection_index", dataMgtURL.toString());
+		urlObject.put("dictcollectiontemp_index", dataTempMgtURL.toString());
 		urlObject.put("serverconfigs", serverConfigsURL.toString());
 		urlObject.put("certnumber", certNumberURL.toString());
 		
