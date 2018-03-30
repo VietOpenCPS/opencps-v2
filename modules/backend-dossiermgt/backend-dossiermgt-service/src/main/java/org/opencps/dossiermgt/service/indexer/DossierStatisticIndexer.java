@@ -6,15 +6,8 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.dossiermgt.constants.DossierStatisticTerm;
-import org.opencps.dossiermgt.constants.DossierStatisticTerm;
-import org.opencps.dossiermgt.constants.ServiceConfigTerm;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierLog;
 import org.opencps.dossiermgt.model.DossierStatistic;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierStatisticLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -28,10 +21,9 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DossierStatisticIndexer extends BaseIndexer<DossierStatistic> {
-	public static final String CLASS_NAME = DossierLog.class.getName();
+	public static final String CLASS_NAME = DossierStatistic.class.getName();
 
 	@Override
 	public String getClassName() {
@@ -113,7 +105,7 @@ public class DossierStatisticIndexer extends BaseIndexer<DossierStatistic> {
 	}
 
 	protected void reindex(long companyId) throws PortalException {
-		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = DossierLogLocalServiceUtil
+		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = DossierStatisticLocalServiceUtil
 				.getIndexableActionableDynamicQuery();
 
 		indexableActionableDynamicQuery.setCompanyId(companyId);
@@ -128,7 +120,7 @@ public class DossierStatisticIndexer extends BaseIndexer<DossierStatistic> {
 							indexableActionableDynamicQuery.addDocuments(document);
 						} catch (PortalException pe) {
 							if (_log.isWarnEnabled()) {
-								_log.warn("Unable to index DossierLog " + object.getPrimaryKey(), pe);
+								_log.warn("Unable to index DossierStatistic " + object.getPrimaryKey(), pe);
 							}
 						}
 					}

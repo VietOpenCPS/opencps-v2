@@ -56,6 +56,9 @@
 
 	<bean class="org.opencps.dossiermgt.service.indexer.DeliverableIndexer"
 		id="org.opencps.dossiermgt.service.indexer.DeliverableIndexer" />
+		
+	<bean class="org.opencps.dossiermgt.service.indexer.DossierStatisticIndexer"
+		id="org.opencps.dossiermgt.service.indexer.DossierStatisticIndexer" />
 
 	<!-- Listeners -->
 	<bean id="dossier.listener.jasper" class="org.opencps.jasper.message.Engine" />

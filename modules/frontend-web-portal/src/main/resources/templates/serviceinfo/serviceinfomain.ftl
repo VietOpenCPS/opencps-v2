@@ -101,7 +101,7 @@
 
 <!-- Modal -->
 <div id="instructionModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+  <div class="modal-dialog" style="position: relative; margin-top: 100px;">
 
     <!-- Modal content-->
     <div class="modal-content">
@@ -252,14 +252,19 @@
       },
       change : function(){
         $("#administration").html(kendo.render(templateAdministration, this.view()));
-        if(!"${domain}"){
-          $("#administration > li:first-child").addClass("active");
-          $("#administrationCodeSearch").data("kendoComboBox").value($("#administration > li:first-child").attr("dataPk"));
-          $("#administrationCodeSearch").data("kendoComboBox")._isSelect = false;
-          $("#service_info_list_view").getKendoListView().dataSource.read({
-            "administration": $("#administration > li:first-child").attr("dataPk")
-          });
+        try{
+          if(!"${domain}"){
+            $("#administration > li:first-child").addClass("active");
+            // $("#administrationCodeSearch").data("kendoComboBox").value($("#administration > li:first-child").attr("dataPk"));
+            // $("#administrationCodeSearch").data("kendoComboBox")._isSelect = false;
+            // $("#service_info_list_view").getKendoListView().dataSource.read({
+            //   "administration": $("#administration > li:first-child").attr("dataPk")
+            // });
+          }
+        }catch(err){
+          console.log(err);
         }
+
       }
     });
     dataSourceAdministrations.read();
@@ -381,7 +386,7 @@
     $(document).on("click",".showInstruction",function(event){
       var instructionContent=$(this).attr("serviceInstruction");
       console.log(instructionContent);
-      $("#modal-content-instruction").text(instructionContent);
+      $("#modal-content-instruction").html(instructionContent);
       $("#instructionModal").modal("show");
     });
 
