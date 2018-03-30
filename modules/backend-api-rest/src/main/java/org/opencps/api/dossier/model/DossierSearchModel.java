@@ -83,7 +83,10 @@ import javax.xml.bind.annotation.XmlType;
     "fromReceiveDate",
     "toReceiveDate",
     "tuNgayKyCc",
-    "denNgayKyCc"    
+    "denNgayKyCc",
+    "dossierIdCTN",
+    "fromSubmitDate",
+    "toSubmitDate"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -139,6 +142,12 @@ public class DossierSearchModel {
     protected String tuNgayKyCc;
     @QueryParam(value = "den_ngay_ky_cc")
     protected String denNgayKyCc;
+    @QueryParam(value = "dossierIdCTN")
+    protected String dossierIdCTN;
+    @QueryParam(value = "fromSubmitDate")
+    protected String fromSubmitDate;
+    @QueryParam(value = "toSubmitDate")
+    protected String toSubmitDate;
     
     public String getSecetKey() {
 		return secetKey;
@@ -691,5 +700,29 @@ public class DossierSearchModel {
     public void setDenNgayKyCc(String value) {
         this.denNgayKyCc = value;
     }
-	
+
+	public String getDossierIdCTN() {
+		return dossierIdCTN;
+	}
+
+	public void setDossierIdCTN(String dossierIdCTN) {
+		this.dossierIdCTN = dossierIdCTN;
+	}
+
+	public String getFromSubmitDate() {
+		return fromSubmitDate;
+	}
+
+	public void setFromSubmitDate(String fromSubmitDate) {
+		this.fromSubmitDate = fromSubmitDate;
+	}
+
+	public String getToSubmitDate() {
+		return toSubmitDate;
+	}
+
+	public void setToSubmitDate(String toSubmitDate) {
+		this.toSubmitDate = toSubmitDate;
+	}
+
 }

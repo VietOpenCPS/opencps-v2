@@ -1033,7 +1033,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
 		String dossierNo = GetterUtil.getString(params.get(DossierTerm.DOSSIER_NO));
 		// Get by certificate number
-		String certificateNo = (String) params.get(DossierTerm.DOSSIER_ID + "CTN");
+		String certificateNo = (String) params.get(DossierTerm.DOSSIER_ID_CTN);
 
 		// String top = GetterUtil.getString(params.get(DossierTerm.TOP));
 
@@ -1052,6 +1052,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String certNo = GetterUtil.getString(params.get(DossierTerm.CERT_NO));
 		String fromCertDate = GetterUtil.getString(params.get(DossierTerm.FROM_CERT_DATE));
 		String toCertDate = GetterUtil.getString(params.get(DossierTerm.TO_CERT_DATE));
+		String fromSubmitDate = GetterUtil.getString(params.get(DossierTerm.FROM_SUBMIT_DATE));
+		String toSubmitDate = GetterUtil.getString(params.get(DossierTerm.TO_SUBMIT_DATE));
 						
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1081,7 +1083,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
 				query.addFields(
-						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO, "dossierIdCTN"});
+						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -1253,7 +1255,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				MultiMatchQuery query = new MultiMatchQuery(key);
 
 				query.addFields(
-						new String[] { DossierTerm.DOSSIER_NO, "dossierIdCTN"});
+						new String[] { DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -1263,7 +1265,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (Validator.isNotNull(certificateNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(certificateNo);
 
-			query.addFields(DossierTerm.DOSSIER_ID + "CTN");
+			query.addFields(DossierTerm.DOSSIER_ID_CTN);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -1318,14 +1320,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 						false,
 						true);
 
-					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);								
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
 		}
 		
 		if (Validator.isNotNull(certNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(certNo));
 
-			query.addField(DossierTerm.CERT_NO);
+			query.addField(DossierTerm.CERT_NO_SEARCH);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -1362,7 +1364,38 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);								
 			}
 		}
-		
+
+		String fromSubmitDateFilter = fromSubmitDate + "000000";
+		String toSubmitDateFilter = toSubmitDate + "235959";
+
+		if (Validator.isNotNull(fromSubmitDate)) {
+			if (Validator.isNotNull(toSubmitDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+					DossierTerm.SUBMIT_DATE, fromSubmitDateFilter, toSubmitDateFilter, true,
+					true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);				
+			}
+			else {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.SUBMIT_DATE, fromSubmitDateFilter, toSubmitDateFilter, 
+						true,
+						false);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);								
+			}
+		}
+		else {
+			if (Validator.isNotNull(toSubmitDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.RECEIVE_DATE, fromSubmitDateFilter, toSubmitDateFilter, 
+						false,
+						true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -1383,7 +1416,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
 		String dossierNo = GetterUtil.getString(params.get(DossierTerm.DOSSIER_NO));
 		// Get by certificate number
-		String certificateNo = (String) params.get(DossierTerm.DOSSIER_ID + "CTN");
+		String certificateNo = (String) params.get(DossierTerm.DOSSIER_ID_CTN);
 
 		// TODO add more logic here
 		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
@@ -1404,6 +1437,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String certNo = GetterUtil.getString(params.get(DossierTerm.CERT_NO));
 		String fromCertDate = GetterUtil.getString(params.get(DossierTerm.FROM_CERT_DATE));
 		String toCertDate = GetterUtil.getString(params.get(DossierTerm.TO_CERT_DATE));
+		String fromSubmitDate = GetterUtil.getString(params.get(DossierTerm.FROM_SUBMIT_DATE));
+		String toSubmitDate = GetterUtil.getString(params.get(DossierTerm.TO_SUBMIT_DATE));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1430,7 +1465,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
 				query.addFields(
-						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO, "dossierIdCTN"});
+						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -1602,7 +1637,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				MultiMatchQuery query = new MultiMatchQuery(key);
 
 				query.addFields(
-						new String[] { DossierTerm.DOSSIER_NO, "dossierIdCTN"});
+						new String[] { DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -1612,7 +1647,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (Validator.isNotNull(certificateNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(certificateNo);
 
-			query.addFields(DossierTerm.DOSSIER_ID + "CTN");
+			query.addFields(DossierTerm.DOSSIER_ID_CTN);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -1674,7 +1709,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (Validator.isNotNull(certNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(certNo));
 
-			query.addField(DossierTerm.CERT_NO);
+			query.addField(DossierTerm.CERT_NO_SEARCH);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -1707,6 +1742,37 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 						true);
 
 					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);								
+			}
+		}
+
+		String fromSubmitDateFilter = fromSubmitDate + "000000";
+		String toSubmitDateFilter = toSubmitDate + "235959";
+
+		if (Validator.isNotNull(fromSubmitDate)) {
+			if (Validator.isNotNull(toSubmitDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+					DossierTerm.SUBMIT_DATE, fromSubmitDateFilter, toSubmitDateFilter, true,
+					true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);				
+			}
+			else {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.SUBMIT_DATE, fromSubmitDateFilter, toSubmitDateFilter, 
+						true,
+						false);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);								
+			}
+		}
+		else {
+			if (Validator.isNotNull(toSubmitDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.RECEIVE_DATE, fromSubmitDateFilter, toSubmitDateFilter, 
+						false,
+						true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
 		}
 		
