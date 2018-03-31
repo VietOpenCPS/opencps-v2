@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -226,7 +227,28 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addTextSortable(DossierTerm.DOSSIER_OVER_DUE,
 				Boolean.toString(getDossierOverDue(object.getPrimaryKey())));
 
-		// Indexing DossierActionUsers
+		//TODO: index dossierAction StepCode
+//		StringBundler sb = new StringBundler();
+//		long dossierActionsUserId = object.getDossierActionId();
+//		if (dossierActionsUserId > 0) {
+//			List<DossierActionUser> dossierActionUsers = DossierActionUserLocalServiceUtil
+//					.getListUser(dossierActionsUserId);
+//			if (dossierActionUsers != null) {
+//				int length = dossierActionUsers.size();
+//				for (int i = 0; i < length; i ++) {
+//					DossierActionUser dau = dossierActionUsers.get(i);
+//					long userId = dau.getUserId();
+//					if (i == length - 1) {
+//						sb.append(userId);
+//					} else {
+//						sb.append(userId);
+//						sb.append(StringPool.BLANK);
+//					}
+//				}
+//			}
+//		}
+//		document.addTextSortable(DossierTerm.ACTION_USERIDS, sb.toString());
+//		 Indexing DossierActionUsers
 		List<Long> actionUserIds = new ArrayList<>();
 		try {
 			List<DossierAction> dossierActions = DossierActionLocalServiceUtil.getDossierActionById(dossierId);
