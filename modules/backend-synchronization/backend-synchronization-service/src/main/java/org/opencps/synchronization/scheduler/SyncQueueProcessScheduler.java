@@ -219,6 +219,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
 										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
+									dictItemDataUtil.deleteDictCollection(collectionCode, serverConfig.getGroupId(), serviceContext);
 									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 								}		
 								else {
