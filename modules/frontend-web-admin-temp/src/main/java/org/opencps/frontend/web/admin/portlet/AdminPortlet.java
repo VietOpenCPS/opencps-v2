@@ -2,6 +2,7 @@ package org.opencps.frontend.web.admin.portlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +42,11 @@ import org.opencps.synchronization.constants.DictItemTempTerm;
 import org.opencps.synchronization.constants.SyncServerTerm;
 import org.opencps.synchronization.model.DictCollectionTemp;
 import org.opencps.synchronization.model.DictGroupTemp;
+import org.opencps.synchronization.model.DictItemGroupTemp;
 import org.opencps.synchronization.model.DictItemTemp;
 import org.opencps.synchronization.service.DictCollectionTempLocalServiceUtil;
 import org.opencps.synchronization.service.DictGroupTempLocalServiceUtil;
+import org.opencps.synchronization.service.DictItemGroupTempLocalServiceUtil;
 import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
 import org.opencps.synchronization.service.SyncQueueLocalServiceUtil;
 import org.opencps.usermgt.action.impl.JobposActions;
@@ -83,6 +86,7 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -1754,10 +1758,101 @@ import backend.utils.ObjectConverterUtil;
 						}		
 					}
 
+				List<DictItemGroupTemp> lstItemGroups = DictItemGroupTempLocalServiceUtil.findByDictItemTemp(groupId, dictItem.getDictItemId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				List<String> oldItemGroups = new ArrayList<>();
+				for (DictItemGroupTemp t : lstItemGroups) {
+					try {
+						DictGroupTemp groupTemp = DictGroupTempLocalServiceUtil.fetchDictGroupTemp(t.getDictGroupId());
+						oldItemGroups.add(groupTemp.getGroupCode());
+					}
+					catch (Exception e) {
+						
+					}
+				}
+
 				groupCodes = dictCollectionActions.updateDictItemGroupTemp(userId, groupId, dictItem.getDictItemId(),
 						groupCodes, collectionCode, serviceContext);
-
-					result.put(
+				List<String> newItemGroups = Arrays.asList(StringUtil.split(groupCodes));
+				
+				for (String groupCode : oldItemGroups) {
+					if (!newItemGroups.contains(groupCode)) {
+						try {
+							for (ServerConfig sc : lstServers) {
+								String configs = sc.getConfigs();
+								if (Validator.isNotNull(configs)) {
+									try {
+										JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+										if (configObj.has(SyncServerTerm.SERVER_TYPE)
+												&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+														.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+												&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+												&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+												&& configObj.has(SyncServerTerm.SERVER_URL)
+												&& (configObj.has(SyncServerTerm.PUSH)
+														&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+											if (groupId == sc.getGroupId()) {
+												JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+												JSONObject itemGroupObj = JSONFactoryUtil.createJSONObject();
+												itemGroupObj.put(DictCollectionTempTerm.COLLECTION_CODE, collectionCode);
+												itemGroupObj.put(DictGroupTempTerm.GROUP_CODE, groupCode);
+												itemGroupObj.put(DictItemTempTerm.ITEM_CODE, dictItem.getItemCode());
+												
+												jsonObject.put("new", convertObject(itemGroupObj));
+												
+												SyncQueueLocalServiceUtil.addSyncQueue(userId, groupId, sc.getServerNo(), DictItemGroupTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOWEST, SyncServerTerm.METHOD_REMOVE_FROM_GROUP, serviceContext);
+											}
+										}
+									} catch (Exception e) {
+										_log.error(e);
+									}
+								}
+							}
+						} catch (Exception e) {
+							_log.error(e);
+						}															
+					}
+				}
+				
+				for (String groupCode : newItemGroups) {
+					if (!oldItemGroups.contains(groupCode)) {
+						try {
+							for (ServerConfig sc : lstServers) {
+								String configs = sc.getConfigs();
+								if (Validator.isNotNull(configs)) {
+									try {
+										JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+										if (configObj.has(SyncServerTerm.SERVER_TYPE)
+												&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+														.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+												&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+												&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+												&& configObj.has(SyncServerTerm.SERVER_URL)
+												&& (configObj.has(SyncServerTerm.PUSH)
+														&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+											if (groupId == sc.getGroupId()) {
+												JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+												JSONObject itemGroupObj = JSONFactoryUtil.createJSONObject();
+												itemGroupObj.put(DictCollectionTempTerm.COLLECTION_CODE, collectionCode);
+												itemGroupObj.put(DictGroupTempTerm.GROUP_CODE, groupCode);
+												itemGroupObj.put(DictItemTempTerm.ITEM_CODE, dictItem.getItemCode());
+												
+												jsonObject.put("new", convertObject(itemGroupObj));
+												
+												SyncQueueLocalServiceUtil.addSyncQueue(userId, groupId, sc.getServerNo(), DictItemGroupTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOWEST, SyncServerTerm.METHOD_REMOVE_FROM_GROUP, serviceContext);
+											}
+										}
+									} catch (Exception e) {
+										_log.error(e);
+									}
+								}
+							}
+						} catch (Exception e) {
+							_log.error(e);
+						}															
+					}
+				}
+					
+				result.put(
 						"createDate", DateTimeUtils.convertDateToString(
 							dictItem.getCreateDate(), DateTimeUtils._TIMESTAMP));
 					result.put(

@@ -562,6 +562,11 @@ public class DictItemGroupTempLocalServiceImpl
 	public long countOlderThanDate(Date date, long groupId) {
 		return dictItemGroupTempPersistence.countByF_newerThan(date, groupId);
 	}
+
+	@Override
+	public List<DictItemGroupTemp> findByDictItemTemp(long groupId, long dictItemId, int start, int end) {
+		return dictItemGroupTempPersistence.findByF_dictItemId(groupId, dictItemId, start, end);
+	}
 	
 	Log _log = LogFactoryUtil.getLog(DictItemGroupTempLocalServiceUtil.class);		
 }
