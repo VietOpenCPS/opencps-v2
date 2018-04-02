@@ -70,12 +70,15 @@ public class DictItemModel {
 			parentModel.setItemNameEN(parentObj.getString(DictItemTerm.ITEM_NAME_EN));
 		}
 		
-		if (obj.has("groups")) {
+		if (obj.has("groups") && Validator.isNotNull(obj.get("groups"))) {
 			JSONArray groupArr = obj.getJSONArray("groups");
-			List<DictGroupModel> lstGroups = new ArrayList<>();
 			
-			for (int i = 0; i < groupArr.length(); i++) {
-				lstGroups.add(DictGroupModel.fromJSONObject(groupArr.getJSONObject(i)));				
+			if (groupArr != null) {
+				List<DictGroupModel> lstGroups = new ArrayList<>();
+				
+				for (int i = 0; i < groupArr.length(); i++) {
+					lstGroups.add(DictGroupModel.fromJSONObject(groupArr.getJSONObject(i)));				
+				}				
 			}
 			
 		}
