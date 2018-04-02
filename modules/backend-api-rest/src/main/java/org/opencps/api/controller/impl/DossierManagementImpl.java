@@ -11,12 +11,17 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.DossierMarkUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossier.model.DoActionModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierInputModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
+import org.opencps.api.dossiermark.model.DossierMarkInputModel;
+import org.opencps.api.dossiermark.model.DossierMarkModel;
+import org.opencps.api.dossiermark.model.DossierMarkResultDetailModel;
+import org.opencps.api.dossiermark.model.DossierMarkResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
@@ -27,12 +32,15 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.DossierMarkActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -1380,6 +1388,119 @@ public class DossierManagementImpl implements DossierManagement {
 
 		}
 
+	}
+	
+	@Override
+	public Response addDossierMark(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long dossierId, String dossierPartNo,
+			DossierMarkInputModel input) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierMarkActions actions = new DossierMarkActionsImpl();
+
+			DossierMark dossierMark = actions.addDossierMark(groupId, dossierId, dossierPartNo, input.isFileCheck(),
+					input.getFileType(), serviceContext);
+
+			DossierMarkResultDetailModel result = DossierMarkUtils.mappingDossierMarkDetailModel(dossierMark);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response getDossierMarks(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long dossierId) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierMarkActions actions = new DossierMarkActionsImpl();
+			
+			DossierMarkResultsModel result = new DossierMarkResultsModel();
+
+			List<DossierMark> lstDossierMark = actions.getDossierMarks(groupId, dossierId);
+
+			List<DossierMarkModel> outputs = DossierMarkUtils.mappingDossierMarks(lstDossierMark);
+			
+			result.setTotal(lstDossierMark.size());
+			result.getData().addAll(outputs);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response getDossierMarkbyDossierId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long dossierId, String dossierPartNo) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierMarkActions actions = new DossierMarkActionsImpl();
+
+			DossierMark dossierMark = actions.getDossierMarkbyDossierId(groupId, dossierId, dossierPartNo);
+
+			DossierMarkResultDetailModel result = DossierMarkUtils.mappingDossierMarkDetailModel(dossierMark);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+	
+	private Response processException(Exception e) {
+		ErrorMsg error = new ErrorMsg();
+
+		if (e instanceof UnauthenticationException) {
+			error.setMessage("Non-Authoritative Information.");
+			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+			error.setDescription("Non-Authoritative Information.");
+
+			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+		} else {
+			if (e instanceof UnauthorizationException) {
+				error.setMessage("Unauthorized.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Unauthorized.");
+
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+			} else {
+				error.setMessage("Internal Server Error");
+				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+				error.setDescription(e.getMessage());
+
+				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+
+			}
+		}
 	}
 
 }
