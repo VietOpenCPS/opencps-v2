@@ -82,9 +82,9 @@ public class DictItemTempDetailModel {
     protected int sibling;
     @XmlElement(required = true)
     protected String treeIndex;
-    @XmlElement(name = "ParentItemModel")
+    @XmlElement(name = "parentItem")
     protected List<ParentItemModel> parentItemModel;
-    @XmlElement(name = "DictGroupTempModel")
+    @XmlElement(name = "groups")
     protected List<DictGroupTempModel> dictGroupTempModel;
 
     /**

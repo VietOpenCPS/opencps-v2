@@ -149,57 +149,14 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, DictCollectionInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictCollectionModel dictCollectionModel = new DictCollectionModel();
-		PushCollectionInterface pushCollectionUtil = new PushCollectionActions();
 
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			DictCollection oldCollection = null;
-			try {
-				oldCollection = dictItemDataUtil.getDictCollectionDetail(input.getCollectionCode(), groupId);
-			} catch (Exception e) {
-
-			}
 			DictCollection dictCollection = dictItemDataUtil.addDictCollection(user.getUserId(), groupId,
 					input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(),
 					input.getDescription(), serviceContext);
-
-			if (oldCollection == null) {
-				try {
-					List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-							QueryUtil.ALL_POS);
-
-					for (ServerConfig sc : lstServers) {
-						String configs = sc.getConfigs();
-						if (Validator.isNotNull(configs)) {
-							try {
-								JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-								if (configObj.has(SyncServerTerm.SERVER_TYPE)
-										&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-												.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
-										&& configObj.has(SyncServerTerm.SERVER_URL)
-										&& (configObj.has(SyncServerTerm.PUSH)
-												&& configObj.getBoolean(SyncServerTerm.PUSH))) {
-									if (groupId == sc.getGroupId()) {
-										pushCollectionUtil.addPushCollection(user.getUserId(), groupId,
-												sc.getServerNo(),
-												input.getCollectionCode(), input.getCollectionName(),
-												input.getCollectionNameEN(), input.getDescription(),
-												SyncServerTerm.METHOD_CREATE, "", serviceContext);
-									}
-								}
-							} catch (Exception e) {
-								_log.error(e);
-							}
-						}
-					}
-				} catch (Exception e) {
-					_log.error(e);
-				}
-			}
 
 			// return json object after update
 			dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
@@ -269,48 +226,16 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, String code, DictCollectionInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictCollectionModel dictCollectionModel = new DictCollectionModel();
-		PushCollectionInterface pushCollectionUtil = new PushCollectionActions();
 
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
+			_log.info("Update dict collection: " + code);
+			
 			DictCollection dictCollection = dictItemDataUtil.updateDictCollection(user.getUserId(), groupId, code,
 					input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(),
 					input.getDescription(), serviceContext);
-
-			try {
-				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS);
-
-				for (ServerConfig sc : lstServers) {
-					String configs = sc.getConfigs();
-					if (Validator.isNotNull(configs)) {
-						try {
-							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-							if (configObj.has(SyncServerTerm.SERVER_TYPE)
-									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
-									&& configObj.has(SyncServerTerm.SERVER_URL)
-									&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
-								if (groupId == sc.getGroupId()) {
-									pushCollectionUtil.addPushCollection(user.getUserId(), groupId, 
-											sc.getServerNo(),
-											code,
-											input.getCollectionName(), input.getCollectionNameEN(),
-											input.getDescription(), SyncServerTerm.METHOD_UPDATE, "", serviceContext);
-								}
-							}
-						} catch (Exception e) {
-							_log.error(e);
-						}
-					}
-				}
-			} catch (Exception e) {
-				_log.error(e);
-			}
 
 			dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
 
@@ -365,54 +290,15 @@ public class DataManagementImpl implements DataManagement {
 	public Response deleteDictCollection(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String code) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-		PushCollectionInterface pushCollectionUtil = new PushCollectionActions();
 
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			DictCollection dictCollection = dictItemDataUtil.getDictCollectionDetail(code, groupId);
-
 			boolean flag = dictItemDataUtil.deleteDictCollection(code, groupId, serviceContext);
 
 			if (flag) {
-
-				try {
-					List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-							QueryUtil.ALL_POS);
-
-					for (ServerConfig sc : lstServers) {
-						String configs = sc.getConfigs();
-						if (Validator.isNotNull(configs)) {
-							try {
-								JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-								if (configObj.has(SyncServerTerm.SERVER_TYPE)
-										&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-												.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
-										&& configObj.has(SyncServerTerm.SERVER_URL)
-										&& (configObj.has(SyncServerTerm.PUSH)
-												&& configObj.getBoolean(SyncServerTerm.PUSH))) {
-									if (groupId == sc.getGroupId()) {
-										pushCollectionUtil.addPushCollection(user.getUserId(), groupId,
-												sc.getServerNo(),
-												dictCollection.getCollectionCode(), dictCollection.getCollectionName(),
-												dictCollection.getCollectionNameEN(), dictCollection.getDescription(),
-												SyncServerTerm.METHOD_DELETE, "", serviceContext);
-									}
-								}
-							} catch (Exception e) {
-								_log.error(e);
-							}
-						}
-					}
-				} catch (Exception e) {
-					_log.error(e);
-				}
-
 				return Response.status(200).build();
-
 			} else {
 
 				ErrorMsg error = new ErrorMsg();
@@ -422,7 +308,6 @@ public class DataManagementImpl implements DataManagement {
 				error.setDescription("not found!");
 
 				return Response.status(404).entity(error).build();
-
 			}
 
 		} catch (Exception e) {
@@ -513,7 +398,6 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, String code, String dataform,
 			long modifiedDateTime) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-		PushCollectionInterface pushCollectionUtil = new PushCollectionActions();
 
 		try {
 
@@ -524,40 +408,6 @@ public class DataManagementImpl implements DataManagement {
 			if (modifiedDateTime == 0 || (modifiedDateTime != 0 && oldCollection.getModifiedDate().compareTo(new Date(modifiedDateTime)) < 0)) {
 				DictCollection dictCollection = dictItemDataUtil.addDataForm(user.getUserId(), groupId, code, dataform,
 						serviceContext);
-
-				try {
-					List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-							QueryUtil.ALL_POS);
-
-					for (ServerConfig sc : lstServers) {
-						String configs = sc.getConfigs();
-						if (Validator.isNotNull(configs)) {
-							try {
-								JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-								if (configObj.has(SyncServerTerm.SERVER_TYPE)
-										&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-												.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
-										&& configObj.has(SyncServerTerm.SERVER_URL)
-										&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
-									if (groupId == sc.getGroupId()) {
-										pushCollectionUtil.addPushCollection(sc.getUserId(), groupId,
-												sc.getServerNo(),
-												dictCollection.getCollectionCode(), dictCollection.getCollectionName(),
-												dictCollection.getCollectionNameEN(), dictCollection.getDescription(),
-												SyncServerTerm.METHOD_UPDATE_DATAFORM, dataform, serviceContext);
-
-									}
-								}
-							} catch (Exception e) {
-								_log.error(e);
-							}
-						}
-					}
-				} catch (Exception e) {
-					_log.error(e);
-				}
 
 				return Response.status(200).entity(dictCollection.getDataForm()).build();				
 			}
@@ -675,7 +525,6 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, String code, DictGroupInputModel input) {
 		Groups dictGroupModel = new Groups();
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-		PushDictGroupInterface pushDictGroupUtil = new PushDictGroupActions();
 		
 		try {
 
@@ -683,46 +532,6 @@ public class DataManagementImpl implements DataManagement {
 
 			DictGroup dictGroup = dictItemDataUtil.addDictgroups(user.getUserId(), groupId, code, input.getGroupCode(),
 					input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(), serviceContext);
-
-			try {
-				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS);
-
-				for (ServerConfig sc : lstServers) {
-					String configs = sc.getConfigs();
-					if (Validator.isNotNull(configs)) {
-						try {
-							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-							if (configObj.has(SyncServerTerm.SERVER_TYPE)
-									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
-									&& configObj.has(SyncServerTerm.SERVER_URL)
-									&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
-								if (groupId == sc.getGroupId()) {
-									pushDictGroupUtil.addPushDictGroup(
-											sc.getUserId(), 
-											groupId, 
-											sc.getServerNo(), 
-											code, 
-											input.getGroupCode(), 
-											input.getGroupName(), 
-											input.getGroupNameEN(), 
-											input.getGroupDescription(), 
-											"", 
-											SyncServerTerm.METHOD_CREATE, 
-											serviceContext);
-								}
-							}
-						} catch (Exception e) {
-							_log.error(e);
-						}
-					}
-				}
-			} catch (Exception e) {
-				_log.error(e);
-			}
 			
 			// return json object after update
 			dictGroupModel = DataManagementUtils.mapperGroups(dictGroup);
@@ -792,7 +601,6 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, String code, String groupCode, DictGroupInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		Groups dictGroupModel = new Groups();
-		PushDictGroupInterface pushDictGroupUtil = new PushDictGroupActions();
 		
 		try {
 
@@ -801,46 +609,6 @@ public class DataManagementImpl implements DataManagement {
 			DictGroup dictGroup = dictItemDataUtil.updateDictgroups(user.getUserId(), groupId, code, groupCode,
 					input.getGroupCode(), input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(),
 					serviceContext);
-
-			try {
-				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS);
-
-				for (ServerConfig sc : lstServers) {
-					String configs = sc.getConfigs();
-					if (Validator.isNotNull(configs)) {
-						try {
-							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-							if (configObj.has(SyncServerTerm.SERVER_TYPE)
-									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
-									&& configObj.has(SyncServerTerm.SERVER_URL)
-									&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
-								if (groupId == sc.getGroupId()) {
-									pushDictGroupUtil.addPushDictGroup(
-											sc.getUserId(), 
-											groupId, 
-											sc.getServerNo(), 
-											code, 
-											input.getGroupCode(), 
-											input.getGroupName(), 
-											input.getGroupNameEN(), 
-											input.getGroupDescription(), 
-											"", 
-											SyncServerTerm.METHOD_UPDATE, 
-											serviceContext);
-								}
-							}
-						} catch (Exception e) {
-							_log.error(e);
-						}
-					}
-				}
-			} catch (Exception e) {
-				_log.error(e);
-			}
 			
 			dictGroupModel = DataManagementUtils.mapperGroups(dictGroup);
 
@@ -895,55 +663,12 @@ public class DataManagementImpl implements DataManagement {
 	public Response deleteDictgroups(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String code, String groupCode) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-		PushDictGroupInterface pushDictGroupUtil = new PushDictGroupActions();
 		
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
-			DictGroup oldDictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
 			
 			boolean flag = dictItemDataUtil.deleteDictgroups(groupCode, groupId, serviceContext);
-
-			try {
-				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS);
-
-				for (ServerConfig sc : lstServers) {
-					String configs = sc.getConfigs();
-					if (Validator.isNotNull(configs)) {
-						try {
-							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-							if (configObj.has(SyncServerTerm.SERVER_TYPE)
-									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
-									&& configObj.has(SyncServerTerm.SERVER_URL)
-									&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
-								if (groupId == sc.getGroupId()) {
-									pushDictGroupUtil.addPushDictGroup(
-											sc.getUserId(), 
-											groupId, 
-											sc.getServerNo(), 
-											code, 
-											oldDictGroup.getGroupCode(), 
-											oldDictGroup.getGroupName(), 
-											oldDictGroup.getGroupNameEN(), 
-											oldDictGroup.getGroupDescription(), 
-											"", 
-											SyncServerTerm.METHOD_DELETE, 
-											serviceContext);
-								}
-							}
-						} catch (Exception e) {
-							_log.error(e);
-						}
-					}
-				}
-			} catch (Exception e) {
-				_log.error(e);
-			}
 			
 			if (flag) {
 

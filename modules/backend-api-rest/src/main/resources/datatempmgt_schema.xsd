@@ -207,6 +207,8 @@
 		<xsd:complexType>
 			<xsd:sequence>
 
+				<xsd:element name="dictGroupId" type="xsd:long" />
+
 				<!-- Other fields -->
 
 				<xsd:element name="groupCode" type="xsd:string" />

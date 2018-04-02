@@ -50,6 +50,8 @@ public class DictItemGroupTempTerm {
 	
 	public static final String SELECTED = "selected";
 	
+	public static final String GROUP_CODE = "groupCode";
+	
 	//sortable
 	public static final String DICT_ITEM_GROUP_ID_SORTABLE = "dictItemGroupId_sortable";
 	

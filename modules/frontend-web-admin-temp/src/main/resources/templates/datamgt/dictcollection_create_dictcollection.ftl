@@ -45,6 +45,14 @@
 		
 		</div>
 		
+		<div class="form-group" >
+		
+			<label for="_collectionAdd_mustSync">Đồng bộ: </label>
+			<input type="checkbox" value="1" id="_collectionAdd_mustSync" name="_collectionAdd_mustSync" class="form-control"
+				placeholder="Đồng bộ" checked="checked" />
+			<label for="_collectionAdd_mustSync">Có đồng bộ</label>		
+		</div>
+
 		<div class="form-group">
 		
 			<label for="description">Mô tả chi tiết:</label>
@@ -103,7 +111,7 @@
 			return;
 		} else {
 
-			var _collectionAdd_BaseUrl = "${api.endpoint}/dictcollections";
+			var _collectionAdd_BaseUrl = "${api.endpoint}/temp/dictcollections";
 
 			$.ajax({
 				url: _collectionAdd_BaseUrl,
@@ -115,6 +123,8 @@
 					collectionCode: $( "#_collectionAdd_collectionCode" ).val().trim(),
 					description: $( "#_collectionAdd_description" ).val().trim(),
 					collectionNameEN: $( "#_collectionAdd_collectionNameEN" ).val().trim(),
+					mustSync: $( "#_collectionAdd_mustSync" ).val().trim(),
+					status: 0
 				},
 				type: 'POST',
 				dataType: 'json',

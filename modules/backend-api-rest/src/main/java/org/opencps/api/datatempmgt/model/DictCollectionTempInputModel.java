@@ -8,11 +8,15 @@
 
 package org.opencps.api.datatempmgt.model;
 
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import com.liferay.portal.kernel.util.StringPool;
 
 
 /**
@@ -52,14 +56,20 @@ import javax.xml.bind.annotation.XmlType;
 public class DictCollectionTempInputModel {
 
     @XmlElement(required = true)
+    @DefaultValue(StringPool.BLANK) @FormParam(value = "collectionCode")
     protected String collectionCode;
     @XmlElement(required = true)
+    @DefaultValue(StringPool.BLANK) @FormParam(value = "collectionName")
     protected String collectionName;
     @XmlElement(required = true)
+    @DefaultValue(StringPool.BLANK) @FormParam(value = "collectionNameEN")
     protected String collectionNameEN;
     @XmlElement(required = true)
+    @DefaultValue(StringPool.BLANK) @FormParam(value = "description")
     protected String description;
+    @DefaultValue("1") @FormParam(value = "status")
     protected int status;
+    @DefaultValue("0") @FormParam(value = "mustSync")
     protected int mustSync;
 
     /**

@@ -46,7 +46,7 @@ import javax.xml.bind.annotation.XmlType;
     "itemNameEN",
     "status"
 })
-@XmlRootElement(name = "ParentItemModel")
+@XmlRootElement(name = "parentItem")
 public class ParentItemModel {
 
     protected long dictItemId;

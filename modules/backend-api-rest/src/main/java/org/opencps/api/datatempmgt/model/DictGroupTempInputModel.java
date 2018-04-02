@@ -8,11 +8,15 @@
 
 package org.opencps.api.datatempmgt.model;
 
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import com.liferay.portal.kernel.util.StringPool;
 
 
 /**
@@ -50,13 +54,18 @@ import javax.xml.bind.annotation.XmlType;
 public class DictGroupTempInputModel {
 
     @XmlElement(required = true)
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "groupCode")
     protected String groupCode;
     @XmlElement(required = true)
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "groupName")
     protected String groupName;
     @XmlElement(required = true)
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "groupNameEN")
     protected String groupNameEN;
     @XmlElement(required = true)
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "groupDescription")
     protected String groupDescription;
+	@DefaultValue("1") @FormParam(value = "status")
     protected int status;
 
     /**

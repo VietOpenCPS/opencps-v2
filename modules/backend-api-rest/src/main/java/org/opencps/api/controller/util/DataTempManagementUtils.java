@@ -11,7 +11,6 @@ import org.opencps.api.datatempmgt.model.DictItemTempDetailModel;
 import org.opencps.api.datatempmgt.model.DictItemTempModel;
 import org.opencps.api.datatempmgt.model.ParentItemModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.constants.DictItemGroupTerm;
 import org.opencps.synchronization.action.DictCollectionTempInterface;
 import org.opencps.synchronization.constants.DictCollectionTempTerm;
@@ -22,9 +21,11 @@ import org.opencps.synchronization.model.DictCollectionTemp;
 import org.opencps.synchronization.model.DictGroupTemp;
 import org.opencps.synchronization.model.DictItemGroupTemp;
 import org.opencps.synchronization.model.DictItemTemp;
+import org.opencps.synchronization.service.DictCollectionTempLocalServiceUtil;
 import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -114,10 +115,12 @@ public class DataTempManagementUtils {
 			for (Document document : listDocument) {
 				ett = new DictGroupTempModel();
 
-				ett.setGroupCode(document.get(DictGroupTerm.GROUP_CODE));
-				ett.setGroupName(document.get(DictGroupTerm.GROUP_NAME));
-				ett.setGroupNameEN(document.get(DictGroupTerm.GROUP_NAME_EN));
-				ett.setGroupDescription(document.get(DictGroupTerm.GROUP_DESCRIPTION));
+				ett.setDictGroupId(Long.valueOf(document.get(DictGroupTempTerm.DICT_GROUPID)));
+				ett.setGroupCode(document.get(DictGroupTempTerm.GROUP_CODE));
+				ett.setGroupName(document.get(DictGroupTempTerm.GROUP_NAME));
+				ett.setGroupNameEN(document.get(DictGroupTempTerm.GROUP_NAME_EN));
+				ett.setGroupDescription(document.get(DictGroupTempTerm.GROUP_DESCRIPTION));
+				ett.setStatus(GetterUtil.getInteger(document.get(DictGroupTempTerm.STATUS)));
 
 				results.add(ett);
 			}
@@ -139,6 +142,8 @@ public class DataTempManagementUtils {
 			ett.setGroupName(dictGroup.getGroupName());
 			ett.setGroupNameEN(dictGroup.getGroupNameEN());
 			ett.setGroupDescription(dictGroup.getGroupDescription());
+			ett.setStatus(dictGroup.getStatus());
+			
 		} catch (Exception e) {
 			_log.error(e);
 		}
@@ -314,6 +319,64 @@ public class DataTempManagementUtils {
 		}
 
 		return ett;
+	}
+	
+	public static JSONObject convertObject(Object o) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		
+		if (o instanceof DictCollectionTemp) {
+			DictCollectionTemp dictCollection = (DictCollectionTemp)o;
+			result.put(DictCollectionTempTerm.MODIFIED_DATE, APIDateTimeUtils.convertDateToString(dictCollection.getModifiedDate(), APIDateTimeUtils._TIMESTAMP));
+			result.put(DictCollectionTempTerm.COLLECTION_CODE, dictCollection.getCollectionCode());
+			result.put(DictCollectionTempTerm.COLLECTION_NAME, dictCollection.getCollectionName());
+			result.put(DictCollectionTempTerm.COLLECTION_NAME_EN, dictCollection.getCollectionNameEN());
+			result.put(DictCollectionTempTerm.DESCRIPTION, dictCollection.getDescription());
+			result.put(DictCollectionTempTerm.DATAFORM, dictCollection.getDataForm());
+		}
+		else if (o instanceof DictGroupTemp) {
+			DictGroupTemp dictGroup = (DictGroupTemp)o;
+			result.put(DictGroupTempTerm.MODIFIED_DATE, APIDateTimeUtils.convertDateToString(dictGroup.getModifiedDate(), APIDateTimeUtils._TIMESTAMP));
+			result.put(DictGroupTempTerm.GROUP_CODE, dictGroup.getGroupCode());
+			result.put(DictGroupTempTerm.GROUP_NAME, dictGroup.getGroupName());
+			result.put(DictGroupTempTerm.GROUP_NAME_EN, dictGroup.getGroupNameEN());
+			result.put(DictGroupTempTerm.GROUP_DESCRIPTION, dictGroup.getGroupDescription());
+			try {
+				DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchDictCollectionTemp(dictGroup.getDictCollectionId());
+				result.put(DictCollectionTempTerm.COLLECTION_CODE, dictCollection.getCollectionCode());
+			}
+			catch (Exception e) {
+				
+			}
+		}
+		else if (o instanceof DictItemTemp) {
+			DictItemTemp dictItem = (DictItemTemp)o;
+			
+			result.put(DictItemTempTerm.MODIFIED_DATE, APIDateTimeUtils.convertDateToString(dictItem.getModifiedDate(), APIDateTimeUtils._TIMESTAMP));
+			result.put(DictItemTempTerm.ITEM_CODE, dictItem.getItemCode());
+			result.put(DictItemTempTerm.ITEM_NAME, dictItem.getItemName());
+			result.put(DictItemTempTerm.ITEM_NAME_EN, dictItem.getItemNameEN());
+			result.put(DictItemTempTerm.ITEM_DESCRIPTION, dictItem.getItemDescription());
+			result.put(DictItemTempTerm.META_DATA, dictItem.getMetaData());
+			result.put(DictItemTempTerm.SIBLING, dictItem.getSibling());
+			result.put(DictItemTempTerm.LEVEL, dictItem.getLevel());
+			
+			try {
+				DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchDictCollectionTemp(dictItem.getDictCollectionId());
+				result.put(DictCollectionTempTerm.COLLECTION_CODE, dictCollection.getCollectionCode());
+			}
+			catch (Exception e) {
+				
+			}			
+			try {
+				DictItemTemp parentItem = DictItemTempLocalServiceUtil.fetchDictItemTemp(dictItem.getParentItemId());
+				result.put(DictItemTempTerm.PARENT_ITEM_CODE, parentItem.getItemCode());
+			}
+			catch (Exception e) {
+				
+			}			
+		}
+		
+		return result;
 	}
 	
 	public static Log _log = LogFactoryUtil.getLog(DataTempManagementUtils.class);

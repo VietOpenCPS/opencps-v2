@@ -42,11 +42,11 @@ import javax.xml.bind.annotation.XmlType;
     "total",
     "dictGroupItemTempModel"
 })
-@XmlRootElement(name = "DictGroupItemTempResults")
+@XmlRootElement(name = "data")
 public class DictGroupItemTempResults {
 
     protected long total;
-    @XmlElement(name = "DictGroupItemTempModel")
+    @XmlElement(name = "data")
     protected List<DictGroupItemTempModel> dictGroupItemTempModel;
 
     /**

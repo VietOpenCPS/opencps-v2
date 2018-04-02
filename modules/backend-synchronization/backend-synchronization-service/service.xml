@@ -185,6 +185,16 @@
 			<order-column name="priority"/>
 		</order>
 		
+        <finder name="F_className_Method" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="className"></finder-column>            
+            <finder-column name="method"></finder-column>
+        </finder>
+        <finder name="F_groupId_serverNo" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="serverNo"></finder-column>            
+        </finder>
+		
 	</entity>	
 	<entity name="DictCollectionTemp" uuid="true" local-service="true"
 		remote-service="false" table="opencps_dictcollection_temp">

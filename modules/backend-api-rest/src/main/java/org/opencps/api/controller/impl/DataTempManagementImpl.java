@@ -26,20 +26,29 @@ import org.opencps.api.datatempmgt.model.DictItemTempResults;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.constants.DictItemTerm;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.synchronization.action.DictCollectionTempInterface;
 import org.opencps.synchronization.action.impl.DictCollectionActions;
 import org.opencps.synchronization.constants.DictGroupTempTerm;
 import org.opencps.synchronization.constants.DictItemTempTerm;
+import org.opencps.synchronization.constants.SyncServerTerm;
 import org.opencps.synchronization.model.DictCollectionTemp;
 import org.opencps.synchronization.model.DictGroupTemp;
 import org.opencps.synchronization.model.DictItemGroupTemp;
 import org.opencps.synchronization.model.DictItemTemp;
+import org.opencps.synchronization.service.DictGroupTempLocalServiceUtil;
+import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
+import org.opencps.synchronization.service.SyncQueueLocalServiceUtil;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -75,9 +84,6 @@ public class DataTempManagementImpl implements DataTempManagement {
 			
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-
-			_log.info("groupId: " + groupId);
-			_log.info("keywords: " + query.getKeywords());
 
 			params.put("groupId", String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
@@ -145,7 +151,6 @@ public class DataTempManagementImpl implements DataTempManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
 			DictCollectionTemp dictCollection = dictItemDataUtil.addDictCollectionTemp(user.getUserId(), groupId,
 					input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(),
 					input.getDescription(), 
@@ -153,6 +158,39 @@ public class DataTempManagementImpl implements DataTempManagement {
 					input.getMustSync(),
 					serviceContext);
 
+			try {
+				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS);
+
+				for (ServerConfig sc : lstServers) {
+					String configs = sc.getConfigs();
+					if (Validator.isNotNull(configs)) {
+						try {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+							if (configObj.has(SyncServerTerm.SERVER_TYPE)
+									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_URL)
+									&& (configObj.has(SyncServerTerm.PUSH)
+											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+								if (groupId == sc.getGroupId()) {
+									JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+									jsonObject.put("new", DataTempManagementUtils.convertObject(dictCollection));
+									
+									SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictCollectionTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_HIGHEST, SyncServerTerm.METHOD_CREATE, serviceContext);
+								}
+							}
+						} catch (Exception e) {
+							_log.error(e);
+						}
+					}
+				}
+			} catch (Exception e) {
+				_log.error(e);
+			}
+			
 			// return json object after update
 			dictCollectionModel = DataTempManagementUtils.mapperDictCollectionTempModel(dictCollection);
 
@@ -227,6 +265,8 @@ public class DataTempManagementImpl implements DataTempManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
+			DictCollectionTemp oldCollection = dictItemDataUtil.getDictCollectionTempDetail(code, groupId);
+			
 			DictCollectionTemp dictCollection = dictItemDataUtil.updateDictCollectionTemp(user.getUserId(), groupId, code,
 					input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(),
 					input.getDescription(), 
@@ -234,6 +274,39 @@ public class DataTempManagementImpl implements DataTempManagement {
 					input.getMustSync(),
 					serviceContext);
 
+			try {
+				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS);
+
+				for (ServerConfig sc : lstServers) {
+					String configs = sc.getConfigs();
+					if (Validator.isNotNull(configs)) {
+						try {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+							if (configObj.has(SyncServerTerm.SERVER_TYPE)
+									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_URL)
+									&& (configObj.has(SyncServerTerm.PUSH)
+											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+								if (groupId == sc.getGroupId()) {
+									JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+									jsonObject.put("old", DataTempManagementUtils.convertObject(oldCollection));
+									jsonObject.put("new", DataTempManagementUtils.convertObject(dictCollection));
+									SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictCollectionTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_HIGHEST, SyncServerTerm.METHOD_UPDATE, serviceContext);
+								}
+							}
+						} catch (Exception e) {
+							_log.error(e);
+						}
+					}
+				}
+			} catch (Exception e) {
+				_log.error(e);
+			}
+			
 			dictCollectionModel = DataTempManagementUtils.mapperDictCollectionTempModel(dictCollection);
 
 			return Response.status(200).entity(dictCollectionModel).build();
@@ -293,9 +366,43 @@ public class DataTempManagementImpl implements DataTempManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
+			DictCollectionTemp dictCollection = dictItemDataUtil.getDictCollectionTempDetail(code, groupId);
+			
 			boolean flag = dictItemDataUtil.deleteDictCollectionTemp(code, groupId, serviceContext);
 
 			if (flag) {
+				try {
+					List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+							QueryUtil.ALL_POS);
+
+					for (ServerConfig sc : lstServers) {
+						String configs = sc.getConfigs();
+						if (Validator.isNotNull(configs)) {
+							try {
+								JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+								if (configObj.has(SyncServerTerm.SERVER_TYPE)
+										&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+												.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+										&& configObj.has(SyncServerTerm.SERVER_URL)
+										&& (configObj.has(SyncServerTerm.PUSH)
+												&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+									if (groupId == sc.getGroupId()) {
+										JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+										jsonObject.put("new", DataTempManagementUtils.convertObject(dictCollection));
+										SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictCollectionTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_HIGHEST, SyncServerTerm.METHOD_DELETE, serviceContext);
+									}
+								}
+							} catch (Exception e) {
+								_log.error(e);
+							}
+						}
+					}
+				} catch (Exception e) {
+					_log.error(e);
+				}
+				
 				return Response.status(200).build();
 
 			} else {
@@ -396,7 +503,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 
 	@Override
 	public Response addDataForm(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String code, String dataform, long modifiedDateTime) {
+			User user, ServiceContext serviceContext, String code, String dataform) {
 		// TODO Auto-generated method stub
 		DictCollectionTempInterface dictItemDataUtil = new DictCollectionActions();
 
@@ -406,6 +513,38 @@ public class DataTempManagementImpl implements DataTempManagement {
 
 			DictCollectionTemp dictCollection = dictItemDataUtil.addDataForm(user.getUserId(), groupId, code, dataform,
 						serviceContext);
+			
+			try {
+				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS);
+
+				for (ServerConfig sc : lstServers) {
+					String configs = sc.getConfigs();
+					if (Validator.isNotNull(configs)) {
+						try {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+							if (configObj.has(SyncServerTerm.SERVER_TYPE)
+									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_URL)
+									&& (configObj.has(SyncServerTerm.PUSH)
+											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+								if (groupId == sc.getGroupId()) {
+									JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+									jsonObject.put("new", DataTempManagementUtils.convertObject(dictCollection));
+									SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictCollectionTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_HIGHEST, SyncServerTerm.METHOD_UPDATE_DATAFORM, serviceContext);
+								}
+							}
+						} catch (Exception e) {
+							_log.error(e);
+						}
+					}
+				}
+			} catch (Exception e) {
+				_log.error(e);
+			}
 			
 			return Response.status(200).entity(dictCollection.getDataForm()).build();				
 		} catch (Exception e) {
@@ -477,7 +616,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 
 		try {
 
-			if (query.getEnd() == 0) {
+			if (Validator.isNull(query.getEnd())) {
 
 				query.setStart(-1);
 
@@ -529,6 +668,38 @@ public class DataTempManagementImpl implements DataTempManagement {
 			DictGroupTemp dictGroup = dictItemDataUtil.addDictGroupsTemp(user.getUserId(), groupId, code, input.getGroupCode(),
 					input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(), input.getStatus(), serviceContext);
 
+			try {
+				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS);
+
+				for (ServerConfig sc : lstServers) {
+					String configs = sc.getConfigs();
+					if (Validator.isNotNull(configs)) {
+						try {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+							if (configObj.has(SyncServerTerm.SERVER_TYPE)
+									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_URL)
+									&& (configObj.has(SyncServerTerm.PUSH)
+											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+								if (groupId == sc.getGroupId()) {
+									JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+									jsonObject.put("new", DataTempManagementUtils.convertObject(dictGroup));
+									SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictGroupTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORIOTY_HIGH, SyncServerTerm.METHOD_CREATE, serviceContext);
+								}
+							}
+						} catch (Exception e) {
+							_log.error(e);
+						}
+					}
+				}
+			} catch (Exception e) {
+				_log.error(e);
+			}
+			
 			// return json object after update
 			dictGroupModel = DataTempManagementUtils.mapperGroups(dictGroup);
 
@@ -608,6 +779,37 @@ public class DataTempManagementImpl implements DataTempManagement {
 					input.getStatus(),
 					serviceContext);
 			
+			try {
+				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS);
+
+				for (ServerConfig sc : lstServers) {
+					String configs = sc.getConfigs();
+					if (Validator.isNotNull(configs)) {
+						try {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+							if (configObj.has(SyncServerTerm.SERVER_TYPE)
+									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_URL)
+									&& (configObj.has(SyncServerTerm.PUSH)
+											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+								if (groupId == sc.getGroupId()) {
+									JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+									jsonObject.put("new", DataTempManagementUtils.convertObject(dictGroup));
+									SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictGroupTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORIOTY_HIGH, SyncServerTerm.METHOD_UPDATE, serviceContext);
+								}
+							}
+						} catch (Exception e) {
+							_log.error(e);
+						}
+					}
+				}
+			} catch (Exception e) {
+				_log.error(e);
+			}			
 			dictGroupModel = DataTempManagementUtils.mapperGroups(dictGroup);
 
 			return Response.status(200).entity(dictGroupModel).build();
@@ -667,10 +869,50 @@ public class DataTempManagementImpl implements DataTempManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			
+			DictCollectionTemp dictCollection = dictItemDataUtil.getDictCollectionTempDetail(code, groupId);
+			
+			DictGroupTemp dictGroup = null;
+			
+			if (dictCollection != null) {
+				dictGroup = DictGroupTempLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, dictCollection.getDictCollectionId());
+			}
+			
 			boolean flag = dictItemDataUtil.deleteDictGroupsTemp(groupCode, groupId, serviceContext);
 			
 			if (flag) {
+				if (dictGroup != null) {
+					try {
+						List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+								QueryUtil.ALL_POS);
 
+						for (ServerConfig sc : lstServers) {
+							String configs = sc.getConfigs();
+							if (Validator.isNotNull(configs)) {
+								try {
+									JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+									if (configObj.has(SyncServerTerm.SERVER_TYPE)
+											&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+													.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+											&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+											&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+											&& configObj.has(SyncServerTerm.SERVER_URL)
+											&& (configObj.has(SyncServerTerm.PUSH)
+													&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+										if (groupId == sc.getGroupId()) {
+											JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+											jsonObject.put("new", DataTempManagementUtils.convertObject(dictGroup));
+											SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictGroupTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORIOTY_HIGH, SyncServerTerm.METHOD_DELETE, serviceContext);
+										}
+									}
+								} catch (Exception e) {
+									_log.error(e);
+								}
+							}
+						}
+					} catch (Exception e) {
+						_log.error(e);
+					}					
+				}
 				return Response.status(200).build();
 
 			} else {
@@ -793,9 +1035,12 @@ public class DataTempManagementImpl implements DataTempManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
+			_log.info("Collection code: " + code + ", group code: " + groupCode + ", item code: " + itemCode);
 			DictItemGroupTemp dictItemGroup = dictItemDataUtil.addDictGroupsDictItemsTemp(user.getUserId(), groupId, code,
 					groupCode, itemCode, serviceContext);
 
+			_log.info("Dict item group: " + dictItemGroup.getDictItemGroupId());
+			
 			dictGroupItemModel = DataTempManagementUtils.mapperDictGroupItemTempModel(dictItemGroup);
 			dictGroupItemModel.setSelected(Boolean.TRUE);
 
@@ -956,7 +1201,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 
 		try {
 
-			if (query.getEnd() == 0) {
+			if (Validator.isNull(query.getEnd())) {
 
 				query.setStart(-1);
 
@@ -1026,6 +1271,39 @@ public class DataTempManagementImpl implements DataTempManagement {
 					input.getStatus(),	
 					serviceContext);
 
+			try {
+				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS);
+
+				for (ServerConfig sc : lstServers) {
+					String configs = sc.getConfigs();
+					if (Validator.isNotNull(configs)) {
+						try {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+							if (configObj.has(SyncServerTerm.SERVER_TYPE)
+									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_URL)
+									&& (configObj.has(SyncServerTerm.PUSH)
+											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+								if (groupId == sc.getGroupId()) {
+									JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+									jsonObject.put("new", DataTempManagementUtils.convertObject(dictItem));
+									
+									SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictCollectionTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOW, SyncServerTerm.METHOD_CREATE, serviceContext);
+								}
+							}
+						} catch (Exception e) {
+							_log.error(e);
+						}
+					}
+				}
+			} catch (Exception e) {
+				_log.error(e);
+			}
+			
 			// return json object after update
 			dictItemModel = DataTempManagementUtils.mapperDictItemTempModel(dictItem, dictItemDataUtil, user.getUserId(),
 					company.getCompanyId(), groupId, serviceContext);
@@ -1094,7 +1372,30 @@ public class DataTempManagementImpl implements DataTempManagement {
 	public Response getDictItemByItemCode(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode) {
 		// TODO Auto-generated method stub
-		return null;
+		DictCollectionTempInterface dictItemDataUtil = new DictCollectionActions();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		DictItemTemp dictItem = dictItemDataUtil.getDictItemTempByItemCode(code, itemCode, groupId, serviceContext);
+
+		if (Validator.isNotNull(dictItem)) {
+
+			DictItemTempDetailModel dictItemModel = DataTempManagementUtils.mapperDictItemTempModel(dictItem, dictItemDataUtil,
+					user.getUserId(), company.getCompanyId(), groupId, serviceContext);
+
+			return Response.status(200).entity(dictItemModel).build();
+
+		} else {
+
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(409).entity(error).build();
+
+		}
 	}
 
 	@Override
@@ -1102,28 +1403,316 @@ public class DataTempManagementImpl implements DataTempManagement {
 			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode,
 			DictItemTempInputModel input) {
 		// TODO Auto-generated method stub
-		return null;
+		DictCollectionTempInterface dictItemDataUtil = new DictCollectionActions();
+		DictItemTempDetailModel dictItemModel = new DictItemTempDetailModel();
+
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			
+			DictItemTemp oldItem = dictItemDataUtil.getDictItemTempByItemCode(code, itemCode, groupId, serviceContext);
+			
+			DictItemTemp ett = dictItemDataUtil.updateDictItemTempByItemCode(user.getUserId(), groupId, serviceContext, code,
+					itemCode, input.getItemCode(), input.getItemName(), input.getItemNameEN(),
+					input.getItemDescription(), String.valueOf(input.getSibling()), input.getParentItemCode(), input.getStatus());
+
+			if (Validator.isNull(ett)) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("not found!");
+				error.setCode(404);
+				error.setDescription("not found!");
+
+				return Response.status(404).entity(error).build();
+
+			} else {
+
+				try {
+					List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+							QueryUtil.ALL_POS);
+
+					for (ServerConfig sc : lstServers) {
+						String configs = sc.getConfigs();
+						if (Validator.isNotNull(configs)) {
+							try {
+								JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+								if (configObj.has(SyncServerTerm.SERVER_TYPE)
+										&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+												.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+										&& configObj.has(SyncServerTerm.SERVER_URL)
+										&& (configObj.has(SyncServerTerm.PUSH)
+												&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+									if (groupId == sc.getGroupId()) {
+										JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+										jsonObject.put("old", oldItem);
+										jsonObject.put("new", DataTempManagementUtils.convertObject(ett));
+										
+										SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictCollectionTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOW, SyncServerTerm.METHOD_UPDATE, serviceContext);
+									}
+								}
+							} catch (Exception e) {
+								_log.error(e);
+							}
+						}
+					}
+				} catch (Exception e) {
+					_log.error(e);
+				}
+				
+				// return json object after update
+				dictItemModel = DataTempManagementUtils.mapperDictItemTempModel(ett, dictItemDataUtil, user.getUserId(),
+						company.getCompanyId(), groupId, serviceContext);
+
+				return Response.status(200).entity(dictItemModel).build();
+
+			}
+
+		} catch (Exception e) {
+			_log.info(e);
+			if (e instanceof UnauthenticationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+
+			}
+
+			if (e instanceof UnauthorizationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			}
+
+			if (e instanceof NoSuchUserException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+
+			if (e instanceof DuplicateCategoryException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+
+			return Response.status(500).build();
+		}	
 	}
 
 	@Override
-	public Response dateletDictItemByItemCode(HttpServletRequest request, HttpHeaders header, Company company,
+	public Response deleteDictItemByItemCode(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode) {
 		// TODO Auto-generated method stub
-		return null;
+		DictCollectionTempInterface dictItemDataUtil = new DictCollectionActions();
+
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			DictItemTemp dictColl = dictItemDataUtil.getDictItemTempByItemCode(code, itemCode, groupId, serviceContext);
+
+			if (Validator.isNull(dictColl)) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("not found!");
+				error.setCode(404);
+				error.setDescription("not found!");
+
+				return Response.status(404).entity(error).build();
+
+			} else {				
+				DictItemTempLocalServiceUtil.deleteDictItemTemp(groupId, itemCode, serviceContext);
+
+				try {
+					List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+							QueryUtil.ALL_POS);
+
+					for (ServerConfig sc : lstServers) {
+						String configs = sc.getConfigs();
+						if (Validator.isNotNull(configs)) {
+							try {
+								JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+								if (configObj.has(SyncServerTerm.SERVER_TYPE)
+										&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+												.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+										&& configObj.has(SyncServerTerm.SERVER_URL)
+										&& (configObj.has(SyncServerTerm.PUSH)
+												&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+									if (groupId == sc.getGroupId()) {
+										JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+										jsonObject.put("new", DataTempManagementUtils.convertObject(dictColl));
+										
+										SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictCollectionTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOW, SyncServerTerm.METHOD_CREATE, serviceContext);
+									}
+								}
+							} catch (Exception e) {
+								_log.error(e);
+							}
+						}
+					}
+				} catch (Exception e) {
+					_log.error(e);
+				}				
+				return Response.status(200).build();
+
+			}
+
+		} catch (Exception e) {
+			_log.error("@DELETE: " + e);
+			if (e instanceof UnauthenticationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+
+			}
+
+			if (e instanceof UnauthorizationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			}
+
+			if (e instanceof NotFoundException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("not found!");
+				error.setCode(404);
+				error.setDescription("not found!");
+
+				return Response.status(404).entity(error).build();
+
+			}
+
+			if (e instanceof NoSuchUserException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+
+			return Response.status(500).build();
+		}	
 	}
 
 	@Override
 	public Response getMetaDataOfDictItem(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode) {
 		// TODO Auto-generated method stub
-		return null;
+		DictCollectionTempInterface dictItemDataUtil = new DictCollectionActions();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		DictItemTemp dictItem = dictItemDataUtil.getDictItemTempByItemCode(code, itemCode, groupId, serviceContext);
+
+		if (Validator.isNotNull(dictItem)) {
+
+			return Response.status(200).entity(dictItem.getMetaData()).build();
+
+		} else {
+
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(409).entity(error).build();
+
+		}
 	}
 
 	@Override
 	public Response getMetaDataOfDictItemByKey(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode, String key) {
 		// TODO Auto-generated method stub
-		return null;
+		DictCollectionTempInterface dictItemDataUtil = new DictCollectionActions();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		DictItemTemp dictItem = dictItemDataUtil.getDictItemTempByItemCode(code, itemCode, groupId, serviceContext);
+
+		if (Validator.isNotNull(dictItem)) {
+
+			JSONObject jsonMetaData;
+
+			String value = "Not Found!";
+
+			try {
+
+				jsonMetaData = JSONFactoryUtil.createJSONObject(dictItem.getMetaData());
+
+				value = jsonMetaData.getString(key);
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			return Response.status(200).entity(value).build();
+
+		} else {
+
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(409).entity(error).build();
+
+		}
 	}
 
 	@Override
@@ -1131,7 +1720,74 @@ public class DataTempManagementImpl implements DataTempManagement {
 			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode,
 			DictItemTempInputModel input) {
 		// TODO Auto-generated method stub
-		return null;
+		DictCollectionTempInterface dictItemDataUtil = new DictCollectionActions();
+
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			DictItemTemp ett = dictItemDataUtil.updateMetaDataByItemCode(user.getUserId(), groupId, serviceContext, code,
+					itemCode, input.getMetaData());
+
+			if (Validator.isNull(ett)) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("not found!");
+				error.setCode(404);
+				error.setDescription("not found!");
+
+				return Response.status(404).entity(error).build();
+
+			} else {
+
+				return Response.status(200).entity(ett.getMetaData()).build();
+
+			}
+
+		} catch (Exception e) {
+			_log.info(e);
+			if (e instanceof UnauthenticationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+
+			}
+
+			if (e instanceof UnauthorizationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			}
+
+			if (e instanceof NoSuchUserException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+
+			return Response.status(500).build();
+		}
 	}
 
 	@Override

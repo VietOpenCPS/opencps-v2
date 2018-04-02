@@ -23,7 +23,7 @@
 			</div>
 	
 			<span data-toggle="modal" class="btn btn-active btn-block MT15"
-				href="${url.adminDataTempMgtPortlet.dictcollection_create_dictcollection}" data-target="#modal"> 
+				href="${url.adminDataMgtPortlet.dictcollection_create_dictcollection}" data-target="#modal"> 
 				<i class="fa fa-book" aria-hidden="true"></i>
 				<span class="p-xxs" >Tổng số</span> 
 				<span id="dictCollectionCounterList">0</span>
@@ -102,13 +102,13 @@
 		});
 		
 		$('#dictCollectionCounterList').html($("#_collection_listView").getKendoListView().dataSource.total());
-		console.log("Total: " + $("#_collection_listView").getKendoListView().dataSource.total());
+		
 	}
 	
 	(function($) {
 	
 		var _collection_BaseUrl = "${api.endpoint}/temp/dictcollections";
-		
+
 		var _collection_dataSource = new kendo.data.DataSource({
 			
 			transport: {
@@ -127,7 +127,7 @@
 							sort: 'collectionName'
 						},
 						success: function(result) {
-												
+						
 							$('#dictCollectionCounterList').html(result.total);
 							
 							result["data"] = result.total==0 ? []: result["data"];
@@ -151,7 +151,7 @@
 						if(confirmed){
 	
 							$.ajax({
-								url: _collection_BaseUrl + "/temp/" + options.data.collectionCode,
+								url: _collection_BaseUrl + "/" + options.data.collectionCode,
 								type: 'DELETE',
 								headers: {
 									"groupId": ${groupId}
@@ -282,9 +282,9 @@
 			});
 			
 			$("#_collection_hidden_new_id").val(selected[0]);
-	
+			
 			$("#_collection_right-page").load(
-				'${url.adminDataTempMgtPortlet.dictcollection_detail}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}collectionCode='+selected[0]);
+				'${url.adminDataMgtPortlet.dictcollection_detail}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}collectionCode='+selected[0]);
 		}
 		
 	})(jQuery);

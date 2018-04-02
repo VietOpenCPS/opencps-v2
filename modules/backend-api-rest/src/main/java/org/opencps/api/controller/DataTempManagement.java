@@ -121,8 +121,7 @@ public interface DataTempManagement {
 	public Response addDataForm(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "code that need to be get detail", required = true) @PathParam("code") String code,
-			@ApiParam(value = "alpace string of dataform", required = true) @FormParam("dataform") String dataform,
-			@ApiParam(value = "time of updated value when synchronize", required = false) @FormParam("modifiedDate") long modifiedDateTime);
+			@ApiParam(value = "alpace string of dataform", required = true) @FormParam("dataform") String dataform);
 	
 	@GET
 	@Path("/{code}/dictgroups")
@@ -252,7 +251,7 @@ public interface DataTempManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized"),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found"),
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server problems") })
-	public Response dateletDictItemByItemCode(@Context HttpServletRequest request, @Context HttpHeaders header,
+	public Response deleteDictItemByItemCode(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "code of DictCollection of DictItem that need to be deleted", required = true) @PathParam("code") String code,
 			@ApiParam(value = "itemCode of DictItemthat need to be deleted", required = true) @PathParam("itemCode") String itemCode);

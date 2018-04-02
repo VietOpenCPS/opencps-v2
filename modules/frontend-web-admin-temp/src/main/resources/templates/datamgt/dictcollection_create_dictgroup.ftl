@@ -127,8 +127,8 @@
 				groupCode: $( "#_collectionSub_dictGroup_edit_groupCode" ).val().trim(),
 				groupName: $( "#_collectionSub_dictGroup_edit_groupName" ).val().trim(),
 				groupNameEN: $( "#_collectionSub_dictGroup_edit_groupNameEN" ).val().trim(),
-				groupDescription: $( "#_collectionSub_dictGroup_edit_groupDescription" ).val().trim()
-				
+				groupDescription: $( "#_collectionSub_dictGroup_edit_groupDescription" ).val().trim(),
+				status: 1
 			});
 
 		} else {
@@ -140,8 +140,8 @@
 				groupCode: $( "#_collectionSub_dictGroup_edit_groupCode" ).val().trim(),
 				groupName: $( "#_collectionSub_dictGroup_edit_groupName" ).val().trim(),
 				groupNameEN: $( "#_collectionSub_dictGroup_edit_groupNameEN" ).val().trim(),
-				groupDescription: $( "#_collectionSub_dictGroup_edit_groupDescription" ).val().trim()
-				
+				groupDescription: $( "#_collectionSub_dictGroup_edit_groupDescription" ).val().trim(),
+				status: 1
 			});
 
 			// save the created collectionGroup

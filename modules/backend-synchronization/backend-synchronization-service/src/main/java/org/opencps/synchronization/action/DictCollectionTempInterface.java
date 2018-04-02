@@ -98,4 +98,8 @@ public interface DictCollectionTempInterface {
 			UnauthorizationException, NoSuchUserException, NotFoundException, PortalException;
 
 	public DictItemTemp getDictItemTempByItemCode(String code, String itemCode, long groupId, ServiceContext serviceContext);	
+
+	public String updateDictItemGroupTemp(long userId, long groupId, long dictItemId, String groupCodes,
+			String collectionCode, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
+			UnauthorizationException, DuplicateCategoryException;
 }

@@ -4,7 +4,7 @@
 
 <div id="dictcollection-index-page">
 
-	<#include "dictcollectiontemp_list.ftl">
+	<#include "dictcollection_list.ftl">
 
 </div>
 

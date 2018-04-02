@@ -8,11 +8,15 @@
 
 package org.opencps.api.datatempmgt.model;
 
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import com.liferay.portal.kernel.util.StringPool;
 
 
 /**
@@ -89,24 +93,34 @@ public class DictItemTempInputModel {
     protected String modifiedDate;
     protected long dictCollectionId;
     @XmlElement(required = true)
+    @DefaultValue(StringPool.BLANK) @FormParam(value = "itemCode")
     protected String itemCode;
     @XmlElement(required = true)
+    @DefaultValue(StringPool.BLANK) @FormParam(value = "itemName")
     protected String itemName;
     @XmlElement(required = true)
+    @DefaultValue(StringPool.BLANK) @FormParam(value = "itemNameEN")
     protected String itemNameEN;
     @XmlElement(required = true)
+    @DefaultValue(StringPool.BLANK) @FormParam(value = "itemDescription")
     protected String itemDescription;
+    @DefaultValue("0") @FormParam(value = "parentItemId")
     protected long parentItemId;
     @XmlElement(required = true)
+    @DefaultValue(StringPool.BLANK) @FormParam(value = "parentItemCode")
     protected String parentItemCode;
     @XmlElement(required = true)
     protected String treeIndex;
     protected int issueStatus;
     protected long dictVersionId;
+    @DefaultValue("1") @FormParam(value = "sibling")
     protected long sibling;
+    @DefaultValue("0") @FormParam(value = "level")
     protected int level;
     @XmlElement(required = true)
+    @DefaultValue(StringPool.BLANK) @FormParam(value = "metaData")
     protected String metaData;
+    @DefaultValue("1") @FormParam(value = "status")
     protected int status;
 
     /**

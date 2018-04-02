@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
+ *         &lt;element name="dictGroupId" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="groupCode" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="groupName" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="groupNameEN" type="{http://www.w3.org/2001/XMLSchema}string"/>
@@ -40,6 +41,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
+	"dictGroupId",
     "groupCode",
     "groupName",
     "groupNameEN",
@@ -50,6 +52,8 @@ import javax.xml.bind.annotation.XmlType;
 public class DictGroupTempModel {
 
     @XmlElement(required = true)
+    protected long dictGroupId;
+    @XmlElement(required = true)
     protected String groupCode;
     @XmlElement(required = true)
     protected String groupName;
@@ -59,6 +63,22 @@ public class DictGroupTempModel {
     protected String groupDescription;
     protected int status;
 
+    /**
+     * Gets the value of the dictGroupId property.
+     * 
+     */
+    public long getDictGroupId() {
+        return dictGroupId;
+    }
+
+    /**
+     * Sets the value of the dictGroupId property.
+     * 
+     */
+    public void setDictGroupId(long value) {
+        this.dictGroupId = value;
+    }
+    
     /**
      * Gets the value of the groupCode property.
      * 

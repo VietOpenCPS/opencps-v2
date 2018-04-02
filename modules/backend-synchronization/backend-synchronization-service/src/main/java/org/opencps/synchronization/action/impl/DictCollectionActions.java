@@ -1,6 +1,7 @@
 
 package org.opencps.synchronization.action.impl;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DictCollectionActions implements DictCollectionTempInterface {
@@ -51,36 +53,29 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 		try {
 
-			hits = DictCollectionTempLocalServiceUtil.luceneSearchEngine(
-				params, sorts, start, end, searchContext);
+			hits = DictCollectionTempLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
 			result.put("data", hits.toList());
 
-			long total = DictCollectionTempLocalServiceUtil.countLuceneSearchEngine(
-				params, searchContext);
+			long total = DictCollectionTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
 			result.put("total", total);
 
 			if (DictCollectionTempLocalServiceUtil.initDictCollectionTemp(groupId)) {
 
 				// create init dictcollection
-				Map<String, String> initDictCollection =
-					DataMGTTempConstants.DICTCOLLECTION_INIT;
+				Map<String, String> initDictCollection = DataMGTTempConstants.DICTCOLLECTION_INIT;
 
 				for (String key : initDictCollection.keySet()) {
 
 					try {
 
-						DictCollectionTempLocalServiceUtil.addDictCollectionTemp(
-							userId, groupId, key, initDictCollection.get(key),
-							initDictCollection.get(key),
-							initDictCollection.get(key), 
-							DataMGTTempConstants.DATA_STATUS_DEACTIVE,
-							DataMGTTempConstants.DATA_MUST_NOT_SYNCHRONIZED,
-							serviceContext);
+						DictCollectionTempLocalServiceUtil.addDictCollectionTemp(userId, groupId, key,
+								initDictCollection.get(key), initDictCollection.get(key), initDictCollection.get(key),
+								DataMGTTempConstants.DATA_STATUS_DEACTIVE,
+								DataMGTTempConstants.DATA_MUST_NOT_SYNCHRONIZED, serviceContext);
 
-					}
-					catch (Exception e) {
+					} catch (Exception e) {
 						_log.error(e);
 					}
 
@@ -88,25 +83,22 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 			}
 
-		}
-		catch (ParseException e) {
+		} catch (ParseException e) {
 			_log.error(e);
-		}
-		catch (SearchException e) {
+		} catch (SearchException e) {
 			_log.error(e);
 		}
 
-		return result;	
+		return result;
 	}
 
 	@Override
 	public DictCollectionTemp getDictCollectionTempDetail(String dictCollectionCode, long groupId) {
 		// TODO Auto-generated method stub
-		DictCollectionTemp dictCollection =
-				DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(
-					dictCollectionCode, groupId);
+		DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil
+				.fetchByF_dictCollectionCode(dictCollectionCode, groupId);
 
-			return dictCollection;
+		return dictCollection;
 	}
 
 	@Override
@@ -115,7 +107,12 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 			ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException {
 		// TODO Auto-generated method stub
-		return null;
+		DictCollectionTemp dictCollection = null;
+
+		dictCollection = DictCollectionTempLocalServiceUtil.addDictCollectionTemp(userId, groupId, collectionCode,
+				collectionName, collectionNameEN, description, status, mustSync, serviceContext);
+
+		return dictCollection;
 	}
 
 	@Override
@@ -124,14 +121,45 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 			ServiceContext serviceContext) throws NoSuchUserException, NotFoundException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException {
 		// TODO Auto-generated method stub
-		DictCollectionTemp dictCollection = null;
+		DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(code,
+				groupId);
 
-		dictCollection = DictCollectionTempLocalServiceUtil.addDictCollectionTemp(
-			userId, groupId, collectionCode, collectionName, collectionNameEN,
-			description, 
-			status,
-			mustSync,
-			serviceContext);
+		if (Validator.isNotNull(collectionCode)) {
+
+			dictCollection.setCollectionCode(collectionCode);
+
+		}
+
+		if (Validator.isNotNull(collectionName)) {
+
+			dictCollection.setCollectionName(collectionName);
+
+		}
+
+		if (Validator.isNotNull(collectionNameEN)) {
+
+			dictCollection.setCollectionNameEN(collectionNameEN);
+
+		}
+
+		if (Validator.isNotNull(description)) {
+
+			dictCollection.setDescription(description);
+
+		}
+
+		if (Validator.isNotNull(status)) {
+			dictCollection.setStatus(status);
+		}
+
+		if (Validator.isNotNull(mustSync)) {
+			dictCollection.setMustSync(mustSync);
+		}
+
+		dictCollection = DictCollectionTempLocalServiceUtil.updateDictCollectionTemp(userId,
+				dictCollection.getDictCollectionId(), dictCollection.getCollectionCode(),
+				dictCollection.getCollectionName(), dictCollection.getCollectionNameEN(),
+				dictCollection.getDescription(), status, mustSync, dictCollection.getDataForm(), serviceContext);
 
 		return dictCollection;
 	}
@@ -142,19 +170,15 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 		// TODO Auto-generated method stub
 		boolean flag = false;
 
-		DictCollectionTemp dictColl =
-			DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(
-				code, groupId);
+		DictCollectionTemp dictColl = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
 
 		if (Validator.isNull(dictColl)) {
 
 			flag = false;
 
-		}
-		else {
+		} else {
 
-			DictCollectionTempLocalServiceUtil.deleteDictCollectionTemp(
-				dictColl.getDictCollectionId(), serviceContext);
+			DictCollectionTempLocalServiceUtil.deleteDictCollectionTemp(dictColl.getDictCollectionId(), serviceContext);
 
 			flag = true;
 
@@ -167,28 +191,22 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 			ServiceContext serviceContext) throws NoSuchUserException, NotFoundException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException {
 		// TODO Auto-generated method stub
-		DictCollectionTemp dictCollection =
-				DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(
-					code, groupId);
+		DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(code,
+				groupId);
 
-			if (Validator.isNotNull(dataform)) {
+		if (Validator.isNotNull(dataform)) {
 
-				dictCollection.setDataForm(dataform);
+			dictCollection.setDataForm(dataform);
 
-			}
+		}
 
-			dictCollection = DictCollectionTempLocalServiceUtil.updateDictCollectionTemp(
-				userId, dictCollection.getDictCollectionId(),
-				dictCollection.getCollectionCode(),
-				dictCollection.getCollectionName(),
-				dictCollection.getCollectionNameEN(),
-				dictCollection.getDescription(), 
-				dictCollection.getStatus(),
-				dictCollection.getMustSync(),
-				dictCollection.getDataForm(),
-				serviceContext);
+		dictCollection = DictCollectionTempLocalServiceUtil.updateDictCollectionTemp(userId,
+				dictCollection.getDictCollectionId(), dictCollection.getCollectionCode(),
+				dictCollection.getCollectionName(), dictCollection.getCollectionNameEN(),
+				dictCollection.getDescription(), dictCollection.getStatus(), dictCollection.getMustSync(),
+				dictCollection.getDataForm(), serviceContext);
 
-			return dictCollection;
+		return dictCollection;
 	}
 
 	@Override
@@ -202,21 +220,17 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 		try {
 
-			hits = DictGroupTempLocalServiceUtil.luceneSearchEngine(
-				params, sorts, start, end, searchContext);
+			hits = DictGroupTempLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
 			result.put("data", hits.toList());
 
-			long total = DictGroupTempLocalServiceUtil.countLuceneSearchEngine(
-				params, searchContext);
+			long total = DictGroupTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
 			result.put("total", total);
 
-		}
-		catch (ParseException e) {
+		} catch (ParseException e) {
 			_log.error(e);
-		}
-		catch (SearchException e) {
+		} catch (SearchException e) {
 			_log.error(e);
 		}
 
@@ -234,21 +248,17 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 		try {
 
-			hits = DictItemGroupTempLocalServiceUtil.luceneSearchEngine(
-				params, sorts, start, end, searchContext);
+			hits = DictItemGroupTempLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
 			result.put("data", hits.toList());
 
-			long total = DictItemGroupTempLocalServiceUtil.countLuceneSearchEngine(
-				params, searchContext);
+			long total = DictItemGroupTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
 			result.put("total", total);
 
-		}
-		catch (ParseException e) {
+		} catch (ParseException e) {
 			_log.error(e);
-		}
-		catch (SearchException e) {
+		} catch (SearchException e) {
 			_log.error(e);
 		}
 
@@ -257,70 +267,63 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 	@Override
 	public DictGroupTemp addDictGroupsTemp(long userId, long groupId, String code, String groupCode, String groupName,
-			String groupNameEN, String groupDescription, 
-			int status,
-			ServiceContext serviceContext) throws NoSuchUserException,
-			UnauthenticationException, UnauthorizationException, DuplicateCategoryException {
+			String groupNameEN, String groupDescription, int status, ServiceContext serviceContext)
+			throws NoSuchUserException, UnauthenticationException, UnauthorizationException,
+			DuplicateCategoryException {
 		// TODO Auto-generated method stub
 		DictGroupTemp dictGroup = null;
 
-		DictCollectionTemp dictCollection =
-			DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(
-				code, groupId);
+		DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(code,
+				groupId);
 
-		dictGroup = DictGroupTempLocalServiceUtil.addDictGroupTemp(
-			userId, groupId, dictCollection.getDictCollectionId(), groupCode,
-			groupName, groupNameEN, groupDescription, status, serviceContext);
+		dictGroup = DictGroupTempLocalServiceUtil.addDictGroupTemp(userId, groupId,
+				dictCollection.getDictCollectionId(), groupCode, groupName, groupNameEN, groupDescription, status,
+				serviceContext);
 
 		return dictGroup;
 	}
 
 	@Override
 	public DictGroupTemp updateDictGroupsTemp(long userId, long groupId, String code, String groupCodeRoot,
-			String groupCode, String groupName, String groupNameEN, String groupDescription,
-			int status,
+			String groupCode, String groupName, String groupNameEN, String groupDescription, int status,
 			ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException, NotFoundException {
 		// TODO Auto-generated method stub
-		DictGroupTemp dictGroup = DictGroupTempLocalServiceUtil.fetchByF_DictGroupCode(
-				groupCodeRoot, groupId);
+		DictGroupTemp dictGroup = DictGroupTempLocalServiceUtil.fetchByF_DictGroupCode(groupCodeRoot, groupId);
 
-			if (Validator.isNotNull(groupCode)) {
+		if (Validator.isNotNull(groupCode)) {
 
-				dictGroup.setGroupCode(groupCode);
+			dictGroup.setGroupCode(groupCode);
 
-			}
+		}
 
-			if (Validator.isNotNull(groupName)) {
+		if (Validator.isNotNull(groupName)) {
 
-				dictGroup.setGroupName(groupName);
+			dictGroup.setGroupName(groupName);
 
-			}
+		}
 
-			if (Validator.isNotNull(groupNameEN)) {
+		if (Validator.isNotNull(groupNameEN)) {
 
-				dictGroup.setGroupNameEN(groupNameEN);
+			dictGroup.setGroupNameEN(groupNameEN);
 
-			}
+		}
 
-			if (Validator.isNotNull(groupDescription)) {
+		if (Validator.isNotNull(groupDescription)) {
 
-				dictGroup.setGroupDescription(groupDescription);
+			dictGroup.setGroupDescription(groupDescription);
 
-			}
+		}
 
-			if (Validator.isNotNull(status)) {
-				dictGroup.setStatus(status);
-			}
-			
-			dictGroup = DictGroupTempLocalServiceUtil.updateDictGroupTemp(
-				userId, dictGroup.getDictGroupId(), dictGroup.getDictCollectionId(),
-				dictGroup.getGroupCode(), dictGroup.getGroupName(),
-				dictGroup.getGroupNameEN(), dictGroup.getGroupDescription(),
-				dictGroup.getStatus(),
-				serviceContext);
+		if (Validator.isNotNull(status)) {
+			dictGroup.setStatus(status);
+		}
 
-			return dictGroup;
+		dictGroup = DictGroupTempLocalServiceUtil.updateDictGroupTemp(userId, dictGroup.getDictGroupId(),
+				dictGroup.getDictCollectionId(), dictGroup.getGroupCode(), dictGroup.getGroupName(),
+				dictGroup.getGroupNameEN(), dictGroup.getGroupDescription(), dictGroup.getStatus(), serviceContext);
+
+		return dictGroup;
 	}
 
 	@Override
@@ -329,18 +332,15 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 		// TODO Auto-generated method stub
 		boolean flag = false;
 
-		DictGroupTemp dictColl = DictGroupTempLocalServiceUtil.fetchByF_DictGroupCode(
-			groupCode, groupId);
+		DictGroupTemp dictColl = DictGroupTempLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
 
 		if (Validator.isNull(dictColl)) {
 
 			flag = false;
 
-		}
-		else {
+		} else {
 
-			DictGroupTempLocalServiceUtil.deleteDictGroupTemp(
-				dictColl.getDictGroupId(), serviceContext);
+			DictGroupTempLocalServiceUtil.deleteDictGroupTemp(dictColl.getDictGroupId(), serviceContext);
 
 			flag = true;
 
@@ -357,21 +357,24 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 		DictGroupTemp dictGroup = null;
 		DictItemTemp dictItem = null;
 
-		DictCollectionTemp dictCollection =
-			DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(
-				code, groupId);
+		DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(code,
+				groupId);
+
+		_log.info("Dict collection: " + dictCollection.getCollectionCode());
 
 		if (dictCollection != null) {
-			dictGroup = DictGroupTempLocalServiceUtil.getByGC_GI_DCI(
-				groupCode, groupId, dictCollection.getDictCollectionId());
-			dictItem = DictItemTempLocalServiceUtil.fetchByF_dictItemCode(
-				itemCode, dictCollection.getDictCollectionId(), groupId);
+			dictGroup = DictGroupTempLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId,
+					dictCollection.getDictCollectionId());
+			_log.info("Dict group: " + dictGroup.getGroupCode());
+			dictItem = DictItemTempLocalServiceUtil.fetchByF_dictItemCode(itemCode,
+					dictCollection.getDictCollectionId(), groupId);
+			_log.info("Dict item: " + dictItem.getItemCode());
 		}
 
-		dictItemGroup = DictItemGroupTempLocalServiceUtil.addDictItemGroupTemp(
-			userId, groupId, dictGroup.getDictGroupId(),
-			dictItem.getDictItemId(), groupCode, serviceContext);
+		dictItemGroup = DictItemGroupTempLocalServiceUtil.addDictItemGroupTemp(userId, groupId,
+				dictGroup.getDictGroupId(), dictItem.getDictItemId(), groupCode, serviceContext);
 
+		_log.info("Dict item group: " + dictItemGroup.getDictItemGroupId());
 		return dictItemGroup;
 	}
 
@@ -382,29 +385,25 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 		// TODO Auto-generated method stub
 		boolean flag = false;
 
-		DictGroupTemp dictGroup = DictGroupTempLocalServiceUtil.fetchByF_DictGroupCode(
-			groupCode, groupId);
+		DictGroupTemp dictGroup = DictGroupTempLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
 
-		DictCollectionTemp dictCollection =
-			DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(
-				code, groupId);
+		DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(code,
+				groupId);
 
-		DictItemTemp dictItem = DictItemTempLocalServiceUtil.fetchByF_dictItemCode(
-			itemCode, dictCollection.getDictCollectionId(), groupId);
+		DictItemTemp dictItem = DictItemTempLocalServiceUtil.fetchByF_dictItemCode(itemCode,
+				dictCollection.getDictCollectionId(), groupId);
 
-		DictItemGroupTemp dictItemGroup =
-			DictItemGroupTempLocalServiceUtil.fetchByF_dictItemId_dictGroupId(
-				groupId, dictGroup.getDictGroupId(), dictItem.getDictItemId());
+		DictItemGroupTemp dictItemGroup = DictItemGroupTempLocalServiceUtil.fetchByF_dictItemId_dictGroupId(groupId,
+				dictGroup.getDictGroupId(), dictItem.getDictItemId());
 
 		if (Validator.isNull(dictItemGroup)) {
 
 			flag = false;
 
-		}
-		else {
+		} else {
 
-			DictItemGroupTempLocalServiceUtil.deleteDictItemGroupTemp(
-				dictItemGroup.getDictItemGroupId(), serviceContext);
+			DictItemGroupTempLocalServiceUtil.deleteDictItemGroupTemp(dictItemGroup.getDictItemGroupId(),
+					serviceContext);
 
 			flag = true;
 
@@ -430,15 +429,13 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 				// DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCode,
 				// groupId);
 
-				long dictCollectionId =
-					DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(
-						code, groupId).getPrimaryKey();
+				long dictCollectionId = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId)
+						.getPrimaryKey();
 
-				DictGroupTemp dictGroup = DictGroupTempLocalServiceUtil.getByGC_GI_DCI(
-					groupCode, groupId, dictCollectionId);
+				DictGroupTemp dictGroup = DictGroupTempLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId,
+						dictCollectionId);
 
-				hits = DictItemTempLocalServiceUtil.luceneSearchEngine(
-					params, sorts, start, end, searchContext);
+				hits = DictItemTempLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
 				List<Document> list = hits.toList();
 
@@ -446,10 +443,8 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 				for (Document document : list) {
 
-					DictItemGroupTemp dictItemGroup =
-						DictItemGroupTempLocalServiceUtil.fetchByF_dictItemId_dictGroupId(
-							groupId, dictGroup.getDictGroupId(),
-							Long.valueOf(document.get("entryClassPK")));
+					DictItemGroupTemp dictItemGroup = DictItemGroupTempLocalServiceUtil.fetchByF_dictItemId_dictGroupId(
+							groupId, dictGroup.getDictGroupId(), Long.valueOf(document.get("entryClassPK")));
 
 					String selected = Boolean.FALSE.toString();
 
@@ -461,23 +456,19 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 					_log.info(document);
 
-					document.addTextSortable(
-						DictItemGroupTerm.SELECTED, selected);
+					document.addTextSortable(DictItemGroupTerm.SELECTED, selected);
 
 				}
 
 				result.put("data", list);
 
-				long total = DictItemTempLocalServiceUtil.countLuceneSearchEngine(
-					params, searchContext);
+				long total = DictItemTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
 				result.put("total", total);
 
-			}
-			else {
+			} else {
 
-				hits = DictItemGroupTempLocalServiceUtil.luceneSearchEngine(
-					params, sorts, start, end, searchContext);
+				hits = DictItemGroupTempLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
 				/*
 				 * for (Document doc : hits.toList()) { _log.info(doc); }
@@ -485,19 +476,15 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 				result.put("data", hits.toList());
 
-				long total =
-					DictItemGroupTempLocalServiceUtil.countLuceneSearchEngine(
-						params, searchContext);
+				long total = DictItemGroupTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
 				result.put("total", total);
 
 			}
 
-		}
-		catch (ParseException e) {
+		} catch (ParseException e) {
 			_log.error(e);
-		}
-		catch (SearchException e) {
+		} catch (SearchException e) {
 			_log.error(e);
 		}
 
@@ -515,21 +502,17 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 		try {
 
-			hits = DictItemTempLocalServiceUtil.luceneSearchEngine(
-				params, sorts, start, end, searchContext);
+			hits = DictItemTempLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
 			result.put("data", hits.toList());
 
-			long total = DictItemTempLocalServiceUtil.countLuceneSearchEngine(
-				params, searchContext);
+			long total = DictItemTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
 			result.put("total", total);
 
-		}
-		catch (ParseException e) {
+		} catch (ParseException e) {
 			_log.error(e);
-		}
-		catch (SearchException e) {
+		} catch (SearchException e) {
 			_log.error(e);
 		}
 
@@ -539,40 +522,36 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 	@Override
 	public DictItemTemp addDictItemsTemp(long userId, long groupId, String code, String parentItemCode, String itemCode,
 			String itemName, String itemNameEN, String itemDescription, String sibling, int level, String metaData,
-			int status,
-			ServiceContext serviceContext) throws NoSuchUserException, NoSuchDictItemTempException,
+			int status, ServiceContext serviceContext) throws NoSuchUserException, NoSuchDictItemTempException,
 			UnauthenticationException, UnauthorizationException, DuplicateCategoryException, SystemException {
 		// TODO Auto-generated method stub
-		DictCollectionTemp dictCollection =
-				DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(
-					code, groupId);
+		DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(code,
+				groupId);
 
-			long dictCollectionId = dictCollection.getDictCollectionId();
+		long dictCollectionId = dictCollection.getDictCollectionId();
 
-			if (Validator.isNull(itemNameEN)) {
+		if (Validator.isNull(itemNameEN)) {
 
-				itemNameEN = itemName;
+			itemNameEN = itemName;
 
-			}
+		}
 
-			DictItemTemp parentItem = DictItemTempLocalServiceUtil.fetchByF_dictItemCode(
-				parentItemCode, dictCollectionId, groupId);
+		DictItemTemp parentItem = DictItemTempLocalServiceUtil.fetchByF_dictItemCode(parentItemCode, dictCollectionId,
+				groupId);
 
-			long parentItemId = 0;
+		long parentItemId = 0;
 
-			if (Validator.isNotNull(parentItem)) {
+		if (Validator.isNotNull(parentItem)) {
 
-				parentItemId = parentItem.getDictItemId();
+			parentItemId = parentItem.getDictItemId();
 
-			}
+		}
 
-			DictItemTemp dictItem = DictItemTempLocalServiceUtil.addDictItemTemp(
-				userId, groupId, dictCollectionId, itemCode, itemName, itemNameEN,
-				itemDescription, parentItemId, sibling, level, metaData,
-				status,
+		DictItemTemp dictItem = DictItemTempLocalServiceUtil.addDictItemTemp(userId, groupId, dictCollectionId,
+				itemCode, itemName, itemNameEN, itemDescription, parentItemId, sibling, level, metaData, status,
 				serviceContext);
 
-			return dictItem;
+		return dictItem;
 	}
 
 	@Override
@@ -582,63 +561,60 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 			throws DuplicateCategoryException, UnauthenticationException, UnauthorizationException, NoSuchUserException,
 			NotFoundException, PortalException {
 		// TODO Auto-generated method stub
-		DictCollectionTemp dictCollection =
-				DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(
-					code, groupId);
+		DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(code,
+				groupId);
 
-			DictItemTemp ett = DictItemTempLocalServiceUtil.fetchByF_dictItemCode(
-				itemCode, dictCollection.getDictCollectionId(), groupId);
+		DictItemTemp ett = DictItemTempLocalServiceUtil.fetchByF_dictItemCode(itemCode,
+				dictCollection.getDictCollectionId(), groupId);
 
-			if (Validator.isNotNull(itemCodeInput)) {
+		if (Validator.isNotNull(itemCodeInput)) {
 
-				ett.setItemCode(itemCodeInput);
+			ett.setItemCode(itemCodeInput);
 
-			}
+		}
 
-			if (Validator.isNotNull(itemName)) {
+		if (Validator.isNotNull(itemName)) {
 
-				ett.setItemName(itemName);
+			ett.setItemName(itemName);
 
-			}
+		}
 
-			if (Validator.isNotNull(itemNameEN)) {
+		if (Validator.isNotNull(itemNameEN)) {
 
-				ett.setItemNameEN(itemNameEN);
+			ett.setItemNameEN(itemNameEN);
 
-			}
+		}
 
-			if (Validator.isNotNull(itemDescription)) {
+		if (Validator.isNotNull(itemDescription)) {
 
-				ett.setItemDescription(itemDescription);
+			ett.setItemDescription(itemDescription);
 
-			}
+		}
 
-			if (Validator.isNotNull(sibling)) {
+		if (Validator.isNotNull(sibling)) {
 
-				ett.setSibling(sibling);
+			ett.setSibling(sibling);
 
-			}
+		}
 
-			if (Validator.isNotNull(parentItemCode)) {
+		if (Validator.isNotNull(parentItemCode)) {
 
-				DictItemTemp ettParent = DictItemTempLocalServiceUtil.fetchByF_dictItemCode(
-					parentItemCode, dictCollection.getDictCollectionId(), groupId);
+			DictItemTemp ettParent = DictItemTempLocalServiceUtil.fetchByF_dictItemCode(parentItemCode,
+					dictCollection.getDictCollectionId(), groupId);
 
-				ett.setParentItemId(
-					Validator.isNotNull(ettParent) ? ettParent.getDictItemId() : 0);
+			ett.setParentItemId(Validator.isNotNull(ettParent) ? ettParent.getDictItemId() : 0);
 
-			}
+		}
 
-			if (Validator.isNotNull(status)) {
-				ett.setStatus(status);
-			}
-			DictItemTemp dictItem = DictItemTempLocalServiceUtil.updateDictItemTemp(
-				userId, ett.getDictItemId(), ett.getDictCollectionId(),
-				ett.getItemCode(), ett.getItemName(), ett.getItemNameEN(),
-				ett.getItemDescription(), ett.getParentItemId(), ett.getSibling(),
-				ett.getLevel(), ett.getMetaData(), ett.getStatus(), serviceContext);
+		if (Validator.isNotNull(status)) {
+			ett.setStatus(status);
+		}
+		DictItemTemp dictItem = DictItemTempLocalServiceUtil.updateDictItemTemp(userId, ett.getDictItemId(),
+				ett.getDictCollectionId(), ett.getItemCode(), ett.getItemName(), ett.getItemNameEN(),
+				ett.getItemDescription(), ett.getParentItemId(), ett.getSibling(), ett.getLevel(), ett.getMetaData(),
+				ett.getStatus(), serviceContext);
 
-			return dictItem;
+		return dictItem;
 	}
 
 	@Override
@@ -646,42 +622,83 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 			String itemCode, String metaData) throws DuplicateCategoryException, UnauthenticationException,
 			UnauthorizationException, NoSuchUserException, NotFoundException, PortalException {
 		// TODO Auto-generated method stub
-		DictCollectionTemp dictCollection =
-				DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(
-					code, groupId);
+		DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(code,
+				groupId);
 
-			DictItemTemp ett = DictItemTempLocalServiceUtil.fetchByF_dictItemCode(
-				itemCode, dictCollection.getDictCollectionId(), groupId);
+		DictItemTemp ett = DictItemTempLocalServiceUtil.fetchByF_dictItemCode(itemCode,
+				dictCollection.getDictCollectionId(), groupId);
 
-			if (Validator.isNotNull(metaData)) {
+		if (Validator.isNotNull(metaData)) {
 
-				ett.setMetaData(metaData);
+			ett.setMetaData(metaData);
 
-			}
+		}
 
-			DictItemTemp dictItem = DictItemTempLocalServiceUtil.updateDictItemTemp(
-				userId, ett.getDictItemId(), ett.getDictCollectionId(),
-				ett.getItemCode(), ett.getItemName(), ett.getItemNameEN(),
-				ett.getItemDescription(), ett.getParentItemId(), ett.getSibling(),
-				ett.getLevel(), ett.getMetaData(), ett.getStatus(), serviceContext);
+		DictItemTemp dictItem = DictItemTempLocalServiceUtil.updateDictItemTemp(userId, ett.getDictItemId(),
+				ett.getDictCollectionId(), ett.getItemCode(), ett.getItemName(), ett.getItemNameEN(),
+				ett.getItemDescription(), ett.getParentItemId(), ett.getSibling(), ett.getLevel(), ett.getMetaData(),
+				ett.getStatus(), serviceContext);
 
-			return dictItem;
+		return dictItem;
 	}
 
 	@Override
 	public DictItemTemp getDictItemTempByItemCode(String code, String itemCode, long groupId,
 			ServiceContext serviceContext) {
 		// TODO Auto-generated method stub
-		DictCollectionTemp dictCollection =
-				DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(
-					code, groupId);
+		DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(code,
+				groupId);
 
-			DictItemTemp dictItem = DictItemTempLocalServiceUtil.fetchByF_dictItemCode(
-				itemCode, dictCollection.getDictCollectionId(), groupId);
+		DictItemTemp dictItem = DictItemTempLocalServiceUtil.fetchByF_dictItemCode(itemCode,
+				dictCollection.getDictCollectionId(), groupId);
 
-			return dictItem;
+		return dictItem;
+	}
+
+	public String updateDictItemGroupTemp(long userId, long groupId, long dictItemId, String groupCodes,
+			String collectionCode, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
+			UnauthorizationException, DuplicateCategoryException {
+
+		// Remove all dictItemGroup
+
+		List<String> groupCodeList = new ArrayList<String>();
+
+		List<DictItemGroupTemp> dictItemGroups = new ArrayList<>();
+		try {
+			dictItemGroups = DictItemGroupTempLocalServiceUtil.findByF_dictItemId(groupId, dictItemId);
+			for (DictItemGroupTemp dictItemGroup : dictItemGroups) {
+				DictItemGroupTempLocalServiceUtil.deleteDictItemGroupTemp(dictItemGroup.getDictItemGroupId());
+			}
+		} catch (Exception e) {
+			_log.warn("Can't not get DictItemGroupsTemp by groupId, dictItemId " + groupId + "|" + dictItemId);
+		}
+		if (Validator.isNotNull(groupCodes)) {
+			String[] arrGroupCode = StringUtil.split(groupCodes);
+			if (arrGroupCode != null && arrGroupCode.length > 0) {
+				for (int i = 0; i < arrGroupCode.length; i++) {
+					if (Validator.isNotNull(arrGroupCode[i])) {
+						try {
+							DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil
+									.fetchByF_dictCollectionCode(collectionCode, groupId);
+							DictGroupTemp dictGroup = DictGroupTempLocalServiceUtil.getByGC_GI_DCI(arrGroupCode[i],
+									groupId, dictCollection.getDictCollectionId());
+
+							DictItemGroupTempLocalServiceUtil.addDictItemGroupTemp(userId, groupId,
+									dictGroup.getDictGroupId(), dictItemId, arrGroupCode[i], serviceContext);
+							groupCodeList.add(arrGroupCode[i]);
+						} catch (Exception e) {
+							continue;
+
+						}
+					}
+
+				}
+			}
+		}
+
+		return StringUtil.merge(groupCodeList);
 	}
 
 	public Log _log = LogFactoryUtil.getLog(DictCollectionActions.class);
-	
+
 }

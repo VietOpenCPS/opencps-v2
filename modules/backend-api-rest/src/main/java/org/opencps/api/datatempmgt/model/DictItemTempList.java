@@ -40,10 +40,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "dictItemTempModel"
 })
-@XmlRootElement(name = "DictItemTempList")
+@XmlRootElement(name = "data")
 public class DictItemTempList {
 
-    @XmlElement(name = "DictItemTempModel")
+    @XmlElement(name = "data")
     protected List<DictItemTempModel> dictItemTempModel;
 
     /**

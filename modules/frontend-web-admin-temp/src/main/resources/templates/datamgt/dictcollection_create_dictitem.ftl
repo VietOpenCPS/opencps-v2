@@ -337,7 +337,7 @@
 
 (function($) {
 
-	var _collectionSub_dictItem_BaseUrl_detail = "${api.endpoint}/dictcollections/${(dictCollection_dictCollection.collectionCode)!}/dictitems";
+	var _collectionSub_dictItem_BaseUrl_detail = "${api.endpoint}/temp/dictcollections/${(dictCollection_dictCollection.collectionCode)!}/dictitems";
 	
 	var _collectionSub_dictItem_edit_parentItemCode = $("#_collectionSub_dictItem_edit_parentItemCode").kendoDropDownList({
 		
@@ -389,7 +389,7 @@
 	
 	_collectionSub_dictItem_edit_parentItemCode.value($( "#_collectionSub_dictItem_edit_parentItemCode" ).attr("data-value"));
 
-	var _collectionSub_group_BaseUrl_detail = "${api.endpoint}/dictcollections/${(dictCollection_dictCollection.collectionCode)!}/dictgroups";
+	var _collectionSub_group_BaseUrl_detail = "${api.endpoint}/temp/dictcollections/${(dictCollection_dictCollection.collectionCode)!}/dictgroups";
 	
 	var _collectionSub_dictItem_edit_groupCode = $("#_collectionSub_dictItem_edit_groupCode").kendoMultiSelect({
 		placeholder: "Chọn nhóm danh mục...",

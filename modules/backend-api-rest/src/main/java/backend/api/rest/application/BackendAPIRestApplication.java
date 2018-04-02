@@ -57,7 +57,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 @ApplicationPath("/v2")
-@Component(immediate = true, service = Application.class)
+@Component(immediate = true, property={"jaxrs.application=true"}, service = Application.class)
 public class BackendAPIRestApplication extends Application {
 
 	public Set<Object> getSingletons() {
