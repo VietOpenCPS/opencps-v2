@@ -228,26 +228,29 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				Boolean.toString(getDossierOverDue(object.getPrimaryKey())));
 
 		//TODO: index dossierAction StepCode
-//		StringBundler sb = new StringBundler();
-//		long dossierActionsUserId = object.getDossierActionId();
-//		if (dossierActionsUserId > 0) {
-//			List<DossierActionUser> dossierActionUsers = DossierActionUserLocalServiceUtil
-//					.getListUser(dossierActionsUserId);
-//			if (dossierActionUsers != null) {
-//				int length = dossierActionUsers.size();
-//				for (int i = 0; i < length; i ++) {
-//					DossierActionUser dau = dossierActionUsers.get(i);
-//					long userId = dau.getUserId();
-//					if (i == length - 1) {
-//						sb.append(userId);
-//					} else {
-//						sb.append(userId);
-//						sb.append(StringPool.BLANK);
-//					}
-//				}
-//			}
-//		}
-//		document.addTextSortable(DossierTerm.ACTION_USERIDS, sb.toString());
+		StringBundler sb = new StringBundler();
+		long dossierActionsUserId = object.getDossierActionId();
+		if (dossierActionsUserId > 0) {
+			List<DossierActionUser> dossierActionUsers = DossierActionUserLocalServiceUtil
+					.getListUser(dossierActionsUserId);
+			if (dossierActionUsers != null) {
+				int length = dossierActionUsers.size();
+				for (int i = 0; i < length; i ++) {
+					DossierActionUser dau = dossierActionUsers.get(i);
+					long userId = dau.getUserId();
+					if (i == 0) {
+						sb.append(userId);
+					} else {
+						sb.append(StringPool.SPACE);
+						sb.append(userId);
+						
+					}
+				}
+			}
+		}
+		_log.info("Mapping user:"+sb.toString());
+		document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, sb.toString());
+		
 //		 Indexing DossierActionUsers
 		List<Long> actionUserIds = new ArrayList<>();
 		try {
@@ -270,6 +273,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			_log.error("Can not get list dossierActions by dossierId " + dossierId, e);
 		}
 
+		_log.info("Action user:"+StringUtil.merge(actionUserIds, StringPool.SPACE));
 		document.addTextSortable(DossierTerm.ACTION_USERIDS, StringUtil.merge(actionUserIds, StringPool.SPACE));
 		
 		//binhth index dossierId CTN
