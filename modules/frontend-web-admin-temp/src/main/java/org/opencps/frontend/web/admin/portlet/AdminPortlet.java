@@ -1773,7 +1773,7 @@ import backend.utils.ObjectConverterUtil;
 				groupCodes = dictCollectionActions.updateDictItemGroupTemp(userId, groupId, dictItem.getDictItemId(),
 						groupCodes, collectionCode, serviceContext);
 				List<String> newItemGroups = Arrays.asList(StringUtil.split(groupCodes));
-				
+								
 				for (String groupCode : oldItemGroups) {
 					if (!newItemGroups.contains(groupCode)) {
 						try {
@@ -1838,7 +1838,7 @@ import backend.utils.ObjectConverterUtil;
 												
 												jsonObject.put("new", itemGroupObj);
 												
-												SyncQueueLocalServiceUtil.addSyncQueue(userId, groupId, sc.getServerNo(), DictItemGroupTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOWEST, SyncServerTerm.METHOD_REMOVE_FROM_GROUP, serviceContext);
+												SyncQueueLocalServiceUtil.addSyncQueue(userId, groupId, sc.getServerNo(), DictItemGroupTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOWEST, SyncServerTerm.METHOD_ADD_TO_GROUP, serviceContext);
 											}
 										}
 									} catch (Exception e) {
