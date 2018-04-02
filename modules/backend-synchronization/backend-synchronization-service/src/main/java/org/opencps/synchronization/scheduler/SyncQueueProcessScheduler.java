@@ -274,7 +274,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 					
 					JSONObject oldGroupObj = jsonObject.getJSONObject("old");
 					String oldGroupCode = (oldGroupObj != null) ? oldGroupObj.getString(DictGroupTempTerm.GROUP_CODE) : groupCode;
-							
+												
 					if (pqueue.getMethod().equals(SyncServerTerm.METHOD_CREATE)) {
 						putDictGroupRestUrl.setLength(0);
 						putDictGroupRestUrl.append(dictCollectionEndPoint);

@@ -775,6 +775,9 @@ public class DataTempManagementImpl implements DataTempManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
+			DictCollectionTemp dictCollection = dictItemDataUtil.getDictCollectionTempDetail(code, groupId);
+			DictGroupTemp oldGroup = DictGroupTempLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
+			
 			DictGroupTemp dictGroup = dictItemDataUtil.updateDictGroupsTemp(user.getUserId(), groupId, code, groupCode,
 					input.getGroupCode(), input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(),
 					input.getStatus(),
@@ -799,6 +802,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
 								if (groupId == sc.getGroupId()) {
 									JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+									jsonObject.put("old", DataTempManagementUtils.convertObject(oldGroup));
 									jsonObject.put("new", DataTempManagementUtils.convertObject(dictGroup));
 									SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictGroupTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORIOTY_HIGH, SyncServerTerm.METHOD_UPDATE, serviceContext);
 								}
