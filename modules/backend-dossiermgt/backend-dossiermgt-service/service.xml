@@ -856,9 +856,6 @@
 		<column name="createDate" type="Date" />
 		<column name="modifiedDate" type="Date" />
 
-		<column name="moderator" type="boolean" />
-		<column name="condition" type="String" />
-
 		<column name="dossierId" type="long" />
 		<column name="referenceUid" type="String" />
 		<column name="requestType" type="String" />
