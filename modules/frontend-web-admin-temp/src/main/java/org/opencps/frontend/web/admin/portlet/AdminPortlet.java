@@ -21,9 +21,12 @@ import javax.portlet.WindowStateException;
 
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.action.impl.NotificationTemplateActions;
 import org.opencps.communication.constants.NotificationMGTConstants;
 import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.frontend.web.admin.constants.AdminPortletKeys;
@@ -31,12 +34,18 @@ import org.opencps.frontend.web.admin.constants.FrontendWebAdminPortletConstants
 import org.opencps.synchronization.action.DictCollectionTempInterface;
 import org.opencps.synchronization.action.impl.DictCollectionActions;
 import org.opencps.synchronization.constants.DataMGTTempConstants;
+import org.opencps.synchronization.constants.DictCollectionTempTerm;
+import org.opencps.synchronization.constants.DictGroupTempTerm;
 import org.opencps.synchronization.constants.DictItemGroupTempTerm;
+import org.opencps.synchronization.constants.DictItemTempTerm;
+import org.opencps.synchronization.constants.SyncServerTerm;
 import org.opencps.synchronization.model.DictCollectionTemp;
 import org.opencps.synchronization.model.DictGroupTemp;
 import org.opencps.synchronization.model.DictItemTemp;
+import org.opencps.synchronization.service.DictCollectionTempLocalServiceUtil;
 import org.opencps.synchronization.service.DictGroupTempLocalServiceUtil;
 import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
+import org.opencps.synchronization.service.SyncQueueLocalServiceUtil;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
@@ -1618,24 +1627,131 @@ import backend.utils.ObjectConverterUtil;
 						ServiceContextFactory.getInstance(actionRequest);
 
 					DictItemTemp dictItem = null;
+					List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+							QueryUtil.ALL_POS);
 
 					if (Validator.isNotNull(itemCodeOld)) {
-
+						String oldMetaData = null;
+						DictItemTemp oldDictItem = dictCollectionActions.getDictItemTempByItemCode(collectionCode, itemCodeOld, groupId, serviceContext);
+						
 						dictItem = dictCollectionActions.updateDictItemTempByItemCode(
 							userId, groupId, serviceContext, collectionCode,
 							itemCodeOld, itemCode, itemName, itemNameEN,
 							itemDescription, String.valueOf(sibling), parentItemCode, DataMGTTempConstants.DATA_STATUS_ACTIVE);
+						
+						try {
+							for (ServerConfig sc : lstServers) {
+								String configs = sc.getConfigs();
+								if (Validator.isNotNull(configs)) {
+									try {
+										JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+										if (configObj.has(SyncServerTerm.SERVER_TYPE)
+												&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+														.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+												&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+												&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+												&& configObj.has(SyncServerTerm.SERVER_URL)
+												&& (configObj.has(SyncServerTerm.PUSH)
+														&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+											if (groupId == sc.getGroupId()) {
+												JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+												jsonObject.put("old", convertObject(oldDictItem));
+												jsonObject.put("new", convertObject(dictItem));
+												
+												SyncQueueLocalServiceUtil.addSyncQueue(userId, groupId, sc.getServerNo(), DictItemTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOW, SyncServerTerm.METHOD_UPDATE, serviceContext);
+											}
+										}
+									} catch (Exception e) {
+										_log.error(e);
+									}
+								}
+							}
+						} catch (Exception e) {
+							_log.error(e);
+						}							
 
+						oldMetaData = dictItem.getMetaData();
+						
+						String newMetaData = null;
+						oldDictItem = dictItem;
+						
 						dictItem = dictCollectionActions.updateMetaDataByItemCode(
 							userId, groupId, serviceContext, collectionCode,
 							itemCode, metaData);
+					
+						newMetaData = dictItem.getMetaData();
 						
+						if (newMetaData != null && !newMetaData.equals(oldMetaData)) {
+							try {
+								for (ServerConfig sc : lstServers) {
+									String configs = sc.getConfigs();
+									if (Validator.isNotNull(configs)) {
+										try {
+											JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+											if (configObj.has(SyncServerTerm.SERVER_TYPE)
+													&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+															.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+													&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+													&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+													&& configObj.has(SyncServerTerm.SERVER_URL)
+													&& (configObj.has(SyncServerTerm.PUSH)
+															&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+												if (groupId == sc.getGroupId()) {
+													JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+													jsonObject.put("old", convertObject(oldDictItem));
+													jsonObject.put("new", convertObject(dictItem));
+													
+													SyncQueueLocalServiceUtil.addSyncQueue(userId, groupId, sc.getServerNo(), DictItemTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOW, SyncServerTerm.METHOD_UPDATE_METADATA, serviceContext);
+												}
+											}
+										} catch (Exception e) {
+											_log.error(e);
+										}
+									}
+								}
+							} catch (Exception e) {
+								_log.error(e);
+							}							
+						}
+						else {
+							
+						}
 					}
 					else {
 						dictItem = dictCollectionActions.addDictItemsTemp(
 							userId, groupId, collectionCode, parentItemCode, itemCode,
 							itemName, itemNameEN, itemDescription,
 							String.valueOf(sibling), 0, metaData, DataMGTTempConstants.DATA_STATUS_ACTIVE, serviceContext);
+						
+						try {
+							for (ServerConfig sc : lstServers) {
+								String configs = sc.getConfigs();
+								if (Validator.isNotNull(configs)) {
+									try {
+										JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+										if (configObj.has(SyncServerTerm.SERVER_TYPE)
+												&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+														.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+												&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+												&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+												&& configObj.has(SyncServerTerm.SERVER_URL)
+												&& (configObj.has(SyncServerTerm.PUSH)
+														&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+											if (groupId == sc.getGroupId()) {
+												JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+												jsonObject.put("new", convertObject(dictItem));
+												
+												SyncQueueLocalServiceUtil.addSyncQueue(userId, groupId, sc.getServerNo(), DictItemTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOW, SyncServerTerm.METHOD_CREATE, serviceContext);
+											}
+										}
+									} catch (Exception e) {
+										_log.error(e);
+									}
+								}
+							}
+						} catch (Exception e) {
+							_log.error(e);
+						}		
 					}
 
 				groupCodes = dictCollectionActions.updateDictItemGroupTemp(userId, groupId, dictItem.getDictItemId(),
@@ -1696,5 +1812,63 @@ import backend.utils.ObjectConverterUtil;
 
 			}
 
+		public static JSONObject convertObject(Object o) {
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			
+			if (o instanceof DictCollectionTemp) {
+				DictCollectionTemp dictCollection = (DictCollectionTemp)o;
+				result.put(DictCollectionTempTerm.MODIFIED_DATE, APIDateTimeUtils.convertDateToString(dictCollection.getModifiedDate(), APIDateTimeUtils._TIMESTAMP));
+				result.put(DictCollectionTempTerm.COLLECTION_CODE, dictCollection.getCollectionCode());
+				result.put(DictCollectionTempTerm.COLLECTION_NAME, dictCollection.getCollectionName());
+				result.put(DictCollectionTempTerm.COLLECTION_NAME_EN, dictCollection.getCollectionNameEN());
+				result.put(DictCollectionTempTerm.DESCRIPTION, dictCollection.getDescription());
+				result.put(DictCollectionTempTerm.DATAFORM, dictCollection.getDataForm());
+			}
+			else if (o instanceof DictGroupTemp) {
+				DictGroupTemp dictGroup = (DictGroupTemp)o;
+				result.put(DictGroupTempTerm.MODIFIED_DATE, APIDateTimeUtils.convertDateToString(dictGroup.getModifiedDate(), APIDateTimeUtils._TIMESTAMP));
+				result.put(DictGroupTempTerm.GROUP_CODE, dictGroup.getGroupCode());
+				result.put(DictGroupTempTerm.GROUP_NAME, dictGroup.getGroupName());
+				result.put(DictGroupTempTerm.GROUP_NAME_EN, dictGroup.getGroupNameEN());
+				result.put(DictGroupTempTerm.GROUP_DESCRIPTION, dictGroup.getGroupDescription());
+				try {
+					DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchDictCollectionTemp(dictGroup.getDictCollectionId());
+					result.put(DictCollectionTempTerm.COLLECTION_CODE, dictCollection.getCollectionCode());
+				}
+				catch (Exception e) {
+					
+				}
+			}
+			else if (o instanceof DictItemTemp) {
+				DictItemTemp dictItem = (DictItemTemp)o;
+				
+				result.put(DictItemTempTerm.MODIFIED_DATE, APIDateTimeUtils.convertDateToString(dictItem.getModifiedDate(), APIDateTimeUtils._TIMESTAMP));
+				result.put(DictItemTempTerm.ITEM_CODE, dictItem.getItemCode());
+				result.put(DictItemTempTerm.ITEM_NAME, dictItem.getItemName());
+				result.put(DictItemTempTerm.ITEM_NAME_EN, dictItem.getItemNameEN());
+				result.put(DictItemTempTerm.ITEM_DESCRIPTION, dictItem.getItemDescription());
+				result.put(DictItemTempTerm.META_DATA, dictItem.getMetaData());
+				result.put(DictItemTempTerm.SIBLING, dictItem.getSibling());
+				result.put(DictItemTempTerm.LEVEL, dictItem.getLevel());
+				
+				try {
+					DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchDictCollectionTemp(dictItem.getDictCollectionId());
+					result.put(DictCollectionTempTerm.COLLECTION_CODE, dictCollection.getCollectionCode());
+				}
+				catch (Exception e) {
+					
+				}			
+				try {
+					DictItemTemp parentItem = DictItemTempLocalServiceUtil.fetchDictItemTemp(dictItem.getParentItemId());
+					result.put(DictItemTempTerm.PARENT_ITEM_CODE, parentItem.getItemCode());
+				}
+				catch (Exception e) {
+					
+				}			
+			}
+			
+			return result;
+		}
+		
 		private Log _log = LogFactoryUtil.getLog(AdminPortlet.class.getName());
 	}

@@ -41,10 +41,8 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.synchronization.action.PushCollectionInterface;
 import org.opencps.synchronization.action.PushDictGroupInterface;
 import org.opencps.synchronization.action.PushDictItemInterface;
-import org.opencps.synchronization.action.impl.PushCollectionActions;
 import org.opencps.synchronization.action.impl.PushDictGroupActions;
 import org.opencps.synchronization.action.impl.PushDictItemActions;
 import org.opencps.synchronization.constants.SyncServerTerm;
@@ -1696,7 +1694,6 @@ public class DataManagementImpl implements DataManagement {
 		// TODO Auto-generated method stub
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictItemModel dictItemModel = new DictItemModel();
-		PushDictItemInterface pushDictItemUtil = new PushDictItemActions();
 
 		try {
 
@@ -1712,14 +1709,11 @@ public class DataManagementImpl implements DataManagement {
 
 			DictItem ett = null;
 
-			int flag = 1;
-
 			if (oldEtt != null) {
 				if (modifiedDateTime != 0 && oldEtt.getModifiedDate().compareTo(new Date(modifiedDateTime)) < 0) {
 					ett = dictItemDataUtil.updateDictItemByItemCode(user.getUserId(), groupId, serviceContext, code,
 							itemCode, input.getItemCode(), input.getItemName(), input.getItemNameEN(),
 							input.getItemDescription(), input.getSibling(), input.getParentItemCode());
-					flag = 2;
 				}
 				else {
 					throw new DuplicateCategoryException();
@@ -1728,45 +1722,6 @@ public class DataManagementImpl implements DataManagement {
 				ett = dictItemDataUtil.addDictItems(user.getUserId(), groupId, code, input.getParentItemCode(),
 						itemCode, input.getItemName(), input.getItemNameEN(), input.getItemDescription(),
 						input.getSibling(), input.getLevel(), input.getMetaData(), serviceContext);
-				flag = 1;
-			}
-
-			List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS);
-			for (ServerConfig sc : lstServers) {
-				String configs = sc.getConfigs();
-				if (Validator.isNotNull(configs)) {
-					try {
-						JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-						if (configObj.has(SyncServerTerm.SERVER_TYPE)
-								&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-										.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-								&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-								&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
-								&& configObj.has(SyncServerTerm.SERVER_URL)
-								&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
-							if (groupId == sc.getGroupId()) {
-								if (flag == 1) {
-									pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, 
-											sc.getServerNo(),
-											code, itemCode,
-											input.getItemName(), input.getItemNameEN(), input.getItemDescription(),
-											input.getParentItemCode(), input.getSibling(), SyncServerTerm.METHOD_CREATE,
-											"", serviceContext);
-								} else {
-									pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, 
-											sc.getServerNo(),
-											code, itemCode,
-											input.getItemName(), input.getItemNameEN(), input.getItemDescription(),
-											input.getParentItemCode(), input.getSibling(), SyncServerTerm.METHOD_UPDATE,
-											"", serviceContext);
-								}
-							}
-						}
-					} catch (Exception e) {
-						_log.error(e);
-					}
-				}
 			}
 
 			if (Validator.isNull(ett)) {
@@ -1854,7 +1809,6 @@ public class DataManagementImpl implements DataManagement {
 		// TODO Auto-generated method stub
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictCollectionModel dictCollectionModel = new DictCollectionModel();
-		PushCollectionInterface pushCollectionUtil = new PushCollectionActions();
 
 		try {
 
@@ -1868,7 +1822,6 @@ public class DataManagementImpl implements DataManagement {
 				_log.error(e);
 			}
 			DictCollection dictCollection = null;
-			int flag = 0;
 
 			if (oldDictCollection != null) {
 				if (modifiedDateTime != 0
@@ -1876,7 +1829,6 @@ public class DataManagementImpl implements DataManagement {
 					dictCollection = dictItemDataUtil.updateDictCollection(user.getUserId(), groupId, code,
 							input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(),
 							input.getDescription(), serviceContext);
-					flag = 2;
 				}
 				else {
 					throw new DuplicateCategoryException();
@@ -1884,48 +1836,6 @@ public class DataManagementImpl implements DataManagement {
 			} else {
 				dictCollection = dictItemDataUtil.addDictCollection(user.getUserId(), groupId, code,
 						input.getCollectionName(), input.getCollectionNameEN(), input.getDescription(), serviceContext);
-				flag = 1;
-			}
-
-			try {
-				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS);
-
-				for (ServerConfig sc : lstServers) {
-					String configs = sc.getConfigs();
-					if (Validator.isNotNull(configs)) {
-						try {
-							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-							if (configObj.has(SyncServerTerm.SERVER_TYPE)
-									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
-									&& configObj.has(SyncServerTerm.SERVER_URL) && (configObj.has(SyncServerTerm.PUSH)
-											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
-								if (groupId == sc.getGroupId()) {
-									if (flag == 1) {
-										pushCollectionUtil.addPushCollection(user.getUserId(), groupId,
-												sc.getServerNo(),
-												input.getCollectionCode(), input.getCollectionName(),
-												input.getCollectionNameEN(), input.getDescription(),
-												SyncServerTerm.METHOD_CREATE, "", serviceContext);
-									} else if (flag == 2) {
-										pushCollectionUtil.addPushCollection(user.getUserId(), groupId,
-												sc.getServerNo(),
-												input.getCollectionCode(), input.getCollectionName(),
-												input.getCollectionNameEN(), input.getDescription(),
-												SyncServerTerm.METHOD_UPDATE, "", serviceContext);
-									}
-								}
-							}
-						} catch (Exception e) {
-							_log.error(e);
-						}
-					}
-				}
-			} catch (Exception e) {
-				_log.error(e);
 			}
 
 			dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
@@ -2123,7 +2033,6 @@ public class DataManagementImpl implements DataManagement {
 		// TODO Auto-generated method stub
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		Groups dictGroupModel = new Groups();
-		PushDictGroupInterface pushDictGroupUtil = new PushDictGroupActions();
 
 		try {
 
@@ -2137,14 +2046,12 @@ public class DataManagementImpl implements DataManagement {
 				_log.error(e);
 			}
 			DictGroup dictGroup = null;
-			int flag = 1;
 
 			if (oldDictGroup != null) {
 				if (modifiedDateTime != 0 && oldDictGroup.getModifiedDate().compareTo(new Date(modifiedDateTime)) < 0) {
 					dictGroup = dictItemDataUtil.updateDictgroups(user.getUserId(), groupId, code, groupCode,
 							input.getGroupCode(), input.getGroupName(), input.getGroupNameEN(),
 							input.getGroupDescription(), serviceContext);
-					flag = 2;
 				}
 				else {
 					throw new DuplicateCategoryException();
@@ -2152,52 +2059,9 @@ public class DataManagementImpl implements DataManagement {
 			} else {
 				dictGroup = dictItemDataUtil.addDictgroups(user.getUserId(), groupId, code, groupCode,
 						input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(), serviceContext);
-				flag = 1;
 			}
 
 			dictGroupModel = DataManagementUtils.mapperGroups(dictGroup);
-
-			try {
-				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS);
-
-				for (ServerConfig sc : lstServers) {
-					String configs = sc.getConfigs();
-					if (Validator.isNotNull(configs)) {
-						try {
-							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-							if (configObj.has(SyncServerTerm.SERVER_TYPE)
-									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
-									&& configObj.has(SyncServerTerm.SERVER_URL)) {
-								if (groupId == sc.getGroupId()) {
-									if (flag == 1) {
-										pushDictGroupUtil.addPushDictGroup(user.getUserId(), groupId, 
-												sc.getServerNo(),
-												code, groupCode,
-												input.getGroupName(), input.getGroupNameEN(),
-												input.getGroupDescription(), "", SyncServerTerm.METHOD_CREATE,
-												serviceContext);
-									} else {
-										pushDictGroupUtil.addPushDictGroup(user.getUserId(), groupId, 
-												sc.getServerNo(),
-												code, groupCode,
-												input.getGroupName(), input.getGroupNameEN(),
-												input.getGroupDescription(), "", SyncServerTerm.METHOD_UPDATE,
-												serviceContext);
-									}
-								}
-							}
-						} catch (Exception e) {
-							_log.error(e);
-						}
-					}
-				}
-			} catch (Exception e) {
-				_log.error(e);
-			}
 
 			return Response.status(200).entity(dictGroupModel).build();
 

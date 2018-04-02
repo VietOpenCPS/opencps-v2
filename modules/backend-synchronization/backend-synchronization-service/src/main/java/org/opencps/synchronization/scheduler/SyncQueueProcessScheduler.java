@@ -18,6 +18,7 @@ import org.opencps.synchronization.constants.PushDictItemTerm;
 import org.opencps.synchronization.constants.SyncServerTerm;
 import org.opencps.synchronization.model.DictCollectionTemp;
 import org.opencps.synchronization.model.DictGroupTemp;
+import org.opencps.synchronization.model.DictItemGroupTemp;
 import org.opencps.synchronization.model.DictItemTemp;
 import org.opencps.synchronization.model.SyncQueue;
 import org.opencps.synchronization.rest.client.DictDataRestClient;
@@ -29,6 +30,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -159,7 +161,10 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							if (SyncServerUtil.isSyncOk(resDictCollection.getInt(RESTFulConfiguration.STATUS))) {
 								dictItemDataUtil.addDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, collectionName, collectionNameEN, description, serviceContext);
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
-		 					}																			
+		 					}		
+							else {
+								break;
+							}
 						}
 						else {
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());						
@@ -176,17 +181,30 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 						params.put(PushCollectionTerm.COLLECTION_NAME_EN, collectionNameEN);
 						params.put(PushCollectionTerm.DESCRIPTION, description);
 						if (isFound) {
-							JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.PUT, "application/json",
+							JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
 									rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
 									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 							
 							if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 								dictItemDataUtil.updateDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), oldCollectionCode, collectionCode, collectionName, collectionNameEN, description, serviceContext);							
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());								
-							}															
+							}	
+							else {
+								break;
+							}
 						}
 						else {
-							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
+							JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
+									rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+							
+							if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
+								dictItemDataUtil.updateDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), oldCollectionCode, collectionCode, collectionName, collectionNameEN, description, serviceContext);							
+								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());								
+							}	
+							else {
+								break;
+							}
 						}
 					}
 					else if (pqueue.getMethod().equals(SyncServerTerm.METHOD_DELETE)) {
@@ -201,7 +219,10 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
-								}																					
+								}		
+								else {
+									break;
+								}
 							}
 							else {
 								dictItemDataUtil.deleteDictCollection(collectionCode, serverConfig.getGroupId(), serviceContext);
@@ -229,7 +250,10 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 								dictItemDataUtil.addDataForm(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, dataForm, serviceContext);
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
-							}															
+							}		
+							else {
+								break;
+							}
 						}
 						else {
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());						
@@ -269,7 +293,10 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 						if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
 							dictItemDataUtil.addDictgroups(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, groupCode, groupName, groupNameEN, groupDescription, serviceContext);
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
-						}													
+						}
+						else {
+							break;
+						}
 					}
 					else if (pqueue.getMethod().equals(SyncServerTerm.METHOD_UPDATE)) {
 						putDictGroupRestUrl.setLength(0);
@@ -283,14 +310,17 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 						params.put(PushDictGroupTerm.GROUP_NAME_EN, groupNameEN);
 						params.put(PushDictGroupTerm.GROUP_DESCRIPTION, groupDescription);
 										
-						JSONObject resDictGroup = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.PUT, "application/json",
+						JSONObject resDictGroup = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
 								rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
 								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 						
 						if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
 							dictItemDataUtil.updateDictgroups(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, oldGroupCode, groupCode, groupName, groupNameEN, groupDescription, serviceContext);
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
-						}									
+						}	
+						else {
+							break;
+						}
 					}
 					else if (pqueue.getMethod().equals(SyncServerTerm.METHOD_DELETE)) {
 						putDictGroupRestUrl.setLength(0);
@@ -306,7 +336,10 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 						if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
 							dictItemDataUtil.deleteDictgroups(groupCode, serverConfig.getGroupId(), serviceContext);
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
-						}														
+						}		
+						else {
+							break;
+						}
 					}
 				}
 				else if (DictItemTemp.class.getName().equals(pqueue.getClassName())) {
@@ -352,17 +385,25 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 						params.put(PushDictItemTerm.PARENT_ITEM_CODE, parentItemCode);
 						params.put(PushDictItemTerm.SIBLING, sibling);
 										
-						if (isFound) {
+						if (!isFound) {
 							JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
 									rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
 									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 							
 							if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
-								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
-							}																			
+								try {
+									dictItemDataUtil.addDictItems(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, parentItemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, level, metaData, serviceContext);						
+									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());									
+								}
+								catch (DuplicateCategoryException e) {
+									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());									
+								}
+							}	
+							else {
+								break;
+							}
 						}
 						else {
-							dictItemDataUtil.addDictItems(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, parentItemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, level, metaData, serviceContext);						
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 						}
 					}
@@ -390,10 +431,23 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 								dictItemDataUtil.updateDictItemByItemCode(serverConfig.getUserId(), serverConfig.getGroupId(), serviceContext, collectionCode, oldItemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, parentItemCode);
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
-							}															
+							}			
+							else {
+								break;
+							}
 						}
 						else {							
-							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
+							JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
+									rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+							
+							if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
+								dictItemDataUtil.updateDictItemByItemCode(serverConfig.getUserId(), serverConfig.getGroupId(), serviceContext, collectionCode, oldItemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, parentItemCode);
+								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
+							}			
+							else {
+								break;
+							}
 						}
 					}
 					else if (pqueue.getMethod().equals(SyncServerTerm.METHOD_DELETE)) {
@@ -412,13 +466,95 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 								DictItemTempLocalServiceUtil.deleteDictItemTemp(serverConfig.getGroupId(), itemCode, serviceContext);
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
-							}																				
+							}		
+							else {
+								break;
+							}
 						}
 						else {
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 						}
 					}
+					else if (pqueue.getMethod().equals(SyncServerTerm.METHOD_UPDATE_METADATA)) {
+						putDictItemRestUrl.setLength(0);
+						putDictItemRestUrl.append(dictCollectionEndPoint);
+						putDictItemRestUrl.append("/");
+						putDictItemRestUrl.append(collectionCode);
+						putDictItemRestUrl.append("/dictitems");
+						putDictItemRestUrl.append("/" + itemCode);
+						putDictItemRestUrl.append("/metadata");
+						
+						params.put(PushDictItemTerm.META_DATA, metaData);
+										
+						if (isFound) {
+							JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.PUT, "application/json",
+									rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+							
+							if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
+								dictItemDataUtil.updateMetaDataByItemCode(serverConfig.getUserId(), serverConfig.getGroupId(), serviceContext, collectionCode, itemCode, metaData);
+								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
+							}															
+						}
+						else {
+							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
+						}
+						_log.info("PUSH DICT ITEM FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
+					}					
+				}
+				else if (DictItemGroupTemp.class.getName().equals(pqueue.getClassName())) {
+					JSONObject jsonObject = JSONFactoryUtil.createJSONObject(pqueue.getJsonObject());
 					
+					JSONObject dictItemGroupObj = jsonObject.getJSONObject("new");
+					String collectionCode = dictItemGroupObj.getString(DictCollectionTempTerm.COLLECTION_CODE);
+					String groupCode = dictItemGroupObj.getString(DictGroupTempTerm.GROUP_CODE);
+					String itemCode = dictItemGroupObj.getString(DictItemTempTerm.ITEM_CODE);
+					
+					StringBuilder putDictGroupRestUrl = new StringBuilder();
+
+					if (pqueue.getMethod().equals(SyncServerTerm.METHOD_ADD_TO_GROUP)) {
+						putDictGroupRestUrl.setLength(0);
+						putDictGroupRestUrl.append(dictCollectionEndPoint);
+						putDictGroupRestUrl.append("/" + collectionCode);
+						putDictGroupRestUrl.append("/dictgroups");
+						putDictGroupRestUrl.append("/" + groupCode);
+						putDictGroupRestUrl.append("/dictitems");
+															
+						params.put(PushDictGroupTerm.ITEM_CODE, itemCode);
+						
+						JSONObject resDictGroup = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
+								rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+						
+						if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
+							dictItemDataUtil.addDictgroupsDictItems(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, groupCode, itemCode, serviceContext);
+							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
+						}														
+						else {
+							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
+						}
+					}
+					else if (pqueue.getMethod().equals(SyncServerTerm.METHOD_REMOVE_FROM_GROUP)) {
+						putDictGroupRestUrl.setLength(0);
+						putDictGroupRestUrl.append(dictCollectionEndPoint);
+						putDictGroupRestUrl.append("/" + collectionCode);
+						putDictGroupRestUrl.append("/dictgroups");
+						putDictGroupRestUrl.append("/" + groupCode);
+						putDictGroupRestUrl.append("/dictitems");
+						putDictGroupRestUrl.append("/" + itemCode);
+															
+						JSONObject resDictGroup = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.DELETE, "application/json",
+								rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+											
+						if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
+							dictItemDataUtil.deleteDictgroupsDictItems(serverConfig.getGroupId(), collectionCode, groupCode, itemCode, serviceContext);
+							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
+						}		
+						else {
+							break;
+						}
+					}	
 				}				
 			}
 		}

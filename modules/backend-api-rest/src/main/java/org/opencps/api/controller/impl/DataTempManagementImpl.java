@@ -41,6 +41,7 @@ import org.opencps.synchronization.model.DictGroupTemp;
 import org.opencps.synchronization.model.DictItemGroupTemp;
 import org.opencps.synchronization.model.DictItemTemp;
 import org.opencps.synchronization.service.DictGroupTempLocalServiceUtil;
+import org.opencps.synchronization.service.DictItemGroupTempLocalServiceUtil;
 import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
 import org.opencps.synchronization.service.SyncQueueLocalServiceUtil;
 
@@ -1035,12 +1036,42 @@ public class DataTempManagementImpl implements DataTempManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			_log.info("Collection code: " + code + ", group code: " + groupCode + ", item code: " + itemCode);
 			DictItemGroupTemp dictItemGroup = dictItemDataUtil.addDictGroupsDictItemsTemp(user.getUserId(), groupId, code,
 					groupCode, itemCode, serviceContext);
 
-			_log.info("Dict item group: " + dictItemGroup.getDictItemGroupId());
-			
+			try {
+				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS);
+
+				for (ServerConfig sc : lstServers) {
+					String configs = sc.getConfigs();
+					if (Validator.isNotNull(configs)) {
+						try {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+							if (configObj.has(SyncServerTerm.SERVER_TYPE)
+									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_URL)
+									&& (configObj.has(SyncServerTerm.PUSH)
+											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+								if (groupId == sc.getGroupId()) {
+									JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+									jsonObject.put("new", DataTempManagementUtils.convertObject(dictItemGroup));
+									
+									SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictItemGroupTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOWEST, SyncServerTerm.METHOD_ADD_TO_GROUP, serviceContext);
+								}
+							}
+						} catch (Exception e) {
+							_log.error(e);
+						}
+					}
+				}
+			} catch (Exception e) {
+				_log.error(e);
+			}				
+						
 			dictGroupItemModel = DataTempManagementUtils.mapperDictGroupItemTempModel(dictItemGroup);
 			dictGroupItemModel.setSelected(Boolean.TRUE);
 
@@ -1113,12 +1144,49 @@ public class DataTempManagementImpl implements DataTempManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
+			DictItemTemp dictItem = dictItemDataUtil.getDictItemTempByItemCode(code, itemCode, groupId, serviceContext);
+			DictGroupTemp dictGroup = DictGroupTempLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
+			
+			DictItemGroupTemp dictItemGroup = DictItemGroupTempLocalServiceUtil.fetchByF_dictItemId_dictGroupId(groupId, dictGroup.getDictGroupId(), dictItem.getDictItemId());
+			
 			boolean flag = dictItemDataUtil.deleteDictGroupsDictItemsTemp(groupId, code, groupCode, itemCode,
 					serviceContext);
 
 			if (flag) {
 
+				try {
+					List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+							QueryUtil.ALL_POS);
+
+					for (ServerConfig sc : lstServers) {
+						String configs = sc.getConfigs();
+						if (Validator.isNotNull(configs)) {
+							try {
+								JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
+								if (configObj.has(SyncServerTerm.SERVER_TYPE)
+										&& configObj.getString(SyncServerTerm.SERVER_TYPE)
+												.equals(SyncServerTerm.SYNC_SERVER_TYPE)
+										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
+										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+										&& configObj.has(SyncServerTerm.SERVER_URL)
+										&& (configObj.has(SyncServerTerm.PUSH)
+												&& configObj.getBoolean(SyncServerTerm.PUSH))) {
+									if (groupId == sc.getGroupId()) {
+										JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+										jsonObject.put("new", DataTempManagementUtils.convertObject(dictItemGroup));
+										
+										SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictItemGroupTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOWEST, SyncServerTerm.METHOD_REMOVE_FROM_GROUP, serviceContext);
+									}
+								}
+							} catch (Exception e) {
+								_log.error(e);
+							}
+						}
+					}
+				} catch (Exception e) {
+					_log.error(e);
+				}				
+				
 				return Response.status(200).build();
 
 			} else {
@@ -1292,7 +1360,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 									JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 									jsonObject.put("new", DataTempManagementUtils.convertObject(dictItem));
 									
-									SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictCollectionTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOW, SyncServerTerm.METHOD_CREATE, serviceContext);
+									SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictItemTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOW, SyncServerTerm.METHOD_CREATE, serviceContext);
 								}
 							}
 						} catch (Exception e) {
@@ -1447,10 +1515,10 @@ public class DataTempManagementImpl implements DataTempManagement {
 												&& configObj.getBoolean(SyncServerTerm.PUSH))) {
 									if (groupId == sc.getGroupId()) {
 										JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-										jsonObject.put("old", oldItem);
+										jsonObject.put("old", DataTempManagementUtils.convertObject(oldItem));
 										jsonObject.put("new", DataTempManagementUtils.convertObject(ett));
 										
-										SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictCollectionTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOW, SyncServerTerm.METHOD_UPDATE, serviceContext);
+										SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictItemTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOW, SyncServerTerm.METHOD_UPDATE, serviceContext);
 									}
 								}
 							} catch (Exception e) {
@@ -1574,7 +1642,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 										JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 										jsonObject.put("new", DataTempManagementUtils.convertObject(dictColl));
 										
-										SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictCollectionTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOW, SyncServerTerm.METHOD_CREATE, serviceContext);
+										SyncQueueLocalServiceUtil.addSyncQueue(user.getUserId(), groupId, sc.getServerNo(), DictItemTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOW, SyncServerTerm.METHOD_DELETE, serviceContext);
 									}
 								}
 							} catch (Exception e) {

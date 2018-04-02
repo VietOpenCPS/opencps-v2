@@ -22,6 +22,7 @@ import org.opencps.synchronization.model.DictGroupTemp;
 import org.opencps.synchronization.model.DictItemGroupTemp;
 import org.opencps.synchronization.model.DictItemTemp;
 import org.opencps.synchronization.service.DictCollectionTempLocalServiceUtil;
+import org.opencps.synchronization.service.DictGroupTempLocalServiceUtil;
 import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -374,6 +375,35 @@ public class DataTempManagementUtils {
 			catch (Exception e) {
 				
 			}			
+		}
+		else if (o instanceof DictItemGroupTemp) {
+			DictItemGroupTemp dictItemGroup = (DictItemGroupTemp)o;
+			
+			result.put(DictItemGroupTempTerm.DICT_GROUP_ID, dictItemGroup.getDictGroupId());
+			result.put(DictItemGroupTempTerm.DICT_GROUP_NAME, dictItemGroup.getDictGroupName());
+			result.put(DictItemGroupTempTerm.DICT_ITEM_ID, dictItemGroup.getDictItemId());
+			result.put(DictItemGroupTempTerm.DICT_ITEM_GROUP_ID, dictItemGroup.getDictItemGroupId());
+			try {
+				DictItemTemp dictItem = DictItemTempLocalServiceUtil.fetchDictItemTemp(dictItemGroup.getDictItemId());
+				result.put(DictItemTempTerm.ITEM_CODE, dictItem.getItemCode());
+				try {
+					DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchDictCollectionTemp(dictItem.getDictCollectionId());
+					result.put(DictCollectionTempTerm.COLLECTION_CODE, dictCollection.getCollectionCode());
+				}
+				catch (Exception e) {
+					
+				}			
+			}
+			catch (Exception e) {
+				
+			}			
+			try {
+				DictGroupTemp dictGroup = DictGroupTempLocalServiceUtil.fetchDictGroupTemp(dictItemGroup.getDictGroupId());
+				result.put(DictGroupTempTerm.GROUP_CODE, dictGroup.getGroupCode());
+			}
+			catch (Exception e) {
+				
+			}
 		}
 		
 		return result;
