@@ -364,6 +364,7 @@ public class DictItemTempLocalServiceImpl
 		if (!hasPermission) {
 			throw new UnauthorizationException();
 		}
+		
 		DictItemTemp dictItem = dictItemTempPersistence.fetchByF_dictItemCode(itemCode, groupId);
 		
 		List<DictItemGroupTemp> lsDictItem = dictItemGroupTempPersistence.findByF_dictItemId(groupId, dictItem.getPrimaryKey());

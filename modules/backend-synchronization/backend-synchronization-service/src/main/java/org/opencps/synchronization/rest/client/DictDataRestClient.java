@@ -131,8 +131,9 @@ public class DictDataRestClient {
 			CloseableHttpClient httpClient = HttpClientBuilder.create()
 			  .setDefaultCredentialsProvider(provider)
 			  .build();
-			HttpGet getRequest = new HttpGet(baseUrl + DICT_COLLLECTIONS_BASE_PATH + "/" + URLEncoder.encode(code, StandardCharsets.UTF_8.toString()) + "/" + URLEncoder.encode(itemCode, StandardCharsets.UTF_8.toString()));
- 			Header groupHeader = new BasicHeader("groupId", String.valueOf(groupId));
+			HttpGet getRequest = new HttpGet(baseUrl + DICT_COLLLECTIONS_BASE_PATH + "/" + URLEncoder.encode(code, StandardCharsets.UTF_8.toString()) + "/dictitems/" + URLEncoder.encode(itemCode, StandardCharsets.UTF_8.toString()));
+ 			
+			Header groupHeader = new BasicHeader("groupId", String.valueOf(groupId));
  			getRequest.addHeader(HttpHeaders.ACCEPT, "application/json");
  			getRequest.addHeader(groupHeader);
  			
@@ -146,7 +147,7 @@ public class DictDataRestClient {
 				while ((output = br.readLine()) != null) {
 					jsonStr.append(output);
 				}
-
+				
 				JSONObject obj = JSONFactoryUtil.createJSONObject(jsonStr.toString());
 
 				httpClient.close();	

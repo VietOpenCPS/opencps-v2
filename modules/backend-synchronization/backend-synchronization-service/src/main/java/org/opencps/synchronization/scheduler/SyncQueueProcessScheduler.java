@@ -9,6 +9,7 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalService;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.synchronization.constants.DictCollectionTempTerm;
 import org.opencps.synchronization.constants.DictGroupTempTerm;
 import org.opencps.synchronization.constants.DictItemTempTerm;
@@ -457,14 +458,14 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 						putDictItemRestUrl.append(collectionCode);
 						putDictItemRestUrl.append("/dictitems");
 						putDictItemRestUrl.append("/" + itemCode);
-												
+																
 						if (isFound) {
 							JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.DELETE, "application/json",
 									rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
 									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 							
 							if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
-								DictItemTempLocalServiceUtil.deleteDictItemTemp(serverConfig.getGroupId(), itemCode, serviceContext);
+								DictItemLocalServiceUtil.deleteDictItem(serverConfig.getGroupId(), itemCode, serviceContext);
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 							}		
 							else {

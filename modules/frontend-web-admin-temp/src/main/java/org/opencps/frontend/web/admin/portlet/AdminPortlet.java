@@ -1797,7 +1797,7 @@ import backend.utils.ObjectConverterUtil;
 												itemGroupObj.put(DictGroupTempTerm.GROUP_CODE, groupCode);
 												itemGroupObj.put(DictItemTempTerm.ITEM_CODE, dictItem.getItemCode());
 												
-												jsonObject.put("new", convertObject(itemGroupObj));
+												jsonObject.put("new", itemGroupObj);
 												
 												SyncQueueLocalServiceUtil.addSyncQueue(userId, groupId, sc.getServerNo(), DictItemGroupTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOWEST, SyncServerTerm.METHOD_REMOVE_FROM_GROUP, serviceContext);
 											}
@@ -1836,7 +1836,7 @@ import backend.utils.ObjectConverterUtil;
 												itemGroupObj.put(DictGroupTempTerm.GROUP_CODE, groupCode);
 												itemGroupObj.put(DictItemTempTerm.ITEM_CODE, dictItem.getItemCode());
 												
-												jsonObject.put("new", convertObject(itemGroupObj));
+												jsonObject.put("new", itemGroupObj);
 												
 												SyncQueueLocalServiceUtil.addSyncQueue(userId, groupId, sc.getServerNo(), DictItemGroupTemp.class.getName(), jsonObject.toJSONString(), SyncServerTerm.QUEUE_STATUS_NEW, 0, SyncServerTerm.PRIORITY_LOWEST, SyncServerTerm.METHOD_REMOVE_FROM_GROUP, serviceContext);
 											}
