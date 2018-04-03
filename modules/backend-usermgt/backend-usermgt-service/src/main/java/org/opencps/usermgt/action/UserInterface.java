@@ -36,7 +36,8 @@ public interface UserInterface {
 	public String getPreferenceByKey(long id, long groupId, String key, ServiceContext serviceContext);
 
 	public String addPreferences(long id, long groupId, String preferences, ServiceContext serviceContext)
-			throws NoSuchUserException, UnauthenticationException, UnauthorizationException, DuplicateCategoryException, NotFoundException;
+			throws NoSuchUserException, UnauthenticationException, UnauthorizationException, DuplicateCategoryException,
+			NotFoundException;
 
 	public String updatePreferences(long id, long groupId, String key, String value, ServiceContext serviceContext)
 			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException,
@@ -55,9 +56,19 @@ public interface UserInterface {
 
 	public boolean addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword,
 			ServiceContext serviceContext);
-	
+
 	public File uploadEsign(long userId, long companyId, long groupId, long id, InputStream inputStream,
 			String fileName, String fileType, long fileSize, String destination, String desc,
 			ServiceContext serviceContext) throws Exception;
+
+	public File uploadCert(long userId, long companyId, long groupId, long id, InputStream inputStream, String fileName,
+			String fileType, long fileSize, String destination, String desc, ServiceContext serviceContext)
+			throws Exception;
+
+	public String getEsignPath(long userId, long companyId, long groupId, ServiceContext serviceContext)
+			throws Exception;
+
+	public String getCertPath(long userId, long companyId, long groupId, ServiceContext serviceContext)
+			throws Exception;
 
 }
