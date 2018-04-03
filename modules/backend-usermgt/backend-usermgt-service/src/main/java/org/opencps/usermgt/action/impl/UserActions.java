@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.EmailAddressModel;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Image;
 import com.liferay.portal.kernel.model.Role;
@@ -456,6 +457,33 @@ public class UserActions implements UserInterface {
 		}
 		
 		return flag;
+	}
+
+	@Override
+	public File uploadEsign(long userId, long companyId, long groupId, long id, InputStream inputStream,
+			String fileName, String fileType, long fileSize, String destination, String desc,
+			ServiceContext serviceContext) throws Exception {
+		
+		File file = null;
+
+		FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, inputStream, fileName, fileType,
+				fileSize, destination, desc, serviceContext);
+		
+		
+
+		User user = UserLocalServiceUtil.fetchUser(id);
+		
+		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+		
+		//if (Validator.isNotNull(l))
+		
+		file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), false);
+		
+		
+
+		UserLocalServiceUtil.updatePortrait(user.getUserId(), FileUtil.getBytes(file));
+
+		return file;
 	}
 
 }

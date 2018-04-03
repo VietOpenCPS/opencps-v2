@@ -8,7 +8,6 @@ import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
 
@@ -56,4 +55,9 @@ public interface UserInterface {
 
 	public boolean addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword,
 			ServiceContext serviceContext);
+	
+	public File uploadEsign(long userId, long companyId, long groupId, long id, InputStream inputStream,
+			String fileName, String fileType, long fileSize, String destination, String desc,
+			ServiceContext serviceContext) throws Exception;
+
 }
