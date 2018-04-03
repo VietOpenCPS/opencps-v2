@@ -64,22 +64,22 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 			if (DictCollectionTempLocalServiceUtil.initDictCollectionTemp(groupId)) {
 
 				// create init dictcollection
-				Map<String, String> initDictCollection = DataMGTTempConstants.DICTCOLLECTION_INIT;
-
-				for (String key : initDictCollection.keySet()) {
-
-					try {
-
-						DictCollectionTempLocalServiceUtil.addDictCollectionTemp(userId, groupId, key,
-								initDictCollection.get(key), initDictCollection.get(key), initDictCollection.get(key),
-								DataMGTTempConstants.DATA_STATUS_DEACTIVE,
-								DataMGTTempConstants.DATA_MUST_NOT_SYNCHRONIZED, serviceContext);
-
-					} catch (Exception e) {
-						_log.error(e);
-					}
-
-				}
+//				Map<String, String> initDictCollection = DataMGTTempConstants.DICTCOLLECTION_INIT;
+//
+//				for (String key : initDictCollection.keySet()) {
+//
+//					try {
+//
+//						DictCollectionTempLocalServiceUtil.addDictCollectionTemp(userId, groupId, key,
+//								initDictCollection.get(key), initDictCollection.get(key), initDictCollection.get(key),
+//								DataMGTTempConstants.DATA_STATUS_DEACTIVE,
+//								DataMGTTempConstants.DATA_MUST_NOT_SYNCHRONIZED, serviceContext);
+//
+//					} catch (Exception e) {
+//						_log.error(e);
+//					}
+//
+//				}
 
 			}
 
