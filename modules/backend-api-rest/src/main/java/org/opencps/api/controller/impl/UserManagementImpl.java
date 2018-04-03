@@ -565,4 +565,105 @@ public class UserManagementImpl implements UserManagement {
 		return null;
 	}
 
+	@Override
+	public Response uploadEsign(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, Attachment attachment, String fileName, String fileType,
+			long fileSize) {
+		
+		UserInterface actions = new UserActions();
+		InputStream inputStream = null;
+
+		DataHandler dataHandler = attachment.getDataHandler();
+		
+		//HARD CODE groupId = 55301
+		
+		long groupId = 55301;
+
+		try {
+
+			//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			inputStream = dataHandler.getInputStream();
+
+			File file = actions.uploadPhoto(user.getUserId(), company.getCompanyId(), groupId, id, inputStream,
+					fileName, fileType, fileSize, "USERESING/", "USERESING file upload", serviceContext);
+			
+			String type = actions.getType(id, serviceContext);
+			
+			_log.info("FILE TYPE: " + type);
+			
+			_log.info("Absolute Path " + file.getAbsolutePath());
+			_log.info("Canonical Path " + file.getCanonicalPath());
+
+			ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
+					.header("Content-Type", "image/" + type);
+
+			return responseBuilder.build();
+		} catch (Exception e) {
+			_log.error(e);
+			if (e instanceof UnauthenticationException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+			} else if (e instanceof UnauthorizationException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			} else if (e instanceof NoSuchUserException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+			} else {
+				return Response.status(500).build();
+			}
+
+		} finally {
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				_log.error(e);
+			}
+		}
+	}
+
+	@Override
+	public Response uploadEsignCert(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, Attachment attachment, String fileName, String fileType,
+			long fileSize) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response getUserEsign(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response getUserEsignCert(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
