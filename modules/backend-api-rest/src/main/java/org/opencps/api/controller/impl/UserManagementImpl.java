@@ -737,9 +737,10 @@ public class UserManagementImpl implements UserManagement {
 
 			// long groupId =
 			// GetterUtil.getLong(header.getHeaderString("groupId"));
+			_log.info("FILE PATH ID + GROUPID: " + id + "" + groupId);
 
-			String filePath = actions.getEsignPath(id, company.getCompanyId(), groupId, serviceContext);
-
+			String filePath = actions.getEsignPath(id, company, groupId, serviceContext);
+			
 			_log.info("FILE PATH: " + filePath);
 
 			return Response.status(200).entity(filePath).build();
