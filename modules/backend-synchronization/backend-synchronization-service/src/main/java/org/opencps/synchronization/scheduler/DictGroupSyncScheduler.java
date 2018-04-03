@@ -38,7 +38,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-@Component(immediate = true, service = DictGroupSyncScheduler.class)
+//@Component(immediate = true, service = DictGroupSyncScheduler.class)
 public class DictGroupSyncScheduler extends BaseSchedulerEntryMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {

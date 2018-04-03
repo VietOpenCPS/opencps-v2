@@ -1334,8 +1334,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		
 		String fromCertDateFilter = fromCertDate + "000000";
 		String toCertDateFilter = toCertDate + "235959";
-
-		_log.info("From cert: " + fromCertDateFilter + " to " + toCertDateFilter);
 		
 		if (Validator.isNotNull(fromCertDate)) {
 			if (Validator.isNotNull(toCertDate)) {
