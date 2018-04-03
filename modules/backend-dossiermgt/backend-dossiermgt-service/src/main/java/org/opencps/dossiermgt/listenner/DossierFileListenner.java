@@ -416,7 +416,12 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(model.getGroupId(),
 					model.getDossierTemplateNo(), model.getDossierPartNo());
 
-			String deliverableType = dossierPart.getDeliverableType();
+			String deliverableType = StringPool.BLANK;
+			boolean eSign = false;
+			if (dossierPart != null) {
+				deliverableType = dossierPart.getDeliverableType();
+				eSign = dossierPart.getESign();
+			}
 			// int deliverableAction = dossierPart.getDeliverableAction();
 
 			String deliverableCode = model.getDeliverableCode();
@@ -457,7 +462,12 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				String issueDate = StringPool.BLANK;
 				String expireDate = StringPool.BLANK;
 				String revalidate = StringPool.BLANK;
-				String deliverableState = "2";
+				String deliverableState = StringPool.BLANK;
+				if (eSign) {
+					deliverableState = "0";
+				} else {
+					deliverableState = "2";
+				}
 
 				if (Validator.isNotNull(formDataContent)) {
 					subject = formDataContent.getString("subject");

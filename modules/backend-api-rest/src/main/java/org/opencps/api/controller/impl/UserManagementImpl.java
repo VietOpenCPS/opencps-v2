@@ -15,7 +15,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.UserManagement;
-import org.opencps.api.controller.util.JobposUtils;
 import org.opencps.api.controller.util.UserUtils;
 import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.api.jobpos.model.JobposPermissionResults;
@@ -25,8 +24,6 @@ import org.opencps.api.user.model.UserProfileModel;
 import org.opencps.api.user.model.UserResults;
 import org.opencps.api.user.model.UserRolesResults;
 import org.opencps.api.user.model.UserSitesResults;
-import org.opencps.api.user.model.UserWorksModel;
-import org.opencps.api.user.model.UserWorksResults;
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.JobposActions;
@@ -334,13 +331,14 @@ public class UserManagementImpl implements UserManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword, serviceContext);
+			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword,
+					serviceContext);
 
 			return Response.status(200).entity(String.valueOf(flag)).build();
 
 		} catch (Exception e) {
 			_log.error("/ @GET: " + e);
-			
+
 			if (e instanceof DigestException) {
 
 				ErrorMsg error = new ErrorMsg();
@@ -350,9 +348,9 @@ public class UserManagementImpl implements UserManagement {
 				error.setDescription("conflict!");
 
 				return Response.status(409).entity(error).build();
-				
+
 			} else {
-				
+
 				ErrorMsg error = new ErrorMsg();
 
 				error.setMessage("not found!");
@@ -360,9 +358,9 @@ public class UserManagementImpl implements UserManagement {
 				error.setDescription("not found!");
 
 				return Response.status(404).entity(error).build();
-				
+
 			}
-			
+
 		}
 	}
 
@@ -376,8 +374,8 @@ public class UserManagementImpl implements UserManagement {
 			JSONObject jsonData = actions.getJobposPermissions();
 
 			result.setTotal(jsonData.getLong("total"));
-			result.getJobposPermissionModel().addAll(UserUtils
-					.mapperUsersPermissionsList((String[]) jsonData.get("data"), id, serviceContext));
+			result.getJobposPermissionModel()
+					.addAll(UserUtils.mapperUsersPermissionsList((String[]) jsonData.get("data"), id, serviceContext));
 
 			return Response.status(200).entity(result).build();
 
@@ -395,7 +393,7 @@ public class UserManagementImpl implements UserManagement {
 
 	@Override
 	public Response getForgot(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
-			ServiceContext serviceContext,String screenname_email) {
+			ServiceContext serviceContext, String screenname_email) {
 		UserInterface actions = new UserActions();
 		try {
 
@@ -404,7 +402,7 @@ public class UserManagementImpl implements UserManagement {
 			Document document = actions.getForgot(groupId, company.getCompanyId(), screenname_email, serviceContext);
 
 			UserAccountModel userAccountModel = UserUtils.mapperUserAccountModel(document);
-			
+
 			return Response.status(200).entity(userAccountModel).build();
 
 		} catch (Exception e) {
@@ -427,15 +425,16 @@ public class UserManagementImpl implements UserManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			Document document = actions.getForgotConfirm(groupId, company.getCompanyId(), screenname_email, code, serviceContext);
+			Document document = actions.getForgotConfirm(groupId, company.getCompanyId(), screenname_email, code,
+					serviceContext);
 
 			UserAccountModel userAccountModel = UserUtils.mapperUserAccountModel(document);
-			
+
 			return Response.status(200).entity(userAccountModel).build();
 
 		} catch (Exception e) {
 			_log.error("/ @GET: " + e);
-			
+
 			if (e instanceof DigestException) {
 
 				ErrorMsg error = new ErrorMsg();
@@ -445,9 +444,9 @@ public class UserManagementImpl implements UserManagement {
 				error.setDescription("conflict!");
 
 				return Response.status(409).entity(error).build();
-				
+
 			} else {
-				
+
 				ErrorMsg error = new ErrorMsg();
 
 				error.setMessage("not found!");
@@ -455,9 +454,9 @@ public class UserManagementImpl implements UserManagement {
 				error.setDescription("not found!");
 
 				return Response.status(404).entity(error).build();
-				
+
 			}
-			
+
 		}
 	}
 
@@ -516,8 +515,6 @@ public class UserManagementImpl implements UserManagement {
 		}
 	}
 
-
-
 	@Override
 	public Response getCheckpass(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String password) {
@@ -532,7 +529,7 @@ public class UserManagementImpl implements UserManagement {
 
 		} catch (Exception e) {
 			_log.error("/ @GET: " + e);
-			
+
 			if (e instanceof DigestException) {
 
 				ErrorMsg error = new ErrorMsg();
@@ -542,9 +539,9 @@ public class UserManagementImpl implements UserManagement {
 				error.setDescription("conflict!");
 
 				return Response.status(409).entity(error).build();
-				
+
 			} else {
-				
+
 				ErrorMsg error = new ErrorMsg();
 
 				error.setMessage("not found!");
@@ -552,9 +549,9 @@ public class UserManagementImpl implements UserManagement {
 				error.setDescription("not found!");
 
 				return Response.status(404).entity(error).build();
-				
+
 			}
-			
+
 		}
 	}
 
@@ -563,6 +560,283 @@ public class UserManagementImpl implements UserManagement {
 			User user, ServiceContext serviceContext, long id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Response uploadEsign(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, Attachment attachment, String fileName, String fileType,
+			long fileSize) {
+
+		UserInterface actions = new UserActions();
+		InputStream inputStream = null;
+
+		DataHandler dataHandler = attachment.getDataHandler();
+
+		// HARD CODE groupId = 55301
+
+		long groupId = 55301;
+
+		try {
+
+			// long groupId =
+			// GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			inputStream = dataHandler.getInputStream();
+
+			File file = actions.uploadEsign(user.getUserId(), company.getCompanyId(), groupId, id, inputStream,
+					fileName, fileType, fileSize, "USERESING/", "USERESING file upload", serviceContext);
+
+			String type = actions.getType(id, serviceContext);
+
+			_log.info("FILE TYPE: " + type);
+
+			_log.info("Absolute Path " + file.getAbsolutePath());
+			_log.info("Canonical Path " + file.getCanonicalPath());
+
+			ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
+					.header("Content-Type", "image/" + type);
+
+			return responseBuilder.build();
+		} catch (Exception e) {
+			_log.error(e);
+			if (e instanceof UnauthenticationException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+			} else if (e instanceof UnauthorizationException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			} else if (e instanceof NoSuchUserException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+			} else {
+				return Response.status(500).build();
+			}
+
+		} finally {
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				_log.error(e);
+			}
+		}
+	}
+
+	@Override
+	public Response uploadEsignCert(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, Attachment attachment, String fileName, String fileType,
+			long fileSize) {
+
+		UserInterface actions = new UserActions();
+		InputStream inputStream = null;
+
+		DataHandler dataHandler = attachment.getDataHandler();
+
+		// HARD CODE groupId = 55301
+
+		long groupId = 55301;
+
+		try {
+
+			// long groupId =
+			// GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			inputStream = dataHandler.getInputStream();
+
+			File file = actions.uploadCert(user.getUserId(), company.getCompanyId(), groupId, id, inputStream, fileName,
+					fileType, fileSize, "USERECERT/", "USERECERT file upload", serviceContext);
+
+			String type = actions.getType(id, serviceContext);
+
+			_log.info("FILE TYPE: " + type);
+
+			_log.info("Absolute Path " + file.getAbsolutePath());
+			_log.info("Canonical Path " + file.getCanonicalPath());
+
+			ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
+					.header("Content-Type", "image/" + type);
+
+			return responseBuilder.build();
+		} catch (Exception e) {
+			_log.error(e);
+			if (e instanceof UnauthenticationException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+			} else if (e instanceof UnauthorizationException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			} else if (e instanceof NoSuchUserException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+			} else {
+				return Response.status(500).build();
+			}
+
+		} finally {
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				_log.error(e);
+			}
+		}
+
+	}
+
+	@Override
+	public Response getUserEsign(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id) {
+
+		UserInterface actions = new UserActions();
+
+		// HARD CODE groupId = 55301
+
+		long groupId = 55301;
+
+		try {
+
+			// long groupId =
+			// GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			String filePath = actions.getEsignPath(id, company.getCompanyId(), groupId, serviceContext);
+
+			_log.info("FILE PATH: " + filePath);
+
+			return Response.status(200).entity(filePath).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			if (e instanceof UnauthenticationException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+			} else if (e instanceof UnauthorizationException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			} else if (e instanceof NoSuchUserException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+			} else {
+				return Response.status(500).build();
+			}
+
+		}
+
+	}
+
+	@Override
+	public Response getUserEsignCert(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id) {
+		UserInterface actions = new UserActions();
+
+		// HARD CODE groupId = 55301
+
+		long groupId = 55301;
+
+		try {
+
+			// long groupId =
+			// GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			String filePath = actions.getCertPath(id, company.getCompanyId(), groupId, serviceContext);
+
+			_log.info("FILE PATH: " + filePath);
+
+			return Response.status(200).entity(filePath).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			if (e instanceof UnauthenticationException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+			} else if (e instanceof UnauthorizationException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			} else if (e instanceof NoSuchUserException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+			} else {
+				return Response.status(500).build();
+			}
+
+		}
 	}
 
 }

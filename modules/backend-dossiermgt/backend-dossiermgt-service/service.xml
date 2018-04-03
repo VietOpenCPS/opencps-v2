@@ -532,6 +532,9 @@
         	<finder-column name="groupId" />
         	<finder-column name="referenceUid" />
         </finder>
+        <finder return-type="DossierFile" name="FILE_ID">
+        	<finder-column name="fileEntryId" />
+        </finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -971,6 +974,12 @@
 			<finder-column name="groupId" />
 			<finder-column name="autoEvent" />
 		</finder>
+		
+		<finder return-type="ProcessAction" name="SPID_AC_AN">
+			<finder-column name="serviceProcessId" />
+			<finder-column name="actionCode" />
+			<finder-column name="actionName" />
+		</finder>
 
 	</entity>
 
@@ -1319,6 +1328,11 @@
 			<finder-column name="isNew" />
 		</finder>
 		
+		<finder return-type="RegistrationForm" name="REGID_FORMNO">
+			<finder-column name="registrationId" />
+			<finder-column name="formNo" />
+		</finder>
+
 		<finder return-type="Collection" name="G_REGID_FORMNO">
 			<finder-column name="groupId" />
 			<finder-column name="registrationId" />

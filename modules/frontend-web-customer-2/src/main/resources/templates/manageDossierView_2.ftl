@@ -20,7 +20,7 @@
 						data-bind="events: { keyup: filterDelivableKey}" style="width: 290px;">
 					</div>
 					
-					<a class="PL5 PR5 hover-pointer" href="#searchAdvancedCollapse" data-toggle="collapse">Nâng cao</a>
+					<a class="PL5 PR5 hover-pointer" href="#searchAdvancedCollapse2" data-toggle="collapse">Nâng cao</a>
 
 					<span id="fullScreen" data-bind="events: { click: fullScreen}">
 						<i class="fa fa-expand fs20 toggle-collapse MR10 ML10" aria-hidden="true"></i>
@@ -34,10 +34,10 @@
 		</div>
 		<#--	-->
 		<div id="wrapMain" class="table-responsive">
-			<div class="row collapse toggle-hide" id="searchAdvancedCollapse">
+			<div class="row collapse M0 toggle-hide" id="searchAdvancedCollapse2">
 
 				<div class="col-sm-12">
-					<div class="row PL10 PR10 PT10">
+					<div class="row PT10">
 
 						<div class="col-sm-3">
 							<input name="advanced_deliverableTypes_search" id="advanced_deliverableTypes_search"
@@ -49,6 +49,7 @@
 							data-bind="
 							source: deliverableTypesSource
 							"
+							data-index="0"
 							>
 						</div>
 						<div class="col-sm-3">
@@ -64,7 +65,7 @@
 						</div>
 					</div>
 
-					<div class="row P10">
+					<div class="row PT10">
 						<div class="col-sm-3">
 							<input name="advanced_product_search" id="advanced_product_search"
 							data-role="combobox"
@@ -97,7 +98,7 @@
 							<input class="form-control input-sm" name="advanced_typeNo_search" id="advanced_typeNo_search" placeholder="Mã kiểu loại">
 						</div>
 					</div>
-					<div class="row PL10 PB10 border-bottom ">
+					<div class="row PT15 PB10 border-bottom ">
 						<div class="col-sm-12">
 							<button class="btn btn-active" data-bind="events: {
 							click: searchAdvancedDeliverables}">Tìm kiếm</button>
@@ -220,7 +221,7 @@
 			<#-- Số chứng chỉ -->
 			<#-- #=briefNote# -->
 			#if(so_chung_chi){#
-			<strong>#=so_chung_chi#</strong>
+			<strong>#=so_chung_chi#</strong> <br>
 			#}#
 
 			#if(ngay_ky_cc){#

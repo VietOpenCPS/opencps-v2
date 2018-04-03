@@ -15,6 +15,7 @@ import javax.portlet.PortletResponse;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
@@ -43,6 +44,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -78,8 +80,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		// add number fields
 		document.addTextSortable(DossierTerm.APPLICANT_ID_DATE,
 				APIDateTimeUtils.convertDateToString(object.getApplicantIdDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-		document.addTextSortable(DossierTerm.SUBMIT_DATE,
-				APIDateTimeUtils.convertDateToString(object.getSubmitDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		document.addDateSortable(DossierTerm.SUBMIT_DATE,
+				object.getReceiveDate());
+//		document.addTextSortable(DossierTerm.SUBMIT_DATE,
+//				APIDateTimeUtils.convertDateToString(object.getSubmitDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 //		document.addTextSortable(DossierTerm.RECEIVE_DATE,
 //				APIDateTimeUtils.convertDateToString(object.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		
@@ -198,7 +202,14 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addTextSortable(DossierTerm.SUBMISSION_NOTE, object.getSubmissionNote());
 		document.addTextSortable(DossierTerm.APPLICANT_NOTE, object.getApplicantNote());
 		document.addTextSortable(DossierTerm.BRIEF_NOTE, object.getBriefNote());
-		document.addTextSortable(DossierTerm.DOSSIER_NO, object.getDossierNo());
+		// Search follow dossierNo
+		String dossierNo = object.getDossierNo();
+		String dossierNoSearch = StringPool.BLANK;
+		document.addTextSortable(DossierTerm.DOSSIER_NO, dossierNo);
+		if (Validator.isNotNull(dossierNo)) {
+			dossierNoSearch = SpecialCharacterUtils.splitSpecial(dossierNo);
+			document.addTextSortable(DossierTerm.DOSSIER_NO_SEARCH, dossierNoSearch);
+		}
 		document.addTextSortable(DossierTerm.SUBMITTING, Boolean.toString(object.getSubmitting()));
 
 		document.addTextSortable(DossierTerm.DOSSIER_STATUS, object.getDossierStatus());
@@ -216,7 +227,31 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addTextSortable(DossierTerm.DOSSIER_OVER_DUE,
 				Boolean.toString(getDossierOverDue(object.getPrimaryKey())));
 
-		// Indexing DossierActionUsers
+		//TODO: index dossierAction StepCode
+		StringBundler sb = new StringBundler();
+		long dossierActionsUserId = object.getDossierActionId();
+		if (dossierActionsUserId > 0) {
+			List<DossierActionUser> dossierActionUsers = DossierActionUserLocalServiceUtil
+					.getListUser(dossierActionsUserId);
+			if (dossierActionUsers != null) {
+				int length = dossierActionUsers.size();
+				for (int i = 0; i < length; i ++) {
+					DossierActionUser dau = dossierActionUsers.get(i);
+					long userId = dau.getUserId();
+					if (i == 0) {
+						sb.append(userId);
+					} else {
+						sb.append(StringPool.SPACE);
+						sb.append(userId);
+						
+					}
+				}
+			}
+		}
+		_log.info("Mapping user:"+sb.toString());
+		document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, sb.toString());
+		
+//		 Indexing DossierActionUsers
 		List<Long> actionUserIds = new ArrayList<>();
 		try {
 			List<DossierAction> dossierActions = DossierActionLocalServiceUtil.getDossierActionById(dossierId);
@@ -238,6 +273,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			_log.error("Can not get list dossierActions by dossierId " + dossierId, e);
 		}
 
+		_log.info("Action user:"+StringUtil.merge(actionUserIds, StringPool.SPACE));
 		document.addTextSortable(DossierTerm.ACTION_USERIDS, StringUtil.merge(actionUserIds, StringPool.SPACE));
 		
 		//binhth index dossierId CTN
@@ -297,6 +333,9 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								if (Validator.isNotNull(certNo) && Validator.isNotNull(certDate)) {
 									document.addTextSortable("so_chung_chi", certNo);
 									document.addDateSortable("ngay_ky_cc", certDate);
+									// Search follow so_chung_chi
+									String certNoSearch = SpecialCharacterUtils.splitSpecial(certNo);
+									document.addTextSortable(DossierTerm.CERT_NO_SEARCH, certNoSearch);
 								}
 								break;
 							} catch (Exception e) {

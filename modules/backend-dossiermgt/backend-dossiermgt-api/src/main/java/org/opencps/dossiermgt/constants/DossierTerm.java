@@ -95,4 +95,11 @@ public class DossierTerm {
 	public static final String FROM_CERT_DATE = "tu_ngay_ky_cc";
 	public static final String TO_CERT_DATE = "den_ngay_ky_cc";
 	public static final String CERT_DATE = "ngay_ky_cc";
+	public static final String DOSSIER_ID_CTN = "dossierIdCTN";
+	public static final String FROM_SUBMIT_DATE = "fromSubmitDate";
+	public static final String TO_SUBMIT_DATE = "toSubmitDate";
+	
+	public static final String DOSSIER_NO_SEARCH = "dossierNoSearch";
+	public static final String CERT_NO_SEARCH = "certNoSearch";
+	public static final String ACTION_MAPPING_USERID = "actionMappingUserId";
 }

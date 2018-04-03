@@ -21,6 +21,7 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
@@ -30,6 +31,7 @@ import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
@@ -148,6 +150,21 @@ public class SignatureManagementImpl implements SignatureManagement{
 								serviceContext);
 					} else {
 						//TODO
+					}
+					// Update deliverable with deliverableType
+					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
+					if (dossierFile != null) {
+						String deliverableCode = dossierFile.getDeliverableCode();
+						if (Validator.isNotNull(deliverableCode)) {
+							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
+							if (deliverable != null) {
+								String deliState = deliverable.getDeliverableState();
+								if (!"2".equals(deliState)) {
+									deliverable.setDeliverableState("2");
+									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+								}
+							}
+						}
 					}
 					// Process success
 					result.put("msg", "success");
