@@ -4,7 +4,7 @@
 <service-builder auto-namespace-tables="false"
 	package-path="org.opencps.synchronization">
 	<author>trungdk</author>
-	<namespace>Synchronization</namespace>
+	<namespace>DataSynchronization</namespace>
 	<entity local-service="true" name="PushDictItem" table="opencps_pushdictitem" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
@@ -151,4 +151,282 @@
             <finder-column name="serverNo"></finder-column>            
         </finder>
 	</entity>	
+	<entity local-service="true" name="SyncQueue" table="opencps_syncqueue" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="syncQueueId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="serverNo" type="String" />
+		<column name="className" type="String"/>
+		<column name="jsonObject" type="String"/>
+		<column name="status" type="int"/>
+		<column name="retryCount" type="int"/>
+		<column name="priority" type="int"/>
+		<column name="method" type="String"/>
+		
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="modifiedDate" />
+			<order-column name="priority"/>
+		</order>
+		
+        <finder name="F_className_Method" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="className"></finder-column>            
+            <finder-column name="method"></finder-column>
+        </finder>
+        <finder name="F_groupId_serverNo" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="serverNo"></finder-column>            
+        </finder>
+		
+	</entity>	
+	<entity name="DictCollectionTemp" uuid="true" local-service="true"
+		remote-service="false" table="opencps_dictcollection_temp">
+
+		<!-- PK fields -->
+		<column name="dictCollectionId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="collectionCode" type="String" />
+		<column name="collectionName" type="String" />
+		<column name="collectionNameEN" type="String" />
+		<column name="description" type="String" />
+		<column name="dataForm" type="String" />
+		<column name="status" type="int"/>
+		<column name="mustSync" type="int"/>
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+		
+		<!-- Finder -->
+		<finder return-type="DictCollectionTemp" name="F_dictCollectionCode">
+			<finder-column name="collectionCode"></finder-column>
+			<finder-column name="groupId"></finder-column>
+		</finder>
+
+		<finder return-type="Collection" name="F_dictCollectionByGroup">
+			<finder-column name="groupId"></finder-column>
+		</finder>
+        <finder name="F_dictCollectionNewerThan" return-type="Collection">
+            <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
+            <finder-column name="groupId"></finder-column>
+        </finder>
+	</entity>
+
+	<entity name="DictItemTemp" uuid="true" local-service="true"
+		remote-service="false" table="opencps_dictitem_temp">
+
+		<!-- PK fields -->
+
+		<column name="dictItemId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="dictCollectionId" type="long" />
+		<column name="itemCode" type="String" />
+		<column name="itemName" type="String" />
+		<column name="itemNameEN" type="String" />
+		<column name="itemDescription" type="String" />
+		<column name="parentItemId" type="long" />
+		<column name="level" type="int" />
+		<column name="sibling" type="String" />
+		<column name="treeIndex" type="String" />
+		<column name="metaData" type="String" />
+		<column name="status" type="int"/>
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="sibling" />
+		</order>
+
+		<!-- Finder -->
+		<finder return-type="Collection" name="F_dictCollectionId">
+			<finder-column name="dictCollectionId"></finder-column>
+		</finder>
+
+		<!-- Finder -->
+		<finder return-type="DictItemTemp" name="F_dictItemCode">
+			<finder-column name="itemCode"></finder-column>
+			<finder-column name="groupId"></finder-column>
+		</finder>
+
+		<finder return-type="Collection" name="F_dictItemByGroup">
+			<finder-column name="dictCollectionId"></finder-column>
+			<finder-column name="groupId"></finder-column>
+		</finder>
+		
+		<finder return-type="DictItemTemp" name="F_dictItemCode_dictCollectionId">
+			<finder-column name="itemCode"></finder-column>
+			<finder-column name="dictCollectionId"></finder-column>
+			<finder-column name="groupId"></finder-column>
+		</finder>
+		
+		<finder return-type="Collection" name="F_parentItemId">
+			<finder-column name="parentItemId"></finder-column>
+		</finder>
+		
+		<finder return-type="Collection" name="F_parentItemId_level">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="dictCollectionId"></finder-column>
+			<finder-column name="parentItemId"></finder-column>
+			<finder-column name="level"></finder-column>
+		</finder>
+		
+		<finder return-type="DictItemTemp" name="IC_DCI">
+			<finder-column name="itemCode"/>
+			<finder-column name="dictCollectionId"/>
+		</finder>
+        <finder name="F_treeIndex" return-type="Collection">
+            <finder-column name="dictCollectionId"></finder-column>
+            <finder-column name="parentItemId"></finder-column>
+            <finder-column name="treeIndex" comparator="LIKE"></finder-column>
+        </finder>
+        <finder name="F_dictCollectionId_parentItemId" return-type="Collection">
+            <finder-column name="dictCollectionId"></finder-column>
+            <finder-column name="parentItemId"></finder-column>
+        </finder>
+        <finder name="F_dictItemNewerThan" return-type="Collection">
+            <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
+            <finder-column name="groupId"></finder-column>
+        </finder>
+	</entity>
+
+	<entity name="DictGroupTemp" uuid="true" local-service="true"
+		remote-service="false" table="opencps_dictgroup_temp">
+
+		<!-- PK fields -->
+
+		<column name="dictGroupId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="dictCollectionId" type="long" />
+		<column name="groupCode" type="String" />
+		<column name="groupName" type="String" />
+		<column name="groupNameEN" type="String" />
+		<column name="groupDescription" type="String" />
+		<column name="status" type="int"/>
+		
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="dictGroupId" />
+		</order>
+
+		<!-- Finder -->
+		<finder return-type="DictGroupTemp" name="F_groupCode">
+			<finder-column name="groupCode"></finder-column>
+			<finder-column name="groupId"></finder-column>
+		</finder>
+		
+		<!-- Finder -->
+		<finder return-type="DictGroupTemp" name="GC_GI_DCI">
+			<finder-column name="groupCode"/>
+			<finder-column name="groupId"/>
+			<finder-column name="dictCollectionId"/>
+		</finder>
+		
+		<finder return-type="Collection" name="GID_DC">
+			<finder-column name="dictCollectionId"/>
+			<finder-column name="groupId"/>
+		</finder>
+        <finder name="F_dictGroupNewerThan" return-type="Collection">
+            <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
+            <finder-column name="groupId"></finder-column>
+        </finder>
+		
+	</entity>
+	
+	<entity name="DictItemGroupTemp" uuid="true" local-service="true"
+		remote-service="false" table="opencps_dictitemgroup_temp">
+
+		<!-- PK fields -->
+
+		<column name="dictItemGroupId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="dictGroupId" type="long" />
+		<column name="dictItemId" type="long" />
+		<column name="dictGroupName" type= "String" />
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="dictGroupId" />
+		</order>
+
+		<finder return-type="DictItemGroupTemp" name="F_dictItemId_dictGroupId">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="dictGroupId"></finder-column>
+			<finder-column name="dictItemId"></finder-column>
+		</finder>
+		
+		<finder return-type="Collection" name="F_dictGroupId">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="dictGroupId"></finder-column>
+		</finder>
+		
+		<finder return-type="Collection" name="F_dictItemId">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="dictItemId"></finder-column>
+		</finder>
+        <finder name="F_newerThan" return-type="Collection">
+            <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
+            <finder-column name="groupId"></finder-column>
+        </finder>
+		
+	</entity>
 </service-builder>

@@ -9,6 +9,7 @@ import org.opencps.datamgt.constants.DictItemTerm;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.util.Validator;
 
 public class DictItemModel {
 	private Date createDate;
@@ -61,7 +62,7 @@ public class DictItemModel {
 			model.setTreeIndex(obj.getString(DictItemTerm.TREE_INDEX));
 		}
 		
-		if (obj.has("parentItem")) {
+		if (obj.has("parentItem") && Validator.isNotNull(obj.getString("parentItem"))) {
 			DictItemModel parentModel = new DictItemModel();
 			JSONObject parentObj = obj.getJSONObject("parentItem");
 			parentModel.setItemCode(parentObj.getString(DictItemTerm.ITEM_CODE));
@@ -69,12 +70,15 @@ public class DictItemModel {
 			parentModel.setItemNameEN(parentObj.getString(DictItemTerm.ITEM_NAME_EN));
 		}
 		
-		if (obj.has("groups")) {
+		if (obj.has("groups") && Validator.isNotNull(obj.get("groups"))) {
 			JSONArray groupArr = obj.getJSONArray("groups");
-			List<DictGroupModel> lstGroups = new ArrayList<>();
 			
-			for (int i = 0; i < groupArr.length(); i++) {
-				lstGroups.add(DictGroupModel.fromJSONObject(groupArr.getJSONObject(i)));				
+			if (groupArr != null) {
+				List<DictGroupModel> lstGroups = new ArrayList<>();
+				
+				for (int i = 0; i < groupArr.length(); i++) {
+					lstGroups.add(DictGroupModel.fromJSONObject(groupArr.getJSONObject(i)));				
+				}				
 			}
 			
 		}

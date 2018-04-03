@@ -7,6 +7,8 @@ import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -15,6 +17,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicHeader;
 import org.opencps.synchronization.constants.SyncServerTerm;
 import org.opencps.synchronization.rest.model.DictCollectionModel;
 import org.opencps.synchronization.rest.model.DictItemModel;
@@ -79,9 +82,12 @@ public class DictDataRestClient {
 			  .setDefaultCredentialsProvider(provider)
 			  .build();
 			HttpGet getRequest = new HttpGet(baseUrl + DICT_COLLLECTIONS_BASE_PATH + "/" + URLEncoder.encode(collectionCode, StandardCharsets.UTF_8.toString()));
+ 			Header groupHeader = new BasicHeader("groupId", String.valueOf(groupId));
+ 			getRequest.addHeader(HttpHeaders.ACCEPT, "application/json");
+ 			getRequest.addHeader(groupHeader);
  			
 			HttpResponse getqueryresponse = httpClient.execute(getRequest);
-						
+ 			 			
 			if (getqueryresponse.getStatusLine().getStatusCode() == SyncServerTerm.STATUS_OK) {
 				BufferedReader br = new BufferedReader(new InputStreamReader((getqueryresponse.getEntity().getContent())));
 				String output = "";
@@ -125,7 +131,11 @@ public class DictDataRestClient {
 			CloseableHttpClient httpClient = HttpClientBuilder.create()
 			  .setDefaultCredentialsProvider(provider)
 			  .build();
-			HttpGet getRequest = new HttpGet(baseUrl + DICT_COLLLECTIONS_BASE_PATH + "/" + URLEncoder.encode(code, StandardCharsets.UTF_8.toString()) + "/" + URLEncoder.encode(itemCode, StandardCharsets.UTF_8.toString()));
+			HttpGet getRequest = new HttpGet(baseUrl + DICT_COLLLECTIONS_BASE_PATH + "/" + URLEncoder.encode(code, StandardCharsets.UTF_8.toString()) + "/dictitems/" + URLEncoder.encode(itemCode, StandardCharsets.UTF_8.toString()));
+ 			
+			Header groupHeader = new BasicHeader("groupId", String.valueOf(groupId));
+ 			getRequest.addHeader(HttpHeaders.ACCEPT, "application/json");
+ 			getRequest.addHeader(groupHeader);
  			
 			HttpResponse getqueryresponse = httpClient.execute(getRequest);
 						
@@ -137,7 +147,7 @@ public class DictDataRestClient {
 				while ((output = br.readLine()) != null) {
 					jsonStr.append(output);
 				}
-
+				
 				JSONObject obj = JSONFactoryUtil.createJSONObject(jsonStr.toString());
 
 				httpClient.close();	

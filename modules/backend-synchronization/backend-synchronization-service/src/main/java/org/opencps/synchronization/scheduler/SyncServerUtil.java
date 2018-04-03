@@ -6,7 +6,6 @@ public class SyncServerUtil {
 	public static boolean isSyncOk(int status) {
 		switch (status) {
 			case 0:
-			case SyncServerTerm.STATUS_NOT_FOUND:
 			case SyncServerTerm.STATUS_DUPLICATE:
 			case SyncServerTerm.STATUS_OK:
 				return true;
