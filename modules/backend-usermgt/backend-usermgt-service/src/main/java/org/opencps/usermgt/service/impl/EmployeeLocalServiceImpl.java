@@ -679,6 +679,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			employee.setUserName(userName);
 			employee.setModifiedDate(now);
 		}
+		
+		employeePersistence.update(employee);
 
 		return employee;
 	}

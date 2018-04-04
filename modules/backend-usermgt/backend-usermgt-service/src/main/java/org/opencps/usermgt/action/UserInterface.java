@@ -7,6 +7,7 @@ import java.security.DigestException;
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -65,7 +66,7 @@ public interface UserInterface {
 			String fileType, long fileSize, String destination, String desc, ServiceContext serviceContext)
 			throws Exception;
 
-	public String getEsignPath(long userId, long companyId, long groupId, ServiceContext serviceContext)
+	public String getEsignPath(long userId, Company company, long groupId, ServiceContext serviceContext)
 			throws Exception;
 
 	public String getCertPath(long userId, long companyId, long groupId, ServiceContext serviceContext)
