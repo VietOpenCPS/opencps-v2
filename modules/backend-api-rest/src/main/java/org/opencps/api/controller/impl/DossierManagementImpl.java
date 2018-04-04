@@ -380,7 +380,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 		}
-		JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
+		JSONObject jsonData = actions.getDossiersTest(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 				query.getStart(), query.getEnd(), serviceContext);
 
 		DossierResultsModel results = new DossierResultsModel();
