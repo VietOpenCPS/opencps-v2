@@ -163,28 +163,28 @@ public class DossierActionsImpl implements DossierActions {
 //			}
 
 			// Get list dossierActionId
-			List<DossierActionUser> dauList = DossierActionUserLocalServiceUtil.getListUserByUserId(userId);
-			long dossierActionId = 0;
-			StringBuilder sb = null;
-			if (dauList != null && dauList.size() > 0) {
-				sb = new StringBuilder();
-				int length = dauList.size();
-				DossierActionUser dau = null;
-				for (int i = 0; i < length; i++) {
-					dau = dauList.get(i);
-					dossierActionId = dau.getDossierActionId();
-					// StringBuilder sb = new StringBuilder();
-					if (dossierActionId > 0) {
-
-						if (i == 0) {
-							sb.append(dossierActionId);
-						} else {
-							sb.append(StringPool.COMMA);
-							sb.append(dossierActionId);
-						}
-					}
-				}
-			}
+//			List<DossierActionUser> dauList = DossierActionUserLocalServiceUtil.getListUserByUserId(userId);
+//			long dossierActionId = 0;
+//			StringBuilder sb = null;
+//			if (dauList != null && dauList.size() > 0) {
+//				sb = new StringBuilder();
+//				int length = dauList.size();
+//				DossierActionUser dau = null;
+//				for (int i = 0; i < length; i++) {
+//					dau = dauList.get(i);
+//					dossierActionId = dau.getDossierActionId();
+//					// StringBuilder sb = new StringBuilder();
+//					if (dossierActionId > 0) {
+//
+//						if (i == 0) {
+//							sb.append(dossierActionId);
+//						} else {
+//							sb.append(StringPool.COMMA);
+//							sb.append(dossierActionId);
+//						}
+//					}
+//				}
+//			}
 
 			// Get collection with collection Code
 			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
@@ -221,9 +221,11 @@ public class DossierActionsImpl implements DossierActions {
 					}
 
 					if (Validator.isNotNull(specialStatus) && Boolean.parseBoolean(specialStatus)) {
-						params.put(DossierTerm.DOSSIER_ACTION_ID, sb.toString());
+//						params.put(DossierTerm.DOSSIER_ACTION_ID, sb.toString());
+						params.put(DossierTerm.FOLLOW, String.valueOf(true));
+					} else {
+						params.put(DossierTerm.FOLLOW, false);
 					}
-					params.put(DossierTerm.FOLLOW, String.valueOf(false));
 
 					hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 					if (hits != null && hits.getLength() > 0) {
@@ -288,14 +290,14 @@ public class DossierActionsImpl implements DossierActions {
 						if (isPermission) {
 							_log.info("isPermission: " + isPermission);
 							_log.info("userId: " + userId);
-							_log.info("strdossierActionId: " + sb.toString());
+//							_log.info("strdossierActionId: " + sb.toString());
 
 							if (Validator.isNotNull(specialStatus) && Boolean.parseBoolean(specialStatus)) {
 								// Add params
 								params.put(DossierTerm.STATUS, statusCode);
 								params.put(DossierTerm.SUBSTATUS, subStatusCode);
-								params.put(DossierTerm.DOSSIER_ACTION_ID, sb.toString());
-								params.put(DossierTerm.FOLLOW, String.valueOf(false));
+//								params.put(DossierTerm.DOSSIER_ACTION_ID, sb.toString());
+								params.put(DossierTerm.FOLLOW, String.valueOf(true));
 
 								hits = DossierLocalServiceUtil.searchLucene(params, sorts, -1, -1, searchContext);
 
@@ -2114,28 +2116,28 @@ public class DossierActionsImpl implements DossierActions {
 						.findByF_dictCollectionId(dictCollection.getDictCollectionId());
 
 				// Get list dossierActionId
-				List<DossierActionUser> dauList = DossierActionUserLocalServiceUtil.getListUserByUserId(userId);
-				long dossierActionId = 0;
-				StringBuilder sb = null;
-				if (dauList != null && dauList.size() > 0) {
-					sb = new StringBuilder();
-					int length = dauList.size();
-					DossierActionUser dau = null;
-					for (int i = 0; i < length; i++) {
-						dau = dauList.get(i);
-						dossierActionId = dau.getDossierActionId();
-						// StringBuilder sb = new StringBuilder();
-						if (dossierActionId > 0) {
-
-							if (i == 0) {
-								sb.append(dossierActionId);
-							} else {
-								sb.append(StringPool.COMMA);
-								sb.append(dossierActionId);
-							}
-						}
-					}
-				}
+//				List<DossierActionUser> dauList = DossierActionUserLocalServiceUtil.getListUserByUserId(userId);
+//				long dossierActionId = 0;
+//				StringBuilder sb = null;
+//				if (dauList != null && dauList.size() > 0) {
+//					sb = new StringBuilder();
+//					int length = dauList.size();
+//					DossierActionUser dau = null;
+//					for (int i = 0; i < length; i++) {
+//						dau = dauList.get(i);
+//						dossierActionId = dau.getDossierActionId();
+//						// StringBuilder sb = new StringBuilder();
+//						if (dossierActionId > 0) {
+//
+//							if (i == 0) {
+//								sb.append(dossierActionId);
+//							} else {
+//								sb.append(StringPool.COMMA);
+//								sb.append(dossierActionId);
+//							}
+//						}
+//					}
+//				}
 
 				for (DictItem dictItem : dictItems) {
 					String metaData = dictItem.getMetaData();
@@ -2179,8 +2181,8 @@ public class DossierActionsImpl implements DossierActions {
 							// Add params
 							params.put(DossierTerm.STATUS, statusCode);
 							params.put(DossierTerm.SUBSTATUS, subStatusCode);
-							params.put(DossierTerm.DOSSIER_ACTION_ID, sb.toString());
-							params.put(DossierTerm.FOLLOW, String.valueOf(false));
+//							params.put(DossierTerm.DOSSIER_ACTION_ID, sb.toString());
+							params.put(DossierTerm.FOLLOW, String.valueOf(true));
 
 							long count = DossierLocalServiceUtil.countLucene(params, searchContext);
 							// _log.info("count: " + count);

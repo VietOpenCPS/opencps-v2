@@ -235,8 +235,24 @@ public class DossierUtils {
 			model.setBriefNote(doc.get(DossierTerm.BRIEF_NOTE));
 			model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
 			model.setBriefNote(doc.get(DossierTerm.BRIEF_NOTE));
-			model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
-			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+//			model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
+//			_log.info("SUBMIT_DATE: "+doc.get(DossierTerm.SUBMIT_DATE));
+			if (Validator.isNotNull(doc.get(DossierTerm.SUBMIT_DATE))) {
+//				_log.info("SUBMIT_DATE_DATEEEEEE: "+doc.get(DossierTerm.SUBMIT_DATE));
+				Date submitDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.SUBMIT_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+//				_log.info("SUBMIT_DATE_DATEEEEEE: "+submitDate);
+				model.setSubmitDate(APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
+//				_log.info("SUBMIT_DATE_CONVERT: "+APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
+			}
+//			_log.info("RECEIVE_DATE: "+doc.get(DossierTerm.RECEIVE_DATE));
+			if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
+				Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));				
+			} else {
+				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+			}
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
 			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
 			model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));
