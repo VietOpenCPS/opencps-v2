@@ -1,7 +1,6 @@
 
 package org.opencps.frontend.web.admin.portlet;
 
-import java.io.Console;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -25,7 +24,6 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.communication.action.impl.NotificationTemplateActions;
 import org.opencps.communication.constants.NotificationMGTConstants;
-import org.opencps.communication.constants.NotificationTemplateTerm;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
@@ -261,6 +259,12 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		dataMgtURL.setParameter(
 			"mvcPath", "/templates/datamgt/dictcollection_index.ftl");
 		
+		PortletURL dataTempMgtURL = PortletURLFactoryUtil.create(
+				renderRequest, portletId, themeDisplay.getPlid(),
+				PortletRequest.RENDER_PHASE);
+		dataTempMgtURL.setPortletMode(PortletMode.VIEW);
+		dataTempMgtURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
 		PortletURL registrationTemplatesURL = PortletURLFactoryUtil.create(
 			renderRequest, portletId, themeDisplay.getPlid(),
 			PortletRequest.RENDER_PHASE);
@@ -304,6 +308,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		urlObject.put("payment_config", paymentConfigtURL.toString());
 		urlObject.put("paymentconfig_form", paymentConfigFormURL.toString());
 		urlObject.put("dictcollection_index", dataMgtURL.toString());
+		urlObject.put("dictcollectiontemp_index", dataTempMgtURL.toString());
 		urlObject.put("serverconfigs", serverConfigsURL.toString());
 		urlObject.put("certnumber", certNumberURL.toString());
 		
@@ -1264,62 +1269,62 @@ public class AdminPortlet extends FreeMarkerPortlet {
 				dictCollectionCreateDictCollectionURL);
 
 			PortletURL dictCollectionCreateDictItemURL =
-				renderResponse.createRenderURL();
-			dictCollectionCreateDictItemURL.setParameter(
-				"mvcPath",
-				"/templates/datamgt/dictcollection_create_dictitem.ftl");
-			dictCollectionCreateDictItemURL.setWindowState(
-				LiferayWindowState.EXCLUSIVE);
+					renderResponse.createRenderURL();
+				dictCollectionCreateDictItemURL.setParameter(
+					"mvcPath",
+					"/templates/datamgt/dictcollection_create_dictitem.ftl");
+				dictCollectionCreateDictItemURL.setWindowState(
+					LiferayWindowState.EXCLUSIVE);
 
-			adminDataMgtPortlet.put(
-				"dictcollection_create_dictitem",
-				dictCollectionCreateDictItemURL);
+				adminDataMgtPortlet.put(
+					"dictcollection_create_dictitem",
+					dictCollectionCreateDictItemURL);
 
-			PortletURL dictCollectionCreateInfoURL =
-				renderResponse.createRenderURL();
-			dictCollectionCreateInfoURL.setParameter(
-				"mvcPath",
-				"/templates/datamgt/dictcollection_create_dictgroup.ftl");
-			dictCollectionCreateInfoURL.setWindowState(
-				LiferayWindowState.EXCLUSIVE);
+				PortletURL dictCollectionCreateInfoURL =
+					renderResponse.createRenderURL();
+				dictCollectionCreateInfoURL.setParameter(
+					"mvcPath",
+					"/templates/datamgt/dictcollection_create_dictgroup.ftl");
+				dictCollectionCreateInfoURL.setWindowState(
+					LiferayWindowState.EXCLUSIVE);
 
-			adminDataMgtPortlet.put(
-				"dictcollection_create_dictgroup", dictCollectionCreateInfoURL);
+				adminDataMgtPortlet.put(
+					"dictcollection_create_dictgroup", dictCollectionCreateInfoURL);
 
-			PortletURL saveDictItemURL = renderResponse.createActionURL();
+				PortletURL saveDictItemURL = renderResponse.createActionURL();
 
-			saveDictItemURL.setParameter(
-				ActionRequest.ACTION_NAME, "saveDictItem");
-			saveDictItemURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+				saveDictItemURL.setParameter(
+					ActionRequest.ACTION_NAME, "saveDictItem");
+				saveDictItemURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
-			adminDataMgtPortlet.put(
-				"dictcollection_dictitem_edit_action", saveDictItemURL);
+				adminDataMgtPortlet.put(
+					"dictcollection_dictitem_edit_action", saveDictItemURL);
 
-			PortletURL documentTypeListURL = renderResponse.createRenderURL();
-			documentTypeListURL.setParameter(
-				"mvcPath", "/templates/html/document_type_list.ftl");
-			documentTypeListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+				PortletURL documentTypeListURL = renderResponse.createRenderURL();
+				documentTypeListURL.setParameter(
+					"mvcPath", "/templates/html/document_type_list.ftl");
+				documentTypeListURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
-			adminDataMgtPortlet.put("document_type_list", documentTypeListURL);
+				adminDataMgtPortlet.put("document_type_list", documentTypeListURL);
 
-			PortletURL documentTypeDetailURL = renderResponse.createRenderURL();
-			documentTypeDetailURL.setParameter(
-				"mvcPath", "/templates/html/document_type_detail.ftl");
-			documentTypeDetailURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+				PortletURL documentTypeDetailURL = renderResponse.createRenderURL();
+				documentTypeDetailURL.setParameter(
+					"mvcPath", "/templates/html/document_type_detail.ftl");
+				documentTypeDetailURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
-			adminDataMgtPortlet.put(
-				"document_type_detail", documentTypeDetailURL);
+				adminDataMgtPortlet.put(
+					"document_type_detail", documentTypeDetailURL);
 
-			PortletURL documentTypeCreateURL = renderResponse.createRenderURL();
-			documentTypeCreateURL.setParameter(
-				"mvcPath", "/templates/html/document_type_create.ftl");
-			documentTypeCreateURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+				PortletURL documentTypeCreateURL = renderResponse.createRenderURL();
+				documentTypeCreateURL.setParameter(
+					"mvcPath", "/templates/html/document_type_create.ftl");
+				documentTypeCreateURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
-			adminDataMgtPortlet.put(
-				"document_type_create", documentTypeCreateURL);
+				adminDataMgtPortlet.put(
+					"document_type_create", documentTypeCreateURL);
 
-			portletURLs.put("adminDataMgtPortlet", adminDataMgtPortlet);
-
+				portletURLs.put("adminDataMgtPortlet", adminDataMgtPortlet);			
+			
 			// Label url
 
 			JSONObject adminLabelPortlet = JSONFactoryUtil.createJSONObject();

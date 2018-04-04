@@ -128,6 +128,10 @@
 		<column name="photoFileEntryId" type="long" />
 		<column name="recruitDate" type="Date" />
 		<column name="leaveDate" type="Date" />
+		<column name="fileCertId" type="long" />
+		<column name="fileSignId" type="long" />
+		<column name="fileCertPath" type="String" />
+		<column name="fileSignPath" type="String" />
 		
 		<!-- Order -->
 		<order by="asc">
@@ -137,6 +141,10 @@
 		<finder return-type="Employee" name="F_mappingUserId">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="mappingUserId"></finder-column>
+		</finder>
+
+		<finder return-type="Employee" name="FB_MUID">
+			<finder-column name="mappingUserId"/>
 		</finder>
 		
 		<finder return-type="Collection" name="F_groupId">

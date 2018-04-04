@@ -167,5 +167,38 @@ public interface UserManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,  @PathParam("id") long id,
 			@PathParam("password") String password);
-
+	
+	@PUT
+	@Path("/{id}/esign")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	public Response uploadEsign(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @Multipart("file") Attachment attachment,
+			@Multipart("fileName") String fileName, @Multipart("fileType") String fileType,
+			@Multipart("fileSize") long fileSize);
+	
+	@PUT
+	@Path("/{id}/esigncert")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	public Response uploadEsignCert(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @Multipart("file") Attachment attachment,
+			@Multipart("fileName") String fileName, @Multipart("fileType") String fileType,
+			@Multipart("fileSize") long fileSize);
+	
+	@GET
+	@Path("/{id}/esign")
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	public Response getUserEsign(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id);
+	
+	@GET
+	@Path("/{id}/esigncert")
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	public Response getUserEsignCert(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id);
 }

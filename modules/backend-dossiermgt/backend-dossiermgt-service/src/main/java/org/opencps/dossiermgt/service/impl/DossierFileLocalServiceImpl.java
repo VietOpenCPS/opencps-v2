@@ -1008,5 +1008,10 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		}
 	}
 
+	//Get dossierFile follow fileEntryId
+	public DossierFile getByFileEntryId(long fileEntryId) {
+		return dossierFilePersistence.fetchByFILE_ID(fileEntryId);
+	}
+
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }

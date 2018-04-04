@@ -1029,5 +1029,10 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		return booleanQueries;
 	}
 
+	//Get Registration using output logic DB
+	public RegistrationForm getByRegIdAndFormNo(long registrationId, String formNo) {
+		return registrationFormPersistence.fetchByREGID_FORMNO(registrationId, formNo);
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(RegistrationFormLocalServiceImpl.class);
 }

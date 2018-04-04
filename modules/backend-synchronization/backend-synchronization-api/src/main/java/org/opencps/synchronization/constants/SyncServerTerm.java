@@ -27,4 +27,13 @@ public class SyncServerTerm {
 	
 	public static final String PULL = "isPull";
 	public static final String PUSH = "isPush";
+	
+	public static final int PRIORITY_HIGHEST = 0;
+	public static final int PRIORIOTY_HIGH = 1;
+	public static final int PRIORITY_LOW = 2;
+	public static final int PRIORITY_LOWEST = 3;
+	
+	public static final int QUEUE_STATUS_NEW = 0;
+	public static final int QUEUE_STATUS_PROCESSING = 1;
+	public static final int QUEUE_STATUS_FAILED = 2;
 }
