@@ -1,6 +1,8 @@
 package org.opencps.api.controller.impl;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.DigestException;
@@ -8,11 +10,13 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.activation.DataHandler;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.UserManagement;
 import org.opencps.api.controller.util.UserUtils;
@@ -28,6 +32,8 @@ import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.action.impl.UserActions;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -38,6 +44,9 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.StringPool;
 
 import backend.auth.api.exception.UnauthenticationException;
 import backend.auth.api.exception.UnauthorizationException;
@@ -89,6 +98,8 @@ public class UserManagementImpl implements UserManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 			inputStream = dataHandler.getInputStream();
+			
+			
 
 			File file = actions.uploadPhoto(user.getUserId(), company.getCompanyId(), groupId, id, inputStream,
 					fileName, fileType, fileSize, "USERPHOTO/", "USERPHOTO file upload", serviceContext);
@@ -577,28 +588,27 @@ public class UserManagementImpl implements UserManagement {
 		long groupId = 55301;
 
 		try {
-
 			// long groupId =
 			// GetterUtil.getLong(header.getHeaderString("groupId"));
-
+			
 			inputStream = dataHandler.getInputStream();
+			BufferedImage image = ImageIO.read(inputStream);
+			
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
+			
+			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
+			File targetFile = new File(buildFileName);
 
-			File file = actions.uploadEsign(user.getUserId(), company.getCompanyId(), groupId, id, inputStream,
-					fileName, fileType, fileSize, "USERESING/", "USERESING file upload", serviceContext);
+			ImageIO.write(image, "png", targetFile);
+			
+			_log.info("Absolute Path buildFileName " + buildFileName);
+			
+			//FileUtils.copyInputStreamToFile(inputStream, targetFile);
+			
+			EmployeeLocalServiceUtil.updatePayload(id, groupId, 0, 0, StringPool.BLANK, buildFileName, serviceContext);
 
-			String type = actions.getType(id, serviceContext);
+			return Response.status(200).entity(buildFileName).build();
 
-			_log.info("FILE TYPE: " + type);
-
-			_log.info("Absolute Path " + file.getAbsolutePath());
-			_log.info("Canonical Path " + file.getCanonicalPath());
-
-			ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
-					.header("Content-Type", "image/" + type);
-
-			return responseBuilder.build();
 		} catch (Exception e) {
 			_log.error(e);
 			if (e instanceof UnauthenticationException) {
@@ -662,23 +672,25 @@ public class UserManagementImpl implements UserManagement {
 			// GetterUtil.getLong(header.getHeaderString("groupId"));
 
 			inputStream = dataHandler.getInputStream();
+			
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
 
-			File file = actions.uploadCert(user.getUserId(), company.getCompanyId(), groupId, id, inputStream, fileName,
-					fileType, fileSize, "USERECERT/", "USERECERT file upload", serviceContext);
+			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "cer";
+			File targetFile = new File(buildFileName);
 
-			String type = actions.getType(id, serviceContext);
+			FileOutputStream outStream = new FileOutputStream(targetFile);
 
-			_log.info("FILE TYPE: " + type);
+			int bytesRead = -1;
+			byte[] buffer = new byte[4096];
+			while ((bytesRead = inputStream.read(buffer)) != -1) {
+				outStream.write(buffer, 0, bytesRead);
+			}
 
-			_log.info("Absolute Path " + file.getAbsolutePath());
-			_log.info("Canonical Path " + file.getCanonicalPath());
+			outStream.close();
+			inputStream.close();
 
-			ResponseBuilder responseBuilder = Response.ok((Object) file);
+			return Response.status(200).entity(buildFileName).build();
 
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
-					.header("Content-Type", "image/" + type);
-
-			return responseBuilder.build();
 		} catch (Exception e) {
 			_log.error(e);
 			if (e instanceof UnauthenticationException) {
@@ -735,16 +747,20 @@ public class UserManagementImpl implements UserManagement {
 
 		try {
 
-			// long groupId =
-			// GetterUtil.getLong(header.getHeaderString("groupId"));
-			_log.info("FILE PATH ID + GROUPID: " + id + "" + groupId);
 
-			String filePath = actions.getEsignPath(id, company, groupId, serviceContext);
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
 			
-			_log.info("FILE PATH: " + filePath);
+			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
+			File targetFile = new File(buildFileName);
 
-			return Response.status(200).entity(filePath).build();
+			ResponseBuilder responseBuilder = Response.ok((Object) targetFile);
 
+			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + targetFile.getName() + "\"")
+					.header("Content-Type", "image/png");
+
+			return responseBuilder.build();
+			
+			
 		} catch (Exception e) {
 			_log.error(e);
 			if (e instanceof UnauthenticationException) {
@@ -786,7 +802,6 @@ public class UserManagementImpl implements UserManagement {
 	@Override
 	public Response getUserEsignCert(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id) {
-		UserInterface actions = new UserActions();
 
 		// HARD CODE groupId = 55301
 
@@ -794,14 +809,18 @@ public class UserManagementImpl implements UserManagement {
 
 		try {
 
-			// long groupId =
-			// GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			String filePath = actions.getCertPath(id, company.getCompanyId(), groupId, serviceContext);
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
+			
+			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
+			File targetFile = new File(buildFileName);
 
-			_log.info("FILE PATH: " + filePath);
+			ResponseBuilder responseBuilder = Response.ok((Object) targetFile);
 
-			return Response.status(200).entity(filePath).build();
+			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + targetFile.getName() + "\"")
+					.header("Content-Type", "application/x-x509-user-cert");
+
+			return responseBuilder.build();
 
 		} catch (Exception e) {
 			_log.error(e);
