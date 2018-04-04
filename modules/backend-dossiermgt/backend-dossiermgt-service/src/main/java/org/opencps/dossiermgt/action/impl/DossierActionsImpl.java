@@ -237,6 +237,18 @@ public class DossierActionsImpl implements DossierActions {
 				List<DictItem> dictItems = DictItemLocalServiceUtil
 						.findByF_dictCollectionId(dictCollection.getDictCollectionId());
 
+				//TODO:   
+//				if (dictItems != null && dictItems.size() > 0) {
+//					StringBuilder sbNormal = new StringBuilder();
+//					StringBuilder sbSpecial = new StringBuilder();
+//					List<Document> allDocsList = new ArrayList<Document>();
+//					for (DictItem dictItem : dictItems) {
+//						boolean flagSpecial = checkSpecialStatus(dictItem);
+//						if (flagSpecial) {
+//							
+//						}
+//					}
+//				}
 				// Get list dossier follow each status
 				if (dictItems != null && dictItems.size() > 0) {
 					List<Document> allDocsList = new ArrayList<Document>();
@@ -333,6 +345,29 @@ public class DossierActionsImpl implements DossierActions {
 
 	}
 
+	private boolean checkSpecialStatus(DictItem dictItem) {
+		boolean flag = false;
+		String metaData = dictItem.getMetaData();
+		String specialStatus = StringPool.BLANK;
+		if (Validator.isNotNull(metaData)) {
+			_log.info("metaData: " + metaData);
+			try {
+				JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
+				specialStatus = metaJson.getString("specialStatus");
+				_log.info("specialStatus: " + specialStatus);
+
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+
+		if (Validator.isNotNull(specialStatus) && Boolean.parseBoolean(specialStatus)) {
+			flag = true;
+		}
+
+		return flag;
+	}
+	
 	@Override
 	public Dossier addDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
 			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
