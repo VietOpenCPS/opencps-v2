@@ -859,4 +859,90 @@ public class UserManagementImpl implements UserManagement {
 		}
 	}
 
+	@Override
+	public Response addChangepassApplication(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id, String oldPassword, String newPassword) {
+		
+		UserInterface actions = new UserActions();
+		
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword, 0,
+					serviceContext);
+
+			return Response.status(200).entity(String.valueOf(flag)).build();
+
+		} catch (Exception e) {
+			_log.error("/ @GET: " + e);
+
+			if (e instanceof DigestException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			} else {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("not found!");
+				error.setCode(404);
+				error.setDescription("not found!");
+
+				return Response.status(404).entity(error).build();
+
+			}
+
+		}
+	}
+
+	@Override
+	public Response addChangepassEmployee(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id, String oldPassword, String newPassword) {
+		
+		UserInterface actions = new UserActions();
+		
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword, 1,
+					serviceContext);
+
+			return Response.status(200).entity(String.valueOf(flag)).build();
+
+		} catch (Exception e) {
+			_log.error("/ @GET: " + e);
+
+			if (e instanceof DigestException) {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			} else {
+
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("not found!");
+				error.setCode(404);
+				error.setDescription("not found!");
+
+				return Response.status(404).entity(error).build();
+
+			}
+
+		}
+	}
+
 }
