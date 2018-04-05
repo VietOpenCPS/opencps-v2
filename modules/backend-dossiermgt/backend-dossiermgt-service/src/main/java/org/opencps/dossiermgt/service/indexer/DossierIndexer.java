@@ -339,7 +339,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			for (DossierFile dossierFile : dossierFileList) {
 				templateNo = dossierFile.getDossierTemplateNo();
 				partNo = dossierFile.getDossierPartNo();
-				DossierPart dossierPart = DossierPartLocalServiceUtil.getByPartTypeEsign (groupId, templateNo,
+				DossierPart dossierPart = DossierPartLocalServiceUtil.getByPartTypeEsign (templateNo,
 						partNo, partType, eSign);
 				if (dossierPart != null) {
 					List<DossierFile> dossierFileRefList = DossierFileLocalServiceUtil
