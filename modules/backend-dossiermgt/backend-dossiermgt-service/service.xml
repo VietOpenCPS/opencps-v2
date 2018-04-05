@@ -535,6 +535,9 @@
         <finder return-type="DossierFile" name="FILE_ID">
         	<finder-column name="fileEntryId" />
         </finder>
+         <finder return-type="Collection" name="REF_UID">
+        	<finder-column name="referenceUid" />
+       	</finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"

@@ -705,6 +705,13 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 	}
 
+	// Get all dossierFile by dossierId
+	public List<DossierFile> getByReferenceUid(String referenceUid) {
+
+		return dossierFilePersistence.findByREF_UID(referenceUid);
+
+	}
+
 	public List<DossierFile> getDossierFilesByD_DP(long dossierId, int dossierPartType) {
 		return dossierFilePersistence.findByD_DPT(dossierId, dossierPartType, false);
 	}

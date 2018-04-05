@@ -14,9 +14,8 @@
 
 package org.opencps.communication.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.communication.exception.ServerNameDuplicateException;
@@ -29,6 +28,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the server config local service.
@@ -179,8 +180,8 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 		return serverConfigPersistence.fetchByCF_CD(serverNo);
 	}
 	
-	public ServerConfig getGroupId(long groupId) {
-		return serverConfigPersistence.fetchByCF_GID(groupId);
+	public List<ServerConfig> getGroupId(long groupId) {
+		return serverConfigPersistence.findByCF_GID(groupId);
 	}
 
 }
