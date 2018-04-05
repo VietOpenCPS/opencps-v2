@@ -567,10 +567,10 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		// TODO add more logic here
 	}
 
-	public DossierPart getByPartTypeEsign(long groupId, String templateNo,
+	public DossierPart getByPartTypeEsign(String templateNo,
 			String partNo, int partType, boolean eSign) {
 		try {
-			return dossierPartPersistence.findByTP_NO_PART_ESIGN(groupId, templateNo, partNo, partType, eSign);
+			return dossierPartPersistence.findByTP_NO_PART_ESIGN(templateNo, partNo, partType, eSign);
 		} catch (NoSuchDossierPartException e) {
 			return null;
 		}

@@ -202,7 +202,6 @@
 		</finder>
 
 		<finder return-type="DossierPart" name="TP_NO_PART_ESIGN">
-			<finder-column name="groupId" />
 			<finder-column name="templateNo" />
 			<finder-column name="partNo" />
 			<finder-column name="partType" />
