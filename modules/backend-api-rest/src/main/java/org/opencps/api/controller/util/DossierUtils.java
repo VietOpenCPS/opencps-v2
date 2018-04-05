@@ -84,7 +84,7 @@ public class DossierUtils {
 //			_log.info("RECEIVE_DATE: "+doc.get(DossierTerm.RECEIVE_DATE));
 			if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
 				Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
-				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));				
+				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			} else {
 				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			}
@@ -123,7 +123,7 @@ public class DossierUtils {
 			model.setCertNo(doc.get("so_chung_chi"));
 			if (Validator.isNotNull(doc.get("ngay_ky_cc"))) {
 				Date certDate = APIDateTimeUtils.convertStringToDate(doc.get("ngay_ky_cc"), APIDateTimeUtils._LUCENE_PATTERN);
-				model.setCertDate(APIDateTimeUtils.convertDateToString(certDate, APIDateTimeUtils._NORMAL_PARTTERN));
+				model.setCertDate(APIDateTimeUtils.convertDateToString(certDate, APIDateTimeUtils._NORMAL_DATE));
 			} else {
 				model.setCertDate(doc.get("ngay_ky_cc"));
 			}
@@ -295,7 +295,7 @@ public class DossierUtils {
 			String certDate = doc.get("ngay_ky_cc");
 			if (Validator.isNotNull(certNo) && Validator.isNotNull(certDate)) {
 				Date tempDate = APIDateTimeUtils.convertStringToDate(certDate, APIDateTimeUtils._LUCENE_PATTERN);
-				model.setCertDate(APIDateTimeUtils.convertDateToString(tempDate, APIDateTimeUtils._NORMAL_PARTTERN));
+				model.setCertDate(APIDateTimeUtils.convertDateToString(tempDate, APIDateTimeUtils._NORMAL_DATE));
 				model.setCertNo(doc.get("so_chung_chi"));
 			}
 
