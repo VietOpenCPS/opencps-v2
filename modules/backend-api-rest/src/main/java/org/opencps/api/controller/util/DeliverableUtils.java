@@ -66,7 +66,7 @@ public class DeliverableUtils {
 		if (Validator.isNotNull(strIssueDate)) {
 			issueDate = APIDateTimeUtils.convertStringToDate(strIssueDate, "yyyyMMddHHmmss");
 		}
-		model.setModifiedDate(issueDate != null
+		model.setIssueDate(issueDate != null
 				? APIDateTimeUtils.convertDateToString(issueDate, APIDateTimeUtils._TIMESTAMP)
 				: strIssueDate);
 
@@ -75,7 +75,7 @@ public class DeliverableUtils {
 		if (Validator.isNotNull(strExpireDate)) {
 			expireDate = APIDateTimeUtils.convertStringToDate(strExpireDate, "yyyyMMddHHmmss");
 		}
-		model.setModifiedDate(expireDate != null
+		model.setExpireDate(expireDate != null
 				? APIDateTimeUtils.convertDateToString(expireDate, APIDateTimeUtils._TIMESTAMP)
 				: strExpireDate);
 
@@ -84,7 +84,7 @@ public class DeliverableUtils {
 		if (Validator.isNotNull(strRevalidate)) {
 			revalidate = APIDateTimeUtils.convertStringToDate(strRevalidate, "yyyyMMddHHmmss");
 		}
-		model.setModifiedDate(revalidate != null
+		model.setRevalidate(revalidate != null
 				? APIDateTimeUtils.convertDateToString(revalidate, APIDateTimeUtils._TIMESTAMP)
 				: strRevalidate);
 

@@ -303,6 +303,32 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addTextSortable(DossierTerm.DOSSIER_ID+"CTN", dossierIDCTN);
 
 		// Get info cert Number
+		List<String> certNoIndexer = certNoIndexer(dossierId, object.getGroupId());
+		if (certNoIndexer != null && certNoIndexer.size() > 0) {
+			String certNo = certNoIndexer.get(0);
+			String certDateStr = certNoIndexer.get(1);
+			String certDateTimeStamp = certDateStr + " 00:00:00";
+			Date certDate = APIDateTimeUtils.convertStringToDate(certDateTimeStamp, APIDateTimeUtils._NORMAL_PARTTERN);
+			_log.info("certNo: "+certNo);
+			_log.info("certDate: "+certDate);
+			if (Validator.isNotNull(certDate)) {
+				document.addTextSortable("so_chung_chi", certNo);
+				document.addDateSortable("ngay_ky_cc", certDate);
+				// Search follow so_chung_chi
+				String certNoSearch = SpecialCharacterUtils.splitSpecial(certNo);
+				document.addTextSortable(DossierTerm.CERT_NO_SEARCH, certNoSearch);
+			}
+		}
+		}catch(Exception e) {
+			_log.error(e);
+		}
+
+		return document;
+	}
+
+	private List<String> certNoIndexer(long dossierId, long groupId) {
+		List<String> certIndex = new ArrayList<String>();
+		// Get info cert Number
 		List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.getAllDossierFile(dossierId);
 		if (dossierFileList != null && dossierFileList.size() > 0) {
 			String templateNo = StringPool.BLANK;
@@ -313,46 +339,41 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			for (DossierFile dossierFile : dossierFileList) {
 				templateNo = dossierFile.getDossierTemplateNo();
 				partNo = dossierFile.getDossierPartNo();
-				DossierPart dossierPart = DossierPartLocalServiceUtil.getByPartTypeEsign (object.getGroupId(), templateNo,
+				DossierPart dossierPart = DossierPartLocalServiceUtil.getByPartTypeEsign (groupId, templateNo,
 						partNo, partType, eSign);
 				if (dossierPart != null) {
-					deliverableCode = dossierFile.getDeliverableCode();
-					if (Validator.isNotNull(deliverableCode)) {
-						Deliverable deli = DeliverableLocalServiceUtil.getByCodeAndState(deliverableCode, "2");
-						if (deli != null) {
-							String formData = StringPool.BLANK;
-							formData = deli.getFormData();
-							try {
-								JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
-								String certNo = String.valueOf(jsonData.get("so_chung_chi"));
-								String certDateStr = String.valueOf(jsonData.get("ngay_ky_cc"));
-								String certDateTimeStamp = certDateStr + " 00:00:00";
-								Date certDate = APIDateTimeUtils.convertStringToDate(certDateTimeStamp, APIDateTimeUtils._NORMAL_PARTTERN);
-								_log.info("certNo: "+certNo);
-								_log.info("certDate: "+certDate);
-								if (Validator.isNotNull(certNo) && Validator.isNotNull(certDate)) {
-									document.addTextSortable("so_chung_chi", certNo);
-									document.addDateSortable("ngay_ky_cc", certDate);
-									// Search follow so_chung_chi
-									String certNoSearch = SpecialCharacterUtils.splitSpecial(certNo);
-									document.addTextSortable(DossierTerm.CERT_NO_SEARCH, certNoSearch);
+					List<DossierFile> dossierFileRefList = DossierFileLocalServiceUtil
+							.getByReferenceUid(dossierFile.getReferenceUid());
+					if (dossierFileRefList != null && dossierFileRefList.size() > 0) {
+						for (DossierFile dof : dossierFileRefList) {
+							deliverableCode = dof.getDeliverableCode();
+							_log.info("DOssier deliverableCode: "+deliverableCode);
+							if (Validator.isNotNull(deliverableCode)) {
+								Deliverable deli = DeliverableLocalServiceUtil.getByCodeAndState(deliverableCode, "2");
+								if (deli != null) {
+									String formData = StringPool.BLANK;
+									formData = deli.getFormData();
+									try {
+										JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
+										String certNo = String.valueOf(jsonData.get("so_chung_chi"));
+										String certDateStr = String.valueOf(jsonData.get("ngay_ky_cc"));
+										if (Validator.isNotNull(certNo) && Validator.isNotNull(certDateStr)) {
+											certIndex.add(certNo);
+											certIndex.add(certDateStr);
+										}
+										return certIndex;
+									} catch (Exception e) {
+										_log.error(e);
+									}
 								}
-								break;
-							} catch (Exception e) {
-								_log.error(e);
 							}
 						}
 					}
 				}
 			}
 		}
-		}catch(Exception e) {
-			_log.error(e);
-		}
-
-		return document;
+		return certIndex;
 	}
-
 
 	private boolean getDossierOverDue(long dossierId) {
 		// TODO add logic here
