@@ -1112,7 +1112,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
 
-			query.addField(DossierTerm.ACTION_USERIDS);
+			query.addField(DossierTerm.ACTION_MAPPING_USERID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

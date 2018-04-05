@@ -19,6 +19,7 @@ import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
 import org.opencps.usermgt.service.PreferencesLocalServiceUtil;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Image;
 import com.liferay.portal.kernel.model.Role;
@@ -41,6 +43,7 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -480,8 +483,8 @@ public class UserActions implements UserInterface {
 
 		if (Validator.isNotNull(employee)) {
 			// update userPayload
-			EmployeeLocalServiceUtil.updatePayload(userId, groupId, fileEntry.getFileEntryId(), 0,
-					file.getAbsolutePath(), StringPool.BLANK, serviceContext);
+			EmployeeLocalServiceUtil.updatePayload(user.getUserId(), groupId, 0, fileEntry.getFileEntryId(),
+					StringPool.BLANK, file.getAbsolutePath(), serviceContext);
 		}
 
 		return file;
@@ -507,39 +510,50 @@ public class UserActions implements UserInterface {
 
 		if (Validator.isNotNull(employee)) {
 			// update userPayload
-			EmployeeLocalServiceUtil.updatePayload(userId, groupId, 0, fileEntry.getFileEntryId(), StringPool.BLANK,
-					file.getAbsolutePath(), serviceContext);
+			EmployeeLocalServiceUtil.updatePayload(userId, groupId, fileEntry.getFileEntryId(), 0,
+					file.getAbsolutePath(), StringPool.BLANK, serviceContext);
 		}
 
 		return file;
 	}
 
 	@Override
-	public String getEsignPath(long userId, long companyId, long groupId, ServiceContext serviceContext)
+	public String getEsignPath(long userId, Company company, long groupId, ServiceContext serviceContext)
 			throws Exception {
+
+		_log.info("FILE______GROUPID " + groupId);
+		_log.info("FILE______USERID " + userId);
+
 		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-		
+
 		String filePath = StringPool.BLANK;
-		
-		if (Validator.isNotNull(employee)) {
-			filePath = employee.getFileSignPath();
+
+		if (Validator.isNotNull(employee) && employee.getFileSignId() != 0) {
+			String portalURL = PortalUtil.getPortalURL(company.getVirtualHostname(),
+					PortalUtil.getPortalServerPort(false), false);
+
+			DLFileEntry dlfileEntry = DLFileEntryLocalServiceUtil.getDLFileEntry(employee.getFileSignId());
+
+			filePath = portalURL + "/c/document_library/get_file?uuid=" + dlfileEntry.getUuid() + "&groupId="
+					+ dlfileEntry.getGroupId();
+
 		}
-		
+
 		return filePath;
 	}
 
 	@Override
 	public String getCertPath(long userId, long companyId, long groupId, ServiceContext serviceContext)
 			throws Exception {
-		
+
 		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-		
+
 		String filePath = StringPool.BLANK;
-		
+
 		if (Validator.isNotNull(employee)) {
 			filePath = employee.getFileCertPath();
 		}
-		
+
 		return filePath;
 
 	}
