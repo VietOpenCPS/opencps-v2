@@ -121,7 +121,12 @@ public class DossierUtils {
 			model.setPostalCityName(doc.get(DossierTerm.POSTAL_CITY_NAME));
 			model.setPostalTelNo(doc.get(DossierTerm.POSTAL_TEL_NO));
 			model.setCertNo(doc.get("so_chung_chi"));
-			model.setCertDate(doc.get("ngay_ky_cc"));
+			if (Validator.isNotNull(doc.get("ngay_ky_cc"))) {
+				Date certDate = APIDateTimeUtils.convertStringToDate(doc.get("ngay_ky_cc"), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setCertDate(APIDateTimeUtils.convertDateToString(certDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setCertDate(doc.get("ngay_ky_cc"));
+			}
 
 			//TODO: Get info cert Number
 //			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil
