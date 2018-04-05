@@ -132,6 +132,24 @@ public interface UserManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") long id,
 			@FormParam("oldPassword") String oldPassword, @FormParam("newPassword") String newPassword);
+	
+	@POST
+	@Path("/{id}/changepass/application")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response addChangepassApplication(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id,
+			@FormParam("oldPassword") String oldPassword, @FormParam("newPassword") String newPassword);
+	
+	@POST
+	@Path("/{id}/changepass/employee")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response addChangepassEmployee(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id,
+			@FormParam("oldPassword") String oldPassword, @FormParam("newPassword") String newPassword);
 
 	@GET
 	@Path("/{id}/permissions")

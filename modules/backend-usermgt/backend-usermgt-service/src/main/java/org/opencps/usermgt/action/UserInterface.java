@@ -57,6 +57,10 @@ public interface UserInterface {
 
 	public boolean addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword,
 			ServiceContext serviceContext);
+	
+	public boolean addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword, int type,
+			ServiceContext serviceContext);
+
 
 	public File uploadEsign(long userId, long companyId, long groupId, long id, InputStream inputStream,
 			String fileName, String fileType, long fileSize, String destination, String desc,

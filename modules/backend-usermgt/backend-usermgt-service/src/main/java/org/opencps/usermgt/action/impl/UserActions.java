@@ -11,9 +11,11 @@ import java.util.Locale;
 
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.usermgt.action.UserInterface;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.OfficeSite;
 import org.opencps.usermgt.model.Preferences;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
 import org.opencps.usermgt.service.PreferencesLocalServiceUtil;
@@ -435,6 +437,7 @@ public class UserActions implements UserInterface {
 	@Override
 	public boolean addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword,
 			ServiceContext serviceContext) {
+		
 		boolean flag = getCheckpass(groupId, companyId, id, oldPassword, serviceContext);
 
 		if (flag) {
@@ -442,7 +445,7 @@ public class UserActions implements UserInterface {
 
 				User user = UserLocalServiceUtil.updatePassword(id, newPassword, newPassword, Boolean.FALSE);
 
-				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
 
 				JSONObject payLoad = JSONFactoryUtil.createJSONObject();
 
@@ -462,6 +465,52 @@ public class UserActions implements UserInterface {
 
 		return flag;
 	}
+	
+	@Override
+	public boolean addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword, int type,
+			ServiceContext serviceContext) {
+		
+		boolean flag = getCheckpass(groupId, companyId, id, oldPassword, serviceContext);
+
+		if (flag) {
+			try {
+
+				User user = UserLocalServiceUtil.updatePassword(id, newPassword, newPassword, Boolean.FALSE);
+				
+				String email = StringPool.BLANK;
+				
+				if (type == 1) {
+					//update application
+					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
+					
+					email = employee.getEmail();
+				} else {
+					//update employee
+					Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(id);
+					
+					email = applicant.getContactEmail();
+				}
+
+
+				JSONObject payLoad = JSONFactoryUtil.createJSONObject();
+
+				payLoad.put("USERNAME", user.getScreenName());
+				payLoad.put("USEREMAIL", user.getEmailAddress());
+				payLoad.put("PASSWORD", newPassword);
+
+				NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId, Constants.USER_04,
+						User.class.getName(), String.valueOf(user.getUserId()), payLoad.toJSONString(), "SYSTEM",
+						user.getFullName(), user.getUserId(), email, StringPool.BLANK, new Date(), null,
+						serviceContext);
+
+			} catch (PortalException e) {
+				flag = false;
+			}
+		}
+
+		return flag;
+	}
+
 
 	@Override
 	public File uploadEsign(long userId, long companyId, long groupId, long id, InputStream inputStream,
