@@ -202,7 +202,6 @@
 		</finder>
 
 		<finder return-type="DossierPart" name="TP_NO_PART_ESIGN">
-			<finder-column name="groupId" />
 			<finder-column name="templateNo" />
 			<finder-column name="partNo" />
 			<finder-column name="partType" />
@@ -535,6 +534,9 @@
         <finder return-type="DossierFile" name="FILE_ID">
         	<finder-column name="fileEntryId" />
         </finder>
+         <finder return-type="Collection" name="REF_UID">
+        	<finder-column name="referenceUid" />
+       	</finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
