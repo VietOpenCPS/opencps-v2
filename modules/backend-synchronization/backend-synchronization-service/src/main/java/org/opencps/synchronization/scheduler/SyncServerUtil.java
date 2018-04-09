@@ -13,4 +13,17 @@ public class SyncServerUtil {
 				return false;
 		}
 	}
+
+
+	public static boolean isSyncDeleteGroupOk(int status) {
+		switch (status) {
+			case 0:
+			case SyncServerTerm.STATUS_DUPLICATE:
+			case SyncServerTerm.STATUS_OK:
+			case SyncServerTerm.STATUS_NOT_FOUND:
+				return true;
+			default:
+				return false;
+		}
+	}
 }
