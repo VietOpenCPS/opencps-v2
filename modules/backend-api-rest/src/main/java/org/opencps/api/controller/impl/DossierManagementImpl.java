@@ -1668,8 +1668,6 @@ public class DossierManagementImpl implements DossierManagement {
 			Locale locale, User user, ServiceContext serviceContext, String id) {
 		BackendAuth auth = new BackendAuthImpl();
 
-		DossierActions actions = new DossierActionsImpl();
-
 		try {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();

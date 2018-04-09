@@ -1166,6 +1166,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 			}
+			if (state.equals("correcting")) {
+
+				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
+
+				query.addField(DossierTerm.CORRECTING_DATE_TIMESTAMP);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+			if (state.equals("endorsement")) {
+
+				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
+
+				query.addField(DossierTerm.ENDORSEMENT_DATE_TIMESTAMP);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
