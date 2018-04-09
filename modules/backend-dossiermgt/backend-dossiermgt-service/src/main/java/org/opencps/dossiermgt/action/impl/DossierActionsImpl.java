@@ -418,7 +418,7 @@ public class DossierActionsImpl implements DossierActions {
 	@Override
 	public Dossier correctDossier(long groupId, long dossierId, String referenceUid, ServiceContext context)
 			throws PortalException {
-		return DossierLocalServiceUtil.updateCorrectingDate(groupId, dossierId, referenceUid, new Date(), context);
+		return DossierLocalServiceUtil.updateEndosementDate(groupId, dossierId, referenceUid,  new Date(), context);
 	}
 
 	@Override

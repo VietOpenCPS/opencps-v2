@@ -308,11 +308,20 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				}
 
 				if (Validator.isNotNull(object.getString(DossierTerm.CORRECTING_DATE))) {
+					_log.error("UPDATE____CORRECTTING_DATE");
 					// Update correctingDate
 					desDossier.setCorrecttingDate(APIDateTimeUtils.convertStringToDate(
 							object.getString(DossierTerm.CORRECTING_DATE), APIDateTimeUtils._NORMAL_PARTTERN));
 				}
-
+				
+				
+				if (Validator.isNotNull(object.getString(DossierTerm.ENDORSEMENT_DATE))) {
+					_log.error("UPDATE____ENDOSEMENT_DATE");
+					// Update correctingDate
+					desDossier.setEndorsementDate(APIDateTimeUtils.convertStringToDate(
+							object.getString(DossierTerm.ENDORSEMENT_DATE), APIDateTimeUtils._NORMAL_PARTTERN));
+				}
+	
 				// Update dossier
 
 				DossierLocalServiceUtil.updateDossier(desDossier);
