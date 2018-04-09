@@ -793,6 +793,7 @@
 		<column name="stepInstruction" type="String" />
 		<column name="briefNote" type="String" />
 		<column name="editable" type="boolean" />
+		<column name="restrictDossier" type="String" />
 
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
