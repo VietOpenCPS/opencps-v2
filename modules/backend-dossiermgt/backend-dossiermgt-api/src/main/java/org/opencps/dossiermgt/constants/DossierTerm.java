@@ -102,4 +102,5 @@ public class DossierTerm {
 	public static final String DOSSIER_NO_SEARCH = "dossierNoSearch";
 	public static final String CERT_NO_SEARCH = "certNoSearch";
 	public static final String ACTION_MAPPING_USERID = "actionMappingUserId";
+	public static final String ENDORSEMENT_DATE= "endorsementDate";
 }

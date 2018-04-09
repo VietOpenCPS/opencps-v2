@@ -369,6 +369,7 @@
 		<column name="notification" type="boolean" />
 		<column name="online" type="boolean" />
 		<column name="serverNo" type="String" />
+		<column name="endorsementDate" type="Date" />
 
 		<!-- Order -->
 
