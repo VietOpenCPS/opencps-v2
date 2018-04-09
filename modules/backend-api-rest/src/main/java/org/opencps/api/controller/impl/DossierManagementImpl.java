@@ -540,6 +540,7 @@ public class DossierManagementImpl implements DossierManagement {
 					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
 
 				} else {
+					_log.info(e);
 
 					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
@@ -619,6 +620,8 @@ public class DossierManagementImpl implements DossierManagement {
 					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
 
 				} else {
+					
+					_log.info(e);
 
 					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
@@ -1618,7 +1621,7 @@ public class DossierManagementImpl implements DossierManagement {
 			
 			serviceContext.setScopeGroupId(groupId);
 
-			Dossier cancellingDossier = actions.correctDossier(groupId, dossier.getDossierId(),
+			Dossier cancellingDossier = actions.submitPostDossier(groupId, dossier.getDossierId(),
 					dossier.getReferenceUid(), serviceContext);
 
 			// 2. update requestDossier

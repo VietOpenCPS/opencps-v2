@@ -128,6 +128,8 @@ public class DossierUtils {
 				model.setCertDate(doc.get("ngay_ky_cc"));
 			}
 
+			model.setEndorsementDate(doc.get(DossierTerm.ENDORSEMENT_DATE));
+
 			//TODO: Get info cert Number
 //			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil
 //					.getDossierFilesByDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));

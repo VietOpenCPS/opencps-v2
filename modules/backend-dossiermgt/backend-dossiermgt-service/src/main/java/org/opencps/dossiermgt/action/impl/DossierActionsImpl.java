@@ -415,8 +415,15 @@ public class DossierActionsImpl implements DossierActions {
 		return DossierLocalServiceUtil.updateCancellingDate(groupId, dossierId, referenceUid, new Date(), context);
 	}
 
+	
 	@Override
 	public Dossier correctDossier(long groupId, long dossierId, String referenceUid, ServiceContext context)
+			throws PortalException {
+		return DossierLocalServiceUtil.updateCorrectingDate(groupId, dossierId, referenceUid,  new Date(), context);
+	}
+	
+	@Override
+	public Dossier submitPostDossier(long groupId, long dossierId, String referenceUid, ServiceContext context)
 			throws PortalException {
 		return DossierLocalServiceUtil.updateEndosementDate(groupId, dossierId, referenceUid,  new Date(), context);
 	}
