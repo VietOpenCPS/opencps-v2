@@ -172,7 +172,8 @@ import javax.xml.bind.annotation.XmlType;
     "serverNo",
 //    "certNumber"
     "certNo",
-    "certDate"
+    "certDate",
+    "endorsementDate"
 })
 public class DossierDataModel {
 
@@ -248,7 +249,17 @@ public class DossierDataModel {
 //	protected List<CertNumberModel> certNumber;
 	protected String certNo;
 	protected String certDate;
+	protected String endorsementDate;
 
+	public String getEndorsementDate() {
+		return endorsementDate;
+	}
+
+	public void setEndorsementDate(String endorsementDate) {
+		this.endorsementDate = endorsementDate;
+	}
+
+	
     public String getDossierTemplateName() {
 		return dossierTemplateName;
 	}
