@@ -548,15 +548,11 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	public Response getFormDataByReferenceUid(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long registrationId) {
 		BackendAuth auth = new BackendAuthImpl();
-		RegistrationActions actions = new RegistrationActionsImpl();
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
-			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			Registration reg = RegistrationLocalServiceUtil.fetchRegistration(registrationId);
 

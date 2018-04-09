@@ -19,6 +19,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -254,22 +256,23 @@ public class RegistrationUtils {
 
 	}
 
+	private static Log _log = LogFactoryUtil.getLog(RegistrationUtils.class);
 	public static JSONArray mappingFormData(Registration reg) throws PortalException {
 		JSONArray data = JSONFactoryUtil.createJSONArray();
 
 //		for (Document doc : documents) {
 		long registrationId = reg.getRegistrationId();
+		_log.info("registrationId: "+registrationId);
 //			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
-		JSONObject xuongSXJson = JSONFactoryUtil.createJSONObject();
 		if (Validator.isNotNull(registrationId) && registrationId > 0) {
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 			List<RegistrationForm> registrationFormList = action.getFormbyRegId(reg.getGroupId(), registrationId);
 
 			if (registrationFormList != null && registrationFormList.size() > 0) {
-				String formData = StringPool.BLANK;
-
 				for (RegistrationForm regForm : registrationFormList) {
-					formData = regForm.getFormData();
+					JSONObject xuongSXJson = JSONFactoryUtil.createJSONObject();
+					String formData = regForm.getFormData();
+					_log.info("formData: "+formData);
 					try {
 						JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
 						String xuongSX = formJson.getString("ten_xuong_san_xuat");
