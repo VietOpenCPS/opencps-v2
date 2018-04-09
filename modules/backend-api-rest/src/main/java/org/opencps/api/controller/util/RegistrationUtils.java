@@ -254,36 +254,36 @@ public class RegistrationUtils {
 
 	}
 
-	public static JSONArray mappingFormData(List<Document> documents) throws PortalException {
+	public static JSONArray mappingFormData(Registration reg) throws PortalException {
 		JSONArray data = JSONFactoryUtil.createJSONArray();
 
-		for (Document doc : documents) {
-			long registrationId = GetterUtil.getLong(doc.get(RegistrationTerm.REGISTRATION_ID));
-			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
-			JSONObject xuongSXJson = JSONFactoryUtil.createJSONObject();
-			if (Validator.isNotNull(registrationId) && registrationId > 0) {
-				RegistrationFormActions action = new RegistrationFormActionsImpl();
-				List<RegistrationForm> registrationFormList = action.getFormbyRegId(groupId, registrationId);
+//		for (Document doc : documents) {
+		long registrationId = reg.getRegistrationId();
+//			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
+		JSONObject xuongSXJson = JSONFactoryUtil.createJSONObject();
+		if (Validator.isNotNull(registrationId) && registrationId > 0) {
+			RegistrationFormActions action = new RegistrationFormActionsImpl();
+			List<RegistrationForm> registrationFormList = action.getFormbyRegId(reg.getGroupId(), registrationId);
 
-				if (registrationFormList != null && registrationFormList.size() > 0) {
-					String formData = StringPool.BLANK;
+			if (registrationFormList != null && registrationFormList.size() > 0) {
+				String formData = StringPool.BLANK;
 
-					for (RegistrationForm regForm : registrationFormList) {
-						formData = regForm.getFormData();
-						try {
-							JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
-							String xuongSX = formJson.getString("ten_xuong_san_xuat");
-							if (Validator.isNotNull(xuongSX)) {
-								xuongSXJson.put("ten_xuong_san_xuat", xuongSX);
-								data.put(xuongSXJson);
-							}
-						} catch (Exception e) {
-							// TODO: handle exception
+				for (RegistrationForm regForm : registrationFormList) {
+					formData = regForm.getFormData();
+					try {
+						JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
+						String xuongSX = formJson.getString("ten_xuong_san_xuat");
+						if (Validator.isNotNull(xuongSX)) {
+							xuongSXJson.put("ten_xuong_san_xuat", xuongSX);
+							data.put(xuongSXJson);
 						}
+					} catch (Exception e) {
+						// TODO: handle exception
 					}
 				}
 			}
 		}
+//		}
 		return data;
 	}
 }

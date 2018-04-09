@@ -1172,7 +1172,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 				query.addField(DossierTerm.CORRECTING_DATE_TIMESTAMP);
 
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
+				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
 			}
 			if (state.equals("endorsement")) {
 
@@ -1180,7 +1180,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 				query.addField(DossierTerm.ENDORSEMENT_DATE_TIMESTAMP);
 
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
+				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
 			}
 		}
 
