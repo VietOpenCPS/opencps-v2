@@ -780,6 +780,36 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossier;
 
 	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier updateEndosementDate(long groupId, long id, String refId, Date date, ServiceContext context)
+			throws PortalException {
+
+		validateCancellingDate(groupId, id, refId, date);
+
+		Date now = new Date();
+
+		Dossier dossier = null;
+
+		if (id != 0) {
+			dossier = dossierPersistence.fetchByPrimaryKey(id);
+		} else {
+			dossier = dossierPersistence.fetchByG_REF(groupId, refId);
+		}
+
+		dossier.setModifiedDate(now);
+
+		//dossier.setCancellingDate(date);
+		
+		dossier.setEndorsementDate(date);
+
+		dossier.setSubmitting(true);
+
+		dossierPersistence.update(dossier);
+
+		return dossier;
+
+	}
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateFinishDate(long groupId, long id, String refId, Date date, ServiceContext context)
