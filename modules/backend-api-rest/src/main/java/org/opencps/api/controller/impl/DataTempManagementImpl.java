@@ -30,7 +30,6 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.constants.DictItemTerm;
-import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.synchronization.action.DictCollectionTempInterface;
 import org.opencps.synchronization.action.impl.DictCollectionActions;
 import org.opencps.synchronization.constants.DictGroupTempTerm;
@@ -471,6 +470,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 
 			}
 
+			e.printStackTrace();
 			return Response.status(500).build();
 		}
 	}
@@ -776,7 +776,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 			DictCollectionTemp dictCollection = dictItemDataUtil.getDictCollectionTempDetail(code, groupId);
-			DictGroupTemp oldGroup = DictGroupTempLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
+			DictGroupTemp oldGroup = DictGroupTempLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, dictCollection.getDictCollectionId());
 			
 			DictGroupTemp dictGroup = dictItemDataUtil.updateDictGroupsTemp(user.getUserId(), groupId, code, groupCode,
 					input.getGroupCode(), input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(),
@@ -1148,8 +1148,9 @@ public class DataTempManagementImpl implements DataTempManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			DictCollectionTemp dictCollection = dictItemDataUtil.getDictCollectionTempDetail(code, groupId);
 			DictItemTemp dictItem = dictItemDataUtil.getDictItemTempByItemCode(code, itemCode, groupId, serviceContext);
-			DictGroupTemp dictGroup = DictGroupTempLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
+			DictGroupTemp dictGroup = DictGroupTempLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, dictCollection.getDictCollectionId());
 			
 			DictItemGroupTemp dictItemGroup = DictItemGroupTempLocalServiceUtil.fetchByF_dictItemId_dictGroupId(groupId, dictGroup.getDictGroupId(), dictItem.getDictItemId());
 			
