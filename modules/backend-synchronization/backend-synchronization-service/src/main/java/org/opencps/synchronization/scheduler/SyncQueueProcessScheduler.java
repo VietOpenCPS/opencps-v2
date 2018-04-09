@@ -6,11 +6,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalService;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictGroup;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.synchronization.constants.DictCollectionTempTerm;
 import org.opencps.synchronization.constants.DictGroupTempTerm;
@@ -166,7 +171,14 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 								
 								if (SyncServerUtil.isSyncOk(resDictCollection.getInt(RESTFulConfiguration.STATUS))) {
-									dictItemDataUtil.addDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, collectionName, collectionNameEN, description, serviceContext);
+									DictCollection oldDict = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
+									
+									if (oldDict != null) {
+										dictItemDataUtil.updateDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, collectionCode, collectionName, collectionNameEN, description, serviceContext);
+									}
+									else {
+										dictItemDataUtil.addDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, collectionName, collectionNameEN, description, serviceContext);										
+									}
 									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 			 					}		
 								else {
@@ -178,7 +190,14 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							}
 						}
 						else {
-							dictItemDataUtil.addDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, collectionName, collectionNameEN, description, serviceContext);
+							DictCollection oldDict = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
+							
+							if (oldDict != null) {
+								dictItemDataUtil.updateDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, collectionCode, collectionName, collectionNameEN, description, serviceContext);
+							}
+							else {
+								dictItemDataUtil.addDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, collectionName, collectionNameEN, description, serviceContext);										
+							}
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
 						}
 					}
@@ -200,7 +219,14 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 								
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
-									dictItemDataUtil.updateDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), oldCollectionCode, collectionCode, collectionName, collectionNameEN, description, serviceContext);							
+									DictCollection oldDict = dictItemDataUtil.getDictCollectionDetail(oldCollectionCode, serverConfig.getGroupId());
+									
+									if (oldDict != null) {
+										dictItemDataUtil.updateDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), oldCollectionCode, collectionCode, collectionName, collectionNameEN, description, serviceContext);							
+									}
+									else {
+										dictItemDataUtil.addDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, collectionName, collectionNameEN, description, serviceContext);
+									}
 									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());								
 								}	
 								else {
@@ -213,7 +239,15 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 								
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
-									dictItemDataUtil.updateDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), oldCollectionCode, collectionCode, collectionName, collectionNameEN, description, serviceContext);							
+									DictCollection oldDict = dictItemDataUtil.getDictCollectionDetail(oldCollectionCode, serverConfig.getGroupId());
+									
+									if (oldDict != null) {
+										dictItemDataUtil.updateDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), oldCollectionCode, collectionCode, collectionName, collectionNameEN, description, serviceContext);							
+									}
+									else {
+										dictItemDataUtil.addDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, collectionName, collectionNameEN, description, serviceContext);
+									}
+
 									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());								
 								}	
 								else {
@@ -222,7 +256,14 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							}
 						}
 						else {
-							dictItemDataUtil.updateDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), oldCollectionCode, collectionCode, collectionName, collectionNameEN, description, serviceContext);							
+							DictCollection oldDict = dictItemDataUtil.getDictCollectionDetail(oldCollectionCode, serverConfig.getGroupId());
+							
+							if (oldDict != null) {
+								dictItemDataUtil.updateDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), oldCollectionCode, collectionCode, collectionName, collectionNameEN, description, serviceContext);							
+							}
+							else {
+								dictItemDataUtil.addDictCollection(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, collectionName, collectionNameEN, description, serviceContext);
+							}
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());															
 						}
 					}
@@ -238,7 +279,11 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 											rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
 											configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 									if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
-										dictItemDataUtil.deleteDictCollection(collectionCode, serverConfig.getGroupId(), serviceContext);
+										DictCollection oldDict = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
+										
+										if (oldDict != null) {
+											dictItemDataUtil.deleteDictCollection(collectionCode, serverConfig.getGroupId(), serviceContext);
+										}
 										_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 									}		
 									else {
@@ -246,7 +291,11 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 									}
 								}
 								else {
-									dictItemDataUtil.deleteDictCollection(collectionCode, serverConfig.getGroupId(), serviceContext);
+									DictCollection oldDict = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
+									
+									if (oldDict != null) {
+										dictItemDataUtil.deleteDictCollection(collectionCode, serverConfig.getGroupId(), serviceContext);
+									}
 									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
 								}
 							}
@@ -255,7 +304,11 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							}
 						}
 						else {
-							dictItemDataUtil.deleteDictCollection(collectionCode, serverConfig.getGroupId(), serviceContext);
+							DictCollection oldDict = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
+							
+							if (oldDict != null) {
+								dictItemDataUtil.deleteDictCollection(collectionCode, serverConfig.getGroupId(), serviceContext);
+							}
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());														
 						}
 					}
@@ -275,7 +328,12 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 								
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
-									dictItemDataUtil.addDataForm(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, dataForm, serviceContext);
+									DictCollection oldDict = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
+									
+									if (oldDict != null) {
+										dictItemDataUtil.addDataForm(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, dataForm, serviceContext);
+									}
+
 									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 								}		
 								else {
@@ -287,7 +345,11 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							}
 						}
 						else {
-							dictItemDataUtil.addDataForm(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, dataForm, serviceContext);
+							DictCollection oldDict = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
+							
+							if (oldDict != null) {
+								dictItemDataUtil.addDataForm(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, dataForm, serviceContext);
+							}
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
 						}
 					}					
@@ -324,7 +386,13 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 							
 							if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
-								dictItemDataUtil.addDictgroups(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, groupCode, groupName, groupNameEN, groupDescription, serviceContext);
+								DictCollection collection = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
+								
+								DictGroup oldGroup = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, serverConfig.getGroupId(), collection.getDictCollectionId());
+								
+								if (oldGroup == null) {
+									dictItemDataUtil.addDictgroups(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, groupCode, groupName, groupNameEN, groupDescription, serviceContext);									
+								}
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 							}
 							else {
@@ -332,7 +400,12 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							}
 						}
 						else {
-							dictItemDataUtil.addDictgroups(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, groupCode, groupName, groupNameEN, groupDescription, serviceContext);
+							DictCollection collection = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
+							
+							DictGroup oldGroup = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, serverConfig.getGroupId(), collection.getDictCollectionId());
+							if (oldGroup == null) {
+								dictItemDataUtil.addDictgroups(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, groupCode, groupName, groupNameEN, groupDescription, serviceContext);
+							}
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
 						}
 					}
@@ -354,7 +427,13 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 							
 							if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
-								dictItemDataUtil.updateDictgroups(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, oldGroupCode, groupCode, groupName, groupNameEN, groupDescription, serviceContext);
+								DictCollection collection = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
+								
+								DictGroup oldGroup = DictGroupLocalServiceUtil.getByGC_GI_DCI(oldGroupCode, serverConfig.getGroupId(), collection.getDictCollectionId());
+								if (oldGroup != null) {
+									dictItemDataUtil.updateDictgroups(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, oldGroupCode, groupCode, groupName, groupNameEN, groupDescription, serviceContext);
+								}
+
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 							}	
 							else {
@@ -362,7 +441,12 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							}
 						}
 						else {
-							dictItemDataUtil.updateDictgroups(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, oldGroupCode, groupCode, groupName, groupNameEN, groupDescription, serviceContext);
+							DictCollection collection = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
+							
+							DictGroup oldGroup = DictGroupLocalServiceUtil.getByGC_GI_DCI(oldGroupCode, serverConfig.getGroupId(), collection.getDictCollectionId());
+							if (oldGroup != null) {
+								dictItemDataUtil.updateDictgroups(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, oldGroupCode, groupCode, groupName, groupNameEN, groupDescription, serviceContext);
+							}
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
 						}
 					}
@@ -378,8 +462,14 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 									rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
 									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 							
-							if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
-								dictItemDataUtil.deleteDictgroups(groupCode, serverConfig.getGroupId(), serviceContext);
+							if (SyncServerUtil.isSyncDeleteGroupOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
+								DictCollection collection = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
+								
+								DictGroup oldGroup = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, serverConfig.getGroupId(), collection.getDictCollectionId());
+								if (oldGroup != null) {
+									dictItemDataUtil.deleteDictgroups(groupCode, serverConfig.getGroupId(), serviceContext);
+								}
+
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 							}		
 							else {
@@ -387,7 +477,12 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							}
 						}
 						else {
-							dictItemDataUtil.deleteDictgroups(groupCode, serverConfig.getGroupId(), serviceContext);
+							DictCollection collection = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
+							
+							DictGroup oldGroup = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, serverConfig.getGroupId(), collection.getDictCollectionId());
+							if (oldGroup != null) {
+								dictItemDataUtil.deleteDictgroups(groupCode, serverConfig.getGroupId(), serviceContext);
+							}
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
 						}
 					}
@@ -459,8 +554,13 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							}
 						}
 						else {
-							dictItemDataUtil.addDictItems(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, parentItemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, level, metaData, serviceContext);						
-							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());																
+							try {
+								dictItemDataUtil.addDictItems(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, parentItemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, level, metaData, serviceContext);						
+								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());																
+							}
+							catch (DuplicateCategoryException e) {
+								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());																								
+							}
 						}
 					}
 					else if (pqueue.getMethod().equals(SyncServerTerm.METHOD_UPDATE)) {
@@ -486,7 +586,14 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 								
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
-									dictItemDataUtil.updateDictItemByItemCode(serverConfig.getUserId(), serverConfig.getGroupId(), serviceContext, collectionCode, oldItemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, parentItemCode);
+									DictItem oldItem = dictItemDataUtil.getDictItemByItemCode(collectionCode, oldItemCode, serverConfig.getGroupId(), serviceContext);
+									
+									if (oldItem != null) {
+										dictItemDataUtil.updateDictItemByItemCode(serverConfig.getUserId(), serverConfig.getGroupId(), serviceContext, collectionCode, oldItemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, parentItemCode);										
+									}
+									else {
+										dictItemDataUtil.addDictItems(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, parentItemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, level, metaData, serviceContext);
+									}
 									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 								}			
 								else {
@@ -499,7 +606,15 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 								
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
-									dictItemDataUtil.updateDictItemByItemCode(serverConfig.getUserId(), serverConfig.getGroupId(), serviceContext, collectionCode, oldItemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, parentItemCode);
+									DictItem oldItem = dictItemDataUtil.getDictItemByItemCode(collectionCode, oldItemCode, serverConfig.getGroupId(), serviceContext);
+									
+									if (oldItem != null) {
+										dictItemDataUtil.updateDictItemByItemCode(serverConfig.getUserId(), serverConfig.getGroupId(), serviceContext, collectionCode, oldItemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, parentItemCode);
+									}
+									else {
+										dictItemDataUtil.addDictItems(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, parentItemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, level, metaData, serviceContext);
+									}
+
 									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 								}			
 								else {
@@ -508,7 +623,15 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							}
 						}
 						else {
-							dictItemDataUtil.updateDictItemByItemCode(serverConfig.getUserId(), serverConfig.getGroupId(), serviceContext, collectionCode, oldItemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, parentItemCode);
+							DictItem oldItem = dictItemDataUtil.getDictItemByItemCode(collectionCode, oldItemCode, serverConfig.getGroupId(), serviceContext);
+							
+							if (oldItem != null) {
+								dictItemDataUtil.updateDictItemByItemCode(serverConfig.getUserId(), serverConfig.getGroupId(), serviceContext, collectionCode, oldItemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, parentItemCode);
+							}
+							else {
+								dictItemDataUtil.addDictItems(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, parentItemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, level, metaData, serviceContext);
+							}
+
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
 						}
 					}
@@ -527,7 +650,12 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 								
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
-									DictItemLocalServiceUtil.deleteDictItem(serverConfig.getGroupId(), itemCode, serviceContext);
+									DictItem oldItem = dictItemDataUtil.getDictItemByItemCode(collectionCode, itemCode, serverConfig.getGroupId(), serviceContext);
+									
+									if (oldItem != null) {
+										DictItemLocalServiceUtil.deleteDictItem(serverConfig.getGroupId(), itemCode, serviceContext);
+									}
+
 									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 								}		
 								else {
@@ -539,7 +667,12 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							}
 						}
 						else {
-							DictItemLocalServiceUtil.deleteDictItem(serverConfig.getGroupId(), itemCode, serviceContext);
+							DictItem oldItem = dictItemDataUtil.getDictItemByItemCode(collectionCode, itemCode, serverConfig.getGroupId(), serviceContext);
+							
+							if (oldItem != null) {
+								DictItemLocalServiceUtil.deleteDictItem(serverConfig.getGroupId(), itemCode, serviceContext);
+							}
+
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
 						}
 					}
@@ -561,7 +694,12 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 								
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
-									dictItemDataUtil.updateMetaDataByItemCode(serverConfig.getUserId(), serverConfig.getGroupId(), serviceContext, collectionCode, itemCode, metaData);
+									DictItem oldItem = dictItemDataUtil.getDictItemByItemCode(collectionCode, itemCode, serverConfig.getGroupId(), serviceContext);
+									
+									if (oldItem != null) {
+										dictItemDataUtil.updateMetaDataByItemCode(serverConfig.getUserId(), serverConfig.getGroupId(), serviceContext, collectionCode, itemCode, metaData);
+									}
+
 									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 								}															
 							}
@@ -570,7 +708,12 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							}
 						}
 						else {
-							dictItemDataUtil.updateMetaDataByItemCode(serverConfig.getUserId(), serverConfig.getGroupId(), serviceContext, collectionCode, itemCode, metaData);
+							DictItem oldItem = dictItemDataUtil.getDictItemByItemCode(collectionCode, itemCode, serverConfig.getGroupId(), serviceContext);
+							
+							if (oldItem != null) {
+								dictItemDataUtil.updateMetaDataByItemCode(serverConfig.getUserId(), serverConfig.getGroupId(), serviceContext, collectionCode, itemCode, metaData);
+							}
+
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
 						}
 					}					
@@ -601,16 +744,26 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 							
 							if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
-								dictItemDataUtil.addDictgroupsDictItems(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, groupCode, itemCode, serviceContext);
-								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
+								try {
+									dictItemDataUtil.addDictgroupsDictItems(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, groupCode, itemCode, serviceContext);
+									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
+								}
+								catch (DuplicateCategoryException e) {
+									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());									
+								}
 							}														
 							else {
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
 							}
 						}
 						else {
-							dictItemDataUtil.addDictgroupsDictItems(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, groupCode, itemCode, serviceContext);
-							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
+							try {
+								dictItemDataUtil.addDictgroupsDictItems(serverConfig.getUserId(), serverConfig.getGroupId(), collectionCode, groupCode, itemCode, serviceContext);
+								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
+							}
+							catch (DuplicateCategoryException e) {
+								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());								
+							}
 						}
 					}
 					else if (pqueue.getMethod().equals(SyncServerTerm.METHOD_REMOVE_FROM_GROUP)) {
@@ -628,16 +781,26 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
 												
 							if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
-								dictItemDataUtil.deleteDictgroupsDictItems(serverConfig.getGroupId(), collectionCode, groupCode, itemCode, serviceContext);
-								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
+								try {
+									dictItemDataUtil.deleteDictgroupsDictItems(serverConfig.getGroupId(), collectionCode, groupCode, itemCode, serviceContext);
+									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
+								}
+								catch (NotFoundException e) {
+									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());									
+								}
 							}		
 							else {
 								break;
 							}
 						}
 						else {
-							dictItemDataUtil.deleteDictgroupsDictItems(serverConfig.getGroupId(), collectionCode, groupCode, itemCode, serviceContext);
-							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
+							try {
+								dictItemDataUtil.deleteDictgroupsDictItems(serverConfig.getGroupId(), collectionCode, groupCode, itemCode, serviceContext);
+								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
+							}
+							catch (NotFoundException e) {
+								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());								
+							}
 						}
 					}	
 				}				

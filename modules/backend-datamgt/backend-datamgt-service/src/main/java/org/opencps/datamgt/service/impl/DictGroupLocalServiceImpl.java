@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.DataInUsedException;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
@@ -182,7 +183,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public DictGroup deleteDictGroup(long dictGroupId, ServiceContext serviceContext)
-			throws UnauthenticationException, UnauthorizationException, NotFoundException {
+			throws UnauthenticationException, UnauthorizationException, NotFoundException, DataInUsedException {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
@@ -204,7 +205,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 			if (dictItemGroupPersistence.findByF_dictGroupId(dictGroup.getGroupId(), dictGroupId)
 					.size() > 0) {
-				throw new UnauthorizationException();
+				throw new DataInUsedException();
 			} else {
 
 				dictGroup = dictGroupPersistence.remove(dictGroupId);
