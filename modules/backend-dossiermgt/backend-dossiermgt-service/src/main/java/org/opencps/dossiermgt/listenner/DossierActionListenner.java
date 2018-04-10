@@ -9,7 +9,6 @@ import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.impl.ProcessActionLocalServiceImpl;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.model.Employee;
@@ -126,7 +125,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				if (Validator.isNotNull(processAction)) {
 					if (processAction.getPreCondition().contains("cancelling")
 							|| processAction.getPreCondition().contains("correcting")
-							|| processAction.getPreCondition().contains("submit")) {
+							|| processAction.getPreCondition().contains("submitting")) {
 						ok = false;
 						
 						_log.info("CHECK CONDITION OK ********** ....." + ok);

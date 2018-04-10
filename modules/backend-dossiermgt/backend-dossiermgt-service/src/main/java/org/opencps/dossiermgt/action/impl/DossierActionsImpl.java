@@ -1209,7 +1209,7 @@ public class DossierActionsImpl implements DossierActions {
 
 			_log.info("REJECT_SUBMIT....");
 
-			if (preCondition.contentEquals("reject_submit")) {
+			if (preCondition.contentEquals("reject_submitting")) {
 				// flag-off
 				_log.info("DO REJECT_SUBMIT....");
 
@@ -1228,13 +1228,13 @@ public class DossierActionsImpl implements DossierActions {
 				
 				String refUid = PortalUUIDUtil.generate();
 
-				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "reject_submit",
+				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "reject_submitting",
 						actionNote, 0, context);
 
 				// in SERVER
 				
 				context.setScopeGroupId(sourceDossier.getGroupId());
-				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid, "reject_submit",
+				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid, "reject_submitting",
 						actionNote, 0, context);
 				
 				context.setScopeGroupId(dossier.getGroupId());
