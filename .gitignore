@@ -1,20 +1,50 @@
+<<<<<<< HEAD
 **/!bnd.bnd
 **/!build.gradle
+=======
+.gradle/
+build/
+target/
+bin/
+**/vr-business-api/**/model/
+**/vr-business-api/**/exception/
+**/vr-business-api/**/service/
+**/vr-business-api/**/service/persistence/
+**/.DS_Store
+**/**.class
+
+##Ignore tracking in service layer
+**/model/impl/
+**/service/base/
+**/service/persistence/impl/
+**/service/http/
+
+##Ignore database
+>>>>>>> vr-business/master
 **/indexes.sql
 **/sequences.sql
 **/tables.sql
 **/module-hbm.xml
 **/portlet-model-hints.xml
+<<<<<<< HEAD
 **/module-spring.xml 
 **/service.properties
 **/sql/**
 **/**/**.sql
 **/*.iml
 **/.ivy
+=======
+**/module-spring.xml
+**/service.properties
+**/sql/**
+**/**/**.sql
+
+>>>>>>> vr-business/master
 **/.classpath
 **/.project
 **/.sass-cache
 **/.settings
+<<<<<<< HEAD
 **/bin
 **/build
 **/build_gradle
@@ -25,6 +55,7 @@ themes/
 **/.web_bundle_build
 .gradle
 .idea
+.metadata
 /bundles
 /plugins-sdk/**/classes
 /plugins-sdk/**/ivy.xml.MD5
@@ -82,3 +113,6 @@ mt-dklr/**
 theme_nz/*
 modules/vr-business
 gradle.properties
+=======
+
+>>>>>>> vr-business/master

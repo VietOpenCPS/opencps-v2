@@ -21,6 +21,7 @@ import org.opencps.datamgt.model.DictGroup;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.model.DictItemGroup;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -175,17 +176,19 @@ public class DataManagementUtils {
 
 		try {
 
-			ett.setDictCollectionId(dictCollection.getDictCollectionId());
-			ett.setCollectionCode(dictCollection.getCollectionCode());
-			ett.setCollectionName(dictCollection.getCollectionName());
-			ett.setCollectionNameEN(dictCollection.getCollectionNameEN());
-			ett.setDescription(dictCollection.getDescription());
-			ett.setCreateDate(Validator.isNotNull(dictCollection.getCreateDate())
-					? APIDateTimeUtils.convertDateToString(dictCollection.getCreateDate(), APIDateTimeUtils._TIMESTAMP)
-					: StringPool.BLANK);
-			ett.setModifiedDate(
-					Validator.isNotNull(dictCollection.getModifiedDate()) ? APIDateTimeUtils.convertDateToString(
-							dictCollection.getModifiedDate(), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+			if (ett != null) {
+				ett.setDictCollectionId(dictCollection.getDictCollectionId());
+				ett.setCollectionCode(dictCollection.getCollectionCode());
+				ett.setCollectionName(dictCollection.getCollectionName());
+				ett.setCollectionNameEN(dictCollection.getCollectionNameEN());
+				ett.setDescription(dictCollection.getDescription());
+				ett.setCreateDate(Validator.isNotNull(dictCollection.getCreateDate())
+						? APIDateTimeUtils.convertDateToString(dictCollection.getCreateDate(), APIDateTimeUtils._TIMESTAMP)
+						: StringPool.BLANK);
+				ett.setModifiedDate(
+						Validator.isNotNull(dictCollection.getModifiedDate()) ? APIDateTimeUtils.convertDateToString(
+								dictCollection.getModifiedDate(), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);				
+			}
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -393,6 +396,67 @@ public class DataManagementUtils {
 		}
 		return results;
 	}	
+
+	public static List<org.opencps.api.datamgtsync.model.DictGroupModel> mapperDictGroupList(List<DictGroup> lstGroups) {		
+		List<org.opencps.api.datamgtsync.model.DictGroupModel> results = new ArrayList<>();
+		
+		for (DictGroup dg : lstGroups) {
+			org.opencps.api.datamgtsync.model.DictGroupModel model = new org.opencps.api.datamgtsync.model.DictGroupModel();
+			try {
+				DictCollection collection = DictCollectionLocalServiceUtil.fetchDictCollection(dg.getDictCollectionId());
+
+				model.setCollectionCode(collection.getCollectionCode());
+				
+				model.setGroupCode(dg.getGroupCode());
+				model.setGroupName(dg.getGroupName());
+				model.setGroupNameEN(dg.getGroupNameEN());
+				model.setGroupDescription(dg.getGroupDescription());
+				
+				if (Validator.isNotNull(dg.getCreateDate())) {
+					model.setCreateDate(dg.getCreateDate().getTime());				
+				}
+				if (Validator.isNotNull(dg.getModifiedDate())) {
+					model.setModifiedDate(dg.getModifiedDate().getTime());				
+				}
+				
+				results.add(model);
+			}
+			catch (Exception e) {
+				
+			}
+		}
+		return results;
+	}	
+	public static List<org.opencps.api.datamgtsync.model.DictItemGroupModel> mapperDictItemGroupList(List<DictItemGroup> lstDictItemGroups) {		
+		List<org.opencps.api.datamgtsync.model.DictItemGroupModel> results = new ArrayList<>();
+		
+		for (DictItemGroup dig : lstDictItemGroups) {
+			org.opencps.api.datamgtsync.model.DictItemGroupModel model = new org.opencps.api.datamgtsync.model.DictItemGroupModel();
+			try {
+				DictGroup group = DictGroupLocalServiceUtil.fetchDictGroup(dig.getDictGroupId());
+				DictCollection collection = DictCollectionLocalServiceUtil.fetchDictCollection(group.getDictCollectionId());
+				DictItem item = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+				
+				model.setCollectionCode(collection.getCollectionCode());
+				model.setGroupCode(group.getGroupCode());
+				model.setItemCode(item.getItemCode());
+				
+				if (Validator.isNotNull(dig.getCreateDate())) {
+					model.setCreateDate(dig.getCreateDate().getTime());				
+				}
+				if (Validator.isNotNull(dig.getModifiedDate())) {
+					model.setModifiedDate(dig.getModifiedDate().getTime());				
+				}
+				
+				results.add(model);
+			}
+			catch (Exception e) {
+				
+			}
+		}
+		return results;
+	}	
+	
 	public static Log _log = LogFactoryUtil.getLog(DataManagementUtils.class);
 
 }

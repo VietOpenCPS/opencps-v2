@@ -21,25 +21,24 @@
 
 					</div>
 					
-					<#-- <a class="PL5 PR5 hover-pointer" href="#searchAdvancedCollapse" data-toggle="collapse">Nâng cao</a> -->
+					<a class="PL5 PR5 hover-pointer no-icon" href="#searchAdvancedCollapse1" data-toggle="collapse">Nâng cao</a>
 
 					<span id="fullScreen" data-bind="events: { click: fullScreen}">
 						<i class="fa fa-expand fs20 toggle-collapse MR10 ML10" aria-hidden="true"></i>
 						<i class="fa fa-compress fs20 MR10 ML10" aria-hidden="true" style="display: none"></i>
 					</span>
 
-
-
 				</div>
 			</div>
 		</div>
 		<#--	-->
 		<div id="wrapMain" class="table-responsive">
-			<div class="row collapse" id="searchAdvancedCollapse">
+			<div class="row collapse toggle-hide M0" id="searchAdvancedCollapse1">
 
 				<div class="col-sm-12">
-					<div class="row PL10 PR10 PT10">
-						<div class="col-sm-3">
+					<div class="row PT10">
+						<#-- <div class="col-sm-3">
+							<label>Thủ tục</label>
 							<input name="advanced_serviceName_search" id="advanced_serviceName_search"
 							data-role="combobox"
 							data-placeholder="Chọn thủ tục"
@@ -47,57 +46,99 @@
 							data-value-field="serviceCode"
 							data-filter="contains"
 							data-bind="
-							source: serviceNameSource
+							source: dataServiceInfo
 							"
 							>
-						</div>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" name="advanced_companyName_search" id="advanced_companyName_search"
-							 placeholder="Tên doanh nghiệp">
-						</div>
-						<div class="col-sm-3">
+						</div> -->
+						<div class="col-sm-4">
+							<label>Số hồ sơ</label>
 							<input class="form-control input-sm" name="advanced_dossierNo_search" id="advanced_dossierNo_search"
 							placeholder="Số hồ sơ">
 						</div>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" name="advanced_certificateNo_search" id="advanced_certificateNo_search" placeholder="Số chứng chỉ" >
+						<div class="col-sm-4">
+							<label>Từ ngày (Ngày tiếp nhận)</label>
+							<input name="fromReceiveDate" id="fromReceiveDate"
+							data-role="datepicker"
+							data-placeholder="Từ ngày"
+							data-format="dd/MM/yyyy"
+							> 
+						</div>
+						<div class="col-sm-4">
+							<label>Đến ngày (Ngày tiếp nhận)</label>
+							<input name="toReceiveDate" id="toReceiveDate"
+							data-role="datepicker"
+							data-placeholder="Đến ngày"
+							data-format="dd/MM/yyyy"
+							>
+							<!-- <div class="input-group date" data-date-format="dd.mm.yyyy">
+								<input  type="text" class="form-control" placeholder="dd.mm.yyyy">
+								<div class="input-group-addon" >
+									<span class="glyphicon glyphicon-th"></span>
+								</div>
+							</div> -->
 						</div>
 					</div>
 
-					<div class="row P10">
-						<div class="col-sm-3">
-							<input name="advanced_product_search" id="advanced_product_search"
-							data-role="combobox"
-							data-placeholder="Loại sản phẩm"
-							data-text-field="itemName"
-							data-value-field="itemCode"
-							data-filter="contains"
-							data-bind="
-							source: productSource
-							"
+					<div class="row PT10">
+						<div class="col-sm-4">
+							<label>Mã hồ sơ</label>
+							<input class="form-control input-sm" name="dossierIdCTNAdvanced" id="dossierIdCTNAdvanced" placeholder="Mã hồ sơ" >
+						</div>
+						<div class="col-sm-4">
+							<label>Từ ngày (Ngày gửi)</label>
+							<input name="fromSubmitDate" id="fromSubmitDate"
+							data-role="datepicker"
+							data-placeholder="Từ ngày"
+							data-format="dd/MM/yyyy"
+							> 
+						</div>
+						<div class="col-sm-4">
+							<label>Đến ngày (Ngày gửi)</label>
+							<input name="toSubmitDate" id="toSubmitDate"
+							data-role="datepicker"
+							data-placeholder="Đến ngày"
+							data-format="dd/MM/yyyy"
 							>
+							<!-- <div class="input-group date" data-date-format="dd.mm.yyyy">
+								<input  type="text" class="form-control" placeholder="dd.mm.yyyy">
+								<div class="input-group-addon" >
+									<span class="glyphicon glyphicon-th"></span>
+								</div>
+							</div> -->
 						</div>
-						<div class="col-sm-3">
-							<input name="advanced_brand_search" id="advanced_brand_search"
-							data-role="combobox"
-							data-placeholder="Nhãn hiệu"
-							data-text-field="itemName"
-							data-value-field="itemCode"
-							data-filter="contains"
-							data-bind="
-							source: brandSource
-							"
-							>
-						</div>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" name="advanced_tradenames_search" id="advanced_tradenames_search"
-							placeholder="Tên thương mại">
-						</div>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" name="advanced_typeNo_search" id="advanced_typeNo_search" placeholder="Mã kiểu loại">
-						</div>
+						
 					</div>
-					<div class="row PL10 PB10 border-bottom ">
+
+					<div class="row PT10">
+						<div class="col-sm-4">
+							<label>Số chứng chỉ</label>
+							<input class="form-control input-sm" name="so_chung_chi" id="so_chung_chi" placeholder="Số chứng chỉ" >
+						</div>
+						<div class="col-sm-4">
+							<label>Từ ngày (Ngày ký)</label>
+							<input name="tu_ngay_ky_cc" id="tu_ngay_ky_cc"
+							data-role="datepicker"
+							data-placeholder="Từ ngày"
+							data-format="dd/MM/yyyy"
+							> 
+						</div>
+						<div class="col-sm-4">
+							<label>Đến ngày (Ngày ký)</label>
+							<input name="den_ngay_ky_cc" id="den_ngay_ky_cc"
+							data-role="datepicker"
+							data-placeholder="Đến ngày"
+							data-format="dd/MM/yyyy"
+							>
+							<!-- <div class="input-group date" data-date-format="dd.mm.yyyy">
+								<input  type="text" class="form-control" placeholder="dd.mm.yyyy">
+								<div class="input-group-addon" >
+									<span class="glyphicon glyphicon-th"></span>
+								</div>
+							</div> -->
+						</div>
+						
+					</div>
+					<div class="row PT15 PB10 border-bottom ">
 						<div class="col-sm-12">
 							<button class="btn btn-active" data-bind="events: {
 							click: searchAdvanced}">Tìm kiếm</button>
@@ -221,8 +262,8 @@
 		<td class="text-center" style="width: 10%">
 			<#-- Số chứng chỉ -->
 			<#-- #=briefNote# -->
-			<p id="so_cc#:id#" title="Số chứng chỉ">---</p>
-			<p id="ngayki_cc#:id#" title="Ngày ký chứng chỉ">---</p>
+			<p>#=certNo#</p>
+			<p>#=certDate#</p>
 		</td>
 
 		<td class="" style="width: 23%">
@@ -230,47 +271,66 @@
 		</td>
 
 		<td class="" style="width: 23%">
-			# if(typeof actionNote !== "undefined"){#
-			<i>#:actionNote#</i>
+			# if(applicantNote){#
+			<i>#=applicantNote#</i>
 			#}#
 		</td>
 
 		<td class="PT0 PR0" style="width: 12%">
 			<#--	-->
-			<button type="button" class="btn-link no-border PT10 copyProfile" data-pk="#:dossierId#">
+			<#-- <button type="button" class="btn-link no-border PT10 copyProfile" data-pk="#:dossierId#">
 				<i class="fa fa-file-o" aria-hidden="true"></i>
 				Sao chép
-			</button>
+			</button> -->
 			<#--	-->
 			#if(dossierStatus == "done"){#
-			<button type="button" class="btn-link no-border PT10 downloadProfile" data-pk="#:dossierId#">
-				<i class="fa fa-download" aria-hidden="true"/>
-				Tải kết quả
-			</button>
-			<#--  -->
-			<button type="button" class="btn-link no-border PT10 resDone" data-pk="#:dossierId#">
-				<i class="fa fa-reply" aria-hidden="true"/>
-				Yêu cầu cấp lại
-			</button>
-			<#--  -->
-			<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
-				<i class="fa fa-paper-plane" aria-hidden="true"></i>
-				Sửa đổi bổ sung
-			</button>
+				<button type="button" class="btn-link no-border PT10 downloadProfile" data-pk="#:dossierId#">
+					<i class="fa fa-download" aria-hidden="true"/>
+					Tải kết quả
+				</button>
+
+				<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
+					<i class="fa fa-paper-plane" aria-hidden="true"></i>
+					Sửa đổi bổ sung
+				</button>
 			#}#
+
+
+			#
+			if(dossierStatus == "done" && !correctingDate){
+			#
+				<button type="button" class="btn-link no-border PT10 resDone" data-pk="#:dossierId#">
+					<i class="fa fa-reply" aria-hidden="true"/>
+					Yêu cầu cấp lại
+				</button>
+			#
+			}
+			#
+
+
+			#
+			if(dossierStatus == "waiting"){
+				if(!cancellingDate){
+				#
+				<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="#:dossierId#">
+					<i class="fa fa-trash-o" aria-hidden="true"></i>
+					Yêu cầu hủy
+				</button></br>
+				#
+				}
+
+				#
+				<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
+					<i class="fa fa-paper-plane" aria-hidden="true"></i>
+					Gửi bổ sung
+				</button>
+				#
+
+			}
+			#
+			
 			<#--  -->
-			#if(dossierStatus == "waiting"){#
-			<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="#:dossierId#">
-				<i class="fa fa-trash-o" aria-hidden="true"></i>
-				Yêu cầu hủy
-			</button></br>
-			<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
-				<i class="fa fa-paper-plane" aria-hidden="true"></i>
-				Gửi bổ sung
-			</button>
-			#}#
-			<#--  -->
-			#if(dossierStatus == "receiving"){#
+			#if(dossierStatus == "receiving" && !cancellingDate){#
 			<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="#:dossierId#">
 				<i class="fa fa-trash-o" aria-hidden="true"></i>
 				Yêu cầu hủy

@@ -66,6 +66,18 @@ public class DossierMgtUtils {
 				result = result && checkCorrecting(dossier);
 				break;
 
+			case "reject_correcting":
+				result = result && checkCorrecting(dossier);
+				break;
+
+			case "submitting":
+				result = result && checkSubmitting(dossier);
+				break;
+
+			case "reject_submitting":
+				result = result && checkSubmitting(dossier);
+				break;
+
 			default:
 				break;
 			}
@@ -97,6 +109,15 @@ public class DossierMgtUtils {
 
 	private static boolean checkCorrecting(Dossier dossier) {
 		if (dossier.getCorrecttingDate() != null) {
+			return true;
+		}
+
+		return false;
+	}
+	
+	
+	private static boolean checkSubmitting(Dossier dossier) {
+		if (dossier.getEndorsementDate() != null) {
 			return true;
 		}
 

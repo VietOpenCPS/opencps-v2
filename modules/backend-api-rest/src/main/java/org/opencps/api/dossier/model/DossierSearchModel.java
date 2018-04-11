@@ -12,6 +12,7 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -43,6 +44,11 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="step" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="submitting" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="top" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="so_chung_chi" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="fromReceiveDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="toReceiveDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="tu_ngay_ky_cc" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="den_ngay_ky_cc" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -72,7 +78,15 @@ import javax.xml.bind.annotation.XmlType;
     "top",
     "secetKey",
     "state",
-    "dossierNo"
+    "dossierNo",
+    "soChungChi",
+    "fromReceiveDate",
+    "toReceiveDate",
+    "tuNgayKyCc",
+    "denNgayKyCc",
+    "dossierIdCTN",
+    "fromSubmitDate",
+    "toSubmitDate"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -118,7 +132,23 @@ public class DossierSearchModel {
     protected String state;
 	@QueryParam(value = "dossierNo")
     protected String dossierNo;
-
+    @QueryParam(value = "so_chung_chi")
+    protected String soChungChi;
+    @QueryParam(value = "fromReceiveDate")
+    protected String fromReceiveDate;
+    @QueryParam(value = "toReceiveDate")
+    protected String toReceiveDate;
+    @QueryParam(value = "tu_ngay_ky_cc")
+    protected String tuNgayKyCc;
+    @QueryParam(value = "den_ngay_ky_cc")
+    protected String denNgayKyCc;
+    @QueryParam(value = "dossierIdCTN")
+    protected String dossierIdCTN;
+    @QueryParam(value = "fromSubmitDate")
+    protected String fromSubmitDate;
+    @QueryParam(value = "toSubmitDate")
+    protected String toSubmitDate;
+    
     public String getSecetKey() {
 		return secetKey;
 	}
@@ -549,6 +579,150 @@ public class DossierSearchModel {
 
 	public void setDossierNo(String dossierNo) {
 		this.dossierNo = dossierNo;
+	}
+
+    /**
+     * Gets the value of the soChungChi property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSoChungChi() {
+        return soChungChi;
+    }
+
+    /**
+     * Sets the value of the soChungChi property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSoChungChi(String value) {
+        this.soChungChi = value;
+    }
+
+    /**
+     * Gets the value of the fromReceiveDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getFromReceiveDate() {
+        return fromReceiveDate;
+    }
+
+    /**
+     * Sets the value of the fromReceiveDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setFromReceiveDate(String value) {
+        this.fromReceiveDate = value;
+    }
+
+    /**
+     * Gets the value of the toReceiveDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getToReceiveDate() {
+        return toReceiveDate;
+    }
+
+    /**
+     * Sets the value of the toReceiveDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setToReceiveDate(String value) {
+        this.toReceiveDate = value;
+    }
+
+    /**
+     * Gets the value of the tuNgayKyCc property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getTuNgayKyCc() {
+        return tuNgayKyCc;
+    }
+
+    /**
+     * Sets the value of the tuNgayKyCc property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTuNgayKyCc(String value) {
+        this.tuNgayKyCc = value;
+    }
+
+    /**
+     * Gets the value of the denNgayKyCc property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDenNgayKyCc() {
+        return denNgayKyCc;
+    }
+
+    /**
+     * Sets the value of the denNgayKyCc property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDenNgayKyCc(String value) {
+        this.denNgayKyCc = value;
+    }
+
+	public String getDossierIdCTN() {
+		return dossierIdCTN;
+	}
+
+	public void setDossierIdCTN(String dossierIdCTN) {
+		this.dossierIdCTN = dossierIdCTN;
+	}
+
+	public String getFromSubmitDate() {
+		return fromSubmitDate;
+	}
+
+	public void setFromSubmitDate(String fromSubmitDate) {
+		this.fromSubmitDate = fromSubmitDate;
+	}
+
+	public String getToSubmitDate() {
+		return toSubmitDate;
+	}
+
+	public void setToSubmitDate(String toSubmitDate) {
+		this.toSubmitDate = toSubmitDate;
 	}
 
 }

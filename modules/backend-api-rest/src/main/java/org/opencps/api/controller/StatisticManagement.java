@@ -22,17 +22,17 @@ import com.liferay.portal.kernel.service.ServiceContext;
 
 public interface StatisticManagement {
 
+//	@GET
+//	@Path("/dossiers/todo")
+//	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+//	public Response getDossierTodo(@Context HttpServletRequest request, @Context HttpHeaders header,
+//			@Context Company company, @Context Locale locale, @Context User user,
+//			@Context ServiceContext serviceContext, @BeanParam StatisticDossierSearchModel query);
+
 	@GET
 	@Path("/dossiers/todo")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getDossierTodo(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @BeanParam StatisticDossierSearchModel query);
-
-	@GET
-	@Path("/dossiers/todoTest")
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response getDossierTodoTest(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @BeanParam StatisticDossierSearchModel query);
 

@@ -10,6 +10,7 @@ import org.opencps.communication.service.ServerConfigLocalService;
 import org.opencps.synchronization.constants.PushCollectionTerm;
 import org.opencps.synchronization.constants.SyncServerTerm;
 import org.opencps.synchronization.model.PushCollection;
+import org.opencps.synchronization.rest.client.DictDataRestClient;
 import org.opencps.synchronization.service.PushCollectionLocalService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -42,14 +43,13 @@ import com.liferay.portal.kernel.util.Validator;
 public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		_log.info("PUSH DICT COLLECTION IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
+//		_log.info("PUSH DICT COLLECTION IS STARTING " + APIDateTimeUtils.convertDateToString(new Date()));
 		
 		try {
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 			ServiceContext serviceContext = new ServiceContext();
 			serviceContext.setCompanyId(company.getCompanyId());
 					
-			List<PushCollection> lstSyncDicts = _pushCollectionLocalService.findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 			List<ServerConfig> lstServers = _serverConfigLocalService.getServerConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 						
 			for (ServerConfig sc : lstServers) {
@@ -62,7 +62,10 @@ public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListen
 								&& configObj.has(SyncServerTerm.SERVER_USERNAME)
 								&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
 								&& configObj.has(SyncServerTerm.SERVER_URL)
-								&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+								&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)
+								&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))
+								) {
+							List<PushCollection> lstSyncDicts = _pushCollectionLocalService.findByGroupId_ServerNo(sc.getGroupId(), sc.getServerNo(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 							synchronizeCollection(lstSyncDicts, sc, configObj);
 						}
 					}
@@ -75,11 +78,10 @@ public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListen
 		catch (Exception e) {
 			_log.error(e);
 		}	
-		_log.info("PUSH DICT COLLECTION HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
+//		_log.info("PUSH DICT COLLECTION HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 	}
 	
 	private void synchronizeCollection(List<PushCollection> lstSyncDicts, ServerConfig serverConfig, JSONObject configObj) {
-		_log.info("PUSH DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " IS STARING " + APIDateTimeUtils.convertDateToString(new Date()));
 		InvokeREST rest = new InvokeREST();
 		
 		HashMap<String, String> properties = new HashMap<String, String>();
@@ -92,6 +94,8 @@ public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListen
 		if (rootApiUrl.charAt(rootApiUrl.length() - 1) == '/') {
 			rootApiUrl = rootApiUrl.substring(0, rootApiUrl.length() - 2);
 		}
+
+		DictDataRestClient restClient = DictDataRestClient.fromJSONObject(configObj);
 		
 		try {
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
@@ -99,7 +103,16 @@ public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListen
 			serviceContext.setCompanyId(company.getCompanyId());
 			
 			for (PushCollection pcollection : lstSyncDicts) {
-				if (pcollection.getMethod().equals(SyncServerTerm.METHOD_CREATE)) {
+				boolean isFound = false;
+				
+				if (restClient != null) {
+					if (restClient.getCollectionDetail(pcollection.getCollectionCode()) != null) {
+						isFound = true;
+					}
+				}
+	
+				if (pcollection.getGroupId() != configObj.getLong(SyncServerTerm.SERVER_GROUP_ID) && pcollection.getMethod().equals(SyncServerTerm.METHOD_CREATE)) {
+					_log.info("PUSH DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " IS STARING " + APIDateTimeUtils.convertDateToString(new Date()));
 					putDictCollectionRestUrl.setLength(0);
 					putDictCollectionRestUrl.append(dictCollectionEndPoint);
 					putDictCollectionRestUrl.append("/" + pcollection.getCollectionCode());
@@ -108,75 +121,107 @@ public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListen
 					params.put(PushCollectionTerm.COLLECTION_NAME, pcollection.getCollectionName());
 					params.put(PushCollectionTerm.COLLECTION_NAME_EN, pcollection.getCollectionNameEN());
 					params.put(PushCollectionTerm.DESCRIPTION, pcollection.getDescription());
-									
-					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
-							rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
-					
-					if (resDictItem.getInt(RESTFulConfiguration.STATUS) == 200) {
-						_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());
-					}													
+														
+					if (!isFound) {
+						JSONObject resDictCollection = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
+								rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+						
+						if (SyncServerUtil.isSyncOk(resDictCollection.getInt(RESTFulConfiguration.STATUS))) {
+							_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());
+	 					}																			
+					}
+					else {
+						_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());						
+					}
+					_log.info("PUSH DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
-				else if (pcollection.getMethod().equals(SyncServerTerm.METHOD_UPDATE)) {
+				else if (pcollection.getGroupId() != configObj.getLong(SyncServerTerm.SERVER_GROUP_ID) && pcollection.getMethod().equals(SyncServerTerm.METHOD_UPDATE)) {
+					_log.info("PUSH DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " IS STARING " + APIDateTimeUtils.convertDateToString(new Date()));
 					putDictCollectionRestUrl.setLength(0);
 					putDictCollectionRestUrl.append(dictCollectionEndPoint);
 					putDictCollectionRestUrl.append("/" + pcollection.getCollectionCode());
 					
+					params.put(PushCollectionTerm.MODIFIED_DATE, pcollection.getModifiedDate().getTime());
 					params.put(PushCollectionTerm.COLLECTION_CODE, pcollection.getCollectionCode());
 					params.put(PushCollectionTerm.COLLECTION_NAME, pcollection.getCollectionName());
 					params.put(PushCollectionTerm.COLLECTION_NAME_EN, pcollection.getCollectionNameEN());
 					params.put(PushCollectionTerm.DESCRIPTION, pcollection.getDescription());
 									
-					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
-							rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
-					
-					if (resDictItem.getInt(RESTFulConfiguration.STATUS) == 200) {
-						_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());
-					}									
+					if (isFound) {
+						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
+								rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+						
+						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
+							_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());
+						}															
+					}
+					else {
+						_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());						
+					}
+					_log.info("PUSH DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
-				else if (pcollection.getMethod().equals(SyncServerTerm.METHOD_DELETE)) {
+				else if (pcollection.getGroupId() != configObj.getLong(SyncServerTerm.SERVER_GROUP_ID) && pcollection.getMethod().equals(SyncServerTerm.METHOD_DELETE)) {
+					_log.info("PUSH DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " IS STARING " + APIDateTimeUtils.convertDateToString(new Date()));
 					putDictCollectionRestUrl.setLength(0);
 					putDictCollectionRestUrl.append(dictCollectionEndPoint);
 					putDictCollectionRestUrl.append("/" + pcollection.getCollectionCode());
 														
-					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.DELETE, "application/json",
-							rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
-					
-					if (resDictItem.getInt(RESTFulConfiguration.STATUS) == 200) {
-						_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());
-					}														
+					try {
+						if (isFound) {
+							JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.DELETE, "application/json",
+									rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+							if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
+								_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());
+							}																					
+						}
+						else {
+							_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());							
+						}
+					}
+					catch (Exception e) {
+						_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());						
+					}
+					_log.info("PUSH DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
-				else if (pcollection.getMethod().equals(SyncServerTerm.METHOD_UPDATE_DATAFORM)) {
+				else if (pcollection.getGroupId() != configObj.getLong(SyncServerTerm.SERVER_GROUP_ID) && pcollection.getMethod().equals(SyncServerTerm.METHOD_UPDATE_DATAFORM)) {
+					_log.info("PUSH DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " IS STARING " + APIDateTimeUtils.convertDateToString(new Date()));
 					putDictCollectionRestUrl.setLength(0);
 					putDictCollectionRestUrl.append(dictCollectionEndPoint);
 					putDictCollectionRestUrl.append("/" + pcollection.getCollectionCode());
 					putDictCollectionRestUrl.append("/dataform");
 					
 					params.put(PushCollectionTerm.DATA_FORM, pcollection.getDataForm());
+					params.put(PushCollectionTerm.MODIFIED_DATE, pcollection.getModifiedDate().getTime());
 									
-					JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.PUT, "application/json",
-							rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-							configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
-					
-					if (resDictItem.getInt(RESTFulConfiguration.STATUS) == 200) {
-						_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());
-					}									
+					if (isFound) {
+						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.PUT, "application/json",
+								rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
+								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+						
+						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
+							_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());
+						}															
+					}
+					else {
+						_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());						
+					}
+					_log.info("PUSH DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 				}
 			}
 		}
 		catch (Exception e) {
 			_log.error(e);
 		}
-		_log.info("PUSH DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
 	}
 	
 	@Activate
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 45, TimeUnit.SECOND));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 15, TimeUnit.SECOND));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 
