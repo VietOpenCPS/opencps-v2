@@ -701,7 +701,9 @@ public class DataManagementImpl implements DataManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			
-			boolean flag = dictItemDataUtil.deleteDictgroups(groupCode, groupId, serviceContext);
+//			boolean flag = dictItemDataUtil.deleteDictgroups(groupCode, groupId, serviceContext);
+			boolean flag = dictItemDataUtil.deleteDictgroups(code, groupCode, groupId, serviceContext);
+			
 			dictItemDataTempUtil.deleteDictGroupsTemp(groupCode, groupId, serviceContext);
 			
 			if (flag) {

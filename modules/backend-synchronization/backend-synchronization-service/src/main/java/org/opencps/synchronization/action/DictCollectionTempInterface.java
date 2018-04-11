@@ -68,6 +68,9 @@ public interface DictCollectionTempInterface {
 	public boolean deleteDictGroupsTemp(String groupCode, long groupId, ServiceContext serviceContext)
 			throws NotFoundException, UnauthenticationException, UnauthorizationException;
 	
+	public boolean deleteDictGroupsTemp(String collectionCode, String groupCode, long groupId, ServiceContext serviceContext)
+			throws NotFoundException, UnauthenticationException, UnauthorizationException;
+
 	public DictItemGroupTemp addDictGroupsDictItemsTemp(long userId, long groupId, String code, String groupCode,
 			String itemCode, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException;

@@ -122,6 +122,11 @@
 </div>
 
 <div class="row MT30">
+	<div class="col-xs-2 col-sm-2">
+	
+		<span class="btn btn-active btn-block p-xxs" id="btnDeleteDictGroups">Xoá nhóm</span> 
+	
+	</div>
 
 	<div class="col-xs-3 col-sm-3">
 	
@@ -135,7 +140,7 @@
 	
 	</div>
 	
-	<div class="col-xs-9 col-sm-9 input-group MB15 PR15">
+	<div class="col-xs-7 col-sm-7 input-group MB15 PR15">
 
 		<input type="text" class="form-control" id="_collectionSub_group_keySearch"
 				oninput="_collectionSub_group_autocompleteSearch(this.value)" 
@@ -152,13 +157,18 @@
 			<li class="PB10">
 				
 				<div class="row M0">
+					<div class="col-xs-1 col-sm-1 text-center">
+					    <div>
+					        <input type="checkbox" id="checkallGroup" class="clickGroup" />
+					    </div>									
+					</div>
 					
 					<div class="col-xs-1 col-sm-1 PL0 text-center">
 					
 						<strong>STT</strong>
 					
 					</div>
-					<div class="col-xs-3  col-sm-3">
+					<div class="col-xs-2  col-sm-2">
 						
 						<strong>Mã nhóm</strong>
 					
@@ -199,6 +209,16 @@
 	<li class="PT5 PB5 line-dashed">
 	
 		<div class="row M0 eq-height flex-break" >
+			<div class="col-xs-1 col-sm-1 align-middle" >
+				
+				<div class="full-width text-center">
+
+				    <div class="group clickGroup" data="#:groupCode#">
+				        <input type="checkbox" value="#:groupCode#" class="clickGroup" />
+				    </div>
+				</div>
+				
+			</div>
 		
 			<div class="col-xs-1 col-sm-1 PL0 align-middle" >
 				
@@ -214,7 +234,7 @@
 				
 			</div>
 			
-			<div class="col-xs-3 col-sm-3 align-middle" >
+			<div class="col-xs-2 col-sm-2 align-middle" >
 				
 				<div class="text-ellipsis">
 					#:groupCode#
@@ -309,6 +329,50 @@ function _collectionSub_group_autocompleteSearch(val) {
 }
 
 (function($) {
+    function checkboxGroupEventBinding()
+    {
+         $('#checkallGroup').bind('click',function(e){
+             if(this.checked)
+             {
+                 $('.group.clickGroup input').attr('checked','checked');
+             }
+             else
+             {
+                 $('.group.clickGroup input').removeAttr('checked');
+             }
+         })
+    }
+     		
+    $('#btnDeleteDictGroups').click(function() {
+					var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa các bản ghi này?', $("#_collectionSub_dictItem_listView") );
+					
+					confirmWindown.then(function(confirmed){
+					
+						if(confirmed){
+					    	$('.group.clickGroup input:checked').each(function() {
+					    		var groupCode = $(this).val();
+								$.ajax({
+									url: _collectionSub_group_BaseUrl_detail + "/" + groupCode,
+									headers: {
+										"groupId": ${groupId}
+									},
+									type: 'DELETE',
+									success: function(result) {
+										_collectionSub_group_dataSource_detail.read();										
+									},
+									error: function(xhr, textStatus, errorThrown) {
+									}
+					
+								});
+					    	});
+
+						} else{
+							
+							options.error();
+						}
+					});
+    
+    });
 	
 	var _collectionSub_group_BaseUrl_detail = "${api.endpoint}/dictcollections/"+$("#_collectionSub_code").text().trim()+"/dictgroups",
 		
@@ -515,6 +579,7 @@ function _collectionSub_group_autocompleteSearch(val) {
 		dataBound : function (e){
 
 			e.preventDefault();
+         	checkboxGroupEventBinding();
 
 			globleIndex = 0;
 

@@ -521,6 +521,52 @@ public class DictCollectionActions implements DictcollectionInterface {
 		return flag;
 	}
 
+	/**
+	 * @author binhth
+	 * @param userId
+	 * @param groupId
+	 * @param groupCode
+	 * @param serviceContext
+	 * @return boolean
+	 */
+	public boolean deleteDictgroups(
+		String collectionCode,
+		String groupCode, long groupId, ServiceContext serviceContext)
+		throws NotFoundException, UnauthenticationException,
+		UnauthorizationException, DataInUsedException {
+
+		boolean flag = false;
+
+		DictCollection collection = null;
+		try {
+			collection = getDictCollectionDetail(collectionCode, groupId);
+		}
+		catch (Exception e) {
+			
+		}
+		if (collection != null) {
+			DictGroup dictColl = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());
+
+			if (Validator.isNull(dictColl)) {
+
+				flag = false;
+
+			}
+			else {
+
+				DictGroupLocalServiceUtil.deleteDictGroup(
+					dictColl.getDictGroupId(), serviceContext);
+
+				flag = true;
+
+			}			
+		}
+		else {
+			flag = false;
+		}
+		return flag;
+	}
+
 	public DictItemGroup addDictgroupsDictItems(
 		long userId, long groupId, String code, String groupCode,
 		String itemCode, ServiceContext serviceContext)

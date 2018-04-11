@@ -349,6 +349,42 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 	}
 
 	@Override
+	public boolean deleteDictGroupsTemp(String collectionCode, String groupCode, long groupId, ServiceContext serviceContext)
+			throws NotFoundException, UnauthenticationException, UnauthorizationException {
+		// TODO Auto-generated method stub
+		boolean flag = false;
+
+		DictCollectionTemp collection = null;
+		
+		try {
+			collection = getDictCollectionTempDetail(collectionCode, groupId);
+		}
+		catch (Exception e) {
+			
+		}
+		
+		if (collection != null) {
+			DictGroupTemp dictColl = DictGroupTempLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());
+
+			if (Validator.isNull(dictColl)) {
+
+				flag = false;
+
+			} else {
+
+				DictGroupTempLocalServiceUtil.deleteDictGroupTemp(dictColl.getDictGroupId(), serviceContext);
+
+				flag = true;
+
+			}			
+		}
+		else {
+			flag = false;
+		}
+		return flag;
+	}
+
+	@Override
 	public DictItemGroupTemp addDictGroupsDictItemsTemp(long userId, long groupId, String code, String groupCode,
 			String itemCode, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException {

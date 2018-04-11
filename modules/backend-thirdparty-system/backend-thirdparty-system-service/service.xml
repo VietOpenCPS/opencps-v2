@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+
+<service-builder package-path="org.opencps.thirdparty.system">
+	<author>trungdk</author>
+	<namespace>thirdpartysystem</namespace>
+	
+	<entity local-service="true" name="ThirdPartyDossierSync" remote-service="false"
+		table="opencps_thirdparty_dossiersync" uuid="true">
+
+		<column name="dossierSyncId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="dossierId" type="long" />
+		<column name="dossierReferenceUid" type="String" />
+		<column name="createDossier" type="boolean" />
+		<column name="method" type="int" />
+		<column name="classPK" type="long" />
+		<column name="fileReferenceUid" type="String" />
+		<column name="serverNo" type="String" />
+
+		<order>
+			<order-column name="dossierId" order-by="asc" />
+			<order-column name="method" order-by="asc" />
+		</order>
+		
+		<finder return-type="DossierSync" name="F_D_M_CPK_FR">
+			<finder-column name="dossierId"/>
+			<finder-column name="method"/>
+			<finder-column name="classPK"/>
+			<finder-column name="fileReferenceUid"/>
+		</finder>
+		
+		<finder return-type="Collection" name="G_ID">
+			<finder-column name="groupId" />
+		</finder>
+
+		<finder return-type="Collection" name="G_ID_DID">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+		</finder>
+
+		<finder return-type="Collection" name="G_ID_DRF">
+			<finder-column name="groupId" />
+			<finder-column name="dossierReferenceUid" />
+		</finder>
+
+		<finder return-type="Collection" name="SRV_NO">
+			<finder-column name="serverNo" />
+		</finder>
+		
+		<finder return-type="Collection" name="DossierId">
+			<finder-column name="dossierId" />
+		</finder>		
+	</entity>
+</service-builder>

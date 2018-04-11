@@ -1,0 +1,11 @@
+Bundle-Name: backend-thirdparty-system-service
+Bundle-SymbolicName: org.opencps.thirdparty.system.service
+Bundle-Version: 1.0.0
+Liferay-Require-SchemaVersion: 1.0.0
+Liferay-Service: true
+Include-Resource:\
+	@httpclient-4.3.1.jar,\
+	@httpmime-4.3.1.jar,\
+	@httpcore-4.3.1.jar,\
+	@commons-io-2.0.1.jar,\
+	@commons-codec-1.9.jar	
