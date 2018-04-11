@@ -243,7 +243,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 									input.getPostStepCode(), serviceContext);
 							_log.info("hashComputed: "+hashComputed);
 						} catch (Exception e) {
-							
+							_log.info("hashComputed: "+hashComputed);
 							_log.info(e);
 						}
 						
