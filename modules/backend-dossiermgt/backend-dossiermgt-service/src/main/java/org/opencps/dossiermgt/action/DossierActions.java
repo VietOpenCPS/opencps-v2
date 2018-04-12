@@ -86,4 +86,8 @@ public interface DossierActions {
 
 	public JSONObject getDossierTodoPermission(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, ServiceContext serviceContext);
+	
+	
+	public Dossier submitPostDossier(long groupId, long dossierId, String referenceUid, ServiceContext context) throws PortalException ;
+
 }

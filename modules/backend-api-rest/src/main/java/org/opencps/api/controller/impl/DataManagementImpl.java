@@ -24,6 +24,7 @@ import org.opencps.api.datamgt.model.DictItemInputModel;
 import org.opencps.api.datamgt.model.DictItemModel;
 import org.opencps.api.datamgt.model.DictItemResults;
 import org.opencps.api.datamgt.model.Groups;
+import org.opencps.auth.api.exception.DataInUsedException;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
@@ -756,6 +757,19 @@ public class DataManagementImpl implements DataManagement {
 				error.setDescription("not found!");
 
 				return Response.status(404).entity(error).build();
+
+			}
+
+			if (e instanceof DataInUsedException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("data is in used!");
+				error.setCode(406);
+				error.setDescription("data is in used!");
+
+				return Response.status(406).entity(error).build();
 
 			}
 

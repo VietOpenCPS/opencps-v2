@@ -325,6 +325,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 		document.addTextSortable(DossierTerm.ENDORSEMENT_DATE,
 				APIDateTimeUtils.convertDateToString(object.getEndorsementDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		document.addNumberSortable(DossierTerm.ENDORSEMENT_DATE_TIMESTAMP,
+				Validator.isNotNull(object.getEndorsementDate()) ? object.getEndorsementDate().getTime() : 0);
 
 		return document;
 	}

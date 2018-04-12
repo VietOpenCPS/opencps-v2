@@ -1166,6 +1166,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 			}
+			if (state.equals("correcting")) {
+
+				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
+
+				query.addField(DossierTerm.CORRECTING_DATE_TIMESTAMP);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
+			}
+			if (state.equals("endorsement")) {
+
+				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
+
+				query.addField(DossierTerm.ENDORSEMENT_DATE_TIMESTAMP);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
+			}
 		}
 
 		if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
@@ -1545,6 +1561,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				subQuery.add(query2, BooleanClauseOccur.MUST_NOT);
 
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
+			if (state.equals("correcting")) {
+
+				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
+
+				query.addField(DossierTerm.CORRECTING_DATE_TIMESTAMP);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
+			}
+			if (state.equals("endorsement")) {
+
+				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
+
+				query.addField(DossierTerm.ENDORSEMENT_DATE_TIMESTAMP);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
 			}
 		}
 

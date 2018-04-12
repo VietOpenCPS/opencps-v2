@@ -42,6 +42,7 @@ import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
@@ -556,7 +557,6 @@ public class DossierManagementImpl implements DossierManagement {
 	public Response getDetailDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id) {
 
-		_log.info("1");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		String password = GetterUtil.getString(header.getHeaderString("password"));
 		DossierPermission dossierPermission = new DossierPermission();
@@ -564,10 +564,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 		try {
 
-			_log.info("1");
 			if (Validator.isNotNull(password)) {
 
-				_log.info("1");
 				Dossier dossier = getDossier(id, groupId);
 
 				dossierPermission.checkPassword(dossier, password);
@@ -577,23 +575,17 @@ public class DossierManagementImpl implements DossierManagement {
 				return Response.status(200).entity(result).build();
 
 			} else {
-				_log.info("1");
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
 				}
 
-				_log.info("1");
 				Dossier dossier = getDossier(id, groupId);
 
-				_log.info("1");
 				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 						dossier.getDossierTemplateNo(), groupId);
 
-				_log.info("userID: "+user.getUserId());
-				_log.info("1");
 //				dossierPermission.hasGetDetailDossier(groupId, user.getUserId(), dossier, option.getServiceProcessId());
 
-				_log.info("userID: "+user.getUserId());
 				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
 				return Response.status(200).entity(result).build();
@@ -1617,7 +1609,7 @@ public class DossierManagementImpl implements DossierManagement {
 			
 			serviceContext.setScopeGroupId(groupId);
 
-			Dossier cancellingDossier = actions.correctDossier(groupId, dossier.getDossierId(),
+			Dossier cancellingDossier = actions.submitPostDossier(groupId, dossier.getDossierId(),
 					dossier.getReferenceUid(), serviceContext);
 
 			// 2. update requestDossier
@@ -1660,6 +1652,73 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 		}
 
+	}
+
+	@Override
+	public Response getProcessStepByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long dossierId = GetterUtil.getLong(id);
+
+			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+			long dossierActionId = 0;
+			DossierAction dossierAction = null;
+			long serviceProcessId = 0;
+			String actionCode = StringPool.BLANK;
+			if (dossier != null) {
+				dossierActionId = dossier.getDossierActionId();
+				if (dossierActionId > 0) {
+					dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+				}
+			}
+			if (dossierAction != null) {
+				serviceProcessId = dossierAction.getServiceProcessId();
+				actionCode = dossierAction.getActionCode();
+			}
+
+			ProcessStep proStep = ProcessStepLocalServiceUtil.fetchBySC_GID(actionCode, groupId, serviceProcessId);
+			String restrictDossier = StringPool.BLANK;
+			if (proStep != null) {
+				restrictDossier = proStep.getRestrictDossier();
+			}
+
+			return Response.status(200).entity(restrictDossier).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					error.setMessage("Internal Server Error");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+
+				}
+			}
+		}
 	}
 
 }

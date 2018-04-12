@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import org.opencps.auth.api.exception.DataInUsedException;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
@@ -497,7 +498,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 	public boolean deleteDictgroups(
 		String groupCode, long groupId, ServiceContext serviceContext)
 		throws NotFoundException, UnauthenticationException,
-		UnauthorizationException {
+		UnauthorizationException, DataInUsedException {
 
 		boolean flag = false;
 
@@ -856,10 +857,14 @@ public class DictCollectionActions implements DictcollectionInterface {
 			DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(
 				code, groupId);
 
-		DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(
-			itemCode, dictCollection.getDictCollectionId(), groupId);
-
-		return dictItem;
+		if (dictCollection != null) {
+			DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(
+					itemCode, dictCollection.getDictCollectionId(), groupId);
+			return dictItem;			
+		}
+		else {
+			return null;
+		}
 	}
 
 	public String updateDictItemGroup(

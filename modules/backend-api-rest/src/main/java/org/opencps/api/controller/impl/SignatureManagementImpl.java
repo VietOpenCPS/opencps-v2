@@ -229,18 +229,24 @@ public class SignatureManagementImpl implements SignatureManagement{
 			for (String strId : idSplit) {
 				String[] idArr = strId.split(StringPool.COMMA);
 				DossierPart dossierPart = DossierPartLocalServiceUtil.fetchDossierPart(Long.valueOf(idArr[1]));
-//				_log.info("Dossier Part: "+dossierPart);
+				_log.info("Dossier Part: "+dossierPart.getDossierPartId());
 				DossierFile dossierFile = null;
 				if (dossierPart != null && dossierPart.getESign()) {
 					dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(Long.valueOf(idArr[0]));
-//					_log.info("Dossier File: "+dossierFile);
+					_log.info("Dossier File: "+dossierFile.getDossierFileId());
 					if (dossierFile != null && dossierFile.getFileEntryId() > 0) {
 						long fileEntryId = dossierFile.getFileEntryId();
-//						_log.info("fileEntryId: "+fileEntryId);
+						_log.info("fileEntryId: "+fileEntryId);
 
-						hashComputed = callHashComputedSync(groupId, user, fileEntryId, input.getActionCode(),
-								input.getPostStepCode(), serviceContext);
-//						_log.info("hashComputed: "+hashComputed);
+						try {
+							hashComputed = callHashComputedSync(groupId, user, fileEntryId, input.getActionCode(),
+									input.getPostStepCode(), serviceContext);
+							_log.info("hashComputed: "+hashComputed);
+						} catch (Exception e) {
+							_log.info("hashComputed: "+hashComputed);
+							_log.info(e);
+						}
+						
 						results = JSONFactoryUtil.createJSONObject(hashComputed.getString(RESTFulConfiguration.MESSAGE));
 //						_log.info("results: "+results);
 					} else {
