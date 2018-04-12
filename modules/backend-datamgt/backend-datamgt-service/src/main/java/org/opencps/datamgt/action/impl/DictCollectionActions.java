@@ -1122,4 +1122,63 @@ public class DictCollectionActions implements DictcollectionInterface {
 		return DictItemGroupLocalServiceUtil.countOlderThanDate(date, groupId);
 	}
 
+	@Override
+	public boolean deleteDictgroupsAndSomethingUseIt(String collectionCode, String groupCode, long groupId,
+			ServiceContext serviceContext)
+			throws NotFoundException, UnauthenticationException, UnauthorizationException, DataInUsedException {
+		// TODO Auto-generated method stub
+		boolean flag = false;
+
+		DictCollection collection = null;
+		try {
+			collection = getDictCollectionDetail(collectionCode, groupId);
+		}
+		catch (Exception e) {
+			
+		}
+		if (collection != null) {
+			DictGroup dictColl = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());
+
+			if (Validator.isNull(dictColl)) {
+
+				flag = false;
+
+			}
+			else {
+				List<DictItemGroup> lstItemGroups = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId, dictColl.getDictGroupId());
+				if (lstItemGroups.size() > 0) {
+					for (DictItemGroup itemGroup : lstItemGroups) {
+						DictItemGroupLocalServiceUtil.deleteDictItemGroup(itemGroup);
+					}
+				}
+				DictGroupLocalServiceUtil.deleteDictGroup(
+					dictColl.getDictGroupId(), serviceContext);
+
+				flag = true;
+
+			}			
+		}
+		else {
+			flag = false;
+		}
+		return flag;	
+	}
+
+	@Override
+	public DictGroup getDictGroupDetail(String dictCollectionCode, String groupCode, long groupId) {
+		// TODO Auto-generated method stub
+		DictCollection collection = null;
+		try {
+			collection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(dictCollectionCode, groupId);
+		}
+		catch (Exception e) {
+			
+		}
+		if (collection != null) {
+			DictGroup dictGroup = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());
+			return dictGroup;
+		}
+		return null;
+	}
+
 }

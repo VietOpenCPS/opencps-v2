@@ -132,4 +132,7 @@ public class ThirdPartyDossierSyncLocalServiceImpl
 		return thirdPartyDossierSyncPersistence.countByDossierId(dossierId);
 	}
 	
+	public List<ThirdPartyDossierSync> findAll(int start, int end) {
+		return thirdPartyDossierSyncPersistence.findAll(start, end);
+	}
 }

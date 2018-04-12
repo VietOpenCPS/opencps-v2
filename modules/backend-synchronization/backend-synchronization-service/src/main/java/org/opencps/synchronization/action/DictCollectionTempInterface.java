@@ -50,6 +50,8 @@ public interface DictCollectionTempInterface {
 	
 	public JSONObject getDictGroupsTemp(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
+
+	public DictGroupTemp getDictGroupTempDetail(String dictCollectionCode, String groupCode, long groupId);
 	
 	public JSONObject getDictItemsGroupTemp(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
