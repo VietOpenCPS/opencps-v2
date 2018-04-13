@@ -1510,20 +1510,20 @@
 		</finder>
 	</entity>
 
-	<entity local-service="true" name="UserInfoLog"
-		remote-service="false" table="opencps_userinfolog" uuid="true">
+<!-- 	<entity local-service="true" name="UserInfoLog" -->
+<!-- 		remote-service="false" table="opencps_userinfolog" uuid="true"> -->
 
-		<column name="userLogId" type="long" primary="true" />
+<!-- 		<column name="userLogId" type="long" primary="true" /> -->
 
-		<!-- Audit fields -->
-		<column name="userId" type="long" />
-		<column name="createDate" type="Date" />
-		<column name="payload" type="String" />
+ 		<!-- Audit fields -->
+<!-- 		<column name="userId" type="long" /> -->
+<!-- 		<column name="createDate" type="Date" /> -->
+<!-- 		<column name="payload" type="String" /> -->
 
-		<order>
-			<order-column name="createDate" order-by="desc" />
-		</order>
-	</entity>
+<!-- 		<order> -->
+<!-- 			<order-column name="createDate" order-by="desc" /> -->
+<!-- 		</order> -->
+<!-- 	</entity> -->
 
 		<entity local-service="true" name="DossierMark" remote-service="false"
 		table="opencps_dossiermark" uuid="true">
