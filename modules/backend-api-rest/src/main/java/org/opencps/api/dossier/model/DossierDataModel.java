@@ -170,7 +170,10 @@ import javax.xml.bind.annotation.XmlType;
     "dossierOverdue",
     "hasPassword",
     "serverNo",
-    "certNumber"
+//    "certNumber"
+    "certNo",
+    "certDate",
+    "endorsementDate"
 })
 public class DossierDataModel {
 
@@ -243,8 +246,20 @@ public class DossierDataModel {
 	protected String dossierOverdue;
 	protected String hasPassword;
 	protected String serverNo;
-	protected List<CertNumberModel> certNumber;
+//	protected List<CertNumberModel> certNumber;
+	protected String certNo;
+	protected String certDate;
+	protected String endorsementDate;
 
+	public String getEndorsementDate() {
+		return endorsementDate;
+	}
+
+	public void setEndorsementDate(String endorsementDate) {
+		this.endorsementDate = endorsementDate;
+	}
+
+	
     public String getDossierTemplateName() {
 		return dossierTemplateName;
 	}
@@ -1806,6 +1821,22 @@ public class DossierDataModel {
 		this.dossierIdCTN = dossierIdCTN;
 	}
 
+	public String getCertNo() {
+		return certNo;
+	}
+
+	public void setCertNo(String certNo) {
+		this.certNo = certNo;
+	}
+
+	public String getCertDate() {
+		return certDate;
+	}
+
+	public void setCertDate(String certDate) {
+		this.certDate = certDate;
+	}
+
     /**
      * Gets the value of the data property.
      * 
@@ -1828,11 +1859,11 @@ public class DossierDataModel {
      * 
      * 
      */
-	public List<CertNumberModel> getCertNumber() {
-		if (certNumber == null) {
-			certNumber = new ArrayList<CertNumberModel>();
-        }
-        return this.certNumber;
-	}
+//	public List<CertNumberModel> getCertNumber() {
+//		if (certNumber == null) {
+//			certNumber = new ArrayList<CertNumberModel>();
+//        }
+//        return this.certNumber;
+//	}
 
 }

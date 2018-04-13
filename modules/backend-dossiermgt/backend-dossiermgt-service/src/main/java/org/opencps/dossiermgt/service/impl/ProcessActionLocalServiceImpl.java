@@ -585,4 +585,8 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			return processActionPersistence.findByPSC_AEV_GI(groupId,autoEvent, start, end);
 
 	}
+	
+	public ProcessAction getByNameActionNo(long serviceProcessId, String actionCode, String actionName) {
+		return processActionPersistence.fetchBySPID_AC_AN(serviceProcessId, actionCode, actionName);
+	}
 }
