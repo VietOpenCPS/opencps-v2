@@ -8,6 +8,33 @@
 	<script type="text/javascript">
 	// Source for panel list
 
+	var arrStatusDossier = ["new","receiving","processing","waiting","paying","done","cancelled","expired"];
+	var fnLoadStatus = function(id){
+		if (id == "all") {
+			dataSourceProfile.read({
+				"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+				"serviceInfo":$("#serviceInfo").val(),
+				"govAgencyCode":$("#govAgency").val(),
+				"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
+			});
+		} else if (id == "cancelling") {
+			dataSourceProfile.read({
+				"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+				"serviceInfo":$("#serviceInfo").val(),
+				"govAgencyCode":$("#govAgency").val(),
+				"state":"cancelling"
+			});
+		}
+		else {
+			dataSourceProfile.read({
+				"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+				"serviceInfo":$("#serviceInfo").val(),
+				"govAgencyCode":$("#govAgency").val(),
+				"status":id
+			});
+		};
+	}
+
 	var fnConfirm = function(title, message, okText, cancelText, okCallBack, cancelCallBack){
 
 		var cf = $("#confirm").kendoDialog({
@@ -89,6 +116,12 @@
 						},
 						headers : {"groupId": ${groupId}},
 						success:function(result){
+							if(result.data){
+								$("#profileStatus li[dataPk='all'] .bagde").html(result.total);
+							}else {
+								$("#profileStatus li[dataPk='all'] .bagde").html("0");
+							}
+							
 							options.success(result);
 						},
 						error:function(result){
@@ -103,6 +136,8 @@
 			},
 			group: {field: "dossierStatus"},
 		});
+
+
 		var optBoxPageSize = function(){
 			var totalItem = parseInt(dataSourceProfile.total());
 			var pSize = 10;
@@ -144,6 +179,7 @@
 				$("#itemPpageDeliverables").append(selectHtml)
 			};
 		}
+		
 		var dataSourceProfile = new kendo.data.DataSource({
 			transport:{
 				read:function(options){
@@ -162,6 +198,12 @@
 									value.count = indexItem;
 								});
 							};
+
+							if(result.data){
+								$("#profileStatus li.active").find(".bagde").html(result.data.length);
+							}else {
+								$("#profileStatus li.active").find(".bagde").html("0");
+							}
 
 							options.success(result);
 							optBoxPageSize();
@@ -202,7 +244,7 @@
 			transport:{
 				read:function(options){
 					if(options.data.typeSearch === "advanced"){
-						options.data.applicant = "${(applicant.applicantIdNo)!}";
+						options.data.applicantIdNo = "${(applicant.applicantIdNo)!}";
 						console.log("has keyword");
 						var deliverableTypes = $("#advanced_deliverableTypes_search").val();
 						if(!deliverableTypes){
@@ -241,32 +283,46 @@
 						
 					}else {
 						$.ajax({
+							url : "${api.server}/deliverabletypes",
+							dataType : "json",
+							type : "GET",
+							headers: {"groupId": ${groupId}},
+							success : function(result){
+								var typeCode = result.data[0].deliverableType;
+								$.ajax({
 
-							url:"${api.server}/deliverables",
-							dataType:"json",
-							type:"GET",
-							headers : {"groupId": ${groupId}},
-							data : {
-								applicant : "${(applicant.applicantIdNo)!}"
+									url : "${api.server}/deliverables/agency/BGTVTCDKVN/type/"+typeCode,
+									dataType : "json",
+									type : "POST",
+									headers : {"groupId": ${groupId}},
+									data : {
+										owner : true,
+										applicantIdNo : "${(applicant.applicantIdNo)!}"
+									},
+									success:function(result){
+
+										if (result.total!=0) {
+											var indexItem = 0;
+											$(result.data).each(function(index, value){
+												indexItem += 1;
+												value.count = indexItem;
+											});
+										};
+										options.success(result);
+
+										optBoxPageSizeDeliverables();
+
+									},
+									error:function(result){
+										options.error(result);
+									}
+								});
 							},
-							success:function(result){
-
-								if (result.total!=0) {
-									var indexItem = 0;
-									$(result.data).each(function(index, value){
-										indexItem += 1;
-										value.count = indexItem;
-									});
-								};
-								options.success(result);
-
-								optBoxPageSizeDeliverables();
-
-							},
-							error:function(result){
-								options.error(result);
+							error : function(result){
+								console.log("error !!!");
 							}
 						});
+						
 					}
 					
 				}
@@ -403,7 +459,7 @@
 				}
 			});
 
-			$.ajax({
+			/*$.ajax({
 				// url: "http://localhost:3000/dossiers",
 				url:"${api.server}/dossiers",
 				dataType:"json",
@@ -420,15 +476,27 @@
 				},
 				error:function(result){
 				}
-			});
+			});*/
 
 
 			dataGetTotal.read();
 			dataGetTotal.fetch(function(){
-			  $('#profileStatus li > span.bagde').html("0");
 			  var view = dataGetTotal.view();
+			  for (var i = 0; i < arrStatusDossier.length; i++) {
+			  	var models = jQuery.grep(view, function( value, index ) {
+			  		return ( arrStatusDossier[i] === value.value );
+			  	});
+
+			  	if(models.length > 0){
+			  		$('#profileStatus li[dataPk='+models[0].value+'] .bagde').html(models[0].items.length);
+			  	}else {
+			  		$('#profileStatus li[dataPk='+arrStatusDossier[i]+'] .bagde').html("0");
+			  	}
+			  	
+			  }
+
 			  $.each(view, function(index,value){
-					$('#profileStatus li[dataPk='+value.value+'] .bagde').html(value.items.length);
+					//$('#profileStatus li[dataPk='+value.value+'] .bagde').html(value.items.length);
 					if(dossierStatus !== "all"){
 						if(dossierStatus === value.value){
 							currentStateBageFlag = value.items.length;
@@ -437,6 +505,8 @@
 						currentStateBageFlag = 0;
 					}
 				});
+
+
 			});
 						
 		}
@@ -605,6 +675,10 @@ var fnConvertArrFile = function(arrFile){
 			},
 			filterStatus: function(e){
 				e.preventDefault();
+
+				getTotal();
+				firstLoadDataSource = false;
+
 				$("#profileStatus li").removeClass("active");
 				$(e.currentTarget).addClass("active");
 				$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
@@ -616,26 +690,15 @@ var fnConvertArrFile = function(arrFile){
 				var id = $(e.currentTarget).attr("dataPk");
 				try{
 
-					if($("#mainType2").is(":visible")){
-						if($("button.saveFormAlpaca").length > 0){
-							if(arrIsChangeForm){
-								var isChange = fnCheckIsChangeForm();
-								if(isChange){
-									var cf = confirm("Bạn vừa thay đổi dữ liệu form bạn có muốn lưu lại!");
-									if(cf){
-										$(".saveFormAlpaca[data-pk="+isChange.partNo+"]").trigger("click");
-									}else {
-										manageDossier.navigate("/"+id);
-									}
-								}else {
-									manageDossier.navigate("/"+id);
-								}
-							}else {
-								manageDossier.navigate("/"+id);
-							}
+					var isChange = fnCheckIsChangeForm();
+					if($("#mainType2").is(":visible") && $("button.saveFormAlpaca").length > 0 && isChange ){
+						var cf = confirm("Bạn vừa thay đổi dữ liệu form bạn có muốn lưu lại!");
+						if(cf){
+							$(".saveFormAlpaca[data-pk="+isChange.partNo+"]").trigger("click");
 						}else {
 							manageDossier.navigate("/"+id);
 						}
+
 					}else {
 						manageDossier.navigate("/"+id);
 					} 
@@ -647,12 +710,28 @@ var fnConvertArrFile = function(arrFile){
 				}
 
 				
+				fnLoadStatus(id);
+
+				firstLoadDataSource = true;
+
+				
 				// modelMain.set("isInvestigated", false);
 				// modelMain.set("visibleHeader", $(".itemStatus.active .dossierStatus").text());
 			},
 			load_serviceConfig:function(e){
 				e.preventDefault();
-				manageDossier.navigate("/taohosomoi");
+				if('${(registration)!}'){
+					manageDossier.navigate("/taohosomoi");
+				}else {
+					var cf = confirm("Bạn chưa khai báo đủ thông tin, Bạn có muốn chuyển đến trang khác khai báo!");
+					if(cf){
+						location.href = "/en/group/cong-tiep-nhan/ho-so-doanh-nghiep";
+					}else {
+						location.href = "/en/group/cong-tiep-nhan/quan-ly-ho-so";
+					}
+				}
+
+				
 			},
 			dataBound: function() {
 				$(".k-clear-value").addClass("k-hidden");
@@ -769,6 +848,7 @@ var fnConvertArrFile = function(arrFile){
 
 
 		var modelMain = kendo.observable({
+			dataServiceInfo: dataServiceInfo,
 			dataSourceProfile : dataSourceProfile,
 			dataSourceDeliverables : dataSourceDeliverables,
 
@@ -788,11 +868,13 @@ var fnConvertArrFile = function(arrFile){
 				var cancellingDateDossier = e.data.cancellingDate;
 				var id = e.data.dossierId;
 				//
-				if (cancellingDateDossier != null && dossierItemStatus != "cancelled") {
+
+				manageDossier.navigate("/"+dossierItemStatus+"/dossiers/"+id);
+				/*if (cancellingDateDossier != null && dossierItemStatus != "cancelled") {
 					manageDossier.navigate("/cancelling/dossiers/"+id);
 				} else {
 					manageDossier.navigate("/"+dossierItemStatus+"/dossiers/"+id);	
-				}
+				}*/
 				// 
 			},
 			loadDeliverableDetail : function(e){
@@ -861,7 +943,7 @@ var fnConvertArrFile = function(arrFile){
 				console.log("eeeeeeeee",e);
 				try{
 					console.log("eeeeeeeee",e);
-					loadSoCC();
+					//loadSoCC();
 				}catch(e){
 					console.log(e);
 				}
@@ -884,7 +966,7 @@ var fnConvertArrFile = function(arrFile){
 				$("th").css("vertical-align","top");
 
 
-				loadSoCC();
+				//loadSoCC();
 
 			},
 			filterInvestigationNo : function(e){
@@ -936,17 +1018,52 @@ var fnConvertArrFile = function(arrFile){
 				console.log("action searchAdvanced");
 
 				var statusDossier = $("li.itemStatus.active").attr("dataPk");
-				dataSourceProfile.read({
-					"status": statusDossier,
-					"serviceName": $("#advanced_serviceName_search").val(),
-					"companyName": $("#advanced_companyName_search").val(),
-					"product": $("#advanced_product_search").val(),
-					"brand": $("#advanced_brand_search").val(),
-					"dossierNo" : $("#advanced_dossierNo_search").val(),
-					"certificateNo" : $("#advanced_certificateNo_search").val(),
-					"tradenames" : $("#advanced_tradenames_search").val(),
-					"typeNo" : $("#advanced_typeNo_search").val()
-				});
+
+				if (statusDossier == "all") {
+					dataSourceProfile.read({
+						"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired",
+						"serviceInfo":$("#serviceInfo").val(),
+						"dossierNo" : $("#advanced_dossierNo_search").val(),
+						"so_chung_chi" : $("#so_chung_chi").val(),
+						"dossierIdCTN" : $("#dossierIdCTNAdvanced").val(),
+						"fromReceiveDate" : $("#fromReceiveDate").val(),
+						"toReceiveDate" : $("#toReceiveDate").val(),
+						"fromSubmitDate" : $("#fromSubmitDate").val(),
+						"toSubmitDate" : $("#toSubmitDate").val(),
+						"tu_ngay_ky_cc" : $("#tu_ngay_ky_cc").val(),
+						"den_ngay_ky_cc" : $("#den_ngay_ky_cc").val()
+					});
+				} else if (statusDossier == "cancelling") {
+					dataSourceProfile.read({
+						"state": "cancelling",
+						"serviceInfo": $("#serviceInfo").val(),
+						"dossierNo" : $("#advanced_dossierNo_search").val(),
+						"so_chung_chi" : $("#so_chung_chi").val(),
+						"dossierIdCTN" : $("#dossierIdCTNAdvanced").val(),
+						"fromReceiveDate" : $("#fromReceiveDate").val(),
+						"toReceiveDate" : $("#toReceiveDate").val(),
+						"fromSubmitDate" : $("#fromSubmitDate").val(),
+						"toSubmitDate" : $("#toSubmitDate").val(),
+						"tu_ngay_ky_cc" : $("#tu_ngay_ky_cc").val(),
+						"den_ngay_ky_cc" : $("#den_ngay_ky_cc").val()
+					});
+				}else {
+					dataSourceProfile.read({
+						"status": statusDossier,
+						"serviceInfo": $("#serviceInfo").val(),
+						"dossierNo" : $("#advanced_dossierNo_search").val(),
+						"so_chung_chi" : $("#so_chung_chi").val(),
+						"dossierIdCTN" : $("#dossierIdCTNAdvanced").val(),
+						"fromReceiveDate" : $("#fromReceiveDate").val(),
+						"toReceiveDate" : $("#toReceiveDate").val(),
+						"fromSubmitDate" : $("#fromSubmitDate").val(),
+						"toSubmitDate" : $("#toSubmitDate").val(),
+						"tu_ngay_ky_cc" : $("#tu_ngay_ky_cc").val(),
+						"den_ngay_ky_cc" : $("#den_ngay_ky_cc").val()
+					});
+				};
+
+				
 			},
 			searchAdvancedDeliverables : function(e){
 				var loai_chung_chi = $("#advanced_deliverableTypes_search").val();
@@ -1121,7 +1238,7 @@ var fnConvertArrFile = function(arrFile){
 		
 
 		//sau 10s refrest lai danh sach ro trang thai va danh sach tuong ung
-		setInterval(function(){
+		/*setInterval(function(){
 			//refrest lai ro trang thai
 			getTotal();
 
@@ -1155,12 +1272,13 @@ var fnConvertArrFile = function(arrFile){
 				currentStateBage = currentStateBageFlag;
 			} 
 
-		}, 10000);
+		}, 10000);*/
 
 		var viewConfirmSaveForm = $("#confirmSaveForm");
 
 	</script>
 
+	
 
 
 	

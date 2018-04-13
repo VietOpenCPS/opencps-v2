@@ -32,8 +32,6 @@ dependencies {
 	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-api")
 	compileOnly project(":modules:backend-communication:backend-communication-api")
 	compileOnly project(":modules:backend-communication:backend-communication-service")
-	compileOnly project(":modules:backend-synchronization:backend-synchronization-api")
-	compileOnly project(":modules:backend-synchronization:backend-synchronization-service")
 	
 	compileOnly project(":modules:backend-auth")
 	

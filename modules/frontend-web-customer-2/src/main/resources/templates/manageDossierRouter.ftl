@@ -7,6 +7,7 @@
 		var viewMainList = new kendo.View("mainTemplate", {model: modelMain});
 		var viewMainList_2 = new kendo.View("mainTemplate_2", {model: modelMain});
 		var statusRouteTem = "";
+		var firstLoadDataSource = true;
 		// Show màn hình chi tiết hồ sơ
 		manageDossier.route("/(:dossierItemStatus)/dossiers/(:id)", function(dossierItemStatus, id){
 			$("#panel_list").show();
@@ -41,7 +42,7 @@
 			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 			$("#mainType1").hide();
 			$("#mainType2").show();
-			$("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+id+"&${portletNamespace}resCancelling=true",function(result){
+			$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"&${portletNamespace}resCancelling=true",function(result){
 			})
 		});
 		manageDossier.route("/dossiers/(:id)/guibosung", function(id){
@@ -61,6 +62,7 @@
 			$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"&${portletNamespace}sendReissue=true",function(result){
 			})
 		});
+
 		// Show màn hình chọn dịch vụ công
 		manageDossier.route("/taohosomoi", function(id){
 			$("#mainType1").hide();
@@ -80,29 +82,36 @@
 			$(".filterField").show();
 			$("#mainType2").hide();
 			layout.showIn("#main_section", viewMainList);
-			if (id == "all") {
-				dataSourceProfile.read({
-					"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-					"serviceInfo":$("#serviceInfo").val(),
-					"govAgencyCode":$("#govAgency").val(),
-					"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
-				});
-			} else if (id == "cancelling") {
-				dataSourceProfile.read({
-					"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-					"serviceInfo":$("#serviceInfo").val(),
-					"govAgencyCode":$("#govAgency").val(),
-					"state":"cancelling"
-				});
+
+			if(firstLoadDataSource === true){
+				if (id == "all") {
+					dataSourceProfile.read({
+						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+						"serviceInfo":$("#serviceInfo").val(),
+						"govAgencyCode":$("#govAgency").val(),
+						"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
+					});
+				} else if (id == "cancelling") {
+					dataSourceProfile.read({
+						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+						"serviceInfo":$("#serviceInfo").val(),
+						"govAgencyCode":$("#govAgency").val(),
+						"state":"cancelling"
+					});
+				}
+				else {
+					dataSourceProfile.read({
+						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+						"serviceInfo":$("#serviceInfo").val(),
+						"govAgencyCode":$("#govAgency").val(),
+						"status":id
+					});
+				};
 			}
-			else {
-				dataSourceProfile.read({
-					"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-					"serviceInfo":$("#serviceInfo").val(),
-					"govAgencyCode":$("#govAgency").val(),
-					"status":id
-				});
-			};   
+			
+
+			
+			statusRouteTem = id;
 			$("#profileStatus li").removeClass('active');
 			$('#searchCC').removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
