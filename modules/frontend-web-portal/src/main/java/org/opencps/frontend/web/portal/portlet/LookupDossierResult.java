@@ -80,6 +80,8 @@ public class LookupDossierResult extends FreeMarkerPortlet {
 		String keyword = ParamUtil.getString(renderRequest, "keyword");
 		
 		// set varible
+		String secretKey = renderRequest.getParameter("secretKey");
+		renderRequest.setAttribute("secretKey", secretKey);
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("api", apiObject);
 		renderRequest.setAttribute("keyword", keyword);
