@@ -567,7 +567,7 @@ public class DossierManagementImpl implements DossierManagement {
 	public Response getDetailDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id) {
 
-		_log.info("1");
+//		_log.info("1");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		String password = GetterUtil.getString(header.getHeaderString("password"));
 		DossierPermission dossierPermission = new DossierPermission();
@@ -575,10 +575,10 @@ public class DossierManagementImpl implements DossierManagement {
 
 		try {
 
-			_log.info("1");
+//			_log.info("1");
 			if (Validator.isNotNull(password)) {
 
-				_log.info("1");
+//				_log.info("1");
 				Dossier dossier = getDossier(id, groupId);
 
 				dossierPermission.checkPassword(dossier, password);
@@ -605,7 +605,7 @@ public class DossierManagementImpl implements DossierManagement {
 				return Response.status(200).entity(result).build();
 			} else {
 				Dossier dossier = DossierLocalServiceUtil.fetchDossier(Long.valueOf(id));
-				DossierSearchDetailModel result = null;
+				DossierDetailModel result = null;
 				if (dossier != null) {
 					result = DossierUtils.mappingForGetDetailSearch(dossier);
 				}

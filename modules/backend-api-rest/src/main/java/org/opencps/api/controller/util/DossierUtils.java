@@ -459,9 +459,9 @@ public class DossierUtils {
 		return model;
 	}
 
-	public static DossierSearchDetailModel mappingForGetDetailSearch(Dossier input) {
+	public static DossierDetailModel mappingForGetDetailSearch(Dossier input) {
 
-		DossierSearchDetailModel model = new DossierSearchDetailModel();
+		DossierDetailModel model = new DossierDetailModel();
 		
 		try {
 			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
