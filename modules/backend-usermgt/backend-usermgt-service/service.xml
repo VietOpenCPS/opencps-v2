@@ -137,6 +137,11 @@
 		<column name="fileCertPath" type="String" />
 		<column name="fileSignPath" type="String" />
 		
+<column name="fileCertId" type="long" />
+		<column name="fileSignId" type="long" />
+		<column name="fileCertPath" type="String" />
+		<column name="fileSignPath" type="String" />
+		
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="employeeNo" />

@@ -17,6 +17,7 @@ import org.opencps.api.dossier.model.DoActionModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierInputModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
+import org.opencps.api.dossier.model.DossierSearchDetailModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
 import org.opencps.api.dossiermark.model.DossierMarkModel;
@@ -586,8 +587,13 @@ public class DossierManagementImpl implements DossierManagement {
 
 				return Response.status(200).entity(result).build();
 
+<<<<<<< HEAD
+			} else if(groupId > 0) {
+				
+=======
 			} else {
 				_log.info("1");
+>>>>>>> refs/remotes/upstream/develop-bvh
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
 				}
@@ -599,15 +605,25 @@ public class DossierManagementImpl implements DossierManagement {
 				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 						dossier.getDossierTemplateNo(), groupId);
 
+<<<<<<< HEAD
+//					dossierPermission.hasGetDetailDossier(groupId, user.getUserId(), dossier, option.getServiceProcessId());
+=======
 				_log.info("userID: "+user.getUserId());
 				_log.info("1");
 //				dossierPermission.hasGetDetailDossier(groupId, user.getUserId(), dossier, option.getServiceProcessId());
+>>>>>>> refs/remotes/upstream/develop-bvh
 
 				_log.info("userID: "+user.getUserId());
 				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
 				return Response.status(200).entity(result).build();
-
+			} else {
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(Long.valueOf(id));
+				DossierSearchDetailModel result = null;
+				if (dossier != null) {
+					result = DossierUtils.mappingForGetDetailSearch(dossier);
+				}
+				return Response.status(200).entity(result).build();
 			}
 
 		} catch (Exception e) {

@@ -108,7 +108,11 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 
 					}
 
+<<<<<<< HEAD
+					}
+=======
 				}
+>>>>>>> refs/remotes/upstream/develop-bvh
 
 				payload.put("jobPosName", jobPosName);
 				payload.put("stepName", model.getActionName());
@@ -138,8 +142,13 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				
 				
 				if (ok) {
+<<<<<<< HEAD
+				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
+						model.getActionUser(), content, "PROCESS_TYPE", payload.toString(), serviceContext);
+=======
 					DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
 							model.getActionUser(), content, "PROCESS_TYPE", payload.toString(), serviceContext);
+>>>>>>> refs/remotes/upstream/develop-bvh
 				}
 
 			} catch (SystemException | PortalException e) {

@@ -858,8 +858,13 @@ public class DictCollectionActions implements DictcollectionInterface {
 				code, groupId);
 
 		if (dictCollection != null) {
+<<<<<<< HEAD
+		DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(
+			itemCode, dictCollection.getDictCollectionId(), groupId);
+=======
 			DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(
 					itemCode, dictCollection.getDictCollectionId(), groupId);
+>>>>>>> refs/remotes/upstream/develop-bvh
 			return dictItem;			
 		}
 		else {

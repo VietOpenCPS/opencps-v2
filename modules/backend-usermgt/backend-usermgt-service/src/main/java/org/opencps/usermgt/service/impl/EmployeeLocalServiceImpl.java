@@ -27,6 +27,8 @@ import org.opencps.usermgt.service.base.EmployeeLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -42,6 +44,7 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
@@ -324,7 +327,11 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		String active = (String) params.get(EmployeeTerm.ACTIVE);
 		String month = (String) params.get(EmployeeTerm.MONTH);
 		String strUserIdList = (String) params.get("userIdList");
+<<<<<<< HEAD
+
+=======
 		
+>>>>>>> refs/remotes/upstream/develop-bvh
 		Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 
 		searchContext.addFullQueryEntryClassName(Employee.class.getName());
@@ -448,7 +455,11 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		if (Validator.isNotNull(strUserIdList)) {
 			String[] sliptUserId = strUserIdList.split(StringPool.COMMA);
 			if (sliptUserId != null && sliptUserId.length > 0) {
+<<<<<<< HEAD
+			BooleanQuery subQuery = new BooleanQueryImpl();
+=======
 				BooleanQuery subQuery = new BooleanQueryImpl();
+>>>>>>> refs/remotes/upstream/develop-bvh
 				for (String strUserId : sliptUserId) {
 					if (Validator.isNotNull(strUserId)) {
 
@@ -489,7 +500,11 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		String status = (String) params.get(EmployeeTerm.WORKING_STATUS);
 		String active = (String) params.get(EmployeeTerm.ACTIVE);
 		String month = (String) params.get(EmployeeTerm.MONTH);
+<<<<<<< HEAD
+		String strUserIdList = (String) params.get("userIdList");
+=======
     String strUserIdList = (String) params.get("userIdList");
+>>>>>>> refs/remotes/upstream/develop-bvh
 
 		Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 
@@ -611,7 +626,11 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		if (Validator.isNotNull(strUserIdList)) {
 			String[] sliptUserId = strUserIdList.split(StringPool.COMMA);
 			if (sliptUserId != null && sliptUserId.length > 0) {
+<<<<<<< HEAD
+			BooleanQuery subQuery = new BooleanQueryImpl();
+=======
 				BooleanQuery subQuery = new BooleanQueryImpl();
+>>>>>>> refs/remotes/upstream/develop-bvh
 				for (String strUserId : sliptUserId) {
 					if (Validator.isNotNull(strUserId)) {
 
@@ -681,7 +700,12 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		return employee;
 	}
+<<<<<<< HEAD
+
+		
+=======
 	
+>>>>>>> refs/remotes/upstream/develop-bvh
 	public List<Employee> getLstEmployee(long groupId, long userId){
 		return employeePersistence.findByG_UID(groupId, userId);
 	}
