@@ -9,3 +9,12 @@
 <@liferay_theme["defineObjects"] />
 
 <@portlet["defineObjects"] />
+
+<#assign ajax = (Request.ajax)!>
+<#assign api = (Request.api)!>
+
+<#assign groupId = themeDisplay.getScopeGroupId() />
+<#assign userId = themeDisplay.getUserId() />
+<#assign currentURL = themeDisplay.getURLCurrent() />
+<#assign request = themeDisplay.getRequest() />
+<#assign portalURL = (themeDisplay.getPortalURL())!>
