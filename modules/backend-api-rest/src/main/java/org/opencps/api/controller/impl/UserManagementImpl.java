@@ -16,7 +16,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.UserManagement;
 import org.opencps.api.controller.util.UserUtils;
@@ -28,8 +27,6 @@ import org.opencps.api.user.model.UserProfileModel;
 import org.opencps.api.user.model.UserResults;
 import org.opencps.api.user.model.UserRolesResults;
 import org.opencps.api.user.model.UserSitesResults;
-import org.opencps.api.user.model.UserWorksModel;
-import org.opencps.api.user.model.UserWorksResults;
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.JobposActions;
