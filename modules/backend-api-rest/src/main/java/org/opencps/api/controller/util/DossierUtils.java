@@ -80,6 +80,7 @@ public class DossierUtils {
 				model.setSubmitDate(APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //				_log.info("SUBMIT_DATE_CONVERT: "+APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			} else {
+<<<<<<< HEAD
 			model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
 			}
 //			_log.info("RECEIVE_DATE: "+doc.get(DossierTerm.RECEIVE_DATE));
@@ -88,6 +89,16 @@ public class DossierUtils {
 				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			} else {
 			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+=======
+				model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
+			}
+//			_log.info("RECEIVE_DATE: "+doc.get(DossierTerm.RECEIVE_DATE));
+			if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
+				Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+>>>>>>> refs/remotes/upstream/develop-bvh
 			}
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
 			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
@@ -252,6 +263,7 @@ public class DossierUtils {
 				model.setSubmitDate(APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //				_log.info("SUBMIT_DATE_CONVERT: "+APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			} else {
+<<<<<<< HEAD
 			model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
 			}
 //			_log.info("RECEIVE_DATE: "+doc.get(DossierTerm.RECEIVE_DATE));
@@ -260,6 +272,16 @@ public class DossierUtils {
 				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));				
 			} else {
 			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+=======
+				model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
+			}
+//			_log.info("RECEIVE_DATE: "+doc.get(DossierTerm.RECEIVE_DATE));
+			if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
+				Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));				
+			} else {
+				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+>>>>>>> refs/remotes/upstream/develop-bvh
 			}
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
 			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
@@ -437,12 +459,21 @@ public class DossierUtils {
 						}
 					}
 					if (Validator.isNotNull(specialStatus) && Boolean.parseBoolean(specialStatus)) {
+<<<<<<< HEAD
 			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(input.getDossierActionId(), userId);
 			if (dau != null) {
 				model.setSpecialNo(dau.getModerator());
 			} else {
 				model.setSpecialNo(0);
 			}
+=======
+						DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(input.getDossierActionId(), userId);
+						if (dau != null) {
+							model.setSpecialNo(dau.getModerator());
+						} else {
+							model.setSpecialNo(0);
+						}
+>>>>>>> refs/remotes/upstream/develop-bvh
 					} else {
 						model.setSpecialNo(1);
 					}

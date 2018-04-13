@@ -48,7 +48,7 @@
 				<span class="text-bold">Trạng thái</span>: <i data-bind="text:dossierStatusText"></i>
 			</div>
 			<div class="col-sm-7">
-				<span class="text-bold">Mã hồ sơ</span>: <span data-bind="text : dossierIdCTN"></span>
+				<span>Mã hồ sơ</span>: <span data-bind="text : dossierIdCTN" class="text-bold"></span>
 			</div>
 		</div>
 
@@ -191,10 +191,11 @@
 					#if(partType == 1){#
 					<div class="row-parts-head align-middle slide-toggle">
 						<span class="text-bold MR5">#:itemIndex#.</span>
-						<span class="hover-pointer">
+						<span class="hover-pointer show-dossierpart-new-tab" data-partno="#:id#" #if(hasForm){# hasForm="true" #}#>
 							#:partName# 
 							#if(required){#
 							<span class="red">*</span>
+							<input type="hidden" id="validPart#:id#" name="validPart#:id#" class="validPart" value="0">
 							#}#
 						</span>
 
@@ -369,6 +370,25 @@
 	$("#step2").addClass("done");
 	$("#step3").addClass("done");
 	var arrIsChangeForm = [];
+	var fnCheckValidTemplate = function(){
+		console.log($(".validPart"));
+		var valid = true;
+		try {
+
+			$(".validPart").each(function(index){
+				console.log($(this).val());
+				if($(this).val() === "0"){
+					valid = false;
+				}
+			});
+
+		}catch(e){
+			valid = false;
+		}
+
+		return valid;
+	}
+
 
 	var fnCheckIsChangeForm = function(){
 		if (arrIsChangeForm) {
@@ -383,6 +403,26 @@
 	}
 	$(function(){
 
+		$(document).off("click",".show-dossierpart-new-tab");
+		$(document).on("click",".show-dossierpart-new-tab",function(){
+			var partNo = $(this).attr("data-partno");
+			var hasForm = $(this).attr("hasForm");
+			var hasFile = $(this).attr("hasFile");
+
+			if(!hasForm){
+				if(hasFile){
+					var dossierId = "${(dossierId)!}";
+					var dossierTemplateNo = "${(dossier.dossierTemplateNo)!}";
+
+					var url = "#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo;
+
+					window.open(url,"_blank");
+				}
+				
+			}
+			
+		});
+		
 		$(document).off("click",".dossier-file");
 		$(document).on("click",".dossier-file",function(){
 			funDossierFile("${dossierId}",funGenNumberFile);
@@ -402,7 +442,6 @@
 			kendo.ui.progress($("#mainType2"), true);
 
 			funUploadFile($(this),partNo,dossierTemplateNo,fileTemplateNo);
-			funDossierFile("${dossierId}",funGenNumberFile);
 		});
 
 		$(document).off("click",".uploadfile-form-repository");
@@ -651,29 +690,51 @@
 		
 
 		sessionStorage.setItem("applicantNote", $('#applicantNote').editable('getValue'));
-		kendo.confirm("Bạn có muốn nộp hồ sơ này?").then(function () {
+		var cf = fnConfirm("Thông báo",
+			"Bạn có muốn nộp hồ sơ này?", 
+			"OK", "Thoát",
+			function(){
+
+				funSubmitDossier();
+
+			}, function(){
+				
+			});
+
+		cf.open();
+
+		/*kendo.confirm("Bạn có muốn nộp hồ sơ này?").then(function () {
 			$("#btn-submit-dossier").button('loading');
 			$("#btn-back-dossier").prop("disabled","disabled");
 			$("#btn-delete-dossier").prop("disabled","disabled");
 			funSubmitDossier();
 		}, function () {
 
-		});
+		});*/
 		
 	});
 
 	var funSubmitDossier = function(){
 		var validateAplicantInfo = $('#contactName, #city , #district , #wards , #contactTelNo' ).editable('validate');
 		var validatePostal = true;
+		var validateDossierTemplate = fnCheckValidTemplate();
 
 		if($("#viaPostal").is(":checked")){
 			validatePostal = $('#address, #postalCityCode , #postalTelNo' ).editable('validate');
 		}
 
+		if(!validateDossierTemplate){
+			notification.show({
+				message: "Vui lòng kiểm tra lại các thông tin bắt buộc của các thành phần hồ sơ!"
+			}, "error");
+
+			return false;
+		}
+
 		console.log(validatePostal);
 		console.log(validateAplicantInfo);
 
-		if( jQuery.isEmptyObject(validateAplicantInfo) && jQuery.isEmptyObject(validatePostal) ){
+		if( jQuery.isEmptyObject(validateAplicantInfo) && jQuery.isEmptyObject(validatePostal) && validateDossierTemplate){
 			$.ajax({
 				type : 'GET', 
 				url  : '${api.server}/dossiers/${dossierId}/submitting',
@@ -736,7 +797,10 @@
 					$("#btn-delete-dossier").hide();
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
-					}, "success");               
+					}, "success");  
+
+					
+					firstLoadDataSource = true;             
 					manageDossier.navigate("/new");
 				},
 				error:function(result){
@@ -751,11 +815,19 @@
 
 	$("#btn-delete-dossier").click(function(){
 		var dossierId = $(this).attr("data-pk");
-		kendo.confirm("Bạn có muốn xóa hồ sơ này?").then(function () {
-			funDeleteDossier(dossierId);
-		}, function () {
 
-		});
+		var cf = fnConfirm("Thông báo",
+			"Bạn có muốn xóa hồ sơ này?", 
+			"OK", "Thoát",
+			function(){
+
+				funDeleteDossier(dossierId);
+
+			}, function(){
+
+			});
+
+		cf.open();
 
 	});
 
@@ -1432,6 +1504,11 @@
 
 			$(this).attr("data-number",found.length);
 			$(this).html('<span class="number-in-circle" >'+found.length+'</span>');
+			if(found.length > 0){
+				$(".show-dossierpart-new-tab[data-partno="+partNo+"]").attr('hasFile', 'true');
+			}else {
+				$(".show-dossierpart-new-tab[data-partno="+partNo+"]").attr('hasFile', '');
+			}
 		});
 	}
 
@@ -1515,7 +1592,9 @@
 			success :  function(result){ 
 				kendo.ui.progress($("#mainType2"), false);
 
-				console.log("fileLength=======",fileLength);
+				funDossierFile("${dossierId}",funGenNumberFile);
+
+				/*console.log("fileLength=======",fileLength);
 
 				var currentFileNumber = $(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number");
 
@@ -1530,7 +1609,7 @@
 				console.log("dossier-component-profile=======",$(".dossier-component-profile").filter("[data-partno="+partNo+"]"));
 
 
-				$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",totalFile);
+				$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",totalFile);*/
 
 				notification.show({
 					message: "Yêu cầu được thực hiện thành công"

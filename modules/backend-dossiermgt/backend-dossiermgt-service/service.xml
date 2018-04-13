@@ -532,7 +532,11 @@
         	<finder-column name="groupId" />
         	<finder-column name="referenceUid" />
         </finder>
+<<<<<<< HEAD
 	<finder return-type="DossierFile" name="FILE_ID">
+=======
+        <finder return-type="DossierFile" name="FILE_ID">
+>>>>>>> refs/remotes/upstream/develop-bvh
         	<finder-column name="fileEntryId" />
         </finder>
          <finder return-type="Collection" name="REF_UID">
@@ -889,7 +893,12 @@
 		<finder return-type="Collection" name="IS_NEW">
 			<finder-column name="isNew" />
 		</finder>
+<<<<<<< HEAD
 					<finder return-type="Collection" name="DID_IN">
+=======
+		
+		<finder return-type="Collection" name="DID_IN">
+>>>>>>> refs/remotes/upstream/develop-bvh
 			<finder-column name="dossierId" />
 			<finder-column name="isNew" />
 		</finder>

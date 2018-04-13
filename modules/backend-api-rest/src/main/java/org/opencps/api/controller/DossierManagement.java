@@ -308,7 +308,11 @@ public interface DossierManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "dossier id", required = true) @PathParam("id") String id);
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> refs/remotes/upstream/develop-bvh
 	@POST
 	@Path("/{id}/marks/{dossierPartNo}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -334,4 +338,5 @@ public interface DossierManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") long dossierId,
 			@PathParam("dossierPartNo") String dossierPartNo);
+
 }

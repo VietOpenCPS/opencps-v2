@@ -132,6 +132,10 @@
 		<column name="photoFileEntryId" type="long" />
 		<column name="recruitDate" type="Date" />
 		<column name="leaveDate" type="Date" />
+		<column name="fileCertId" type="long" />
+		<column name="fileSignId" type="long" />
+		<column name="fileCertPath" type="String" />
+		<column name="fileSignPath" type="String" />
 		
 <column name="fileCertId" type="long" />
 		<column name="fileSignId" type="long" />

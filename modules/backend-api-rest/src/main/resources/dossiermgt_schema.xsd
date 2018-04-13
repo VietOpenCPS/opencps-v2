@@ -23,6 +23,11 @@
 				<xsd:element name="submitting" type="xsd:string" minOccurs="0" />
 				<xsd:element name="top" type="xsd:string" minOccurs="0" />
 				<xsd:element name="state" type="xsd:string" minOccurs="0" />
+				<xsd:element name="so_chung_chi" type="xsd:string" minOccurs="0" />
+				<xsd:element name="fromReceiveDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="toReceiveDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="tu_ngay_ky_cc" type="xsd:string" minOccurs="0" />
+				<xsd:element name="den_ngay_ky_cc" type="xsd:string" minOccurs="0" />				
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>

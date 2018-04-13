@@ -549,6 +549,7 @@ public class DossierManagementImpl implements DossierManagement {
 					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
 
 				} else {
+					_log.info(e);
 
 					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
@@ -566,6 +567,7 @@ public class DossierManagementImpl implements DossierManagement {
 	public Response getDetailDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id) {
 
+		_log.info("1");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		String password = GetterUtil.getString(header.getHeaderString("password"));
 		DossierPermission dossierPermission = new DossierPermission();
@@ -573,8 +575,10 @@ public class DossierManagementImpl implements DossierManagement {
 
 		try {
 
+			_log.info("1");
 			if (Validator.isNotNull(password)) {
 
+				_log.info("1");
 				Dossier dossier = getDossier(id, groupId);
 
 				dossierPermission.checkPassword(dossier, password);
@@ -583,19 +587,33 @@ public class DossierManagementImpl implements DossierManagement {
 
 				return Response.status(200).entity(result).build();
 
+<<<<<<< HEAD
 			} else if(groupId > 0) {
 				
+=======
+			} else {
+				_log.info("1");
+>>>>>>> refs/remotes/upstream/develop-bvh
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
 				}
 
+				_log.info("1");
 				Dossier dossier = getDossier(id, groupId);
 
+				_log.info("1");
 				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 						dossier.getDossierTemplateNo(), groupId);
 
+<<<<<<< HEAD
 //					dossierPermission.hasGetDetailDossier(groupId, user.getUserId(), dossier, option.getServiceProcessId());
+=======
+				_log.info("userID: "+user.getUserId());
+				_log.info("1");
+//				dossierPermission.hasGetDetailDossier(groupId, user.getUserId(), dossier, option.getServiceProcessId());
+>>>>>>> refs/remotes/upstream/develop-bvh
 
+				_log.info("userID: "+user.getUserId());
 				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
 				return Response.status(200).entity(result).build();
@@ -626,6 +644,8 @@ public class DossierManagementImpl implements DossierManagement {
 					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
 
 				} else {
+					
+					_log.info(e);
 
 					error.setMessage("Internal Server Error");
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
@@ -991,7 +1011,8 @@ public class DossierManagementImpl implements DossierManagement {
 			Dossier dossierResetted = actions.resetDossier(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
 					serviceContext);
 
-			return Response.status(200).entity(DossierUtils.mappingForGetDetail(dossierResetted, user.getUserId())).build();
+			return Response.status(200).entity(DossierUtils.mappingForGetDetail(dossierResetted, user.getUserId()))
+					.build();
 
 		} catch (Exception e) {
 			ErrorMsg error = new ErrorMsg();
