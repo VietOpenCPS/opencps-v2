@@ -469,7 +469,6 @@ public class UserActions implements UserInterface {
 	@Override
 	public boolean addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword, int type,
 			ServiceContext serviceContext) {
-<<<<<<< HEAD
 			
 		boolean flag = getCheckpass(groupId, companyId, id, oldPassword, serviceContext);
 
@@ -489,27 +488,6 @@ public class UserActions implements UserInterface {
 					//update employee
 					Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(id);
 				
-=======
-		
-		boolean flag = getCheckpass(groupId, companyId, id, oldPassword, serviceContext);
-
-		if (flag) {
-			try {
-
-				User user = UserLocalServiceUtil.updatePassword(id, newPassword, newPassword, Boolean.FALSE);
-				
-				String email = StringPool.BLANK;
-				
-				if (type == 1) {
-					//update application
-					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
-					
-					email = employee.getEmail();
-				} else {
-					//update employee
-					Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(id);
-					
->>>>>>> refs/remotes/upstream/develop-bvh
 					email = applicant.getContactEmail();
 				}
 

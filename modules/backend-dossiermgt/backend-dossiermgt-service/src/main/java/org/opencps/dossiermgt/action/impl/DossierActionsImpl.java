@@ -1224,7 +1224,6 @@ public class DossierActionsImpl implements DossierActions {
 
 				// To index
 				DossierLocalServiceUtil.syncDossier(dossier);
-<<<<<<< HEAD
 			
 			
 				String refUid = PortalUUIDUtil.generate();
@@ -1234,17 +1233,6 @@ public class DossierActionsImpl implements DossierActions {
 
 				// in SERVER
 			
-=======
-				
-				
-				String refUid = PortalUUIDUtil.generate();
-
-				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "reject_submit",
-						actionNote, 0, context);
-
-				// in SERVER
-				
->>>>>>> refs/remotes/upstream/develop-bvh
 				context.setScopeGroupId(sourceDossier.getGroupId());
 				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid, "reject_submit",
 						actionNote, 0, context);
@@ -2032,11 +2020,7 @@ public class DossierActionsImpl implements DossierActions {
 		// sb.append(":");
 		// sb.append(actionNote);
 		// }
-<<<<<<< HEAD
 			return sb.toString();
-=======
-		return sb.toString();
->>>>>>> refs/remotes/upstream/develop-bvh
 
 	}
 

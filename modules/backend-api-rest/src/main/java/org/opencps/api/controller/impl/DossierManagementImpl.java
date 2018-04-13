@@ -587,33 +587,19 @@ public class DossierManagementImpl implements DossierManagement {
 
 				return Response.status(200).entity(result).build();
 
-<<<<<<< HEAD
 			} else if(groupId > 0) {
-				
-=======
-			} else {
-				_log.info("1");
->>>>>>> refs/remotes/upstream/develop-bvh
+
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
 				}
 
-				_log.info("1");
 				Dossier dossier = getDossier(id, groupId);
 
-				_log.info("1");
 				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 						dossier.getDossierTemplateNo(), groupId);
 
-<<<<<<< HEAD
-//					dossierPermission.hasGetDetailDossier(groupId, user.getUserId(), dossier, option.getServiceProcessId());
-=======
-				_log.info("userID: "+user.getUserId());
-				_log.info("1");
 //				dossierPermission.hasGetDetailDossier(groupId, user.getUserId(), dossier, option.getServiceProcessId());
->>>>>>> refs/remotes/upstream/develop-bvh
 
-				_log.info("userID: "+user.getUserId());
 				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
 				return Response.status(200).entity(result).build();

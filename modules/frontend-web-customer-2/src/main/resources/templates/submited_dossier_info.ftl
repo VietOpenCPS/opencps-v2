@@ -125,7 +125,6 @@
 
     $("#btn-completed-submiting-dossier").click(function(){
 
-      firstLoadDataSource = true;
       manageDossier.navigate("/new");
 
       $("#mainType1").show();

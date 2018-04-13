@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-import org.opencps.auth.api.exception.DataInUsedException;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
@@ -62,7 +61,7 @@ public interface DictcollectionInterface {
 			DuplicateCategoryException, NotFoundException;
 	
 	public boolean deleteDictgroups(String groupCode, long groupId, ServiceContext serviceContext)
-			throws NotFoundException, UnauthenticationException, UnauthorizationException, DataInUsedException;
+			throws NotFoundException, UnauthenticationException, UnauthorizationException;
 	
 	public DictItemGroup addDictgroupsDictItems(long userId, long groupId, String code, String groupCode,
 			String itemCode, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,

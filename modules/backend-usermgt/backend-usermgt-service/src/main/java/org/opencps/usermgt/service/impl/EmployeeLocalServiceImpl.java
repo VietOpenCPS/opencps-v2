@@ -327,11 +327,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		String active = (String) params.get(EmployeeTerm.ACTIVE);
 		String month = (String) params.get(EmployeeTerm.MONTH);
 		String strUserIdList = (String) params.get("userIdList");
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> refs/remotes/upstream/develop-bvh
 		Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 
 		searchContext.addFullQueryEntryClassName(Employee.class.getName());
@@ -455,11 +451,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		if (Validator.isNotNull(strUserIdList)) {
 			String[] sliptUserId = strUserIdList.split(StringPool.COMMA);
 			if (sliptUserId != null && sliptUserId.length > 0) {
-<<<<<<< HEAD
 			BooleanQuery subQuery = new BooleanQueryImpl();
-=======
-				BooleanQuery subQuery = new BooleanQueryImpl();
->>>>>>> refs/remotes/upstream/develop-bvh
 				for (String strUserId : sliptUserId) {
 					if (Validator.isNotNull(strUserId)) {
 
@@ -500,11 +492,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		String status = (String) params.get(EmployeeTerm.WORKING_STATUS);
 		String active = (String) params.get(EmployeeTerm.ACTIVE);
 		String month = (String) params.get(EmployeeTerm.MONTH);
-<<<<<<< HEAD
 		String strUserIdList = (String) params.get("userIdList");
-=======
-    String strUserIdList = (String) params.get("userIdList");
->>>>>>> refs/remotes/upstream/develop-bvh
 
 		Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 
@@ -626,11 +614,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		if (Validator.isNotNull(strUserIdList)) {
 			String[] sliptUserId = strUserIdList.split(StringPool.COMMA);
 			if (sliptUserId != null && sliptUserId.length > 0) {
-<<<<<<< HEAD
 			BooleanQuery subQuery = new BooleanQueryImpl();
-=======
-				BooleanQuery subQuery = new BooleanQueryImpl();
->>>>>>> refs/remotes/upstream/develop-bvh
 				for (String strUserId : sliptUserId) {
 					if (Validator.isNotNull(strUserId)) {
 
@@ -700,14 +684,9 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		return employee;
 	}
-<<<<<<< HEAD
 
 		
-=======
-	
->>>>>>> refs/remotes/upstream/develop-bvh
 	public List<Employee> getLstEmployee(long groupId, long userId){
 		return employeePersistence.findByG_UID(groupId, userId);
 	}
-
 }

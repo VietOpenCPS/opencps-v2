@@ -264,16 +264,10 @@ public class RegistrationUtils {
 		long registrationId = reg.getRegistrationId();
 		_log.info("registrationId: "+registrationId);
 //			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
-<<<<<<< HEAD
 			if (Validator.isNotNull(registrationId) && registrationId > 0) {
 				RegistrationFormActions action = new RegistrationFormActionsImpl();
-=======
-		if (Validator.isNotNull(registrationId) && registrationId > 0) {
-			RegistrationFormActions action = new RegistrationFormActionsImpl();
->>>>>>> refs/remotes/upstream/develop-bvh
 			List<RegistrationForm> registrationFormList = action.getFormbyRegId(reg.getGroupId(), registrationId);
 
-<<<<<<< HEAD
 				if (registrationFormList != null && registrationFormList.size() > 0) {
 					for (RegistrationForm regForm : registrationFormList) {
 					JSONObject xuongSXJson = JSONFactoryUtil.createJSONObject();
@@ -288,29 +282,10 @@ public class RegistrationUtils {
 							}
 						} catch (Exception e) {
 							// TODO: handle exception
-=======
-			if (registrationFormList != null && registrationFormList.size() > 0) {
-				for (RegistrationForm regForm : registrationFormList) {
-					JSONObject xuongSXJson = JSONFactoryUtil.createJSONObject();
-					String formData = regForm.getFormData();
-					_log.info("formData: "+formData);
-					try {
-						JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
-						String xuongSX = formJson.getString("ten_xuong_san_xuat");
-						if (Validator.isNotNull(xuongSX)) {
-							xuongSXJson.put("ten_xuong_san_xuat", xuongSX);
-							data.put(xuongSXJson);
->>>>>>> refs/remotes/upstream/develop-bvh
 						}
-					} catch (Exception e) {
-						// TODO: handle exception
 					}
 				}
 			}
-<<<<<<< HEAD
-=======
-		}
->>>>>>> refs/remotes/upstream/develop-bvh
 //		}
 		return data;
 	}
