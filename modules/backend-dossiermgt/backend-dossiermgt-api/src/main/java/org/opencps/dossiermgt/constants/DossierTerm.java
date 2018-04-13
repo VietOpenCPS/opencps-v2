@@ -35,6 +35,7 @@ public class DossierTerm {
 	public static final String SUBMITTING = "submitting";
 	public static final String SUBMIT_DATE = "submitDate";
 	public static final String RECEIVE_DATE = "receiveDate";
+	public static final String RECEIVE_DATE_SORTABLE = "receiveDate_sortable";
 	public static final String RECEIVE_DATE_TIMESTAMP = "receiveDateTimestamp";
 	public static final String DUE_DATE = "dueDate";
 	public static final String DUE_DATE_TIMESTAMP = "dueDateTimestamp";
@@ -88,4 +89,19 @@ public class DossierTerm {
 	public static final String TOP = "top";
 	public static final String STATE = "state";
 
+	public static final String FROM_RECEIVEDATE = "fromReceiveDate";
+	public static final String TO_RECEIVEDATE = "toReceiveDate";
+	public static final String CERT_NO = "so_chung_chi";
+	public static final String FROM_CERT_DATE = "tu_ngay_ky_cc";
+	public static final String TO_CERT_DATE = "den_ngay_ky_cc";
+	public static final String CERT_DATE = "ngay_ky_cc";
+	public static final String DOSSIER_ID_CTN = "dossierIdCTN";
+	public static final String FROM_SUBMIT_DATE = "fromSubmitDate";
+	public static final String TO_SUBMIT_DATE = "toSubmitDate";
+	
+	public static final String DOSSIER_NO_SEARCH = "dossierNoSearch";
+	public static final String CERT_NO_SEARCH = "certNoSearch";
+	public static final String ACTION_MAPPING_USERID = "actionMappingUserId";
+	public static final String ENDORSEMENT_DATE= "endorsementDate";
+	public static final String ENDORSEMENT_DATE_TIMESTAMP = "endorsementDateTimestamp";
 }

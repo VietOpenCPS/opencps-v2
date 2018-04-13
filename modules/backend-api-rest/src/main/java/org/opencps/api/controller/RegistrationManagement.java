@@ -136,14 +136,11 @@ public interface RegistrationManagement {
 	/* Get list dataform by applicantNo, agencyNo and formNo - END */
 	// Get info formdata of registration
 	@GET
-	@Path("/registrations/forms/formdata")
+	@Path("/registrations/{id}/forms/formdata")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getFormDataByReferenceUid(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @DefaultValue("") @QueryParam("stage") String stage,
-			@DefaultValue("") @QueryParam("agency") String agency, @DefaultValue("") @QueryParam("owner") String owner,
-			@DefaultValue("") @QueryParam("registrationClass") String registrationClass,
-			@DefaultValue("") @QueryParam("submitting") String submitting,
-			@DefaultValue("") @QueryParam("keyword") String keyword, @DefaultValue("") @QueryParam("sort") String sort);
+			@Context ServiceContext serviceContext,
+			@ApiParam(value = "registrationId", required = true) @PathParam("id") long registrationId);
 }
