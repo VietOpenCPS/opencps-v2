@@ -1178,7 +1178,11 @@
 		<!-- Order -->
 
 		<!-- Filter -->
-
+		<finder return-type="Collection" name="G_UID_Y">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="userId"></finder-column>
+            <finder-column name="year"></finder-column>
+        </finder>
 
 	</entity>
 
@@ -1520,6 +1524,36 @@
 		<order>
 			<order-column name="createDate" order-by="desc" />
 		</order>
+	</entity>
+	
+	<entity local-service="true" name="DossierMark" remote-service="false"
+		table="opencps_dossiermark" uuid="true">
+
+		<column name="dossierMarkId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="dossierId" type="long" />
+		<column name="dossierPartNo" type="String" />
+		<column name="fileCheck" type="boolean" />
+		<column name="fileType" type="int" />
+
+		<finder return-type="DossierMark" name="G_DID_PN">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+			<finder-column name="dossierPartNo" />
+		</finder>
+		
+		<finder return-type="Collection" name="G_DID">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+		</finder>
 	</entity>
 
 	<exceptions>
