@@ -309,7 +309,6 @@ public interface DossierManagement {
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "dossier id", required = true) @PathParam("id") String id);
 
-		
 	@POST
 	@Path("/{id}/marks/{dossierPartNo}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
