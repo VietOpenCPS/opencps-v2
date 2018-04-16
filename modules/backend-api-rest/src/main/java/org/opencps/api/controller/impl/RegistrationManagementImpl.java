@@ -264,7 +264,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			List<RegistrationForm> lstRegistrationForm = action.getFormbyRegId(groupId, id);
 			int total = lstRegistrationForm.size();
 			for (RegistrationForm registrationForm : lstRegistrationForm) {
-				_log.info("registrationFormXXXXXXX: "+registrationForm);
+				_log.info("registrationFormXXXXXXX: "+registrationForm.getRemoved());
 			}
 
 			List<RegistrationFormModel> lstRegistrationFormModel = RegistrationFormUtils

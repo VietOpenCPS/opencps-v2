@@ -41,10 +41,10 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 	}
 
 	@Override
-	public RegistrationForm deleteRegistrationForm(long groupId, long registrationId, String referenceUid)
+	public boolean deleteRegistrationForm(String referenceUid)
 			throws PortalException {
 
-		return RegistrationFormLocalServiceUtil.deleteRegistrationForm(groupId, registrationId, referenceUid);
+		return RegistrationFormLocalServiceUtil.deleteRegistrationForm(referenceUid);
 
 	}
 

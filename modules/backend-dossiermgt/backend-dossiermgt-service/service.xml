@@ -1342,6 +1342,10 @@
 			<finder-column name="registrationId" />
 			<finder-column name="formNo" />
 		</finder>
+
+		<finder return-type="Collection" name="F_REFID">
+			<finder-column name="referenceUid" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DeliverableType"
