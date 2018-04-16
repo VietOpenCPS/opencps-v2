@@ -320,6 +320,11 @@
 				status = "error";
 				break;
 
+				case 406:
+				message = "Dữ liệu đang được sử dụng, không thể xoá tài nguyên!!!";
+				status = "error";
+				break;
+				
 				case 409:
 				message = "Yêu cầu của bạn xử lý thất bại, xung đột dữ liệu";
 				status = "error";

@@ -1,0 +1,9 @@
+Bundle-Name: backend-thirdparty-system-api
+Bundle-SymbolicName: org.opencps.thirdparty.system.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	org.opencps.thirdparty.system.exception,\
+	org.opencps.thirdparty.system.model,\
+	org.opencps.thirdparty.system.service,\
+	org.opencps.thirdparty.system.service.persistence
+-includeresource: META-INF/service.xml=../backend-thirdparty-system-service/service.xml

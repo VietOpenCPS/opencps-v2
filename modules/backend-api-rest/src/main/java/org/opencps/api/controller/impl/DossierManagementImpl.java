@@ -1109,9 +1109,13 @@ public class DossierManagementImpl implements DossierManagement {
 
 	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
 
+		_log.info("Collection code: " + collectionCode);
+		_log.info("Group id: " + groupId);
+		
 		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
 
 		if (Validator.isNotNull(dc)) {
+			_log.info("Item code: " + itemCode);
 			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
 
 			return it.getItemName();

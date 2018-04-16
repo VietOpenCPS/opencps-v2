@@ -882,8 +882,10 @@ public class DataTempManagementImpl implements DataTempManagement {
 				dictGroup = DictGroupTempLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, dictCollection.getDictCollectionId());
 			}
 			
-			boolean flag = dictItemDataUtil.deleteDictGroupsTemp(groupCode, groupId, serviceContext);
+//			boolean flag = dictItemDataUtil.deleteDictGroupsTemp(groupCode, groupId, serviceContext);
 			
+			boolean flag = dictItemDataUtil.deleteDictGroupsTemp(code, groupCode, groupId, serviceContext);
+
 			if (flag) {
 				if (dictGroup != null) {
 					try {

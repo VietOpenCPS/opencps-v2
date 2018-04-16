@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+
+	<xsd:element name="NSWRequest" type="NSWRequest" />
+
+	<xsd:complexType name="NSWRequest">
+		<xsd:sequence>
+			<xsd:element name="officeCode" type="xsd:string" />
+			<xsd:element name="documentType" type="xsd:string" />
+			<xsd:element ref="requestPayload" minOccurs="0"
+				maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="requestPayload">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="Envelope" minOccurs="0" maxOccurs="1" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="responsePayload">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="Envelope" minOccurs="0" maxOccurs="1" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<!-- Envelope, header and body -->
+	<xsd:element name="Envelope" type="Envelope" />
+	<xsd:complexType name="Envelope">
+		<xsd:sequence>
+			<xsd:element ref="Header" minOccurs="0" />
+			<xsd:element ref="Body" minOccurs="1" />
+			<xsd:element name="systemSignature" type="xsd:string" />
+			<xsd:any namespace="##other" minOccurs="0" maxOccurs="unbounded"
+				processContents="lax" />
+		</xsd:sequence>
+		<xsd:anyAttribute namespace="##other"
+			processContents="lax" />
+	</xsd:complexType>
+	<xsd:element name="Reference" type="Reference" />
+	<xsd:complexType name="Reference">
+		<xsd:sequence>
+			<xsd:element name="version" type="xsd:string" />
+			<xsd:element name="messageId" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="From" type="From" />
+	<xsd:complexType name="From">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" />
+			<xsd:element name="identity" type="xsd:string" />
+			<xsd:element name="countryCode" type="xsd:string" />
+			<xsd:element name="ministryCode" type="xsd:string" />
+			<xsd:element name="organizationCode" type="xsd:string" />
+			<xsd:element name="unitCode" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="To" type="To" />
+	<xsd:complexType name="To">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" />
+			<xsd:element name="identity" type="xsd:string" />
+			<xsd:element name="countryCode" type="xsd:string" />
+			<xsd:element name="ministryCode" type="xsd:string" />
+			<xsd:element name="organizationCode" type="xsd:string" />
+			<xsd:element name="unitCode" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="Subject" type="Subject" />
+	<xsd:complexType name="Subject">
+		<xsd:sequence>
+			<xsd:element name="documentType" type="xsd:string" />
+			<xsd:element name="type" type="xsd:int" />
+			<xsd:element name="function" type="xsd:int" />
+			<xsd:element name="reference" type="xsd:string" />
+			<xsd:element name="documentYear" type="xsd:int" />
+			<xsd:element name="preReference" type="xsd:string" />
+			<xsd:element name="sendDate" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="Header" type="Header" />
+	<xsd:complexType name="Header">
+		<xsd:sequence>
+			<xsd:element ref="Reference" minOccurs="1" />
+			<xsd:element ref="From" minOccurs="1" />
+			<xsd:element ref="To" minOccurs="1" />
+			<xsd:element ref="Subject" minOccurs="1" />
+			<xsd:any namespace="##other" minOccurs="0" maxOccurs="unbounded"
+				processContents="lax" />
+		</xsd:sequence>
+		<xsd:anyAttribute namespace="##other"
+			processContents="lax" />
+	</xsd:complexType>
+	<xsd:element name="DS_Loi" type="DS_Loi" />
+	<xsd:complexType name="DS_Loi">
+		<xsd:sequence>
+			<xsd:element ref="Thongtin_Loi" minOccurs="1" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="Thongtin_Loi" type="Thongtin_Loi" />
+	<xsd:complexType name="Thongtin_Loi">
+		<xsd:sequence>
+			<xsd:element name="ma_loi">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="250"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="ten_loi">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="5000"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="Content" type="Content" />
+	<xsd:complexType name="Content">
+		<xsd:sequence>
+			<xsd:element ref="DS_Loi" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="Body" type="Body" />
+	<xsd:complexType name="Body">
+		<xsd:sequence>
+			<xsd:element ref="Content" />
+			<xsd:element name="personSignature" type="xsd:string" />
+		</xsd:sequence>
+		<xsd:anyAttribute namespace="##any" processContents="lax">
+			<xsd:annotation>
+				<xsd:documentation>
+					Prose in the spec does not specify that
+					attributes are allowed on the
+					Body element
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:anyAttribute>
+	</xsd:complexType>
+	<!-- Global Attributes. The following attributes are intended to be usable 
+		via qualified attribute names on any complex type referencing them. -->
+	<xsd:attribute name="mustUnderstand">
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:boolean">
+				<xsd:pattern value="0|1" />
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:attribute>
+	<xsd:attribute name="actor" type="xsd:anyURI" />
+	<xsd:simpleType name="encodingStyle">
+		<xsd:annotation>
+			<xsd:documentation>
+				'encodingStyle' indicates any canonicalization
+				conventions followed in the contents
+				of the containing element. For
+				example, the value
+				'http://schemas.xmlsoap.org/soap/encoding/'
+				indicates the pattern
+				described in SOAP specification
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:list itemType="xsd:anyURI" />
+	</xsd:simpleType>
+	<xsd:attribute name="encodingStyle" type="encodingStyle" />
+	<xsd:attributeGroup name="encodingStyle">
+		<xsd:attribute ref="encodingStyle" />
+	</xsd:attributeGroup>
+	<xsd:element name="Fault" type="Fault" />
+	<xsd:complexType name="Fault" final="extension">
+		<xsd:annotation>
+			<xsd:documentation>Fault reporting structure</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="faultcode" type="xsd:QName" />
+			<xsd:element name="faultstring" type="xsd:string" />
+			<xsd:element name="faultactor" type="xsd:anyURI"
+				minOccurs="0" />
+			<xsd:element name="detail" type="detail" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="detail">
+		<xsd:sequence>
+			<xsd:any namespace="##any" minOccurs="0" maxOccurs="unbounded"
+				processContents="lax" />
+		</xsd:sequence>
+		<xsd:anyAttribute namespace="##any" processContents="lax" />
+	</xsd:complexType>
+</xsd:schema>

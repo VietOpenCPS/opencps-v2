@@ -4,14 +4,12 @@ package org.opencps.synchronization.action.impl;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.datamgt.constants.DictItemGroupTerm;
 import org.opencps.synchronization.action.DictCollectionTempInterface;
-import org.opencps.synchronization.constants.DataMGTTempConstants;
 import org.opencps.synchronization.exception.NoSuchDictItemTempException;
 import org.opencps.synchronization.model.DictCollectionTemp;
 import org.opencps.synchronization.model.DictGroupTemp;
@@ -344,6 +342,42 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 			flag = true;
 
+		}
+		return flag;
+	}
+
+	@Override
+	public boolean deleteDictGroupsTemp(String collectionCode, String groupCode, long groupId, ServiceContext serviceContext)
+			throws NotFoundException, UnauthenticationException, UnauthorizationException {
+		// TODO Auto-generated method stub
+		boolean flag = false;
+
+		DictCollectionTemp collection = null;
+		
+		try {
+			collection = getDictCollectionTempDetail(collectionCode, groupId);
+		}
+		catch (Exception e) {
+			
+		}
+		
+		if (collection != null) {
+			DictGroupTemp dictColl = DictGroupTempLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());
+
+			if (Validator.isNull(dictColl)) {
+
+				flag = false;
+
+			} else {
+
+				DictGroupTempLocalServiceUtil.deleteDictGroupTemp(dictColl.getDictGroupId(), serviceContext);
+
+				flag = true;
+
+			}			
+		}
+		else {
+			flag = false;
 		}
 		return flag;
 	}
@@ -699,6 +733,22 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 		return StringUtil.merge(groupCodeList);
 	}
 
-	public Log _log = LogFactoryUtil.getLog(DictCollectionActions.class);
+	@Override
+	public DictGroupTemp getDictGroupTempDetail(String dictCollectionCode, String groupCode, long groupId) {
+		// TODO Auto-generated method stub
+		DictCollectionTemp collection = null;
+		try {
+			collection = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(dictCollectionCode, groupId);
+		}
+		catch (Exception e) {
+			
+		}
+		if (collection != null) {
+			DictGroupTemp dictGroup = DictGroupTempLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());
+			return dictGroup;
+		}
+		return null;
+	}
 
+	public Log _log = LogFactoryUtil.getLog(DictCollectionActions.class);	
 }

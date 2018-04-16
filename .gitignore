@@ -1,7 +1,6 @@
-<<<<<<< HEAD
 **/!bnd.bnd
 **/!build.gradle
-=======
+
 .gradle/
 build/
 target/
@@ -20,31 +19,24 @@ bin/
 **/service/http/
 
 ##Ignore database
->>>>>>> vr-business/master
 **/indexes.sql
 **/sequences.sql
 **/tables.sql
 **/module-hbm.xml
 **/portlet-model-hints.xml
-<<<<<<< HEAD
+
 **/module-spring.xml 
 **/service.properties
 **/sql/**
 **/**/**.sql
 **/*.iml
 **/.ivy
-=======
-**/module-spring.xml
-**/service.properties
-**/sql/**
-**/**/**.sql
 
->>>>>>> vr-business/master
 **/.classpath
 **/.project
 **/.sass-cache
 **/.settings
-<<<<<<< HEAD
+
 **/bin
 **/build
 **/build_gradle
@@ -105,6 +97,10 @@ gradle-local.properties
 **/backend-synchronization-api/**/service/
 **/backend-synchronization-api/**/service/persistence/
 
+**/backend-thirdparty-system-api/**/model/
+**/backend-thirdparty-system-api/**/exception/
+**/backend-thirdparty-system-api/**/service/
+**/backend-thirdparty-system-api/**/service/persistence/
 **/**/ServiceProps.java
 
 **/vr-business/**
@@ -113,6 +109,3 @@ mt-dklr/**
 theme_nz/*
 modules/vr-business
 gradle.properties
-=======
-
->>>>>>> vr-business/master

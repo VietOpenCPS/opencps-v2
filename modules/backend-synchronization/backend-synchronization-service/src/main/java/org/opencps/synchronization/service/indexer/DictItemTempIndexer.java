@@ -65,7 +65,9 @@ public class DictItemTempIndexer extends BaseIndexer<DictItemTemp> {
 		document.addTextSortable(DictItemTempTerm.ITEM_CODE, dictItem.getItemCode());
 		document.addTextSortable(DictItemTempTerm.ITEM_NAME, dictItem.getItemName());
 		document.addTextSortable(DictItemTempTerm.ITEM_NAME_EN, dictItem.getItemNameEN());
-		document.addTextSortable(DictItemTempTerm.ITEM_DESCRIPTION, dictItem.getItemDescription());
+		if (Validator.isNotNull(dictItem.getItemDescription())) {
+			document.addTextSortable(DictItemTempTerm.ITEM_DESCRIPTION, dictItem.getItemDescription());			
+		}
 		document.addNumberSortable(DictItemTempTerm.PARENT_ITEM_ID, dictItem.getParentItemId());
 		document.addTextSortable(DictItemTempTerm.SIBLING, dictItem.getSibling());
 		document.addTextSortable(DictItemTempTerm.TREE_INDEX, dictItem.getTreeIndex());

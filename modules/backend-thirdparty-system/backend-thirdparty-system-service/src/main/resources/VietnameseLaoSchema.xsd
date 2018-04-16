@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+
+	<xsd:element name="DS_Loi" type="DS_Loi" />
+	<xsd:complexType name="DS_Loi">
+		<xsd:sequence>
+			<xsd:element ref="Thongtin_Loi" minOccurs="1" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="Thongtin_Loi" type="Thongtin_Loi"/>
+	<xsd:complexType name="Thongtin_Loi">
+		<xsd:sequence>
+			<xsd:element name="ma_loi">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="250"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="ten_loi">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="5000"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="Thongbao" type="Thongbao" />
+	<xsd:complexType name="Thongbao">
+		<xsd:sequence>
+			<xsd:element name="ngaythongbao">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern
+							value="[0-9]{4}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-6][0-9]" />					
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="thongbao" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="KetQuaXuLy" type="KetQuaXuLy"/>
+	<xsd:complexType name="KetQuaXuLy">
+		<xsd:sequence>
+			<xsd:element name="so_tn">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="100"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="noi_dung">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="2000"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="ngay_xu_ly">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern
+							value="[0-9]{4}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-6][0-9]" />					
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="don_vi_xu_ly">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="250"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="link_congvan">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="2000"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="DN_Yeucau_Rut" type="DN_Yeucau_Rut"/>
+	<xsd:complexType name="DN_Yeucau_Rut">
+		<xsd:sequence>
+			<xsd:element name="ngay_rut">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern
+							value="[0-9]{4}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-6][0-9]" />					
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="noi_dung">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="2000"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="DN_Yeucau_TraLai" type="DN_Yeucau_TraLai"/>
+	<xsd:complexType name="DN_Yeucau_TraLai">
+		<xsd:sequence>
+			<xsd:element name="ngay_tra">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern
+							value="[0-9]{4}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-6][0-9]" />					
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="noi_dung">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="2000"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="PhytosanitaryResultDelete" type="PhytosanitaryResultDelete"/>
+	<xsd:complexType name="PhytosanitaryResultDelete">
+		<xsd:sequence>
+			<xsd:element name="NSWFileCode">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="12"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="DispatchNo">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="50"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="SignConfirmDate">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern
+							value="[0-9]{4}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-6][0-9]" />					
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="SignConfirmName">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="100"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="SignConfirmAddress">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="100"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="Reason">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="500"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>			
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="Content" type="Content" />
+
+	<xsd:complexType name="Content">
+		<xsd:sequence>
+			<xsd:element ref="RequestForVLInterRoadTransportLicence"
+				minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="RequestForVLInterRoadTransportLicence" type="RequestForVLInterRoadTransportLicence" />
+	<xsd:complexType name="RequestForVLInterRoadTransportLicence">
+		<xsd:sequence>
+			<xsd:element ref="Transporter" />
+ 			<xsd:element ref="TypeOfTransport" />
+			<xsd:element name="IssuingType">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="50"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="Remarks" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="1000"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element ref="AttachedFile" minOccurs="1" maxOccurs="unbounded" />
+			<xsd:element ref="TransporterSign" />
+ 		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="Transporter" type="Transporter" />
+	<xsd:complexType name="Transporter">
+		<xsd:sequence>
+ 			<xsd:element name="NameOfCompany">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="255"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+ 			<xsd:element name="Address">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="500"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="Tel">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="50"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="Fax">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="50"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="Email" type="xsd:string" minOccurs="0" />
+			<xsd:element name="Website" type="xsd:string" minOccurs="0" />
+			<xsd:element name="BizCertificationNo">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="255"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="BizCertificationDate">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern
+							value="[0-9]{4}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-6][0-9]" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="BizCertificationIssuedBy">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="255"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+ 		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="TypeOfTransport" type="TypeOfTransport" />
+	<xsd:complexType name="TypeOfTransport">
+		<xsd:sequence>
+			<xsd:element name="IsFixedRoadTransport">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="1"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="IsContractRoadTransport">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="1"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="IsPassengerTransport">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="1"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="IsCargoTransport">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="1"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="AttachedFile" type="AttachedFile" />
+	<xsd:complexType name="AttachedFile">
+		<xsd:sequence>
+			<xsd:element name="AttachedTypeCode">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="20"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="AttachedTypeName">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="200"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="AttachedNote">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="100"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="FullFileName">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="100"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="Base64FileContent" type="xsd:string" />
+			<xsd:element name="FileURL">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="500"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="TransporterSign" type="TransporterSign" />
+	<xsd:complexType name="TransporterSign">
+		<xsd:sequence>
+			<xsd:element name="SignName">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="255"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="SignTitle" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="100"></xsd:maxLength>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="SignPlace" type="xsd:string" />
+			<xsd:element name="SignDate">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern
+							value="[0-9]{4}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-6][0-9]" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="RequestForVLCrossBorderTransport7A">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="NameOfCompany" type="xsd:string" />
+				<xsd:element name="BizCertificationIssuedBy" type="xsd:string" />
+				<xsd:element name="Address" type="xsd:string" />
+				<xsd:element name="Tel" type="xsd:string" />
+				<xsd:element name="Fax" type="xsd:string" />
+				<xsd:element name="Email" type="xsd:string" />
+				<xsd:element name="Website" type="xsd:string" />
+				<xsd:element name="LicenseNo" type="xsd:string" />
+				<xsd:element name="LicenseDate" type="xsd:string" />
+				<xsd:element ref="VehicleList" />
+				<xsd:element ref="TypeOfTransport" />
+				<xsd:element name="RouteCode" type="xsd:string" />
+				<xsd:element name="RouteName" type="xsd:string" />
+				<xsd:element name="FromParkingLot" type="xsd:string" />
+				<xsd:element name="FromProvinceCode" type="xsd:string" />
+				<xsd:element name="FromProvinceName" type="xsd:string" />
+				<xsd:element name="ToParkingLot" type="xsd:string" />
+				<xsd:element name="ToProvinceCode" type="xsd:string" />
+				<xsd:element name="ToProvinceName" type="xsd:string" />
+				<xsd:element name="Distance" type="xsd:string" />
+				<xsd:element name="RouteDescription" type="xsd:string" />
+				<xsd:element name="OfficalDispatchNo" type="xsd:string" />
+				<xsd:element name="OfficalDispatchDate" type="xsd:string" />
+				<xsd:element ref="AttachedFile" minOccurs="1" maxOccurs="unbounded" />
+				<xsd:element ref="TransporterSign" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="VehicleList">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="SequenceNo" type="xsd:string" />
+				<xsd:element name="RegistrationNumber" type="xsd:string" />
+				<xsd:element name="Capacity" type="xsd:string" />
+				<xsd:element name="ManufacturedYear" type="xsd:string" />
+				<xsd:element name="TrademarkCode" type="xsd:string" />
+				<xsd:element name="TrademarkName" type="xsd:string" />
+				<xsd:element name="ChassisNumber" type="xsd:string" />
+				<xsd:element name="EngineNumber" type="xsd:string" />
+				<xsd:element name="VehicleColor" type="xsd:string" />
+				<xsd:element name="PermitedFrom" type="xsd:string" />
+				<xsd:element name="PermitedTo" type="xsd:string" />
+				<xsd:element name="PassengerOrCargo" type="xsd:string" />
+				<xsd:element name="ExpImpGateCode" type="xsd:string" />
+				<xsd:element name="ExpImpGate" type="xsd:string" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="VehicleListFixRoad">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="SequenceNo" type="xsd:string" />
+				<xsd:element name="RegistrationNumber" type="xsd:string" />
+				<xsd:element name="RegistrationDriver" type="xsd:string" />
+				<xsd:element name="VehicleModelCode" type="xsd:string" />
+				<xsd:element name="VehicleModelName" type="xsd:string" />
+				<xsd:element name="Capacity" type="xsd:string" />
+				<xsd:element name="ManufacturedYear" type="xsd:string" />
+				<xsd:element name="VehicleExpImpGateCode" type="xsd:string" />
+				<xsd:element name="VehicleExpImpGate" type="xsd:string" />
+				<xsd:element name="RegistrationNumberStop" type="xsd:string" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="PurposeOfDeparture">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="Official" type="xsd:string" />
+				<xsd:element name="Individual" type="xsd:string" />
+				<xsd:element name="Business" type="xsd:string" />
+				<xsd:element name="Others" type="xsd:string" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="RequestForVLCrossBorderTransport7B">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="NameOfCompany" type="xsd:string" />
+				<xsd:element name="BizCertificationIssuedBy" type="xsd:string" />
+				<xsd:element name="Address" type="xsd:string" />
+				<xsd:element name="Tel" type="xsd:string" />
+				<xsd:element name="Fax" type="xsd:string" />
+				<xsd:element name="Email" type="xsd:string" />
+				<xsd:element name="Website" type="xsd:string" />
+				<xsd:element name="LicenseNo" type="xsd:string" />
+				<xsd:element name="LicenseDate" type="xsd:string" />
+				<xsd:element ref="VehicleList" />
+				<xsd:element ref="PurposeOfDeparture" />
+				<xsd:element ref="AttachedFile" minOccurs="1" maxOccurs="unbounded" />
+				<xsd:element ref="TransporterSign" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="RegistrationOfVLFixRoadTransport">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="NameOfCompany" type="xsd:string" />
+				<xsd:element name="OfficialDispatchNo" type="xsd:string" />
+				<xsd:element name="DispatchPlace" type="xsd:string" />
+				<xsd:element name="OfficialDispatchDate" type="xsd:string" />
+				<xsd:element name="Address" type="xsd:string" />
+				<xsd:element name="Tel" type="xsd:string" />
+				<xsd:element name="Fax" type="xsd:string" />
+				<xsd:element name="Email" type="xsd:string" />
+				<xsd:element name="Website" type="xsd:string" />
+				<xsd:element name="LicenceNo" type="xsd:string" />
+				<xsd:element name="LicenceDate" type="xsd:string" />
+				<xsd:element name="RouteCode" type="xsd:string" />
+				<xsd:element name="RouteName" type="xsd:string" />
+				<xsd:element name="FromParkingLot" type="xsd:string" />
+				<xsd:element name="FromProvinceCode" type="xsd:string" />
+				<xsd:element name="FromProvinceName" type="xsd:string" />
+				<xsd:element name="ToParkingLot" type="xsd:string" />
+				<xsd:element name="ToProvinceCode" type="xsd:string" />
+				<xsd:element name="ToProvinceName" type="xsd:string" />
+				<xsd:element name="Distance" type="xsd:string" />
+				<xsd:element name="RouteDescription" type="xsd:string" />
+				<xsd:element name="ExpImpGateCode" type="xsd:string" />
+				<xsd:element name="ExpImpGate" type="xsd:string" />
+				<xsd:element ref="VehicleListFixRoad" />
+				<xsd:element ref="AttachedFile" minOccurs="1" maxOccurs="unbounded" />
+				<xsd:element ref="TransporterSign" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="NoticeOfVLStopTransport">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="NameOfCompany" type="xsd:string" />
+				<xsd:element name="OfficialDispatchNo" type="xsd:string" />
+				<xsd:element name="Address" type="xsd:string" />
+				<xsd:element name="Tel" type="xsd:string" />
+				<xsd:element name="LicenceNo" type="xsd:string" />
+				<xsd:element name="LicenceDate" type="xsd:string" />
+				<xsd:element name="BeginingOfStop" type="xsd:string" />
+				<xsd:element name="RouteCodeStop" type="xsd:string" />
+				<xsd:element name="RouteNameStop" type="xsd:string" />
+				<xsd:element ref="AttachedFile" minOccurs="1" maxOccurs="unbounded" />
+				<xsd:element ref="TransporterSign" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="NoticeOfVLAdjustFrequency">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="NameOfCompany" type="xsd:string" />
+				<xsd:element name="OfficialDispatchNo" type="xsd:string" />
+				<xsd:element name="Address" type="xsd:string" />
+				<xsd:element name="Tel" type="xsd:string" />
+				<xsd:element name="LicenceNo" type="xsd:string" />
+				<xsd:element name="LicenceDate" type="xsd:string" />
+				<xsd:element name="BeginingOfAdjust" type="xsd:string" />
+				<xsd:element name="RouteCode" type="xsd:string" />
+				<xsd:element name="RouteName" type="xsd:string" />
+				<xsd:element name="NumberOfLot" type="xsd:string" />
+				<xsd:element ref="AttachedFile" minOccurs="1" maxOccurs="unbounded" />
+				<xsd:element ref="TransporterSign" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>
