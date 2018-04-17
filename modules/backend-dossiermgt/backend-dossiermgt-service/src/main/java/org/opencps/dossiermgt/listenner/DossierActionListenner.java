@@ -124,18 +124,20 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				boolean ok = true;
 
 				if (Validator.isNotNull(processAction)) {
-					if (processAction.getPreCondition().contains("cancelling")
-							|| processAction.getPreCondition().contains("correcting")
-							|| processAction.getPreCondition().contains("submit")) {
+					if ((processAction.getPreCondition().contains("cancelling")
+							&& processAction.getAutoEvent().contains("timmer"))
+							|| (processAction.getPreCondition().contains("correcting")
+									&& processAction.getAutoEvent().contains("timmer"))
+							|| (processAction.getPreCondition().contains("submitting"))
+									&& processAction.getAutoEvent().contains("timmer")) {
 						ok = false;
-						
+
 						_log.info("CHECK CONDITION OK ********** ....." + ok);
 
 					}
 				} else {
 					_log.info("CANT GET DOSSIER ACTION ********** .....");
-				}
-				
+				}				
 				
 				if (ok) {
 				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
