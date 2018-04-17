@@ -61,7 +61,7 @@ public class DossierOverDueUtils {
 
 		return dateFormat.format(estimateDate);
 	}
-/*	
+	
 	private int hourRemaining(Date checkDate) {
 		
 	}
@@ -69,7 +69,7 @@ public class DossierOverDueUtils {
 	private int minuteRemaining(Date checkDate) {
 		
 	}
-	*/
+	
 	private boolean isWorkingDay(Date checkDate) {
 		boolean isWorkingDay = false;
 		
