@@ -2,10 +2,10 @@
 	<v-layout wrap class="px-4 align-center-flex row-list-style"> 
 		<v-flex xs11>
 			<span class="text-bold" style="position: absolute;">{{index + 1}}.</span> 
-			<div style="margin-left: 30px;">{{item.partName}}</div>
+			<div style="margin-left: 30px;"><span @click.prevent="viewOnNewTab(item)" style="cursor: pointer;">{{item.partName}}</span></div>
 		</v-flex>
 		<v-flex xs1 class="text-right">
-		<v-btn color="primary" fab small dark class="small-btn-x" v-on:click.native="viewDossierFileVersion(item)">
+		<v-btn color="primary" fab small dark class="small-btn-x" v-on:click.native="viewDossierFileVersionNewTabOrWindow(item)">
 			{{item.counter}}
 		</v-btn>
 		</v-flex>
