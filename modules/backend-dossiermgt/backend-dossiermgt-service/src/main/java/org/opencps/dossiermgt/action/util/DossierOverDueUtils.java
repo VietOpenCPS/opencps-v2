@@ -13,11 +13,11 @@ import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 
 public class DossierOverDueUtils {
-	
+
 	public static final int START_HOUR_OF_DAY = 8;
-	
+
 	public static final int END_HOUR_OF_DAY = 18;
-	
+
 	public static final int END_MINUTE_OF_DAY = 0;
 
 	public static final int START_MINUTE_OF_DAY = 0;
@@ -30,13 +30,12 @@ public class DossierOverDueUtils {
 
 	public static final int END_NAP_MINUTE_OF_DAY = 0;
 
-	
 	public static Date getStepOverDue(int overDuePoint, Date date) {
 
 		// TODO add logic here
 		return null;
 	}
-
+	
 	public static String getEstimateDate(int processingDay) {
 		Date now = new Date();
 		int start = -1, end = -1;
@@ -61,50 +60,71 @@ public class DossierOverDueUtils {
 
 		return dateFormat.format(estimateDate);
 	}
-	
-	private int hourRemaining(Date checkDate) {
+
+	public static void main(String[] args) {
+		System.out.println(calculateEndDate(new Date(), 5));
 		
 	}
-	
-	private int minuteRemaining(Date checkDate) {
+	public static Date calculateEndDate(Date startDate, int duration) {
+		Calendar startCal = Calendar.getInstance();
+
+		startCal.setTime(startDate);
 		
-	}
-	
-	private boolean isWorkingDay(Date checkDate) {
-		boolean isWorkingDay = false;
-		
-		Calendar cal = Calendar.getInstance();
-		
-		cal.setTime(checkDate);
-		
-		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-		
-		if (dayOfWeek < 6) {
-			isWorkingDay = true;
+		for (int i = 1; i < duration; i++) {
+			startCal.add(Calendar.DAY_OF_MONTH, 1);
+			while (startCal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
+					|| startCal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+				startCal.add(Calendar.DAY_OF_MONTH, 1);
+			}
 		}
-		
-		return isWorkingDay;
+
+		return startCal.getTime();
 	}
 
+	public static int calculateDuration(Date startDate, Date endDate) {
+		Calendar startCal = Calendar.getInstance();
+		startCal.setTime(startDate);
+
+		Calendar endCal = Calendar.getInstance();
+		endCal.setTime(endDate);
+
+		int workDays = 0;
+
+		if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
+			startCal.setTime(endDate);
+			endCal.setTime(startDate);
+		}
+
+		do {
+			startCal.add(Calendar.DAY_OF_MONTH, 1);
+			if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
+					&& startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+				workDays++;
+			}
+		} while (startCal.getTimeInMillis() <= endCal.getTimeInMillis());
+
+		return workDays;
+	}
+	
 	private boolean isHoliday(Date checkDate) {
-		
+
 		boolean isHoliday = false;
-		
+
 		List<Holiday> holidays = new ArrayList<Holiday>();
-		
+
 		holidays = HolidayLocalServiceUtil.getHolidaies(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-		
+
 		for (Holiday holiday : holidays) {
 			if (equalDay(checkDate, holiday.getHolidayDate()) == 0) {
 				isHoliday = true;
-				
+
 				break;
 			}
 		}
-		
+
 		return isHoliday;
 	}
-	
+
 	private int equalDay(Date date1, Date date2) {
 		return truncateToDay(date1).compareTo(date2);
 	}
@@ -118,6 +138,8 @@ public class DossierOverDueUtils {
 		calendar.set(Calendar.MILLISECOND, 0);
 		return calendar.getTime();
 	}
+	
+	
 
 	private static final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 }
