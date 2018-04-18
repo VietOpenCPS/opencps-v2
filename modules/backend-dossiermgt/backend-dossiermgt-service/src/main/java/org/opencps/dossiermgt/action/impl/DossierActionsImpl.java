@@ -19,6 +19,7 @@ import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierContentGenerator;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
@@ -905,6 +906,24 @@ public class DossierActionsImpl implements DossierActions {
 
 		return result;
 	}
+	
+	private int getDuration(ServiceProcess serviceProcess) {
+		int duration = 0;
+		
+		int unit = serviceProcess.getDurationUnit();
+		
+		int count = serviceProcess.getDurationCount();
+		
+		if (unit == 0) {
+			duration = count;
+		}
+		
+		if (unit != 0) {
+			duration = count/8;
+		}
+		
+		return duration;
+	}
 
 	@Override
 	public DossierAction doAction(long groupId, long dossierId, String referenceUid, String actionCode,
@@ -1046,9 +1065,20 @@ public class DossierActionsImpl implements DossierActions {
 				dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId,
 						assignUserId);
 			}
-
+			
+			// ADD DUE DATE
 			dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, DossierStatusConstants.NEW,
 					jsStatus.getString(DossierStatusConstants.NEW), StringPool.BLANK, StringPool.BLANK, context);
+			
+			int duration = getDuration(serviceProcess);
+			
+			if (duration != 0) {
+				Date estimeteDate = DossierOverDueUtils.calculateEndDate(dossier.getSubmitDate(), duration);
+				dossier.setDueDate(estimeteDate);
+				DossierLocalServiceUtil.syncDossier(dossier);
+			} else {
+				_log.info("DONT HAVE ANY CONFIG FOR CACULATING DUE DATE");
+			}
 
 		} else {
 
@@ -1296,6 +1326,22 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 			}
+			
+			// ADD DUE DATE
+			dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, DossierStatusConstants.NEW,
+					jsStatus.getString(DossierStatusConstants.NEW), StringPool.BLANK, StringPool.BLANK, context);
+			
+			int duration = getDuration(serviceProcess);
+			
+			if (duration != 0 && Validator.isNotNull(dossier.getDueDate())) {
+				
+				Date estimeteDate = DossierOverDueUtils.calculateEndDate(dossier.getSubmitDate(), duration);
+				dossier.setDueDate(estimeteDate);
+				DossierLocalServiceUtil.syncDossier(dossier);
+			} else {
+				_log.info("DONT HAVE ANY CONFIG FOR CACULATING DUE DATE");
+			}
+
 		}
 
 		ProcessStep postStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
