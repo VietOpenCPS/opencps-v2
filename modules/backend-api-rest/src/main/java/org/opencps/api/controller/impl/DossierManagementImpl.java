@@ -1721,4 +1721,64 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 	}
 
+	@Override
+	public Response getDossierPenddingByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String referenceUid) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			//TODO: Fix port process
+			long groupId = 55301;
+
+			Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
+			long dossierActionId = 0;
+			DossierAction dossierAction = null;
+			boolean pendding = false;
+			if (dossier != null) {
+				dossierActionId = dossier.getDossierActionId();
+				if (dossierActionId > 0) {
+					dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+				}
+			}
+			if (dossierAction != null) {
+				pendding = dossierAction.getPending();
+			}
+
+			return Response.status(200).entity(pendding).build();
+
+		} catch (Exception e) {
+			_log.info(e);
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					error.setMessage("Internal Server Error");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+
+				}
+			}
+		}
+	}
+
 }
