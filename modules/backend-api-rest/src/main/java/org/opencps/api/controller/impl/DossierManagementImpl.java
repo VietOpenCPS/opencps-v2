@@ -394,7 +394,7 @@ public class DossierManagementImpl implements DossierManagement {
 			if (jsonData != null && jsonData.length() > 0) {
 				results.setTotal(jsonData.getInt("total"));
 //				_log.info("7");
-				results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+//				results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
 				List<Document> docs = (List<Document>) jsonData.get("data");
 				if (docs != null && docs.size() > 0) {
 					if (Validator.isNotNull(status) || Validator.isNotNull(substatus)) {
@@ -1692,6 +1692,66 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(restrictDossier).build();
 
 		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					error.setMessage("Internal Server Error");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+
+				}
+			}
+		}
+	}
+
+	@Override
+	public Response getDossierPenddingByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String referenceUid) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			//TODO: Fix port process
+			long groupId = 55301;
+
+			Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
+			long dossierActionId = 0;
+			DossierAction dossierAction = null;
+			boolean pendding = false;
+			if (dossier != null) {
+				dossierActionId = dossier.getDossierActionId();
+				if (dossierActionId > 0) {
+					dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+				}
+			}
+			if (dossierAction != null) {
+				pendding = dossierAction.getPending();
+			}
+
+			return Response.status(200).entity(pendding).build();
+
+		} catch (Exception e) {
+			_log.info(e);
 			ErrorMsg error = new ErrorMsg();
 
 			if (e instanceof UnauthenticationException) {
