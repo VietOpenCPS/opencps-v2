@@ -1982,7 +1982,7 @@ public class DossierActionsImpl implements DossierActions {
 //		return result;
 //	}
 
-	private String _buildDossierNote(Dossier dossier, String actionNote, long groupId, String type) {
+private String _buildDossierNote(Dossier dossier, String actionNote, long groupId, String type) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		String defaultTimezone = TimeZone.getDefault().getID();
@@ -2230,4 +2230,65 @@ public class DossierActionsImpl implements DossierActions {
 
 		return result;
 	}
+
+	@Override
+	public JSONObject getDossierCountTodoPermission(long userId, long companyId, long groupId,
+			LinkedHashMap<String, Object> params, Object object, ServiceContext serviceContext) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		SearchContext searchContext = new SearchContext();
+
+		searchContext.setCompanyId(companyId);
+
+		String statusCode = StringPool.BLANK;
+
+		String subStatusCode = StringPool.BLANK;
+
+		JSONArray statistics = JSONFactoryUtil.createJSONArray();
+
+		long total = 0;
+
+		try {
+			statusCode = GetterUtil.getString(params.get(DossierTerm.STATUS));
+			_log.info("statusCode: "+statusCode);
+
+			if (Validator.isNotNull(statusCode) ) {
+
+				String[] statusCodeArr = statusCode.split(StringPool.COMMA);
+				if (statusCodeArr != null && statusCodeArr.length > 0) {
+					for (String strStatus : statusCodeArr) {
+						if (Validator.isNotNull(strStatus)) {
+							_log.info("strStatus: "+strStatus);
+							params.put(DossierTerm.STATUS, strStatus);
+							params.put(DossierTerm.SUBSTATUS, subStatusCode);
+							params.put(DossierTerm.FOLLOW, String.valueOf(false));
+
+							long count = DossierLocalServiceUtil.countLucene(params, searchContext);
+
+							JSONObject statistic = JSONFactoryUtil.createJSONObject();
+							statistic.put("dossierStatus", strStatus);
+							statistic.put("dossierSubStatus", subStatusCode);
+							statistic.put("count", count);
+
+							statistics.put(statistic);
+
+							total += count;
+						}
+					}
+				}
+			}
+
+			result.put("data", statistics);
+			_log.info("statistics: "+statistics);
+
+			result.put("total", total);
+			_log.info("total: "+total);
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return result;
+	}
+
 }
