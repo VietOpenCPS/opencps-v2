@@ -1538,7 +1538,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (Validator.isNotNull(follow) && Boolean.parseBoolean(follow) && userId > 0) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
 
-			query.addField(DossierTerm.ACTION_USERIDS);
+			query.addField(DossierTerm.ACTION_MAPPING_USERID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

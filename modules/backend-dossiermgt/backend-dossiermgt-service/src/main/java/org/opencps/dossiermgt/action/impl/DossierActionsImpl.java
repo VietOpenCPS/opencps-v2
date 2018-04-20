@@ -230,7 +230,9 @@ public class DossierActionsImpl implements DossierActions {
 					hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 					if (hits != null && hits.getLength() > 0) {
 						result.put("data", hits.toList());
+						_log.info("hits.toList(): "+hits.toList().size());
 						total = DossierLocalServiceUtil.countLucene(params, searchContext);
+						_log.info("total: "+total);
 						result.put("total", total);
 					}
 				}
@@ -302,11 +304,11 @@ public class DossierActionsImpl implements DossierActions {
 								hits = DossierLocalServiceUtil.searchLucene(params, sorts, -1, -1, searchContext);
 
 								if (hits != null && hits.getLength() > 0) {
-									allDocsList.addAll(hits.toList());
-									_log.info("SizeList1: " + hits.toList().size());
 									long count = DossierLocalServiceUtil.countLucene(params, searchContext);
 									_log.info("count: " + count);
 									if (dictItem.getParentItemId() != 0) {
+										allDocsList.addAll(hits.toList());
+										_log.info("SizeList1: " + hits.toList().size());
 										total += count;
 									}
 								}
