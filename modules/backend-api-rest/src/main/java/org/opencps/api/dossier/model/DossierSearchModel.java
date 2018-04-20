@@ -148,6 +148,8 @@ public class DossierSearchModel {
     protected String fromSubmitDate;
     @QueryParam(value = "toSubmitDate")
     protected String toSubmitDate;
+    @QueryParam(value = "pendding")
+    protected String pendding;
     
     public String getSecetKey() {
 		return secetKey;
@@ -723,6 +725,14 @@ public class DossierSearchModel {
 
 	public void setToSubmitDate(String toSubmitDate) {
 		this.toSubmitDate = toSubmitDate;
+	}
+
+	public String getPendding() {
+		return pendding;
+	}
+
+	public void setPendding(String pendding) {
+		this.pendding = pendding;
 	}
 
 }

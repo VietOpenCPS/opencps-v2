@@ -1084,6 +1084,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String toCertDate = GetterUtil.getString(params.get(DossierTerm.TO_CERT_DATE));
 		String fromSubmitDate = GetterUtil.getString(params.get(DossierTerm.FROM_SUBMIT_DATE));
 		String toSubmitDate = GetterUtil.getString(params.get(DossierTerm.TO_SUBMIT_DATE));
+		String pendding = GetterUtil.getString(params.get("pendding"));
 						
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1184,12 +1185,33 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+		boolean flag = false;
 		if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
-			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(submitting));
+			flag = true;
+		}
+		if (Validator.isNotNull(pendding) && Boolean.parseBoolean(pendding)) {
+			flag = true;
+		}
 
-			query.addField(DossierTerm.SUBMITTING);
+		if (flag) {
+			BooleanQuery subQuery = new BooleanQueryImpl();
+			if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
+				
+				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(submitting));
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+				query.addField(DossierTerm.SUBMITTING);
+
+				subQuery.add(query, BooleanClauseOccur.SHOULD);
+			}
+			if (Validator.isNotNull(pendding) && Boolean.parseBoolean(pendding)) {
+				
+				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(pendding));
+
+				query.addField("pendding");
+
+				subQuery.add(query, BooleanClauseOccur.SHOULD);
+			}
+			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(status)) {
@@ -1483,6 +1505,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String toCertDate = GetterUtil.getString(params.get(DossierTerm.TO_CERT_DATE));
 		String fromSubmitDate = GetterUtil.getString(params.get(DossierTerm.FROM_SUBMIT_DATE));
 		String toSubmitDate = GetterUtil.getString(params.get(DossierTerm.TO_SUBMIT_DATE));
+		String pendding = GetterUtil.getString(params.get("pendding"));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1580,12 +1603,33 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+		boolean flag = false;
 		if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
-			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(submitting));
+			flag = true;
+		}
+		if (Validator.isNotNull(pendding) && Boolean.parseBoolean(pendding)) {
+			flag = true;
+		}
 
-			query.addField(DossierTerm.SUBMITTING);
+		if (flag) {
+			BooleanQuery subQuery = new BooleanQueryImpl();
+			if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
+				
+				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(submitting));
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+				query.addField(DossierTerm.SUBMITTING);
+
+				subQuery.add(query, BooleanClauseOccur.SHOULD);
+			}
+			if (Validator.isNotNull(pendding) && Boolean.parseBoolean(pendding)) {
+				
+				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(pendding));
+
+				query.addField("pendding");
+
+				subQuery.add(query, BooleanClauseOccur.SHOULD);
+			}
+			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(status)) {

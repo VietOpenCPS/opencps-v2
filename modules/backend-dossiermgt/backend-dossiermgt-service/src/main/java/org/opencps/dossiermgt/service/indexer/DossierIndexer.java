@@ -167,6 +167,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 			document.addTextSortable(DossierTerm.STEP_DUE_DATE,
 					APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
+
 		}
 
 		// add text fields
@@ -319,6 +320,16 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				document.addTextSortable(DossierTerm.CERT_NO_SEARCH, certNoSearch);
 			}
 		}
+
+		// TODO: Flag pendding
+		Dossier dossierSync = DossierLocalServiceUtil.getByRef(55301, object.getReferenceUid());
+		if (dossierSync != null) {
+			DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
+			if (dAction != null) {
+				document.addTextSortable("pendding", Boolean.toString(dAction.getPending()));
+			}
+		}
+
 		}catch(Exception e) {
 			_log.error(e);
 		}
