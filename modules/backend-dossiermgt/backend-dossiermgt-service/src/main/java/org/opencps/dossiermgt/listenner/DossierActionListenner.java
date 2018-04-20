@@ -145,7 +145,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 
 				if (ok) {
 					DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
-							getUserName(userId, model.getGroupId()), content, "PROCESS_TYPE", payload.toString(),
+							model.getActionUser(), content, "PROCESS_TYPE", payload.toString(),
 							serviceContext);
 				}
 
