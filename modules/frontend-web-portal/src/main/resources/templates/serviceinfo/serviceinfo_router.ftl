@@ -8,14 +8,14 @@
     serviceInfoRouter.route("/", function(id) {
         console.log(id);
         $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
-            if(!"${domain}"){
+            // if(!"${domain}"){
                 $("#administration > li:first-child").addClass("active");
                 $("#administrationCodeSearch").data("kendoComboBox").value($("#administration > li:first-child").attr("dataPk"));
                 $("#administrationCodeSearch").data("kendoComboBox")._isSelect = false;
                 $("#service_info_list_view").getKendoListView().dataSource.read({
                   "administration": $("#administration > li:first-child").attr("dataPk")
               });
-            }
+            // }
         });
     });
     serviceInfoRouter.route("/(:id)", function(id) {
