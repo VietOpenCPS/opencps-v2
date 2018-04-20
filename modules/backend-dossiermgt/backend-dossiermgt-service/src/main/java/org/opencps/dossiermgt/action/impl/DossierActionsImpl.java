@@ -927,9 +927,10 @@ public class DossierActionsImpl implements DossierActions {
 
 		Dossier dossier = getDossier(groupId, dossierId, referenceUid);
 		// _log.info("dossier: " + dossier);
+		
+		String type = StringPool.BLANK;
 
-		String applicantNote = _buildDossierNote(dossier, actionNote, groupId);
-		_log.info("applicantNote: " + applicantNote);
+		String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
 
 		dossier.setApplicantNote(applicantNote);
 
@@ -1981,7 +1982,7 @@ public class DossierActionsImpl implements DossierActions {
 //		return result;
 //	}
 
-	private String _buildDossierNote(Dossier dossier, String actionNote, long groupId) {
+	private String _buildDossierNote(Dossier dossier, String actionNote, long groupId, String type) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		String defaultTimezone = TimeZone.getDefault().getID();

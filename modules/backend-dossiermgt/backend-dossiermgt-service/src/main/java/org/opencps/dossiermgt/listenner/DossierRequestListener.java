@@ -1,6 +1,12 @@
 package org.opencps.dossiermgt.listenner;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierRequestUD;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
@@ -58,12 +64,9 @@ public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 
 			String content = model.getComment();
 
-			// JSONArray payloads = JSONFactoryUtil.createJSONArray();
 
 			JSONObject payload = JSONFactoryUtil.createJSONObject();
 
-			//JSONArray files = JSONFactoryUtil.createJSONArray();
-			
 			
 			payload.put("stepName", "type_"+model.getRequestType());
 			
@@ -76,11 +79,59 @@ public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 
 			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
 					userName, content, "PROCESS_TYPE", payload.toString(), serviceContext);
+			
+			// Add applicationNote
+			
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(model.getDossierId());
+			
+			String dossierNote = _buildDossierNote(dossier, content, dossier.getGroupId(), "DN");
+			
+			dossier.setApplicantNote(dossierNote);
+			
+			DossierLocalServiceUtil.syncDossier(dossier);
 
 		} catch (SystemException | PortalException e) {
 			_log.error(e);
 		}
 		
+	}
+	
+	
+	private String _buildDossierNote(Dossier dossier, String actionNote, long groupId, String type) {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		String defaultTimezone = TimeZone.getDefault().getID();
+		sdf.setTimeZone(TimeZone.getTimeZone(defaultTimezone));
+		Date date = new Date();
+
+		StringBuilder sb = new StringBuilder();
+
+		String oldNote = dossier.getApplicantNote();
+
+		if (Validator.isNotNull(oldNote) && oldNote.contains("<br>")) {
+			if (Validator.isNotNull(actionNote)) {
+				if (groupId != 55217) {
+					sb.append("<br>");
+					sb.append("[" + sdf.format(date) + "]");
+					sb.append(": ");
+					sb.append(actionNote);
+					sb.append(oldNote);
+				} else {
+					sb.append("<br>");
+					sb.append("[" + sdf.format(date) + "]");
+					sb.append(": ");
+					sb.append(actionNote);
+				}
+			}
+		} else if (Validator.isNotNull(actionNote)) {
+			sb.append("<br>");
+			sb.append("[" + sdf.format(date) + "]");
+			sb.append(": ");
+			sb.append(actionNote);
+		}
+
+		return sb.toString();
+
 	}
 	
 	private String getUserName(long userId, long groupId) {
