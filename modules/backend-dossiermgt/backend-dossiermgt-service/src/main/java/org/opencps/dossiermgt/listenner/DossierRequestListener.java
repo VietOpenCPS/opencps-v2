@@ -4,8 +4,11 @@ import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.exception.ModelListenerException;
@@ -41,7 +44,7 @@ public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 
 			long mainJobposId = employee != null ? employee.getMainJobPostId() : 0;
 
-			long dossierId = model.getDossierId();
+			//long dossierId = model.getDossierId();
 
 			String jobPosName = StringPool.BLANK;
 
@@ -59,10 +62,12 @@ public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 
 			JSONObject payload = JSONFactoryUtil.createJSONObject();
 
-			JSONArray files = JSONFactoryUtil.createJSONArray();
+			//JSONArray files = JSONFactoryUtil.createJSONArray();
 			
 			
 			payload.put("stepName", "type_"+model.getRequestType());
+			
+			String userName = getUserName(userId, model.getGroupId());
 
 			// payloads.put(payload);
 
@@ -70,13 +75,35 @@ public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 			serviceContext.setUserId(userId);
 
 			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
-					model.getUserName(), content, "PROCESS_TYPE", payload.toString(), serviceContext);
+					userName, content, "PROCESS_TYPE", payload.toString(), serviceContext);
 
 		} catch (SystemException | PortalException e) {
 			_log.error(e);
 		}
 		
-
+	}
+	
+	private String getUserName(long userId, long groupId) {
+		String userName = StringPool.BLANK;
+		
+		Employee employee = null;
+		
+		Applicant applicant = null;
+		
+		employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+		
+		if (Validator.isNotNull(employee)) {
+			return employee.getFullName();
+			
+		}
+		
+		applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+		
+		if (Validator.isNotNull(applicant)) {
+			return applicant.getApplicantName();
+		}
+		
+		return userName;
 	}
 	
 	private Log _log = LogFactoryUtil.getLog(DossierRequestListener.class.getName());

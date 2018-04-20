@@ -1981,12 +1981,10 @@ public class DossierActionsImpl implements DossierActions {
 
 	private String _buildDossierNote(Dossier dossier, String actionNote, long groupId) {
 
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		String defaultTimezone = TimeZone.getDefault().getID();
 		sdf.setTimeZone(TimeZone.getTimeZone(defaultTimezone));
 		Date date = new Date();
-		// String strDate = sdf.format(date);
-		// _log.info("strDate: "+strDate);
 
 		StringBuilder sb = new StringBuilder();
 
@@ -2013,13 +2011,7 @@ public class DossierActionsImpl implements DossierActions {
 			sb.append(": ");
 			sb.append(actionNote);
 		}
-		// sb.append(oldNote);
-		// if (Validator.isNotNull(actionNote)) {
-		// sb.append("<br>");
-		// sb.append("[" + sdf.format(dateConvert) + "]");
-		// sb.append(":");
-		// sb.append(actionNote);
-		// }
+
 		return sb.toString();
 
 	}

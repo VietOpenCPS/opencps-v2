@@ -183,15 +183,12 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					syncProcesses.add(desServiceProcess);
 
 					break;
-
-					// TODO : check again
 				}
 
 			} catch (Exception e) {
 				_log.info("NOProcess");
 			}
 
-			// ProcessOption option = ProcessOptionLocalServiceUtil.get
 		}
 
 		for (ServiceProcess syncServiceProcess : syncProcesses) {
