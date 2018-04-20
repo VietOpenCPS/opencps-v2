@@ -93,7 +93,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 						if (dossierFileId != 0) {
 							DossierFile dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(dossierFileId);
 
-							if (Validator.isNotNull(dossierFile)) {
+							if (Validator.isNotNull(dossierFile) && dossierFile.getFileEntryId() > 0) {
 								JSONObject file = JSONFactoryUtil.createJSONObject();
 
 								file.put("dossierFileId", dossierFile.getDossierFileId());
