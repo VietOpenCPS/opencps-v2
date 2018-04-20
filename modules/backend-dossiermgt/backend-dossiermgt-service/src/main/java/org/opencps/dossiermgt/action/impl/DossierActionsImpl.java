@@ -2261,7 +2261,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 							_log.info("strStatus: "+strStatus);
 							params.put(DossierTerm.STATUS, strStatus);
 							params.put(DossierTerm.SUBSTATUS, subStatusCode);
-							params.put(DossierTerm.FOLLOW, String.valueOf(true));
+							params.put(DossierTerm.OWNER, String.valueOf(true));
 
 							long count = DossierLocalServiceUtil.countLucene(params, searchContext);
 
