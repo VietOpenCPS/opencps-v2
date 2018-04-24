@@ -12,7 +12,6 @@
 			<div class="row" style="margin-bottom : 3px;">
 				<div class="col-sm-12 PT15 PB15" style="background-color: #ccc;">
 					<span class="text-bold">Thành phần hồ sơ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span>#${(dossier.dossierIdCTN)!}</span>
-					<#-- <i class="fa fa-times pull-right hover-pointer" aria-hidden="true" data-dismiss="modal" style="font-size: 150%;"></i> -->
 				</div>
 			</div>
 			<div class="row">
@@ -73,35 +72,14 @@
 </div>
 
 <div class="col-sm-9" style="height:100vh;background-color: rgba(0,0,0,0.4)">
-				<#-- <div id="fileCarousel" class="carousel slide row" data-ride="carousel" data-interval="false"> 
-					<ul class="carousel-inner" id="listViewCarouselDossierFile">
 
-					</ul>
-					<script type="text/x-kendo-template" id="templateCarouselDossierFile">
-						<li class="item" data-pk="#:id#">
-							
-							<object data="${api.server}/dossiers/${dossierId}/files/#:id#/preview" type="application/pdf" width="100%" height="100%">
-								<embed width="100%" height="100%" name="plugin" src="${api.server}/dossiers/${dossierId}/files/#:id#/preview" />
-							</object>
-						</li>
-					</script>
-					<a class="left carousel-control control-left" href="#fileCarousel" data-slide="prev">
-						<span class="glyphicon glyphicon-chevron-left"></span>
-						<span class="sr-only">Previous</span>
-					</a>
-					<a class="right carousel-control control-right" href="#fileCarousel" data-slide="next">
-						<span class="glyphicon glyphicon-chevron-right"></span>
-						<span class="sr-only">Next</span>
-					</a>
-				</div> -->
+	<object id="objectView2" data="" width="100%" height="100%">
 
-				<object id="objectView2" data="" width="100%" height="100%">
+	</object>
+</div>
 
-				</object>
-			</div>
-
-		</div>
-	</div>
+</div>
+</div>
 
 	<#-- </div> -->
 
