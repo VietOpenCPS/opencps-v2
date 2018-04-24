@@ -81,18 +81,19 @@
 	var dataSourceServiceConfigDomain;
 	$(document).ready(function(){
 
-		var fnGenEventChoiseServiceConfig = function(){
-			$('.btn-select-serviceConfig, .link-govAgency').unbind().click(function(event){
-				
-				event.preventDefault();
-				var serviceConfigId = $(this).attr("data-pk");
-				$("#serviceConfigId").val(serviceConfigId);
-
-				/*dataSourceProcessServiceConfig.read({
-					serviceConfigId : serviceConfigId
-				});*/
-			});
+		function selectProcess(element){
+			console.log("choise process");
+			var id = $(element).attr("data-pk");
+			var templateNo = $(element).attr("data-template");
+			fnGetParamAndCreateDossier(id,templateNo);
 		}
+
+		$(document).off("click",".btn-select-serviceConfig, .link-govAgency");
+		$(document).on("click",".btn-select-serviceConfig, .link-govAgency",function(event){
+			event.preventDefault();
+			var serviceConfigId = $(this).attr("data-pk");
+			$("#serviceConfigId").val(serviceConfigId);
+		});
 
 		dataSourceServiceConfigDomain = new kendo.data.DataSource({
 			transport : {
@@ -124,7 +125,7 @@
 			template : kendo.template($("#templateServiceConfigDomain").html()),
 			autoBind : true,
 			dataBound : function(){
-				fnGenEventChoiseServiceConfig();
+				//fnGenEventChoiseServiceConfig();
 				$(".dropdown-menu").each(function(){
 					var id = $(this).attr("data-pk");
 					fnGenServiceProcess(id, $(this));
@@ -145,16 +146,16 @@
 					if(result.data){
 						var data = result.data;
 						for (var i = 0; i < data.length; i++) {
-							$(element).append('<li><span class="btn-choise-process hover-pointer" data-pk="'+data[i].processOptionId+'" data-template="'+data[i].templateNo+'">'+data[i].optionName+'</span></li>');
+							$(element).append('<li><span class="btn-choise-process hover-pointer" data-pk="'+data[i].processOptionId+'" data-template="'+data[i].templateNo+'" onclick="selectProcess(this);">'+data[i].optionName+'</span></li>');
 						}
 					}
-					$(".btn-choise-process").unbind().click(function(){
+					/*$(".btn-choise-process").unbind().click(function(){
 						console.log("choise process");
 						var id = $(this).attr("data-pk");
 						var templateNo = $(this).attr("data-template");
 						fnGetParamAndCreateDossier(id,templateNo);
 	
-					});
+					});*/
 				},
 				error : function(result){
 	
