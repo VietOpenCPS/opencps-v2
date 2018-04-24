@@ -42,7 +42,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "dossierStatus",
     "dossierSubStatus",
-    "level"
+    "level",
+    "dossierArr"
 })
 @XmlRootElement(name = "StatisticDossierSearchModel")
 public class StatisticDossierSearchModel {
@@ -53,8 +54,18 @@ public class StatisticDossierSearchModel {
     protected String dossierSubStatus;
 	@QueryParam(value = "level")
     protected BigInteger level;
+	@QueryParam(value = "dossierArr")
+    protected String dossierArr;
 
-    /**
+    public String getDossierArr() {
+		return dossierArr;
+	}
+
+	public void setDossierArr(String dossierArr) {
+		this.dossierArr = dossierArr;
+	}
+
+	/**
      * Gets the value of the dossierStatus property.
      * 
      * @return

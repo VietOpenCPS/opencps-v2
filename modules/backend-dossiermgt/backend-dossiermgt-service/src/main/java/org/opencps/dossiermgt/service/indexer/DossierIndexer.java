@@ -234,7 +234,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		if (dossierActionsUserId > 0) {
 			List<DossierActionUser> dossierActionUsers = DossierActionUserLocalServiceUtil
 					.getListUser(dossierActionsUserId);
-			if (dossierActionUsers != null) {
+			if (dossierActionUsers != null && dossierActionUsers.size() > 0) {
 				int length = dossierActionUsers.size();
 				for (int i = 0; i < length; i ++) {
 					DossierActionUser dau = dossierActionUsers.get(i);
@@ -318,15 +318,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				// Search follow so_chung_chi
 				String certNoSearch = SpecialCharacterUtils.splitSpecial(certNo);
 				document.addTextSortable(DossierTerm.CERT_NO_SEARCH, certNoSearch);
-			}
-		}
-
-		// TODO: Flag pendding
-		Dossier dossierSync = DossierLocalServiceUtil.getByRef(55301, object.getReferenceUid());
-		if (dossierSync != null) {
-			DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
-			if (dAction != null) {
-				document.addTextSortable("pendding", Boolean.toString(dAction.getPending()));
 			}
 		}
 

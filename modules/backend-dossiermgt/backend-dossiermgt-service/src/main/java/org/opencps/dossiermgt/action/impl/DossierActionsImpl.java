@@ -107,6 +107,43 @@ public class DossierActionsImpl implements DossierActions {
 
 		try {
 
+			String submitting = (String) params.get(DossierTerm.SUBMITTING);
+			String pendding = (String) params.get("pendding");
+			String referenceUid = (String) params.get(DossierTerm.REFERENCE_UID);
+			boolean flag = false;
+			
+			if (Validator.isNotNull(submitting) &&Boolean.parseBoolean(submitting)) {
+				if (Validator.isNotNull(pendding) &&Boolean.parseBoolean(pendding)) {
+					flag = true;
+				}
+			}
+			if (flag) {
+				List<Document> allDocsList = new ArrayList<Document>();
+				long total = 0;
+				if (Boolean.parseBoolean(submitting)) {
+					if (Validator.isNotNull(referenceUid)) {
+						params.put(DossierTerm.REFERENCE_UID, StringPool.BLANK);
+					}
+					hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
+					if (hits != null && hits.getLength() > 0) {
+						long count = DossierLocalServiceUtil.countLucene(params, searchContext);
+						allDocsList.addAll(hits.toList());
+						total += count;
+					}
+				}
+				if (Boolean.parseBoolean(pendding) && Validator.isNotNull(referenceUid)) {
+					params.put(DossierTerm.REFERENCE_UID, referenceUid);
+					params.put(DossierTerm.SUBMITTING, String.valueOf(false));
+					hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
+					if (hits != null && hits.getLength() > 0) {
+						long count = DossierLocalServiceUtil.countLucene(params, searchContext);
+						allDocsList.addAll(hits.toList());
+						total += count;
+					}
+				}
+				result.put("data", allDocsList);
+				result.put("total", total);
+			}
 			hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
 			result.put("data", hits.toList());
@@ -2262,7 +2299,9 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 
 		try {
 			statusCode = GetterUtil.getString(params.get(DossierTerm.STATUS));
-			_log.info("statusCode: "+statusCode);
+			String dossierArr = GetterUtil.getString(params.get("dossierArr"));
+//			_log.info("statusCode: "+statusCode);
+//			_log.info("dossierArr: "+dossierArr);
 
 			if (Validator.isNotNull(statusCode) ) {
 
@@ -2270,7 +2309,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 				if (statusCodeArr != null && statusCodeArr.length > 0) {
 					for (String strStatus : statusCodeArr) {
 						if (Validator.isNotNull(strStatus)) {
-							_log.info("strStatus: "+strStatus);
+//							_log.info("strStatus: "+strStatus);
 							params.put(DossierTerm.STATUS, strStatus);
 							params.put(DossierTerm.SUBSTATUS, subStatusCode);
 							params.put(DossierTerm.OWNER, String.valueOf(true));
@@ -2290,11 +2329,31 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 				}
 			}
 
+			if (Validator.isNotNull(dossierArr)) {
+				String[] splitDossierId = dossierArr.split(StringPool.COMMA);
+				JSONObject statistic = JSONFactoryUtil.createJSONObject();
+				statistic.put("dossierStatus", "submiting");
+				statistic.put("dossierSubStatus", StringPool.BLANK);
+				statistic.put("count", splitDossierId.length);
+
+				statistics.put(statistic);
+
+				total += splitDossierId.length;
+			} else {
+				JSONObject statistic = JSONFactoryUtil.createJSONObject();
+				statistic.put("dossierStatus", "submiting");
+				statistic.put("dossierSubStatus", StringPool.BLANK);
+				statistic.put("count", 0);
+
+				statistics.put(statistic);
+
+			}
+
 			result.put("data", statistics);
-			_log.info("statistics: "+statistics);
+//			_log.info("statistics: "+statistics);
 
 			result.put("total", total);
-			_log.info("total: "+total);
+//			_log.info("total: "+total);
 
 		} catch (Exception e) {
 			_log.error(e);
