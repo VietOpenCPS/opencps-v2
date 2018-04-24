@@ -430,6 +430,7 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
                         	var subStatus = vm.substatusParamFilter;
                         	vm.stepModel = null;
                         	$("#alpacajs_form_plugin").empty();
+                        	
                         	/*if(status === "waiting" && subStatus === "watting_1"){
                         		$("#labelTPKQ").html("File đính kèm");
                         	}*/
@@ -782,7 +783,7 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 												var hashComputer = hashComputers[i];
 												var code = plugin().Sign(hashComputer);
 												
-												if(code===0 || code===7){			
+												if(code === 0 || code === 7){			
 													var sign = plugin().Signature;
 													var signFieldName = signFieldNames[i];
 													var fileName = fileNames[i];
@@ -2374,7 +2375,7 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 								}
 							};
 
-							var url = '/o/rest/v2/dossiers';
+							var url = '/o/rest/v2/dossiers/dossiersTest';
 							//var url = "http://hanoi.fds.vn:2281/api/dossiers";
 							
 							axios.get(url, config_dossiers).then(function (response) {
@@ -2497,14 +2498,14 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 //							vm.listDocumentInItems = [];
 //							vm.listDocumentOutItems = [];
 
-var url = "/o/rest/v2/dossiertemplates/"+item.dossierTemplateNo;
-var urlFiles = "/o/rest/v2/dossiers/"+item.dossierId+"/files";
+								var url = "/o/rest/v2/dossiertemplates/"+item.dossierTemplateNo;
+								var urlFiles = "/o/rest/v2/dossiers/"+item.dossierId+"/files";
 
-axios.all([
-	axios.get(url, config),
-	axios.get(urlFiles, config)
-	])
-.then(axios.spread(function (urlRespones, urlFilesRespones) {
+								axios.all([
+									axios.get(url, config),
+									axios.get(urlFiles, config)
+									])
+								.then(axios.spread(function (urlRespones, urlFilesRespones) {
 							    // Both requests are now complete
 							    vm.dossierFiles = urlFilesRespones.data.data;
 
@@ -2546,9 +2547,9 @@ axios.all([
 								return Promise.reject();
 								
 							})).catch(function (error) {
-	console.log(error);
+								console.log(error);
 
-});
+							});
 							return false;
 						},
 						viewDossierFileVersion: function (item) {
@@ -2669,14 +2670,14 @@ axios.all([
 //							vm.listDocumentInItems = [];
 //							vm.listDocumentOutItems = [];
 
-var url = "/o/rest/v2/dossiertemplates/"+item.dossierTemplateNo;
-var urlFiles = "/o/rest/v2/dossiers/"+item.dossierId+"/files";
+							var url = "/o/rest/v2/dossiertemplates/"+item.dossierTemplateNo;
+							var urlFiles = "/o/rest/v2/dossiers/"+item.dossierId+"/files";
 
-axios.all([
-	axios.get(url, config),
-	axios.get(urlFiles, config)
-	])
-.then(axios.spread(function (urlRespones, urlFilesRespones) {
+							axios.all([
+								axios.get(url, config),
+								axios.get(urlFiles, config)
+								])
+							.then(axios.spread(function (urlRespones, urlFilesRespones) {
 							    // Both requests are now complete
 							    vm.dossierFiles = urlFilesRespones.data.data;
 
@@ -2722,9 +2723,9 @@ axios.all([
 							    return Promise.reject();
 
 							})).catch(function (error) {
-	console.log(error);
+								console.log(error);
 
-});
+							});
 							return false;
 						}
 					}
@@ -2768,12 +2769,16 @@ axios.all([
 												stepNameTmp = "Yêu cầu hủy";
 											}else if(stepNameTmp === "type_submit"){
 												stepNameTmp = "Yêu cầu sửa thành phần hồ sơ";
+											}else if(stepNameTmp === "type_submitting"){
+												stepNameTmp = "Yêu cầu sửa đổi bổ sung";
 											}else if(stepNameTmp === "type_correcting"){
 												stepNameTmp = "Yêu cầu chỉnh sửa kết quả";
 											}else if(stepNameTmp === "type_reject_cancelling"){
 												stepNameTmp = "Từ chối yêu cầu hủy";
 											}else if(stepNameTmp === "type_reject_submit"){
 												stepNameTmp = "Hủy yêu cầu sửa thành phần hồ sơ";
+											}else if(stepNameTmp === "type_reject_submitting"){
+												stepNameTmp = "Từ chối yêu cầu bổ sung";
 											}else if(stepNameTmp === "type_reject_correcting"){
 												stepNameTmp = "Hủy yêu cầu chỉnh sửa kết quả";
 											}

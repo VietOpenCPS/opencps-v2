@@ -8,7 +8,8 @@
  			<br/>
 			<span class="text-light-gray">{{ props.item.createDate | datetime }}</span>
 			</p>
-			<p>Ý kiến: {{ props.item.content }}</p>
+
+			Ý kiến: <span v-html="props.item.content"></span> <br>
 			
 			<p	
 				class="history__download__link"
