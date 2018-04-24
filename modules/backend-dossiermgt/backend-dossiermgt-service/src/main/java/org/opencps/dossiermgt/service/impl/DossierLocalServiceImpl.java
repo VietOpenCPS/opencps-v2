@@ -1084,8 +1084,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String toCertDate = GetterUtil.getString(params.get(DossierTerm.TO_CERT_DATE));
 		String fromSubmitDate = GetterUtil.getString(params.get(DossierTerm.FROM_SUBMIT_DATE));
 		String toSubmitDate = GetterUtil.getString(params.get(DossierTerm.TO_SUBMIT_DATE));
-		String pendding = GetterUtil.getString(params.get("pendding"));
-						
+		String applicantIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_ID_NO));
+		String strDActionIdPending = GetterUtil.getString(params.get(DossierTerm.DOSSIER_ACTION_ID_PENDING));
+		String strReferenceUid = GetterUtil.getString(params.get(DossierTerm.REFERENCE_UID));
+		String dossierArr = GetterUtil.getString(params.get("dossierArr"));
+
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -1185,33 +1188,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
-		boolean flag = false;
 		if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
-			flag = true;
-		}
-		if (Validator.isNotNull(pendding) && Boolean.parseBoolean(pendding)) {
-			flag = true;
-		}
+			
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(submitting));
 
-		if (flag) {
-			BooleanQuery subQuery = new BooleanQueryImpl();
-			if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
-				
-				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(submitting));
+			query.addField(DossierTerm.SUBMITTING);
 
-				query.addField(DossierTerm.SUBMITTING);
-
-				subQuery.add(query, BooleanClauseOccur.SHOULD);
-			}
-			if (Validator.isNotNull(pendding) && Boolean.parseBoolean(pendding)) {
-				
-				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(pendding));
-
-				query.addField("pendding");
-
-				subQuery.add(query, BooleanClauseOccur.SHOULD);
-			}
-			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(status)) {
@@ -1462,6 +1445,89 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+		//TODO: Test API get dossier DN
+		if (Validator.isNotNull(applicantIdNo)) {
+			
+			MultiMatchQuery query = new MultiMatchQuery(applicantIdNo);
+
+			query.addField(DossierTerm.APPLICANT_ID_NO);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(strDActionIdPending)) {
+			String[] sliptDActionIdPending = StringUtil.split(strDActionIdPending);
+			if (sliptDActionIdPending != null && sliptDActionIdPending.length > 0) {
+			BooleanQuery subQuery = new BooleanQueryImpl();
+				for (String dActionId : sliptDActionIdPending) {
+					if (Validator.isNotNull(dActionId)) {
+	
+						MultiMatchQuery query = new MultiMatchQuery(dActionId);
+	
+						query.addFields(DossierTerm.DOSSIER_ACTION_ID);
+						subQuery.add(query, BooleanClauseOccur.SHOULD);
+					}
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(strDActionIdPending);
+
+				query.addFields(DossierTerm.DOSSIER_ACTION_ID);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+
+		if (Validator.isNotNull(strReferenceUid)) {
+			String[] sliptRef = StringUtil.split(strReferenceUid);
+			if (sliptRef != null && sliptRef.length > 0) {
+			BooleanQuery subQuery = new BooleanQueryImpl();
+				for (String ref : sliptRef) {
+					if (Validator.isNotNull(ref)) {
+	
+						MultiMatchQuery query = new MultiMatchQuery(ref);
+	
+						query.addFields(DossierTerm.REFERENCE_UID);
+						subQuery.add(query, BooleanClauseOccur.SHOULD);
+					}
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(strReferenceUid);
+
+				query.addFields(DossierTerm.REFERENCE_UID);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+
+		//TODO:
+		if (Validator.isNotNull(dossierArr)) {
+
+			String[] lstDossier = StringUtil.split(dossierArr);
+
+			if (lstDossier != null && lstDossier.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < lstDossier.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(lstDossier[i]);
+
+					query.addField(DossierTerm.DOSSIER_ID);
+
+					subQuery.add(query, BooleanClauseOccur.MUST_NOT);
+				}
+
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(status);
+
+				query.addFields(DossierTerm.DOSSIER_ID);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
+			}
+
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -1505,7 +1571,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String toCertDate = GetterUtil.getString(params.get(DossierTerm.TO_CERT_DATE));
 		String fromSubmitDate = GetterUtil.getString(params.get(DossierTerm.FROM_SUBMIT_DATE));
 		String toSubmitDate = GetterUtil.getString(params.get(DossierTerm.TO_SUBMIT_DATE));
-		String pendding = GetterUtil.getString(params.get("pendding"));
+		String applicantIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_ID_NO));
+		String strDActionIdPending = GetterUtil.getString(params.get(DossierTerm.DOSSIER_ACTION_ID_PENDING));
+		String strReferenceUid = GetterUtil.getString(params.get(DossierTerm.REFERENCE_UID));
+		String dossierArr = GetterUtil.getString(params.get("dossierArr"));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1603,33 +1672,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
-		boolean flag = false;
 		if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
-			flag = true;
-		}
-		if (Validator.isNotNull(pendding) && Boolean.parseBoolean(pendding)) {
-			flag = true;
-		}
+			
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(submitting));
 
-		if (flag) {
-			BooleanQuery subQuery = new BooleanQueryImpl();
-			if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
-				
-				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(submitting));
+			query.addField(DossierTerm.SUBMITTING);
 
-				query.addField(DossierTerm.SUBMITTING);
-
-				subQuery.add(query, BooleanClauseOccur.SHOULD);
-			}
-			if (Validator.isNotNull(pendding) && Boolean.parseBoolean(pendding)) {
-				
-				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(pendding));
-
-				query.addField("pendding");
-
-				subQuery.add(query, BooleanClauseOccur.SHOULD);
-			}
-			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(status)) {
@@ -1878,6 +1927,89 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
+		}
+
+		//TODO: Test API get dossier DN
+		if (Validator.isNotNull(applicantIdNo)) {
+			
+			MultiMatchQuery query = new MultiMatchQuery(applicantIdNo);
+
+			query.addField(DossierTerm.APPLICANT_ID_NO);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(strDActionIdPending)) {
+			String[] sliptDActionIdPending = StringUtil.split(strDActionIdPending);
+			if (sliptDActionIdPending != null && sliptDActionIdPending.length > 0) {
+			BooleanQuery subQuery = new BooleanQueryImpl();
+				for (String dActionId : sliptDActionIdPending) {
+					if (Validator.isNotNull(dActionId)) {
+	
+						MultiMatchQuery query = new MultiMatchQuery(dActionId);
+	
+						query.addFields(DossierTerm.DOSSIER_ACTION_ID);
+						subQuery.add(query, BooleanClauseOccur.SHOULD);
+					}
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(strDActionIdPending);
+
+				query.addFields(DossierTerm.DOSSIER_ACTION_ID);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+
+		if (Validator.isNotNull(strReferenceUid)) {
+			String[] sliptRef = StringUtil.split(strReferenceUid);
+			if (sliptRef != null && sliptRef.length > 0) {
+			BooleanQuery subQuery = new BooleanQueryImpl();
+				for (String ref : sliptRef) {
+					if (Validator.isNotNull(ref)) {
+	
+						MultiMatchQuery query = new MultiMatchQuery(ref);
+	
+						query.addFields(DossierTerm.REFERENCE_UID);
+						subQuery.add(query, BooleanClauseOccur.SHOULD);
+					}
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(strReferenceUid);
+
+				query.addFields(DossierTerm.REFERENCE_UID);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+
+		//TODO
+		if (Validator.isNotNull(dossierArr)) {
+
+			String[] lstDossier = StringUtil.split(dossierArr);
+
+			if (lstDossier != null && lstDossier.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < lstDossier.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(lstDossier[i]);
+
+					query.addField(DossierTerm.DOSSIER_ID);
+
+					subQuery.add(query, BooleanClauseOccur.MUST_NOT);
+				}
+
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(status);
+
+				query.addFields(DossierTerm.DOSSIER_ID);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
+			}
+
 		}
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);

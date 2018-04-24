@@ -1038,6 +1038,11 @@
 		<finder name="DID" return-type="Collection">
 			<finder-column name="dossierId"></finder-column>
 		</finder>
+
+		<finder name="G_PENDING" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="pending" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DossierActionUser"
