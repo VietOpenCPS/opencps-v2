@@ -23,12 +23,14 @@ import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -321,14 +323,24 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			}
 		}
 
-		}catch(Exception e) {
-			_log.error(e);
-		}
-
 		document.addTextSortable(DossierTerm.ENDORSEMENT_DATE,
 				APIDateTimeUtils.convertDateToString(object.getEndorsementDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		document.addNumberSortable(DossierTerm.ENDORSEMENT_DATE_TIMESTAMP,
 				Validator.isNotNull(object.getEndorsementDate()) ? object.getEndorsementDate().getTime() : 0);
+
+		//LamTV: Indexer from dossierRequest to Dossier
+		DossierRequestUD dRegUD = DossierRequestUDLocalServiceUtil.getDossierRequestByDossierId(dossierId);
+		_log.info("dossierId: "+dossierId+" |statusReg: "+dRegUD.getStatusReg());
+		if (dRegUD != null) {
+			_log.info("statusReg: "+dRegUD.getStatusReg());
+			document.addNumberSortable(DossierTerm.STATUS_REG, dRegUD.getStatusReg());
+		} else {
+			document.addNumberSortable(DossierTerm.STATUS_REG, 4);
+		}
+
+		}catch(Exception e) {
+			_log.error(e);
+		}
 
 		return document;
 	}

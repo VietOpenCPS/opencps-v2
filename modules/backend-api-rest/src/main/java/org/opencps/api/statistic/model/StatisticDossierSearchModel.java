@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlType;
     "dossierStatus",
     "dossierSubStatus",
     "level",
-    "dossierArr"
+    "notState"
 })
 @XmlRootElement(name = "StatisticDossierSearchModel")
 public class StatisticDossierSearchModel {
@@ -54,16 +54,8 @@ public class StatisticDossierSearchModel {
     protected String dossierSubStatus;
 	@QueryParam(value = "level")
     protected BigInteger level;
-	@QueryParam(value = "dossierArr")
-    protected String dossierArr;
-
-    public String getDossierArr() {
-		return dossierArr;
-	}
-
-	public void setDossierArr(String dossierArr) {
-		this.dossierArr = dossierArr;
-	}
+	@QueryParam(value = "notState")
+    protected String notState;
 
 	/**
      * Gets the value of the dossierStatus property.
@@ -136,5 +128,29 @@ public class StatisticDossierSearchModel {
     public void setLevel(BigInteger value) {
         this.level = value;
     }
+
+    /**
+     * Gets the value of the notState property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+	public String getNotState() {
+		return notState;
+	}
+
+    /**
+     * Sets the value of the notState property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+	public void setNotState(String notState) {
+		this.notState = notState;
+	}
 
 }

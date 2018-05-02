@@ -49,7 +49,8 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="toReceiveDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="tu_ngay_ky_cc" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="den_ngay_ky_cc" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="applicantIdNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="notState" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="statusReg" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -88,8 +89,8 @@ import javax.xml.bind.annotation.XmlType;
     "dossierIdCTN",
     "fromSubmitDate",
     "toSubmitDate",
-    "applicantIdNo",
-    "dossierArr"
+    "notState",
+    "statusReg"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -157,8 +158,28 @@ public class DossierSearchModel {
     protected String applicantIdNo;
     @QueryParam(value = "dossierArr")
     protected String dossierArr;
+    @QueryParam(value = "notState")
+    protected String notState;
+    @QueryParam(value = "statusReg")
+    protected String statusReg;
 
-    public String getDossierArr() {
+    public String getStatusReg() {
+		return statusReg;
+	}
+
+	public void setStatusReg(String statusReg) {
+		this.statusReg = statusReg;
+	}
+
+	public String getNotState() {
+		return notState;
+	}
+
+	public void setNotState(String notState) {
+		this.notState = notState;
+	}
+
+	public String getDossierArr() {
 		return dossierArr;
 	}
 
