@@ -6,7 +6,7 @@
 		var viewPanel = new kendo.View("panelTemplate", {model: modelPanel});
 		var viewMainList = new kendo.View("mainTemplate", {model: modelMain});
 		var viewSidebar = new kendo.View("sidebarTemplate", {model: modelSidebar});
-	
+		var statusRouteTem = "";
 		manageDossier.route("/(:dossierItemStatus)/dossiers/(:id)", function(dossierItemStatus, id){
 			$("#mainType1").hide();
 			$("#mainType2").show();
@@ -21,6 +21,9 @@
 				$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"",function(result){
 				});
 			};
+
+			statusRouteTem = dossierItemStatus;
+
 		    $(".itemStatus").css("pointer-events","auto");
 			$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
@@ -98,7 +101,7 @@
 				});
 			}
 
-			
+			statusRouteTem = id;
 			$(".itemStatus").css("pointer-events","auto");
 			$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");

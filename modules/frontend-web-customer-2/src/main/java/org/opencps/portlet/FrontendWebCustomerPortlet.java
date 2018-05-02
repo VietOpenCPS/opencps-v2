@@ -163,56 +163,85 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		JSONObject dossierNew = JSONFactoryUtil.createJSONObject();
 		dossierNew.put("text", "Hồ sơ mới");
 		dossierNew.put("value", "new");
+		dossierNew.put("valueSub", "");
 		dossierStatus.add(dossierNew);
+		
+		JSONObject dossierSubmitting = JSONFactoryUtil.createJSONObject();
+		dossierSubmitting.put("text", "Hồ sơ đang xử lý");
+		dossierSubmitting.put("value", "submitting");
+		dossierSubmitting.put("valueSub", "");
+		dossierStatus.add(dossierSubmitting);
 
 		JSONObject dossierReceiving = JSONFactoryUtil.createJSONObject();
 		dossierReceiving.put("text", "Hồ sơ chờ tiếp nhận");
 		dossierReceiving.put("value", "receiving");
+		dossierReceiving.put("valueSub", "");
 		dossierStatus.add(dossierReceiving);
 		
 		JSONObject dossierWaiting = JSONFactoryUtil.createJSONObject();
 		dossierWaiting.put("text", "Hồ sơ chờ bổ sung");
 		dossierWaiting.put("value", "waiting");
+		dossierWaiting.put("valueSub", "");
 		dossierStatus.add(dossierWaiting);
 
 		JSONObject dossierProcessed = JSONFactoryUtil.createJSONObject();
 		dossierProcessed.put("text", "Hồ sơ đã tiếp nhận");
 		dossierProcessed.put("value", "processing");
+		dossierProcessed.put("valueSub", "");
 		dossierStatus.add(dossierProcessed);
 
 		JSONObject dossierPaying = JSONFactoryUtil.createJSONObject();
 		dossierPaying.put("text", "Hồ sơ chờ thanh toán");
 		dossierPaying.put("value", "paying");
+		dossierPaying.put("valueSub", "");
 		dossierStatus.add(dossierPaying);
 
 		JSONObject dossierDone = JSONFactoryUtil.createJSONObject();
 		dossierDone.put("text", "Hồ sơ đã kết thúc");
 		dossierDone.put("value", "done");
+		dossierDone.put("valueSub", "");
 		dossierStatus.add(dossierDone);
 
 		JSONObject dossierCancelling = JSONFactoryUtil.createJSONObject();
 		dossierCancelling.put("text", "Hồ sơ yêu cầu hủy");
 		dossierCancelling.put("value", "cancelling");
+		dossierCancelling.put("valueSub", "");
 		dossierStatus.add(dossierCancelling);
 
 		JSONObject dossierCancelled = JSONFactoryUtil.createJSONObject();
 		dossierCancelled.put("text", "Hồ sơ xác nhận hủy");
 		dossierCancelled.put("value", "cancelled");
+		dossierCancelled.put("valueSub", "");
 		dossierStatus.add(dossierCancelled);
 		
 		JSONObject dossierConfirmation = JSONFactoryUtil.createJSONObject();
 		dossierConfirmation.put("text", "Xác nhận kế hoạch kiểm tra");
-		dossierConfirmation.put("value", "confirm");
+		dossierConfirmation.put("value", "waiting_3");
+		dossierConfirmation.put("valueSub", "waiting_3");
 		dossierStatus.add(dossierConfirmation);
+		
+		JSONObject dossierDone2 = JSONFactoryUtil.createJSONObject();
+		dossierDone2.put("text", "Đề nghị cấp lại CC");
+		dossierDone2.put("value", "correcting");
+		dossierDone2.put("valueSub", "correcting");
+		dossierStatus.add(dossierDone2);
+		
+		JSONObject dossierDone3 = JSONFactoryUtil.createJSONObject();
+		dossierDone3.put("text", "Hồ sơ sửa đổi bổ sung sau chứng nhận");
+		dossierDone3.put("value", "endorsement");
+		dossierDone3.put("valueSub", "endorsement");
+		dossierStatus.add(dossierDone3);
 
 		JSONObject dossierExpired = JSONFactoryUtil.createJSONObject();
 		dossierExpired.put("text", "Hồ sơ đến hạn XN hiệu lực");
-		dossierExpired.put("value", "expired");
+		dossierExpired.put("value", "DONE_4");
+		dossierExpired.put("valueSub", "DONE_4");
 		dossierStatus.add(dossierExpired);
 
 		JSONObject dossierAll = JSONFactoryUtil.createJSONObject();
 		dossierAll.put("text", "Tất cả hồ sơ");
 		dossierAll.put("value", "all");
+		dossierAll.put("valueSub", "");
 		dossierStatus.add(dossierAll);
 
 		constantsObj.put("dossierStatus", dossierStatus);
