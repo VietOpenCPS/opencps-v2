@@ -152,6 +152,12 @@ public class DossierManagementImpl implements DossierManagement {
 			String dossierIdCTN = query.getDossierIdCTN();
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
+			//Get info case abnormal
+			Long statusRegNo = null;
+			if (Validator.isNotNull(query.getStatusReg())) {
+				statusRegNo = Long.valueOf(query.getStatusReg());
+			}
+			_log.info("statusRegNo: "+statusRegNo);
 
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -177,128 +183,49 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
 			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
+			params.put(DossierTerm.STATUS_REG, statusRegNo);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
-			DossierResultsModel results = new DossierResultsModel();
-			JSONObject jsonData = null;
-
-			// Get list status pending and submitting
-			if (Validator.isNotNull(query.getApplicantIdNo()) && Validator.isNotNull(query.getPendding())) {
-
-				String pendding = query.getPendding();
-				String applicantIdNo = query.getApplicantIdNo();
-
-				params.put("pendding", pendding);
-				params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
-
-				if (Boolean.parseBoolean(pendding)) {
-					long groupIdCXL = 55301;
-					JSONObject jsonDataPending = null;
-
-					List<DossierAction> dActionList = DossierActionLocalServiceUtil.getDossiersPending(groupIdCXL, pendding);
-
-					if (dActionList != null && dActionList.size() > 0) {
-						LinkedHashMap<String, Object> paramPending = new LinkedHashMap<String, Object>();
-						_log.info("dActionList: "+dActionList.size());
-						int length = dActionList.size();
-						StringBuilder sb = new StringBuilder();
-						for (int i = 0; i < length; i ++) {
-							DossierAction dAct = dActionList.get(i);
-							long dActId = dAct.getDossierActionId();
-							if (i == 0) {
-								sb.append(dActId);
-							} else {
-								sb.append(StringPool.COMMA);
-								sb.append(dActId);
-								
-							}
-						}
-						_log.info("DOSSIER_ACTION_ID_PENDING: "+sb.toString());
-
-						paramPending.put(Field.GROUP_ID, String.valueOf(groupIdCXL));
-						paramPending.put(DossierTerm.OWNER, String.valueOf(false));
-						paramPending.put(DossierTerm.APPLICANT_ID_NO, query.getApplicantIdNo());
-						paramPending.put(DossierTerm.DOSSIER_ACTION_ID_PENDING, sb.toString());
-
-						jsonDataPending = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupIdCXL, paramPending, sorts,
-								-1, -1, serviceContext);
-						_log.info("jsonDataPending: "+jsonDataPending);
-					}
-
-					if (jsonDataPending != null) {
-						List<Document> docs = (List<Document>) jsonDataPending.get("data");
-						if (docs != null && docs.size() > 0) {
-							StringBuilder sb1 = new StringBuilder();
-							int length = docs.size();
-							for (int i = 0; i < length; i ++) {
-								Document doc = docs.get(i);
-								String referenceUid = doc.get(DossierTerm.REFERENCE_UID);
-								if (i == 0) {
-									sb1.append(referenceUid);
-								} else {
-									sb1.append(StringPool.COMMA);
-									sb1.append(referenceUid);
-								}
-							}
-							_log.info("REFERENCE_UID: "+sb1.toString());
-							params.put(DossierTerm.REFERENCE_UID, sb1.toString());
-						}
-					}
+			if (Validator.isNotNull(top)) {
+				switch (top) {
+				case "receive":
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.RECEIVE_DATE_TIMESTAMP + "_sortable",
+							Sort.LONG_TYPE, false) };
+					break;
+				case "overdue":
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.DUE_DATE_TIMESTAMP + "_sortable",
+							Sort.LONG_TYPE, false) };
+					break;
+				case "release":
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.RELEASE_DATE_TIMESTAMP + "_sortable",
+							Sort.LONG_TYPE, false) };
+					break;
+				case "cancelling":
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CANCELLING_DATE_TIMESTAMP + "_sortable",
+							Sort.LONG_TYPE, false) };
+					break;
+				case "corecting":
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CORRECTING_DATE_TIMESTAMP + "_sortable",
+							Sort.LONG_TYPE, false) };
+					break;
+				default:
+					break;
 				}
 
-				jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
-						-1, -1, serviceContext);
-
-			} else {
-				// Get info input params
-				String dossierArr = query.getDossierArr();
-				String applicantIdNo = query.getApplicantIdNo();
-
-				params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
-				params.put("dossierArr", dossierArr);
-
-				jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
-						-1, -1, serviceContext);
 			}
 
-			if (jsonData == null) {
-				jsonData = JSONFactoryUtil.createJSONObject(); 
-			}
+			DossierResultsModel results = new DossierResultsModel();
+
+			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
+						-1, -1, serviceContext);
 
 			results.setTotal(jsonData.getInt("total"));
 
 			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
 
 			return Response.status(200).entity(results).build();
-//			if (Validator.isNotNull(top)) {
-//				switch (top) {
-//				case "receive":
-//					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.RECEIVE_DATE_TIMESTAMP + "_sortable",
-//							Sort.LONG_TYPE, false) };
-//					break;
-//				case "overdue":
-//					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.DUE_DATE_TIMESTAMP + "_sortable",
-//							Sort.LONG_TYPE, false) };
-//					break;
-//				case "release":
-//					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.RELEASE_DATE_TIMESTAMP + "_sortable",
-//							Sort.LONG_TYPE, false) };
-//					break;
-//				case "cancelling":
-//					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CANCELLING_DATE_TIMESTAMP + "_sortable",
-//							Sort.LONG_TYPE, false) };
-//					break;
-//				case "corecting":
-//					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CORRECTING_DATE_TIMESTAMP + "_sortable",
-//							Sort.LONG_TYPE, false) };
-//					break;
-//				default:
-//					break;
-//				}
-//
-//			}
 
 		} catch (Exception e) {
 			_log.info(e);
@@ -1195,9 +1122,10 @@ public class DossierManagementImpl implements DossierManagement {
 			// 2. update requestDossier
 
 			String referenceUid = PortalUUIDUtil.generate();
+			int status = 3;
 
 			DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossier.getDossierId(), referenceUid,
-					RT_CANCELLING, body, 1, serviceContext);
+					RT_CANCELLING, body, 1, status, serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(cancellingDossier, user.getUserId());
 
@@ -1232,17 +1160,18 @@ public class DossierManagementImpl implements DossierManagement {
 
 			serviceContext.setScopeGroupId(groupId);
 
-			Dossier cancellingDossier = actions.correctDossier(groupId, dossier.getDossierId(),
+			Dossier correctingDossier = actions.correctDossier(groupId, dossier.getDossierId(),
 					dossier.getReferenceUid(), serviceContext);
 
 			// 2. update requestDossier
 
 			String referenceUid = PortalUUIDUtil.generate();
+			int status = 3;
 
 			DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossier.getDossierId(), referenceUid,
-					RT_CORRECTING, body, 1, serviceContext);
+					RT_CORRECTING, body, 1, status, serviceContext);
 
-			DossierDetailModel result = DossierUtils.mappingForGetDetail(cancellingDossier, user.getUserId());
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(correctingDossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
 
@@ -1275,17 +1204,18 @@ public class DossierManagementImpl implements DossierManagement {
 
 			serviceContext.setScopeGroupId(groupId);
 
-			Dossier cancellingDossier = actions.submitPostDossier(groupId, dossier.getDossierId(),
+			Dossier endorsementDossier = actions.submitPostDossier(groupId, dossier.getDossierId(),
 					dossier.getReferenceUid(), serviceContext);
 
 			// 2. update requestDossier
 
 			String referenceUid = PortalUUIDUtil.generate();
+			int status = 3;
 
 			DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossier.getDossierId(), referenceUid,
-					RT_SUBMITTING, body, 1, serviceContext);
+					RT_SUBMITTING, body, 1, status, serviceContext);
 
-			DossierDetailModel result = DossierUtils.mappingForGetDetail(cancellingDossier, user.getUserId());
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(endorsementDossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
 
@@ -1367,9 +1297,10 @@ public class DossierManagementImpl implements DossierManagement {
 			// 2. update requestDossier
 
 			String referenceUid = PortalUUIDUtil.generate();
+			int status = 0;
 
 			DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossier.getDossierId(), referenceUid,
-					RT_SUBMITTING, body, 1, serviceContext);
+					RT_SUBMITTING, body, 1, status, serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(cancellingDossier, user.getUserId());
 

@@ -163,7 +163,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			long userId = user.getUserId();
 
 			// Get info input
-			String dossierArr = query.getDossierArr();
+			String notState = query.getNotState();
 			String status = query.getDossierStatus();
 			String substatus = query.getDossierSubStatus();
 			
@@ -173,7 +173,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			params.put(DossierTerm.SUBSTATUS, substatus);
 			params.put(Field.USER_ID, String.valueOf(userId));
 			params.put(DossierTerm.OWNER, String.valueOf(true));
-			params.put("dossierArr", dossierArr);
+			params.put("notState", notState);
 
 			JSONObject jsonData = actions.getDossierCountTodoPermission(user.getUserId(), company.getCompanyId(), groupId, params,
 					null, serviceContext);

@@ -454,6 +454,7 @@ public class DossierUtils {
 		model.setApplicantNote(input.getApplicantNote());
 		model.setNotification(Boolean.toString(input.getNotification()));
 		model.setOnline(Boolean.toString(input.getOnline()));
+		model.setLockState(input.getLockState());
 
 		return model;
 	}

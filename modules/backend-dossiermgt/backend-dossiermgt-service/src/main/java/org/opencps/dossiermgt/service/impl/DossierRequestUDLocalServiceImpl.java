@@ -53,7 +53,7 @@ public class DossierRequestUDLocalServiceImpl
 	 */
 	
 	public DossierRequestUD updateDossierRequest(long dossierRequestId, long dossierId, String referenceUid,
-			String requestType, String comment, int isNew, ServiceContext context)
+			String requestType, String comment, int isNew, int status, ServiceContext context)
 			throws PortalException, SystemException {
 		
 		Date now = new Date();
@@ -82,6 +82,7 @@ public class DossierRequestUDLocalServiceImpl
 			
 			dossierRequest.setComment(comment);
 			dossierRequest.setIsNew(isNew);
+			dossierRequest.setStatusReg(status);
 			
 		} else {
 			dossierRequestId = counterLocalService.increment(DossierRequestUD.class.getName());
@@ -100,6 +101,7 @@ public class DossierRequestUDLocalServiceImpl
 			dossierRequest.setRequestType(requestType);
 			dossierRequest.setComment(comment);
 			dossierRequest.setIsNew(isNew);
+			dossierRequest.setStatusReg(status);
 
 		}
 		
@@ -115,6 +117,16 @@ public class DossierRequestUDLocalServiceImpl
 		//This is temporary function
 		
 		return dossierRequestUDPersistence.findByDID_IN(dossierId, isNew);
+	}
+
+	//LamTV: Update get list dossierRequest
+	public DossierRequestUD getDossierRequestByDossierId(long dossierId) {
+		List<DossierRequestUD> dReqUD = dossierRequestUDPersistence.findByD_(dossierId);
+		if (dReqUD != null && dReqUD.size() > 0) {
+			return dReqUD.get(0);
+		} else {
+			return null;
+		}
 	}
 
 }
