@@ -8,29 +8,34 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
-import java.util.UUID;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.communication.model.ServerConfig;
-import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
@@ -39,6 +44,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -60,6 +66,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 	protected Document doGetDocument(Dossier object) throws Exception {
 		Document document = getBaseModelDocument(CLASS_NAME, object);
 
+		try{
 		// Indexer of audit fields
 		document.addNumberSortable(Field.COMPANY_ID, object.getCompanyId());
 		document.addNumberSortable(Field.GROUP_ID, object.getGroupId());
@@ -73,10 +80,16 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		// add number fields
 		document.addTextSortable(DossierTerm.APPLICANT_ID_DATE,
 				APIDateTimeUtils.convertDateToString(object.getApplicantIdDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-		document.addTextSortable(DossierTerm.SUBMIT_DATE,
-				APIDateTimeUtils.convertDateToString(object.getSubmitDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-		document.addTextSortable(DossierTerm.RECEIVE_DATE,
-				APIDateTimeUtils.convertDateToString(object.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		document.addDateSortable(DossierTerm.SUBMIT_DATE,
+				object.getSubmitDate());
+//		document.addTextSortable(DossierTerm.SUBMIT_DATE,
+//				APIDateTimeUtils.convertDateToString(object.getSubmitDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+//		document.addTextSortable(DossierTerm.RECEIVE_DATE,
+//				APIDateTimeUtils.convertDateToString(object.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		
+		document.addDateSortable(DossierTerm.RECEIVE_DATE,
+				object.getReceiveDate());
+		
 		document.addTextSortable(DossierTerm.DUE_DATE,
 				APIDateTimeUtils.convertDateToString(object.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		document.addTextSortable(DossierTerm.RELEASE_DATE,
@@ -189,7 +202,14 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addTextSortable(DossierTerm.SUBMISSION_NOTE, object.getSubmissionNote());
 		document.addTextSortable(DossierTerm.APPLICANT_NOTE, object.getApplicantNote());
 		document.addTextSortable(DossierTerm.BRIEF_NOTE, object.getBriefNote());
-		document.addTextSortable(DossierTerm.DOSSIER_NO, object.getDossierNo());
+		// Search follow dossierNo
+		String dossierNo = object.getDossierNo();
+		String dossierNoSearch = StringPool.BLANK;
+		document.addTextSortable(DossierTerm.DOSSIER_NO, dossierNo);
+		if (Validator.isNotNull(dossierNo)) {
+			dossierNoSearch = SpecialCharacterUtils.splitSpecial(dossierNo);
+			document.addTextSortable(DossierTerm.DOSSIER_NO_SEARCH, dossierNoSearch);
+		}
 		document.addTextSortable(DossierTerm.SUBMITTING, Boolean.toString(object.getSubmitting()));
 
 		document.addTextSortable(DossierTerm.DOSSIER_STATUS, object.getDossierStatus());
@@ -207,7 +227,31 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		document.addTextSortable(DossierTerm.DOSSIER_OVER_DUE,
 				Boolean.toString(getDossierOverDue(object.getPrimaryKey())));
 
-		// Indexing DossierActionUsers
+		//TODO: index dossierAction StepCode
+		StringBundler sb = new StringBundler();
+		long dossierActionsUserId = object.getDossierActionId();
+		if (dossierActionsUserId > 0) {
+			List<DossierActionUser> dossierActionUsers = DossierActionUserLocalServiceUtil
+					.getListUser(dossierActionsUserId);
+			if (dossierActionUsers != null) {
+				int length = dossierActionUsers.size();
+				for (int i = 0; i < length; i ++) {
+					DossierActionUser dau = dossierActionUsers.get(i);
+					long userId = dau.getUserId();
+					if (i == 0) {
+						sb.append(userId);
+					} else {
+						sb.append(StringPool.SPACE);
+						sb.append(userId);
+						
+					}
+				}
+			}
+		}
+		_log.info("Mapping user:"+sb.toString());
+		document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, sb.toString());
+		
+//		 Indexing DossierActionUsers
 		List<Long> actionUserIds = new ArrayList<>();
 		try {
 			List<DossierAction> dossierActions = DossierActionLocalServiceUtil.getDossierActionById(dossierId);
@@ -229,6 +273,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			_log.error("Can not get list dossierActions by dossierId " + dossierId, e);
 		}
 
+		_log.info("Action user:"+StringUtil.merge(actionUserIds, StringPool.SPACE));
 		document.addTextSortable(DossierTerm.ACTION_USERIDS, StringUtil.merge(actionUserIds, StringPool.SPACE));
 		
 		//binhth index dossierId CTN
@@ -256,9 +301,84 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		dossierIDCTN = formattedDate + HashFunction.hexShort(ba);
 		
 		document.addTextSortable(DossierTerm.DOSSIER_ID+"CTN", dossierIDCTN);
+
+		// Get info cert Number
+		List<String> certNoIndexer = certNoIndexer(dossierId, object.getGroupId());
+		if (certNoIndexer != null && certNoIndexer.size() > 0) {
+			String certNo = certNoIndexer.get(0);
+			String certDateStr = certNoIndexer.get(1);
+			String certDateTimeStamp = certDateStr + " 00:00:00";
+			Date certDate = APIDateTimeUtils.convertStringToDate(certDateTimeStamp, APIDateTimeUtils._NORMAL_PARTTERN);
+			_log.info("certNo: "+certNo);
+			_log.info("certDate: "+certDate);
+			if (Validator.isNotNull(certDate)) {
+				document.addTextSortable("so_chung_chi", certNo);
+				document.addDateSortable("ngay_ky_cc", certDate);
+				// Search follow so_chung_chi
+				String certNoSearch = SpecialCharacterUtils.splitSpecial(certNo);
+				document.addTextSortable(DossierTerm.CERT_NO_SEARCH, certNoSearch);
+			}
+		}
+		}catch(Exception e) {
+			_log.error(e);
+		}
+
+		document.addTextSortable(DossierTerm.ENDORSEMENT_DATE,
+				APIDateTimeUtils.convertDateToString(object.getEndorsementDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		document.addNumberSortable(DossierTerm.ENDORSEMENT_DATE_TIMESTAMP,
+				Validator.isNotNull(object.getEndorsementDate()) ? object.getEndorsementDate().getTime() : 0);
+
 		return document;
 	}
 
+	private List<String> certNoIndexer(long dossierId, long groupId) {
+		List<String> certIndex = new ArrayList<String>();
+		// Get info cert Number
+		List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.getAllDossierFile(dossierId);
+		if (dossierFileList != null && dossierFileList.size() > 0) {
+			String templateNo = StringPool.BLANK;
+			String partNo = StringPool.BLANK;
+			int partType = 2;
+			boolean eSign = true;
+			String deliverableCode = StringPool.BLANK;
+			for (DossierFile dossierFile : dossierFileList) {
+				templateNo = dossierFile.getDossierTemplateNo();
+				partNo = dossierFile.getDossierPartNo();
+				DossierPart dossierPart = DossierPartLocalServiceUtil.getByPartTypeEsign (templateNo,
+						partNo, partType, eSign);
+				if (dossierPart != null) {
+					List<DossierFile> dossierFileRefList = DossierFileLocalServiceUtil
+							.getByReferenceUid(dossierFile.getReferenceUid());
+					if (dossierFileRefList != null && dossierFileRefList.size() > 0) {
+						for (DossierFile dof : dossierFileRefList) {
+							deliverableCode = dof.getDeliverableCode();
+							_log.info("DOssier deliverableCode: "+deliverableCode);
+							if (Validator.isNotNull(deliverableCode)) {
+								Deliverable deli = DeliverableLocalServiceUtil.getByCodeAndState(deliverableCode, "2");
+								if (deli != null) {
+									String formData = StringPool.BLANK;
+									formData = deli.getFormData();
+									try {
+										JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
+										String certNo = String.valueOf(jsonData.get("so_chung_chi"));
+										String certDateStr = String.valueOf(jsonData.get("ngay_ky_cc"));
+										if (Validator.isNotNull(certNo) && Validator.isNotNull(certDateStr)) {
+											certIndex.add(certNo);
+											certIndex.add(certDateStr);
+										}
+										return certIndex;
+									} catch (Exception e) {
+										_log.error(e);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return certIndex;
+	}
 
 	private boolean getDossierOverDue(long dossierId) {
 		// TODO add logic here

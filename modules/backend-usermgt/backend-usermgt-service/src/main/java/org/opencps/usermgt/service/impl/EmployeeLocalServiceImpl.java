@@ -27,6 +27,8 @@ import org.opencps.usermgt.service.base.EmployeeLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -42,6 +44,7 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
@@ -86,8 +89,9 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	@Override
 	public Employee addEmployee(long userId, long groupId, String fullName, String employeeNo, int gender,
 			Date birthDate, String telNo, String mobile, String email, int workingStatus, long mainJobPostId,
-			String title, boolean isCreateUser, Date recruitDate, Date leaveDate, ServiceContext serviceContext) throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException,
-			UnauthenticationException, UnauthorizationException, NoSuchUserException, PortalException {
+			String title, boolean isCreateUser, Date recruitDate, Date leaveDate, ServiceContext serviceContext)
+			throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException, UnauthenticationException,
+			UnauthorizationException, NoSuchUserException, PortalException {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
@@ -150,7 +154,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		employee.setRecruitDate(recruitDate);
 		employee.setLeaveDate(leaveDate);
-		
+
 		employee.setExpandoBridgeAttributes(serviceContext);
 
 		employeePersistence.update(employee);
@@ -194,9 +198,10 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	@Override
 	public Employee updateEmployee(long userId, long employeeId, String fullName, String employeeNo, int gender,
 			Date birthDate, String telNo, String mobile, String email, int workingStatus, long mainJobPostId,
-			long photoFileEntryId, long mappingUserId, String title, Date recruitDate, Date leaveDate, ServiceContext serviceContext)
-			throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException, UnauthenticationException, UnauthorizationException, NoSuchUserException,
-			NotFoundException, PortalException {
+			long photoFileEntryId, long mappingUserId, String title, Date recruitDate, Date leaveDate,
+			ServiceContext serviceContext)
+			throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException, UnauthenticationException,
+			UnauthorizationException, NoSuchUserException, NotFoundException, PortalException {
 
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
@@ -222,16 +227,18 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(employee.getGroupId(), employeeNo);
 
-		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 && employeeCheck.get(0).getEmployeeId() != employeeId) {
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0
+				&& employeeCheck.get(0).getEmployeeId() != employeeId) {
 			throw new DuplicateEmployeeNoException();
 		}
 
 		employeeCheck = employeePersistence.findByF_email(employee.getGroupId(), email);
 
-		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 && employeeCheck.get(0).getEmployeeId() != employeeId) {
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0
+				&& employeeCheck.get(0).getEmployeeId() != employeeId) {
 			throw new DuplicateEmployeeEmailException();
 		}
-		
+
 		// Audit fields
 		employee.setUserId(user.getUserId());
 		employee.setUserName(user.getFullName());
@@ -287,8 +294,9 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		return employeePersistence.fetchByF_mappingUserId(groupId, mappingUserId);
 	}
 
-	public void isExits(long groupId, String employeeNo, String email) throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException {
-		
+	public void isExits(long groupId, String employeeNo, String email)
+			throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException {
+
 		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(groupId, employeeNo);
 
 		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0) {
@@ -300,9 +308,9 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0) {
 			throw new DuplicateEmployeeEmailException();
 		}
-		
+
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
@@ -318,7 +326,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		String status = (String) params.get(EmployeeTerm.WORKING_STATUS);
 		String active = (String) params.get(EmployeeTerm.ACTIVE);
 		String month = (String) params.get(EmployeeTerm.MONTH);
-		
+		String strUserIdList = (String) params.get("userIdList");
+
 		Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 
 		searchContext.addFullQueryEntryClassName(Employee.class.getName());
@@ -422,13 +431,13 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			query.addFields(EmployeeTerm.ACTIVE);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
-			
+
 			query = new MultiMatchQuery(String.valueOf(0));
 
 			query.addFields(EmployeeTerm.MAPPING_USER_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
-			
+
 		}
 
 		if (Validator.isNotNull(month)) {
@@ -438,6 +447,30 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+
+		if (Validator.isNotNull(strUserIdList)) {
+			String[] sliptUserId = strUserIdList.split(StringPool.COMMA);
+			if (sliptUserId != null && sliptUserId.length > 0) {
+			BooleanQuery subQuery = new BooleanQueryImpl();
+				for (String strUserId : sliptUserId) {
+					if (Validator.isNotNull(strUserId)) {
+
+						MultiMatchQuery query = new MultiMatchQuery(strUserId);
+
+						query.addFields(EmployeeTerm.MAPPING_USER_ID);
+						subQuery.add(query, BooleanClauseOccur.SHOULD);
+					}
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(strUserIdList);
+
+				query.addFields(EmployeeTerm.MAPPING_USER_ID);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Employee.class.getName());
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -459,6 +492,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		String status = (String) params.get(EmployeeTerm.WORKING_STATUS);
 		String active = (String) params.get(EmployeeTerm.ACTIVE);
 		String month = (String) params.get(EmployeeTerm.MONTH);
+		String strUserIdList = (String) params.get("userIdList");
 
 		Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 
@@ -560,13 +594,13 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			query.addFields(EmployeeTerm.ACTIVE);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
-			
+
 			query = new MultiMatchQuery(String.valueOf(0));
 
 			query.addFields(EmployeeTerm.MAPPING_USER_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
-			
+
 		}
 
 		if (Validator.isNotNull(month)) {
@@ -576,12 +610,82 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+
+		if (Validator.isNotNull(strUserIdList)) {
+			String[] sliptUserId = strUserIdList.split(StringPool.COMMA);
+			if (sliptUserId != null && sliptUserId.length > 0) {
+			BooleanQuery subQuery = new BooleanQueryImpl();
+				for (String strUserId : sliptUserId) {
+					if (Validator.isNotNull(strUserId)) {
+
+						MultiMatchQuery query = new MultiMatchQuery(strUserId);
+
+						query.addFields(EmployeeTerm.MAPPING_USER_ID);
+						subQuery.add(query, BooleanClauseOccur.SHOULD);
+					}
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(strUserIdList);
+
+				query.addFields(EmployeeTerm.MAPPING_USER_ID);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Employee.class.getName());
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
 	}
-	
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Employee updatePayload(long userId, long groupId, long fileCertId, long fileSignId, String fileCertPath,
+			String fileSignPath, ServiceContext serviceContext) throws PortalException {
+
+		Employee employee = employeePersistence.fetchByF_mappingUserId(groupId, userId);
+		
+		if (Validator.isNotNull(employee)) {
+			
+			User user = userPersistence.fetchByPrimaryKey(serviceContext.getUserId());
+			
+			String userName = StringPool.BLANK;
+			
+			if (Validator.isNotNull(user)) {
+				userName = user.getFullName();
+			}
+			
+			Date now = new Date();
+			
+			if (fileCertId != 0) {
+				//update fileId of certFile
+				employee.setFileCertId(fileCertId);
+			}
+			if (fileSignId != 0) {
+				//update fileSignId
+				employee.setFileSignId(fileSignId);
+			}
+			if (fileCertPath.trim().length() != 0) {
+				//update fileCertPath
+				employee.setFileCertPath(fileCertPath);
+			}
+			if (fileSignPath.trim().length() != 0) {
+				//update fileId of certFile
+				employee.setFileSignPath(fileSignPath);
+			}
+			
+			employee.setUserId(serviceContext.getUserId());
+			employee.setUserName(userName);
+			employee.setModifiedDate(now);
+		}
+		
+		employeePersistence.update(employee);
+
+		return employee;
+	}
+
+		
 	public List<Employee> getLstEmployee(long groupId, long userId){
 		return employeePersistence.findByG_UID(groupId, userId);
 	}

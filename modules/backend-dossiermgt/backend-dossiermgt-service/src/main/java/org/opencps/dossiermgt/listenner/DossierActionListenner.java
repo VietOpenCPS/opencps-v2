@@ -5,8 +5,11 @@ import java.util.List;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierLog;
+import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.impl.ProcessActionLocalServiceImpl;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.model.Employee;
@@ -66,8 +69,6 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 
 				String content = model.getActionNote();
 
-				// JSONArray payloads = JSONFactoryUtil.createJSONArray();
-
 				JSONObject payload = JSONFactoryUtil.createJSONObject();
 
 				JSONArray files = JSONFactoryUtil.createJSONArray();
@@ -77,24 +78,22 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 					List<DossierLog> dossierLogs = DossierLogLocalServiceUtil.getByDossierAndType(dossierId,
 							DossierFileListenerMessageKeys.DOSSIER_LOG_CREATE_TYPE, QueryUtil.ALL_POS,
 							QueryUtil.ALL_POS);
-					
+
 					for (DossierLog log : dossierLogs) {
 						long dossierFileId = 0;
-						
+
 						try {
 							JSONObject payloadFile = JSONFactoryUtil.createJSONObject(log.getPayload());
-							
+
 							dossierFileId = GetterUtil.getLong(payloadFile.get("dossierFileId"));
 						} catch (Exception e) {
-							
+
 						}
-						
-						
-						
+
 						if (dossierFileId != 0) {
 							DossierFile dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(dossierFileId);
-							
-							if (Validator.isNotNull(dossierFile)) {
+
+							if (Validator.isNotNull(dossierFile) && dossierFile.getFileEntryId() > 0) {
 								JSONObject file = JSONFactoryUtil.createJSONObject();
 
 								file.put("dossierFileId", dossierFile.getDossierFileId());
@@ -104,38 +103,46 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 								files.put(file);
 							}
 						}
-						
+
 						DossierLogLocalServiceUtil.deleteDossierLog(log);
-						
+
 					}
 
-/*					List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getByDossierIdAndIsNew(dossierId,
-							true);
-					if (dossierFiles != null) {
-						for (DossierFile dossierFile : dossierFiles) {
-							JSONObject file = JSONFactoryUtil.createJSONObject();
-
-							file.put("dossierFileId", dossierFile.getDossierFileId());
-							file.put("fileName", dossierFile.getDisplayName());
-							file.put("createDate", APIDateTimeUtils.convertDateToString(dossierFile.getCreateDate(),
-									APIDateTimeUtils._TIMESTAMP));
-							files.put(file);
-						}
 					}
-*/				}
 
 				payload.put("jobPosName", jobPosName);
 				payload.put("stepName", model.getActionName());
 				payload.put("stepInstruction", model.getStepInstruction());
 				payload.put("files", files);
 
-				// payloads.put(payload);
-
 				serviceContext.setCompanyId(model.getCompanyId());
 				serviceContext.setUserId(userId);
 
+				ProcessAction processAction = ProcessActionLocalServiceUtil
+						.getByNameActionNo(model.getServiceProcessId(), model.getActionCode(), model.getActionName());
+
+				boolean ok = true;
+
+				if (Validator.isNotNull(processAction)) {
+					if ((processAction.getPreCondition().contains("cancelling")
+							&& processAction.getAutoEvent().contains("timmer"))
+							|| (processAction.getPreCondition().contains("correcting")
+									&& processAction.getAutoEvent().contains("timmer"))
+							|| (processAction.getPreCondition().contains("submitting"))
+									&& processAction.getAutoEvent().contains("timmer")) {
+						ok = false;
+
+						_log.info("CHECK CONDITION OK ********** ....." + ok);
+
+					}
+				} else {
+					_log.info("CANT GET DOSSIER ACTION ********** .....");
+				}				
+				
+				if (ok) {
 				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
 						model.getActionUser(), content, "PROCESS_TYPE", payload.toString(), serviceContext);
+				}
 
 			} catch (SystemException | PortalException e) {
 				_log.error(e);

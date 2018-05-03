@@ -199,6 +199,11 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		dossierCancelled.put("text", "Hồ sơ xác nhận hủy");
 		dossierCancelled.put("value", "cancelled");
 		dossierStatus.add(dossierCancelled);
+		
+		JSONObject dossierConfirmation = JSONFactoryUtil.createJSONObject();
+		dossierConfirmation.put("text", "Xác nhận kế hoạch kiểm tra");
+		dossierConfirmation.put("value", "confirm");
+		dossierStatus.add(dossierConfirmation);
 
 		JSONObject dossierExpired = JSONFactoryUtil.createJSONObject();
 		dossierExpired.put("text", "Hồ sơ đến hạn XN hiệu lực");

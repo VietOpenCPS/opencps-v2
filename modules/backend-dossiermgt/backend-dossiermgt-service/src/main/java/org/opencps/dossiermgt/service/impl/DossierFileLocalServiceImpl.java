@@ -705,6 +705,13 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 	}
 
+	// Get all dossierFile by dossierId
+	public List<DossierFile> getByReferenceUid(String referenceUid) {
+
+		return dossierFilePersistence.findByREF_UID(referenceUid);
+
+	}
+
 	public List<DossierFile> getDossierFilesByD_DP(long dossierId, int dossierPartType) {
 		return dossierFilePersistence.findByD_DPT(dossierId, dossierPartType, false);
 	}
@@ -1006,6 +1013,11 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	//Get dossierFile follow fileEntryId
+	public DossierFile getByFileEntryId(long fileEntryId) {
+		return dossierFilePersistence.fetchByFILE_ID(fileEntryId);
 	}
 
 	public static final String CLASS_NAME = DossierFile.class.getName();

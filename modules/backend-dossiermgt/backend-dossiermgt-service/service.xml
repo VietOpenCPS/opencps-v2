@@ -201,6 +201,13 @@
 			<finder-column name="fileTemplateNo" />
 		</finder>
 
+		<finder return-type="DossierPart" name="TP_NO_PART_ESIGN">
+			<finder-column name="templateNo" />
+			<finder-column name="partNo" />
+			<finder-column name="partType" />
+			<finder-column name="eSign" />
+		</finder>
+
 		<!-- References -->
 
 	</entity>
@@ -362,6 +369,7 @@
 		<column name="notification" type="boolean" />
 		<column name="online" type="boolean" />
 		<column name="serverNo" type="String" />
+		<column name="endorsementDate" type="Date" />
 
 		<!-- Order -->
 
@@ -524,6 +532,12 @@
         	<finder-column name="groupId" />
         	<finder-column name="referenceUid" />
         </finder>
+	<finder return-type="DossierFile" name="FILE_ID">
+        	<finder-column name="fileEntryId" />
+        </finder>
+         <finder return-type="Collection" name="REF_UID">
+        	<finder-column name="referenceUid" />
+       	</finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -779,6 +793,7 @@
 		<column name="stepInstruction" type="String" />
 		<column name="briefNote" type="String" />
 		<column name="editable" type="boolean" />
+		<column name="restrictDossier" type="String" />
 
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
@@ -844,8 +859,8 @@
 
 	</entity>
 	
-	<entity local-service="true" name="DossierRequest"
-		remote-service="false" table="opencps_dossierrequest" uuid="true">
+	<entity local-service="true" name="DossierRequestUD"
+		remote-service="false" table="opencps_dossierrequests" uuid="true">
 
 		<column name="dossierRequestId" type="long" primary="true" />
 
@@ -860,7 +875,7 @@
 		<column name="referenceUid" type="String" />
 		<column name="requestType" type="String" />
 		<column name="comment" type="String" />
-		<column name="isNew" type="boolean" />
+		<column name="isNew" type="int" />
 
 		<finder return-type="Collection" name="D_">
 			<finder-column name="dossierId" />
@@ -872,6 +887,10 @@
 		</finder>
 
 		<finder return-type="Collection" name="IS_NEW">
+			<finder-column name="isNew" />
+		</finder>
+					<finder return-type="Collection" name="DID_IN">
+			<finder-column name="dossierId" />
 			<finder-column name="isNew" />
 		</finder>
 	</entity>
@@ -957,6 +976,12 @@
 		<finder return-type="Collection" name="PSC_AEV_GI">
 			<finder-column name="groupId" />
 			<finder-column name="autoEvent" />
+		</finder>
+		
+		<finder return-type="ProcessAction" name="SPID_AC_AN">
+			<finder-column name="serviceProcessId" />
+			<finder-column name="actionCode" />
+			<finder-column name="actionName" />
 		</finder>
 
 	</entity>
@@ -1153,10 +1178,10 @@
 
 		<!-- Filter -->
 		<finder return-type="Collection" name="G_UID_Y">
-            <finder-column name="groupId"></finder-column>
-            <finder-column name="userId"></finder-column>
-            <finder-column name="year"></finder-column>
-        </finder>
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="userId"></finder-column>
+			<finder-column name="year"></finder-column>
+		</finder>
 
 	</entity>
 
@@ -1310,6 +1335,11 @@
 			<finder-column name="isNew" />
 		</finder>
 		
+		<finder return-type="RegistrationForm" name="REGID_FORMNO">
+			<finder-column name="registrationId" />
+			<finder-column name="formNo" />
+		</finder>
+
 		<finder return-type="Collection" name="G_REGID_FORMNO">
 			<finder-column name="groupId" />
 			<finder-column name="registrationId" />
@@ -1390,6 +1420,11 @@
 		
 		<finder return-type="Deliverable" name="FB_DCODE">
 			<finder-column name="deliverableCode"/>
+		</finder>
+
+		<finder return-type="Deliverable" name="FB_DCODE_STATE">
+			<finder-column name="deliverableCode"/>
+			<finder-column name="deliverableState"/>
 		</finder>
 <!-- 		<order> -->
 <!-- 			<order-column name="modifiedDate" order-by="asc" /> -->
@@ -1475,30 +1510,22 @@
 		</finder>
 	</entity>
 
-	<entity local-service="true" name="DossierRequest"
-		remote-service="false" table="opencps_dossierrequest" uuid="true">
+<!-- 	<entity local-service="true" name="UserInfoLog" -->
+<!-- 		remote-service="false" table="opencps_userinfolog" uuid="true"> -->
 
-		<column name="dossierRequestId" type="long" primary="true" />
+<!-- 		<column name="userLogId" type="long" primary="true" /> -->
 
-		<!-- Audit fields -->
+ 		<!-- Audit fields -->
+<!-- 		<column name="userId" type="long" /> -->
+<!-- 		<column name="createDate" type="Date" /> -->
+<!-- 		<column name="payload" type="String" /> -->
 
-		<column name="groupId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
+<!-- 		<order> -->
+<!-- 			<order-column name="createDate" order-by="desc" /> -->
+<!-- 		</order> -->
+<!-- 	</entity> -->
 
-		<!-- Other fields -->
-
-		<column name="dossierId" type="long" />
-		<column name="referenceUid" type="String" />
-		<column name="requestType" type="String" />
-		<column name="comment" type="String" />
-		<column name="isNew" type="int" />
-
-	</entity>
-	
-	<entity local-service="true" name="DossierMark" remote-service="false"
+		<entity local-service="true" name="DossierMark" remote-service="false"
 		table="opencps_dossiermark" uuid="true">
 
 		<column name="dossierMarkId" type="long" primary="true" />

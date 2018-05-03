@@ -1,6 +1,9 @@
 <#if (Request)??>
 <#include "init.ftl">
 </#if>
+
+<#if registration?has_content>
+
 <div class="steps align-space-between">
 	<div class="step align-middle-lg done">
 		<span>1</span>
@@ -302,6 +305,8 @@
 	
 	var createDossier = function(dossierTemplateNo,serviceCode,govAgencyCode,selector){
 
+		
+
 		if("${(registration.registrationId)!}"){
 			/*if("${(registration.registrationState)!}" == "2"){
 				
@@ -310,6 +315,8 @@
 						message: "Hồ sơ doanh nghiệp của bạn chưa được cán bộ phê duyệt, Xin vui lòng kiểm tra lại!"
 					}, "error");
 			}*/
+
+
 
 			$.ajax({
 				url : "${api.server}/dossiers",
@@ -342,7 +349,10 @@
 					selector.button('reset');
 				}
 			});
+
+
 		}
+
 
 		
 	} 
@@ -413,4 +423,18 @@
 		}
 	}
 
+
 </script>
+<#else>
+	<script type="text/javascript">
+		$(function(){
+
+			var cf = confirm("Bạn chưa khai báo đủ thông tin, Bạn có muốn chuyển đến trang khác khai báo!");
+			if(cf){
+				location.href = "/en/group/cong-tiep-nhan/ho-so-doanh-nghiep";
+			}else {
+				location.href = "/en/group/cong-tiep-nhan/quan-ly-ho-so";
+			}
+		});
+	</script>
+</#if>

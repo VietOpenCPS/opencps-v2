@@ -856,10 +856,14 @@ public class DictCollectionActions implements DictcollectionInterface {
 			DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(
 				code, groupId);
 
+		if (dictCollection != null) {
 		DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(
 			itemCode, dictCollection.getDictCollectionId(), groupId);
-
-		return dictItem;
+			return dictItem;			
+		}
+		else {
+			return null;
+		}
 	}
 
 	public String updateDictItemGroup(
