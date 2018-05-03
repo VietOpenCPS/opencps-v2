@@ -1073,7 +1073,7 @@ public class DossierManagementImpl implements DossierManagement {
 				// dossierPermission.hasPermitDoAction(groupId,
 				// user.getUserId(), dossier, option.getServiceProcessId(),
 				// action);
-
+				
 				_log.info("input.getActionCode(): " + input.getActionCode());
 				_log.info("action.getProcessActionId(): " + action.getProcessActionId());
 				_log.info("input.getActionUser(): " + input.getActionUser());
