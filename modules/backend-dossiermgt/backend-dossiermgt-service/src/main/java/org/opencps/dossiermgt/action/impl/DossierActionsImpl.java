@@ -230,7 +230,9 @@ public class DossierActionsImpl implements DossierActions {
 					hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 					if (hits != null && hits.getLength() > 0) {
 						result.put("data", hits.toList());
+						_log.info("hits.toList(): "+hits.toList().size());
 						total = DossierLocalServiceUtil.countLucene(params, searchContext);
+						_log.info("total: "+total);
 						result.put("total", total);
 					}
 				}
@@ -302,11 +304,11 @@ public class DossierActionsImpl implements DossierActions {
 								hits = DossierLocalServiceUtil.searchLucene(params, sorts, -1, -1, searchContext);
 
 								if (hits != null && hits.getLength() > 0) {
-									allDocsList.addAll(hits.toList());
-									_log.info("SizeList1: " + hits.toList().size());
 									long count = DossierLocalServiceUtil.countLucene(params, searchContext);
 									_log.info("count: " + count);
 									if (dictItem.getParentItemId() != 0) {
+										allDocsList.addAll(hits.toList());
+										_log.info("SizeList1: " + hits.toList().size());
 										total += count;
 									}
 								}
@@ -925,9 +927,10 @@ public class DossierActionsImpl implements DossierActions {
 
 		Dossier dossier = getDossier(groupId, dossierId, referenceUid);
 		// _log.info("dossier: " + dossier);
+		
+		String type = StringPool.BLANK;
 
-		String applicantNote = _buildDossierNote(dossier, actionNote, groupId);
-		_log.info("applicantNote: " + applicantNote);
+		String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
 
 		dossier.setApplicantNote(applicantNote);
 
@@ -1209,7 +1212,7 @@ public class DossierActionsImpl implements DossierActions {
 
 			_log.info("REJECT_SUBMIT....");
 
-			if (preCondition.contentEquals("reject_submit")) {
+			if (preCondition.contentEquals("reject_submitting")) {
 				// flag-off
 				_log.info("DO REJECT_SUBMIT....");
 
@@ -1228,13 +1231,13 @@ public class DossierActionsImpl implements DossierActions {
 			
 				String refUid = PortalUUIDUtil.generate();
 
-				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "reject_submit",
+				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "reject_submitting",
 						actionNote, 0, context);
 
 				// in SERVER
 			
 				context.setScopeGroupId(sourceDossier.getGroupId());
-				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid, "reject_submit",
+				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid, "reject_submitting",
 						actionNote, 0, context);
 				
 				context.setScopeGroupId(dossier.getGroupId());
@@ -1979,14 +1982,12 @@ public class DossierActionsImpl implements DossierActions {
 //		return result;
 //	}
 
-	private String _buildDossierNote(Dossier dossier, String actionNote, long groupId) {
+private String _buildDossierNote(Dossier dossier, String actionNote, long groupId, String type) {
 
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		String defaultTimezone = TimeZone.getDefault().getID();
 		sdf.setTimeZone(TimeZone.getTimeZone(defaultTimezone));
 		Date date = new Date();
-		// String strDate = sdf.format(date);
-		// _log.info("strDate: "+strDate);
 
 		StringBuilder sb = new StringBuilder();
 
@@ -2013,13 +2014,7 @@ public class DossierActionsImpl implements DossierActions {
 			sb.append(": ");
 			sb.append(actionNote);
 		}
-		// sb.append(oldNote);
-		// if (Validator.isNotNull(actionNote)) {
-		// sb.append("<br>");
-		// sb.append("[" + sdf.format(dateConvert) + "]");
-		// sb.append(":");
-		// sb.append(actionNote);
-		// }
+
 			return sb.toString();
 
 	}
