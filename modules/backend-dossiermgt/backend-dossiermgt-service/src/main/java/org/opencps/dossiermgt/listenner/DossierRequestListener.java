@@ -1,11 +1,20 @@
 package org.opencps.dossiermgt.listenner;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierRequestUD;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.exception.ModelListenerException;
@@ -41,7 +50,7 @@ public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 
 			long mainJobposId = employee != null ? employee.getMainJobPostId() : 0;
 
-			long dossierId = model.getDossierId();
+			//long dossierId = model.getDossierId();
 
 			String jobPosName = StringPool.BLANK;
 
@@ -55,14 +64,13 @@ public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 
 			String content = model.getComment();
 
-			// JSONArray payloads = JSONFactoryUtil.createJSONArray();
 
 			JSONObject payload = JSONFactoryUtil.createJSONObject();
 
-			JSONArray files = JSONFactoryUtil.createJSONArray();
-			
 			
 			payload.put("stepName", "type_"+model.getRequestType());
+			
+			String userName = getUserName(userId, model.getGroupId());
 
 			// payloads.put(payload);
 
@@ -70,13 +78,83 @@ public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 			serviceContext.setUserId(userId);
 
 			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
-					model.getUserName(), content, "PROCESS_TYPE", payload.toString(), serviceContext);
+					userName, content, "PROCESS_TYPE", payload.toString(), serviceContext);
+			
+			// Add applicationNote
+			
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(model.getDossierId());
+			
+			String dossierNote = _buildDossierNote(dossier, content, dossier.getGroupId(), "DN");
+			
+			dossier.setApplicantNote(dossierNote);
+			
+			DossierLocalServiceUtil.syncDossier(dossier);
 
 		} catch (SystemException | PortalException e) {
 			_log.error(e);
 		}
 		
+	}
+	
+	
+	private String _buildDossierNote(Dossier dossier, String actionNote, long groupId, String type) {
 
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		String defaultTimezone = TimeZone.getDefault().getID();
+		sdf.setTimeZone(TimeZone.getTimeZone(defaultTimezone));
+		Date date = new Date();
+
+		StringBuilder sb = new StringBuilder();
+
+		String oldNote = dossier.getApplicantNote();
+
+		if (Validator.isNotNull(oldNote) && oldNote.contains("<br>")) {
+			if (Validator.isNotNull(actionNote)) {
+				if (groupId != 55217) {
+					sb.append("<br>");
+					sb.append("[" + sdf.format(date) + "]");
+					sb.append(": ");
+					sb.append(actionNote);
+					sb.append(oldNote);
+				} else {
+					sb.append("<br>");
+					sb.append("[" + sdf.format(date) + "]");
+					sb.append(": ");
+					sb.append(actionNote);
+				}
+			}
+		} else if (Validator.isNotNull(actionNote)) {
+			sb.append("<br>");
+			sb.append("[" + sdf.format(date) + "]");
+			sb.append(": ");
+			sb.append(actionNote);
+		}
+
+		return sb.toString();
+
+	}
+	
+	private String getUserName(long userId, long groupId) {
+		String userName = StringPool.BLANK;
+		
+		Employee employee = null;
+		
+		Applicant applicant = null;
+		
+		employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+		
+		if (Validator.isNotNull(employee)) {
+			return employee.getFullName();
+			
+		}
+		
+		applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+		
+		if (Validator.isNotNull(applicant)) {
+			return applicant.getApplicantName();
+		}
+		
+		return userName;
 	}
 	
 	private Log _log = LogFactoryUtil.getLog(DossierRequestListener.class.getName());
