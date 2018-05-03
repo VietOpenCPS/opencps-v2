@@ -120,8 +120,10 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 //			}
 //			results.put("data", formDataArr);
 
+
 //			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 			return Response.status(200).entity(results).build();
+
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
 		}
