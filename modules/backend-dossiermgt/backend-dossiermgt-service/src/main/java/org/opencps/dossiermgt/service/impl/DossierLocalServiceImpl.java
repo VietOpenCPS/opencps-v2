@@ -253,7 +253,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalTelNo(StringPool.BLANK);
 			}
 
-			if (Validator.isNotNull(applicantNote))
+//			if (Validator.isNotNull(applicantNote))
 				dossier.setApplicantNote(applicantNote);
 
 			dossierPersistence.update(dossier);
