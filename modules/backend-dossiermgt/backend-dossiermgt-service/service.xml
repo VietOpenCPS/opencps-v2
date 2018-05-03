@@ -889,7 +889,7 @@
 		<finder return-type="Collection" name="IS_NEW">
 			<finder-column name="isNew" />
 		</finder>
-					<finder return-type="Collection" name="DID_IN">
+							<finder return-type="Collection" name="DID_IN">
 			<finder-column name="dossierId" />
 			<finder-column name="isNew" />
 		</finder>
@@ -1036,6 +1036,11 @@
 		</finder>
 		<finder name="DID" return-type="Collection">
 			<finder-column name="dossierId"></finder-column>
+		</finder>
+
+		<finder name="G_PENDING" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="pending" />
 		</finder>
 	</entity>
 
@@ -1344,6 +1349,10 @@
 			<finder-column name="groupId" />
 			<finder-column name="registrationId" />
 			<finder-column name="formNo" />
+		</finder>
+
+		<finder return-type="Collection" name="F_REFID">
+			<finder-column name="referenceUid" />
 		</finder>
 	</entity>
 
