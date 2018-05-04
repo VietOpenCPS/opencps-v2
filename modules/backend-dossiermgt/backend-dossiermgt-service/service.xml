@@ -1325,7 +1325,7 @@
 		<column name="removed" type="boolean" />
 		<!-- Order -->
 		<order>
-			<order-column name="createDate" order-by="desc" />
+			<order-column name="createDate" order-by="asc" />
 		</order>
 
 		<!-- Filter -->

@@ -108,11 +108,11 @@ public class DossierActionsImpl implements DossierActions {
 		try {
 
 			String status = GetterUtil.getString(params.get(DossierTerm.STATUS));
+			_log.info("status: "+status);
 			if (Validator.isNotNull(status)) {
 				if (!status.contains(StringPool.COMMA)) {
-					if (status.equals("done")) {
-						params.put(DossierTerm.NOT_STATE, "correcting, endorsement");
-					} else {
+					if (!status.equals("done") && !status.equals("cancelled")) {
+						_log.info("done: "+status);
 						params.put(DossierTerm.NOT_STATE, "cancelling");
 					}
 				}
@@ -942,6 +942,7 @@ public class DossierActionsImpl implements DossierActions {
 		String type = StringPool.BLANK;
 
 		String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
+		_log.info("applicantNote: "+applicantNote);
 
 		dossier.setApplicantNote(applicantNote);
 
@@ -2080,6 +2081,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		StringBuilder sb = new StringBuilder();
 
 		String oldNote = dossier.getApplicantNote();
+		_log.info("oldNote: "+oldNote);
 
 		if (Validator.isNotNull(oldNote) && oldNote.contains("<br>")) {
 			if (Validator.isNotNull(actionNote)) {
@@ -2094,6 +2096,10 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					sb.append("[" + sdf.format(date) + "]");
 					sb.append(": ");
 					sb.append(actionNote);
+				}
+			} else {
+				if (groupId != 55217) {
+					sb.append(oldNote);
 				}
 			}
 		} else if (Validator.isNotNull(actionNote)) {
@@ -2349,12 +2355,14 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 							params.put(DossierTerm.STATUS, strStatus);
 							params.put(DossierTerm.SUBSTATUS, subStatusCode);
 							params.put(DossierTerm.OWNER, String.valueOf(true));
-							if (strStatus.equals("done")) {
-								params.put(DossierTerm.NOT_STATE, "correcting, endorsement");
-							} else {
+							if (!strStatus.equals("done") && !strStatus.equals("cancelled")) {
 								params.put(DossierTerm.NOT_STATE, "cancelling");
 							}
-	
+							if(strStatus.equals("cancelled")) {
+								params.put(DossierTerm.NOT_STATE, StringPool.BLANK);
+								params.put(DossierTerm.NOT_STATUS_REG, null);
+							}
+
 							long count = DossierLocalServiceUtil.countLucene(params, searchContext);
 
 							JSONObject statistic = JSONFactoryUtil.createJSONObject();

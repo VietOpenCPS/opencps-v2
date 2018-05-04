@@ -121,6 +121,10 @@ public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 					sb.append(": ");
 					sb.append(actionNote);
 				}
+			} else {
+				if (groupId != 55217) {
+					sb.append(oldNote);
+				}
 			}
 		} else if (Validator.isNotNull(actionNote)) {
 			sb.append("<br>");
