@@ -1050,6 +1050,9 @@ public class DossierManagementImpl implements DossierManagement {
 			if (input.getIsSynAction() == 1) {
 
 				_log.info(JSONFactoryUtil.looseSerialize(input));
+				
+				_log.info("Call in SynAction **********8 ===========");
+
 
 				DossierAction dossierAction = actions.doAction(groupId, dossier.getDossierId(),
 						dossier.getReferenceUid(), input.getActionCode(), 0l, input.getActionUser(),
