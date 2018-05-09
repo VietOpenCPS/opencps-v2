@@ -74,6 +74,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 									axios.put(urlFiles, config).then(function (response) {
 										item.counter = 0;
+										console.log("----------------------------------------");
+                      					console.log("id----",item.partNo);
+										console.log("validCreateFile----",$("#validCreateFile"+item.partNo));
+
+										$("#validCreateFile"+item.partNo).val("0");
 										
 									})
 									.catch(function (error) {
@@ -125,10 +130,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						},
 						submitAlpacajsForm: function (item) {
 							var vm = this;
-
+							console.log("$('#alpacajs_form_'+item.partNo + ' .formType').val()============",$("#alpacajs_form_"+item.partNo + " .formType").val());
 							if( $("#alpacajs_form_"+item.partNo + " .formType").val() == null || 
 									$("#alpacajs_form_"+item.partNo + " .formType").val() == 'undefined' ) {
-								
+								console.log("formtype 1");
 								vm.loadingAlpacajsForm = true;
 								
 								var control = $("#alpacajs_form_"+item.partNo).alpaca("get");
@@ -150,6 +155,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	                      				vm.snackbardossierViewJX = true;
 										vm.loadingAlpacajsForm = false;
 
+										console.log("----------------------------------------");
+                      					console.log("id----",item.partNo);
+										console.log("validCreateFile----",$("#validCreateFile"+item.partNo));
+
+										$("#validCreateFile"+item.partNo).val("1");
 										try{
 											if(item.hasSubmit){
 												
@@ -172,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								});
 							} else if( $("#alpacajs_form_"+item.partNo + " .formType").val() != null || 
 									$("#alpacajs_form_"+item.partNo + " .formType").val() === 'assign' ) {
-								
+								console.log("formtype 2");
 								vm.loadingAlpacajsForm = true;
 								
 								var control = $("#alpacajs_form_"+item.partNo).alpaca("get");
@@ -197,6 +207,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										vm.snackbartextdossierViewJX = "Lưu form thành công!";
 	                      				vm.snackbardossierViewJX = true;
 										vm.loadingAlpacajsForm = false;
+
+										console.log("----------------------------------------");
+                      					console.log("id----",item.partNo);
+										console.log("validCreateFile----",$("#validCreateFile"+item.partNo));
+										$("#validCreateFile"+item.partNo).val("1");
 
 										try{
 											if(item.hasSubmit){
@@ -231,7 +246,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						},
 						showAlpacaJSFORM: function (item) {
 							//alapcajs Form
+							console.log("item=========",item);
 							var alpacajsForm = document.getElementById("alpacajs_form_"+item.partNo);
+							console.log("alpacajsForm=========",alpacajsForm);
 							if (alpacajsForm.innerHTML == '' && item.eform) {
 								console.log(item);
 								var alapcaJS = eval('('+item.formScript+')');
@@ -240,6 +257,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								$("#alpacajs_form_"+item.partNo).alpaca(alapcaJS);
 							}
 							
+						},
+						parseDateUtc : function(date){
+							return moment(String(date)).utc().format('MM/DD/YYYY HH:mm:ss');
 						},
 						showAlpacaJSFORMRegist: function (item) {
 							var vm = this;
@@ -347,12 +367,36 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							
 							
                         },
+                        checkValidPart : function(actionCode){
+                        	var isValid = true;
+                        	console.log("validCreatePart==========",$(".validCreatePart[actionCode="+actionCode+"]"));
+                        	$(".validCreatePart[actionCode="+actionCode+"]").each(function(){
+                        		console.log("validCreatePart=========",$(this).val());
+                        		if($(this).val() === "0"){
+                        			isValid = false;
+
+                        		}
+                        	});
+
+                        	return isValid;
+                        },
 						postNextActions: function (item){
 							console.log(item);
                            var vm = this;
 							vm.actionsSubmitLoading = true;
 							var fileArr = item.createFiles;
 							var idArr = [];
+
+							var validCreateFile = vm.checkValidPart(item.actionCode);
+							console.log("validCreateFile========",validCreateFile);
+
+							if(!validCreateFile){
+								vm.snackbartextdossierViewJX = "Vui lòng tải file hoặc ghi lại Form trực tuyến( nếu có) trước khi thực hiện hành động này";
+	                      		vm.snackbarerordossierViewJX = true;
+	                      		vm.actionsSubmitLoading = false;
+	                      		return false;
+							}
+
 							// var dossierFileId
 							if (fileArr) {
 								var length = fileArr.length;
@@ -443,9 +487,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										vm.snackbardossierViewJX = true;
 										
 										vm._inidanhSachHoSoTable();
-										setTimeout(function(){ 
+										/*setTimeout(function(){ 
 											vm._initlistgroupHoSoFilter();
-										}, 1000);
+										}, 1000);*/
 										vm.detailPage = false;
 										vm.actionsSubmitLoading = false;
 									
@@ -705,6 +749,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									vm.actionsSubmitLoading = false;
 									vm.snackbartextdossierViewJX = " Tải file thành công!";
                       				vm.snackbardossierViewJX = true;
+
+                      				console.log("----------------------------------------");
+                      				console.log("id----",item.partNo);
+									console.log("validCreateFile----",$("#validCreateFile"+item.partNo));
+
+                      				$("#validCreateFile"+item.partNo).val("1");
 									//vm._initchangeProcessStep();
 									vm.stepModel.createFiles[index].counter = vm.stepModel.createFiles[index].counter + 1;
 									
@@ -778,7 +828,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					"events": {
 						groupHoSoFilter: function(item){
 							var vm = this;
-							vm._initlistgroupHoSoFilter();
+							vm.reloadCounter();
 							vm.detailPage = false;
 							vm.detailRegistPage = false;
 							vm.listgroupHoSoFilterselected = item.id;
@@ -815,6 +865,60 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							
 							vm.onScrollTop();
 
+						},
+						reloadCounter : function(){
+							var vm = this;
+
+							vm.stageFilterView = 'danh_sach';
+
+							/*var url = '/o/rest/v2/statistics/dossiers/todo';*/
+							var url = '/o/rest/v2/statistics/dossiers/todo';
+							$.ajax({
+								url : url,
+								dataType : "json",
+								type : "GET",
+								headers : {
+									'groupId': themeDisplay.getScopeGroupId(),
+								},
+								success : function(result){
+									var serializable = result;
+
+									var indexTree = -1;
+									var index = 0;
+									console.log("listgroupHoSoFilterItems=======FISRT",vm.listgroupHoSoFilterItems);
+									console.log("serializable=======",serializable.data);
+									for (var key in serializable.data) {
+										for(var i in vm.listgroupHoSoFilterItems){
+											if ( serializable.data[key].level === 0) {
+
+												if (serializable.data[key].dossierStatus === 'cancelling' ||
+													serializable.data[key].dossierStatus === 'cancelled' ||
+													serializable.data[key].dossierStatus === 'processing' ||
+													serializable.data[key].dossierStatus === 'paid') {
+													serializable.data[key].items = [];
+
+												if(serializable.data[key].dossierStatus === vm.listgroupHoSoFilterItems[i].id){
+													vm.listgroupHoSoFilterItems[i].count = serializable.data[key].count;
+												}
+											}
+
+										} else {
+
+											if(serializable.data[key].dossierSubStatus === vm.listgroupHoSoFilterItems[i].id){
+												vm.listgroupHoSoFilterItems[i].count = serializable.data[key].count;
+											}
+										}
+									}
+
+								}
+								console.log("listgroupHoSoFilterItems=======LAST",vm.listgroupHoSoFilterItems);
+
+							},
+							error : function(result){
+
+							}
+						});	
+							
 						},
 						_initlistgroupHoSoFilter: function(){
 							var vm = this;
@@ -917,10 +1021,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								{
 									id: 'tra_cuu_hoso',
 									title: 'Tra cứu hồ sơ'
-								},
-								{
-									id: 'tra_cuu_phuong_tien',
-									title: 'Phương tiện sản xuất lắp ráp'
 								},
 								{
 									id: 'tra_cuu_thong_tin_doanh_nghiep',
@@ -1063,7 +1163,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 					}
 				},
-				"applicantNameFilter": {
+				/*"applicantNameFilter": {
 					'id': 'applicantNameFilter',
 					'name': 'applicantNameFilter',
 					"type": "select",
@@ -1116,12 +1216,25 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							this.applicantNameFilter = [];
 						}
 					}
+				},*/
+				"applicantNameFilter": {
+					'id': 'applicantNameFilter',
+					'name': 'applicantNameFilter',
+					"type": "text",
+					'label': 'Nhập tên chủ hồ sơ',
+					"onChange": "_filterDanhSachHoSoOnchange4",
+					"events": {
+						_filterDanhSachHoSoOnchange4: function(){
+							var vm = this;
+							vm._inidanhSachHoSoTable(false);
+						}
+					}
 				},
 				"dossierNoFilter": {
 					'id': 'dossierNoFilter',
 					'name': 'dossierNoFilter',
 					"type": "text",
-					'label': 'Nhập mã tiếp nhận ',
+					'label': 'Nhập số hồ sơ',
 					"onChange": "_filterDanhSachHoSoOnchange3",
 					"events": {
 						_filterDanhSachHoSoOnchange3: function(){
@@ -1156,7 +1269,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									value: 'stt'
 								},
 								{
-									text: 'Tên, địa chỉ cơ sở sản xuất. Cơ sở nhập khẩu',
+									text: 'Tên doanh nghiệp',
 									align: 'left',
 									sortable: true,
 									value: 'address'
@@ -1173,7 +1286,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									sortable: true,
 									value: 'applicantName'
 								},
-								{
+								/*{
 									text: 'Thông tin nhà xưởng. (SL, địa chỉ, diện tích, nhân lực, công suất theo tháng)',
 									align: 'left',
 									sortable: false,
@@ -1184,7 +1297,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									align: 'left',
 									sortable: true,
 									value: 'action'
-								},
+								},*/
 								{
 									text: 'Tình trạng đăng ký',
 									align: 'left',
@@ -1449,7 +1562,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									sortable: true,
 									value: 'submitDate'
 								},
-								{
+								/*{
 									text: 'Số chứng chỉ. Ngày cấp',
 									align: 'left',
 									sortable: false,
@@ -1460,7 +1573,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									align: 'left',
 									sortable: false,
 									value: 'action'
-								},
+								},*/
 								{
 									text: 'Hành động',
 									align: 'center',
@@ -1782,7 +1895,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									sortable: true,
 									value: 'submitDate'
 								},
-								{
+								/*{
 									text: 'Số chứng chỉ. Ngày cấp',
 									align: 'left',
 									sortable: false,
@@ -1793,7 +1906,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									align: 'left',
 									sortable: false,
 									value: 'action'
-								},
+								},*/
 								{
 									text: 'Ghi chú',
 									align: 'left',
@@ -1812,7 +1925,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 							var paramsBuilder = {
 								keyword: vm.keywordsSearch,
-								owner: vm.applicantNameFilter.applicantIdNo,
+								owner: vm.applicantNameFilter,
 								service: vm.serviceInfoFilter.serviceCode,
 								follow: true,
 								dossierNo: vm.dossierNoFilter,
@@ -1859,7 +1972,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								}
 								
 								vm.xem_them = 'Xem thêm 8+ bản ghi';
-								if (serializable.data.length === 0) {
+								if (serializable.data && serializable.data.length === 0) {
 									vm.xem_them = 'Tổng số ( ' + serializable.total + ' ) bản ghi'
 								}
 								vm.viewmore = false;
@@ -1955,6 +2068,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 											serializable.dossierParts[key].referenceUid = vm.dossierFiles[keyFile].referenceUid;
 											serializable.dossierParts[key].fileEntryId = vm.dossierFiles[keyFile].fileEntryId;
 											serializable.dossierParts[key].displayName = vm.dossierFiles[keyFile].displayName;
+
+											if(vm.dossierFiles[keyFile].fileSize <= 0){
+												countData = countData - 1;
+											}
 											
 											listAll.push(serializable.dossierParts[key]);
 										}
@@ -1990,7 +2107,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							var listFilesUpload = [];
 							for (var key in vm.dossierFiles){
 								if (vm.dossierFiles[key].dossierPartNo === item.partNo) {
-									listFilesUpload.push(vm.dossierFiles[key]);
+									if(vm.dossierFiles[key].fileSize > 0){
+										listFilesUpload.push(vm.dossierFiles[key]);
+									}
+									
 								}
 							}
 							vm.listDocumentInPartNoItems = listFilesUpload;
@@ -2093,6 +2213,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 											serializable.dossierParts[key].referenceUid = vm.dossierFiles[keyFile].referenceUid;
 											serializable.dossierParts[key].fileEntryId = vm.dossierFiles[keyFile].fileEntryId;
 											serializable.dossierParts[key].displayName = vm.dossierFiles[keyFile].displayName;
+											serializable.dossierParts[key].fileSize = vm.dossierFiles[keyFile].fileSize;
+											if(vm.dossierFiles[keyFile].fileSize <= 0){
+												countData = countData - 1;
+											}
 										
 										}
 										
@@ -2153,6 +2277,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								var serializable = response.data;
 								for (var key in serializable.data) {
 									if (serializable.data[key].notificationType === 'PROCESS_TYPE') {
+										serializable.data[key].createDate = vm.parseDateUtc(serializable.data[key].createDate);
 										vm.listHistoryProcessingItems.push(serializable.data[key]);
 									}
 								}
@@ -2411,6 +2536,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                     "type": "text",
                     'label': 'Số hồ sơ'
                 },
+                
                 "advanced_filter_dossierNo": {
                     'id': 'advanced_filter_dossierNo',
                     'name': 'advanced_filter_dossierNo',

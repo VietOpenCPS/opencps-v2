@@ -31,11 +31,11 @@
 					<i class="fa fa-reply" aria-hidden="true"></i>
 					Quay lại
 				</a>
-				<a href="javascript:;" id="btn-submit-dossier-header" >
+				<a href="javascript:;" id="btn-submit-dossier-header" style="display: none;">
 					<i class="fa fa-paper-plane" aria-hidden="true"></i> 
 					Nộp hồ sơ
 				</a>
-				<a href="javascript:;" id="btn-delete-dossier-header">
+				<a href="javascript:;" id="btn-delete-dossier-header" style="display: none;">
 					<i class="fa fa-trash"></i>
 					Xóa
 				</a>
@@ -205,7 +205,7 @@
 								<i class="fa fa-archive" aria-hidden="true"></i>
 							</a>
 
-							<label class="MB0 ML10 hover-pointer" for="file#:id#" title="Tải file lên" >
+							<label class="MB0 ML10 hover-pointer lbl-dossier-file" for="file#:id#" title="Tải file lên" >
 								<i class="fa fa-upload text-light-blue"></i>
 							</label>
 
@@ -348,11 +348,15 @@
 
 <div class="button-row MT20">
 	<button class="btn btn-active" id="btn-back-dossier" type="button"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
-
-	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
-
-	<button class="btn btn-active" id="btn-delete-dossier" data-bind="attr : {data-pk : dossierId}"><i class="fa fa-trash"></i> Xóa</button>
 	
+	<#if dossier.submitting?has_content &&  dossier.submitting != true && dossier.dossierStatus?has_content && dossier.dossierStatus == "new">
+	<button class="btn btn-active" id="btn-submit-dossier" style="display: none;" data-bind="value : referenceUid"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+	</#if>
+	
+	<#if dossier.submitting?has_content &&  dossier.submitting != true && dossier.dossierStatus?has_content && dossier.dossierStatus == "new">
+		<button class="btn btn-active" id="btn-delete-dossier" style="display: none;" data-bind="attr : {data-pk : dossierId}"><i class="fa fa-trash"></i> Xóa</button>
+	</#if>
+
 </div>
 </div>
 
@@ -387,6 +391,52 @@
 		}
 
 		return valid;
+	}
+
+	var fnCheckStatusAndHideUpload = function(dossierStatus, dossierParts){
+		if(dossierStatus !== "" && dossierStatus !== "new" && dossierStatus !== "waiting" && "${(sendAdd)!}" !== "true"){
+			$(".uploadfile-form-repository").remove();
+			$(".lbl-dossier-file").remove();
+			$(".delete-dossier-file").remove();
+		}
+
+		console.log("dossierParts=========",dossierParts);
+		var promise = new Promise(function(resolve, reject){
+			$.ajax({
+				url : "${api.server}/dossiers/${(dossierId)!}/processstep",
+				dataType : "json",
+				type : "GET",
+				headers : {"groupId": ${groupId}},
+				success : function(result){
+					resolve(result);
+				},
+				error : function(xhr){
+					reject(xhr);
+				}
+			});
+		});
+
+
+		promise.then(function(success){
+			var arrPart = success.split(",");
+			console.log("arrPart=========",arrPart);
+			if(arrPart){
+				for (var i = 0; i < arrPart.length; i++) {
+					var index = $.inArray( arrPart[i], dossierParts );
+					if(index != -1){
+						$(".lbl-dossier-file[data-partno="+arrPart[i]+"]").remove();
+						$(".uploadfile-form-repository[partno="+arrPart[i]+"]").remove();
+						$(".delete-dossier-file[data-partno="+arrPart[i]+"]").remove();
+					}
+				}
+			}
+
+
+		},function(error){
+
+		});
+
+
 	}
 
 
@@ -525,6 +575,7 @@
 													message: "Yêu cầu được thực hiện thành công"
 												}, "success");
 											}
+											$("#validPart"+dataPartNo).val("0");
 										}else {
 											if(navigator.onLine){
 												notification.show({
@@ -644,7 +695,9 @@
 		},
 		template : function(data){
 
-			indexDossiserPart ++;
+			if(data.partType === 1){
+				indexDossiserPart ++;
+			}
 
 			data.itemIndex = indexDossiserPart;
 
@@ -655,6 +708,9 @@
 			indexDossiserPart = 0;
 
 			funDossierFile("${dossierId}",funGenNumberFile);
+			var dossierParts = this.dataSource.view();
+			//kiem tra dossier status, neu status thuoc new thi cho phep upoad hoac sua file
+			fnCheckStatusAndHideUpload("${(dossier.dossierStatus)!}",dossierParts);
 		}
 	});
 
@@ -758,7 +814,9 @@
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công!"
 					}, "success");
-					getTotal()  
+					getTotal(function(dossierArr){
+
+					});
 				},
 				error:function(result){
 					$("#btn-submit-dossier").button('reset');
@@ -1331,6 +1389,31 @@
 
 					var viewModel = kendo.observable({
 						dossierId : result.dossierId,
+						referenceUid : function(e){
+							var submitting = result.submitting;
+							$.ajax({
+								url : "${api.server}/dossiers/"+result.referenceUid+"/dossierAction/pedding",
+								dataType : "text",
+								type : "GET",
+								headers : {"groupId": ${groupId}},
+								success : function(result){
+									if(result == "true" || submitting){
+										$(".uploadfile-form-repository").remove();
+										$(".lbl-dossier-file").remove();
+										$(".delete-dossier-file").remove();
+									}else {
+										$("#btn-submit-dossier").show();
+										$("#btn-delete-dossier").show();
+										$("#btn-submit-dossier-header").show();
+										$("#btn-delete-dossier-header").show();
+
+									}
+								},
+								error : function(result){
+
+								}
+							});
+						},
 						dossierIdCTN : function(e){
 							if(result.dossierIdCTN){
 								return result.dossierIdCTN;
@@ -1442,20 +1525,36 @@
 	}
 
 	$("#btn-submit-dossier-header").click(function(){
-		kendo.confirm("Bạn có muốn nộp hồ sơ này?").then(function () {
-			funSubmitDossier();
-		}, function () {
 
-		});
+		var cf = fnConfirm("Thông báo",
+			"Bạn có muốn gửi yêu cầu cấp lại?", 
+			"OK", "Thoát",
+			function(){
+
+				funSubmitDossier();
+
+			}, function(){
+
+			});
+
+		cf.open();
 		
 	});
 
 	$("#btn-delete-dossier-header").click(function(){
-		kendo.confirm("Bạn có muốn xóa hồ sơ này?").then(function () {
-			funDeleteDossier(${(dossierId)!})
-		}, function () {
 
-		});
+		var cf = fnConfirm("Thông báo",
+			"Bạn có muốn gửi yêu cầu cấp lại?", 
+			"OK", "Thoát",
+			function(){
+
+				funDeleteDossier(${(dossierId)!});
+
+			}, function(){
+
+			});
+
+		cf.open();
 	});
 
 	var fnGetReferenceUidForm = function(arrFile){
@@ -1507,6 +1606,7 @@
 			if(found.length > 0){
 				$(".show-dossierpart-new-tab[data-partno="+partNo+"]").attr('hasFile', 'true');
 			}else {
+				$("#validPart"+partNo).val("0");
 				$(".show-dossierpart-new-tab[data-partno="+partNo+"]").attr('hasFile', '');
 			}
 		});
@@ -1554,6 +1654,7 @@
 					$(".dossier-component-profile").filter("[data-partno="+partNo+"]").html('<span class="number-in-circle" >0</span>');
 
 					$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",0);
+					$("#validPart"+partNo).val("0");
 				},
 				error : function(result) {
 					if(navigator.onLine){
@@ -1580,6 +1681,7 @@
 		data.append('fileType', "");
 		data.append('formData', "");
 		data.append('isSync', "true");
+		//data.append('deliverableCode', "");
 
 		$.ajax({
 			type : 'POST', 

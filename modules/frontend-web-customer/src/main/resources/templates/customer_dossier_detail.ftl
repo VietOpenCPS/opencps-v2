@@ -24,15 +24,18 @@
 		</div>
 	</div>
 
-	<div class="guide-section">
-		<div class="head-part">
+	<div class="guide-section PB0">
+		<div class="head-part" data-toggle="collapse" data-target="#guideDossier">
 			<div class="background-triangle-small"><i class="fa fa-star"></i></div> <span class="text-uppercase">Hướng dẫn</span> <span class="text-light-gray"></span>
 		</div>
 
-		<div class="content-part">
-			<span data-bind="html:dossierNote"></span>
+		<div class="content-part toggle-hide collapse" id="guideDossier">
+			<div style="height: 100px;overflow: hidden;" id="guideDossierContent">
+				<span data-bind="html:dossierNote" id="textDossierNote"></span>
+			</div>
+			<p class="MB0 text-light-blue PB10"><a href="javascript:;" id="guide-toggle" state="normal">Xem thêm >></a></p>
 		</div>
-		<p class="MB0 text-light-blue"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p>
+		
 	</div>
 
 	<div class="row">
@@ -207,10 +210,21 @@
 
 				var alpaca = eval("(" + result + ")");
 				var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
-				if(formdata){
-				$("\\#validPart"+id).val("1");
-			}
-			alpaca.data = formdata; 
+				
+				if(formdata.dinh_danh){
+					var dinh_danh = formdata.dinh_danh;
+					if(dinh_danh.indexOf("Thành phố") !== -1){
+						
+						dinh_danh = dinh_danh.replace("Thành phố", "");
+						formdata.dinh_danh = dinh_danh;
+					}else if(dinh_danh.indexOf("Tỉnh") !== -1){
+						
+						dinh_danh = dinh_danh.replace("Tỉnh", "");
+						formdata.dinh_danh = dinh_danh;
+					}
+				}
+				
+				alpaca.data = formdata; 
 
 			$("\\#formPartNo"+id).alpaca(alpaca);
 			<#-- $("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca'+id+'" class="btn btn-active MB10 MT10 saveForm" 
@@ -316,7 +330,7 @@
 			var dossierId = "${(dossierId)!}";
 			var dossierTemplateId = "${(dossierTemplateId)!}";
 			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateId="+dossierTemplateId,function(result){
-
+				$(this).modal("show");
 			});
 		});
 
@@ -442,7 +456,9 @@
 		},
 		template : function(data){
 
-			indexDossiserPart ++;
+			if(data.partType === 1){
+				indexDossiserPart ++;
+			}
 
 			data.itemIndex = indexDossiserPart;
 
@@ -469,6 +485,14 @@
 		
 		var validator = $("#detailDossier").kendoValidator().data("kendoValidator");
 		var validateDossierTemplate = fnCheckValidTemplate();
+
+		if(!validateDossierTemplate){
+			notification.show({
+				message: "Vui lòng kiểm tra lại các thông tin bắt buộc của các thành phần hồ sơ!"
+			}, "error");
+
+			return ;
+		}
 
 		console.log("validPart-----------------------");
 		console.log(validateDossierTemplate);
@@ -868,9 +892,11 @@
 					message: "Yêu cầu được thực hiện thành công"
 				}, "success");
 
-				if(!hasForm){
+				/*if(!hasForm){
 					$("#validPart"+partNo).val("1");
-				}
+				}*/
+
+				$("#validPart"+partNo).val("1");
 
 
 			},
@@ -986,6 +1012,12 @@ var fnCheckValidTemplate = function(){
 	return valid;
 }
 
+window.onload = function(){
+	if($("#textDossierNote").text().length < 550){
+		$("#guide-toggle").remove();
+	}
+}
+
 var fnSaveForm = function(id, value){
 	var current = $("#btn-save-formalpaca"+id);
 	var referentUid = current.attr("referenceUid");
@@ -1074,6 +1106,22 @@ $(document).on("click",".saveFormAlpaca",function(event){
 			}, "error");
 		}
 	}
+});
+
+$("#guide-toggle").click(function(event){
+	event.preventDefault();
+	var state = $(this).attr("state");
+
+	if(state === "normal"){
+		$('#guideDossierContent').css('height', 'auto');
+		$(this).attr("state","full");
+		$(this).html("Thu gọn >>");
+	}else {
+		$('#guideDossierContent').css('height', '100px');
+		$(this).attr("state","normal");
+		$(this).html("Xem thêm >>");
+	}
+
 });
 
 </script>

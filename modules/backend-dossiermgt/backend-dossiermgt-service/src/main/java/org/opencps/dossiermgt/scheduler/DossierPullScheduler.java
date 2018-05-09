@@ -424,7 +424,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				context.setUserId(dr.getUserId());
 				
 				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, desDossierId, dr.getReferenceUid(),
-						dr.getRequestType(), dr.getComment(), 0, context);
+						dr.getRequestType(), dr.getComment(), 0, dr.getStatusReg(), context);
 
 			}
 
@@ -1082,7 +1082,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				// update to client
 
 				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, desDossierId, dr.getReferenceUid(),
-						dr.getRequestType(), dr.getComment(), 0, context);
+						dr.getRequestType(), dr.getComment(), 0, dr.getStatusReg(), context);
 			}
 
 		} catch (Exception e) {

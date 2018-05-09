@@ -127,6 +127,7 @@
 
       manageDossier.navigate("/new");
 
+
       $("#mainType1").show();
       $("#mainType2").hide();       
 

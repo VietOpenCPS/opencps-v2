@@ -370,6 +370,7 @@
 		<column name="online" type="boolean" />
 		<column name="serverNo" type="String" />
 		<column name="endorsementDate" type="Date" />
+		<column name="lockState" type="String" />
 
 		<!-- Order -->
 
@@ -794,6 +795,7 @@
 		<column name="briefNote" type="String" />
 		<column name="editable" type="boolean" />
 		<column name="restrictDossier" type="String" />
+		<column name="lockState" type="String" />
 
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
@@ -876,6 +878,12 @@
 		<column name="requestType" type="String" />
 		<column name="comment" type="String" />
 		<column name="isNew" type="int" />
+		<column name="statusReg" type="int" />
+
+		<!-- Filter -->
+		<order by="desc">
+			<order-column name="modifiedDate" order-by="desc" />
+		</order>
 
 		<finder return-type="Collection" name="D_">
 			<finder-column name="dossierId" />
@@ -1036,6 +1044,11 @@
 		</finder>
 		<finder name="DID" return-type="Collection">
 			<finder-column name="dossierId"></finder-column>
+		</finder>
+
+		<finder name="G_PENDING" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="pending" />
 		</finder>
 
 		<finder name="G_PENDING" return-type="Collection">
@@ -1349,6 +1362,10 @@
 			<finder-column name="groupId" />
 			<finder-column name="registrationId" />
 			<finder-column name="formNo" />
+		</finder>
+
+		<finder return-type="Collection" name="F_REFID">
+			<finder-column name="referenceUid" />
 		</finder>
 
 		<finder return-type="Collection" name="F_REFID">
