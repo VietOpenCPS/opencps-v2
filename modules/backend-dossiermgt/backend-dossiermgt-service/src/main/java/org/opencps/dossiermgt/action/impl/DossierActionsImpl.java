@@ -1119,12 +1119,23 @@ public class DossierActionsImpl implements DossierActions {
 				dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId,
 						assignUserId);
 			}
-
+			_log.info("UPDATE DOSSIER STATUS************");
+			_log.info(curStep.getDossierStatus());
+			_log.info(curStep.getDossierSubStatus());
+			_log.info("*********************************");
 			// Set dossierStatus by CUR_STEP
 			// LamTV: Update lockState when Sync
 			dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, curStep.getDossierStatus(),
-					jsStatus.getString(curStep.getDossierStatus()), curStep.getDossierSubStatus(),
-					jsSubStatus.getString(curStep.getDossierSubStatus()), curStep.getLockState(), context);
+			
+			jsStatus.getString(curStep.getDossierStatus()), curStep.getDossierSubStatus(),
+			jsSubStatus.getString(curStep.getDossierSubStatus()), curStep.getLockState(), context);
+			
+			_log.info(jsStatus.toJSONString());
+			_log.info(jsSubStatus.toJSONString());
+
+			_log.info("dossier_" + dossier.getDossierStatus());
+
+			_log.info("*********************************");
 
 			if (Validator.isNull(dossier.getDossierNo())
 					&& (curStep.getDossierStatus().contentEquals(DossierStatusConstants.PAYING)
