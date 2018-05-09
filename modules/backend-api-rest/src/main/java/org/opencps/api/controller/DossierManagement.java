@@ -347,7 +347,6 @@ public interface DossierManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") long dossierId,
 			@PathParam("dossierPartNo") String dossierPartNo);
-
 	@GET
 	@Path("/{referenceUid}/dossierAction/pedding")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -390,5 +389,4 @@ public interface DossierManagement {
 	public Response getDossiersInfoList(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @BeanParam DossierSearchModel query);
-
 }

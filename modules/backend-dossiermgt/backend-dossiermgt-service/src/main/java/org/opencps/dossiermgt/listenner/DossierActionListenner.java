@@ -95,7 +95,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 						if (dossierFileId != 0) {
 							DossierFile dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(dossierFileId);
 
-							if (Validator.isNotNull(dossierFile) && dossierFile.getFileEntryId() > 0) {
+							if (Validator.isNotNull(dossierFile)) {
 								JSONObject file = JSONFactoryUtil.createJSONObject();
 
 								file.put("dossierFileId", dossierFile.getDossierFileId());
@@ -110,7 +110,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 
 					}
 
-					}
+				}
 
 				payload.put("jobPosName", jobPosName);
 				payload.put("stepName", model.getActionName());
@@ -133,20 +133,6 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 							|| (processAction.getPreCondition().contains("submitting"))
 									&& processAction.getAutoEvent().contains("timmer")) {
 						ok = false;
-//<<<<<<< HEAD
-//
-//						_log.info("CHECK CONDITION OK ********** ....." + ok);
-//
-//					}
-//				} else {
-//					_log.info("CANT GET DOSSIER ACTION ********** .....");
-//				}				
-//				
-//				if (ok) {
-//				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
-//						model.getActionUser(), content, "PROCESS_TYPE", payload.toString(), serviceContext);
-//=======
-
 					}
 				}
 
@@ -160,7 +146,6 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 					DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
 							model.getActionUser(), content, "PROCESS_TYPE", payload.toString(),
 							serviceContext);
-//>>>>>>> upstream-http/develop
 				}
 
 			} catch (SystemException | PortalException e) {
