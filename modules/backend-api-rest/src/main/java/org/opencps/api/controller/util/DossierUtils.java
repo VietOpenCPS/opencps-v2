@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.opencps.api.dossier.model.DossierDataModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
+import org.opencps.api.dossier.model.DossierSearchDetailModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
@@ -79,14 +80,14 @@ public class DossierUtils {
 				model.setSubmitDate(APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //				_log.info("SUBMIT_DATE_CONVERT: "+APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			} else {
-				model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
+			model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
 			}
 //			_log.info("RECEIVE_DATE: "+doc.get(DossierTerm.RECEIVE_DATE));
 			if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
 				Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
 				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			} else {
-				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			}
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
 			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
@@ -251,14 +252,14 @@ public class DossierUtils {
 				model.setSubmitDate(APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //				_log.info("SUBMIT_DATE_CONVERT: "+APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			} else {
-				model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
+			model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
 			}
 //			_log.info("RECEIVE_DATE: "+doc.get(DossierTerm.RECEIVE_DATE));
 			if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
 				Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
 				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));				
 			} else {
-				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			}
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
 			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
@@ -436,12 +437,12 @@ public class DossierUtils {
 						}
 					}
 					if (Validator.isNotNull(specialStatus) && Boolean.parseBoolean(specialStatus)) {
-						DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(input.getDossierActionId(), userId);
-						if (dau != null) {
-							model.setSpecialNo(dau.getModerator());
-						} else {
-							model.setSpecialNo(0);
-						}
+			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(input.getDossierActionId(), userId);
+			if (dau != null) {
+				model.setSpecialNo(dau.getModerator());
+			} else {
+				model.setSpecialNo(0);
+			}
 					} else {
 						model.setSpecialNo(1);
 					}
@@ -455,6 +456,28 @@ public class DossierUtils {
 		model.setNotification(Boolean.toString(input.getNotification()));
 		model.setOnline(Boolean.toString(input.getOnline()));
 		model.setLockState(input.getLockState());
+
+		return model;
+	}
+
+	public static DossierDetailModel mappingForGetDetailSearch(Dossier input) {
+
+		DossierDetailModel model = new DossierDetailModel();
+		
+		try {
+			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
+			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID+"CTN"));
+		} catch (Exception e) {
+			model.setDossierIdCTN("");
+		}
+		
+
+		model.setUserName(input.getUserName());
+		model.setGovAgencyName(input.getGovAgencyName());
+		model.setDossierNo(input.getDossierNo());
+		model.setSubmitDate(
+				APIDateTimeUtils.convertDateToString(input.getSubmitDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		model.setDueDate(APIDateTimeUtils.convertDateToString(input.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 
 		return model;
 	}

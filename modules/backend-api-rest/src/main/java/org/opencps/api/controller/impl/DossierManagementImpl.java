@@ -11,12 +11,18 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.DossierMarkUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossier.model.DoActionModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierInputModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
+import org.opencps.api.dossier.model.DossierSearchDetailModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
+import org.opencps.api.dossiermark.model.DossierMarkInputModel;
+import org.opencps.api.dossiermark.model.DossierMarkModel;
+import org.opencps.api.dossiermark.model.DossierMarkResultDetailModel;
+import org.opencps.api.dossiermark.model.DossierMarkResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
@@ -28,13 +34,16 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.DossierMarkActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -537,6 +546,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 	}
 
+
 	@Override
 	public Response updateDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, DossierInputModel input) {
@@ -795,6 +805,9 @@ public class DossierManagementImpl implements DossierManagement {
 			if (input.getIsSynAction() == 1) {
 
 				_log.info(JSONFactoryUtil.looseSerialize(input));
+				
+				_log.info("Call in SynAction **********8 ===========");
+
 
 				DossierAction dossierAction = actions.doAction(groupId, dossier.getDossierId(),
 						dossier.getReferenceUid(), input.getActionCode(), 0l, input.getActionUser(),
@@ -819,7 +832,7 @@ public class DossierManagementImpl implements DossierManagement {
 				// dossierPermission.hasPermitDoAction(groupId,
 				// user.getUserId(), dossier, option.getServiceProcessId(),
 				// action);
-
+				
 				_log.info("input.getActionCode(): " + input.getActionCode());
 				_log.info("action.getProcessActionId(): " + action.getProcessActionId());
 				_log.info("input.getActionUser(): " + input.getActionUser());
@@ -1092,6 +1105,92 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 
 	}
+	
+	@Override
+	public Response addDossierMark(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long dossierId, String dossierPartNo,
+			DossierMarkInputModel input) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierMarkActions actions = new DossierMarkActionsImpl();
+
+			DossierMark dossierMark = actions.addDossierMark(groupId, dossierId, dossierPartNo, input.isFileCheck(),
+					input.getFileType(), serviceContext);
+
+			DossierMarkResultDetailModel result = DossierMarkUtils.mappingDossierMarkDetailModel(dossierMark);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response getDossierMarks(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long dossierId) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierMarkActions actions = new DossierMarkActionsImpl();
+			
+			DossierMarkResultsModel result = new DossierMarkResultsModel();
+
+			List<DossierMark> lstDossierMark = actions.getDossierMarks(groupId, dossierId);
+
+			List<DossierMarkModel> outputs = DossierMarkUtils.mappingDossierMarks(lstDossierMark);
+			
+			result.setTotal(lstDossierMark.size());
+			result.getData().addAll(outputs);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response getDossierMarkbyDossierId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long dossierId, String dossierPartNo) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierMarkActions actions = new DossierMarkActionsImpl();
+
+			DossierMark dossierMark = actions.getDossierMarkbyDossierId(groupId, dossierId, dossierPartNo);
+
+			DossierMarkResultDetailModel result = DossierMarkUtils.mappingDossierMarkDetailModel(dossierMark);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+	
 
 	@Override
 	public Response cancellingRequestDossier(HttpServletRequest request, HttpHeaders header, Company company,
