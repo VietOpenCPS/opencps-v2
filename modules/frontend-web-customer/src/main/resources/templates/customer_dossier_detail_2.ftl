@@ -13,11 +13,11 @@
 			<div class="background-triangle-big">Tên thủ tục</div> 
 			<span class="text-bold" data-bind="text:serviceName"></span>
 			<div class="pull-right group-icons">
-				<a href="javascript:;" id="btn-submit-dossier-header" onclick="funSubmitDossier()" >
+				<a href="javascript:;" id="btn-submit-dossier-header">
 					<i class="fa fa-paper-plane" aria-hidden="true"></i> 
 					Nộp hồ sơ
-				</a>
-				<a href="javascript:;" onclick="funDeleteDossier(${(dossierId)!})">
+				</a> 
+				<a href="javascript:;" id="btn-delete-dossier-header">
 					<i class="fa fa-trash"></i>
 					Xóa
 				</a>
@@ -37,14 +37,17 @@
 			</div>
 		</div>
 
-		<div class="guide-section">
-			<div class="head-part">
+		<div class="guide-section PB0">
+			<div class="head-part"  data-toggle="collapse" data-target="#guideDossier">
 				<div class="background-triangle-small"><i class="fa fa-star"></i></div> <span class="text-uppercase">Hướng dẫn</span> <span class="text-light-gray">(gồm các bước làm thủ tục)</span>
 			</div>
-			<div class="content-part">
-				<span data-bind="html:dossierNote"></span>
+			<div class="content-part toggle-hide collapse" id="guideDossier">
+				<div style="height: 100px;overflow: hidden;" id="guideDossierContent">
+					<span data-bind="html:dossierNote" id="textDossierNote"></span>
+				</div>
+				<p class="MB0 text-light-blue PB10"><a href="javascript:;" id="guide-toggle" state="normal">Xem thêm >></a></p>
 			</div>
-			<p class="MB0 text-light-blue"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p>
+			
 		</div>
 
 		<div class="row">
@@ -155,6 +158,7 @@
 						<span>#:partName# 
 							#if(required){#
 							<span class="red">*</span>
+							<input type="hidden" id="validPart#:id#" name="validPart#:id#" class="validPart" value="0">
 							#}#
 						</span>
 
@@ -330,6 +334,27 @@
 
 <script type="text/javascript">
 	
+	
+
+	var fnCheckValidTemplate = function(){
+		console.log($(".validPart"));
+		var valid = true;
+		try {
+
+			$(".validPart").each(function(index){
+				console.log($(this).val());
+				if($(this).val() === "0"){
+					valid = false;
+				}
+			});
+
+		}catch(e){
+			valid = false;
+		}
+
+		return valid;
+	}
+
 		//upload file click
 		$(document).off("change",".dossier-file");
 		$(document).on("change",".dossier-file",function(){
@@ -362,7 +387,7 @@
 			var dossierId = "${(dossierId)!}";
 			var dossierTemplateId = "${(dossierTemplateId)!}";
 			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateId="+dossierTemplateId,function(result){
-
+				$(this).modal("show");
 			});
 		});
 
@@ -404,6 +429,8 @@
 									notification.show({
 										message: "Yêu cầu được thực hiện thành công"
 									}, "success");
+
+									$("#validPart"+dataPartNo).val("0");
 								}else {
 									notification.show({
 										message: "Xẩy ra lỗi, vui lòng thử lại"
@@ -422,158 +449,178 @@
 			}
 		});
 
-	$("#btn-view-extendguide").click(function(){
-		if($("#extend-guide").attr("status")=="none"){
+		$("#btn-view-extendguide").click(function(){
+			if($("#extend-guide").attr("status")=="none"){
 
-			$("#extend-guide").show();
-			$("#extend-guide").attr("status","show");
+				$("#extend-guide").show();
+				$("#extend-guide").attr("status","show");
 
-		}else{
+			}else{
 
-			$("#extend-guide").hide();
-			$("#extend-guide").attr("status","none");
-			
-		}
-
-	});
-
-	var dataSourceDossierTemplate = new kendo.data.DataSource({
-		transport :{
-			read : function(options){
-				if(options.data.dossierTemplateNo){
-					$.ajax({
-						url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateNo,
-						dataType : "json",
-						type : "GET",
-						headers : {"groupId": ${groupId}},
-						data : {
-
-						},
-						success : function(result){
-							options.success(result.dossierParts);
-
-							$("#dossierTemplateNo").val(result.templateNo);
-						},
-						error : function(result){
-							options.error(result);
-						}
-					});
-				}
+				$("#extend-guide").hide();
+				$("#extend-guide").attr("status","none");
 				
 			}
-		},
-		schema : {
-			model : {
-				id : "partNo"
-			}
-		}
-	});
 
-	var indexDossiserPart =0 ;
-	$("#lsDossierTemplPart").kendoListView({
-		dataSource : dataSourceDossierTemplate,
-		autoBind : false,
-		change : function(){
-			
-		},
-		template : function(data){
-
-			indexDossiserPart ++;
-
-			data.itemIndex = indexDossiserPart;
-
-			return kendo.template($("#templateDossierPart").html())(data);
-
-		},
-		dataBound : function(){
-			indexDossiserPart = 0;
-
-			var arrFile = funDossierFile(${dossierId});
-			funGenNumberFile(arrFile);
-		}
-	});
-
-	$(document).on("click",".dossier-online-form",function(event){
-		console.log("abcd");
-		$("#showDossierOnlineForm").load("${ajax.customer_dossier_online_form_dialog}",function(result){
-			$(this).modal("show");
 		});
-	});
 
-	(function($) { 
-		$('.spinner .btn:first-of-type').on('click', function() { 
-			$('.spinner input').val(parseInt($('.spinner input').val(), 10) + 1); 
-		}); 
-		$('.spinner .btn:last-of-type').on('click', function() { 
-			$('.spinner input').val(parseInt($('.spinner input').val(), 10) - 1); 
-		}); 
-	})(jQuery);
+		var dataSourceDossierTemplate = new kendo.data.DataSource({
+			transport :{
+				read : function(options){
+					if(options.data.dossierTemplateNo){
+						$.ajax({
+							url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateNo,
+							dataType : "json",
+							type : "GET",
+							headers : {"groupId": ${groupId}},
+							data : {
 
-	$("#dossier-submit-info").click(function(){
-		$("#dossierSubmitInfo").load("${ajax.customer_dossier_info}",function(result){
-			$(this).modal("show");
-		});
-	});
+							},
+							success : function(result){
+								options.success(result.dossierParts);
 
-	$("#showFileTemplateDialog").click(function(){
-		$("#fileTemplateDialog").load("employeemain_dossierdetail_filetemplate.ftl",function(result){
-			$(this).modal("show");
-		});
-	});
-
-	$("#btn-submit-dossier").click(function(){
-		funSubmitDossier();
-	});
-
-	var funSubmitDossier = function(){
-		var validateAplicantInfo = $('#contactName, #city , #district , #wards , #contactTelNo' ).editable('validate');
-		var validatePostal = true;
-
-		if($("#viaPostal").is(":checked")){
-			validatePostal = $('#address, #postalCityCode , #postalTelNo' ).editable('validate');
-		}
-
-		console.log(validatePostal);
-		console.log(validateAplicantInfo);
-
-		if( jQuery.isEmptyObject(validateAplicantInfo) && jQuery.isEmptyObject(validatePostal) ){
-			$.ajax({
-				type : 'GET', 
-				url  : '${api.server}/dossiers/${dossierId}/submitting', 
-				data : {
-
-				},
-				headers: {
-					"groupId": ${groupId},
-					Accept : "application/json"
-				},
-				success :  function(result){    
-
-					manageDossier.navigate("/taohosomoi/nopthanhcong/${dossierId}"); 
-					notification.show({
-						message: "Yêu cầu được thực hiện thành công!"
-					}, "success");      
-				},
-				error:function(result){
-					notification.show({
-						message: "Có lỗi sảy ra!"
-					}, "error");
+								$("#dossierTemplateNo").val(result.templateNo);
+							},
+							error : function(result){
+								options.error(result);
+							}
+						});
+					}
+					
 				}
+			},
+			schema : {
+				model : {
+					id : "partNo"
+				}
+			}
+		});
+
+		var indexDossiserPart =0 ;
+		$("#lsDossierTemplPart").kendoListView({
+			dataSource : dataSourceDossierTemplate,
+			autoBind : false,
+			change : function(){
+				
+			},
+			template : function(data){
+
+				indexDossiserPart ++;
+
+				data.itemIndex = indexDossiserPart;
+
+				return kendo.template($("#templateDossierPart").html())(data);
+
+			},
+			dataBound : function(){
+				indexDossiserPart = 0;
+
+				var arrFile = funDossierFile(${dossierId});
+				funGenNumberFile(arrFile);
+			}
+		});
+
+		$(document).on("click",".dossier-online-form",function(event){
+			console.log("abcd");
+			$("#showDossierOnlineForm").load("${ajax.customer_dossier_online_form_dialog}",function(result){
+				$(this).modal("show");
 			});
+		});
 
-			console.log("submit dossier success!");
-		}else {
-			notification.show({
-				message: "Vui lòng kiểm tra lại các thông tin bắt buộc!"
-			}, "error");
+		(function($) { 
+			$('.spinner .btn:first-of-type').on('click', function() { 
+				$('.spinner input').val(parseInt($('.spinner input').val(), 10) + 1); 
+			}); 
+			$('.spinner .btn:last-of-type').on('click', function() { 
+				$('.spinner input').val(parseInt($('.spinner input').val(), 10) - 1); 
+			}); 
+		})(jQuery);
+
+		$("#dossier-submit-info").click(function(){
+			$("#dossierSubmitInfo").load("${ajax.customer_dossier_info}",function(result){
+				$(this).modal("show");
+			});
+		});
+
+		$("#showFileTemplateDialog").click(function(){
+			$("#fileTemplateDialog").load("employeemain_dossierdetail_filetemplate.ftl",function(result){
+				$(this).modal("show");
+			});
+		});
+
+		$("#btn-submit-dossier,#btn-submit-dossier-header").click(function(){
+			var cf = fnConfirm("Thông báo",
+				"Bạn muốn nộp hồ sơ này", 
+				"Nộp hồ sơ", "Hủy bỏ",
+				function(){
+
+					funSubmitDossier();
+
+				}, function(){
+					
+				});
+
+			cf.open();
+			
+		});
+
+		var funSubmitDossier = function(){
+			var validateAplicantInfo = $('#contactName, #city , #district , #wards , #contactTelNo' ).editable('validate');
+			var validatePostal = true;
+
+			if($("#viaPostal").is(":checked")){
+				validatePostal = $('#address, #postalCityCode , #postalTelNo' ).editable('validate');
+			}
+
+			var validTemplate = fnCheckValidTemplate();
+
+			if(!validTemplate){
+				notification.show({
+					message: "Vui lòng kiểm tra lại các thông tin bắt buộc của các thành phần hồ sơ!"
+				}, "error");
+
+				return ;
+			}
+
+			console.log(validatePostal);
+			console.log(validateAplicantInfo);
+
+			if( jQuery.isEmptyObject(validateAplicantInfo) && jQuery.isEmptyObject(validatePostal) ){
+				$.ajax({
+					type : 'GET', 
+					url  : '${api.server}/dossiers/${dossierId}/submitting', 
+					data : {
+
+					},
+					headers: {
+						"groupId": ${groupId},
+						Accept : "application/json"
+					},
+					success :  function(result){    
+
+						manageDossier.navigate("/taohosomoi/nopthanhcong/${dossierId}"); 
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công!"
+						}, "success");      
+					},
+					error:function(result){
+						notification.show({
+							message: "Có lỗi sảy ra!"
+						}, "error");
+					}
+				});
+
+				console.log("submit dossier success!");
+			}else {
+				notification.show({
+					message: "Vui lòng kiểm tra lại các thông tin bắt buộc!"
+				}, "error");
+			}
+			
 		}
-		
-	}
 
-	var funDeleteDossier = function(dossierId){
-		if(dossierId){
-			var cf = confirm("Bạn có muốn xóa !");
-			if(cf){
+		var funDeleteDossier = function(dossierId){
+			if(dossierId){
 				$.ajax({
 					type : 'DELETE', 
 					url  : '${api.server}/dossiers/'+dossierId, 
@@ -583,7 +630,7 @@
 					},
 					headers: {"groupId": ${groupId}},
 					success :  function(result){                       
-						manageDossier.navigate("/New");
+						manageDossier.navigate("/new");
 					},
 					error:function(result){
 
@@ -592,914 +639,952 @@
 				console.log("delete dossier success!");
 			}
 		}
-	}
 
-	$("#btn-delete-dossier").click(function(){
-		var dossierId = $(this).attr("data-pk");
-		funDeleteDossier(dossierId);
+		$("#btn-delete-dossier,#btn-delete-dossier-header").click(function(){
+			var dossierId = $(this).attr("data-pk");
+			var cf = fnConfirm("Thông báo",
+				"Bạn muốn xóa hồ sơ này", 
+				"Ok", "Hủy bỏ",
+				function(){
 
-	});
+					funDeleteDossier(${(dossierId)!});
 
-	var updateDossierURL = "/o/rest/v2/dossiers/${dossierId}";
-
-	$('#contactName').editable({
-		url: updateDossierURL,
-		ajaxOptions:{
-			type:'PUT',
-			dataType: "json",
-			headers: {"groupId": ${groupId}}
-		},
-		emptytext : "",
-		params: function(params) {
-			return {
-				contactName: params.value
-			};
-		},
-		validate: function(value) {
-			if (value.length < 1){
-				return 'Đây là trường bắt buộc';
-			}
-		},
-		success: function(response, newValue) {
-			
-		},
-		error: function(event, id, obj) {
-
-		}
-	});
-	$('#editContactName').click(function(e) {
-		e.stopPropagation();
-		$('#contactName').editable('toggle');
-	});
-
-	$('#address').editable({
-		url: updateDossierURL,
-		ajaxOptions:{
-			type:'PUT',
-			dataType: "json",
-			headers: {"groupId": ${groupId}}
-		},
-		emptytext : "",
-		params: function(params) {
-			return {
-				address: params.value
-			};
-		},
-		validate: function(value) {
-			if (value.length < 1){
-				return 'Đây là trường bắt buộc';
-			}
-		},
-		success: function(response, newValue) {
-
-		},
-		error: function(event, id, obj) {
-
-		}
-	});
-	$('#editAddress').click(function(e) {
-		e.stopPropagation();
-		$('#address').editable('toggle');
-	});
-
-	$('#city').editable({
-		url: updateDossierURL,
-		emptytext : "",
-		ajaxOptions:{
-			type:'PUT',
-			dataType: "json",
-			headers: {"groupId": ${groupId}}
-		},
-		params: function(params) {
-			return {
-				cityCode: params.value
-			};
-		},
-		validate: function(value) {
-			if (value.length < 1){
-				return 'Đây là trường bắt buộc';
-			}
-		},
-		success: function(response, newValue) {
-			var arrDisplay = new Array();
-			$.ajax({
-				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-				dataType : "json",
-				type : "GET",
-				async: false,
-				headers: {"groupId": ${groupId}},
-				data : {
-					parent : newValue
-				},
-				success : function(result){
-					var arrDataRes = result.data;
-					for (var i = 0; i < arrDataRes.length; i++) {
-						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
-					}
-				},
-				error : function(xhr){
-
-				}
-			});
-			$('#district').editable('option', 'source', arrDisplay);
-			$('#district').html("-");
-			$('#wards').html("-");
-			$.ajax({
-				url : updateDossierURL,
-				dataType : "json",
-				type : "PUT",
-				async: false,
-				headers: {"groupId": ${groupId}},
-				data : {
-					districtCode: "-",
-					districtName: "-",
-					wardCode: "-",
-					wardName: "-",
-				},
-				success : function(result){
+				}, function(){
 					
-				},
-				error : function(xhr){
+				});
 
+			cf.open();
+
+		});
+
+		var updateDossierURL = "/o/rest/v2/dossiers/${dossierId}";
+
+		$('#contactName').editable({
+			url: updateDossierURL,
+			ajaxOptions:{
+				type:'PUT',
+				dataType: "json",
+				headers: {"groupId": ${groupId}}
+			},
+			emptytext : "",
+			params: function(params) {
+				return {
+					contactName: params.value
+				};
+			},
+			validate: function(value) {
+				if (value.length < 1){
+					return 'Đây là trường bắt buộc';
 				}
-			});
-		},
-		error: function(event, id, obj) {
+			},
+			success: function(response, newValue) {
+				
+			},
+			error: function(event, id, obj) {
 
-		},
-		prepend: "",
-		source: function(){
-			var arrDisplay = new Array();
-			$.ajax({
-				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-				dataType : "json",
-				type : "GET",
-				async: false,
-				headers: {"groupId": ${groupId}},
-				data : {
-					parent : 0
-				},
-				success : function(result){
-					var arrDataRes = result.data;
-					for (var i = 0; i < arrDataRes.length; i++) {
-						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
-					}
-				},
-				error : function(xhr){
-
-				}
-			});
-			return arrDisplay;
-		}
-	});
-
-
-	$('#district').editable({
-		url: updateDossierURL,
-		emptytext : "",
-		ajaxOptions:{
-			type:'PUT',
-			dataType: "json",
-			headers: {"groupId": ${groupId}}
-		},
-		params: function(params) {
-			return {
-				districtCode: params.value
-			};
-		},
-		validate: function(value) {
-			if (value.length < 1){
-				return 'Đây là trường bắt buộc';
 			}
-		},
-		success : function(response, newValue){
-			var arrDisplay = new Array();
-			$.ajax({
-				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-				dataType : "json",
-				type : "GET",
-				async: false,
-				headers: {"groupId": ${groupId}},
-				data : {
-					parent : newValue
-				},
-				success : function(result){
-					var arrDataRes = result.data;
-					for (var i = 0; i < arrDataRes.length; i++) {
-						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
-					}
-				},
-				error : function(xhr){
+		});
+		$('#editContactName').click(function(e) {
+			e.stopPropagation();
+			$('#contactName').editable('toggle');
+		});
 
+		$('#address').editable({
+			url: updateDossierURL,
+			ajaxOptions:{
+				type:'PUT',
+				dataType: "json",
+				headers: {"groupId": ${groupId}}
+			},
+			emptytext : "",
+			params: function(params) {
+				return {
+					address: params.value
+				};
+			},
+			validate: function(value) {
+				if (value.length < 1){
+					return 'Đây là trường bắt buộc';
 				}
-			});
-			$('#wards').editable('option', 'source', arrDisplay);
-			$('#wards').html("-");
-			$.ajax({
-				url : updateDossierURL,
-				dataType : "json",
-				type : "PUT",
-				async: false,
-				headers: {"groupId": ${groupId}},
-				data : {
-					wardCode: "-",
-					wardName: "-",
-				},
-				success : function(result){
-					
-				},
-				error : function(xhr){
+			},
+			success: function(response, newValue) {
 
+			},
+			error: function(event, id, obj) {
+
+			}
+		});
+		$('#editAddress').click(function(e) {
+			e.stopPropagation();
+			$('#address').editable('toggle');
+		});
+
+		$('#city').editable({
+			url: updateDossierURL,
+			emptytext : "",
+			ajaxOptions:{
+				type:'PUT',
+				dataType: "json",
+				headers: {"groupId": ${groupId}}
+			},
+			params: function(params) {
+				return {
+					cityCode: params.value
+				};
+			},
+			validate: function(value) {
+				if (value.length < 1){
+					return 'Đây là trường bắt buộc';
 				}
-			});
-		},
-		error : function(xhr){
-
-		},
-		prepend: "",
-		source: function(){
-			var arrDisplay = new Array();
-			$.ajax({
-				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-				dataType : "json",
-				type : "GET",
-				async: false,
-				headers: {"groupId": ${groupId}},
-				data : {
-					parent : "${(dossier.cityCode)!}"
-				},
-				success : function(result){
-					var arrDataRes = result.data;
-					for (var i = 0; i < arrDataRes.length; i++) {
-						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
-					}
-				},
-				error : function(xhr){
-
-				}
-			});
-			return arrDisplay;
-		}
-	});
-
-	$('#wards').editable({
-		url: updateDossierURL,
-		emptytext : "",
-		ajaxOptions:{
-			type:'PUT',
-			dataType: "json",
-			headers: {"groupId": ${groupId}}
-		},
-		params: function(params) {
-			return {
-				wardCode: params.value
-			};
-		},
-		validate: function(value) {
-			if (value.length < 1){
-				return 'Đây là trường bắt buộc';
-			}
-		},
-		success : function(data){
-
-		},
-		error : function(xhr){
-
-		},
-		prepend: "",
-		source: function(){
-			var arrDisplay = new Array();
-			$.ajax({
-				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-				dataType : "json",
-				type : "GET",
-				async: false,
-				headers: {"groupId": ${groupId}},
-				data : {
-					parent : "${(dossier.districtCode)!}"
-				},
-				success : function(result){
-					var arrDataRes = result.data;
-					for (var i = 0; i < arrDataRes.length; i++) {
-						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
-					}
-				},
-				error : function(xhr){
-
-				}
-			});
-			return arrDisplay;
-		}
-	});
-
-	$('#editCity').click(function(e) {
-		e.stopPropagation();
-		$('#city').editable('toggle');
-	});
-
-	$('#editDistrict').click(function(e) {
-		e.stopPropagation();
-		$('#district').editable('toggle');
-	});
-
-	$('#editWards').click(function(e) {
-		e.stopPropagation();
-		$('#wards').editable('toggle');
-	});
-
-	$('#contactTelNo').editable({
-		url: updateDossierURL,
-		ajaxOptions:{
-			type:'PUT',
-			dataType: "json",
-			headers: {"groupId": ${groupId}}
-		},
-		emptytext : "",
-		params: function(params) {
-			return {
-				contactTelNo: params.value
-			};
-		},
-		validate: function(value) {
-			if(value === ""){
-				return "Bạn phải nhập số điện thoại";
-			}
-		},
-		success: function(response, newValue) {
-
-		},
-		error: function(event, id, obj) {
-
-		}
-	});
-	$('#editContactTelNo').click(function(e) {
-		e.stopPropagation();
-		$('#contactTelNo').editable('toggle');
-	});
-
-	$('#postalAddress').editable({
-		url: updateDossierURL,
-		ajaxOptions:{
-			type:'PUT',
-			dataType: "json",
-			headers: {"groupId": ${groupId}}
-		},
-		emptytext : "",
-		params: function(params) {
-			return {
-				postalAddress: params.value
-			};
-		},
-		validate: function(value) {
-			if(value === ""){
-				return "Bạn phải nhập địa chỉ";
-			}
-		},
-		success: function(response, newValue) {
-
-		},
-		error: function(event, id, obj) {
-
-		}
-	});
-	
-	$('#editPostalAddress').click(function(e) {
-		e.stopPropagation();
-		$('#postalAddress').editable('toggle');
-	});
-
-	$('#postalCityCode').editable({
-		url: updateDossierURL,
-		emptytext : "",
-		ajaxOptions:{
-			type:'PUT',
-			dataType: "json",
-			headers: {"groupId": ${groupId}}
-		},
-		params: function(params) {
-			return {
-				postalCityCode: params.value
-			};
-		},
-		validate: function(value) {
-			if (value.length < 1){
-				return 'Đây là trường bắt buộc';
-			}
-		},
-		success: function(response, newValue) {
-			
-		},
-		error: function(event, id, obj) {
-
-		},
-		prepend: "",
-		source: function(){
-			var arrDisplay = new Array();
-			$.ajax({
-				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-				dataType : "json",
-				type : "GET",
-				async: false,
-				headers: {"groupId": ${groupId}},
-				data : {
-					parent : 0
-				},
-				success : function(result){
-					var arrDataRes = result.data;
-					for (var i = 0; i < arrDataRes.length; i++) {
-						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
-					}
-				},
-				error : function(xhr){
-
-				}
-			});
-			return arrDisplay;
-		}
-	});
-
-	$('#editPostalCityCode').click(function(e) {
-		e.stopPropagation();
-		$('#postalCityCode').editable('toggle');
-	});
-
-	$('#postalTelNo').editable({
-		url: updateDossierURL,
-		ajaxOptions:{
-			type:'PUT',
-			dataType: "json",
-			headers: {"groupId": ${groupId}}
-		},
-		emptytext : "",
-		params: function(params) {
-			return {
-				postalTelNo: params.value
-			};
-		},
-		validate: function(value) {
-			if(value === ""){
-				return "Bạn phải nhập số điện thoại";
-			}
-		},
-		success: function(response, newValue) {
-			
-		},
-		error: function(event, id, obj) {
-
-		}
-	});
-
-	$('#editPostalTelNo').click(function(e) {
-		e.stopPropagation();
-
-		$('#postalTelNo').editable('toggle');
-	});
-
-	$('#applicantNote').editable({
-		url: updateDossierURL,
-		ajaxOptions:{
-			type:'PUT',
-			dataType: "json",
-			headers: {"groupId": ${groupId}}
-		},
-		emptytext : "",
-		params: function(params) {
-			return {
-				applicantNote: params.value
-			};
-		},
-		validate: function(value) {
-
-		},
-		success: function(response, newValue) {
-
-		},
-		error: function(event, id, obj) {
-
-		}
-	});
-	$('#editApplicantNote').click(function(e) {
-		e.stopPropagation();
-		$('#applicantNote').editable('toggle');
-	});
-
-	var printDetailDossier = function(dossierId){
-		if(dossierId){
-			$.ajax({
-				url : "${api.server}/dossiers/"+dossierId,
-				dataType : "json",
-				type : "GET",
-				headers : {"groupId": ${groupId}},
-				success : function(result){
-					console.log("load detail dossier!");
-					console.log(result.dossierId);
-
-					dataSourceDossierTemplate.read({
-						dossierTemplateNo : result.dossierTemplateNo
-					});
-
-					var viewModel = kendo.observable({
-
-						dossierId : result.dossierId,
-						serviceName : result.serviceName,
-						govAgencyName : result.govAgencyName,
-						dossierIdCTN : result.dossierIdCTN,
-						dossierNote : function(e){
-							if(result.dossierNote){
-								return result.dossierNote;
-							}
-
-							return "";
-						},
-						contactName : function(){
-							$('#contactName').editable("setValue",result.contactName); 
-							return result.contactName;
-						},
-						address : function(){
-							$('#address').editable("setValue",result.address); 
-							return result.address;
-						},
-						cityName : function(){
-							$('#city').editable("setValue",result.cityCode); 
-							return result.cityName;
-						},
-						districtName : function(){
-							$('#district').editable("setValue",result.districtCode); 
-							return result.districtName
-						},
-						wardName : function(){
-							$('#wards').editable("setValue",result.wardCode); 
-							return result.wardName
-						},
-						contactTelNo : function(){
-							$('#contactTelNo').editable("setValue",result.contactTelNo);
-							return result.contactTelNo; 
-						},
-						contactEmail : result.contactEmail,
-						dossierNo : result.dossierNo,
-						dossierStatusText : result.dossierStatusText,
-						stepInstruction : function(){
-							if(result.stepInstruction){
-								return result.stepInstruction;
-							}
-
-							return "";
-						},
-						applicantNote : function(){
-							$('#applicantNote').editable("setValue",result.applicantNote);
-							if(!result.applicantNote){
-								return "Ghi chú người dùng";
-							}
-							return result.applicantNote;
-						},
-						viaPostal : function(e){
-							console.log(result.viaPostal);
-
-							if(result.viaPostal < 2){
-								$("#viaPostalContent").hide();
-								$("#viaPostal").prop('checked', false);
-							}else {
-								$("#viaPostalContent").show();
-								$("#viaPostal").prop('checked', true);
-							}
-
-							return result.viaPostal;
-						},
-						postalAddress : function(){
-							$('#postalAddress').editable("setValue",result.postalAddress);
-							return result.postalAddress;
-						},
-						postalCityName : function(){
-							console.log(result.postalCityCode);
-							console.log(result.postalCityName);
-							$('#postalCityCode').editable("setValue",result.postalCityCode);
-							return result.postalCityName;
-						},
-						postalTelNo : function(){
-							$('#postalTelNo').editable("setValue",result.postalTelNo);
-							return result.postalTelNo;
-						},
-						submitting : function(){
-							if(result.submitting){
-								$("#btn-submit-dossier").hide();
-								$("#btn-submit-dossier-header").hide();
-							}
+			},
+			success: function(response, newValue) {
+				var arrDisplay = new Array();
+				$.ajax({
+					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+					dataType : "json",
+					type : "GET",
+					async: false,
+					headers: {"groupId": ${groupId}},
+					data : {
+						parent : newValue
+					},
+					success : function(result){
+						var arrDataRes = result.data;
+						for (var i = 0; i < arrDataRes.length; i++) {
+							arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
 						}
+					},
+					error : function(xhr){
 
-					});
-
-					kendo.bind($("#detailDossier"), viewModel);
-				},
-				error : function(result){
-
-				}
-
-			});
-		}
-	}
-
-	var fnGetReferenceUidForm = function(arrFile){
-		var referenceUid = 0;
-		if(arrFile){
-			for (var i = 0; i < arrFile.length; i++) {
-				if(arrFile[i].eForm){
-					referenceUid = arrFile[i].referenceUid;
-					break;
-				}
-			}
-		}
-		return referenceUid;
-	}
-
-	var funDossierFile = function(dossierId){
-		var arrFile = new Array();
-		if(dossierId){
-			$.ajax({
-				url : "${api.server}/dossiers/"+dossierId+"/files",
-				dataType : "json",
-				type : "GET",
-				headers : {"groupId": ${groupId}},
-				async : false,
-				success : function(result){
-					if(result.data){
-						arrFile = result.data;
-					}else {
-						arrFile = [];
 					}
-					
-				},
-				error : function(result){
+				});
+				$('#district').editable('option', 'source', arrDisplay);
+				$('#district').html("-");
+				$('#wards').html("-");
+				$.ajax({
+					url : updateDossierURL,
+					dataType : "json",
+					type : "PUT",
+					async: false,
+					headers: {"groupId": ${groupId}},
+					data : {
+						districtCode: "-",
+						districtName: "-",
+						wardCode: "-",
+						wardName: "-",
+					},
+					success : function(result){
+						
+					},
+					error : function(xhr){
 
-				}
-			});
-		}
-		return arrFile;
-	}
-	
-
-	var funGenNumberFile = function(arrCount){
-		$(".dossier-component-profile").each(function(index){
-			var partNo = $(this).attr("data-partno");
-			var found = $.grep(arrCount, function(v) {
-				return v.dossierPartNo === partNo;
-			});
-
-			$(this).attr("data-number",found.length);
-			$(this).html('<span class="number-in-circle" >'+found.length+'</span>');
-		});
-	}
-
-	var removeDossierFile = function(dossierId, fileId){
-		var isSuccess = false;
-		$.ajax({
-			url : "${api.server}/dossiers/"+dossierId+"/files/"+fileId,
-			dataType : "json",
-			type : "DELETE",
-			headers : {"groupId": ${groupId}},
-			async : false,
-			success : function(result) {
-				isSuccess = true;
+					}
+				});
+			},
+			error: function(event, id, obj) {
 
 			},
-			error : function(result) {
-				isSuccess = false;
-			}	
-		});
-		return isSuccess;
-	}
+			prepend: "",
+			source: function(){
+				var arrDisplay = new Array();
+				$.ajax({
+					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+					dataType : "json",
+					type : "GET",
+					async: false,
+					headers: {"groupId": ${groupId}},
+					data : {
+						parent : 0
+					},
+					success : function(result){
+						var arrDataRes = result.data;
+						for (var i = 0; i < arrDataRes.length; i++) {
+							arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+						}
+					},
+					error : function(xhr){
 
-	var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
-		var data = new FormData();
-		console.log(file);
-
-		data.append( 'displayName', $(file)[0].files[0].name);
-		data.append( 'file', $(file)[0].files[0]);
-		data.append('dossierPartNo', partNo);
-		data.append('referenceUid', "");
-		data.append('dossierTemplateNo', dossierTemplateNo);
-		data.append('fileTemplateNo', fileTemplateNo);
-		data.append('formData', "");
-		data.append('isSync', "true");
-		data.append('fileType', "");
-
-		$.ajax({
-			type : 'POST', 
-			url  : '${api.server}/dossiers/${dossierId}/files', 
-			data : data,
-			headers: {"groupId": ${groupId}},
-			processData: false,
-			contentType: false,
-			cache: false,
-			success :  function(result){ 
-				var fileLength = $(file)[0].files.length;
-
-				var currentFileNumber = $(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number");
-
-				var totalFile = fileLength + parseInt(currentFileNumber, 0);
-
-				$(".dossier-component-profile").filter("[data-partno="+partNo+"]").html('<span class="number-in-circle" >'+totalFile+'</span>');
-
-				$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",totalFile);
-				$("#uploadFileTemplateDialog").modal("hide");
-
-				notification.show({
-					message: "Yêu cầu được thực hiện thành công"
-				}, "success");
-
-			},
-			error:function(result){
-				notification.show({
-					message: "Xảy ra lỗi, xin vui lòng thử lại"
-				}, "error");
+					}
+				});
+				return arrDisplay;
 			}
 		});
-		console.log("success!");
-	}
 
-	printDetailDossier(${dossierId});
 
-	$("#viaPostal").change(function(){
-		var viaPostal = 1;
-		if($(this).is(":checked")) {
-			$("#viaPostalContent").show();
-			viaPostal = 2;
-		}else{
-			$("#viaPostalContent").hide();	
-			viaPostal = 1;
-		}
-		$.ajax({
-			url : "${api.server}/dossiers/${dossierId}",
-			dataType : "json",
-			type : "PUT",
-			headers: {"groupId": ${groupId}},
-			data : {
-				viaPostal : viaPostal
+		$('#district').editable({
+			url: updateDossierURL,
+			emptytext : "",
+			ajaxOptions:{
+				type:'PUT',
+				dataType: "json",
+				headers: {"groupId": ${groupId}}
 			},
-			success : function(result){
+			params: function(params) {
+				return {
+					districtCode: params.value
+				};
+			},
+			validate: function(value) {
+				if (value.length < 1){
+					return 'Đây là trường bắt buộc';
+				}
+			},
+			success : function(response, newValue){
+				var arrDisplay = new Array();
+				$.ajax({
+					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+					dataType : "json",
+					type : "GET",
+					async: false,
+					headers: {"groupId": ${groupId}},
+					data : {
+						parent : newValue
+					},
+					success : function(result){
+						var arrDataRes = result.data;
+						for (var i = 0; i < arrDataRes.length; i++) {
+							arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+						}
+					},
+					error : function(xhr){
+
+					}
+				});
+				$('#wards').editable('option', 'source', arrDisplay);
+				$('#wards').html("-");
+				$.ajax({
+					url : updateDossierURL,
+					dataType : "json",
+					type : "PUT",
+					async: false,
+					headers: {"groupId": ${groupId}},
+					data : {
+						wardCode: "-",
+						wardName: "-",
+					},
+					success : function(result){
+						
+					},
+					error : function(xhr){
+
+					}
+				});
+			},
+			error : function(xhr){
+
+			},
+			prepend: "",
+			source: function(){
+				var arrDisplay = new Array();
+				$.ajax({
+					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+					dataType : "json",
+					type : "GET",
+					async: false,
+					headers: {"groupId": ${groupId}},
+					data : {
+						parent : "${(dossier.cityCode)!}"
+					},
+					success : function(result){
+						var arrDataRes = result.data;
+						for (var i = 0; i < arrDataRes.length; i++) {
+							arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+						}
+					},
+					error : function(xhr){
+
+					}
+				});
+				return arrDisplay;
+			}
+		});
+
+		$('#wards').editable({
+			url: updateDossierURL,
+			emptytext : "",
+			ajaxOptions:{
+				type:'PUT',
+				dataType: "json",
+				headers: {"groupId": ${groupId}}
+			},
+			params: function(params) {
+				return {
+					wardCode: params.value
+				};
+			},
+			validate: function(value) {
+				if (value.length < 1){
+					return 'Đây là trường bắt buộc';
+				}
+			},
+			success : function(data){
 
 			},
 			error : function(xhr){
 
+			},
+			prepend: "",
+			source: function(){
+				var arrDisplay = new Array();
+				$.ajax({
+					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+					dataType : "json",
+					type : "GET",
+					async: false,
+					headers: {"groupId": ${groupId}},
+					data : {
+						parent : "${(dossier.districtCode)!}"
+					},
+					success : function(result){
+						var arrDataRes = result.data;
+						for (var i = 0; i < arrDataRes.length; i++) {
+							arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+						}
+					},
+					error : function(xhr){
+
+					}
+				});
+				return arrDisplay;
 			}
 		});
-	});
 
-	var getReferentUidFile = function(dossierId,dossierPartNo){
-		var dossierFile;
-		if(dossierId){
-			$.ajax({
-				type : 'GET', 
-				dataType : "json",
-				url  : '${api.server}/dossiers/${dossierId}/files', 
-				headers: {"groupId": ${groupId}},
-				async : false,
-				success :  function(result){ 
-					if(result.data){
-						for (var i = 0; i < result.data.length; i++) {
-							if(result.data[i].eForm){
-								if(dossierPartNo == result.data[i].dossierPartNo){
-									dossierFile = result.data[i];
-									return ;
+		$('#editCity').click(function(e) {
+			e.stopPropagation();
+			$('#city').editable('toggle');
+		});
+
+		$('#editDistrict').click(function(e) {
+			e.stopPropagation();
+			$('#district').editable('toggle');
+		});
+
+		$('#editWards').click(function(e) {
+			e.stopPropagation();
+			$('#wards').editable('toggle');
+		});
+
+		$('#contactTelNo').editable({
+			url: updateDossierURL,
+			ajaxOptions:{
+				type:'PUT',
+				dataType: "json",
+				headers: {"groupId": ${groupId}}
+			},
+			emptytext : "",
+			params: function(params) {
+				return {
+					contactTelNo: params.value
+				};
+			},
+			validate: function(value) {
+				if(value === ""){
+					return "Bạn phải nhập số điện thoại";
+				}
+			},
+			success: function(response, newValue) {
+
+			},
+			error: function(event, id, obj) {
+
+			}
+		});
+		$('#editContactTelNo').click(function(e) {
+			e.stopPropagation();
+			$('#contactTelNo').editable('toggle');
+		});
+
+		$('#postalAddress').editable({
+			url: updateDossierURL,
+			ajaxOptions:{
+				type:'PUT',
+				dataType: "json",
+				headers: {"groupId": ${groupId}}
+			},
+			emptytext : "",
+			params: function(params) {
+				return {
+					postalAddress: params.value
+				};
+			},
+			validate: function(value) {
+				if(value === ""){
+					return "Bạn phải nhập địa chỉ";
+				}
+			},
+			success: function(response, newValue) {
+
+			},
+			error: function(event, id, obj) {
+
+			}
+		});
+		
+		$('#editPostalAddress').click(function(e) {
+			e.stopPropagation();
+			$('#postalAddress').editable('toggle');
+		});
+
+		$('#postalCityCode').editable({
+			url: updateDossierURL,
+			emptytext : "",
+			ajaxOptions:{
+				type:'PUT',
+				dataType: "json",
+				headers: {"groupId": ${groupId}}
+			},
+			params: function(params) {
+				return {
+					postalCityCode: params.value
+				};
+			},
+			validate: function(value) {
+				if (value.length < 1){
+					return 'Đây là trường bắt buộc';
+				}
+			},
+			success: function(response, newValue) {
+				
+			},
+			error: function(event, id, obj) {
+
+			},
+			prepend: "",
+			source: function(){
+				var arrDisplay = new Array();
+				$.ajax({
+					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+					dataType : "json",
+					type : "GET",
+					async: false,
+					headers: {"groupId": ${groupId}},
+					data : {
+						parent : 0
+					},
+					success : function(result){
+						var arrDataRes = result.data;
+						for (var i = 0; i < arrDataRes.length; i++) {
+							arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+						}
+					},
+					error : function(xhr){
+
+					}
+				});
+				return arrDisplay;
+			}
+		});
+
+		$('#editPostalCityCode').click(function(e) {
+			e.stopPropagation();
+			$('#postalCityCode').editable('toggle');
+		});
+
+		$('#postalTelNo').editable({
+			url: updateDossierURL,
+			ajaxOptions:{
+				type:'PUT',
+				dataType: "json",
+				headers: {"groupId": ${groupId}}
+			},
+			emptytext : "",
+			params: function(params) {
+				return {
+					postalTelNo: params.value
+				};
+			},
+			validate: function(value) {
+				if(value === ""){
+					return "Bạn phải nhập số điện thoại";
+				}
+			},
+			success: function(response, newValue) {
+				
+			},
+			error: function(event, id, obj) {
+
+			}
+		});
+
+		$('#editPostalTelNo').click(function(e) {
+			e.stopPropagation();
+
+			$('#postalTelNo').editable('toggle');
+		});
+
+		$('#applicantNote').editable({
+			url: updateDossierURL,
+			ajaxOptions:{
+				type:'PUT',
+				dataType: "json",
+				headers: {"groupId": ${groupId}}
+			},
+			emptytext : "",
+			params: function(params) {
+				return {
+					applicantNote: params.value
+				};
+			},
+			validate: function(value) {
+
+			},
+			success: function(response, newValue) {
+
+			},
+			error: function(event, id, obj) {
+
+			}
+		});
+		$('#editApplicantNote').click(function(e) {
+			e.stopPropagation();
+			$('#applicantNote').editable('toggle');
+		});
+
+		var printDetailDossier = function(dossierId){
+			if(dossierId){
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId,
+					dataType : "json",
+					type : "GET",
+					headers : {"groupId": ${groupId}},
+					success : function(result){
+						console.log("load detail dossier!");
+						console.log(result.dossierId);
+
+						dataSourceDossierTemplate.read({
+							dossierTemplateNo : result.dossierTemplateNo
+						});
+
+						var viewModel = kendo.observable({
+
+							dossierId : result.dossierId,
+							serviceName : result.serviceName,
+							govAgencyName : result.govAgencyName,
+							dossierIdCTN : result.dossierIdCTN,
+							dossierNote : function(e){
+
+								if(result.dossierNote){
+									return result.dossierNote;
 								}
 
+								return "";
+							},
+							contactName : function(){
+								$('#contactName').editable("setValue",result.contactName); 
+								return result.contactName;
+							},
+							address : function(){
+								$('#address').editable("setValue",result.address); 
+								return result.address;
+							},
+							cityName : function(){
+								$('#city').editable("setValue",result.cityCode); 
+								return result.cityName;
+							},
+							districtName : function(){
+								$('#district').editable("setValue",result.districtCode); 
+								return result.districtName
+							},
+							wardName : function(){
+								$('#wards').editable("setValue",result.wardCode); 
+								return result.wardName
+							},
+							contactTelNo : function(){
+								$('#contactTelNo').editable("setValue",result.contactTelNo);
+								return result.contactTelNo; 
+							},
+							contactEmail : result.contactEmail,
+							dossierNo : result.dossierNo,
+							dossierStatusText : result.dossierStatusText,
+							stepInstruction : function(){
+								if(result.stepInstruction){
+									return result.stepInstruction;
+								}
+
+								return "";
+							},
+							applicantNote : function(){
+								$('#applicantNote').editable("setValue",result.applicantNote);
+								if(!result.applicantNote){
+									return "Ghi chú người dùng";
+								}
+								return result.applicantNote;
+							},
+							viaPostal : function(e){
+								console.log(result.viaPostal);
+
+								if(result.viaPostal < 2){
+									$("#viaPostalContent").hide();
+									$("#viaPostal").prop('checked', false);
+								}else {
+									$("#viaPostalContent").show();
+									$("#viaPostal").prop('checked', true);
+								}
+
+								return result.viaPostal;
+							},
+							postalAddress : function(){
+								$('#postalAddress').editable("setValue",result.postalAddress);
+								return result.postalAddress;
+							},
+							postalCityName : function(){
+								console.log(result.postalCityCode);
+								console.log(result.postalCityName);
+								$('#postalCityCode').editable("setValue",result.postalCityCode);
+								return result.postalCityName;
+							},
+							postalTelNo : function(){
+								$('#postalTelNo').editable("setValue",result.postalTelNo);
+								return result.postalTelNo;
+							},
+							submitting : function(){
+								if(result.submitting){
+									$("#btn-submit-dossier").hide();
+									$("#btn-submit-dossier-header").hide();
+								}
 							}
-						}
+
+						});
+
+						kendo.bind($("#detailDossier"), viewModel);
+					},
+					error : function(result){
+
 					}
+
+				});
+			}
+		}
+
+		var fnGetReferenceUidForm = function(arrFile){
+			var referenceUid = 0;
+			if(arrFile){
+				for (var i = 0; i < arrFile.length; i++) {
+					if(arrFile[i].eForm){
+						referenceUid = arrFile[i].referenceUid;
+						break;
+					}
+				}
+			}
+			return referenceUid;
+		}
+
+		var funDossierFile = function(dossierId){
+			var arrFile = new Array();
+			if(dossierId){
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId+"/files",
+					dataType : "json",
+					type : "GET",
+					headers : {"groupId": ${groupId}},
+					async : false,
+					success : function(result){
+						if(result.data){
+							arrFile = result.data;
+						}else {
+							arrFile = [];
+						}
+						
+					},
+					error : function(result){
+
+					}
+				});
+			}
+			return arrFile;
+		}
+		
+
+		var funGenNumberFile = function(arrCount){
+			$(".dossier-component-profile").each(function(index){
+				var partNo = $(this).attr("data-partno");
+				var found = $.grep(arrCount, function(v) {
+					if(v.dossierPartNo === partNo){
+						$("#validPart"+partNo).val(1);
+					}
+					return v.dossierPartNo === partNo;
+				});
+
+				$(this).attr("data-number",found.length);
+				$(this).html('<span class="number-in-circle" >'+found.length+'</span>');
+			});
+		}
+
+		var removeDossierFile = function(dossierId, fileId){
+			var isSuccess = false;
+			$.ajax({
+				url : "${api.server}/dossiers/"+dossierId+"/files/"+fileId,
+				dataType : "json",
+				type : "DELETE",
+				headers : {"groupId": ${groupId}},
+				async : false,
+				success : function(result) {
+					isSuccess = true;
+
+				},
+				error : function(result) {
+					isSuccess = false;
+				}	
+			});
+			return isSuccess;
+		}
+
+		var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
+			var data = new FormData();
+			console.log(file);
+
+			data.append( 'displayName', $(file)[0].files[0].name);
+			data.append( 'file', $(file)[0].files[0]);
+			data.append('dossierPartNo', partNo);
+			data.append('referenceUid', "");
+			data.append('dossierTemplateNo', dossierTemplateNo);
+			data.append('fileTemplateNo', fileTemplateNo);
+			data.append('formData', "");
+			data.append('isSync', "true");
+			data.append('fileType', "");
+
+			$.ajax({
+				type : 'POST', 
+				url  : '${api.server}/dossiers/${dossierId}/files', 
+				data : data,
+				headers: {"groupId": ${groupId}},
+				processData: false,
+				contentType: false,
+				cache: false,
+				success :  function(result){ 
+					var fileLength = $(file)[0].files.length;
+
+					var currentFileNumber = $(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number");
+
+					var totalFile = fileLength + parseInt(currentFileNumber, 0);
+
+					$(".dossier-component-profile").filter("[data-partno="+partNo+"]").html('<span class="number-in-circle" >'+totalFile+'</span>');
+
+					$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",totalFile);
+					$("#uploadFileTemplateDialog").modal("hide");
+
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công"
+					}, "success");
+
+					$("#validPart"+partNo).val("1");
 
 				},
 				error:function(result){
-
-				}
-			});
-		}
-		console.log(dossierFile);
-
-		return dossierFile;
-	}
-
-
-	var fnGetFormData = function(dossierId,referentUid){
-		var value = null;
-		if(dossierId && referentUid){
-			$.ajax({
-				url : "${api.server}/dossiers/"+dossierId+"/files/"+referentUid+"/formdata",
-				type : "GET",
-				dataType : "json",
-				async : false,
-				success : function(result){
-					value = result;
-
-				},
-				error : function(result){
-
-				}
-
-			});
-		}
-
-		return value;
-	}
-
-	$(function(){
-		manageDossier.route("/taohosomoi/nopthanhcong/(:dossierId)", function(dossierId){
-			$("#mainType1").hide();
-			$("#mainType2").show();
-			$("#mainType2").load("${ajax.submited_dossier_info}&${portletNamespace}dossierId="+dossierId,function(result){
-
-			});
-		});
-	});
-
-
-
-	var fnSaveForm = function(id, value){
-		var current = $("#btn-save-formalpaca"+id);
-		var referentUid = current.attr("referenceUid");
-		console.log(referentUid);
-		if(referentUid){
-			$.ajax({
-				url : "${api.server}/dossiers/${dossierId}/files/"+referentUid+"/formdata",
-				dataType : "json",
-				type : "PUT",
-				headers: {
-					"groupId": ${groupId},
-					Accept : "application/json"
-				},
-				data : {
-					formdata: JSON.stringify(value)
-				},
-				success : function(result){
 					notification.show({
-						message: "Yêu cầu được thực hiện thành công!"
-					}, "success");
-					console.log($("#validPart"+id));
-					$("#validPart"+id).val("1");
-				},
-				error : function(result){
-					notification.show({
-						message: "Thực hiện không thành công, xin vui lòng thử lại!"
+						message: "Xảy ra lỗi, xin vui lòng thử lại"
 					}, "error");
 				}
 			});
+			console.log("success!");
 		}
-	}
-	
-$(document).off("click",".saveFormAlpaca");
-$(document).on("click",".saveFormAlpaca",function(event){
-	var id = $(this).attr("data-pk");
-	var referentUidFile = $(this).attr("referenceUid");
 
-	console.log(id);
-	console.log("ccc");
+		printDetailDossier(${dossierId});
 
-	var formType = $("#formPartNo"+id+" .formType").val();
-	var value ;
-
-	if(formType !== "dklr"){
-		value = $("#formPartNo"+id).alpaca('get').getValue();
-
-		var errorMessage = '';
-		$("#formPartNo"+id+' div[class*="has-error"] > label').each(function( index ) {
-
-			errorMessage = "notValid";
-
-		});
-		console.log(errorMessage);
-		console.log(referentUidFile);
-		console.log(value);
-
-		if(errorMessage === '' && referentUidFile){
+		$("#viaPostal").change(function(){
+			var viaPostal = 1;
+			if($(this).is(":checked")) {
+				$("#viaPostalContent").show();
+				viaPostal = 2;
+			}else{
+				$("#viaPostalContent").hide();	
+				viaPostal = 1;
+			}
 			$.ajax({
-				url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
+				url : "${api.server}/dossiers/${dossierId}",
 				dataType : "json",
 				type : "PUT",
-				headers: {
-					"groupId": ${groupId},
-					Accept : "application/json"
-				},
+				headers: {"groupId": ${groupId}},
 				data : {
-					formdata: JSON.stringify(value)
+					viaPostal : viaPostal
 				},
 				success : function(result){
-					notification.show({
-						message: "Yêu cầu được thực hiện thành công!"
-					}, "success");
-					console.log($("#validPart"+id));
-					$("#validPart"+id).val("1");
 
 				},
-				error : function(result){
-					notification.show({
-						message: "Thực hiện không thành công, xin vui lòng thử lại!"
-					}, "error");
+				error : function(xhr){
+
 				}
 			});
-		}else {
-			notification.show({
-				message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi ghi lại!"
-			}, "error");
-		}
-	}
-});
+		});
 
-</script>
+		var getReferentUidFile = function(dossierId,dossierPartNo){
+			var dossierFile;
+			if(dossierId){
+				$.ajax({
+					type : 'GET', 
+					dataType : "json",
+					url  : '${api.server}/dossiers/${dossierId}/files', 
+					headers: {"groupId": ${groupId}},
+					async : false,
+					success :  function(result){ 
+						if(result.data){
+							for (var i = 0; i < result.data.length; i++) {
+								if(result.data[i].eForm){
+									if(dossierPartNo == result.data[i].dossierPartNo){
+										dossierFile = result.data[i];
+										return ;
+									}
+
+								}
+							}
+						}
+
+					},
+					error:function(result){
+
+					}
+				});
+			}
+			console.log(dossierFile);
+
+			return dossierFile;
+		}
+
+
+		var fnGetFormData = function(dossierId,referentUid){
+			var value = null;
+			if(dossierId && referentUid){
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId+"/files/"+referentUid+"/formdata",
+					type : "GET",
+					dataType : "json",
+					async : false,
+					success : function(result){
+						value = result;
+
+					},
+					error : function(result){
+
+					}
+
+				});
+			}
+
+			return value;
+		}
+
+		$(function(){
+			manageDossier.route("/taohosomoi/nopthanhcong/(:dossierId)", function(dossierId){
+				$("#mainType1").hide();
+				$("#mainType2").show();
+				$("#mainType2").load("${ajax.submited_dossier_info}&${portletNamespace}dossierId="+dossierId,function(result){
+
+				});
+			});
+		});
+
+		window.onload = function(){
+			if($("#textDossierNote").text().length < 550){
+				$("#guide-toggle").remove();
+			}
+		}
+
+
+		var fnSaveForm = function(id, value){
+			var current = $("#btn-save-formalpaca"+id);
+			var referentUid = current.attr("referenceUid");
+			console.log(referentUid);
+			if(referentUid){
+				$.ajax({
+					url : "${api.server}/dossiers/${dossierId}/files/"+referentUid+"/formdata",
+					dataType : "json",
+					type : "PUT",
+					headers: {
+						"groupId": ${groupId},
+						Accept : "application/json"
+					},
+					data : {
+						formdata: JSON.stringify(value)
+					},
+					success : function(result){
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công!"
+						}, "success");
+						console.log($("#validPart"+id));
+						$("#validPart"+id).val("1");
+					},
+					error : function(result){
+						notification.show({
+							message: "Thực hiện không thành công, xin vui lòng thử lại!"
+						}, "error");
+					}
+				});
+			}
+		}
+		
+		$(document).off("click",".saveFormAlpaca");
+		$(document).on("click",".saveFormAlpaca",function(event){
+			var id = $(this).attr("data-pk");
+			var referentUidFile = $(this).attr("referenceUid");
+
+			console.log(id);
+			console.log("ccc");
+
+			var formType = $("#formPartNo"+id+" .formType").val();
+			var value ;
+
+			if(formType !== "dklr"){
+				value = $("#formPartNo"+id).alpaca('get').getValue();
+
+				var errorMessage = '';
+				$("#formPartNo"+id+' div[class*="has-error"] > label').each(function( index ) {
+
+					errorMessage = "notValid";
+
+				});
+				console.log(errorMessage);
+				console.log(referentUidFile);
+				console.log(value);
+
+				if(errorMessage === '' && referentUidFile){
+					$.ajax({
+						url : "${api.server}/dossiers/${dossierId}/files/"+referentUidFile+"/formdata",
+						dataType : "json",
+						type : "PUT",
+						headers: {
+							"groupId": ${groupId},
+							Accept : "application/json"
+						},
+						data : {
+							formdata: JSON.stringify(value)
+						},
+						success : function(result){
+							notification.show({
+								message: "Yêu cầu được thực hiện thành công!"
+							}, "success");
+							console.log($("#validPart"+id));
+							$("#validPart"+id).val("1");
+
+						},
+						error : function(result){
+							notification.show({
+								message: "Thực hiện không thành công, xin vui lòng thử lại!"
+							}, "error");
+						}
+					});
+				}else {
+					notification.show({
+						message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi ghi lại!"
+					}, "error");
+				}
+			}
+		});
+
+
+		$("#guide-toggle").click(function(event){
+			event.preventDefault();
+			var state = $(this).attr("state");
+
+			if(state === "normal"){
+				$('#guideDossierContent').css('height', 'auto');
+				$(this).attr("state","full");
+				$(this).html("Thu gọn >>");
+			}else {
+				$('#guideDossierContent').css('height', '100px');
+				$(this).attr("state","normal");
+				$(this).html("Xem thêm >>");
+			}
+
+		});
+
+	</script>

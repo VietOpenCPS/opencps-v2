@@ -104,4 +104,7 @@ public class DossierTerm {
 	public static final String ACTION_MAPPING_USERID = "actionMappingUserId";
 	public static final String ENDORSEMENT_DATE= "endorsementDate";
 	public static final String ENDORSEMENT_DATE_TIMESTAMP = "endorsementDateTimestamp";
+	public static final String DOSSIER_ACTION_ID_PENDING = "dossierActionIdPending";
+	public static final String NOT_STATE = "notState";
+	public static final String STATUS_REG = "statusReg";
 }

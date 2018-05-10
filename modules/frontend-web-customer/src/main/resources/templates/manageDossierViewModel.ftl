@@ -1,6 +1,9 @@
 <#if (Request)??>
 	<#include "init.ftl">
 </#if>
+	<div id="confirm" name="confirm">
+		
+	</div>
 	<script type="text/javascript">
 	// Source for panel list
 		var dataGovAgency = new kendo.data.DataSource({
@@ -31,6 +34,23 @@
 				total:"total"
 			}
 		});
+
+		var fnConfirm = function(title, message, okText, cancelText, okCallBack, cancelCallBack){
+
+			var cf = $("#confirm").kendoDialog({
+				width: "400px",
+				title: title,
+				closable: true,
+				modal: false,
+				content: "<p>"+message+"?<p>",
+				actions: [
+				{ text: cancelText, action: cancelCallBack },
+				{ text: okText, primary: true, action: okCallBack }
+				]
+			}).data("kendoDialog");
+
+			return cf;
+		};
 	//Source for main listview
 		var optBoxPageSize = function(){
 			var totalItem = parseInt(dataSourceProfile.total());
@@ -303,49 +323,22 @@
 			},
 			load_serviceConfig:function(e){
 				e.preventDefault();
-				manageDossier.navigate("/taohosomoi");
+				if('${(applicant)!}'){
+					manageDossier.navigate("/taohosomoi");
+				}else {
+					var cf = confirm("Bạn chưa khai báo đủ thông tin, Bạn có muốn chuyển đến trang khác khai báo!");
+					if(cf){
+						location.href = "group/cong-tiep-nhan/ho-so-doanh-nghiep";
+					}else {
+						location.href = "group/cong-tiep-nhan/quan-ly-ho-so";
+					}
+				}
 			},
 			dataBound: function() {
 				$(".k-clear-value").addClass("k-hidden")
 			}
 		});
 	// Model MainSection
-		var loadProfile = function(){
-			$(".downloadProfile").click(function(e){
-				e.stopPropagation();
-				var id = $(this).attr("data-Pk");
-				$.ajax({
-					url:"${api.server}/dossiers/"+id+"/download",
-					headers: {"groupId": ${groupId}},
-					dataType:"json",
-					type:"GET",
-					success:function(res){
-						
-					},
-					error:function(res){
-						
-					}
-				});
-			});
-		};
-		var loadAddRes = function(){
-			$(".downloadAddRes").click(function(e){
-				e.stopPropagation();
-				var id = $(this).attr("data-Pk");
-				$.ajax({
-					url:"${api.server}/dossiers/"+id,
-					headers: {"groupId": ${groupId}},
-					dataType:"json",
-					type:"GET",
-					success:function(res){
-						
-					},
-					error:function(res){
-						
-					}
-				});
-			});
-		};
 		var copyProfile = function(){
 			$(".copyProfile").click(function(e){
 				e.stopPropagation();
@@ -385,11 +378,48 @@
 			},
 			changeList: function(e){
 				e.preventDefault();
-				loadProfile();
-				loadAddRes();
 				copyProfile();
 				$(".actionDossier a").hover(function(){ $(this).css("color","#14bef0")}, function(){ $(this).css("color","#2a2a2a") }
 				);
+			},
+			downloadProfile : function(e){
+				e.stopPropagation();
+				var id = $(e.currentTarget).attr("data-Pk");
+				var url = "${api.server}/dossiers/"+id+"/download";
+				
+				$.ajax({
+					url : url,
+					type : "GET",
+					success : function(xml, statusText, xhr){
+						if(xhr.status === 204){
+							notification.show({
+								message: "Hồ sơ này chưa có file đính kèm"
+							}, "error");
+						}else if(xhr.status === 200){
+							window.open(url, '_blank');
+						}
+					}
+				});
+			},
+			downloadResDossier : function(e){
+				e.stopPropagation();
+				var id = $(e.currentTarget).attr("data-Pk");
+				var url = "${api.server}/dossiers/"+id+"/download";
+
+				$.ajax({
+					url : url,
+					type : "GET",
+					success : function(xml, statusText, xhr){
+						if(xhr.status === 204){
+							notification.show({
+								message: "Hồ sơ này chưa có file đính kèm"
+							}, "error");
+						}else if(xhr.status === 200){
+							window.open(url, '_blank');
+						}
+					}
+				});
+				
 			}
 		});
 		

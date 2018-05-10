@@ -49,6 +49,8 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="toReceiveDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="tu_ngay_ky_cc" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="den_ngay_ky_cc" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="notState" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="statusReg" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -86,7 +88,9 @@ import javax.xml.bind.annotation.XmlType;
     "denNgayKyCc",
     "dossierIdCTN",
     "fromSubmitDate",
-    "toSubmitDate"
+    "toSubmitDate",
+    "notState",
+    "statusReg"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -148,8 +152,50 @@ public class DossierSearchModel {
     protected String fromSubmitDate;
     @QueryParam(value = "toSubmitDate")
     protected String toSubmitDate;
-    
-    public String getSecetKey() {
+    @QueryParam(value = "pendding")
+    protected String pendding;
+    @QueryParam(value = "applicantIdNo")
+    protected String applicantIdNo;
+    @QueryParam(value = "dossierArr")
+    protected String dossierArr;
+    @QueryParam(value = "notState")
+    protected String notState;
+    @QueryParam(value = "statusReg")
+    protected String statusReg;
+
+    public String getStatusReg() {
+		return statusReg;
+	}
+
+	public void setStatusReg(String statusReg) {
+		this.statusReg = statusReg;
+	}
+
+	public String getNotState() {
+		return notState;
+	}
+
+	public void setNotState(String notState) {
+		this.notState = notState;
+	}
+
+	public String getDossierArr() {
+		return dossierArr;
+	}
+
+	public void setDossierArr(String dossierArr) {
+		this.dossierArr = dossierArr;
+	}
+
+	public String getApplicantIdNo() {
+		return applicantIdNo;
+	}
+
+	public void setApplicantIdNo(String applicantIdNo) {
+		this.applicantIdNo = applicantIdNo;
+	}
+
+	public String getSecetKey() {
 		return secetKey;
 	}
 
@@ -723,6 +769,14 @@ public class DossierSearchModel {
 
 	public void setToSubmitDate(String toSubmitDate) {
 		this.toSubmitDate = toSubmitDate;
+	}
+
+	public String getPendding() {
+		return pendding;
+	}
+
+	public void setPendding(String pendding) {
+		this.pendding = pendding;
 	}
 
 }

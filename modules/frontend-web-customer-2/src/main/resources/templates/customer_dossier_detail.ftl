@@ -635,7 +635,10 @@
 			},
 			template : function(data){
 
-				indexDossiserPart ++;
+				
+				if(data.partType === 1){
+					indexDossiserPart ++;
+				}
 
 				data.itemIndex = indexDossiserPart;
 
@@ -817,7 +820,9 @@
 					if(result.dossierStatus == ''){
 						console.log("------>doActions");  
 						createActionDossier(${dossierId});
-						getTotal();
+						getTotal(function(dossierArr){
+							
+						});
 					}
 					/*notification.show({
 						message: "Yêu cầu được thực hiện thành công"
@@ -1214,6 +1219,7 @@
 		data.append('formData', "");
 		data.append('fileType', "");
 		data.append('isSync', "true");
+		//data.append('deliverableCode', "");
 
 		$.ajax({
 			type : 'POST', 
