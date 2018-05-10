@@ -233,42 +233,56 @@
 
 				initStepCombobox();
 
+				$("#createDossierFiles").data("kendoMultiSelect").dataSource.read({
+					id : serviceProcessAction.dossierTemplateNo
+				});
 				
 				console.log("serviceProcessAction.createDossierFiles==============",serviceProcessAction.createDossierFiles);
-				if (typeof serviceProcessAction.createDossierFiles === 'number'){
-					console.log("type number");
-					$("#createDossierFiles").data("kendoMultiSelect").value(serviceProcessAction.createDossierFiles);
-					
 
-				} else if (typeof serviceProcessAction.createDossierFiles === 'string'){
-					console.log("type string");
-					var createDossierFileArr = serviceProcessAction.createDossierFiles.split(",");
-					$("#createDossierFiles").data("kendoMultiSelect").value(createDossierFileArr);
-					
-				} else if (serviceProcessAction.createDossierFiles){
-					$("#createDossierFiles").data("kendoMultiSelect").value(serviceProcessAction.createDossierFiles);
-				}else {
-					$("#createDossierFiles").data("kendoMultiSelect").value("");
-				}
+				$("#createDossierFiles").data("kendoMultiSelect").dataSource.fetch(function(){
+					if (typeof serviceProcessAction.createDossierFiles === 'number'){
+						console.log("type number");
+						$("#createDossierFiles").data("kendoMultiSelect").value(serviceProcessAction.createDossierFiles);
 
+
+					} else if (typeof serviceProcessAction.createDossierFiles === 'string'){
+						console.log("type string");
+						var createDossierFileArr = serviceProcessAction.createDossierFiles.split(",");
+						$("#createDossierFiles").data("kendoMultiSelect").value(createDossierFileArr);
+
+					} else if (serviceProcessAction.createDossierFiles){
+						$("#createDossierFiles").data("kendoMultiSelect").value(serviceProcessAction.createDossierFiles);
+					}else {
+						$("#createDossierFiles").data("kendoMultiSelect").value("");
+					}
+				});
 				
 				console.log("serviceProcessAction.returnDossierFiles==============",serviceProcessAction.returnDossierFiles);
+				$("#returnDossierFiles").data("kendoMultiSelect").dataSource.read({
+					id : serviceProcessAction.dossierTemplateNo
+				});
 
-				if (typeof serviceProcessAction.returnDossierFiles === 'number'){
+				$("#returnDossierFiles").data("kendoMultiSelect").dataSource.fetch(function(){
+					console.log(this.view());
+					if (typeof serviceProcessAction.returnDossierFiles === 'number'){
 
-					$("#returnDossierFiles").data("kendoMultiSelect").value(serviceProcessAction.returnDossierFiles);
+						$("#returnDossierFiles").data("kendoMultiSelect").value(serviceProcessAction.returnDossierFiles);
 
-				}  else if (typeof serviceProcessAction.returnDossierFiles === 'string'){
+					}  else if (typeof serviceProcessAction.returnDossierFiles === 'string'){
 
-					var returnDossierFileArr = serviceProcessAction.returnDossierFiles.split(",");
+						var returnDossierFileArr = serviceProcessAction.returnDossierFiles.split(",");
 
-					$("#returnDossierFiles").data("kendoMultiSelect").value(returnDossierFileArr);
+						$("#returnDossierFiles").data("kendoMultiSelect").value(returnDossierFileArr);
 
-				} else if (serviceProcessAction.returnDossierFiles){
-					$("#returnDossierFiles").data("kendoMultiSelect").value(serviceProcessAction.returnDossierFiles);
-				}else {
-					$("#returnDossierFiles").data("kendoMultiSelect").value("");
-				}
+					} else if (serviceProcessAction.returnDossierFiles){
+						$("#returnDossierFiles").data("kendoMultiSelect").value(serviceProcessAction.returnDossierFiles);
+					}else {
+						$("#returnDossierFiles").data("kendoMultiSelect").value("");
+					}
+				});
+
+
+				
 
 				$("#btn_save_service_process_action").attr("data-pk", $(this).attr("data-pk"));
 			});
@@ -284,6 +298,8 @@
 				event.preventDefault();
 				$("#serviceprocess_action_container").hide();
 				$("#serviceprocess_detail_formaction_container").show();
+
+				
 
 				var viewModel = kendo.observable({
 					actionCode: "",
@@ -304,7 +320,18 @@
 					createDossierNo : "",
 					eSignature : "",
 					configNote : "",
-					dossiertemplatesFileFilter : ""
+					dossiertemplatesFileFilter : function(){
+
+						$("#dossiertemplateTmp").val("");
+
+						$('#createDossierFiles').data('kendoMultiSelect').dataSource.read();
+						$('#createDossierFiles').data('kendoMultiSelect').value("");
+
+						$('#returnDossierFiles').data('kendoMultiSelect').dataSource.read();
+						$('#returnDossierFiles').data('kendoMultiSelect').value("");
+
+						return "";
+					}
 					/*configNote : '{  "cancelButton": "Quay lại", "requiredNote": false,    "confirmButton": "Đồng ý",    "titleNote": "Nhập ý kiến chỉ đạo",    "displayNote": false}'*/
 				});
 

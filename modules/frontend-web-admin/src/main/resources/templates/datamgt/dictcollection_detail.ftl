@@ -13,6 +13,9 @@
 				Danh sách dữ liệu danh mục
 			</li>
 			<li>
+				Danh sách dữ liệu danh mục chờ đồng bộ
+			</li>
+			<li>
 				Mẫu form
 			</li>
 
@@ -23,6 +26,8 @@
 		</div>
 
 		<div id="_collectionDetail_dictItem_link"></div>
+
+		<div id="_collectionDetail_dictItem_link_2"></div>
 
 		<div id="_collectionDetail_formTemplate_link">
 
@@ -48,7 +53,10 @@ $(document).ready(function() {
 
 				$("#_collectionDetail_dictItem_link").load('${url.adminDataMgtPortlet.dictcollection_detail_dictitem}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}collectionCode=${(dictCollection_dictCollection.collectionCode)!}');
 
-			} else if($(e.item).index() == 2){
+			}else if($(e.item).index() == 2){
+				$("#_collectionDetail_dictItem_link_2").load('${url.adminDataMgtPortlet.dictcollection_detail_dictitem_2}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}collectionCode=${(dictCollection_dictCollection.collectionCode)!}');
+
+			} else if($(e.item).index() == 3){
 
 				$("#_collectionDetail_formTemplate_link").load('${url.adminDataMgtPortlet.dictcollection_detail_formtemplate}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}collectionCode=${(dictCollection_dictCollection.collectionCode)!}');
 

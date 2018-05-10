@@ -44,7 +44,8 @@
 			</label>
 
 			<input type="text" id="_collectionSub_dictGroup_edit_groupCode" name="_collectionSub_dictGroup_edit_groupCode" class="form-control"
-				placeholder="Mã nhóm" required validationMessage="Nhập mã nhóm" value="${(dictCollection_dictGroup.groupCode)!}"  />
+				placeholder="Mã nhóm" required validationMessage="Nhập mã nhóm" value="${(dictCollection_dictGroup.groupCode)!}" <#if dictCollection_dictGroup?has_content >
+						disabled</#if> />
 		
 		</div>
 		
@@ -117,9 +118,9 @@
 			return;
 		}
 		
-		var dictCollection_groupCode = $(this).attr('data-pk');;
+		var dictCollection_groupCode = $(this).attr('data-pk');
 
-		if (dictCollection_groupCode!=null && dictCollection_groupCode!="") {
+		if (dictCollection_groupCode != null && dictCollection_groupCode != "") {
 
 			$("#_collectionSub_group_listView").getKendoListView().dataSource.transport.update({
 				

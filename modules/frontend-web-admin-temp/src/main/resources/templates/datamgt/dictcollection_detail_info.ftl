@@ -408,7 +408,7 @@ function _collectionSub_group_autocompleteSearch(val) {
 					success: function(data, textStatus, xhr) {
 					
 						showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-						$("#_collectionSub_group_listView").getKendoListView().dataSource.pushDestroy(data);
+						/*$("#_collectionSub_group_listView").getKendoListView().dataSource.pushDestroy(data);*/
 						$("#_collectionSub_group_listView").getKendoListView().dataSource.pushUpdate(data);
 						$("#modal").trigger({ type: "click" });
 						
