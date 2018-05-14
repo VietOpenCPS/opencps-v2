@@ -109,6 +109,7 @@ public class AutoFillFormData {
 					_applicantIdType = applicantJSON.getString("applicantIdType");
 					_applicantIdNo = applicantJSON.getString("applicantIdNo");
 					_applicantIdDate = applicantJSON.getString("applicantIdDate");
+					_applicantIdDate = applicantJSON.getString("representativeEnterprise");
 
 				} else {
 					String applicantStr = applicantActions.getApplicantByUserId(serviceContext);

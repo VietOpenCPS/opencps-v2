@@ -35,27 +35,30 @@ public class RegistrationActionsImpl implements RegistrationActions {
 	Log _log = LogFactoryUtil.getLog(RegistrationActionsImpl.class);
 
 	@Override
-	public Registration insert(long groupId, long companyId, String applicantName, String applicantIdType, String applicantIdNo,
-			String applicantIdDate, String address, String cityCode, String cityName, String districtCode,
-			String districtName, String wardCode, String wardName, String contactName, String contactTelNo,
-			String contactEmail, String govAgencyCode, String govAgencyName, int registrationState,
-			String registrationClass, ServiceContext serviceContext) throws SystemException, PortalException {
+	public Registration insert(long groupId, long companyId, String applicantName, String applicantIdType,
+			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
+			String districtCode, String districtName, String wardCode, String wardName, String contactName,
+			String contactTelNo, String contactEmail, String govAgencyCode, String govAgencyName, int registrationState,
+			String registrationClass, String representativeEnterprise, ServiceContext serviceContext)
+			throws SystemException, PortalException {
 		List<Registration> listRegistration = RegistrationLocalServiceUtil.getRegistrationByGID_UID(groupId,
 				serviceContext.getUserId());
 		_log.info("listRegistration: "+listRegistration.size());
 		if (listRegistration.size() == 0) {
-			return RegistrationLocalServiceUtil.insert(groupId, companyId, applicantName, applicantIdType, applicantIdNo,
-					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
-					contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, 0, "", serviceContext);
+			return RegistrationLocalServiceUtil.insert(groupId, companyId, applicantName, applicantIdType,
+					applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
+					wardName, contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, 0, "",
+					representativeEnterprise, serviceContext);
 		} else {
 			Registration registration = listRegistration.get(0);
 			int state = registration.getRegistrationState();
 			_log.info("registration: "+registration.getRegistrationId());
 			_log.info("state: "+state);
 			if (state == 2) {
-				return RegistrationLocalServiceUtil.insert(groupId, companyId, applicantName, applicantIdType, applicantIdNo,
-						applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
-						contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, 0, "", serviceContext);
+				return RegistrationLocalServiceUtil.insert(groupId, companyId, applicantName, applicantIdType,
+						applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName,
+						wardCode, wardName, contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, 0,
+						"", representativeEnterprise, serviceContext);
 			} else {
 				return registration;
 			}
@@ -68,7 +71,8 @@ public class RegistrationActionsImpl implements RegistrationActions {
 			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String govAgencyCode, String govAgencyName,
-			int registrationState, String registrationClass, ServiceContext serviceContext) throws PortalException {
+			int registrationState, String registrationClass, String representativeEnterprise,
+			ServiceContext serviceContext) throws PortalException {
 
 		int start = -1, end = -1;
 
@@ -106,7 +110,7 @@ public class RegistrationActionsImpl implements RegistrationActions {
 		return RegistrationLocalServiceUtil.updateRegistration(groupId, registrationId, applicantName, applicantIdType,
 				applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
 				wardName, contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, registrationState,
-				registrationClass, serviceContext);
+				registrationClass, representativeEnterprise, serviceContext);
 
 	}
 

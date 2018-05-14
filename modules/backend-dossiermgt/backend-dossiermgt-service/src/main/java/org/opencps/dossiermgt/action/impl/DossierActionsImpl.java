@@ -987,7 +987,7 @@ public class DossierActionsImpl implements DossierActions {
 		}
 
 		// Add paymentFile
-		if (Validator.isNotNull(processAction.getPaymentFee())) {
+		if (processAction != null && Validator.isNotNull(processAction.getPaymentFee())) {
 			try {
 				DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId,
 						context, serviceProcess.getServerNo());
@@ -1184,7 +1184,14 @@ public class DossierActionsImpl implements DossierActions {
 			}
 
 			String preCondition = processAction.getPreCondition();
+			String autoEvent = processAction.getAutoEvent();
 			_log.info("preCondition: "+preCondition);
+
+			//LamTV: Process case auto Event
+			boolean flagEvent = false;
+			if (Validator.isNotNull(autoEvent) && autoEvent.toLowerCase().contentEquals("timmer")) {
+				flagEvent = true;
+			}
 
 			if (Validator.isNotNull(preCondition)) {
 				// case reject_cancelling
@@ -1287,26 +1294,49 @@ public class DossierActionsImpl implements DossierActions {
 
 				//LamTV: Update process approved endorsement
 				if (preCondition.toLowerCase().contentEquals("submitting")) {
-					// flag-off
-					_log.info("START APPROVED SUBMIT....");
+					if (flagEvent) {
+						// flag-off
+						_log.info("START APPROVED SUBMIT....");
 
-					
-					String refUid = PortalUUIDUtil.generate();
-					int status = 1;
+						
+						String refUid = PortalUUIDUtil.generate();
+						int status = 3;
 
-					DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "submitting",
-							actionNote, 0, status, context);
+						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "submitting",
+								actionNote, 0, status, context);
 
-					// in SERVER
-					
-					Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
-					if (sourceDossier != null) {
-						context.setScopeGroupId(sourceDossier.getGroupId());
-						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
-								"submitting", actionNote, 0, status, context);
+						// in SERVER
+						
+						Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+						if (sourceDossier != null) {
+							context.setScopeGroupId(sourceDossier.getGroupId());
+							DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
+									"submitting", actionNote, 0, status, context);
+						}
+
+						context.setScopeGroupId(dossier.getGroupId());
+					} else {
+						// flag-off
+						_log.info("START APPROVED SUBMIT....");
+
+						
+						String refUid = PortalUUIDUtil.generate();
+						int status = 1;
+
+						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "submitting",
+								actionNote, 0, status, context);
+
+						// in SERVER
+						
+						Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+						if (sourceDossier != null) {
+							context.setScopeGroupId(sourceDossier.getGroupId());
+							DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
+									"submitting", actionNote, 0, status, context);
+						}
+
+						context.setScopeGroupId(dossier.getGroupId());
 					}
-
-					context.setScopeGroupId(dossier.getGroupId());
 
 				}
 
@@ -1346,24 +1376,45 @@ public class DossierActionsImpl implements DossierActions {
 
 				//LamTV: Update process approved correcting
 				if (preCondition.toLowerCase().contentEquals("correcting")) {
-					// flag-off
-					_log.info("START APPROVED CORRECTING....");
+					if (flagEvent) {
+						// flag-off
+						_log.info("START APPROVED CORRECTING....");
 
-					String refUid = PortalUUIDUtil.generate();
-					int status = 1;
+						String refUid = PortalUUIDUtil.generate();
+						int status = 3;
 
-					// IN CLIENT
-					DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "correcting",
-							actionNote, 0, status, context);
+						// IN CLIENT
+						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "correcting",
+								actionNote, 0, status, context);
 
-					// IN SERVER
-					Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
-					if (sourceDossier != null) {
-						context.setScopeGroupId(sourceDossier.getGroupId());
-						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
-								"correcting", actionNote, 0, status, context);
+						// IN SERVER
+						Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+						if (sourceDossier != null) {
+							context.setScopeGroupId(sourceDossier.getGroupId());
+							DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
+									"correcting", actionNote, 0, status, context);
+						}
+						context.setScopeGroupId(dossier.getGroupId());
+					}else {
+						// flag-off
+						_log.info("START APPROVED CORRECTING....");
+
+						String refUid = PortalUUIDUtil.generate();
+						int status = 1;
+
+						// IN CLIENT
+						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "correcting",
+								actionNote, 0, status, context);
+
+						// IN SERVER
+						Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+						if (sourceDossier != null) {
+							context.setScopeGroupId(sourceDossier.getGroupId());
+							DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
+									"correcting", actionNote, 0, status, context);
+						}
+						context.setScopeGroupId(dossier.getGroupId());
 					}
-					context.setScopeGroupId(dossier.getGroupId());
 				}
 
 			}
