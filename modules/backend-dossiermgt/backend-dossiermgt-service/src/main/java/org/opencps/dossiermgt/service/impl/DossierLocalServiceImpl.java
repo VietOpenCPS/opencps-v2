@@ -530,6 +530,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossier;
 	}
 
+	private static final String LOCK_ALL = "LOCK ALL";
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier submitting(long groupId, long id, String refId, ServiceContext context) throws PortalException {
@@ -558,27 +559,27 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setSubmitDate(now);
 		}
 
-		long dActionId = 0;
-		String stepCode = StringPool.BLANK;
-		long serviceProcessId = 0;
-		String lockState = StringPool.BLANK;
-		if (dossier != null) {
-			dActionId = dossier.getDossierActionId();
-		}
-		if (dActionId > 0) {
-			DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dActionId);
-			if (dAction != null) {
-				stepCode = dAction.getStepCode();
-				serviceProcessId = dAction.getServiceProcessId();
-			}
-		}
-		if (Validator.isNotNull(stepCode) && serviceProcessId > 0) {
-			ProcessStep proStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
-			if (proStep != null) {
-				lockState = proStep.getLockState();
-			}
-		}
-		dossier.setLockState(lockState);
+//		long dActionId = 0;
+//		String stepCode = StringPool.BLANK;
+//		long serviceProcessId = 0;
+//		String lockState = StringPool.BLANK;
+//		if (dossier != null) {
+//			dActionId = dossier.getDossierActionId();
+//		}
+//		if (dActionId > 0) {
+//			DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dActionId);
+//			if (dAction != null) {
+//				stepCode = dAction.getStepCode();
+//				serviceProcessId = dAction.getServiceProcessId();
+//			}
+//		}
+//		if (Validator.isNotNull(stepCode) && serviceProcessId > 0) {
+//			ProcessStep proStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
+//			if (proStep != null) {
+//				lockState = proStep.getLockState();
+//			}
+//		}
+		dossier.setLockState(LOCK_ALL);
 
 		dossierPersistence.update(dossier);
 
@@ -1114,7 +1115,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String toSubmitDate = GetterUtil.getString(params.get(DossierTerm.TO_SUBMIT_DATE));
 		String notState = GetterUtil.getString(params.get(DossierTerm.NOT_STATE));
 		Long statusReg = GetterUtil.getLong(params.get(DossierTerm.STATUS_REG));
-		_log.info("STATUS_REG Local Search: "+statusReg);
+//		_log.info("STATUS_REG Local Search: "+statusReg);
+		Long notStatusReg = GetterUtil.getLong(params.get(DossierTerm.NOT_STATUS_REG));
+//		_log.info("notStatusReg_REG Local Search: "+notStatusReg);
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1509,6 +1512,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+		if (Validator.isNotNull(notStatusReg)) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(notStatusReg));
+
+			query.addField(DossierTerm.STATUS_REG);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -1555,7 +1566,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String toSubmitDate = GetterUtil.getString(params.get(DossierTerm.TO_SUBMIT_DATE));
 		String notState = GetterUtil.getString(params.get(DossierTerm.NOT_STATE));
 		Long statusReg = GetterUtil.getLong(params.get(DossierTerm.STATUS_REG));
-		_log.info("statusReg: "+statusReg);
+		Long notStatusReg = GetterUtil.getLong(params.get(DossierTerm.NOT_STATUS_REG));
+//		_log.info("statusReg: "+statusReg);
+//		_log.info("notStatusReg: "+notStatusReg);
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1946,6 +1959,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			query.addField(DossierTerm.STATUS_REG);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(notStatusReg)) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(notStatusReg));
+
+			query.addField(DossierTerm.STATUS_REG);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);

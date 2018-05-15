@@ -161,12 +161,16 @@ public class DossierManagementImpl implements DossierManagement {
 			String dossierIdCTN = query.getDossierIdCTN();
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
-			//Get info case abnormal
+			//LamTV:Get info case abnormal
 			Long statusRegNo = null;
 			if (Validator.isNotNull(query.getStatusReg())) {
 				statusRegNo = Long.valueOf(query.getStatusReg());
 			}
-			_log.info("statusRegNo: "+statusRegNo);
+
+			Long notStatusRegNo = null;
+			if (Validator.isNotNull(query.getNotStatusReg())) {
+				notStatusRegNo = Long.valueOf(query.getNotStatusReg());
+			}
 
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -193,6 +197,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
 			params.put(DossierTerm.STATUS_REG, statusRegNo);
+			params.put(DossierTerm.NOT_STATUS_REG, notStatusRegNo);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };

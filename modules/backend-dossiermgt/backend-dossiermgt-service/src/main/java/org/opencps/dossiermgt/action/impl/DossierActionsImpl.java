@@ -109,11 +109,11 @@ public class DossierActionsImpl implements DossierActions {
 		try {
 
 			String status = GetterUtil.getString(params.get(DossierTerm.STATUS));
+			_log.info("status: "+status);
 			if (Validator.isNotNull(status)) {
 				if (!status.contains(StringPool.COMMA)) {
-					if (status.equals("done")) {
-						params.put(DossierTerm.NOT_STATE, "correcting, endorsement");
-					} else {
+					if (!status.equals("done") && !status.equals("cancelled")) {
+						_log.info("done: "+status);
 						params.put(DossierTerm.NOT_STATE, "cancelling");
 					}
 				}
@@ -961,6 +961,7 @@ public class DossierActionsImpl implements DossierActions {
 		String type = StringPool.BLANK;
 
 		String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
+		_log.info("applicantNote: "+applicantNote);
 
 		dossier.setApplicantNote(applicantNote);
 
@@ -1005,7 +1006,7 @@ public class DossierActionsImpl implements DossierActions {
 		}
 
 		// Add paymentFile
-		if (Validator.isNotNull(processAction.getPaymentFee())) {
+		if (processAction != null && Validator.isNotNull(processAction.getPaymentFee())) {
 			try {
 				DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId,
 						context, serviceProcess.getServerNo());
@@ -1213,7 +1214,14 @@ public class DossierActionsImpl implements DossierActions {
 			}
 
 			String preCondition = processAction.getPreCondition();
+			String autoEvent = processAction.getAutoEvent();
 			_log.info("preCondition: "+preCondition);
+
+			//LamTV: Process case auto Event
+			boolean flagEvent = false;
+			if (Validator.isNotNull(autoEvent) && autoEvent.toLowerCase().contentEquals("timmer")) {
+				flagEvent = true;
+			}
 
 			if (Validator.isNotNull(preCondition)) {
 				// case reject_cancelling
@@ -1316,26 +1324,49 @@ public class DossierActionsImpl implements DossierActions {
 
 				//LamTV: Update process approved endorsement
 				if (preCondition.toLowerCase().contentEquals("submitting")) {
-					// flag-off
-					_log.info("START APPROVED SUBMIT....");
+					if (flagEvent) {
+						// flag-off
+						_log.info("START APPROVED SUBMIT....");
 
-					
-					String refUid = PortalUUIDUtil.generate();
-					int status = 1;
+						
+						String refUid = PortalUUIDUtil.generate();
+						int status = 3;
 
-					DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "submitting",
-							actionNote, 0, status, context);
+						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "submitting",
+								actionNote, 0, status, context);
 
-					// in SERVER
-					
-					Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
-					if (sourceDossier != null) {
-						context.setScopeGroupId(sourceDossier.getGroupId());
-						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
-								"submitting", actionNote, 0, status, context);
+						// in SERVER
+						
+						Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+						if (sourceDossier != null) {
+							context.setScopeGroupId(sourceDossier.getGroupId());
+							DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
+									"submitting", actionNote, 0, status, context);
+						}
+
+						context.setScopeGroupId(dossier.getGroupId());
+					} else {
+						// flag-off
+						_log.info("START APPROVED SUBMIT....");
+
+						
+						String refUid = PortalUUIDUtil.generate();
+						int status = 1;
+
+						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "submitting",
+								actionNote, 0, status, context);
+
+						// in SERVER
+						
+						Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+						if (sourceDossier != null) {
+							context.setScopeGroupId(sourceDossier.getGroupId());
+							DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
+									"submitting", actionNote, 0, status, context);
+						}
+
+						context.setScopeGroupId(dossier.getGroupId());
 					}
-
-					context.setScopeGroupId(dossier.getGroupId());
 
 				}
 
@@ -1375,24 +1406,45 @@ public class DossierActionsImpl implements DossierActions {
 
 				//LamTV: Update process approved correcting
 				if (preCondition.toLowerCase().contentEquals("correcting")) {
-					// flag-off
-					_log.info("START APPROVED CORRECTING....");
+					if (flagEvent) {
+						// flag-off
+						_log.info("START APPROVED CORRECTING....");
 
-					String refUid = PortalUUIDUtil.generate();
-					int status = 1;
+						String refUid = PortalUUIDUtil.generate();
+						int status = 3;
 
-					// IN CLIENT
-					DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "correcting",
-							actionNote, 0, status, context);
+						// IN CLIENT
+						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "correcting",
+								actionNote, 0, status, context);
 
-					// IN SERVER
-					Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
-					if (sourceDossier != null) {
-						context.setScopeGroupId(sourceDossier.getGroupId());
-						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
-								"correcting", actionNote, 0, status, context);
+						// IN SERVER
+						Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+						if (sourceDossier != null) {
+							context.setScopeGroupId(sourceDossier.getGroupId());
+							DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
+									"correcting", actionNote, 0, status, context);
+						}
+						context.setScopeGroupId(dossier.getGroupId());
+					}else {
+						// flag-off
+						_log.info("START APPROVED CORRECTING....");
+
+						String refUid = PortalUUIDUtil.generate();
+						int status = 1;
+
+						// IN CLIENT
+						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "correcting",
+								actionNote, 0, status, context);
+
+						// IN SERVER
+						Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+						if (sourceDossier != null) {
+							context.setScopeGroupId(sourceDossier.getGroupId());
+							DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
+									"correcting", actionNote, 0, status, context);
+						}
+						context.setScopeGroupId(dossier.getGroupId());
 					}
-					context.setScopeGroupId(dossier.getGroupId());
 				}
 
 			}
@@ -2110,6 +2162,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		StringBuilder sb = new StringBuilder();
 
 		String oldNote = dossier.getApplicantNote();
+		_log.info("oldNote: "+oldNote);
 
 		if (Validator.isNotNull(oldNote) && oldNote.contains("<br>")) {
 			if (Validator.isNotNull(actionNote)) {
@@ -2124,6 +2177,10 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					sb.append("[" + sdf.format(date) + "]");
 					sb.append(": ");
 					sb.append(actionNote);
+				}
+			} else {
+				if (groupId != 55217) {
+					sb.append(oldNote);
 				}
 			}
 		} else if (Validator.isNotNull(actionNote)) {
@@ -2379,12 +2436,14 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 							params.put(DossierTerm.STATUS, strStatus);
 							params.put(DossierTerm.SUBSTATUS, subStatusCode);
 							params.put(DossierTerm.OWNER, String.valueOf(true));
-							if (strStatus.equals("done")) {
-								params.put(DossierTerm.NOT_STATE, "correcting, endorsement");
-							} else {
+							if (!strStatus.equals("done") && !strStatus.equals("cancelled")) {
 								params.put(DossierTerm.NOT_STATE, "cancelling");
 							}
-	
+							if(strStatus.equals("cancelled")) {
+								params.put(DossierTerm.NOT_STATE, StringPool.BLANK);
+								params.put(DossierTerm.NOT_STATUS_REG, null);
+							}
+
 							long count = DossierLocalServiceUtil.countLucene(params, searchContext);
 
 							JSONObject statistic = JSONFactoryUtil.createJSONObject();

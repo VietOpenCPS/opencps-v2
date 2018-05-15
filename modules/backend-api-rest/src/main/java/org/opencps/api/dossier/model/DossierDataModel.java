@@ -170,10 +170,11 @@ import javax.xml.bind.annotation.XmlType;
     "dossierOverdue",
     "hasPassword",
     "serverNo",
-//    "certNumber"
     "certNo",
     "certDate",
-    "endorsementDate"
+    "endorsementDate",
+    "lockState",
+    "statusReg"
 })
 public class DossierDataModel {
 
@@ -246,10 +247,27 @@ public class DossierDataModel {
 	protected String dossierOverdue;
 	protected String hasPassword;
 	protected String serverNo;
-//	protected List<CertNumberModel> certNumber;
 	protected String certNo;
 	protected String certDate;
 	protected String endorsementDate;
+	protected String lockState;
+	protected String statusReg;
+
+	public String getStatusReg() {
+		return statusReg;
+	}
+
+	public void setStatusReg(String statusReg) {
+		this.statusReg = statusReg;
+	}
+
+	public String getLockState() {
+		return lockState;
+	}
+
+	public void setLockState(String lockState) {
+		this.lockState = lockState;
+	}
 
 	public String getEndorsementDate() {
 		return endorsementDate;

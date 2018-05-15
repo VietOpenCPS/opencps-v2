@@ -1229,6 +1229,7 @@
 		<column name="registrationState" type="int" />
 		<column name="registrationClass" type="String" />
 		<column name="submitting" type="boolean" />
+		<column name="representativeEnterprise" type="String" />
 
 		<!-- Order -->
 
@@ -1328,7 +1329,7 @@
 		<column name="removed" type="boolean" />
 		<!-- Order -->
 		<order>
-			<order-column name="createDate" order-by="desc" />
+			<order-column name="createDate" order-by="asc" />
 		</order>
 
 		<!-- Filter -->

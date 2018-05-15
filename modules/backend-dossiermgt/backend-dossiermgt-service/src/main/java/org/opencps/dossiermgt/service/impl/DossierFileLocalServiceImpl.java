@@ -1015,6 +1015,15 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		}
 	}
 
+	//TODO: get follow PPC
+	public DossierFile getByFileTemplateNo(long id, String fileTemplateNo) {
+		try {
+			return deliverableFinder.findFileTemplateNo(id, fileTemplateNo);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	//Get dossierFile follow fileEntryId
 	public DossierFile getByFileEntryId(long fileEntryId) {
 		return dossierFilePersistence.fetchByFILE_ID(fileEntryId);
