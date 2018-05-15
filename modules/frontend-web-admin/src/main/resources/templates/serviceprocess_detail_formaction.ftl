@@ -292,26 +292,33 @@
 						
 					}
 
-					$.ajax({
-						url : "${api.server}" + "/dossiertemplates/"+id+"/parts",
-						dataType : "json",
-						type : "GET",
-						headers: {"groupId": ${groupId}},
-						success : function(result){
-							if(result.data){
-								options.success(result);
-							}else {
-								options.success({
-									"total" : 0,
-									"data" : []
-								});
-							}
+					if(!id){
+						options.success({
+							"total" : 0,
+							"data" : []
+						});
+					}else {
+						$.ajax({
+							url : "${api.server}" + "/dossiertemplates/"+id+"/parts",
+							dataType : "json",
+							type : "GET",
+							headers: {"groupId": ${groupId}},
+							success : function(result){
+								if(result.data){
+									options.success(result);
+								}else {
+									options.success({
+										"total" : 0,
+										"data" : []
+									});
+								}
 
-						},
-						error : function(xhr){
-							options.error(xhr);
-						}
-					});
+							},
+							error : function(xhr){
+								options.error(xhr);
+							}
+						});
+					}
 					
 				}
 			},
@@ -347,26 +354,35 @@
 						
 					}
 
-					$.ajax({
-						url : "${api.server}" + "/dossiertemplates/"+id+"/parts",
-						dataType : "json",
-						type : "GET",
-						headers: {"groupId": ${groupId}},
-						success : function(result){
-							if(result.data){
-								options.success(result);
-							}else {
-								options.success({
-									"total" : 0,
-									"data" : []
-								});
-							}
+					if(!id){
+						options.success({
+							"total" : 0,
+							"data" : []
+						});
+					}else {
+						$.ajax({
+							url : "${api.server}" + "/dossiertemplates/"+id+"/parts",
+							dataType : "json",
+							type : "GET",
+							headers: {"groupId": ${groupId}},
+							success : function(result){
+								if(result.data){
+									options.success(result);
+								}else {
+									options.success({
+										"total" : 0,
+										"data" : []
+									});
+								}
 
-						},
-						error : function(xhr){
-							options.error(xhr);
-						}
-					});
+							},
+							error : function(xhr){
+								options.error(xhr);
+							}
+						});
+					}
+
+					
 					
 				}
 			},

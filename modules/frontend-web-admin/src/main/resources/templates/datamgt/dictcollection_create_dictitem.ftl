@@ -30,7 +30,8 @@
 				
 					</label>
 					<input type="text" id="_collectionSub_dictItem_edit_itemCode" name="_collectionSub_dictItem_edit_itemCode" class="form-control"
-						placeholder="Mã danh mục" required validationMessage="Nhập mã danh mục" value="${(dictCollection_dictItem.itemCode)!}"  />
+						placeholder="Mã danh mục" required validationMessage="Nhập mã danh mục" value="${(dictCollection_dictItem.itemCode)!}" <#if dictCollection_dictItem?has_content >
+						disabled</#if>  />
 				
 				</div>
 

@@ -1592,6 +1592,8 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		finally {
 			writeJSON(actionRequest, actionResponse, result);
 		}
+		
+		
 
 	}
 

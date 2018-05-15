@@ -42,13 +42,14 @@
 		$("#noInput").hide();
 		resetValueFilter();
 		layout.showIn("#main_section", viewMainList);
+
+		getTotal();
 		
-		getTotal(function(dossierArr){
-			dataSourceProfile.read({
-				"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired",
-				"dossierArr" : dossierArr
-			});
+		dataSourceProfile.read({
+			"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
 		});
+		
+		
 
 		// $(".itemStatus").css("pointer-events","auto");
 		$('#searchCC').removeClass('active');

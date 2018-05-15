@@ -820,9 +820,7 @@
 					if(result.dossierStatus == ''){
 						console.log("------>doActions");  
 						createActionDossier(${dossierId});
-						getTotal(function(dossierArr){
-							
-						});
+						getTotal();
 					}
 					/*notification.show({
 						message: "Yêu cầu được thực hiện thành công"

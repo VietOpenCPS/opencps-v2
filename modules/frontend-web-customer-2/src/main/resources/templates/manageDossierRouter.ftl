@@ -13,12 +13,15 @@
 		var firstLoadDataSource = true;
 		// Show màn hình chi tiết hồ sơ
 		manageDossier.route("/(:dossierItemStatus)/dossiers/(:id)", function(dossierItemStatus, id){
+			$("#mainType2").html("");
 			$("#panel_list").show();
 			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 			$("#mainType1").hide();
 			$("#noInput").hide();
 			$("#mainType2").show();
 			$(".filterField").hide();
+
+			
 			layout.showIn("#main_section", viewMainList);
 			if (dossierItemStatus == "new") {
 				$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+id+"",function(result){
@@ -30,12 +33,10 @@
 				$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"",function(result){
 				})
 			};
+			getTotal();
 
 			statusRouteTem.status = dossierItemStatus;
 			$('#searchCC').removeClass('active');
-			getTotal(function(dossierArr){
-
-			});
 			/*$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 			$('#profileStatus li[dataPk='+dossierItemStatus+']').children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
@@ -72,16 +73,18 @@
 		
 		// Show
 		manageDossier.route("/dossiers/(:id)/yeucauhuy", function(id){
+			$("#mainType2").html("");
 			$("#panel_list").show();
 			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 			$("#mainType1").hide();
 			$("#mainType2").show();
 			$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"&${portletNamespace}resCancelling=true",function(result){
 			});
-			getTotal(function(dossierArr){
+			getTotal();
 
-			});
 		});
+
+		
 		manageDossier.route("/dossiers/(:id)/guibosung", function(id){
 			$("#panel_list").show();
 			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
@@ -89,30 +92,29 @@
 			$("#mainType2").show();
 			$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"&${portletNamespace}sendAdd=true",function(result){
 			});
-			getTotal(function(dossierArr){
-
-			});
+			getTotal();
 		});
 		// 
 		manageDossier.route("/dossiers/(:id)/yeucaucaplai", function(id){
+			$("#mainType2").html("");
 			$("#panel_list").show();
 			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 			$("#mainType1").hide();
 			$("#mainType2").show();
 			$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"&${portletNamespace}sendReissue=true",function(result){
 			});
-			getTotal(function(dossierArr){
 
-			});
+			getTotal();
 		});
 
 		// Show màn hình chọn dịch vụ công
 		manageDossier.route("/taohosomoi", function(id){
+			$("#mainType2").html("");
 			$("#mainType1").hide();
 			$(".filterField").hide();
 			$("#mainType2").show();
 			$("#mainType2").load("${ajax.serviceconfigDKLR}",function(result){
-				});
+			});
 			$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 		});
@@ -125,163 +127,62 @@
 			$("#noInput").hide();
 			$(".filterField").show();
 			$("#mainType2").hide();
-			layout.showIn("#main_section", viewMainList);
 
 			if(firstLoadDataSource === true){
 
-				getTotal(function(dossierArr){
-					if (id == "all") {
-						dataSourceProfile.read({
-							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo":$("#serviceInfo").val(),
-							"govAgencyCode":$("#govAgency").val(),
-							"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired",
-							"dossierArr" : ""
-						});
-					} else if (id == "cancelling") {
-						dataSourceProfile.read({
-							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo":$("#serviceInfo").val(),
-							"govAgencyCode":$("#govAgency").val(),
-							"state":"cancelling",
-							"dossierArr" : dossierArr
-						});
-					}else if(id == "correcting"){
-
-						dataSourceProfile.read({
-							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo":$("#serviceInfo").val(),
-							"govAgencyCode":$("#govAgency").val(),
-							"state": "correcting",
-							"dossierArr" : dossierArr
-						});
-
-					}else if (id == "endorsement") {
-						dataSourceProfile.read({
-							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo":$("#serviceInfo").val(),
-							"govAgencyCode":$("#govAgency").val(),
-							"state": "endorsement",
-							"dossierArr" : dossierArr
-						});
-
-					}else if (id == "submitting") {
-						dataSourceProfile.read({
-							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo":$("#serviceInfo").val(),
-							"govAgencyCode":$("#govAgency").val(),
-							"submitting" : true,
-							"applicantIdNo" : "${applicant.applicantIdNo}",
-							"pendding" : true
-						});
-
-					}else {
-						dataSourceProfile.read({
-							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo":$("#serviceInfo").val(),
-							"govAgencyCode":$("#govAgency").val(),
-							"status":id,
-							"dossierArr" : dossierArr
-						});
-					};
-				});
-
-
-
-				/*var promise = new Promise(function(resolve, reject){
-					$.ajax({
-						url:"${api.server}/dossiers",
-						dataType:"json",
-						type:"GET",
-						data:{
-							"submitting": "true"
-						},
-						headers : {"groupId": ${groupId}},
-						success:function(result){
-							if(result.data){
-								var data = [];
-								for (var i = 0; i < result.data.length; i++) {
-									data.push(result.data[i].dossierId);
-								}
-
-								resolve(data.join());
-							}else {
-								resolve("");
-							}
-
-						},
-						error:function(result){
-							reject(false);
-						}
+				if (id == "all") {
+					dataSourceProfile.read({
+						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+						"serviceInfo":$("#serviceInfo").val(),
+						"govAgencyCode":$("#govAgency").val(),
+						"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired",
 					});
-				});*/
+				} else if (id == "cancelling") {
+					dataSourceProfile.read({
+						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+						"serviceInfo":$("#serviceInfo").val(),
+						"govAgencyCode":$("#govAgency").val(),
+						"state":"cancelling"
 
+					});
+				}else if(id == "correcting"){
+					dataSourceProfile.read({
+						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+						"serviceInfo" : $("#serviceInfo").val(),
+						"govAgencyCode" : $("#govAgency").val(),
+						"state": "correcting",
+						"statusReg" : 3
 
-				/*promise.then(function(success){
-					var dossierIds = success;
-					if (id == "all") {
-						dataSourceProfile.read({
-							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo":$("#serviceInfo").val(),
-							"govAgencyCode":$("#govAgency").val(),
-							"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired",
-							"dossierArr" : dossierIds
-						});
-					} else if (id == "cancelling") {
-						dataSourceProfile.read({
-							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo":$("#serviceInfo").val(),
-							"govAgencyCode":$("#govAgency").val(),
-							"state":"cancelling",
-							"dossierArr" : dossierIds
-						});
-					}else if(id == "correcting"){
+					});
+				}else if (id == "endorsement") {
+					dataSourceProfile.read({
+						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+						"serviceInfo" : $("#serviceInfo").val(),
+						"govAgencyCode" : $("#govAgency").val(),
+						"state" : "endorsement",
+						"statusReg" : 3
+					});
+				}else if (id == "done") {
+					dataSourceProfile.read({
+						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+						"serviceInfo" : $("#serviceInfo").val(),
+						"govAgencyCode" : $("#govAgency").val(),
+						"status" : "done",
+						"notStatusReg" : 3
+					});
+				}else {
+					dataSourceProfile.read({
+						"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
+						"serviceInfo" : $("#serviceInfo").val(),
+						"govAgencyCode" : $("#govAgency").val(),
+						"status" : id
 
-						dataSourceProfile.read({
-							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo":$("#serviceInfo").val(),
-							"govAgencyCode":$("#govAgency").val(),
-							"state": "correcting",
-							"dossierArr" : dossierIds
-						});
-
-					}else if (id == "endorsement") {
-						dataSourceProfile.read({
-							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo":$("#serviceInfo").val(),
-							"govAgencyCode":$("#govAgency").val(),
-							"state": "endorsement",
-							"dossierArr" : dossierIds
-						});
-
-					}else if (id == "submitting") {
-						dataSourceProfile.read({
-							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo":$("#serviceInfo").val(),
-							"govAgencyCode":$("#govAgency").val(),
-							"submitting": "true",
-							"dossierArr" : dossierIds
-						});
-
-					}else {
-						dataSourceProfile.read({
-							"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-							"serviceInfo":$("#serviceInfo").val(),
-							"govAgencyCode":$("#govAgency").val(),
-							"status":id,
-							"dossierArr" : dossierIds
-						});
-					};
-
-					getTotal();
-				}, 
-				function(error){
-
-				});*/
-
-
-				
+					});
+				};
+				getTotal();
 			}
+
+			layout.showIn("#main_section", viewMainList);
 			
 
 			
@@ -294,9 +195,9 @@
 			modelMain.set("visibleHeader", $('#profileStatus li[dataPk='+id+'] .dossierStatus').text());
 			modelMain.set("isInvestigated", false);
 
-    }); 
+		}); 
 
-	manageDossier.route("/(:id)/sub/(:idSub)", function(id,idSub) {
+		manageDossier.route("/(:id)/sub/(:idSub)", function(id,idSub) {
 			$(".fa-expand").css("display","block");
 			$(".fa-compress").css("display","none");
 			$("#mainType1").show();
@@ -347,38 +248,41 @@
 			modelMain.set("visibleHeader", $('#profileStatus li[dataPk='+id+'][dataPkSub='+idSub+'] .dossierStatus').text());
 			modelMain.set("isInvestigated", false);
 
-    });
-		// Show màn hình chọn dịch vụ công
-    manageDossier.route("/taohosomoi/admin", function(){
-      $("#mainType1").hide();
-      $(".filterField").hide();
-      $("#mainType2").show();
-      $("#mainType2").load("${ajax.serviceconfig}",function(result){
-        $('#btn_fillter_by_admintration').addClass('btn-active');
-        $('#btn_fillter_by_domain').removeClass('btn-active');
-        $('#serviceconfig_container').load("${ajax.serviceconfig_administration}");
-        $('#input_search').val('');
-      });
-      $('#searchCC').removeClass('active');
-      $("#profileStatus li").removeClass('active');
-      $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
-    });
-    manageDossier.route("/taohosomoi/doman", function(){
-      $("#mainType1").hide();
-      $(".filterField").hide();
-      $("#mainType2").show();
-      $("#mainType2").load("${ajax.serviceconfig}",function(result){
-        $('#btn_fillter_by_admintration').removeClass('btn-active');
-        $('#btn_fillter_by_domain').addClass('btn-active');
-        $('#serviceconfig_container').load("${ajax.serviceconfig_domain}");
-        $('#input_search').val('');
-      });
-      $("#profileStatus li").removeClass('active');
-      $('#searchCC').removeClass('active');
-      $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
-    });
+		});
 
-    manageDossier.route("/keyPay/(:id)/(:refUid)", function(id,refUid,params){
+		// Show màn hình chọn dịch vụ công
+		manageDossier.route("/taohosomoi/admin", function(){
+			$("#mainType2").html("");
+			$("#mainType1").hide();
+			$(".filterField").hide();
+			$("#mainType2").show();
+			$("#mainType2").load("${ajax.serviceconfig}",function(result){
+				$('#btn_fillter_by_admintration').addClass('btn-active');
+				$('#btn_fillter_by_domain').removeClass('btn-active');
+				$('#serviceconfig_container').load("${ajax.serviceconfig_administration}");
+				$('#input_search').val('');
+			});
+			$('#searchCC').removeClass('active');
+			$("#profileStatus li").removeClass('active');
+			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
+		});
+
+		manageDossier.route("/taohosomoi/doman", function(){
+			$("#mainType1").hide();
+			$(".filterField").hide();
+			$("#mainType2").show();
+			$("#mainType2").load("${ajax.serviceconfig}",function(result){
+				$('#btn_fillter_by_admintration').removeClass('btn-active');
+				$('#btn_fillter_by_domain').addClass('btn-active');
+				$('#serviceconfig_container').load("${ajax.serviceconfig_domain}");
+				$('#input_search').val('');
+			});
+			$("#profileStatus li").removeClass('active');
+			$('#searchCC').removeClass('active');
+			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
+		});
+
+		manageDossier.route("/keyPay/(:id)/(:refUid)", function(id,refUid,params){
 			$("#panel_list").show();
 			$("#mainType1").removeClass("col-sm-12").addClass("col-sm-10");
 			$("#mainType1").hide();
@@ -389,12 +293,14 @@
 			
 			
 		});
+
 		// View file trong Thành phần hồ sơ
 		manageDossier.route("/(:dossierId)/files/(:dossierTemplateNo)/(:partNo)", function(dossierId,dossierTemplateNo,partNo){
 			$(".mWrapper").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
 				
 			});
 		});
+
 	// Show màn hình tra cứu
 		manageDossier.route("/tra-cuu/tra-cuu-ho-so", function() {
 			/*$(".fa-expand").css("display","block");
@@ -422,7 +328,7 @@
 					"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
 					"serviceInfo" : $("#serviceInfo").val(),
 					"govAgencyCode" : $("#govAgency").val(),
-					"status" : "all"
+					"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired",
 				});
 			}
 

@@ -36,6 +36,7 @@
 	<#assign sendReissue = (Request.sendReissue)!>
 	<#assign lblApplicantNote = (Request.lblApplicantNote)!>
 	<#assign registration = (Request.registration)!>
+	<#assign lockState = (Request.lockState)!>
 	
 	
 	<#assign RequestParameters = (Request.RequestParameters)!>
