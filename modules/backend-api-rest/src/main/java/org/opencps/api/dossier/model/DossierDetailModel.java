@@ -161,7 +161,8 @@ import javax.xml.bind.annotation.XmlType;
     "applicantNote",
     "notification",
     "online",
-    "specialNo"
+    "specialNo",
+    "lockState"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -230,6 +231,15 @@ public class DossierDetailModel {
     protected String notification;
     protected String online;
     protected Integer specialNo;
+    protected String lockState;
+
+	public String getLockState() {
+		return lockState;
+	}
+
+	public void setLockState(String lockState) {
+		this.lockState = lockState;
+	}
 
 	public String getDossierIdCTN() {
 		return dossierIdCTN;

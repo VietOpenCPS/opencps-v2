@@ -1,6 +1,8 @@
 <!-- TODO detailTemplate page -->
 <div v-if="detailPage" style="width: 100%;">
 	<input type="hidden" id="dossierId__hidden" :value="detailModel.dossierId" />
+	<input type="hidden" id="submitDate__hidden" :value="detailModel.submitDate" />
+	
 	<div class="row-header">
 		<div class="background-triangle-big"> Tên thủ tục </div>
 		<div class="layout row wrap header_tools row-blue">
@@ -30,110 +32,144 @@
 		<v-expansion-panel-content v-bind:value="true">
 		<div slot="header" class="text-bold primary--text">Thông tin chung hồ sơ</div>
 		<v-layout wrap class="px-4 pb-2">
-			<v-flex xs12 sm6>
-			<div class="pb-1">
-				<span class="text-bold">
-				Tên doanh nghiệp: 
-				</span>
-				{{ detailModel.applicantName }} 
-			</div>
-			<div class="pb-1">
-				<span class="text-bold">
-				Mã hồ sơ: 
-				</span>
-				{{ detailModel.dossierIdCTN }}
-			</div>
-			<div class="pb-1">
-				<span class="text-bold">
-				Số hồ sơ: 
-				</span>
-				{{ detailModel.dossierNo }}
-			</div>
-			<div class="pb-1">
-				<span class="text-bold">
-				Chuyển bởi: 
-				</span>
-				{{detailModel.lastActionUser}}
-			</div>
-            <div>
-				{{detailModel.lastActionName}}
-			</div>
-			<div>
-				{{detailModel.lastActionNote}}
-			</div>
-			</v-flex>
-			<v-flex xs12 sm6>
+			<v-flex xs12 sm4>
 				<div class="pb-1">
-					<span class="text-bold">
-					Thời gian gửi: 
+					<span>
+						Tên doanh nghiệp: 
 					</span>
-					{{ detailModel.submitDate}}
+					<span class="text-bold">
+						{{ detailModel.applicantName }} 
+					</span>
 				</div>
 				<div class="pb-1">
-					<span class="text-bold">
-					Thời gian tiếp nhận: 
+					<span>
+						Mã hồ sơ: 
 					</span>
-					{{ detailModel.receiveDate}}
+					<span class="text-bold">
+						{{ detailModel.dossierIdCTN }}
+					</span>
+					
 				</div>
 				<div class="pb-1">
-					<span class="text-bold">
-					Thời hạn xử lý: 
+					<span>
+						Số hồ sơ: 
 					</span>
-					{{ detailModel.dueDate}}
-				</div>
-				<div class="pb-1">
 					<span class="text-bold">
-					Trạng thái: 
+						{{ detailModel.dossierNo }}
 					</span>
-					{{detailModel.dossierStatusText}}
 				</div>
 				<div>
 					<a href="javascript:;" @click.prevent.stop="showContactDetail = !showContactDetail">
-					Thông tin liên hệ: <v-icon color="primary" v-if="!showContactDetail">keyboard_arrow_down</v-icon>
-					<v-icon color="primary" v-if="showContactDetail">keyboard_arrow_up</v-icon>
+						Thông tin liên hệ: <v-icon color="primary" v-if="!showContactDetail">keyboard_arrow_down</v-icon>
+						<v-icon color="primary" v-if="showContactDetail">keyboard_arrow_up</v-icon>
 					</a>
 					
 					<v-slide-y-transition>
 						<div v-if="showContactDetail">
 							<div class="pb-1">
-								<span class="text-bold">
-								Tên doanh nghiệp: 
+								<span>
+									Tên doanh nghiệp: 
 								</span> 
-								{{detailModel.contactName}}
+								<span class="text-bold">
+									{{detailModel.contactName}}
+								</span>
 							</div>
 							<div class="pb-1">
-								<span class="text-bold">
-								Địa chỉ email: 
+								<span>
+									Địa chỉ email: 
 								</span>
-								{{detailModel.contactEmail}}
+								<span class="text-bold">
+									{{detailModel.contactEmail}}
+								</span>
 							</div>
 							<div class="pb-1">
-								<span class="text-bold">
-								Số điện thoại: 
+								<span>
+									Số điện thoại: 
 								</span>
-								{{detailModel.contactTelNo}}
+								<span class="text-bold">
+									{{detailModel.contactTelNo}}
+								</span>
+								
 							</div>
 							<div class="pb-1">
-								<span class="text-bold">
-								Địa chỉ: 
+								<span>
+									Địa chỉ: 
 								</span>
-								{{detailModel.wardName}}/{{detailModel.districtName}}/{{detailModel.cityName}}
+								<span class="text-bold">
+									{{detailModel.wardName}}/{{detailModel.districtName}}/{{detailModel.cityName}}
+								</span>
 							</div>
 							
 						</div>
 					</v-slide-y-transition>
-						
+					
 				</div>
+			</v-flex>
+
+		<v-flex xs12 sm4>
+			<div class="pb-1">
+				<span>
+					Thời gian gửi: 
+				</span>
+				<span class="text-bold">
+					{{ detailModel.submitDate }}
+				</span>
+
+			</div>
+			<div class="pb-1">
+				<span >
+					Thời gian tiếp nhận: 
+				</span>
+				<span class="text-bold">
+					{{ detailModel.receiveDate }}
+				</span>
+
+			</div>
+			<div class="pb-1">
+				<span >
+					Thời hạn xử lý: 
+				</span>
+				<span class="text-bold">
+					{{ detailModel.dueDate}}
+				</span>
+			</div>
+			<div class="pb-1">
+				<span>
+					Trạng thái: 
+				</span>
+				<span class="text-bold">
+					{{detailModel.dossierStatusText}}
+				</span>
+			</div>
+
+			<div class="pb-1">
+				<span>
+					Chuyển bởi: 
+				</span>
+				<span class="text-bold">
+					{{detailModel.lastActionUser}}
+				</span>
+			</div>
+			<div>
+				{{detailModel.lastActionName}}
+			</div>
+				<#-- <div v-html="detailModel.applicantNote">
 				
+				</div> -->
+			</v-flex>
+
+			<v-flex xs12 sm4>
+				<div class="text-bold primary--text expansion-panel__header pl-0 pt-0">Thông tin sản phẩm</div>
+				<div class="pb-1" v-html="detailModel.briefNote"></div>
 			</v-flex>
 		</v-layout>
 	
-		<div class="text-bold primary--text expansion-panel__header">Thông tin sản phẩm</div>
+		<#-- <div class="text-bold primary--text expansion-panel__header">Thông tin sản phẩm</div>
 		<v-layout wrap class="px-4 pb-2">
 			<v-flex xs12 sm6>
 			<div class="pb-1" v-html="detailModel.briefNote"></div>
 			</v-flex>
-		</v-layout>
+		</v-layout> -->
 		</v-expansion-panel-content>
 	</v-expansion-panel>
 
@@ -177,6 +213,7 @@
 						:key="step.processActionId"
 						:href="'#tab-temp-' + step.processActionId"
 						@click.prevent.stop="changeProcessStep(step)"
+						v-if="detailModel.specialNo !== 0 && !stateOnlyFollow"
 					>
                         <v-btn
                             :loading="true"
@@ -194,6 +231,12 @@
                         </v-btn>
 						
 					</v-tabs-item>
+					<div v-if="(detailModel.specialNo == 0 )">
+						<i>Hồ sơ này chỉ được theo dõi</i>
+					</div>
+					<div v-else-if="stateOnlyFollow">
+						<i>Hồ sơ này chỉ được theo dõi</i>
+					</div>
 					<v-menu>
 					</v-menu>
 					</v-tabs-bar>
@@ -203,19 +246,35 @@
 						Hồ sơ chờ đồng bộ ...
 					</div>
 					<div v-else-if="stepModel.plugin">
-						<div class="flex xs12 sm12 text-center">
-						<object id="dossierPDFViewPlugin" data="" width="100%" height="100%">
+
+						<!-- <div class="flex xs12 sm12 text-center">
+							<object id="dossierPDFViewPlugin" data="" width="100%" height="100%">
 								<iframe :src="stepModel.url" width="100%" height="100%"> </iframe>
 							</object>
 							<div id="dossierPDFViewNotFound" class="text-center">{{ stepModel.no_pdf }}</div>
+						</div> -->
+						<div v-if="stepModel.pdf">
+							<div class="flex xs12 sm12 text-center">
+								<object id="dossierPDFViewPlugin" data="" width="100%" height="100%">
+									<iframe :src="stepModel.url" width="100%" height="100%"> </iframe>
+								</object>
+								<div id="dossierPDFViewNotFound" class="text-center">{{ stepModel.no_pdf }}</div>
+							</div>
 						</div>
+						
+						<div v-if="stepModel.html">
+							<input type="hidden" class="dossierFilePartNo" name="">
+							<div id="alpacajs_form_plugin" class="expansion-panel__header"></div>
+							<div id="dossierAlpacaNotFound" class="text-center">{{ stepModel.no_html }}</div>
+						</div> 
+						
 					</div>
                     <div v-else>
                     	
                     	<v-card-title primary-title class="mx-2 pb-0" v-if="stepModel.createFiles">
                             <v-layout wrap> 
-                                <v-flex xs12>
-                                    Thành phần kết quả:
+                                <v-flex xs12 id="labelTPKQ">
+                                    File đính kèm:
                                 </v-flex>
                             </v-layout>
                         </v-card-title>
@@ -227,7 +286,7 @@
                                 <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native.prevent="singleFileUpload(item)">
                                     <v-icon>file_upload</v-icon>
                                 </v-btn>
-                                <v-btn color="primary" fab small dark class="small-btn-x mx-0 my-0" v-on:click.native.prevent="viewDossierFileResult(item, i)">
+                                <v-btn color="primary" fab small dark class="small-btn-x mx-0 my-0" v-on:click.native.prevent="viewDossierFileResult(item, i)" :id="'btn-count-partno'+item.partNo">
                                     {{item.counter}}
                                 </v-btn>
                                 
@@ -264,7 +323,9 @@
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                         
-                        <v-card-title primary-title class="mx-2 py-0">
+                        
+
+                        <!-- <v-card-title primary-title class="mx-2 py-0">
                             <v-layout wrap> 
                             	<v-flex xs12 class="mb-3" v-if="stepModel.allowAssignUser">
                                     <div jx-bind="processAssignUserId"></div>
@@ -279,7 +340,63 @@
                         <v-card-actions>
                             <v-btn flat color="primary" class="px-0" :loading="actionsSubmitLoading" :disabled="actionsSubmitLoading"
                             @click.prevent.stop="postNextActions(stepModel)">Xác nhận</v-btn>
-                        </v-card-actions>
+                        </v-card-actions> -->
+						
+						<div v-if="stepModel.configNote">
+                        	<v-card-title primary-title class="mx-2 py-0">
+                        		<v-layout wrap> 
+                        			<v-flex xs12 class="mb-3" v-if="stepModel.allowAssignUser">
+                        				<div jx-bind="processAssignUserId"></div>
+                        			</v-flex>
+                        			<v-flex xs12>
+                        				<span v-if="stepModel.configNote.displayNote">{{ stepModel.configNote.titleNote }}</span>
+                        					<!-- <div jx-bind="processActionNote" v-if="stepModel.configNote.displayNote">
+                        						
+                        					</div> -->
+
+                        					<v-text-field
+                        					name="processActionNote"
+                        					id="processActionNote"
+                        					multi-line
+                        					 v-if="stepModel.configNote.displayNote"></v-text-field>
+                        			</v-flex>
+                        		</v-layout>
+                        	</v-card-title>
+                        
+                        	<v-card-actions>
+                        		<v-btn flat color="primary" class="px-0" :loading="actionsSubmitLoading" :disabled="actionsSubmitLoading" v-if="stepModel.configNote.confirmButton"
+                        		@click.prevent.stop="postNextActions2(stepModel)">{{ stepModel.configNote.confirmButton }}</v-btn>
+                        
+                        		<v-btn flat class="px-0" @click.prevent.stop="refreshProcess()" v-if="stepModel.configNote.cancelButton">{{ stepModel.configNote.cancelButton }}</v-btn>
+                        	</v-card-actions>
+                        </div>
+                        
+                        <div v-else>
+                        	<v-card-title primary-title class="mx-2 py-0">
+                        		<v-layout wrap> 
+                        			<v-flex xs12 class="mb-3" v-if="stepModel.allowAssignUser">
+                        				<div jx-bind="processAssignUserId"></div>
+                        			</v-flex>
+                        			<v-flex xs12>
+                        				Nhập ý kiến {{stepModel.actionName}}:
+                        				<!-- <div jx-bind="processActionNote">
+                        						
+                        				</div> -->
+                        				<v-text-field
+                        				name="processActionNote"
+                        				id="processActionNote"
+                        				multi-line
+                        				></v-text-field>
+                        			</v-flex>
+                        		</v-layout>
+                        	</v-card-title>
+                        	
+                        	<v-card-actions>
+                        		<v-btn flat color="primary" class="px-0" :loading="actionsSubmitLoading" :disabled="actionsSubmitLoading"
+                        		@click.prevent.stop="postNextActions2(stepModel)">Xác nhận</v-btn>
+                        	</v-card-actions>
+                        </div>
+                       
                     </div>
 				</v-card>
                 
@@ -314,6 +431,7 @@
 					url : "/o/rest/v2/dossiers/"+dossierId+"/files/"+referentUid+"/formdata",
 					dataType : "json",
 					type : "PUT",
+					async : false,
 					headers: {
 						"groupId": themeDisplay.getScopeGroupId(),
 						Accept : "application/json"
@@ -330,6 +448,9 @@
 								$('#message_success_'+referentUid).addClass('hidden');
 							}, 
 						10000);
+						/*var count = $("#btn-part-kq1 > div.btn__content").html().trim() || 0;
+						count ++;*/
+						//$("#btn-count-partno"+id).html("1");
 					},
 					error : function(result){
 						$('#message_error_'+referentUid).removeClass('hidden');

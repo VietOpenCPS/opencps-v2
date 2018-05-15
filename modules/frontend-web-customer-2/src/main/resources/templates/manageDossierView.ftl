@@ -2,6 +2,11 @@
 <#include "init.ftl">
 </#if>
 <#-- main section template -->
+
+<#if registration?has_content>
+	<input type="hidden" name="registrationId__hidden" id="registrationId__hidden" value="${(registration.registrationId)!}">
+</#if>
+
 <script type="text/x-kendo-template" id="mainTemplate">
 	<div id="contentMain" class="row panel M0" style="border: none;box-shadow: none">
 		<div class="panel-heading P0">
@@ -10,7 +15,12 @@
 					<div class="background-triangle-big">
 						<i class="fa fa-file-text"></i>
 					</div>
-					<span class="text-bold" id="statusName" style="text-transform:uppercase;"></span>
+					<span class="text-bold" id="statusName" style="text-transform:uppercase;"></span> &nbsp;&nbsp;&nbsp;
+					<#if registration?has_content>
+						
+					<#else>
+						<span class="text-bold red" style="text-transform:uppercase;">(Tài khoản này chưa bổ sung thông tin doanh nghiệp)</span>
+					</#if>
 					<div class="MLA form-inline">
 
 						<input type="text" class="form-control" id="noInput" placeholder="Nhập số chứng chỉ" 
@@ -206,7 +216,7 @@
 						</select>
 					</span>
 				</span>
-				<span id="pagerProfile" class="M0 P0" data-role="pager" data-info="false" data-bind="source: dataSourceProfile, events:{change: stylePager}" data-button-count="3" style="background: #ffffff" data-auto-bind="false"></span>
+				<span id="pagerProfile" class="M0 P0" data-role="pager" data-info="false" data-bind="source: dataSourceProfile, events:{change: stylePager}" data-button-count="10" style="background: #ffffff" data-auto-bind="false"></span>
 			</div>	
 		</div>
 
@@ -217,7 +227,7 @@
 <script type="text/x-kendo-template" id="proFileTemplate">
 	<tr class="rowTable">
 		<td class="text-center count" style="width: 1%">
-
+			#:count#
 		</td>
 
 		<td class="" style="width: 15%">
@@ -271,8 +281,20 @@
 		</td>
 
 		<td class="" style="width: 23%">
-			# if(applicantNote){#
-			<i>#=applicantNote#</i>
+			# 
+			if(applicantNote){
+				var applicantNotes = applicantNote.split("<br>");
+				var strResult = "";
+				for(var i=0; i< applicantNotes.length; i++){
+					if(applicantNotes[i].startsWith("DN")){
+						applicantNotes[i] = "<span class='text-light-blue'>"+applicantNotes[i]+"</span>"+"<br>";
+					}else {
+						applicantNotes[i] = "<span class='red'>"+applicantNotes[i]+"</span>"+"<br>";
+					}
+					strResult += applicantNotes[i];
+				}
+			#
+			<i>#=strResult#</i>
 			#}#
 		</td>
 
@@ -283,54 +305,44 @@
 				Sao chép
 			</button> -->
 			<#--	-->
-			#if(dossierStatus == "done"){#
-				<button type="button" class="btn-link no-border PT10 downloadProfile" data-pk="#:dossierId#">
+			<#-- <button type="button" class="btn-link no-border PT10 downloadProfile" data-pk="#:dossierId#">
 					<i class="fa fa-download" aria-hidden="true"/>
 					Tải kết quả
-				</button>
+				</button> -->
 
+
+			#
+			if(dossierStatus === "done" && dossierSubStatus === "" && statusReg !== 3){
+			#
 				<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
 					<i class="fa fa-paper-plane" aria-hidden="true"></i>
 					Sửa đổi bổ sung
 				</button>
-			#}#
-
-
-			#
-			if(dossierStatus == "done" && !correctingDate){
-			#
 				<button type="button" class="btn-link no-border PT10 resDone" data-pk="#:dossierId#">
 					<i class="fa fa-reply" aria-hidden="true"/>
 					Yêu cầu cấp lại
 				</button>
+
 			#
 			}
 			#
 
 
 			#
-			if(dossierStatus == "waiting"){
-				if(!cancellingDate){
-				#
+			if(dossierStatus == "waiting" && !cancellingDate && !endorsementDate && !correctingDate){
+			#
+
 				<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="#:dossierId#">
 					<i class="fa fa-trash-o" aria-hidden="true"></i>
 					Yêu cầu hủy
 				</button></br>
-				#
-				}
 
-				#
-				<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
-					<i class="fa fa-paper-plane" aria-hidden="true"></i>
-					Gửi bổ sung
-				</button>
-				#
-
+			#
 			}
 			#
 			
 			<#--  -->
-			#if(dossierStatus == "receiving" && !cancellingDate){#
+			#if(dossierStatus == "receiving" && !cancellingDate && !endorsementDate && !cancellingDate){#
 			<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="#:dossierId#">
 				<i class="fa fa-trash-o" aria-hidden="true"></i>
 				Yêu cầu hủy
@@ -342,3 +354,4 @@
 
 	</tr>
 </script>
+

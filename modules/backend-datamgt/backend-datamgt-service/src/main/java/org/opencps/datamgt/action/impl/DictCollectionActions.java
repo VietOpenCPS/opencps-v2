@@ -858,8 +858,8 @@ public class DictCollectionActions implements DictcollectionInterface {
 				code, groupId);
 
 		if (dictCollection != null) {
-			DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(
-					itemCode, dictCollection.getDictCollectionId(), groupId);
+		DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(
+			itemCode, dictCollection.getDictCollectionId(), groupId);
 			return dictItem;			
 		}
 		else {

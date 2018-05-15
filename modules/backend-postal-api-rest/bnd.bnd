@@ -1,0 +1,6 @@
+Bundle-Name: backend-postal-api-rest
+Bundle-SymbolicName: backend.postal.api.rest
+Bundle-Version: 1.0.0
+Liferay-Configuration-Path: /configuration
+-includeresource: @VNPostNGSPSDK.jar,\
+@gson-2.8.0.jar

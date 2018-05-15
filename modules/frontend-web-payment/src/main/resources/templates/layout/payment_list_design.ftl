@@ -17,7 +17,7 @@
 			{{ props.item.invoiceTemplateNo }}
 			</a>
 		</td>
-		<td style="padding-top: 8px;" class="text-xs-center">{{ props.item.createDate | date }}</td>
+		<td style="padding-top: 8px;" class="text-xs-center">{{ props.item.createDate }}</td>
 
 		<td style="padding-top: 8px;" class="text-xs-right red--text" v-on:click.native="toPaymentDetail(props.index)">{{ props.item.paymentAmount | money }} VNĐ</td>
 

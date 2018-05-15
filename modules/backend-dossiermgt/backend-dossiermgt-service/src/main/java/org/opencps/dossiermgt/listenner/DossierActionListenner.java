@@ -11,8 +11,11 @@ import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -38,6 +41,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 	@Override
 	public void onAfterCreate(DossierAction model) throws ModelListenerException {
 
+		_log.info("START Dossier Action");
 		if (true) {
 
 			ServiceContext serviceContext = new ServiceContext();
@@ -74,6 +78,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 
 				if (dossierId > 0) {
 
+					_log.info("START Dossier Action11111");
 					List<DossierLog> dossierLogs = DossierLogLocalServiceUtil.getByDossierAndType(dossierId,
 							DossierFileListenerMessageKeys.DOSSIER_LOG_CREATE_TYPE, QueryUtil.ALL_POS,
 							QueryUtil.ALL_POS);
@@ -123,22 +128,30 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				boolean ok = true;
 
 				if (Validator.isNotNull(processAction)) {
-					if (processAction.getPreCondition().contains("cancelling")
-							|| processAction.getPreCondition().contains("correcting")
-							|| processAction.getPreCondition().contains("submitting")) {
+					if ((processAction.getPreCondition().contains("cancelling")
+							&& processAction.getAutoEvent().contains("timmer"))
+							|| (processAction.getPreCondition().contains("correcting")
+									&& processAction.getAutoEvent().contains("timmer"))
+							|| (processAction.getPreCondition().contains("submitting"))
+									&& processAction.getAutoEvent().contains("timmer")) {
 						ok = false;
-						
-						_log.info("CHECK CONDITION OK ********** ....." + ok);
 
 					}
-				} else {
-					_log.info("CANT GET DOSSIER ACTION ********** .....");
 				}
-				
-				
+
+				if (processAction.getPreCondition().contains("reject_cancelling")
+						|| processAction.getPreCondition().contains("reject_correcting")
+						|| processAction.getPreCondition().contains("reject_submitting")) {
+					ok = false;
+				}
+
+				_log.info("content: "+content);
 				if (ok) {
-					DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
-							model.getActionUser(), content, "PROCESS_TYPE", payload.toString(), serviceContext);
+					_log.info("START Dossier Action11111");
+					DossierLog dossierLog = DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
+							model.getActionUser(), content, "PROCESS_TYPE", payload.toString(),
+							serviceContext);
+					_log.info("dossierLog: "+dossierLog);
 				}
 
 			} catch (SystemException | PortalException e) {
@@ -156,12 +169,36 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 			serviceContext.setUserId(model.getUserId());
 
 			try {
+				_log.info("START Dossier Action11111");
 				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
 						content, notificationType, payload, serviceContext);
 			} catch (SystemException | PortalException e) {
 				_log.error(e);
 			}
 		}
+	}
+
+	private String getUserName(long userId, long groupId) {
+		String userName = StringPool.BLANK;
+
+		Employee employee = null;
+
+		Applicant applicant = null;
+
+		employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+
+		if (Validator.isNotNull(employee)) {
+			return employee.getFullName();
+
+		}
+
+		applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+
+		if (Validator.isNotNull(applicant)) {
+			return applicant.getApplicantName();
+		}
+
+		return userName;
 	}
 
 	private Log _log = LogFactoryUtil.getLog(DossierActionListenner.class.getName());

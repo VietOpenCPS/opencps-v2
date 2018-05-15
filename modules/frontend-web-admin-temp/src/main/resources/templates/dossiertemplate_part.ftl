@@ -51,35 +51,31 @@
 		dossierTemplatePartDataSource = new kendo.data.DataSource({
 			transport: {
 				read: function(options) {
-					console.log("FISRT Loadddd");
-					var dossierTemplateId = options.data.dossierTemplateId;
-					if(dossierTemplateId){
-						$.ajax({
-							url: "${api.server}" + "/dossiertemplates/" + dossierTemplateId  + "/parts",
-							type: "GET",
-							dataType: "json",
-							headers: {"groupId": ${groupId}},
-							data: {
-								keywords: options.data.keywords,
-								page: options.data.page,
-								pageSize: options.data.pageSize
-							},
-							success: function(result) {
-								console.log("Success Loadddd");
-								if(result.data){
-									options.success(result);
-								}else {
-									options.success({
-										total : 0,
-										data : []
-									});
-								}
-								
+					$.ajax({
+						url: "${api.server}" + "/dossiertemplates/" + options.data.dossierTemplateId  + "/parts",
+						type: "GET",
+						dataType: "json",
+						headers: {"groupId": ${groupId}},
+						data: {
 
-								/*dossierTemplatePartDataSource.sort({ field: "partNo", dir: "asc" });*/
+						},
+						success: function(result) {
+							console.log("Success Loadddd");
+							if(result.data){
+								options.success(result);
+							}else {
+								options.success({
+									total : 0,
+									data : []
+								});
 							}
-						});
-					}
+
+							/*dossierTemplatePartDataSource.sort({ field: "partNo", dir: "asc" });*/
+						},
+						error : function(xhr){
+							options.error(xhr);
+						}
+					});
 					
 				},
 				destroy: function(options) {
@@ -119,10 +115,7 @@
 				data: "data",
 				model : { id: "partNo" },
 			},
-			pageSize: 10,
-			serverPaging: false,
-			serverSorting: false,
-			serverFiltering: false
+			pageSize: 10
 		});
 
 		var localIndex = 0;

@@ -205,7 +205,7 @@
 				#if(partType == 1){#
 				<div class="row-parts-head align-middle slide-toggle">
 					<span class="text-bold MR5">#:itemIndex#.</span>
-					<span class="hover-pointer show-dossierpart-new-tab" data-partno="#:id#" #if(hasForm){# hasForm="true" #}#> #:partName# 
+					<span class="hover-pointer"> #:partName# 
 						#
 						if(required){
 						#
@@ -270,6 +270,9 @@
 
 				var alpaca = eval("(" + result + ")");
 				var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
+				if(formdata){
+				$("\\#validPart"+id).val("1");
+			}
 			alpaca.data = formdata; 
 
 			$("\\#formPartNo"+id).alpaca(alpaca);
@@ -423,26 +426,6 @@
 		$("#step2").addClass("done");
 		$("#step3").removeClass("done");
 
-		$(document).off("click",".show-dossierpart-new-tab");
-		$(document).on("click",".show-dossierpart-new-tab",function(){
-			var partNo = $(this).attr("data-partno");
-			var hasForm = $(this).attr("hasForm");
-			var hasFile = $(this).attr("hasFile");
-
-			if(!hasForm){
-				if(hasFile){
-					var dossierId = "${(dossierId)!}";
-					var dossierTemplateNo = "${(dossier.dossierTemplateNo)!}";
-
-					var url = "#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo;
-
-					window.open(url,"_blank");
-				}
-				
-			}
-			
-		});
-
 		$(document).off("click",".dossier-file");
 		$(document).on("click",".dossier-file",function(){
 			funDossierFile("${dossierId}",funGenNumberFile);
@@ -468,6 +451,7 @@
 
 			funUploadFile($(this),partNo,dossierTemplateNo+"",fileTemplateNo,hasform);
 
+			funDossierFile("${dossierId}",funGenNumberFile);
 		});
 
 		$(document).off("click",".uploadfile-form-repository");
@@ -651,7 +635,10 @@
 			},
 			template : function(data){
 
-				indexDossiserPart ++;
+				
+				if(data.partType === 1){
+					indexDossiserPart ++;
+				}
 
 				data.itemIndex = indexDossiserPart;
 
@@ -671,17 +658,6 @@
 		});
 
 		$("#btn-save-dossier,#btn-save-dosier-header").click(function(){
-
-			var validateDossierTemplate = fnCheckValidTemplate();
-
-			if(!validateDossierTemplate){
-				notification.show({
-					message: "Vui lòng kiểm tra lại các thông tin bắt buộc của các thành phần hồ sơ!"
-				}, "error");
-
-				return false;
-			}
-
 			sessionStorage.setItem("applicantNote", $("textarea#applicantNote").val());
 			try{
 				var isChange = fnCheckIsChangeForm();
@@ -699,32 +675,25 @@
 								return ;
 							}
 						});
-
+	
 						funSaveDossier();
+						
 
+						
 					}
 					return ;
 				}else {
-
+					
 					funSaveDossier();
 				}
 			}catch(e){
 
 			}
 
+			
 		});
 
 		$("#btn-submit-dossier,#btn-next-dossier-header").click(function(){
-			var validateDossierTemplate = fnCheckValidTemplate();
-
-			if(!validateDossierTemplate){
-				notification.show({
-					message: "Vui lòng kiểm tra lại các thông tin bắt buộc của các thành phần hồ sơ!"
-				}, "error");
-
-				return false;
-			}
-
 			sessionStorage.setItem("applicantNote", $("textarea#applicantNote").val());
 			try{
 				var isChange = fnCheckIsChangeForm();
@@ -809,14 +778,6 @@
 		var postalValidator = $("#postalInfo").kendoValidator().data("kendoValidator");
 		var applicantValidator = $("#applicantInfo").kendoValidator().data("kendoValidator");
 		var validateDossierTemplate = fnCheckValidTemplate();
-
-		if(!validateDossierTemplate){
-			notification.show({
-				message: "Vui lòng kiểm tra lại các thông tin bắt buộc của các thành phần hồ sơ!"
-			}, "error");
-
-			return false;
-		}
 
 		console.log("validPart-----------------------");
 		console.log(validateDossierTemplate);
@@ -1256,6 +1217,7 @@
 		data.append('formData', "");
 		data.append('fileType', "");
 		data.append('isSync', "true");
+		//data.append('deliverableCode', "");
 
 		$.ajax({
 			type : 'POST', 
@@ -1268,11 +1230,9 @@
 			success :  function(result){ 
 				kendo.ui.progress($("#mainType2"), false);
 
-				funDossierFile("${dossierId}",funGenNumberFile);
-
 				console.log("fileLength=======",fileLength);
 
-				/*var currentFileNumber = $(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number");
+				var currentFileNumber = $(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number");
 
 				console.log("currentFileNumber=======",currentFileNumber);
 
@@ -1285,7 +1245,7 @@
 				console.log("dossier-component-profile=======",$(".dossier-component-profile").filter("[data-partno="+partNo+"]"));
 
 
-				$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",totalFile);*/
+				$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",totalFile);
 
 				notification.show({
 					message: "Yêu cầu được thực hiện thành công"
@@ -1348,6 +1308,7 @@ var getReferentUidFile = function(dossierId,dossierPartNo){
 								dossierFile = result.data[i];
 								return ;
 							}
+
 						}
 					}
 				}
@@ -1810,12 +1771,6 @@ var funGenNumberFile = function(arrCount){
 
 		$(this).attr("data-number",found.length);
 		$(this).html('<span class="number-in-circle" >'+found.length+'</span>');
-		if(found.length > 0){
-			$(".show-dossierpart-new-tab[data-partno="+partNo+"]").attr('hasFile', 'true');
-		}else {
-			$(".show-dossierpart-new-tab[data-partno="+partNo+"]").attr('hasFile', '');
-		}
-		
 	});
 }
 

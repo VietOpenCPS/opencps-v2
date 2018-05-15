@@ -208,6 +208,7 @@ public class ServiceProcessUtils {
 			model.setBriefNote(doc.get(ProcessStepTerm.BRIEF_NOTE));
 			model.setCustomProcessUrl(doc.get(ProcessStepTerm.CUSTOM_PROCESS_URL));
 			model.setEditable(doc.get(ProcessStepTerm.EDITABLE));
+			model.setLockState(doc.get(ProcessStepTerm.LOCK_STATE));
 
 			outputs.add(model);
 		}

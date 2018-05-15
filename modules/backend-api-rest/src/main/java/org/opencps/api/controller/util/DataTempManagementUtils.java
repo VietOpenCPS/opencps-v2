@@ -139,6 +139,7 @@ public class DataTempManagementUtils {
 
 		try {
 
+			ett.setDictGroupId(dictGroup.getDictGroupId());
 			ett.setGroupCode(dictGroup.getGroupCode());
 			ett.setGroupName(dictGroup.getGroupName());
 			ett.setGroupNameEN(dictGroup.getGroupNameEN());

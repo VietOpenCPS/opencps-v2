@@ -73,7 +73,7 @@
 					<v-flex xs12 sm7 jx-bind="applicantIdDate">
 						<span v-if="themeDisplay.getUserId() != detailRegistModel.userId">
 						
-							{{detailRegistModel.applicantIdDate | datetime}}
+							{{detailRegistModel.applicantIdDate | date}}
 							
 						</span>
 						<v-menu v-else
@@ -205,7 +205,7 @@
 	<v-expansion-panel expand class="my-0 opencps-dossier-info opencps-dossier-part-style">
 		<v-expansion-panel-content v-bind:value="true">
 		
-		<div slot="header" class="text-bold primary--text">II. Thành phần hồ sơ</div>
+		<div slot="header" class="text-bold primary--text">II. Thành tin doanh nghiệp và các xưởng lắp ráp (nếu có)</div>
 		<v-expansion-panel class="my-0 expansion__list_style">
 	        <v-expansion-panel-content v-for="(item,i) in registForms" v-if="item" :key="item.referenceUid">
 	        <div slot="header" @click="showAlpacaJSFORMRegist(item)">{{i + 1}}. {{item.formName}}</div>
@@ -221,11 +221,11 @@
 	<v-btn primary class="ml-0 mr-0" v-on:click.native="detailRegistPage = !detailRegistPage" v-if="themeDisplay.getUserId() == detailRegistModel.userId">
 		Ghi lại
 	</v-btn>
-	<v-btn primary class="ml-0 mr-0" v-on:click.native="registrationPheDuyet(2)" v-else-if="detailRegistModel.registrationState !== 2">
+	<v-btn primary class="ml-0 mr-0" v-on:click.native="registrationPheDuyet(2)" v-else-if="(detailRegistModel.registrationState !== 2 )&& stateButtonregistration">
 		<v-icon class="mr-2">done</v-icon>
 		Phê duyệt
 	</v-btn>
-	<v-btn primary class="ml-0 mr-0" v-on:click.native="registrationPheDuyet(3)" v-if="detailRegistModel.registrationState !== 3 && detailRegistModel.registrationState !== 2" >
+	<v-btn primary class="ml-0 mr-0" v-on:click.native="registrationPheDuyet(3)" v-if="(detailRegistModel.registrationState !== 3 && detailRegistModel.registrationState !== 2) && stateButtonregistration" >
 		<v-icon class="mr-2">undo</v-icon>
 		Yêu cầu chỉnh sửa đăng kí
 	</v-btn>

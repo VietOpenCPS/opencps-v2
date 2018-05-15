@@ -33,7 +33,7 @@
     </div>
   </div>
   <div class="row MT15">
-   <div class="col-xs-12 col-sm-12">Ngày cấp</div>
+   <div class="col-xs-12 col-sm-12">Ngày cấp giấy đăng ký kinh doanh (lần gần nhất)</div>
    <div class="col-xs-12 col-sm-12 MT5">
     <input id="applicantIdDate" name="applicantIdDate" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Ngày/ tháng/ năm"/>
   </div>

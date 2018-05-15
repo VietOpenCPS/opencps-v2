@@ -5,7 +5,7 @@
 <div class="row">
 	
 	<div class="col-sm-12">
-		<div class="hidden">
+		<#-- <div class="hidden">
 			<input 
 				class="form-control"
 				data-role="combobox"
@@ -18,33 +18,21 @@
 							change: govAgency.change
 						}"
 			/>
-	
+			
 			<div data-bind="visible: show, text: show"></div>
 		</div>
-
-		<button class="btn btn-active form-control" 
-			data-bind="click: updateDossierBusiness">
+		 -->
+		<button class="btn btn-active form-control" onclick="updateDossierBusiness(this)" >
 			Cập nhật hồ sơ Doanh Nghiệp
 		</button>
 
 		<ul id="registrationsListView"
-			data-role="listview"
-			
-			data-template="registrationsTemplate"
-			data-bind="source: registrationsListView_dataSource,
-				events: {
-					change: registrationsListView_change
-				}"
-
+		
 		></ul>
 		
-		<script type="text/x-keno-template" id="registrationsTemplate">
-			
+		<script type="text/x-kendo-template" id="registrationsTemplate">
 			<li class="clearfix PT10 PR0 PB10 PL10 registrationsLogItem hover-pointer"
-				data-pk="#= registrationId#"
-				data-bind="events: {
-					click: registrationsListView_change
-				}">
+				data-pk="#= registrationId#">
 	
 				<div class="col-sm-2 clearfix PL0 PR0">
 					
@@ -64,21 +52,23 @@
 						#}else if(registrationState === 1){#
 							<strong>Chờ duyệt<strong> &nbsp; (#= kendo.toString(kendo.parseDate(modifiedDate, "yyyy-MM-ddTHH:mm:ss"), "dd/MM/yyyy HH:mm")#)
 						#}else if(registrationState === 0){#
-							<strong>Lưu nháp<strong> &nbsp; (#= kendo.toString(kendo.parseDate(modifiedDate, "yyyy-MM-ddTHH:mm:ss"), "dd/MM/yyyy HH:mm")#)
+							<strong>Lưu nháp<strong> &nbsp; (#= kendo.toString(kendo.parseDate(createDate, "yyyy-MM-ddTHH:mm:ss"), "dd/MM/yyyy HH:mm")#)
 						#}else {#
 							<strong>Yêu cầu bổ sung<strong> &nbsp; (#= kendo.toString(kendo.parseDate(modifiedDate, "yyyy-MM-ddTHH:mm:ss"), "dd/MM/yyyy HH:mm")#)
 						#}#
 					</div>
 				
 				</div>
+				<div class="col-sm-1 PL0 PR0">
+					<span class=" PT5 item-select"></span>
+				</div>
 				
-				# if ( viewRegistrationModel.registrationModel.selected == true ) { #
-					<span class="col-sm-1 PL0 PR0 PT5"></span>
-				#} else { viewRegistrationModel.registrationModel.selected = true;#
-					<span class="col-sm-1 PL0 PR0 fa fa-arrow-right PT5"></span>
-				#}#
+				<#--  # if ( viewRegistrationModel.registrationModel.selected == true ) { #
+									<span class="col-sm-1 PL0 PR0 PT5"></span>
+								#} else { viewRegistrationModel.registrationModel.selected = true;#
+									
+								#}#  -->
 			 </li>
-			
 		</script>
 		
 	</div>

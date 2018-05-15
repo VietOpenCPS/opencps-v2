@@ -79,7 +79,7 @@
 
 					<a href="javascript:;">
 					
-						<span>#:sibling#</span>
+						<span>#:itemIndex#</span>
 						
 					</a>
 
@@ -263,6 +263,7 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 			}
 		});
 
+		var sttDictItem = 0;
 		$("#_collectionSub_dictItem_listView").kendoListView({
 			remove: function(e) {
 				
@@ -270,8 +271,18 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 			
 			dataSource: _collectionSub_dictItem_dataSource_detail,
 			
-			template: kendo.template($("#_collectionSub_dictItem_template").html()),
-			
+			template : function(data){
+
+				sttDictItem ++;
+
+				data.itemIndex = sttDictItem;
+
+				return kendo.template($("#_collectionSub_dictItem_template").html())(data);
+
+			},
+			dataBound : function(e){
+				sttDictItem = 0;
+			},
 			filterable: {
 			
 				logic: "or",

@@ -160,7 +160,7 @@
 						</select>
 					</span>
 				</span>
-				<span id="pagerDeliverables" class="M0 P0" data-role="pager" data-info="false" data-bind="source: dataSourceDeliverables, events:{change: stylePagerDeliverables}" data-button-count="3" style="background: #ffffff"></span>
+				<span id="pagerDeliverables" data-auto-bind="false" class="M0 P0" data-role="pager" data-info="false" data-bind="source: dataSourceDeliverables, events:{change: stylePagerDeliverables}" data-button-count="3" style="background: #ffffff"></span>
 			</div>	
 		</div>
 
