@@ -490,6 +490,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return processException(e);
 		}
 	}
+
 	@Override
 	public Response downloadByDossierId(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String password) {
@@ -736,6 +737,32 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response getDossierFileByDossierId_FileTemplateNo(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id, String fileTemplateNo) {
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierFileActions action = new DossierFileActionsImpl();
+
+			DossierFile dossierFile = action.getDossierFileByFileTemplateNo(id, fileTemplateNo);
+			
+			DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}

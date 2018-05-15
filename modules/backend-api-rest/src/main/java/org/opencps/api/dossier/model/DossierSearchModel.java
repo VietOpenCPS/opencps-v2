@@ -90,7 +90,8 @@ import javax.xml.bind.annotation.XmlType;
     "fromSubmitDate",
     "toSubmitDate",
     "notState",
-    "statusReg"
+    "statusReg",
+    "notStatusReg"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -162,8 +163,18 @@ public class DossierSearchModel {
     protected String notState;
     @QueryParam(value = "statusReg")
     protected String statusReg;
+    @QueryParam(value = "notStatusReg")
+    protected String notStatusReg;
 
-    public String getStatusReg() {
+    public String getNotStatusReg() {
+		return notStatusReg;
+	}
+
+	public void setNotStatusReg(String notStatusReg) {
+		this.notStatusReg = notStatusReg;
+	}
+
+	public String getStatusReg() {
 		return statusReg;
 	}
 

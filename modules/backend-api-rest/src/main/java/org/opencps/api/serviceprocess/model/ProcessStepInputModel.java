@@ -59,7 +59,8 @@ import javax.xml.bind.annotation.XmlType;
     "stepInstruction",
     "briefNote",
     "customProcessUrl",
-    "editable"
+    "editable",
+    "lockState"
 })
 @XmlRootElement(name = "ProcessStepInputModel")
 public class ProcessStepInputModel {
@@ -89,8 +90,18 @@ public class ProcessStepInputModel {
     protected String briefNote;
 	@FormParam("editable")
     protected String editable;
+	@FormParam("lockState")
+    protected String lockState;
 
-    public String getBriefNote() {
+    public String getLockState() {
+		return lockState;
+	}
+
+	public void setLockState(String lockState) {
+		this.lockState = lockState;
+	}
+
+	public String getBriefNote() {
 		return briefNote;
 	}
 
