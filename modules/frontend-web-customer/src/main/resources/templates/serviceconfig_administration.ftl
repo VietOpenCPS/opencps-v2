@@ -41,8 +41,6 @@
 												<a class="link-serviceInfo" data-pk="#:domains[i].serviceConfigs[j].serviceConfigId#" admt-pk="#domains[i].serviceConfigs.serviceConfigId#" href="\\#">
 													#:domains[i].serviceConfigs[j].serviceInfoName#
 												</a>
-
-
 											</div>
 											<div class="col-xs-12 col-sm-1 border-left ML100 center-all lh32 text-light-gray">
 												Mức #:domains[i].serviceConfigs[j].level#
@@ -52,6 +50,7 @@
 													<button class="btn dropdown-toggle btn-select-serviceConfig" type="button" data-toggle="dropdown" data-pk="#:domains[i].serviceConfigs[j].serviceConfigId#">Chọn
 														<span class="caret"></span>
 													</button>
+													
 													<ul id="dropdown-menu#:domains[i].serviceConfigs[j].serviceConfigId#" class="dropdown-menu" data-pk="#:domains[i].serviceConfigs[j].serviceConfigId#">
 														
 													</ul>
@@ -97,9 +96,21 @@
 				$(element).html("");
 				if(result.data){
 					var data = result.data;
-					for (var i = 0; i < data.length; i++) {
-						$(element).append('<li><span class="btn-choise-process hover-pointer" data-pk="'+data[i].processOptionId+'" data-template="'+data[i].templateNo+'" onclick="selectProcess(this);">'+data[i].optionName+'</span></li>');
+
+					if(result.data){
+
+						if(result.data.length === 1){
+							$(element).remove();
+
+							return ;
+						}
+
+						for (var i = 0; i < data.length; i++) {
+							$(element).append('<li><span class="btn-choise-process hover-pointer" data-pk="'+data[i].processOptionId+'" data-template="'+data[i].templateNo+'" onclick="selectProcess(this);">'+data[i].optionName+'</span></li>');
+						}
 					}
+
+					
 				}
 				/*$(".btn-choise-process").unbind().click(function(){
 					console.log("choise process");

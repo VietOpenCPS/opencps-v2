@@ -420,7 +420,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 					},
 					parseDateUtc : function(date){
-						return moment(String(date)).utc().format('MM/DD/YYYY HH:mm:ss');
+						return moment(String(date)).utc().format('DD/MM/YYYY HH:mm:ss');
 					},
 					_paggingPaymentList: function() {
 						

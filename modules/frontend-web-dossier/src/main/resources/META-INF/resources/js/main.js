@@ -46,7 +46,8 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 			advancedFilterLoaiSanPham : {},
 			advancedFilterNhanHieu : {},
 			advancedFilterDossierStatus : {},
-			stateOnlyFollow : false
+			stateOnlyFollow : false,
+			stateButtonregistration : true
 		},
 		onScroll: 'onScroll',
 		schema: {
@@ -75,16 +76,29 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 
 									var urlFiles = "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid+"/resetformdata";
 									
+									$.ajax({
+										url : urlFiles,
+										dataType : "json",
+										type : "PUT",
+										headers : {
+											groupId : themeDisplay.getScopeGroupId()
+										},
+										success : function(result){
+											item.counter = 0;
+										},
+										error : function(xhr){
+											console.log(xhr);
+										}
+									});
 
-									axios.put(urlFiles, config).then(function (response) {
+									/*axios.put(urlFiles, config).then(function (response) {
 										item.counter = 0;
-										
 										
 									})
 									.catch(function (error) {
 										console.log(error);
 										
-									});
+									});*/
 									
 									dialog.close();
 									return false; 
@@ -260,8 +274,6 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 										vm.snackbartextdossierViewJX = "Lưu form thành công!";
 										vm.snackbardossierViewJX = true;
 										vm.loadingAlpacajsForm = false;
-
-										
 
 										try{
 											
@@ -1776,6 +1788,7 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 								vm.detailRegistPage = true;
 								window.scrollBy(0, -99999);
 								vm._getListForms();
+								vm.stateButtonregistration = true;
 
 							})
 							.catch(function (error) {
@@ -1792,8 +1805,15 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 							
 							axios.get(url, config).then(function (response) {
 								var serializable = response.data;
-
-								vm.registForms = serializable.data;
+								var arrFormnotRemmove = [];
+								if(serializable.data){
+									for (var i = 0; i < serializable.data.length; i++) {
+										if(!serializable.data[i].removed){
+											arrFormnotRemmove.push(serializable.data[i]);
+										}
+									}
+								}
+								vm.registForms = arrFormnotRemmove;
 								vm.detailRegistPage = true;
 								
 							})
@@ -1873,7 +1893,10 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 							})
 						},
 						registrationPheDuyet: function(registrationState) {
+
+							
 							var vm = this;
+							vm.stateButtonregistration = false;
 							var defaultMessage = 'Đồng ý phê duyệt hồ sơ doanh nghiệp này?';
 							
 							if (registrationState === 3) {
@@ -1908,12 +1931,14 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 										console.log(vm.detailRegistModel);
 										vm.snackbartextdossierViewJX = "Yêu cầu xử lý thành công thành công!";
 										vm.snackbardossierViewJX = true;
+										vm.stateButtonregistration = false;
 										
 									},
 									error: function(xhr, textStatus, errorThrown) {
 										vm.detailRegistModel = {};
 										vm.snackbartextdossierViewJX = "Yêu cầu xử lý thành công thất bại!";
 										vm.snackbarerordossierViewJX = true;
+										vm.stateButtonregistration = true;
 									}
 								});
 								
@@ -1921,7 +1946,8 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 								return false; 
 							})
 							.catch((e) => {
-								console.log(e)
+								console.log(e);
+								vm.stateButtonregistration = true;
 							})
 						}
 					}

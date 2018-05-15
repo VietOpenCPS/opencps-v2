@@ -65,26 +65,26 @@ public class ProfilePorlet extends FreeMarkerPortlet {
 			Applicant applicant = UserMgtUtils.getApplicant(
 				themeDisplay.getUser().getEmailAddress());
 			
-			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(
-									themeDisplay.getScopeGroupId(), themeDisplay.getUserId());
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId( 55301, themeDisplay.getUserId());
 			
-			_log.info("employee===========>"+employee);
-			
-
-			JSONObject applicantObj = JSONFactoryUtil.createJSONObject();
-			String jsonObj = JSONFactoryUtil.looseSerialize(applicant);
-			applicantObj = JSONFactoryUtil.createJSONObject(jsonObj);
-			
-			if(applicantObj != null){
-				renderRequest.setAttribute("applicant", applicantObj);
-				renderRequest.setAttribute("applicantIdType", applicantObj.get("applicantIdType").toString());
-				_log.info("applicantIdType===========>"+applicantObj.get("applicantIdType").toString());
-			}else {
+			if(employee != null){
 				JSONObject employeeObj = JSONFactoryUtil.createJSONObject();
 				String employeeStr = JSONFactoryUtil.looseSerialize(employee);
 				employeeObj = JSONFactoryUtil.createJSONObject(employeeStr);
 				_log.info("employee===========>"+employeeObj);
 				renderRequest.setAttribute("employee", employeeObj);
+				renderRequest.setAttribute("userType", "employee");
+			}else {
+				
+				renderRequest.setAttribute("userType", "applicant");
+				JSONObject applicantObj = JSONFactoryUtil.createJSONObject();
+				String jsonObj = JSONFactoryUtil.looseSerialize(applicant);
+				applicantObj = JSONFactoryUtil.createJSONObject(jsonObj);
+				if(applicantObj != null){
+					renderRequest.setAttribute("applicant", applicantObj);
+					renderRequest.setAttribute("applicantIdType", applicantObj.get("applicantIdType").toString());
+					_log.info("applicantIdType===========>"+applicantObj.get("applicantIdType").toString());
+				}
 			}
 			
 			

@@ -125,7 +125,7 @@
 					<span> 
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Chứng nhận Chất lượng kiểu loại LK xe cơ giới
 					</span>
-					<button data-TTHC="TT302011BGTVTCNCLKLLKXCG" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCNCLKLLKXCG" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item71">Chọn</button>
+					<button data-TTHC="TT302011BGTVTCNCLKLLKOTO" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCNCLKLLKXCG" class="btn btn-reset chooseService pull-right P0 PT5" id="btn1item71">Chọn</button>
 				</div>
 				<div class="clear"></div>
 			</div>

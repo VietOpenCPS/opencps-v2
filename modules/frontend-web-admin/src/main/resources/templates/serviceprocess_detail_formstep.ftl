@@ -131,6 +131,20 @@
 			<div class="col-xs-12 col-sm-12">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
+						Lock State
+					</div>
+				</div>
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<input type="text" class="form-control" id="lockState" name="lockState" data-bind="value: lockState">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row MT10">
+			<div class="col-xs-12 col-sm-12">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
 						Hướng dẫn
 					</div>
 				</div>

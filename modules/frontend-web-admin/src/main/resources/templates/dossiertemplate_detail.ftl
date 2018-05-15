@@ -27,7 +27,7 @@
 					<#include "dossiertemplate_part_form.ftl">
 				</div>
      </div>
-	 </div>
+	</div>
  </div>
 
 <script type="text/javascript">
