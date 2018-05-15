@@ -1164,6 +1164,7 @@
 												}, "success");
 											}
 											$("#validPart"+dataPartNo).val("0");
+											
 										}else {
 											if(navigator.onLine){
 												notification.show({
@@ -1171,8 +1172,6 @@
 												}, "error");
 											}
 										}
-
-										
 
 									}
 								},
