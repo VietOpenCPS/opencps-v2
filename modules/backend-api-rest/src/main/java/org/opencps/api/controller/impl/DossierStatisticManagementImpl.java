@@ -95,13 +95,6 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 	}
 
 	@Override
-	public Response getDossierStatisticTodo(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Response getDossierStatistic(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierStatisticSearchModel search) {
 		DossierStatisticAction actions = new DossierStatisticActionImpl();
