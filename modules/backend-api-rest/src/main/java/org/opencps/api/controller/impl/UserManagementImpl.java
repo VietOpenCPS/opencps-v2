@@ -16,7 +16,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.UserManagement;
 import org.opencps.api.controller.util.UserUtils;
@@ -342,8 +341,7 @@ public class UserManagementImpl implements UserManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword,
-					serviceContext);
+			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword, serviceContext);
 
 			return Response.status(200).entity(String.valueOf(flag)).build();
 
@@ -385,8 +383,8 @@ public class UserManagementImpl implements UserManagement {
 			JSONObject jsonData = actions.getJobposPermissions();
 
 			result.setTotal(jsonData.getLong("total"));
-			result.getJobposPermissionModel()
-					.addAll(UserUtils.mapperUsersPermissionsList((String[]) jsonData.get("data"), id, serviceContext));
+			result.getJobposPermissionModel().addAll(UserUtils
+					.mapperUsersPermissionsList((String[]) jsonData.get("data"), id, serviceContext));
 
 			return Response.status(200).entity(result).build();
 
@@ -404,7 +402,7 @@ public class UserManagementImpl implements UserManagement {
 
 	@Override
 	public Response getForgot(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
-			ServiceContext serviceContext, String screenname_email) {
+			ServiceContext serviceContext,String screenname_email) {
 		UserInterface actions = new UserActions();
 		try {
 
@@ -436,8 +434,7 @@ public class UserManagementImpl implements UserManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			Document document = actions.getForgotConfirm(groupId, company.getCompanyId(), screenname_email, code,
-					serviceContext);
+			Document document = actions.getForgotConfirm(groupId, company.getCompanyId(), screenname_email, code, serviceContext);
 
 			UserAccountModel userAccountModel = UserUtils.mapperUserAccountModel(document);
 

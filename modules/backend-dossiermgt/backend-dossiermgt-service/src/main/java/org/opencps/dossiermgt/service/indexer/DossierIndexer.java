@@ -23,12 +23,14 @@ import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -167,6 +169,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 			document.addTextSortable(DossierTerm.STEP_DUE_DATE,
 					APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
+
 		}
 
 		// add text fields
@@ -233,7 +236,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		if (dossierActionsUserId > 0) {
 			List<DossierActionUser> dossierActionUsers = DossierActionUserLocalServiceUtil
 					.getListUser(dossierActionsUserId);
-			if (dossierActionUsers != null) {
+			if (dossierActionUsers != null && dossierActionUsers.size() > 0) {
 				int length = dossierActionUsers.size();
 				for (int i = 0; i < length; i ++) {
 					DossierActionUser dau = dossierActionUsers.get(i);
@@ -319,14 +322,25 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				document.addTextSortable(DossierTerm.CERT_NO_SEARCH, certNoSearch);
 			}
 		}
-		}catch(Exception e) {
-			_log.error(e);
-		}
 
 		document.addTextSortable(DossierTerm.ENDORSEMENT_DATE,
 				APIDateTimeUtils.convertDateToString(object.getEndorsementDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		document.addNumberSortable(DossierTerm.ENDORSEMENT_DATE_TIMESTAMP,
 				Validator.isNotNull(object.getEndorsementDate()) ? object.getEndorsementDate().getTime() : 0);
+
+		//LamTV: Indexer from dossierRequest to Dossier
+		DossierRequestUD dRegUD = DossierRequestUDLocalServiceUtil.getDossierRequestByDossierId(dossierId);
+		_log.info("dossierId: "+dossierId+" |statusReg: "+dRegUD.getStatusReg());
+		if (dRegUD != null) {
+			_log.info("statusReg: "+dRegUD.getStatusReg());
+			document.addNumberSortable(DossierTerm.STATUS_REG, dRegUD.getStatusReg());
+		} else {
+			document.addNumberSortable(DossierTerm.STATUS_REG, 4);
+		}
+
+		}catch(Exception e) {
+			_log.error(e);
+		}
 
 		return document;
 	}

@@ -33,7 +33,7 @@
 								</select>
 							</span>
 						</span>
-						<span id="pagerProfile" class="M0 P0" data-role="pager" data-info="false" data-bind="source: dataSourceProfile, events:{change: stylePager}" data-button-count="3" style="background: #ffffff"></span>
+						<span id="pagerProfile" class="M0 P0" data-role="pager" data-auto-bind="false" data-info="false" data-bind="source: dataSourceProfile, events:{change: stylePager}" data-button-count="3" style="background: #ffffff"></span>
 					</div>	
 				</div>
 			</div>
@@ -46,7 +46,7 @@
 				<div class="row M0">
 					<div class="row-blue align-middle">
 						<div class="order-number">#:count#</div>
-						<div class="dossier-number" data-toggle="tooltip" title="Mã hồ sơ"><span class="red">\\#</span> #:dossierId#</div>
+						<#-- <div class="dossier-number" data-toggle="tooltip" title="Mã hồ sơ"><span class="red">\\#</span> #:dossierId#</div> -->
 						<div class="receive-number"><span class="text-normal">Mã tiếp nhận hồ sơ:</span> #:dossierNo#</div>
 						#
 							var label="label-info";
@@ -121,43 +121,65 @@
 							</p>
 							<p class="actionDossier MB0">
 								#if(dossierStatus === "waiting"){#
-								<a href="javascript:;" data-Pk="#:id#" class="downloadAddRes PR15">
+								<a href="javascript:;" data-Pk="#:id#" class="downloadAddRes PR15" data-bind=" events:{click : downloadResDossier}">
 									<i class="fa fa-download" aria-hidden="true">
 									</i> Tải yêu cầu bổ sung
 								</a>
 								#}#
 
 								#if(dossierStatus === "done"){#
-									<a href="javascript:;" data-Pk="#:id#" class="downloadProfile PR15">
+									<a href="javascript:;" data-Pk="#:id#" class=" PR15" data-bind=" events:{click : downloadProfile}">
 										<i class="fa fa-download" aria-hidden="true">
 										</i> Tải giấy tờ kết quả
 									</a>
 								#}#
 								<#-- ${api.server}/dossiers/#:id#/result -->
-								#if(dossierStatus === "done" ){#
+								<#-- #if(dossierStatus === "done" ){#
 									<a href="javascript:;" data-Pk="#:id#" class="copyProfile PR15"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Sao chép hồ sơ
 									</a>
-								#}#
+								#}# -->
 							</p>	
 						</div>
 						<#-- Content DATE -->
 						<div class="col-sm-3 text-right">
 							<div class="row">
-								#if(submitDate != ""){#
+								#
+								if(typeof submitDate !== "undefined"){
+									if(submitDate != ""){
+								#
 									<p data-toggle="tooltip" title="Ngày gửi">
 										<i class="fa fa-paper-plane-o" aria-hidden="true"></i> #:submitDate#
 									</p>
-								#}#
-								#if(receiveDate != ""){#
+								#
+									}
+								}
+								#
+
+								#
+								if(typeof receiveDate !== "undefined"){
+									if(receiveDate != ""){
+
+								#
 									<p data-toggle="tooltip" title="Ngày tiếp nhận">
 										<i class="fa fa-file-o" aria-hidden="true"></i> #:receiveDate#
 									</p>
-								#}#
-								#if(dueDate != ""){#
+								#
+									}
+								}
+								#
+
+								#
+								if(typeof dueDate !== "undefined"){
+									if(dueDate != ""){
+
+								#
 									<p data-toggle="tooltip" title="Ngày hẹn trả">
 										<i class="fa fa-clock-o" aria-hidden="true"></i> #:dueDate#
 									</p>
-								#}#
+								#
+									}
+								}
+								#
 								
 							</div>
 						</div>

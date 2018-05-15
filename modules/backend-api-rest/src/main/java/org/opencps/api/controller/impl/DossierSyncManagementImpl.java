@@ -152,7 +152,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			DossierSyncSendingModel result = new DossierSyncSendingModel();
 
 			if (Validator.isNotNull(dossierSync)) {
-				// Get DOSSIER in CLIENT
+				// Get DOSSIER in SERVER
 				Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierSync.getDossierId());
 
 				// Get the latest ACTION of DOSSIER has been done

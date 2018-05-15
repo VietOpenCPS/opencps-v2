@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:complexType name="DossierMarkModel">
+		<xsd:sequence>
+			<xsd:element name="dossierId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="dossierPartNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="fileCheck" type="xsd:boolean" minOccurs="0" />
+			<xsd:element name="fileType" type="xsd:int" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="DossierMarkResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="DossierMarkModel"  minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="DossierMarkInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="fileCheck" type="xsd:boolean" minOccurs="0" />
+				<xsd:element name="fileType" type="xsd:int" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="DossierMarkResultDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="dossierMarkId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="fileCheck" type="xsd:boolean" minOccurs="0" />
+				<xsd:element name="fileType" type="xsd:int" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

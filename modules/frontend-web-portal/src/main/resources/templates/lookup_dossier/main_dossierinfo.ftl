@@ -80,9 +80,10 @@
 			            url: "${api.server}/dossiers",
 			            dataType: "json",
 			            type: 'GET',
-			            headers : {"groupId": ${groupId}},
+			            headers : {"groupId": 55217},
 			            data: {
 			            	keyword: options.data.keyword,
+			            	SecetKey:${(secretKey)!}
 			            },
 			            success: function (result) {
 			                if (result.data) {

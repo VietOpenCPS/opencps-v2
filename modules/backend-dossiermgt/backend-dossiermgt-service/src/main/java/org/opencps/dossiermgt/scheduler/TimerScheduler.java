@@ -24,8 +24,6 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
@@ -39,8 +37,6 @@ import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -78,7 +74,7 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-		Sort[] sorts = new Sort[] { SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, false) };
+		//Sort[] sorts = new Sort[] { SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, false) };
 
 		for (Dossier dossier : allDossierTimer) {
 			params.put(Field.GROUP_ID, String.valueOf(dossier.getGroupId()));
@@ -96,7 +92,7 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 				String stepCode = dossierAction != null ? dossierAction.getStepCode() : StringPool.BLANK;
 
-				boolean pending = dossierAction != null ? dossierAction.getPending() : false;
+				//boolean pending = dossierAction != null ? dossierAction.getPending() : false;
 
 				List<ProcessAction> lstProcessAction = new ArrayList<ProcessAction>();
 
@@ -109,8 +105,6 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 					if (processAction.getAutoEvent().contains("timmer")) {
 						
-						_log.info("dossierId_"+dossier.getDossierId() + "autoEvent_" + processAction.getAutoEvent());
-
 						String perConditionStr = processAction.getPreCondition();
 
 						boolean checkPreCondition = DossierMgtUtils

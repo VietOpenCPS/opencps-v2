@@ -183,15 +183,12 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					syncProcesses.add(desServiceProcess);
 
 					break;
-
-					// TODO : check again
 				}
 
 			} catch (Exception e) {
 				_log.info("NOProcess");
 			}
 
-			// ProcessOption option = ProcessOptionLocalServiceUtil.get
 		}
 
 		for (ServiceProcess syncServiceProcess : syncProcesses) {
@@ -276,6 +273,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				// doAction in this case is an Applicant object
 				String applicantNote = object.getString(DossierTerm.APPLICANT_NOTE);
 				String applicantName = object.getString(DossierTerm.APPLICANT_NAME);
+				
 
 				// Process doAction (with autoEvent = SUBMIT)
 				try {
@@ -283,12 +281,19 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 					ProcessAction processAction = ProcessActionLocalServiceUtil
 							.fetchBySPI_PRESC_AEV(syncServiceProcess.getServiceProcessId(), StringPool.BLANK, "SUBMIT");
+					
+					
+					_log.info("GETPROCESSACTION************" + processAction.getActionName());
 
 					long assignedUserId = processAction.getAssignUserId();
 
-					actions.doAction(syncServiceProcess.getGroupId(), desDossierId, desDossier.getReferenceUid(),
+					DossierAction da = actions.doAction(syncServiceProcess.getGroupId(), desDossierId, desDossier.getReferenceUid(),
 							processAction.getActionCode(), processAction.getProcessActionId(), applicantName,
 							applicantNote, assignedUserId, systemUser.getUserId(), StringPool.BLANK, serviceContext);
+					
+					
+					_log.info("GETPROCESSACTION************" + da.getActionName());
+
 
 				} catch (Exception e) {
 					_log.info("SyncDossierUnsuccessfuly" + desDossier.getReferenceUid());
@@ -419,7 +424,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				context.setUserId(dr.getUserId());
 				
 				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, desDossierId, dr.getReferenceUid(),
-						dr.getRequestType(), dr.getComment(), 0, context);
+						dr.getRequestType(), dr.getComment(), 0, dr.getStatusReg(), context);
 
 			}
 
@@ -1077,7 +1082,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				// update to client
 
 				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, desDossierId, dr.getReferenceUid(),
-						dr.getRequestType(), dr.getComment(), 0, context);
+						dr.getRequestType(), dr.getComment(), 0, dr.getStatusReg(), context);
 			}
 
 		} catch (Exception e) {

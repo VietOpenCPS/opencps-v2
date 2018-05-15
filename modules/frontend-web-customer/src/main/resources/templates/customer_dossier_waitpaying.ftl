@@ -233,7 +233,10 @@
 											<div class="col-sm-4 text-center MB10">
 												<i class="fa fa-file-image-o text-center text-light-gray MB10" aria-hidden="true" style="font-size:100px;">
 													
-												</i> <br>
+												</i> 
+												<br>
+												<span id="fileNamePayment" name="fileNamePayment"></span>
+												<br>
 												<span class="text-center" style="font-size: 10px;">Chứng từ thanh toán cho chuyển khoản là giấy yêu cầu nộp tiền vào ngân hàng hoặc hóa đơn chứng nhận giao dịch chuyển khoản được in ra</span>
 											</div>
 											<div class="col-sm-4">
@@ -515,6 +518,22 @@
 
 			});
 		}
+	});
+
+	$("#filePayment").change(function(event){
+		event.preventDefault();
+		try{
+			var fileName = $("#filePayment")[0].files[0].name;
+			if(fileName){
+				$("#fileNamePayment").html(fileName);
+			}else {
+				$("#fileNamePayment").html("");
+			}
+
+		}catch(e){
+			$("#fileNamePayment").html("");
+		}
+
 	});
 
 	$("#dossier-payment-viewpdf").click(function(){

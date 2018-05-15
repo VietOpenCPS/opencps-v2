@@ -2,6 +2,11 @@
 <#include "init.ftl">
 </#if>
 <#-- main section template -->
+
+<#if registration?has_content>
+	<input type="hidden" name="registrationId__hidden" id="registrationId__hidden" value="${(registration.registrationId)!}">
+</#if>
+
 <script type="text/x-kendo-template" id="mainTemplate">
 	<div id="contentMain" class="row panel M0" style="border: none;box-shadow: none">
 		<div class="panel-heading P0">
@@ -271,8 +276,20 @@
 		</td>
 
 		<td class="" style="width: 23%">
-			# if(applicantNote){#
-			<i>#=applicantNote#</i>
+			# 
+			if(applicantNote){
+				var applicantNotes = applicantNote.split("<br>");
+				var strResult = "";
+				for(var i=0; i< applicantNotes.length; i++){
+					if(applicantNotes[i].startsWith("DN")){
+						applicantNotes[i] = "<span class='text-light-blue'>"+applicantNotes[i]+"</span>"+"<br>";
+					}else {
+						applicantNotes[i] = "<span class='red'>"+applicantNotes[i]+"</span>"+"<br>";
+					}
+					strResult += applicantNotes[i];
+				}
+			#
+			<i>#=strResult#</i>
 			#}#
 		</td>
 
@@ -283,54 +300,44 @@
 				Sao chép
 			</button> -->
 			<#--	-->
-			#if(dossierStatus == "done"){#
-				<button type="button" class="btn-link no-border PT10 downloadProfile" data-pk="#:dossierId#">
+			<#-- <button type="button" class="btn-link no-border PT10 downloadProfile" data-pk="#:dossierId#">
 					<i class="fa fa-download" aria-hidden="true"/>
 					Tải kết quả
-				</button>
+				</button> -->
 
+
+			#
+			if(dossierStatus === "done" && dossierSubStatus === ""){
+			#
 				<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
 					<i class="fa fa-paper-plane" aria-hidden="true"></i>
 					Sửa đổi bổ sung
 				</button>
-			#}#
-
-
-			#
-			if(dossierStatus == "done" && !correctingDate){
-			#
 				<button type="button" class="btn-link no-border PT10 resDone" data-pk="#:dossierId#">
 					<i class="fa fa-reply" aria-hidden="true"/>
 					Yêu cầu cấp lại
 				</button>
+
 			#
 			}
 			#
 
 
 			#
-			if(dossierStatus == "waiting"){
-				if(!cancellingDate){
-				#
+			if(dossierStatus == "waiting" && !cancellingDate && !endorsementDate && !correctingDate){
+			#
+
 				<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="#:dossierId#">
 					<i class="fa fa-trash-o" aria-hidden="true"></i>
 					Yêu cầu hủy
 				</button></br>
-				#
-				}
 
-				#
-				<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
-					<i class="fa fa-paper-plane" aria-hidden="true"></i>
-					Gửi bổ sung
-				</button>
-				#
-
+			#
 			}
 			#
 			
 			<#--  -->
-			#if(dossierStatus == "receiving" && !cancellingDate){#
+			#if(dossierStatus == "receiving" && !cancellingDate && !endorsementDate && !cancellingDate){#
 			<button type="button" class="btn-link no-border PT10 resCancelling" data-pk="#:dossierId#">
 				<i class="fa fa-trash-o" aria-hidden="true"></i>
 				Yêu cầu hủy
@@ -342,3 +349,4 @@
 
 	</tr>
 </script>
+

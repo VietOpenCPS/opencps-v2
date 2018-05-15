@@ -6,9 +6,9 @@
 			<p> Ông/bà <b>{{ props.item.author }}</b> 
 			<span class="text-blue">( {{ props.item.payload.stepName }} )</span>
  			<br/>
-			<span class="text-light-gray">{{ props.item.createDate | datetime }}</span>
+			<span class="text-light-gray">{{ props.item.createDate }}</span>
 			</p>
-			<p>Ý kiến: {{ props.item.content }}</p>
+			<span>Ý kiến: </span> <span v-html="props.item.content"></span> <br>
 			
 			<p	
 				class="history__download__link"

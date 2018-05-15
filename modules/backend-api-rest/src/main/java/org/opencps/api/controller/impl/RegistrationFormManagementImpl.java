@@ -58,10 +58,10 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 
-			action.deleteRegistrationForm(groupId, id, referenceUid);
+			action.deleteRegistrationForm(referenceUid);
 
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 

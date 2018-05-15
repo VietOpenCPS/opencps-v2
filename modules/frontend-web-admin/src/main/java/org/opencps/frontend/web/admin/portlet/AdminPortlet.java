@@ -1231,6 +1231,18 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			adminDataMgtPortlet.put(
 				"dictcollection_detail_dictitem",
 				dictCollectionDetailDictItemURL);
+			
+			PortletURL dictCollectionDetailDictItem_2_URL =
+							renderResponse.createRenderURL();
+				dictCollectionDetailDictItem_2_URL.setParameter(
+							"mvcPath",
+							"/templates/datamgt/dictcollection_detail_dictitem_2.ftl");
+				dictCollectionDetailDictItem_2_URL.setWindowState(
+							LiferayWindowState.EXCLUSIVE);
+
+			adminDataMgtPortlet.put(
+				"dictcollection_detail_dictitem_2",
+				dictCollectionDetailDictItem_2_URL);
 
 			PortletURL dictCollectionDetailFormTemplateURL =
 				renderResponse.createRenderURL();

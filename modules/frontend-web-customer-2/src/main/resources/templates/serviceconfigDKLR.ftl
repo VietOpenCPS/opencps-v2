@@ -298,6 +298,8 @@
 </div>
 </div>
 <script type="text/javascript">
+
+	
 	var dossierTemplateNo;
 	var serviceCode;
 	var govAgencyCode;
