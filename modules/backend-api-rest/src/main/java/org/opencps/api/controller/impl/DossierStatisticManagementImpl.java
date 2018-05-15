@@ -133,8 +133,13 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(404).entity(error).build();
 		}
 	}
 

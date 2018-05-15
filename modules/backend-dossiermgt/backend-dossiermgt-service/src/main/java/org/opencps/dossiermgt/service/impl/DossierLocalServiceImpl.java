@@ -194,12 +194,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 					// TODO HotFix
 
-//					if (groupId != 55301) {
+					if (groupId != 55301) {
 
 					dossierFileLocalService.addDossierFile(groupId, dossierId, dossierFileUUID, dossierTemplateNo,
 							part.getPartNo(), part.getFileTemplateNo(), part.getPartName(), StringPool.BLANK, 0l,
 							null, StringPool.BLANK, StringPool.TRUE, context);
-//					}
+					}
 				}
 			}
 

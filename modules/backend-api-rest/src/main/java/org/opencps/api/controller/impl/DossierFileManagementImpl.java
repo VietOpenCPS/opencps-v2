@@ -490,6 +490,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return processException(e);
 		}
 	}
+
 	@Override
 	public Response downloadByDossierId(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String password) {

@@ -273,7 +273,6 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				// doAction in this case is an Applicant object
 				String applicantNote = object.getString(DossierTerm.APPLICANT_NOTE);
 				String applicantName = object.getString(DossierTerm.APPLICANT_NAME);
-				
 
 				// Process doAction (with autoEvent = SUBMIT)
 				try {
@@ -287,13 +286,9 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 					long assignedUserId = processAction.getAssignUserId();
 
-					DossierAction da = actions.doAction(syncServiceProcess.getGroupId(), desDossierId, desDossier.getReferenceUid(),
+					actions.doAction(syncServiceProcess.getGroupId(), desDossierId, desDossier.getReferenceUid(),
 							processAction.getActionCode(), processAction.getProcessActionId(), applicantName,
 							applicantNote, assignedUserId, systemUser.getUserId(), StringPool.BLANK, serviceContext);
-					
-					
-					_log.info("GETPROCESSACTION************" + da.getActionName());
-
 
 				} catch (Exception e) {
 					_log.info("SyncDossierUnsuccessfuly" + desDossier.getReferenceUid());
