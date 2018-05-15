@@ -17,6 +17,7 @@ import org.opencps.api.context.provider.UserContextProvider;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
 import org.opencps.api.controller.impl.CommentManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
+import org.opencps.api.controller.impl.DataTempManagementImpl;
 import org.opencps.api.controller.impl.DeliverableTypesManagementImpl;
 import org.opencps.api.controller.impl.DeliverablesLogManagementImpl;
 import org.opencps.api.controller.impl.DeliverablesManagementImpl;
@@ -47,6 +48,7 @@ import org.opencps.api.controller.impl.ServiceInfoManagementImpl;
 import org.opencps.api.controller.impl.ServiceProcessManagementImpl;
 import org.opencps.api.controller.impl.SignatureManagementImpl;
 import org.opencps.api.controller.impl.StatisticManagementImpl;
+import org.opencps.api.controller.impl.UserInfoLogManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
@@ -55,7 +57,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 @ApplicationPath("/v2")
-@Component(immediate = true, service = Application.class)
+@Component(immediate = true, property={"jaxrs.application=true"}, service = Application.class)
 public class BackendAPIRestApplication extends Application {
 
 	public Set<Object> getSingletons() {
@@ -103,6 +105,8 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new RegistrationLogManagementImpl());
 		singletons.add(new ProcessPluginManagementImpl());
 		singletons.add(new SignatureManagementImpl());
+		singletons.add(new DataTempManagementImpl());
+		singletons.add(new UserInfoLogManagementImpl());
 		
 		// add service provider
 		singletons.add(_serviceContextProvider);
