@@ -325,7 +325,7 @@ public class UserActions implements UserInterface {
 		long mappingUserId = Validator.isNotNull(user) ? user.getUserId() : 0;
 		String userName = Validator.isNotNull(user) ? user.getFullName() : StringPool.BLANK;
 
-		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, mappingUserId);
+		Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(mappingUserId);
 
 		document.addTextSortable("userId", String.valueOf(mappingUserId));
 		document.addTextSortable("userName", Validator.isNotNull(employee) ? employee.getFullName() : userName);
