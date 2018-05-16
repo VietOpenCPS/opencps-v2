@@ -1208,8 +1208,8 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 
 									var indexTree = -1;
 									var index = 0;
-									console.log("listgroupHoSoFilterItems=======FISRT",vm.listgroupHoSoFilterItems);
-									console.log("serializable=======",serializable.data);
+									//console.log("listgroupHoSoFilterItems=======FISRT",vm.listgroupHoSoFilterItems);
+									//console.log("serializable=======",serializable.data);
 									for (var key in serializable.data) {
 										for(var i in vm.listgroupHoSoFilterItems){
 											if ( serializable.data[key].level === 0) {
@@ -1234,7 +1234,7 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 									}
 
 								}
-								console.log("listgroupHoSoFilterItems=======LAST",vm.listgroupHoSoFilterItems);
+								//console.log("listgroupHoSoFilterItems=======LAST",vm.listgroupHoSoFilterItems);
 
 							},
 							error : function(result){
@@ -2213,7 +2213,7 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 
 								axios.get(urlGetFile, config_blob).then(function (response) {
 									var url = window.URL.createObjectURL(response.data);
-									console.log("url===========>",url);
+									//console.log("url===========>",url);
 									window.open(url , '_blank');
 								})
 								.catch(function (error) {
@@ -2466,7 +2466,7 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>"));
 									}
 								});
-								console.log(vm.danhSachHoSoTableItems);
+								//console.log(vm.danhSachHoSoTableItems);
 							})
 							.catch(function (error) {
 								console.log(error);
@@ -2613,7 +2613,7 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 									animation: 'fade'
 								})
 								.then((dialog) => {
-									console.log("dialog============",dialog);
+									//console.log("dialog============",dialog);
 
 									window.open(url, "_blank", "ccc");
 
@@ -2682,7 +2682,7 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 							
 							axios.get(url, config_blob).then(function (response) {
 								var url = window.URL.createObjectURL(response.data);
-								console.log(url);
+								//console.log(url);
 								window.open(url);
 							})
 							.catch(function (error) {
@@ -3010,7 +3010,7 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 							
 							axios.get(url, config_blob).then(function (response) {
 								var url = window.URL.createObjectURL(response.data);
-								console.log(url);
+								//console.log(url);
 								window.open(url);
 							})
 							.catch(function (error) {
