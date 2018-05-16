@@ -393,6 +393,8 @@
 		return valid;
 	}
 
+
+
 	var fnCheckStatusAndHideUpload = function(dossierStatus, dossierParts){
 		if(dossierStatus !== "" && dossierStatus !== "new" && dossierStatus !== "waiting" && "${(sendAdd)!}" !== "true"){
 			$(".uploadfile-form-repository").remove();
