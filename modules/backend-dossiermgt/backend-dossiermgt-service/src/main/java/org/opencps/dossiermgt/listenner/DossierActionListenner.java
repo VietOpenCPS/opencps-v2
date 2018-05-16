@@ -133,7 +133,6 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 							|| (processAction.getPreCondition().contains("submitting"))
 									&& processAction.getAutoEvent().contains("timmer")) {
 						ok = false;
-
 					}
 				}
 

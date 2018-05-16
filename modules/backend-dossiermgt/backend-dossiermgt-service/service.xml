@@ -897,7 +897,7 @@
 		<finder return-type="Collection" name="IS_NEW">
 			<finder-column name="isNew" />
 		</finder>
-							<finder return-type="Collection" name="DID_IN">
+		<finder return-type="Collection" name="DID_IN">
 			<finder-column name="dossierId" />
 			<finder-column name="isNew" />
 		</finder>
@@ -1050,6 +1050,7 @@
 			<finder-column name="groupId" />
 			<finder-column name="pending" />
 		</finder>
+
 	</entity>
 
 	<entity local-service="true" name="DossierActionUser"
@@ -1573,6 +1574,34 @@
 		</finder>
 	</entity>
 
+	<entity local-service="true" name="Evaluation" remote-service="false"
+		table="opencps_evaluation" uuid="true">
+
+		<column name="evaluationId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="employeeId" type="long" />
+		<column name="employeeName" type="String" />
+		<column name="score" type="int" />
+
+		<finder return-type="Collection" name="EM_ID">
+			<finder-column name="employeeId" />
+		</finder>
+		
+		<finder return-type="Collection" name="EM_ID_S">
+			<finder-column name="employeeId" />
+			<finder-column name="score" />
+		</finder>
+		
+	</entity>
+	
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>DuplicateServiceCode</exception>

@@ -196,10 +196,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 //					if (groupId != 55301) {
 
+
 					dossierFileLocalService.addDossierFile(groupId, dossierId, dossierFileUUID, dossierTemplateNo,
 							part.getPartNo(), part.getFileTemplateNo(), part.getPartName(), StringPool.BLANK, 0l,
 							null, StringPool.BLANK, StringPool.TRUE, context);
-//					}
+
 				}
 			}
 
@@ -256,7 +257,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalTelNo(StringPool.BLANK);
 			}
 
-//			if (Validator.isNotNull(applicantNote))
 			dossier.setApplicantNote(applicantNote);
 
 			dossierPersistence.update(dossier);

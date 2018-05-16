@@ -133,6 +133,14 @@
 				</div>
 				<div class="col-sm-9 PL10 P0">Danh sách tham số hệ thống</div>
 			</li>
+			<li class="clearfix" >
+				<div class="col-sm-2 clearfix ">
+					<a href="javascript:;" >
+						<i class="fa fa-gg" aria-hidden="true"></i>
+					</a>
+				</div>
+				<div class="col-sm-9 PL10 P0">Danh sách câu hỏi khảo sát</div>
+			</li>
 		</ul>
 	</div>
 </div>
