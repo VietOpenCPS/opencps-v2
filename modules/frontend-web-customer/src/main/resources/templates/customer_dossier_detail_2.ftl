@@ -174,12 +174,11 @@
 
 							<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#">
 
-
 							<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 								<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
 							</a>
 
-							<a href="javascript:;" class="text-light-gray delete-dossier-file" data-toggle="tooltip" data-placement="top" title="Xóa" data-partno="#:id#">
+							<a href="javascript:;" class="text-light-gray delete-dossier-file" data-toggle="tooltip" data-placement="top" title="Xóa" data-partno="#:id#" eForm="#:hasForm#" fileTemplateNo="#:fileTemplateNo#">
 								<i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
 							</a>
 						</div>
@@ -392,60 +391,78 @@
 		});
 
 		$(document).off("click",".delete-dossier-file");
-		$(document).on("click",".delete-dossier-file",function(event){
-			var dossierId  = ${dossierId};
-			var dataPartNo = $(this).attr("data-partno");
-			try{
-				$("#formPartNo"+dataPartNo).alpaca('get').setValue({});
-			}catch (e){
-				
-			}
-			console.log(dossierId);
-			console.log(dataPartNo);
-			var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
-			if(cf){
-				if(dossierId && dataPartNo){
-					$.ajax({
-						url : "${api.server}/dossiers/"+dossierId+"/files",
-						dataType : "json",
-						type : "GET",
-						headers : {"groupId": ${groupId}},
-						success : function(result) {
-							var data = result.data;
-							if(data){
-								var arrIsSuccess = new Array();
-								for (var i = 0; i < data.length; i++) {
-									if(dataPartNo === data[i].dossierPartNo){
-										var isSuccess = removeDossierFile(dossierId, data[i].referenceUid);
-										arrIsSuccess.push(isSuccess);
+		$(document).on("click",".delete-dossier-file",function(){
+			if(navigator.onLine){
+				var dossierId  = "${dossierId}";
+				var dataPartNo = $(this).attr("data-partno");
+				var eForm = $(this).attr("eForm");
+				var fileTemplateNo = $(this).attr("fileTemplateNo");
+				try{
+					$("#formPartNo"+dataPartNo).alpaca('get').setValue({});
+				}catch (e){
+					
+				}
+				console.log(dossierId);
+				console.log(dataPartNo);
+				var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
+				if(cf){
+					if(dossierId && dataPartNo){
+						if(eForm === "true"){
+							
+							$.ajax({
+								url : "${api.server}/dossiers/"+dossierId+"/files",
+								dataType : "json",
+								type : "GET",
+								headers : {"groupId": ${groupId}},
+								success : function(result) {
+									var data = result.data;
+									if(data){
+										var arrIsSuccess = new Array();
+										for (var i = 0; i < data.length; i++) {
+											var isSuccess = false;
+											if(dataPartNo === data[i].dossierPartNo){
+												isSuccess = removeDossierFile(dossierId, data[i].referenceUid);
+												arrIsSuccess.push(isSuccess);
+
+											}
+										}
+
+										if(jQuery.inArray( false, arrIsSuccess ) == -1){
+											$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
+
+											$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
+											if(navigator.onLine){
+												notification.show({
+													message: "Yêu cầu được thực hiện thành công"
+												}, "success");
+											}
+											$("#validPart"+dataPartNo).val("0");
+										}else {
+											if(navigator.onLine){
+												notification.show({
+													message: "Xẩy ra lỗi, vui lòng thử lại"
+												}, "error");
+											}
+										}
 
 									}
+								},
+								error : function(result) {
+									if(navigator.onLine){
+										notification.show({
+											message: "Xẩy ra lỗi, vui lòng thử lại"
+										}, "error");
+									}
 								}
-
-								if(jQuery.inArray( false, arrIsSuccess ) == -1){
-									$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
-
-									$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
-									notification.show({
-										message: "Yêu cầu được thực hiện thành công"
-									}, "success");
-
-									$("#validPart"+dataPartNo).val("0");
-								}else {
-									notification.show({
-										message: "Xẩy ra lỗi, vui lòng thử lại"
-									}, "error");
-								}
-								
-							}
-						},
-						error : function(result) {
-							notification.show({
-								message: "Xẩy ra lỗi, vui lòng thử lại"
-							}, "error");
+							});
+							
+						}else {
+							removeDossierFileNotEform(dossierId,fileTemplateNo,dataPartNo);
 						}
-					});
+					}
 				}
+			}else{
+				alert("Không có kết nối internet, vui lòng kiểm tra kết nối của bạn!");
 			}
 		});
 
@@ -1327,6 +1344,43 @@
 				}	
 			});
 			return isSuccess;
+		}
+
+		var removeDossierFileNotEform = function(dossierId,fileTemplateNo,partNo){
+
+			if(navigator.onLine){
+				var data = new FormData();
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId+"/files/"+fileTemplateNo+"/all",
+					type : "DELETE",
+					dataType : "json",
+					processData: false,
+					contentType: false,
+					cache: false,
+					headers : {
+						"groupId": ${groupId},
+						"Accept" : "application/json"
+					},
+					data : data,
+					success : function(result) {
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
+						$(".dossier-component-profile").filter("[data-partno="+partNo+"]").html('<span class="number-in-circle" >0</span>');
+
+						$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",0);
+						$("#validPart"+partNo).val("0");
+					},
+					error : function(result) {
+						if(navigator.onLine){
+							notification.show({
+								message: "Xảy ra lỗi, xin vui lòng thử lại"
+							}, "error");
+						}
+					}
+				});
+			}
+
 		}
 
 		var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
