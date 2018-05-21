@@ -300,6 +300,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				String cancellingDate = object.getString(DossierTerm.CANCELLING_DATE);
 				String correctingDate = object.getString(DossierTerm.CORRECTING_DATE);
 				String endorsementDate = object.getString(DossierTerm.ENDORSEMENT_DATE);
+				_log.error("CANCELLING DATE: "+cancellingDate);
 
 				if (Validator.isNotNull(cancellingDate)) {
 					// Update cancellingDate

@@ -17,7 +17,6 @@ import org.opencps.api.dossier.model.DoActionModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierInputModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
-import org.opencps.api.dossier.model.DossierSearchDetailModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
 import org.opencps.api.dossiermark.model.DossierMarkModel;
@@ -324,6 +323,12 @@ public class DossierManagementImpl implements DossierManagement {
 			String dossierIdCTN = query.getDossierIdCTN();
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
+			//Add keyword Search
+			String keywordSearchLike = query.getKeywordSearchLike();
+			String keySearch = StringPool.BLANK;
+			if (Validator.isNotNull(keywordSearchLike)) {
+				keySearch = SpecialCharacterUtils.splitSpecial(keywordSearchLike);
+			}
 
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -349,6 +354,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
 			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
+			params.put(DossierTerm.KEYWORD_SEARCH_LIKE, keySearch);
 
 			// _log.info("4");
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,

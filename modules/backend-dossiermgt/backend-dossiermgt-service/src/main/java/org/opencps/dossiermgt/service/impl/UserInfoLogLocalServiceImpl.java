@@ -15,6 +15,7 @@
 package org.opencps.dossiermgt.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.UserInfoLog;
@@ -62,6 +63,12 @@ public class UserInfoLogLocalServiceImpl extends UserInfoLogLocalServiceBaseImpl
 		userInfoLog.setPayload(jsonData.toJSONString());
 
 		return userInfoLogPersistence.update(userInfoLog);
+
+	}
+
+	public List<UserInfoLog> getUserInfoLogs(long userId) {
+
+		return userInfoLogPersistence.findByF_USERID(userId, 0, 5);
 
 	}
 }

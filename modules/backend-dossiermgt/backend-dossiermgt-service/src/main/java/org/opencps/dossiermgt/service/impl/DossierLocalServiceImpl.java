@@ -24,18 +24,14 @@ import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
@@ -59,8 +55,11 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.TermQuery;
+import com.liferay.portal.kernel.search.TermQueryFactoryUtil;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.search.generic.StringQuery;
 import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -1079,6 +1078,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			SearchContext searchContext) throws ParseException, SearchException {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+		_log.info("keywords Search: "+keywords);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String secetKey = GetterUtil.getString(params.get("secetKey"));
 
@@ -1118,6 +1118,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //		_log.info("STATUS_REG Local Search: "+statusReg);
 		Long notStatusReg = GetterUtil.getLong(params.get(DossierTerm.NOT_STATUS_REG));
 //		_log.info("notStatusReg_REG Local Search: "+notStatusReg);
+		String keySearch = GetterUtil.getString(params.get(DossierTerm.KEYWORD_SEARCH_LIKE));
+		_log.info("keySearch Local Search: "+keySearch); 
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1140,18 +1142,37 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(keywords)) {
 
-			String[] keyword = keywords.split(StringPool.SPACE);
+			BooleanQuery query = new BooleanQueryImpl(); 
+			//BooleanQueryFactoryUtil.create(searchContext);
+			
+//			StringQuery sque = new StringQuery(keywords);
+			
+			
+//			BooleanQuery qee = new BooleanQuery();
+			_log.info("keywords Search: "+keywords);
 
-			for (String string : keyword) {
+			String[] subQuerieArr = new String[] { DossierTerm.SERVICE_NAME, DossierTerm.APPLICANT_NAME,
+					DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID, DossierTerm.DOSSIER_ID_CTN,
+					DossierTerm.BRIEF_NOTE };
 
-				MultiMatchQuery query = new MultiMatchQuery(string);
+			query.addTerms(subQuerieArr, keywords, true);
 
-				query.addFields(
-						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"});
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-
-			}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			
+			
+//			TermQuery termQuery = TermQueryFactoryUtil.create(searchContext, Field.TITLE, "%"+keywords);
+//			String[] keyword = keywords.split(StringPool.SPACE);
+//
+//			for (String string : keyword) {
+//
+//				MultiMatchQuery query = new MultiMatchQuery(string);
+//
+//				query.addFields(
+//						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"});
+//
+//				booleanQuery.add(query, BooleanClauseOccur.MUST);
+//
+//			}
 		}
 		if (!(Validator.isNotNull(secetKey) && secetKey.contentEquals("OPENCPSV2"))) {
 			if (Validator.isNotNull(groupId)) {
@@ -1520,6 +1541,18 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
 		}
 
+		if (Validator.isNotNull(keySearch)) {
+			BooleanQuery query = new BooleanQueryImpl();
+
+			String[] subQuerieArr = new String[] { DossierTerm.SERVICE_NAME, DossierTerm.APPLICANT_NAME,
+					DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID, DossierTerm.DOSSIER_ID_CTN,
+					DossierTerm.BRIEF_NOTE };
+
+			query.addTerms(subQuerieArr, keySearch.toLowerCase(), true);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -1569,6 +1602,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Long notStatusReg = GetterUtil.getLong(params.get(DossierTerm.NOT_STATUS_REG));
 //		_log.info("statusReg: "+statusReg);
 //		_log.info("notStatusReg: "+notStatusReg);
+		String keySearch = GetterUtil.getString(params.get(DossierTerm.KEYWORD_SEARCH_LIKE));
+		_log.info("keySearch Local Search: "+keySearch);
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1588,18 +1623,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(keywords)) {
 
-			String[] keyword = keywords.split(StringPool.SPACE);
+			BooleanQuery query = new BooleanQueryImpl();
 
-			for (String string : keyword) {
+			String[] subQuerieArr = new String[] { DossierTerm.SERVICE_NAME, DossierTerm.APPLICANT_NAME,
+					DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID, DossierTerm.DOSSIER_ID_CTN,
+					DossierTerm.BRIEF_NOTE };
 
-				MultiMatchQuery query = new MultiMatchQuery(string);
+			query.addTerms(subQuerieArr, keywords, true);
 
-				query.addFields(
-						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"});
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-
-			}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		if (!(Validator.isNotNull(secetKey) && secetKey.contentEquals("OPENCPSV2"))) {
@@ -1968,6 +2000,18 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
 		}
+		
+		if (Validator.isNotNull(keySearch)) {
+			BooleanQuery query = new BooleanQueryImpl();
+
+			String[] subQuerieArr = new String[] { DossierTerm.SERVICE_NAME, DossierTerm.APPLICANT_NAME,
+					DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID, DossierTerm.DOSSIER_ID_CTN,
+					DossierTerm.BRIEF_NOTE };
+
+			query.addTerms(subQuerieArr, keySearch.toLowerCase(), true);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2035,5 +2079,118 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	public static final String CLASS_NAME = Dossier.class.getName();
+
+	//TODO: TEST
+//	public FullTextQuery getFullTextQueryForKeywordOnAllAnnotatedFields(String keyword) throws ParseException {
+//
+////	    String[] indexedFields = findAllIndexedFields(entity);
+//		String[] indexedFields = new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"};
+//
+//	    final QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_35, indexedFields, analyzer);
+//	    parser.setAllowLeadingWildcard(true);
+//
+//	    // Add wildcards when not already in search
+//	    if (!(StringUtils.containsAny(keyword, new char[] { '*', '?', ':' }) || keyword.startsWith("\"") && keyword.endsWith("\""))) {
+//	      keyword = "*" + keyword + "*";
+//	    }
+//
+//	    Query luceneQuery = parser.parse(keyword);
+//	    FullTextQuery fullTextQuery = getFullTextQuery(luceneQuery);
+//	    return fullTextQuery;
+//	  }
+
+	/////////////
+	
+//	private static List<BooleanQuery> LuceneSearchLike(String keywordsTest, SearchContext searchContext) {
+//		List<BooleanQuery> booleanQueries = new ArrayList<BooleanQuery>();
+//		BooleanQuery booleanQuerie = BooleanQueryFactoryUtil.create(searchContext);
+////		Searcher searcher;
+//		if (Validator.isNotNull(keywordsTest)) {
+//			try {
+////				searcher.searchUsingWildCardQuery(keywordsTest);
+////				Query query = (Query) QueryParser.parse(keywordsTest); 
+//				String[] subQuerieArr = new String[] { DossierTerm.SERVICE_NAME, DossierTerm.SERVICE_NAME,
+//						DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID};
+//				
+//				
+//				//create a term to search file name 
+////				@SuppressWarnings("deprecation")
+////				TermQuery term = TermQueryFactoryUtil.create(searchContext,DossierTerm.SERVICE_NAME, keywordsTest);
+//				
+////				TermQuery term1 = new TermQueryImpl(DossierTerm.SERVICE_NAME, keywordsTest); 
+//				//create the term query object 
+////				Query query = new WildcardQueryImpl(term1.getQueryTerm()); 
+////				   return queryParser.parse(searchQuery); 
+////			   } 
+//
+////				String strValueSearch = SpecialCharacterUtils.splitSpecial(keywordsTest.toString());
+////				Query query1 = new WildcardQueryImpl(DossierTerm.SERVICE_NAME, "*"+keywordsTest+"*");
+//
+//				// Search LIKE
+//				Map<String, Query> queryMap = query.addTerms(subQuerieArr, keywordsTest, true);
+////
+////				Iterator<Map.Entry<String, Query>> iterator = queryMap.entrySet().iterator();
+////				while (iterator.hasNext()) {
+////					Map.Entry<String, Query> entry = iterator.next();
+////					_log.info("entryKey Local Search: "+entry.getKey()); 
+////					_log.info("entry Local Search: "+entry.getValue()); 
+////					BooleanQuery query11 = BooleanQueryFactoryUtil.create(searchContext);
+////					query11.add(entry.getValue(), BooleanClauseOccur.SHOULD);
+//
+//				booleanQuerie.add(query, BooleanClauseOccur.SHOULD);
+//				booleanQueries.add(booleanQuerie);
+//			} catch (Exception e) {
+//
+//			}
+//		}
+
+//		return booleanQueries;
+//	}
+
+//	public static void main(String[] args){
+//		List<String> subQueries = new ArrayList<String>();
+//		SearchContext searchContext = new SearchContext();
+//		LuceneSearchLike("6842", searchContext);
+//	}
+	
+//	  String indexDir = "E:\\Lucene\\Index"; 
+//	   String dataDir = "E:\\Lucene\\Data"; 
+////	   Searcher searcher; 
+//		
+//	   public static void main(String[] args) { 
+//	      LuceneTester tester; 
+//	      try { 
+//	         tester = new LuceneTester(); 
+//	         tester.searchUsingWildCardQuery("record1*"); 
+//	      } catch (IOException e) { 
+//	         e.printStackTrace(); 
+//	      } catch (ParseException e) { 
+//	         e.printStackTrace(); 
+//	      } 
+//	   } 
+//		
+//	   private void searchUsingWildCardQuery(String searchQuery) 
+//	      throws IOException, ParseException { 
+////	      searcher = new Searcher(indexDir); 
+//	      long startTime = System.currentTimeMillis(); 
+//			
+//	      //create a term to search file name 
+//	      Term term = new Term(LuceneConstants.FILE_NAME, searchQuery); 
+//	      //create the term query object 
+//	      Query query = new WildcardQuery(term); 
+//	      //do the search 
+//	      TopDocs hits = searcher.search(query); 
+//	      long endTime = System.currentTimeMillis(); 
+//			
+//	      System.out.println(hits.totalHits + 
+//	         " documents found. Time :" + (endTime - startTime) + "ms"); 
+//				
+//	      for(ScoreDoc scoreDoc : hits.scoreDocs) { 
+//	         Document doc = searcher.getDocument(scoreDoc); 
+//	         System.out.println("File: "+ doc.get(LuceneConstants.FILE_PATH)); 
+//	      } 
+//			
+//	      searcher.close(); 
+//	   } 
 
 }
