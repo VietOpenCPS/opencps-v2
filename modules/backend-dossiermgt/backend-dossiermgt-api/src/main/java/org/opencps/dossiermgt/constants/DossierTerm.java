@@ -109,4 +109,5 @@ public class DossierTerm {
 	public static final String STATUS_REG = "statusReg";
 	public static final String NOT_STATUS_REG = "notStatusReg";
 	public static final String LOCK_STATE = "lockState";
+	public static final String KEYWORD_SEARCH_LIKE = "keywordSearchLike";
 }
