@@ -132,6 +132,14 @@ public interface DataManagement {
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@PathParam("code") String code, @BeanParam DataSearchModel query);
 
+	@GET
+	@Path("/{code}/dictgroups/{groupCode}")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getDictgroup(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@PathParam("code") String code, @PathParam("groupCode") String groupCode);
+	
 	@POST
 	@Path("/{code}/dictgroups")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })

@@ -25,14 +25,17 @@ import java.util.Map;
 
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.exception.DuplicateDossierFileException;
 import org.opencps.dossiermgt.exception.InvalidDossierStatusException;
 import org.opencps.dossiermgt.exception.NoSuchDossierFileException;
 import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierFileLocalServiceBaseImpl;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.opencps.usermgt.action.ApplicantActions;
@@ -190,10 +193,6 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		}
 		_log.info("****Start autofill file at:" + new Date());
 
-		if (Validator.isNotNull(dossierPart.getSampleData())) {
-			object.setFormData(
-					AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext));
-		}
 		_log.info("****End autofill file at:" + new Date());
 
 		object.setDisplayName(displayName);
@@ -203,10 +202,28 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			object.setIsNew(true);
 		}
 		
-		String deliverableCode = PwdGenerator.getPassword(10);
+//		String deliverableCode = PwdGenerator.getPassword(10);
+//		
+//		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
+//			object.setDeliverableCode(deliverableCode);
+//		}
+		String deliverableCode = StringPool.BLANK;
 		
 		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
+			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getByCode(groupId, dossierPart.getDeliverableType());
+			
+			deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, serviceContext.getCompanyId(), deliverableType.getDeliverableTypeId());
 			object.setDeliverableCode(deliverableCode);
+		}
+
+		if (Validator.isNotNull(dossierPart.getSampleData())) {
+			String formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext);
+			JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formData);
+			formDataObj.put("LicenceNo", deliverableCode);
+			formData = formDataObj.toJSONString();
+			object.setFormData(
+					formData
+					);
 		}
 
 		return dossierFilePersistence.update(object);
@@ -613,6 +630,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		dossierFile.setIsNew(true);
 
 		// Binhth add message bus to processing jasper file
+		_log.info("IN DOSSIER FILE UPDATE FORM DATA");
 		Message message = new Message();
 
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();

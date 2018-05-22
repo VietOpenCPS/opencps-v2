@@ -76,7 +76,7 @@ public class ServiceInfoUtils {
 			params.put(ServiceConfigTerm.SERVICE_CODE, doc.get(ServiceInfoTerm.SERVICE_CODE));
 
 			Sort[] sorts = new Sort[] {
-					SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, Boolean.getBoolean(StringPool.BLANK)) };
+					SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, Boolean.valueOf(StringPool.BLANK)) };
 
 			JSONObject jsonData = serviceConfigActions.getServiceConfigs(serviceContext.getUserId(),
 					serviceContext.getCompanyId(), Long.parseLong(doc.get(Field.GROUP_ID)), params, sorts,
@@ -174,7 +174,7 @@ public class ServiceInfoUtils {
 		params.put(ServiceConfigTerm.SERVICE_CODE, serviceInfo.getServiceCode());
 
 		Sort[] sorts = new Sort[] {
-				SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, Boolean.getBoolean(StringPool.BLANK)) };
+				SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, Boolean.valueOf(StringPool.BLANK)) };
 
 		JSONObject jsonData = serviceConfigActions.getServiceConfigs(serviceContext.getUserId(),
 				serviceContext.getCompanyId(), serviceInfo.getGroupId(), params, sorts,

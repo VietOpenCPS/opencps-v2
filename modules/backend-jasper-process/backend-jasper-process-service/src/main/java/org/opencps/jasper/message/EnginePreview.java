@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.opencps.jasper.utils.JRReportUtil;
 
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -28,6 +29,28 @@ public class EnginePreview implements MessageListener {
 		}
 	}
 	
+	private boolean isJsonObject(String jsonString) {
+        try {
+            JSONArray arr = JSONFactoryUtil.createJSONArray(jsonString);
+            if (arr == null)
+            	return true;
+            else
+            	return false;
+        } catch (JSONException ex) {
+            try {
+                JSONObject obj = JSONFactoryUtil.createJSONObject(jsonString);
+                if (obj == null) {
+                	return false;
+                }
+                else {
+                	return true;
+                }
+            } catch (JSONException e) {
+                return false;
+            }
+        }
+ 	}
+	
 	private void _doPreview(Message message) {
 		_log.info("DoPreview.........");
 		
@@ -36,7 +59,9 @@ public class EnginePreview implements MessageListener {
 		String formReport = message.getString("formReport");
 		
 		String formData = message.getString("formData");
+		_log.info("Object or array: " + isJsonObject(formData));
 		
+		if (isJsonObject(formData)) {
 		try {
 			//create file
 			JRReportUtil.createReportFile(formReport,
@@ -56,8 +81,31 @@ public class EnginePreview implements MessageListener {
 
 		} catch (Exception e) {
 			_log.error("Generate file exception.........");
+			}			
 		}
+		else {
+			_log.info("JSON Array generate list of deliverable");
+			try {
+				//create file
+				JRReportUtil.createReportFile(formReport,
+						formData, null, file.getCanonicalPath());
+				
+				Message responseMessage = MessageBusUtil.createResponseMessage(message);
+				
+				//JSONObject payload = JSONFactoryUtil.createJSONObject();
+				
+				//payload.put("status", "DONE");
+				//.put("", value)
+
+				responseMessage.setPayload(file.getCanonicalPath());
+				responseMessage.put("fileDes", file.getCanonicalPath());
 		
+				MessageBusUtil.sendMessage(responseMessage.getDestinationName(), responseMessage);
+
+			} catch (Exception e) {
+				_log.error("Generate file exception.........");
+			}			
+		}
 	}
 
 	private void _doReceiveJasperRequest(Message message) {

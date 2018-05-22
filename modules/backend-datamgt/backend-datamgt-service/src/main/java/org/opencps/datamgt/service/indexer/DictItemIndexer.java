@@ -66,12 +66,16 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 		document.addTextSortable(DictItemTerm.ITEM_CODE, dictItem.getItemCode());
 		document.addTextSortable(DictItemTerm.ITEM_NAME, dictItem.getItemName());
 		document.addTextSortable(DictItemTerm.ITEM_NAME_EN, dictItem.getItemNameEN());
-		document.addTextSortable(DictItemTerm.ITEM_DESCRIPTION, dictItem.getItemDescription());
+		if (Validator.isNotNull(dictItem.getItemDescription())) {
+			document.addTextSortable(DictItemTerm.ITEM_DESCRIPTION, dictItem.getItemDescription());			
+		}
 		document.addNumberSortable(DictItemTerm.PARENT_ITEM_ID, dictItem.getParentItemId());
 		document.addTextSortable(DictItemTerm.SIBLING, dictItem.getSibling());
 		document.addTextSortable(DictItemTerm.TREE_INDEX, dictItem.getTreeIndex());
 		document.addNumberSortable(DictItemTerm.LEVEL, dictItem.getLevel());
-		document.addTextSortable(DictItemTerm.META_DATA, dictItem.getMetaData());
+		if (Validator.isNotNull(dictItem.getMetaData())) {
+			document.addTextSortable(DictItemTerm.META_DATA, dictItem.getMetaData());			
+		}
 		
 		long dictCollectionId = dictItem.getDictCollectionId();
 		
