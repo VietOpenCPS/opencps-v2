@@ -49,6 +49,8 @@ public interface DictcollectionInterface {
 	public JSONObject getDictgroups(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
 	
+	public DictGroup getDictGroupDetail(String dictCollectionCode, String groupCode, long groupId);
+	
 	public JSONObject getDictItemsGroup(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
 	
@@ -64,6 +66,12 @@ public interface DictcollectionInterface {
 	public boolean deleteDictgroups(String groupCode, long groupId, ServiceContext serviceContext)
 			throws NotFoundException, UnauthenticationException, UnauthorizationException, DataInUsedException;
 	
+	public boolean deleteDictgroups(String collectionCode, String groupCode, long groupId, ServiceContext serviceContext)
+			throws NotFoundException, UnauthenticationException, UnauthorizationException, DataInUsedException;
+
+	public boolean deleteDictgroupsAndSomethingUseIt(String collectionCode, String groupCode, long groupId, ServiceContext serviceContext)
+			throws NotFoundException, UnauthenticationException, UnauthorizationException, DataInUsedException;
+
 	public DictItemGroup addDictgroupsDictItems(long userId, long groupId, String code, String groupCode,
 			String itemCode, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException;

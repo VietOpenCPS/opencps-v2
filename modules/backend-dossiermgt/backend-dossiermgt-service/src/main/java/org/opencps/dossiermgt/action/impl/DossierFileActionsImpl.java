@@ -225,6 +225,12 @@ public class DossierFileActionsImpl implements DossierFileActions {
 						dossierFile.getFileTemplateNo());
 	
 				defaultData = AutoFillFormData.sampleDataBinding(part.getSampleData(), dossierId, serviceContext);
+				dossierFile = DossierFileLocalServiceUtil.getByReferenceUid(referenceUid).get(0);
+				JSONObject defaultDataObj = JSONFactoryUtil.createJSONObject(defaultData);
+				_log.info("Default data obj: " + defaultDataObj.toJSONString());
+				defaultDataObj.put("LicenceNo", dossierFile.getDeliverableCode());
+				_log.info("Default data obj: " + defaultDataObj.toJSONString());
+				defaultData = defaultDataObj.toJSONString();
 			}
 	
 			dossierFile = DossierFileLocalServiceUtil.updateFormData(groupId, dossierId, referenceUid, defaultData,

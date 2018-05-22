@@ -1496,6 +1496,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+		//TODO: Test API get dossier DN
+//		if (Validator.isNotNull(applicantIdNo)) {
+//			
+//			MultiMatchQuery query = new MultiMatchQuery(applicantIdNo);
+//
+//			query.addField(DossierTerm.APPLICANT_ID_NO);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
 		if (Validator.isNotNull(notState)) {
 			//LamTV: Case not have flag cancel
 			if (notState.equals("cancelling")) {
@@ -1955,6 +1964,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+		//TODO: Test API get dossier DN
+//		if (Validator.isNotNull(applicantIdNo)) {
+//			
+//			MultiMatchQuery query = new MultiMatchQuery(applicantIdNo);
+//
+//			query.addField(DossierTerm.APPLICANT_ID_NO);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
 		if (Validator.isNotNull(notState)) {
 			//LamTV: Case not have flag cancel
 			if (notState.equals("cancelling")) {

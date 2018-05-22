@@ -8,4 +8,11 @@ public class DeliverableTypesTerm {
 	public static final String DELIVERABLE_NAME = "deliverableName";
 	public static final String CODEPATTERN = "codePattern";
 	public static final String COUNTER = "counter";
+	
+	public static final String DELIVERABLES_KEY = "deliverables";
+	public static final String DELIVERABLE_CODE_KEY = "deliverableCode";
+	public static final String DELIVERABLE_SUBJECT = "subject";
+	public static final String DELIVERABLE_ISSUEDATE = "issueDate";
+	public static final String DELIVERABLE_EXPIREDATE = "expireDate";
+	public static final String DELIVERABLE_REVALIDDATE = "revalidDate";
 }

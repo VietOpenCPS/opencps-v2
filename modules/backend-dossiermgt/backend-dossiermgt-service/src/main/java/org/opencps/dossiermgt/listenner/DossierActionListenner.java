@@ -78,7 +78,6 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 
 				if (dossierId > 0) {
 
-					_log.info("START Dossier Action11111");
 					List<DossierLog> dossierLogs = DossierLogLocalServiceUtil.getByDossierAndType(dossierId,
 							DossierFileListenerMessageKeys.DOSSIER_LOG_CREATE_TYPE, QueryUtil.ALL_POS,
 							QueryUtil.ALL_POS);

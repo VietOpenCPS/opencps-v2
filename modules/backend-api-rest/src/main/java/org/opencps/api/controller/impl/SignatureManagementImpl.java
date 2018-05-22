@@ -60,8 +60,8 @@ import com.liferay.portal.kernel.util.Validator;
 public class SignatureManagementImpl implements SignatureManagement{
 
 	Log _log = LogFactoryUtil.getLog(SignatureManagementImpl.class.getName());
-	private static final String TYPE_KYSO = "1135, 1158, 1160";
-	private static final String TYPE_DONGDAU = "1137, 1162";
+//	private static final String TYPE_KYSO = "1135, 1158, 1160, 1032";
+//	private static final String TYPE_DONGDAU = "1137, 1162, 105";
 
 	@Override
 	public Response updateDossierFileBySignature(HttpServletRequest request, HttpHeaders header, Company company,
@@ -134,23 +134,28 @@ public class SignatureManagementImpl implements SignatureManagement{
 //					_log.info("assignUserId: "+assignUserId);
 //					_log.info("subUsers: "+subUsers);
 					DossierActions dossierAction = new DossierActionsImpl();
-					if (TYPE_KYSO.contains(actionCode)) {
+					//if (TYPE_KYSO.contains(actionCode)) {
 						dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
 								0L, actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
 								serviceContext);
-					} else if(TYPE_DONGDAU.contains(actionCode)) {
-						ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
-								dossier.getDossierTemplateNo(), groupId);
-	
-						ProcessAction action = getProcessAction(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
-								input.getActionCode(), option.getServiceProcessId());
-	
-						dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
-								action.getProcessActionId(), actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
-								serviceContext);
-					} else {
-						//TODO
-					}
+
+//					if (TYPE_KYSO.contains(actionCode)) {
+//						dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
+//								0L, actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
+//								serviceContext);
+//					} else if(TYPE_DONGDAU.contains(actionCode)) {
+//						ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
+//								dossier.getDossierTemplateNo(), groupId);
+//	
+//						ProcessAction action = getProcessAction(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
+//								input.getActionCode(), option.getServiceProcessId());
+//	
+//						dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
+//								action.getProcessActionId(), actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
+//								serviceContext);
+//					} else {
+//						//TODO
+//					}
 					// Update deliverable with deliverableType
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
 					if (dossierFile != null) {
@@ -253,7 +258,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 						results = JSONFactoryUtil.createJSONObject();
 						results.put("msg", "fileEntryId");
 					}
-					break;
+//					break;
 				}
 			}
 

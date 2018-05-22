@@ -24,10 +24,16 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
+ *         &lt;element name="deliverableTypeId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="createDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="modifiedDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="deliverableType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="deliverableName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="codePattern" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="counter" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="formScript" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="formReport" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="mappingData" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,18 +44,102 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
+    "deliverableTypeId",
+    "createDate",
+    "modifiedDate",
     "deliverableType",
     "deliverableName",
     "codePattern",
-    "counter"
+    "counter",
+    "formScript",
+    "formReport",
+    "mappingData"
 })
 @XmlRootElement(name = "DeliverableTypeDetailModel")
 public class DeliverableTypeDetailModel {
 
+    protected Long deliverableTypeId;
+    protected String createDate;
+    protected String modifiedDate;
     protected String deliverableType;
     protected String deliverableName;
     protected String codePattern;
     protected Long counter;
+    protected String formScript;
+    protected String formReport;
+    protected String mappingData;
+
+    /**
+     * Gets the value of the deliverableTypeId property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getDeliverableTypeId() {
+        return deliverableTypeId;
+    }
+
+    /**
+     * Sets the value of the deliverableTypeId property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setDeliverableTypeId(Long value) {
+        this.deliverableTypeId = value;
+    }
+
+    /**
+     * Gets the value of the createDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    /**
+     * Sets the value of the createDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCreateDate(String value) {
+        this.createDate = value;
+    }
+
+    /**
+     * Gets the value of the modifiedDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getModifiedDate() {
+        return modifiedDate;
+    }
+
+    /**
+     * Sets the value of the modifiedDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setModifiedDate(String value) {
+        this.modifiedDate = value;
+    }
 
     /**
      * Gets the value of the deliverableType property.
@@ -145,6 +235,78 @@ public class DeliverableTypeDetailModel {
      */
     public void setCounter(Long value) {
         this.counter = value;
+    }
+
+    /**
+     * Gets the value of the formScript property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getFormScript() {
+        return formScript;
+    }
+
+    /**
+     * Sets the value of the formScript property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setFormScript(String value) {
+        this.formScript = value;
+    }
+
+    /**
+     * Gets the value of the formReport property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getFormReport() {
+        return formReport;
+    }
+
+    /**
+     * Sets the value of the formReport property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setFormReport(String value) {
+        this.formReport = value;
+    }
+
+    /**
+     * Gets the value of the mappingData property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getMappingData() {
+        return mappingData;
+    }
+
+    /**
+     * Sets the value of the mappingData property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setMappingData(String value) {
+        this.mappingData = value;
     }
 
 }
