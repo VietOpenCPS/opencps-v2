@@ -42,6 +42,7 @@
 									<div class="accordion-inner">
 										#
 										for(var i=0; i < items.length; i++){
+											var lockState = fnCheckLockTemplate("${(dossier.lockState)!}",items[i].dossierPartNo);
 										#
 										<div class="eq-height">
 
@@ -50,10 +51,13 @@
 													#:items[i].displayName#
 												</span>
 											</div>
-
-											<div class="col-xs-12 col-sm-3 align-center">
+											
+											#if(!lockState){#
+												<div class="col-xs-12 col-sm-3 align-center">
 												<button class="btn btn-reset btn-delete-component-profile" data-pk="#:items[i].referenceUid#" eForm="#:items[i].eForm#" type="button"><i class="fa fa-trash"></i> Xóa</button>
-											</div>
+												</div>
+											#}#
+											
 										</div>
 										#
 									}
@@ -86,6 +90,53 @@
 	<#-- </div> -->
 
 	<script type="text/javascript">
+
+		var fnCheckLockTemplate = function(lockState, item){
+			if(lockState){
+				if(lockState.startsWith("LOCK")){
+
+					if(lockState === "LOCK INPUT"){
+						return true;
+					}else if(lockState === "LOCK ALL"){
+						return true;
+					}else if (lockState !== "LOCK ALL" && lockState !== "LOCK INPUT" && lockState !== "LOCK OUTPUT" )  {
+						var partLocksStr = lockState.split(" ")[1];
+						if(partLocksStr){
+							var partLocks = partLocksStr.split(",");
+							for (var i = 0; i < partLocks.length; i++) {
+								if(partLocks[i] === item){
+									return true;
+								}
+							}
+						}
+					}
+
+				}else if(lockState.startsWith("UPDATE")){
+					if(lockState === "UPDATE INPUT"){
+						return false;
+					}
+
+					if(lockState === "UPDATE ALL"){
+						return false;
+					}
+
+					if (lockState !== "UPDATE ALL" && lockState !== "UPDATE INPUT" && lockState !== "UPDATE OUTPUT" ){
+						var partLocksStr = lockState.split(" ")[1];
+						if(partLocksStr){
+							var partLocks = partLocksStr.split(",");
+							for (var i = 0; i < partLocks.length; i++) {
+								if(partLocks[i] === item){
+									return false;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+
 		$(function(){
 			/*		var template = kendo.template($("#template").html());*/
 			$(document).off("click",".btn-delete-component-profile");

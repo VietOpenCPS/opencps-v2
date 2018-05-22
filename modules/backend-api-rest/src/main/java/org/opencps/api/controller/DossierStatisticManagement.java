@@ -67,11 +67,4 @@ public interface DossierStatisticManagement {
 			@Context ServiceContext serviceContext, @BeanParam DossierStatisticInputModel input,
 			@ApiParam(value = "govAgencyCode", required = true) @PathParam("code") String govAgencyCode);
 
-	@GET
-	@Path("/dossiers/todo")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.MULTIPART_FORM_DATA })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response getDossierStatisticTodo(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext);
 }

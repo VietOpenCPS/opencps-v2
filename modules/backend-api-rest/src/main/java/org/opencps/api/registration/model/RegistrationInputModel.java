@@ -72,7 +72,9 @@ import javax.xml.bind.annotation.XmlType;
     "govAgencyName",
     "registrationState",
     "registrationClass",
-    "submitting"
+    "submitting",
+    "representativeEnterprise"
+    
 })
 public class RegistrationInputModel {
 
@@ -130,8 +132,19 @@ public class RegistrationInputModel {
     @DefaultValue(value = "")
     @FormParam(value = "registrationClass")
     protected String registrationClass;
+    @DefaultValue(value = "")
+    @FormParam(value = "representativeEnterprise")
+    protected String representativeEnterprise;
 
-    /**
+    public String getRepresentativeEnterprise() {
+		return representativeEnterprise;
+	}
+
+	public void setRepresentativeEnterprise(String representativeEnterprise) {
+		this.representativeEnterprise = representativeEnterprise;
+	}
+
+	/**
      * Gets the value of the applicantName property.
      * 
      * @return

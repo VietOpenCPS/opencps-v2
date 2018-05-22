@@ -1,0 +1,18 @@
+{
+
+	"api": {
+		"server": ""
+	},
+	"ajax": {
+		"serviceinfo_detail": "serviceinfo_detail.ftl",
+		"serviceinfomain_list": "serviceinfomain_list.ftl",
+		"register_result": "register_result.ftl",
+		"confirm_password": "confirm_password.ftl"
+	},
+  "serviceinfo": {
+    "groupId" : 20147
+  },
+  "isSignedIn": false,
+  "loginURL": "#",
+  "portletNamespace": ""
+}

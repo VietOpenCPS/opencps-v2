@@ -63,6 +63,7 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 
 		// add number fields
 
+		document.addNumberSortable(RegistrationFormTerm.REGISTRATION_FORM_ID, object.getRegistrationFormId());
 		document.addNumberSortable(RegistrationFormTerm.REGISTRATION_ID, object.getRegistrationId());
 
 		// add text fields

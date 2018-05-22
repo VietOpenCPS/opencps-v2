@@ -177,6 +177,7 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
                                             applicant.setWardCode(registrationClient.getWardCode());
                                             applicant.setWardName(registrationClient.getWardName());
                                             applicant.setContactEmail(registrationClient.getContactEmail());
+                                            applicant.setRepresentativeEnterprise(registrationClient.getRepresentativeEnterprise());
                                             
                                             ApplicantLocalServiceUtil.updateApplicant(applicant);
                                             Indexer<Applicant> indexApplicant = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
@@ -260,6 +261,7 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 			params.put(RegistrationTerm.GOV_AGENCY_NAME, registration.getGovAgencyName());
 			params.put(RegistrationTerm.REGISTRATIONSTATE, registration.getRegistrationState());
 			params.put(RegistrationTerm.REGISTRATION_CLASS, registration.getRegistrationClass());
+			params.put(RegistrationTerm.REPRESENTATIVE_ENTERPRISE, registration.getRepresentativeEnterprise());
 			params.put(RegistrationTerm.SUBMITTING, registration.getSubmitting());
 			
 			

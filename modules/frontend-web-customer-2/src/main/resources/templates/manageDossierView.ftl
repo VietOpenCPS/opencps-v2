@@ -15,7 +15,12 @@
 					<div class="background-triangle-big">
 						<i class="fa fa-file-text"></i>
 					</div>
-					<span class="text-bold" id="statusName" style="text-transform:uppercase;"></span>
+					<span class="text-bold" id="statusName" style="text-transform:uppercase;"></span> &nbsp;&nbsp;&nbsp;
+					<#if registration?has_content>
+						
+					<#else>
+						<span class="text-bold red" style="text-transform:uppercase;">(Tài khoản này chưa bổ sung thông tin doanh nghiệp)</span>
+					</#if>
 					<div class="MLA form-inline">
 
 						<input type="text" class="form-control" id="noInput" placeholder="Nhập số chứng chỉ" 
@@ -211,7 +216,7 @@
 						</select>
 					</span>
 				</span>
-				<span id="pagerProfile" class="M0 P0" data-role="pager" data-info="false" data-bind="source: dataSourceProfile, events:{change: stylePager}" data-button-count="3" style="background: #ffffff" data-auto-bind="false"></span>
+				<span id="pagerProfile" class="M0 P0" data-role="pager" data-info="false" data-bind="source: dataSourceProfile, events:{change: stylePager}" data-button-count="10" style="background: #ffffff" data-auto-bind="false"></span>
 			</div>	
 		</div>
 
@@ -222,7 +227,7 @@
 <script type="text/x-kendo-template" id="proFileTemplate">
 	<tr class="rowTable">
 		<td class="text-center count" style="width: 1%">
-
+			#:count#
 		</td>
 
 		<td class="" style="width: 15%">
@@ -307,7 +312,7 @@
 
 
 			#
-			if(dossierStatus === "done" && dossierSubStatus === ""){
+			if(dossierStatus === "done" && dossierSubStatus === "" && statusReg !== 3){
 			#
 				<button type="button" class="btn-link no-border PT10 sendAdd" data-pk="#:dossierId#">
 					<i class="fa fa-paper-plane" aria-hidden="true"></i>

@@ -261,7 +261,8 @@
 					durationCount: processStep.durationCount,
 					customProcessUrl: processStep.customProcessUrl,
 					briefNote: processStep.briefNote,
-					stepInstruction: processStep.stepInstruction
+					stepInstruction: processStep.stepInstruction,
+					lockState : processStep.lockState
 				});
 
 				kendo.bind($("#process_detail_form"), viewModel);
@@ -345,7 +346,8 @@
 					durationCount: "",
 					customProcessUrl: "",
 					briefNote: "",
-					stepInstruction: ""
+					stepInstruction: "",
+					lockState : ""
 				});
 
 				kendo.bind($("#process_detail_form"), viewModel);
@@ -357,6 +359,17 @@
 
 			$(document).on("click", "#btn_save_service_process_step", function(event){
 				event.preventDefault();
+
+				var lockState = $("#lockState").val();
+
+				if(lockState){
+					if(!lockState.startsWith("LOCK") && !lockState.startsWith("UPDATE")){
+						notification.show({
+							message: "Lock State phải bắt đầu bằng LOCK hoặc UPDATE"
+						}, "error");
+						return ;
+					}
+				}
 
 				$(".service-process-detail ul.nav.nav-tabs li:not(:first)").removeClass("disabled-tab");
 
@@ -391,6 +404,7 @@
 						customProcessUrl: $("#customProcessUrl").val(),
 						briefNote: $("#briefNote").val(),
 						stepInstruction: $("#stepInstruction").val(),
+						lockState : $("#lockState").val(),
 					},
 					success: function(result) {
 						notification.show({
@@ -498,6 +512,7 @@
 						customProcessUrl: $("#customProcessUrl").val(),
 						briefNote: $("#briefNote").val(),
 						stepInstruction: $("#stepInstruction").val(),
+						lockState : $("#lockState").val(),
 					},
 					success: function(result) {
 						notification.show({

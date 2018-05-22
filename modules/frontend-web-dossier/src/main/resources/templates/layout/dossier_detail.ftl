@@ -319,8 +319,6 @@
                             </div>
                             <div :id="'alpacajs_form_'+item.partNo" class="expansion-panel__header"></div>
 							<input type="hidden" :id="'dossierFileId' + item.partNo" :value="item.dossierFileId" />
-
-							
 							
                             </v-expansion-panel-content>
                         </v-expansion-panel>

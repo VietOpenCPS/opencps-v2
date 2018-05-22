@@ -105,6 +105,8 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		
 
 		String dossierPartNo = ParamUtil.getString(renderRequest, "dossierPartNo");
+		
+		String lockState = ParamUtil.getString(renderRequest, "lockState");
 
 		String dossierTemplateNo = ParamUtil.getString(renderRequest, "dossierTemplateNo");
 
@@ -142,6 +144,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute("sendAdd", sendAdd);
 		renderRequest.setAttribute("sendReissue", sendReissue);
 		renderRequest.setAttribute("lblApplicantNote", lblApplicantNote);
+		renderRequest.setAttribute("lockState", lockState);
 
 		renderRequest.setAttribute("userInfo", userInfo);
 
@@ -166,12 +169,6 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		dossierNew.put("valueSub", "");
 		dossierStatus.add(dossierNew);
 		
-		JSONObject dossierSubmitting = JSONFactoryUtil.createJSONObject();
-		dossierSubmitting.put("text", "Hồ sơ đang xử lý");
-		dossierSubmitting.put("value", "submitting");
-		dossierSubmitting.put("valueSub", "");
-		dossierStatus.add(dossierSubmitting);
-
 		JSONObject dossierReceiving = JSONFactoryUtil.createJSONObject();
 		dossierReceiving.put("text", "Hồ sơ chờ tiếp nhận");
 		dossierReceiving.put("value", "receiving");
@@ -183,12 +180,13 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		dossierWaiting.put("value", "waiting");
 		dossierWaiting.put("valueSub", "");
 		dossierStatus.add(dossierWaiting);
-
+		
 		JSONObject dossierProcessed = JSONFactoryUtil.createJSONObject();
 		dossierProcessed.put("text", "Hồ sơ đã tiếp nhận");
 		dossierProcessed.put("value", "processing");
 		dossierProcessed.put("valueSub", "");
 		dossierStatus.add(dossierProcessed);
+
 
 		JSONObject dossierPaying = JSONFactoryUtil.createJSONObject();
 		dossierPaying.put("text", "Hồ sơ chờ thanh toán");
@@ -197,7 +195,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		dossierStatus.add(dossierPaying);
 
 		JSONObject dossierDone = JSONFactoryUtil.createJSONObject();
-		dossierDone.put("text", "Hồ sơ đã kết thúc");
+		dossierDone.put("text", "Hồ sơ đã chứng nhận");
 		dossierDone.put("value", "done");
 		dossierDone.put("valueSub", "");
 		dossierStatus.add(dossierDone);
@@ -227,7 +225,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		dossierStatus.add(dossierDone2);
 		
 		JSONObject dossierDone3 = JSONFactoryUtil.createJSONObject();
-		dossierDone3.put("text", "Hồ sơ sửa đổi bổ sung sau chứng nhận");
+		dossierDone3.put("text", "Hồ sơ SĐBS sau chứng nhận");
 		dossierDone3.put("value", "endorsement");
 		dossierDone3.put("valueSub", "endorsement");
 		dossierStatus.add(dossierDone3);
@@ -253,15 +251,15 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 	private String getLabelApplicantNote(String resCancelling, String sendAdd, String sendReissue) {
 
 		if (resCancelling != null && resCancelling != "") {
-			return "Lý do yêu cầu huỷ";
+			return "Thông báo yêu cầu huỷ";
 		}
 
 		if (sendAdd != null && sendAdd != "") {
-			return "Yêu cầu gửi bổ sung";
+			return "Thông báo yêu cầu gửi bổ sung";
 		}
 
 		if (sendReissue != null && sendReissue != "") {
-			return "yêu cầu cấp lại";
+			return "Thông báo yêu cầu cấp lại";
 		}
 
 		return "Ghi chú";

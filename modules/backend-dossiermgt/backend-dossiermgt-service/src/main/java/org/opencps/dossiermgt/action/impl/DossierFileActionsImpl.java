@@ -285,4 +285,10 @@ public class DossierFileActionsImpl implements DossierFileActions {
 
 		return DossierFileLocalServiceUtil.getByDeliverableCode(deliverableCode);
 	}
+
+	@Override
+	public DossierFile getDossierFileByFileTemplateNo(long id, String fileTemplateNo) {
+
+		return DossierFileLocalServiceUtil.getByFileTemplateNo(id, fileTemplateNo);
+	}
 }

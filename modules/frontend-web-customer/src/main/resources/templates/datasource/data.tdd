@@ -42,7 +42,7 @@
 	},
 	groupId: 20147,
 	dossierId : 101,
-	dossierTemplateNo : 201,
+	dossierTemplateId : 201,
 	dossierPartNo : 401,
 	applicant : {
 		applicantName : "dsdksdsdkjs",

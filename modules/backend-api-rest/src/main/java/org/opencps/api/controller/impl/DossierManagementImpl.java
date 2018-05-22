@@ -17,7 +17,6 @@ import org.opencps.api.dossier.model.DoActionModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierInputModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
-import org.opencps.api.dossier.model.DossierSearchDetailModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
 import org.opencps.api.dossiermark.model.DossierMarkModel;
@@ -161,12 +160,16 @@ public class DossierManagementImpl implements DossierManagement {
 			String dossierIdCTN = query.getDossierIdCTN();
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
-			//Get info case abnormal
+			//LamTV:Get info case abnormal
 			Long statusRegNo = null;
 			if (Validator.isNotNull(query.getStatusReg())) {
 				statusRegNo = Long.valueOf(query.getStatusReg());
 			}
-			_log.info("statusRegNo: "+statusRegNo);
+
+			Long notStatusRegNo = null;
+			if (Validator.isNotNull(query.getNotStatusReg())) {
+				notStatusRegNo = Long.valueOf(query.getNotStatusReg());
+			}
 
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -193,6 +196,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
 			params.put(DossierTerm.STATUS_REG, statusRegNo);
+			params.put(DossierTerm.NOT_STATUS_REG, notStatusRegNo);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
@@ -319,6 +323,12 @@ public class DossierManagementImpl implements DossierManagement {
 			String dossierIdCTN = query.getDossierIdCTN();
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
+			//Add keyword Search
+			String keywordSearchLike = query.getKeywordSearchLike();
+			String keySearch = StringPool.BLANK;
+			if (Validator.isNotNull(keywordSearchLike)) {
+				keySearch = SpecialCharacterUtils.splitSpecial(keywordSearchLike);
+			}
 
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -344,6 +354,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
 			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
+			params.put(DossierTerm.KEYWORD_SEARCH_LIKE, keySearch);
 
 			// _log.info("4");
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
@@ -545,7 +556,6 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 
 	}
-
 
 	@Override
 	public Response updateDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -832,7 +842,7 @@ public class DossierManagementImpl implements DossierManagement {
 				// dossierPermission.hasPermitDoAction(groupId,
 				// user.getUserId(), dossier, option.getServiceProcessId(),
 				// action);
-				
+
 				_log.info("input.getActionCode(): " + input.getActionCode());
 				_log.info("action.getProcessActionId(): " + action.getProcessActionId());
 				_log.info("input.getActionUser(): " + input.getActionUser());

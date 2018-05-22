@@ -330,12 +330,18 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 		//LamTV: Indexer from dossierRequest to Dossier
 		DossierRequestUD dRegUD = DossierRequestUDLocalServiceUtil.getDossierRequestByDossierId(dossierId);
-		_log.info("dossierId: "+dossierId+" |statusReg: "+dRegUD.getStatusReg());
 		if (dRegUD != null) {
 			_log.info("statusReg: "+dRegUD.getStatusReg());
 			document.addNumberSortable(DossierTerm.STATUS_REG, dRegUD.getStatusReg());
 		} else {
 			document.addNumberSortable(DossierTerm.STATUS_REG, 4);
+		}
+
+		_log.info("object.getLockState(): "+object.getLockState());
+		if (Validator.isNotNull(object.getLockState())) {
+			document.addTextSortable(DossierTerm.LOCK_STATE, object.getLockState());
+		} else {
+			document.addTextSortable(DossierTerm.LOCK_STATE, StringPool.BLANK);
 		}
 
 		}catch(Exception e) {

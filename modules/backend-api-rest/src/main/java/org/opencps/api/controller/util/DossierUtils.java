@@ -130,6 +130,8 @@ public class DossierUtils {
 			}
 
 			model.setEndorsementDate(doc.get(DossierTerm.ENDORSEMENT_DATE));
+			model.setLockState(doc.get(DossierTerm.LOCK_STATE));
+			model.setStatusReg(doc.get(DossierTerm.STATUS_REG));
 
 			//TODO: Get info cert Number
 //			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil
@@ -301,6 +303,10 @@ public class DossierUtils {
 				model.setCertDate(APIDateTimeUtils.convertDateToString(tempDate, APIDateTimeUtils._NORMAL_DATE));
 				model.setCertNo(doc.get("so_chung_chi"));
 			}
+
+			model.setEndorsementDate(doc.get(DossierTerm.ENDORSEMENT_DATE));
+			model.setLockState(doc.get(DossierTerm.LOCK_STATE));
+			model.setStatusReg(doc.get(DossierTerm.STATUS_REG));
 
 			ouputs.add(model);
 		}

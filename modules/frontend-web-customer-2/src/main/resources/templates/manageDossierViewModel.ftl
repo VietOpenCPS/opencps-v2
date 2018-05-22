@@ -41,7 +41,7 @@
 	};
 	
 	var arrStatusDossier = ["new","receiving","processing","waiting","paying","done","cancelled","expired"];
-	var fnLoadStatus = function(id,dossierArr){
+	var fnLoadStatus = function(id){
 
 		if (id == "all") {
 			dataSourceProfile.read({
@@ -49,7 +49,6 @@
 				"serviceInfo":$("#serviceInfo").val(),
 				"govAgencyCode":$("#govAgency").val(),
 				"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired",
-				"dossierArr" : ""
 			});
 		} else if (id == "cancelling") {
 			dataSourceProfile.read({
@@ -57,105 +56,120 @@
 				"serviceInfo":$("#serviceInfo").val(),
 				"govAgencyCode":$("#govAgency").val(),
 				"state":"cancelling",
-				"dossierArr" : dossierArr
-				
 			});
 		}else if(id == "correcting"){
 			dataSourceProfile.read({
 				"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-				"serviceInfo":$("#serviceInfo").val(),
-				"govAgencyCode":$("#govAgency").val(),
+				"serviceInfo" : $("#serviceInfo").val(),
+				"govAgencyCode" : $("#govAgency").val(),
 				"state": "correcting",
-				"dossierArr" : dossierArr
+				"statusReg" : 3
 				
 			});
 		}else if (id == "endorsement") {
 			dataSourceProfile.read({
 				"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-				"serviceInfo":$("#serviceInfo").val(),
-				"govAgencyCode":$("#govAgency").val(),
-				"state": "endorsement",
-				"dossierArr" : dossierArr
-				
+				"serviceInfo" : $("#serviceInfo").val(),
+				"govAgencyCode" : $("#govAgency").val(),
+				"state" : "endorsement",
+				"statusReg" : 3
 			});
-		}else if (id == "submitting") {
+		}else if (id == "done") {
 			dataSourceProfile.read({
 				"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-				"serviceInfo":$("#serviceInfo").val(),
-				"govAgencyCode":$("#govAgency").val(),
-				"dossierArr" : dossierArr,
-				"submitting" : true,
-				"applicantIdNo" : "${applicant.applicantIdNo}",
-				"pendding" : true
+				"serviceInfo" : $("#serviceInfo").val(),
+				"govAgencyCode" : $("#govAgency").val(),
+				"status" : "done",
+				"notStatusReg" : 3
 			});
 		}else {
 			dataSourceProfile.read({
 				"dossierNo" : $("#dossier-emp-nav-selectbox-by-dossierNo").val(),
-				"serviceInfo":$("#serviceInfo").val(),
-				"govAgencyCode":$("#govAgency").val(),
-				"status":id,
-				"dossierArr" : dossierArr
-
+				"serviceInfo" : $("#serviceInfo").val(),
+				"govAgencyCode" : $("#govAgency").val(),
+				"status" : id
 			});
+
 		};
 		
-
 	}
 
-	var fnGetCounter = function(callBack){
-		$.ajax({
-			url:"${api.server}/dossiers",
-			dataType:"json",
-			type:"GET",
-			data:{
-				submitting : true,
-				applicantIdNo : "${applicant.applicantIdNo}",
-				pendding : true
+	var fnGetCounter = function(){
+
+		$.when( $.ajax({
+			url : "${api.server}/statistics/dossiers/countTodo",
+			dataType : "json",
+			type : "GET",
+			data : {
+				dossierStatus: "new,receiving,processing,waiting,paying,done,expired,cancelled",
+				notStatusReg : 3
 			},
 			headers : {"groupId": ${groupId}},
-			success:function(result){
-				$("#profileStatus li[dataPk='submitting'] .bagde").html(result.total);
-				var dossierArr = [];
+			success : function(result){
 				if(result.data){
-					for (var i = 0; i < result.data.length; i++) {
-						dossierArr.push(result.data[i].dossierId);
+					var data = result.data;
+					for (var i = 0; i < data.length; i++) {
+
+						$("#profileStatus li[dataPk="+data[i].dossierStatus+"] .bagde").html(data[i].count);
 					}
+
 				}
-				var totalSubmitting = result.total;
-				$.ajax({
-					url:"${api.server}/statistics/dossiers/countTodo",
-					dataType:"json",
-					type:"GET",
-					data:{
-						dossierStatus: "new,receiving,processing,waiting,paying,done,cancelled,expired",
-						dossierArr : dossierArr.join()
-					},
-					headers : {"groupId": ${groupId}},
-					success:function(result){
-						if(result.data){
-							var data = result.data;
-							for (var i = 0; i < data.length; i++) {
-
-								$("#profileStatus li[dataPk="+data[i].dossierStatus+"] .bagde").html(data[i].count);
-							}
-
-						}
-						$("#profileStatus li[dataPk='all'] .bagde").html(result.total);
-					},
-					error:function(result){
-
-					}
-				});
-
-				callBack(dossierArr.join());
 
 			},
-			error:function(result){
+			error : function(result){
 
 			}
-		});
+		}), 
+		$.ajax({
+			url : "${api.server}/dossiers",
+			dataType : "json",
+			type : "GET",
+			data : {
+				"state":"cancelling"
+			},
+			headers : {"groupId": ${groupId}},
+			success : function(result){
+				$("#profileStatus li[dataPk='cancelling'] .bagde").html(result.total);
+			},
+			error : function(result){
 
-		
+			}
+		}),
+		$.ajax({
+			url : "${api.server}/dossiers",
+			dataType : "json",
+			type : "GET",
+			data : {
+				"state": "correcting",
+				"statusReg" : 3
+			},
+			headers : {"groupId": ${groupId}},
+			success : function(result){
+				$("#profileStatus li[dataPk='correcting'] .bagde").html(result.total);
+			},
+			error : function(result){
+
+			}
+		}),
+		$.ajax({
+			url : "${api.server}/dossiers",
+			dataType : "json",
+			type : "GET",
+			data : {
+				"state" : "endorsement",
+				"statusReg" : 3
+			},
+			headers : {"groupId": ${groupId}},
+			success : function(result){
+				$("#profileStatus li[dataPk='endorsement'] .bagde").html(result.total);
+			},
+			error : function(result){
+
+			}
+		})).done(function ( r1, r2, r3, r4 ) {
+			var total = r1[0].total + r2[0].total + r3[0].total + r4[0].total;
+			$("#profileStatus li[dataPk='all'] .bagde").html(total);
+		});
 	}
 
 	var currentStateBage = 0;
@@ -208,41 +222,6 @@
 	}
 
 	var fnBind;
-
-	var dataGetTotal = new kendo.data.DataSource({
-		transport:{
-			read:function(options){
-				$.ajax({
-
-					url:"${api.server}/dossiers",
-					dataType:"json",
-					type:"GET",
-					data:{
-						status: "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
-					},
-					headers : {"groupId": ${groupId}},
-					success:function(result){
-						if(result.data){
-							$("#profileStatus li[dataPk='all'] .bagde").html(result.total);
-						}else {
-							$("#profileStatus li[dataPk='all'] .bagde").html("0");
-						}
-
-						options.success(result);
-					},
-					error:function(result){
-						options.error(result)
-					}
-				});
-			}
-		},
-		schema : {
-			data : "data",
-			total : "total"
-		},
-		group: {field: "dossierStatus"},
-	});
-
 
 	var optBoxPageSize = function(){
 		var totalItem = parseInt(dataSourceProfile.total());
@@ -312,7 +291,6 @@
 						};
 
 						$("#statusName").html($(".itemStatus.active .dossierStatus").text());
-
 
 						$('.optPage[value="'+dataSourceProfile.pageSize()+'"]').attr("selected","selected");
 
@@ -438,103 +416,9 @@
 
 	});
 
-	var loadSoCC = function(){
-		try {
-			var data = dataSourceProfile.view();
-			var curPage = dataSourceProfile.page();
-			var total = dataSourceProfile.total();
+	var getTotal = function(){
 
-			var start = (curPage - 1) * 15;
-			var end = start + 15;
-
-			if(end > total){
-				end = total;
-			}
-
-			for (var i = start; i < end; i++) {
-				var dossierId = data[i].dossierId;
-				if(dossierId){
-					$.ajax({
-						url : "${api.server}/dossiers/"+dossierId+"/deliverableState/"+"1",
-						dataType : "json",
-						type : "GET",
-						headers: {"groupId": ${groupId}},
-						success : function(result){
-							$("#so_cc"+dossierId).text(result.so_chung_chi);
-							$("#ngayki_cc"+dossierId).text(result.ngay_ky_cc);
-						},
-						error : function(result){
-
-						}
-					});
-				}
-
-			}
-
-		}catch(e){
-			return;
-		}
-		return;
-	}
-
-	var getTotal = function(callBack){
-
-		fnGetCounter(function(dossierArr){
-			var dossierStatus = $("#profileStatus > li.itemStatus.active").attr("dataPK");
-			if(!dossierStatus){
-				dossierStatus = "all";
-			}
-
-			$.ajax({
-				url:"${api.server}/dossiers",
-				dataType:"json",
-				type:"GET",
-				headers : {"groupId": ${groupId}},
-				data:{
-					state: "cancelling",
-					dossierArr : dossierArr
-				},
-				success:function(result){
-					$("#profileStatus li[dataPk='cancelling'] .bagde").html(result.total);
-				},
-				error:function(result){
-				}
-			});
-
-			$.ajax({
-				url:"${api.server}/dossiers",
-				dataType:"json",
-				type:"GET",
-				headers : {"groupId": ${groupId}},
-				data:{
-					state: "correcting",
-					dossierArr : dossierArr
-				},
-				success:function(result){
-					$("#profileStatus li[dataPk='correcting'] .bagde").html(result.total);
-				},
-				error:function(result){
-				}
-			});
-
-			$.ajax({
-				url:"${api.server}/dossiers",
-				dataType:"json",
-				type:"GET",
-				headers : {"groupId": ${groupId}},
-				data:{
-					state: "endorsement",
-					dossierArr : dossierArr
-				},
-				success:function(result){
-					$("#profileStatus li[dataPk='endorsement'] .bagde").html(result.total);
-				},
-				error:function(result){
-				}
-			});
-
-			callBack(dossierArr);
-		});
+		fnGetCounter();
 	};
 
 
@@ -563,7 +447,6 @@
 	};
 
 	function fileAttachmentUrl ( options) {
-
 
 		var xhttp = new XMLHttpRequest();
 		var a,filename;
@@ -700,44 +583,42 @@
 		filterStatus: function(e){
 			e.preventDefault();
 
+			getTotal();
+
 			firstLoadDataSource = false;
-			getTotal(function(dossierArr){
-				
+			$("#profileStatus li").removeClass("active");
+			$(e.currentTarget).addClass("active");
+			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
+			$(e.currentTarget).children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
+			$("#keyInput").val("");
+			$("#dossier-emp-nav-selectbox-by-dossierNo").val("");
 
-				$("#profileStatus li").removeClass("active");
-				$(e.currentTarget).addClass("active");
-				$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
-				$(e.currentTarget).children("i").removeClass("fa fa-folder").addClass("fa fa-folder-open");
-				$("#keyInput").val("");
-				$("#dossier-emp-nav-selectbox-by-dossierNo").val("");
+			var id = $(e.currentTarget).attr("dataPk");
+			try{
 
-				var id = $(e.currentTarget).attr("dataPk");
-				try{
-
-					var isChange = fnCheckIsChangeForm();
-					if($("#mainType2").is(":visible") && $("button.saveFormAlpaca").length > 0 && isChange ){
-						var cf = confirm("Bạn vừa thay đổi dữ liệu form bạn có muốn lưu lại!");
-						if(cf){
-							$(".saveFormAlpaca[data-pk="+isChange.partNo+"]").trigger("click");
-						}else {
-							manageDossier.navigate("/"+id);
-						}
-
+				var isChange = fnCheckIsChangeForm();
+				if($("#mainType2").is(":visible") && $("button.saveFormAlpaca").length > 0 && isChange ){
+					var cf = confirm("Bạn vừa thay đổi dữ liệu form bạn có muốn lưu lại!");
+					if(cf){
+						$(".saveFormAlpaca[data-pk="+isChange.partNo+"]").trigger("click");
 					}else {
 						manageDossier.navigate("/"+id);
-					} 
+					}
 
-					console.log(arrIsChangeForm);
+				}else {
+					manageDossier.navigate("/"+id);
+				} 
 
-				}catch(e){
+				console.log(arrIsChangeForm);
 
-				}
+			}catch(e){
 
+			}
 
-				fnLoadStatus(id,dossierArr);
+			
+			fnLoadStatus(id);
 
-				firstLoadDataSource = true;
-			});
+			firstLoadDataSource = true;
 		},
 		load_serviceConfig:function(e){
 			e.preventDefault();
@@ -763,12 +644,11 @@
 			firstLoadDataSource = false;
 			manageDossier.navigate("/tra-cuu/tra-cuu-ho-so");
 
-			fnLoadStatus("all","");
+			fnLoadStatus("all");
 
 			firstLoadDataSource = true;
 		}
 	});
-
 
 	var loadProfile = function(){
 		$(".downloadProfile").click(function(event){
@@ -882,7 +762,7 @@
 		filterKey: modelPanel.eventLookup,
 		changePageSize: function(){
 			dataSourceProfile.pageSize(parseInt($("#itemPpage").val()));
-			$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"})
+			$("#pagerProfile .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"});
 		},
 		changePageSizeDeliverables : function(){
 			dataSourceDeliverables.pageSize(parseInt($("#itemPpageDeliverables").val()));
