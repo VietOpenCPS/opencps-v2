@@ -16,14 +16,6 @@
 
 		<div class="col-sm-12 filterField">
 			<select class="form-control MB15" style="font-size: 13px">
-                <option value="0" selected="">Trạng thái cấp giấy</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-            </select>
-		</div>
-
-		<div class="col-sm-12 filterField">
-			<select class="form-control MB15" style="font-size: 13px">
                 <option value="0" selected="">Chủ giấy pháp/Giấy chứng nhận</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
