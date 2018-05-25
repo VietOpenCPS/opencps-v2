@@ -6,7 +6,7 @@
 		<div id="contentMain" class="row panel M0" style="border: none;box-shadow: none">
 			<div class="panel-heading P0">
 				<div class="row PL15 PR15">
-					<div class="row-header"> 
+					<div class="row-header align-middle-lg"> 
 						<div class="background-triangle-big">
 							<i class="fa fa-file-text"></i>
 						</div>

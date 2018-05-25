@@ -1925,7 +1925,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 							var paramsBuilder = {
 								keyword: vm.keywordsSearch,
-								owner: vm.applicantNameFilter,
+								applicantName: vm.applicantNameFilter,
 								service: vm.serviceInfoFilter.serviceCode,
 								follow: true,
 								dossierNo: vm.dossierNoFilter,

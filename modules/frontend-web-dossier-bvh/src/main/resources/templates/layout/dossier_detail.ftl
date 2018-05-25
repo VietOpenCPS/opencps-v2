@@ -16,14 +16,12 @@
 					<v-icon class="mr-2">undo</v-icon>
 				Quay lại
 				</v-btn>
+				
                 <v-btn v-if="navigationFilterview" v-on:click.native.prevent.stop="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0 hidden-sm-and-down"><v-icon>fullscreen</v-icon></v-btn>
 
                 <v-btn v-if="!navigationFilterview" v-on:click.native.prevent.stop="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0 hidden-sm-and-down"><v-icon>fullscreen_exit</v-icon></v-btn>
-
 			</div>
-	
 		</div>
-	
 	</div>
 	
 	<v-expansion-panel expand class="my-0 opencps-dossier-info">

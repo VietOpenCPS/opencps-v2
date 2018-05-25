@@ -67,6 +67,9 @@
 						},
 						success: function(result) {
 							options.success(result);
+						},
+						error: function(xhr){
+							options.error(xhr);
 						}
 					});
 				},
@@ -200,8 +203,8 @@
 
 		var onSelectDossiertemplate = function(id){
 			if(id){
-				console.log("load parts 2");
-				dossierTemplatePartDataSource.read({
+				console.log("onSelectDossiertemplate=======>",id);
+				$("#dossier_template_part_listview").getKendoListView().dataSource.read({
 					dossierTemplateId: id
 				});
 			}
