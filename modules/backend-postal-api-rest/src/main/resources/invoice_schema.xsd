@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	
+	<xsd:element name="InvoiceInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="userName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="passWord" type="xsd:string" minOccurs="0" />
+				<xsd:element name="soCG" type="xsd:string" minOccurs="0" />
+				<xsd:element name="soid" type="xsd:string" minOccurs="0" />
+				<xsd:element name="maHoadon" type="xsd:string" minOccurs="0" />
+				<xsd:element name="ngayHd" type="xsd:string" minOccurs="0" />
+				<xsd:element name="seri" type="xsd:string" minOccurs="0" />
+				<xsd:element name="maNthue" type="xsd:string" minOccurs="0" />
+				<xsd:element name="kieuSo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="maKhackHang" type="xsd:string" minOccurs="0" />
+				<xsd:element name="ten" type="xsd:string" minOccurs="0" />
+				<xsd:element name="phone" type="xsd:string" minOccurs="0" />
+				<xsd:element name="tax" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dchi" type="xsd:string" minOccurs="0" />
+				<xsd:element name="maTk" type="xsd:string" minOccurs="0" />
+				<xsd:element name="tenNh" type="xsd:string" minOccurs="0" />
+				<xsd:element name="mailH" type="xsd:string" minOccurs="0" />
+				<xsd:element name="phoneH" type="xsd:string" minOccurs="0" />
+				<xsd:element name="tenM" type="xsd:string" minOccurs="0" />
+				<xsd:element name="maKhL" type="xsd:string" minOccurs="0" />
+				<xsd:element name="maNt" type="xsd:string" minOccurs="0" />
+				<xsd:element name="tg" type="xsd:string" minOccurs="0" />
+				<xsd:element name="hthuc" type="xsd:string" minOccurs="0" />
+				<xsd:element name="han" type="xsd:string" minOccurs="0" />
+				<xsd:element name="tlGgia" type="xsd:string" minOccurs="0" />
+				<xsd:element name="ggia" type="xsd:string" minOccurs="0" />
+				<xsd:element name="phi" type="xsd:string" minOccurs="0" />
+				<xsd:element name="noidung" type="xsd:string" minOccurs="0" />
+				<xsd:element name="tien" type="xsd:string" minOccurs="0" />
+				<xsd:element name="ttoan" type="xsd:string" minOccurs="0" />
+				<xsd:element name="ngayHT" type="xsd:string" minOccurs="0" />
+				<xsd:element name="maVt" type="xsd:string" minOccurs="0" />
+				<xsd:element name="tenDetail" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dvt" type="xsd:string" minOccurs="0" />
+				<xsd:element name="luong" type="xsd:string" minOccurs="0" />
+				<xsd:element name="gia" type="xsd:string" minOccurs="0" />
+				<xsd:element name="tienDetail" type="xsd:string" minOccurs="0" />
+				<xsd:element name="ts" type="xsd:string" minOccurs="0" />
+				<xsd:element name="thue" type="xsd:string" minOccurs="0" />
+				<xsd:element name="ttoanDetail" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
