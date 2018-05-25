@@ -1570,7 +1570,6 @@ var getReferentUidFile = function(dossierId,dossierPartNo){
 								dossierFile = result.data[i];
 								return ;
 							}
-
 						}
 					}
 				}

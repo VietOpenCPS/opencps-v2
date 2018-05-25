@@ -99,11 +99,11 @@
 
 					if(result.data){
 
-						if(result.data.length === 1){
+/*						if(result.data.length === 1){
 							$(element).remove();
 
 							return ;
-						}
+						}*/
 
 						for (var i = 0; i < data.length; i++) {
 							$(element).append('<li><span class="btn-choise-process hover-pointer" data-pk="'+data[i].processOptionId+'" data-template="'+data[i].templateNo+'" onclick="selectProcess(this);">'+data[i].optionName+'</span></li>');
