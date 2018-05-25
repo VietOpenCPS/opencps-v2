@@ -415,9 +415,6 @@
 		return valid;
 	}
 
-<<<<<<< HEAD
-
-=======
 	var fnCheckLockTemplate = function(lockState, item){
 		if(lockState){
 			if(lockState.startsWith("LOCK")){
@@ -466,7 +463,6 @@
 
 		return false;
 	}
->>>>>>> openCps/pre-develop
 
 	var fnCheckStatusAndHideUpload = function(dossierStatus, dossierParts){
 		/*if(dossierStatus !== "" && dossierStatus !== "new" && dossierStatus !== "waiting" && "${(sendAdd)!}" !== "true"){
