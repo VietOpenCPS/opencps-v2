@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Date;
 
 import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.RegistrationForm;
@@ -133,6 +134,9 @@ public class Engine implements MessageListener {
 			        
 			        RegistrationFormLocalServiceUtil.updateRegistrationForm(registrationForm);
 			    }
+			}
+			else if (className.equals(Deliverable.class.getName())) {
+				
 			}
 
 		} catch (Exception e) {

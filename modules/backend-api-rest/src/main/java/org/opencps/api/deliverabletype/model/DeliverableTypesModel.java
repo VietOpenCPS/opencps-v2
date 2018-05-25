@@ -30,6 +30,9 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="deliverableName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="codePattern" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="counter" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="formScript" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="formReport" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="mappingData" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -46,7 +49,10 @@ import javax.xml.bind.annotation.XmlType;
     "deliverableType",
     "deliverableName",
     "codePattern",
-    "counter"
+    "counter",
+    "formScript",
+    "formReport",
+    "mappingData"
 })
 public class DeliverableTypesModel {
 
@@ -57,6 +63,9 @@ public class DeliverableTypesModel {
     protected String deliverableName;
     protected String codePattern;
     protected Long counter;
+    protected String formScript;
+    protected String formReport;
+    protected String mappingData;
 
     /**
      * Gets the value of the deliverableTypeId property.
@@ -224,6 +233,78 @@ public class DeliverableTypesModel {
      */
     public void setCounter(Long value) {
         this.counter = value;
+    }
+
+    /**
+     * Gets the value of the formScript property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getFormScript() {
+        return formScript;
+    }
+
+    /**
+     * Sets the value of the formScript property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setFormScript(String value) {
+        this.formScript = value;
+    }
+
+    /**
+     * Gets the value of the formReport property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getFormReport() {
+        return formReport;
+    }
+
+    /**
+     * Sets the value of the formReport property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setFormReport(String value) {
+        this.formReport = value;
+    }
+
+    /**
+     * Gets the value of the mappingData property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getMappingData() {
+        return mappingData;
+    }
+
+    /**
+     * Sets the value of the mappingData property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setMappingData(String value) {
+        this.mappingData = value;
     }
 
 }

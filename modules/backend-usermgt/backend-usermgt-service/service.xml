@@ -165,7 +165,7 @@
 			<finder-column name="email"></finder-column>
 		</finder>
 		
-		<finder return-type="Collection" name="G_UID">
+<finder return-type="Collection" name="G_UID">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="userId"></finder-column>
 		</finder>

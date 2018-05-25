@@ -16,19 +16,33 @@ package org.opencps.jasper.utils;
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 
 /**
  * @author trungnt
@@ -65,6 +79,28 @@ public class JRReportUtil {
 		}
 	}
 
+	private static boolean isJsonObject(String jsonString) {
+        try {
+            JSONArray arr = JSONFactoryUtil.createJSONArray(jsonString);
+            if (arr == null)
+            	return true;
+            else
+            	return false;
+        } catch (JSONException ex) {
+            try {
+                JSONObject obj = JSONFactoryUtil.createJSONObject(jsonString);
+                if (obj == null) {
+                	return false;
+                }
+                else {
+                	return true;
+                }
+            } catch (JSONException e) {
+                return false;
+            }
+        }
+ 	}
+	
 	/**
 	 * @param jrxmlTemplate
 	 * @param jsonData
@@ -77,13 +113,54 @@ public class JRReportUtil {
 
 		try {
 			// fix json enter char
-			jsonData = quoteHTML(jsonData);
+			//hot fix
+//			jsonData = quoteHTML(jsonData);
+			_log.info("JASPER JSON DATA: " + jsonData);
+			if (isJsonObject(jsonData)) {
+				_log.info("JSON Object");
 			JasperReport reportTemplate = JRReportTemplate.getJasperReport(jrxmlTemplate);
 			JRJSONDataSource dataSource = JRJSONDataSource.getInstance(jsonData);
 
 			JasperPrint jasperPrint = getJasperPrint(reportTemplate, parameters, dataSource);
 
-			return exportReport(jasperPrint, destFileName, DocType.PDF);
+				return exportReport(jasperPrint, destFileName, DocType.PDF);				
+			}
+			else {
+				_log.info("JSON array");
+				List<JasperPrint> jasperPrints = new ArrayList<JasperPrint>();
+				
+				JSONArray jsonArrData = JSONFactoryUtil.createJSONArray(jsonData);
+				_log.info("JSON Array data object: " + jsonArrData.toJSONString());
+//				if (jsonArrData.length() > 0) {
+//					JSONObject jsonDataObj = jsonArrData.getJSONObject(0);
+//					
+//					JasperReport reportTemplate = JRReportTemplate.getJasperReport(jrxmlTemplate);
+//					JRJSONDataSource dataSource = JRJSONDataSource.getInstance(jsonDataObj.toJSONString());
+//
+//					JasperPrint jasperPrint = getJasperPrint(reportTemplate, parameters, dataSource);	
+//					return exportReport(jasperPrint, destFileName, DocType.PDF);									
+//				}
+//				else {
+//					return StringPool.BLANK;
+//				}
+				JasperPrint jasperPrint = null;
+				JasperReport reportTemplate = JRReportTemplate.getJasperReport(jrxmlTemplate);
+				JRJSONDataSource dataSource = null;
+				
+				for (int i = 0; i < jsonArrData.length(); i++) {
+					JSONObject jsonDataObj = jsonArrData.getJSONObject(i);
+					_log.info("JASPER ONE JSON: " + jsonDataObj.toJSONString());
+					
+					dataSource = JRJSONDataSource.getInstance(jsonDataObj.toJSONString());
+
+					jasperPrint = getJasperPrint(reportTemplate, parameters, dataSource);	
+					jasperPrints.add(jasperPrint);
+
+				}
+//				return exportReport(jasperPrint, destFileName, DocType.PDF);				
+				
+				return exportPdfFile(jasperPrints, destFileName);
+			}
 		} catch (Exception e) {
 			_log.error(e);
 
@@ -171,6 +248,42 @@ public class JRReportUtil {
 		return destFileName;
 
 	}
+	
+	/**
+	 * @param jasperPrints
+	 * @param destFileName
+	 * @return
+	 * @throws JRException
+	 */
+	protected static String exportPdfFile(List<JasperPrint> jasperPrints, String destFileName) throws JRException {
+		JRPdfExporter exporter = new JRPdfExporter();
+
+		exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrints));
+		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(destFileName));
+		SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration();
+		configuration.setCreatingBatchModeBookmarks(true);
+		exporter.setConfiguration(configuration);
+
+		exporter.exportReport();
+//		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//
+//		JRPdfExporter exporter = new JRPdfExporter();
+//
+//		exporter.setParameter(JRExporterParameter.JASPER_PRINT_LIST, jasperPrints);
+//		exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
+//
+//		exporter.exportReport();
+//
+//		try (OutputStream outputStreamWrite = new FileOutputStream(destFileName)) {
+//			outputStream.writeTo(outputStreamWrite);
+//		}
+//		catch (IOException e) {
+//			
+//		}
+				
+		return destFileName;
+
+	}	
 
 	/**
 	 * @param jasperPrint

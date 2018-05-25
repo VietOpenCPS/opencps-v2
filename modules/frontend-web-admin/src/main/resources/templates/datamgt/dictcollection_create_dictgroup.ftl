@@ -21,11 +21,11 @@
 <div class="modal-body">
 
 	<form id="_collectionSub_dictGroup_edit_form">
-
-		<div class="form-group">
 		
+		<div class="form-group">
+			
 			<label for="_collectionSub_dictGroup_edit_groupName">Tên nhóm
-
+				
 				<span class="icon-asterisk text-warning"></span>
 
 			</label>
@@ -44,7 +44,8 @@
 			</label>
 
 			<input type="text" id="_collectionSub_dictGroup_edit_groupCode" name="_collectionSub_dictGroup_edit_groupCode" class="form-control"
-				placeholder="Mã nhóm" required validationMessage="Nhập mã nhóm" value="${(dictCollection_dictGroup.groupCode)!}"  />
+				placeholder="Mã nhóm" required validationMessage="Nhập mã nhóm" value="${(dictCollection_dictGroup.groupCode)!}" <#if dictCollection_dictGroup?has_content >
+						disabled</#if> />
 		
 		</div>
 		
@@ -127,8 +128,8 @@
 				groupCode: $( "#_collectionSub_dictGroup_edit_groupCode" ).val().trim(),
 				groupName: $( "#_collectionSub_dictGroup_edit_groupName" ).val().trim(),
 				groupNameEN: $( "#_collectionSub_dictGroup_edit_groupNameEN" ).val().trim(),
-				groupDescription: $( "#_collectionSub_dictGroup_edit_groupDescription" ).val().trim()
-				
+				groupDescription: $( "#_collectionSub_dictGroup_edit_groupDescription" ).val().trim(),
+				status: 1
 			});
 
 		} else {
@@ -140,8 +141,8 @@
 				groupCode: $( "#_collectionSub_dictGroup_edit_groupCode" ).val().trim(),
 				groupName: $( "#_collectionSub_dictGroup_edit_groupName" ).val().trim(),
 				groupNameEN: $( "#_collectionSub_dictGroup_edit_groupNameEN" ).val().trim(),
-				groupDescription: $( "#_collectionSub_dictGroup_edit_groupDescription" ).val().trim()
-				
+				groupDescription: $( "#_collectionSub_dictGroup_edit_groupDescription" ).val().trim(),
+				status: 1
 			});
 
 			// save the created collectionGroup

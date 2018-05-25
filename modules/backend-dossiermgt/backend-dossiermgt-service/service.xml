@@ -1229,6 +1229,7 @@
 		<column name="registrationState" type="int" />
 		<column name="registrationClass" type="String" />
 		<column name="submitting" type="boolean" />
+		<column name="representativeEnterprise" type="String" />
 
 		<!-- Order -->
 
@@ -1328,7 +1329,7 @@
 		<column name="removed" type="boolean" />
 		<!-- Order -->
 		<order>
-			<order-column name="createDate" order-by="desc" />
+			<order-column name="createDate" order-by="asc" />
 		</order>
 
 		<!-- Filter -->
@@ -1528,20 +1529,24 @@
 		</finder>
 	</entity>
 
-<!-- 	<entity local-service="true" name="UserInfoLog" -->
-<!-- 		remote-service="false" table="opencps_userinfolog" uuid="true"> -->
+	<entity local-service="true" name="UserInfoLog"
+		remote-service="false" table="opencps_userinfolog" uuid="true">
 
-<!-- 		<column name="userLogId" type="long" primary="true" /> -->
+		<column name="userLogId" type="long" primary="true" />
 
  		<!-- Audit fields -->
-<!-- 		<column name="userId" type="long" /> -->
-<!-- 		<column name="createDate" type="Date" /> -->
-<!-- 		<column name="payload" type="String" /> -->
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="payload" type="String" />
 
-<!-- 		<order> -->
-<!-- 			<order-column name="createDate" order-by="desc" /> -->
-<!-- 		</order> -->
-<!-- 	</entity> -->
+		<order>
+			<order-column name="createDate" order-by="desc" />
+		</order>
+
+		<finder return-type="Collection" name="F_USERID">
+			<finder-column name="userId"></finder-column>
+		</finder>
+	</entity>
 
 		<entity local-service="true" name="DossierMark" remote-service="false"
 		table="opencps_dossiermark" uuid="true">

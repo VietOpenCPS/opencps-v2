@@ -247,14 +247,14 @@
 			<div class="PT5">
 				<div class="ML40 col-sm-6 P5 PL0">
 					<span> 
-						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra thiết bị kiểm tra xuất xưởng đối với cơ sở đăng ký lần đầu
+						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra tình trạng hoạt động thiết bị kiểm tra xuất xưởng 
 					</span>
 					<button data-TTHC="TT302011BGTVTKTTBLANDAU" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTKTTBLANDAU" class="btn btn-reset chooseService pull-right P0">Chọn</button>
 				</div>
 				<div class="clear"></div>
 			</div>
 
-			<div class="PT5">
+			<#-- <div class="PT5">
 				<div class="ML40 col-sm-6 P5 PL0">
 					<span> 
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra thiết bị kiểm tra xuất xưởng đối với cơ sở đăng ký kiểm tra hàng năm
@@ -262,12 +262,12 @@
 					<button data-TTHC="TT302011BGTVTKTTB" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTKTTB" class="btn btn-reset chooseService pull-right P0">Chọn</button>
 				</div>
 				<div class="clear"></div>
-			</div>
+			</div> -->
 
 			<div class="PT5">
 				<div class="ML40 col-sm-6 P5 PL0">
 					<span class="col-sm-10 PL0"> 
-						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Đánh giá điều kiện đảm bảo chất lượng xưởng lắp ráp của cơ sở sản xuất/ nhà sản xuất nước ngoài (Đánh giá COP) trong thủ tục sản xuất lắp ráp
+						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Đánh giá điều kiện đảm bảo chất lượng xưởng lắp ráp của cơ sở sản xuất/ nhà sản xuất nước ngoài (Đánh giá COP) trong sản xuất lắp ráp
 					</span>
 					<button data-TTHC="TT302011BGTVTCOP" data-CQTH="BGTVTCDKVN" data-MMHS="TT302011BGTVTCOP" class="btn btn-reset chooseService pull-right P0">Chọn</button>
 				</div>
@@ -277,14 +277,14 @@
 			<div class="PT5">
 				<div class="ML40 col-sm-6 P5 PL0">
 					<span> 
-						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra, đánh giá cơ sở bảo hành, bảo dưỡng đối với cơ sở đánh giá lần đầu
+						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra, đánh giá cơ sở bảo hành, bảo dưỡng 
 					</span>
 					<button data-TTHC="TT192012TTBGTVTDGLD" data-CQTH="BGTVTCDKVN" data-MMHS="TT192012TTBGTVTDGLD" class="btn btn-reset chooseService pull-right P0">Chọn</button>
 				</div>
 				<div class="clear"></div>
 			</div>
 
-			<div class="PT5">
+			<#-- <div class="PT5">
 				<div class="ML40 col-sm-6 P5 PL0">
 					<span class="col-sm-10 PL0">
 						<i class="fa fa-play PR5 text-light-gray" aria-hidden="true"></i>Kiểm tra, đánh giá cơ sở bảo hành, bảo dưỡng đối với cơ sở đánh giá bổ sung, đánh giá cấp lại GCN hết hiệu lực
@@ -292,7 +292,7 @@
 					<button data-TTHC="TT192012TTBGTVTDGBS" data-CQTH="BGTVTCDKVN" data-MMHS="TT192012TTBGTVTDGBS" class="btn btn-reset chooseService pull-right P0">Chọn</button>
 				</div>
 				<div class="clear"></div>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </div>

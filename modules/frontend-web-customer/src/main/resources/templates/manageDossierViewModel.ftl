@@ -290,6 +290,9 @@
 				e.preventDefault();
 				var statusDossier = $("li.itemStatus.active").attr("dataPk");
 			    if (statusDossier !== undefined) {
+			    	if(statusDossier === "done"){
+			    		statusDossier = "done,cancelled,denied,ended"
+			    	}
 					dataSourceProfile.read({
 						"serviceInfo": $("#serviceInfo").val(),
 						"govAgencyCode": $("#govAgency").val(),

@@ -20,14 +20,17 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 
 public class DeliverableTypesManagementImpl implements DeliverableTypesManagement {
 
@@ -344,6 +347,36 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
 
 			}
+		}
+	}
+
+	@Override
+	public Response getGenerateCodeById(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		// TODO Auto-generated method stub
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getDeliverableTypebyId(groupId, id);
+
+			String deliverableNumber = StringPool.BLANK;
+			if (deliverableType != null) {
+				deliverableNumber = DeliverableNumberGenerator.generateDeliverableNumber(groupId, deliverableType.getCompanyId(), deliverableType.getDeliverableTypeId());				
+			}
+			
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			result.put("deliverableCode", deliverableNumber);
+			
+			return Response.status(200).entity(result.toJSONString()).build();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return processException(e);
 		}
 	}
 }

@@ -208,6 +208,7 @@ public class ServiceProcessUtils {
 			model.setBriefNote(doc.get(ProcessStepTerm.BRIEF_NOTE));
 			model.setCustomProcessUrl(doc.get(ProcessStepTerm.CUSTOM_PROCESS_URL));
 			model.setEditable(doc.get(ProcessStepTerm.EDITABLE));
+			model.setLockState(doc.get(ProcessStepTerm.LOCK_STATE));
 
 			outputs.add(model);
 		}
@@ -243,8 +244,8 @@ public class ServiceProcessUtils {
 			model.setMakeBriefNote(doc.get(ProcessActionTerm.MAKE_BRIEF_NOTE));
 			model.setSyncActionCode(doc.get(ProcessActionTerm.SYNC_ACTION_CODE));
 			model.setRollbackable(doc.get(ProcessActionTerm.ROLLBACKABLE));
-			model.setCreateDossierNo(Boolean.getBoolean(doc.get(ProcessActionTerm.CREATE_DOSSIER_NO)));
-			model.seteSignature(Boolean.getBoolean(doc.get(ProcessActionTerm.ESIGNATURE)));
+			model.setCreateDossierNo(Boolean.valueOf(doc.get(ProcessActionTerm.CREATE_DOSSIER_NO)));
+			model.seteSignature(Boolean.valueOf(doc.get(ProcessActionTerm.ESIGNATURE)));
 			
 			if (Validator.isNull(doc.get(ProcessActionTerm.CONFIG_NOTE))) {
 				ProcessAction action = ProcessActionLocalServiceUtil.fetchProcessAction(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));

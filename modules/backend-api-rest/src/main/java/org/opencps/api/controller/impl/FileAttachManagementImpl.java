@@ -76,7 +76,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 			params.put(FileAttachTerm.CLASS_PK, classPK);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getFileAttachs(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);

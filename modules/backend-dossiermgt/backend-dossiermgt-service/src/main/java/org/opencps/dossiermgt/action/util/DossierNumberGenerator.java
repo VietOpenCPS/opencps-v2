@@ -88,7 +88,6 @@ public class DossierNumberGenerator {
 			String year = String.valueOf(DateTimeUtils.getYearFromDate(now));
 
 			for (String pattern : patterns) {
-
 				Pattern r = Pattern.compile(pattern);
 
 				Matcher m = r.matcher(seriNumberPattern);
@@ -97,7 +96,6 @@ public class DossierNumberGenerator {
 					String tmp = m.group(1);
 
 					if (r.toString().equals(codePattern)) {
-
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						
 						String number = countByInit(serviceProcessCode, dossierId);
@@ -355,7 +353,7 @@ public class DossierNumberGenerator {
 				}
 
 
-				certNumber = String.format("%7d", _counterNumber); 
+				certNumber = String.format("%07d", _counterNumber); 
 				
 			} else {
 				certNumber = "0";

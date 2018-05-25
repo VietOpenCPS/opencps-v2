@@ -25,7 +25,9 @@
 
 				<a class="" id="btn-sendadd-dossier-header" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
 
-				<#else>
+				<#elseif dossier.dossierStatus?has_content && dossier.dossierStatus == "waiting" && dossier.submitting?has_content && dossier.submitting != true>
+
+				<a class="btn btn-active" id="btn-submit-dossier-header" style="display: none;" data-bind="value : lockState"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</a>
 
 				</#if>
 			</div>
@@ -595,7 +597,7 @@
 
 	<#elseif dossier.dossierStatus?has_content && dossier.dossierStatus == "waiting" &&            	dossier.submitting?has_content && dossier.submitting != true>
 
-	<button class="btn btn-active" id="btn-submit-dossier" ><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+	<button class="btn btn-active" id="btn-submit-dossier" style="display: none;" data-bind="value : lockState"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 
 	</#if>
 </div>
@@ -619,6 +621,51 @@
 		}
 
 		return valid;
+	}
+
+	function fnCheckLockTemplate(lockState, item){
+		if(lockState.startsWith("LOCK")){
+
+			if(lockState === "LOCK INPUT"){
+				return true;
+			}else if(lockState === "LOCK ALL"){
+				return true;
+			}else if (lockState !== "LOCK ALL" && lockState !== "LOCK INPUT" && lockState !== "LOCK OUTPUT" )  {
+				var partLocksStr = lockState.split(" ")[1];
+				if(partLocksStr){
+					var partLocks = partLocksStr.split(",");
+					for (var i = 0; i < partLocks.length; i++) {
+						if(partLocks[i] === item){
+							return true;
+						}
+					}
+				}
+			}
+
+		}else if(lockState.startsWith("UPDATE")){
+			
+			if(lockState === "UPDATE INPUT"){
+				return false;
+			}
+
+			if(lockState === "UPDATE ALL"){
+				return false;
+			}
+
+			if (lockState !== "UPDATE ALL" && lockState !== "UPDATE INPUT" && lockState !== "UPDATE OUTPUT" ){
+				var partLocksStr = lockState.split(" ")[1];
+				if(partLocksStr){
+					var partLocks = partLocksStr.split(",");
+					for (var i = 0; i < partLocks.length; i++) {
+						if(partLocks[i] === item){
+							return false;
+						}
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	var fnCancelling = function(dossierId){
@@ -1017,6 +1064,36 @@
 							dossierNote : function(e){
 								if(result.dossierNote){
 									return result.dossierNote;
+								}
+
+								return "";
+							},
+							lockState : function(e){
+								if(result.lockState){
+									if(result.lockState.startsWith("LOCK")){
+										if(result.lockState === "LOCK ALL"){
+											$("#btn-submit-dossier").remove();
+											$("#btn-delete-dossier").remove();
+											$("#btn-submit-dossier-header").remove();
+											$("#btn-delete-dossier-header").remove();
+										}else {
+											$("#btn-submit-dossier").show();
+											$("#btn-delete-dossier").show();
+											$("#btn-submit-dossier-header").show();
+											$("#btn-delete-dossier-header").show();
+										}
+									}else {
+										$("#btn-submit-dossier").show();
+										$("#btn-delete-dossier").show();
+										$("#btn-submit-dossier-header").show();
+										$("#btn-delete-dossier-header").show();
+									}
+
+								}else {
+									$("#btn-submit-dossier").show();
+									$("#btn-delete-dossier").show();
+									$("#btn-submit-dossier-header").show();
+									$("#btn-delete-dossier-header").show();
 								}
 
 								return "";
@@ -1753,7 +1830,7 @@ var fnSubmitting = function(dossierId){
 
 }
 
-$("#btn-submit-dossier").click(function(){
+$("#btn-submit-dossier,#btn-submit-dossier-header").click(function(){
 
 	var cf = fnConfirm("Thông báo",
 		"Bạn muốn nộp hồ sơ này", 

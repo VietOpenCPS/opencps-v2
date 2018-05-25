@@ -31,14 +31,16 @@
 					<i class="fa fa-reply" aria-hidden="true"></i>
 					Quay lại
 				</a>
-				<a href="javascript:;" id="btn-submit-dossier-header" style="display: none;">
-					<i class="fa fa-paper-plane" aria-hidden="true"></i> 
-					Nộp hồ sơ
-				</a>
-				<a href="javascript:;" id="btn-delete-dossier-header" style="display: none;">
-					<i class="fa fa-trash"></i>
-					Xóa
-				</a>
+				<#if dossier.submitting?has_content &&  dossier.submitting != true && dossier.dossierStatus?has_content && dossier.dossierStatus == "new">
+					<a href="javascript:;" id="btn-submit-dossier-header" style="display: none;" data-bind="value : lockState">
+						<i class="fa fa-paper-plane" aria-hidden="true"></i> 
+						Nộp hồ sơ
+					</a>
+					<a href="javascript:;" id="btn-delete-dossier-header" style="display: none;" data-bind="value : lockState">
+						<i class="fa fa-trash"></i>
+						Xóa
+					</a>
+				</#if>
 			</div>
 		</div>
 
@@ -198,18 +200,26 @@
 							<input type="hidden" id="validPart#:id#" name="validPart#:id#" class="validPart" value="0">
 							#}#
 						</span>
+						
+						#
+						var lockState = fnCheckLockTemplate("${dossier.lockState}",id);
+						#
 
 						<div class="actions">
-
+							
+							#if(!lockState){#
 							<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#">
 								<i class="fa fa-archive" aria-hidden="true"></i>
 							</a>
-
-							<label class="MB0 ML10 hover-pointer lbl-dossier-file" for="file#:id#" title="Tải file lên" >
+							#}#
+							
+							#if(!lockState){#
+							<label class="MB0 ML10 hover-pointer lbl-dossier-file" for="file#:id#" title="Tải file lên">
 								<i class="fa fa-upload text-light-blue"></i>
 							</label>
+							#}#
 
-							<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#">
+							<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#" >
 
 
 							<#-- <a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
@@ -218,26 +228,36 @@
 							<a href="javascript:;" class="dossier-component-profile" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 								<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
 							</a>
-	
+							
+							#if(!lockState){#
 							<a href="javascript:;" class="text-light-gray delete-dossier-file" data-toggle="tooltip" data-placement="top" title="Xóa" data-partno="#:id#" eForm="#:hasForm#" fileTemplateNo="#:fileTemplateNo#">
 								<i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
 							</a>
+							#}#
 						</div>
 					</div>
 
 					#if(hasForm){
 					var dossierFile =  getReferentUidFile(${dossierId},id);
+
+					var hiddenState = "";
+
+					if(lockState){
+						hiddenState = "pointer-events:none;";
+					}
 					#
 					
 					<div class="collapse" id="collapseDossierPart#:id#">
+						#if(!lockState){#
 						<div class="col-xs-12 col-sm-12 text-right">
 							<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
 							type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
 							<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
 						</div>
+						#}#
 						<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# >
 
-							<form id="formPartNo#:id#" class="formAlpacaDN" data-pk="#:id#" data-partname="#:partName#">
+							<form id="formPartNo#:id#" class="formAlpacaDN" data-pk="#:id#" data-partname="#:partName#" style="#:hiddenState#">
 
 							</form>
 
@@ -342,7 +362,7 @@
 			</span>
 		</div>
 	</div>
-
+	
 </div>
 </div>
 
@@ -350,12 +370,14 @@
 	<button class="btn btn-active" id="btn-back-dossier" type="button"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
 	
 	<#if dossier.submitting?has_content &&  dossier.submitting != true && dossier.dossierStatus?has_content && dossier.dossierStatus == "new">
-	<button class="btn btn-active" id="btn-submit-dossier" style="display: none;" data-bind="value : referenceUid"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+		<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : referenceUid" data-bind="value : lockState"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+
+		<button class="btn btn-active" id="btn-delete-dossier" data-bind="attr : {data-pk : dossierId}" data-bind="value : lockState"><i class="fa fa-trash"></i> Xóa</button>
 	</#if>
+
+	<#-- <#if dossier.submitting?has_content &&  dossier.submitting != true && dossier.dossierStatus?has_content && dossier.dossierStatus == "new">
 	
-	<#if dossier.submitting?has_content &&  dossier.submitting != true && dossier.dossierStatus?has_content && dossier.dossierStatus == "new">
-		<button class="btn btn-active" id="btn-delete-dossier" style="display: none;" data-bind="attr : {data-pk : dossierId}"><i class="fa fa-trash"></i> Xóa</button>
-	</#if>
+	</#if>-->
 
 </div>
 </div>
@@ -393,14 +415,65 @@
 		return valid;
 	}
 
+<<<<<<< HEAD
 
+=======
+	var fnCheckLockTemplate = function(lockState, item){
+		if(lockState){
+			if(lockState.startsWith("LOCK")){
+
+				if(lockState === "LOCK INPUT"){
+					return true;
+				}else if(lockState === "LOCK ALL"){
+					return true;
+				}else if (lockState !== "LOCK ALL" && lockState !== "LOCK INPUT" && lockState !== "LOCK OUTPUT" )  {
+					var partLocksStr = lockState.split(" ")[1];
+					if(partLocksStr){
+						var partLocks = partLocksStr.split(",");
+						for (var i = 0; i < partLocks.length; i++) {
+							if(partLocks[i] === item){
+								return true;
+							}
+						}
+					}
+				}
+
+			}else if(lockState.startsWith("UPDATE")){
+
+				if(lockState === "UPDATE INPUT"){
+					return false;
+				}
+
+				if(lockState === "UPDATE ALL"){
+					return false;
+				}
+
+				if (lockState !== "UPDATE ALL" && lockState !== "UPDATE INPUT" && lockState !== "UPDATE OUTPUT" ){
+					var partLocksStr = lockState.split(" ")[1];
+					if(partLocksStr){
+						var partLocks = partLocksStr.split(",");
+						for (var i = 0; i < partLocks.length; i++) {
+							if(partLocks[i] === item){
+								return false;
+							}
+						}
+					}
+				}
+
+
+			}
+		}
+
+		return false;
+	}
+>>>>>>> openCps/pre-develop
 
 	var fnCheckStatusAndHideUpload = function(dossierStatus, dossierParts){
-		if(dossierStatus !== "" && dossierStatus !== "new" && dossierStatus !== "waiting" && "${(sendAdd)!}" !== "true"){
+		/*if(dossierStatus !== "" && dossierStatus !== "new" && dossierStatus !== "waiting" && "${(sendAdd)!}" !== "true"){
 			$(".uploadfile-form-repository").remove();
 			$(".lbl-dossier-file").remove();
 			$(".delete-dossier-file").remove();
-		}
+		}*/
 
 		console.log("dossierParts=========",dossierParts);
 		var promise = new Promise(function(resolve, reject){
@@ -712,7 +785,7 @@
 			funDossierFile("${dossierId}",funGenNumberFile);
 			var dossierParts = this.dataSource.view();
 			//kiem tra dossier status, neu status thuoc new thi cho phep upoad hoac sua file
-			fnCheckStatusAndHideUpload("${(dossier.dossierStatus)!}",dossierParts);
+			//fnCheckStatusAndHideUpload("${(dossier.dossierStatus)!}",dossierParts);
 		}
 	});
 
@@ -753,7 +826,10 @@
 			"OK", "Thoát",
 			function(){
 
-				funSubmitDossier();
+				funSubmitDossier(function(){
+					printDetailDossier(${dossierId});
+				});
+				
 
 			}, function(){
 				
@@ -772,7 +848,7 @@
 		
 	});
 
-	var funSubmitDossier = function(){
+	var funSubmitDossier = function(callBack){
 		var validateAplicantInfo = $('#contactName, #city , #district , #wards , #contactTelNo' ).editable('validate');
 		var validatePostal = true;
 		var validateDossierTemplate = fnCheckValidTemplate();
@@ -816,9 +892,11 @@
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công!"
 					}, "success");
-					getTotal(function(dossierArr){
+					getTotal();
 
-					});
+					$("#lsDossierTemplPart").getKendoListView().refresh();
+
+					callBack();
 				},
 				error:function(result){
 					$("#btn-submit-dossier").button('reset');
@@ -1391,30 +1469,35 @@
 
 					var viewModel = kendo.observable({
 						dossierId : result.dossierId,
-						referenceUid : function(e){
-							var submitting = result.submitting;
-							$.ajax({
-								url : "${api.server}/dossiers/"+result.referenceUid+"/dossierAction/pedding",
-								dataType : "text",
-								type : "GET",
-								headers : {"groupId": ${groupId}},
-								success : function(result){
-									if(result == "true" || submitting){
-										$(".uploadfile-form-repository").remove();
-										$(".lbl-dossier-file").remove();
-										$(".delete-dossier-file").remove();
+						lockState : function(e){
+							if(result.lockState){
+								if(result.lockState.startsWith("LOCK")){
+									if(result.lockState === "LOCK ALL"){
+										$("#btn-submit-dossier").remove();
+										$("#btn-delete-dossier").remove();
+										$("#btn-submit-dossier-header").remove();
+										$("#btn-delete-dossier-header").remove();
 									}else {
 										$("#btn-submit-dossier").show();
 										$("#btn-delete-dossier").show();
 										$("#btn-submit-dossier-header").show();
 										$("#btn-delete-dossier-header").show();
-
 									}
-								},
-								error : function(result){
-
+								}else {
+									$("#btn-submit-dossier").show();
+									$("#btn-delete-dossier").show();
+									$("#btn-submit-dossier-header").show();
+									$("#btn-delete-dossier-header").show();
 								}
-							});
+
+							}else {
+								$("#btn-submit-dossier").show();
+								$("#btn-delete-dossier").show();
+								$("#btn-submit-dossier-header").show();
+								$("#btn-delete-dossier-header").show();
+							}
+
+							return "";
 						},
 						dossierIdCTN : function(e){
 							if(result.dossierIdCTN){
@@ -1533,7 +1616,10 @@
 			"OK", "Thoát",
 			function(){
 
-				funSubmitDossier();
+				funSubmitDossier(function(){
+					printDetailDossier(${dossierId});
+				});
+				
 
 			}, function(){
 

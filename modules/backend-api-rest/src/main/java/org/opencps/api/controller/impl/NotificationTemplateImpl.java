@@ -63,7 +63,7 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 			params.put("keywords", query.getKeywords());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create("notificationType_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getNotificationTemplates(user.getUserId(), company.getCompanyId(), groupId,
 					params, sorts, query.getStart(), query.getEnd(), serviceContext);

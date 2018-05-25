@@ -195,7 +195,7 @@ public interface DeliverablesManagement {
 			@ApiParam(value = "id for agency", required = true) @PathParam("agencyNo") String agencyNo,
 			@ApiParam(value = "id for type", required = true) @PathParam("typeCode") String typeCode,
 			@FormParam("keyword") String keyword, @FormParam("start") String start, @FormParam("end") String end,
-			@FormParam("applicantIdNo") String applicantIdNo);
+			@FormParam("applicantIdNo") String applicantIdNo, @FormParam("deliverableState") String deliverableState);
 	
 	/* Get list dataform by agencyNo and typeCode - END */
 }

@@ -611,7 +611,7 @@
 
 		$("#btn-submit-dossier,#btn-submit-dossier-header").click(function(){
 			var cf = fnConfirm("Thông báo",
-				"Bạn có chắc chắn muốn nộp hồ sơ này?", 
+				"Bạn có chắc chắn muốn gửi hồ sơ trực tuyến",
 				"Nộp hồ sơ", "Hủy bỏ",
 				function(){
 

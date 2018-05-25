@@ -10,6 +10,7 @@ import org.opencps.api.datamgt.model.DictGroupItemModel;
 import org.opencps.api.datamgt.model.DictItemModel;
 import org.opencps.api.datamgt.model.Groups;
 import org.opencps.api.datamgt.model.ParentItem;
+import org.opencps.api.dictcollection.model.DictGroupModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.constants.DictCollectionTerm;
@@ -457,6 +458,14 @@ public class DataManagementUtils {
 		return results;
 	}	
 	
+	public static DictGroupModel mapperDictGroupModel(DictGroup dictGroup) {
+		DictGroupModel model = new DictGroupModel();
+		model.setGroupCode(dictGroup.getGroupCode());
+		model.setGroupDescription(dictGroup.getGroupDescription());
+		model.setGroupName(dictGroup.getGroupName());
+		model.setGroupNameEN(dictGroup.getGroupNameEN());
+		return model;
+	}
 	public static Log _log = LogFactoryUtil.getLog(DataManagementUtils.class);
 
 }

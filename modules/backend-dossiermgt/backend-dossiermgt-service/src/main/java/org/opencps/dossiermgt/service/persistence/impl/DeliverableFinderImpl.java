@@ -3,7 +3,9 @@ package org.opencps.dossiermgt.service.persistence.impl;
 import java.util.List;
 
 import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.impl.DeliverableImpl;
+import org.opencps.dossiermgt.model.impl.DossierFileImpl;
 import org.opencps.dossiermgt.service.persistence.DeliverableFinder;
 
 import com.liferay.portal.kernel.dao.orm.Query;
@@ -95,5 +97,40 @@ public class DeliverableFinderImpl extends DeliverableFinderBaseImpl
 		    }
 
 		    return deliverableList;
+		}
+
+	public DossierFile findFileTemplateNo(long id, String fileTemplateNo) {
+
+		    Session session = null;
+		    DossierFile dossierFile = null;
+		    String sql = "SELECT * FROM opencps_dossierfile WHERE"
+		    				+ " dossierId = "+id+" AND"
+		    				+ " fileTemplateNo = '"+fileTemplateNo+"' AND"
+		    				+ " length(formData) > 0"
+		    				+ " ORDER BY dossierId DESC LIMIT 1";
+		    _log.info("SQL: "+ sql);
+		    try {
+		        session = openSession();
+
+		        SQLQuery q = session.createSQLQuery(sql);
+		        q.setCacheable(false);
+		        q.addEntity("opencps_dossierfile", DossierFileImpl.class);
+
+		        dossierFile = (DossierFile) q.uniqueResult();
+//		        _log.info("SQL list deliverable: "+ deliverableList);
+		    }
+		    catch (Exception e) {
+		        try {
+		            throw new SystemException(e);
+		        }
+		        catch (SystemException se) {
+		            se.printStackTrace();
+		        }
+		    }
+		    finally {
+		        closeSession(session);
+		    }
+
+		    return dossierFile;
 		}
 }
