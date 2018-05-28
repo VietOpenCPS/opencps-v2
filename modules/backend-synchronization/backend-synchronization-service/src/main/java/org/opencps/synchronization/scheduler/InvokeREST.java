@@ -161,7 +161,7 @@ public class InvokeREST {
 				try {
 					br.close();
 				} catch (IOException e) {
-					_log.error(e);
+//					_log.error(e);
 				}
 			}
 
