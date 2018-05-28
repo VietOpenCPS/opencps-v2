@@ -201,7 +201,7 @@ public interface DossierFileManagement {
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
 			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid,
-			@ApiParam(value = "password for access dossier file", required = false) String password);
+			@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
 
 	@GET
 	@Path("/{id}/files/{referenceUid}/public/{password}")

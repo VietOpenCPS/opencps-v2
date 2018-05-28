@@ -1,19 +1,23 @@
 package org.opencps.dossiermgt.action.util;
 
+import java.util.Date;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierMgtUtils {
@@ -78,6 +82,9 @@ public class DossierMgtUtils {
 				result = result && checkSubmitting(dossier);
 				break;
 
+			case "waiting":
+				result = result && checkWaiting(preCondition, dossier);
+				break;
 			default:
 				break;
 			}
@@ -124,4 +131,23 @@ public class DossierMgtUtils {
 		return false;
 	}
 	
+	private static boolean checkWaiting(String preCondition, Dossier dossier) {
+		long dossierActionId = dossier.getDossierActionId();
+		DossierAction action = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+		Date actionDate = action.getModifiedDate();
+		String[] waitingArr = StringUtil.split(preCondition);
+		if (waitingArr.length != 2) {
+			return false;
+		}
+		String condition = waitingArr[0];
+		String nBlock = waitingArr[1];
+		if ("waiting".equals(condition)) {
+			
+		}
+		else {
+			return false;
+		}
+		
+		return false;
+	}
 }
