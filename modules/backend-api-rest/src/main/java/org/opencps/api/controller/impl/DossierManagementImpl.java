@@ -1803,5 +1803,4 @@ public class DossierManagementImpl implements DossierManagement {
 			return processException(e);
 		}
 	}
-
 }

@@ -431,6 +431,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setPassword(password);
 		dossier.setOnline(false);
+		
+		
+		dossierPersistence.update(dossier);
 
 		// init DossierFile
 		List<DossierPart> dossierParts = new ArrayList<DossierPart>();
@@ -447,7 +450,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 		
-		dossierPersistence.update(dossier);
 		
 		return dossier;
 	}
