@@ -438,25 +438,25 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				DeliverableType dlvType = DeliverableTypeLocalServiceUtil.getByCode(model.getGroupId(),
 						deliverableType);
 
-				JSONObject formDataContent = JSONFactoryUtil.createJSONObject();
+				JSONObject formDataContent = JSONFactoryUtil.createJSONObject(model.getFormData());
 
-				try {
-
-					if (Validator.isNotNull(dlvType.getMappingData())) {
-						JSONObject jsMappingData = JSONFactoryUtil.createJSONObject(dlvType.getMappingData());
-
-						JSONObject jsFormData = JSONFactoryUtil.createJSONObject();
-
-						if (Validator.isNotNull(model.getFormData()))
-							jsFormData = JSONFactoryUtil.createJSONObject(model.getFormData());
-
-						formDataContent = mappingContent(jsMappingData, jsFormData, model.getDossierId());
-
-					}
-
-				} catch (Exception e) {
-					_log.error("Parser JSONDATA error_DELIVERABLE");
-				}
+//				try {
+//
+//					if (Validator.isNotNull(dlvType.getMappingData())) {
+//						JSONObject jsMappingData = JSONFactoryUtil.createJSONObject(dlvType.getMappingData());
+//
+//						JSONObject jsFormData = JSONFactoryUtil.createJSONObject();
+//
+//						if (Validator.isNotNull(model.getFormData()))
+//							jsFormData = JSONFactoryUtil.createJSONObject(model.getFormData());
+//
+//						formDataContent = mappingContent(jsMappingData, jsFormData, model.getDossierId());
+//
+//					}
+//
+//				} catch (Exception e) {
+//					_log.error("Parser JSONDATA error_DELIVERABLE");
+//				}
 
 				String subject = StringPool.BLANK;
 				String issueDate = StringPool.BLANK;
@@ -497,8 +497,12 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 						if (Validator.isNotNull(model.getFormData()))
 							jsFormData = JSONFactoryUtil.createJSONObject(model.getFormData());
 
-						formDataContent = mappingContent(jsMappingData, jsFormData, model.getDossierId());
-
+						if (jsMappingData.has("deliverables") && !Validator.isNull(jsMappingData.get("deliverbles"))) {
+							formDataContent = mappingContent(jsMappingData, jsFormData, model.getDossierId());							
+						}
+						else {
+							formDataContent = JSONFactoryUtil.createJSONObject(model.getFormData());
+						}
 					}
 
 				} catch (Exception e) {
@@ -512,6 +516,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 				}
 
+				//_log.info("Update deliverable form data: " + formData);
+				
 				DeliverableLocalServiceUtil.updateFormData(model.getGroupId(), dlv.getDeliverableId(), formData,
 						serviceContext);
 

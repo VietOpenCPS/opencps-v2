@@ -144,13 +144,13 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 					ok = false;
 				}
 
-				_log.info("content: "+content);
+				//_log.info("content: "+content);
 				if (ok) {
-					_log.info("START Dossier Action11111");
+					//_log.info("START Dossier Action11111");
 					DossierLog dossierLog = DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
 							model.getActionUser(), content, "PROCESS_TYPE", payload.toString(),
 							serviceContext);
-					_log.info("dossierLog: "+dossierLog);
+					//_log.info("dossierLog: "+dossierLog);
 				}
 
 			} catch (SystemException | PortalException e) {
@@ -168,7 +168,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 			serviceContext.setUserId(model.getUserId());
 
 			try {
-				_log.info("START Dossier Action11111");
+				//_log.info("START Dossier Action11111");
 				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
 						content, notificationType, payload, serviceContext);
 			} catch (SystemException | PortalException e) {

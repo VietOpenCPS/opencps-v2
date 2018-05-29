@@ -504,7 +504,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
+//			_log.info(e);
 			return processException(e);
 		}
 
@@ -551,7 +551,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 		} catch (Exception e) {
-			_log.info(e);
+//			_log.info(e);
 			return processException(e);
 		}
 

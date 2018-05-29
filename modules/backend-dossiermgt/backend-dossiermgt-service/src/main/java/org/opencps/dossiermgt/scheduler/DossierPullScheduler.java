@@ -282,7 +282,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 							.fetchBySPI_PRESC_AEV(syncServiceProcess.getServiceProcessId(), StringPool.BLANK, "SUBMIT");
 					
 					
-					_log.info("GETPROCESSACTION************" + processAction.getActionName());
+					//_log.info("GETPROCESSACTION************" + processAction.getActionName());
 
 					long assignedUserId = processAction.getAssignUserId();
 
