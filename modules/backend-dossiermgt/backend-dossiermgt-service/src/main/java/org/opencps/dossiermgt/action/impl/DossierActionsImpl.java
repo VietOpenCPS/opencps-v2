@@ -2984,4 +2984,23 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		return result;
 	}
 
+	@Override
+	public Dossier createDossier(long groupId,String serviceCode, String govAgencyCode, String applicantName,
+			String applicantIdType, String applicantIdNo, Date applicantIdDate, String address, String cityCode,
+			String districtCode, String wardCode, String contactName, String contactTelNo, String contactEmail,
+			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
+			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
+			String delegateWardCode, String applicantNote, String briefNote,
+			String dossierNo, String dossierTemplateNo, int viaPostal, String postalServiceCode,
+			String postalServiceName, String postalAddress, String postalCityCode, String postalDistrictCode,
+			String postalWardCode, String postalTelNo, ServiceContext context) throws PortalException {
+
+		return DossierLocalServiceUtil.createDossier(groupId, serviceCode, govAgencyCode, applicantName,
+				applicantIdType, applicantIdNo, applicantIdDate, address, cityCode, districtCode, wardCode, contactName,
+				contactTelNo, contactEmail, isSameAsApplicant, delegateName, delegateIdNo, delegateTelNo, delegateEmail,
+				delegateAddress, delegateCityCode, delegateDistrictCode, delegateWardCode, applicantNote, briefNote,
+				dossierNo, dossierTemplateNo, viaPostal, postalServiceCode, postalServiceName, postalAddress, postalCityCode, postalDistrictCode, postalWardCode, postalTelNo, context);
+				
+	}
+
 }
