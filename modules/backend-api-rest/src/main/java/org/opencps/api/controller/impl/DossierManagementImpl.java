@@ -1769,6 +1769,10 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierPermission dossierPermission = new DossierPermission();
 
 		DossierActions actions = new DossierActionsImpl();
+		
+		_log.info("__INPUT_ONEGATE");
+		_log.info(JSONFactoryUtil.looseSerialize(input));
+		_log.info("__XXXXXXXXXXXXX");
 
 		try {
 
