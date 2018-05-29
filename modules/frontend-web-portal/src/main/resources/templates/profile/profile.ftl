@@ -50,9 +50,9 @@
 									</div>
 									<div class="col-sm-7">
 										<span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Nhập tên công ty" tabindex="-1" class="" data-bind="text:applicantName"> <#-- ${api.applicant.applicantName} --> </span>
-										<#-- <span class="pull-right">
+										<span class="pull-right">
 											<a href="#" id="editApplicantName" style="float: right"><i class="fa fa-pencil"></i></a>
-										</span>  -->
+										</span>
 									</div>
 								</div>
 								<div class="row MB15">
@@ -61,9 +61,9 @@
 									</div>
 									<div class="col-sm-7">
 										<span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Nhập địa chỉ" tabindex="-1" class="" data-bind="text:address"> </span>
-										<#-- <span class="pull-right">
+										<span class="pull-right">
 											<a href="#" id="editAddress" style="float: right"><i class="fa fa-pencil"></i></a>
-										</span> -->
+										</span>
 									</div>
 								</div>
 								<div class="row MB15">
@@ -72,9 +72,9 @@
 									</div>
 									<div class="col-sm-7">
 										<span id="city" data-pk="1" data-type="select" data-toggle="#editCity" data-original-title="Chọn thành phố" tabindex="-1" class="" data-bind="text:cityName"><#--  ${api.applicant.cityName} --> </span>
-										<#-- <span class="pull-right">
+										<span class="pull-right">
 											<a href="#" id="editCity" style="float: right"><i class="fa fa-pencil"></i></a>
-										</span> -->
+										</span>
 									</div>
 								</div>
 								<div class="row MB15">
@@ -83,9 +83,9 @@
 									</div>
 									<div class="col-sm-7">
 										<span id="district" data-pk="1" data-type="select" data-toggle="#editDistrict" data-original-title="Chọn quận/ huyện" tabindex="-1" class="" data-bind="text:districtName"><#-- ${api.applicant.districtName} --></span>
-										<#-- <span class="pull-right">
+										<span class="pull-right">
 											<a href="#" id="editDistrict" style="float: right"><i class="fa fa-pencil"></i></a>
-										</span> -->
+										</span>
 									</div>
 								</div>
 								<div class="row MB15">
@@ -94,9 +94,9 @@
 									</div>
 									<div class="col-sm-7">
 										<span id="wards" data-pk="1" data-type="select" data-toggle="#editWards" data-original-title="Chọn xã/ phường" tabindex="-1" class="" data-bind="text:wardName"><#-- ${api.applicant.wardName} --></span>
-										<#-- <span class="pull-right">
+										<span class="pull-right">
 											<a href="#" id="editWards" style="float: right"><i class="fa fa-pencil"></i></a>
-										</span> -->
+										</span>
 									</div>
 								</div>
 								<div class="row MB15">
@@ -105,9 +105,9 @@
 									</div>
 									<div class="col-sm-7">
 										<span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Nhập số điện thoại" tabindex="-1" class="" data-bind="text:contactTelNo"><#-- ${api.applicant.contactTelNo} --></span>
-										<#-- <span class="pull-right">
+										<span class="pull-right">
 											<a href="#" id="editPhone" style="float: right"><i class="fa fa-pencil"></i></a>
-										</span> -->
+										</span>
 									</div>
 								</div>
 								<div class="row MB15">
@@ -116,7 +116,7 @@
 									</div>
 									<div class="col-sm-7">
 										<span id="email" data-pk="1" data-toggle="#editEmail" data-original-title="Nhập email" tabindex="-1" class="" data-bind="text:contactEmail"><#-- ${api.applicant.contactEmail} --> </span>
-										<#-- <span class="pull-right">
+										<!-- <span class="pull-right">
 											<a href="#" id="editEmail" style="float: right"><i class="fa fa-pencil"></i></a>
 										</span> -->
 									</div>
@@ -127,9 +127,9 @@
 									</div>
 									<div class="col-sm-7">
 										<span id="contactName" data-pk="1" data-toggle="#editContactName" data-original-title="Tên người đại diện" tabindex="-1" class="" data-bind="text:contactName"><#-- ${api.applicant.contactName} --></span>
-										<#-- <span class="pull-right">
+										<span class="pull-right">
 											<a href="#" id="editContactName" style="float: right"><i class="fa fa-pencil"></i></a>
-										</span> -->
+										</span>
 									</div>
 								</div>
 							</div>
@@ -147,9 +147,9 @@
 									</div>
 									<div class="col-sm-7">
 										<span id="applicantName" data-pk="1" data-toggle="#editApplicantName" data-original-title="Nhập họ và tên" tabindex="-1" class="" data-bind="text:applicantName"><#-- ${api.applicant.applicantName} --></span>
-										<#-- <span class="pull-right">
+										<span class="pull-right">
 											<a href="#" id="editApplicantName" style="float: right"><i class="fa fa-pencil"></i></a>
-										</span> -->
+										</span>
 									</div>
 								</div>
 								<div class="row MB15">
@@ -158,9 +158,9 @@
 									</div>
 									<div class="col-sm-7">
 										<span id="address" data-pk="1" data-toggle="#editAddress" data-original-title="Nhập địa chỉ" tabindex="-1" class="" data-bind="text:address"><#-- ${api.applicant.address} --></span>
-										<#-- <span class="pull-right">
+										<span class="pull-right">
 											<a href="#" id="editAddress" style="float: right"><i class="fa fa-pencil"></i></a>
-										</span> -->
+										</span>
 									</div>
 								</div>
 								<div class="row MB15">
@@ -169,9 +169,9 @@
 									</div>
 									<div class="col-sm-7">
 										<span id="city" data-pk="1" data-type="select" data-toggle="#editCity" data-original-title="Chọn tỉnh/ thành phố" tabindex="-1" class="" data-bind="text:cityName"><#-- ${api.applicant.cityName} --></span>
-										<#-- <span class="pull-right">
+										<span class="pull-right">
 											<a href="#" id="editCity" style="float: right"><i class="fa fa-pencil"></i></a>
-										</span> -->
+										</span>
 									</div>
 								</div>
 								<div class="row MB15">
@@ -180,9 +180,9 @@
 									</div>
 									<div class="col-sm-7">
 										<span id="district" data-pk="1" data-type="select" data-toggle="#editDistrict" data-original-title="Chọn quận/ huyện" tabindex="-1" class="" data-bind="text:districtName"><#-- ${api.applicant.districtName} --></span>
-										<#-- <span class="pull-right">
+										<span class="pull-right">
 											<a href="#" id="editDistrict" style="float: right"><i class="fa fa-pencil"></i></a>
-										</span> -->
+										</span>
 									</div>
 								</div>
 								<div class="row MB15">
@@ -191,9 +191,9 @@
 									</div>
 									<div class="col-sm-7">
 										<span id="wards" data-pk="1" data-type="select" data-toggle="#editWards" data-original-title="Chọn xã/ phường" tabindex="-1" class="" data-bind="text:wardName"><#-- ${api.applicant.wardName} --></span>
-										<#-- <span class="pull-right">
+										<span class="pull-right">
 											<a href="#" id="editWards" style="float: right"><i class="fa fa-pencil"></i></a>
-										</span> -->
+										</span>
 									</div>
 								</div>
 								<div class="row MB15">
@@ -202,9 +202,9 @@
 									</div>
 									<div class="col-sm-7">
 										<span id="phone" data-pk="1" data-toggle="#editPhone" data-original-title="Nhập số điện thoại" tabindex="-1" class="" data-bind="text:contactTelNo"><#-- ${api.applicant.contactTelNo} --></span>
-										<#-- <span class="pull-right">
+										<span class="pull-right">
 											<a href="#" id="editPhone" style="float: right"><i class="fa fa-pencil"></i></a>
-										</span> -->
+										</span>
 									</div>
 								</div>
 								<div class="row MB15">
@@ -1071,6 +1071,11 @@
 	$('#editPhone').click(function(e) {
 		e.stopPropagation();
 		$('#phone').editable('toggle');
+	});
+
+	$('#editContactName').click(function(e) {
+		e.stopPropagation();
+		$('#contactName').editable('toggle');
 	});
 
 	$('#editEmail').click(function(e) {

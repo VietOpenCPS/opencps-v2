@@ -25,7 +25,7 @@
 				
 			</div>
 			<div class="col-sm-6">
-				<a class="btn btn-active btn-sm" href="/web/cong-tiep-nhan/register" style="float: left;margin-left: -12px;margin-right:2px; padding: 3px 7px;">Đăng ký</a>
+				<button class="btn btn-active btn-sm" type="button" id="btn-register-applicant" style="float: left;margin-left: -12px;margin-right:2px;">Đăng ký</button>
 				<button class="btn btn-active btn-sm">Đăng nhập</button>
 			</div>
 		</div>
@@ -60,7 +60,6 @@
 
 <script type="text/javascript">
 	$("#btn-register-applicant").click(function () {
-		alert("Bấm đăng ký");
 		window.location.href = "/web/cong-tiep-nhan/register";
 	});
 </script>
