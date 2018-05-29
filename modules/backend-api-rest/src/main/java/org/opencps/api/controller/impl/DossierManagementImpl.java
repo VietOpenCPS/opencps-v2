@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +17,7 @@ import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossier.model.DoActionModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierInputModel;
+import org.opencps.api.dossier.model.DossierOnegateInputModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
@@ -32,6 +34,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
@@ -160,7 +163,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String dossierIdCTN = query.getDossierIdCTN();
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
-			//LamTV:Get info case abnormal
+			// LamTV:Get info case abnormal
 			Long statusRegNo = null;
 			if (Validator.isNotNull(query.getStatusReg())) {
 				statusRegNo = Long.valueOf(query.getStatusReg());
@@ -232,7 +235,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierResultsModel results = new DossierResultsModel();
 
 			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
-						-1, -1, serviceContext);
+					-1, -1, serviceContext);
 
 			results.setTotal(jsonData.getInt("total"));
 
@@ -323,7 +326,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String dossierIdCTN = query.getDossierIdCTN();
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
-			//Add keyword Search
+			// Add keyword Search
 			String keywordSearchLike = query.getKeywordSearchLike();
 			String keySearch = StringPool.BLANK;
 			if (Validator.isNotNull(keywordSearchLike)) {
@@ -396,8 +399,9 @@ public class DossierManagementImpl implements DossierManagement {
 
 			if (jsonData != null && jsonData.length() > 0) {
 				results.setTotal(jsonData.getInt("total"));
-//				_log.info("7");
-//				results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+				// _log.info("7");
+				// results.getData().addAll(DossierUtils.mappingForGetList((List<Document>)
+				// jsonData.get("data")));
 
 				List<Document> docs = (List<Document>) jsonData.get("data");
 				if (docs != null && docs.size() > 0) {
@@ -815,9 +819,8 @@ public class DossierManagementImpl implements DossierManagement {
 			if (input.getIsSynAction() == 1) {
 
 				_log.info(JSONFactoryUtil.looseSerialize(input));
-				
-				_log.info("Call in SynAction **********8 ===========");
 
+				_log.info("Call in SynAction **********8 ===========");
 
 				DossierAction dossierAction = actions.doAction(groupId, dossier.getDossierId(),
 						dossier.getReferenceUid(), input.getActionCode(), 0l, input.getActionUser(),
@@ -1115,7 +1118,7 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 
 	}
-	
+
 	@Override
 	public Response addDossierMark(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long dossierId, String dossierPartNo,
@@ -1158,13 +1161,13 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			DossierMarkActions actions = new DossierMarkActionsImpl();
-			
+
 			DossierMarkResultsModel result = new DossierMarkResultsModel();
 
 			List<DossierMark> lstDossierMark = actions.getDossierMarks(groupId, dossierId);
 
 			List<DossierMarkModel> outputs = DossierMarkUtils.mappingDossierMarks(lstDossierMark);
-			
+
 			result.setTotal(lstDossierMark.size());
 			result.getData().addAll(outputs);
 
@@ -1200,7 +1203,6 @@ public class DossierManagementImpl implements DossierManagement {
 			return processException(e);
 		}
 	}
-	
 
 	@Override
 	public Response cancellingRequestDossier(HttpServletRequest request, HttpHeaders header, Company company,
@@ -1387,7 +1389,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		DossierActions actions = new DossierActionsImpl();
 
-		//DossierPermission dossierPermission = new DossierPermission();
+		// DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1419,7 +1421,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return processException(e);
 		}
 	}
-	
+
 	private Response processException(Exception e) {
 		ErrorMsg error = new ErrorMsg();
 
@@ -1448,7 +1450,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 		}
 	}
-	
+
 	public Response getDossierPenddingByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String referenceUid) {
 		BackendAuth auth = new BackendAuthImpl();
@@ -1458,7 +1460,7 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new UnauthenticationException();
 			}
 
-			//TODO: Fix port process
+			// TODO: Fix port process
 			long groupId = 55301;
 
 			Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
@@ -1538,21 +1540,22 @@ public class DossierManagementImpl implements DossierManagement {
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
-//			_log.info("START 1");
-//			_log.info("START Applicant: "+query.getApplicantIdNo());
-			
+			// _log.info("START 1");
+			// _log.info("START Applicant: "+query.getApplicantIdNo());
+
 			if (Boolean.parseBoolean(pendding)) {
 				long groupIdCXL = 55301;
 				JSONObject jsonDataPending = null;
 
-				List<DossierAction> dActionList = DossierActionLocalServiceUtil.getDossiersPending(groupIdCXL, pendding);
+				List<DossierAction> dActionList = DossierActionLocalServiceUtil.getDossiersPending(groupIdCXL,
+						pendding);
 
 				if (dActionList != null && dActionList.size() > 0) {
 					LinkedHashMap<String, Object> paramPending = new LinkedHashMap<String, Object>();
-					_log.info("dActionList: "+dActionList.size());
+					_log.info("dActionList: " + dActionList.size());
 					int length = dActionList.size();
 					StringBuilder sb = new StringBuilder();
-					for (int i = 0; i < length; i ++) {
+					for (int i = 0; i < length; i++) {
 						DossierAction dAct = dActionList.get(i);
 						long dActId = dAct.getDossierActionId();
 						if (i == 0) {
@@ -1560,26 +1563,26 @@ public class DossierManagementImpl implements DossierManagement {
 						} else {
 							sb.append(StringPool.COMMA);
 							sb.append(dActId);
-							
+
 						}
 					}
-					_log.info("DOSSIER_ACTION_ID_PENDING: "+sb.toString());
+					_log.info("DOSSIER_ACTION_ID_PENDING: " + sb.toString());
 
 					paramPending.put(Field.GROUP_ID, String.valueOf(groupIdCXL));
 					paramPending.put(DossierTerm.OWNER, String.valueOf(false));
 					paramPending.put(DossierTerm.APPLICANT_ID_NO, query.getApplicantIdNo());
 					paramPending.put(DossierTerm.DOSSIER_ACTION_ID_PENDING, sb.toString());
-					
-					jsonDataPending = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupIdCXL, paramPending, sorts,
-							-1, -1, serviceContext);
-					_log.info("jsonDataPending: "+jsonDataPending);
+
+					jsonDataPending = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupIdCXL,
+							paramPending, sorts, -1, -1, serviceContext);
+					_log.info("jsonDataPending: " + jsonDataPending);
 				}
 				if (jsonDataPending != null) {
 					List<Document> docs = (List<Document>) jsonDataPending.get("data");
 					if (docs != null && docs.size() > 0) {
 						StringBuilder sb1 = new StringBuilder();
 						int length = docs.size();
-						for (int i = 0; i < length; i ++) {
+						for (int i = 0; i < length; i++) {
 							Document doc = docs.get(i);
 							String referenceUid = doc.get(DossierTerm.REFERENCE_UID);
 							if (i == 0) {
@@ -1589,18 +1592,18 @@ public class DossierManagementImpl implements DossierManagement {
 								sb1.append(referenceUid);
 							}
 						}
-						_log.info("REFERENCE_UID: "+sb1.toString());
+						_log.info("REFERENCE_UID: " + sb1.toString());
 						params.put(DossierTerm.REFERENCE_UID, sb1.toString());
 					}
 				}
-				
+
 			}
 
 			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					-1, -1, serviceContext);
 
 			if (jsonData == null) {
-				jsonData = JSONFactoryUtil.createJSONObject(); 
+				jsonData = JSONFactoryUtil.createJSONObject();
 			}
 
 			results.setTotal(jsonData.getInt("total"));
@@ -1662,13 +1665,13 @@ public class DossierManagementImpl implements DossierManagement {
 			String dossierArr = query.getDossierArr();
 			String status = query.getStatus();
 			// Get info input params
-//			String submitting = query.getSubmitting();
-//			String pendding = query.getPendding();
+			// String submitting = query.getSubmitting();
+			// String pendding = query.getPendding();
 			String applicantIdNo = query.getApplicantIdNo();
 
 			params.put(DossierTerm.OWNER, owner);
-//			params.put(DossierTerm.SUBMITTING, submitting);
-//			params.put("pendding", pendding);
+			// params.put(DossierTerm.SUBMITTING, submitting);
+			// params.put("pendding", pendding);
 			params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
 			params.put(DossierTerm.STATUS, status);
 			params.put("dossierArr", dossierArr);
@@ -1676,68 +1679,73 @@ public class DossierManagementImpl implements DossierManagement {
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
-			
-			
-//			if (Boolean.parseBoolean(pendding)) {
-//				long groupIdCXL = 55301;
-//				JSONObject jsonDataPending = null;
-//
-//				List<DossierAction> dActionList = DossierActionLocalServiceUtil.getDossiersPending(groupIdCXL, pendding);
-//
-//				if (dActionList != null && dActionList.size() > 0) {
-//					LinkedHashMap<String, Object> paramPending = new LinkedHashMap<String, Object>();
-//					_log.info("dActionList: "+dActionList.size());
-//					int length = dActionList.size();
-//					StringBuilder sb = new StringBuilder();
-//					for (int i = 0; i < length; i ++) {
-//						DossierAction dAct = dActionList.get(i);
-//						long dActId = dAct.getDossierActionId();
-//						if (i == 0) {
-//							sb.append(dActId);
-//						} else {
-//							sb.append(StringPool.COMMA);
-//							sb.append(dActId);
-//							
-//						}
-//					}
-//					_log.info("DOSSIER_ACTION_ID_PENDING: "+sb.toString());
-//
-//					paramPending.put(Field.GROUP_ID, String.valueOf(groupIdCXL));
-//					paramPending.put(DossierTerm.OWNER, String.valueOf(false));
-//					paramPending.put(DossierTerm.APPLICANT_ID_NO, query.getApplicantIdNo());
-//					paramPending.put(DossierTerm.DOSSIER_ACTION_ID_PENDING, sb.toString());
-//					
-//					jsonDataPending = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupIdCXL, paramPending, sorts,
-//							-1, -1, serviceContext);
-//					_log.info("jsonDataPending: "+jsonDataPending);
-//				}
-//				if (jsonDataPending != null) {
-//					List<Document> docs = (List<Document>) jsonDataPending.get("data");
-//					if (docs != null && docs.size() > 0) {
-//						StringBuilder sb1 = new StringBuilder();
-//						int length = docs.size();
-//						for (int i = 0; i < length; i ++) {
-//							Document doc = docs.get(i);
-//							String referenceUid = doc.get(DossierTerm.REFERENCE_UID);
-//							if (i == 0) {
-//								sb1.append(referenceUid);
-//							} else {
-//								sb1.append(StringPool.COMMA);
-//								sb1.append(referenceUid);
-//							}
-//						}
-//						_log.info("REFERENCE_UID: "+sb1.toString());
-//						params.put(DossierTerm.REFERENCE_UID, sb1.toString());
-//					}
-//				}
-//				
-//			}
+			// if (Boolean.parseBoolean(pendding)) {
+			// long groupIdCXL = 55301;
+			// JSONObject jsonDataPending = null;
+			//
+			// List<DossierAction> dActionList =
+			// DossierActionLocalServiceUtil.getDossiersPending(groupIdCXL,
+			// pendding);
+			//
+			// if (dActionList != null && dActionList.size() > 0) {
+			// LinkedHashMap<String, Object> paramPending = new
+			// LinkedHashMap<String, Object>();
+			// _log.info("dActionList: "+dActionList.size());
+			// int length = dActionList.size();
+			// StringBuilder sb = new StringBuilder();
+			// for (int i = 0; i < length; i ++) {
+			// DossierAction dAct = dActionList.get(i);
+			// long dActId = dAct.getDossierActionId();
+			// if (i == 0) {
+			// sb.append(dActId);
+			// } else {
+			// sb.append(StringPool.COMMA);
+			// sb.append(dActId);
+			//
+			// }
+			// }
+			// _log.info("DOSSIER_ACTION_ID_PENDING: "+sb.toString());
+			//
+			// paramPending.put(Field.GROUP_ID, String.valueOf(groupIdCXL));
+			// paramPending.put(DossierTerm.OWNER, String.valueOf(false));
+			// paramPending.put(DossierTerm.APPLICANT_ID_NO,
+			// query.getApplicantIdNo());
+			// paramPending.put(DossierTerm.DOSSIER_ACTION_ID_PENDING,
+			// sb.toString());
+			//
+			// jsonDataPending = actions.getDossiers(user.getUserId(),
+			// company.getCompanyId(), groupIdCXL, paramPending, sorts,
+			// -1, -1, serviceContext);
+			// _log.info("jsonDataPending: "+jsonDataPending);
+			// }
+			// if (jsonDataPending != null) {
+			// List<Document> docs = (List<Document>)
+			// jsonDataPending.get("data");
+			// if (docs != null && docs.size() > 0) {
+			// StringBuilder sb1 = new StringBuilder();
+			// int length = docs.size();
+			// for (int i = 0; i < length; i ++) {
+			// Document doc = docs.get(i);
+			// String referenceUid = doc.get(DossierTerm.REFERENCE_UID);
+			// if (i == 0) {
+			// sb1.append(referenceUid);
+			// } else {
+			// sb1.append(StringPool.COMMA);
+			// sb1.append(referenceUid);
+			// }
+			// }
+			// _log.info("REFERENCE_UID: "+sb1.toString());
+			// params.put(DossierTerm.REFERENCE_UID, sb1.toString());
+			// }
+			// }
+			//
+			// }
 
 			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					-1, -1, serviceContext);
 
 			if (jsonData == null) {
-				jsonData = JSONFactoryUtil.createJSONObject(); 
+				jsonData = JSONFactoryUtil.createJSONObject();
 			}
 
 			results.setTotal(jsonData.getInt("total"));
@@ -1745,6 +1753,46 @@ public class DossierManagementImpl implements DossierManagement {
 			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
 
 			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			_log.info(e);
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response createDossierOngate(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, DossierOnegateInputModel input) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		DossierPermission dossierPermission = new DossierPermission();
+
+		DossierActions actions = new DossierActionsImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
+					input.getGovAgencyCode(), input.getDossierTemplateNo());
+			
+
+			Dossier dossier = actions.createDossier(groupId, input.getServiceCode(), input.getGovAgencyCode(),
+					input.getApplicantName(), input.getApplicantIdType(), input.getApplicantIdNo(),
+					DateTimeUtils.convertDateTimeToString(input.getApplicantIdDate()), input.getAddress(), input.getCityCode(), input.getDistrictCode(),
+					input.getWardCode(), input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
+					input.isSameAsApplicant(), input.getDelegateName(), input.getDelegateIdNo(),
+					input.getDelegateTelNo(), input.getDelegateEmail(), input.getDelegateAddress(),
+					input.getDelegateCityCode(), input.getDelegateDistrictCode(), input.getDelegateWardCode(),
+					input.getApplicantNote(), StringPool.BLANK, input.getDossierNo(), input.getDossierTemplateNo(),
+					input.getViaPostal(), input.getPostalServiceCode(), input.getPostalServiceName(),
+					input.getPostalAddress(), input.getPostalCityCode(), input.getPostalDistrictCode(),
+					input.getPostalWardCode(), input.getPostalTelNo(), serviceContext);
+
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(dossier)).build();
 
 		} catch (Exception e) {
 			_log.info(e);
