@@ -85,10 +85,14 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		if (Validator.isNotNull(object.getApplicantIdDate())) {
 		document.addTextSortable(DossierTerm.APPLICANT_ID_DATE,
 					APIDateTimeUtils.convertDateToString(object.getApplicantIdDate(), APIDateTimeUtils._NORMAL_PARTTERN));			
+		} else {
+			document.addTextSortable(DossierTerm.APPLICANT_ID_DATE, StringPool.BLANK);
 		}
 		if (Validator.isNotNull(object.getSubmitDate())) {
 		document.addDateSortable(DossierTerm.SUBMIT_DATE,
 					object.getSubmitDate());			
+		} else {
+			document.addTextSortable(DossierTerm.SUBMIT_DATE, StringPool.BLANK);
 		}
 //		document.addTextSortable(DossierTerm.SUBMIT_DATE,
 //				APIDateTimeUtils.convertDateToString(object.getSubmitDate(), APIDateTimeUtils._NORMAL_PARTTERN));
@@ -97,54 +101,66 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		
 		if (Validator.isNotNull(object.getReceiveDate())) {
 		document.addDateSortable(DossierTerm.RECEIVE_DATE,
-					object.getReceiveDate());			
+					object.getReceiveDate());
+		} else {
+			document.addTextSortable(DossierTerm.RECEIVE_DATE, StringPool.BLANK);
 		}
 		
 		if (Validator.isNotNull(object.getDueDate())) {
 		document.addTextSortable(DossierTerm.DUE_DATE,
-					APIDateTimeUtils.convertDateToString(object.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));			
+					APIDateTimeUtils.convertDateToString(object.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		} else {
+			document.addTextSortable(DossierTerm.DUE_DATE, StringPool.BLANK);
 		}
 		if (Validator.isNotNull(object.getReleaseDate())) {
 		document.addTextSortable(DossierTerm.RELEASE_DATE,
-					APIDateTimeUtils.convertDateToString(object.getReleaseDate(), APIDateTimeUtils._NORMAL_PARTTERN));			
+					APIDateTimeUtils.convertDateToString(object.getReleaseDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		} else {
+			document.addTextSortable(DossierTerm.RELEASE_DATE, StringPool.BLANK);
 		}
 		if (Validator.isNotNull(object.getFinishDate())) {
 		document.addTextSortable(DossierTerm.FINISH_DATE,
 					APIDateTimeUtils.convertDateToString(object.getFinishDate(), APIDateTimeUtils._NORMAL_PARTTERN));			
+		} else {
+			document.addTextSortable(DossierTerm.FINISH_DATE, StringPool.BLANK);
 		}
 		if (Validator.isNotNull(object.getCancellingDate())) {
 		document.addTextSortable(DossierTerm.CANCELLING_DATE,
 					APIDateTimeUtils.convertDateToString(object.getCancellingDate(), APIDateTimeUtils._NORMAL_PARTTERN));			
+		} else {
+			document.addTextSortable(DossierTerm.CANCELLING_DATE, StringPool.BLANK);
 		}
 		if (Validator.isNotNull(object.getCorrecttingDate())) {
 		document.addTextSortable(DossierTerm.CORRECTING_DATE,
 					APIDateTimeUtils.convertDateToString(object.getCorrecttingDate(), APIDateTimeUtils._NORMAL_PARTTERN));			
+		} else {
+			document.addTextSortable(DossierTerm.CORRECTING_DATE, StringPool.BLANK);
 		}
 
-		if (Validator.isNotNull(object.getReceiveDate())) {
+//		if (Validator.isNotNull(object.getReceiveDate())) {
 		document.addNumberSortable(DossierTerm.RECEIVE_DATE_TIMESTAMP,
-					Validator.isNotNull(object.getReceiveDate()) ? object.getReceiveDate().getTime() : 0);			
-		}
+					Validator.isNotNull(object.getReceiveDate()) ? object.getReceiveDate().getTime() : 0);
+//		}
 
-		if (Validator.isNotNull(object.getDueDate())) {
+//		if (Validator.isNotNull(object.getDueDate())) {
 		document.addNumberSortable(DossierTerm.DUE_DATE_TIMESTAMP,
-					Validator.isNotNull(object.getDueDate()) ? object.getDueDate().getTime() : 0);			
-		}
+					Validator.isNotNull(object.getDueDate()) ? object.getDueDate().getTime() : 0);
+//		}
 
-		if (Validator.isNotNull(object.getReleaseDate())) {
+//		if (Validator.isNotNull(object.getReleaseDate())) {
 		document.addNumberSortable(DossierTerm.RELEASE_DATE_TIMESTAMP,
 					Validator.isNotNull(object.getReleaseDate()) ? object.getReleaseDate().getTime() : 0);			
-		}
+//		}
 
-		if (Validator.isNotNull(object.getCancellingDate())) {
+//		if (Validator.isNotNull(object.getCancellingDate())) {
 		document.addNumberSortable(DossierTerm.CANCELLING_DATE_TIMESTAMP,
 					Validator.isNotNull(object.getCancellingDate()) ? object.getCancellingDate().getTime() : 0);			
-		}
+//		}
 
-		if (Validator.isNotNull(object.getCorrecttingDate())) {
+//		if (Validator.isNotNull(object.getCorrecttingDate())) {
 		document.addNumberSortable(DossierTerm.CORRECTING_DATE_TIMESTAMP,
 					Validator.isNotNull(object.getCorrecttingDate()) ? object.getCorrecttingDate().getTime() : 0);			
-		}
+//		}
 
 		// add number fields
 		document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());
