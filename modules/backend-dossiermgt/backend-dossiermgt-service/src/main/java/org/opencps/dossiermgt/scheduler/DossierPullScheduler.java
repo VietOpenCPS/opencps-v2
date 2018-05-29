@@ -808,6 +808,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					conn.setRequestMethod(HttpMethods.GET);
 					conn.setDoInput(true);
 					conn.setDoOutput(true);
+					conn.setRequestProperty("Content-Type", "application/json");
 					conn.setRequestProperty("Accept", "application/json");
 					conn.setRequestProperty("groupId", String.valueOf(srcGroupId));
 

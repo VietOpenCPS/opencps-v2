@@ -47,6 +47,7 @@ import javax.xml.bind.annotation.XmlType;
     "deliverableType",
     "deliverableCode",
     "govAgencyCode",
+    "govAgencyName",
     "applicantIdNo",
     "applicantName",
     "subject",
@@ -63,6 +64,8 @@ public class DeliverableInputModel {
     protected String deliverableCode;
 	@FormParam(value = "govAgencyCode")
     protected String govAgencyCode;
+	@FormParam(value = "govAgencyName")
+    protected String govAgencyName;
 	@FormParam(value = "applicantIdNo")
     protected String applicantIdNo;
 	@FormParam(value = "applicantName")
@@ -77,6 +80,14 @@ public class DeliverableInputModel {
     protected String revalidate;
 	@FormParam(value = "deliverableState")
     protected String deliverableState;
+
+    public String getGovAgencyName() {
+		return govAgencyName;
+	}
+
+	public void setGovAgencyName(String govAgencyName) {
+		this.govAgencyName = govAgencyName;
+	}
 
     /**
      * Gets the value of the deliverableType property.

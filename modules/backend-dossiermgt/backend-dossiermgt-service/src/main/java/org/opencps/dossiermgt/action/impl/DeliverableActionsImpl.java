@@ -64,10 +64,11 @@ public class DeliverableActionsImpl implements DeliverableActions {
 
 	@Override
 	public Deliverable addDeliverable(long groupId, String deliverableType, String deliverableCode,
-			String govAgencyCode, String applicantIdNo, String applicantName, String subject, String issueDate,
-			String expireDate, String revalidate, String deliverableState, ServiceContext serviceContext) {
+			String govAgencyCode, String govAgencyName, String applicantIdNo, String applicantName, String subject,
+			String issueDate, String expireDate, String revalidate, String deliverableState,
+			ServiceContext serviceContext) {
 		return DeliverableLocalServiceUtil.addDeliverable(groupId, deliverableType, deliverableCode,
-				govAgencyCode, applicantIdNo, applicantName, subject, issueDate, expireDate,
+				govAgencyCode, govAgencyName, applicantIdNo, applicantName, subject, issueDate, expireDate,
 				revalidate, deliverableState, serviceContext);
 	}
 

@@ -145,6 +145,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			//
 			String deliverableType = input.getDeliverableType();
 			String deliverableCode = input.getDeliverableCode();
+			String govAgencyName = input.getGovAgencyName();
 			String govAgencyCode = input.getGovAgencyCode();
 			String applicantIdNo = input.getApplicantIdNo();
 			String applicantName = input.getApplicantName();
@@ -155,7 +156,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			String deliverableState = input.getDeliverableState();
 			//
 			Deliverable deliverable = action.addDeliverable(groupId, deliverableType, deliverableCode, 
-					govAgencyCode, applicantIdNo, applicantName, subject, issueDate, expireDate,
+					govAgencyCode, govAgencyName, applicantIdNo, applicantName, subject, issueDate, expireDate,
 					revalidate, deliverableState, serviceContext);
 
 			DeliverableInputModel result = DeliverableUtils.mappingToDeliverablesModel(deliverable);

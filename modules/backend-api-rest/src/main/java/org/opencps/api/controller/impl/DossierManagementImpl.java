@@ -163,7 +163,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String dossierIdCTN = query.getDossierIdCTN();
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
-			// LamTV:Get info case abnormal
+			//LamTV:Get info case abnormal
 			Long statusRegNo = null;
 			if (Validator.isNotNull(query.getStatusReg())) {
 				statusRegNo = Long.valueOf(query.getStatusReg());
@@ -235,7 +235,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierResultsModel results = new DossierResultsModel();
 
 			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
-					-1, -1, serviceContext);
+						query.getStart(), query.getEnd(), serviceContext);
 
 			results.setTotal(jsonData.getInt("total"));
 
@@ -326,7 +326,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String dossierIdCTN = query.getDossierIdCTN();
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
-			// Add keyword Search
+			//Add keyword Search
 			String keywordSearchLike = query.getKeywordSearchLike();
 			String keySearch = StringPool.BLANK;
 			if (Validator.isNotNull(keywordSearchLike)) {
@@ -399,9 +399,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 			if (jsonData != null && jsonData.length() > 0) {
 				results.setTotal(jsonData.getInt("total"));
-				// _log.info("7");
-				// results.getData().addAll(DossierUtils.mappingForGetList((List<Document>)
-				// jsonData.get("data")));
+//				_log.info("7");
+//				results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
 
 				List<Document> docs = (List<Document>) jsonData.get("data");
 				if (docs != null && docs.size() > 0) {
@@ -1389,7 +1388,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		DossierActions actions = new DossierActionsImpl();
 
-		// DossierPermission dossierPermission = new DossierPermission();
+		//DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1460,7 +1459,7 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new UnauthenticationException();
 			}
 
-			// TODO: Fix port process
+			//TODO: Fix port process
 			long groupId = 55301;
 
 			Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
