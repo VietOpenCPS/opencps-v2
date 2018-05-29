@@ -264,28 +264,30 @@ public class RegistrationUtils {
 		long registrationId = reg.getRegistrationId();
 		_log.info("registrationId: "+registrationId);
 //			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
-		if (Validator.isNotNull(registrationId) && registrationId > 0) {
-			RegistrationFormActions action = new RegistrationFormActionsImpl();
+			if (Validator.isNotNull(registrationId) && registrationId > 0) {
+				RegistrationFormActions action = new RegistrationFormActionsImpl();
 			List<RegistrationForm> registrationFormList = action.getFormbyRegId(reg.getGroupId(), registrationId);
 
-			if (registrationFormList != null && registrationFormList.size() > 0) {
-				for (RegistrationForm regForm : registrationFormList) {
+				if (registrationFormList != null && registrationFormList.size() > 0) {
+					for (RegistrationForm regForm : registrationFormList) {
 					JSONObject xuongSXJson = JSONFactoryUtil.createJSONObject();
 					String formData = regForm.getFormData();
+					long registrationFormId = regForm.getRegistrationFormId();
 					_log.info("formData: "+formData);
 					try {
 						JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
 						String xuongSX = formJson.getString("ten_xuong_san_xuat");
 						if (Validator.isNotNull(xuongSX)) {
 							xuongSXJson.put("ten_xuong_san_xuat", xuongSX);
+							xuongSXJson.put("registrationFormId",registrationFormId);
 							data.put(xuongSXJson);
+							}
+						} catch (Exception e) {
+							// TODO: handle exception
 						}
-					} catch (Exception e) {
-						// TODO: handle exception
 					}
 				}
 			}
-		}
 //		}
 		return data;
 	}

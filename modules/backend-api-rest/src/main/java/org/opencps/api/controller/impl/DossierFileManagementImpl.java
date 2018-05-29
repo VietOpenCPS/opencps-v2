@@ -506,19 +506,27 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				throw new UnauthenticationException();
 			}
 
-			List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(id);
+			int partType = 2;
+			List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByD_DP(id, partType);
+
+			if (dossierFiles != null && dossierFiles.size() > 0) {
 			if (dossierFiles.size() > 0) {
 				if (dossierFiles.get(0).getFileEntryId() > 0) {
 					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFiles.get(0).getFileEntryId());
-
+	
 					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
 							true);
 					realPath = file.getPath();
 					pathName = file.getPath() + "_" + String.valueOf(id);
 				}
 			}
-			int index = realPath.lastIndexOf("\\");
-			File d = new File(pathName.substring(0, index));
+	//			int index = realPath.lastIndexOf("\\");
+				int index = realPath.lastIndexOf("/");
+				File d = null;
+				if (index > 0) {
+					d = new File(pathName.substring(0, index));
+				}
+				if (d != null) {
 			for (File f : d.listFiles()) {
 				if (f.getName().substring(f.getName().lastIndexOf(".") + 1).equals("zip")) {
 					f.delete();
@@ -526,36 +534,47 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				if (f.isDirectory()) {
 					f.delete();
 				}
-
+	
 			}
+				}
+	
 			for (DossierFile dossierFile : dossierFiles) {
 				if (dossierFile.getFileEntryId() > 0) {
 					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
-
+	
 					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
 							true);
-					String fileName = pathName + "\\" + fileEntry.getFileName();
+	//					String fileName = pathName + "\\" + fileEntry.getFileName();
+						String fileName = pathName + "/" + fileEntry.getFileName();
 					File dir = new File(pathName);
 					if (!dir.exists()) {
 						dir.mkdirs();
 					}
 					action.copyFile(file.getPath(), fileName);
-
 				}
 			}
-
+	
 			File dirName = new File(pathName);
+	//			action.zipDirectory(dirName,
+	//					pathName.substring(0, index) + "\\" + pathName.substring(index + 1, pathName.length()) + ".zip");
 			action.zipDirectory(dirName,
-					pathName.substring(0, index) + "\\" + pathName.substring(index + 1, pathName.length()) + ".zip");
+						pathName.substring(0, index) + "/" + pathName.substring(index + 1, pathName.length()) + ".zip");
 			// TODO:
 			// Nen danh sach dossierFiles thanh file zip sau day gui lai client
-
+	
+	//			File fi = new File(
+	//					pathName.substring(0, index) + "\\" + pathName.substring(index + 1, pathName.length()) + ".zip");
 			File fi = new File(
-					pathName.substring(0, index) + "\\" + pathName.substring(index + 1, pathName.length()) + ".zip");
-			ResponseBuilder responseBuilder = Response.ok((Object) fi);
+						pathName.substring(0, index) + "/" + pathName.substring(index + 1, pathName.length()) + ".zip");
+	
+				ResponseBuilder responseBuilder = Response.ok(fi);
 			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fi.getName() + "\"");
 			responseBuilder.header("Content-Type", "application/zip");
+	
 			return responseBuilder.build();
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).entity("No Content").build();
+			}
 		} catch (Exception e) {
 			return processException(e);
 		}
@@ -718,6 +737,32 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response getDossierFileByDossierId_FileTemplateNo(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id, String fileTemplateNo) {
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierFileActions action = new DossierFileActionsImpl();
+
+			DossierFile dossierFile = action.getDossierFileByFileTemplateNo(id, fileTemplateNo);
+			
+			DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}

@@ -11,10 +11,12 @@ import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
@@ -24,8 +26,6 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
@@ -39,8 +39,6 @@ import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -78,7 +76,7 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-		Sort[] sorts = new Sort[] { SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, false) };
+		//Sort[] sorts = new Sort[] { SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, false) };
 
 		for (Dossier dossier : allDossierTimer) {
 			params.put(Field.GROUP_ID, String.valueOf(dossier.getGroupId()));
@@ -96,51 +94,86 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 				String stepCode = dossierAction != null ? dossierAction.getStepCode() : StringPool.BLANK;
 
-				boolean pending = dossierAction != null ? dossierAction.getPending() : false;
+				//boolean pending = dossierAction != null ? dossierAction.getPending() : false;
 
 				List<ProcessAction> lstProcessAction = new ArrayList<ProcessAction>();
 
 				lstProcessAction = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(dossier.getGroupId(),
 						serviceProcessId, stepCode);
+				//TODO : test case auto event
+				DossierRequestUD dRegUD = DossierRequestUDLocalServiceUtil
+						.getDossierRequestByDossierId(dossier.getDossierId());
 
 				boolean flag = false;
+				if (dRegUD != null && dRegUD.getStatusReg() == 3) {
+					for (ProcessAction processAction : lstProcessAction) {
 
-				for (ProcessAction processAction : lstProcessAction) {
-
-					if (processAction.getAutoEvent().contains("timmer")) {
-						
-						_log.info("dossierId_"+dossier.getDossierId() + "autoEvent_" + processAction.getAutoEvent());
-
-						String perConditionStr = processAction.getPreCondition();
-
-						boolean checkPreCondition = DossierMgtUtils
-								.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
-
-						// do action
-
-						String userActionName = _getUserActionName(perConditionStr, dossier.getDossierId(),
-								systemUser.getFullName());
-
-						// String subUsers = StringPool.BLANK;
-						if (checkPreCondition) {
+						if (processAction.getAutoEvent().contains("timmer")) {
 							
-							_log.info("$$$$$dossierId_"+dossier.getDossierId() + "autoEvent_" + processAction.getAutoEvent());
+							String perConditionStr = processAction.getPreCondition();
 
-							flag = true;
+							boolean checkPreCondition = DossierMgtUtils
+									.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
 
-							dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
-									dossier.getReferenceUid(), processAction.getActionCode(),
-									processAction.getProcessActionId(), userActionName, processAction.getActionName(),
-									processAction.getAssignUserId(), systemUser.getUserId(), StringPool.BLANK,
-									serviceContext);
+							// do action
+
+							String userActionName = _getUserActionName(perConditionStr, dossier.getDossierId(),
+									systemUser.getFullName());
+
+							// String subUsers = StringPool.BLANK;
+							if (checkPreCondition) {
+								
+								_log.info("$$$$$dossierId_"+dossier.getDossierId() + "autoEvent_" + processAction.getAutoEvent());
+
+								flag = true;
+
+								dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
+										dossier.getReferenceUid(), processAction.getActionCode(),
+										processAction.getProcessActionId(), userActionName, StringPool.BLANK,
+										processAction.getAssignUserId(), systemUser.getUserId(), StringPool.BLANK,
+										serviceContext);
+							}
+						}
+						
+						if (flag) {
+							break;
 						}
 					}
-					
-					if (flag) {
-						break;
+				} else {
+					for (ProcessAction processAction : lstProcessAction) {
+
+						if (processAction.getAutoEvent().contains("timmer")) {
+							
+							String perConditionStr = processAction.getPreCondition();
+
+							boolean checkPreCondition = DossierMgtUtils
+									.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier);
+
+							// do action
+
+							String userActionName = _getUserActionName(perConditionStr, dossier.getDossierId(),
+									systemUser.getFullName());
+
+							// String subUsers = StringPool.BLANK;
+							if (checkPreCondition && perConditionStr.contains("payok")) {
+								
+								_log.info("$$$$$dossierId_"+dossier.getDossierId() + "autoEvent_" + processAction.getAutoEvent());
+
+								flag = true;
+
+								dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
+										dossier.getReferenceUid(), processAction.getActionCode(),
+										processAction.getProcessActionId(), userActionName, processAction.getActionName(),
+										processAction.getAssignUserId(), systemUser.getUserId(), StringPool.BLANK,
+										serviceContext);
+							}
+						}
+						
+						if (flag) {
+							break;
+						}
 					}
 				}
-
 			}
 
 		}

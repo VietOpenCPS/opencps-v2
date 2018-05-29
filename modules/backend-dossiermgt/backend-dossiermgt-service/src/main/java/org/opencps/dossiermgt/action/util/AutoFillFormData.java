@@ -71,6 +71,7 @@ public class AutoFillFormData {
 			String _applicantIdNo = StringPool.BLANK;
 			String _applicantIdDate = StringPool.BLANK;
 			String _curDate = StringPool.BLANK;
+			String _representative = StringPool.BLANK;
 			
 			SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 			
@@ -108,6 +109,7 @@ public class AutoFillFormData {
 					_applicantIdType = applicantJSON.getString("applicantIdType");
 					_applicantIdNo = applicantJSON.getString("applicantIdNo");
 					_applicantIdDate = applicantJSON.getString("applicantIdDate");
+					_applicantIdDate = applicantJSON.getString("representativeEnterprise");
 
 				} else {
 					String applicantStr = applicantActions.getApplicantByUserId(serviceContext);
@@ -130,6 +132,7 @@ public class AutoFillFormData {
 					_applicantIdType = applicantJSON.getString("applicantIdType");
 					_applicantIdNo = applicantJSON.getString("applicantIdNo");
 					_applicantIdDate = applicantJSON.getString("applicantIdDate");
+					_representative = applicantJSON.getString("representativeEnterprise");
 
 				}
 				
@@ -215,6 +218,8 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _applicantIdDate);
 					}else if (value.equals("_curDate")) {
 						jsonMap.put(entry.getKey(), _curDate);
+					} else if (value.equals("_representative")) {
+						jsonMap.put(entry.getKey(), _representative);
 					}
 
 				} else if (value.startsWith("_") && value.contains(":")) {
@@ -265,6 +270,8 @@ public class AutoFillFormData {
 							resultBinding += ", " + _applicantIdDate;
 						} else if (value.equals("_curDate")) {
 							resultBinding += ", " + _curDate;
+						} else if (value.equals("_representative")) {
+							resultBinding += ", " + _representative;
 						}
 					}
 

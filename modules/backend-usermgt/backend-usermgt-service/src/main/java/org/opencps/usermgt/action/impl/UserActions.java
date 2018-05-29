@@ -469,7 +469,7 @@ public class UserActions implements UserInterface {
 	@Override
 	public boolean addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword, int type,
 			ServiceContext serviceContext) {
-		
+			
 		boolean flag = getCheckpass(groupId, companyId, id, oldPassword, serviceContext);
 
 		if (flag) {
@@ -482,12 +482,12 @@ public class UserActions implements UserInterface {
 				if (type == 1) {
 					//update application
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
-					
+				
 					email = employee.getEmail();
 				} else {
 					//update employee
 					Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(id);
-					
+				
 					email = applicant.getContactEmail();
 				}
 

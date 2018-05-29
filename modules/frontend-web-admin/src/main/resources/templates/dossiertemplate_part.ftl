@@ -77,6 +77,9 @@
 								
 
 								/*dossierTemplatePartDataSource.sort({ field: "partNo", dir: "asc" });*/
+							},
+							error : function(xhr){
+								options.error(xhr);
 							}
 						});
 					}

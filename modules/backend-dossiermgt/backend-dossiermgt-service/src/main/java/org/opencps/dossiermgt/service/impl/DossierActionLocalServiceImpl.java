@@ -352,4 +352,9 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	}
 
 	public static final String CLASS_NAME = DossierAction.class.getName();
+
+	//TODO:
+	public List<DossierAction> getDossiersPending(long groupId, String pending) {
+		return dossierActionPersistence.findByG_PENDING(groupId, Boolean.parseBoolean(pending));
+	}
 }

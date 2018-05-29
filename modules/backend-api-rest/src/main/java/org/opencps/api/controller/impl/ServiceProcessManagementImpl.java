@@ -580,10 +580,11 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new DuplicateStepNoException("DuplicateStepNoException");
 			}
 
-			ProcessStep step = actions.updateProcessStep(groupId, StringPool.BLANK, input.getStepCode(), input.getStepName(), id,
-					input.getSequenceNo(), input.getDossierStatus(), input.getDossierSubStatus(),
-					GetterUtil.getInteger(input.getDurationCount()), input.getCustomProcessUrl(),
-					input.getStepInstruction(), input.getBriefNote(), GetterUtil.getBoolean(input.getEditable()), serviceContext);
+			ProcessStep step = actions.updateProcessStep(groupId, StringPool.BLANK, input.getStepCode(),
+					input.getStepName(), id, input.getSequenceNo(), input.getDossierStatus(),
+					input.getDossierSubStatus(), GetterUtil.getInteger(input.getDurationCount()),
+					input.getCustomProcessUrl(), input.getStepInstruction(), input.getBriefNote(),
+					GetterUtil.getBoolean(input.getEditable()), input.getLockState(), serviceContext);
 
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 
@@ -643,10 +644,11 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new DuplicateStepNoException("InvalidStepCode");
 			}
 			
-			ProcessStep step = actions.updateProcessStep(groupId, code, input.getStepCode(), input.getStepName(), id, input.getSequenceNo(),
-					input.getDossierStatus(), input.getDossierSubStatus(),
+			ProcessStep step = actions.updateProcessStep(groupId, code, input.getStepCode(), input.getStepName(), id,
+					input.getSequenceNo(), input.getDossierStatus(), input.getDossierSubStatus(),
 					GetterUtil.getInteger(input.getDurationCount()), input.getCustomProcessUrl(),
-					input.getStepInstruction(), input.getBriefNote(), GetterUtil.getBoolean(input.getEditable()), serviceContext);
+					input.getStepInstruction(), input.getBriefNote(), GetterUtil.getBoolean(input.getEditable()),
+					input.getLockState(), serviceContext);
 
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 

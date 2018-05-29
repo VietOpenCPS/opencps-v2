@@ -25,27 +25,43 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringPool;
 
 public class UserInfoLogManagementImpl implements UserInfoLogManagement{
+
+	Log _log = LogFactoryUtil.getLog(UserInfoLogManagementImpl.class);
 
 	@Override
 	public Response getUserLogs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, UserInfoLogSearchModel query) {
 
+//		_log.info("START++++++++++");
 		BackendAuth auth = new BackendAuthImpl();
 		long userId = user.getUserId();
+		_log.info("userId: "+userId);
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
 
+//			_log.info("START++++++++++");
 			UserInfoLogActions uilAction = new UserInfoLogActionsImpl();
 
+//			_log.info("START++++++++++");
 			List<UserInfoLog> userInfoList = uilAction.getUserInfoLog(userId, serviceContext);
-			UserInfoLog userInfo = userInfoList.get(0);
+//			_log.info("START++++++++++");
+			UserInfoLog userInfo = null;
+			String payLoad = StringPool.BLANK;
+			if (userInfoList != null && userInfoList.size() > 0) {
+				userInfo = userInfoList.get(0);
+				if (userInfo != null) {
+					payLoad = userInfo.getPayload();
+//					_log.info("START++++++++++: "+payLoad);
+				}
+			}
 
-			return Response.status(200).entity(userInfo.getPayload()).build();
+			return Response.status(200).entity(payLoad).build();
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
 		}

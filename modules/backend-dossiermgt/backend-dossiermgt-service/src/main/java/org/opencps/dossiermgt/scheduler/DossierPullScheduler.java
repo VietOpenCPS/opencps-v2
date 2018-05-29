@@ -183,15 +183,12 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					syncProcesses.add(desServiceProcess);
 
 					break;
-
-					// TODO : check again
 				}
 
 			} catch (Exception e) {
 				_log.info("NOProcess");
 			}
 
-			// ProcessOption option = ProcessOptionLocalServiceUtil.get
 		}
 
 		for (ServiceProcess syncServiceProcess : syncProcesses) {
@@ -283,6 +280,9 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 					ProcessAction processAction = ProcessActionLocalServiceUtil
 							.fetchBySPI_PRESC_AEV(syncServiceProcess.getServiceProcessId(), StringPool.BLANK, "SUBMIT");
+					
+					
+					_log.info("GETPROCESSACTION************" + processAction.getActionName());
 
 					long assignedUserId = processAction.getAssignUserId();
 
@@ -297,29 +297,33 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			} else {
 
 				_log.error("UPDATE_____IN_CASE_HAS_DES_DOSSIER___________");
+				String cancellingDate = object.getString(DossierTerm.CANCELLING_DATE);
+				String correctingDate = object.getString(DossierTerm.CORRECTING_DATE);
+				String endorsementDate = object.getString(DossierTerm.ENDORSEMENT_DATE);
+				_log.error("CANCELLING DATE: "+cancellingDate);
 
-				if (Validator.isNotNull(object.getString(DossierTerm.CANCELLING_DATE))) {
+				if (Validator.isNotNull(cancellingDate)) {
 					// Update cancellingDate
 
 					_log.error("UPDATE____CANCELLING_DATE");
 					desDossier.setCancellingDate(APIDateTimeUtils.convertStringToDate(
-							object.getString(DossierTerm.CANCELLING_DATE), APIDateTimeUtils._NORMAL_PARTTERN));
+							cancellingDate, APIDateTimeUtils._NORMAL_PARTTERN));
 
 				}
 
-				if (Validator.isNotNull(object.getString(DossierTerm.CORRECTING_DATE))) {
+				if (Validator.isNotNull(correctingDate)) {
 					_log.error("UPDATE____CORRECTTING_DATE");
 					// Update correctingDate
 					desDossier.setCorrecttingDate(APIDateTimeUtils.convertStringToDate(
-							object.getString(DossierTerm.CORRECTING_DATE), APIDateTimeUtils._NORMAL_PARTTERN));
+							correctingDate, APIDateTimeUtils._NORMAL_PARTTERN));
 				}
 				
 				
-				if (Validator.isNotNull(object.getString(DossierTerm.ENDORSEMENT_DATE))) {
+				if (Validator.isNotNull(endorsementDate)) {
 					_log.error("UPDATE____ENDOSEMENT_DATE");
 					// Update correctingDate
 					desDossier.setEndorsementDate(APIDateTimeUtils.convertStringToDate(
-							object.getString(DossierTerm.ENDORSEMENT_DATE), APIDateTimeUtils._NORMAL_PARTTERN));
+							endorsementDate, APIDateTimeUtils._NORMAL_PARTTERN));
 				}
 	
 				// Update dossier
@@ -330,9 +334,10 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				if (object.getBoolean(DossierTerm.SUBMITTING, false)) {
 					// Check autoEvent
 					ProcessAction processAction = null;
+					DossierAction dossierAction = null;
 
 					try {
-						DossierAction dossierAction = DossierActionLocalServiceUtil
+						dossierAction = DossierActionLocalServiceUtil
 								.getDossierAction(desDossier.getDossierActionId());
 
 						processAction = ProcessActionLocalServiceUtil.fetchBySPI_PRESC_AEV(
@@ -370,11 +375,15 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					
 					synDossierRequest(dossierId, desDossier.getDossierId(), serviceContext);
 
-					if (Validator.isNotNull(processAction)) {
+					if (Validator.isNotNull(processAction) && Validator.isNull(cancellingDate)) {
 						// doAction
 						// doAction in this case is an Applicant object
 						String applicantNote = object.getString(DossierTerm.APPLICANT_NOTE);
 						String applicantName = object.getString(DossierTerm.APPLICANT_NAME);
+						String actionNote = StringPool.BLANK;
+						if (dossierAction != null) {
+							actionNote = dossierAction.getActionNote();
+						}
 
 						// String subUsers = StringPool.BLANK;
 
@@ -419,7 +428,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				context.setUserId(dr.getUserId());
 				
 				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, desDossierId, dr.getReferenceUid(),
-						dr.getRequestType(), dr.getComment(), 0, context);
+						dr.getRequestType(), dr.getComment(), 0, dr.getStatusReg(), context);
 
 			}
 
@@ -1077,7 +1086,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				// update to client
 
 				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, desDossierId, dr.getReferenceUid(),
-						dr.getRequestType(), dr.getComment(), 0, context);
+						dr.getRequestType(), dr.getComment(), 0, dr.getStatusReg(), context);
 			}
 
 		} catch (Exception e) {

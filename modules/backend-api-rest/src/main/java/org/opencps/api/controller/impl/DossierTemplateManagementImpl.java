@@ -214,6 +214,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			ErrorMsg error = new ErrorMsg();
 
 			if (e instanceof UnauthenticationException) {

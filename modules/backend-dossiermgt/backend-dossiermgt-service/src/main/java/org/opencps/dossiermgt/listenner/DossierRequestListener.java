@@ -1,17 +1,25 @@
 package org.opencps.dossiermgt.listenner;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierRequestUD;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -41,7 +49,7 @@ public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 
 			long mainJobposId = employee != null ? employee.getMainJobPostId() : 0;
 
-			long dossierId = model.getDossierId();
+			//long dossierId = model.getDossierId();
 
 			String jobPosName = StringPool.BLANK;
 
@@ -53,30 +61,127 @@ public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 						: StringPool.BLANK;
 			}
 
-			String content = model.getComment();
+			//TODO: Hot fix
+			String requestType = model.getRequestType();
+			long companyId = model.getCompanyId();
+			long groupId = model.getGroupId();
+			boolean flagRequestType = false;
+			if (Validator.isNotNull(requestType)) {
+				if (requestType.toLowerCase().contentEquals("reject_submitting")
+					|| requestType.toLowerCase().contentEquals("reject_correcting")
+					|| requestType.toLowerCase().contentEquals("reject_cancelling")) {
+					flagRequestType = true;
+				}
+			}
+			if (Validator.isNotNull(requestType)) {
+				if (requestType.toLowerCase().contentEquals("submitting")
+						|| requestType.toLowerCase().contentEquals("correcting")
+						|| requestType.toLowerCase().contentEquals("cancelling")) {
+					if (companyId == 0 && groupId == 55217) {
+						flagRequestType = true;
+					}
+				}
+			}
+			if (!flagRequestType) {
 
-			// JSONArray payloads = JSONFactoryUtil.createJSONArray();
+				String content = model.getComment();
 
-			JSONObject payload = JSONFactoryUtil.createJSONObject();
 
-			JSONArray files = JSONFactoryUtil.createJSONArray();
-			
-			
-			payload.put("stepName", "type_"+model.getRequestType());
+				JSONObject payload = JSONFactoryUtil.createJSONObject();
 
-			// payloads.put(payload);
+				
+				payload.put("stepName", "type_"+model.getRequestType());
+				
+				String userName = getUserName(userId, model.getGroupId());
 
-			serviceContext.setCompanyId(20116l);
-			serviceContext.setUserId(userId);
+				// payloads.put(payload);
 
-			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
-					model.getUserName(), content, "PROCESS_TYPE", payload.toString(), serviceContext);
+				serviceContext.setCompanyId(20116l);
+				serviceContext.setUserId(userId);
+
+				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
+						userName, content, "PROCESS_TYPE", payload.toString(), serviceContext);
+				
+				// Add applicationNote
+				
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(model.getDossierId());
+				
+				String dossierNote = _buildDossierNote(dossier, content, dossier.getGroupId(), "DN");
+				
+				dossier.setApplicantNote(dossierNote);
+				
+				DossierLocalServiceUtil.syncDossier(dossier);
+			}
 
 		} catch (SystemException | PortalException e) {
 			_log.error(e);
 		}
 		
+	}
+	
+	
+	private String _buildDossierNote(Dossier dossier, String actionNote, long groupId, String type) {
 
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		String defaultTimezone = TimeZone.getDefault().getID();
+		sdf.setTimeZone(TimeZone.getTimeZone(defaultTimezone));
+		Date date = new Date();
+
+		StringBuilder sb = new StringBuilder();
+
+		String oldNote = dossier.getApplicantNote();
+
+		if (Validator.isNotNull(oldNote) && oldNote.contains("<br>")) {
+			if (Validator.isNotNull(actionNote)) {
+				if (groupId != 55217) {
+					sb.append("<br>");
+					sb.append("[" + sdf.format(date) + "]");
+					sb.append(": ");
+					sb.append(actionNote);
+					sb.append(oldNote);
+				} else {
+					sb.append("<br>");
+					sb.append("[" + sdf.format(date) + "]");
+					sb.append(": ");
+					sb.append(actionNote);
+				}
+			} else {
+				if (groupId != 55217) {
+					sb.append(oldNote);
+				}
+			}
+		} else if (Validator.isNotNull(actionNote)) {
+			sb.append("<br>");
+			sb.append("[" + sdf.format(date) + "]");
+			sb.append(": ");
+			sb.append(actionNote);
+		}
+
+		return sb.toString();
+
+	}
+	
+	private String getUserName(long userId, long groupId) {
+		String userName = StringPool.BLANK;
+		
+		Employee employee = null;
+		
+		Applicant applicant = null;
+		
+		employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+		
+		if (Validator.isNotNull(employee)) {
+			return employee.getFullName();
+			
+		}
+		
+		applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+		
+		if (Validator.isNotNull(applicant)) {
+			return applicant.getApplicantName();
+		}
+		
+		return userName;
 	}
 	
 	private Log _log = LogFactoryUtil.getLog(DossierRequestListener.class.getName());

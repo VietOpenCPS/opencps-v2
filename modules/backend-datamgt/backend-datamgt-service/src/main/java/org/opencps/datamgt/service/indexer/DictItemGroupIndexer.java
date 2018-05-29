@@ -98,7 +98,7 @@ public class DictItemGroupIndexer extends BaseIndexer<DictItemGroup> {
 		DictItem dictItem = DictItemLocalServiceUtil.fetchDictItem(dictItemGroup.getDictItemId());
 		
 		if(Validator.isNotNull(dictItem)){
-			
+			_log.info(dictItem.getItemNameEN());
 			document.addTextSortable(DictItemGroupTerm.ITEM_CODE, dictItem.getItemCode());
 			document.addTextSortable(DictItemGroupTerm.ITEM_NAME, dictItem.getItemName());
 			document.addTextSortable(DictItemGroupTerm.ITEM_NAME_EN, dictItem.getItemNameEN());

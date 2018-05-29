@@ -19,6 +19,7 @@ import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierContentGenerator;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
@@ -107,8 +108,19 @@ public class DossierActionsImpl implements DossierActions {
 
 		try {
 
-			hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
+			String status = GetterUtil.getString(params.get(DossierTerm.STATUS));
+			_log.info("status: "+status);
+			if (Validator.isNotNull(status)) {
+				if (!status.contains(StringPool.COMMA)) {
+					if (!status.equals("done") && !status.equals("cancelled")) {
+						_log.info("done: "+status);
+						params.put(DossierTerm.NOT_STATE, "cancelling");
+					}
+				}
+			}
 
+			hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
+			
 			result.put("data", hits.toList());
 
 			long total = DossierLocalServiceUtil.countLucene(params, searchContext);
@@ -230,7 +242,9 @@ public class DossierActionsImpl implements DossierActions {
 					hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 					if (hits != null && hits.getLength() > 0) {
 						result.put("data", hits.toList());
+						_log.info("hits.toList(): "+hits.toList().size());
 						total = DossierLocalServiceUtil.countLucene(params, searchContext);
+						_log.info("total: "+total);
 						result.put("total", total);
 					}
 				}
@@ -302,11 +316,11 @@ public class DossierActionsImpl implements DossierActions {
 								hits = DossierLocalServiceUtil.searchLucene(params, sorts, -1, -1, searchContext);
 
 								if (hits != null && hits.getLength() > 0) {
-									allDocsList.addAll(hits.toList());
-									_log.info("SizeList1: " + hits.toList().size());
 									long count = DossierLocalServiceUtil.countLucene(params, searchContext);
 									_log.info("count: " + count);
 									if (dictItem.getParentItemId() != 0) {
+										allDocsList.addAll(hits.toList());
+										_log.info("SizeList1: " + hits.toList().size());
 										total += count;
 									}
 								}
@@ -419,13 +433,13 @@ public class DossierActionsImpl implements DossierActions {
 	@Override
 	public Dossier correctDossier(long groupId, long dossierId, String referenceUid, ServiceContext context)
 			throws PortalException {
-		return DossierLocalServiceUtil.updateCorrectingDate(groupId, dossierId, referenceUid,  new Date(), context);
+		return DossierLocalServiceUtil.updateCorrectingDate(groupId, dossierId, referenceUid, new Date(), context);
 	}
 	
 	@Override
 	public Dossier submitPostDossier(long groupId, long dossierId, String referenceUid, ServiceContext context)
 			throws PortalException {
-		return DossierLocalServiceUtil.updateEndosementDate(groupId, dossierId, referenceUid,  new Date(), context);
+		return DossierLocalServiceUtil.updateEndosementDate(groupId, dossierId, referenceUid, new Date(), context);
 	}
 
 	@Override
@@ -905,13 +919,31 @@ public class DossierActionsImpl implements DossierActions {
 
 		return result;
 	}
+	
+	private int getDuration(ServiceProcess serviceProcess) {
+		int duration = 0;
+		
+		int unit = serviceProcess.getDurationUnit();
+		
+		int count = serviceProcess.getDurationCount();
+		
+		if (unit == 0) {
+			duration = count;
+		}
+		
+		if (unit != 0) {
+			duration = count/8;
+		}
+		
+		return duration;
+	}
 
 	@Override
 	public DossierAction doAction(long groupId, long dossierId, String referenceUid, String actionCode,
-			long processActionId, String actionUser, String actionNote, long assignUserId, long userId, String subUsers,
-			ServiceContext context) throws PortalException {
+			long processActionId, String actionUser, String actionNote, long assignUserId, long userId,
+			String subUsers, ServiceContext context) throws PortalException {
 
-		_log.info("STRART DO ACTION ==========");
+		_log.info("STRART DO ACTION ==========:GroupID: "+groupId);
 		// Add DossierAction
 
 		// Update DossierStatus
@@ -925,9 +957,11 @@ public class DossierActionsImpl implements DossierActions {
 
 		Dossier dossier = getDossier(groupId, dossierId, referenceUid);
 		// _log.info("dossier: " + dossier);
+		
+		String type = StringPool.BLANK;
 
-		String applicantNote = _buildDossierNote(dossier, actionNote, groupId);
-		_log.info("applicantNote: " + applicantNote);
+		String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
+		_log.info("applicantNote: "+applicantNote);
 
 		dossier.setApplicantNote(applicantNote);
 
@@ -972,7 +1006,7 @@ public class DossierActionsImpl implements DossierActions {
 		}
 
 		// Add paymentFile
-		if (Validator.isNotNull(processAction.getPaymentFee())) {
+		if (processAction != null && Validator.isNotNull(processAction.getPaymentFee())) {
 			try {
 				DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId,
 						context, serviceProcess.getServerNo());
@@ -1048,7 +1082,7 @@ public class DossierActionsImpl implements DossierActions {
 			}
 
 			dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, DossierStatusConstants.NEW,
-					jsStatus.getString(DossierStatusConstants.NEW), StringPool.BLANK, StringPool.BLANK, context);
+					jsStatus.getString(DossierStatusConstants.NEW), StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, context);
 
 		} else {
 
@@ -1086,11 +1120,23 @@ public class DossierActionsImpl implements DossierActions {
 				dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId,
 						assignUserId);
 			}
-
+			_log.info("UPDATE DOSSIER STATUS************");
+			_log.info(curStep.getDossierStatus());
+			_log.info(curStep.getDossierSubStatus());
+			_log.info("*********************************");
 			// Set dossierStatus by CUR_STEP
+			// LamTV: Update lockState when Sync
 			dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, curStep.getDossierStatus(),
-					jsStatus.getString(curStep.getDossierStatus()), curStep.getDossierSubStatus(),
-					jsSubStatus.getString(curStep.getDossierSubStatus()), context);
+			
+			jsStatus.getString(curStep.getDossierStatus()), curStep.getDossierSubStatus(),
+			jsSubStatus.getString(curStep.getDossierSubStatus()), curStep.getLockState(), context);
+			
+			_log.info(jsStatus.toJSONString());
+			_log.info(jsSubStatus.toJSONString());
+
+			_log.info("dossier_" + dossier.getDossierStatus());
+
+			_log.info("*********************************");
 
 			if (Validator.isNull(dossier.getDossierNo())
 					&& (curStep.getDossierStatus().contentEquals(DossierStatusConstants.PAYING)
@@ -1168,111 +1214,238 @@ public class DossierActionsImpl implements DossierActions {
 			}
 
 			String preCondition = processAction.getPreCondition();
+			String autoEvent = processAction.getAutoEvent();
+			_log.info("preCondition: "+preCondition);
 
-			// case reject_cancelling
-
-			_log.info("REJECT_CANCELLING....");
-
-			if (preCondition.contentEquals("reject_cancelling")) {
-				// flag-off
-				_log.info("DO REJECT_CANCELLING....");
-
-				Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
-				_log.info("DO REJECT_CANCELLING.... FIND RESOURCE");
-
-				sourceDossier.setCancellingDate(null);
-
-				DossierLocalServiceUtil.updateDossier(sourceDossier);
-
-				dossier.setCancellingDate(null);
-
-				// To index
-				DossierLocalServiceUtil.syncDossier(dossier);
-
-				// add dossierLog
-
-				// in CLIENT
-
-				String refUid = PortalUUIDUtil.generate();
-
-				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "reject_cancelling",
-						actionNote, 0, context);
-
-				// in SERVER
-				
-				context.setScopeGroupId(sourceDossier.getGroupId());
-				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid, "reject_cancelling",
-						actionNote, 0, context);
-				
-				context.setScopeGroupId(dossier.getGroupId());
+			//LamTV: Process case auto Event
+			boolean flagEvent = false;
+			if (Validator.isNotNull(autoEvent) && autoEvent.toLowerCase().contentEquals("timmer")) {
+				flagEvent = true;
 			}
 
-			_log.info("REJECT_SUBMIT....");
+			if (Validator.isNotNull(preCondition)) {
+				// case reject_cancelling
+				_log.info("REJECT_CANCELLING....");
 
-			if (preCondition.contentEquals("reject_submitting")) {
-				// flag-off
-				_log.info("DO REJECT_SUBMIT....");
+				if (preCondition.toLowerCase().contentEquals("reject_cancelling")) {
+					// flag-off
+					_log.info("DO REJECT_CANCELLING....");
 
-				Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
-				_log.info("DO REJECT_SUBMIT.... FIND RESOURCE");
+					Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+					_log.info("DO REJECT_CANCELLING.... FIND RESOURCE");
 
-				sourceDossier.setCancellingDate(null);
+					sourceDossier.setCancellingDate(null);
 
-				DossierLocalServiceUtil.updateDossier(sourceDossier);
+					DossierLocalServiceUtil.updateDossier(sourceDossier);
 
-				dossier.setCancellingDate(null);
+					dossier.setCancellingDate(null);
 
-				// To index
-				DossierLocalServiceUtil.syncDossier(dossier);
-				
-				
-				String refUid = PortalUUIDUtil.generate();
+					// To index
+					DossierLocalServiceUtil.syncDossier(dossier);
 
-				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "reject_submitting",
-						actionNote, 0, context);
+					// add dossierLog
 
-				// in SERVER
-				
-				context.setScopeGroupId(sourceDossier.getGroupId());
-				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid, "reject_submitting",
-						actionNote, 0, context);
-				
-				context.setScopeGroupId(dossier.getGroupId());
+					// in CLIENT
 
-			}
+					String refUid = PortalUUIDUtil.generate();
+					int status = 2;
 
-			_log.info("REJECT_CORRECTING....");
+					DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "reject_cancelling",
+							actionNote, 0, status, context);
 
-			if (preCondition.contentEquals("reject_correcting")) {
-				// flag-off
-				_log.info("DO REJECT_CORRECTING....");
+					// in SERVER
+					
+					context.setScopeGroupId(sourceDossier.getGroupId());
+					DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid, "reject_cancelling",
+							actionNote, 0, status, context);
+					
+					context.setScopeGroupId(dossier.getGroupId());
+				}
 
-				Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
-				_log.info("DO REJECT_CORRECTING.... FIND RESOURCE");
+				//LamTV: Update status when approved canceling
+				if (preCondition.toLowerCase().contentEquals("cancelling")) {
+					// flag-off
+					_log.info("START CANCELLING....");
 
-				sourceDossier.setCancellingDate(null);
+					// in CLIENT
 
-				DossierLocalServiceUtil.updateDossier(sourceDossier);
+					String refUid = PortalUUIDUtil.generate();
+					int status = 1;
 
-				dossier.setCancellingDate(null);
+					DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "cancelling",
+							actionNote, 0, status, context);
 
-				// To index
-				DossierLocalServiceUtil.syncDossier(dossier);
-				
-				
-				String refUid = PortalUUIDUtil.generate();
+					// in SERVER
 
-				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "reject_correcting",
-						actionNote, 0, context);
+					Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+					if (sourceDossier != null) {
+						context.setScopeGroupId(sourceDossier.getGroupId());
+						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid, "cancelling",
+								actionNote, 0, status, context);
+					}
 
-				// in SERVER
-				
-				context.setScopeGroupId(sourceDossier.getGroupId());
-				DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid, "reject_correcting",
-						actionNote, 0, context);
-				
-				context.setScopeGroupId(dossier.getGroupId());
+					context.setScopeGroupId(dossier.getGroupId());
 
+				}
+
+				_log.info("REJECT_SUBMIT....");
+				if (preCondition.toLowerCase().contentEquals("reject_submitting")) {
+					// flag-off
+					_log.info("DO REJECT_SUBMIT....");
+
+					Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+					_log.info("DO REJECT_SUBMIT.... FIND RESOURCE");
+
+					sourceDossier.setEndorsementDate(null);
+
+					DossierLocalServiceUtil.updateDossier(sourceDossier);
+
+					dossier.setEndorsementDate(null);
+
+					// To index
+					DossierLocalServiceUtil.syncDossier(dossier);
+					
+					
+					String refUid = PortalUUIDUtil.generate();
+					int status = 2;
+
+					DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "reject_submitting",
+							actionNote, 0, status, context);
+
+					// in SERVER
+					
+					context.setScopeGroupId(sourceDossier.getGroupId());
+					DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid, "reject_submitting",
+							actionNote, 0, status, context);
+					
+					context.setScopeGroupId(dossier.getGroupId());
+
+				}
+
+				//LamTV: Update process approved endorsement
+				if (preCondition.toLowerCase().contentEquals("submitting")) {
+					if (flagEvent) {
+						// flag-off
+						_log.info("START APPROVED SUBMIT....");
+
+						
+						String refUid = PortalUUIDUtil.generate();
+						int status = 3;
+
+						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "submitting",
+								actionNote, 0, status, context);
+
+						// in SERVER
+						
+						Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+						if (sourceDossier != null) {
+							context.setScopeGroupId(sourceDossier.getGroupId());
+							DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
+									"submitting", actionNote, 0, status, context);
+						}
+
+						context.setScopeGroupId(dossier.getGroupId());
+					} else {
+						// flag-off
+						_log.info("START APPROVED SUBMIT....");
+
+						
+						String refUid = PortalUUIDUtil.generate();
+						int status = 1;
+
+						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "submitting",
+								actionNote, 0, status, context);
+
+						// in SERVER
+						
+						Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+						if (sourceDossier != null) {
+							context.setScopeGroupId(sourceDossier.getGroupId());
+							DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
+									"submitting", actionNote, 0, status, context);
+						}
+
+						context.setScopeGroupId(dossier.getGroupId());
+					}
+
+				}
+
+				_log.info("REJECT_CORRECTING....");
+				if (preCondition.toLowerCase().contentEquals("reject_correcting")) {
+					// flag-off
+					_log.info("DO REJECT_CORRECTING....");
+
+					Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+					_log.info("DO REJECT_CORRECTING.... FIND RESOURCE");
+
+					sourceDossier.setCorrecttingDate(null);
+
+					DossierLocalServiceUtil.updateDossier(sourceDossier);
+
+					dossier.setCorrecttingDate(null);
+
+					// To index
+					DossierLocalServiceUtil.syncDossier(dossier);
+
+					String refUid = PortalUUIDUtil.generate();
+					int status = 2;
+
+					DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "reject_correcting",
+							actionNote, 0, status, context);
+
+					// in SERVER
+					
+					context.setScopeGroupId(sourceDossier.getGroupId());
+					DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid, "reject_correcting",
+							actionNote, 0, status, context);
+					
+					context.setScopeGroupId(dossier.getGroupId());
+
+
+				}
+
+				//LamTV: Update process approved correcting
+				if (preCondition.toLowerCase().contentEquals("correcting")) {
+					if (flagEvent) {
+						// flag-off
+						_log.info("START APPROVED CORRECTING....");
+
+						String refUid = PortalUUIDUtil.generate();
+						int status = 3;
+
+						// IN CLIENT
+						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "correcting",
+								actionNote, 0, status, context);
+
+						// IN SERVER
+						Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+						if (sourceDossier != null) {
+							context.setScopeGroupId(sourceDossier.getGroupId());
+							DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
+									"correcting", actionNote, 0, status, context);
+						}
+						context.setScopeGroupId(dossier.getGroupId());
+					}else {
+						// flag-off
+						_log.info("START APPROVED CORRECTING....");
+
+						String refUid = PortalUUIDUtil.generate();
+						int status = 1;
+
+						// IN CLIENT
+						DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossierId, refUid, "correcting",
+								actionNote, 0, status, context);
+
+						// IN SERVER
+						Dossier sourceDossier = DossierLocalServiceUtil.getByRef(55217, dossier.getReferenceUid());
+						if (sourceDossier != null) {
+							context.setScopeGroupId(sourceDossier.getGroupId());
+							DossierRequestUDLocalServiceUtil.updateDossierRequest(0, sourceDossier.getDossierId(), refUid,
+									"correcting", actionNote, 0, status, context);
+						}
+						context.setScopeGroupId(dossier.getGroupId());
+					}
+				}
 
 			}
 
@@ -1979,18 +2152,17 @@ public class DossierActionsImpl implements DossierActions {
 //		return result;
 //	}
 
-	private String _buildDossierNote(Dossier dossier, String actionNote, long groupId) {
+private String _buildDossierNote(Dossier dossier, String actionNote, long groupId, String type) {
 
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		String defaultTimezone = TimeZone.getDefault().getID();
 		sdf.setTimeZone(TimeZone.getTimeZone(defaultTimezone));
 		Date date = new Date();
-		// String strDate = sdf.format(date);
-		// _log.info("strDate: "+strDate);
 
 		StringBuilder sb = new StringBuilder();
 
 		String oldNote = dossier.getApplicantNote();
+		_log.info("oldNote: "+oldNote);
 
 		if (Validator.isNotNull(oldNote) && oldNote.contains("<br>")) {
 			if (Validator.isNotNull(actionNote)) {
@@ -2006,6 +2178,10 @@ public class DossierActionsImpl implements DossierActions {
 					sb.append(": ");
 					sb.append(actionNote);
 				}
+			} else {
+				if (groupId != 55217) {
+					sb.append(oldNote);
+				}
 			}
 		} else if (Validator.isNotNull(actionNote)) {
 			sb.append("<br>");
@@ -2013,13 +2189,7 @@ public class DossierActionsImpl implements DossierActions {
 			sb.append(": ");
 			sb.append(actionNote);
 		}
-		// sb.append(oldNote);
-		// if (Validator.isNotNull(actionNote)) {
-		// sb.append("<br>");
-		// sb.append("[" + sdf.format(dateConvert) + "]");
-		// sb.append(":");
-		// sb.append(actionNote);
-		// }
+
 		return sb.toString();
 
 	}
@@ -2235,4 +2405,90 @@ public class DossierActionsImpl implements DossierActions {
 
 		return result;
 	}
+
+	@Override
+	public JSONObject getDossierCountTodoPermission(long userId, long companyId, long groupId,
+			LinkedHashMap<String, Object> params, Object object, ServiceContext serviceContext) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		SearchContext searchContext = new SearchContext();
+
+		searchContext.setCompanyId(companyId);
+
+		String statusCode = StringPool.BLANK;
+
+		String subStatusCode = StringPool.BLANK;
+
+		JSONArray statistics = JSONFactoryUtil.createJSONArray();
+
+		long total = 0;
+
+		try {
+			statusCode = GetterUtil.getString(params.get(DossierTerm.STATUS));
+
+			if (Validator.isNotNull(statusCode) ) {
+
+				String[] statusCodeArr = statusCode.split(StringPool.COMMA);
+				if (statusCodeArr != null && statusCodeArr.length > 0) {
+					for (String strStatus : statusCodeArr) {
+						if (Validator.isNotNull(strStatus)) {
+							_log.info("strStatus: "+strStatus);
+							params.put(DossierTerm.STATUS, strStatus);
+							params.put(DossierTerm.SUBSTATUS, subStatusCode);
+							params.put(DossierTerm.OWNER, String.valueOf(true));
+							if (!strStatus.equals("done") && !strStatus.equals("cancelled")) {
+								params.put(DossierTerm.NOT_STATE, "cancelling");
+							}
+							if(strStatus.equals("cancelled")) {
+								params.put(DossierTerm.NOT_STATE, StringPool.BLANK);
+								params.put(DossierTerm.NOT_STATUS_REG, null);
+							}
+
+							long count = DossierLocalServiceUtil.countLucene(params, searchContext);
+
+							JSONObject statistic = JSONFactoryUtil.createJSONObject();
+							statistic.put("dossierStatus", strStatus);
+							statistic.put("dossierSubStatus", subStatusCode);
+							statistic.put("count", count);
+
+							statistics.put(statistic);
+
+							total += count;
+						}
+					}
+				}
+			}
+
+			result.put("data", statistics);
+//			_log.info("statistics: "+statistics);
+
+			result.put("total", total);
+//			_log.info("total: "+total);
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return result;
+	}
+
+	@Override
+	public Dossier createDossier(long groupId,String serviceCode, String govAgencyCode, String applicantName,
+			String applicantIdType, String applicantIdNo, Date applicantIdDate, String address, String cityCode,
+			String districtCode, String wardCode, String contactName, String contactTelNo, String contactEmail,
+			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
+			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
+			String delegateWardCode, String applicantNote, String briefNote,
+			String dossierNo, String dossierTemplateNo, int viaPostal, String postalServiceCode,
+			String postalServiceName, String postalAddress, String postalCityCode, String postalDistrictCode,
+			String postalWardCode, String postalTelNo, ServiceContext context) throws PortalException {
+
+		return DossierLocalServiceUtil.createDossier(groupId, serviceCode, govAgencyCode, applicantName,
+				applicantIdType, applicantIdNo, applicantIdDate, address, cityCode, districtCode, wardCode, contactName,
+				contactTelNo, contactEmail, isSameAsApplicant, delegateName, delegateIdNo, delegateTelNo, delegateEmail,
+				delegateAddress, delegateCityCode, delegateDistrictCode, delegateWardCode, applicantNote, briefNote,
+				dossierNo, dossierTemplateNo, viaPostal, postalServiceCode, postalServiceName, postalAddress, postalCityCode, postalDistrictCode, postalWardCode, postalTelNo, context);
+				
+	}
+
 }

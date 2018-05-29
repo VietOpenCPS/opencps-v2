@@ -235,7 +235,7 @@
 				var serviceProcessId = $("#btn_save_service_process").attr("data-pk");
 
 				var processStep = serviceProcessStepDataSource.get(processStepId);
-
+				console.log("processStep=============",processStep);
 				var viewModel = kendo.observable({
 					stepCode: processStep.stepCode,
 					stepName: processStep.stepName,
@@ -261,7 +261,8 @@
 					durationCount: processStep.durationCount,
 					customProcessUrl: processStep.customProcessUrl,
 					briefNote: processStep.briefNote,
-					stepInstruction: processStep.stepInstruction
+					stepInstruction: processStep.stepInstruction,
+					lockState : processStep.lockState
 				});
 
 				kendo.bind($("#process_detail_form"), viewModel);
@@ -345,7 +346,8 @@
 					durationCount: "",
 					customProcessUrl: "",
 					briefNote: "",
-					stepInstruction: ""
+					stepInstruction: "",
+					lockState : ""
 				});
 
 				kendo.bind($("#process_detail_form"), viewModel);
@@ -374,6 +376,16 @@
 
 				var stepCode = serviceProcessStepDataSource.get(processStepId).stepCode;
 
+				if($("#lockState").val() !== ""){
+					if(!$("#lockState").val().startsWith("LOCK") && !$("#lockState").val().startsWith("UPDATE") ){
+						notification.show({
+							message: "Lock state phải bắt đầu bằng LOCK hoặc UPDATE"
+						}, "error");
+
+						return ;
+					}
+				}
+
 				$.ajax({
 					url: "${api.server}" + "/serviceprocesses/" + serviceProcessId + "/steps/" + stepCode,
 					type: "PUT",
@@ -391,6 +403,7 @@
 						customProcessUrl: $("#customProcessUrl").val(),
 						briefNote: $("#briefNote").val(),
 						stepInstruction: $("#stepInstruction").val(),
+						lockState : $("#lockState").val()
 					},
 					success: function(result) {
 						notification.show({
@@ -482,6 +495,16 @@
 
 			var addServiceProcessStep = function(serviceProcessId){
 
+				if($("#lockState").val() !== ""){
+					if(!$("#lockState").val().startsWith("LOCK") && !$("#lockState").val().startsWith("UPDATE") ){
+						notification.show({
+							message: "Lock state phải bắt đầu bằng LOCK hoặc UPDATE"
+						}, "error");
+
+						return ;
+					}
+				}
+
 				$.ajax({
 					url: "${api.server}" + "/serviceprocesses/" + serviceProcessId + "/steps",
 					type: "POST",
@@ -498,6 +521,7 @@
 						customProcessUrl: $("#customProcessUrl").val(),
 						briefNote: $("#briefNote").val(),
 						stepInstruction: $("#stepInstruction").val(),
+						lockState : $("#lockState").val()
 					},
 					success: function(result) {
 						notification.show({
@@ -516,6 +540,7 @@
 							"customProcessUrl": $("#customProcessUrl").val(),
 							"briefNote": $("#briefNote").val(),
 							"stepInstruction": $("#stepInstruction").val(),
+							"lockState" : $("#lockState").val()
 						});
 
 						// add roles

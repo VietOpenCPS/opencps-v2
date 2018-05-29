@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -11,12 +12,18 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.DossierMarkUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossier.model.DoActionModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierInputModel;
+import org.opencps.api.dossier.model.DossierOnegateInputModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
+import org.opencps.api.dossiermark.model.DossierMarkInputModel;
+import org.opencps.api.dossiermark.model.DossierMarkModel;
+import org.opencps.api.dossiermark.model.DossierMarkResultDetailModel;
+import org.opencps.api.dossiermark.model.DossierMarkResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
@@ -27,14 +34,18 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.DossierMarkActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -77,6 +88,7 @@ public class DossierManagementImpl implements DossierManagement {
 	public static final String RT_CORRECTING = "correcting";
 	public static final String RT_SUBMITTING = "submitting";
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossiers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierSearchModel query) {
@@ -100,7 +112,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
 			}
 
-			if (query.getEnd() == 0) {
+			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
 
 				query.setStart(-1);
 
@@ -109,7 +121,6 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
 
@@ -140,18 +151,28 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNotNull(soChungChi)) {
 				certNo = SpecialCharacterUtils.splitSpecial(soChungChi);
 			}
-			
+
 			String fromReceiveDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromReceiveDate());
-			
+
 			String toReceiveDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToReceiveDate());
 
 			String fromCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getTuNgayKyCc());
 
 			String toCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getDenNgayKyCc());
-			
+
 			String dossierIdCTN = query.getDossierIdCTN();
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
+			// LamTV:Get info case abnormal
+			Long statusRegNo = null;
+			if (Validator.isNotNull(query.getStatusReg())) {
+				statusRegNo = Long.valueOf(query.getStatusReg());
+			}
+
+			Long notStatusRegNo = null;
+			if (Validator.isNotNull(query.getNotStatusReg())) {
+				notStatusRegNo = Long.valueOf(query.getNotStatusReg());
+			}
 
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -177,6 +198,8 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
 			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
+			params.put(DossierTerm.STATUS_REG, statusRegNo);
+			params.put(DossierTerm.NOT_STATUS_REG, notStatusRegNo);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
@@ -208,10 +231,11 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 
 			}
-			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
-					query.getStart(), query.getEnd(), serviceContext);
 
 			DossierResultsModel results = new DossierResultsModel();
+
+			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
+					-1, -1, serviceContext);
 
 			results.setTotal(jsonData.getInt("total"));
 
@@ -220,32 +244,8 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			_log.info(e);
+			return processException(e);
 		}
 
 	}
@@ -261,18 +261,18 @@ public class DossierManagementImpl implements DossierManagement {
 
 		try {
 
-//			_log.info("1");
+			// _log.info("1");
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
 
-//			_log.info("2");
+			// _log.info("2");
 			boolean isCitizen = dossierPermission.isCitizen(user.getUserId());
 
-//			_log.info("3");
+			// _log.info("3");
 			dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
 
-//			_log.info("31" + query.getEnd());
+			// _log.info("31" + query.getEnd());
 
 			if (query.getEnd() == 0) {
 
@@ -314,18 +314,24 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNotNull(soChungChi)) {
 				certNo = SpecialCharacterUtils.splitSpecial(soChungChi);
 			}
-			
+
 			String fromReceiveDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromReceiveDate());
-			
+
 			String toReceiveDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToReceiveDate());
 
 			String fromCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getTuNgayKyCc());
 
 			String toCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getDenNgayKyCc());
-			
+
 			String dossierIdCTN = query.getDossierIdCTN();
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
+			// Add keyword Search
+			String keywordSearchLike = query.getKeywordSearchLike();
+			String keySearch = StringPool.BLANK;
+			if (Validator.isNotNull(keywordSearchLike)) {
+				keySearch = SpecialCharacterUtils.splitSpecial(keywordSearchLike);
+			}
 
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -351,9 +357,9 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
 			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
+			params.put(DossierTerm.KEYWORD_SEARCH_LIKE, keySearch);
 
-
-//			_log.info("4");
+			// _log.info("4");
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
@@ -384,17 +390,19 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 
 			}
-//			_log.info("5");
+			// _log.info("5");
 			JSONObject jsonData = actions.getDossiersTest(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-//			_log.info("6");
+			// _log.info("6");
 			DossierResultsModel results = new DossierResultsModel();
 
 			if (jsonData != null && jsonData.length() > 0) {
 				results.setTotal(jsonData.getInt("total"));
-//				_log.info("7");
-				results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+				// _log.info("7");
+				// results.getData().addAll(DossierUtils.mappingForGetList((List<Document>)
+				// jsonData.get("data")));
+
 				List<Document> docs = (List<Document>) jsonData.get("data");
 				if (docs != null && docs.size() > 0) {
 					if (Validator.isNotNull(status) || Validator.isNotNull(substatus)) {
@@ -405,7 +413,8 @@ public class DossierManagementImpl implements DossierManagement {
 							results.getData().addAll(DossierUtils.mappingForGetList(docs));
 						} else {
 							_log.info("669999");
-							results.getData().addAll(DossierUtils.mappingForGetListPaging(docs, query.getStart(), query.getEnd()));
+							results.getData().addAll(
+									DossierUtils.mappingForGetListPaging(docs, query.getStart(), query.getEnd()));
 						}
 					}
 				}
@@ -413,36 +422,12 @@ public class DossierManagementImpl implements DossierManagement {
 				results.setTotal(0);
 			}
 
-//			_log.info("8");
+			// _log.info("8");
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			_log.info(e);
+			return processException(e);
 		}
 
 	}
@@ -523,32 +508,8 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			_log.info(e);
+			return processException(e);
 		}
 
 	}
@@ -584,7 +545,8 @@ public class DossierManagementImpl implements DossierManagement {
 				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 						dossier.getDossierTemplateNo(), groupId);
 
-//				dossierPermission.hasGetDetailDossier(groupId, user.getUserId(), dossier, option.getServiceProcessId());
+				// dossierPermission.hasGetDetailDossier(groupId,
+				// user.getUserId(), dossier, option.getServiceProcessId());
 
 				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
@@ -593,33 +555,8 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
-
+			_log.info(e);
+			return processException(e);
 		}
 
 	}
@@ -699,32 +636,8 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			_log.info(e);
+			return processException(e);
 		}
 	}
 
@@ -755,32 +668,8 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			_log.info(e);
+			return processException(e);
 		}
 	}
 
@@ -812,32 +701,8 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			_log.info(e);
+			return processException(e);
 		}
 	}
 
@@ -870,32 +735,8 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			_log.info(e);
+			return processException(e);
 		}
 
 	}
@@ -928,32 +769,8 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			_log.info(e);
+			return processException(e);
 		}
 
 	}
@@ -979,33 +796,8 @@ public class DossierManagementImpl implements DossierManagement {
 					.build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
-
+			_log.info(e);
+			return processException(e);
 		}
 
 	}
@@ -1027,6 +819,8 @@ public class DossierManagementImpl implements DossierManagement {
 			if (input.getIsSynAction() == 1) {
 
 				_log.info(JSONFactoryUtil.looseSerialize(input));
+
+				_log.info("Call in SynAction **********8 ===========");
 
 				DossierAction dossierAction = actions.doAction(groupId, dossier.getDossierId(),
 						dossier.getReferenceUid(), input.getActionCode(), 0l, input.getActionUser(),
@@ -1065,36 +859,8 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 		} catch (Exception e) {
-
-			_log.error(e);
-
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
-
+			_log.info(e);
+			return processException(e);
 		}
 	}
 
@@ -1236,32 +1002,8 @@ public class DossierManagementImpl implements DossierManagement {
 			JSONObject result = action.getContacts(groupId, dossierId, referenceUid);
 			return Response.status(200).entity(result).build();
 		} catch (PortalException e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			_log.info(e);
+			return processException(e);
 		}
 	}
 
@@ -1286,33 +1028,8 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
-
+			_log.info(e);
+			return processException(e);
 		}
 
 	}
@@ -1352,33 +1069,8 @@ public class DossierManagementImpl implements DossierManagement {
 		} catch (Exception e) {
 
 			_log.error("Can't syncDossierNo with id = " + id, e);
-
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			_log.info(e);
+			return processException(e);
 
 		}
 
@@ -1421,35 +1113,95 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
-
+			_log.info(e);
+			return processException(e);
 		}
 
+	}
+
+	@Override
+	public Response addDossierMark(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long dossierId, String dossierPartNo,
+			DossierMarkInputModel input) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierMarkActions actions = new DossierMarkActionsImpl();
+
+			DossierMark dossierMark = actions.addDossierMark(groupId, dossierId, dossierPartNo, input.isFileCheck(),
+					input.getFileType(), serviceContext);
+
+			DossierMarkResultDetailModel result = DossierMarkUtils.mappingDossierMarkDetailModel(dossierMark);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response getDossierMarks(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long dossierId) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierMarkActions actions = new DossierMarkActionsImpl();
+
+			DossierMarkResultsModel result = new DossierMarkResultsModel();
+
+			List<DossierMark> lstDossierMark = actions.getDossierMarks(groupId, dossierId);
+
+			List<DossierMarkModel> outputs = DossierMarkUtils.mappingDossierMarks(lstDossierMark);
+
+			result.setTotal(lstDossierMark.size());
+			result.getData().addAll(outputs);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response getDossierMarkbyDossierId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long dossierId, String dossierPartNo) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierMarkActions actions = new DossierMarkActionsImpl();
+
+			DossierMark dossierMark = actions.getDossierMarkbyDossierId(groupId, dossierId, dossierPartNo);
+
+			DossierMarkResultDetailModel result = DossierMarkUtils.mappingDossierMarkDetailModel(dossierMark);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
 	}
 
 	@Override
@@ -1472,50 +1224,27 @@ public class DossierManagementImpl implements DossierManagement {
 			// 1. Update cancellingDate in dossier
 
 			Dossier dossier = getDossier(id, groupId);
-			
+
 			serviceContext.setScopeGroupId(groupId);
 
 			Dossier cancellingDossier = actions.cancelDossier(groupId, dossier.getDossierId(),
 					dossier.getReferenceUid(), serviceContext);
 
 			// 2. update requestDossier
-			
+
 			String referenceUid = PortalUUIDUtil.generate();
+			int status = 3;
 
 			DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossier.getDossierId(), referenceUid,
-					RT_CANCELLING, body, 1, serviceContext);
+					RT_CANCELLING, body, 1, status, serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(cancellingDossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			_log.info(e);
+			return processException(e);
 		}
 
 	}
@@ -1539,50 +1268,27 @@ public class DossierManagementImpl implements DossierManagement {
 			// 1. Update cancellingDate in dossier
 
 			Dossier dossier = getDossier(id, groupId);
-			
+
 			serviceContext.setScopeGroupId(groupId);
 
-			Dossier cancellingDossier = actions.correctDossier(groupId, dossier.getDossierId(),
+			Dossier correctingDossier = actions.correctDossier(groupId, dossier.getDossierId(),
 					dossier.getReferenceUid(), serviceContext);
 
 			// 2. update requestDossier
-			
+
 			String referenceUid = PortalUUIDUtil.generate();
+			int status = 3;
 
 			DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossier.getDossierId(), referenceUid,
-					RT_CORRECTING, body, 1, serviceContext);
+					RT_CORRECTING, body, 1, status, serviceContext);
 
-			DossierDetailModel result = DossierUtils.mappingForGetDetail(cancellingDossier, user.getUserId());
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(correctingDossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			_log.info(e);
+			return processException(e);
 		}
 
 	}
@@ -1591,7 +1297,7 @@ public class DossierManagementImpl implements DossierManagement {
 	public Response submittingDossierPOST(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id, String body) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		
+
 		BackendAuth auth = new BackendAuthImpl();
 
 		DossierActions actions = new DossierActionsImpl();
@@ -1606,50 +1312,27 @@ public class DossierManagementImpl implements DossierManagement {
 			// 1. Update cancellingDate in dossier
 
 			Dossier dossier = getDossier(id, groupId);
-			
+
 			serviceContext.setScopeGroupId(groupId);
 
-			Dossier cancellingDossier = actions.submitPostDossier(groupId, dossier.getDossierId(),
+			Dossier endorsementDossier = actions.submitPostDossier(groupId, dossier.getDossierId(),
 					dossier.getReferenceUid(), serviceContext);
 
 			// 2. update requestDossier
-			
+
 			String referenceUid = PortalUUIDUtil.generate();
+			int status = 3;
 
 			DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossier.getDossierId(), referenceUid,
-					RT_SUBMITTING, body, 1, serviceContext);
+					RT_SUBMITTING, body, 1, status, serviceContext);
 
-			DossierDetailModel result = DossierUtils.mappingForGetDetail(cancellingDossier, user.getUserId());
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(endorsementDossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			_log.info(e);
+			return processException(e);
 		}
 
 	}
@@ -1692,32 +1375,432 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(restrictDossier).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
+			_log.info(e);
+			return processException(e);
+		}
+	}
 
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
+	@Override
+	public Response submitDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String body) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		DossierActions actions = new DossierActionsImpl();
+
+		// DossierPermission dossierPermission = new DossierPermission();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			// 1. Update cancellingDate in dossier
+
+			Dossier dossier = getDossier(id, groupId);
+
+			serviceContext.setScopeGroupId(groupId);
+
+			Dossier cancellingDossier = actions.submitPostDossier(groupId, dossier.getDossierId(),
+					dossier.getReferenceUid(), serviceContext);
+
+			// 2. update requestDossier
+
+			String referenceUid = PortalUUIDUtil.generate();
+			int status = 0;
+
+			DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossier.getDossierId(), referenceUid,
+					RT_SUBMITTING, body, 1, status, serviceContext);
+
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(cancellingDossier, user.getUserId());
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
+
+	private Response processException(Exception e) {
+		ErrorMsg error = new ErrorMsg();
+
+		if (e instanceof UnauthenticationException) {
+			error.setMessage("Non-Authoritative Information.");
+			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+			error.setDescription("Non-Authoritative Information.");
+
+			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+		} else {
+			if (e instanceof UnauthorizationException) {
+				error.setMessage("Unauthorized.");
 				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
+				error.setDescription("Unauthorized.");
 
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
 			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
 
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+				error.setMessage("No Content.");
+				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+				error.setDescription(e.getMessage());
 
-				} else {
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
 
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
+			}
+		}
+	}
 
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+	public Response getDossierPenddingByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String referenceUid) {
+		BackendAuth auth = new BackendAuthImpl();
 
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			// TODO: Fix port process
+			long groupId = 55301;
+
+			Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
+			long dossierActionId = 0;
+			DossierAction dossierAction = null;
+			boolean pendding = false;
+			if (dossier != null) {
+				dossierActionId = dossier.getDossierActionId();
+				if (dossierActionId > 0) {
+					dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 				}
 			}
+			if (dossierAction != null) {
+				pendding = dossierAction.getPending();
+			}
+
+			return Response.status(200).entity(pendding).build();
+
+		} catch (Exception e) {
+			_log.info(e);
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response getDossiersPendingList(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, DossierSearchModel query) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		DossierPermission dossierPermission = new DossierPermission();
+		DossierActions actions = new DossierActionsImpl();
+
+		try {
+			boolean isCitizen = false;
+
+			if (!query.getSecetKey().contentEquals("OPENCPSV2")) {
+
+				if (!auth.isAuth(serviceContext)) {
+					throw new UnauthenticationException();
+				}
+
+				isCitizen = dossierPermission.isCitizen(user.getUserId());
+
+				dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
+			}
+
+			if (query.getEnd() == 0) {
+
+				query.setStart(-1);
+
+				query.setEnd(-1);
+
+			}
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			DossierResultsModel results = new DossierResultsModel();
+
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
+
+			String owner = query.getOwner();
+			// If user is citizen then default owner true
+			if (isCitizen) {
+				owner = String.valueOf(true);
+			}
+			// Get info input params
+			String submitting = query.getSubmitting();
+			String pendding = query.getPendding();
+			String applicantIdNo = query.getApplicantIdNo();
+
+			params.put(DossierTerm.OWNER, owner);
+			params.put(DossierTerm.SUBMITTING, submitting);
+			params.put("pendding", pendding);
+			params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
+
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+					GetterUtil.getBoolean(query.getOrder())) };
+
+			// _log.info("START 1");
+			// _log.info("START Applicant: "+query.getApplicantIdNo());
+
+			if (Boolean.parseBoolean(pendding)) {
+				long groupIdCXL = 55301;
+				JSONObject jsonDataPending = null;
+
+				List<DossierAction> dActionList = DossierActionLocalServiceUtil.getDossiersPending(groupIdCXL,
+						pendding);
+
+				if (dActionList != null && dActionList.size() > 0) {
+					LinkedHashMap<String, Object> paramPending = new LinkedHashMap<String, Object>();
+					_log.info("dActionList: " + dActionList.size());
+					int length = dActionList.size();
+					StringBuilder sb = new StringBuilder();
+					for (int i = 0; i < length; i++) {
+						DossierAction dAct = dActionList.get(i);
+						long dActId = dAct.getDossierActionId();
+						if (i == 0) {
+							sb.append(dActId);
+						} else {
+							sb.append(StringPool.COMMA);
+							sb.append(dActId);
+
+						}
+					}
+					_log.info("DOSSIER_ACTION_ID_PENDING: " + sb.toString());
+
+					paramPending.put(Field.GROUP_ID, String.valueOf(groupIdCXL));
+					paramPending.put(DossierTerm.OWNER, String.valueOf(false));
+					paramPending.put(DossierTerm.APPLICANT_ID_NO, query.getApplicantIdNo());
+					paramPending.put(DossierTerm.DOSSIER_ACTION_ID_PENDING, sb.toString());
+
+					jsonDataPending = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupIdCXL,
+							paramPending, sorts, -1, -1, serviceContext);
+					_log.info("jsonDataPending: " + jsonDataPending);
+				}
+				if (jsonDataPending != null) {
+					List<Document> docs = (List<Document>) jsonDataPending.get("data");
+					if (docs != null && docs.size() > 0) {
+						StringBuilder sb1 = new StringBuilder();
+						int length = docs.size();
+						for (int i = 0; i < length; i++) {
+							Document doc = docs.get(i);
+							String referenceUid = doc.get(DossierTerm.REFERENCE_UID);
+							if (i == 0) {
+								sb1.append(referenceUid);
+							} else {
+								sb1.append(StringPool.COMMA);
+								sb1.append(referenceUid);
+							}
+						}
+						_log.info("REFERENCE_UID: " + sb1.toString());
+						params.put(DossierTerm.REFERENCE_UID, sb1.toString());
+					}
+				}
+
+			}
+
+			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
+					-1, -1, serviceContext);
+
+			if (jsonData == null) {
+				jsonData = JSONFactoryUtil.createJSONObject();
+			}
+
+			results.setTotal(jsonData.getInt("total"));
+
+			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			_log.info(e);
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response getDossiersInfoList(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, DossierSearchModel query) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		DossierPermission dossierPermission = new DossierPermission();
+		DossierActions actions = new DossierActionsImpl();
+
+		try {
+			boolean isCitizen = false;
+
+			if (!query.getSecetKey().contentEquals("OPENCPSV2")) {
+
+				if (!auth.isAuth(serviceContext)) {
+					throw new UnauthenticationException();
+				}
+
+				isCitizen = dossierPermission.isCitizen(user.getUserId());
+
+				dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
+			}
+
+			if (query.getEnd() == 0) {
+
+				query.setStart(-1);
+
+				query.setEnd(-1);
+
+			}
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			DossierResultsModel results = new DossierResultsModel();
+
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
+
+			String owner = query.getOwner();
+			// If user is citizen then default owner true
+			if (isCitizen) {
+				owner = String.valueOf(true);
+			}
+
+			// Test API new
+			String dossierArr = query.getDossierArr();
+			String status = query.getStatus();
+			// Get info input params
+			// String submitting = query.getSubmitting();
+			// String pendding = query.getPendding();
+			String applicantIdNo = query.getApplicantIdNo();
+
+			params.put(DossierTerm.OWNER, owner);
+			// params.put(DossierTerm.SUBMITTING, submitting);
+			// params.put("pendding", pendding);
+			params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
+			params.put(DossierTerm.STATUS, status);
+			params.put("dossierArr", dossierArr);
+
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+					GetterUtil.getBoolean(query.getOrder())) };
+
+			// if (Boolean.parseBoolean(pendding)) {
+			// long groupIdCXL = 55301;
+			// JSONObject jsonDataPending = null;
+			//
+			// List<DossierAction> dActionList =
+			// DossierActionLocalServiceUtil.getDossiersPending(groupIdCXL,
+			// pendding);
+			//
+			// if (dActionList != null && dActionList.size() > 0) {
+			// LinkedHashMap<String, Object> paramPending = new
+			// LinkedHashMap<String, Object>();
+			// _log.info("dActionList: "+dActionList.size());
+			// int length = dActionList.size();
+			// StringBuilder sb = new StringBuilder();
+			// for (int i = 0; i < length; i ++) {
+			// DossierAction dAct = dActionList.get(i);
+			// long dActId = dAct.getDossierActionId();
+			// if (i == 0) {
+			// sb.append(dActId);
+			// } else {
+			// sb.append(StringPool.COMMA);
+			// sb.append(dActId);
+			//
+			// }
+			// }
+			// _log.info("DOSSIER_ACTION_ID_PENDING: "+sb.toString());
+			//
+			// paramPending.put(Field.GROUP_ID, String.valueOf(groupIdCXL));
+			// paramPending.put(DossierTerm.OWNER, String.valueOf(false));
+			// paramPending.put(DossierTerm.APPLICANT_ID_NO,
+			// query.getApplicantIdNo());
+			// paramPending.put(DossierTerm.DOSSIER_ACTION_ID_PENDING,
+			// sb.toString());
+			//
+			// jsonDataPending = actions.getDossiers(user.getUserId(),
+			// company.getCompanyId(), groupIdCXL, paramPending, sorts,
+			// -1, -1, serviceContext);
+			// _log.info("jsonDataPending: "+jsonDataPending);
+			// }
+			// if (jsonDataPending != null) {
+			// List<Document> docs = (List<Document>)
+			// jsonDataPending.get("data");
+			// if (docs != null && docs.size() > 0) {
+			// StringBuilder sb1 = new StringBuilder();
+			// int length = docs.size();
+			// for (int i = 0; i < length; i ++) {
+			// Document doc = docs.get(i);
+			// String referenceUid = doc.get(DossierTerm.REFERENCE_UID);
+			// if (i == 0) {
+			// sb1.append(referenceUid);
+			// } else {
+			// sb1.append(StringPool.COMMA);
+			// sb1.append(referenceUid);
+			// }
+			// }
+			// _log.info("REFERENCE_UID: "+sb1.toString());
+			// params.put(DossierTerm.REFERENCE_UID, sb1.toString());
+			// }
+			// }
+			//
+			// }
+
+			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
+					-1, -1, serviceContext);
+
+			if (jsonData == null) {
+				jsonData = JSONFactoryUtil.createJSONObject();
+			}
+
+			results.setTotal(jsonData.getInt("total"));
+
+			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			_log.info(e);
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response createDossierOngate(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, DossierOnegateInputModel input) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		DossierPermission dossierPermission = new DossierPermission();
+
+		DossierActions actions = new DossierActionsImpl();
+		
+		_log.info("__INPUT_ONEGATE");
+		_log.info(JSONFactoryUtil.looseSerialize(input));
+		_log.info("__XXXXXXXXXXXXX");
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
+					input.getGovAgencyCode(), input.getDossierTemplateNo());
+			
+
+			Dossier dossier = actions.createDossier(groupId, input.getServiceCode(), input.getGovAgencyCode(),
+					input.getApplicantName(), input.getApplicantIdType(), input.getApplicantIdNo(),
+					DateTimeUtils.convertDateTimeToString(input.getApplicantIdDate()), input.getAddress(), input.getCityCode(), input.getDistrictCode(),
+					input.getWardCode(), input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
+					input.isSameAsApplicant(), input.getDelegateName(), input.getDelegateIdNo(),
+					input.getDelegateTelNo(), input.getDelegateEmail(), input.getDelegateAddress(),
+					input.getDelegateCityCode(), input.getDelegateDistrictCode(), input.getDelegateWardCode(),
+					input.getApplicantNote(), StringPool.BLANK, input.getDossierNo(), input.getDossierTemplateNo(),
+					input.getViaPostal(), input.getPostalServiceCode(), input.getPostalServiceName(),
+					input.getPostalAddress(), input.getPostalCityCode(), input.getPostalDistrictCode(),
+					input.getPostalWardCode(), input.getPostalTelNo(), serviceContext);
+
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(dossier)).build();
+
+		} catch (Exception e) {
+			_log.info(e);
+			return processException(e);
 		}
 	}
 
