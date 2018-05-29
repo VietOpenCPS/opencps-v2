@@ -876,9 +876,11 @@ public class DossierManagementImpl implements DossierManagement {
 
 		if (Validator.isNotNull(dc)) {
 			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
-
-			return it.getItemName();
-
+			if(Validator.isNotNull(it)){
+				return it.getItemName();
+			}else{
+				return StringPool.BLANK;
+			}
 		} else {
 			return StringPool.BLANK;
 		}
