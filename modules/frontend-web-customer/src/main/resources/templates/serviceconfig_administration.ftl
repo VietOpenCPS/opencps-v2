@@ -189,7 +189,7 @@
 	$(document).ready(function(){
 
 		$(document).off("click",'.btn-select-serviceConfig, .link-serviceInfo');
-		$(document).on("click",'.btn-select-serviceConfig, .link-serviceInfo',function(){
+		$(document).on("click",'.btn-select-serviceConfig, .link-serviceInfo',function(event){
 			event.preventDefault();
 			var serviceConfigId = $(this).attr("data-pk");
 			$("#serviceConfigId").val(serviceConfigId);
