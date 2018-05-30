@@ -347,6 +347,7 @@
 				}
 			});
 
+
 		}catch(e){
 			valid = false;
 		}
@@ -643,6 +644,19 @@
 				return ;
 			}
 
+			var valDistrict = $('#district').html();
+			var valWards = $('#wards').html();
+			var check = true;
+			if(valDistrict === "-" || valWards === "-"){
+				check = false;
+			}
+			if(!check){
+				notification.show({
+					message: "Vui lòng kiểm tra lại các thông tin bắt buộc của các thông tin chủ hồ sơ!"
+				}, "error");
+
+				return ;
+			}
 			console.log(validatePostal);
 			console.log(validateAplicantInfo);
 
@@ -734,7 +748,7 @@
 				};
 			},
 			validate: function(value) {
-				if (value.length < 1){
+				if (value.length < 2){
 					return 'Đây là trường bắt buộc';
 				}
 			},
@@ -764,7 +778,7 @@
 				};
 			},
 			validate: function(value) {
-				if (value.length < 1){
+				if (value.length < 2){
 					return 'Đây là trường bắt buộc';
 				}
 			},
@@ -794,7 +808,7 @@
 				};
 			},
 			validate: function(value) {
-				if (value.length < 1){
+				if (value.length < 2){
 					return 'Đây là trường bắt buộc';
 				}
 			},
@@ -886,7 +900,7 @@
 				};
 			},
 			validate: function(value) {
-				if (value.length < 1){
+				if (value.length < 2  && value !== "-"){
 					return 'Đây là trường bắt buộc';
 				}
 			},
@@ -974,7 +988,7 @@
 				};
 			},
 			validate: function(value) {
-				if (value.length < 1){
+				if (value.length < 2 && value !== "-"){
 					return 'Đây là trường bắt buộc';
 				}
 			},
@@ -1299,7 +1313,7 @@
 								// if(!result.applicantNote){
 								// 	return "Ghi chú người dùng";
 								// }
-								return result.applicantNote;
+								return result.applicantNote.substr(24);
 							},
 							viaPostal : function(e){
 								console.log(result.viaPostal);

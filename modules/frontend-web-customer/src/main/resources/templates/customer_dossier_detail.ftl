@@ -70,7 +70,7 @@
 							</div>
 							<div class="col-sm-10">
 								<div class="form-group"> 
-									<input type="text" class="form-control" data-bind="value: address" id="address" name="address"> 
+									<input type="text" class="form-control" data-bind="value: address" id="address" name="address" required="required" validationMessage="Bạn phải điền địa chỉ"> 
 								</div>
 							</div>
 
