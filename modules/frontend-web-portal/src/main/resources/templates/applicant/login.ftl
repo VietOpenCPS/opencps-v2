@@ -9,7 +9,7 @@
 		<div class="row">
 			<div class="col-sm-6">
 				<div class="">
-					<input type="text" class="form-control input-sm" name="${portletNamespace}login" id="input_login" placeholder="Tài khoản đăng nhập" title="Tài khoản đăng nhập">
+					<input type="text" class="form-control input-sm" name="${portletNamespace}login" id="input_login" placeholder="Tài khoản đăng nhập (địa chỉ email đã đăng ký)" title="Tài khoản đăng nhập">
 				</div>
 			</div>
 			<div class="col-sm-6">
@@ -24,8 +24,8 @@
 				<a href="/forgotten-password" class="text-hover-blue">Quên mật khẩu?</a>
 				
 			</div>
-			<div class="col-sm-6 text-right">
-				<button class="btn btn-active btn-sm" type="button" id="btn-register-applicant">Đăng ký</button>
+			<div class="col-sm-6">
+				<a class="btn btn-active btn-sm" href="/web/cong-tiep-nhan/register" style="float: left;margin-left: -12px;margin-right:2px; padding: 3px 7px;">Đăng ký</a>
 				<button class="btn btn-active btn-sm">Đăng nhập</button>
 			</div>
 		</div>
@@ -60,6 +60,7 @@
 
 <script type="text/javascript">
 	$("#btn-register-applicant").click(function () {
-		window.location.href = "http://dangkiemlaprap.mt.gov.vn/web/cong-tiep-nhan/register";
+		alert("Bấm đăng ký");
+		window.location.href = "/web/cong-tiep-nhan/register";
 	});
 </script>

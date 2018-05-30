@@ -156,7 +156,7 @@
 			<v-expansion-panel expand class="my-0">
 				<v-expansion-panel-content v-bind:value="true">
 				<div slot="header" class="text-bold"> <span>I. </span>Tài liệu nộp</div>
-				<small slot="header" class="text-gray text-right mr-4"> Những thành phần hồ sơ có dấu ( <span style="color: red;"> * </span> ) là thành phần bắt buộc</small>
+				<!-- <small slot="header" class="text-gray text-right mr-4"> Những thành phần hồ sơ có dấu ( <span style="color: red;"> * </span> ) là thành phần bắt buộc</small> -->
 				<div class="opencps_list_border_style" jx-bind="listDocumentIn"></div>
 				</v-expansion-panel-content>
 			</v-expansion-panel>

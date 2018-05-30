@@ -22,8 +22,9 @@ public interface DeliverableActions {
 
 	//2
 	public Deliverable addDeliverable(long groupId, String deliverableType, String deliverableCode,
-			String govAgencyCode, String applicantIdNo, String applicantName, String subject, String issueDate,
-			String expireDate, String revalidate, String deliverableState, ServiceContext serviceContext);
+			String govAgencyCode, String govAgencyName, String applicantIdNo, String applicantName, String subject,
+			String issueDate, String expireDate, String revalidate, String deliverableState,
+			ServiceContext serviceContext);
 
 	//1
 	public JSONObject getListDeliverable(long userId, long companyId, LinkedHashMap<String, Object> params,

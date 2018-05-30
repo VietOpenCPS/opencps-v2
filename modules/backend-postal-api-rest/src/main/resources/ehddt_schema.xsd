@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="Fs_NH_GTGT" type="FsNHGTGT" />
+	<xs:complexType name="FsNHGTGT">
+		<xs:sequence>
+			<xs:element name="b_nsd" type="xs:string" />
+			<xs:element name="b_mk" type="xs:string" />
+			<xs:element name="b_so_id" type="xs:string" />
+			<xs:element name="hoadon" type="HoadonT" />
+			<xs:element name="hoadon_ct" type="Hoadon_ctT" />
+			<xs:element name="b_ktra_dch" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="HoadonT">
+		<xs:sequence>
+			<xs:element name="ma" type="xs:string" />
+			<xs:element name="ng_hd" type="xs:string" />
+			<xs:element name="seri" type="xs:string" />
+			<xs:element name="ma_nthue" type="xs:string" />
+			<xs:element name="kieu_so" type="xs:string" />
+			<xs:element name="ma_kh" type="xs:string" />
+			<xs:element name="ten" type="xs:string" />
+			<xs:element name="phone" type="xs:string" />
+			<xs:element name="tax" type="xs:string" />
+			<xs:element name="dchi" type="xs:string" />
+			<xs:element name="ma_tk" type="xs:string" />
+			<xs:element name="ten_nh" type="xs:string" />
+			<xs:element name="mailH" type="xs:string" />
+			<xs:element name="phoneH" type="xs:string" />
+			<xs:element name="tenM" type="xs:string" />
+			<xs:element name="ma_khL" type="xs:string" />
+			<xs:element name="ma_nt" type="xs:string" />
+			<xs:element name="tg" type="xs:string" />
+			<xs:element name="hthuc" type="xs:string" />
+			<xs:element name="han" type="xs:string" />
+			<xs:element name="tl_ggia" type="xs:string" />
+			<xs:element name="ggia" type="xs:string" />
+			<xs:element name="phi" type="xs:string" />
+			<xs:element name="noidung" type="xs:string" />
+			<xs:element name="tien" type="xs:string" />
+			<xs:element name="ttoan" type="xs:string" />
+			<xs:element name="lst_hoadon_ct" type="lst_hoadon_ctT" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Hoadon_ctT">
+		<xs:sequence>
+			<xs:element name="hoadon_gtgt_ct" type="Hoadon_gtgt_ctT"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="lst_hoadon_ctT">
+		<xs:sequence>
+			<xs:element name="hoadon_gtgt_ct" type="Hoadon_gtgt_ctT"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Hoadon_gtgt_ctT">
+		<xs:sequence>
+			<xs:element name="ma_vt" type="xs:string" />
+			<xs:element name="TEN" type="xs:string" />
+			<xs:element name="dvt" type="xs:string" />
+			<xs:element name="luong" type="xs:string" />
+			<xs:element name="gia" type="xs:string" />
+			<xs:element name="tien" type="xs:string" />
+			<xs:element name="ts" type="xs:string" />
+			<xs:element name="thue" type="xs:string" />
+			<xs:element name="ttoan" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

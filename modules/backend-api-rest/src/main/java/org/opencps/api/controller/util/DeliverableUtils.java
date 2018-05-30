@@ -62,22 +62,26 @@ public class DeliverableUtils {
 	    model.setSubject(doc.get(DeliverableTerm.SUBJECT));
 	  //Convert Date to String
 		String strIssueDate = doc.get(DeliverableTerm.ISSUE_DATE);
-		Date issueDate = null;
 		if (Validator.isNotNull(strIssueDate)) {
-			issueDate = APIDateTimeUtils.convertStringToDate(strIssueDate, "yyyyMMddHHmmss");
+//			_log.info("SUBMIT_DATE_DATEEEEEE: "+doc.get(DossierTerm.SUBMIT_DATE));
+	    	Date issueDate = APIDateTimeUtils.convertStringToDate(strIssueDate, APIDateTimeUtils._LUCENE_PATTERN);
+//			_log.info("SUBMIT_DATE_DATEEEEEE: "+submitDate);
+			model.setIssueDate(APIDateTimeUtils.convertDateToString(issueDate, APIDateTimeUtils._NORMAL_PARTTERN));
+//			_log.info("SUBMIT_DATE_CONVERT: "+APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
+		} else {
+			model.setIssueDate(strIssueDate);
 		}
-		model.setIssueDate(issueDate != null
-				? APIDateTimeUtils.convertDateToString(issueDate, APIDateTimeUtils._TIMESTAMP)
-				: strIssueDate);
-
+		
 		String strExpireDate = doc.get(DeliverableTerm.EXPIRE_DATE);
-		Date expireDate = null;
 		if (Validator.isNotNull(strExpireDate)) {
-			expireDate = APIDateTimeUtils.convertStringToDate(strExpireDate, "yyyyMMddHHmmss");
+//			_log.info("SUBMIT_DATE_DATEEEEEE: "+doc.get(DossierTerm.SUBMIT_DATE));
+	    	Date expireDate = APIDateTimeUtils.convertStringToDate(strExpireDate, APIDateTimeUtils._LUCENE_PATTERN);
+//			_log.info("SUBMIT_DATE_DATEEEEEE: "+submitDate);
+			model.setExpireDate(APIDateTimeUtils.convertDateToString(expireDate, APIDateTimeUtils._NORMAL_PARTTERN));
+//			_log.info("SUBMIT_DATE_CONVERT: "+APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
+		} else {
+			model.setExpireDate(strExpireDate);
 		}
-		model.setExpireDate(expireDate != null
-				? APIDateTimeUtils.convertDateToString(expireDate, APIDateTimeUtils._TIMESTAMP)
-				: strExpireDate);
 
 		String strRevalidate = doc.get(DeliverableTerm.REVALIDATE);
 		Date revalidate = null;
