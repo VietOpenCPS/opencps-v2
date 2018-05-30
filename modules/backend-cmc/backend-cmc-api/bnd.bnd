@@ -1,9 +1,0 @@
-Bundle-Name: backend-cmc-api
-Bundle-SymbolicName: backend.cmc.api
-Bundle-Version: 1.0.0
-Export-Package:\
-	backend.cmc.exception,\
-	backend.cmc.model,\
-	backend.cmc.service,\
-	backend.cmc.service.persistence
--includeresource: META-INF/service.xml=../backend-cmc-service/service.xml
