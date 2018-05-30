@@ -55,7 +55,7 @@
 						<div class="row MT5">
 							
 							<div class="col-sm-2 PT5 text-right">
-								Họ và tên
+								Họ và tên<span style="color: red;"> * </span>
 							</div>
 							<div class="col-sm-10">
 								<div class="form-group"> 
@@ -66,16 +66,16 @@
 							</div>
 
 							<div class="col-sm-2 PT5 text-right">
-								Địa chỉ
+								Địa chỉ<span style="color: red;"> * </span>
 							</div>
 							<div class="col-sm-10">
 								<div class="form-group"> 
-									<input type="text" class="form-control" data-bind="value: address" id="address" name="address"> 
+									<input type="text" class="form-control" data-bind="value: address" id="address" name="address" required="required" validationMessage="Bạn phải điền địa chỉ"> 
 								</div>
 							</div>
 
 							<div class="col-sm-2 PT5 text-right">
-								Tỉnh/ Thành phố
+								Tỉnh/ Thành phố<span style="color: red;"> * </span>
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
@@ -86,7 +86,7 @@
 							</div>
 
 							<div class="col-sm-2 PT5 text-right">
-								Quận/ Huyện
+								Quận/ Huyện<span style="color: red;"> * </span>
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
@@ -97,7 +97,7 @@
 							</div>
 							
 							<div class="col-sm-2 PT5 text-right">
-								Xã/ Phường
+								Xã/ Phường<span style="color: red;"> * </span>
 							</div>
 							<div class="col-sm-2 PL0">
 								<div class="form-group"> 
@@ -108,7 +108,7 @@
 							</div>
 
 							<div class="col-sm-2 PT5 text-right">
-								Điện thoại
+								Điện thoại<span style="color: red;"> * </span>
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
@@ -122,7 +122,7 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="contactEmail" name="contactEmail" data-bind="value : contactEmail" required="required" validationMessage="Bạn phải điền email">
+									<input type="text" class="form-control" id="contactEmail" name="contactEmail" data-bind="value : contactEmail" required="required" validationMessage="Bạn phải điền email" readonly>
 									<span data-for="contactEmail" class="k-invalid-msg"></span> 
 								</div>
 							</div>

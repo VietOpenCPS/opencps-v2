@@ -151,6 +151,7 @@
 	};
 
 	var fnCreateDossier = function(dossierTemplateNo,serviceCode,govAgencyCode){
+
 		$.ajax({
 			url : "${api.server}/dossiers",
 			dataType : "json",

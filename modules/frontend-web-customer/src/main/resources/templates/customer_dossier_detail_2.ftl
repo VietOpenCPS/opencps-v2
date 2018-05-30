@@ -61,7 +61,7 @@
 
 							<div class="row MT5">
 								<div class="col-sm-2">
-									<label>Họ và tên</label>
+									<label>Họ và tên<span style="color: red;"> * </span></label>
 								</div>
 								<div class="col-sm-10">
 									<span id="contactName" data-pk="1" data-type="text" data-toggle="#editContactName" data-original-title="Nhập họ và tên" tabindex="-1" class="" data-bind="text:contactName" required></span>
@@ -73,7 +73,7 @@
 
 							<div class="row">
 								<div class="col-sm-2">
-									<label>Địa chỉ</label>
+									<label>Địa chỉ<span style="color: red;"> * </span></label>
 								</div>
 								<div class="col-sm-10">
 									<span id="address" data-pk="1" data-type="text" data-toggle="#editAddress" data-original-title="Nhập địa chỉ" tabindex="-1" class="" data-bind="text:address" required></span>
@@ -85,7 +85,7 @@
 
 							<div class="row">
 								<div class="col-sm-2">
-									<label>Tỉnh/ Thành phố</label>
+									<label>Tỉnh/ Thành phố<span style="color: red;"> * </span></label>
 								</div>
 								<div class="col-sm-10">
 									<span id="city" data-pk="1" data-type="select" data-toggle="#editCity" data-original-title="Chọn tỉnh/ thành phố" tabindex="-1" class="" data-bind="text:cityName" required><#-- ${api.applicant.cityName} --></span>
@@ -96,7 +96,7 @@
 							</div>
 							<div class="row">
 								<div class="col-sm-2">
-									<label>Quận/ Huyện</label>
+									<label>Quận/ Huyện<span style="color: red;"> * </span></label>
 								</div>
 								<div class="col-sm-10">
 									<span id="district" data-pk="1" data-type="select" data-toggle="#editDistrict" data-original-title="Chọn quận/ huyện" tabindex="-1" class="" data-bind="text:districtName" required><#-- ${api.applicant.districtName} --></span>
@@ -107,7 +107,7 @@
 							</div>
 							<div class="row">
 								<div class="col-sm-2">
-									<label>Xã/ Phường</label>
+									<label>Xã/ Phường<span style="color: red;"> * </span></label>
 								</div>
 								<div class="col-sm-10">
 									<span id="wards" data-pk="1" data-type="select" data-toggle="#editWards" data-original-title="Chọn xã/ phường" tabindex="-1" class="" data-bind="text:wardName" required><#-- ${api.applicant.wardName} --></span>
@@ -119,7 +119,7 @@
 
 							<div class="row">
 								<div class="col-sm-2">
-									<label>Điện thoại</label>
+									<label>Điện thoại<span style="color: red;"> * </span></label>
 								</div>
 								<div class="col-sm-10">
 									<span id="contactTelNo" data-pk="1" data-type="text" data-toggle="#editContactTelNo" data-original-title="Nhập số điện thoại" tabindex="-1" class="" data-bind="text:contactTelNo" required></span>
@@ -346,6 +346,7 @@
 					valid = false;
 				}
 			});
+
 
 		}catch(e){
 			valid = false;
@@ -643,6 +644,19 @@
 				return ;
 			}
 
+			var valDistrict = $('#district').html();
+			var valWards = $('#wards').html();
+			var check = true;
+			if(valDistrict === "-" || valWards === "-"){
+				check = false;
+			}
+			if(!check){
+				notification.show({
+					message: "Vui lòng kiểm tra lại các thông tin bắt buộc của các thông tin chủ hồ sơ!"
+				}, "error");
+
+				return ;
+			}
 			console.log(validatePostal);
 			console.log(validateAplicantInfo);
 
@@ -734,7 +748,7 @@
 				};
 			},
 			validate: function(value) {
-				if (value.length < 1){
+				if (value.length < 2){
 					return 'Đây là trường bắt buộc';
 				}
 			},
@@ -764,7 +778,7 @@
 				};
 			},
 			validate: function(value) {
-				if (value.length < 1){
+				if (value.length < 2){
 					return 'Đây là trường bắt buộc';
 				}
 			},
@@ -794,7 +808,7 @@
 				};
 			},
 			validate: function(value) {
-				if (value.length < 1){
+				if (value.length < 2){
 					return 'Đây là trường bắt buộc';
 				}
 			},
@@ -886,7 +900,7 @@
 				};
 			},
 			validate: function(value) {
-				if (value.length < 1){
+				if (value.length < 2  && value !== "-"){
 					return 'Đây là trường bắt buộc';
 				}
 			},
@@ -974,7 +988,7 @@
 				};
 			},
 			validate: function(value) {
-				if (value.length < 1){
+				if (value.length < 2 && value !== "-"){
 					return 'Đây là trường bắt buộc';
 				}
 			},
@@ -1296,10 +1310,10 @@
 							},
 							applicantNote : function(){
 								$('#applicantNote').editable("setValue",result.applicantNote);
-								if(!result.applicantNote){
-									return "Ghi chú người dùng";
-								}
-								return result.applicantNote;
+								// if(!result.applicantNote){
+								// 	return "Ghi chú người dùng";
+								// }
+								return result.applicantNote.substr(24);
 							},
 							viaPostal : function(e){
 								console.log(result.viaPostal);
