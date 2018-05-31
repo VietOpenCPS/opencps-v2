@@ -292,7 +292,7 @@
 			<label>Ghi chú</label>
 		</div>
 		<div class="col-sm-11">
-			<span id="applicantNote" data-pk="1" data-type="textarea" data-toggle="#editApplicantNote" data-original-title="Ghi chú" tabindex="-1" class="" data-bind="text:applicantNote"></span>
+			<span id="applicantNote" data-pk="1" data-type="textarea" data-toggle="#editApplicantNote" data-original-title="Ghi chú" tabindex="-1" class="" data-bind="text:lastActionNote"></span>
 			<span class="pull-right">
 				<a href="javascript:;" id="editApplicantNote" style="float: right"><i class="fa fa-pencil"></i></a>
 			</span>
@@ -1308,12 +1308,12 @@
 
 								return "";
 							},
-							applicantNote : function(){
-								$('#applicantNote').editable("setValue",result.applicantNote);
+							lastActionNote : function(){
+								$('#applicantNote').editable("setValue",result.lastActionNote);
 								// if(!result.applicantNote){
 								// 	return "Ghi chú người dùng";
 								// }
-								return result.applicantNote.substr(24);
+								return result.lastActionNote;
 							},
 							viaPostal : function(e){
 								console.log(result.viaPostal);
