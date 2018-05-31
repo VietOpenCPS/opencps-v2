@@ -25,8 +25,8 @@ dependencies {
 	compile group: 'io.swagger', name: 'swagger-jaxrs', version: '1.5.10'
 	
 	compileOnly project(":modules:backend-auth")
-	compileOnly project(":modules:backend-cmc:backend-cmc-service")
-	compileOnly project(":modules:backend-cmc:backend-cmc-api")
+	//compileOnly project(":modules:backend-cmc:backend-cmc-service")
+	//compileOnly project(":modules:backend-cmc:backend-cmc-api")
 	
 	compileOnly name: 'VNPostNGSPSDK'
 	compileOnly name: 'gson-2.8.0'
