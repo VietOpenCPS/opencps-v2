@@ -1951,7 +1951,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								}
 							};
 
-							var url = '/o/rest/v2/dossiers';
+							var url = '/o/rest/v2/dossiers/dossiersTest';
 							//var url = "http://hanoi.fds.vn:2281/api/dossiers";
 							
 							axios.get(url, config_dossiers).then(function (response) {

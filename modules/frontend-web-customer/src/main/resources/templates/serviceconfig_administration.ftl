@@ -8,11 +8,11 @@
 <div class="panel">
 	<div class="panel-body PT0 PB0">
 		<div class="row">
-			<div id="listView">
+			<div id="serviceConfigsAdmin">
 			</div>
 		</div>
 	</div>
-	<script type="text/x-kendo-tmpl" id="templateAdmin">
+	<script type="text/x-kendo-template" id="templateAdmin">
 		#if(domains.length > 0) {#
 		<div class="accordion" id=#:'acc1'+govAgencyCode#>
 			<div class="accordion-group">
@@ -96,29 +96,12 @@
 				$(element).html("");
 				if(result.data){
 					var data = result.data;
-
 					if(result.data){
-
-/*						if(result.data.length === 1){
-							$(element).remove();
-
-							return ;
-						}*/
-
 						for (var i = 0; i < data.length; i++) {
 							$(element).append('<li><span class="btn-choise-process hover-pointer" data-pk="'+data[i].processOptionId+'" data-template="'+data[i].templateNo+'" onclick="selectProcess(this);">'+data[i].optionName+'</span></li>');
 						}
 					}
-
-					
 				}
-				/*$(".btn-choise-process").unbind().click(function(){
-					console.log("choise process");
-					var id = $(this).attr("data-pk");
-					var templateNo = $(this).attr("data-template");
-					fnGetParamAndCreateDossier(id,templateNo);
-
-				});*/
 			},
 			error : function(result){
 
@@ -190,7 +173,7 @@
 	$(document).ready(function(){
 
 		$(document).off("click",'.btn-select-serviceConfig, .link-serviceInfo');
-		$(document).on("click",'.btn-select-serviceConfig, .link-serviceInfo',function(){
+		$(document).on("click",'.btn-select-serviceConfig, .link-serviceInfo',function(event){
 			event.preventDefault();
 			var serviceConfigId = $(this).attr("data-pk");
 			$("#serviceConfigId").val(serviceConfigId);
@@ -231,7 +214,7 @@
 			}
 		});
 
-		$("#listView").kendoListView({
+		$("#serviceConfigsAdmin").kendoListView({
 			dataSource : dataSourceAdmin,
 			template: kendo.template($("#templateAdmin").html()),
 			autoBind : true,

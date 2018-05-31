@@ -21,7 +21,6 @@
 				$("#mainType2").load("${ajax.customer_dossier_detail_4}&${portletNamespace}dossierId="+id+"",function(result){
 				});
 			};
-
 			statusRouteTem = dossierItemStatus;
 
 		    $(".itemStatus").css("pointer-events","auto");
@@ -42,7 +41,7 @@
 			$(".itemStatus").css("pointer-events","auto");
 		});
 
-		manageDossier.route("/taohosomoi/(:id)", function(id){
+		/*manageDossier.route("/taohosomoi/(:id)", function(id){
 			$("#mainType1").hide();
 			$(".filterField").hide();
 			$("#mainType2").show();
@@ -52,13 +51,12 @@
 			$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 			$(".itemStatus").css("pointer-events","auto");
-		});
+		});*/
 
 		manageDossier.route("/taohosomoi/chuanbihoso/(:dossierId)", function(dossierId){
 			$("#mainType1").hide();
 			$("#mainType2").show();
 			$("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+dossierId,function(result){
-
 			});
 		});
 		
@@ -111,13 +109,14 @@
         }); 
 
       manageDossier.route("/taohosomoi/admin", function(){
+      	console.log("admin route=================");
         $("#mainType1").hide();
         $(".filterField").hide();
         $("#mainType2").show();
         $("#mainType2").load("${ajax.serviceconfig}",function(result){
             $('#btn_fillter_by_admintration').addClass('btn-active');
             $('#btn_fillter_by_domain').removeClass('btn-active');
-            $('#serviceconfig_container').load("${ajax.serviceconfig_administration}");
+            $('#serviceconfig_container_create_dossier').load("${ajax.serviceconfig_administration}");
             $('#input_search').val('');
         });
         $("#profileStatus li").removeClass('active');
@@ -126,13 +125,15 @@
       });
       
       manageDossier.route("/taohosomoi/doman", function(){
+      	console.log("domain route==================");
         $("#mainType1").hide();
         $(".filterField").hide();
         $("#mainType2").show();
         $("#mainType2").load("${ajax.serviceconfig}",function(result){
+        	$('#serviceconfig_container_create_dossier').html("");
+        	 $('#serviceconfig_container_create_dossier').load("${ajax.serviceconfig_domain}");
             $('#btn_fillter_by_admintration').removeClass('btn-active');
             $('#btn_fillter_by_domain').addClass('btn-active');
-            $('#serviceconfig_container').load("${ajax.serviceconfig_domain}");
             $('#input_search').val('');
         });
         $("#profileStatus li").removeClass('active');
