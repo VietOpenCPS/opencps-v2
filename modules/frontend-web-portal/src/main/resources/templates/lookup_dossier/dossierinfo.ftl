@@ -48,30 +48,30 @@
 <script>
 	var pullDataDetail= function(id){
         dossiersId = id;
-        $.ajax({
-            url : "${api.server}/dossiers/"+id,
-            dataType : "json",
-            type : "GET",
-            headers : {"groupId": ${groupId}},
-            success : function(result){
-                console.log(dossierId);
-                var viewModel = kendo.observable({
-                    dossierId: result.dossierId,
-	                applicantName: result.applicantName,
-                    serviceName: result.serviceName,
-                    dossierNo: result.dossierNo,
-                    govAgencyName: result.govAgencyName,
-                    submitDate: result.submitDate,
-                    dueDate: result.dueDate,
-                    dossierStatusText: result.dossierStatusText
-                });
-                kendo.bind($("#DossiersDetailInfo"), viewModel);
-                $(".panel").css("border-radius","0");
-            },
-            error : function(result){
+        // $.ajax({
+        //     url : "${api.server}/dossiers/"+id,
+        //     dataType : "json",
+        //     type : "GET",
+        //     headers : {"groupId": 55217},
+        //     success : function(result){
+        //         console.log(dossierId);
+        //         var viewModel = kendo.observable({
+        //             dossierId: result.dossierId,
+	       //          applicantName: result.applicantName,
+        //             serviceName: result.serviceName,
+        //             dossierNo: result.dossierNo,
+        //             govAgencyName: result.govAgencyName,
+        //             submitDate: result.submitDate,
+        //             dueDate: result.dueDate,
+        //             dossierStatusText: result.dossierStatusText
+        //         });
+        //         kendo.bind($("#DossiersDetailInfo"), viewModel);
+        //         $(".panel").css("border-radius","0");
+        //     },
+        //     error : function(result){
                 
-            }
-        });
+        //     }
+        // });
         //dataSource chi tiết thông tin hồ sơ
         var dataSourceDossierFileDetail = new kendo.data.DataSource({
             transport: {
@@ -80,7 +80,7 @@
                         url: "${api.server}/dossiers/"+id+"/files",
                         dataType: "json",
                         type: 'GET',
-                        headers : {"groupId": ${groupId}},
+                        headers : {"groupId": 55217},
                         data: {
                             password: options.data.password
                         },
@@ -105,11 +105,11 @@
             transport: {
                 read: function (options) {
                     $.ajax({
-                        // url: "${api.server}/dossiers/"+id+"/logs",
-                        url:"http://localhost:3000/logs",
+                        url: "${api.server}/dossiers/"+id+"/logs",
+                        // url:"http://localhost:3000/logs",
                         dataType: "json",
                         type: 'GET',
-                        headers : {"groupId": ${groupId}},
+                        headers : {"groupId": 55217},
                         data: {
                             password: options.data.password
                         },
