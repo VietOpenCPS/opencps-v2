@@ -1466,12 +1466,17 @@ public class DossierActionsImpl implements DossierActions {
 		
 		String type = StringPool.BLANK;
 
-		String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
-		_log.info("applicantNote: "+applicantNote);
+		if (dossier != null) {
+			String dossierStatus = dossier.getDossierStatus().toLowerCase();
+			if (Validator.isNotNull(dossierStatus) && !dossierStatus.equals("new")) {
+				String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
+				_log.info("applicantNote: "+applicantNote);
 
-		dossier.setApplicantNote(applicantNote);
+				dossier.setApplicantNote(applicantNote);
 
-		DossierLocalServiceUtil.updateDossier(dossier);
+				DossierLocalServiceUtil.updateDossier(dossier);
+			}
+		}
 
 		if (Validator.isNull(dossier)) {
 			throw new NotFoundException("DossierNotFoundException");
@@ -2674,7 +2679,8 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		StringBuilder sb = new StringBuilder();
 
 		String oldNote = dossier.getApplicantNote();
-		//_log.info("oldNote: "+oldNote);
+		_log.info("oldNote: "+oldNote);
+		_log.info("actionNote: "+actionNote);
 
 		if (Validator.isNotNull(oldNote) && oldNote.contains("<br>")) {
 			if (Validator.isNotNull(actionNote)) {
