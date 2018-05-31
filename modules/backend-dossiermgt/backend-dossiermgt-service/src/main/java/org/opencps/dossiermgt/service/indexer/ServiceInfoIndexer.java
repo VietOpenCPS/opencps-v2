@@ -50,6 +50,8 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(object.getUserName()));
 		document.addKeywordSortable(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
+		_log.info("object.getPrimaryKey(): "+object.getPrimaryKey());
+		_log.info("ServiceInfo: "+object.getServiceInfoId());
 
 		document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE, object.getServiceCode());
 

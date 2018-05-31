@@ -158,6 +158,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(returnModel).build();
 
 		} catch (Exception e) {
+			_log.info(e);
 			ErrorMsg error = new ErrorMsg();
 
 			if (e instanceof UnauthenticationException) {
