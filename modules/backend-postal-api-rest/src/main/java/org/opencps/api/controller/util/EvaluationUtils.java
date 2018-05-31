@@ -11,7 +11,7 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
-import backend.cmc.model.Evaluation;
+import backend.feedback.model.Evaluation;
 
 public class EvaluationUtils {
 

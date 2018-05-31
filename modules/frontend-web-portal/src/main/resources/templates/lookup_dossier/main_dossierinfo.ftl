@@ -8,7 +8,7 @@
 	<div class="form-group search-icon col-sm-6 P0 MB10"> <input type="text" class="form-control" id="input_search_dossierinfo" oninput="" placeholder="Nhập mã hồ sơ / Họ và tên"> </div>
 	<!--Render listview tìm kiếm theo mã hồ sơ / họ tên-->
     <div class="col-sm-12 MB10 PL0">
-		<ul class="ul-default" id="lvDossierResultSearch"></ul>
+		<#-- <ul class="ul-default" id="lvDossierResultSearch"></ul> -->
 		<script type="text/x-kendo-template" id="tempDossierResultSearch">
 			<li class="itemResult" data-pk="#:dossierId#"><a href="javascript:;" class="hover-pointer text-hover-blue">> </i> #:applicantName# - #:dossierId#</a></li>
 		</script>
@@ -67,9 +67,11 @@
     </div>
 </div>
 <script type="text/javascript">
+
 	var dossierId;
 	$(function(){
 		$("#input_search_dossierinfo").val("${(keyword)!}");
+		var paramKeyword = $("#input_search_dossierinfo").val().toLowerCase();
 		$("#detailView2").hide();
 		// dataSource thông tin hồ sơ cơ bản
 		var dataSourceDossierResultSearch = new kendo.data.DataSource({
@@ -82,23 +84,35 @@
 			            type: 'GET',
 			            headers : {"groupId": 55217},
 			            data: {
-			            	keyword: options.data.keyword,
-			            	SecetKey:${(secretKey)!}
+			            	keyword: paramKeyword,
+			            	secetKey: "OPENCPSV2"
 			            },
 			            success: function (result) {
 			                if (result.data) {
 			                	options.success(result);
 			                	loadDetail();
 			                	var NoItem = result.data.length;
-				            	if (NoItem == 1) {
-				            		$("#detailView").load("${ajax.dossierinfo}",
-					                 	function(success){
-					                 		dataItem = result.data[0];
-					                  		pullDataDetail(dataItem.dossierId);
-					                  	}
-					              	);
-					            	$("#detailView2").hide()
-				            	};
+			            		$("#detailView").load("${ajax.dossierinfo}",
+				                 	function(success){
+				                 		dataItem = result.data[0];
+				                  		pullDataDetail(dataItem.dossierId);
+				                  		var viewModel = kendo.observable({
+						                    dossierId: dataItem.dossierId,
+							                applicantName: dataItem.applicantName,
+						                    serviceName: dataItem.serviceName,
+						                    dossierNo: dataItem.dossierNo,
+						                    govAgencyName: dataItem.govAgencyName,
+						                    submitDate: dataItem.submitDate,
+						                    dueDate: dataItem.dueDate,
+						                    dossierStatusText: dataItem.dossierStatusText
+						                });
+						                kendo.bind($("#DossiersDetailInfo"), viewModel);
+						                $(".panel").css("border-radius","0");
+				                  	}
+				              	);
+				            	$("#detailView2").hide()
+			                }else{
+			                	$("#detailView").html("Hồ sơ với mã hồ sơ đã nhập không tồn tại trong hệ thống");
 			                }
 			            },
 			            error : function(xhr){
@@ -147,14 +161,20 @@
 	        autoBind: false
 		});
 		// dataSource listview trái
+		
 		var dataSourceDossierResult = new kendo.data.DataSource({
-			transport : {
-				read : function(options){
-					$.ajax({
-						url : "${api.server}/dossiers?status=done",
-						dataType : "json",
-						type : "GET",
-						headers : {"groupId": ${groupId}},
+			transport: {
+			    read: function (options) {
+			        $.ajax({
+			        	// url: "http://localhost:3000/dossiers",
+			            url: "${api.server}/dossiers",
+			            dataType: "json",
+			            type: 'GET',
+			            headers : {"groupId": 55217},
+			            data: {
+			            	keyword: paramKeyword,
+			            	secetKey: "OPENCPSV2"
+			            },
 						success : function(result){
 							if (result.data) {
 								options.success(result);
@@ -191,8 +211,19 @@
 	                	$("#detailView").load("${ajax.dossierinfo}",
 		                   	function(success){
 		                   		pullDataDetail(dataItem.dossierId);
-		                   	}
-	                	);
+		                   		var viewModel = kendo.observable({
+				                    dossierId: dataItem.dossierId,
+					                applicantName: dataItem.applicantName,
+				                    serviceName: dataItem.serviceName,
+				                    dossierNo: dataItem.dossierNo,
+				                    govAgencyName: dataItem.govAgencyName,
+				                    submitDate: dataItem.submitDate,
+				                    dueDate: dataItem.dueDate,
+				                    dossierStatusText: dataItem.dossierStatusText
+			                	});
+				                kendo.bind($("#DossiersDetailInfo"), viewModel);
+				                $(".panel").css("border-radius","0");
+	                		});
 	                	dossierId = dataItem.dossierId;
 	                },
 	        dataBound: function(e) {
