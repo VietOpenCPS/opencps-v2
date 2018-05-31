@@ -73,7 +73,7 @@
 					<v-flex xs12 sm7 jx-bind="applicantIdDate">
 						<span v-if="themeDisplay.getUserId() != detailRegistModel.userId">
 						
-							{{detailRegistModel.applicantIdDate | datetime}}
+							{{detailRegistModel.applicantIdDate | date}}
 							
 						</span>
 						<v-menu v-else

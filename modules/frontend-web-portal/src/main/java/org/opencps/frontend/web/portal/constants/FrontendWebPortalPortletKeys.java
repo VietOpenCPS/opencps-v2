@@ -12,6 +12,9 @@ public class FrontendWebPortalPortletKeys {
 
 	public static final String REGISTER_PORTLET_NAME =
 		"FrontendWebPortal_RegisterPortlet";
+	
+	public static final String REGISTERBVH_PORTLET_NAME =
+		"FrontendWebPortal_RegisterPortletBvh";
 
 	public static final String SERVICE_INFO_PORTLET_NAME =
 		"FrontendWebPortal_ServiceInfoPortlet";

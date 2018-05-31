@@ -2,7 +2,7 @@
 <div id="thong_tin_doanh_nghiep_table_template" class="hidden">
 	<template slot="items" slot-scope="props">
 		<td style="padding-top: 8px">{{ danhSachHoSoTablepage * 8 - 8 + props.index + 1 }}</td>
-		<td style="padding: 8px;" class="text-xs-left">
+		<td style="padding: 8px; width: 30%;" class="text-xs-left">
 			{{ props.item.applicantName }}  <br/>
 			{{ props.item.address }}
 		</td>
@@ -12,12 +12,12 @@
 			{{ props.item.contactEmail }} 
 		</td>
 		<td style="padding: 8px;" class="text-xs-left">{{ props.item.contactName }}</td>
-		<td style="padding: 8px;" class="text-xs-left">
+		<!-- <td style="padding: 8px;" class="text-xs-left">
 			///
 		</td>
 		<td style="padding: 8px;" class="text-xs-left">
 			///
-		</td>
+		</td> -->
 
 		<td style="padding: 8px;" class="text-xs-left">
 			

@@ -21,7 +21,7 @@
 		<div class="dossier-general-info P15 MB30">
 			<div class="col-sm-4">
 				<div class="row MB5">
-					<span class="text-bold">Số hồ sơ</span>: <span data-bind="text:dossierNo"></span>
+					<span class="text-bold">Mã tiếp nhận hồ sơ</span>: <span data-bind="text:dossierNo"></span>
 				</div>
 				<#-- <div class="row" id="">
 					<a href="javascript:;" class="text-blue text-underline">
@@ -47,22 +47,22 @@
 			
 		</div>
 
-		<div class="guide-section PB0">
+		<!-- <div class="guide-section PB0">
 			<div class="head-part slide-toggle">
 				<div class="background-triangle-small">
 					<i class="fa fa-star"></i>
-
+		
 				</div> 
 				<span class="text-uppercase hover-pointer">Hướng dẫn</span> 
 				<i class="fa fa-angle-down pull-right hover-pointer MR15" aria-hidden="true" style="font-size: 150%;"></i>
 			</div>
-
+		
 			<div class="content-part collapse PB15" id="collapseDossierG">
 				<span data-bind="html:stepInstruction"></span>
-				<#-- <p class="MB0 text-light-blue PB15"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p> -->
+				<p class="MB0 text-light-blue PB15"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p>
 			</div>
-
-		</div>
+		
+		</div> -->
 		<#-- Bổ sung thông tin chủ hồ sơ -->
 		<div class="row">
 			<div class="col-sm-12">
@@ -179,7 +179,7 @@
 
 							<div class="row MB5">
 								<div class="col-sm-2">								
-									<span class="text-bold">Gía trị thanh toán</span>	
+									<span class="text-bold">Giá trị thanh toán</span>	
 								</div>
 								<div class="col-sm-10 red">
 									<span data-bind="text:paymentAmount"></span>
@@ -233,7 +233,10 @@
 											<div class="col-sm-4 text-center MB10">
 												<i class="fa fa-file-image-o text-center text-light-gray MB10" aria-hidden="true" style="font-size:100px;">
 													
-												</i> <br>
+												</i> 
+												<br>
+												<span id="fileNamePayment" name="fileNamePayment"></span>
+												<br>
 												<span class="text-center" style="font-size: 10px;">Chứng từ thanh toán cho chuyển khoản là giấy yêu cầu nộp tiền vào ngân hàng hoặc hóa đơn chứng nhận giao dịch chuyển khoản được in ra</span>
 											</div>
 											<div class="col-sm-4">
@@ -428,8 +431,8 @@
 							}
 						},
 						confirmDatetime : function(){
-							if(this.get('paymentDossier').confirmDatetime ){
-								return this.get('paymentDossier').confirmDatetime;
+							if(this.get('paymentDossier').createDate){
+								return parseDateUtc(this.get('paymentDossier').createDate);
 							}
 						},
 						submitting : function(){
@@ -517,6 +520,22 @@
 		}
 	});
 
+	$("#filePayment").change(function(event){
+		event.preventDefault();
+		try{
+			var fileName = $("#filePayment")[0].files[0].name;
+			if(fileName){
+				$("#fileNamePayment").html(fileName);
+			}else {
+				$("#fileNamePayment").html("");
+			}
+
+		}catch(e){
+			$("#fileNamePayment").html("");
+		}
+
+	});
+
 	$("#dossier-payment-viewpdf").click(function(){
 		var referenceUid = $(this).attr("data-pk");
 		if(referenceUid){
@@ -540,4 +559,9 @@
 			});
 		}
 	});
+
+
+	function parseDateUtc(date){
+		return moment(String(date)).utc().format('DD/MM/YYYY HH:mm:ss');
+	}
 </script>

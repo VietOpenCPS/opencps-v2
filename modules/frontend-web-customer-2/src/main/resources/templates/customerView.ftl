@@ -67,7 +67,7 @@
 									<ul id="profileStatus" class="ul-default ul-with-left-icon icon-folder have-bagde">
 										<#if constants.dossierStatus?has_content>
 											<#list constants.dossierStatus as odossierStatus>
-												<li dataPk='${odossierStatus.value}' class='itemStatus' data-bind="click: filterStatus">
+												<li dataPk='${odossierStatus.value}' dataPkSub='${odossierStatus.valueSub}' class='itemStatus' data-bind="click: filterStatus">
 													<i class='fa fa-folder icon-left' aria-hidden='true'></i>  
 													<span class="hover-pointer text-hover-blue dossierStatus">${odossierStatus.text}</span>
 													<span class="bagde">0</span>
@@ -92,9 +92,13 @@
 							<div id="groupLookup" class="accordion-body collapse in">
 								<div class="accordion-inner">
 									<ul id="" class="ul-default have-bagde">
-										<li class="hover-pointer text-hover-blue itemStatus" id="searchCC" 
+										<#-- <li class="hover-pointer text-hover-blue itemStatus" id="searchCC" 
 											data-bind="click: filterInvestigation" >
 											<span class="dossierStatus">Tra cứu chứng chỉ</span>
+										</li> -->
+										<li class="hover-pointer text-hover-blue itemStatus" id="searchCC" 
+											data-bind="click: filterInvestigation" >
+											<span class="dossierStatus">Tra cứu hồ sơ</span>
 										</li>
 										<li class="hover-pointer text-hover-blue itemStatus" 
 											data-bind="click: filterInvestigation">

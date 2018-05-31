@@ -13,4 +13,6 @@ Liferay-Service: true
 @fontbox.jar;lib:=true,\
 @opencpspki.jar;lib:=true
 Import-Package: *;resolution:=optional
-Export-Package: org.opencps.kyso.action.impl
+Export-Package: \
+	org.opencps.kyso.action.impl,\
+	org.opencps.kyso.action

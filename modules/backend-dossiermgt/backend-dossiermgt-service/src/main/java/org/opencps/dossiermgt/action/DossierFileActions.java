@@ -45,5 +45,7 @@ public interface DossierFileActions {
 	public void zipDirectory(File dir, String zipDirName) throws IOException;
 
 	public DossierFile getDossierFileByDeliverableCode(long groupId, String deliverableCode);
+
+	public DossierFile getDossierFileByFileTemplateNo(long id, String fileTemplateNo);
 	
 }

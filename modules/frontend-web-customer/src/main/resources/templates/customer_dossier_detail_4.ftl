@@ -19,13 +19,15 @@
 
 				<#if sendReissue?has_content >
 				
-				<a class="" id="btn-sendReissue-dossier-header" onclick="fnCorrecting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
+				<a class="" id="btn-sendReissue-dossier-header" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
 
 				<#elseif sendAdd?has_content >
 
-				<a class="" id="btn-sendadd-dossier-header" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
+				<a class="" id="btn-sendadd-dossier-header" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
 
-				<#else>
+				<#elseif dossier.dossierStatus?has_content && dossier.dossierStatus == "waiting" && dossier.submitting?has_content && dossier.submitting != true>
+
+				<a class="btn btn-active" id="btn-submit-dossier-header" style="display: none;" data-bind="value : lockState"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</a>
 
 				</#if>
 			</div>
@@ -78,12 +80,12 @@
 						<i class="fa fa-angle-down pull-right hover-pointer MR15" aria-hidden="true" style="font-size: 150%;"></i>
 					</div>	
 
-					<div class="content-part collapse PB15" id="collapseDossierG">
-
-						<span data-bind="html:dossierNote"></span>
-						<#-- <p class="MB0 text-light-blue PB15"><a href="javascript:;" id="guide-toggle">Xem thêm >></a></p> -->
+					<div class="content-part toggle-hide collapse" id="guideDossier">
+						<div style="height: 100px;overflow: hidden;" id="guideDossierContent">
+							<span data-bind="html:dossierNote" id="textDossierNote"></span>
+						</div>
+						<p class="MB0 text-light-blue PB10"><a href="javascript:;" id="guide-toggle" state="normal">Xem thêm >></a></p>
 					</div>
-
 				</div>
 			</div>
 		</div>
@@ -206,6 +208,7 @@
 									#:partName# 
 									#if(required){#
 									<span class="red">*</span>
+									<input type="hidden" id="validPart#:id#" name="validPart#:id#" class="validPart" value="0">
 									#}#
 								</span>
 
@@ -240,58 +243,58 @@
 							console.log(dossierFile);
 							var hiddenState = "pointer-events:none;";
 							if("${(dossier.dossierStatus)!}" === "new" || "${(dossier.dossierStatus)!}" === "waiting" || "${(dossier.dossierStatus)!}" === ""){
-								hiddenState = "";
-							}
+							hiddenState = "";
+						}
 
-							#
+						#
 
-							<div class="collapse" id="collapseDossierPart#:id#">
-								
-								#if("${(dossier.dossierStatus)!}" === "new" || "${(dossier.dossierStatus)!}" === "waiting" || "${(dossier.dossierStatus)!}" === ""){#
-								<div class="col-xs-12 col-sm-12 text-right">
-									<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
-									type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
-									<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
-								</div>
-								#}#
-								
+						<div class="collapse" id="collapseDossierPart#:id#">
 
-								<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# >
-									<div class="formAlpacaDN" id="formPartNo#:id#" style="#:hiddenState#" data-pk="#:id#" data-partname="#:partName#">
-										
-									</div>
+							#if("${(dossier.dossierStatus)!}" === "new" || "${(dossier.dossierStatus)!}" === "waiting" || "${(dossier.dossierStatus)!}" === ""){#
+							<div class="col-xs-12 col-sm-12 text-right">
+								<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
+								type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
+								<input type="hidden" name="" id="dossierFileId#:id#" value="#:dossierFile.dossierFileId#">
+							</div>
+							#}#
+
+
+							<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}# >
+								<div class="formAlpacaDN" id="formPartNo#:id#" style="#:hiddenState#" data-pk="#:id#" data-partname="#:partName#">
+
 								</div>
 							</div>
-							
-							#
+						</div>
 
-							$.ajax({
-							url : "${api.server}/dossiers/${dossierId}/files/"+dossierFile.referenceUid+"/formscript",
-							dataType : "text",
-							type : "GET",
-							headers : {"groupId": ${groupId}},
-							success : function(result){
-							$("\\#formPartNo"+id).empty();
-							var alpaca1 = eval("(" + result + ")");
-							var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
-							if(formdata){
-							$("\\#validPart"+id).val("1");
-						}
-						alpaca1.data = formdata;
+						#
 
-						$("\\#formPartNo"+id).alpaca(alpaca1);
+						$.ajax({
+						url : "${api.server}/dossiers/${dossierId}/files/"+dossierFile.referenceUid+"/formscript",
+						dataType : "text",
+						type : "GET",
+						headers : {"groupId": ${groupId}},
+						success : function(result){
+						$("\\#formPartNo"+id).empty();
+						var alpaca1 = eval("(" + result + ")");
+						var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
+						if(formdata){
+						$("\\#validPart"+id).val("1");
+					}
+					alpaca1.data = formdata;
 
-						<#-- $("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12 "><button id="btn-save-formalpaca'+id+'" class="btn btn-active MB10 MT10 saveForm" type="button" data-pk="'+id+'" referentUid="'+referentUidFile+'">Ghi lại</button></div></div>'); -->
+					$("\\#formPartNo"+id).alpaca(alpaca1);
 
-					},
-					error : function(result){
+					<#-- $("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12 "><button id="btn-save-formalpaca'+id+'" class="btn btn-active MB10 MT10 saveForm" type="button" data-pk="'+id+'" referentUid="'+referentUidFile+'">Ghi lại</button></div></div>'); -->
 
-				}
-			});
-		}#
+				},
+				error : function(result){
 
-		#}#
-	</script>
+			}
+		});
+	}#
+
+	#}#
+</script>
 </div>
 </form>
 </div>
@@ -377,7 +380,10 @@
 									<div class="col-sm-4 text-center MB10">
 										<i class="fa fa-file-image-o text-center text-light-gray MB10" aria-hidden="true" style="font-size:100px;">
 
-										</i> <br>
+										</i>
+										<br>
+										<span id="fileNamePayment" name="fileNamePayment"></span>
+										<br>
 										<span class="text-center" style="font-size: 10px;">Chứng từ thanh toán cho chuyển khoản là giấy yêu cầu nộp tiền vào ngân hàng hoặc hóa đơn chứng nhận giao dịch chuyển khoản được in ra</span>
 									</div>
 									<div class="col-sm-4">
@@ -396,7 +402,7 @@
 								<div class="form-group"> 
 									<label class="control-label">Ghi chú kèm theo</label> 
 									<textarea class="form-control" rows="2" id="confirmNote" name="confirmNote" data-bind="text:confirmNote">
-											
+
 									</textarea> 
 								</div>
 							</div> 
@@ -570,32 +576,147 @@
 	
 </div>
 
-<#-- <div id="profileDetail" class="modal fade" role="dialog">
+<div id="profileDetail" class="modal fade" role="dialog">
 
-</div> -->
+</div>
 
 </div>
 <div class="button-row MT20">
 	<button class="btn btn-active" id="btn-back-dossier" type="button"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
 	<#if sendReissue?has_content >
 	
-	<button class="btn btn-active" id="btn-sendReissue-dossier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-	<a class="btn btn-active" id="btn-sendReissue-dossier-footer" onclick="fnCorrecting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
+	<a class="btn btn-active" id="btn-sendReissue-dossier-footer" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
 
 	<#elseif sendAdd?has_content >
 	
-	<button class="btn btn-active" id="btn-sendadd-dosier" data-bind="value : submitting" style="display:none"><i class="fa fa-paper-plane"></i> Xác nhận</button>
-	<a class="btn btn-active" id="btn-sendadd-dossier-footer" onclick="fnSubmitting(${(dossierId)!});" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
+	<a class="btn btn-active" id="btn-sendadd-dossier-footer" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
+
+	<#elseif resCancelling?has_content >
+
+	<a href="javascript:;" class="btn btn-active" id="btn-rescancelling-dossier" data-bind="value : cancellingDate"><i class="fa fa-paper-plane" ></i> Yêu cầu hủy</a>
 
 	<#elseif dossier.dossierStatus?has_content && dossier.dossierStatus == "waiting" &&            	dossier.submitting?has_content && dossier.submitting != true>
 
-	<button class="btn btn-active" id="btn-submit-dossier" ><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+	<button class="btn btn-active" id="btn-submit-dossier" style="display: none;" data-bind="value : lockState"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 
 	</#if>
 </div>
 </div>
 
 <script type="text/javascript">
+	var fnCheckValidTemplate = function(){
+		console.log($(".validPart"));
+		var valid = true;
+		try {
+
+			$(".validPart").each(function(index){
+				console.log($(this).val());
+				if($(this).val() === "0"){
+					valid = false;
+				}
+			});
+
+		}catch(e){
+			valid = false;
+		}
+
+		return valid;
+	}
+
+	function fnCheckLockTemplate(lockState, item){
+		if(lockState.startsWith("LOCK")){
+
+			if(lockState === "LOCK INPUT"){
+				return true;
+			}else if(lockState === "LOCK ALL"){
+				return true;
+			}else if (lockState !== "LOCK ALL" && lockState !== "LOCK INPUT" && lockState !== "LOCK OUTPUT" )  {
+				var partLocksStr = lockState.split(" ")[1];
+				if(partLocksStr){
+					var partLocks = partLocksStr.split(",");
+					for (var i = 0; i < partLocks.length; i++) {
+						if(partLocks[i] === item){
+							return true;
+						}
+					}
+				}
+			}
+
+		}else if(lockState.startsWith("UPDATE")){
+			
+			if(lockState === "UPDATE INPUT"){
+				return false;
+			}
+
+			if(lockState === "UPDATE ALL"){
+				return false;
+			}
+
+			if (lockState !== "UPDATE ALL" && lockState !== "UPDATE INPUT" && lockState !== "UPDATE OUTPUT" ){
+				var partLocksStr = lockState.split(" ")[1];
+				if(partLocksStr){
+					var partLocks = partLocksStr.split(",");
+					for (var i = 0; i < partLocks.length; i++) {
+						if(partLocks[i] === item){
+							return false;
+						}
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+	var fnCancelling = function(dossierId){
+		console.log("-----------1" + "${(dossier.dossierStatus)!}");
+		if("${(dossier.dossierStatus)!}" !== "new" && "${(dossier.dossierStatus)!}" !== "null" && "${(dossier.dossierStatus)!}" !== "done"){
+			var applicantNote = $("textarea#applicantNote").val();
+			if(applicantNote.trim() == ''){
+				alert('Bạn phải nhập ý kiến trước khi gửi.');
+				$("textarea#applicantNote").focus();
+				return;
+			}
+			console.log("run rescancelling!");
+
+			$.ajax({
+				url : "${api.server}/dossiers/"+dossierId+"/cancelling",
+				dataType : "json",
+				type : "POST",
+				headers : {
+					"groupId" : ${groupId},
+					"Accept" : "application/json"
+				},
+				processData: false,
+				contentType: 'text/plain',
+				data : $("textarea#applicantNote").val(),
+				success : function(result){
+
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công!"
+					}, "success");
+
+					$("#btn-rescancelling-dossier,#btn-cancelling-header").hide();
+
+					try{
+						manageDossier.navigate("/"+statusRouteTem.status); 
+						$('html,body').scrollTop(0);
+					}catch(e){
+
+					}
+				},
+				error : function(result){
+					notification.show({
+						message: "Thực hiện không thành công, xin vui lòng thử lại!"
+					}, "error");
+				}
+			});
+
+		}
+
+	}
+
+
 	var arrIsChangeForm = [];
 
 	var fnCheckIsChangeForm = function(){
@@ -637,33 +758,13 @@
 		});
 
 		$(document).off("click",".dossier-component-profile");
-		$(document).on("click",".dossier-component-profile",function(){
-			/*var partNo = $(this).attr("data-partno");
-			var dossierId = "${(dossierId)!}";
-			var dossierTemplateNo = "${(dossier.dossierTemplateNo)!}";
-			
-			var url = "#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo;
-
-			var cf = fnConfirm("Thông báo",
-			 "Bạn muốn mở trong tab mới hay cửa sổ mới", 
-			 "Tab mới", "Cửa sổ mới",
-			function(){
-
-				window.open(url,"_blank");
-
-			}, function(){
-				window.open(url,"_blank","location=yes");
-			});
-
-			cf.open();
-*/
+		$(document).on("click",".dossier-component-profile",function() {
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
 			var dossierTemplateId = "${(dossierTemplateId)!}";
 			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateId="+dossierTemplateId,function(result){
-
+				$(this).modal("show");
 			});
-
 		});
 
 		$(document).off("click",".delete-dossier-file");
@@ -710,6 +811,9 @@
 											notification.show({
 												message: "Yêu cầu được thực hiện thành công"
 											}, "success");
+
+
+											$("#validPart"+dataPartNo).val("0");
 										}else {
 											notification.show({
 												message: "Xẩy ra lỗi, vui lòng thử lại"
@@ -964,6 +1068,36 @@
 
 								return "";
 							},
+							lockState : function(e){
+								if(result.lockState){
+									if(result.lockState.startsWith("LOCK")){
+										if(result.lockState === "LOCK ALL"){
+											$("#btn-submit-dossier").remove();
+											$("#btn-delete-dossier").remove();
+											$("#btn-submit-dossier-header").remove();
+											$("#btn-delete-dossier-header").remove();
+										}else {
+											$("#btn-submit-dossier").show();
+											$("#btn-delete-dossier").show();
+											$("#btn-submit-dossier-header").show();
+											$("#btn-delete-dossier-header").show();
+										}
+									}else {
+										$("#btn-submit-dossier").show();
+										$("#btn-delete-dossier").show();
+										$("#btn-submit-dossier-header").show();
+										$("#btn-delete-dossier-header").show();
+									}
+
+								}else {
+									$("#btn-submit-dossier").show();
+									$("#btn-delete-dossier").show();
+									$("#btn-submit-dossier-header").show();
+									$("#btn-delete-dossier-header").show();
+								}
+
+								return "";
+							},
 							serviceName : result.serviceName,
 							govAgencyName : result.govAgencyName,
 
@@ -1176,6 +1310,8 @@ var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
 				message: "Yêu cầu được thực hiện thành công"
 			}, "success");
 
+			$("#validPart"+partNo).val("1");
+
 			$(file).val("");
 
 		},
@@ -1268,6 +1404,8 @@ var removeDossierFileNotEform = function(dossierId,fileTemplateNo,partNo){
 			$(".dossier-component-profile").filter("[data-partno="+partNo+"]").html('<span class="number-in-circle" >0</span>');
 
 			$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",0);
+
+			$("#validPart"+partNo).val("0");
 		},
 		error : function(result) {
 			notification.show({
@@ -1309,6 +1447,9 @@ var funGenNumberFile = function(arrCount){
 	$(".dossier-component-profile").each(function(index){
 		var partNo = $(this).attr("data-partno");
 		var found = $.grep(arrCount, function(v) {
+			if(v.dossierPartNo === partNo){
+				$("#validPart"+partNo).val(1);
+			}
 			return v.dossierPartNo === partNo;
 		});
 
@@ -1480,12 +1621,35 @@ $(document).on("click",".saveFormAlpaca",function(event){
 
 });
 
-$("#btn-sendReissue-dossier").click(function(){
-	fnCorrecting(${(dossierId)!});
+$("#btn-sendReissue-dossier-footer,#btn-sendReissue-dossier-header").click(function(){
+	
+	var cf = fnConfirm("Thông báo",
+		"Bạn muốn nộp hồ sơ này", 
+		"Nộp hồ sơ", "Hủy bỏ",
+		function(){
+
+			fnCorrecting(${(dossierId)!});
+
+		}, function(){
+			
+		});
+
+	cf.open();
 });
 
-$("#btn-sendadd-dosier").click(function(){
-	fnSubmitting(${(dossierId)!});
+$("#btn-sendadd-dossier-footer,#btn-sendadd-dossier-header").click(function(event){
+	var cf = fnConfirm("Thông báo",
+		"Bạn muốn nộp hồ sơ này", 
+		"Nộp hồ sơ", "Hủy bỏ",
+		function(){
+
+			fnSubmitting(${(dossierId)!});
+
+		}, function(){
+			
+		});
+
+	cf.open();
 });
 
 
@@ -1499,53 +1663,35 @@ var fnCorrecting = function(dossierId){
 	}
 	console.log("run sendReissue!");
 	$.ajax({
-		url : "${api.server}/dossiers/${dossierId}",
+		url : "${api.server}/dossiers/"+dossierId+"/correcting",
 		dataType : "json",
-		type : "PUT",
+		type : "POST",
 		headers: {
 			"groupId": ${groupId},
 			Accept : "application/json"
 		},
-		data : {
-			applicantNote : $("textarea#applicantNote").val()
-		},
+		processData: false,
+		contentType: 'text/plain',
+		data : $("textarea#applicantNote").val(),
 		success : function(result){
-			$.ajax({
-				url : "${api.server}/dossiers/"+dossierId+"/correcting",
-				dataType : "json",
-				type : "GET",
-				headers: {
-					"groupId": ${groupId},
-					Accept : "application/json"
-				},
-				data : {
+			notification.show({
+				message: "Yêu cầu được thực hiện thành công!"
+			}, "success");
 
-				},
-				success : function(result){
-					notification.show({
-						message: "Yêu cầu được thực hiện thành công!"
-					}, "success");
+			$("#btn-sendReissue-dossier-header").hide();
+			$("#btn-sendReissue-dossier-footer").hide();
 
-					$("#btn-sendReissue-dossier-header").hide();
-					$("#btn-sendReissue-dossier-footer").hide();
+			try {
+				manageDossier.navigate("/"+statusRouteTem); 
+				$('html,body').scrollTop(0);
+			}catch(e){
 
-					try {
-						manageDossier.navigate("/"+statusRouteTem); 
-						$('html,body').scrollTop(0);
-					}catch(e){
-
-					}
-				},
-				error : function(result){
-					notification.show({
-						message: "Thực hiện không thành công, xin vui lòng thử lại!"
-					}, "error");
-				}
-			});
-
+			}
 		},
 		error : function(result){
-
+			notification.show({
+				message: "Thực hiện không thành công, xin vui lòng thử lại!"
+			}, "error");
 		}
 	});
 
@@ -1580,6 +1726,12 @@ $("#btn-back-dossier").click(function(){
 	}
 });
 
+window.onload = function(){
+	if($("#textDossierNote").text().length < 550){
+		$("#guide-toggle").remove();
+	}
+}
+
 
 var fnSubmitting = function(dossierId){
 	console.log("----------4" + "${(dossier.dossierStatus)!}");
@@ -1589,6 +1741,16 @@ var fnSubmitting = function(dossierId){
 		alert('Bạn phải nhập ý kiến trước khi gửi.');
 		$("textarea#applicantNote").focus();
 		return;
+	}
+
+	var validTemplate = fnCheckValidTemplate();
+
+	if(!validTemplate){
+		notification.show({
+			message: "Vui lòng kiểm tra lại các thông tin bắt buộc của các thành phần hồ sơ!"
+		}, "error");
+
+		return ;
 	}
 
 	//------------------------------------------
@@ -1616,7 +1778,7 @@ var fnSubmitting = function(dossierId){
 	
 	if(isNext){
 		$.ajax({
-			url : "${api.server}/dossiers/${dossierId}",
+			url : "${api.server}/dossiers/"+dossierId,
 			dataType : "json",
 			type : "PUT",
 			headers: {
@@ -1658,97 +1820,48 @@ var fnSubmitting = function(dossierId){
 						}, "error");
 					}
 				});
-
 			},
 			error : function(result){
 
 			}
 		});
+
 	}
 
 }
 
-$("#btn-submit-dossier").click(function(){
-	$("#btn-back-dossier").prop("disabled","disabled");
-	var isNext = false;
-	try{
-		var isChange = fnCheckIsChangeForm();
-		console.log("isChange");
-		if(isChange){
-			var cf = confirm("Bạn vừa thay đổi dữ liệu trong "+isChange.partName+" bạn có muốn lưu lại!");
-			if(cf){
-				$(".saveFormAlpaca[data-pk="+isChange.partNo+"]").trigger("click");
-			}else {
+$("#btn-submit-dossier,#btn-submit-dossier-header").click(function(){
 
-				$.each(arrIsChangeForm,function(index,value){
-					if(value.partNo === isChange.partNo){
-						arrIsChangeForm.splice(index, 1);
-						return ;
-					}
-				});
-				isNext = true;
-			}
+	var cf = fnConfirm("Thông báo",
+		"Bạn muốn nộp hồ sơ này", 
+		"Nộp hồ sơ", "Hủy bỏ",
+		function(){
+
+			fnSubmitting(${(dossierId)!});
+
+		}, function(){
 			
-		}else {
-			isNext = true;
-		}
-	}catch(e){
-		isNext = true;
-	}
-
-
-	if(isNext){
-		$.ajax({
-			url : "${api.server}/dossiers/${dossierId}",
-			dataType : "json",
-			type : "PUT",
-			headers: {
-				"groupId": ${groupId},
-				Accept : "application/json"
-			},
-			data : {
-				applicantNote : $("textarea#applicantNote").val()
-			},
-			success : function(result){
-				$.ajax({
-					url : "${api.server}/dossiers/${dossierId}/submitting",
-					dataType : "json",
-					type : "GET",
-					headers: {
-						"groupId": ${groupId},
-						Accept : "application/json"
-					},
-					data : {
-
-					},
-					success : function(result){
-						$("#btn-submit-dossier").hide();
-						$("#btn-back-dossier").prop("disabled","");
-						notification.show({
-							message: "Yêu cầu được thực hiện thành công!"
-						}, "success");
-
-						try {
-							manageDossier.navigate("/"+statusRouteTem); 
-							$('html,body').scrollTop(0);
-						}catch(e){
-
-						}
-					},
-					error : function(result){
-						$("#btn-back-dossier").prop("disabled","");
-						notification.show({
-							message: "Thực hiện không thành công, xin vui lòng thử lại!"
-						}, "error");
-					}
-				});
-
-			},
-			error : function(result){
-
-			}
 		});
-	}
+
+	cf.open();
+
+	
+	
+});
+
+$("#btn-rescancelling-dossier").click(function(){
+	var cf = fnConfirm("Thông báo",
+		"Bạn có muốn gửi yêu cầu hủy?", 
+		"OK", "Thoát",
+		function(){
+
+			fnCancelling(${(dossierId)!});
+
+		}, function(){
+
+		});
+
+	cf.open();
 	
 });
 
@@ -1776,6 +1889,22 @@ $("#dossier-payment-online").click(function(){
 
 		});
 	}
+});
+
+$("#filePayment").change(function(event){
+	event.preventDefault();
+	try{
+		var fileName = $("#filePayment")[0].files[0].name;
+		if(fileName){
+			$("#fileNamePayment").html(fileName);
+		}else {
+			$("#fileNamePayment").html("");
+		}
+		
+	}catch(e){
+		$("#fileNamePayment").html("");
+	}
+
 });
 
 $("#dossier-payment-confirm").click(function(){
@@ -1894,6 +2023,22 @@ window.onhashchange = function(event) {
 	}
 	
 }
+
+$("#guide-toggle").click(function(event){
+	event.preventDefault();
+	var state = $(this).attr("state");
+
+	if(state === "normal"){
+		$('#guideDossierContent').css('height', 'auto');
+		$(this).attr("state","full");
+		$(this).html("Thu gọn >>");
+	}else {
+		$('#guideDossierContent').css('height', '100px');
+		$(this).attr("state","normal");
+		$(this).html("Xem thêm >>");
+	}
+
+});
 </script>
 
 <style type="text/css" media="screen">

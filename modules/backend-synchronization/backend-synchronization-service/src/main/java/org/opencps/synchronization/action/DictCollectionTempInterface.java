@@ -50,6 +50,8 @@ public interface DictCollectionTempInterface {
 	
 	public JSONObject getDictGroupsTemp(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
+
+	public DictGroupTemp getDictGroupTempDetail(String dictCollectionCode, String groupCode, long groupId);
 	
 	public JSONObject getDictItemsGroupTemp(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
@@ -68,6 +70,9 @@ public interface DictCollectionTempInterface {
 	public boolean deleteDictGroupsTemp(String groupCode, long groupId, ServiceContext serviceContext)
 			throws NotFoundException, UnauthenticationException, UnauthorizationException;
 	
+	public boolean deleteDictGroupsTemp(String collectionCode, String groupCode, long groupId, ServiceContext serviceContext)
+			throws NotFoundException, UnauthenticationException, UnauthorizationException;
+
 	public DictItemGroupTemp addDictGroupsDictItemsTemp(long userId, long groupId, String code, String groupCode,
 			String itemCode, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException;

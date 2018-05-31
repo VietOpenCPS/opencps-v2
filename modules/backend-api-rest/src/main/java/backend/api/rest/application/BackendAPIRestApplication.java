@@ -15,6 +15,7 @@ import org.opencps.api.context.provider.LocaleContextProvider;
 import org.opencps.api.context.provider.ServiceContextProvider;
 import org.opencps.api.context.provider.UserContextProvider;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
+import org.opencps.api.controller.impl.CertNumberManagementImpl;
 import org.opencps.api.controller.impl.CommentManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
 import org.opencps.api.controller.impl.DataTempManagementImpl;
@@ -107,6 +108,8 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new SignatureManagementImpl());
 		singletons.add(new DataTempManagementImpl());
 		singletons.add(new UserInfoLogManagementImpl());
+		//
+		singletons.add(new CertNumberManagementImpl());
 		
 		// add service provider
 		singletons.add(_serviceContextProvider);

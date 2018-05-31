@@ -16,14 +16,12 @@
 					<v-icon class="mr-2">undo</v-icon>
 				Quay lại
 				</v-btn>
+				
                 <v-btn v-if="navigationFilterview" v-on:click.native.prevent.stop="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0 hidden-sm-and-down"><v-icon>fullscreen</v-icon></v-btn>
 
                 <v-btn v-if="!navigationFilterview" v-on:click.native.prevent.stop="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0 hidden-sm-and-down"><v-icon>fullscreen_exit</v-icon></v-btn>
-
 			</div>
-	
 		</div>
-	
 	</div>
 	
 	<v-expansion-panel expand class="my-0 opencps-dossier-info">
@@ -41,13 +39,13 @@
 				<span class="text-bold">
 				Mã hồ sơ: 
 				</span>
-				{{ detailModel.dossierIdCTN }}
+				{{ detailModel.dossierNo }}
 			</div>
 			<div class="pb-1">
 				<span class="text-bold">
 				Số hồ sơ: 
 				</span>
-				{{ detailModel.dossierNo }}
+				{{ detailModel.dossierIdCTN }}
 			</div>
 			<div class="pb-1">
 				<span class="text-bold">
@@ -128,12 +126,12 @@
 			</v-flex>
 		</v-layout>
 	
-		<div class="text-bold primary--text expansion-panel__header">Thông tin sản phẩm</div>
+		<#-- <div class="text-bold primary--text expansion-panel__header">Thông tin sản phẩm</div>
 		<v-layout wrap class="px-4 pb-2">
 			<v-flex xs12 sm6>
 			<div class="pb-1" v-html="detailModel.briefNote"></div>
 			</v-flex>
-		</v-layout>
+		</v-layout> -->
 		</v-expansion-panel-content>
 	</v-expansion-panel>
 
@@ -158,7 +156,7 @@
 			<v-expansion-panel expand class="my-0">
 				<v-expansion-panel-content v-bind:value="true">
 				<div slot="header" class="text-bold"> <span>I. </span>Tài liệu nộp</div>
-				<small slot="header" class="text-gray text-right mr-4"> Những thành phần hồ sơ có dấu ( <span style="color: red;"> * </span> ) là thành phần bắt buộc</small>
+				<!-- <small slot="header" class="text-gray text-right mr-4"> Những thành phần hồ sơ có dấu ( <span style="color: red;"> * </span> ) là thành phần bắt buộc</small> -->
 				<div class="opencps_list_border_style" jx-bind="listDocumentIn"></div>
 				</v-expansion-panel-content>
 			</v-expansion-panel>
@@ -204,8 +202,8 @@
 					</div>
 					<div v-else-if="stepModel.plugin">
 						<div class="flex xs12 sm12 text-center">
-						<object id="dossierPDFViewPlugin" data="" width="100%" height="100%">
-								<iframe :src="stepModel.url" width="100%" height="100%"> </iframe>
+							<object id="dossierPDFViewPlugin" data="" width="100%" height="100%">
+									<iframe :src="stepModel.url" width="100%" height="100%"> </iframe>
 							</object>
 							<div id="dossierPDFViewNotFound" class="text-center">{{ stepModel.no_pdf }}</div>
 						</div>
@@ -260,6 +258,11 @@
                             </div>
                             <div :id="'alpacajs_form_'+item.partNo" class="expansion-panel__header"></div>
 							<input type="hidden" :id="'dossierFileId' + item.partNo" :value="item.dossierFileId" />
+
+							<input v-if="item.counter > 0" type="hidden" class="validCreatePart" :actionCode="stepModel.actionCode" :id="'validCreateFile' + item.partNo" value="1" />
+							
+							<input v-else type="hidden" class="validCreatePart" :actionCode="stepModel.actionCode" :id="'validCreateFile' + item.partNo" value="0" />
+
 							
                             </v-expansion-panel-content>
                         </v-expansion-panel>
@@ -330,6 +333,11 @@
 								$('#message_success_'+referentUid).addClass('hidden');
 							}, 
 						10000);
+
+						console.log("id----",id);
+						console.log("validCreateFile----",$("#validCreateFile"+id));
+
+						$("#validCreateFile"+id).val("1");
 					},
 					error : function(result){
 						$('#message_error_'+referentUid).removeClass('hidden');

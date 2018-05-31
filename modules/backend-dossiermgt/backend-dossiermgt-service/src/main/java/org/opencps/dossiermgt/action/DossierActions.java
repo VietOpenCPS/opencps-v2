@@ -28,6 +28,16 @@ public interface DossierActions {
 			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
 			boolean online, boolean notification, String applicantNote, ServiceContext context) throws PortalException;
 
+	public Dossier createDossier(long groupId,String serviceCode, String govAgencyCode, String applicantName,
+			String applicantIdType, String applicantIdNo, Date applicantIdDate, String address, String cityCode,
+			String districtCode, String wardCode, String contactName, String contactTelNo, String contactEmail,
+			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
+			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
+			String delegateWardCode, String applicantNote, String briefNote,
+			String dossierNo, String dossierTemplateNo, int viaPostal, String postalServiceCode,
+			String postalServiceName, String postalAddress, String postalCityCode, String postalDistrictCode,
+			String postalWardCode, String postalTelNo, ServiceContext context) throws PortalException;
+
 	public Dossier assignDossierToProcess(long dossierId, String dossierNote, String submissionNote, String briefNote,
 			String dossierNo, long folderId, long dossierActionId, String serverNo, ServiceContext context)
 			throws PortalException;
@@ -89,5 +99,8 @@ public interface DossierActions {
 	
 	
 	public Dossier submitPostDossier(long groupId, long dossierId, String referenceUid, ServiceContext context) throws PortalException ;
+
+	public JSONObject getDossierCountTodoPermission(long userId, long companyId, long groupId,
+			LinkedHashMap<String, Object> params, Object object, ServiceContext serviceContext);
 
 }

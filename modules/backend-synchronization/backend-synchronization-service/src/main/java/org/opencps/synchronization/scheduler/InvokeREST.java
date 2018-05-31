@@ -149,14 +149,19 @@ public class InvokeREST {
 
 		} finally {
 			if (conn != null) {
+				try {
 				conn.disconnect();
+			}
+				catch (Exception e) {
+					
+				}
 			}
 
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					_log.error(e);
+//					_log.error(e);
 				}
 			}
 

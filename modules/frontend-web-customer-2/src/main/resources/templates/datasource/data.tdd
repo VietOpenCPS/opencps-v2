@@ -15,7 +15,7 @@
 	      { "text" : "Hồ sơ chờ bổ sung", value : "waiting"},
 	      { "text" : "Hồ sơ chờ thanh toán", value : "paying"},
 	      { "text" : "Hồ sơ đã kết thúc", value : "done"},
-	      { "text" : "Hồ sơ yêu cầu hủy", value : "cancelling"},
+		  { "text" : "Hồ sơ yêu cầu hủy", value : "cancelling"},
 	      { "text" : "Hồ sơ xác nhận hủy", value : "cancelled"},
 	      { "text" : "Hồ sơ đến hạn XN hiệu lực", value : "expired"},
 	      { "text" : "Tất cả hồ sơ", value : "all"}

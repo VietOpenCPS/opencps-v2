@@ -1,14 +1,13 @@
-<div id="list_document_in_template" class="hidden">
-	<v-layout wrap class="pr-4 pl-3 align-center-flex row-list-style" v-if="item.fileEntryId > 0"> 
-		<v-flex xs12>
-		<v-btn flat fab small class="small-btn-x mx-0" color="grey darken-1" v-on:click.native="downloadReferenceFile(item)">
-			<v-icon>file_download</v-icon> 
+<div id="list_document_out_template" class="hidden">
+	<v-layout wrap class="px-4 align-center-flex row-list-style"> 
+		<v-flex xs11>
+			<!-- <span class="text-bold" style="position: absolute;">{{index + 1}}.</span>  -->
+			<div style="margin-left: 30px;"><span @click.prevent="viewOnNewTab(item)" style="cursor: pointer;">{{item.partName}}</span></div>
+		</v-flex>
+		<v-flex xs1 class="text-right">
+		<v-btn color="primary" fab small dark class="small-btn-x" v-on:click.native="viewDossierFileVersionNewTabOrWindow(item)">
+			{{item.counter}}
 		</v-btn>
-		
-		<v-btn flat small class="mx-0 px-0 btn__link_normal" v-on:click.native="downloadReferenceFile(item)">
-			{{item.partName}}
-		</v-btn>
-		
 		</v-flex>
 	</v-layout>
 </div>

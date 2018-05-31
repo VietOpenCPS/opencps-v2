@@ -25,7 +25,7 @@
 		</div>
 
 		<script type="text/x-kendo-template" id="dossier_template_template">
-			<li class="clearfix" data-pk="#: id #" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
+			<li class="clearfix dossier_template_item" data-pk="#: id #" style="padding: 10px 0 10px 5px;" role="option" aria-selected="true">
 				<div class="P0 col-xs-12 col-sm-12 dossier-template-item" data-pk="#: id #">
 					<strong>#: templateNo #</strong>
 					<a class="btn-group k-delete-button pull-right" href="\\#" title="Xóa">
@@ -140,13 +140,13 @@
 			dataBound: function(e) {
 
 				if (firstTimeLoad){
+					var data = this.dataSource.data();
 					var listView = e.sender;
 					var firstItem = listView.element.children().first();
 					listView.select(firstItem);
-
 					//  the first select dossier template
-					onSelectDossiertemplate(firstItem.attr("data-pk"));
-					$("#btn_save_dossier_template").attr("data-pk", firstItem.attr("data-pk"));
+					onSelectDossiertemplate(data[0].dossierTemplateId);
+					$("#btn_save_dossier_template").attr("data-pk", data[0].dossierTemplateId);
 
 					firstTimeLoad = false;
 				}
@@ -176,9 +176,7 @@
 
 				$("#dossiertemplate_part_container").show();
 				$("#dossiertemplate_part_form_container").hide();
-
-				console.log("dossierTemplateId---------------",dataItem.id);
-				onSelectDossiertemplate(dataItem.id);
+				
 				try{
 					$("#dossier_template_part_listview").getKendoListView().dataSource.page(1);
 				}catch(e){
@@ -188,6 +186,14 @@
 			}
 		});
 
+		$(document).off("click",".dossier_template_item");
+		$(document).on("click",".dossier_template_item",function(event){
+			event.preventDefault();
+			var id = $(this).attr("data-pk");
+			console.log("id==========",id);
+			onSelectDossiertemplate(id);
+		});
+
 		// $(document).on("click", ".dossier-template-item", function(event){
 		//   onSelectDossiertemplate($(this).attr("data-pk"));
 		// });
@@ -195,8 +201,8 @@
 		var onSelectDossiertemplate = function(id){
 			if(id){
 				console.log("load parts 2");
-				dossierTemplatePartDataSource.read({
-					dossierTemplateId: id
+				$("#dossier_template_part_listview").getKendoListView().dataSource.read({
+					dossierTemplateId : id
 				});
 			}
 		}

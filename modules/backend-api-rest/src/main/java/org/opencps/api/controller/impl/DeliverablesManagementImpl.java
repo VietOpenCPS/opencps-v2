@@ -145,6 +145,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			//
 			String deliverableType = input.getDeliverableType();
 			String deliverableCode = input.getDeliverableCode();
+			String govAgencyName = input.getGovAgencyName();
 			String govAgencyCode = input.getGovAgencyCode();
 			String applicantIdNo = input.getApplicantIdNo();
 			String applicantName = input.getApplicantName();
@@ -155,7 +156,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			String deliverableState = input.getDeliverableState();
 			//
 			Deliverable deliverable = action.addDeliverable(groupId, deliverableType, deliverableCode, 
-					govAgencyCode, applicantIdNo, applicantName, subject, issueDate, expireDate,
+					govAgencyCode, govAgencyName, applicantIdNo, applicantName, subject, issueDate, expireDate,
 					revalidate, deliverableState, serviceContext);
 
 			DeliverableInputModel result = DeliverableUtils.mappingToDeliverablesModel(deliverable);
@@ -475,7 +476,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 	@Override
 	public Response getDataFormByTypeCode(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String agencyNo, String typeCode,
-			String keyword, String start, String end, String applicantIdNo) {
+			String keyword, String start, String end, String applicantIdNo, String deliverableState) {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -507,6 +508,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			params.put(DeliverableTerm.GOV_AGENCY_CODE, agencyNo);
 			params.put(DeliverableTerm.DELIVERABLE_TYPE, typeCode);
 			params.put(DeliverableTerm.APPLICANT_ID_NO, applicantIdNo);
+			params.put(DeliverableTerm.DELIVERABLE_STATE, deliverableState);
 			params.put("pattern", pattern);
 			params.put("paramValues", paramValues);
 			params.put("paramTypes", paramTypes);

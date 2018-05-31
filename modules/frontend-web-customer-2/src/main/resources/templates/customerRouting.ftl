@@ -42,10 +42,14 @@
 		$("#noInput").hide();
 		resetValueFilter();
 		layout.showIn("#main_section", viewMainList);
+
+		getTotal();
+		
 		dataSourceProfile.read({
 			"status": "new,receiving,processing,waiting,paying,done,cancelling,cancelled,expired"
 		});
-		getTotal();
+		
+		
 
 		// $(".itemStatus").css("pointer-events","auto");
 		$('#searchCC').removeClass('active');
@@ -102,8 +106,6 @@
     	// Run Routing
     	var flagSort = true;
     	manageDossier.start();
-    	// 
-    	getTotal();
     	// 
     	var sortItem;
     	var sortType;

@@ -58,6 +58,7 @@ import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -166,7 +167,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 					cityName, input.getDistrictCode(), districtName, input.getWardCode(), wardName,
 					input.getContactName(), input.getContactTelNo(), input.getContactEmail(), input.getGovAgencyCode(),
 					input.getGovAgencyName(), input.getRegistrationState(), input.getRegistrationClass(),
-					serviceContext);
+					input.getRepresentativeEnterprise(), serviceContext);
 
 			result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
 			return Response.status(200).entity(result).build();
@@ -223,7 +224,8 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 					input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
 					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
 					input.getContactEmail(), input.getGovAgencyCode(), input.getGovAgencyName(),
-					input.getRegistrationState(), input.getRegistrationClass(), serviceContext);
+					input.getRegistrationState(), input.getRegistrationClass(), input.getRepresentativeEnterprise(),
+					serviceContext);
 
 			RegistrationDetailResultModel result = RegistrationUtils.mappingToRegistrationDetailResultModel(registration);
 
@@ -264,7 +266,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			List<RegistrationForm> lstRegistrationForm = action.getFormbyRegId(groupId, id);
 			int total = lstRegistrationForm.size();
 			for (RegistrationForm registrationForm : lstRegistrationForm) {
-				_log.info("registrationFormXXXXXXX: "+registrationForm);
+				_log.info("registrationFormXXXXXXX: "+registrationForm.getRemoved());
 			}
 
 			List<RegistrationFormModel> lstRegistrationFormModel = RegistrationFormUtils
@@ -372,7 +374,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 					input.getDistrictName(), input.getWardCode(), input.getWardName(), input.getContactName(),
 					input.getContactTelNo(), input.getContactEmail(), input.getGovAgencyCode(),
 					input.getGovAgencyName(), input.getRegistrationState(), input.getRegistrationClass(),
-					serviceContext);
+					input.getRepresentativeEnterprise(), serviceContext);
 
 			return Response.status(200).build();
 		} catch (Exception e) {
@@ -451,6 +453,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	}
 
 	//18
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDataFormByFormNo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String applicantNo, String agencyNo, String formNo,
@@ -529,7 +532,15 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 			for (Document doc : docList) {
 				String formData = doc.get(RegistrationFormTerm.FORM_DATA);
-				formDataArr.put(JSONFactoryUtil.createJSONObject(formData));
+				String registrationFormId = doc.get(RegistrationFormTerm.REGISTRATION_FORM_ID);
+				JSONObject formDataJson = null;
+				if (Validator.isNotNull(formData)) {
+					formDataJson = JSONFactoryUtil.createJSONObject(formData);
+					formDataJson.put("registrationFormId", registrationFormId);
+				}
+				if (formDataJson != null) {
+					formDataArr.put(formDataJson);
+				}
 			}
 			results.put("data", formDataArr);
 			
@@ -576,4 +587,26 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return processException(e);
 		}
 	}
+
+//	public static void main(String []args) {
+//		String jsonString = "{'name':'Hamidul Islam','country':'India'}";
+//		try {
+//			JSONObject jSONObject = JSONFactoryUtil.createJSONObject(jsonString);
+//			jSONObject.put("test", "123456");
+//	        jSONObject.put("test1", "1111");
+//	        String formData = String.valueOf(jSONObject);
+//	        if (Validator.isNotNull(formData)) {
+//	        	try {
+//					JSONObject formDataJson = JSONFactoryUtil.createJSONObject(formData);
+//					formDataJson.put("test2", "33333");
+//					System.out.println(formDataJson.toString());
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
+//	        	
+//			}
+//		} catch (JSONException e1) {
+//			e1.printStackTrace();
+//		}
+//	}
 }

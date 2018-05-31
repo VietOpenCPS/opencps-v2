@@ -139,6 +139,7 @@ public class DataTempManagementUtils {
 
 		try {
 
+			ett.setDictGroupId(dictGroup.getDictGroupId());
 			ett.setGroupCode(dictGroup.getGroupCode());
 			ett.setGroupName(dictGroup.getGroupName());
 			ett.setGroupNameEN(dictGroup.getGroupNameEN());
@@ -218,7 +219,7 @@ public class DataTempManagementUtils {
 				ett.setItemName(document.get(DictItemTempTerm.ITEM_NAME));
 				ett.setItemDescription(document.get(DictItemTempTerm.ITEM_DESCRIPTION));
 				ett.setLevel(Integer.valueOf(document.get(DictItemTempTerm.LEVEL)));
-				ett.setSibling(Integer.valueOf(document.get(DictItemTempTerm.LEVEL)));
+				ett.setSibling(Integer.valueOf(document.get(DictItemTempTerm.SIBLING)));
 				ett.setTreeIndex(document.get(DictItemTempTerm.TREE_INDEX));
 
 				ett.setCreateDate(Validator.isNotNull(document.get(DictItemTempTerm.CREATE_DATE)) ? APIDateTimeUtils

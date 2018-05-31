@@ -27,7 +27,7 @@ public class UserInfoLogActionsImpl implements UserInfoLogActions{
 	@Override
 	public List<UserInfoLog> getUserInfoLog(long userId, ServiceContext serviceContext) {
 		
-		return UserInfoLogLocalServiceUtil.getUserInfoLogs(0, 5);
+		return UserInfoLogLocalServiceUtil.getUserInfoLogs(userId);
 	}
 
 }
