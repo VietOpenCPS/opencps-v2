@@ -29,7 +29,7 @@
 
 				<a class="" id="btn-sendadd-dossier-header" data-bind="value : lockState"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
 
-				<#elseif dossier.submitting?has_content &&  dossier.submitting != true && dossier.dossierStatus?has_content && dossier.dossierStatus == "waiting">
+				<#elseif dossier.submitting?has_content &&  dossier.submitting != true && dossier.dossierStatus?has_content && dossier.dossierStatus == "waiting" || dossier.dossierStatus == "waiting_3">
 				
 				<a class="" id="btn-submit-dossier-header" data-bind="value : lockState"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</a>
 
@@ -635,7 +635,7 @@
 
 	<a href="javascript:;" class="btn btn-active" id="btn-rescancelling-dossier" data-bind="value : cancellingDate"><i class="fa fa-paper-plane" ></i> Yêu cầu hủy</a>
 
-	<#elseif dossier.submitting?has_content &&  dossier.submitting != true && dossier.dossierStatus?has_content && dossier.dossierStatus == "waiting">
+	<#elseif dossier.submitting?has_content &&  dossier.submitting != true && dossier.dossierStatus?has_content && dossier.dossierStatus == "waiting" || dossier.dossierStatus == "waiting_3">
 
 	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : lockState" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý..."><i class="fa fa-paper-plane" ></i> Nộp hồ sơ</button>
 	
@@ -1518,8 +1518,6 @@ var funDossierFile = function(dossierId,callBack){
 				}else {
 					callBack([]);
 				}
-
-
 			},
 			error : function(result){
 
@@ -1540,6 +1538,7 @@ var funGenNumberFile = function(arrCount){
 		$(this).attr("data-number",found.length);
 		$(this).html('<span class="number-in-circle" >'+found.length+'</span>');
 		if(found.length > 0){
+			$("#validPart"+partNo).val("1");
 			$(".show-dossierpart-new-tab[data-partno="+partNo+"]").attr('hasFile', 'true');
 		}else {
 			$("#validPart"+partNo).val("0");

@@ -47,7 +47,8 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 			advancedFilterNhanHieu : {},
 			advancedFilterDossierStatus : {},
 			stateOnlyFollow : false,
-			stateButtonregistration : true
+			stateButtonregistration : true,
+			follow : true
 		},
 		onScroll: 'onScroll',
 		schema: {
@@ -334,7 +335,6 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 												item.hasSubmit = true;
 											}
 
-
 										}catch(e){
 
 										}
@@ -602,6 +602,14 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 
 
                         			promise.then(function(success){
+                        				/*var formDataRequireds = $(".formDataRequired");
+
+                        				for (var i = 0; i < formDataRequireds.length; i++) {
+                        					if($(formDataRequireds[i]).val() === 0){
+                        						return;
+                        					}
+                        				}
+*/
                         				vm.postNextActions(item);
                         			}, function(error){
 
@@ -1363,6 +1371,8 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 
 								vm.statusParamFilter = '';
 								vm.substatusParamFilter = '';
+
+								vm.follow = false;
 
 								vm._inidanhSachHoSoTable(false);
 
@@ -2377,7 +2387,7 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 								keyword: vm.keywordsSearch,
 								owner: vm.applicantNameFilter.applicantIdNo,
 								service: vm.serviceInfoFilter.serviceCode,
-								follow: true,
+								follow: vm.follow,
 								dossierNo: vm.dossierNoFilter,
 								start: vm.danhSachHoSoTablepage * 15 - 15,
 								end: vm.danhSachHoSoTablepage * 15,
@@ -2387,7 +2397,6 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 								order: 'false'
 							};
 
-							
 							
 							if ( vm.keywordFilter != null ) {
 								paramsBuilder['keyword'] = vm.keywordFilter;
@@ -2407,6 +2416,7 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 							axios.get(url, config_dossiers).then(function (response) {
 								var serializable = response.data;
 								
+								vm.follow = true;
 
 								if (append) {
 									vm.danhSachHoSoTableItems.push.apply(vm.danhSachHoSoTableItems, serializable.data);

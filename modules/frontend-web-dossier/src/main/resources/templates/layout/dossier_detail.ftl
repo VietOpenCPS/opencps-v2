@@ -282,6 +282,11 @@
                     	<v-expansion-panel class="my-0 expansion__list_style">
                             <v-expansion-panel-content v-for="(item,i) in stepModel.createFiles" v-if="item" :key="item.dossierPartId">
                             <div slot="header" @click.prevent="showAlpacaJSFORM(item)">{{i + 1}}. {{item.partName}} <small v-if="item.eform">( Form trực tuyến )</small> </div>
+							
+							<input v-if="item.counter > 0" type="hidden" class="formDataRequired" :id="'requiredForm' + item.partNo" :name="'requiredForm' + item.partNo" value="1">
+
+							<input v-else type="hidden" class="formDataRequired" :id="'requiredForm' + item.partNo" :name="'requiredForm' + item.partNo" value="0">
+
                             <div slot="header" class="text-right">
                                 <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native.prevent="singleFileUpload(item)">
                                     <v-icon>file_upload</v-icon>
@@ -448,6 +453,8 @@
 								$('#message_success_'+referentUid).addClass('hidden');
 							}, 
 						10000);
+
+						$("#requiredForm"+id).val("1");
 						/*var count = $("#btn-part-kq1 > div.btn__content").html().trim() || 0;
 						count ++;*/
 						//$("#btn-count-partno"+id).html("1");
