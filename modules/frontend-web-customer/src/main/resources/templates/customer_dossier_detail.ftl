@@ -283,6 +283,7 @@
 
 <div class="button-row MT20">
 	<button class="btn btn-active" id="btn-submit-dossier">Lưu <i class="fa fa-save"></i></button>
+	<button class="btn btn-active" id="btn-next-step-dossier" type="button"><i class="fa fa-sign-in" aria-hidden="true"></i> Tiếp tục</button>
 	<#-- <button class="btn btn-active" id="btn-submit-dossier"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 	<button class="btn btn-active"><i class="fa fa-trash"></i> Xóa</button> -->
 	
@@ -505,9 +506,15 @@
 		funSaveDossier();
 	});
 
+	$("#btn-next-step-dossier").click(function(){
+		funSaveDossier();
+		setInterval(function(){
+			manageDossier.navigate("/taohosomoi/nophoso/${dossierId}");
+		}, 1000);
+	});
+
 	funSaveDossier = function(){
 		//PUT dossier
-		
 		var validator = $("#detailDossier").kendoValidator().data("kendoValidator");
 		var validateDossierTemplate = fnCheckValidTemplate();
 
@@ -557,8 +564,6 @@
 
 				//finish PUT dossier create action for dossier
 				createActionDossier(${dossierId});
-
-				manageDossier.navigate("/taohosomoi/nophoso/${dossierId}");
 
 			},
 			error:function(result){
