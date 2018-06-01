@@ -13,14 +13,16 @@
 			<div class="background-triangle-big">Tên thủ tục</div> 
 			<span class="text-bold" data-bind="text:serviceName"></span>
 			<div class="pull-right group-icons">
-				<a href="javascript:;" id="btn-submit-dossier-header" style="display: none;">
-					<i class="fa fa-paper-plane" aria-hidden="true"></i> 
-					Nộp hồ sơ
-				</a> 
-				<a href="javascript:;" id="btn-delete-dossier-header" style="display: none;">
-					<i class="fa fa-trash"></i>
-					Xóa
-				</a>
+				<#if dossier.dossierStatus?has_content && dossier.dossierStatus == "new" && dossier.submitting?has_content && dossier.submitting != true >
+					<a href="javascript:;" id="btn-submit-dossier-header" style="display: none;">
+						<i class="fa fa-paper-plane" aria-hidden="true"></i> 
+						Nộp hồ sơ
+					</a> 
+					<a href="javascript:;" id="btn-delete-dossier-header" style="display: none;">
+						<i class="fa fa-trash"></i>
+						Xóa
+					</a>
+				</#if>
 			</div>
 		</div>
 
@@ -161,32 +163,49 @@
 							<input type="hidden" id="validPart#:id#" name="validPart#:id#" class="validPart" value="0">
 							#}#
 						</span>
+						
+						#
+						var lockState = fnCheckLockTemplate("${dossier.lockState}",id);
+						#
 
 						<div class="actions">
-
+							
+							#if(!lockState){#	
 							<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#">
 								<i class="fa fa-archive" aria-hidden="true"></i>
 							</a>
+							#}#
 
+							#if(!lockState){#
 							<label class="MB0 ML10 hover-pointer" for="file#:id#" title="Tải file lên" >
 								<i class="fa fa-upload text-light-blue"></i>
 							</label>
+							#}#
 
 							<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#">
 
 							<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 								<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
 							</a>
-
+							
+							#if(!lockState){#
 							<a href="javascript:;" class="text-light-gray delete-dossier-file" data-toggle="tooltip" data-placement="top" title="Xóa" data-partno="#:id#" eForm="#:hasForm#" fileTemplateNo="#:fileTemplateNo#">
 								<i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
 							</a>
+							#}#
 						</div>
 					</div>
 
-					#if(hasForm){
-					var dossierFile =  getReferentUidFile(${dossierId},id);
 					#
+						if(hasForm){
+						var dossierFile =  getReferentUidFile(${dossierId},id);
+						var hiddenState = "";
+
+						if(lockState){
+							hiddenState = "pointer-events:none;";
+						}
+					#
+
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 text-right">
 							<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
@@ -196,7 +215,7 @@
 					</div>
 
 					<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}#>
-						<form id="formPartNo#:id#">
+						<form id="formPartNo#:id#" style="#:hiddenState#">
 
 						</form>
 					</div>
@@ -204,33 +223,31 @@
 					
 
 					$.ajax({
-					url : "${api.server}/dossiers/${dossierId}/files/"+dossierFile.referenceUid+"/formscript",
-					dataType : "text",
-					type : "GET",
-					headers : {"groupId": ${groupId}},
-					success : function(result){
-					$("\\#formPartNo"+id).empty();
-					var alpaca = eval("(" + result + ")");
-					var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
-					if(formdata){
-					$("\\#validPart"+id).val("1");
-				}
-				alpaca.data = formdata;
+						url : "${api.server}/dossiers/${dossierId}/files/"+dossierFile.referenceUid+"/formscript",
+						dataType : "text",
+						type : "GET",
+						headers : {"groupId": ${groupId}},
+						success : function(result){
+							$("\\#formPartNo"+id).empty();
+							var alpaca = eval("(" + result + ")");
+							var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
+							if(formdata){
+								$("\\#validPart"+id).val("1");
+							}
+							alpaca.data = formdata;
 
-				$("\\#formPartNo"+id).alpaca(alpaca);
+							$("\\#formPartNo"+id).alpaca(alpaca);
 
-				<#-- $("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12 "><button id="btn-save-formalpaca'+id+'" class="btn btn-active MB10 MT10 saveForm" type="button" data-pk="'+id+'" referentUid="'+referentUidFile+'">Ghi lại</button></div></div>'); -->
+						},
+						error : function(result){
 
-			},
-			error : function(result){
+						}
+					});
+				}#
 
-		}
-	});
-}#
-
-#}#
-</script>
-</div>
+			#}#
+		</script>
+	</div>
 </div>
 
 <div class="row-parts-content">
@@ -311,7 +328,7 @@
 
 	<button class="btn btn-active" id="btn-submit-dossier" ><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 
-	<#else>
+	<#elseif dossier.dossierStatus?has_content && dossier.dossierStatus == "new" &&            	dossier.submitting?has_content && dossier.submitting != true>
 
 	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : lockState" style="display: none;"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 	

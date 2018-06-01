@@ -128,7 +128,6 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 							})
 							.catch(function (error) {
 								console.log(error);
-
 							});
 						},
 						getLastedStateUserInfo : function(callBack){
