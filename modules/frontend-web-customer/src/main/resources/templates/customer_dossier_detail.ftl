@@ -209,6 +209,9 @@
 				$("\\#formPartNo"+id).empty();
 
 				var alpaca = eval("(" + result + ")");
+
+				console.log("alpaca==================", alpaca);
+				<#-- var alpaca = result; -->
 				var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
 				
 				if(formdata.dinh_danh){
@@ -226,7 +229,11 @@
 				
 				alpaca.data = formdata; 
 
-			$("\\#formPartNo"+id).alpaca(alpaca);
+				setInterval(function(){
+					$("\\#formPartNo"+id).alpaca(alpaca);
+				}, 1000);
+
+			
 			<#-- $("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca'+id+'" class="btn btn-active MB10 MT10 saveForm" 
 			type="button" data-pk="'+id+'" referentUid="'+referentUidFile+'">Ghi lại</button></div></div>'); -->
 
