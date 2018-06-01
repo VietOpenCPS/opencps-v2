@@ -27,8 +27,8 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-import backend.cmc.model.Evaluation;
-import backend.cmc.service.EvaluationLocalServiceUtil;
+import backend.feedback.model.Evaluation;
+import backend.feedback.service.EvaluationLocalServiceUtil;
 import backend.postal.api.rest.controller.EvaluationManagement;
 
 public class EvaluationManagementImpl implements EvaluationManagement {

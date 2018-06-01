@@ -480,9 +480,9 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				if (Validator.isNull(dlv)) {
 					// add deliverable
 					dlv = DeliverableLocalServiceUtil.addDeliverable(model.getGroupId(), deliverableType,
-							deliverableCode, dossier.getGovAgencyCode(), dossier.getApplicantIdNo(),
-							dossier.getApplicantName(), subject, issueDate, expireDate, revalidate, deliverableState,
-							serviceContext);
+							deliverableCode, dossier.getGovAgencyCode(), dossier.getGovAgencyName(),
+							dossier.getApplicantIdNo(), dossier.getApplicantName(), subject, issueDate, expireDate,
+							revalidate, deliverableState, serviceContext);
 
 				}
 				// update deliverable
