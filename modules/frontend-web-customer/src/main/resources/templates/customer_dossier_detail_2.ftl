@@ -318,7 +318,6 @@
 	</div>
 </div>
 </div>
-
 <div class="button-row MT20">
 	<#if resCancelling?has_content >
 

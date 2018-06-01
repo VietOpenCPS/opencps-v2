@@ -543,7 +543,6 @@
 </div>
 </div> 
 
-
 <div class="row-parts-content" id="postal" data-bind="value: viaPostal">
 	<div class="row">
 		<div class="col-sm-12 MB10" >
