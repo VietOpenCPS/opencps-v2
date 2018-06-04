@@ -12,19 +12,19 @@
 		<div class="col-sm-8 ">
 			<div class="row MB10 MT20">	
 				<div class="col-sm-4 PT5">
-					<span>Tên đăng kiểm viên </span> <span class="red">(*)</span>
+					<span>Tên người dùng </span>
 				</div>
 				<div class="col-sm-8">
-					<input class="form-control input-sm" id="fullnameEmployee" name="fullnameEmployee" value="${(employee.fullName)!}">
+					<input class="form-control input-sm" id="fullnameEmployee" name="fullnameEmployee" value="${(employee.fullName)!}" readonly>
 				</div>
 			</div>
 
 			<div class="row MB10">
 				<div class="col-sm-4 PT5">
-					<span>Số điện thoại </span> <span class="red">(*)</span>
+					<span>Số điện thoại </span>
 				</div>
 				<div class="col-sm-8">
-					<input class="form-control input-sm" id="telNoEmployee" name="telNoEmployee" data-bind="value: telNo" value="${(employee.telNo)!}">
+					<input class="form-control input-sm" id="telNoEmployee" name="telNoEmployee" data-bind="value: telNo" value="${(employee.telNo)!}" readonly>
 				</div>
 			</div>
 
@@ -33,34 +33,34 @@
 					<span>Email </span>
 				</div>
 				<div class="col-sm-8">
-					<input class="form-control input-sm" id="emailEmployee" name="emailEmployee" data-bind="value: email" value="${(employee.email)!}" >
+					<input class="form-control input-sm" id="emailEmployee" name="emailEmployee" data-bind="value: email" value="${(employee.email)!}" readonly>
 				</div>
 			</div>
 
 			<div class="row MB10">
 				<div class="col-sm-4 PT5">
-					<span>Contact code </span> <span class="red">(*)</span>
+					<span>Contact code </span>
 				</div>
 				<div class="col-sm-8">
-					<input class="form-control input-sm" value="${(employee.employeeNo)!}">
+					<input class="form-control input-sm" value="${(employee.employeeNo)!}" readonly>
 				</div>
 			</div>
 
 			<div class="row MB10">
 				<div class="col-sm-4 PT5">
-					<span>Địa điểm ký số </span> <span class="red">(*)</span>
+					<span>Địa điểm ký số </span>
 				</div>
 				<div class="col-sm-8">
-					<input class="form-control input-sm" value="Hà Nội">
+					<input class="form-control input-sm" value="Hà Nội" readonly>
 				</div>
 			</div>
 
 			<div class="row MB10">
 				<div class="col-sm-4 PT5">
-					<span>Chức danh ký số </span> <span class="red">(*)</span>
+					<span>Chức danh ký số </span>
 				</div>
 				<div class="col-sm-8">
-					<input class="form-control input-sm" id="title" name="title" value="${(employee.title)!}" >
+					<input class="form-control input-sm" id="title" name="title" value="${(employee.title)!}" readonly>
 				</div>
 			</div>
 
@@ -105,14 +105,14 @@
 					<span>Tài khoản đăng nhập </span> 
 				</div>
 				<div class="col-sm-8">
-					<input class="form-control input-sm" value="${(employee.email)!}">
+					<input class="form-control input-sm" value="${(employee.email)!}" readonly>
 				</div>
 			</div>
 
 			<div class="row MB15 MT20">
 				<div class="col-sm-4 PT5">
 					<p class="MB20">File ảnh ký số </p>  
-					File chứng thư gốc <span class="red">*</span>
+					File chứng thư gốc
 				</div>
 				<div class="col-sm-4">
 					<input type="file" class="MB20" id="fileRegisNumber" name="fileRegisNumber">
