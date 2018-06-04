@@ -229,7 +229,7 @@
 				
 				alpaca.data = formdata; 
 
-				setInterval(function(){
+				setTimeout(function(){
 					$("\\#formPartNo"+id).alpaca(alpaca);
 				}, 1000);
 
@@ -508,7 +508,7 @@
 
 	$("#btn-next-step-dossier").click(function(){
 		funSaveDossier();
-		setInterval(function(){
+		setTimeout(function(){ 
 			manageDossier.navigate("/taohosomoi/nophoso/${dossierId}");
 		}, 1000);
 	});
@@ -561,18 +561,18 @@
 				},
 				success :  function(result){                       
 					console.log("PUT Dossier success!");
-
-				//finish PUT dossier create action for dossier
-				createActionDossier(${dossierId});
-
-			},
-			error:function(result){
-				console.error(result);
-				notification.show({
-					message: "Xảy ra lỗi, xin vui lòng thử lại"
-				}, "error");
-			}	
-		});
+					if(result.dossierStatus == ''){
+						createActionDossier(${dossierId});
+					}
+					
+				},
+				error:function(result){
+					console.error(result);
+					notification.show({
+						message: "Xảy ra lỗi, xin vui lòng thử lại"
+					}, "error");
+				}	
+			});
 		}else {
 			notification.show({
 				message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi lưu!"

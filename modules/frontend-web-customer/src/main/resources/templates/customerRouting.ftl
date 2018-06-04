@@ -18,7 +18,13 @@
 		$("#mainType2").hide();
 		resetValueFilter();
 		layout.showIn("#main_section", viewMainList);
-		dataSourceProfile.read({"status": "new"});
+		dataSourceProfile.read({
+			"serviceInfo":$("#serviceInfo").val(),
+			"govAgencyCode":$("#govAgency").val(),
+			"year":$("#year").val(),
+			"month":$("#month").val(),
+			"status": "new"
+		});
 		$(".itemStatus").css("pointer-events","auto");
 		$("#profileStatus li").removeClass('active');
 		$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
