@@ -584,7 +584,7 @@
 		}
 
 		//Find by keyword from homepage
-		$( window ).load(function() {
+		/*$( window ).load(function() {
 		  	var url = new URL(window.location.href);
 			var keyword = url.searchParams.get("keyword");
 			console.log("keyword = " + keyword);
@@ -598,7 +598,7 @@
 					"status": ""
 				})
 			}
-		});
+		});*/
 	</script>
 		
 

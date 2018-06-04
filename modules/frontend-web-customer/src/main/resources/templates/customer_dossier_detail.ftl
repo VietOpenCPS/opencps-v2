@@ -242,7 +242,7 @@
 				
 				alpaca.data = formdata; 
 
-				setInterval(function(){
+				setTimeout(function(){
 					$("\\#formPartNo"+id).alpaca(alpaca);
 				}, 1000);
 
@@ -296,6 +296,7 @@
 
 <div class="button-row MT20">
 	<button class="btn btn-active" id="btn-submit-dossier">Lưu <i class="fa fa-save"></i></button>
+	<button class="btn btn-active" id="btn-next-step-dossier" type="button"><i class="fa fa-sign-in" aria-hidden="true"></i> Tiếp tục</button>
 	<#-- <button class="btn btn-active" id="btn-submit-dossier"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 	<button class="btn btn-active"><i class="fa fa-trash"></i> Xóa</button> -->
 	
@@ -518,9 +519,15 @@
 		funSaveDossier();
 	});
 
+	$("#btn-next-step-dossier").click(function(){
+		funSaveDossier();
+		setTimeout(function(){ 
+			manageDossier.navigate("/taohosomoi/nophoso/${dossierId}");
+		}, 1000);
+	});
+
 	funSaveDossier = function(){
 		//PUT dossier
-		
 		var validator = $("#detailDossier").kendoValidator().data("kendoValidator");
 		var validateDossierTemplate = fnCheckValidTemplate();
 
@@ -567,20 +574,18 @@
 				},
 				success :  function(result){                       
 					console.log("PUT Dossier success!");
-
-				//finish PUT dossier create action for dossier
-				createActionDossier(${dossierId});
-
-				manageDossier.navigate("/taohosomoi/nophoso/${dossierId}");
-
-			},
-			error:function(result){
-				console.error(result);
-				notification.show({
-					message: "Xảy ra lỗi, xin vui lòng thử lại"
-				}, "error");
-			}	
-		});
+					if(result.dossierStatus == ''){
+						createActionDossier(${dossierId});
+					}
+					
+				},
+				error:function(result){
+					console.error(result);
+					notification.show({
+						message: "Xảy ra lỗi, xin vui lòng thử lại"
+					}, "error");
+				}	
+			});
 		}else {
 			notification.show({
 				message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi lưu!"

@@ -85,7 +85,7 @@
 		transport : {
 			read : function(options){
 				$.ajax({
-					url : "/o/rest/vr-app/certnumbers",
+					url : "/o/rest/v2/vr-app/certnumbers",
 					dataType : "json",
 					type : "GET",
 					headers: {"groupId": ${(groupId)!}},
@@ -142,7 +142,7 @@
 		var id = $(this).attr("data-pk");
 		if(id){
 			$.ajax({
-				url : "/o/rest/vr-app/certnumbers/"+id,
+				url : "/o/rest/v2/vr-app/certnumbers/"+id,
 				dataType : "json",
 				type : "GET",
 				headers: {"groupId": ${groupId}},
@@ -170,10 +170,10 @@
 		var url = "";
 		var type = "";
 		if(id){
-			url = "/o/rest/vr-app/certnumbers/"+id;
+			url = "/o/rest/v2/vr-app/certnumbers/"+id;
 			type = "PUT";
 		}else {
-			url = "/o/rest/vr-app/certnumbers";
+			url = "/o/rest/v2/vr-app/certnumbers";
 			type = "POST";
 		}
 		var certId = $("#certId").val();
@@ -283,11 +283,19 @@
 		if(id){
 			var cf = confirm("Bạn có muốn xóa tham số này!");
 			if(cf){
+				var year = $("#year").val();
+				var pattern = $("#pattern").val();
+				var initNumber = $("#initNumber").val();
 				$.ajax({
-					url : "/o/rest/vr-app/certnumbers/"+id,
+					url : "/o/rest/v2/vr-app/certnumbers/"+id,
 					dataType : "json",
 					type : "DELETE",
 					headers: {"groupId": ${groupId}},
+					data: {
+						year: year,
+						pattern: pattern,
+						initNumber: initNumber
+					},
 					success : function(result){
 						notification.show({
 							message: "Yêu cầu được thực hiện thành công"

@@ -249,7 +249,9 @@
 							}
 							alpaca.data = formdata;
 
-							$("\\#formPartNo"+id).alpaca(alpaca);
+							setTimeout(function(){
+								$("\\#formPartNo"+id).alpaca(alpaca);
+							},1000)
 
 						},
 						error : function(result){
@@ -1634,23 +1636,11 @@
 			return value;
 		}
 
-		$(function(){
-			manageDossier.route("/taohosomoi/nopthanhcong/(:dossierId)", function(dossierId){
-				$("#mainType1").hide();
-				$("#mainType2").show();
-				$("#mainType2").load("${ajax.submited_dossier_info}&${portletNamespace}dossierId="+dossierId,function(result){
-
-				});
-			});
-		});
-
 		window.onload = function(){
 			if($("#textDossierNote").text().length < 550){
 				$("#guide-toggle").remove();
 			}
 		}
-
-
 		var fnSaveForm = function(id, value){
 			var current = $("#btn-save-formalpaca"+id);
 			var referentUid = current.attr("referenceUid");

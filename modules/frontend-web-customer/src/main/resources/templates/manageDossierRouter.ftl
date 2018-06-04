@@ -127,6 +127,14 @@
         $("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
         $(".itemStatus").css("pointer-events","auto");
       });
+
+      manageDossier.route("/taohosomoi/nopthanhcong/(:dossierId)", function(dossierId){
+      	$("#mainType1").hide();
+      	$("#mainType2").show();
+      	$("#mainType2").load("${ajax.submited_dossier_info}&${portletNamespace}dossierId="+dossierId,function(result){
+
+      	});
+      });
       
       manageDossier.route("/taohosomoi/doman", function(){
       	console.log("domain route==================");

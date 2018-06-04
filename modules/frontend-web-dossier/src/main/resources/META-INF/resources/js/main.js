@@ -550,8 +550,6 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
                         						formReport.data = formData;
                         						console.log("formReport_____FINAL=======",formReport);
                         						$("#alpacajs_form_plugin").alpaca(formReport);
-                        						
-
                         					})
                         					.catch(function (error) {
                         						console.log(error);
@@ -567,8 +565,6 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 
                         			});
                         		}
-
-
 
                         	},
                         	refreshProcess : function(){
@@ -913,8 +909,7 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
                             			serializable = [];
                             			serializableNextActionConvert = [];
                             		}
-
-
+                            		
                             		if(serializablePlugins){
                             			for (var i = 0; i < serializablePlugins.length; i++) {
                             				var plugin = {
