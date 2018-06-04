@@ -4,14 +4,14 @@
 <!-- Template thông tin hồ sơ cơ bản -->
 <div class="panel panel-default MB15" id="DossiersDetailInfo">
 	<div class="panel-heading"> 
-		<span class="text-bold text-light-blue">THÔNG TIN HỒ SƠ | </span> <span data-bind="text:applicantName"> </span>
+		<span class="text-bold text-light-blue">THÔNG TIN HỒ SƠ | </span> <span class="text-bold" data-bind="text:applicantName"> </span>
 	</div>
 	<div class="panel-body PL0">
 		<div class="col-sm-12 MB10">
             <span class="text-bold">Tên hồ sơ: </span> <span data-bind="text:serviceName"> </span>
         </div>
 		<div class="col-sm-12 MB10">
-            <span class="text-bold">Mã hồ sơ: </span> <span data-bind="text:dossierId"> </span>
+            <span class="text-bold">Mã hồ sơ: </span> <span data-bind="text:dossierIdCTN"> </span>
         </div>
         <div class="col-sm-12 MB10">
             <span class="text-bold">Mã tiếp nhận: </span> <span data-bind="text:dossierNo"> </span>
@@ -126,6 +126,7 @@
                         },
                         error : function(result){
                             options.error(result);
+                            $("#DossierDetailLog").html("<span>Không có dữ liệu</span>")
                         }
                     })
                 }
@@ -156,6 +157,13 @@
         };
         $("#btn_dossierinfo_detail").click(
             function(){
+                if($("#input_dossier_detail").val().length === 0){
+                    console.log(Id);
+                    notification.show({
+                        message: "Bạn phải nhập mã bí mật"
+                    }, "error");
+                    return;
+                }
                 console.log(dossierId);
                 $("#detailView2").show();
                 evenDataDossierDetail()

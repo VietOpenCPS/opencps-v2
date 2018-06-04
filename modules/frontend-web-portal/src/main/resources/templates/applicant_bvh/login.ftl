@@ -9,7 +9,7 @@
 		<div class="row">
 			<div class="col-sm-6">
 				<div class="">
-					<input type="text" class="form-control input-sm" name="${portletNamespace}login" id="input_login" placeholder="Tài khoản đăng nhập (địa chỉ email đã đăng ký)" title="Tài khoản đăng nhập">
+					<input type="text" class="form-control input-sm" name="${portletNamespace}login" id="input_login" placeholder="Tài khoản đăng nhập" title="Tài khoản đăng nhập">
 				</div>
 			</div>
 			<div class="col-sm-6">

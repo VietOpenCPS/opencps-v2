@@ -97,7 +97,7 @@
 			        					dataItem = result.data[0];
 			        					pullDataDetail(dataItem.dossierId);
 			        					var viewModel = kendo.observable({
-			        						dossierId: dataItem.dossierId,
+			        						dossierIdCTN: dataItem.dossierIdCTN,
 			        						applicantName: dataItem.applicantName,
 			        						serviceName: dataItem.serviceName,
 			        						dossierNo: dataItem.dossierNo,
@@ -242,23 +242,23 @@
 		// 	selectTemplate: '<li class="k-link"><i class="fa fa-circle" aria-hidden="true"></i></li>',
 		// 	linkTemplate: '<li><a href="\\#" class="k-link" data-#=ns#page="#=idx#"><i class="fa fa-circle" aria-hidden="true"></i></a></li>'
 		// });
-		// var loadDetail = function(){
-		// 	$(".itemResult").click(function(){
-		// 		dossierId = $(this).attr("data-pk");
-		// 		console.log(dossierId);
-		// 		$(".itemResult").css("pointer-events","auto");
-		// 		$(".itemResult").removeClass("text-light-blue");
-		// 		$(this).css("pointer-events","none");
-		// 		$(this).addClass("text-light-blue");
-		// 		$("#detailView").show();
-		// 		$("#detailView").load("${ajax.dossierinfo}",
-		// 			function(success){
-		// 				pullDataDetail(dossierId)
-		// 			}
-		// 		);
-		// 		$("#detailView2").hide()
-		// 	})
-		// }
+		var loadDetail = function(){
+			$(".itemResult").click(function(){
+				dossierId = $(this).attr("data-pk");
+				console.log(dossierId);
+				$(".itemResult").css("pointer-events","auto");
+				$(".itemResult").removeClass("text-light-blue");
+				$(this).css("pointer-events","none");
+				$(this).addClass("text-light-blue");
+				$("#detailView").show();
+				$("#detailView").load("${ajax.dossierinfo}",
+					function(success){
+						pullDataDetail(dossierId)
+					}
+				);
+				$("#detailView2").hide()
+			})
+		}
 	});
 </script>
 
