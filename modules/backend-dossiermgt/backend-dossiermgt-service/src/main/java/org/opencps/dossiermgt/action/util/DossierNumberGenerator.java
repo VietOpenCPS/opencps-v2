@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import javax.ws.rs.core.Response;
 
 import org.opencps.datamgt.utils.DateTimeUtils;
+import org.opencps.dossiermgt.constants.ConstantsUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -285,17 +286,17 @@ public class DossierNumberGenerator {
 			String curYear = df.format(cal.getTime());
 			String shortCurYear = sdf.format(cal.getTime());
 
-			String certConfigId = PRE_FIX_CERT + pattern + StringPool.AT + curYear;
+			String certConfigId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + curYear;
 			
 			_log.info("___certConfigId" + certConfigId);
 
-			String certConfigCurrId = PRE_FIX_CERT_CURR + pattern + StringPool.AT + curYear;
+			String certConfigCurrId = ConstantsUtils.PRE_FIX_CERT_CURR + pattern + StringPool.AT + curYear;
 			
 			_log.info("___certConfigCurrId" + certConfigCurrId);
 
 			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigId);
 
-			String elmCertId = PRE_FIX_CERT_ELM + pattern + StringPool.AT + curYear + StringPool.AT + dossierid;
+			String elmCertId = ConstantsUtils.PRE_FIX_CERT_ELM + pattern + StringPool.AT + curYear + StringPool.AT + dossierid;
 
 			//Counter counter = CounterLocalServiceUtil.fetchCounter(certId);
 
@@ -378,9 +379,9 @@ public class DossierNumberGenerator {
 		return password;
 	}
 
-	public static final String PRE_FIX_CERT = "DKLR_CERT@";
-	public static final String PRE_FIX_CERT_CURR = "DKLR_CERT_CURR@";
-	public static final String PRE_FIX_CERT_ELM = "DKLR_CERT_ELM@";
+//	public static final String PRE_FIX_CERT = "CERT@";
+//	public static final String PRE_FIX_CERT_CURR = "CERT_CURR@";
+//	public static final String PRE_FIX_CERT_ELM = "CERT_ELM@";
 
 	private static Log _log = LogFactoryUtil.getLog(DossierNumberGenerator.class.getName());
 }

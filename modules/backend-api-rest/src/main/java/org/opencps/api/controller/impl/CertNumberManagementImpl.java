@@ -12,6 +12,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.CertNumberManagement;
+import org.opencps.dossiermgt.constants.ConstantsUtils;
 
 import com.liferay.counter.kernel.model.Counter;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
@@ -30,9 +31,9 @@ import com.liferay.portal.kernel.util.Validator;
 
 public class CertNumberManagementImpl implements CertNumberManagement{
 
-	public static final String PRE_FIX_CERT = "TCDB_CERT@";
-	public static final String PRE_FIX_CERT_CURR = "TCDB_CERT_CURR@";
-	public static final String PRE_FIX_CERT_ELM = "TCDB_CERT_ELM@";
+//	public static final String PRE_FIX_CERT = "TCDB_CERT@";
+//	public static final String PRE_FIX_CERT_CURR = "TCDB_CERT_CURR@";
+//	public static final String PRE_FIX_CERT_ELM = "TCDB_CERT_ELM@";
 
 	Log _log = LogFactoryUtil.getLog(CertNumberManagementImpl.class);
 
@@ -54,7 +55,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			for (Counter cnt : counters) {
 				JSONObject elm = JSONFactoryUtil.createJSONObject();
 
-				if (cnt.getName().contains(PRE_FIX_CERT)) {
+				if (cnt.getName().contains(ConstantsUtils.PRE_FIX_CERT)) {
 
 					String[] splitPattern = StringUtil.split(cnt.getName(), StringPool.AT);
 
@@ -114,7 +115,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		
 		try {
 
-			String certId = PRE_FIX_CERT + pattern + StringPool.AT + year;
+			String certId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + year;
 			
 			Counter counterInit = CounterLocalServiceUtil.createCounter(certId);
 			counterInit.setCurrentId(initNumber);
@@ -140,7 +141,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
 
 		try {
-			String certId = PRE_FIX_CERT + pattern + StringPool.AT + year;
+			String certId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + year;
 
 			Counter counter = CounterLocalServiceUtil.getCounter(certId);
 
@@ -182,17 +183,17 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			String curYear = df.format(cal.getTime());
 			String shortCurYear = sdf.format(cal.getTime());
 
-			String certConfigId = PRE_FIX_CERT + pattern + StringPool.AT + curYear;
+			String certConfigId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + curYear;
 			
 			_log.info("___certConfigId" + certConfigId);
 
-			String certConfigCurrId = PRE_FIX_CERT_CURR + pattern + StringPool.AT + curYear;
+			String certConfigCurrId = ConstantsUtils.PRE_FIX_CERT_CURR + pattern + StringPool.AT + curYear;
 			
 			_log.info("___certConfigCurrId" + certConfigCurrId);
 
 			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigId);
 
-			String elmCertId = PRE_FIX_CERT_ELM + pattern + StringPool.AT + curYear + StringPool.AT + dossierid;
+			String elmCertId = ConstantsUtils.PRE_FIX_CERT_ELM + pattern + StringPool.AT + curYear + StringPool.AT + dossierid;
 
 			//Counter counter = CounterLocalServiceUtil.fetchCounter(certId);
 
@@ -261,6 +262,28 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		} catch (Exception e) {
 			
 			return Response.status(500).entity(e.getMessage()).build();
+		}
+	}
+
+	@Override
+	public Response removeCertNumbers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String certId) {
+		// long groupId =
+		// GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
+		_log.info("certId: "+certId);
+
+		try {
+//			String nameCounter = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + year;
+
+			CounterLocalServiceUtil.deleteCounter(certId);
+
+			jsObj.put("status", "done");
+			return Response.status(200).entity(jsObj.toString()).build();
+		} catch (Exception e) {
+			jsObj.put("status", "error");
+
+			return Response.status(500).entity(jsObj.toString()).build();
 		}
 	}
 
