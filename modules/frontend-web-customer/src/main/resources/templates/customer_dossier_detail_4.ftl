@@ -293,8 +293,10 @@
 								$("\\#validPart"+id).val("1");
 								}
 								alpaca1.data = formdata;
-
-								$("\\#formPartNo"+id).alpaca(alpaca1);
+								
+								setTimeout(function(){
+									$("\\#formPartNo"+id).alpaca(alpaca1);
+								}, 1000);
 							},
 							error : function(result){
 
